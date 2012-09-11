@@ -13,7 +13,7 @@ C     POUR GAGNER EN TEMPS CPU
       CHARACTER*(*)  FAMI
       CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE JMBHH01 J.M.PROIX
+C RESPONSABLE PROIX J.M.PROIX
 C ======================================================================
 C TOLE CRP_21 CRS_1404
 C ======================================================================
@@ -251,7 +251,7 @@ C               IF (NECOUL.NE.'KOCKS_RAUCH') THEN
                   IEXP=0
                   IF (IS.EQ.1) IEXP=1
                   CALL LCMMFI(COEFT,INDFA,NMAT,NBCOMM,NECRIS,
-     &                        IS,NBSYS,VINI(DECAL+1),DY(1),NFS,NSG,
+     &                        IS,NBSYS,VINI,DECAL,DY(1),NFS,NSG,
      &                        HSR(1,1,IHSR),IEXP,EXPBP,RP)
 
                ENDIF
@@ -272,7 +272,7 @@ C
 C
 C                 ECROUISSAGE CINEMATIQUE
 C
-                  IF ((NUECOU.LT.4).OR.(NUECOU.GT.7)) THEN
+                  IF (NUECOU.LT.4) THEN
                       CALL LCMMEC( COEFT,INDFA,NMAT,NBCOMM,NECRCI,
      &                     ITMAX, TOLER,VIS(1),DGAMMA,DALPHA, IRET)
                       IF (IRET.NE.0) GOTO 9999

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF python supervis  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF python supervis  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
 /* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
@@ -34,22 +34,20 @@
 /* Minimal main program -- everything is loaded from the library */
 
 #include "Python.h"
+
 #ifdef _USE_MPI
-#include "mpi.h"
+#   include <stdio.h>
+#   include <stdlib.h>
+#   include "mpi.h"
 #endif
+
+#include "aster_error.h"
 
 extern DL_EXPORT(int) Py_Main();
 extern void initaster();
 extern void initaster_core();
 extern void initaster_fonctions();
 extern void initmed_fonctions();
-
-#ifdef _USE_MPI
-void terminate(){
-  printf("Fin interpreteur Python\n");
-  MPI_Finalize();
-}
-#endif
 
 #ifndef _MAIN_
 #define _MAIN_ main
@@ -68,7 +66,12 @@ _MAIN_(argc, argv)
          fprintf(stderr, "MPI Initialization failed: error code %d\n",rc);
          abort();
     }
-    atexit(terminate);
+    /* terminate is defined in aster_error */
+    ierr = atexit(terminate);
+    if (ierr != 0) {
+        fprintf(stderr, "cannot set exit function\n");
+        exit(EXIT_FAILURE);
+    }
 #endif
     PyImport_AppendInittab("aster_core",initaster_core);
     PyImport_AppendInittab("aster",initaster);

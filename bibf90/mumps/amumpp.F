@@ -3,7 +3,7 @@
      &                  LPRECO,LMIXP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPP MUMPS  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 

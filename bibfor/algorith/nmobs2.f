@@ -6,7 +6,7 @@
      &                  NOBSEF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,8 +113,8 @@ C
           NBNOR  = NBNO
         ELSEIF ((EXTRCH.EQ.'MIN').OR.
      &          (EXTRCH.EQ.'MAX').OR.
-     &          (EXTRCH.EQ.'MAX_ABS').OR.
-     &          (EXTRCH.EQ.'MIN_ABS').OR.
+     &          (EXTRCH.EQ.'MAXI_ABS').OR.
+     &          (EXTRCH.EQ.'MINI_ABS').OR.
      &          (EXTRCH.EQ.'MOY')) THEN
           NBNOR = 1
         ELSE
@@ -129,8 +129,8 @@ C
           NBMAR  = NBMA
         ELSEIF ((EXTRCH.EQ.'MIN').OR.
      &          (EXTRCH.EQ.'MAX').OR.
-     &          (EXTRCH.EQ.'MAX_ABS').OR.
-     &          (EXTRCH.EQ.'MIN_ABS').OR.
+     &          (EXTRCH.EQ.'MAXI_ABS').OR.
+     &          (EXTRCH.EQ.'MINI_ABS').OR.
      &          (EXTRCH.EQ.'MOY')) THEN
           NBMAR = 1
         ELSE

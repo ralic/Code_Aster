@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF compor1 Messages  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -269,6 +269,11 @@ Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme
 
 51: _(u"""
  La commande <%(k1)s> n'est pas prévue dans le traitement des mot-clé COMP_INCR / COMP_ELAS.
+"""),
+
+52: _(u"""
+ La modélisation choisie <%(k1)s> sur la maille <%(k2)s> est incompatible avec les déformations <%(k3)s>.
+ Utilisez un autre type de déformations (cf. U4.51.11 et les documents R).
 """),
 
 54: _(u"""

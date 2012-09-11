@@ -1,6 +1,6 @@
       SUBROUTINE MPICM1(OPTMPI,TYPSCA,NBV,VI,VR)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF MPICM1 UTILITAI  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MPICM1 UTILITAI  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -52,7 +52,7 @@
       CHARACTER*1  TYPSC1
       INTEGER      VI2(1000)
       REAL*8       VR2(1000)
-      INTEGER      LOISEM,K,JTRAV
+      INTEGER      LOISEM,K,JTRAV,IRET
       INTEGER*4    IERMPI,LR8,LINT,NBV4,LOPMPI,NBPRO4
       LOGICAL      FIRST
       SAVE         FIRST,LR8,LINT
@@ -82,7 +82,12 @@
       CALL MPIERR(IERMPI)
       IF (NBPRO4.EQ.1) GOTO 9999
 
-
+!     -- VERIFICATION RENDEZ-VOUS
+      CALL MPICHK(NBPRO4, IRET)
+      IF (IRET .NE. 0) THEN
+        CALL U2MESK('I', 'APPELMPI_83', 1, OPTMPI)
+        GOTO 9999
+      ENDIF
 
       IF (OPTMPI.EQ.'BARRIER') THEN
 !     ---------------------------------
@@ -90,8 +95,6 @@
         CALL MPIERR(IERMPI)
         GOTO 9999
       ENDIF
-
-
 
 !     -- SCALAIRE :
 !     -------------

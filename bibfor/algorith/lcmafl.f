@@ -2,7 +2,7 @@
      &             NBVAL,VALRES,NMAT,ITBINT,NFS,NSG,HSRI,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,6 +85,24 @@ C         PAR CONVENTION ECOU_VISC2 A LE NUMERO 2
           NBVAL=NBVAL+1
 C         PAR CONVENTION ECOU_DD_CFC A LE NUMERO 5
           VALRES(1)=5
+          NBVAL=NBVAL+1
+          VALRES(NBVAL)=0.D0
+      ENDIF
+      IF (NECOUL.EQ.'MONO_DD_CFC_IRRA') THEN
+          NBVAL=6
+          NOMRES(1)='TAU_F'
+          NOMRES(2)='GAMMA0'
+          NOMRES(3)='A'
+          NOMRES(4)='B'
+          NOMRES(5)='N'
+          NOMRES(6)='Y'
+
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
+     &                 NBVAL,NOMRES, VALLUE,ICODRE,1)
+          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
+          NBVAL=NBVAL+1
+C         PAR CONVENTION ECOU_DD_CFC_IRRA A LE NUMERO 8
+          VALRES(1)=8
           NBVAL=NBVAL+1
           VALRES(NBVAL)=0.D0
       ENDIF

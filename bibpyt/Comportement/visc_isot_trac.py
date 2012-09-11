@@ -1,4 +1,4 @@
-#@ MODIF visc_isot_trac Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF visc_isot_trac Comportement  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ from cata_comportement import LoiComportement
 loi = LoiComportement(
    nom            = 'VISC_ISOT_TRAC',
    doc = """Loi viscoplastique avec critère de Von Mises, écrouissage isotrope et viscosité en sinh""",
-   num_lc         = 1,
+   num_lc         = 2,
    nb_vari        = 2,
    nom_vari       = ('EPSPEQ', 'INDIPLAS'),
    mc_mater       = ('ELAS', 'TRACTION', 'VISC_SINH'),

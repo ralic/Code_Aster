@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",
          NOM_PARA  = SIMP(statut='o',typ='TXM'),
          CRIT_COMP = SIMP(statut='f',typ='TXM',defaut="EQ",
                           into=('EQ','NE','GT','LT','GE','LE','REGEXP',
-                                'VIDE','NON_VIDE','MAXI','ABS_MAXI','MINI','ABS_MINI'),),
+                                'VIDE','NON_VIDE','MAXI','MAXI_ABS','MINI','MINI_ABS'),),
          b_vale = BLOC(condition = "(CRIT_COMP in ('EQ','NE','GT','LT','GE','LE'))",
             regles=(UN_PARMI('VALE','VALE_I','VALE_K','VALE_C',),),
             VALE   = SIMP(statut='f',typ='R',max='**'),

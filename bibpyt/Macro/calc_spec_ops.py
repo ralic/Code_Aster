@@ -1,4 +1,4 @@
-#@ MODIF calc_spec_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calc_spec_ops Macro  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,7 +103,6 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
    else :
       
       tab_ast=l_t[0][1]['NOM_TAB'];
-      #tab_ast=l_t['NOM_TAB']  #MC
       tab_py=tab_ast.EXTR_TABLE();
       
       nom_fonc= tab_py['FONCTION'].values()['FONCTION']

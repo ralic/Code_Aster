@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+#& MODIF COMMANDE  DATE 10/09/2012   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,12 +51,6 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
             ),
 
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mode_meca,mult_elas),),
-         TOUT             = SIMP(statut='f',typ='TXM',into=("OUI",),
-                             fr="le calcul sera effectue sur toutes les mailles"),
-         GROUP_MA         = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                             fr="le calcul ne sera effectue que sur ces groupes de mailles"),
-         MAILLE           = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
-                             fr="le calcul ne sera effectue que sur ces mailles"),
                     
          b_no_mult          =BLOC(condition="(AsType(RESULTAT) != mult_elas)",
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST',

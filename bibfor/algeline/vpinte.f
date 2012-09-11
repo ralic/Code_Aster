@@ -11,7 +11,7 @@
       CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,8 +109,9 @@ C                    --- CONTROLE DE NON SORTIE DES BORNES ---
                   ENDIF
  25               CONTINUE
                   IDET0 = 0
+C --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
                   CALL VPSTUR(LRAIDE,OM,LMASSE,LDYNAM,
-     +                        DET0,IDET0,IEME0,IER,SOLVEU)
+     +                     DET0,IDET0,IEME0,IER,SOLVEU,.TRUE.,.FALSE.)
                   PRECI = ABS(OM0-OM)/OM0
                   IF (PRECI.LE.TOLF.OR. IER.NE.0 ) THEN
                      NBITER = NITER

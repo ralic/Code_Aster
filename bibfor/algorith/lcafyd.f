@@ -3,7 +3,7 @@
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,10 +56,7 @@ C ATTENTION !         NS=(NVI-8)/3
          NS=NR-NDT
          IRR=0
          DECIRR=0
-         IF ( (   MATERF(NBCOMM(1,1),2).EQ.4)
-     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.5)
-     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.6)
-     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.7)) THEN
+         IF ( MATERF(NBCOMM(1,1),2).GE.4) THEN
 C           KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
 C           UNE SEULE FAMILLE
             CALL ASSERT(NBCOMM(NMAT,2).EQ.1)
@@ -68,6 +65,10 @@ C           UNE SEULE FAMILLE
  102        CONTINUE
             NECOUL=CPMONO(3)
             IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
+               IRR=1
+               DECIRR=6+3*NS
+            ENDIF
+            IF (NECOUL.EQ.'MONO_DD_CFC_IRRA') THEN
                IRR=1
                DECIRR=6+3*NS
             ENDIF

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_exceptions supervis  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_exceptions supervis  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -41,16 +41,17 @@
  * except( code ) {                                 else if (gExcEnv == code ) {
  *      ...                                                 ...
  * }                                                }
- * finally {                                        else {
+ * exceptAll {                                      else {
  *      ...                                                 ...
  * }                                                }
  * endTry();
  * 
  * NB: there are two differences with the Python behavior/syntax.
- *     1. If an exception occurs in any of the blocks (and not handled),
- *        it will not be raised at the end of the finally clause. 
+ *     1. There is no finally clause.
  *     2. An additional statement endTry() to decrement the counter level.
  *        Do not forget endTry() if there is a return statement in a block.
+ * 
+ * except( code ) : will probably be not very usefull in C.
  * 
  * Global variables:
  *  gExcNumb: code of the exception to raise
@@ -58,11 +59,11 @@
  *  gExcArgs: arguments passed to the exception raised
  * 
  */
+int gExcLvl = 0;
 int gExcNumb = -1;
 jmp_buf gExcEnv[NIVMAX+1];
-PyObject* gExcArgs = NULL;
 
-static int exc_level = 0;
+static PyObject* gExcArgs = NULL;
 static PyObject *exc_module = NULL;
 
 /*
@@ -96,29 +97,32 @@ void initExceptions(PyObject *dict)
  *   PRIVATE FUNCTIONS
  * 
  */
-int _new_try()
+void _new_try()
 {
-    /* Begin of try : `exc_level` incremented
+    /* Begin of try : `gExcLvl` incremented
      */
-    exc_level += 1;
-    if ( NIVMAX < exc_level ) {
-        printf("AssertionError: too many nested try/except statements: %d\n", exc_level);
+    gExcLvl += 1;
+    if ( NIVMAX < gExcLvl ) {
+        printf("AssertionError: too many nested try/except statements: %d\n", gExcLvl);
         abort();
     }
-    return exc_level;
 }
 
 void _end_try()
 {
-    /* End if try : `exc_level` is decremented
+    /* End if try : `gExcLvl` is decremented
      */
-    exc_level -= 1;
+    gExcLvl -= 1;
 }
 
 void _raiseException( _IN int val )
 {
-    /* Raise the exception of code `val`
-     * called by aster_oper, aster_opsexe, aster_debut, aster_poursu
+    /* Raise the exception of code `val`.
+     * Called through raiseException by aster_oper, aster_opsexe, aster_debut,
+     * aster_poursu.
+     * 
+     * WARNING: The error indicator will be reset by a PyObject_CallMethod or similar.
+     * All C-Python methods must take care of that indicator (ex. UTPRIN).
      */
     PyObject *exc;
 
@@ -129,5 +133,43 @@ void _raiseException( _IN int val )
         PyErr_SetObject(exc, gExcArgs);
     }
     return;
+}
+
+void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
+                                _IN char *idmess, _IN STRING_SIZE lidmess,
+                                _IN INTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
+                                _IN INTEGER *nbi, _IN INTEGER *vali,
+                                _IN INTEGER *nbr, _IN DOUBLE *valr)
+{
+    /*
+     * Fortran/Python interface to raise an exception from the fortran subroutines
+     */
+    PyObject *tup_valk, *tup_vali, *tup_valr;
+    char *kvar;
+    int i;
+    
+    tup_valk = PyTuple_New( *nbk ) ;
+    for(i=0;i<*nbk;i++){
+       kvar = valk + i*lvk;
+       PyTuple_SetItem( tup_valk, i, PyString_FromStringAndSize(kvar,lvk) ) ;
+    }
+
+    tup_vali = PyTuple_New( *nbi ) ;
+    for(i=0;i<*nbi;i++){
+       PyTuple_SetItem( tup_vali, i, PyInt_FromLong(vali[i]) ) ;
+    }
+
+    tup_valr = PyTuple_New( *nbr ) ;
+    for(i=0;i<*nbr;i++){
+       PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble(valr[i]) ) ;
+    }
+
+    gExcArgs = PyTuple_New( 4 );
+    PyTuple_SetItem( gExcArgs, (Py_ssize_t)0, PyString_FromStringAndSize(idmess, lidmess) );
+    PyTuple_SetItem( gExcArgs, (Py_ssize_t)1, tup_valk );
+    PyTuple_SetItem( gExcArgs, (Py_ssize_t)2, tup_vali );
+    PyTuple_SetItem( gExcArgs, (Py_ssize_t)3, tup_valr );
+
+    interruptTry((int)*exc_type);
 }
 

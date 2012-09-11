@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMUN  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ def C_OBSERVATION() : return FACT(statut='f',max=99,
                                          "DEPL_ABSOLU","VITE_ABSOLU","ACCE_ABSOLU",)),
 
            EVAL_CHAM       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',
-                                   into=("MIN","MAX","MOY","MAX_ABS","MIN_ABS","VALE",),),
+                                   into=("MIN","MAX","MOY","MAXI_ABS","MINI_ABS","VALE",),),
 
            NOM_CMP         =SIMP(statut='o',typ='TXM',max=20),
            EVAL_CMP        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',

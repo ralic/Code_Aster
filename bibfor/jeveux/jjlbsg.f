@@ -1,6 +1,6 @@
       SUBROUTINE JJLBSG (IC, ID, IOC, IBACOL, IADMI, IADYN, LTOT) 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -113,8 +113,8 @@ C
               IADD( JIADD(IC)+2*ID   ) = IADDI(2)
             ENDIF
             LGS = ISZON(JISZON+IADMI-4) - IADMI + 4
-            MCDYN = MCDYN - LGS*LOIS
-            MLDYN = MLDYN + LGS*LOIS
+            MCDYN = MCDYN - LGS
+            MLDYN = MLDYN + LGS
             CALL HPDEALLC ( IADYN , NBFREE , IBID )
             LTOT = LTOT + IL
             IADM(JIADM(IC)+2*ID-1) = 0
@@ -160,8 +160,8 @@ C
                 ISZON(JISZON + IBIADD -1 + 2*IOC  ) = IADDI(2)
               ENDIF
               LGS = ISZON(JISZON+IADMI-4) - IADMI + 4
-              MCDYN = MCDYN - LGS*LOIS
-              MLDYN = MLDYN + LGS*LOIS
+              MCDYN = MCDYN - LGS
+              MLDYN = MLDYN + LGS
               CALL HPDEALLC ( IADYN , NBFREE , IBID )
               LTOT = LTOT + IL
               ISZON(JISZON + IBIADM - 1 +2*IOC-1) = 0

@@ -1,6 +1,6 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE FATIGUE VIBRATOIRE D'UNE AUBE DE VENTILATEUR
-# sdlv129a.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test R
+# sdlv129a.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,9 +70,8 @@ TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
                   NOM_CMP='VMIS_SG',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=2.981633E+02,
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);
+                  VALE=307.712514,
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
                   NUME_ORDRE=1,
@@ -80,9 +79,8 @@ TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
                   NOM_CMP='VMIS',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=2.981633E+02,
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);
+                  VALE=307.712514,
+                  REFERENCE='NON_REGRESSION',),);
 
 #
 # CALCUL DES CONTRAINTES MODALES
@@ -112,9 +110,8 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NOM_CMP='VMIS_SG',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=9.498365E+00,
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);
+                  VALE=9.800254,
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NUME_MODE=2,
@@ -122,9 +119,8 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NOM_CMP='VMIS_SG',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=-2.97812567E+01,
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);
+                  VALE=-31.150885,
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NUME_MODE=1,
@@ -132,9 +128,8 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NOM_CMP='VMIS',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=9.498365E+00,
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);
+                  VALE=9.800254,
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NUME_MODE=2,
@@ -142,9 +137,8 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NOM_CMP='VMIS',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=2.97812567E+01,
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);
+                  VALE=31.150885,
+                  REFERENCE='NON_REGRESSION',),);
 #
 #
 # CALCUL EN FATIGUE
@@ -178,16 +172,14 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1,
                   NOM_CMP='DOMA',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=3.69451E+01,
-                  REFERENCE='ANALYTIQUE',
-                  PRECISION=0.01,),);
+                  VALE=35.32,
+                  REFERENCE='ANALYTIQUE',),);
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1,
                   NOM_CMP='DOMA',
                   TYPE_TEST='MIN',
-                  VALE=2.44963E+01,
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);
+                  VALE=21.138430,
+                  REFERENCE='NON_REGRESSION',),);
 
 # MODE 1 SEUL (AUX NOEUDS, GERBER)
 D_MOD1b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
@@ -207,16 +199,14 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1b,
                   NOM_CMP='DOMA',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=4.79608E+01,
-                  REFERENCE='ANALYTIQUE',
-                  PRECISION=0.01,),);
+                  VALE=46.18,
+                  REFERENCE='ANALYTIQUE',),);
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1b,
                   NOM_CMP='DOMA',
                   TYPE_TEST='MIN',
-                  VALE=3.136561E+01,
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);
+                  VALE=27.712900,
+                  REFERENCE='NON_REGRESSION',),);
 
 # MODE 1 SEUL (AUX PTS DE GAUSS, GERBER)
 D_MOD1G=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
@@ -253,9 +243,8 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12,
                   NOM_CMP='DOMA',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=1.43884E+01,
-                  REFERENCE='ANALYTIQUE',
-                  PRECISION=0.01,),);
+                  VALE=13.64,
+                  REFERENCE='ANALYTIQUE',),);
 
 
 TDMG12=POST_RELEVE_T(ACTION=_F(     INTITULE='(MODE 1) + 0,5 * (MODE 2)',
@@ -263,14 +252,12 @@ TDMG12=POST_RELEVE_T(ACTION=_F(     INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     TOUT_CMP='OUI',
                                     OPERATION='EXTREMA',) ,) ;
 
-TEST_TABLE(  TABLE=TDMG12,
-             FILTRE=( _F(  NOM_PARA = 'EXTREMA',
-                           VALE_K   = 'MIN'),),
-             REFERENCE='NON_REGRESSION',
-             NOM_PARA='VALE',
-             VALE=7.44918541,
-             PRECISION = 1.E-4,
-           )
+TEST_TABLE(TABLE=TDMG12,
+           FILTRE=( _F(NOM_PARA='EXTREMA',
+                       VALE_K='MIN'),),
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='VALE',
+           VALE=6.66335850,);
 
 # (MODE 1) + 0,5 * (MODE 2) (AUX NOEUDS, GERBER)
 D_MOD12b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
@@ -291,9 +278,8 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12b,
                   NOM_CMP='DOMA',
                   MAILLE='M294',
                   NOEUD = 'N111',
-                  VALE=1.867847966E+01,
-                  REFERENCE='ANALYTIQUE',
-                  PRECISION=0.01,),);
+                  VALE=17.83,
+                  REFERENCE='ANALYTIQUE',),);
 
 
 TDMG12b=POST_RELEVE_T(ACTION=_F(    INTITULE='(MODE 1) + 0,5 * (MODE 2)',
@@ -301,12 +287,10 @@ TDMG12b=POST_RELEVE_T(ACTION=_F(    INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     TOUT_CMP='OUI',
                                     OPERATION='EXTREMA',) ,) ;
 
-TEST_TABLE(  TABLE=TDMG12b,
-             FILTRE=( _F(  NOM_PARA = 'EXTREMA',
-                           VALE_K   = 'MIN'),),
-             REFERENCE='NON_REGRESSION',
-             NOM_PARA='VALE',
-             VALE=9.538073372,
-             PRECISION = 1.E-4,
-           )
+TEST_TABLE(TABLE=TDMG12b,
+           FILTRE=(_F(NOM_PARA='EXTREMA',
+                      VALE_K='MIN',),),
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='VALE',
+           VALE=8.735795,);
 FIN();

@@ -1,0 +1,93 @@
+      SUBROUTINE MPISST( ISTAT, RESP0 )
+!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
+!& MODIF MPISST UTILITAI  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+! ================================================================== 
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
+!                                                                    
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
+!                                                                    
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
+! ================================================================== 
+C RESPONSABLE COURTOIS M.COURTOIS
+      IMPLICIT NONE
+!     ARGUMENTS          IN     OUT
+      INTEGER            ISTAT, RESP0
+!-----------------------------------------------------------------------
+!     FONCTION REALISEE : MPI SEND STAT
+!       ENVOIE L'ETAT OK OU ERREUR AU PROC #0 ET RETOURNE LA REPONSE
+!       DU PROC #0.
+!-----------------------------------------------------------------------
+#ifdef _USE_MPI
+!
+      INCLUDE 'mpif.h'
+      INCLUDE 'aster_constant.h'
+!
+      INTEGER*4 RANK, IERMPI
+      INTEGER*4 IST4, IRP0, TERM, MPST(MPI_STATUS_SIZE), REQ
+      DOUBLE PRECISION T0, TF
+      REAL*8    TRES, TIMOUT
+!
+      CALL MPI_COMM_RANK(MPI_COMM_WORLD, RANK, IERMPI)
+      CALL MPIERR(IERMPI)
+      CALL ASSERT(RANK .NE. 0)
+      CALL ASSERT(ISTAT.EQ.ST_OK .OR. ISTAT.EQ.ST_ER)
+!
+      CALL UTTRST(TRES)
+      TIMOUT = TRES * 0.2D0
+!
+!     ENVOI ST_OK OU ST_ERR AU PROC #0
+      IST4 = ISTAT
+      CALL MPI_ISEND(IST4, 1, MPI_INTEGER4, 0, ST_TAG_CHK,
+     &               MPI_COMM_WORLD, REQ, IERMPI)
+      CALL MPIERR(IERMPI)
+      T0 = MPI_WTIME()
+ 300  CONTINUE
+!     WHILE NOT TERM
+        CALL MPI_TEST(REQ, TERM, MPST, IERMPI)
+        CALL MPIERR(IERMPI)
+!       TIMOUT
+        TF = MPI_WTIME()
+        IF ( (TF - T0) .GT. TIMOUT ) THEN
+          CALL U2MESI('E+', 'APPELMPI_96', 1, 0)
+          CALL U2MESK('E', 'APPELMPI_83', 1, 'MPI_ISEND')
+          CALL MPISTP(1)
+          GOTO 9999
+        ENDIF
+      IF ( TERM .NE. 1 ) GOTO 300
+!     END WHILE
+!
+!     REPONSE DE PROC #0
+      IRP0 = ST_ER
+      CALL MPI_IRECV(IRP0, 1, MPI_INTEGER4, 0, ST_TAG_CNT,
+     &               MPI_COMM_WORLD, REQ, IERMPI)
+      CALL MPIERR(IERMPI)
+      T0 = MPI_WTIME()
+ 200  CONTINUE
+!     WHILE NOT TERM
+        CALL MPI_TEST(REQ, TERM, MPST, IERMPI)
+        CALL MPIERR(IERMPI)
+!       TIMOUT
+        TF = MPI_WTIME()
+        IF ( (TF - T0) .GT. TIMOUT * 1.2 ) THEN
+          CALL U2MESI('E+', 'APPELMPI_96', 1, 0)
+          CALL U2MESK('E', 'APPELMPI_83', 1, 'MPI_IRECV')
+          CALL MPISTP(1)
+          GOTO 9999
+        ENDIF
+      IF ( TERM .NE. 1 ) GOTO 200
+!     END WHILE
+!
+      RESP0 = IRP0
+!
+ 9999 CONTINUE
+#endif
+      END

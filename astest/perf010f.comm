@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CALCUL DE PERFORMANCE : DIABOLO PLEIN
 # perf010f.para = tps_job 2000 mem_job 6849Mo ncpus 1 liste_test PI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,7 +111,7 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MUMPS',
                               GESTION_MEMOIRE='OUT_OF_CORE',
                               RESI_RELA=-1.0,
-   
+                              PCENT_PIVOT=30,
                               MATR_DISTRIBUEE='OUI',
                               ),
                    INFO=1);

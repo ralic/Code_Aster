@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,15 +35,15 @@ cata_msg={
 """),
 
 3: _(u"""
- Erreur programmeur : %(k1)s non appariés.
+  Erreur programmeur : %(k1)s non appariés.
 """),
 
 8: _(u"""
- Un nom de concept intermédiaire doit commencer par '.' ou '_' et non :  %(k1)s
+  Un nom de concept intermédiaire doit commencer par '.' ou '_' et non :  %(k1)s
 """),
 
 12: _(u"""
- Exécution de JEVEUX en mode DEBUG
+  Exécution de JEVEUX en mode DEBUG
 """),
 
 13: _(u"""
@@ -55,7 +55,7 @@ cata_msg={
 """),
 
 15: _(u"""
- Problème d'allocation des bases de données
+  Problème d'allocation des bases de données
 """),
 
 16: _(u"""
@@ -63,7 +63,7 @@ cata_msg={
 """),
 
 17: _(u"""
- Relecture des catalogues des éléments faite.
+  Relecture des catalogues des éléments faite.
 """),
 
 18: _(u"""
@@ -71,7 +71,7 @@ cata_msg={
 """),
 
 19: _(u"""
- Début de lecture..."""),
+  Début de lecture..."""),
 
 20: _(u"""
   "%(k1)s" argument invalide du mot clé "FICHIER" du mot clé facteur "CATALOGUE"
@@ -90,11 +90,11 @@ cata_msg={
 },
 
 23: _(u"""
- Débogage JXVERI demandé
+  Débogage JXVERI demandé
 """),
 
 24: _(u"""
- Débogage SDVERI demandé
+  Débogage SDVERI demandé
 """),
 
 31: _(u"""
@@ -128,29 +128,29 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 43: _(u"""
- Débogage %(k1)s suspendu
+  Débogage %(k1)s suspendu
 """),
 
 44: _(u"""
- Débogage %(k1)s demandé
+  Débogage %(k1)s demandé
 """),
 
 50: _(u"""
- la commande a un numéro non appelable dans cette version.
- le numéro erroné est  %(i1)d
+ La commande a un numéro non appelable dans cette version.
+ Le numéro erroné est  %(i1)d
 """),
 
 52: _(u"""
- Fin de lecture (durée  %(r1)f  s.) %(k1)s
+  Fin de lecture (durée  %(r1)f  s.) %(k1)s
 """),
 
 56: _(u"""
- Incohérence entre le catalogue et le corps de la macro-commande.
+  Incohérence entre le catalogue et le corps de la macro-commande.
 """),
 
 60: _(u"""
- La procédure a un numéro non appelable dans cette version.
- le numéro erroné est %(i1)d.
+  La procédure a un numéro non appelable dans cette version.
+  Le numéro erroné est %(i1)d.
 """),
 
 61: _(u"""
@@ -172,7 +172,7 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 65 : _(u"""
- Liste des concepts issus de la base :
+  Liste des concepts issus de la base :
     Nom         Type du concept
 """),
 
@@ -182,7 +182,7 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 68: _(u"""
- La signature de la base sauvegardée est (à l'adresse %(i1)d) :
+  La signature de la base sauvegardée est (à l'adresse %(i1)d) :
     %(k1)s
 """),
 
@@ -196,21 +196,21 @@ Or la signature de glob.1 est :
 """),
 
 70: _(u"""
- La signature de la base relue est conforme à celle attendue (à l'adresse %(i1)d) :
+  La signature de la base relue est conforme à celle attendue (à l'adresse %(i1)d) :
     %(k1)s
 """),
 
 71: _(u"""
- La signature de la base au format HDF ne peut pas être vérifiée.
+  La signature de la base au format HDF ne peut pas être vérifiée.
 """),
 
 72: _(u"""
- L'exécution précédente s'est terminée correctement.
+  L'exécution précédente s'est terminée correctement.
 """),
 
 76: _(u"""
- L'exécution précédente a été interrompue au cours d'une commande qui a produit
- le concept '%(k1)s' de type <%(k2)s> qui a été néanmoins validé par l'opérateur.
+  L'exécution précédente a été interrompue au cours d'une commande qui a produit
+  le concept '%(k1)s' de type <%(k2)s> qui a été néanmoins validé par l'opérateur.
 """),
 
 81: _(u"""

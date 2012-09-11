@@ -1,8 +1,8 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
-# ssnp124b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test SI
+# ssnp124b.para = tps_job 60 mem_job 1024Mo ncpus 1 liste_test SI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

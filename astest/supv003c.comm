@@ -1,0 +1,111 @@
+# MODIF  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE GESTION DES ERREURS EN PARALLELE
+# supv003c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+MAXSLEEP = 3.
+wait_on = 999
+err_on = 999
+err_f = 'EXCEPTION'
+
+test = 0
+
+"""
+# Content of the `.distr` file, provided in supv003c.2
+ltest = range(1, 9 + 1) + [11, 12]
+VALE = [ { 'test' : i } for i in ltest]
+"""
+
+if   test == 1:
+    err_on = 0
+elif test == 2:
+    err_on = 1
+elif test == 3:
+    err_on = 2
+    wait_on = 1
+elif test == 4:
+    wait_on = 2
+elif test == 5:
+    wait_on = 0
+elif test == 6:
+    wait_on = 0
+    err_on = 2
+elif test == 7:
+    wait_on = 0
+    err_on = 1, 2
+elif test == 8:
+    err_on = 0
+    wait_on = 1, 2
+elif test == 9:
+    err_on = 2
+    wait_on = 0, 1
+elif test == 11:
+    err_on = 0
+    err_f = 'ABORT'
+elif test == 12:
+    err_on = 1
+    err_f = 'ABORT'
+elif test == 101: # with nbproc=1
+    err_on = 0
+    err_f = 'ABORT'
+
+
+DEBUT(CODE=_F(NOM='SUPV003C', NIV_PUB_WEB='INTERNET'),
+      PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1',
+      ERREUR=_F(ERREUR_F=err_f))
+
+import aster_core
+
+def execute(err_on, wait_on):
+    """Main"""
+    import time
+    from random import random
+    rank, size = aster_core.mpi_info()
+    ts = MAXSLEEP * random()
+    if rank in wait_on:
+        # must be greater than 20% of the remaining time (=time limit)
+        ts = 60. + ts
+    print '  proc #%d/%d is waiting for %.1f s' % (rank, size, ts)
+    time.sleep(ts)
+
+    if rank in err_on:
+        # if another proc is ok, it should time out first
+        time.sleep(MAXSLEEP)
+        ma = LIRE_MAILLAGE(UNITE=22)
+
+if type(err_on) is int:
+    err_on = (err_on, )
+if type(wait_on) is int:
+    wait_on = (wait_on, )
+
+execute(err_on, wait_on)
+
+aster_core.mpi_barrier()
+
+assert test == 0, 'we should never pass here'
+
+# checks nothing
+tab = CREA_TABLE(LISTE=_F(PARA='NBOK', LISTE_I=1))
+
+TEST_TABLE(TABLE=tab,
+           NOM_PARA='NBOK',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',)
+
+FIN()

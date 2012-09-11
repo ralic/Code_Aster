@@ -12,7 +12,7 @@
       CHARACTER*24  K24RC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,14 +55,15 @@ C IN IND   : IN : NUMEROUS OF THE CHECK POINT (FOR PRINT/DEBUGGING ONLY)
 C     ------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 
-      INTEGER      J,NKM1,NBCMB,IBID,IRET,LDIAG,IRET2,JMATC,RINDC
+      INTEGER      J,NKM1,NBCMB,IBID,IRET,LDIAG,IRET2,JMATC,RINDC,ISLVK,
+     &             ISLVI,LMATSH
       REAL*8       RAUXX,RAUXY,RAUXM,R8PREM,PREC,PREC1,R8PI,PI,COEF(6),
-     &             VALR(2),R8MIEM,RMIN,RAYON
-      COMPLEX*16   CAUX2,CUN,CAUX3
+     &             VALR(2),R8MIEM,RMIN,RAYON,R8BID
+      COMPLEX*16   CAUX2
       CHARACTER*1  TYPCST(3)
       CHARACTER*8  NOMDDL
       CHARACTER*19 MATPRE
-      CHARACTER*24 NMAT(3),NMATSH,K24B
+      CHARACTER*24 NMAT(3),NMATSH,K24B,METRES
 
 C     ------------------------------------------------------------------
       DATA TYPCST /'C','C','C'/
@@ -75,7 +76,6 @@ C   --- MISCELLANEOUS ---
       PREC1=1.D0-PREC
       PI=R8PI()
       NKM1=NK-1
-      CUN=DCMPLX(1.D0,0.D0)
       RMIN=R8MIEM()*100
 
 C     ------------------------------------------------------------------
@@ -124,8 +124,21 @@ C   --- COMPUTE DYNAM=(1.D0,0.D0)*RAIDE - (RE(LAMBDA),IM(LAMBDA))*MASSE
           NMAT(3)  = ZK24(ZI(LRAIDE+1))
           NMATSH   = ZK24(ZI(LDYNAM+1))
         ENDIF
+        CALL MTDSCR(NMATSH)
+        CALL JEVEUO(NMATSH(1:19)//'.&INT','E',LMATSH)
         CALL MTCMBL(NBCMB,TYPCST,COEF,NMAT,NMATSH,NOMDDL,' ','ELIM=')
-        
+
+C   --- STEP 1.5: IF LINEAR SOLVER='MUMPS'
+C   --- WE CHANGE TWO PARAMETERS OF THE SD_SOLVER RECORD TO ORDER MUMPS
+C   --- TO COMPUTE THE DETERMINANT WITHOUT KEEPING THE FACTORS
+        CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
+        METRES=ZK24(ISLVK)
+        CALL JEVEUO(SOLVEU//'.SLVI','E',ISLVI)
+        IF (METRES(1:5).EQ.'MUMPS') THEN
+          ZI(ISLVI-1+4)=1
+          ZI(ISLVI-1+5)=1
+        ENDIF
+
 C   --- STEP 2: FACTORIZATION OF THIS DYNAMIC MATRIX              ---
         MATPRE=' '
         IRET=0
@@ -143,28 +156,17 @@ C   --- OR THE LINEAR SOLVER FAILED                               ---
 C   --- STEP 3: COMPUTATION OF THE NORMALIZED CHARAC. POLYNOMIAL  ---
 C   --- IT'S OK BECAUSE ONLY THE ARGUMENT INTERESTED US           ---
 C   --- THIS IS A TIP TO PREVENT OVERFLOW WHEN MULTPLYING NUMBERS ---
-          K24B=NMATSH(1:19)//'.DIGS'
-
-          CALL JEEXIN(K24B,IRET2)
-          IF (IRET2.EQ.0) CALL U2MESR('F','ALGELINE4_15',2,VALR)
-          CALL JEVEUO(K24B,'L',LDIAG)
-          LDIAG=LDIAG+NK
-          CAUX2=CUN
-          DO 60 J=1,NK
-            CAUX3=ZC(LDIAG+J-1)
-            RAUXX=DBLE(CAUX3)
-            RAUXY=DIMAG(CAUX3)
-            RAUXM=SQRT(RAUXX*RAUXX+RAUXY*RAUXY)
-            IF (RAUXM.LT.RMIN) RAUXM=1.D0
-            CAUX3=CAUX3/RAUXM
-            CAUX2=CAUX2*CAUX3
-   60     CONTINUE
+C   --- THIS TIP IS ACTIVED ONLY FOR LDLT AND MULT_FRONT LINEAR   ---
+C   --- SOLVER. FOR MUMPS, WE USE THE DETERMINANT COMPUTE BY THE  ---
+C   --- THE TOOL.                                                 ---
+           CALL MTDETE(2,METRES,LMATSH,R8BID,IBID,CAUX2)
         ENDIF          
  
       ELSE
 
 C   --- ILLEGAL OPTION ---
         CALL ASSERT(.FALSE.)
+
       ENDIF
 
 

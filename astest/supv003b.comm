@@ -1,0 +1,83 @@
+# MODIF  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE VERIFICATION DES ALARMES EN PARALLELE
+# supv003b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F(NOM='SUPV003B', NIV_PUB_WEB='INTERNET'),
+      PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1')
+"""
+Ce test doit être lancé sur au moins deux processeurs.
+
+- Sur le proc #1, on lit un maillage contenant des noeuds orphelins,
+  des mailles doubles... Il émet donc des alarmes de vérification du maillage.
+
+- Le proc #0 lit un maillage sain : pas d'alarme.
+  FIN doit récupérer le nombre d'alarmes émises sur les autres processeurs.
+  Comme une alarme est émise sur #1, on vérifie que l'alarme APPELMPI_1/2 est
+  émise sur le proc #0.
+
+On ne peut pas faire de TEST_RESU car il faudrait le faire **après** FIN.
+
+On surcharge la méthode qui traite la fin d'exécution du jdc pour récupérer
+la liste des alarmes émises. Et on vérifie qu'on y trouve une des deux alarmes
+émises en cas de "transfert" d'anomalies vers le proc #0.
+
+FIN s'est passé correctement, donc on affiche un message <F> dans le fichier
+RESULTAT pour dégrader le diagnostic.
+"""
+
+import aster_core
+rank, size = aster_core.mpi_info()
+
+def just_for_test_decorator(meth):
+    def wrap(*args, **kwargs):
+        #if rank == 0:
+        from Utilitai.Utmess import MessageLog as MSG
+        res = MSG.get_info_alarm()
+        idmsg = set([item[0] for item in res])
+        ok = idmsg.intersection(['APPELMPI_1', 'APPELMPI_2'])
+        if not ok:
+            # devrait être imprimé dans le fichier RESULTAT et
+            # donc se voir dans le diagnostic.
+            MSG('F', 'DVP_1')
+        assert ok, "<F> Alarm not transfered to proc #0"
+        return meth(*args, **kwargs)
+    return wrap
+
+if rank == 0 and size > 1:
+    from Execution.E_JDC import JDC
+    JDC.traiter_fin_exec = just_for_test_decorator(JDC.traiter_fin_exec)
+
+alarm_on = 1
+
+unit = 21
+if alarm_on == rank:
+    unit = 20
+
+ma = LIRE_MAILLAGE(UNITE=unit)
+
+# checks nothing
+tab = CREA_TABLE(LISTE=_F(PARA='NBOK', LISTE_I=1))
+
+TEST_TABLE(TABLE=tab,
+           NOM_PARA='NBOK',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',)
+
+FIN()
+

@@ -1,4 +1,4 @@
-#@ MODIF vmis_cine_line Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_cine_line Comportement  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ from cata_comportement import LoiComportement
 loi = LoiComportement(
    nom            = 'VMIS_CINE_LINE',
    doc = """Loi de Von Mises - Prager avec ecrouissage cinematique lineaire [R5.03.02]""",
-   num_lc         = 2,
+   num_lc         = 3,
    nb_vari        = 7,
    nom_vari       = ('XCINXX', 'XCINYY', 'XCINZZ', 'XCINXY', 'XCINXZ', 'XCINYZ', 'INDIPLAS',),
    mc_mater       = ('ELAS', 'ECRO_LINE'),

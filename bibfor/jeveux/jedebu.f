@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -196,7 +196,7 @@ C -----------------  CONSTANTES DE STATUT DES SEGMENTS DE VALEURS ------
  2    CONTINUE
       IDEBUG = IDB
 C -----------------  ZONE MEMOIRE  -------------------------------------
-      VMXDYN = MXZON*LOIS
+      VMXDYN = MXZON
       IF ( MXZON .EQ. 0 ) THEN
         VMXDYN = 1024
       ENDIF

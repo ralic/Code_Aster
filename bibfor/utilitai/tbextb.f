@@ -9,7 +9,7 @@
      &                    LCRIT(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,7 +172,7 @@ C
                      ZI(JNUMI+ITROUV-1) = ITROU2
                   ENDIF
                   GOTO 24
-               ELSEIF ( RELA .EQ. 'ABS_MAXI' ) THEN
+               ELSEIF ( RELA .EQ. 'MAXI_ABS' ) THEN
                   ITROU2 = 0
                   IF ( TYPE(1:1) .EQ. 'I' ) THEN
                      IMAX  = -ISMAEM()
@@ -243,7 +243,7 @@ C
                      ZI(JNUMI+ITROUV-1) = ITROU2
                   ENDIF
                   GOTO 24
-               ELSEIF ( RELA .EQ. 'ABS_MINI' ) THEN
+               ELSEIF ( RELA .EQ. 'MINI_ABS' ) THEN
                   ITROU2 = 0
                   IF ( TYPE(1:1) .EQ. 'I' ) THEN
                      IMIN  = ISMAEM()

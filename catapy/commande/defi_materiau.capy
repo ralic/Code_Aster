@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -3034,6 +3034,39 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              H3              =SIMP(statut='f',typ='R',defaut=0.137,fr="matrice d'interaction, terme a_glissile",),
              H4              =SIMP(statut='f',typ='R',defaut=0.122,fr="matrice d'interaction, terme a_Lomer",),
              H5              =SIMP(statut='f',typ='R',defaut=0.07,fr="matrice d'interaction, terme a_Hirth",),
+           ),
+
+           MONO_DD_CFC_IRRA      =FACT(statut='f',
+             regles=(UN_PARMI('H','H1'),
+                     PRESENT_PRESENT('H1','H2','H3','H4','H5'),
+                     PRESENT_ABSENT('H','H1','H2','H3','H4','H5'),
+                     ),
+             #TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
+             GAMMA0          =SIMP(statut='f',typ='R',defaut=0.001,fr="Vitesse d ecoulement initiale en s**-1"),
+             TAU_F           =SIMP(statut='o',typ='R',fr="Contraintes , en unite de contraintes ex 20 MPa"),
+             A               =SIMP(statut='f',typ='R',defaut=0.13,fr="paramètre A, sans unité"),
+             B               =SIMP(statut='f',typ='R',defaut=0.005,fr="paramètre B, sans unité"),
+             N               =SIMP(statut='f',typ='R',defaut=200.,fr="paramètre n, sans unité"),
+             Y               =SIMP(statut='o',typ='R',fr="paramète Y, en unité de longueur ex 2.5 A"),
+             ALPHA           =SIMP(statut='f',typ='R',defaut=0.35,fr="ecrouissage, paramètre alpha"),
+             BETA            =SIMP(statut='o',typ='R',fr="ecrouissage, paramètre b, en unite de longueur"),
+             RHO_REF         =SIMP(statut='o',typ='R',fr="ecrouissage, paramètre rho_ref, en unité de longueur **-2"),
+             H               =SIMP(statut='f',typ='R'),
+             H1              =SIMP(statut='f',typ='R',defaut=0.124,fr="matrice d'interaction, terme a*",),
+             H2              =SIMP(statut='f',typ='R',defaut=0.625,fr="matrice d'interaction, terme a_colineaire",),
+             H3              =SIMP(statut='f',typ='R',defaut=0.137,fr="matrice d'interaction, terme a_glissile",),
+             H4              =SIMP(statut='f',typ='R',defaut=0.122,fr="matrice d'interaction, terme a_Lomer",),
+             H5              =SIMP(statut='f',typ='R',defaut=0.07,fr="matrice d'interaction, terme a_Hirth",),
+
+             DZ_IRRA         =SIMP(statut='o',typ='R',fr="Parametre dzeta pour irradiation"),
+             XI_IRRA         =SIMP(statut='o',typ='R',fr="Parametre xi pour irradiation"),
+             RHO_VOID        =SIMP(statut='o',typ='R',fr="Parametre rho_voids pour irradiation"),
+             PHI_LOOP        =SIMP(statut='o',typ='R',fr="Parametre phi_loops pour irradiation"),
+             ALP_VOID        =SIMP(statut='o',typ='R',fr="Parametre alpha_voids pour irradiation"),
+             ALP_LOOP        =SIMP(statut='o',typ='R',fr="Parametre alpha_loops pour irradiation"),
+             RHO_SAT         =SIMP(statut='o',typ='R',fr="Parametre rho_sat*b*b pour irradiation"),
+             PHI_SAT         =SIMP(statut='o',typ='R',fr="Parametre phi_sat pour irradiation"),
+
            ),
 
            MONO_DD_FAT      =FACT(statut='f',

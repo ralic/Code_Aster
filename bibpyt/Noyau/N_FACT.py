@@ -1,4 +1,4 @@
-#@ MODIF N_FACT Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_FACT Noyau  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,16 +128,20 @@ class FACT(N_ENTITE.ENTITE):
       # On cree toujours une liste de mcfact
       l=self.list_instance()
       l.init(nom = nom,parent=parent)
-      if type(val) in (types.TupleType,types.ListType) :
+      if type(val) in (types.TupleType, types.ListType, self.list_instance) :
          for v in val:
             if type(v) == types.DictType or isinstance(v, _F):
                objet=self.class_instance(nom=nom,definition=self,val=v,parent=parent)
                l.append(objet)
+            elif isinstance(v, self.class_instance):
+               l.append(v)
             else:
                l.append(N_OBJECT.ErrorObj(self,v,parent,nom))
       elif type(val) == types.DictType or isinstance(val, _F):
          objet=self.class_instance(nom=nom,definition=self,val=val,parent=parent)
          l.append(objet)
+      elif isinstance(val, self.class_instance):
+         l.append(val)
       else:
          l.append(N_OBJECT.ErrorObj(self,val,parent,nom))
 

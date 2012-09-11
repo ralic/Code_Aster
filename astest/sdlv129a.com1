@@ -54,8 +54,7 @@ IMPR_TABLE(TABLE=TDMAX)
 TEST_TABLE(  TABLE=TDMAX,
              REFERENCE='ANALYTIQUE',
              NOM_PARA='DMAX',
-             VALE=9.982491,
-             PRECISION = 1.e-4,
+             VALE=8.92942,
            )
 
 

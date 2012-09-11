@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -115,7 +115,7 @@ PHENOMENE_MODELISATION__
 %  TYPMOD = C_PLAN   l'élément fait appel a des comportements C_PLAN
 %           D_PLAN   l'élément fait appel a des comportements D_PLAN
 %           AXIS     l'élément fait appel a des comportements AXIS
-%           COMP1D   l'élément fait appel a des comportements COMP1D + DEBORST
+%           COMP1D   l'élément fait appel a des comportements COMP1D (HPP) + DEBORST EVENTUELLEMENT
 %           COMP3D   l'élément fait appel a des comportements 3D
 %           PLAN     l'élément fait appel a des comportements PLAN
 %
@@ -127,6 +127,7 @@ PHENOMENE_MODELISATION__
 %           ELEMJOIN l'élément utilise des comportements d'éléments de joints (CZM sur des modélisations *_JOINT)
 %           INTERFAC l'élément utilise des comportements d'éléments d'interface (CZM sur des modélisations *_INTERFACE)
 %           ELEMDISC l'élément utilise des comportements d'éléments a discontinuité interne
+%           PMF      l'élément fait appel a des comportements 1D PMF (GROT_GDEP PERMIS)
 %
 %  TUYAU  =  'OUI' :  l'élément est un élément de "tuyau".
 %  GRILLE =  'OUI' :  l'élément est un élément de "grille".
@@ -1110,7 +1111,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_E
 
        MODELISATION__ 'POU_D_EM'         DIM__ 1 3   CODE__ 'PFM'
-              ATTRIBUT__  TYPMOD=COMP1D
+              ATTRIBUT__  TYPMOD=COMP1D TYPMOD2=PMF
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_EM
 
        MODELISATION__ 'POU_D_T'          DIM__ 1 3   CODE__ 'PDT'
@@ -1123,7 +1124,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_TG
 
        MODELISATION__ 'POU_D_TGM'        DIM__ 1 3   CODE__ 'PGM'
-              ATTRIBUT__  TYPMOD=COMP1D
+              ATTRIBUT__   TYPMOD=COMP1D TYPMOD2=PMF
               MAILLE__ SEG2      ELEMENT__ MECA_POU_D_TGM
 
        MODELISATION__ 'POU_D_T_GD'       DIM__ 1 3   CODE__ 'PGD'

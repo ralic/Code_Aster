@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR BERRO H.BERRO 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21b.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,6 +101,52 @@ DYNHARGA=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                        EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE_GENE = EFFOGENE)
                             )
 
+DEPLGE05=RECU_GENE(   RESU_GENE= DYNHARGA,
+                      FREQ     = 5.0,
+                      NOM_CHAM = 'DEPL',
+                   )
+DEPLGE10=RECU_GENE(   RESU_GENE= DYNHARGA,
+                      FREQ     = 10.0,
+                      NOM_CHAM = 'DEPL',
+                   ) 
+DEPLGE20=RECU_GENE(   RESU_GENE= DYNHARGA,
+                      FREQ     = 20.0,
+                      NOM_CHAM = 'DEPL',
+                   ) 
+DEPLGE30=RECU_GENE(   RESU_GENE= DYNHARGA,
+                      FREQ     = 30.0,
+                      NOM_CHAM = 'DEPL',
+                   ) 
+DEPLGE40=RECU_GENE(   RESU_GENE= DYNHARGA,
+                      FREQ     = 40.0,
+                      NOM_CHAM = 'DEPL',
+                   )
+
+TEST_RESU(GENE=(_F(RESU_GENE     = DEPLGE05,
+                   NUME_CMP_GENE = 1,
+                   VALE_C        = 9.75984E-05-8.43621E-06j,
+                   PRECISION     = 1E-5,
+                   ),
+                _F(RESU_GENE     = DEPLGE10,
+                   NUME_CMP_GENE = 2,
+                   VALE_C        = 9.83806E-06-1.97763E-06j,
+                   PRECISION     = 1E-5,
+                   ),
+                _F(RESU_GENE     = DEPLGE20,
+                   NUME_CMP_GENE = 4,
+                   VALE_C        =-6.38999E-06+9.01969E-06j,
+                   PRECISION     = 1E-5,
+                   ),              
+                _F(RESU_GENE     = DEPLGE30,
+                   NUME_CMP_GENE = 6,
+                   VALE_C        =-2.38912E-06-1.22141E-06j,
+                   PRECISION     = 1E-5,
+                   ),
+                _F(RESU_GENE     = DEPLGE40,
+                   NUME_CMP_GENE = 8,
+                   VALE_C        = 8.50292E-07+1.70081E-07j,
+                   PRECISION     = 1E-5,
+                   ),),);
 
 L_AMORT = DEFI_LIST_REEL(VALE=(8.6824E-3, 0.017101, 0.0250, 3.21393E-2,
                                3.83022E-2, 4.33012E-2, 4.69846E-2, 4.92403E-2,),)

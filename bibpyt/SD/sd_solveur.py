@@ -1,4 +1,4 @@
-#@ MODIF sd_solveur SD  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF sd_solveur SD  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ class sd_solveur(AsBase):
             assert slvk[8] in ('IN_CORE', 'OUT_OF_CORE', 'AUTO', 'EVAL','XXXX'), slvk
             assert slvk[9] in ('OUI', 'NON','XXXX'), slvk
             assert slvk[10] in ('SANS', 'AUTO', 'FORCE','XXXX'), slvk
-            assert slvk[11] in ('XXXX'), slvk
+            assert slvk[11] in ('XXXX','4.9.2','4.10.0'), slvk
         elif method == 'MULT_FRONT' :
             assert slvk[1] in ('XXXX'), slvk
             assert slvk[2] in ('XXXX'), slvk

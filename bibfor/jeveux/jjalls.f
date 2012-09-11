@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +45,7 @@ C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER I ,IADA ,IDM ,IERR ,IESSAI ,ILDYNA ,JCARA 
       INTEGER JDATE ,JHCOD ,JIADD ,JIADM ,JISZO2 ,JLONG ,JLONO 
-      INTEGER JLTYP ,JLUTI ,JMARQ ,LGBL ,LOISEM ,LSI ,LSO 
+      INTEGER JLTYP ,JLUTI ,JMARQ ,LGBL ,LSI ,LSO 
       INTEGER LTOT ,N ,NDE 
 C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
@@ -130,12 +130,12 @@ C
       LSIC = LSI + 8
  50   CONTINUE
       ILDYNA = ILDYNA+1
-      IF ( MCDYN+LSIC*LOIS .GT. VMXDYN ) THEN
+      IF ( MCDYN+LSIC .GT. VMXDYN ) THEN
         IF ( ILDYNA .GT. 1 ) THEN
           UNMEGA=1048576
           IVAL(1)=(LSIC*LOIS)/UNMEGA
-          IVAL(2)=NINT(VMXDYN)/UNMEGA
-          IVAL(3)=NINT(MCDYN)/UNMEGA
+          IVAL(2)=NINT(VMXDYN*LOIS)/UNMEGA
+          IVAL(3)=NINT(MCDYN*LOIS)/UNMEGA
           IVAL(4)=(LTOT*LOIS)/UNMEGA
           IF (LDYN .EQ. 1) THEN
              CALL JEIMPM ( 6 )
@@ -151,11 +151,11 @@ C
       CALL  HPALLOC ( IADA , LSIC , IERR , 0 )
       IF ( IERR .EQ. 0 ) THEN
         VALLOC = LOC(ISZON)
-        JISZO2 = (IADA - VALLOC)/LOISEM()
+        JISZO2 = (IADA - VALLOC)/LOIS
         IADMI  = JISZO2 + 5 - JISZON
         IDM    = JISZO2 + 1
         IADYN  = IADA
-        MCDYN  = MCDYN + LSIC*LOIS
+        MCDYN  = MCDYN + LSIC
         MXDYN  = MAX(MXDYN,MCDYN)
         NBDYN  = NBDYN + 1
       ELSE

@@ -1,4 +1,4 @@
-#@ MODIF vmis_isot_trac Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_isot_trac Comportement  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ loi = LoiComportement(
    nom            = 'VMIS_ISOT_TRAC',
    doc = """Loi de plasticité de Von Mises à écrouissage isotrope défini
             par une courbe de traction affine par morceaux [R5.03.02]""",
-   num_lc         = 1,
+   num_lc         = 2,
    nb_vari        = 2,
    nom_vari       = ('EPSPEQ', 'INDIPLAS',),
    mc_mater       = ('ELAS', 'TRACTION'),

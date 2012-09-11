@@ -1,7 +1,7 @@
       SUBROUTINE JJLIDY ( IADYN , IADMI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,8 +62,8 @@ C DEB ------------------------------------------------------------------
           CALL ASSERT ( LGS .GT. 0)
           SMXUSE = MAX(SMXUSE,SVUSE)
         ENDIF
-        MCDYN = MCDYN - LGS*LOIS
-        MLDYN = MLDYN + LGS*LOIS
+        MCDYN = MCDYN - LGS
+        MLDYN = MLDYN + LGS
         CALL  HPDEALLC ( IADYN , NBFREE , IBID )
       ENDIF
 C FIN ------------------------------------------------------------------

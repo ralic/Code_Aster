@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -241,14 +241,19 @@ Causes possibles :
           return d
       # retirer les sd produites par 'etape'
       sd_names = [sd.nom for sd in etape.get_created_sd()]
-      #message.debug(SUPERV, "reuse : %s, sdprods : %s", etape.reuse, sd_names)
+      #message.debug(SUPERV, "etape: %s, reuse : %s, sdprods de %s : %s",
+                    #self.nom, etape.reuse, etape.nom, sd_names)
       for nom in sd_names:
          try:
              del d[nom]
          except KeyError:
-             from warnings import warn
-             warn("concept '%s' absent du contexte de %s" % (nom, self.nom),
-                  RuntimeWarning, stacklevel=2)
+             pass
+             # Exemple avec INCLUDE_MATERIAU appelé dans une macro.
+             # Les fonctions restent uniquement dans le contexte de INCLUDE_MATERIAU,
+             # elles ne sont donc pas dans le contexte de la macro appelante.
+             #from warnings import warn
+             #warn("concept '%s' absent du contexte de %s" % (nom, self.nom),
+                  #RuntimeWarning, stacklevel=2)
       return d
 
    def supprime(self):

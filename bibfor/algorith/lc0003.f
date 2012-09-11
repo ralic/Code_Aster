@@ -4,20 +4,20 @@
       IMPLICIT NONE
       INTEGER            KPG,KSP,NDIM,IMATE
       CHARACTER*(*)      FAMI
-      CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*),OPTION
+      CHARACTER*8        TYPMOD(*)
       INTEGER            ICOMP,NVI
       INTEGER            CODRET
       REAL*8             ANGMAS(*),TAMPON(*)
       REAL*8             CRIT(1),INSTAM,INSTAP
       REAL*8             EPSM(6),DEPS(6)
-      REAL*8             SIGM(6),VIM(8),SIGP(6),VIP(8),DSIDEP(6,6)
+      REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
 
 C
 C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +39,9 @@ C ======================================================================
 C.......................................................................
 C
 C     BUT: LOI DE COMPORTEMENT ELASTIQUE A ECROUISSAGE CINEMATIQUE
-C          LINEAIRE (PRAGER) ET ECROUISSAGE ISOTROPE
+C          LINEAIRE (PRAGER) ET/OU ECROUISSAGE ISOTROPE
 C
-C          RELATIONS : 'VMIS_ECMI_LINE' 'VMIS_ECMI_TRAC'
+C      RELATIONS : 'VMIS_CINE_LINE', 'VMIS_ECMI_LINE' 'VMIS_ECMI_TRAC'
 C
 C       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 C       IN      KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
@@ -81,9 +81,16 @@ C               VIP    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 C               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 
 
-
-      CALL NMECMI (FAMI,KPG,KSP, NDIM,  TYPMOD, IMATE, COMPOR,
-     &                CRIT,
-     &                DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP,
-     &                CODRET)
+      IF (COMPOR(1).EQ.'VMIS_CINE_LINE') THEN
+      
+         CALL NMCINE (FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,INSTAP,
+     &                EPSM,DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP,CODRET)
+     
+      ELSEIF (COMPOR(1)(1:9).EQ.'VMIS_ECMI') THEN
+      
+         CALL NMECMI (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP,CODRET)
+     
+      ENDIF
+      
       END

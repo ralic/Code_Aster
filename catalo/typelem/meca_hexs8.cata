@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+%& MODIF TYPELEM  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -303,14 +303,10 @@ OPTION__
                               OUT__  EDFEQPG  PDEFOEQ
     EPEQ_ELGA           335   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    SIEQ_ELGA           335   IN__   ESIGMPG  PCONTRR
-                              OUT__  ECOEQPG  PCONTEQ
     EPMQ_ELNO           335   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
     EPEQ_ELNO           335   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
-    SIEQ_ELNO           330   IN__   ESIGMPG  PCONTRR
-                              OUT__  ECOEQNO  PCONTEQ
     ERME_ELEM           375   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
                                      EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ESIGMNO  PCONTNO
@@ -407,6 +403,10 @@ OPTION__
                               OUT__  ECONTPC  PCONTRC  ECONTPG  PCONTRR
     SIEF_ELNO            4    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+    SIEQ_ELGA           335   IN__   ESIGMPG  PCONTRR
+                              OUT__  ECOEQPG  PCONTEQ
+    SIEQ_ELNO           330   IN__   ESIGMNO  PCONTRR
+                              OUT__  ECOEQNO  PCONTEQ
     SIGM_ELGA           546   IN__   ESIGMPG  PSIEFR
                               OUT__  ESIGMPG  PSIGMR   ESIGMPC  PSIGMC
     SIGM_ELNO           4     IN__   ESIGMPG  PCONTRR

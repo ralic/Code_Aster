@@ -6,9 +6,9 @@
       REAL*8 COEFT(*),ALPHAP(12),HS,HSR(NSG,NSG),SOMS1,SOMS2,SOMS3
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ C     ----------------------------------------------------------------
 
 C     LOI D'ECOULEMENT DD-CFC
 
-      IF (NUECOU.EQ.5) THEN
+      IF ((NUECOU.EQ.5).OR.(NUECOU.EQ.8)) THEN
          A     =COEFT(IFL+3)
          B     =COEFT(IFL+4)
          Y     =COEFT(IFL+6)

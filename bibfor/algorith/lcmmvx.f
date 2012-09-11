@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C
                IEXP=0
                IF (IS.EQ.1) IEXP=1
                CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &   IS,NBSYS,VIN(NSFV+1),DY(NSFA+1),NFS,NSG,HSR,IEXP,EXPBP,RP)
+     &   IS,NBSYS,VIN,NSFV,DY(NSFA+1),NFS,NSG,HSR,IEXP,EXPBP,RP)
             ENDIF
 C
 C           ECOULEMENT VISCOPLASTIQUE

@@ -2,7 +2,7 @@
      &                    NVI,SIGD,SIGF,VIND,VINF,NBPHAS,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -121,11 +121,7 @@ C     COMPTAGE
             CALL DCOPY(9,FP,1,VINF(NVI-3-18+1),1)
             NVI=NVI-9
          ENDIF
-         IF ( (   MATERF(NBCOMM(1,1),2).EQ.4)
-     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.5)
-     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.6)
-     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.7)) THEN
-C           KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
+         IF ( MATERF(NBCOMM(1,1),2).GE.4) THEN
 C           UNE SEULE FAMILLE
             CALL ASSERT(NBCOMM(NMAT,2).EQ.1)
             NECOUL=CPMONO(3)
@@ -133,14 +129,14 @@ C           UNE SEULE FAMILLE
                IRR=1
                DECIRR=6+3*12
             ENDIF
+            IF (NECOUL.EQ.'MONO_DD_CFC_IRRA') THEN
+               IRR=1
+               DECIRR=6+3*12
+            ENDIF
          ENDIF
-         IF (IRR.EQ.1) THEN            
-            NVI = NVI-3-12
-         ELSE
-            NVI = NVI-3
-         ENDIF
+         NVI = NVI-3
+C        NE PAS DIMINUER NVI DAVANTAGE A CAUSE DES GDEF
       ENDIF
-      
 C      POUR POLYCRISTAL
 C     INITIALISATION DE NBPHAS 
       NBPHAS=NBCOMM(1,1)
@@ -169,8 +165,6 @@ C              IRRADIATION
          DECIRR=NSFV
       ENDIF
       
-C  PENSER A DIMINUER NVI      
-C
 
  9999 CONTINUE
       END

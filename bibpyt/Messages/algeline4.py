@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline4 Messages  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,20 +153,6 @@ Risques & conseils :
   - Augmenter les dimensions du contour pour englober cette valeur propre,
   - Changer la discrétisation du contour (plus risqué).
   - Changer le paramétrage du solveur linéaire ou de solveur linéaire (expert).
-"""),
-
-16: _(u"""
- L'algorithme choisit a besoin de calculer un déterminant de matrice. Cette
- fonctionnalité de MUMPS n'a pas encore été branchée dans Code_Aster.
- Dans ce cas on doit utiliser, soit le solveur linéaire LDLT, soit MULT_FRONT
- suivant que la matrice soit assemblée ou généralisée.
- On a donc changé le paramétrage pour vous et sélectionné l'un des deux solveurs
- préconisés.
-
- Conseil:
- ========
- La prochaine fois, dans une telle situation paramétrer explicitement
- SOLVEUR/METHODE='MULT_FRONT' (matrice assemblée) ou 'LDLT'(matrice généralisée).
 """),
 
 17: _(u"""

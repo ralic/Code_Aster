@@ -10,7 +10,7 @@ C
       CHARACTER*19 SOLVEU
 C     ----------------------- ------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,10 +64,6 @@ C-----------------------------------------------------------------------
       CHCINE=' '
       CRITER=' '
       K19BID=' '
-
-C --- POUR NE PAS DECLANCHER INUTILEMENT LE CALCUL DU DETERMINANT DANS
-C     VPSTUR
-      IDET0=-9999
 
 C     --- VECTEUR INITIAL ALEATOIRE ---
       DSEED = 526815.0D0
@@ -146,9 +142,10 @@ C        --- SHIFT ---
           PVALP = VALP + COEF
 C
           IF (PVALP.GT.VALP*0.9D0 .AND. PVALP.LT.VALP*1.1D0) THEN
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET
             VALP = PVALP
             CALL VPSTUR(LRAIDE,VALP,LMASSE,LDYNAM,
-     &                  DET0,IDET0,PLACE,IER,SOLVEU)
+     &                  DET0,IDET0,PLACE,IER,SOLVEU,.FALSE.,.TRUE.)
           END IF
 
         END IF

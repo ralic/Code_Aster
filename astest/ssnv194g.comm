@@ -1,0 +1,228 @@
+# MODIF  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+# TITRE : VALIDATION POLYCRISTAL LOI DD_CFC_IRRA
+# ssnv194g.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+DEBUT(CODE=_F(NOM='SSNV194G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),
+         IGNORE_ALARM=('ALGORITH7_60','MECANONLINE5_21'))
+
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+# IGNORE_ALARM='ALGORITH7_60' car pour RUNGE_KUTTA, RESI_INTE_RELA=1.E-4 suffit pour une bonne precision
+# comparaison : resi_inte_rela  CPU total (calibre7)  RESU
+#                1.E-6          219s                  OK
+#                1.E-5           94s                  OK
+#                1.E-4           51s                  OK
+# on choisit donc 1.E-4, sachant qu'en explicite, le pas de temps est petit
+
+# IGNORE_ALARM='MECANONLINE5_21' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-3 suffit pour une bonne precision
+# comparaison : resi_inte_rela  CPU total (calibre7)   RESU
+#                1.E-4           98s                   OK
+#                1.E-3           51s                   OK
+
+from numpy.linalg import norm
+from numpy import *
+
+# MATERIAU DEFINI POUR LE COMPORTEMENT  DD_CFC. Unites : MPa, mm, N
+
+MU=80000. # MPa
+NU=0.3
+E=MU*2*(1.+NU)
+TAU_F  = 20.
+RHO_0  = 1.E5    # en mm**-2
+RHOREF = 1.E6    # en mm**-2
+
+N      = 5.
+GAMMA0 = 1.E-3
+ALPHA=0.35
+BETA=2.54E-7     # 2.54 Angstrom
+
+A      = 0.13
+B      = 0.005
+Y      = 2.5E-7  # 2.5 Angstrom
+
+# variable adimensionnee, voir R5.03.11
+
+RHO_0=RHO_0*BETA*BETA
+
+ALPHA=0.0
+
+# pour DD_CFC_IRRA
+# variable adimensionnee, voir R5.03.11
+RHO_LOOPS=RHO_0*2.
+PHI_VOIDS=1.e-3
+
+
+ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=NU,
+                            ALPHA=0.),
+                      MONO_DD_CFC_IRRA=_F(TAU_F  = TAU_F,  # MPa
+                                     Y      = Y      ,  # 2.5 Angstrom
+                                     N      = N,
+                                     GAMMA0 = GAMMA0,
+                                     A      = A,
+                                     B      = B,
+                                     RHO_REF= RHOREF,    # en mm**-2
+                                     ALPHA=ALPHA,
+                                     BETA=BETA,          # 2.54 Angstrom
+                                     H1      = 1.0,
+                                     H2      = 1.0,
+                                     H3      = 1.0,
+                                     H4      = 1.0,
+                                     H5      = 1.0,
+                                       
+                                     RHO_VOID =1.E3,
+                                     PHI_LOOP =1.E-3,
+                                     ALP_VOID =1.,
+                                     ALP_LOOP =1.,
+                                     RHO_SAT  =RHO_0*4.,
+                                     PHI_SAT  =4.E-2,
+                                     XI_IRRA  =1.e7,
+                                     DZ_IRRA  =1.e7,
+                                       
+                                   ),
+                      );
+
+
+
+
+
+# DD_CFC
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
+                                    ECOULEMENT='MONO_DD_CFC_IRRA',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',
+                                    ),);
+
+
+#Orientations cristallographiques
+INCLUDE(UNITE=91)
+ 
+##chargement
+EpsMax=0.15
+viteps=3.e-4
+tmax=EpsMax/viteps
+
+EPSZZ=DEFI_FONCTION(
+                      NOM_PARA='INST',  NOM_RESU='EPSI',
+                       VALE=(  0. , 0., tmax , EpsMax),
+                       PROL_DROITE='LINEAIRE',
+                        )
+
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=tmax,
+                                    NOMBRE=500,),
+                                    ),);
+
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),)
+
+nbgr=100
+nb_syst=12
+nvarit=7+nbgr*(6+3*nb_syst+2*nb_syst+6)+1
+
+nvarpargr=3*nb_syst 
+
+                    
+# densites de dislocation initiales : variables internes de 0 a 44
+avari = zeros(nvarit)
+for igr in range(nbgr):
+   for isy in range(12):
+       avari[7+6*nbgr+igr*nvarpargr+isy*3]=RHO_0
+
+# initialisation rho_loops
+for igr in range(nbgr):
+   for isy in range(12):
+       avari[7+6*nbgr+nbgr*nvarpargr+12*igr+isy]=RHO_LOOPS
+
+# initialisation phi_voids
+for igr in range(nbgr):
+   for isy in range(12):
+       avari[7+6*nbgr+nbgr*nvarpargr+12*nbgr+12*igr+isy]=PHI_VOIDS
+
+lvari=list(avari)
+
+                    
+SOLNL=SIMU_POINT_MAT(INFO=1,
+                   COMP_INCR=_F(
+                                RELATION='POLYCRISTAL',
+                                COMPOR=COMPORP,
+                                ALGO_INTE='RUNGE_KUTTA',
+                                RESI_INTE_RELA=1.E-4,
+                                ),
+                   NEWTON=_F(
+                             MATRICE='ELASTIQUE',
+                             PREDICTION='EXTRAPOLE',
+                             REAC_ITER=0
+                             ),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                                  RESI_GLOB_RELA=1.E-3
+                                     ),
+                   MATER      = ACIERDD,
+
+                   NB_VARI_TABLE=6,
+                   
+                   VARI_INIT=_F(VALE=lvari,
+                                  ),
+
+                   INCREMENT=_F(LIST_INST=DEFLIST1),
+                   ARCHIVAGE=_F(LIST_INST=LINST),
+                   EPSI_IMPOSE=_F(EPZZ=EPSZZ),
+                        );
+
+
+IMPR_TABLE(TABLE=SOLNL)
+
+F_SI=RECU_FONCTION(TABLE=SOLNL,
+                           PARA_X='INST',
+                           PARA_Y='SIZZ',);
+
+F_EP=RECU_FONCTION(TABLE=SOLNL,
+                           PARA_X='INST',
+                           PARA_Y='EPZZ',);
+
+
+IMPR_FONCTION(
+                FORMAT ='XMGRACE',
+                UNITE=38,
+                COURBE=(
+                        _F(FONC_X=F_EP, FONC_Y=F_SI),
+                        )
+                )
+
+
+
+TEST_FONCTION(VALEUR=_F(FONCTION=F_EP,
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=0.15,
+                        REFERENCE='NON_REGRESSION',),);
+                        
+TEST_FONCTION(VALEUR=_F(FONCTION=F_SI,
+                        NOM_PARA='INST',
+                        VALE_PARA=tmax,
+                        VALE_REFE=2645.462786 ,
+                        PRECISION=0.02,
+                        REFERENCE='NON_REGRESSION',),);
+
+
+
+FIN()
+

@@ -1,6 +1,6 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION DE LA MODELISATION D_PLAN_GRAD_VARI
-# comp005b.para = tps_job 140 mem_job 512Mo ncpus 1 liste_test S
+# comp005b.para = tps_job 140 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -227,7 +227,7 @@ IMPR_TABLE(TABLE=DIFF);
 
 TEST_TABLE(TABLE=DIFF,
          FILTRE=_F(NOM_PARA='DIFF',
-                   CRIT_COMP='ABS_MAXI',
+                   CRIT_COMP='MAXI_ABS',
                    ),
          NOM_PARA='DIFF',
          VALE=0.0,

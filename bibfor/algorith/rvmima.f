@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,12 +82,12 @@ C
             VALK(5) = CPMIN
             CALL TBAJLI (NOMRES,NBPAN2,NOPAN2,VALI,VALR,C16B,VALK,0)
             VALR(1) = VAAMAX
-            VALK(3) = 'MAX_ABS'
+            VALK(3) = 'MAXI_ABS'
             VALK(4) = NOAMAX
             VALK(5) = CPAMAX
             CALL TBAJLI (NOMRES,NBPAN2,NOPAN2,VALI,VALR,C16B,VALK,0)
             VALR(1) = VAAMIN
-            VALK(3) = 'MIN_ABS'
+            VALK(3) = 'MINI_ABS'
             VALK(4) = NOAMIN
             VALK(5) = CPAMIN
             CALL TBAJLI (NOMRES,NBPAN2,NOPAN2,VALI,VALR,C16B,VALK,0)
@@ -111,13 +111,13 @@ C
             VALK(6) = CPMIN
             CALL TBAJLI (NOMRES,NBPAE2,NOPAE2,VALI,VALR,C16B,VALK,0)
             VALR(1) = VAAMAX
-            VALK(3) = 'MAX_ABS'
+            VALK(3) = 'MAXI_ABS'
             VALK(4) = MAAMAX
             VALK(5) = NOAMAX
             VALK(6) = CPAMAX
             CALL TBAJLI (NOMRES,NBPAE2,NOPAE2,VALI,VALR,C16B,VALK,0)
             VALR(1) = VAAMIN
-            VALK(3) = 'MIN_ABS'
+            VALK(3) = 'MINI_ABS'
             VALK(4) = MAAMIN
             VALK(5) = NOAMIN
             VALK(6) = CPAMIN
@@ -171,12 +171,12 @@ C
             VALK(6) = CPMIN
             CALL TBAJLI (NOMRES,NBPANO,NOPANO,VALI,VALR,C16B,VALK,0)
             VALR(1) = VAAMAX
-            VALK(4) = 'MAX_ABS'
+            VALK(4) = 'MAXI_ABS'
             VALK(5) = NOAMAX
             VALK(6) = CPAMAX
             CALL TBAJLI (NOMRES,NBPANO,NOPANO,VALI,VALR,C16B,VALK,0)
             VALR(1) = VAAMIN
-            VALK(4) = 'MIN_ABS'
+            VALK(4) = 'MINI_ABS'
             VALK(5) = NOAMIN
             VALK(6) = CPAMIN
             CALL TBAJLI (NOMRES,NBPANO,NOPANO,VALI,VALR,C16B,VALK,0)
@@ -201,13 +201,13 @@ C
             VALK(7) = CPMIN
             CALL TBAJLI (NOMRES,NBPAEL,NOPAEL,VALI,VALR,C16B,VALK,0)
             VALR(1) = VAAMAX
-            VALK(4) = 'MAX_ABS'
+            VALK(4) = 'MAXI_ABS'
             VALK(5) = MAAMAX
             VALK(6) = NOAMAX
             VALK(7) = CPAMAX
             CALL TBAJLI (NOMRES,NBPAEL,NOPAEL,VALI,VALR,C16B,VALK,0)
             VALR(1) = VAAMIN
-            VALK(4) = 'MIN_ABS'
+            VALK(4) = 'MINI_ABS'
             VALK(5) = MAAMIN
             VALK(6) = NOAMIN
             VALK(7) = CPAMIN

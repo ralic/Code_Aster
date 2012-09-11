@@ -2,7 +2,7 @@
      &                  EPSMAT,KTYPR,LAPX)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 28/08/2012   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPM MUMPS  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -111,7 +111,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RMIN=R4MIEM()*2.0
         NBPROC=SMPSK%NPROCS
         RANG=SMPSK%MYID
-	ESIZEMU=4
+        ESIZEMU=4
       ELSE IF (TYPE.EQ.'C') THEN
         CMPSK=>CMPS(KXMPS)
         LTYPR=.FALSE.
@@ -120,7 +120,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RMIN=R4MIEM()*2.0
         NBPROC=CMPSK%NPROCS
         RANG=CMPSK%MYID
-	ESIZEMU=8
+        ESIZEMU=8
       ELSE IF (TYPE.EQ.'D') THEN
         DMPSK=>DMPS(KXMPS)
         LTYPR=.TRUE.
@@ -129,7 +129,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RMIN=R8MIEM()*2.0
         NBPROC=DMPSK%NPROCS
         RANG=DMPSK%MYID
-	ESIZEMU=8
+        ESIZEMU=8
       ELSE IF (TYPE.EQ.'Z') THEN
         ZMPSK=>ZMPS(KXMPS)
         LTYPR=.FALSE.
@@ -138,7 +138,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RMIN=R8MIEM()*2.0
         NBPROC=ZMPSK%NPROCS
         RANG=ZMPSK%MYID
-	ESIZEMU=16
+        ESIZEMU=16
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -462,11 +462,11 @@ C ----  VIA UN MPI_ALLREDUCE + SUM.
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
-	  IF (LMD) THEN
-	    NSIZEMU=NZ2*(4+4+ESIZEMU)+ESIZEMU*NBEQ
-	  ELSE
-	    NSIZEMU=NZ2*(4+4+ESIZEMU)+ESIZEMU*N
-	  ENDIF
+          IF (LMD) THEN
+            NSIZEMU=NZ2*(4+4+ESIZEMU)+ESIZEMU*NBEQ
+          ELSE
+            NSIZEMU=NZ2*(4+4+ESIZEMU)+ESIZEMU*N
+          ENDIF
         ELSE
           IF (TYPE.EQ.'S') THEN
             SMPSK%N=N
@@ -495,9 +495,9 @@ C ----  VIA UN MPI_ALLREDUCE + SUM.
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
-	  NSIZEMU=NZ2*(4+4+ESIZEMU)+ESIZEMU*N
+          NSIZEMU=NZ2*(4+4+ESIZEMU)+ESIZEMU*N
         ENDIF
-	ZI(ISIZEMU+RANG)=1+(NSIZEMU/(1024*1024))
+        ZI(ISIZEMU+RANG)=1+(NSIZEMU/(1024*1024))
 
 C       ------------------------------------------------
 C       INTERPRETATION DES PBS RENCONTRES LORS DU FILTRAGE
@@ -539,7 +539,8 @@ C --- PARTIE TRIANGULAIRE INF. SI REEL
               RAUX=ZR(JVALE-1+KTERM)
             ELSE IF (ZI4(IOK+KTERM-1).EQ.-1) THEN
               LNN=.TRUE.
-              RAUX=RMAX
+              RAUX=ZR(JVALE-1+KTERM)
+              RAUX=RMAX*SIGN(1.D0,RAUX)
             ENDIF
           ELSE
 C --- PARTIE TRIANGULAIRE INF. SI COMPLEXE
@@ -548,7 +549,9 @@ C --- PARTIE TRIANGULAIRE INF. SI COMPLEXE
               CAUX=ZC(JVALE-1+KTERM)
             ELSE IF (ZI4(IOK+KTERM-1).EQ.-1) THEN
               LNN=.TRUE.
-              CAUX=DCMPLX(RMAX,0.D0)
+              CAUX=ZC(JVALE-1+KTERM)
+              CAUX=RMAX*DCMPLX(1.D0*SIGN(1.D0,DBLE(CAUX)),
+     &             1.D0*SIGN(1.D0,IMAG(CAUX)))
             ENDIF
           ENDIF
           IF (LMD) THEN
@@ -646,7 +649,8 @@ C --- PARTIE TRIANGULAIRE SUP. SI REEL
                 IF (LMNSY) RAUX=ZR(JVALE2-1+KTERM)
               ELSE IF (ZI4(IOK2+KTERM-1).EQ.-1) THEN
                 LNN=.TRUE.
-                RAUX=RMAX
+                RAUX=ZR(JVALE-1+KTERM)
+                RAUX=RMAX*SIGN(1.D0,RAUX)
               ENDIF
             ELSE
 C --- PARTIE TRIANGULAIRE SUP. SI COMPLEXE
@@ -655,7 +659,9 @@ C --- PARTIE TRIANGULAIRE SUP. SI COMPLEXE
                 IF (LMNSY) CAUX=ZC(JVALE2-1+KTERM)
               ELSE IF (ZI4(IOK2+KTERM-1).EQ.-1) THEN
                 LNN=.TRUE.
-                CAUX=DCMPLX(RMAX,0.D0)
+                CAUX=ZC(JVALE-1+KTERM)
+                CAUX=RMAX*DCMPLX(1.D0*SIGN(1.D0,DBLE(CAUX)),
+     &               1.D0*SIGN(1.D0,IMAG(CAUX)))
               ENDIF
             ENDIF
 

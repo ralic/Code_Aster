@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF CALCULEL  DATE 11/09/2012   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C     ------------------------------------------------------------------
         CALL GETVID('GENE','RESU_GENE',IOCC,IARG,1,RESU19,N1)
         CALL GETTCO(RESU19,TYSD)
 C ----------------------------------------------------------------------
-        IF ( TYSD .EQ. 'VECT_ASSE_GENE_R' ) THEN
+        IF ( TYSD .EQ. 'VECT_ASSE_GENE' ) THEN
           CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
           CALL JEVEUO(RESU19//'.VALE','L',JLUE)
           CALL JELIRA(RESU19//'.VALE','TYPE',IBID,K16B)

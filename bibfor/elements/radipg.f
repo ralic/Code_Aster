@@ -7,7 +7,7 @@
       CHARACTER*16 COMPOR   
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,7 +55,7 @@ C
       INTEGER MXCMEL
       PARAMETER (MXCMEL=162)
 
-      INTEGER I,K,IGAU,ICINE,NBVAR,MEMO,VISC
+      INTEGER I,K,IGAU,ICINE,NBVAR,MEMO,VISC,IRADI
 
       REAL*8 DSIGMA(MXCMEL),ZERO,DEUX,S1DSIG,NORM,DNORM,NORSIG,MATEL(20)
       REAL*8 ZERNOR,R8PREM,TENSM(6),TENSP(6),INDM,INDP,XM(6),XP(6)
@@ -121,66 +121,84 @@ C
       ELSEIF (IND.EQ.1) THEN
 
          DO 51 IGAU = 1,NPG
-
+         
+            IRADI=0
             CALL DCOPY(NBSIG,SIG1(1+(IGAU-1)*NBSIG),1,TENSM,1)
             CALL DCOPY(NBSIG,SIG2(1+(IGAU-1)*NBSIG),1,TENSP,1)
             CALL DSCAL(NBSIG-3,SQRT(2.D0),TENSM(4),1)
             CALL DSCAL(NBSIG-3,SQRT(2.D0),TENSP(4),1)
             
-C            ISOTROPE : LA NORMALE NE DEPEND QUE DE SIG
+C           ISOTROPE : LA NORMALE NE DEPEND QUE DE SIG
             IF ( (COMPOR.EQ.'VMIS_ISOT_TRAC')
      &       .OR.(COMPOR.EQ.'VMIS_ISOT_LINE')
      &       .OR.(COMPOR.EQ.'VMIS_ISOT_PUIS')) THEN
-              INDM=VARI1((IGAU-1)*NVI+2)
-              INDP=VARI2((IGAU-1)*NVI+2)
-              ICINE=0
+               INDM=VARI1((IGAU-1)*NVI+2)
+               INDP=VARI2((IGAU-1)*NVI+2)
+               ICINE=0
+               IRADI=1
+              
 C           CINEMATIQUE : LA NORMALE DEPEND DE SIG ET X
-            ELSE
-               ICINE=1
-               IF  ( (COMPOR.EQ.'VMIS_ECMI_TRAC')
+            ELSEIF  ((COMPOR.EQ.'VMIS_ECMI_TRAC')
      &           .OR.(COMPOR.EQ.'VMIS_ECMI_LINE')) THEN
-                  CALL DCOPY(NBSIG,VARI1((IGAU-1)*NVI+3),1,XM,1)
-                  CALL DCOPY(NBSIG,VARI2((IGAU-1)*NVI+3),1,XP,1)
-                  INDM=VARI1((IGAU-1)*NVI+2)
-                  INDP=VARI2((IGAU-1)*NVI+2)
-               ELSEIF((COMPOR.EQ.'VMIS_CINE_LINE')
-     &             ) THEN
-                  CALL DCOPY(NBSIG,VARI1((IGAU-1)*NVI+1),1,XM,1)
-                  CALL DCOPY(NBSIG,VARI2((IGAU-1)*NVI+1),1,XP,1)
-                  INDM=VARI1((IGAU-1)*NVI+7)
-                  INDP=VARI2((IGAU-1)*NVI+7)
-               ELSEIF((COMPOR.EQ.'VMIS_CIN1_CHAB')
-     &           .OR. (COMPOR.EQ.'VISC_CIN1_CHAB')
-     &           .OR. (COMPOR.EQ.'VMIS_CIN2_CHAB')
-     &           .OR. (COMPOR.EQ.'VMIS_CIN2_MEMO')
-     &           .OR. (COMPOR.EQ.'VISC_CIN2_CHAB')
-     &           .OR. (COMPOR.EQ.'VISC_CIN2_MEMO')) THEN
-                  CALL NMCHAM('RIGI',IGAU,1,IMATE,COMPOR,
-     &                   MATEL,MAT,NBVAR,MEMO,VISC,COEF)
-C                 approximation : on supose C constant
-                  CINF   = MAT(4)/1.5D0
-                  INDM=VARI1((IGAU-1)*NVI+2)
-                  INDP=VARI2((IGAU-1)*NVI+2)
-                  CALL DCOPY(NBSIG,VARI1((IGAU-1)*NVI+3),1,XM,1)
-                  CALL DCOPY(NBSIG,VARI2((IGAU-1)*NVI+3),1,XP,1)
-                  CALL DSCAL(NBSIG,CINF,XM,1)
-                  CALL DSCAL(NBSIG,CINF,XP,1)
-                  IF (NBVAR.EQ.2) THEN
-                    C2INF  = MAT(9)/1.5D0
-                    CALL DAXPY(NBSIG,C2INF,VARI1((IGAU-1)*NVI+9),1,XM,1)
-                    CALL DAXPY(NBSIG,C2INF,VARI2((IGAU-1)*NVI+9),1,XP,1)
-                  ENDIF
-                  
-               ENDIF
-               
+               CALL DCOPY(NBSIG,VARI1((IGAU-1)*NVI+3),1,XM,1)
+               CALL DCOPY(NBSIG,VARI2((IGAU-1)*NVI+3),1,XP,1)
+               INDM=VARI1((IGAU-1)*NVI+2)
+               INDP=VARI2((IGAU-1)*NVI+2)
+               ICINE=1
+               IRADI=1
                CALL DSCAL(NBSIG-3,SQRT(2.D0),XM(4),1)
                CALL DSCAL(NBSIG-3,SQRT(2.D0),XP(4),1)
+
+            ELSEIF((COMPOR.EQ.'VMIS_CINE_LINE')
+     &          ) THEN
+               CALL DCOPY(NBSIG,VARI1((IGAU-1)*NVI+1),1,XM,1)
+               CALL DCOPY(NBSIG,VARI2((IGAU-1)*NVI+1),1,XP,1)
+               INDM=VARI1((IGAU-1)*NVI+7)
+               INDP=VARI2((IGAU-1)*NVI+7)
+               ICINE=1
+               IRADI=1
+               CALL DSCAL(NBSIG-3,SQRT(2.D0),XM(4),1)
+               CALL DSCAL(NBSIG-3,SQRT(2.D0),XP(4),1)
+
+            ELSEIF((COMPOR.EQ.'VMIS_CIN1_CHAB')
+     &        .OR. (COMPOR.EQ.'VISC_CIN1_CHAB')
+     &        .OR. (COMPOR.EQ.'VMIS_CIN2_CHAB')
+     &        .OR. (COMPOR.EQ.'VMIS_CIN2_MEMO')
+     &        .OR. (COMPOR.EQ.'VISC_CIN2_CHAB')
+     &        .OR. (COMPOR.EQ.'VISC_CIN2_MEMO')) THEN
+               CALL NMCHAM('RIGI',IGAU,1,IMATE,COMPOR,
+     &                MATEL,MAT,NBVAR,MEMO,VISC,COEF)
+C              approximation : on supose C constant
+               CINF   = MAT(4)/1.5D0
+               INDM=VARI1((IGAU-1)*NVI+2)
+               INDP=VARI2((IGAU-1)*NVI+2)
+               CALL DCOPY(NBSIG,VARI1((IGAU-1)*NVI+3),1,XM,1)
+               CALL DCOPY(NBSIG,VARI2((IGAU-1)*NVI+3),1,XP,1)
+               CALL DSCAL(NBSIG,CINF,XM,1)
+               CALL DSCAL(NBSIG,CINF,XP,1)
+               IF (NBVAR.EQ.2) THEN
+                 C2INF  = MAT(9)/1.5D0
+                 CALL DAXPY(NBSIG,C2INF,VARI1((IGAU-1)*NVI+9),1,XM,1)
+                 CALL DAXPY(NBSIG,C2INF,VARI2((IGAU-1)*NVI+9),1,XP,1)
+               ENDIF
+               ICINE=1
+               IRADI=1
+               CALL DSCAL(NBSIG-3,SQRT(2.D0),XM(4),1)
+               CALL DSCAL(NBSIG-3,SQRT(2.D0),XP(4),1)
+
                
             ENDIF
             
-            CALL RADIAL(NBSIG,TENSM,TENSP,INDM,INDP,ICINE,XM,XP,
+C           CALCUL EFFECTUE UNIQUEMENT SI LE COMPORTEMENT LE PERMET
+            IF (IRADI.EQ.1) THEN
+               CALL RADIAL(NBSIG,TENSM,TENSP,INDM,INDP,ICINE,XM,XP,
      &                  RADIA(IGAU))
-            COSANG(IGAU)=SQRT(ABS(1.D0-RADIA(IGAU)*RADIA(IGAU)))
+               COSANG(IGAU)=SQRT(ABS(1.D0-RADIA(IGAU)*RADIA(IGAU)))
+            ELSE
+               RADIA(IGAU)=0.D0
+               COSANG(IGAU)=0.D0
+            ENDIF
+            
   51     CONTINUE
 
       ENDIF

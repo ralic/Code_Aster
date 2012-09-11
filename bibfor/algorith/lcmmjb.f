@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -83,7 +83,7 @@ C        DD-CFC
       ELSEIF (NUECOU.EQ.6) THEN
 C        DD-FAT
          CALL U2MESS('F','COMPOR2_21')
-      ELSEIF (NUECOU.EQ.7) THEN
+      ELSEIF (NUECOU.GE.7) THEN
 C        DD-CC
 C        matrice tangente pas encore programmee
 C        mais pourquoi EXTRAPOLE appelle RIGI_MECA_TANG ?

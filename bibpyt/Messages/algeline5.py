@@ -1,9 +1,9 @@
-#@ MODIF algeline5 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline5 Messages  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -380,11 +380,16 @@ cata_msg={
     Changer de solveur linéaire (mot-clé SOLVEUR), utiliser MULT_FRONT ou MUMPS.
 """),
 73: _(u"""
-    On a besoin d'effectuer un calcul de déterminant. Pour l'instant seuls les
-    solveurs linéaires directs 'MULT_FRONT' et 'LDLT' l'effectuent. Veuillez changer
-    le paramétrage du mot-clé SOLVEUR/METHODE pour prendre en compte un de
-    ces deux solveurs. De préférence utilisez 'MULT_FRONT' qui est plus efficace
-    que 'LDLT'.
+    On a besoin d'effectuer un calcul de déterminant. Pour l'instant, seuls les
+    solveurs linéaires directs 'MULT_FRONT', 'LDLT' et MUMPS (à partir de la 4.10.0)
+    peuvent faire ce type de calcul.
+    
+    Conseils: 
+     - Vous pouvez changer le paramétrage du mot-clé SOLVEUR/METHODE pour prendre
+      en compte un de ces solveurs.
+     - De préférence utilisez 'MUMPS' (à partir de la 4.10.0) qui est souvent le
+      plus efficace sur de gros problèmes et/ou des problèmes difficiles (X-FEM, 
+      incompressible, THM...).
 """),
 74: _(u"""
     Lors d'un calcul modal (MODE_ITER_SIMULT/INV, CRIT_FLAMB...) utilisant le

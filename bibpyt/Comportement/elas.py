@@ -1,4 +1,4 @@
-#@ MODIF elas Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF elas Comportement  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

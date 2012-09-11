@@ -1,11 +1,13 @@
-        SUBROUTINE LCMMFI( COEFT,IFA,NMAT,NBCOMM,NECRIS,
-     &                  IS,NBSYS,VIND,DY,NFS,NSG,HSR,IEXP,EXPBP,RP)
-        IMPLICIT NONE
-        INTEGER IFA,NMAT,NBCOMM(NMAT,3),NBSYS,IS,IEXP,NFS,NSG
-        REAL*8 COEFT(NMAT),DY(*),VIND(*),HSR(NSG,NSG),SQ,EXPBP(*)
-        CHARACTER*16 NECRIS
+      SUBROUTINE LCMMFI( COEFT,IFA,NMAT,NBCOMM,NECRIS,
+     &                IS,NBSYS,VIND,NSFV,DY,NFS,NSG,HSR,IEXP,EXPBP,RP)
+      IMPLICIT NONE
+      INTEGER IFA,NMAT,NBCOMM(NMAT,3),NBSYS,IS,IEXP,NFS,NSG,NSFV
+      REAL*8 COEFT(NMAT),DY(*),VIND(*),HSR(NSG,NSG),SQ,EXPBP(*)
+      CHARACTER*16 NECRIS
+      INTEGER IRR,DECIRR,NBSYST,DECAL
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +24,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE JMBHH01 J.M.PROIX
+C RESPONSABLE PROIX J.M.PROIX
 C  COMPORTEMENT MONOCRISTALLIN : ECROUISSAGE ISOTROPE
 C     IN  COEFT   :  PARAMETRES MATERIAU
 C         IFA     :  NUMERO DE FAMILLE
@@ -44,6 +46,7 @@ C ======================================================================
 C     ----------------------------------------------------------------
       REAL*8 P,R0,Q,B,RP,B1,B2,Q1,Q2
       REAL*8 PR,MU,CEFF,ALPHAM(12),ALPHAS(12),R8B
+      REAL*8 ALLOOP,ALPVID,DZIRRA,FILOOP,PHISAT,RHOSAT,RHOVID,XIIRRA
       INTEGER IEI,IR,NUEISO
       INTEGER NUMHSR
 C     ----------------------------------------------------------------
@@ -63,7 +66,7 @@ C      IF (NECRIS.EQ.'ECRO_ISOT1') THEN
 
          IF (IEXP.EQ.1) THEN
            DO 10 IR = 1, NBSYS
-            PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
+            PR=VIND(NSFV+3*(IR-1)+3)+ABS(DY(IR))
             EXPBP(IR) = (1.D0-EXP(-B*PR))
   10      CONTINUE
          ENDIF
@@ -72,7 +75,7 @@ C       VIND commence en fait au début de systemes de glissement
 C      de LA famille courante;
          SQ=0.D0
            DO 11 IR = 1, NBSYS
-            PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
+            PR=VIND(NSFV+3*(IR-1)+3)+ABS(DY(IR))
             SQ = SQ + HSR(IS,IR)*EXPBP(IR)
   11      CONTINUE
             RP=R0+Q*SQ
@@ -91,10 +94,10 @@ C        DE LA FAMILLE COURANTE;
 
          SQ=0.D0
          DO 12 IR = 1, NBSYS
-            PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
+            PR=VIND(NSFV+3*(IR-1)+3)+ABS(DY(IR))
             SQ = SQ + HSR(IS,IR)*(1.D0-EXP(-B1*PR))
   12     CONTINUE
-         P=VIND(3*(IS-1)+3)+ABS(DY(IS))
+         P=VIND(NSFV+3*(IS-1)+3)+ABS(DY(IS))
          RP=R0+Q1*SQ+Q2*(1.D0-EXP(-B2*P))
 
 C      ELSEIF ((NECRIS.EQ.'ECRO_DD_CFC').OR. 
@@ -114,9 +117,8 @@ C        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
 C        DE LA FAMILLE COURANTE;
 C        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
 
-C        RHO_0  VALEUR INITIALE DE DENSITE DE DISLOCATION
          DO 55 IR=1,NBSYS
-            ALPHAM(IR)=VIND(3*(IR-1)+1)
+            ALPHAM(IR)=VIND(NSFV+3*(IR-1)+1)
             ALPHAS(IR)= ALPHAM(IR)+DY(IR)
  55      CONTINUE
 
@@ -136,10 +138,40 @@ C          CAS NUEISO = 4 C'EST A DIRE NECRIS = 'ECRO_ECP_CFC'
 
 C        CE QUE L'ON APPELLE RP CORRESPOND ICI A TAU_S_FOREST
          RP=MU*SQRT(RP)*CEFF
+                  
+C        DD_CFC_IRRA
+      ELSEIF (NUEISO.EQ.8) THEN
+
+         RHOVID =COEFT(IEI+4)  
+         FILOOP =COEFT(IEI+5)  
+         ALPVID =COEFT(IEI+6)  
+         ALLOOP =COEFT(IEI+7)  
+         MU     =COEFT(IEI+12)
+
+C        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
+C        DE LA FAMILLE COURANTE;
+C        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
+         DO 56 IR=1,NBSYS
+            ALPHAM(IR)=VIND(NSFV+3*(IR-1)+1)
+            ALPHAS(IR)= ALPHAM(IR)+DY(IR)
+ 56      CONTINUE
+
+         RP=0.D0
+         DO 24 IR = 1, NBSYS
+            IF (ALPHAS(IR).GT.0.D0) THEN
+            RP=RP+ALPHAS(IR)*HSR(IS,IR)
+            ENDIF
+  24     CONTINUE  
+         CALL LCMMDC(COEFT,IFA,NMAT,NBCOMM,ALPHAS,IS,CEFF,R8B)
          
+         RP=RP*CEFF*CEFF         
+         RP=RP+ALLOOP*FILOOP*VIND(DECIRR+3*(IS-1)+1)
+         RP=RP+ALPVID*RHOVID*VIND(DECIRR+12+3*(IS-1)+1)
+         
+C        CE QUE L'ON APPELLE RP CORRESPOND ICI A TAU_S_FOREST
+         RP=MU*SQRT(RP)
          
 C        DD_CC : ON SORT UNIQUEMENT TAU_F
-
       ELSEIF (NUEISO.EQ.7) THEN
          RP=COEFT(IEI+1)
       

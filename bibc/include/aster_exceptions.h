@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_exceptions include  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_exceptions include  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -23,29 +23,43 @@
 
 #include <setjmp.h>
 #include "aster.h"
+#include "aster_module.h"
 
-#define FatalError 18
+#define FatalError 18   /* kept for backward compatibility only */
 #define EOFError   19
+#define AsterError 21
 
 #define NIVMAX     10
 
-#define try                 _exc_lvl = _new_try(); if((gExcNumb = setjmp(gExcEnv[_exc_lvl])) == 0)
-#define interruptTry(val)   if(_exc_lvl > 0) {longjmp(gExcEnv[_exc_lvl], val);} else {raiseException();}
-#define except(val)         else if (gExcNumb == val)
-#define finally             else
-#define endTry()            _end_try()
-#define raiseException()    _raiseException(gExcNumb)
+#ifdef __DEBUG__
+#   define _printDBG(func)  printf("DEBUG [%s:%d] %s: level=%d\n", __FILE__, __LINE__, func, gExcLvl)
+#else
+#   define _printDBG(func)
+#endif
 
-/* hidden variable, store the current level */
-static int _exc_lvl=0;
+#define try                 _new_try(); _printDBG("try"); \
+                            if ((gExcNumb = setjmp(gExcEnv[gExcLvl])) == 0)
+#define interruptTry(val)   if(gExcLvl > 0) { _printDBG("interruptTry"); longjmp(gExcEnv[gExcLvl], val); } \
+                            else { MYABORT("Programming error: should not pass here!\n"); _raiseException(val); }
+#define except(val)         else if (gExcNumb == val)
+#define exceptAll           else
+#define endTry()            _end_try(); _printDBG("endTry")
+#define raiseException()    _end_try(); \
+                            _printDBG("raiseException"); \
+                            _raiseException(gExcNumb); \
+                            return NULL
+#define raiseExceptionString(exc, args) \
+                            _end_try(); \
+                            PyErr_SetString(exc, args); \
+                            return NULL
 
 /*
  *   PUBLIC FUNCTIONS
  *
  */
+extern int gExcLvl;
 extern int gExcNumb;
 extern jmp_buf gExcEnv[NIVMAX+1];
-extern PyObject* gExcArgs;
 
 extern void initExceptions(PyObject *dict);
 
@@ -53,7 +67,7 @@ extern void initExceptions(PyObject *dict);
  *   PRIVATE/HIDDEN FUNCTIONS
  *
  */
-extern int _new_try();
+extern void _new_try();
 extern void _end_try();
 void _raiseException( _IN int val );
 

@@ -1,8 +1,8 @@
-#@ MODIF catamess Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF catamess Messages  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@
 cata_msg={
 
 6: _(u"""
- Fin à la suite de message(s) <E>
+Fin à la suite de message(s) <E>
 """),
 
 41 : _(u"""
@@ -31,29 +31,34 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
 55: _(u"""
- Appels récursifs de messages d'erreur ou d'alarme.
+Appels récursifs de messages d'erreur ou d'alarme.
 """),
 
 57: _(u"""
-   Impossible d'importer '%(k1)s' dans Messages.
-   Le fichier %(k1)s.py n'existe pas dans le répertoire 'Messages'
-   ou bien la syntaxe du fichier est incorrecte.
+  Impossible d'importer '%(k1)s' dans Messages.
+  Le fichier %(k1)s.py n'existe pas dans le répertoire 'Messages'
+  ou bien la syntaxe du fichier est incorrecte.
 
-   Merci de signaler cette anomalie.
+  Merci de signaler cette anomalie.
 
-   Erreur :
-   %(k2)s
+  Erreur :
+  %(k2)s
 """),
 
 69: _(u"""
-   Destruction du concept '%(k1)s'.
+  Destruction du concept '%(k1)s'.
 """),
 
 70: _(u"""
-   Validation du concept '%(k1)s'.
+  Validation du concept '%(k1)s'.
 """),
 
 # on ne veut pas émettre d'alarme mais que le message se voit, donc on fait la mise en forme ici !
+88 : {  'message' : _(u"""
+    Il est possible que d'autres alarmes aient été émises sur d'autres processeurs.
+"""), 'flags' : 'DECORATED',
+},
+
 89 : {  'message' : _(u"""
     Liste des alarmes émises lors de l'exécution du calcul.
 

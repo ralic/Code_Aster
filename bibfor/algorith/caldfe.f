@@ -2,7 +2,7 @@
 
       IMPLICIT NONE      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C       OUT DRDY :  BLOC ((1-6),(7-NS)) JACOBIEN DU SYSTEME NON LINEAIRE
       REAL*8 FE(3,3),DF(3,3),DFPDS(3,3,3,3),MSDGDT(6,6),DFEFDT(3,3,3,3)
       REAL*8 VIND(*),DFEDS(3,3,3,3),DFEFDS(3,3,3,3),DFFE(3,3),FEM(3,3)
       REAL*8 ID(3,3),DRDY(NR,NR)
-      REAL*8 DFPDBS(3,3,24),DFEDBS(3,3,24),DFEFDB(3,3,24)
+      REAL*8 DFPDBS(3,3,30),DFEDBS(3,3,30),DFEFDB(3,3,30)
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
@@ -44,6 +44,8 @@ C     ----------------------------------------------------------------
       DATA IND/1,4,5,4,2,6,5,6,3/
 C     ----------------------------------------------------------------
 
+      NS=NR-6
+      
       CALL DCOPY(9,VIND(NVI-3-18+10),1,FEM,1)
       CALL DAXPY(9,1.D0,ID,1,FEM,1)
       CALL PMAT(3,DF,FEM,DFFE)
@@ -88,28 +90,28 @@ C     on calcule dFe/dS
 
 
 C     on calcule dFe/dbetas
-      CALL R8INIR ( 3*3*24, 0.D0 , DFEDBS, 1 )
+      CALL R8INIR ( 3*3*NS, 0.D0 , DFEDBS, 1 )
       DO 1014 I=1,3
       DO 1014 J=1,3
-      DO 1014 K=1,24
+      DO 1014 K=1,NS
       DO 1014 M=1,3
         DFEDBS(I,J,K)=DFEDBS(I,J,K)+DFFE(I,M)*DFPDBS(M,J,K)
  1014 CONTINUE
  
-      CALL R8INIR ( 3*3*24, 0.D0 , DFEFDB, 1 )
+      CALL R8INIR ( 3*3*NS, 0.D0 , DFEFDB, 1 )
       DO 1015 I=1,3
       DO 1015 J=1,3
-      DO 1015 K=1,24
+      DO 1015 K=1,NS
       DO 1015 M=1,3
         DFEFDB(I,J,K)=DFEFDB(I,J,K)+DFEDBS(M,I,K)*FE(M,J)
      &                             +DFEDBS(M,J,K)*FE(M,I)
  1015 CONTINUE
 
-      CALL DSCAL(3*3*24,-0.5D0,DFEFDB,1)
+      CALL DSCAL(3*3*NS,-0.5D0,DFEFDB,1)
  
       DO 1018 I=1,3
       DO 1018 J=1,3
-      DO 1018 K=1,12
+      DO 1018 K=1,NS
          DRDY(IND(I,J),6+K)=DFEFDB(I,J,K)
  1018 CONTINUE
       END

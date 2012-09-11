@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -137,6 +137,16 @@ extern void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRI
 #define CALL_RSACCH(nomsd, numch, nomch, nbord, liord, nbcmp, liscmp) \
                   F_FUNC(RSACCH,rsacch)(nomsd,strlen(nomsd),numch, nomch,16,nbord, liord, nbcmp, liscmp,8)
 #endif
+
+/* routines interface MPI */
+#define CALL_MPICHK(a,b) CALLPP(MPICHK,mpichk,a,b)
+extern void DEFPP(MPICHK,mpichk,INTEGER *, INTEGER *);
+
+#define CALL_MPICMW() CALL0(MPICMW,mpicmw)
+extern void DEF0(MPICMW,mpicmw);
+
+#define CALL_MPISTP(a) CALLP(MPISTP,mpistp,a)
+extern void DEFP(MPISTP,mpistp,INTEGER *);
 
 
 /* routines de manipulation de la SD MATERIAU */

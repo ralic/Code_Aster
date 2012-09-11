@@ -1,0 +1,136 @@
+      SUBROUTINE NMDOVD(MODELE,MESMAI,NBMA,CES2,COMCOD,DEFO)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+      CHARACTER*24 MODELE,MESMAI
+      CHARACTER*16 DEFO,COMCOD
+C
+C PERMET DE VERIFIER SI LES DEFORMATIONS
+C SONT COMPATIBLES AVEC LES ELEMENTS DU MODELE
+C
+C ----------------------------------------------------------------------
+C IN MODELE   : LE MODELE
+C IN MESMAI   : LISTE DES MAILLES AFFECTEES
+C IN NBMA     : NOMRE DE CES MAILLES (0 SIGNIFIE : TOUT)
+C IN CES2     :  CHAMELEM SIMPLE ISSU DE COMPOR, DEFINI SUR LES
+C                ELEMENTS QUI CALCULENT FULL_MECA
+C IN  COMCOD  : COMPORTEMENT PYTHON (DEFORMAITON) SUR LES MAILLES MESMAI
+C IN  DEFO    : COMPORTEMENT LU ACTUELLEMENT AFFECTE AUX MAILLES MESMAI
+C
+C
+      CHARACTER*16 NOTYPE,TEXTE(3),TYPMOD,TYPMO2
+      CHARACTER*24 K24BID,LIGREL,MAILMA
+      CHARACTER*19 CES2
+      CHARACTER*8  NOMA,NOMAIL
+      INTEGER      NUTYEL,IRETT,IAD,NUGREL
+      INTEGER      IREPE,NBMA,NBMAT,NBMA1
+      INTEGER      IMA,I,IGREL,JMA,IRET
+      INTEGER      NBMAGL,JCESD,JCESL,JCESV
+C
+C      NUMAIL(I,IEL) = ZI(IALIEL-1+ZI(ILLIEL+I-1)+IEL-1)
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+
+      LIGREL = MODELE(1:8)//'.MODELE    .LIEL'
+      CALL JEVEUO(LIGREL(1:19)//'.REPE','L',IREPE)
+      CALL DISMOI('C','NOM_MAILLA',MODELE(1:8),'MODELE',I,NOMAIL,IRETT)
+
+      CALL JEVEUO(CES2//'.CESD','L',JCESD)
+      CALL JEVEUO(CES2//'.CESL','L',JCESL)
+      CALL JEVEUO(CES2//'.CESV','L',JCESV)
+      NBMAT = ZI(JCESD-1+1)
+
+      IF (NBMA.NE.0) THEN
+         CALL JEVEUO(MESMAI,'L',JMA)
+         NBMA1=NBMA
+      ELSE
+         NBMA1=NBMAT
+      ENDIF
+
+      DO 40,I = 1,NBMA1
+         IF (NBMA.NE.0) THEN
+            IMA=ZI(JMA-1+I)
+         ELSE
+            IMA=I
+         ENDIF
+         CALL CESEXI('C',JCESD,JCESL,IMA,1,1,1,IAD)
+         IF (IAD.GT.0) THEN
+            MAILMA = NOMAIL(1:8)//'.NOMMAI'
+            CALL JENUNO(JEXNUM(MAILMA,IMA),NOMA)
+C           NUMERO DU GREL CONTENANT LA MAILLE IMA
+            NUGREL=ZI(IREPE-1+2*(IMA-1)+1)
+            CALL JEVEUO(JEXNUM(LIGREL,NUGREL),'L',IGREL)
+            CALL JELIRA(JEXNUM(LIGREL,NUGREL),'LONMAX',NBMAGL,K24BID)
+            NUTYEL = ZI(IGREL+NBMAGL-1)
+            CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYEL),NOTYPE)
+
+C           LECTURE DE TYPMOD DANS LE CATALOGUE PHENOMENE_MDOELISATION
+            CALL TEATTR(NOTYPE,'C','TYPMOD',TYPMOD,IRET)
+            IF (IRET.NE.0) GOTO 40
+            CALL TEATTR(NOTYPE,'C','TYPMOD2',TYPMO2,IRET)
+
+C           Dans le grel il y a TYPMOD=COMP3D
+            IF(TYPMOD(1:6).EQ.'COMP3D') THEN
+               CALL LCTEST(COMCOD,'MODELISATION','3D',IRETT)
+               IF (IRETT.EQ.0) THEN
+                  TEXTE(1)=NOTYPE
+                  TEXTE(2)=NOMA
+                  TEXTE(3)=DEFO
+                  CALL U2MESG('F','COMPOR1_52',3,TEXTE,0,0,0,0.D0)
+               ENDIF
+            ELSEIF(TYPMOD(1:6).EQ.'COMP1D') THEN
+               IF(TYPMO2.EQ.'PMF') THEN
+                  CALL LCTEST(COMCOD,'MODELISATION','PMF',IRETT)
+                  IF (IRETT.EQ.0) THEN
+                     TEXTE(1)=NOTYPE
+                     TEXTE(2)=NOMA
+                     TEXTE(3)=DEFO
+                     CALL U2MESG('F','COMPOR1_52',3,TEXTE,0,0,0,0.D0)
+                  ENDIF
+               ELSE
+                  CALL LCTEST(COMCOD,'MODELISATION','1D',IRETT)
+                  IF (IRETT.EQ.0) THEN
+                     TEXTE(1)=NOTYPE
+                     TEXTE(2)=NOMA
+                     TEXTE(3)=DEFO
+                     CALL U2MESG('F','COMPOR1_52',3,TEXTE,0,0,0,0.D0)
+                  ENDIF
+               ENDIF
+            ELSE
+               CALL LCTEST(COMCOD,'MODELISATION',TYPMOD,IRETT)
+               IF (IRETT.EQ.0) THEN
+                  TEXTE(1)=NOTYPE
+                  TEXTE(2)=NOMA
+                  TEXTE(3)=DEFO
+                  CALL U2MESG('F','COMPOR1_52',3,TEXTE,0,0,0,0.D0)
+               ENDIF
+            ENDIF
+
+         ENDIF
+ 40   CONTINUE
+
+      CALL JEDEMA()
+C
+      END

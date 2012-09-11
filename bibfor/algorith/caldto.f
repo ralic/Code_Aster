@@ -2,9 +2,9 @@
       IMPLICIT NONE
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,30 +22,59 @@ C ======================================================================
 C RESPONSABLE PROIX J-M.PROIX
 C     ----------------------------------------------------------------
 C     
-C     MONOCRISTAL : calcul de la derivee de Tau en GDEF    
+C     MONOCRISTAL : calcul de la derivee de Tau en GDEF : dTau/dS_ab   
 C     IN  S6    :  CONTRAINTES NOTATION VOIGT
 C     IN  FKOOH :  INVERSE TENSEUR HOOKE
 C     IN  MSNS  :  MS * NS
 C     OUT DTODS :  dTau/dS
 
-      INTEGER I
+      INTEGER I,J,K,L,IND(3,3),A,B,M,N
       REAL*8 S6(6),FKOOH(6,6),MSNS(3,3),DTODS(3,3),HMS6(6),HMS(3,3)
-      REAL*8 S(3,3),T1(3,3),T16(6),T1B(3,3)
+      REAL*8 S(3,3),T1(3,3),T16(6),T1B(3,3),T1B6(6),L4(3,3,3,3)
+      REAL*8 MUS(3,3),L4S(3,3)
+      DATA IND/1,4,5,4,2,6,5,6,3/
 C     ----------------------------------------------------------------
+C     CONSTUCTION DU TENSEUR INVERSE DE HOOKE D'ORDRE 4
 
-      CALL LCPRMV(FKOOH,S6,HMS6)
-      CALL TNSVEC(6,3,HMS, HMS6, 1.D0)
-      CALL PMAT(3,HMS,MSNS,DTODS)
+      DO 1 I=1,3
+      DO 1 J=1,3
+      DO 1 K=1,3
+      DO 1 L=1,3
+         L4(I,J,K,L)=FKOOH(IND(I,J),IND(K,L))
+ 1    CONTINUE
       
       CALL TNSVEC(6,3,S, S6, 1.D0)
-      CALL PMAT(3,MSNS,S,T1)
-      CALL TNSVEC(3,3,T1, T16, 1.D0)
-      CALL LCPRMV(FKOOH,T16,T1B)
+      CALL DCOPY(9,MSNS,1,DTODS,1)
+      
+      CALL R8INIR ( 9, 0.D0 , MUS, 1 )
 
-      CALL DAXPY(9,1.D0,T1B,1,DTODS,1)
+C     CALCUL DU TERME  2(Lambda**-1)*mu*S 
+      DO 2 M=1,3
+      DO 2 N=1,3
+      DO 2 K=1,3
+         MUS(M,N)=MUS(M,N)+MSNS(M,K)*S(K,N)
+ 2    CONTINUE
+
+      DO 3 A=1,3
+      DO 3 B=1,3
+      DO 3 M=1,3
+      DO 3 N=1,3
+         DTODS(A,B)=DTODS(A,B)+2.D0*L4(A,B,M,N)*MUS(M,N)
+ 3    CONTINUE
       
-      CALL DSCAL(9,2.D0,DTODS,1)
-      
-      CALL DAXPY(9,1.D0,MSNS,1,DTODS,1)
+C     CALCUL DU TERME  2(LAMBDA**-1*S)*MU 
+      CALL R8INIR ( 9, 0.D0 , L4S, 1 )
+      DO 4 A=1,3
+      DO 4 K=1,3
+      DO 4 M=1,3
+      DO 4 N=1,3
+         L4S(A,K)=L4S(A,K)+L4(A,K,M,N)*MUS(M,N)
+ 4    CONTINUE
+
+      DO 5 A=1,3
+      DO 5 B=1,3
+      DO 5 K=1,3
+         DTODS(A,B)=DTODS(A,B)+2.D0*L4S(A,K)*MUS(K,B)
+ 5    CONTINUE
 
       END

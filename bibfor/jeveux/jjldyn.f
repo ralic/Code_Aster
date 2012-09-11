@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( IMODE , LMIN , LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER I ,IACCE ,IADMI ,IADMOC ,IADYN ,IADYOC ,IBACOL 
-      INTEGER IBIADD ,IBIADM ,IBID ,IBLONO ,IC ,IDM ,IL 
+      INTEGER IBIADD ,IBIADM ,IBID ,IBLONO ,IC ,IDM  
       INTEGER INDIR ,ISD ,ISDC ,ISF ,IXDESO ,IXIADD ,IXIADM 
       INTEGER IXLONO ,J ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD 
       INTEGER JIACCE ,JIADD ,JIADM ,JINDIR ,JJ ,JLONG ,JLONO 
@@ -102,11 +102,14 @@ C ----------------------------------------------------------------------
      +               IDLONO = 8 , IDLUTI = 9  ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
       CHARACTER*1    CGENR
+      CHARACTER*8    NOMK(5)
       CHARACTER*32   NOM32
       INTEGER        IADDI(2),LGS,NBIOAV(2)
-      INTEGER        RANG, NBPROC
-      REAL*8         GRAINE
-
+      INTEGER        RANG, NBPROC,IRET,IRET2
+      REAL*8         GRAINE, VALP(5), VX(2), V0
+C
+      DATA NOMK /'COUR_JV ','RLQ_MEM ','VMSIZE  ','MEM_TOTA','LIMIT_JV'/
+C
       CALL UTTCPU('CPU.MEMD.1','DEBUT',' ')
 C
 C     ON LISTE LES OBJETS ALLOUES DYNAMIQUEMENT EN BALAYANT
@@ -167,7 +170,6 @@ C
                   IDM  = IADMOC - 4
                   ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
                   ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
-                  IL = ISZON(JISZON+IDM) - 8 - IDM
                   IF ( ISD .EQ. 1 ) THEN
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X A OU X D, ON PEUT LE LIBERER
@@ -197,11 +199,11 @@ C
                       ISZON(JISZON + IBIADD -1 + 2*K  ) = IADDI(2)
                     ENDIF
                     LGS = ISZON(JISZON+IADMOC-4) - IADMOC + 4
-                    MCDYN = MCDYN - LGS*LOIS
-                    MLDYN = MLDYN + LGS*LOIS
+                    MCDYN = MCDYN - LGS
+                    MLDYN = MLDYN + LGS
                     CALL HPDEALLC ( IADYOC , NBFREE , IBID )
-C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
-                    LTOT = LTOT + IL
+                    LTOT = LTOT + LGS                   
+C       write(6,*) ' OC ',NOM32,' objet ',K,' lg =',LSV,LGS,LTOT
                     ISZON(JISZON + IBIADM - 1 +2*K-1) = 0
                     ISZON(JISZON + IBIADM - 1 +2*K  ) = 0
                     IF ( LMIN .GT. 0 ) THEN
@@ -224,7 +226,6 @@ C          ELSE IF ( NOM32(25:32) .EQ. ' ' ) THEN
               IDM   = IADMI - 4
               ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
               ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
-              IL = ISZON(JISZON+IDM) - 8 - IDM
               IF ( ISD .EQ. 1 ) THEN
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X A OU X D, ON PEUT LE LIBERER
@@ -247,12 +248,12 @@ C
                   IADD( JIADD(IC)+2*J-1 ) = IADDI(1)
                   IADD( JIADD(IC)+2*J   ) = IADDI(2)
                 ENDIF
-                LGS = ISZON(JISZON+IADMI-4) - IADMI + 5
-                MCDYN = MCDYN - LGS*LOIS
-                MLDYN = MLDYN + LGS*LOIS
+                LGS = ISZON(JISZON+IADMI-4) - IADMI + 4
+                MCDYN = MCDYN - LGS
+                MLDYN = MLDYN + LGS
                 CALL HPDEALLC ( IADYN , NBFREE , IBID )
-C               write(6,*) ' OS ',NOM32,' lg =',IL,LSV
-                LTOT = LTOT + IL
+                LTOT = LTOT + LGS
+C            write(6,*) ' OS ',NOM32,' lg =',LSV,LGS,LTOT
                 IADM(JIADM(IC)+2*J-1) = 0
                 IADM(JIADM(IC)+2*J  ) = 0
                 IF ( LMIN .GT. 0 ) THEN
@@ -275,5 +276,34 @@ C
  300  CONTINUE
       MXLTOT=MXLTOT+(LTOT*LOIS)/(1024*1024)
 C
-      CALL UTTCPU('CPU.MEMD.1','FIN',' ')
+C   ON TESTE LA VALEUR DE VMSIZE PAR RAPPORT AUX ALLOCATIONS JEVEUX ET
+C   AU RELIQUAT
+C
+      CALL UTGTME(5,NOMK,VALP,IRET)
+      V0=VALP(5)
+      IF (VALP(3)-(VALP(1)+VALP(2)) .GT. 0) THEN
+C      
+C   ON AJUSTE LA VALEUR DU RELIQUAT ET LA LIMITE DES ALLOCATONS JEVEUX
+C   
+        CALL UTPTME(1,'RLQ_MEM ',(VALP(3)-VALP(1)),IRET)
+        VX(1)=VALP(4)-(VALP(3)-VALP(1))
+        IF ( VX(1) .GT. 0 ) THEN 
+          CALL JERMXD(VX(1)*1024*1024,IRET)
+          IF ( IRET.EQ.0 ) THEN
+            CALL UTGTME(5,NOMK,VALP,IRET2)
+C
+C   ON IMPRIME UN MESSAGE D'INFORMATION SI LA VALEUR DE LIMIT_JV VARIE
+C   DE PLUS DE 10 POUR CENT
+C            
+            IF (ABS(VALP(5)-V0) .GT. V0*0.1D0) THEN
+              VX(1)=VALP(2)
+              VX(2)=VALP(5)
+              CALL U2MESR('I' ,'JEVEUX1_74',2,VX) 
+             ENDIF  
+          ENDIF  
+        ENDIF 
+      ENDIF
+C
+      CALL UTTCPU('CPU.MEMD.1','FIN',' ')  
+C          
       END

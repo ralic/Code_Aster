@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 10/09/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -209,7 +209,7 @@ C    -------------------------------------------------------------------
 C    -- OPTIONS "FLUX_ELNO","FLUX_ELGA","SOUR_ELGA","DURT_ELNO"
 C    -------------------------------------------------------------------
         CALL CALCOP(OPTION,LESOPT,RESUCO,RESUC1,KNUM,NBORDR,
-     &              KCHA,NCHAR,CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
+     &              KCHA,NCHAR,CTYP,TYSD,IRET)
           IF (IRET.EQ.0)GOTO 120
 
           NUORD=ZI(JORDR)
@@ -462,7 +462,7 @@ C    -------------------------------------------------------------------
 C    -- OPTIONS "PRAC_ELNO","INTE_ELNO"
 C    -------------------------------------------------------------------
         CALL CALCOP(OPTION,LESOPT,RESUCO,RESUC1,KNUM,NBORDR,
-     &              KCHA,NCHAR,CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
+     &              KCHA,NCHAR,CTYP,TYSD,IRET)
           IF (IRET.EQ.0)GOTO 180
 
   180   CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST THM, 3D, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 # wtnv111a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,7 +151,7 @@ CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,
                   );
 
 MESTAT=STAT_NON_LINE( MODELE=MODELE,
-                SOLVEUR=_F( METHODE = 'MUMPS'),
+                SOLVEUR=_F( METHODE = 'MUMPS',PCENT_PIVOT=120),
                         CHAM_MATER=CHMAT0,
                              EXCIT=_F(
                 CHARGE = CHAR0),

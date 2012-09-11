@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -238,7 +238,7 @@ def get_pickled_context():
     # Le fichier pick.1 est présent. On essaie de récupérer les objets python sauvegardés
     context={}
     try:
-       file=open(fpick,'r')
+       file=open(fpick, 'rb')
        # Le contexte sauvegardé a été picklé en une seule fois. Il est seulement
        # possible de le récupérer en bloc. Si cette opération echoue, on ne récupère
        # aucun objet.

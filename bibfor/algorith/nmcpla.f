@@ -7,7 +7,7 @@
 C TOLE CRP_21
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -287,8 +287,7 @@ C
 C
 C --- RESOLUTION LOI DE PLASTICITE FISSURATION
 C
-      IF (CMP2(1)(1:5) .EQ. 'ELAS '            .OR.
-     &    CMP2(1)(1:9) .EQ. 'VMIS_ISOT'        .OR.
+      IF (CMP2(1)(1:9) .EQ. 'VMIS_ISOT'        .OR.
      &    CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE' ) THEN
 C
           CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,

@@ -5,7 +5,7 @@
       INTEGER      IRET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,17 +153,19 @@ C     --------------------------------------------
 C
  999  CONTINUE
 C
-      IF (.NOT. ISNAP) THEN
-         CALL U2MESK(CODMES//'+', 'FONCT0_62', 1, NOMFON)
-      ELSE
-         CALL U2MESK(CODMES//'+', 'FONCT0_63', 1, NOMFON)
-      ENDIF
-      IF ( CODMES .EQ. 'F' ) THEN
-         CALL U2MESS(CODMES, 'FONCT0_64')
-      ELSEIF ( CODMES .EQ. 'A' .AND. .NOT. INV ) THEN
-         CALL U2MESS(CODMES, 'FONCT0_65')
-      ELSEIF ( CODMES .EQ. 'A' .AND. INV ) THEN
-         CALL U2MESS(CODMES, 'FONCT0_66')
+      IF ( CODMES .NE. ' ') THEN
+        IF (.NOT. ISNAP) THEN
+          CALL U2MESK(CODMES//'+', 'FONCT0_62', 1, NOMFON)
+        ELSE
+          CALL U2MESK(CODMES//'+', 'FONCT0_63', 1, NOMFON)
+        ENDIF
+        IF ( CODMES .EQ. 'F' ) THEN
+          CALL U2MESS(CODMES, 'FONCT0_64')
+        ELSEIF ( CODMES .EQ. 'A' .AND. .NOT. INV ) THEN
+          CALL U2MESS(CODMES, 'FONCT0_65')
+        ELSEIF ( CODMES .EQ. 'A' .AND. INV ) THEN
+          CALL U2MESS(CODMES, 'FONCT0_66')
+        ENDIF
       ENDIF
       CALL JEDEMA()
       END

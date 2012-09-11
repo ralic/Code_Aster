@@ -6,7 +6,7 @@
         REAL*8 TAUR,MATERF(NMAT*2),RR,DT,VIND(36),DY(12)
         REAL*8 DPDTAU,DPRDAS,HSR(NSG,NSG),HR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21 CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ C     DPSDAR=d(Dp_s)/d(Alpha_r)
       K16B=' '
 C     CALCUL de l'écrouissage RR=TAUr_Forest
       CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,K16B,IR,
-     &      NBSYS,VIND(DECAL+1),DY,NFS,NSG,HSR,1,EXPBP,RR)
+     &      NBSYS,VIND,DECAL,DY,NFS,NSG,HSR,1,EXPBP,RR)
       IF (IRET.GT.0)  GOTO 9999
 
 C     CALCUL de l'écoulement dpr et du critère

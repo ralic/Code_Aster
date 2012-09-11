@@ -9,7 +9,7 @@
       CHARACTER*19 SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,8 +67,9 @@ C-----------------------------------------------------------------------
       INTEGER MXDICH 
 C-----------------------------------------------------------------------
       DO 10 I = 2, NFREQ-1
+C --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
         CALL VPSTUR(LRAIDE,VALP(I),LMASSE,LDYNAM,DET(I),IDET(I),
-     +              IEME(I),IER,SOLVEU)
+     +              IEME(I),IER,SOLVEU,.TRUE.,.FALSE.)
         IEME(I) = IEME(I) - NBLAGR
         IF (TYPRES .NE. 'DYNAMIQUE') THEN
           IF (VALP(I).LT.0.D0) THEN
@@ -99,8 +100,9 @@ C
                   IF ( ABS(FREQ2-FREQ1) .GE. TOL*VALPX ) THEN
                      IENCOR = 1
                      IDX=0
+C --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
                      CALL VPSTUR(LRAIDE,VALPX,LMASSE,LDYNAM,
-     +                           DX,IDX,IX,IER,SOLVEU)
+     +                           DX,IDX,IX,IER,SOLVEU,.TRUE.,.FALSE.)
                      IX = IX-NBLAGR
                      IF (TYPRES .NE. 'DYNAMIQUE') THEN
                        IF (VALPX.LT.0.D0) THEN

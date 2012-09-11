@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,7 +116,6 @@ OPTION__
     EPOT_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     EPSI_ELGA           -1    IN__     OUT__  XXXXXX   XXXXXX
     EPSI_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
-    SIEQ_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     FORC_NODA           313   IN__   ECONTPG  PCONTMR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  CCAMASS  PCAMASS
                               OUT__  MVECTUR  PVECTUR
@@ -166,6 +165,7 @@ OPTION__
     SIEF_ELNO           313   IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
+    SIEQ_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__  

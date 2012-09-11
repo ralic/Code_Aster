@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR BERRO H.BERRO 
 # TITRE DEFINITION D'UN INTER-SPECTRE D'EXCITATION ANALYTIQUE
 # sdll148b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -121,7 +121,7 @@ SXY = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
 
 # SYX = CONJUGUE DE SXY
 SYX = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
-              VALE_C='rho*exp(-FREQ/freq0)*exp(distance(X1,Y1,Z1,X2,Y2,Z2)/correl(FREQ))*complex(cos(2*pi*FREQ*(Z2-Z1)/Uc),-sin(2*pi*FREQ*(Z2-Z1)/Uc))');
+              VALE_C='rho*exp(-FREQ/freq0)*exp(distance(X1,Y1,Z1,X2,Y2,Z2)/correl(FREQ))*complex(cos(2*pi*FREQ*(Y2-Y1)/Uc),-sin(2*pi*FREQ*(Y2-Y1)/Uc))');
 
 # INTER-SPECTRE AVEC EFFORTS X ET Y CORRELES
 INTESPEC=CREA_TABLE(LISTE=(_F(LISTE_K=('SXX','SYY','SXY','SYX'),PARA='FONCTION_C'),

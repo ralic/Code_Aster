@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 # ssll11g.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -215,7 +215,7 @@ TEST_TABLE( TABLE=T0,
 
 TEST_TABLE( TABLE=T0,
             FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MAX_ABS'    ),
+                       VALE_K   = 'MAXI_ABS'    ),
             NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
             VALE=  1.21374E+08   )
 
@@ -233,7 +233,7 @@ TEST_TABLE( TABLE=T1,
 
 TEST_TABLE( TABLE=T1,
             FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MAX_ABS'    ),
+                       VALE_K   = 'MAXI_ABS'    ),
             NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
             VALE= 6.18920E-03   )
 
@@ -251,7 +251,7 @@ TEST_TABLE( TABLE=T2,
 
 TEST_TABLE( TABLE=T2,
             FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MAX_ABS'    ),
+                       VALE_K   = 'MAXI_ABS'    ),
             NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
             VALE= 2.17437E+08   )
 

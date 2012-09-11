@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,7 +138,7 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    ECONTNR  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y  VECT_2_Z
@@ -319,8 +319,8 @@ OPTION__
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__    OUT__    XXXXXX   XXXXXX
     REPE_TENS           442   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  ECONTPG  PCOGAIN  EDEFOPG  PDEGAIN
-                                     ECONTNR  PCONOIN  EDEFONO  PDENOIN  CCACOQU  PCACOQU
-                              OUT__  ECONTPG  PCOGAOUT EDEFOPG  PDEGAOUT ECONTNR  PCONOOUT EDEFONO  PDENOOUT
+                                     ECONTNO  PCONOIN  EDEFONO  PDENOIN  CCACOQU  PCACOQU
+                              OUT__  ECONTPG  PCOGAOUT EDEFOPG  PDEGAOUT ECONTNO  PCONOOUT EDEFONO  PDENOOUT
     REPE_GENE           442   IN__   NGEOMER  PGEOMER  CCAORIE  PANGREP  EEFGEPGR PEFGAIN  EDEFGPG  PDGGAIN
                                      EEFGENOR PEFNOIN  EDEFGNO  PDGNOIN  CCACOQU  PCACOQU
                               OUT__  EEFGEPGR PEFGAOUT EDEFGPG  PDGGAOUT EEFGENOR PEFNOOUT EDEFGNO  PDGNOOUT
@@ -347,13 +347,13 @@ OPTION__
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  ECONTPG  PCONTRR  ECONTPC  PCONTRC
     SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
-                              OUT__  ECONTNR  PSIEFNOR ECONTNC  PSIEFNOC
-    SIEQ_ELNO           330   IN__   ECONTNR  PCONCOR
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+    SIEQ_ELNO           330   IN__   ECONTNO  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           4     IN__   ECONTPG  PCONTRR
-                              OUT__  ECONTNR  PSIEFNOR ECONTNC  PSIEFNOC
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     MINMAX_SP           99    IN__
                               OUT__  EGAMIMA  PGAMIMA  ENOMIMA  PNOMIMA
     TOU_INI_ELEM        99    IN__

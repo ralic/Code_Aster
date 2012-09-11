@@ -3,7 +3,8 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C RESPONSABLE PROIX J-M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,8 +118,7 @@ C
       RAC2 = SQRT(2.D0)
 C
 C
-      IF (.NOT.( COMPOR(1:4) .EQ. 'ELAS'.OR.
-     &     COMPOR(1:9) .EQ. 'VMIS_ISOT' )) THEN
+      IF (.NOT.( COMPOR(1:9) .EQ. 'VMIS_ISOT' )) THEN
             CALL U2MESK('F','ALGORITH4_50',1,COMPOR)
       ENDIF
 C
@@ -235,97 +235,91 @@ C
 C
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
-      IF ( COMPOR(1:9) .EQ. 'VMIS_ISOT') THEN
-        LINE=0.D0
-        PLASTI=(VIM(2).GE.0.5D0)
-        IF (COMPOR(10:14) .EQ. '_LINE') THEN
-          LINE=1.D0
-          NOMRES(1)='D_SIGM_EPSI'
-          NOMRES(2)='SY'
-          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_LINE',0,' ',0.D0,
-     &                          2,NOMRES,VALRES,ICODRE, 2)
-          DSDE=VALRES(1)
-          SIGY=VALRES(2)
-          IF ((E-DSDE).LT.R8MIEM()) THEN
-             VALRM(1)=DSDE
-             VALRM(2)=E
-             CALL U2MESG('F','COMPOR1_54',0,' ',0,IBID,2,VALRM)
-          ELSE
-             RPRIM    = DSDE*E/(E-DSDE)
-          ENDIF
-          RP       = RPRIM*VIM(1)+SIGY
-        ELSEIF (COMPOR(10:14) .EQ. '_PUIS') THEN
-          LINE=-1.D0
-          NOMRES(1)='SY'
-          NOMRES(2)='A_PUIS'
-          NOMRES(3)='N_PUIS'
-          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_PUIS',0,' ',0.D0,
-     &                          3,NOMRES,VALRES,ICODRE, 2)
-          SIGY   = VALRES(1)
-          ALFAFA = VALRES(2)
-          COCO   = E/ALFAFA/SIGY
-          UNSURN = 1.D0/VALRES(3)
-          RP     = SIGY * (COCO*VIM(1))**UNSURN + SIGY
-          IF (VIM(1).GT.R8PREM()) THEN
-             RPRIM    = UNSURN * SIGY * COCO * (COCO*VIM(1))**(UNSURN-1)
-          ELSE
-             RPRIM    = E
-          ENDIF
-        ELSE
-          NOMPAR(2)='SECH'
-          VALPAM(2)=SECHM
-          NOMPAR(3)='HYDR'
-          VALPAM(3)=HYDRM
-          CALL RCTYPE(IMATE,3,NOMPAR,VALPAM,RESU,TYPE)
+      LINE=0.D0
+      PLASTI=(VIM(2).GE.0.5D0)
+      IF (COMPOR(10:14) .EQ. '_LINE') THEN
+         LINE=1.D0
+         NOMRES(1)='D_SIGM_EPSI'
+         NOMRES(2)='SY'
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_LINE',0,' ',0.D0,
+     &                         2,NOMRES,VALRES,ICODRE, 2)
+         DSDE=VALRES(1)
+         SIGY=VALRES(2)
+         IF ((E-DSDE).LT.R8MIEM()) THEN
+            VALRM(1)=DSDE
+            VALRM(2)=E
+            CALL U2MESG('F','COMPOR1_54',0,' ',0,IBID,2,VALRM)
+         ELSE
+            RPRIM    = DSDE*E/(E-DSDE)
+         ENDIF
+         RP       = RPRIM*VIM(1)+SIGY
+      ELSEIF (COMPOR(10:14) .EQ. '_PUIS') THEN
+         LINE=-1.D0
+         NOMRES(1)='SY'
+         NOMRES(2)='A_PUIS'
+         NOMRES(3)='N_PUIS'
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_PUIS',0,' ',0.D0,
+     &                         3,NOMRES,VALRES,ICODRE, 2)
+         SIGY   = VALRES(1)
+         ALFAFA = VALRES(2)
+         COCO   = E/ALFAFA/SIGY
+         UNSURN = 1.D0/VALRES(3)
+         RP     = SIGY * (COCO*VIM(1))**UNSURN + SIGY
+         IF (VIM(1).GT.R8PREM()) THEN
+            RPRIM    = UNSURN * SIGY * COCO * (COCO*VIM(1))**(UNSURN-1)
+         ELSE
+            RPRIM    = E
+         ENDIF
+      ELSEIF (COMPOR(10:14) .EQ. '_TRAC') THEN
+         NOMPAR(2)='SECH'
+         VALPAM(2)=SECHM
+         NOMPAR(3)='HYDR'
+         VALPAM(3)=HYDRM
+         CALL RCTYPE(IMATE,3,NOMPAR,VALPAM,RESU,TYPE)
 
-          IF ((TYPE.EQ.'TEMP').AND.(IRET3.EQ.1))
-     &        CALL U2MESS('F','CALCULEL_31')
-          CALL RCTRAC(IMATE,1,'SIGM',TM,JPROLM,JVALEM,
-     &                NBVALM,EM)
-     
-C         CRIT_RUPT VMIS_ISOT_TRAC
-          IF ((CRIT(11).GT.0.D0).AND.(VIM(8).GT.0.D0)) THEN
-             LGPG = 8
-             CALL RUPMAT (FAMI, KPG, KSP, IMATE,VIM,LGPG,EM,SIGM)
-          ENDIF
-     
-          DEUMUM = EM/(1.D0+NUM)
-          IF (INCO) THEN
-            TROIKM = DEUMUM
-          ELSE
-            TROIKM = EM/(1.D0-2.D0*NUM)
-          ENDIF
-          NOMPAR(2)='SECH'
-          VALPAP(2)=SECHP
-          NOMPAR(3)='HYDR'
-          VALPAP(3)=HYDRP
-          CALL RCTYPE(IMATE,3,NOMPAR,VALPAP,RESU,TYPE)
-          IF ((TYPE.EQ.'TEMP').AND.(IRET4.EQ.1))
-     &        CALL U2MESS('F','CALCULEL_31')
-          CALL RCTRAC(IMATE,1,'SIGM',RESU,JPROLP,JVALEP,
-     &                NBVALP,E)
-C         CRIT_RUPT VMIS_ISOT_TRAC
-          IF ((CRIT(11).GT.0.D0).AND.(VIM(8).GT.0.D0)) THEN
-             LGPG = 8
-             CALL RUPMAT (FAMI, KPG, KSP, IMATE,VIM,LGPG,E,SIGM)
-          ENDIF
+         IF ((TYPE.EQ.'TEMP').AND.(IRET3.EQ.1))
+     &       CALL U2MESS('F','CALCULEL_31')
+         CALL RCTRAC(IMATE,1,'SIGM',TM,JPROLM,JVALEM,
+     &               NBVALM,EM)
+ 
+C        CRIT_RUPT VMIS_ISOT_TRAC
+         IF ((CRIT(11).GT.0.D0).AND.(VIM(8).GT.0.D0)) THEN
+            LGPG = 8
+            CALL RUPMAT (FAMI, KPG, KSP, IMATE,VIM,LGPG,EM,SIGM)
+         ENDIF
+ 
+         DEUMUM = EM/(1.D0+NUM)
+         IF (INCO) THEN
+           TROIKM = DEUMUM
+         ELSE
+           TROIKM = EM/(1.D0-2.D0*NUM)
+         ENDIF
+         NOMPAR(2)='SECH'
+         VALPAP(2)=SECHP
+         NOMPAR(3)='HYDR'
+         VALPAP(3)=HYDRP
+         CALL RCTYPE(IMATE,3,NOMPAR,VALPAP,RESU,TYPE)
+         IF ((TYPE.EQ.'TEMP').AND.(IRET4.EQ.1))
+     &       CALL U2MESS('F','CALCULEL_31')
+         CALL RCTRAC(IMATE,1,'SIGM',RESU,JPROLP,JVALEP,
+     &               NBVALP,E)
+C        CRIT_RUPT VMIS_ISOT_TRAC
+         IF ((CRIT(11).GT.0.D0).AND.(VIM(8).GT.0.D0)) THEN
+            LGPG = 8
+            CALL RUPMAT (FAMI, KPG, KSP, IMATE,VIM,LGPG,E,SIGM)
+         ENDIF
 
-          CALL RCFONC('S',1,JPROLP,JVALEP,NBVALP,SIGY,DUM,
-     &                DUM,DUM,DUM,DUM,DUM,DUM,DUM)
-          CALL RCFONC('V',1,JPROLP,JVALEP,NBVALP,RBID,RBID,
-     &                RBID,VIM(1),RP,RPRIM,AIRERP,RBID,RBID)
-          IF (INCO) THEN
-            DEUXMU = 2.D0*E/3.D0
-            TROISK = DEUXMU
-          ELSE
-            DEUXMU = E/(1.D0+NU)
-            TROISK = E/(1.D0-2.D0*NU)
-          ENDIF
-        ENDIF
-      ELSE
-C       -- CAS : COMPOR = 'ELAS'
-        RP=0.D0
-        PLASTI=.FALSE.
+         CALL RCFONC('S',1,JPROLP,JVALEP,NBVALP,SIGY,DUM,
+     &               DUM,DUM,DUM,DUM,DUM,DUM,DUM)
+         CALL RCFONC('V',1,JPROLP,JVALEP,NBVALP,RBID,RBID,
+     &               RBID,VIM(1),RP,RPRIM,AIRERP,RBID,RBID)
+         IF (INCO) THEN
+           DEUXMU = 2.D0*E/3.D0
+           TROISK = DEUXMU
+         ELSE
+           DEUXMU = E/(1.D0+NU)
+           TROISK = E/(1.D0-2.D0*NU)
+         ENDIF
       ENDIF
       DEMU = DEUXMU
       IF (INCO) THEN
@@ -386,16 +380,9 @@ C     -------------------------------------
       DP=0.D0
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &     OPTION(1:9) .EQ. 'FULL_MECA'     ) THEN
-C
 
-        IF (COMPOR(1:4) .EQ. 'ELAS') THEN
-          DO 145 K = 1,NDIMSI
-            SIGP(K) = SIGMP(K)+DEUXMU*DEPSDV(K)+CO*TROISK*DEPSMO*KRON(K)
- 145      CONTINUE
-C
 C       -- 7.1 CALCUL DE DP (ET DX SI C_PLAN) :
 C       -------------------------------------------
-        ELSE IF (COMPOR(1:9) .EQ. 'VMIS_ISOT') THEN
           IF (SEUIL.LE.0.D0) THEN
             VIP(2) = 0.D0
             DP = 0.D0
@@ -452,7 +439,8 @@ C               RPRIM(PM+DP0)
      &                      DP,IRET,IBID)
                 IF(IRET.EQ.1) GOTO 9999
                 CALL ECPUIS(E,SIGY,ALFAFA,UNSURN,PM,DP,RP,RPRIM)
-              ELSE
+
+              ELSEIF (COMPOR(10:14) .EQ. '_TRAC') THEN
                 CALL RCFONC('E',1,JPROLP,JVALEP,NBVALP,RBID,E,
      &                      NU,VIM(1),RP,RPRIM,AIRERP,SIELEQ,DP)
               ENDIF
@@ -475,7 +463,6 @@ C         -----------------------
             SIGP(K)  = SIGPDV(K) + (SIGMMO + CO*TROISK*DEPSMO)*KRON(K)
  160      CONTINUE
 C
-        ENDIF
       ENDIF
 C
 C     -- 8 CALCUL DE DSIDEP(6,6) :
@@ -493,11 +480,9 @@ C         - - OPTION='RIGI_MECA_TANG' => SIGMA(T)
           RP = SQRT(1.5D0*RP)
         ELSE
 C         - - OPTION='FULL_MECA' => SIGMA(T+DT)
-          IF (COMPOR(1:9) .EQ. 'VMIS_ISOT') THEN
             DO 119 K=1,NDIMSI
               SIGDV(K) = SIGPDV(K)
  119        CONTINUE
-          ENDIF
         ENDIF
 C
 C       -- 8.1 PARTIE PLASTIQUE:
@@ -509,7 +494,6 @@ C       -- 8.1 PARTIE PLASTIQUE:
 C
         A=1.D0
         IF (.NOT.DECH) THEN
-          IF (COMPOR(1:9) .EQ. 'VMIS_ISOT') THEN
             SIGEPS = 0.D0
             DO 170 K = 1,NDIMSI
               SIGEPS = SIGEPS + SIGDV(K)*DEPSDV(K)
@@ -523,7 +507,6 @@ C
                   DSIDEP(K,L) =  COEF*SIGDV(K)*SIGDV(L)
  135          CONTINUE
             ENDIF
-          ENDIF
         ENDIF
 C
 C       -- 8.2 PARTIE ELASTIQUE:

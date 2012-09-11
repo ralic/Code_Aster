@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP,PREPOS,PCENTP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPD MUMPS  DATE 28/08/2012   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPD MUMPS  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -73,13 +73,14 @@ C================================================================
       CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE,PREC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM,KLAG2
       CHARACTER*8  KTYPR,K8BID
-      CHARACTER*12 USERSM
+      CHARACTER*12 USERSM,K12BID
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOMAT,NOSOLS(NMXINS)
-      CHARACTER*24 KMONIT(12),KSIZEMU
+      CHARACTER*24 KMONIT(12),K24AUX,KVERS
       REAL*8       EPSMAX,VALR(2),RCTDEB,TEMPS(6),EPSMAT
       COMPLEX*16   CBID(1)
-      LOGICAL      LQUALI,LDIST,LRESOL,LMD,LBID,LMIXP,LPRECO,LBIS,LPB13
+      LOGICAL      LQUALI,LDIST,LRESOL,LMD,LBID,LMIXP,LPRECO,LBIS,LPB13,
+     &             LDET
       COMMON /MUMPSD/ DMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 C=================================================================
@@ -116,8 +117,9 @@ C --- => LQUALI
       EPSMAX=ZR(JSLVR-1+2)
       LQUALI=(EPSMAX.GT.0.D0)
 
-      CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
-C --- POUR "ELIMINER" LE 2EME LAGRANGE :
+      CALL JEVEUO(NOSOLV//'.SLVK','E',JSLVK)
+C --- POUR "ELIMINER" LE 2EME LAGRANGE:
+C --- OPTION DEBRANCHEE SI CALCUL DE DETERMINANT
       KLAG2=ZK24(JSLVK-1+6)
       LBIS=KLAG2(1:3).EQ.'OUI'
 
@@ -125,7 +127,7 @@ C --- TYPE DE RESOLUTION
       KTYPR=ZK24(JSLVK-1+3)      
 
 C --- PARAMETRE NPREC
-      CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
+      CALL JEVEUO(NOSOLV//'.SLVI','E',JSLVI)
       NPREC=ZI(JSLVI)
       
 C --- MUMPS PARALLELE DISTRIBUE ?
@@ -148,7 +150,7 @@ C --- FILTRAGE DE LA MATRICE DONNEE A MUMPS (UNIQUEMENT NON LINEAIRE)
 
 C --- STRATEGIE MEMOIRE POUR MUMPS
       USERSM=ZK24(JSLVK+8)
-      
+
 C --- POUR MONITORING
       CALL AMUMPT(0,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &            IETDEB,IETRAT,RCTDEB,LDIST)
@@ -172,6 +174,32 @@ C        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS :
 C       ------------------------------------------------
         CALL AMUMPI(2,LQUALI,LDIST,KXMPS,TYPE)
 
+C       ----------------------------------------------------------
+C        ON RECUPERE ET STOCKE DS SD_SOLVEUR LE NUMERO DE VERSION
+C        LICITE
+C       ----------------------------------------------------------
+        CALL AMUMPU(3,TYPE,KXMPS,K12BID,IBID,LBID,KVERS)
+        ZK24(JSLVK-1+12)=KVERS
+
+C       -----------------------------------------------------
+C       CALCUL DU DETERMINANT PART I ?
+C       -----------------------------------------------------
+        LDET=.FALSE.
+        IF (ZI(JSLVI-1+5).EQ.1) THEN
+          SELECT CASE(KVERS)
+          CASE('4.10.0')
+C --- ON DEBRANCHE ELIM_LAGR2='NON' CAR CELA FAUSSE LA VALEUR DU DETER
+C --- MINANT PAR RAPPORT AUX AUTRES SOLVEURS DIRECTS
+            IF ((NIV.GE.2).AND.(LBIS)) CALL U2MESS('I','FACTOR_88')
+            ZK24(JSLVK-1+6)='NON'
+            KLAG2='NON'
+            LBIS=.FALSE.
+            LDET=.TRUE.
+          CASE('4.9.2')
+            CALL U2MESK('F','FACTOR_87',1,KVERS)
+          END SELECT
+        ENDIF
+
 C       ------------------------------------------------
 C        REMPLISSAGE DE LA MATRICE MUMPS :
 C       ------------------------------------------------
@@ -179,6 +207,18 @@ C       ------------------------------------------------
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPM(LDIST,KXMPS,KMONIT,IMPR,IFMUMP,KLAG2,
      &              TYPE,LMD,EPSMAT,KTYPR,LPRECO.OR.LMIXP)
+
+C       -----------------------------------------------------
+C       CONSERVE-T-ON LES FACTEURS OU NON ?
+C       -----------------------------------------------------
+        IF (ZI(JSLVI-1+4).EQ.1) THEN
+          SELECT CASE(KVERS)
+          CASE('4.10.0')
+            DMPSK%ICNTL(31)=1
+          CASE('4.9.2')
+            IF (NIV.GE.2) CALL U2MESK('I','FACTOR_86',1,KVERS)
+          END SELECT
+        ENDIF
 
 C       ------------------------------------------------
 C        ANALYSE MUMPS:
@@ -215,10 +255,15 @@ C              -- C'EST OK
 C       -----------------------------------------------------
 C        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
 C       -----------------------------------------------------
-        CALL AMUMPU(1,'D',KXMPS,USERSM,IBID,LBID)
+        CALL AMUMPU(1,'D',KXMPS,USERSM,IBID,LBID,K12BID)
 C ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
 C ---   ASSOCIEE
         IF (USERSM(1:4).EQ.'EVAL') GOTO 99
+
+C       -----------------------------------------------------
+C       CALCUL DU DETERMINANT PART II ?
+C       -----------------------------------------------------
+        IF (LDET) DMPSK%ICNTL(33)=1
 
 C       ------------------------------------------------
 C        FACTORISATION NUMERIQUE MUMPS:
@@ -237,7 +282,7 @@ C --- CELA PEUT ETRE DU A UN ICNTL(23) MAL ESTIME
 C       
         DMPSK%JOB = 2
         IFACT=0
-	LPB13=.FALSE.
+        LPB13=.FALSE.
         IF (USERSM(1:4).EQ.'AUTO') THEN
           IFACTM=PCENTP(1)
         ELSE
@@ -282,14 +327,14 @@ C ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE
 
 C --- TRAITEMENT CORRECTIF ICNTL(23)
 C --- CE N'EST UTILE QU' UNE FOIS D'OU LE CONTROLE DE LPB13
-	    ELSE IF ((IAUX.EQ.-13).AND.(.NOT.LPB13)) THEN
+            ELSE IF ((IAUX.EQ.-13).AND.(.NOT.LPB13)) THEN
 C ---  ICNTL(23): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE
               IF (NIV.GE.2) THEN
                 VALI(1)=DMPSK%ICNTL(23)
                 CALL U2MESI('I','FACTOR_85',1,VALI)
               ENDIF
-	      LPB13=.TRUE.
-              DMPSK%ICNTL(23)=0	      
+              LPB13=.TRUE.
+              DMPSK%ICNTL(23)=0       
             ELSE
 C ---  SORTIE STANDARD SANS ERREUR
               EXIT
@@ -336,9 +381,14 @@ C              -- C'EST OK
         ENDIF
 
 C       ------------------------------------------------
-C        DETECTION DE SINGULARITE:
-C       ------------------------------------------------        
-        CALL AMUMPU(2,'D',KXMPS,K8BID,NPREC,LRESOL)
+C        DETECTION DE SINGULARITE SI NECESSAIRE:
+C       ------------------------------------------------
+        CALL AMUMPU(2,'D',KXMPS,K8BID,NPREC,LRESOL,K12BID)
+
+C       ------------------------------------------------
+C        RECUPERATION DU DETERMINANT SI NECESSAIRE:
+C       ------------------------------------------------
+        CALL AMUMPU(4,'D',KXMPS,K8BID,IBID,LBID,K12BID)
 
 C       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
 C       INUTILES
@@ -375,6 +425,7 @@ C        RESOLUTION MUMPS :
 C       ------------------------------------------------
         CALL AMUMPT(8,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
+     
         DMPSK%JOB = 3
         IF (LRESOL) CALL DMUMPS(DMPSK)
         CALL AMUMPT(10,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
@@ -451,8 +502,18 @@ C       ------------------------------------------------
           PRECS(KXMPS)=' '
           DMPSK%JOB = -2
           CALL DMUMPS(DMPSK)
-          KSIZEMU='&&TAILLE_OBJ_MUMPS'
-          CALL JEDETR(KSIZEMU)
+C NETTOYAGE OBJETS AUXILIAIRES AU CAS OU
+          K24AUX='&&TAILLE_OBJ_MUMPS'
+          CALL JEEXIN(K24AUX,IBID)
+          IF (IBID.NE.0) CALL JEDETR(K24AUX)
+C
+          K24AUX='&&AMUMP.PIVNUL'
+          CALL JEEXIN(K24AUX,IBID)
+          IF (IBID.NE.0) CALL JEDETR(K24AUX)
+C
+          K24AUX='&&AMUMP.DETERMINANT'
+          CALL JEEXIN(K24AUX,IBID)
+          IF (IBID.NE.0) CALL JEDETR(K24AUX)
         ENDIF
       ENDIF
 

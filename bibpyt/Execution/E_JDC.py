@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -267,7 +267,7 @@ class JDC:
           self.timer_fin.Stop(" . filter")
        # Sauvegarde du pickle dans le fichier pick.1 du repertoire de travail
 
-       file=open('pick.1','w')
+       file=open('pick.1', 'wb')
        pickle.dump(context, file, protocol=PICKLE_PROTOCOL)
        if self.info_level > 1:
           self.timer_fin.Stop("pickle")
@@ -407,7 +407,7 @@ class JDC:
    def restore_pickled_attrs(self, context):
       """Restaure les attributs du jdc qui ont été "picklés" via le contexte.
       """
-      d = context.get('jdc_pickled_attributes', {})
+      d = context.pop('jdc_pickled_attributes', {})
       for attr, value in d.items():
          #assert attr in self.l_pick_attr
          setattr(self, attr, value)

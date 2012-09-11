@@ -1,6 +1,6 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE FISSURATION INTERFACE 2D PLAN (QUAD8), LOI CZM_FAT_MIX
-# ssnp118j.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+# ssnp118j.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,18 +26,18 @@ C TOLE CRP_20
 C
 C
       INCLUDE 'jeveux.h'
-      INTEGER      ISLVK,ISLVI,JREFA,NPREC,ITEST,NMULTC,LAMOR,
-     &             EXPO,PIVOT1,PIVOT2,MXDDL,NBRSS,IERD,I,II,IFAPM,
+      INTEGER      ISLVK,ISLVI,JREFA,ITEST,NMULTC,LAMOR,
+     &             EXPO,PIVOT1,PIVOT2,MXDDL,NBRSS,IERD,II,IFAPM,
      &             NBLAGR,NBCINE,NEQACT,NEQ,LTYPME,NITERC,
      &             LTYPRE,L,LBRSS,LMASSE,LRAIDE,LDDL,LDYNAM,NK,
      &             LPROD,IRET,ICOMP,IERX,NBFREQ,KREFA,
-     &             IFM,NIV,NBTETC,NAUX,NBTET0,NBTET1,NBMODE(1),
+     &             IFM,NIV,NBTETC,NBTET0,NBTET1,NBMODE(1),
      &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID
-      REAL*8       OMEGA2,OMGMIN,OMGMAX,OMIN,OMAX,FCORIG,OMECOR,RAUX,
+      REAL*8       OMEGA2,OMGMIN,OMGMAX,OMIN,OMAX,FCORIG,OMECOR,
      &             FMIN,FMAX,PRECDC,FREQOM,MANTIS,RAYONC,DIMC1,
      &             CALPAR(2),CALPAC(3),CALPAF(2),RBID
       COMPLEX*16   CENTRC,ZIMC1,CBID
-      LOGICAL      ULEXIS,LTEST,LC 
+      LOGICAL      LTEST,LC 
       CHARACTER*1  TYPEP,TPPARN(1),TPPARR(2),TPPARC(3),TPPARF(2)
       CHARACTER*3  IMPR
       CHARACTER*8  TYPCON,TYPMET,TYPCHA,TABLE
@@ -58,7 +58,7 @@ C-----------------------------------------------------------------------
 
 
 C     --- FOR SAVE TIME IN FACTORIZATION PROCEDURE OF 'STURM' ---
-      EXPO=-9999      
+      EXPO = 0      
       FMIN = 0.D0
 
 C     --- OUTPUT CONCEPT ---
@@ -103,7 +103,6 @@ C     --- READING/TREATEMENT SD LINEAR SOLVER  ---
       CALL CRESOL(SOLVEU)
       CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
       CALL JEVEUO(SOLVEU//'.SLVI','L',ISLVI)
-      NPREC=ZI(ISLVI)
       METRES=ZK24(ISLVK)
       IF((METRES(1:4).NE.'LDLT').AND.(METRES(1:10).NE.'MULT_FRONT').AND.
      &   (METRES(1:5).NE.'MUMPS')) CALL U2MESS('F','ALGELINE5_71')
@@ -204,15 +203,6 @@ C     --- CURRENT SCOPE OF USE OF THE OPTION TYPCHA='ROMBOUT'   ---
       ENDIF
 
 
-C     --- PARTICULAR CASE 1: METHODE='APM'+MUMPS, WE FORCE MF   ---
-C     --- OR LDLT DEPENDING ON WHETHER MATRICE IS ASSEMBLED OR  ---
-C     --- GENERALIZED                                           ---
-      IF ((TYPMET(1:3).EQ.'APM').AND.(METRES(1:5).EQ.'MUMPS'))
-     &  CALL CRSVL3(SOLVEU,NPREC,RAIDE)
-      NPREC=ZI(ISLVI)
-      METRES=ZK24(ISLVK)
-
-
 C-----------------------------------------------------------------------
 C-------------------------- PRE-TRAITEMENTS ----------------------------
 C-----------------------------------------------------------------------
@@ -250,12 +240,15 @@ C-----------------------------------------------------------------------
 C-----------------------------STURM METHOD -----------------------------
 C-----------------------------------------------------------------------
       IF (TYPMET(1:5).EQ.'STURM') THEN
+
 C     --- STEP1: STURM WITH THE LOWER BOUND ---
         OMGMIN = OMIN
         ICOMP = 0
   10    CONTINUE
+C     --- TO OPTIMIZE WE DON'T COMPUTE THE DETERMINANT AND WE DON'T KEEP
+C     --- THE FACTORS (IF MUMPS)
         CALL VPSTUR(LRAIDE,OMGMIN,LMASSE,LDYNAM,MANTIS,
-     &              EXPO,PIVOT1,IERX,SOLVEU)
+     &              EXPO,PIVOT1,IERX,SOLVEU,.FALSE.,.FALSE.)
         IF (IERX .NE. 0 ) THEN
           IF (ABS(OMGMIN) .LT. OMECOR) THEN
             OMGMIN=-OMECOR
@@ -284,12 +277,14 @@ C     --- STEP1: STURM WITH THE LOWER BOUND ---
           ENDIF
         ENDIF
 C
-C     --- STEP2: STURM WITH THE LOWER BOUND ---
+C     --- STEP2: STURM WITH THE UPPER BOUND ---
         OMGMAX = OMAX
         ICOMP = 0
   20    CONTINUE
+C     --- TO OPTIMIZE WE DON'T COMPUTE THE DETERMINANT AND WE DON'T KEEP
+C     --- THE FACTORS (IF MUMPS)
         CALL VPSTUR(LRAIDE,OMGMAX,LMASSE,LDYNAM,MANTIS,
-     &              EXPO,PIVOT2,IERX,SOLVEU)
+     &              EXPO,PIVOT2,IERX,SOLVEU,.FALSE.,.FALSE.)
         IF (IERX .NE. 0 ) THEN
           IF (ABS(OMGMAX) .LT. OMECOR) THEN
             OMGMAX=OMECOR

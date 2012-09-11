@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C     ------------------------------------------------------------------
       REAL*8       VALR(4), MOCTET, MEMORY, SIZF
       INTEGER      LOISEM
 C
+      CALL IB1MAI()
       NEXCEP = 0
       IBID = 0
 C

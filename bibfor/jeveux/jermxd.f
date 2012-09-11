@@ -4,7 +4,7 @@
       INTEGER                    IRET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,20 +36,23 @@ C                   NOUVELLE VALEUR ET ON RENVOIE LA VALEUR DE LA
 C                   MEMOIRE OCCUPEE PAR JEVEUX                    
 C
 C DEB ------------------------------------------------------------------
+      INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       REAL *8         MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO
       COMMON /R8DYJE/ MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO(2)
 C ----------------------------------------------------------------------
       REAL*8  RV(2)
+C      
       IF ( RVAL .LE. 0 ) THEN
-        RV(1)=MCDYN/(1024*1024)
+        RV(1)=MCDYN*LOIS/(1024*1024)
         RV(2)=RVAL/(1024*1024)
         CALL U2MESG ( 'F' ,'JEVEUX1_72',0,' ',0,0,2,RV )
       ENDIF
 C ON EVALUE LA VALEUR PASSEE EN ARGUMENT PAR RAPPORT A L'OCCUPATION
 C TOTALE COURANTE JEVEUX (OBJETS UTILISÉS)
 C
-      IF ( MCDYN .LT. RVAL ) THEN
-        VMXDYN = RVAL
+      IF ( MCDYN*LOIS .LT. RVAL ) THEN
+        VMXDYN = RVAL/LOIS
         IRET = 0
       ELSE
         IRET = MAX(1, INT(MCDYN)) 

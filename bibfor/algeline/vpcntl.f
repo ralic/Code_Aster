@@ -4,7 +4,7 @@
      &   TYPRES, STURM, NBLAGR,SOLVEU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,9 +64,7 @@ C
         WRITE(IFM,1200)
       ENDIF
 
-C --- POUR NE PAS DECLANCHER INUTILEMENT LE CALCUL DU DETERMINANT DANS
-C     VPSTUR
-      EXPO=-9999
+      EXPO=0
 
 C     ------------------------------------------------------------------
 C     ------------------ CONTROLE DES NORMES D'ERREURS -----------------
@@ -138,12 +136,14 @@ C        --- RECHERCHE DE LA PLUS PETITE ET DE LA PLUS GRANDE FREQUENCES
 
       IF ( OPTION .NE. '  ' ) THEN
 
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET, ON NE GARDE PAS LA FACTO
+C --- (SI MUMPS)
          XFMAX = VPMAX
          CALL VPSTUR(LMAT(1),XFMAX,LMAT(2),LMAT(3),MANTIS,EXPO,
-     +               NBMAX,IR,SOLVEU)
+     +               NBMAX,IR,SOLVEU,.FALSE.,.FALSE.)
          XFMIN = VPINF
          CALL VPSTUR(LMAT(1),XFMIN,LMAT(2),LMAT(3),MANTIS,EXPO,
-     +               NBMIN,IR,SOLVEU)
+     +               NBMIN,IR,SOLVEU,.FALSE.,.FALSE.)
 C
 C REGLES DE STURM ETENDUE
          IF (.NOT.STURM) THEN

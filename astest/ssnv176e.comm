@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 # TITRE ESSAIS BIAXIAUX EN 3D - COMPORTEMENT ENDO_ORTH_BETON
 # ssnv176e.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -319,19 +319,19 @@ tab_si3=CREA_TABLE(FONCTION=_F(FONCTION=SIXX3),);
 IMPR_TABLE(TABLE=tab_si1,
             FORMAT='ASTER',
             FILTRE=_F(NOM_PARA='SIXX',
-                      CRIT_COMP='ABS_MAXI'),
+                      CRIT_COMP='MAXI_ABS'),
            );
 
 IMPR_TABLE(TABLE=tab_si2,
            FORMAT='ASTER',
            FILTRE=_F(NOM_PARA='SIXX',
-                     CRIT_COMP='ABS_MAXI'),
+                     CRIT_COMP='MAXI_ABS'),
            );
 
 IMPR_TABLE(TABLE=tab_si3,
             FORMAT='ASTER',
             FILTRE=_F(NOM_PARA='SIXX',
-                      CRIT_COMP='ABS_MAXI'),
+                      CRIT_COMP='MAXI_ABS'),
             );
 
 

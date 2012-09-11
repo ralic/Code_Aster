@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN
 # ssnd112a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -252,7 +252,7 @@ SOLEXPL=STAT_NON_LINE(MODELE = TROISD,
 
 # deuxieme resolution : implicite. test de SIMO_MIEHE + MONOCRISTAL + NEWTON
 # pas de reprise car les variables internes ne correspondent pas tout a fait :
-# FE puis FP pour l'implicite, FP puis FE pour l'explicite. A faire evoluer
+# FE puis FP pour l'implicite, FP puis FE pour l'explicite.
 
 SOLIMPN=STAT_NON_LINE(MODELE = TROISD,
                     ETAT_INIT = _F(VARI=VAIN11,),
@@ -266,11 +266,12 @@ SOLIMPN=STAT_NON_LINE(MODELE = TROISD,
                                _F(
                                   RELATION='MONOCRISTAL',COMPOR=COMPORDD,
                                   DEFORMATION='SIMO_MIEHE',
+                                  ITER_INTE_MAXI=100,
                                   TOUT='OUI',),
                                _F(RELATION='ELAS',
                                   GROUP_MA=('PX1'),),
                               ),
-                     INCREMENT=(_F(LIST_INST=LIS2DDE, INST_FIN=t1),),
+                     INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=t2),),
 
                      NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOLE'),),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=20),

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 # ssll107f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,137 +23,114 @@
 
 DEBUT(CODE=_F(NOM='SSLL107F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
 
-
-TCARS=MACR_CARA_POUTRE(GROUP_MA_BORD='LCERC',
-                        NOEUD='N1')
-# ON CREE TCARS2 POUR TESTER LA REPRISE DE LA TABLE
-# QUAND ON A TABLE_CARA='OUI'
-TCARS2=MACR_CARA_POUTRE(GROUP_MA_BORD='LCERC',
-                        NOEUD='N1',TABLE_CARA='OUI')
-
+TCARS =MACR_CARA_POUTRE(GROUP_MA_BORD='LCERC', NOEUD='N1',)
 IMPR_TABLE( TABLE=TCARS )
+
+# ON CREE TCARS2 POUR TESTER LA LECTURE DE LA TABLE PAR AFFE_CARA_ELEM
+# QUAND ON A TABLE_CARA='OUI'
+TCARS2=MACR_CARA_POUTRE(GROUP_MA_BORD='LCERC', NOEUD='N1',TABLE_CARA='OUI',NOM='BIDUL')
 IMPR_TABLE( TABLE=TCARS2 )
 #
 # --- VALEURS DE REFERENCE: OPERATEUR AFFE_CARA_ELEM
 #
-#
-
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='A',REFERENCE='ANALYTIQUE',
            VALE=1.963495E-3,
            PRECISION=5.0E-3,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='CDG_Y',REFERENCE='ANALYTIQUE',
            VALE=0.0,
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='CDG_Z',REFERENCE='ANALYTIQUE',
            VALE=0.0,
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='IY_G',REFERENCE='ANALYTIQUE',
            VALE=3.067961E-07,
            PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='IZ_G',REFERENCE='ANALYTIQUE',
            VALE=3.067961E-07,
            PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='IYZ_G',REFERENCE='ANALYTIQUE',
            VALE=0.0,
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='IY',REFERENCE='ANALYTIQUE',
            VALE=3.067961E-07,
            PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='IZ',REFERENCE='ANALYTIQUE',
            VALE=3.067961E-07,
            PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='Y_MIN',REFERENCE='ANALYTIQUE',
            VALE=-0.025,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='Y_MAX',REFERENCE='ANALYTIQUE',
            VALE=0.025,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='Z_MIN',REFERENCE='ANALYTIQUE',
            VALE=-0.025,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='Z_MAX',REFERENCE='ANALYTIQUE',
            VALE=0.025,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='JX',REFERENCE='ANALYTIQUE',
            VALE=6.1359E-07,
            PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='AY',REFERENCE='ANALYTIQUE',
            VALE=1.1666667,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='AZ',REFERENCE='ANALYTIQUE',
            VALE=1.1666667,);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='EY',
            VALE=0.0,REFERENCE='ANALYTIQUE',
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='EZ',
            VALE=0.0,REFERENCE='ANALYTIQUE',
            CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
+           FILTRE=_F(NOM_PARA='LIEU', VALE_K='.9000012',),
            NOM_PARA='JG',
            VALE=0.0,REFERENCE='ANALYTIQUE',
            CRITERE='ABSOLU',);
@@ -207,7 +184,7 @@ CAREL2=AFFE_CARA_ELEM(MODELE=MO,
                                #VALE=rext,
                                 SECTION='GENERALE',
                                 TABLE_CARA=TCARS2,
-                                NOM_SEC='.9000049')
+                                NOM_SEC='BIDUL')
                                ,)
 
 FTOT=1000. ;

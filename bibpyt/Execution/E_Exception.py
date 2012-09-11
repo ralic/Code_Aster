@@ -1,4 +1,4 @@
-#@ MODIF E_Exception Execution  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Exception Execution  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,6 +76,10 @@ class error(Exception):
         except:
             txt = self.basic_format()
         return convert(txt)
+
+    def __reduce__(self):
+        """Pickle an error"""
+        return (self.__class__, (self.id_message, ))
 
 
 class FatalError(error):

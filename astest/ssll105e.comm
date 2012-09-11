@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 # TITRE FLAMBEMENT NON LINEAIRE POUTRE EN L
 # ssll105e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,7 +101,7 @@ CH_CRIT=CREA_TABLE(FONCTION=_F(FONCTION=TEMPO,),);
 TEST_TABLE(TABLE=CH_CRIT,
            NOM_PARA='INST',
            FILTRE=_F(NOM_PARA='CHAR_CRI',
-                     CRIT_COMP='ABS_MINI',),
+                     CRIT_COMP='MINI_ABS',),
            VALE=1.088,
            PRECISION=0.02,
            CRITERE='RELATIF',
@@ -140,7 +140,7 @@ CH_CRIT2=CREA_TABLE(FONCTION=_F(FONCTION=TEMPO2,),);
 TEST_TABLE(TABLE=CH_CRIT2,
            NOM_PARA='INST',
            FILTRE=_F(NOM_PARA='CHAR_CRI',
-                     CRIT_COMP='ABS_MINI',),
+                     CRIT_COMP='MINI_ABS',),
            VALE=0.68,
            PRECISION=0.02,
            CRITERE='RELATIF',

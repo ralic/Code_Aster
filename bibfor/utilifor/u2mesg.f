@@ -1,6 +1,6 @@
-      SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
+      SUBROUTINE U2MESG (TYP, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILIFOR  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,35 +20,68 @@ C ======================================================================
 C RESPONSABLE COURTOIS M.COURTOIS
 C
       IMPLICIT NONE
-      CHARACTER* (*)     CH1,IDMESS,VALK(*)
-      INTEGER            NK,NI,VALI(*),NR
-      REAL*8             VALR(*)
-C     ==================================================================
+      CHARACTER*(*)    TYP, IDMESS, VALK(*)
+      INTEGER          NK, NI, VALI(*), NR
+      REAL*8           VALR(*)
+C
       INTEGER          NEXCEP
       COMMON /UTEXC /  NEXCEP
-C     ------------------------------------------------------------------
+C
       INTEGER          RECURS
-      CHARACTER *16    COMPEX
-      CHARACTER *8     NOMRES, K8B
-      LOGICAL          LERROR, LVALID, LABORT, LTRACE, SUITE, LREC
-      INTEGER          LOUT,IDF,I,LC,ICMD,IMAAP,LXLGUT, ISJVUP
-C     ------------------------------------------------------------------
+      CHARACTER*16     COMPEX
+      CHARACTER*8      NOMRES, K8B
+      CHARACTER*2      TYPM
+      LOGICAL          LERROR, LVALID, LABORT, SUITE, LSTOP, LERRM
+      INTEGER          LOUT, IDF, I, LC, ICMD, IMAAP, LXLGUT, ISJVUP
+C
       SAVE             RECURS
-C     ------------------------------------------------------------------
-C     --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
-      IDF  = INDEX('EFIDASXZ',CH1(1:1))
-
-C --- ERREUR = F, S, Z
-      LERROR = IDF.EQ.2 .OR. IDF.EQ.6 .OR. IDF.EQ.8
-      LREC = IDF.NE.3 .AND. IDF.NE.5
-
+C
+C     TYPES DE MESSAGES :
+C     ERREURS :
+C       F : ERREUR AVEC DESTRUCTION DU CONCEPT PRODUIT PAR LA COMMANDE
+C       S : ERREUR AVEC VALIDATION DU CONCEPT, EXCEPTION
+C       Z : LEVEE D'EXCEPTION PARTICULIERE, COMME 'S'
+C       M : ERREUR SUIVIE DE MPI_ABORT, NE PAS LEVER D'EXCEPTION --> 'F'
+C     MESSAGES :
+C       E : SIMPLE MESSAGE D'ERREUR QUI SERA SUIVI D'UNE ERREUR 'F'
+C       D : COMME 'E' MAIS AFFICHE AVEC 'F' POUR ASSURER UN 'D'IAGNOSTIC
+C       I : INFORMATION
+C       A : ALARME
+C
+      TYPM = TYP
+      IDF  = INDEX('EFIMASZD', TYPM(1:1))
+      CALL ASSERT(IDF .NE. 0)
+C
+C     --- COMPORTEMENT EN CAS D'ERREUR
+      CALL ONERRF(' ', COMPEX, LOUT)
+C
+      LERRM = IDF.EQ.4
+      IF ( LERRM ) THEN
+        IDF = 2
+        TYPM(1:1) = 'F'
+C       L'EXCEPTION A-T-ELLE DEJA ETE LEVEE ?
+        IF ( RECURS .NE. 0) THEN
+C         L'EXCEPTION A DEJA ETE LEVEE
+          RECURS = 0
+        ELSE
+          LERRM = .FALSE.
+        ENDIF
+      ENDIF
+C
+      LERROR = IDF.EQ.2 .OR. IDF.EQ.6 .OR. IDF.EQ.7
+C     DOIT-ON VALIDER LE CONCEPT ?
+      LVALID = (IDF.EQ.6 .OR. IDF.EQ.7)
+     &    .OR. (IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'EXCEPTION+VALID')
+C     DOIT-ON S'ARRETER BRUTALEMENT (POUR DEBUG) ?
+      LABORT = IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'ABORT'
+C
       SUITE = .FALSE.
-      IF (LEN(CH1) .GT. 1) THEN
-         IF (CH1(2:2) .EQ. '+') SUITE=.TRUE.
+      IF (LEN(TYPM) .GT. 1) THEN
+         IF (TYPM(2:2) .EQ. '+') SUITE=.TRUE.
       ENDIF
 C
 C --- SE PROTEGER DES APPELS RECURSIFS POUR LES MESSAGES D'ERREUR
-      IF ( LREC ) THEN
+      IF ( LERROR ) THEN
         IF ( RECURS .EQ. 1234567891 ) THEN
            CALL JEFINI('ERREUR')
         ENDIF
@@ -68,31 +101,29 @@ C          ON NE FAIT PLUS RIEN ET ON SORT DE LA ROUTINE
       IF ( ISJVUP() .EQ. 1 ) THEN
         CALL JEMARQ()
       ENDIF
-
-C     --- COMPORTEMENT EN CAS D'ERREUR
-      CALL ONERRF(' ', COMPEX, LOUT)
-
-C         DOIT-ON VALIDER LE CONCEPT ?
-      LVALID = (IDF.EQ.6 .OR. IDF.EQ.8)
-     &    .OR. (IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'EXCEPTION+VALID')
-C         DOIT-ON S'ARRETER BRUTALEMENT (POUR DEBUG) ?
-      LABORT = IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'ABORT'
-C         TRACEBACK SI F OU S, PAS SI EXCEPTION NOMMEE
-      LTRACE = IDF.EQ.2 .OR. IDF.EQ.6
 C
-      CALL UTPRIN(CH1, NEXCEP, IDMESS, NK, VALK, NI, VALI, NR, VALR)
+      IF (LERROR .AND. IDF.NE.7) THEN
+C     SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP
+C     SINON ON LEVE L'EXCEPTION DE BASE ASTER.ERROR
+        NEXCEP = 21
+      ENDIF
+C
+      CALL UTPRIN(TYPM, NEXCEP, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C
 C     --- REMONTEE D'ERREUR SI DISPO
-      IF ( LTRACE ) THEN
+      IF ( LABORT ) THEN
         CALL TRABCK('Liste des appels successifs ' //
      &              '(option -traceback)', -1)
       ENDIF
-
+      LSTOP = .FALSE.
 C --- EN CAS DE MESSAGE AVEC SUITE, PAS D'ARRET, PAS D'EXCEPTION
       IF ( .NOT. SUITE ) THEN
 C
 C     -- ABORT SUR ERREUR <F> "ORDINAIRE"
          IF ( LABORT ) THEN
+C           AVERTIR LE PROC #0 QU'ON A RENCONTRE UN PROBLEME !
+            CALL MPICMW()
+C
             CALL JEFINI('ERREUR')
 
 C     -- LEVEE D'UNE EXCEPTION
@@ -100,7 +131,7 @@ C     -- LEVEE D'UNE EXCEPTION
 
 C        -- QUELLE EXCEPTION ?
 C           SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP
-            IF ( IDF.NE.8 ) THEN
+            IF ( IDF.NE.7 ) THEN
 C           SINON ON LEVE L'EXCEPTION DE BASE ASTER.ERROR
                NEXCEP = 21
             ENDIF
@@ -108,19 +139,21 @@ C
 C           NOM DU CONCEPT COURANT
             CALL GETRES(NOMRES, K8B, K8B)
 
-C           LE CONCEPT EST REPUTE VALIDE :
-C              - SI ERREUR <S> OU EXCEPTION
-C              - SI ERREUR <F> MAIS LA COMMANDE A DIT "EXCEPTION+VALID"
-            IF ( LVALID) THEN
-               CALL UTPRIN('I',0, 'CATAMESS_70', 1,NOMRES,0,VALI,0,VALR)
-
-C           SINON LE CONCEPT COURANT EST DETRUIT
-            ELSE
-               CALL UTPRIN('I',0, 'CATAMESS_69', 1,NOMRES,0,VALI,0,VALR)
-               LC = LXLGUT(NOMRES)
-               IF (LC .GT. 0) THEN
+            IF ( NOMRES .NE. ' ' ) THEN
+C             LE CONCEPT EST REPUTE VALIDE :
+C               - SI ERREUR <S> OU EXCEPTION
+C               - SI ERREUR <F> MAIS LA COMMANDE A DIT "EXCEPTION+VALID"
+              IF ( LVALID) THEN
+                CALL UTPRIN('I',0,'CATAMESS_70',1,NOMRES,0,VALI,0,VALR)
+             
+C             SINON LE CONCEPT COURANT EST DETRUIT
+              ELSE
+                CALL UTPRIN('I',0,'CATAMESS_69',1,NOMRES,0,VALI,0,VALR)
+                LC = LXLGUT(NOMRES)
+                IF (LC .GT. 0) THEN
                   CALL JEDETC(' ', NOMRES(1:LC), 1)
-               ENDIF
+                ENDIF
+              ENDIF
             ENDIF
 
             IF ( ISJVUP() .EQ. 1 ) THEN
@@ -136,17 +169,22 @@ C             REMONTER LES N JEDEMA COURT-CIRCUITES
 C
             ENDIF
 C
+C           AVERTIR LE PROC #0 QU'ON A RENCONTRE UN PROBLEME !
+            CALL MPICMW()
+C
 C           ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
-            IF ( LREC) RECURS = 0
-            CALL UEXCEP(NEXCEP, IDMESS, NK, VALK, NI, VALI, NR, VALR)
+            IF ( LERROR ) RECURS = 0
+            LSTOP = .TRUE.
+            IF ( .NOT. LERRM ) THEN
+              CALL UEXCEP(NEXCEP, IDMESS, NK, VALK, NI, VALI, NR, VALR)
+            ENDIF
          ENDIF
 C
       ENDIF
 C
-      IF ( LREC) RECURS = 0
+      IF ( LERROR ) RECURS = 0
  9999 CONTINUE
-      IF ( ISJVUP() .EQ. 1 ) THEN
+      IF ( ISJVUP() .EQ. 1 .AND. .NOT. LSTOP ) THEN
         CALL JEDEMA()
       ENDIF
-
       END

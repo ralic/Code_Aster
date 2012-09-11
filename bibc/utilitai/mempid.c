@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMPID utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF MEMPID utilitai  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -26,7 +26,7 @@
 /*
 ** Cette fonction permet de consulter le systeme de fichier /proc sous Unix
 ** et renvoie la memoire en octets consommee par le processus.
-** Elle accede aux valeurs VmData et VmSize .
+** Elle accede aux valeurs VmRSS et VmSize .
 ** La valeur retournee vaut VmStk.
 **
 ** Le numero du processus est recupere par getpid
@@ -63,10 +63,13 @@ INTEGER DEFP (MEMPID, mempid, INTEGER *val)
     } else {
         val[2] = -1 ;  
     }
+
+    S=strstr(sbuf,"VmRSS:")+7;
+    val[3] = (INTEGER)atoi(S); 
       
-        S=strstr(sbuf,"VmStk:")+7;
-        lmem = atoi(S);
-        return lmem ;
+    S=strstr(sbuf,"VmStk:")+7;
+    lmem = atoi(S);
+    return lmem ;
 #else
 /* 
 ** Pour retourner des valeurs sous Windows
@@ -74,6 +77,7 @@ INTEGER DEFP (MEMPID, mempid, INTEGER *val)
     val[0] = 0 ;
     val[1] = 0 ;
     val[2] = 0 ;
+    val[3] = 0 ;
     return -1 ;
 #endif
 }

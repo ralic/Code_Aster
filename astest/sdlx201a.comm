@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
 # RESPONSABLE VABHHTS J.PELLET
 # sdlx201a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test RI
@@ -110,7 +110,8 @@ CHM2=AFFE_CHAR_MECA(  MODELE=MO,LIAISON_GROUP=(
 #      MATRICES ELEMENTAIRES ET ASSEMBLAGE
 #      ----------------------------------------------------
 RIGEL=CALC_MATR_ELEM(  MODELE=MO,  CHAM_MATER=CHMA,
-               CHARGE=( CHM1,CHM2,), OPTION='RIGI_MECA',
+               CHARGE=( CHM1,CHM2,), 
+               OPTION='RIGI_MECA',
                         CARA_ELEM=CARA  )
 
 MASEL=CALC_MATR_ELEM(  MODELE=MO,   CHAM_MATER=CHMA,
@@ -127,6 +128,8 @@ MASEL=CALC_MATR_ELEM(  MODELE=MO,   CHAM_MATER=CHMA,
 NU=NUME_DDL(MATR_RIGI=RIGEL)
 RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU)
 MASAS=ASSE_MATRICE(MATR_ELEM=MASEL,NUME_DDL=NU)
+
+
 
 NBMOD1 = INFO_MODE(MATR_A=RIGAS,MATR_B=MASAS,FREQ_MAX=100.,
                           SOLVEUR=_F(METHODE='LDLT'))
@@ -349,13 +352,19 @@ MOM2_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
 #       3.2 MODE_ITER_INV:
 #       ---------------------
 
-MOM4=MODE_ITER_INV(   MATR_A=RIGAS,   MATR_B=MASAS,
+MOM4=MODE_ITER_INV(   MATR_A=RIGAS,   MATR_B=MASAS, INFO=1,
                    SOLVEUR=_F(METHODE='MUMPS'),
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 6.2E-3,  6.14E-2,)))
 
-# OPTIONS 'SEPARE' ET 'AJUSTE' IMPOSSIBLE AVEC MUMPS TANT QUE CE DERNIER
-# NE SAIT PAS CALCULER UN DETERMINANT
+MOM5=MODE_ITER_INV(MATR_A=RIGAS, MATR_B=MASAS, INFO=1,
+                   SOLVEUR=_F(METHODE='MUMPS'),
+           CALC_FREQ=_F( OPTION = 'SEPARE', FREQ = (1.E-2,6.E-2,)))
+
+MOM6=MODE_ITER_INV(MATR_A=RIGAS,  MATR_B=MASAS, INFO=1,
+                   SOLVEUR=_F(METHODE='MUMPS'),
+           CALC_FREQ=_F( OPTION = 'AJUSTE',  FREQ = (1.E-2,6.E-2,)))
+
 
 #-----------------------------------------------------------------------
 #    PRE ET POST-TRAITEMENTS MODAUX
@@ -515,7 +524,7 @@ MOC3M=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
 
 ENGENDRE_TEST (  CO = (MOD0, MOD1, MOD2, MOD1_QZ, MOD2_QZ, MOD4, MOD5, MOD6) )
 ENGENDRE_TEST (  CO = (MOF0, MOF1, MOF2, MOF1_QZ, MOF2_QZ, MOF4, MOF5, MOF6) )
-ENGENDRE_TEST (  CO = (MOM0, MOM1, MOM2, MOM1_QZ, MOM2_QZ, MOM4, ) )
+ENGENDRE_TEST (  CO = (MOM0, MOM1, MOM2, MOM1_QZ, MOM2_QZ, MOM4, MOM5, MOM6) )
 
 ENGENDRE_TEST (  CO = (MODN1, MODN2, MODN3, MODN4, MODN5, MODN6, MODN7, MODN8) )
 ENGENDRE_TEST (  CO = (MODB1, MODB2, MODB3, MODB4, MODB5, MODB6, MODB7, MODB8) )
@@ -856,6 +865,36 @@ TEST_RESU(RESU=(
                       NOM_CMP = 'DX',
                       NOEUD = 'N21',
                       VALE = 1.1496542317937E-02,
+                      REFERENCE = 'NON_REGRESSION' ),
+                              _F(
+                      RESULTAT = MOM5,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 2.4022786475233E-02,
+                      REFERENCE = 'NON_REGRESSION' ,
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOM5,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+                      VALE = -5.7321699385801E-04,
+                      REFERENCE = 'NON_REGRESSION' ),
+                              _F(
+                      RESULTAT = MOM6,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 2.4022776705884E-02,
+                      REFERENCE = 'NON_REGRESSION' ,
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOM6,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      NOEUD = 'N21',
+                      VALE = -2.9242875932011E-07,
                       REFERENCE = 'NON_REGRESSION' ),
 # NORM_MODE
                               _F(

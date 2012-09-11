@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astercore_module supervis  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astercore_module supervis  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -25,14 +25,20 @@
  *      - CoreOptions : command line options + basic informations
  *      - MessageLog : utility to print message,
  *      - E_Global : a module to define functions more easily in Python than here.
+ *  - give informations about the execution.
  */
 
 #include <Python.h>
 #include "aster.h"
 #include "aster_core.h"
 #include "aster_module.h"
+#include "aster_exceptions.h"
 #include "aster_fort.h"
 #include "aster_utils.h"
+
+#ifdef _USE_MPI
+#include "mpi.h"
+#endif
 
 /*
  * Global variables registered by E_SUPERV.py (main python script)
@@ -412,13 +418,22 @@ void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
                                  _IN INTEGER *nbi, _IN INTEGER *vali,
                                  _IN INTEGER *nbr, _IN DOUBLE *valr)
 {
-   /*
-      Interface Fortran/Python pour l'affichage des messages
-   */
+    /*
+     * Fortran/Python interface to print the messages.
+     * 
+     * WARNING: In the case that the error indicator has already been set, we must
+     * restore it after PyObject_CallMethod.
+     */
     PyObject *tup_valk, *tup_vali, *tup_valr, *res;
     char *kvar;
-    int i;
-
+    int i, iexc=0;
+    PyObject *etype, *eval, *etb;
+    
+    if ( PyErr_Occurred() ) {
+        iexc = 1;
+        PyErr_Fetch(&etype, &eval, &etb);
+    }
+    
     tup_valk = PyTuple_New( (Py_ssize_t)*nbk ) ;
     for(i=0;i<*nbk;i++){
        kvar = valk + i*lvk;
@@ -435,12 +450,14 @@ void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
        PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble((double)valr[i]) ) ;
     }
 
-
     res = PyObject_CallMethod(gMsgLog, "print_message", "s#s#OOOi",
                               typmess, ltype, idmess, lidmess, tup_valk, tup_vali, tup_valr,
                               (int)*exc_typ);
     if (!res) {
        MYABORT("erreur lors de l'appel a MessageLog");
+    }
+    if ( iexc == 1 ) {
+        PyErr_Restore(etype, eval, etb);
     }
 
     Py_DECREF(tup_valk);
@@ -451,16 +468,16 @@ void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
 
 void DEFPP(CHKMSG,chkmsg, _IN INTEGER *info_alarm, _OUT INTEGER *iret)
 {
-   /*
-      Interface Fortran/Python pour la vérification que tout s'est bien
-      passé, destinée à etre appelée dans FIN ou au cours d'une commande.
-      Argument IN :
-         info_alarm = 1  on vérifie si les alarmes ignorées ont été émises ou non.
-                    = 0  on ne fait pas cette vérif
-      Retourne :
-         iret = 0 : tout est ok
-         iret > 0   erreur
-   */
+    /*
+     * Interface Fortran/Python pour la vérification que tout s'est bien
+     * passé, destinée à etre appelée dans FIN ou au cours d'une commande.
+     * Argument IN :
+     *    info_alarm = 1  on vérifie si les alarmes ignorées ont été émises ou non.
+     *               = 0  on ne fait pas cette vérif
+     * Retourne :
+     *    iret = 0 : tout est ok
+     *    iret > 0   erreur
+     */
     PyObject *res;
 
     res = PyObject_CallMethod(gMsgLog, "check_counter", "i", (int)*info_alarm);
@@ -492,6 +509,17 @@ void DEFSS(UTALRM,utalrm, _IN char *bool, _IN STRING_SIZE lbool,
 
     Py_DECREF(res);
     FreeStr(onoff);
+}
+
+void DEFP(GTALRM,gtalrm, _OUT INTEGER *nb)
+{
+    /* Interface Fortran/Python pour obtenir si des alarmes ont été émises.
+     */
+    PyObject *res;
+    res = PyObject_CallMethod(gMsgLog, "get_info_alarm_nb", "");
+    if (!res) MYABORT("erreur lors de l'appel a la methode 'get_info_alarm'");
+    *nb = (INTEGER)PyLong_AsLong(res);
+    Py_DECREF(res);
 }
 
 /*
@@ -562,6 +590,77 @@ PyObject *args;
 }
 
 /*
+ * Functions to communicate the execution status in parallel
+ */
+static PyObject* aster_mpi_info(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    /*
+     * Get MPI informations (idem mpicm0.F)
+     */
+    PyObject *res;
+    int rank=0, size=1;
+#ifdef _USE_MPI
+    MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+    MPI_Comm_size( MPI_COMM_WORLD, &size );
+#endif
+    res = Py_BuildValue("ii", rank, size);
+    return res;
+}
+
+static PyObject* aster_mpi_warn(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    /*
+     * call MPICMW
+     */
+    try {
+        CALL_MPICMW();
+    }
+    exceptAll {
+        raiseException();
+    }
+    endTry();
+    Py_INCREF( Py_None );
+    return Py_None;
+}
+
+static PyObject* aster_mpi_barrier(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    /*
+     * Set a MPI barrier
+     */
+#ifdef _USE_MPI
+    int size=1;
+    INTEGER nbproc, iret, n0=0, ibid=0, nk=1;
+    DOUBLE rbid=0.;
+    char *valk;
+    MPI_Comm_size( MPI_COMM_WORLD, &size );
+    nbproc = (INTEGER)size;
+    try {
+        CALL_MPICHK( &nbproc, &iret );
+        if ( iret != 0 ) {
+            /* an exception should has been raised through MPISTP/U2MESG */
+            raiseExceptionString(PyExc_AssertionError, "MPICHK: Unexpected returned code.\n");
+        }
+    }
+    exceptAll {
+        printf("  Communication 'MPI_Barrier' cancelled.\n");
+        raiseException();
+    }
+    endTry();
+    MPI_Barrier( MPI_COMM_WORLD );
+#endif
+    Py_INCREF( Py_None );
+    return Py_None;
+}
+
+
+/*
  * Methods of the aster_core module.
  */
 static PyMethodDef methods[] = {
@@ -569,6 +668,9 @@ static PyMethodDef methods[] = {
     { "matfpe",         asterc_matfpe,       METH_VARARGS, matfpe_doc },
     { "get_mem_stat",   asterc_get_mem_stat, METH_VARARGS, get_mem_stat_doc },
     { "set_mem_stat",   asterc_set_mem_stat, METH_VARARGS, set_mem_stat_doc },
+    { "mpi_info",       aster_mpi_info,      METH_VARARGS},
+    { "mpi_warn",       aster_mpi_warn,      METH_VARARGS},
+    { "mpi_barrier",    aster_mpi_barrier,   METH_VARARGS},
     // { "get_option",  ... } : method added in register_jdc
     // { "set_info",  ... } : method added in register_jdc
     { NULL, NULL, 0, NULL }

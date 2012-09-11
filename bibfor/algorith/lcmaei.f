@@ -2,7 +2,7 @@
      &     NBVAL,VALRES,NMAT,ITBINT,NFS,NSG,HSRI,IFA,NOMFAM,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,7 @@ C         PAR CONVENTION ECRO_ISOT1 A LE NUMERO 1
 C         PAR CONVENTION ECRO_ISOT2 A LE NUMERO 2
           VALRES(1)=2
 
-      ELSEIF (NECRIS(1:11).EQ.'MONO_DD_CFC') THEN
+      ELSEIF (NECRIS.EQ.'MONO_DD_CFC') THEN
           NBVAL=3
           NOMRES(1)='ALPHA'
           NOMRES(2)='BETA'
@@ -105,6 +105,42 @@ C         CALCUL ET STOCKAGE DE MU
 C         PAR CONVENTION ECRO_DD_CFC A LE NUMERO 3
           VALRES(1)=3
 
+      ELSEIF (NECRIS.EQ.'MONO_DD_CFC_IRRA') THEN
+          NBVAL=3+8
+          NOMRES(1) ='ALPHA'
+          NOMRES(2) ='BETA'
+          NOMRES(3) ='RHO_REF'
+          NOMRES(4) ='RHO_VOID'
+          NOMRES(5) ='PHI_LOOP'
+          NOMRES(6) ='ALP_VOID'
+          NOMRES(7) ='ALP_LOOP'
+          NOMRES(8) ='RHO_SAT'
+          NOMRES(9) ='PHI_SAT'
+          NOMRES(10)='XI_IRRA'
+          NOMRES(11)='DZ_IRRA'
+
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',
+     &                 0.D0,NBVAL,NOMRES, VALLUE,ICODRE,1)
+     
+C         CALCUL ET STOCKAGE DE MU
+          CALL RCCOMA(IMAT,'ELAS',PHENOM,ICODRE)
+
+          IF (PHENOM.EQ.'ELAS') THEN
+             CALL RCVALB(FAMI,KPG,KSP,POUM,IMAT,' ','ELAS',0,' ', 0.D0,
+     &                   1,'E',E,ICODRE,1)
+             CALL RCVALB(FAMI,KPG,KSP,POUM,IMAT,' ','ELAS',0,' ', 0.D0,
+     &                   1,'NU',NU,ICODRE,1)
+             MU=E/(2.0D0+2.0D0*NU)
+          ELSE
+             CALL RCVALB(FAMI,KPG,KSP,POUM,IMAT,' ',PHENOM,0,' ', 0.D0,
+     &                   1,'G_LN',MU,ICODRE,1)
+          ENDIF
+          NBVAL=NBVAL+1
+          VALLUE(NBVAL)=MU
+          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
+          NBVAL=NBVAL+1
+C         PAR CONVENTION ECRO_DD_CFC A LE NUMERO 3
+          VALRES(1)=8
 
       ELSEIF (NECRIS(1:10).EQ.'MONO_DD_CC') THEN
           NBVAL=1

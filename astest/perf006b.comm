@@ -1,6 +1,6 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE SUR SES BORDS
-# perf006b.para = tps_job 2000 mem_job 2122Mo ncpus 1 liste_test P
+# perf006b.para = tps_job 2000 mem_job 2500Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

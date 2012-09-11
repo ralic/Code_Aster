@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,7 @@ import re
 # protection pour eficas
 try:
     import aster
+    import aster_core
     from aster import error
     aster_exists = True
 except:
@@ -41,6 +42,7 @@ from Execution.strfunc import convert, ufmt, to_unicode
 from Execution.E_Exception import ST
 
 from Noyau.N_types import force_list
+from Noyau.N_utils import Singleton
 
 CENTER = 1
 DECORATED = 2
@@ -60,19 +62,19 @@ def list_unit(code):
     """Retourne la liste des noms de fichiers (logiques) sur lesquels doit
     etre imprimé le message.
     """
-    #IDF  = INDEX('EFIDASXZ', ...)
-    #'Z' (IDF=8) = LEVEE D'EXCEPTION
+    # 'D' pour afficher un diagnostic 'F' sans les effets
+    # 'Z' levée d'exception
     d = {
         'E' : ('ERREUR', 'MESSAGE', 'RESULTAT'),
         'I' : ('MESSAGE',),
         'A' : ('MESSAGE', 'RESULTAT'),
     }
-    d['F'] = d['S'] = d['Z'] = d['E']
+    d['F'] = d['S'] = d['Z'] = d['D'] = d['E']
     d['X'] = d['A']
     return d.get(code, d['F'])
 
 
-class MESSAGE_LOGGER:
+class MESSAGE_LOGGER(Singleton):
     """Classe gérant l'impression de messages.
     On ne crée qu'une instance de ce type (singleton).
     Cette instance est accessible dans le module aster_core pour les appels
@@ -104,6 +106,18 @@ class MESSAGE_LOGGER:
             self.default_args['k%d' % i] = u'xxxxxx'
         # mettre en cache les messages 'I' (et uniquement 'I')
         self._cache_txt = {}
+        # arguments mpi : ligne de commande à envoyer au proc #0
+        self._mpi_rank = None
+        self.init_mpi_error()
+
+    def init_mpi_error(self):
+        """Stocke les informations nécessaires pour la gestion des erreurs en MPI."""
+        if not aster_exists:
+            return
+        rank = aster_core.mpi_info()[0]
+        self._mpi_rank = rank
+        import platform
+        node = platform.node()
 
     def __call__(self, *args, **kwargs):
         """Raccourci pour simplifier l'appel depuis astermodule.c et UTMESS.
@@ -150,6 +164,13 @@ class MESSAGE_LOGGER:
             self.print_buffer_content(print_as, cc)
 
             if exception and code[0] in ('S', 'F'):
+                if self._mpi_rank is not None:
+                    aster_core.mpi_warn()
+                if self._mpi_rank == 0:
+                    l_unit = list_unit('F')
+                    txt = _(u"On ne peut pas lever d'exception dans une exécution MPI.")
+                    for unite in l_unit:
+                        self.affiche(unite, txt)
                 exc_typ = dictmess.get('exc_typ')
                 if exc_typ:
                     raise exc_typ(idmess, valk, vali, valr)
@@ -288,7 +309,8 @@ Exception : %s
         """Retourne le code du message du buffer = code du message le plus grave
         (cf. dgrav)
         """
-        dgrav = { '?' : -9, 'I' : 0, 'A' : 1, 'S' : 4, 'Z' : 4, 'E' : 6, 'F' : 10 }
+        dgrav = { '?' : -9, 'I' : 0, 'A' : 1, 'S' : 4, 'Z' : 4, 'E' : 6,
+                  'D' :  9, 'F' : 10 }
 
         current = '?'
         exc_name = None
@@ -352,7 +374,6 @@ Exception : %s
 
         self.init_buffer()
 
-
     def disable_alarm(self, idmess, hide=False):
         """Ignore l'alarme "idmess".
         """
@@ -376,31 +397,45 @@ Exception : %s
         """
         return self._ignored_alarm.get(idmess, 0) + self._hidden_alarm.get(idmess, 0) > 0
 
-    def info_alarm(self, only_ignored=False):
-        """Fournit les infos sur les alarmes activées.
-        """
+    def get_info_alarm(self, only_ignored=False):
+        """Retourne la liste des alarmes émises, le nombre d'occurrence
+        pour chacune d'elle et un indicateur disant si elle a été masquée ou pas."""
         s_alarm = set(self._ignored_alarm.keys())
         if not only_ignored:
             s_alarm.update(self.count_alarm_tot.keys())
-        l_alarm = list(s_alarm)
-        l_alarm.sort()
+        l_all = list(s_alarm)
+        l_all.sort()
+        # occurrences
+        l_alarm, l_occ, l_masq = [], [], []
+        for idmess in l_all:
+            nb = self.count_alarm_tot.get(idmess, 0)
+            if nb > 0:
+                l_alarm.append(idmess)
+                l_occ.append(nb)
+                l_masq.append(int(self._ignored_alarm.get(idmess) is not None))
+        return zip(l_alarm, l_occ, l_masq)
+
+    def get_info_alarm_nb(self, only_ignored=False):
+        """Retourne le nombre d'alarme émises (et non masquées)."""
+        res = self.get_info_alarm(only_ignored)
+        res = [item for item in res if item[2] == 0]
+        return len(res)
+
+    def info_alarm(self, only_ignored=False):
+        """Fournit les infos sur les alarmes activées.
+        """
         # on sépare des éventuels messages en attente
         self.print_buffer_content()
         # entete
         dictmess = self.get_message('I', 'CATAMESS_89')
         self.add_to_buffer(dictmess)
         # occurrences
-        ieff = 0
-        for idmess in l_alarm:
-            mark = ' '
-            ieff += 1
-            if self._ignored_alarm.get(idmess) is not None:
-                mark = '(*)'
-            nb = self.count_alarm_tot.get(idmess, 0)
-            if nb > 0:
-                dictmess = self.get_message('I', 'CATAMESS_90', valk=(mark, idmess), vali=nb)
-                self.add_to_buffer(dictmess)
-        if ieff == 0:
+        res = self.get_info_alarm(only_ignored)
+        for idmess, nb, masq in res:
+            mark = ' ' + '(*)' * masq
+            dictmess = self.get_message('I', 'CATAMESS_90', valk=(mark, idmess), vali=nb)
+            self.add_to_buffer(dictmess)
+        if not res:
             dictmess = self.get_message('I', 'CATAMESS_92')
             self.add_to_buffer(dictmess)
         self.print_buffer_content()
@@ -566,18 +601,21 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
     def get_type_message(self, dictmess):
         """Retourne le type du message affiché.
         En cas d'erreur, si on lève une exception au lieu de s'arreter,
-        on n'affiche pas le type de l'erreur pour ne pas fausser le diagnostic
+        on affiche le type de l'erreur.
         """
         code = dictmess['code']
         typmess = code.strip()
         if self.onFatalError().startswith('EXCEPTION'):
             if typmess in ('E', 'F'):
                 typmess = 'EXCEPTION'
+        if typmess == 'D':
+            typmess = 'F'
         # dans tous les cas, pour S et Z (exception), on affiche EXCEPTION.
-        if code in ('Z', 'S'):
+        elif code == 'S':
+            typmess = 'EXCEPTION'
+        elif code == 'Z':
             typmess = dictmess.get('exc_name') or 'EXCEPTION'
         return typmess
-
 
     def get_context(self, ctxt_msg, idmess, dicarg):
         """Prise en compte du context du message pour donner d'autres infos
@@ -598,7 +636,6 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
             pass
         return os.linesep.join(msg)
 
-
     # définitions pour fonctionner sans le module aster
     def affiche(self, unite, txt):
         """Affichage du message"""
@@ -607,7 +644,6 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
             aster.affiche(unite, txt)
         else:
             print txt
-
 
     def onFatalError(self):
         """Récupérer le comportement en cas d'erreur fatale."""

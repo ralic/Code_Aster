@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05a.para = tps_job 3000 mem_job 15521Mo mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test MI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,7 @@ solveur = 'MUMPS';
 # Choix de la methode de renumeration
 meth_renum = 'METIS';
 meth_renu2 = 'SCOTCH';
-
+pcent_pivot=30
 #
 # Mode verbeux 1/2
 niv_info = 2
@@ -111,6 +111,7 @@ MECAC=MECA_STATIQUE(INFO=1,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
+                                PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
                                 ));
 
@@ -145,6 +146,7 @@ MECAC2=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renu2,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
+                                PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
                                 ));
 
@@ -181,6 +183,7 @@ MECAD1=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='IN_CORE',
+                                PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,                       
                                 ));
 
@@ -217,6 +220,7 @@ MECAD2=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
+                                PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
                                 ));
 
@@ -259,7 +263,7 @@ MECAD3=MECA_STATIQUE(INFO=niv_info,
                      SOLVEUR=_F(METHODE=solveur,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
-   
+                                PCENT_PIVOT=pcent_pivot,
                                 GESTION_MEMOIRE='IN_CORE',
                                 NPREC=-1,
                                 ));
@@ -297,6 +301,7 @@ MECAD4=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
+                                PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
                                 ));
 
@@ -332,6 +337,7 @@ MECAD5=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
+                                PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
                                 ));
 

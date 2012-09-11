@@ -3,7 +3,7 @@
 
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,11 +39,13 @@ C          MATERF :  COEF MATERIAU
 C     ----------------------------------------------------------------
       INTEGER NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV,NUVI,IFA
       INTEGER IFL,IS,NBFSYS,NBSYS,NSFV,INDPHA,INDCP,NUMIRR,NS,INDTAU
+      INTEGER IEI,IS3,IV3,IV,IRR2
       REAL*8  VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
       REAL*8  EPSEQ,E,NU,FV,SIGG(6),MUS(6),NG(3),LG(3),PGL(3,3)
       REAL*8  ID(3,3),F(3,3),FPM(3,3),FP(3,3),FE(3,3),DETP,LCNRTE
       REAL*8  DETOT(*),EPSD(*),PK2(6),DEVI(6),ENDOC,DP,XI,QM(3,3)
       REAL*8  MATERF(NMAT,2),RHOIRR(12),TAU(60)
+      REAL*8  RHOSAT,PHISAT,DZ,ROLOOP(12),FIVOID(12),SDP,DPS(12)
       CHARACTER*16 LOI,CPMONO(5*NMAT+1),LOCA,COMP(*),NECOUL,NOMFAM
       INTEGER IRR,DECIRR,NBSYST,DECAL
       COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
@@ -72,26 +74,61 @@ C            NUECOU=NINT(MATERF(IFL,2))
                CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,RHOIRR,1)
                XI=MATERF(IFL+23,2)
                IRR=1
+               IRR2=1
+            ELSEIF (NECOUL.EQ.'MONO_DD_CFC_IRRA') THEN
+               CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,ROLOOP,1)
+               CALL DCOPY(12, VIND(NSFV+3*NBSYS+13),1,FIVOID,1)
+               IRR=1
+               IRR2=2
+               IEI   =NBCOMM(IFA,3)
+               RHOSAT=MATERF(IEI+8,2)
+               PHISAT=MATERF(IEI+9,2)
+               XI   = MATERF(IEI+10,2)
+               DZ   = MATERF(IEI+11,2)
             ELSE
                IRR=0
+               IRR2=0
             ENDIF
-            DO 7 IS=1,NBSYS
-C              VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
-               NUVI=NSFV+3*(IS-1)+3
-               DP=VINF(NUVI)
-               IF(IRR.EQ.1) THEN
+            
+            IF(IRR2.EQ.1) THEN
+               DO 7 IS=1,12
+C                 VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
+                  NUVI=NSFV+3*(IS-1)+3
+                  DP=VINF(NUVI)
                   RHOIRR(IS)=RHOIRR(IS)*EXP(-XI*DP)
-               ENDIF
-  7         CONTINUE
-            IF(IRR.EQ.1) THEN
+  7            CONTINUE
                CALL DCOPY(12, RHOIRR,1,VINF(NSFV+3*NBSYS+1),1)
+               
             ENDIF
+           
+            IF(IRR2.EQ.2) THEN
+               DO 8 IS=1,12
+C                 SOMME SUR COPLA(S)
+                  SDP=0.D0
+                  DO 9 IV=1,12
+                     IS3=(IS-1)/3
+                     IV3=(IV-1)/3
+C                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
+                     NUVI=NSFV+3*(IV-1)+3
+                     DP=VINF(NUVI)
+                     IF (IS3.EQ.IV3) THEN
+                        SDP=SDP+DP
+                     ENDIF
+  9               CONTINUE
+                  ROLOOP(IS)=RHOSAT+(ROLOOP(IS)-RHOSAT)*EXP(-XI*SDP)
+                  FIVOID(IS)=PHISAT+(FIVOID(IS)-PHISAT)*EXP(-DZ*SDP)
+  8            CONTINUE
+               CALL DCOPY(12, ROLOOP,1,VINF(NSFV+3*NBSYS+1),1)
+               CALL DCOPY(12, FIVOID,1,VINF(NSFV+3*NBSYS+13),1)
+            ENDIF
+         
             NSFV=NSFV+NBSYS*3
   6      CONTINUE
   
   
          INDTAU=NSFV
-         IF (IRR.EQ.1) INDTAU=INDTAU+12
+         IF (IRR2.EQ.1) INDTAU=INDTAU+12
+         IF (IRR2.EQ.2) INDTAU=INDTAU+24
 C        CISSIONS TAU_S  
          NS=0
          DO 61 IFA=1,NBFSYS
@@ -191,6 +228,7 @@ C        IRRADIATION
             INDCP=NBCOMM(1+IPHAS,2)
             DO 32 IFA=1,NBFSYS
                NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
+
                IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
                   NBSYS=12
                   CALL DCOPY(12, VIND(DECIRR+NUMIRR+1),1,RHOIRR,1)
@@ -207,6 +245,38 @@ C                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                   CALL DCOPY(12,RHOIRR,1,VINF(DECIRR+NUMIRR+1),1)
                   NUMIRR=NUMIRR+NBSYS
                ENDIF
+
+               IF (NECOUL.EQ.'MONO_DD_CFC_IRRA') THEN         
+                  NBSYS=12
+                  CALL DCOPY(12, VIND(DECIRR+NUMIRR+1),1,ROLOOP,1)
+                  CALL DCOPY(12, VIND(DECIRR+NUMIRR+13),1,FIVOID,1)
+                  IEI   =NBCOMM(INDPHA+IFA,3)
+                  RHOSAT=MATERF(IEI+8,2)
+                  PHISAT=MATERF(IEI+9,2)
+                  XI   = MATERF(IEI+10,2)
+                  DZ   = MATERF(IEI+11,2)
+                  DO 81 IS=1,NBSYS
+C                    SOMME SUR COPLA(S)
+                     SDP=0.D0
+                     DO 91 IV=1,12
+C                       VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
+                        NUVI=NSFV+3*(IV-1)+3
+                        DP=VINF(NUVI)
+                        IS3=(IS-1)/3
+                        IV3=(IV-1)/3
+C                       PARTIE POSITIVE DE ALPHA
+                        IF (IS3.EQ.IV3) THEN
+                           SDP=SDP+DP
+                        ENDIF
+  91                 CONTINUE
+                     ROLOOP(IS)=RHOSAT+(ROLOOP(IS)-RHOSAT)*EXP(-XI*SDP)
+                     FIVOID(IS)=PHISAT+(FIVOID(IS)-PHISAT)*EXP(-DZ*SDP)
+  81              CONTINUE
+                  CALL DCOPY(12, ROLOOP,1,VINF(DECIRR+NUMIRR+1),1)
+                  CALL DCOPY(12, FIVOID,1,VINF(DECIRR+NUMIRR+13),1)
+                  NUMIRR=NUMIRR+NBSYS+NBSYS
+               ENDIF         
+
                NSFV=NSFV+NBSYS*3
   32        CONTINUE
   33     CONTINUE

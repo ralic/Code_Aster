@@ -3,7 +3,7 @@
      &          TAMPON,COMP,SIGF,DF,NR,MOD, CODRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,15 +52,16 @@ C VAR VINF   :  VARIABLES INTERNES A L'INSTANT ACTUEL
 C     ----------------------------------------------------------------
       INTEGER  NMAT,NDT,I,J,NBCOMM(NMAT,3),NBSYS,IFA,IS,NBFSYS,ITMAX
       INTEGER  NUVI,ITER,NVI,IRET,IR,NR,NSFA,NSFV,IFL,NUECOU,CODRET
-      INTEGER  NFS,NSG,IRR,NS,INDTAU
+      INTEGER  NFS,NSG,IRR,NS,INDTAU,IEI,IS3,IV,IV3
       REAL*8   VIND(*),VINF(*),DY(*),MATERF(NMAT*2)
       REAL*8   LCNRTE, EPSEQ,PGL(3,3),MUS(6),NG(3),DGAMMA,DP,DALPHA
       REAL*8   DEVI(6),TOUTMS(NFS,NSG,6),TOLER,HSR(NSG,NSG)
       REAL*8   TAUS,FKOOH(6,6),MSNS(3,3),YD(*),IDEN(3,3)
       REAL*8   CRIT, SGNS, DT,OMP(3),QM(3,3),FP(3,3)
       REAL*8   SICL,LG(3),TAMPON(*),RP,R8MIEM,TAU(60)
-      REAL*8   PK2(6),DF(3,3),ID6(6),EXPBP(NSG),XI
-      REAL*8   FETFE6(6),GAMSNS(3,3),FE(3,3),SIGF(6),RHOIRR(12)
+      REAL*8   PK2(6),DF(3,3),ID6(6),EXPBP(NSG)
+      REAL*8   FETFE6(6),GAMSNS(3,3),FE(3,3),SIGF(6),RHOIRR(12),XI
+      REAL*8   RHOSAT,PHISAT,DZ,ROLOOP(12),FIVOID(12),SDP,DPS(12)
       CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,COMP(*),NECOUL
       CHARACTER*8 MOD
       DATA IDEN/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
@@ -116,6 +117,15 @@ C        ROTATION RESEAU
             CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,RHOIRR,1)
             IRR=1
             XI=MATERF(NMAT+IFL+23)
+         ELSEIF (NECOUL.EQ.'MONO_DD_CFC_IRRA') THEN
+            CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,ROLOOP,1)
+            CALL DCOPY(12, VIND(NSFV+3*NBSYS+13),1,FIVOID,1)
+            IRR=2
+            IEI   =NBCOMM(IFA,3)
+            RHOSAT=MATERF(NMAT+IEI+8)
+            PHISAT=MATERF(NMAT+IEI+9)
+            XI   = MATERF(NMAT+IEI+10)
+            DZ   = MATERF(NMAT+IEI+11)
          ELSE
             IRR=0
          ENDIF
@@ -145,7 +155,7 @@ C STOCKAGE DES VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
             VINF(NUVI-2)=VIND(NUVI-2)+DALPHA
             VINF(NUVI-1)=VIND(NUVI-1)+DGAMMA
             VINF(NUVI ) =VIND(NUVI)+DP
-            
+            DPS(IS)=DP
             IF ((NUECOU.EQ.4).OR.(NUECOU.EQ.5)) THEN
                 IF (VINF(NUVI-2).LT.0.D0) CODRET=1
             ENDIF
@@ -164,11 +174,32 @@ C              ROTATION RESEAU - CALCUL DE OMEGAP
             IF(IRR.EQ.1) THEN
                RHOIRR(IS)=RHOIRR(IS)*EXP(-XI*DP)
             ENDIF
+            
   7      CONTINUE
   
          IF(IRR.EQ.1) THEN
             CALL DCOPY(12, RHOIRR,1,VINF(NSFV+3*NBSYS+1),1)         
          ENDIF
+         
+         IF(IRR.EQ.2) THEN
+            DO 8 IS=1,NBSYS
+C              SOMME SUR COPLA(S)
+               SDP=0.D0
+               DO 9 IV=1,12
+                  IS3=(IS-1)/3
+                  IV3=(IV-1)/3
+C                 PARTIE POSITIVE DE ALPHA
+                  IF (IS3.EQ.IV3) THEN
+                     SDP=SDP+DPS(IV)
+                  ENDIF
+  9            CONTINUE
+               ROLOOP(IS)=RHOSAT+(ROLOOP(IS)-RHOSAT)*EXP(-XI*SDP)
+               FIVOID(IS)=PHISAT+(FIVOID(IS)-PHISAT)*EXP(-DZ*SDP)
+  8         CONTINUE
+            CALL DCOPY(12, ROLOOP,1,VINF(NSFV+3*NBSYS+1),1)         
+            CALL DCOPY(12, FIVOID,1,VINF(NSFV+3*NBSYS+13),1)         
+         ENDIF
+         
          
          NSFA=NSFA+NBSYS
          NSFV=NSFV+NBSYS*3
@@ -178,6 +209,7 @@ C              ROTATION RESEAU - CALCUL DE OMEGAP
   
       INDTAU=NSFV
       IF (IRR.EQ.1) INDTAU=INDTAU+12
+      IF (IRR.EQ.2) INDTAU=INDTAU+24
 C     CISSIONS TAU_S
       NS=0
 C     NSFA : debut de la famille IFA dans DY et YD
@@ -237,9 +269,9 @@ C les racine(2) attendues par NMCOMP :-)
          VINF (NVI-1) = EPSEQ
          
       ELSE                              
-         DO 8 I=1,6                                           
+         DO 18 I=1,6                                           
             VINF(I)=VIND(I)+DEVI(I)                           
-  8      CONTINUE                                             
+  18      CONTINUE                                             
          EPSEQ = LCNRTE(DEVI)
          VINF (NVI-1) = VIND (NVI-1) + EPSEQ
       ENDIF

@@ -3,7 +3,7 @@
      &                   PRECDC, NBRSSA, NBLAGR, SOLVEU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,9 +74,7 @@ C     ------------------------ OPTION CENTRE ---------------------------
 C     ------------------------------------------------------------------
 
       CALL INFNIV(IFM,NIV)
-C --- POUR NE PAS DECLANCHER INUTILEMENT LE CALCUL DU DETERMINANT DANS
-C     VPSTUR
-      IDET=-9999
+      IDET=0
       WRITE(IFM,900) OPTION
       IF ( OPTION .EQ. 'CENTRE'  ) THEN
 
@@ -85,8 +83,9 @@ C     VPSTUR
 
  10      CONTINUE
 
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET
          CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,
-     &               IDET,NPIVOT,IER,SOLVEU)
+     &               IDET,NPIVOT,IER,SOLVEU,.FALSE.,.TRUE.)
          IF (IER .NE. 0 ) THEN
             IF (ABS(OMGSHI) .LT. OMECOR) THEN
                OMGSHI = OMECOR
@@ -109,8 +108,9 @@ C     VPSTUR
                GOTO 10
             ELSE
                CALL U2MESS('F','ALGELINE3_68')
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET
                CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,IDET,
-     &                     NPIVOT,IER,SOLVEU)
+     &                     NPIVOT,IER,SOLVEU,.FALSE.,.TRUE.)
             ENDIF
          ENDIF
          OMESHI = OMGSHI
@@ -133,8 +133,10 @@ C     ------------------------------------------------------------------
 
  21      CONTINUE
 
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET, ON NE GARDE PAS LA FACTO
+C --- (SI MUMPS)
          CALL VPSTUR( LRAIDE,OMGMIN,LMASSE,LDYNAM,DET,
-     &                IDET,NBFMIN,IER,SOLVEU)
+     &                IDET,NBFMIN,IER,SOLVEU,.FALSE.,.FALSE.)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGMIN) .LT. OMECOR) THEN
                OMGMIN = - OMECOR
@@ -156,8 +158,10 @@ C     ------------------------------------------------------------------
                GOTO 21
             ELSE
                CALL U2MESS('A','ALGELINE3_66')
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET, ON NE GARDE PAS LA FACTO
+C --- (SI MUMPS)
                CALL VPSTUR(LRAIDE,OMGMIN,LMASSE,LDYNAM,DET,IDET,
-     &                     NBFMIN,IER,SOLVEU)
+     &                     NBFMIN,IER,SOLVEU,.FALSE.,.FALSE.)
             ENDIF
          ENDIF
          OMEMIN = OMGMIN
@@ -166,8 +170,10 @@ C     ------------------------------------------------------------------
 
  22      CONTINUE
 
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET, ON NE GARDE PAS LA FACTO
+C --- (SI MUMPS)
          CALL VPSTUR( LRAIDE,OMGMAX,LMASSE,LDYNAM,DET,
-     &                IDET,NBFMAX,IER,SOLVEU)
+     &                IDET,NBFMAX,IER,SOLVEU,.FALSE.,.FALSE.)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGMAX) .LT. OMECOR) THEN
                OMGMAX = OMECOR
@@ -189,8 +195,10 @@ C     ------------------------------------------------------------------
                GOTO 22
             ELSE
                CALL U2MESS('A','ALGELINE3_67')
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET, ON NE GARDE PAS LA FACTO
+C --- (SI MUMPS)
                CALL VPSTUR(LRAIDE,OMGMAX,LMASSE,LDYNAM,DET,IDET,
-     &                    NBFMAX,IER,SOLVEU)
+     &                    NBFMAX,IER,SOLVEU,.FALSE.,.FALSE.)
             ENDIF
          ENDIF
          OMEMAX = OMGMAX
@@ -205,8 +213,9 @@ C        --- CENTRAGE DE L INTERVALLE ---
 
  23      CONTINUE
 
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET
          CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,
-     &               IDET,NPIVOT,IER,SOLVEU)
+     &               IDET,NPIVOT,IER,SOLVEU,.FALSE.,.TRUE.)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGSHI) .LT. OMECOR) THEN
                OMGSHI = OMECOR
@@ -228,8 +237,9 @@ C        --- CENTRAGE DE L INTERVALLE ---
                GOTO 23
             ELSE
                CALL U2MESS('F','ALGELINE3_66')
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET               
                CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,IDET,
-     &                     NPIVOT,IER,SOLVEU)
+     &                     NPIVOT,IER,SOLVEU,.FALSE.,.TRUE.)
             ENDIF
          ENDIF
          OMESHI = OMGSHI
@@ -256,8 +266,9 @@ C     ------------------------------------------------------------------
 
  30      CONTINUE
 
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET
          CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,
-     &               IDET,NPIVOT,IER,SOLVEU)
+     &               IDET,NPIVOT,IER,SOLVEU,.FALSE.,.TRUE.)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGSHI) .LT. OMECOR) THEN
                OMGSHI = - OMECOR
@@ -279,8 +290,9 @@ C     ------------------------------------------------------------------
                GOTO 30
             ELSE
                CALL U2MESS('F','ALGELINE3_68')
+C --- POUR OPTIMISER ON NE CALCULE PAS LE DET
                CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,IDET,
-     &                     NPIVOT,IER,SOLVEU)
+     &                     NPIVOT,IER,SOLVEU,.FALSE.,.TRUE.)
             ENDIF
          ENDIF
          OMESHI = OMGSHI

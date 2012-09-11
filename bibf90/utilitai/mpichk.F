@@ -1,0 +1,147 @@
+      SUBROUTINE MPICHK( NBPRO4, IRET )
+!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
+!& MODIF MPICHK UTILITAI  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+! ================================================================== 
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
+!                                                                    
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
+!                                                                    
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
+! ================================================================== 
+C RESPONSABLE COURTOIS M.COURTOIS
+      IMPLICIT NONE
+!     ARGUMENT IN
+      INTEGER*4          NBPRO4
+!     ARGUMENT OUT
+      INTEGER            IRET
+!-----------------------------------------------------------------------
+!     FONCTION REALISEE : MPI CHECK ERROR
+!       AVANT D'EFFECTUER UNE COMMUNICATION BLOQUANTE
+!       ON VERIFIE :
+!           - QU'AUCUN PROCESSEUR N'A SIGNALE DE PROBLEMES
+!           - QUE TOUS LES PROCESSEURS SONT AU RENDEZ-VOUS
+!       EN CAS DE PROBLEME, ON RETOURNE IRET != 0, CAR IL NE FAUT ALORS
+!       PAS INITIER DE NOUVELLES COMMUNICATIONS.
+!-----------------------------------------------------------------------
+#ifdef _USE_MPI
+!
+      INCLUDE 'mpif.h'
+      INCLUDE 'aster_constant.h'
+!
+      LOGICAL   GTSTAT
+      INTEGER*4 RANK, IERMPI, ISTAT, TERM
+      INTEGER*4 DIAG(NBPRO4), REQUEST(NBPRO4), MPST(MPI_STATUS_SIZE)
+      INTEGER I, NBTERM, NP1, RESP0
+      LOGICAL ISTERM(NBPRO4), LCONT
+      REAL*8    VALR(1), TRES, TIMOUT
+      DOUBLE PRECISION T0, TF
+!
+      IRET = 0
+      CALL MPI_COMM_RANK(MPI_COMM_WORLD, RANK, IERMPI)
+      CALL MPIERR(IERMPI)
+      NP1 = NBPRO4 - 1
+!
+      CALL UTTRST(TRES)
+      TIMOUT = TRES * 0.2D0
+!
+!     SUR LES PROCESSEURS AUTRES QUE #0
+!
+      IF (RANK .NE. 0) THEN
+!       CHAQUE PROCESSEUR ENVOIE ST_OK AU PROC #0
+        CALL MPISST(ST_OK, RESP0)
+        IF (RESP0 .NE. ST_OK) THEN
+          IRET = 1
+          CALL U2MESS('I', 'APPELMPI_80')
+          CALL MPISTP(2)
+          GOTO 9999
+        ENDIF
+!
+!     SUR LE PROCESSEUR #0
+!
+      ELSE
+!       DEMANDE LE STATUT A CHAQUE PROCESSEUR
+        DO 10 I=1, NP1
+          ISTERM(I) = .FALSE.
+          CALL MPI_IRECV(DIAG(I), 1, MPI_INTEGER4, I, ST_TAG_CHK,
+     &                   MPI_COMM_WORLD, REQUEST(I), IERMPI)
+          CALL MPIERR(IERMPI)
+ 10     CONTINUE
+!
+        NBTERM = 0
+        T0 = MPI_WTIME()
+        LCONT = .TRUE.
+ 100    CONTINUE
+!       WHILE LCONT
+          DO 101 I=1, NP1
+            IF ( .NOT. ISTERM(I) ) THEN
+              CALL MPI_TEST(REQUEST(I), TERM, MPST, IERMPI)
+              CALL MPIERR(IERMPI)
+              IF ( TERM .EQ. 1 ) THEN
+                NBTERM = NBTERM + 1
+                ISTERM(I) = .TRUE.
+                IF ( DIAG(I) .EQ. ST_ER ) THEN
+                    CALL U2MESI('I', 'APPELMPI_84', 1, I)
+                    CALL STSTAT(ST_ER_OTH)
+                ENDIF
+              ENDIF
+            ENDIF
+ 101      CONTINUE
+          LCONT = NBTERM .LT. NP1
+!         TIMOUT
+          TF = MPI_WTIME()
+          IF ( LCONT .AND. (TF - T0) .GT. TIMOUT ) THEN
+            LCONT = .FALSE.
+            VALR(1) = TIMOUT
+            CALL U2MESR('E', 'APPELMPI_97', 1, VALR)
+            DO 102 I=1, NP1
+              IF ( .NOT. ISTERM(I) ) THEN
+                CALL U2MESI('E+', 'APPELMPI_96', 1, I)
+                CALL U2MESK('E', 'APPELMPI_83', 1, 'MPI_IRECV')
+                CALL STSTAT(ST_UN_OTH)
+              ENDIF
+ 102        CONTINUE
+          ENDIF
+        IF ( LCONT ) GOTO 100
+!       END WHILE
+
+        IF ( GTSTAT(ST_ER_PR0) ) THEN
+          CALL U2MESI('I', 'APPELMPI_84', 1, 0)
+        ENDIF
+!       DIRE A CEUX QUI ONT REPONDU SI ON CONTINUE OU PAS
+        IF ( GTSTAT(ST_OK) ) THEN
+          ISTAT = ST_OK
+        ELSE
+          ISTAT = ST_ER
+        ENDIF
+        DO 103 I=1, NP1
+          IF ( ISTERM(I) ) THEN
+            IF (ISTAT .NE. ST_OK) THEN
+              CALL U2MESI('I', 'APPELMPI_81', 1, I)
+            ENDIF
+            CALL MPI_SEND(ISTAT, 1, MPI_INTEGER4, I, ST_TAG_CNT,
+     &                    MPI_COMM_WORLD, IERMPI)
+            CALL MPIERR(IERMPI)
+          ENDIF
+ 103    CONTINUE
+
+        IF ( .NOT. GTSTAT(ST_OK) ) THEN
+          IRET = 1
+          IF ( GTSTAT(ST_UN_OTH) ) THEN
+            CALL MPISTP(1)
+          ELSE
+            CALL MPISTP(2)
+          ENDIF
+        ENDIF
+      ENDIF
+ 9999 CONTINUE
+#endif
+      END

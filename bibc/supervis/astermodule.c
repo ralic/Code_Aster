@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -23,10 +23,12 @@
 #include "Python.h"
 #include <ctype.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include "aster.h"
 #include "aster_module.h"
 #include "aster_core.h"
+#include "aster_error.h"
 #include "aster_fort.h"
 #include "aster_utils.h"
 #include "aster_exceptions.h"
@@ -73,49 +75,6 @@ void DEFP(XFINI,xfini, _IN INTEGER *code)
    interruptTry(*code);
 }
 
-/* ------------------------------------------------------------------ */
-void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
-                                _IN char *idmess, _IN STRING_SIZE lidmess,
-                                _IN INTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
-                                _IN INTEGER *nbi, _IN INTEGER *vali,
-                                _IN INTEGER *nbr, _IN DOUBLE *valr)
-{
-   /*
-      Interface Fortran/Python pour lever une exception avec les arguments complets
-   */
-    PyObject *tup_valk, *tup_vali, *tup_valr;
-    char *kvar;
-    int i;
-
-    tup_valk = PyTuple_New( *nbk ) ;
-    for(i=0;i<*nbk;i++){
-       kvar = valk + i*lvk;
-       PyTuple_SetItem( tup_valk, i, PyString_FromStringAndSize(kvar,lvk) ) ;
-    }
-
-    tup_vali = PyTuple_New( *nbi ) ;
-    for(i=0;i<*nbi;i++){
-       PyTuple_SetItem( tup_vali, i, PyInt_FromLong(vali[i]) ) ;
-    }
-
-    tup_valr = PyTuple_New( *nbr ) ;
-    for(i=0;i<*nbr;i++){
-       PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble(valr[i]) ) ;
-    }
-
-    gExcArgs = PyTuple_New( 4 );
-    PyTuple_SetItem( gExcArgs, (Py_ssize_t)0, PyString_FromStringAndSize(idmess, lidmess) );
-    PyTuple_SetItem( gExcArgs, (Py_ssize_t)1, tup_valk );
-    PyTuple_SetItem( gExcArgs, (Py_ssize_t)2, tup_vali );
-    PyTuple_SetItem( gExcArgs, (Py_ssize_t)3, tup_valr );
-
-    interruptTry((int)*exc_type);
-}
-
-
-/* --- FIN liste des variables globales au fonctions  de ce fichier --- */
-
-
 /*
  *   Ce module crée de nombreux objets Python. Il doit respecter les règles
  *   générales de création des objets et en particulier les règles sur le
@@ -140,9 +99,10 @@ void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
 
 void TraiteMessageErreur( _IN char * message )
 {
-        printf("%s\n",message);
-        if(PyErr_Occurred())PyErr_Print();
-        abort();
+    INTEGER ier=SIGABRT;
+    printf("%s\n",message);
+    if ( PyErr_Occurred() ) PyErr_Print();
+    CALL_ASABRT( &ier );
 }
 
 /* ------------------------------------------------------------------ */
@@ -1362,39 +1322,28 @@ PyObject *args;
         if (inval > 0) {
           groups = MakeTabFStr(inval, long_nomcham);
           converltx(inval,list,groups,long_nomcham); /* conversion  */
-        }
-        /* on ne peut passer a fortran une chaine non allouee
-           a cause du strlen() que l'on va faire dessus au moment du passage
-           c -> fortran
-        */
-        else {
+        } else {
           groups = MakeBlankFStr(long_nomcham);
         }
 
         try {
-          CALL_JEMARQ();
-          CALL_PRCOCH(Fce,Fcs,Fcm,Fty,&topo,&nval,groups);
-          Py_INCREF( Py_None ) ;
-          CALL_JEDEMA();
-          FreeStr(groups);
-          FreeStr(Fce);
-          FreeStr(Fcs);
-          FreeStr(Fcm);
-          FreeStr(Fty);
+            CALL_PRCOCH(Fce,Fcs,Fcm,Fty,&topo,&nval,groups);
         }
-        except(FatalError) {
-          /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
-          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-          CALL_JEDEMA();
-          FreeStr(groups);
-          FreeStr(Fce);
-          FreeStr(Fcs);
-          FreeStr(Fcm);
-          FreeStr(Fty);
-          endTry();
-          return NULL;
+        exceptAll {
+            FreeStr(groups);
+            FreeStr(Fce);
+            FreeStr(Fcs);
+            FreeStr(Fcm);
+            FreeStr(Fty);
+            raiseException();
         }
         endTry();
+        FreeStr(groups);
+        FreeStr(Fce);
+        FreeStr(Fcs);
+        FreeStr(Fcm);
+        FreeStr(Fty);
+        Py_INCREF( Py_None ) ;
         return Py_None;
 }
 
@@ -1409,106 +1358,102 @@ static PyObject* aster_getvectjev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        char *nomsd, *nomsd32;
-        char *nomob;
-        DOUBLE *f;
-        INTEGER *l;
-        INTEGER4 *i4;
-        char *kvar;
-        PyObject *tup=NULL;
-        INTEGER lcon, iob;
-        int ishf=0, ilng=0;
-        INTEGER shf;
-        INTEGER lng;
-        INTEGER ctype=0;
-        int i, ksize=0;
-        char *iaddr;
+    char *nomsd, *nomsd32;
+    char *nomob;
+    DOUBLE *f;
+    INTEGER *l;
+    INTEGER4 *i4;
+    char *kvar;
+    PyObject *tup=NULL;
+    INTEGER lcon, iob;
+    int ishf=0, ilng=0;
+    INTEGER shf;
+    INTEGER lng;
+    INTEGER ctype=0;
+    int i, ksize=0;
+    char *iaddr;
 
-        if (!PyArg_ParseTuple(args, "s|ii:getvectjev",&nomsd,&ishf,&ilng)) return NULL;
-        shf = (INTEGER)ishf;
-        lng = (INTEGER)ilng;
+    if (!PyArg_ParseTuple(args, "s|ii:getvectjev",&nomsd,&ishf,&ilng)) return NULL;
+    shf = (INTEGER)ishf;
+    lng = (INTEGER)ilng;
+    iob=0 ;
+    nomsd32 = MakeFStrFromCStr(nomsd, 32);
+    nomob = MakeBlankFStr(8);
 
-        try {
-          iob=0 ;
-          nomsd32 = MakeFStrFromCStr(nomsd, 32);
-          nomob = MakeBlankFStr(8);
-          CALL_JEMARQ();
-          CALL_GETCON(nomsd32,&iob,&shf,&lng,&ctype,&lcon,&iaddr,nomob);
-          if(ctype < 0){
+    try {
+        CALL_JEMARQ();
+        CALL_GETCON(nomsd32,&iob,&shf,&lng,&ctype,&lcon,&iaddr,nomob);
+        FreeStr(nomsd32);
+        FreeStr(nomob);
+        if(ctype < 0){
             /* Erreur : vecteur jeveux inexistant, on retourne None */
-            Py_INCREF( Py_None ) ;
             CALL_JEDEMA();
             endTry();
+            Py_INCREF( Py_None ) ;
             return Py_None;
-          }
-          else if(ctype == 0){
+        }
+        else if(ctype == 0){
             /* Liste vide */
             tup = PyTuple_New( 0 ) ;
-          }
-          else if(ctype == 1){
+        }
+        else if(ctype == 1){
             /* REEL */
             f = (DOUBLE *)iaddr;
             tup = PyTuple_New( (Py_ssize_t)lcon ) ;
             for(i=0;i<lcon;i++){
-               PyTuple_SetItem( tup, i, PyFloat_FromDouble((double)f[i]) ) ;
+                PyTuple_SetItem( tup, i, PyFloat_FromDouble((double)f[i]) ) ;
             }
-          }
-          else if(ctype == 2){
+        }
+        else if(ctype == 2){
             /* ENTIER */
             l = (INTEGER*)iaddr;
             tup = PyTuple_New( (Py_ssize_t)lcon ) ;
             for(i=0;i<lcon;i++){
-               PyTuple_SetItem( tup, i, PyInt_FromLong((long)l[i]) ) ;
+                PyTuple_SetItem( tup, i, PyInt_FromLong((long)l[i]) ) ;
             }
-          }
-          else if(ctype == 9){
+        }
+        else if(ctype == 9){
             /* ENTIER COURT */
             i4 = (INTEGER4*)iaddr;
             tup = PyTuple_New( (Py_ssize_t)lcon ) ;
             for(i=0; i<lcon; i++){
-               PyTuple_SetItem( tup, i, PyInt_FromLong((long)i4[i]) ) ;
+                PyTuple_SetItem( tup, i, PyInt_FromLong((long)i4[i]) ) ;
             }
-          }
-          else if(ctype == 3){
+        }
+        else if(ctype == 3){
             /* COMPLEXE */
             f = (DOUBLE *)iaddr;
             tup = PyTuple_New( (Py_ssize_t)lcon ) ;
             for(i=0;i<lcon;i++){
-               PyTuple_SetItem( tup, i, PyComplex_FromDoubles((double)f[2*i], (double)f[2*i+1]) ) ;
+                PyTuple_SetItem( tup, i, PyComplex_FromDoubles((double)f[2*i], (double)f[2*i+1]) ) ;
             }
-          }
-          else if (ctype == 4 || ctype == 5 || ctype == 6 || ctype == 7 || ctype == 8) {
-                switch ( ctype ) {
-                    case 4 : ksize = 8;  break;
-                    case 5 : ksize = 16; break;
-                    case 6 : ksize = 24; break;
-                    case 7 : ksize = 32; break;
-                    case 8 : ksize = 80; break;
-                }
-                /* CHAINE DE CARACTERES */
-                tup = PyTuple_New( (Py_ssize_t)lcon ) ;
-                for(i=0; i<lcon; i++){
-                   kvar = iaddr + i*ksize;
-                   PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar, ksize) ) ;
-                }
-          }
-
-          CALL_JEDETR("&&GETCON.PTEUR_NOM");
-          CALL_JEDEMA();
-          FreeStr(nomsd32);
-          FreeStr(nomob);
-          endTry();
-          return tup;
         }
-        except(FatalError) {
-          /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
-          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-          CALL_JEDEMA();
-          endTry();
-          return NULL;
+        else if (ctype == 4 || ctype == 5 || ctype == 6 || ctype == 7 || ctype == 8) {
+            switch ( ctype ) {
+                case 4 : ksize = 8;  break;
+                case 5 : ksize = 16; break;
+                case 6 : ksize = 24; break;
+                case 7 : ksize = 32; break;
+                case 8 : ksize = 80; break;
+            }
+            /* CHAINE DE CARACTERES */
+            tup = PyTuple_New( (Py_ssize_t)lcon ) ;
+            for(i=0; i<lcon; i++){
+                kvar = iaddr + i*ksize;
+                PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar, ksize) ) ;
+            }
         }
-   endTry();
-   return NULL;
+        CALL_JEDETR("&&GETCON.PTEUR_NOM");
+        CALL_JEDEMA();
+    }
+    exceptAll {
+        CALL_JEDEMA();
+        FreeStr(nomsd32);
+        FreeStr(nomob);
+        raiseException();
+    }
+    endTry();
+    return tup;
 }
 
 static char getcolljev_doc[]=
@@ -1522,135 +1467,132 @@ static PyObject* aster_getcolljev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        char *nomsd, *nom, *nomsd32;
-        char *nomob;
-        DOUBLE *f;
-        INTEGER *l;
-        INTEGER4 *i4;
-        char *kvar;
-        PyObject *tup=NULL, *dico, *key;
-        INTEGER iob,j,ishf,ilng;
-        INTEGER lcon;
-        INTEGER ctype=0;
-        INTEGER *val, nbval;
-        int i, ksize=0;
-        char *iaddr;
+    char *nomsd, *nom, *nomsd32;
+    char *nomob;
+    DOUBLE *f;
+    INTEGER *l;
+    INTEGER4 *i4;
+    char *kvar;
+    PyObject *tup=NULL, *dico, *key;
+    INTEGER iob,j,ishf,ilng;
+    INTEGER lcon;
+    INTEGER ctype=0;
+    INTEGER *val, nbval;
+    int i, ksize=0;
+    char *iaddr;
 
-        if (!PyArg_ParseTuple(args, "s:getcolljev",&nomsd)) return NULL;
+    if (!PyArg_ParseTuple(args, "s:getcolljev",&nomsd)) return NULL;
 
-/* Taille de la collection */
-        nbval = 1;
-        nomsd32 = MakeFStrFromCStr(nomsd, 32);
-        nomob = MakeBlankFStr(8);
-        val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
-        nom = MakeFStrFromCStr("LIST_COLLECTION", 24);
-        CALL_JEMARQ();
-        CALL_TAILSD(nom, nomsd32, val, &nbval);
-        iob=val[0];
+    /* Taille de la collection */
+    nbval = 1;
+    nomsd32 = MakeFStrFromCStr(nomsd, 32);
+    nomob = MakeBlankFStr(8);
+    val = (INTEGER *)malloc((nbval)*sizeof(INTEGER));
+    nom = MakeFStrFromCStr("LIST_COLLECTION", 24);
+    CALL_JEMARQ();
+    CALL_TAILSD(nom, nomsd32, val, &nbval);
+    iob=val[0];
 #define DictSetAndDecRef(dico, key, item)   PyDict_SetItem(dico, key, item); \
                                             Py_DECREF(key);  Py_DECREF(item);
-        dico = PyDict_New();
-        try {
-          for(j=1;j<iob+1;j++){
-                ishf=0 ;
-                ilng=0 ;
-                CALL_GETCON(nomsd32,&j,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
-                if(nomob[0] == ' '){
-                    key=PyInt_FromLong( (long)j );
-                }
-                else {
-                    key=PyString_FromStringAndSize(nomob,8);
-                }
-                switch ( ctype ) {
-                    case 0 :
-                        Py_INCREF( Py_None );
-                        PyDict_SetItem(dico, key, Py_None);
-                        break;
-                    case 1 :
-                        /* REEL */
-                        f = (DOUBLE *)iaddr;
-                        tup = PyTuple_New( (Py_ssize_t)lcon ) ;
-                        for(i=0;i<lcon;i++){
-                           PyTuple_SetItem( tup, i, PyFloat_FromDouble((double)f[i]) ) ;
-                        }
-                        DictSetAndDecRef(dico, key, tup);
-                        break;
-                    case 2 :
-                        /* ENTIER */
-                        l = (INTEGER*)iaddr;
-                        tup = PyTuple_New( (Py_ssize_t)lcon ) ;
-                        for(i=0;i<lcon;i++){
-                           PyTuple_SetItem( tup, i, PyInt_FromLong((long)l[i]) ) ;
-                        }
-                        DictSetAndDecRef(dico, key, tup);
-                        break;
-                    case 9 :
-                        /* ENTIER COURT */
-                        i4 = (INTEGER4*)iaddr;
-                        tup = PyTuple_New( (Py_ssize_t)lcon ) ;
-                        for(i=0; i<lcon; i++){
-                           PyTuple_SetItem( tup, i, PyInt_FromLong((long)i4[i]) ) ;
-                        }
-                        DictSetAndDecRef(dico, key, tup);
-                        break;
-                    case 3 :
-                        /* COMPLEXE */
-                        f = (DOUBLE *)iaddr;
-                        tup = PyTuple_New( (Py_ssize_t)lcon ) ;
-                        for(i=0;i<lcon;i++){
-                           PyTuple_SetItem( tup, i, PyComplex_FromDoubles((double)f[2*i], (double)f[2*i+1]) ) ;
-                        }
-                        DictSetAndDecRef(dico, key, tup);
-                        break;
-                    case 4 :
-                    case 5 :
-                    case 6 :
-                    case 7 :
-                    case 8 :
-                        switch ( ctype ) {
-                            case 4 : ksize = 8;  break;
-                            case 5 : ksize = 16; break;
-                            case 6 : ksize = 24; break;
-                            case 7 : ksize = 32; break;
-                            case 8 : ksize = 80; break;
-                        }
-                        /* CHAINE DE CARACTERES */
-                        tup = PyTuple_New( (Py_ssize_t)lcon ) ;
-                        for(i=0; i<lcon; i++){
-                           kvar = iaddr + i*ksize;
-                           PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar, ksize) ) ;
-                        }
-                        DictSetAndDecRef(dico, key, tup);
-                        break;
-                    default :
-                        /* Erreur */
-                        PyErr_SetString(PyExc_KeyError, "Concept inexistant, type inconnu");
-                        endTry();
-                        return NULL;
-                }
-          }
-          CALL_JEDETR("&&GETCON.PTEUR_NOM");
-          CALL_JEDEMA();
-          FreeStr(nom);
-          FreeStr(nomob);
-          FreeStr(nomsd32);
-          free(val);
-          endTry();
-          return dico;
+    dico = PyDict_New();
+    try {
+        for (j=1;j<iob+1;j++) {
+            ishf=0 ;
+            ilng=0 ;
+            CALL_GETCON(nomsd32,&j,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
+            if(nomob[0] == ' '){
+                key=PyInt_FromLong( (long)j );
+            }
+            else {
+                key=PyString_FromStringAndSize(nomob,8);
+            }
+            switch ( ctype ) {
+                case 0 :
+                    Py_INCREF( Py_None );
+                    PyDict_SetItem(dico, key, Py_None);
+                    break;
+                case 1 :
+                    /* REEL */
+                    f = (DOUBLE *)iaddr;
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
+                    for(i=0;i<lcon;i++){
+                       PyTuple_SetItem( tup, i, PyFloat_FromDouble((double)f[i]) ) ;
+                    }
+                    DictSetAndDecRef(dico, key, tup);
+                    break;
+                case 2 :
+                    /* ENTIER */
+                    l = (INTEGER*)iaddr;
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
+                    for(i=0;i<lcon;i++){
+                       PyTuple_SetItem( tup, i, PyInt_FromLong((long)l[i]) ) ;
+                    }
+                    DictSetAndDecRef(dico, key, tup);
+                    break;
+                case 9 :
+                    /* ENTIER COURT */
+                    i4 = (INTEGER4*)iaddr;
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
+                    for(i=0; i<lcon; i++){
+                       PyTuple_SetItem( tup, i, PyInt_FromLong((long)i4[i]) ) ;
+                    }
+                    DictSetAndDecRef(dico, key, tup);
+                    break;
+                case 3 :
+                    /* COMPLEXE */
+                    f = (DOUBLE *)iaddr;
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
+                    for(i=0;i<lcon;i++){
+                       PyTuple_SetItem( tup, i, PyComplex_FromDoubles((double)f[2*i], (double)f[2*i+1]) ) ;
+                    }
+                    DictSetAndDecRef(dico, key, tup);
+                    break;
+                case 4 :
+                case 5 :
+                case 6 :
+                case 7 :
+                case 8 :
+                    switch ( ctype ) {
+                        case 4 : ksize = 8;  break;
+                        case 5 : ksize = 16; break;
+                        case 6 : ksize = 24; break;
+                        case 7 : ksize = 32; break;
+                        case 8 : ksize = 80; break;
+                    }
+                    /* CHAINE DE CARACTERES */
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
+                    for(i=0; i<lcon; i++){
+                       kvar = iaddr + i*ksize;
+                       PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar, ksize) ) ;
+                    }
+                    DictSetAndDecRef(dico, key, tup);
+                    break;
+                default :
+                    /* Erreur */
+                    FreeStr(nom);
+                    FreeStr(nomob);
+                    FreeStr(nomsd32);
+                    free(val);
+                    raiseExceptionString(PyExc_KeyError, "Concept inexistant, type inconnu");
+            }
         }
-        except(FatalError) {
-          /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
-          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-          CALL_JEDEMA();
-          endTry();
-          return NULL;
-        }
+        CALL_JEDETR("&&GETCON.PTEUR_NOM");
+        CALL_JEDEMA();
         FreeStr(nom);
         FreeStr(nomob);
         FreeStr(nomsd32);
         free(val);
-   endTry();
-   return NULL;
+    }
+    exceptAll {
+        CALL_JEDEMA();
+        FreeStr(nom);
+        FreeStr(nomob);
+        FreeStr(nomsd32);
+        free(val);
+        raiseException();
+    }
+    endTry();
+    return dico;
 }
 
 
@@ -1672,61 +1614,56 @@ static PyObject* aster_putvectjev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        PyObject *tupi  = (PyObject*)0 ;
-        PyObject *tupr  = (PyObject*)0 ;
-        PyObject *tupc  = (PyObject*)0 ;
-        char *nomsd, *nomsd32;
-        DOUBLE *valr;
-        DOUBLE *valc;
-        INTEGER *ind;
-        int nind, inum;
-        INTEGER num;
-        INTEGER nbind;
-        int ok        = 0 ;
-        INTEGER iret=0;
+    PyObject *tupi  = (PyObject*)0 ;
+    PyObject *tupr  = (PyObject*)0 ;
+    PyObject *tupc  = (PyObject*)0 ;
+    char *nomsd, *nomsd32;
+    DOUBLE *valr;
+    DOUBLE *valc;
+    INTEGER *ind;
+    int nind, inum;
+    INTEGER num;
+    INTEGER nbind;
+    int ok        = 0 ;
+    INTEGER iret=0;
 
-        ok = PyArg_ParseTuple(args, "siOOOi",&nomsd,&nind,&tupi,&tupr,&tupc,&inum);
-        if (!ok)MYABORT("erreur dans la partie Python");
-        nomsd32 = MakeFStrFromCStr(nomsd, 32);
+    ok = PyArg_ParseTuple(args, "siOOOi",&nomsd,&nind,&tupi,&tupr,&tupc,&inum);
+    if (!ok)MYABORT("erreur dans la partie Python");
+    nomsd32 = MakeFStrFromCStr(nomsd, 32);
 
-        nbind=(INTEGER)nind;
-        num=(INTEGER)inum;
+    nbind=(INTEGER)nind;
+    num=(INTEGER)inum;
 
-        ind = (INTEGER *)malloc((size_t)nind*sizeof(INTEGER));
-        valr = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
-        valc = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
+    ind = (INTEGER *)malloc((size_t)nind*sizeof(INTEGER));
+    valr = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
+    valc = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
 
-        if ( nind>0 ){
-                 convert(nind,tupi,ind);
-                 convr8(nind,tupr,valr);
-                 convr8(nind,tupc,valc);
-        }
-        try {
-          CALL_JEMARQ();
-          CALL_PUTCON(nomsd32,&nbind,ind,valr,valc,&num,&iret);
-          CALL_JEDEMA();
-
-          if(iret == 0){
+    if ( nind > 0 ){
+        convert(nind,tupi,ind);
+        convr8(nind,tupr,valr);
+        convr8(nind,tupc,valc);
+    }
+    try {
+        CALL_PUTCON(nomsd32,&nbind,ind,valr,valc,&num,&iret);
+        free((char *)valc);
+        free((char *)valr);
+        free((char *)ind);
+        FreeStr(nomsd32);
+        if (iret == 0) {
             /* Erreur */
-            PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-            endTry();
-            return NULL;
-          }
-
-          free((char *)valc);
-          free((char *)valr);
-          free((char *)ind);
-          FreeStr(nomsd32);
+            raiseExceptionString(PyExc_KeyError, "Concept inexistant");
         }
-        except(FatalError) {
-          /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
-          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-          endTry();
-          return NULL;
-        }
-        endTry();
-        Py_INCREF( Py_None );
-        return Py_None;
+    }
+    exceptAll {
+        free((char *)valc);
+        free((char *)valr);
+        free((char *)ind);
+        FreeStr(nomsd32);
+        raiseException();
+    }
+    endTry();
+    Py_INCREF( Py_None );
+    return Py_None;
 }
 
 
@@ -1741,52 +1678,53 @@ static PyObject* aster_putcolljev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        PyObject *tupi  = (PyObject*)0 ;
-        PyObject *tupr  = (PyObject*)0 ;
-        PyObject *tupc  = (PyObject*)0 ;
-        char *nomsd, *nomsd32;
-        DOUBLE *valr;
-        DOUBLE *valc;
-        INTEGER *ind;
-        int nind, inum;
-        INTEGER num;
-        INTEGER nbind;
-        int ok        = 0 ;
-        INTEGER iret=0;
+    PyObject *tupi  = (PyObject*)0 ;
+    PyObject *tupr  = (PyObject*)0 ;
+    PyObject *tupc  = (PyObject*)0 ;
+    char *nomsd, *nomsd32;
+    DOUBLE *valr;
+    DOUBLE *valc;
+    INTEGER *ind;
+    int nind, inum;
+    INTEGER num;
+    INTEGER nbind;
+    int ok        = 0 ;
+    INTEGER iret=0;
 
-        ok = PyArg_ParseTuple(args, "siOOOi",&nomsd,&nind,&tupi,&tupr,&tupc,&inum);
-        if (!ok)MYABORT("erreur dans la partie Python");
-        nomsd32 = MakeFStrFromCStr(nomsd, 32);
-        nbind=(INTEGER)nind;
-        num=(INTEGER)inum;
+    ok = PyArg_ParseTuple(args, "siOOOi",&nomsd,&nind,&tupi,&tupr,&tupc,&inum);
+    if (!ok)MYABORT("erreur dans la partie Python");
+    nomsd32 = MakeFStrFromCStr(nomsd, 32);
+    nbind=(INTEGER)nind;
+    num=(INTEGER)inum;
 
-        ind = (INTEGER *)malloc((size_t)nind*sizeof(INTEGER));
-        valr = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
-        valc = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
-
-        if ( nind>0 ){
-                 convert(nind,tupi,ind);
-                 convr8(nind,tupr,valr);
-                 convr8(nind,tupc,valc);
-        }
-
-        CALL_JEMARQ();
+    ind = (INTEGER *)malloc((size_t)nind*sizeof(INTEGER));
+    valr = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
+    valc = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
+    if ( nind>0 ){
+             convert(nind,tupi,ind);
+             convr8(nind,tupr,valr);
+             convr8(nind,tupc,valc);
+    }
+    try {
         CALL_PUTCON(nomsd32,&nbind,ind,valr,valc,&num,&iret);
-        CALL_JEDEMA();
-
-        if(iret == 0){
-          /* Erreur */
-          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-          return NULL;
-        }
-
         free((char *)valc);
         free((char *)valr);
         free((char *)ind);
         FreeStr(nomsd32);
-
-        Py_INCREF( Py_None ) ;
-        return Py_None;
+        if(iret == 0){
+            /* Erreur */
+            raiseExceptionString(PyExc_KeyError, "Concept inexistant");
+        }
+    }
+    exceptAll {
+        free((char *)valc);
+        free((char *)valr);
+        free((char *)ind);
+        FreeStr(nomsd32);
+        raiseException();
+    }
+    Py_INCREF( Py_None ) ;
+    return Py_None;
 }
 
 
@@ -1847,48 +1785,60 @@ PyObject *args;
 
 /* Taille de la SD resultat : nbr champs, nbr paras, nbr numeros d'ordre */
    CALL_JEMARQ();
-   CALL_TAILSD(nom, nomsd32, val, &nbval);
+   try {
+        CALL_TAILSD(nom, nomsd32, val, &nbval);
+   }
+   exceptAll {
+        FreeStr(nomsd32);
+        FreeStr(nom);
+        free(val);
+        raiseException();
+   }
+   endTry();
    nbchmx = val[0];
    nbpamx = val[1];
    nbord  = val[2];
    inbord = (int)nbord;
 
-   if (strcmp(mode,"CHAMPS") == 0 || strcmp(mode,"COMPOSANTES") == 0) {
+    if (strcmp(mode,"CHAMPS") == 0 || strcmp(mode,"COMPOSANTES") == 0) {
 /* Construction du dictionnaire : cle d'acces = nom du champ */
-     liord  = (INTEGER *)malloc(inbord*sizeof(INTEGER));
-     liscmp = MakeTabFStr(500, 8);
-     dico = PyDict_New();
-     for (numch=1; numch<=nbchmx; numch++) {
-       nomch = MakeBlankFStr(16);
-       CALL_RSACCH(nomsd32, &numch, nomch, &nbord, liord, &nbcmp, liscmp);
-       inbord = (int)nbord;
-       lo = FStrlen(nomch, 16),
-       key = PyString_FromStringAndSize(nomch,lo);
-       liste = PyList_New(0);
-       if (strcmp(mode,"CHAMPS") == 0) {
-              for (i=0; i<inbord; i++)
-                PyList_Append(liste,PyInt_FromLong((long)liord[i]));
-       }
-
-       if (strcmp(mode,"COMPOSANTES") == 0) {
-         for (i=0; i<nbcmp; i++) {
-            cmp = &(liscmp[i*8]);
-            lo = FStrlen(cmp, 8);
-            PyList_Append(liste,PyString_FromStringAndSize(cmp,lo));
-         }
-       }
-
-       PyDict_SetItem(dico,key,liste);
-       Py_XDECREF(key);
-       Py_XDECREF(liste);
-       FreeStr(nomch);
-     }
-
-     free(liord);
-     FreeStr(liscmp);
-   }
-
-   else if (strcmp(mode,"VARI_ACCES") == 0 || strcmp(mode,"PARAMETRES") == 0) {
+        liord  = (INTEGER *)malloc(inbord*sizeof(INTEGER));
+        liscmp = MakeTabFStr(500, 8);
+        dico = PyDict_New();
+        for (numch=1; numch<=nbchmx; numch++) {
+            nomch = MakeBlankFStr(16);
+            try {
+                CALL_RSACCH(nomsd32, &numch, nomch, &nbord, liord, &nbcmp, liscmp);
+                inbord = (int)nbord;
+                lo = FStrlen(nomch, 16),
+                key = PyString_FromStringAndSize(nomch,lo);
+                liste = PyList_New(0);
+                if (strcmp(mode,"CHAMPS") == 0) {
+                    for (i=0; i<inbord; i++)
+                        PyList_Append(liste,PyInt_FromLong((long)liord[i]));
+                }
+                if (strcmp(mode,"COMPOSANTES") == 0) {
+                    for (i=0; i<nbcmp; i++) {
+                        cmp = &(liscmp[i*8]);
+                        lo = FStrlen(cmp, 8);
+                        PyList_Append(liste,PyString_FromStringAndSize(cmp,lo));
+                    }
+                }
+                PyDict_SetItem(dico,key,liste);
+                Py_XDECREF(key);
+                Py_XDECREF(liste);
+                FreeStr(nomch);
+            }
+            exceptAll {
+                FreeStr(nomch);
+                raiseException();
+            }
+            endTry();
+        }
+        free(liord);
+        FreeStr(liscmp);
+    }
+    else if (strcmp(mode,"VARI_ACCES") == 0 || strcmp(mode,"PARAMETRES") == 0) {
         icode = 2;
         if (strcmp(mode,"VARI_ACCES") == 0) {
             icode = 0;
@@ -1958,13 +1908,12 @@ PyObject *args;
           free(ival);
           free(rval);
           FreeStr(kval);
-   }
-
-   CALL_JEDEMA();
-   FreeStr(nom);
-   FreeStr(nomsd32);
-   free(val);
-   return dico;
+    }
+    CALL_JEDEMA();
+    FreeStr(nom);
+    FreeStr(nomsd32);
+    free(val);
+    return dico;
 }
 
 
@@ -1982,7 +1931,7 @@ PyObject *args;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
-        if(PyErr_Occurred()){
+        if ( PyErr_Occurred() ) {
             fprintf(stderr,"Warning: une exception n'a pas ete traitee\n");
             PyErr_Print();
             fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
@@ -1994,20 +1943,19 @@ PyObject *args;
         fflush(stdout) ;
 
         try {
-                /*  appel du sous programme expass pour verif ou exec */
-                CALL_EXPASS (&jxvrf);
-                /* On depile l appel */
-                commande = depile(); endTry();
-                Py_INCREF(Py_None);
-                return Py_None;
+            /*  appel du sous programme expass pour verif ou exec */
+            CALL_EXPASS (&jxvrf);
         }
-        finally {
-                /* On depile l appel */
-                commande = depile(); endTry();
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-                raiseException();
-                return NULL;
+        exceptAll {
+            /* On depile l'appel */
+            commande = depile();
+            raiseException();
         }
+        endTry();
+        /* On depile l'appel */
+        commande = depile();
+        Py_INCREF(Py_None);
+        return Py_None;
 }
 
 /* ------------------------------------------------------------------ */
@@ -2025,7 +1973,7 @@ PyObject *args;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
-        if(PyErr_Occurred()){
+        if ( PyErr_Occurred() ) {
             fprintf(stderr,"Warning: une exception n'a pas ete traitee\n");
             PyErr_Print();
             fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
@@ -2036,20 +1984,19 @@ PyObject *args;
         fflush(stdout) ;
 
         try {
-                /*  appel du sous programme opsexe */
-                CALL_OPSEXE (&oper);
-                /* On depile l appel */
-                commande = depile(); endTry();
-                Py_INCREF(Py_None);
-                return Py_None;
+            /*  appel du sous programme opsexe */
+            CALL_OPSEXE (&oper);
         }
-        finally {
-                /* On depile l appel */
-                commande = depile(); endTry();
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-                raiseException();
-                return NULL;
+        exceptAll {
+            /* On depile l'appel */
+            commande = depile();
+            raiseException();
         }
+        endTry();
+        /* On depile l'appel */
+        commande = depile();
+        Py_INCREF(Py_None);
+        return Py_None;
 }
 
 
@@ -2163,19 +2110,27 @@ static PyObject * aster_gcncon(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-   PyObject *res;
-   char *type, *Fty, *result;
+    PyObject *res;
+    char *type, *Fty, *result;
 
-   if (!PyArg_ParseTuple(args, "s", &type)) return NULL;
-   result = MakeBlankFStr(8);
-   Fty = MakeFStrFromCStr(type, 1);
-   if (CALL_ISJVUP() == 1) {
-      CALL_GCNCON(Fty, result);
-   }
-   res = PyString_FromStringAndSize(result,FStrlen(result,8));
-   FreeStr(result);
-   FreeStr(Fty);
-   return res;
+    if (!PyArg_ParseTuple(args, "s", &type)) return NULL;
+    result = MakeBlankFStr(8);
+    Fty = MakeFStrFromCStr(type, 1);
+    if (CALL_ISJVUP() == 1) {
+        try {
+            CALL_GCNCON(Fty, result);
+        }
+        exceptAll {
+            FreeStr(result);
+            FreeStr(Fty);
+            raiseException();
+        }
+        endTry();
+    }
+    res = PyString_FromStringAndSize(result,FStrlen(result,8));
+    FreeStr(result);
+    FreeStr(Fty);
+    return res;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -2427,7 +2382,7 @@ PyObject *args;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
-        if(PyErr_Occurred()){
+        if ( PyErr_Occurred() ) {
             fprintf(stderr,"Warning: une exception n'a pas ete traitee\n");
             PyErr_Print();
             fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
@@ -2437,31 +2392,26 @@ PyObject *args;
         fflush(stderr) ;
         fflush(stdout) ;
         try {
-                /*  appel de la commande POURSUTE */
-                CALL_POURSU();
+            /* appel de la commande POURSUTE */
+            CALL_POURSU();
         }
-        finally {
-                /* On depile l appel */
-                commande = depile(); endTry();
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-                raiseException();
-                return NULL;
+        exceptAll {
+            /* On depile l'appel */
+            commande = depile();
+            raiseException();
         }
+        endTry();
         /* On recupere le nom du cas */
-        if(RecupNomCas() == -1){
-          /* Erreur a la recuperation */
-          /* On depile l appel */
-          commande = depile(); endTry();
-          return NULL;
+        if (RecupNomCas() == -1) {
+            /* Erreur a la recuperation */
+            /* On depile l'appel */
+            commande = depile();
+            return NULL;
         }
-        else{
-          /* On depile l appel */
-          commande = depile(); endTry();
-          /*  retour de la fonction poursu sous la forme
-           *  d'un tuple d'un entier et un objet */
-          Py_INCREF(Py_None);
-          return Py_None;
-        }
+        /* On depile l'appel */
+        commande = depile();
+        Py_INCREF(Py_None);
+        return Py_None;
 }
 
 /* ------------------------------------------------------------------ */
@@ -2478,42 +2428,36 @@ PyObject *args;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
-        if(PyErr_Occurred()){
+        if ( PyErr_Occurred() ) {
             fprintf(stderr,"Warning: une exception n'a pas ete traitee\n");
             PyErr_Print();
             fprintf(stderr,"Warning: on l'annule pour continuer mais elle aurait\n\
                             etre traitee avant\n");
             PyErr_Clear();
         }
-
         fflush(stderr) ;
         fflush(stdout) ;
-
         try {
-                /*  appel de la commande debut */
-                CALL_DEBUT();
+            /* appel de la commande debut */
+            CALL_DEBUT();
         }
-        finally {
-                /* On depile l appel */
-                commande = depile(); endTry();
-                /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-                raiseException();
-                return NULL;
+        exceptAll {
+            /* On depile l'appel */
+            commande = depile();
+            raiseException();
         }
-
+        endTry();
         /* On recupere le nom du cas */
-        if(RecupNomCas() == -1){
-          /* Erreur a la recuperation */
-          /* On depile l appel */
-          commande = depile(); endTry();
-          return NULL;
+        if (RecupNomCas() == -1) {
+            /* Erreur a la recuperation */
+            /* On depile l'appel */
+            commande = depile();
+            return NULL;
         }
-        else{
-          /* On depile l appel */
-          commande = depile(); endTry();
-          Py_INCREF(Py_None);
-          return Py_None;
-        }
+        /* On depile l'appel */
+        commande = depile();
+        Py_INCREF(Py_None);
+        return Py_None;
 }
 
 /* ------------------------------------------------------------------ */
@@ -2604,8 +2548,15 @@ static PyObject *jeveux_exists( PyObject* self, PyObject* args)
     if (!PyArg_ParseTuple(args, "s",&nomobj))
         return NULL;
     tmpbuf = MakeFStrFromCStr(nomobj, 32);
-    CALL_JEEXIN( tmpbuf, &intval );
-    FreeStr(tmpbuf);
+    try {
+        CALL_JEEXIN( tmpbuf, &intval );
+        FreeStr(tmpbuf);
+    }
+    exceptAll {
+        FreeStr(tmpbuf);
+        raiseException();
+    }
+    endTry();
 
     if (intval==0) {
         Py_INCREF( Py_False );

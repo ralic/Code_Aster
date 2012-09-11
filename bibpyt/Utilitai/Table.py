@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -764,16 +764,16 @@ class Colonne(TableBase):
       mini=min(self)
       return self._extract(lambda v: v==mini)
 
-   def ABS_MAXI(self):
+   def MAXI_ABS(self):
       # important pour les performances de récupérer le max une fois pour toutes
-      abs_maxi=max([abs(v) for v in self.values() if is_number(v)])
-      return self._extract(lambda v: v==abs_maxi or v==-abs_maxi)
+      maxi_abs=max([abs(v) for v in self.values() if is_number(v)])
+      return self._extract(lambda v: v==maxi_abs or v==-maxi_abs)
 
-   def ABS_MINI(self):
+   def MINI_ABS(self):
       # important pour les performances de récupérer le min une fois pour toutes
-      abs_mini=min([abs(v) for v in self.values() if is_number(v)])
+      mini_abs=min([abs(v) for v in self.values() if is_number(v)])
       # tester le type de v est trop long donc pas de abs(v)
-      return self._extract(lambda v: v==abs_mini or v==-abs_mini)
+      return self._extract(lambda v: v==mini_abs or v==-mini_abs)
 
    def __iter__(self):
       """Itère sur les éléments de la colonne"""

@@ -1,7 +1,7 @@
       SUBROUTINE TE0330(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,18 +38,17 @@ C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
-C-----------------------------------------------------------------------
-      INTEGER IDFDX ,IPOIDS ,IVF ,JGANO ,NDIM ,NEQMAX 
-      INTEGER NNOMAX ,NPGMAX 
-C-----------------------------------------------------------------------
-      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=17)
-C ----------------------------------------------------------------------
+
+      INTEGER NNOMAX,NEQMAX
+      PARAMETER (NNOMAX=27,NEQMAX=17)
+
+      INTEGER IDFDX ,IPOIDS ,IVF ,JGANO ,NDIM
       INTEGER ICONT,IEQUIF
-      INTEGER IDCP,KP,J,I,INO
+      INTEGER IDCP,INO,J,I
       INTEGER NNO,NCEQ,NPG,NNOS,NCMP
       INTEGER NDIM1,NBVA
-      REAL*8 EQPG(NEQMAX*NPGMAX),EQNO(NEQMAX*NNOMAX)
-      REAL*8 SIGMA(30), HYD
+      REAL*8 EQNO(NEQMAX*NNOMAX)
+      REAL*8 SIGMA(30)
       CHARACTER*6  TYPMOD
       CHARACTER*16 NOMTE,OPTION
 
@@ -60,78 +59,46 @@ C ----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,
      &            IVF,IDFDX,JGANO)
 
-      IF(TYPMOD.EQ.'COQUE') THEN
-        CALL JEVECH('PCONCOR','L',ICONT)
-      ELSE
-        CALL JEVECH('PCONTRR','L',ICONT)
-      ENDIF
+      CALL JEVECH('PCONTRR','L',ICONT)
       CALL JEVECH('PCONTEQ','E',IEQUIF)
 
-      DO 10 I = 1,NCEQ*NPG
-        EQPG(I) = 0.0D0
-   10 CONTINUE
       DO 20 I = 1,NCMP*NNO
         EQNO(I) = 0.0D0
    20 CONTINUE
 
-C -   CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS
+C -   CONTRAINTES EQUIVALENTES AUX NOEUDS
 
       IF(TYPMOD.EQ.'2D') THEN
-        DO 103 KP = 1,NPG
-          IDCP = (KP-1) * NCMP
-          DO 109 I = 1,4
-            SIGMA(I) = ZR(ICONT+(KP-1)*NBVA+I-1)
- 109      CONTINUE
-          SIGMA(5) = 0.D0
-          SIGMA(6) = 0.D0
-          CALL FGEQUI(SIGMA,'SIGM',NDIM1,EQPG(IDCP+1))
- 103    CONTINUE
+         DO 103 INO = 1,NNO
+            IDCP = (INO-1) * NCMP
+            DO 109 I = 1,4
+                SIGMA(I) = ZR(ICONT+(INO-1)*NBVA+I-1)
+ 109        CONTINUE
+            SIGMA(5) = 0.D0
+            SIGMA(6) = 0.D0
+            CALL FGEQUI(SIGMA,'SIGM',NDIM1,EQNO(IDCP+1))
+ 103     CONTINUE
 
 
-      ELSEIF(TYPMOD.EQ.'3D') THEN
-        DO 100 KP = 1,NPG
-          IDCP = (KP-1)*NCMP
-          CALL FGEQUI(ZR(ICONT+(KP-1)*NBVA),'SIGM',NDIM1,
-     &                EQPG(IDCP+1))
-  100   CONTINUE
-      ELSEIF(TYPMOD.EQ.'COQUE') THEN
-        DO 200 KP = 1,NNO
-          IDCP = (KP-1)*NCMP
-          CALL FGEQUI(ZR(ICONT+(KP-1)*NBVA),'SIGM_DIR',NDIM1,
-     &                EQNO(IDCP+1))
-  200   CONTINUE
+      ELSEIF(TYPMOD.EQ.'3D'.OR.TYPMOD.EQ.'COQUE') THEN
+         DO 100 INO = 1,NNO
+           IDCP = (INO-1) * NCMP
+           IF(TYPMOD.EQ.'COQUE') THEN
+              CALL FGEQUI(ZR(ICONT+(INO-1)*NBVA),'SIGM_DIR',NDIM1,
+     &                    EQNO(IDCP+1))
+           ELSE
+              CALL FGEQUI(ZR(ICONT+(INO-1)*NBVA),'SIGM',NDIM1,
+     &                    EQNO(IDCP+1))
+           ENDIF
+  100        CONTINUE
       ENDIF
-C -   EXTRAPOLATION AUX NOEUDS
-
-      IF(TYPMOD.NE.'COQUE') THEN
-        CALL PPGAN2(JGANO,1,NCMP,EQPG,ZR(IEQUIF))
-      ENDIF
-
-C     CORRECTION NECESSAIRE POUR VMIS_SG
-C     IL NE FAUT PAS CALCULER VMIS_SG EXTRAPOLE AUX NOEUDS
-C     MAIS PLUTOT  ELNO(VMIS)*SIGNE(ELNO(TRACE))
-      DO 130 I = 1,NNO
-C       RECALCUL DE LA TRACE, MAL CALCULEE PAR PPGAN2
-        HYD=ZR(IEQUIF-1+NCMP*(I-1)+3)+ZR(IEQUIF-1+NCMP*(I-1)+4)+
-     &      ZR(IEQUIF-1+NCMP*(I-1)+5)
-        ZR(IEQUIF-1+NCMP*(I-1)+NCMP)=HYD
-C ----  EQUIVALENT FATIGUE = SECOND INVARIANT * SIGNE(PREMIER INV)
-        IF ( HYD .GE. 0.D0 ) THEN
-          ZR(IEQUIF-1+NCMP*(I-1)+6)=  ZR(IEQUIF-1+NCMP*(I-1)+1)
-        ELSE
-          ZR(IEQUIF-1+NCMP*(I-1)+6)= -ZR(IEQUIF-1+NCMP*(I-1)+1)
-        ENDIF
-  130 CONTINUE
-
 
 C -       STOCKAGE
 
-      IF (TYPMOD.EQ.'COQUE') THEN
         DO 120 INO = 1,NNO
           DO 110 J = 1,NCMP
             ZR(IEQUIF-1+ (INO-1)*NCMP+J) = EQNO((INO-1)*NCMP+J)
   110     CONTINUE
   120   CONTINUE
-      END IF
 
       END

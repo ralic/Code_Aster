@@ -1,7 +1,7 @@
       SUBROUTINE LCMHDD (NECOUL,NECRIS,NBSYS, NBCOEF, COEFH,NSG, HSR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,7 +35,7 @@ C     ----------------------------------------------------------------
       DATA NN/7,9,8,2,1,3,12,11,10,5,4,6/
 C     ----------------------------------------------------------------
       IDBG=0
-      IF (NECRIS.EQ.'MONO_DD_CFC') THEN 
+      IF (NECRIS(1:11).EQ.'MONO_DD_CFC') THEN 
              
 C  MATRICE D INTERACTION (12*12): 5 COEFFICIENTS DD_CFC
 C  DEFINITION SELON G.MONET   

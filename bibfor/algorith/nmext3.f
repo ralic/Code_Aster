@@ -4,7 +4,7 @@
      &                  CHGAUS,CHELGA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -225,13 +225,13 @@ C
      &                       +NBSPI*(IPIR-1)
      &                       +(ISPIR-1)) =
      &          MIN(VALR,VAL2R)
-              ELSEIF (EXTRCH.EQ.'MAX_ABS') THEN
+              ELSEIF (EXTRCH.EQ.'MAXI_ABS') THEN
                 ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
      &                       +NBPI*NBSPI*(IVALCP-1)
      &                       +NBSPI*(IPIR-1)
      &                       +(ISPIR-1)) =
      &          MAX(ABS(VAL2R),ABS(VALR))
-              ELSEIF (EXTRCH.EQ.'MIN_ABS') THEN
+              ELSEIF (EXTRCH.EQ.'MINI_ABS') THEN
                 ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
      &                       +NBPI*NBSPI*(IVALCP-1)
      &                       +NBSPI*(IPIR-1)
