@@ -1,7 +1,7 @@
       SUBROUTINE NMSUIY(SDIMPR,VALR  ,ISUIV )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,6 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INCLUDE 'jeveux.h'
       CHARACTER*24 SDIMPR
       REAL*8       VALR
       INTEGER      ISUIV
@@ -39,23 +38,23 @@ C IN  SDIMPR : SD AFFICHAGE
 C IN  VALR   : VALEUR A ECRIRE DANS LE TABLEAU
 C I/O ISUIV  : NUMERO COURANT DU SUIVI_DDL
 C
+C ----------------------------------------------------------------------
 C
-C
-C 
-      CHARACTER*16 K16BID
+      CHARACTER*9  TYPCOL
+      CHARACTER*1  INDSUI
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
+
 C
 C --- AFFICHAGE DANS LE TABLEAU
 C
-      CALL IMPSDR(SDIMPR,'SUIVI_DDL',K16BID,VALR,ISUIV)
+      CALL IMPFOI(0,1,ISUIV,INDSUI)
+      TYPCOL = 'SUIV_DDL'//INDSUI
+      CALL NMIMCR(SDIMPR,TYPCOL,VALR,.TRUE.)
 C
 C --- SUIVI_DDL SUIVANT
 C
-      ISUIV = ISUIV + 1     
-C
-      CALL JEDEMA()
+      ISUIV = ISUIV + 1
 C
       END

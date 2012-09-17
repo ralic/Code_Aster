@@ -8,7 +8,7 @@
       REAL*8              RESUFR(NBMODE,*), COEF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,7 +148,11 @@ C        --- DU PROBLEME GENERALISE ASSOCIE AU PROBLEME QUADRATIQUE ---
                RESUFR(IM,6) = RESUFR(IM,6) * DBLE(XNORM)
             ENDIF
    30    CONTINUE
-         CALL JEDETC('V','&&WPNORM',1)
+C --- MENAGE
+         CALL JEDETR('&&WPNORM.XXXX_GENE_2')
+         CALL DETRSD('MATR_ASSE','&&WPNORM.MATR.DYNAMIC')
+         CALL DETRSD('MATR_ASSE','&&WPNORM.MATR.DYNAM')
+         CALL JEDETR('&&WPNORM.MATR.DYNAM'//'.&INT')
 C
       ELSE
 C

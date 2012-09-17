@@ -1,4 +1,4 @@
-#@ MODIF N_utils Noyau  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_utils Noyau  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,7 +182,7 @@ class Singleton(object):
     def __new__(cls, *args, **kargs):
         cls_id = getattr(cls, '_singleton_id', cls)
         if Singleton.__inst.get(cls_id) is None:
-            Singleton.__inst[cls_id] = object.__new__(cls, *args, **kargs)
+            Singleton.__inst[cls_id] = object.__new__(cls)
         return Singleton.__inst[cls_id]
 
 

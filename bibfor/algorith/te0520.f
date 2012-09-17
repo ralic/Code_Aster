@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,9 +131,8 @@ C
      >                  NPI,NPG,NDDLS,NDDLM,NDDLFA,NDDLK,DIMUEL,
      >                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO)
       CALL ASSERT(VF)
-C
-C   RECHERCHE DE VOISINAGES
-C
+
+C     -- RECHERCHE DE VOISINAGES
       CALL TECAEL(IADZI,IAZK24)
       NUMA=ZI(IADZI-1+1)
       IF((TYPVF.EQ.1).OR.(TYPVF.EQ.2)) THEN
@@ -141,8 +140,10 @@ C
       ELSE
         CALL U2MESG('F','VOLUFINI_9',0,' ',1,TYPVF,0,0.D0)
       ENDIF
-      CALL VOIUTI(NUMA,CODVOI,NVOIMA,NSCOMA,JREPE,JPTVOI,JELVOI,
+      IF (OPTION.NE.'FORC_NODA') THEN
+        CALL VOIUTI(NUMA,CODVOI,NVOIMA,NSCOMA,JREPE,JPTVOI,JELVOI,
      &                  NBVOIS,LIVOIS,TYVOIS,NBNOVO,NBSOCO,LISOCO)
+      ENDIF
 C =====================================================================
 C --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 C =====================================================================
@@ -248,8 +249,6 @@ C
      +                MECANI,PRESS1,PRESS2,TEMPE,
      >                DIMCON,DIMUEL,
      >                TYPVF,AXI,
-     >                NVOIMA,NSCOMA,NBVOIS,
-     >                LIVOIS,TYVOIS,NBNOVO,NBSOCO,LISOCO,
      >                IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO,
      +                RETLOI)
       END IF

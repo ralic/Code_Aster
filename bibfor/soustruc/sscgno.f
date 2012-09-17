@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -527,7 +527,12 @@ C     --------------------
       END IF
 
 C ----------------------------------------------------------------------
-      CALL JEDETC('V','&&SSCGNO',1)
+C --- MENAGE
+      CALL JEDETR(LISNO)
+      CALL JEDETR('&&SSCGNO.LIK8')
+      CALL JEDETR('&&SSCGNO.LII1')
+      CALL JEDETR('&&SSCGNO.LII2')
+C
       CALL JEDEMA()
 
       END

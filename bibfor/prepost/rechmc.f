@@ -9,7 +9,7 @@ C
       CHARACTER*19 SIGMRV, SIGMDB
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -179,7 +179,16 @@ C ======================================================================
 C ======================================================================
 C --- DESTRUCTION DES TABLES INUTILES ----------------------------------
 C ======================================================================
-      CALL JEDETC('V','&&RECHMC',1)
+      CALL DETRSD('TABLE',TMPREV)
+      CALL DETRSD('TABLE',TMPMDB)
+      CALL JEDETR(REVXX)
+      CALL JEDETR(REVXY)
+      CALL JEDETR(REVYY)
+      CALL JEDETR(MDBXX)
+      CALL JEDETR(MDBXY)
+      CALL JEDETR(MDBYY)
+      CALL JEDETR(COORXX)
+      CALL JEDETR(COORYY)
 C ======================================================================
       CALL JEDEMA( )
 C ======================================================================

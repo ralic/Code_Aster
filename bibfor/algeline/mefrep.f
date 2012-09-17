@@ -7,7 +7,7 @@
      &        DCENT(*),MATMA(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,6 +126,7 @@ C
 C
 2     CONTINUE
 C
-      CALL JEDETC('V','&&MEFREP',1)
+C --- MENAGE
+      CALL JEDETR('&&MEFREP.TEMP.FCT')
       CALL JEDEMA()
       END

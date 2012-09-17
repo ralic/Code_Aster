@@ -13,7 +13,7 @@ C     OUT
       INTEGER         NBNOEU,NBMAIL,NBCOOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -692,7 +692,11 @@ C
  2000   CONTINUE
         ENDIF
 C
-        CALL JEDETC('V',NOMU,1)
+C -     MENAGE
+C
+        CALL JEDETR(NOMU//'.CONXV')
+        CALL JEDETR(NOMU//'.GROUPNOV')
+        CALL JEDETR(NOMU//'.GROUPMAV')
 C
 C FERMETURE DU FICHIER
 C

@@ -3,7 +3,7 @@
      &                  LLF1  ,LLF2  ,NBPREN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -364,7 +364,13 @@ C ======================================================================
 C
       NBPREN = DEKLN
 C ======================================================================
-      CALL JEDETC('V','&&CFNEG',1)
+C --- MENAGE
+C ======================================================================
+      CALL JEDETR('&&CFNEG.SUPNBL')
+      CALL JEDETR('&&CFNEG.SPLIAC')
+      CALL JEDETR('&&CFNEG.SUPLF0')
+      CALL JEDETR('&&CFNEG.SUPLF1')
+      CALL JEDETR('&&CFNEG.SUPLF2')
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -364,10 +364,13 @@ C           -------------------------
           CALL JEDEMA()
    30   CONTINUE
       END IF
-
+C
+C --- MENAGE
       CALL JEDETR('&&FOCRR2.LEXI')
       CALL JEDETR('&&FOCRR2.LIR8')
-      CALL JEDETC('V ','&&FOCRR2',1)
+      CALL JEDETR('&&FOCRR2.INST')
+
    40 CONTINUE
+
       CALL JEDEMA()
       END

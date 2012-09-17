@@ -2,13 +2,13 @@
      &                   MATERF,TIMED,TIMEF,YF,DEPS,
      &                   ITMAX,TOLER, NBCOMM, CPMONO,
      &                   PGL,NFS,NSG,TOUTMS,HSR,NR,COMP,NVI,
-     &                   VIND,EPSD, YD,DY, DRDY ,IRET)
+     &                   VIND,VINF,EPSD, YD,DY, DRDY ,IRET)
         IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,6 +50,7 @@ C           NR     :  DIMENSION DECLAREE DRDY
 C           COMP   :  COMPOR - LOI ET TYPE DE DEFORMATION
 C           NVI    :  NOMBRE DE VARIABLES INTERNES
 C           VIND   :  VARIABLE INTERNES A T
+C           VINF   :  VARIABLE INTERNES A T+DT
 C           EPSD   :  DEFORMATION A T
 C           YD     :  VARIABLES A T   = ( SIGD  VARD  ) A T
 C           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
@@ -62,7 +63,7 @@ C
         REAL*8          DRDY(NR,NR) , YF(NR), DY(NR),YD(NR)
 C
         REAL*8          MATERD(NMAT,2),MATERF(NMAT,2)
-        REAL*8          TIMED, TIMEF,VIND(*)
+        REAL*8          TIMED, TIMEF,VIND(*),VINF(*)
         REAL*8          TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
 C
         CHARACTER*(*)   FAMI
@@ -84,12 +85,19 @@ C
          CALL LCMMJA (COMP,MOD, NMAT, MATERF,TIMED, TIMEF,
      &  ITMAX,TOLER,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,
      &             DEPS,YF,  YD,DY,   DRDY, IRET )
+
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
          CALL IRRJAC ( FAMI,KPG,KSP,MOD, NMAT, MATERF,
      &                  YF,  DY,   NR,  DRDY )
+
       ELSEIF ( LOI(1:15)  .EQ. 'BETON_BURGER_FP' ) THEN
          CALL BURJAC ( MOD, NMAT, MATERD,MATERF,NVI,VIND,
      &                 TIMED,TIMEF,YD,YF,  DY,   NR,  DRDY )
+
+      ELSEIF ( LOI(1:4)  .EQ. 'LETK' ) THEN
+         CALL LKIJAC (MOD, NMAT,MATERF,TIMED,TIMEF,YF,DEPS,NR,NVI,
+     &                VIND,VINF,YD,DY,DRDY,IRET)
+
       ENDIF
 C
       END

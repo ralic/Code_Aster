@@ -1,6 +1,6 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 17/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TP RUPTURE : POUTRE DCB 3D ELASTIQUE
-# forma08a.para = tps_job 400 mem_job 512Mo ncpus 1 liste_test S
+# forma08a.para = tps_job 400 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

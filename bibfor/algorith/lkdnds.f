@@ -1,0 +1,126 @@
+      SUBROUTINE LKDNDS(NMAT,MATERF,I1,DEVSIG,BPRIMP,NVI,VINT,VAL,
+     &                  PARA,DNDSIG)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE FOUCAULT A.FOUCAULT
+      IMPLICIT   NONE
+C     ------------------------------------------------------------------
+C     CALCUL DE DERIVEE DE N PAR RAPPORT A SIGMA 
+C     IN  NMAT   : DIMENSION TABLE DES PARAMETRES MATERIAU
+C         MATERF : PARAMETRES MATERIAU A T+DT
+C         DEVSIG : DEVIATEUR DES CONTRAINTES
+C         I1     : TRACE DES CONTRAINTES
+C         BPRIMP : PARAMETRE DE DILATANCE FCTN SIGMA
+C         NVI    : NOMBRE DE VARIABLES INTERNES
+C         VINT   : VARIABLES INTERNES
+C         VAL    : BOOLEEN PRECISANT DILATANCE EN PRE(0) OU POST-PIC(1)
+C         PARA   : VECTEUR CONTENANT AXI, SXI ET MXI
+C
+C     OUT DNDISG :  DERIVEE DE N PAR RAPPORT A SIGMA (NDT X NDT)
+C     ------------------------------------------------------------------
+      INTEGER         NMAT,NVI,VAL
+      REAL*8          MATERF(NMAT,2),DNDSIG(6,6),DEVSIG(6),I1
+      REAL*8          BPRIMP,VINT(NVI),PARA(3)
+C
+      INTEGER         NDT,NDI,I,J
+      REAL*8          ZERO,UN
+      REAL*8          DSDSIG(6,6),DI1DSI(6),SII
+      REAL*8          DBETDS(6),DBETDI,MIDENT(6,6)
+      REAL*8          DSIIDS(6,6),KRON2(6,6)
+      REAL*8          UNSTRO,UNSSII,TROIS,KRON(6),DBDSIG(6)
+      REAL*8          DEVBDS(6,6),DSIDSI(6,6),SDSIDS(6,6),DIDBDS(6,6)
+      PARAMETER       (ZERO  =  0.D0 )
+      PARAMETER       (UN    =  1.D0 )
+      PARAMETER       (TROIS =  3.D0 )
+C     ------------------------------------------------------------------
+      COMMON /TDIM/   NDT,NDI
+C     ------------------------------------------------------------------
+
+C ----------------------------
+C --- 1) CALCUL TERMES COMMUNS
+C ----------------------------
+C --- CONSTRUCTION DE SII
+      CALL LCPRSC(DEVSIG,DEVSIG,SII)
+      SII = SQRT(SII)
+
+C --- CONSTRUCTION DE KRONECKER
+      CALL LCINVE(ZERO,KRON)
+      DO 10 I = 1, NDI
+        KRON(I) = UN
+  10  CONTINUE
+
+C --- CONSTRUCTION DE MATRICE IDENTITE
+      CALL LCINMA(ZERO,MIDENT)
+      DO 20 I = 1, NDT
+        MIDENT(I,I) = UN
+  20  CONTINUE
+
+C --- CONSTRUCTION DE DI1/DSIGMA
+      CALL LCINVE(ZERO,DI1DSI)
+      DO 30 I = 1, NDI
+        DI1DSI(I) = UN
+  30  CONTINUE
+
+C --- CONSTRUCTION DE DS/DSIGMA
+      UNSTRO = UN / TROIS
+      CALL LCPRTE(KRON,KRON,KRON2)
+      CALL LCPRSM(UNSTRO,KRON2,KRON2)
+      CALL LCDIMA(MIDENT,KRON2,DSDSIG)
+
+C --- CONSTRUCTION DE DSII/D(DEVSIG)
+      UNSSII = UN/SII
+      CALL LCPRSV(UNSSII,DEVSIG,DSIIDS)
+
+C --- CALCUL DE D(BPRIME)/D(DEVSIG) ET D(BPRIME)/D(I1)
+      CALL LKDBDS(NMAT,MATERF,I1,DEVSIG,NVI,VINT,PARA,
+     &            VAL,DBETDS,DBETDI)
+
+C --- CONSTRUCTION DE D(BPRIME)/DSIGMA
+      DO 40 I = 1, NDT
+        DBDSIG(I) = ZERO
+        DO 50 J = 1, NDT
+          DBDSIG(I) = DBDSIG(I)+DBETDS(J)*DSDSIG(J,I)
+  50    CONTINUE
+        DBDSIG(I) = DBDSIG(I)+DBETDI*DI1DSI(I)
+  40  CONTINUE
+
+C --- PRODUIT TENSORIEL DE DEVSIG*D(BPRIME)/DSIGMA
+      CALL LCPRTE(DEVSIG,DBDSIG,DEVBDS)
+
+C --- CALCUL DE DEVSIG*DSII/DSIGMA
+      CALL LCPRMV(DSDSIG,DSIIDS,DSIDSI)
+      CALL LCPRTE(DEVSIG,DSIDSI,SDSIDS)
+
+C --- PRODUIT TENSORIEL DE KRON*DBPRIME/DSIGMA
+      CALL LCPRTE(KRON,DBDSIG,DIDBDS)
+
+C ------------------------------
+C --- 2) ASSEMBLAGE DE DN/DSIGMA
+C ------------------------------
+      DO 60 I = 1, NDT
+        DO 70 J = 1, NDT
+          DNDSIG(I,J) = ((DEVBDS(I,J)/SII+BPRIMP/SII*DSDSIG(I,J)-
+     &                   BPRIMP/SII**2*SDSIDS(I,J))*
+     &                  SQRT(BPRIMP**2+TROIS)-BPRIMP/
+     &                  SQRT(BPRIMP**2+TROIS)*(BPRIMP/SII*
+     &                  DEVBDS(I,J)-DIDBDS(I,J)))/(BPRIMP**2+TROIS)
+  70    CONTINUE
+  60  CONTINUE
+
+      END

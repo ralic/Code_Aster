@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -520,8 +520,8 @@ C
      &            NBORD,JORDR,JCOEF,NBPT,NTCMP,NUMCMP,
      &            IMPR,ZR(IVDMG))
 
-      CALL JEDETC('V','&&OP0151.LMODE',1)
-      CALL JEDETC('V','&&OP0151.CMODE',1)
+      CALL JEDETR('&&OP0151.LMODE')
+      CALL JEDETR('&&OP0151.CMODE')
 C
       ENDIF
 C
@@ -543,7 +543,7 @@ C
       DO 222  I = 1,NBPT
         ZR(JCELV+I-1) = ZR(IVDMG+I-1)
  222  CONTINUE
-      CALL JEDETC('V','&&OP0151.DOMMAGE',1)
+      CALL JEDETR('&&OP0151.DOMMAGE')
 
  7777 CONTINUE
 C

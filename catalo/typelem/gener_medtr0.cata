@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,10 +26,10 @@ MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CABSCUR  = ABSC_R   ELEM__         (ABSC1    ABSC2    )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CCADISA  = CADISA   ELEM__         (A[36])
-    CCADISK  = CADISK   ELEM__         (K[36])
-    CCADISM  = CADISM   ELEM__         (M[36])
-    CCINFDI  = CINFDI   ELEM__         (REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK  TYDI)
+    CCADISA  = CADISA   ELEM__         (A[36]    )
+    CCADISK  = CADISK   ELEM__         (K[36]    )
+    CCADISM  = CADISM   ELEM__         (M[36]    )
+    CCINFDI  = CINFDI   ELEM__         (REPK     REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK  TYDI)
     CCAORIE  = CAORIE   ELEM__         (ALPHA   BETA GAMMA    )
     ECODRET  = CODE_I   ELEM__         (IRET   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
@@ -38,10 +38,7 @@ MODE_LOCAL__
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    EENERCR  = ENER_R   ELEM__         (TOTALE   DX       DY       DZ       DRX      DRY
-                                        DRZ      )
-    EENERDR  = ENER_R   ELEM__         (TOTALE   DX       DY       DZ       DRX      DRY
-                                        DRZ      )
+    EENERR   = ENER_R   ELEM__         (TOTALE   DX       DY       DZ       DRX      DRY      DRZ      )
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
@@ -50,7 +47,7 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    CROTATR  = ROTA_R   ELEM__         (OME    AR     BR     CR     X      Y     Z  )
+    CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y        Z        )
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
     EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ       )
@@ -58,7 +55,7 @@ MODE_LOCAL__
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
-    EREFCO   = PREC     ELEM__         (EFFORT    MOMENT)
+    EREFCO   = PREC     ELEM__         (EFFORT   MOMENT   )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
@@ -92,7 +89,7 @@ OPTION__
                               OUT__  EGGEOP_R PCOORPG
     ECIN_ELEM           44    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  COMEG2R  POMEGA2
                                      CCINFDI  PCINFDI  DDL_MECA PVITESR
-                              OUT__  EENERCR  PENERCR
+                              OUT__  EENERR   PENERCR
     EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
                               OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
     EFGE_ELNO           185   IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
@@ -101,7 +98,7 @@ OPTION__
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
     EPOT_ELEM           44    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      CCINFDI  PCINFDI
-                              OUT__  EENERDR  PENERDR
+                              OUT__  EENERR   PENERDR
     FORC_NODA           39    IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR  CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
     FONL_NOEU           39    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER

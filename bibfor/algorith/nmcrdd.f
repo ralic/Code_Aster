@@ -1,7 +1,7 @@
       SUBROUTINE NMCRDD(NOMA  ,NOMO  ,SDIETO,SDSUIV)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,10 +21,9 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INCLUDE 'jeveux.h'
+      INCLUDE      'jeveux.h'
       CHARACTER*8  NOMA,NOMO
-      CHARACTER*19 SDSUIV
-      CHARACTER*24 SDIETO
+      CHARACTER*24 SDIETO,SDSUIV
 C
 C ----------------------------------------------------------------------
 C

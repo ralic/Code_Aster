@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,9 @@ C      DO 40 IN = 0,NEQ-1
 C         ZR(IDCHM+IN) = ( 1 - ZI(IDDL+IN) ) * ZR(IDCHM+IN)
 C 40   CONTINUE
 C
-      CALL JEDETC(' ','&&SIMONO',1)
+C --- MENAGE
+      CALL JEDETR('&&SIMONO.VECTEUR')
+      CALL JEDETR('&&SIMONO.DDL')
 C
       CALL JEDEMA()
       END

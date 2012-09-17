@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,22 +105,9 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       if hasattr(self,'postexec'):
          self.postexec(self)
 
-      # Destruction des concepts temporaires internes à la macro
-      # préfixés par '.' dans la base jeveux
-      # Pour ne pas avoir l'affichage en cas de IMPR_MACRO='NON'
-      # on déclare l'étape DETRUIRE fille de la macro en cours
-      # par set_current_step (fait dans l'exécution de DETRUIRE)
       self.set_current_step()
-      if self.nom!='DETRUIRE' :
-         s_obj=set()
-         for etape in self.etapes :
-            if etape.sd != None and etape.sd.nom[:1] == '.':
-               s_obj.add(etape.sd)
-         # au cas où self.sd serait arrivé dans s_obj
-         s_obj.discard(self.sd)
-         if len(s_obj) > 0:
-             DETRUIRE = self.get_cmd('DETRUIRE')
-             DETRUIRE(CONCEPT=_F(NOM=list(s_obj)), INFO=1)
+      # destruction
+      self.delete_tmp_sd()
       self.parent.clean(1)
       self.reset_current_step()
 
@@ -215,23 +202,23 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
            self.parent.cr.add(self.cr)
          self.reset_current_step()
          raise
-
-      # Destruction des concepts temporaires internes à la macro
-      # préfixés par '.' dans la base jeveux
-      # Pour ne pas avoir l'affichage en cas de IMPR_MACRO='NON'
-      # on déclare l'étape DETRUIRE fille de la macro en cours
-      # par set_current_step
-      if self.nom != 'DETRUIRE' :
-         s_obj=set()
-         for etape in self.etapes :
-            if etape.sd != None and etape.sd.nom[:1] == '.':
-               s_obj.add(etape.sd)
-         # au cas où self.sd serait arrivé dans s_obj
-         s_obj.discard(self.sd)
-         if len(s_obj) > 0:
-             DETRUIRE = self.get_cmd('DETRUIRE')
-             DETRUIRE(CONCEPT=_F(NOM=list(s_obj)), INFO=1)
+      # destruction
+      self.delete_tmp_sd()
       self.reset_current_step()
+
+   def delete_tmp_sd(self):
+      """Destruction des concepts temporaires internes à la macro
+      préfixés par '.' dans la base jeveux"""
+      if self.nom != 'DETRUIRE' :
+       s_obj=set()
+       for etape in self.etapes :
+          if etape.sd != None and etape.sd.nom != None and etape.sd.nom[:1] == '.':
+             s_obj.add(etape.sd)
+       # au cas où self.sd serait arrivé dans s_obj
+       s_obj.discard(self.sd)
+       if len(s_obj) > 0:
+           DETRUIRE = self.get_cmd('DETRUIRE')
+           DETRUIRE(CONCEPT=_F(NOM=list(s_obj)), INFO=1)
 
    def get_liste_etapes(self,liste):
       if self.nom == 'INCLUDE' :

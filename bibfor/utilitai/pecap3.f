@@ -1,6 +1,6 @@
       SUBROUTINE PECAP3(CHGEOZ,TEMPEZ,IOMEGA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,6 +155,6 @@ C     --------------------------------------------------
       CALL MESOMM(LCHOUT(1),9,IBID,WORK,CBID,0,IBID)
       IOMEGA = WORK(1)
 
-      CALL JEDETC('V','&&PECAP3.INTEG',1)
+      CALL DETRSD('CHAMP_GD','&&PECAP3.INTEG')
 C.============================ FIN DE LA ROUTINE ======================
       END

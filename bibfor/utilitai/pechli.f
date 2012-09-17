@@ -6,7 +6,7 @@
       CHARACTER*(*) RESU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,6 +178,9 @@ C      ECRITURE DANS LA TABLE RESU DE LA CHARGE LIMITE
         CALL JEDEMA()
    10 CONTINUE
 
-      CALL JEDETC('V','&&PECHLI',1)
+C --- MENAGE
+      CALL JEDETR('&&PECHLI.VECTORDR')
+      CALL DETRSD('CARTE','&&PECHLI.CH_INST_R')
+
       CALL JEDEMA()
       END

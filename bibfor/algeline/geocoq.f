@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -265,7 +265,9 @@ C
       GEOM(1) = HMOY
       GEOM(2) = RMOY
 C
-      CALL JEDETC('V','&&GEOCOQ',1)
+C --- MENAGE
+C
+      CALL JEDETR('&&GEOCOQ.TEMP.TABL')
       CALL JEDEMA()
 C
       END

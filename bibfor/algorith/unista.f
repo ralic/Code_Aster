@@ -3,7 +3,7 @@
 C-----------------------------------------------------------------------
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -252,7 +252,12 @@ C 9060 FORMAT ('MIN_K_CONTRAINT',10X,I20,/)
 C
 C ----------------------------------------------
 C
-      CALL JEDETC('V','&&INESTA',1)
+C --- MENAGE
+      CALL JEDETR('&&INESTA.VECT.TEM1')
+      CALL JEDETR('&&INESTA.VECT.TEM2')
+      CALL JEDETR('&&INESTA.VECT.TEM3')
+      CALL JEDETR('&&INESTA.VECT.TEM4')
+      CALL JEDETR('&&INESTA.VECT.TEM5')
 C
 C     %---------------%
 C     | END OF PROSTA |

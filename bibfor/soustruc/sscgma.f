@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -506,7 +506,13 @@ C     --------------------
         WRITE (IFM,'(/,/)')
       END IF
 
-      CALL JEDETC('V','&&SSCGMA',1)
+C
+C --- MENAGE
+      CALL JEDETR(LISMA)
+      CALL JEDETR('&&SSCGMA.LIK8')
+      CALL JEDETR('&&SSCGMA.LII1')
+      CALL JEDETR('&&SSCGMA.LII2')
+C
       CALL JEDEMA()
 
       END

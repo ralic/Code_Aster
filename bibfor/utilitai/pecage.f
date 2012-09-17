@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -182,7 +182,8 @@ C     --- CREATION DE LA TABLE ---
         END IF
    40 CONTINUE
 
-      CALL JEDETC('V','&&PECAGE',1)
+      CALL DETRSD('CHAM_ELEM','&&PECAGE.CARA_GEOM')
+      CALL JEDETR('&&PECAGE.TRAV1')
 
       CALL JEDEMA()
       END

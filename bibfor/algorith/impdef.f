@@ -1,7 +1,7 @@
       SUBROUTINE IMPDEF(SDIMPR,SDSUIV,COLACT,NCOL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,51 +20,14 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
-      IMPLICIT NONE      
-      INCLUDE 'jeveux.h'
+      IMPLICIT NONE
       CHARACTER*24 SDIMPR
       INTEGER      NCOL
       CHARACTER*19 SDSUIV,COLACT
 C
 C ----------------------------------------------------------------------
 C
-C ROUTINE UTILITAIRE (AFFICHAGE)
-C
-C ACTIVATION DES COLONNES
-C
-C ----------------------------------------------------------------------
-C
-C
-C IN  SDIMPR : NOM DE LA SD POUR L'AFFICHAGE
-C IN  SDSUIV : NOM DE LA SD POUR LE SUIVI
-C IN  COLACT : VECTEUR D'ACTIVATION DES COLONNES
-C IN  NCOL   : NOMBRE DE COLONNES ACTIVEES
-C
-C
-C
-C
-      INTEGER      ICOL,ICOD
-      INTEGER      JIMCOL
-      CHARACTER*16 TITCOL(3)
-      INTEGER      FORCOL
-C
-C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
-C
-C --- ACCES
-C
-      CALL JEVEUO(COLACT,'L',JIMCOL)      
-C
-C --- ACTIVATION DES COLONNES
-C
-      DO 10 ICOL = 1,NCOL
-        ICOD = ZI(JIMCOL+ICOL-1)
-        CALL IMPREF(ICOD  ,SDSUIV,TITCOL,FORCOL)
-        CALL IMPSDA(SDIMPR,'AJOU',ICOL  ,ICOD  ,TITCOL,
-     &              FORCOL)
-  10  CONTINUE
-C
-      CALL JEDEMA()
+C A RESORBER
+      CALL ASSERT(.FALSE.)
 
       END

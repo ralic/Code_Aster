@@ -7,9 +7,9 @@
       REAL*8        DFDXIP
 C ====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,13 +51,14 @@ C ====================================================================
       INTEGER NDI, NDT
       REAL*8  PREF, SIGC, COS3T, RCOS3T, H0C, H0E, HTHETA
       REAL*8  SII
-      REAL*8  UN,  LGLEPS
+      REAL*8  UN,  LGLEPS, ZERO
       REAL*8  DFDAD, DFDSD, DFDMD
       REAL*8  FACT1, FACT3, FACT4, FACT5
 C      REAL*8  DEUX,  TROIS
 C ====================================================================
 C --- INITIALISATION DE PARAMETRES -----------------------------------
 C ====================================================================
+      PARAMETER       ( ZERO    =  0.0D0   )
       PARAMETER       ( UN      =  1.0D0   )
 C      PARAMETER       ( DEUX    =  2.0D0   )
 C      PARAMETER       ( TROIS   =  3.0D0   )
@@ -82,14 +83,22 @@ C =================================================================
 C --- CALCUL DE d(F)/d(sd)
 C =================================================================
       FACT1 =  - PARAEP(1) * VARPL(4) * SIGC * H0C
-      DFDSD =    FACT1 * (UCRIP)**(PARAEP(1) - UN)
+      IF(UCRIP.GT.ZERO)THEN
+        DFDSD = FACT1 * (UCRIP)**(PARAEP(1) - UN)
+      ELSE
+        DFDSD = ZERO
+      ENDIF
 C =================================================================
 C --- CALCUL DE d(F)/d(md)
 C =================================================================
-      FACT3 =  - PARAEP(1) * SIGC * H0C
-      FACT4 =  VARPL(1) * SII * HTHETA / PARAEP(3)
-      FACT5 =  VARPL(2) * INVAR / PARAEP(3)
-      DFDMD = FACT3 * (FACT4 + FACT5) * (UCRIP)**(PARAEP(1) - UN)
+      IF(UCRIP.GT.ZERO)THEN
+        FACT3 =  - PARAEP(1) * SIGC * H0C
+        FACT4 =  VARPL(1) * SII * HTHETA / PARAEP(3)
+        FACT5 =  VARPL(2) * INVAR / PARAEP(3)
+        DFDMD = FACT3 * (FACT4 + FACT5) * (UCRIP)**(PARAEP(1) - UN)
+      ELSE
+        DFDMD = ZERO
+      ENDIF
 C =================================================================
 C --- CALCUL DE d(F)/d(ad)
 C =================================================================
@@ -100,7 +109,12 @@ C      FACT8 = LOG(DEUX/TROIS)*(DEUX/TROIS)**(UN/DEUX/PARAEP(1))
 C      DFDAD = FACT6*(UCRIP)**PARAEP(1)*
 C     &        (LOG(UCRIP)-(FACT7*FACT8/UCRIP))
 C VERSION CIH
-      DFDAD = - SIGC*H0C*LOG(UCRIP/VARPL(4))*(UCRIP)**PARAEP(1)
+      IF(UCRIP.GT.ZERO)THEN
+        DFDAD = - SIGC*H0C*LOG(UCRIP/VARPL(4))*(UCRIP)**PARAEP(1)
+      ELSE
+        DFDAD = ZERO
+      ENDIF
       DFDXIP = DERPAR(1)*DFDAD + DERPAR(2)*DFDSD + DERPAR(3)*DFDMD
 C =================================================================
+
       END

@@ -6,7 +6,7 @@
       INTEGER           NBF,NBPOIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -185,6 +185,7 @@ C La valeur de l'endommagement est bornée à 1
         ENDIF
  10   CONTINUE
 C
-      CALL JEDETC('V','&&FGLEMA',1)
+C --- MENAGE
+      CALL JEDETR('&&FGLEMA.DEVIAT')
       CALL JEDEMA()
       END

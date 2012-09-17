@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,10 +160,14 @@ Risques et conseils :
  couplage pesanteur - surface libre d'un fluide (modélisation '2D_FLUI_PESA).
 """),
 
-
-
-
-
+20 : _(u"""
+ Option PREP_VRC :
+ Il est impossible d'utiliser la température comme variable de commande pour les éléments de grille
+ car celle-ci varie dans l'épaisseur de la coque :
+   température sur la peau inférieure : %(r1)f
+   température sur le feuillet moyen  : %(r2)f
+   température sur la peau supérieure : %(r3)f
+"""),
 
 21 : _(u"""
  Erreur utilisateur :
@@ -280,14 +284,13 @@ Erreur utilisateur :
     On ne trouve pas la variable de commande :  %(k1)s
     pour la maille                : %(k2)s
     pour l'instant de calcul      : '%(k3)s'
-    valeur de l'instant de calcul : %(r1)g  (sans signification pour l'instant 'REF')
 
  Conseils :
     Les variables de commande sont des variables connues a priori qui influencent
-    le calcul du comportement mécanique (exemple : la température).
+    le calcul du comportement des matériaux (exemple : la température).
 
     Lorsque le comportement mécanique dépend d'une variable de commande, il faut que l'utilisateur
-    la fournisse au calcul mécanique.
+    la fournisse au calcul.
     Cela se fait via la commande AFFE_MATERIAU / AFFE_VARC.
 
     Les variables de commande les plus utilisées sont :

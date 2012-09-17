@@ -9,7 +9,7 @@
       INTEGER        NDIM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -191,8 +191,8 @@ C           INTO THE EXISTING TANGENTIAL LEVEL SET OF THE PHYSICAL MESH
 3000     CONTINUE
 
 C        DESTROY THE TEMPORARY PROJECTED LEVEL SETS
-         CALL JEDETC(' ',TMPLSN,1)
-         CALL JEDETC(' ',TMPLST,1)
+         CALL DETRSD('CHAM_NO_S',TMPLSN)
+         CALL DETRSD('CHAM_NO_S',TMPLST)
 
 C ----------------------------------------------------------------------
 C        CALCULATE THE GRADIENTS OF THE LEVEL SETS OF THE PHYSICAL MESH
@@ -224,9 +224,9 @@ C        NORMAL LEVEL SET
          CALL CELCES (CELGLS, 'V', CHAMS)
          CALL CESCNS (CHAMS, ' ', 'V', GRLN, ' ', IBID)
 
-         CALL JEDETC(' ',CNOLS,1)
-         CALL JEDETC(' ',CELGLS,1)
-         CALL JEDETC(' ',CHAMS,1)
+         CALL DETRSD('CHAM_NO',CNOLS)
+         CALL DETRSD('CHAM_ELEM',CELGLS)
+         CALL DETRSD('CHAM_ELEM_S',CHAMS)
 
 C        TANGENTIAL LEVEL SET
          CALL CNSCNO(CNSLT,' ','NON','V',CNOLS,'F',IBID)
@@ -244,9 +244,9 @@ C        TANGENTIAL LEVEL SET
          CALL CELCES (CELGLS, 'V', CHAMS)
          CALL CESCNS (CHAMS, ' ', 'V', GRLT, ' ', IBID)
 
-         CALL JEDETC(' ',CNOLS,1)
-         CALL JEDETC(' ',CELGLS,1)
-         CALL JEDETC(' ',CHAMS,1)
+         CALL DETRSD('CHAM_NO',CNOLS)
+         CALL DETRSD('CHAM_ELEM',CELGLS)
+         CALL DETRSD('CHAM_ELEM_S',CHAMS)
 
 C-----------------------------------------------------------------------
 C     FIN

@@ -10,7 +10,7 @@
       CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -219,7 +219,10 @@ C
   100 CONTINUE
 C
 C     --- MENAGE ---
-      CALL JEDETC('V','&&WP1INV',1)
+      CALL JEDETR('&&WP1INV.YN_ASSOCIE_A_XN')
+      CALL JEDETR('&&WP1INV.XN_MOINS_1     ')
+      CALL JEDETR('&&WP1INV.YN_MOINS_1     ')
+      CALL DETRSD('MATR_ASSE','&&WP1INV.MATR_DYNA')
 C
       CALL JEDEMA()
       END

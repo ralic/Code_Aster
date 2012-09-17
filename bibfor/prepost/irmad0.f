@@ -5,7 +5,7 @@
       CHARACTER*(*)                       CHAMNO(*) , NOMSYM
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,11 @@ C
          CALL U2MESS('E','PREPOST2_70')
       ENDIF
 C
-      CALL JEDETC('V','&&IRMAD0',1)
+C --- MENAGE
+      CALL JEDETR('&&IRMAD0.ENT_COD')
+      CALL JEDETR('&&IRMAD0.NOMNOE')
+      CALL JEDETR('&&IRMAD0.NUMNOE')
+C
  9999 CONTINUE
       CALL JEDEMA()
       END

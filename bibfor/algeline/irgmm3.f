@@ -7,7 +7,7 @@
       CHARACTER*8         NOMAIN, NOMAOU
       CHARACTER*(*)       BASZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,7 +187,7 @@ C ----------------------------------------------------------------------
 C#MC  1*NBMAIL NE SUFFIT PAS ?
       CALL JEECRA ( CONNEX, 'LONT', NTYELE*NBMAIL, ' ' )
 
-      CALL JEDETC('V','&&IRMGMS.LISMA',1)
+      CALL JEDETR('&&IRMGMS.LISMA')
       CALL JECREC ( '&&IRMGMS.LISMA', 'V V I', 'NU', 'CONTIG',
      &                                       'VARIABLE', NBMAIL )
       CALL JEECRA ( '&&IRMGMS.LISMA', 'LONT', NBMAIL, K8B)

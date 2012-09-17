@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -136,7 +136,7 @@ OPTION__
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
     ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
-    ENER_ELAS           -1    IN__    OUT__    XXXXXX   XXXXXX
+    ENEL_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPEQ_ELGA           335   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ

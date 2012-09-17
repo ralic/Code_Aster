@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -290,7 +290,9 @@ C
       ENDIF
 C
       IF (ZK16(IVATE).EQ.'SPEC_CORR_CONV_3') THEN
-        CALL JEDETC('V','&&SFIFJ',1)
+        CALL JEDETR('&&SFIFJ.VECX')
+        CALL JEDETR('&&SFIFJ.VECY')
+        CALL JEDETR('&&SFIFJ.VECZ')
       ELSE
         CALL JEDETC('V','&&329',1)
         CALL JEDETC('V','&&V.M',1)

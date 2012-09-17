@@ -6,7 +6,7 @@
       INTEGER            INDMAT,NBMAT,IMATE,IGRP
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,10 +133,7 @@ C
          NBCM=ZI(JNBCM+L-1)
          JNOMRC=ZI(JNOMR+L-1)
          CALL CODENT ( L, 'D0', KNUMA3 )
-         CALL JEEXIN('&&RCMACO.DIM'//KNUMA3,IRET)
-         IF (IRET.NE.0) THEN
-            CALL JEDETR('&&RCMACO.DIM'//KNUMA3)
-         ENDIF
+         CALL JEDETR('&&RCMACO.DIM'//KNUMA3)
          CALL WKVECT ('&&RCMACO.DIM'//KNUMA3,'V V I',LMAT*NBCM,
      &                ZI(JJDIM+L-1))
          JDIM=ZI(JJDIM+L-1)
@@ -299,7 +296,11 @@ C
         IDMA=IDMA+ZI(JLCOD+IMAT-1)
  300  CONTINUE
 C
-      CALL JEDETC('V','&&RCMACO.DIM',1)
+C --- MENAGE
+      DO 400 L=1,NBMAT
+         CALL CODENT ( L, 'D0', KNUMA3 )
+         CALL JEDETR('&&RCMACO.DIM'//KNUMA3)
+ 400  CONTINUE
       CALL JEDETR('&&RCMACO.NBCM')
       CALL JEDETR('&&RCMACO.NOMR')
       CALL JEDETR('&&RCMACO.JDIM')

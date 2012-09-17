@@ -1,6 +1,6 @@
       SUBROUTINE SSDEU2(NVAL,ILISTE,NVALAP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C-----------------------------------------------------------------------
       ELSE
          CALL JELIRA('&&SSDEU2.WK1','LONMAX',NDIM,KBID)
          IF (NDIM.LT.NVAL) THEN
-            CALL JEDETC('V','&&SSDEU2.WK1',1)
+            CALL JEDETR('&&SSDEU2.WK1')
             CALL WKVECT('&&SSDEU2.WK1','V V I',2*NVAL,IAWK1)
          ELSE
             CALL JEVEUO('&&SSDEU2.WK1','E',IAWK1)

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -452,7 +452,7 @@ C
       CALL U2MESG('I','ALGELINE5_13',4,VALK,0,0,3,VALR)
         ENDIF
 C
-         CALL JEDETC('V','&&MDCONF',1)
+         CALL JEDETR('&&MDCONF.TEMP.MAIL')
 C
        ELSE
 C ---  PAS DE COUPLAGE

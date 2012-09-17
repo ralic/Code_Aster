@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,8 +37,7 @@ MODE_LOCAL__
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    EENERCR  = ENER_R   ELEM__         (TOTALE   DX       DY       DRZ      )
-    EENERDR  = ENER_R   ELEM__         (TOTALE   DX       DY       DRZ      )
+    EENERR   = ENER_R   ELEM__         (TOTALE   DX       DY       DRZ      )
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
@@ -88,16 +87,16 @@ OPTION__
                               OUT__  EGGEOP_R PCOORPG
     ECIN_ELEM           44    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  COMEG2R  POMEGA2
                                      CCINFDI  PCINFDI  DDL_MECA PVITESR
-                              OUT__  EENERCR  PENERCR
+                              OUT__  EENERR   PENERCR
     EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
                               OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
     EFGE_ELNO           185   IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CCINFDI  PCINFDI
                                      EEFGEGA  PCONTRR  ENONLIN  PNONLIN
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
-    ENER_ELAS           -1    IN__     OUT__  XXXXXX   XXXXXX
+    ENEL_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           44    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CCINFDI  PCINFDI
-                              OUT__  EENERDR  PENERDR
+                              OUT__  EENERR   PENERDR
     FORC_NODA           39    IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR  CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR

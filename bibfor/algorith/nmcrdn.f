@@ -1,7 +1,7 @@
       SUBROUTINE NMCRDN(SDSUIV,MOTFAC,NBOCC )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
       INTEGER      NBOCC
-      CHARACTER*19 SDSUIV
+      CHARACTER*24 SDSUIV
       CHARACTER*16 MOTFAC
 C
 C ----------------------------------------------------------------------
@@ -39,8 +39,7 @@ C IN  MOTFAC : MOT-FACTEUR POUR LIRE
 C IN  SDSUIV : NOM DE LA SD POUR SUIVI_DDL
 C IN  NBOCC  : NOMBRE D'OCCURRENCES DE MOTFAC
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      IOCC,NBTIT,IBID
       CHARACTER*24 DDLTIT

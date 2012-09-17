@@ -1,4 +1,4 @@
-#@ MODIF cata_vari Comportement  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF cata_vari Comportement  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,6 +104,7 @@ DICT_NOM_VARI = {
     "DISSTHER" : _(u"dissipation Thermodynamique"),
     "DISTSDEV" : _(u"CJS distance normalisée au seuil déviatoire"),
     "DISTSISO" : _(u"CJS distance normalisée au seuil isotrope"),
+    "DOMAINE" : _(u"LETK : domaine de comportement de la roche"),
     "DOMCOMP" : _(u"Laigle : domaine de comportement de la roche"),
     "DPORO" : _(u"LIQU_AD_GAZ v1"),
     "DPVP" : _(u"LIQU_AD_GAZ v2"),
@@ -261,6 +262,7 @@ DICT_NOM_VARI = {
     "INDETAM2" : _(u"Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 2"),
     "INDETAM3" : _(u"Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 3"),
     "INDETAM4" : _(u"Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 4"),
+    "INDIC" : _(u"LETK : indicateur de la position de l'etat de contrainte par rapport aux seuils viscoplastiques"),
     "INDICDIL" : _(u"LETK : indicateur de contractance ou de dilatance"),
     "INDICYCL" : _(u" Pinto-Menegotto, indicateur d'activation du comportement cyclique"),
     "INDIDISS" : _(u"Indicateur de dissipation =0 si régime linéaire, =1 si régime dissipatif."),

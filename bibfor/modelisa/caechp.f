@@ -7,7 +7,7 @@
       CHARACTER*(*)     LIGRCH, LIGRMO
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,13 @@ C
            CALL NOCART(CARTE,-3,' ','NUM',NBM,' ',ZI(JLIGR),LIGRCH,NCMP)
 200      CONTINUE
 100   CONTINUE
-      CALL JEDETC (' ','&&CAECHP',1)
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&CAECHP.LLIST1')
+      CALL JEDETR('&&CAECHP.LLIST2')
+      CALL JEDETR('&&CAECHP.LLIST.TRIE')
+
  9999 CONTINUE
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,16 +35,16 @@ MODE_LOCAL__
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT[9])
+                                        XXXX2    KIT[9]   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       EPXX     EPYY     EPZZ     EPXY     )
     EDEULNO  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMA_R   ELNO__ IDEN__  (DOMA     )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
-    EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )
+    EENERR   = ENER_R   ELEM__         (TOTALE   )
+    EENERPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
+    EENERNO  = ENER_R   ELNO__ IDEN__  (TOTALE   )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )
@@ -151,17 +151,16 @@ OPTION__
     ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                              OUT__  EENEDPG  PENERDR
-    ENEL_ELNO           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                              OUT__  EENEDNN  PENERDR
-    ENER_ELAS           490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NDEPLAR  PDEPLR   NGEOMER  PGEOMER
+                              OUT__  EENERPG  PENERDR
+    ENEL_ELNO           4     IN__   EENERPG  PENERPG
+                              OUT__  EENERNO  PENERNO
+    ENEL_ELEM           490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NDEPLAR  PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1
+                              OUT__  EENERR   PENERD1
     ENER_TOTALE         490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  ECONTPG  PCONTPR  NDEPLAR  PDEPLM
                                      NDEPLAR  PDEPLR   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1
+                              OUT__  EENERR   PENERD1
     EPEQ_ELGA           336   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
     EPEQ_ELNO           336   IN__   EDEFONO  PDEFORR
@@ -176,7 +175,7 @@ OPTION__
                               OUT__  EDFEQNO  PDEFOEQ
     EPOT_ELEM           286   IN__   CCAMASS  PCAMASS  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENERR   PENERDR
     EPSG_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSG_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSI_ELGA           87    IN__   CCOMPOR  PCOMPOR  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
@@ -215,10 +214,10 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NDEPLAR  PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
+                              OUT__  EENERR   PENERD1  EENERR   PENERD2
     INDIC_SEUIL         490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NDEPLAR  PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
+                              OUT__  EENERR   PENERD1  EENERR   PENERD2
     INIT_MAIL_VOIS      99    IN__  
                               OUT__  EVOISIN  PVOISIN
     INIT_VARC           99    IN__  

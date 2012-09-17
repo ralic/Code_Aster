@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C------------- RESOLUTION  DU LAPLACIEN EN 2D-----------------------
            CALL RESOUD(MA,MAPREC,VECSO1,SOLVEU,' ','V',CHSOL,CRITER,0,
      &                 RBID,CBID,.TRUE.)
            CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO1(1:19),.FALSE.)
-           CALL JEDETC('V',CHSOL,1)
+           CALL DETRSD('CHAMP_GD',CHSOL)
 
 C------------ CREATION DU VECTEUR PRESSION MODAL-------------------
 C
@@ -155,17 +155,13 @@ C
              CALL RESOUD(MA,MAPREC,VECSO2,SOLVEU,' ','V',CHSOL,CRITER,0,
      &                   RBID,CBID,.TRUE.)
              CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO2(1:19),.FALSE.)
-             CALL JEDETC('V',CHSOL,1)
+             CALL DETRSD('CHAMP_GD',CHSOL)
 
              VESTO2='&&OP0152.VEST2'
              CALL PRSTOC(VECSO2,VESTO2,
      &                 ILIRES,ILIRES,IPHI2,NBVALE,NBREFE,NBDESC)
 
           ENDIF
-
-          CALL JEDETC('V',VECSO1,1)
-          CALL JEDETC('V',VECSO2,1)
-
 
 20    CONTINUE
 
@@ -201,7 +197,7 @@ C-------------- RESOLUTION  DU LAPLACIEN EN 2D OU 3D-------------
            CALL RESOUD(MA,MAPREC,VECSO1,SOLVEU,' ','V',CHSOL,CRITER,0,
      &                 RBID,CBID,.TRUE.)
            CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO1(1:19),.FALSE.)
-           CALL JEDETC('V',CHSOL,1)
+           CALL DETRSD('CHAMP_GD',CHSOL)
 
 C--------------- CREATION DU VECTEUR PRESSION -------------------
 C
@@ -218,16 +214,13 @@ C-------------POUR CHAQUE CHAMP AUX NOEUDS-----------------------
              CALL RESOUD(MA,MAPREC,VECSO2,SOLVEU,' ','V',CHSOL,CRITER,0,
      &                   RBID,CBID,.TRUE.)
              CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO2(1:19),.FALSE.)
-             CALL JEDETC('V',CHSOL,1)
+             CALL DETRSD('CHAMP_GD',CHSOL)
 
              VESTO2='&&OP0152.VEST2'
              CALL PRSTOC(VECSO2,VESTO2,
      &                 ILIRES,ILIRES,IPHI2,NBVALE,NBREFE,NBDESC)
           ENDIF
 C
-           CALL JEDETC('V',VECSO1,1)
-           CALL JEDETC('V',VECSO2,1)
-
 5000       CONTINUE
             ENDIF
            ENDIF

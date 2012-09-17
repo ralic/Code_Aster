@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,11 +65,6 @@ MODE_LOCAL__
                                  EN2   (DX       DY       DZ)
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMA_R   ELNO__ IDEN__  (DOMA     )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
-    EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )
-    EENECNO  = ENER_R   ELEM__         (TOTALE   DX       DY       DZ       )
-    EENEREL  = ENER_R   ELEM__         (TOTALE   )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
@@ -203,7 +198,7 @@ OPTION__
     ENDO_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENEL_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENEL_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
-    ENER_ELAS           -1    IN__    OUT__    XXXXXX   XXXXXX
+    ENEL_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPME_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPME_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX

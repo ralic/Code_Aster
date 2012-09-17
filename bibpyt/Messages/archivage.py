@@ -1,4 +1,4 @@
-#@ MODIF archivage Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF archivage Messages  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,10 +39,5 @@ cata_msg = {
 
 6 : _(u"""    Champ stocké <%(k1)s> à l'instant %(r1)19.12e pour le numéro d'ordre %(i1)d"""),
 
-8 : _(u"""    Mode vibratoire stocké pour le numéro d'ordre %(i1)d """),
-
-9 : _(u"""    Mode de flambement stocké pour le numéro d'ordre %(i1)d """),
-
-10: _(u"""    Mode de stabilité stocké pour le numéro d'ordre %(i1)d """),
 
 }

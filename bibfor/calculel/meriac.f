@@ -7,7 +7,7 @@
       CHARACTER*19                               MATELZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,17 +71,16 @@ C
       CALL JELIRA('&MERIAC1           .RELR','LONUTI',LONG1,K8BID)
       CALL JEVEUO('&MERIAC1           .RELR','L',JLIRE1)
 C
-      CALL JEEXIN(MATEL//'.RERR',IRET)
-      IF (IRET.GT.0) THEN
-        CALL JEDETR(MATEL//'.RERR')
-        CALL JEDETR(MATEL//'.RELR')
-      END IF
+      CALL JEDETR(MATEL//'.RERR')
+      CALL JEDETR(MATEL//'.RELR')
 
       CALL MEMARE('G',MATEL,MODELE,MATE,' ','RIGI_ACOU')
       DO 1,I = 1,LONG1
         CALL REAJRE(MATEL,ZK24(JLIRE1-1+I),'G')
     1 CONTINUE
-      CALL JEDETC('G','&MERIAC1',1)
+C --- MENAGE
+      CALL JEDETR('&MERIAC1           .RERR')
+      CALL JEDETR('&MERIAC1           .RELR')
 C
       MATELZ = MATEL
       CALL JEDEMA()

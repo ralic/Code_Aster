@@ -1,7 +1,7 @@
       SUBROUTINE NMIMP0(SDIMPR,SEPARA,LIGNE ,COLONN,TITRE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,99 +21,13 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      INCLUDE 'jeveux.h'
       CHARACTER*24  SDIMPR
       CHARACTER*(*) LIGNE,COLONN,TITRE(3)
-      CHARACTER*1   SEPARA  
-C 
-C ----------------------------------------------------------------------
-C
-C ROUTINE MECA_NON_LINE (AFFICHAGE)
-C
-C CREATION DES OBJETS D'AFFICHAGE
-C      
-C ----------------------------------------------------------------------
-C      
-C
-C IN  SDIMPR : SD AFFICHAGE
-C IN  SEPARA : SEPARATEUR ENTRE LES COLONNES
-C OUT LIGNE  : LIGNE DE SEPARATION DANS LE TABLEAU
-C OUT COLONN : LIGNE DU TABLEAU AVEC SEPARATION COLONNES
-C OUT TITRE  : LIGNE DE TITRE DU TABLEAU AVEC SEPARATION COLONNES
-C
-C
-C
-C
-      INTEGER          ZLAR,ZLIG
-      PARAMETER       (ZLAR = 16,ZLIG = 255)
-C 
-      INTEGER          POS
-      INTEGER          I,K,ICOL,IBID 
-      CHARACTER*24     IMPINF
-      INTEGER          JIMPIN
-      INTEGER          NCOL,LARGE
-      CHARACTER*(ZLAR) TITCOL(3)    
+      CHARACTER*1   SEPARA
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-C
-C --- RECUPERATION DES PARAMETRES
-C
-      IMPINF = SDIMPR(1:14)//'.INFO'
-      CALL JEVEUO(IMPINF,'L',JIMPIN)
-C
-      NCOL   = ZI(JIMPIN-1+1)
-      LARGE  = ZI(JIMPIN-1+2)
-      CALL ASSERT(ZLAR.EQ.16)
-      CALL ASSERT(ZLIG.EQ.255)
-C
-C --- INITIALISATIONS
-C
-      DO 21 I = 1,ZLIG
-        TITRE(1)(I:I)  = ' '
-        TITRE(2)(I:I)  = ' '
-        TITRE(3)(I:I)  = ' '
-        COLONN(I:I)    = ' '
-        LIGNE(I:I)     = ' '
- 21   CONTINUE
-C
-C --- LIGNE DE SEPARATION
-C
-      DO 22 I = 1,LARGE
-        LIGNE(I:I) = '-'
- 22   CONTINUE
-C
-C --- MARQUAGE DES COLONNES PAR LES TRAITS VERTICAUX
-C --- (LARGEUR D'UNE COLONNE FIXEE PAR ZLAR)
-C
-      DO 23 I = 1,LARGE
-       IF (MOD(I-1,ZLAR+1) .EQ. 0) THEN
-         COLONN(I:I) = SEPARA
-       ELSE
-         COLONN(I:I) = ' '
-       END IF
- 23   CONTINUE
-C
-C --- TITRE DES COLONNES
-C
-      POS = 2
-      DO 30 ICOL = 1,NCOL
-        CALL IMPSDA(SDIMPR,'LIRE',ICOL  ,IBID  ,TITCOL,
-     &              IBID  )
-        DO 32 K = 1,3
-          TITRE(K)(POS:POS+ZLAR-1) = TITCOL(K)
- 32     CONTINUE
-        POS = POS+ZLAR+1
- 30   CONTINUE
-C
-      DO 35 I = 1,LARGE
-        IF (MOD(I-1,ZLAR+1) .EQ. 0) THEN
-          DO 34 K = 1,3
-            TITRE(K)(I:I) = SEPARA
- 34       CONTINUE
-        END IF
- 35   CONTINUE
-C
-      CALL JEDEMA()
+C A RESORBER
+      CALL ASSERT(.FALSE.)
+
       END

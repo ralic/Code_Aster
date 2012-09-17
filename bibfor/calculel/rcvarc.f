@@ -1,7 +1,7 @@
       SUBROUTINE RCVARC(ARRET,NOVRC,POUM,FAMI,KPG,KSP,VALVRC,IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,14 +127,7 @@ C     -- SI LA CVRC N'EST PAS FOURNIE, ON REND "R8NNEM"
           VALK(1) = NOVR8
           VALK(2) = NOMAIL
           VALK(3) = POUM
-          IF (POUM.EQ.'+') THEN
-            INST=TIMEF1
-          ELSEIF (POUM.EQ.'-') THEN
-            INST=TIMED1
-          ELSE
-            INST=0.D0
-          ENDIF
-          CALL U2MESG('F','CALCULEL4_69',3,VALK,0,0,1,INST)
+          CALL U2MESK('F','CALCULEL4_69',3,VALK)
         END IF
       END IF
 

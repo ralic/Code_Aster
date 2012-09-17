@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,8 +46,7 @@ MODE_LOCAL__
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    EENECNO  = ENER_R   ELEM__         (TOTALE   PLAN_XY  PLAN_XZ  )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   PLAN_XY  PLAN_XZ  )
+    EENERR   = ENER_R   ELEM__         (TOTALE   PLAN_XY  PLAN_XZ  )
     CEPSINR  = EPSI_R   ELEM__         (EPX      KY       KZ       )
     CFORCEC  = FORC_C   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      )
@@ -136,7 +135,7 @@ OPTION__
     ECIN_ELEM           151   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      COMEG2R  POMEGA2  NGEOMER  PGEOMER  CMASDIA  PMASDIA  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  DDL_MECA PVITESR
-                              OUT__  EENECNO  PENERCR
+                              OUT__  EENERR   PENERCR
     EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
                               OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
     EFGE_ELNO           185   IN__   CCAARPO  PCAARPO  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO
@@ -146,11 +145,11 @@ OPTION__
                                      CMATERC  PMATERC  CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
-    ENER_ELAS           -1    IN__     OUT__  XXXXXX   XXXXXX
+    ENEL_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           151   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENERR   PENERDR
     FORC_NODA           39    IN__   CCAARPO  PCAARPO  CCAORIE  PCAORIE  EEFGEGA  PCONTMR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           247   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR

@@ -1,0 +1,103 @@
+      SUBROUTINE OBCREA(TYPSTZ,NOMSTR)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT      NONE
+      INCLUDE       'jeveux.h'
+      CHARACTER*(*) TYPSTZ
+      CHARACTER*24  NOMSTR
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE UTILITAIRE (GESTION STRUCT)
+C
+C CREATION
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  TYPSTR : TYPE DU STRUCT
+C IN  NOMSTR : NOM DU STRUCT
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER      NBPARI,NBPARR,NBPARK,NBPARO,NBPARB
+      CHARACTER*24 SDDESC,SDDESK
+      INTEGER      JSDESC,JSDESK
+      INTEGER      NBDESC,NBDESK
+      INTEGER      IFM,NIV
+      CHARACTER*24 TYPSTR
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- INITIALISATIONS
+C
+      TYPSTR = TYPSTZ
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ... CREATION STRUCT <',NOMSTR,
+     &                ' DE TYPE <',TYPSTR,'>'
+      ENDIF
+C
+C --- NOM DES OBJETS JEVEUX
+C
+      NBDESC = 5
+      SDDESC = NOMSTR(1:19)//'.DESC'
+      NBDESK = 1
+      SDDESK = NOMSTR(1:19)//'.DESK'
+C
+C --- CREATION
+C
+      IF (TYPSTR.EQ.'LISTE_STRUCTS') THEN
+        CALL OBCRLO(NOMSTR,NBPARB,NBPARI,NBPARR,NBPARK,
+     &              NBPARO)
+      ELSEIF (TYPSTR.EQ.'AFFICHAGE') THEN
+        CALL OBCR26(NOMSTR,NBPARB,NBPARI,NBPARR,NBPARK,
+     &              NBPARO)
+      ELSEIF (TYPSTR.EQ.'TABLEAU') THEN
+        CALL OBCR27(NOMSTR,NBPARB,NBPARI,NBPARR,NBPARK,
+     &              NBPARO)
+      ELSEIF (TYPSTR.EQ.'TABLEAU_COLONNE') THEN
+        CALL OBCR28(NOMSTR,NBPARB,NBPARI,NBPARR,NBPARK,
+     &              NBPARO)
+      ELSE
+        WRITE(6,*) 'TYPE SD INTROUVABLE: ',TYPSTR
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+C --- CREATION DESCRIPTEURS
+C
+      CALL WKVECT(SDDESC,'V V I  ',NBDESC,JSDESC)
+      ZI(JSDESC-1+1) = NBPARB
+      ZI(JSDESC-1+2) = NBPARI
+      ZI(JSDESC-1+3) = NBPARR
+      ZI(JSDESC-1+4) = NBPARK
+      ZI(JSDESC-1+5) = NBPARO
+      CALL WKVECT(SDDESK,'V V K24',NBDESK,JSDESK)
+      ZK24(JSDESK-1+1) = TYPSTR
+C
+      CALL JEDEMA()
+      END

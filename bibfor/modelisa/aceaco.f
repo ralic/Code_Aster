@@ -6,7 +6,7 @@
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,32 +85,23 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCO
      &                                IOC,IARG,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE',  'COQUE','MAILLE',
      &                                IOC,IARG,LMAX,ZK8(JDLS),NM)
-         CALL GETVR8('COQUE','EPAIS',IOC,IARG,1,
-     &               EPA      ,NV  )
-         CALL GETVR8('COQUE','ANGL_REP',IOC,IARG,2,
-     &               ANG(1)   ,NA  )
-         CALL GETVR8('COQUE','VECTEUR',IOC,IARG,3,
-     &               VECT     ,NVEC)
-         CALL GETVR8('COQUE','A_CIS',IOC,IARG,1,
-     &               KAPPA    ,NK  )
-         CALL GETVTX('COQUE','MODI_METRIQUE',IOC,IARG,1,
-     &               KORREC   ,NCO )
-         CALL GETVR8('COQUE','COEF_RIGI_DRZ',IOC,IARG,1,
-     &               RIGI     ,NCR )
-         CALL GETVR8('COQUE','EXCENTREMENT',IOC,IARG,1,
-     &               EXCENT   ,NEX )
-         CALL GETVTX('COQUE','INER_ROTA',IOC,IARG,1,
-     &               INERT    ,NIN )
+         CALL GETVR8('COQUE','EPAIS',        IOC,IARG,1, EPA   , NV  )
+         CALL GETVR8('COQUE','ANGL_REP',     IOC,IARG,2, ANG   , NA  )
+         CALL GETVR8('COQUE','VECTEUR',      IOC,IARG,3, VECT  , NVEC)
+         CALL GETVR8('COQUE','A_CIS',        IOC,IARG,1, KAPPA , NK  )
+         CALL GETVTX('COQUE','MODI_METRIQUE',IOC,IARG,1, KORREC, NCO )
+         CALL GETVR8('COQUE','COEF_RIGI_DRZ',IOC,IARG,1, RIGI  , NCR )
+         CALL GETVR8('COQUE','EXCENTREMENT', IOC,IARG,1, EXCENT, NEX )
+         CALL GETVTX('COQUE','INER_ROTA',    IOC,IARG,1, INERT , NIN )
 
-
-         IF(NVEC.NE.0) THEN
-            CALL ANGVX(VECT,ANG(1),ANG(2))
-            ANG(1)=  ANG(1)*180.D0/PI
-            ANG(2)= -ANG(2)*180.D0/PI
-         ENDIF
-         ZR(JDVC)   = EPA
-         ZR(JDVC+1) = ANG(1)
+         ZR(JDVC)   =  EPA
+         ZR(JDVC+1) =  ANG(1)
          ZR(JDVC+2) = -ANG(2)
+         IF (NVEC.NE.0) THEN
+            CALL ANGVX(VECT,ANG(1),ANG(2))
+            ZR(JDVC+1) =  ANG(1)*180.D0/PI
+            ZR(JDVC+2) = -ANG(2)*180.D0/PI
+         ENDIF
          ZR(JDVC+3) = KAPPA
          IF (KORREC.EQ.'OUI') CORREC=1.D0
          ZR(JDVC+4) = CORREC

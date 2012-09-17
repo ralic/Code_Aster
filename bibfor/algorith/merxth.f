@@ -1,7 +1,7 @@
       SUBROUTINE MERXTH(MODELE,CHARGE,INFCHA,CARELE,MATE,INST,CHTNI,
      &                  MERIGI,COMPOR,TMPCHI,TMPCHF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C ----------------------------------------------------------------------
 C CALCUL DES MATRICES TANGENTES ELEMENTAIRES
 C EN THERMIQUE NON LINEAIRE
 C  - TERMES DE VOLUME
-C  - TERMES DE SURFACE DUS AUX CONDITIONS LIMITES
+C  - TERMES DE SURFACE DUS AUX CONDITIONS LIMITES ET CHARGEMENTS
 
 C IN  MODELE  : NOM DU MODELE
 C IN  CHARGE  : LISTE DES CHARGES
@@ -42,25 +42,24 @@ C OUT MERIGI  : MATRICES ELEMENTAIRES
 
 
 
-      CHARACTER*8 NOMCHA,LPAIN(9),LPAOUT(1),K8BID
+      CHARACTER*8 NOMCHA,LPAIN(10),LPAOUT(1),K8BID
       CHARACTER*16 OPTION
-      CHARACTER*24 LIGREL(2),LCHIN(9),LCHOUT(1)
+      CHARACTER*24 LIGREL(2),LCHIN(10),LCHOUT(1)
       CHARACTER*24 CHGEOM,CHCARA(18)
       INTEGER IRET,NCHAR,ILIRES,ICHA,JCHAR,JINF
       LOGICAL EXICAR,EXIGEO
 C ----------------------------------------------------------------------
       INTEGER NBCHMX
-      PARAMETER (NBCHMX=4)
-      INTEGER NBOPT(NBCHMX),NLIGR(NBCHMX),K
+      PARAMETER (NBCHMX=5)
+      INTEGER NLIGR(NBCHMX),K
       CHARACTER*6 NOMOPR(NBCHMX),NOMOPF(NBCHMX),NOMCHP(NBCHMX)
       CHARACTER*7 NOMPAR(NBCHMX),NOMPAF(NBCHMX)
-      DATA NOMCHP/'.COEFH','.FLUNL','.RAYO','.HECHP'/
-      DATA NOMOPR/'COEF_R','      ','RAYO_R','PARO_R'/
-      DATA NOMOPF/'COEF_F','FLUXNL','RAYO_F','PARO_F'/
-      DATA NOMPAR/'PCOEFHR','       ','PRAYONR','PHECHPR'/
-      DATA NOMPAF/'PCOEFHF','PFLUXNL','PRAYONF','PHECHPF'/
-      DATA NBOPT/4,4,4,4/
-      DATA NLIGR/1,1,1,2/
+      DATA NOMCHP/'.COEFH','.FLUNL','.SOUNL','.RAYO','.HECHP'/
+      DATA NOMOPR/'COEF_R','      ','      ','RAYO_R','PARO_R'/
+      DATA NOMOPF/'COEF_F','FLUXNL','SOURNL','RAYO_F','PARO_F'/
+      DATA NOMPAR/'PCOEFHR','       ','       ','PRAYONR','PHECHPR'/
+      DATA NOMPAF/'PCOEFHF','PFLUXNL','PSOURNL','PRAYONF','PHECHPF'/
+      DATA NLIGR/1,1,1,1,2/
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEEXIN(CHARGE,IRET)
@@ -86,7 +85,7 @@ C DEB ------------------------------------------------------------------
 
       ILIRES = 0
 
-      IF (MODELE.NE.'        ') THEN
+      IF (MODELE.NE.' ') THEN
         LPAIN(1) = 'PGEOMER'
         LCHIN(1) = CHGEOM
         LPAIN(2) = 'PMATERC'
@@ -101,12 +100,15 @@ C DEB ------------------------------------------------------------------
         LCHIN(6) = TMPCHI
         LPAIN(7) = 'PTMPCHF'
         LCHIN(7) = TMPCHF
+        LPAIN(8) = 'PVARCPR'
+        LCHIN(8) = '&&NXACMV.CHVARC'
+
         LPAOUT(1) = 'PMATTTR'
         LCHOUT(1) = MERIGI(1:8)//'.ME001'
         OPTION = 'MTAN_RIGI_MASS'
         ILIRES = ILIRES + 1
         CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-        CALL CALCUL('S',OPTION,LIGREL(1),7,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
+        CALL CALCUL('S',OPTION,LIGREL(1),8,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &              'V','OUI')
         CALL REAJRE(MERIGI,LCHOUT(1),'V')
       END IF
@@ -123,6 +125,9 @@ C DEB ------------------------------------------------------------------
             LCHIN(3) = INST
             LPAIN(4) = 'PTEMPEI'
             LCHIN(4) = CHTNI
+            LPAIN(5) = 'PVARCPR'
+            LCHIN(5) = '&&NXACMV.CHVARC'
+
             LPAOUT(1) = 'PMATTTR'
             LCHOUT(1) = MERIGI(1:8)//'.ME001'
 
@@ -141,7 +146,7 @@ C DEB ------------------------------------------------------------------
                 END IF
                 ILIRES = ILIRES + 1
                 CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-                CALL CALCUL('S',OPTION,LIGREL(NLIGR(K)),NBOPT(K),LCHIN,
+                CALL CALCUL('S',OPTION,LIGREL(NLIGR(K)),5,LCHIN,
      &                      LPAIN,1,LCHOUT,LPAOUT,'V','OUI')
                 CALL REAJRE(MERIGI,LCHOUT(1),'V')
               END IF

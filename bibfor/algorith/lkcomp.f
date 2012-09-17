@@ -1,18 +1,18 @@
       SUBROUTINE LKCOMP (MOD,IMATE,INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,
-     &                   VINM,OPTION,SIGP,VINP,DSIDE,RETCOM)
+     &                   VINM,OPTION,SIGP,VINP,DSIDE,RETCOM,INVI)
 C
       IMPLICIT  NONE
-      INTEGER            RETCOM, IMATE
+      INTEGER            RETCOM, IMATE, INVI
       CHARACTER*8        MOD(*)
       CHARACTER*16       OPTION
       REAL*8             INSTAM,INSTAP,TM,TP,TREF
       REAL*8             DEPS(6)
-      REAL*8             SIGM(6),VINM(7)
-      REAL*8             SIGP(6),VINP(7)
+      REAL*8             SIGM(6),VINM(INVI)
+      REAL*8             SIGP(6),VINP(INVI)
       REAL*8             DSIDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/05/2012   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,7 +120,7 @@ C =================================================================
       MATCST = 'OUI'
       CALL LKLMAT ( MOD, IMATE, NBMAT, TM, MATERD,
      &              MATERF, MATCST, NDT, NDI, NVI, INDAL)
-
+      CALL ASSERT(INVI.EQ.NVI)
 C      SIGC   = MATERD(3,2)
       XIPIC  = MATERD(18,2)
       XIVM   = MATERD(20,2)

@@ -5,9 +5,9 @@ C
       REAL*8      INVAR, S(6), MATER(NBMAT,2), VIN(7), SEUIL
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,8 +76,12 @@ C =================================================================
 C ---  CRITERE ELASTOPLASTIQUE ------------------------------------
 C =================================================================
       UCRIV  = VARVI(1)*SII*HTHETA + VARVI(2)*INVAR+VARVI(3)
-C      IF (UCRIV .LT. ZERO) GOTO 100
 
+      IF (UCRIV .LT. 0.0D0) THEN
+         UCRIV=0.0D0
+         PRINT *, '<LKCRIV> UCRIV NON DEFINI'
+      ENDIF
       SEUIL  = SII*HTHETA - SIGC*H0C*(UCRIV)**PARAVI(1)
+C      SEUIL =-1.0D0
 C =================================================================
       END

@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,10 +27,10 @@ C
 C      CALCUL DE LA DENSITE DE DISSIPATION
 C      A L'EQUILIBRE POUR LES ELEMENTS DKT
 C      .SOIT AUX POINTS D'INTEGRATION : OPTION 'DISS_ELGA'
-C      .SOIT L INTEGRALE PAR ELEMENT  : OPTION 'ENER_DISS'
+C      .SOIT L INTEGRALE PAR ELEMENT  : OPTION 'DISS_ELEM'
 C
 C      OPTIONS : 'DISS_ELGA'
-C                'ENER_DISS'
+C                'DISS_ELEM'
 C
 C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -48,7 +48,7 @@ C.......................................................................
 
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  JGEOM,IPG,IDENER,IMATE
-      INTEGER  ICOMPO,ICACOQ,NCMP,JVARI,NBVAR,JTAB(7),IVPG
+      INTEGER  ICOMPO,ICACOQ,JVARI,NBVAR,JTAB(7),IVPG
       INTEGER  JNBSPI,NBCOU,NPGH,IRET,ICOU,IGAUH,ISP,TMA(3,3)
 
       CHARACTER*16 VALK(2)
@@ -99,10 +99,10 @@ C.......................................................................
          CALL GTRIA3(XYZL,CARA)
       END IF
 
-      IF(OPTION(1:4) .EQ. 'DISS') THEN
+      IF(OPTION.EQ.'DISS_ELGA') THEN
         CALL TECACH ( 'OON', 'PVARIGR', 7, JTAB, IRET )
         JVARI = JTAB(1)
-      ELSE IF(OPTION(1:4) .EQ. 'ENER') THEN
+      ELSE IF(OPTION.EQ.'DISS_ELEM') THEN
         CALL TECACH ( 'OON', 'PVARIPR', 7, JTAB, IRET )
         JVARI = JTAB(1)
       ENDIF
@@ -154,7 +154,7 @@ C      ===================================
 
 C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 C        ==========================================================
-         IF ((OPTION(1:4).EQ.'DISS') .OR. (OPTION(6:9).EQ.'DISS')) THEN
+         IF ((OPTION.EQ.'DISS_ELGA').OR.(OPTION.EQ.'DISS_ELEM')) THEN
 
            NBSP=JTAB(7)
 
@@ -202,24 +202,24 @@ C
 C ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
 C ---- ELASTIQUE EN SORTIE
 C      -------------------
-      IF(OPTION(1:4) .EQ. 'DISS') THEN
+      IF(OPTION.EQ.'DISS_ELGA') THEN
         CALL JEVECH('PDISSPG','E',IDENER)
-      ELSE IF(OPTION(1:4) .EQ. 'ENER') THEN
+      ELSE IF(OPTION.EQ.'DISS_ELEM') THEN
         CALL JEVECH('PDISSD1','E',IDENER)
       ENDIF
 C
 C --- OPTIONS DISS_ELGA
 C     ==============================
-      IF (OPTION(1:9).EQ.'DISS_ELGA') THEN
+      IF (OPTION.EQ.'DISS_ELGA') THEN
          DO 100 IPG = 1, NPG
            ZR(IDENER-1+(IPG-1)*3 +1) = DISST(IPG)
            ZR(IDENER-1+(IPG-1)*3 +2) = DISSE(IPG)
            ZR(IDENER-1+(IPG-1)*3 +3) = DISSP(IPG)
  100     CONTINUE
 C
-C --- OPTION ENER_ELAS
+C --- OPTION DISS_ELEM
 C     ================
-      ELSEIF (OPTION(1:9).EQ.'ENER_DISS') THEN
+      ELSEIF (OPTION.EQ.'DISS_ELEM') THEN
         ZR(IDENER-1+1) = DST
         ZR(IDENER-1+2) = DSE
         ZR(IDENER-1+3) = DSP

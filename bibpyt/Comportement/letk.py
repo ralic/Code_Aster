@@ -1,4 +1,4 @@
-#@ MODIF letk Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF letk Comportement  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,13 +26,13 @@ loi = LoiComportement(
    doc = """Relation de comportement pour la modélisation élasto visco plastique des roches suivant le modèle de Laigle et Kleine, cf. [R7.01.24].
    L'opérateur relatif à la prédiction élastique est celui de l'élasticité non linéaire spécifique à la loi.""",
    num_lc         = 35,
-   nb_vari        = 7,
-   nom_vari       = ('XIP','GAMMAP','XIVP','GAMMAVP','INDICDIL','INDIVISC','INDIPLAS'),
+   nb_vari        = 9,
+   nom_vari       = ('XIP','GAMMAP','XIVP','GAMMAVP','INDICDIL','INDIVISC','INDIPLAS','DOMAINE','INDIC'),
    mc_mater       = ('ELAS','LETK'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN', 'THM'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   algo_inte         = ('NEWTON_PERT','SPECIFIQUE'),
+   algo_inte      = ('NEWTON','NEWTON_PERT','SPECIFIQUE'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ' ',
 )

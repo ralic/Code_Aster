@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF calc_europlexus_ops Macro  DATE 17/09/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1093,6 +1093,7 @@ class EUROPLEXUS:
             concept_mater = affe['MATER']
             # Recuperer le nom du materiau
             nom_mater = concept_mater.get_name()
+            print 'nom_mater',nom_mater
             # Recuperer le group_ma concerne
             group_ma = self.get_group_ma(affe)
             if debug: print 'type(group_ma) = %s'%type(group_ma)
@@ -1111,11 +1112,24 @@ class EUROPLEXUS:
                        dic_mater[nom_mater][car] = None
                 beton = self.recupere_structure(concept_mater,'BETON')
                 if beton  :
+                    print 'on a trouve BETON'
                     typMat[nom_mater] = 'GLRC'
                     self.gmaGLRC.extend(group_ma)
                     dic_mater[nom_mater]['LINER']=[]
                     dic_mater[nom_mater]['NAPPE']=[]
+                    dic_mater[nom_mater]['CISAIL_NL']={}
                     materBeton = beton['MATER']
+
+                    cisail_nl = self.recupere_structure(concept_mater,'CISAIL_NL')
+                    if cisail_nl :
+                        btd1=cisail_nl['BTD1']
+                        btd2=cisail_nl['BTD2']
+                        tsd =cisail_nl['TSD']
+                        dic_mater[nom_mater]['CISAIL_NL']['BTD1']=btd1
+                        dic_mater[nom_mater]['CISAIL_NL']['BTD2']=btd2
+                        dic_mater[nom_mater]['CISAIL_NL']['TSD'] =tsd
+
+
                     elasBeton = self.recupere_structure(materBeton,'ELAS')
                     dic_mater[nom_mater]['BETON']={}
                     for car in ['E','RHO','NU']:
@@ -1218,6 +1232,7 @@ class EUROPLEXUS:
         # Impression au format Europlexus
 
         for nom_mater in dic_mater.keys():
+            print 'nom_mater',nom_mater
             epx[MODULE].append('*--MATERIAU %s' %nom_mater)
             # mot cle indicant qu'il s'agit des caracteristiques lineaires du materiau
             if typMat[nom_mater] == 'ELAS' :
@@ -1243,7 +1258,15 @@ class EUROPLEXUS:
                 dic_corres2b = {'MP1X':'MP1X','MP2X':'MP2X','MP1Y':'MP1Y','MP2Y':'MP2Y',}
                 dic_corres3 = {'PREX' : 'PREX', 'PREY' : 'PREY'}
                 dic_corres4 = {'AMOR_ALPHA':'KRAY','AMOR_BETA':'MRAY'}
-                epx[MODULE].append('GLRC DAMA')
+                dic_corres5 = {'BTD1' : 'BTD1','BTD2' : 'BTD2','TSD' : 'TSD'}
+
+                if dic_mater[nom_mater]['CISAIL_NL']=={} :
+                    epx[MODULE].append('GLRC DAMA')
+                    l_cisail = False
+                else :
+                    epx[MODULE].append('GLRC DAMA SHEA')
+                    l_cisail = True
+
                 for car_aster in dic_corres1.keys():
                     vale    = dic_mater[nom_mater]['BETON'][car_aster]
                     car_epx = dic_corres1[car_aster]
@@ -1284,6 +1307,16 @@ class EUROPLEXUS:
                             epx[MODULE].append('%s %s' %(car_epx,vale))
                         else :
                             epx[MODULE].append('%s %s' %(car_epx,vale))
+                if l_cisail :
+                    for car_aster in dic_corres5.keys():
+                        print 'car_aster',car_aster
+                        vale    = dic_mater[nom_mater]['CISAIL_NL'][car_aster]
+                        car_epx = dic_corres5[car_aster]
+                        if vale is not None :
+                            if isinstance(vale, float) :
+                                epx[MODULE].append('%s %s' %(car_epx,vale))
+                            else :
+                                epx[MODULE].append('%s %s' %(car_epx,vale))
                 for car_aster in dic_corres2b.keys():
                     vale    = dic_mater[nom_mater]['BETON'][car_aster]
                     car_epx = dic_corres2b[car_aster]

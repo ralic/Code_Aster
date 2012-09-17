@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 # sslv111b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,10 +105,14 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                                        FX=F3,
                                        FY=F4,),),);
 
-RESU=MECA_STATIQUE(MODELE=MO,
-                   CHAM_MATER=CM,
-                   EXCIT=(_F(CHARGE=CH1,),
-                          _F(CHARGE=CH2,),),);
+#
+# MACRO_ELAS_MULT A LA PLACE DE MECA_STATIQUE POUR VALIDER ELAS_MULT + CALC_ERREUR
+#
+RESU=MACRO_ELAS_MULT(MODELE=MO,
+                     CHAM_MATER=CM,
+                     CHAR_MECA_GLOBAL=CH1,
+                     CAS_CHARGE=_F(NOM_CAS='CHARGEMENT_FONCTION',
+                                   CHAR_MECA=CH2,),);
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -249,7 +249,13 @@ C.... PUIS AFFECTATION
      &            0.D0,LIRELA)
 
    60 CONTINUE
-      CALL JEDETC('V','&&RECI3D',1)
+C
+C --- MENAGE
+      CALL JEDETR('&&RECI3D.COEMUR')
+      CALL JEDETR('&&RECI3D.NOMDDL')
+      CALL JEDETR('&&RECI3D.NOMNOE')
+      CALL JEDETR('&&RECI3D.DIMENS')
+      CALL JEDETR('&&RECI3D.DIRECT')
       CALL JEDEMA()
 
 C --- FIN DE RECI3D.

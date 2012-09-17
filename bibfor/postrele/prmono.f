@@ -1,7 +1,7 @@
       SUBROUTINE PRMONO ( CHAMP, IOC, SOM, NBCMP, NOCMP )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,9 @@ C
 C
  100  CONTINUE
 C
+C --- MENAGE
       CALL DETRSD ( 'CHAM_NO_S', CHAMS1 )
-      CALL JEDETC ( 'V','&&PRMONO',1 )
+      CALL JEDETR ( MESNOE )
+      CALL JEDETR ( '&&PRMONO.NOM_CMP' )
 C
       END

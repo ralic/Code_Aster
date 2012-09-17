@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
+#& MODIF COMMANDE  DATE 17/09/2012   AUTEUR CHEIGNON E.CHEIGNON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +61,11 @@ DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
                            ),
            b_glrc_damage=BLOC(condition = "RELATION == 'GLRC_DAMAGE'",
                             fr="Paramètres de la loi GLRC_DAMAGE",
+                   CISAIL_NL          =FACT(statut='f',max=1,
+                     BTD1            =SIMP(statut='o',typ='R'),
+                     BTD2            =SIMP(statut='o',typ='R'),
+                     TSD             =SIMP(statut='o',typ='R'),
+                                         ),
                    BETON            =FACT(statut='o',max=1,
                    regles=(ENSEMBLE('MP1X', 'MP1Y', 'MP2X', 'MP2Y'),
                            ENSEMBLE('MP1X_FO', 'MP1Y_FO', 'MP2X_FO', 'MP2Y_FO'),

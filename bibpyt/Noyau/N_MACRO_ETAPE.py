@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,6 +73,8 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       self.Outputs = {}
       self.sdprods = []
       self.UserError = "UserError"
+      # permet de stocker le nom du dernier concept nommé dans la macro
+      self.last = None
 
    def make_register(self):
       """
@@ -499,7 +501,8 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
         # create_sdprod. La seule chose a verifier apres conversion eventuelle du nom
         # est de verifier que le nom n'est pas deja attribue. Ceci est fait en delegant
         # au JDC par l'intermediaire du parent.
-        #message.debug(SUPERV, "macro results = %s, (pass %s)", self.Outputs.keys(), sdnom)
+        #message.debug(SUPERV, "macro results = %s, (sdnom: %r, restrict: %r)",
+                      #self.Outputs.keys(), sdnom, restrict)
         if self.Outputs.has_key(sdnom):
             # Il s'agit d'un concept de sortie de la macro produit par une sous commande
             sdnom = self.Outputs[sdnom].nom
@@ -526,7 +529,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
                 #XXX à voir, création de CO() dans CALC_ESSAI (sdls139a)
                 if not sd.is_typco():
                     raise AsException("Résultat non déclaré par la macro %s : %s" % (self.nom, sdnom))
-
+        self.last = sdnom
         if restrict == 'non':
             # On demande le nommage au parent mais sans ajout du concept dans le contexte du parent
             # car on va l'ajouter dans le contexte de la macro
@@ -559,6 +562,12 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       if not self.reuse and self.sd:
           sdprods.append(self.sd)
       return sdprods
+
+   def get_last_concept(self):
+       """Retourne le dernier concept produit dans la macro.
+       Peut-être utile pour accéder au contenu 'fortran' dans une
+       clause 'except'."""
+       return self.g_context.get(self.last, None)
 
    def accept(self,visitor):
       """

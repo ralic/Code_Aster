@@ -91,8 +91,11 @@ iRfPWnbDbEpml7kmnWs5/JveZAivRfrb0NU05lfGuhNtlalDQY/boXgqTyxQ+YZ38Qd9Afm7k44=
         if not testit(fcflags=flags):
             flags = ['-O0']
             testit(fcflags=flags, mandatory=True,
-            errmsg=('No config found to prevent "LOC in loop" failure.',
-                    'It is known to fail with gcc 4.6 and flag "-Oi" (i>0).'))
+                errmsg=('No config found to prevent "LOC in loop" failure.',
+                        'It is known to fail with gcc 4.6 and flag "-Oi" (i>0).'))
+            #XXX the unittest fails but it's known to work with Intel compilers.
+            if self.env.FC_NAME == 'IFORT':
+                flags = ['-O2']
     self.env.append_unique('FCFLAGS', flags)
     self.end_msg(flags)
 

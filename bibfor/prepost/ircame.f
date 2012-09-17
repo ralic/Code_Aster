@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -286,7 +286,7 @@ C
         ENDIF
         NVALEC = ZI(ADCAII+7*NRIMPR-4)
 C
-        CALL JEDETC('V',NMCMFI,1)
+        CALL JEDETR(NMCMFI)
 C
         IFIMED = 0
         CALL MDEXCH ( NOFIMD, IFIMED,
@@ -330,7 +330,14 @@ C
           WRITE (IFM,*) ' '
       ENDIF
 C
-      CALL JEDETC('V','&&'//NOMPRO,1)
+C --- MENAGE
+      CALL JEDETR('&&'//NOMPRO//'.LISTE_N0MCMP   ')                 
+      CALL JEDETR('&&'//NOMPRO//'.NOMCMP         ')
+      CALL JEDETR('&&'//NOMPRO//'.UNITECMP       ')
+      CALL JEDETR('&&'//NOMPRO//'.PROFIL_ASTER   ')
+      CALL JEDETR('&&'//NOMPRO//'.NOMCMP_FICHIER ')
+      CALL JEDETR('&&'//NOMPRO//'.CARAC_NOMBRES__')
+      CALL JEDETR('&&'//NOMPRO//'.CARAC_CHAINES__')
 C
       CALL JEDEMA ( )
 C

@@ -4,7 +4,7 @@
      &                    CARA  , CHVARC, NPASS , CODRET )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*8 K8B
       CHARACTER*8 CTYPE
       CHARACTER*8 RESUP, RESUD
-      CHARACTER*16 OPTION, OPTIOP, OPTIOD, LIPACR(NPACRI)
+      CHARACTER*16 OPTION, OPTIOP, OPTIOD, LIPACR(NPACRI),TYSD
       CHARACTER*19 KCHAP, KCHAD, TABP, TABD
       CHARACTER*24 BLAN24,K24B
       CHARACTER*24 CHS
@@ -134,6 +134,10 @@ C
         LIGRCH = ZK8(JCHA+II-1)//'.CHME.LIGRE'
 C
  101  CONTINUE
+C
+C 1.1.2. ==> LE TYPE DE SD
+C
+      CALL GETTCO(RESUCO,TYSD)
 C
 C 1.2. ==> INITIALISATIONS
 C               123456789012345678901234
@@ -203,43 +207,49 @@ C           RECUPERE LES CHARGES POUR LE NUMERO D'ORDRE IORDR
           CALL JEVEUO(KCHA,'L',JCHA)
           CALL MECARA(CARA,EXICAR,CHCARA)
 
+          IF ((TYSD.EQ.'EVOL_ELAS') .OR.
+     &        (TYSD.EQ.'EVOL_NOLI')) THEN
 C--- RECUPERATION DES INSTANTS CORRESPONDANT A IORDR ET IORDR-1
-          DO 20 , JAUX = 1 , JFIN
+            DO 20 , JAUX = 1 , JFIN
 C
-            IBID = IORDR+1-JAUX
+              IBID = IORDR+1-JAUX
 C
-            IF ( IBID.LT.0 ) THEN
-              CALL U2MESK('I','INDICATEUR_3',1,NOMPRO)
-              GOTO 2299
-            ENDIF
+              IF ( IBID.LT.0 ) THEN
+                CALL U2MESK('I','INDICATEUR_3',1,NOMPRO)
+                GOTO 2299
+              ENDIF
 C
-            CALL RSADPA(RESUCO,'L',1,'INST',IBID,0,IAINST,K8B)
+              CALL RSADPA(RESUCO,'L',1,'INST',IBID,0,IAINST,K8B)
 C
-            IF ( JAUX.EQ.1 ) THEN
-              TIME   = ZR(IAINST)
-              DELTAT = RUNDF
-              THETA  = RUNDF
-            ELSE
-              DELTAT = TIME - ZR(IAINST)
+              IF ( JAUX.EQ.1 ) THEN
+                TIME   = ZR(IAINST)
+                DELTAT = RUNDF
+                THETA  = RUNDF
+              ELSE
+                DELTAT = TIME - ZR(IAINST)
 
 C - --RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
-              CALL JENONU(JEXNOM(RESUCO//'           .NOVA',
+                CALL JENONU(JEXNOM(RESUCO//'           .NOVA',
      &                    'PARM_THETA'),IAD)
-              IF (IAD.EQ.0) THEN
-                THETA = 0.57D0
-                CALL U2MESK('A','INDICATEUR_4',1,RESUCO)
-              ELSE
-                CALL RSADPA(RESUCO,'L',1,'PARM_THETA',IORDR,0,
+                IF (IAD.EQ.0) THEN
+                  THETA = 0.57D0
+                  CALL U2MESK('A','INDICATEUR_4',1,RESUCO)
+                ELSE
+                  CALL RSADPA(RESUCO,'L',1,'PARM_THETA',IORDR,0,
      &                      IAD,K8B)
-                THETA = ZR(IAD)
-                IF ((THETA.GT.1.D0) .OR. (THETA.LT.0.D0)) THEN
-                  CALL U2MESK('F','INDICATEUR_5',1,RESUCO)
+                  THETA = ZR(IAD)
+                  IF ((THETA.GT.1.D0) .OR. (THETA.LT.0.D0)) THEN
+                    CALL U2MESK('F','INDICATEUR_5',1,RESUCO)
+                  ENDIF
                 ENDIF
-              ENDIF
 C - --
-            ENDIF
- 20       CONTINUE
-
+              ENDIF
+ 20         CONTINUE
+          ELSE
+            TIME   = 0.D0
+            DELTAT = RUNDF
+            THETA  = RUNDF
+          ENDIF  
 C--- CREATION DE LA CARTE DES INSTANTS
           CALL MECHTI(NOMA,TIME,DELTAT,THETA,CHTIME)
 C
@@ -374,8 +384,7 @@ C--- SI LE CHAMP N'EXISTE PAS, ON SORT
 
 C 2.2.10. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
 C             LOCAUX
-          CALL ERGLOB(CHELEM,YATHM ,PERMAN,OPTION,IORDR,
-     &                TIME  ,RESUCO,LERES1)
+          CALL ERGLOB(CHELEM,YATHM ,PERMAN,OPTION,IORDR,RESUCO,LERES1)
 
 C 2.2.11. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
           CALL RSNOCH ( LERES1,OPTION,IORDR)
@@ -506,8 +515,13 @@ C 4.2.6. ==> VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
 
 C 4.2.7. ==> RECUPERE L'ADRESSE JEVEUX DE L'INSTANT DE CALCUL
 C          POUR LE NUMERO D'ORDRE IORDR
-          CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-          TIME = ZR(IAINST)
+          IF ((TYSD.EQ.'EVOL_ELAS') .OR.
+     &        (TYSD.EQ.'EVOL_NOLI')) THEN
+            CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
+            TIME = ZR(IAINST)
+          ELSE
+            TIME = 0.D0
+          ENDIF  
 
 C 4.2.8. ==> CREE UNE CARTE D'INSTANTS
           CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
@@ -535,7 +549,7 @@ C--- SI LE CHAMP N'EXISTE PAS, ON SORT
 C 4.2.12. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
 C             LOCAUX
           CALL ERGLOB(CHELEM,.FALSE.,.FALSE.,OPTION,IORDR,
-     &                TIME  ,RESUCO ,LERES1)
+     &                RESUCO ,LERES1)
 
 C 4.2.13. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
           CALL RSNOCH(LERES1,OPTION,IORDR)
@@ -625,8 +639,13 @@ C 6.2.6 ==> CALCUL
 
 C 6.2.7.0. ==> RECUPERE L'ADRESSE JEVEUX DE L'INSTANT DE CALCUL
 C          POUR LE NUMERO D'ORDRE IORDR
-          CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-          TIME = ZR(IAINST)
+         IF ((TYSD.EQ.'EVOL_ELAS') .OR.
+     &        (TYSD.EQ.'EVOL_NOLI')) THEN
+            CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
+            TIME = ZR(IAINST)
+          ELSE
+            TIME = 0.D0
+          ENDIF  
 C
 C 6.2.7.1. ==> RECUPERE LE CHAMP DE VARIABLE DE COMMANDE
           CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CRET)
@@ -634,7 +653,7 @@ C
 C 6.2.7.2. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
 C             LOCAUX
           CALL ERNOZZ(MODELE,CHSIGP,MATE,CHSGPN,CHVARC,OPTION,LIGRMO,
-     &                IORDR,TIME,RESUCO,LERES1,CHELEM)
+     &                IORDR,RESUCO,LERES1,CHELEM)
 
 C 6.2.8. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
           CALL RSNOCH(LERES1,OPTION,IORDR)
@@ -669,18 +688,22 @@ C
             GO TO 9999
           END IF
 C
+
           CALL RSEXC2(1,1,RESUCO,'SI'//OPTION(3:4)//'_NOEU',
      &                IORDR,CHSIGN,OPTION,IRET)
 C
           IF ( IRET.EQ.0 ) THEN
-C       ==> RECUPERE L'ADRESSE JEVEUX DE L'INSTANT DE CALCUL
-C           POUR LE NUMERO D'ORDRE IORDR
-            CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-            TIME = ZR(IAINST)
+            IF ((TYSD.EQ.'EVOL_ELAS') .OR.
+     &          (TYSD.EQ.'EVOL_NOLI')) THEN
+              CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
+              TIME = ZR(IAINST)
+            ELSE
+              TIME = 0.D0
+            ENDIF  
             CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CRET)
             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
             CALL ERNOZZ(MODELE,CHSIG,MATE,CHSIGN,CHVARC,OPTION,LIGRMO,
-     &                  IORDR,TIME,RESUCO,LERES1,CHELEM)
+     &                  IORDR,RESUCO,LERES1,CHELEM)
             CALL RSNOCH(LERES1,OPTION,IORDR)
           ENDIF
 C

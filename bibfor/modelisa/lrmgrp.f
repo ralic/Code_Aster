@@ -4,7 +4,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -239,7 +239,11 @@ C====
 C 4. LA FIN
 C====
 C
-      CALL JEDETC('V','&&'//NOMPRO,1)
+C --- MENAGE
+      CALL JEDETR('&&'//NOMPRO//'.GRPNO_DEJA_VUS_')
+      CALL JEDETR('&&'//NOMPRO//'.ADRESSE_GRPNO__')
+      CALL JEDETR('&&'//NOMPRO//'.GRPMA_DEJA_VUS_')
+      CALL JEDETR('&&'//NOMPRO//'.ADRESSE_GRPMA__')
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'FIN DE '//NOMPRO

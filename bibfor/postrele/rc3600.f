@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -170,6 +170,7 @@ C
       CALL DETRSD ( 'CHAM_ELEM_S', CHRESU )
       CALL JEEXIN ( NCNCIN, IBID )
       IF (IBID .NE. 0)  CALL JEDETR ( NCNCIN )
+      CALL JEDETR ( MESMAI )
       CALL JEDETC ( 'V' , '&&RC3600' , 1 )
 C
       CALL JEDEMA( )

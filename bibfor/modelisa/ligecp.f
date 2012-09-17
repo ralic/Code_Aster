@@ -5,7 +5,7 @@
       INTEGER                    NBTOUT(10),LONLIG,LONEMA,NBGREL
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C           NBNOMA = ""NB DE NOEUDS DE LA MAILLE"""""
 3       CONTINUE
         LONLIG = LONLIG + NBMA + 1
 2     CONTINUE
-      CALL JEDETC(' ',LISTE,1)
+      CALL JEDETR(LISTE)
       NBTOUT(1) = NBGREL
       NBTOUT(2) = NBGREL
       CALL JEDEMA()

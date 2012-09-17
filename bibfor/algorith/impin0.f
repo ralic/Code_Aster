@@ -2,7 +2,7 @@
      &                  UNITE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,6 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
       INTEGER      ZDEF
       CHARACTER*16 MOTFAC
       LOGICAL      LINFRE,LINFTP
@@ -45,64 +44,6 @@ C OUT LINFRE : .TRUE. SI INFO_RESIDU
 C OUT LINFTP : .TRUE. SI INFO_TEMPS
 C OUT UNITE  : UNITE DU FICHIER POUR AFFICHAGE TABLEAU EN PLUS DE .MESS
 C
-C
-C
-C
-      INTEGER      IMPTMP
-      CHARACTER*3  CMP
-      INTEGER      NOC     
-      INTEGER      IARG
-C      
-C ----------------------------------------------------------------------
-C      
-      CALL JEMARQ()
-C
-C --- NOM SD PROVISOIRE COLONNES ACTIVES
-C
-      COLACT = '&&IMPIN0.COLACT'  
-      LINFRE = .FALSE.
-      UNITE  = 0
-C
-C --- INFO SUR LES RESIDUS      
-C
-      CALL GETVTX(MOTFAC,'INFO_RESIDU',1,IARG,1,CMP,NOC)
-      IF (NOC.EQ.0) THEN
-        LINFRE = .FALSE.
-      ELSE
-        IF (CMP.EQ.'OUI') THEN
-          LINFRE = .TRUE.
-        ELSEIF (CMP.EQ.'NON') THEN
-          LINFRE = .FALSE.
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-      ENDIF
-C
-C --- INFO SUR LE TEMPS     
-C
-      CALL GETVTX(MOTFAC,'INFO_TEMPS',1,IARG,1,CMP,NOC)
-      IF (NOC.EQ.0) THEN
-        LINFTP = .FALSE.
-      ELSE
-        IF (CMP.EQ.'OUI') THEN
-          LINFTP = .TRUE.
-        ELSEIF (CMP.EQ.'NON') THEN
-          LINFTP = .FALSE.
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-      ENDIF
-C
-C --- UNITE FICHIER CSV
-C
-      CALL GETVIS(MOTFAC,'UNITE',1,IARG,1,UNITE,NOC)
-C
-C --- CREATION SD PROVISOIRE COLONNES ACTIVES
-C
-      CALL WKVECT(COLACT,'V V I',ZDEF,IMPTMP)   
-C
-C --- MENAGE
-C
-      CALL JEDEMA()
-
+C A RESORBER
+         CALL ASSERT(.FALSE.)
       END

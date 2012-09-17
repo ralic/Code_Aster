@@ -4,7 +4,7 @@
      &                  SDENER,SDIETO,SDCRIQ,LISCH2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INCLUDE 'jeveux.h'
+      INCLUDE      'jeveux.h'
       CHARACTER*8  RESULT
       INTEGER      FONACT(*)
       INTEGER      NUMINS
@@ -68,9 +68,9 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER      JINST
-      INTEGER      IBID,IRET
+      INTEGER      IRET
       INTEGER      NUMARC
-      REAL*8       INSTAM,INSTAN,R8BID
+      REAL*8       INSTAM,INSTAN
       CHARACTER*8  K8BID
       REAL*8       DIINST
       LOGICAL      FORCE
@@ -131,7 +131,7 @@ C
 C
 C ----- AFFICHAGE
 C
-        CALL NMIMPR(SDIMPR,'IMPR','ARCH_TETE',' ',R8BID,IBID)
+        CALL U2MESS('I','ARCHIVAGE_5')
 C
 C ----- EXTENSION DE RESULT SI TROP PETIT (DOUBLEMENT)
 C

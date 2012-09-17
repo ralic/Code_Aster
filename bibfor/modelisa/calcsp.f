@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 17/09/2012   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C-----------------------------------------------------------------------
       INTEGER       IVAL(3), VALI(2)
       INTEGER       LNUMI,LNUMJ,LFREQ,I1,NBABS
       INTEGER       LRNUMI,LRNUMJ,LRFREQ,MXVAL,MRXVAL,IPF
-      REAL*8        MGI, KSI
+      REAL*8        MGI, KSI, HDENOM
       CHARACTER*8   K8B
       CHARACTER*24  CHNUMI,CHNUMJ,CHFREQ,CHVALE
       CHARACTER*24  CRNUMI,CRNUMJ,CRFREQ,CRVALE
@@ -173,27 +173,29 @@ C
               HII1 = ZR(IHI+NBPF*(IM1-1)+IL-1)
               HIR2 = ZR(IHR+NBPF*(IM2-1)+IL-1)
               HII2 = ZR(IHI+NBPF*(IM2-1)+IL-1)
-              HHR = 1.D0/(HIR1*HIR2 + HII1*HII2)
-              HHI = (HIR2*HII1 - HIR1*HII2)
-              IF ( ABS(HHI) .LE. 1.D-20 .OR. IM1.EQ.IM2) THEN
-                HHI = 0.D0
+              HDENOM = (HIR1*HIR1+HII1*HII1)*(HIR2*HIR2+HII2*HII2)
+              HHR = (HIR1*HIR2 + HII1*HII2)/HDENOM
+              HHI = (HIR2*HII1 - HIR1*HII2)/HDENOM
+
+              IF (IVAL(2) .EQ. IVAL(3)) THEN
+                ZR(LVALE+IL-1)   = HHR*ZR(IFONC+IL-1)
               ELSE
-                HHI = 1.D0/HHI
+                ZR(LVALE+2*(IL-1))  = HHR*ZR(IFONC+2*(IL-1))-
+     &                                HHI*ZR(IFONC+2*(IL-1)+1)
+                ZR(LVALE+2*(IL-1)+1)= HHR*ZR(IFONC+2*(IL-1)+1)+
+     &                                HHI*ZR(IFONC+2*(IL-1))
               ENDIF
-        IF (IVAL(2) .EQ. IVAL(3)) THEN
-              ZR(LVALE+IL-1)   = HHR*ZR(IFONC+IL-1)
-        ELSE
-              ZR(LVALE+2*(IL-1))   = HHR*ZR(IFONC+2*(IL-1))
-              ZR(LVALE+2*(IL-1)+1) = HHI*
-     &                               ZR(IFONC+2*(IL-1)+1)
-        ENDIF
  80         CONTINUE
 C
  60       CONTINUE
  50     CONTINUE
  20   CONTINUE
 C
-      CALL JEDETC('V','&&CALCSP',1)
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&CALCSP.TEMP.HR  ')
+      CALL JEDETR('&&CALCSP.TEMP.HI  ')
 C
       CALL JEDEMA()
       END

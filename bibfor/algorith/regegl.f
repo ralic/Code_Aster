@@ -5,7 +5,7 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -361,7 +361,10 @@ C
      &              NBCMP,1)
 20    CONTINUE
 C
-      CALL JEDETC('V','&&REGEGL',1)
+C --- MENAGE
+      CALL JEDETR('&&REGEGL.ROTX')
+      CALL JEDETR('&&REGEGL.ROTY')
+      CALL JEDETR('&&REGEGL.ROTZ')
 C
       CALL JEDETR ('&&MODE_ETENDU_REST_ELIM')
       CALL JEDETR ( INDIRF )

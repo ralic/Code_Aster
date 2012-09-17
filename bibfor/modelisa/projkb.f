@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -410,7 +410,7 @@ C
   10  CONTINUE
 C
 9999  CONTINUE
-      CALL JEDETC('V','&&PROJKB',1)
+      CALL JEDETR('&&PROJKB.SOMNO_BORD')
       CALL JEDEMA()
 C
 C --- FIN DE PROJKB.

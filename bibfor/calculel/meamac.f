@@ -6,7 +6,7 @@
       CHARACTER*8                   LCHA(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,18 +69,17 @@ C**
       CALL JELIRA('&MEAMAC2           .RELR','LONUTI',LONG2,K8BID)
       CALL JEVEUO('&MEAMAC2           .RELR','L',JLIRE2)
 C**
-      CALL JEEXIN(MATEL//'.RERR',IRET)
-      IF (IRET.GT.0) THEN
-        CALL JEDETR(MATEL//'.RERR')
-        CALL JEDETR(MATEL//'.RELR')
-      END IF
+      CALL JEDETR(MATEL//'.RERR')
+      CALL JEDETR(MATEL//'.RELR')
 
       CALL MEMARE('G',MATEL,MODELE,MATE,' ','AMOR_ACOU')
 
       DO 1,I = 1,LONG2
         CALL REAJRE(MATEL,ZK24(JLIRE2-1+I),'G')
     1 CONTINUE
-      CALL JEDETC('G','MEAMAC2',1)
+C --- MENAGE
+      CALL JEDETR('&MEAMAC2           .RELR')
+      CALL JEDETR('&MEAMAC2           .RERR')
 C
       MATELZ = MATEL
       CALL JEDEMA()

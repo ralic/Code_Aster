@@ -8,7 +8,7 @@
       CHARACTER*4 FAMI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,6 @@ C          ET T2VE INVERSE DE T2EV
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
         NOMRES(3) = 'ALPHA'
-CCC        CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         IF (NORM.LE.R8PREM()) THEN

@@ -1,6 +1,6 @@
       SUBROUTINE TE0491(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C            .V         EST LE VOLUME DU GROUPE DE MAILLES TRAITE
 
 C -----------------------------------------------------------------
 
-C  OPTION ENER_ELAS : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
+C  OPTION ENEL_ELEM : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
 C  ================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
 
 C  EN HPP
@@ -68,10 +68,10 @@ C        OU  .SIG       EST LE TENSEUR DES CONTRAINTES DE CAUCHY
 C            .D         EST LE TENSEUR DE HOOKE
 C
 C  EN GRANDES DEFORMATIONS SIMO MIEHE POUR ELAS OU VMIS_ISOT
-C   ENERLAS = ENERGIE ELASTIQUE SPECIFIQUE 
+C   ENERLAS = ENERGIE ELASTIQUE SPECIFIQUE
 C           = K(0.5(J^2-1)-lnJ)+0.5mu(tr(J^(-2/3)be)-3)
 C  EN GRANDES DEFORMATIONS GDEF_LOG
-C   ENERELAS = SOMME_VOLUME((T_T*(1/D)*T).DV) 
+C   ENERELAS = SOMME_VOLUME((T_T*(1/D)*T).DV)
 C        OU  .T       EST LE TENSEUR DES CONTRAINTES DU FORMALISME
 C            .D         EST LE TENSEUR DE HOOKE
 C -----------------------------------------------------------------
@@ -103,7 +103,7 @@ C          ELEMENTS ISOPARAMETRIQUES 3D
 
 C          OPTIONS : 'INDIC_ENER'
 C                    'INDIC_SEUIL'
-C                    'ENER_ELAS'
+C                    'ENEL_ELEM'
 C                    'ENER_TOTALE'
 
 C     ENTREES  ---> OPTION : OPTION DE CALCUL
@@ -112,17 +112,17 @@ C.......................................................................
 
       INCLUDE 'jeveux.h'
 C-----------------------------------------------------------------------
-      INTEGER IDCOMP ,IDCONM ,IDENE1 ,IDENE2 ,IDEPL ,IDEPLM ,IDEPMM 
-      INTEGER IDFDE ,IDSIG ,IDSIGM ,IDVARI ,IGAU ,IGEOM ,IMATE 
-      INTEGER IPOIDS ,IVF ,JGANO ,JPROL ,JVALE ,MXCMEL ,NBSGM 
-      INTEGER NBSIG ,NBSIG2 ,NBVAL ,NBVARI ,NDIM ,NNO ,NNOS 
-      INTEGER NPG1 
-      REAL*8 AIREP ,C1 ,C2 ,DEUX ,DEUXMU ,DSDE ,E 
-      REAL*8 ENELAS ,ENELDV ,ENELSP ,ENELTO ,EPLAEQ ,EPLAST ,EPSEQ 
-      REAL*8 OMEGA ,P ,POIDS ,PSI ,R8PREM ,RBID ,RP 
-      REAL*8 RPRIM ,SIGEQ ,SIGY ,TEMPG ,TREPSM ,TROIS ,TRSIG 
-      REAL*8 TRT ,UN ,UNDEMI ,UNTIER ,VOLUME ,WELAS ,WTOTAL 
-      REAL*8 ZERO 
+      INTEGER IDCOMP ,IDCONM ,IDENE1 ,IDENE2 ,IDEPL ,IDEPLM ,IDEPMM
+      INTEGER IDFDE ,IDSIG ,IDSIGM ,IDVARI ,IGAU ,IGEOM ,IMATE
+      INTEGER IPOIDS ,IVF ,JGANO ,JPROL ,JVALE ,MXCMEL ,NBSGM
+      INTEGER NBSIG ,NBSIG2 ,NBVAL ,NBVARI ,NDIM ,NNO ,NNOS
+      INTEGER NPG1
+      REAL*8 AIREP ,C1 ,C2 ,DEUX ,DEUXMU ,DSDE ,E
+      REAL*8 ENELAS ,ENELDV ,ENELSP ,ENELTO ,EPLAEQ ,EPLAST ,EPSEQ
+      REAL*8 OMEGA ,P ,POIDS ,PSI ,R8PREM ,RBID ,RP
+      REAL*8 RPRIM ,SIGEQ ,SIGY ,TEMPG ,TREPSM ,TROIS ,TRSIG
+      REAL*8 TRT ,UN ,UNDEMI ,UNTIER ,VOLUME ,WELAS ,WTOTAL
+      REAL*8 ZERO
 C-----------------------------------------------------------------------
       PARAMETER (MXCMEL=162)
       PARAMETER (NBSGM=6)
@@ -143,7 +143,7 @@ C-----------------------------------------------------------------------
       LOGICAL GRAND,AXI
       REAL*8 MU,TROISK,JAC,EPSBID(6),DFDBID(27*3)
       REAL*8 TAU(6),TRTAU,EQTAU,DVTAU(6),TLOG(6)
-      REAL*8 JE2,JE3,Q,D,SOL,TRBE,EPSTHE
+      REAL*8 TRBE,EPSTHE
       INTEGER I,JTAB(7)
       REAL*8 KR(6),PDTSCA(6)
 
@@ -243,7 +243,7 @@ C ON TESTE LA RECUPERATION DU CHAMP DE CONTRAINTES DU PAS PRECEDENT
 
 C ON REGARDE SI ON EST EN GRANDE DEFORMATION SIMO MIEHE
 
-      IF ((ZK16(IDCOMP+2) (1:10).EQ.'SIMO_MIEHE') 
+      IF ((ZK16(IDCOMP+2) (1:10).EQ.'SIMO_MIEHE')
      & .OR.(ZK16(IDCOMP+2) (1:8).EQ.'GDEF_LOG'))  THEN
         GRAND = .TRUE.
       ELSE
@@ -293,11 +293,11 @@ C ----    EPSTH = ALPHA*(T-TREF) :
 C                      ===========================
 C                      =                         =
 C                      = OPTION   "INDIC_ENER"   =
-C                      = OPTION   "ENER_ELAS"    =
+C                      = OPTION   "ENEL_ELEM"    =
 C                      = OPTION   "ENER_TOTALE"  =
 C                      =                         =
 C                      ===========================
-      IF (OPTION.EQ.'INDIC_ENER' .OR. OPTION.EQ.'ENER_ELAS' .OR.
+      IF (OPTION.EQ.'INDIC_ENER' .OR. OPTION.EQ.'ENEL_ELEM' .OR.
      &    OPTION.EQ.'ENER_TOTALE') THEN
 
 C --- BOUCLE SUR LES POINTS D'INTEGRATION
@@ -360,7 +360,7 @@ C --- CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
             DO 60 I = 1,NBSIG
               TAU(I) = JAC*SIGMA(I)
    60       CONTINUE
-             
+
 C --- CALCUL DE LA TRACE DE TAU- TAU EQUIVALENT ET TAU DEVIATORIQUE
 
             TRTAU = TAU(1) + TAU(2) + TAU(3)
@@ -372,17 +372,17 @@ C --- CALCUL DE LA TRACE DE TAU- TAU EQUIVALENT ET TAU DEVIATORIQUE
             EQTAU = SQRT(1.5D0*EQTAU)
 
 C --- CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
-            
+
             CALL DCOPY(6,ZR(IDVARI+(IGAU-1)*NBVARI+1),1,BE,1)
             TRBE=BE(1)+BE(2)+BE(3)
             TRBE=JAC**(-2.D0/3.D0)*(3.D0-2.D0*TRBE)
-            
-C --- ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...          
+
+C --- ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...
             IF (EPSTHE.NE.0) CALL U2MESS('F','POSTELEM_5')
-            
+
             ENELAS = TROISK* (JAC*JAC/2.D0-1.D0/2.D0-LOG(JAC))/
      &               3.D0 + MU* (TRBE-3.D0)/2.D0
-            
+
 C --- CAS EN GRANDES DEFORMATIONS GDEF_LOG
 
           ELSEIF ((ZK16(IDCOMP+2) (1:8).EQ.'GDEF_LOG')) THEN
@@ -397,17 +397,17 @@ C --- CAS EN GRANDES DEFORMATIONS GDEF_LOG
 
             C1 = (UN+NU)/E
             C2 = NU/E
-                        
+
             CALL DCOPY(6,ZR(IDVARI+(IGAU-1)*NBVARI+NBVARI-6),1,TLOG,1)
             TRT=TLOG(1)+TLOG(2)+TLOG(3)
-            
+
             ENELAS = UNDEMI* (TLOG(1)* (C1*TLOG(1)-C2*TRT)+
      &               TLOG(2)* (C1*TLOG(2)-C2*TRT)+
      &               TLOG(3)* (C1*TLOG(3)-C2*TRT)+
      &               (TLOG(4)*C1*TLOG(4)+TLOG(5)*C1*TLOG(5)+
      &               TLOG(6)*C1*TLOG(6)))
 
-            
+
 
 C --- EN HPP SI ON CONSIDERE LE MATERIAU ISOTROPE
 C --- E_ELAS = 1/2*SIGMA*1/D*SIGMA :
@@ -425,14 +425,14 @@ C --- E_ELAS = 1/2*SIGMA*1/D*SIGMA :
      &               SIGMA(6)*C1*SIGMA(6)))
           END IF
 
-C --- TRAITEMENT DE L'OPTION ENER_ELAS :
+C --- TRAITEMENT DE L'OPTION ENEL_ELEM :
 
-          IF (OPTION.EQ.'ENER_ELAS') THEN
+          IF (OPTION.EQ.'ENEL_ELEM') THEN
 
             WELAS = WELAS + ENELAS*POIDS
 
 C  ===============================================
-C  = FIN TRAITEMENT DE L'OPTION ENER_ELAS        =
+C  = FIN TRAITEMENT DE L'OPTION ENEL_ELEM        =
 C  ===============================================
 
             GO TO 120
@@ -731,14 +731,14 @@ C ----  L'ELEMENT ET LE VOLUME DE L'ELEMENT POUR L'OPTION
 C ----  INDIC_ENER
 C ----  AFFECTATION DE L'ENERGIE DE DEFORMATION ELASTIQUE
 C ----  ET DE L'ENERGIE DE DEFORMATION TOTALE RESPECTIVEMENT
-C ----  POUR LES OPTIONS ENER_ELAS ET ENER_TOTALE :
+C ----  POUR LES OPTIONS ENEL_ELEM ET ENER_TOTALE :
 
         IF (OPTION.EQ.'INDIC_ENER') THEN
           CALL JEVECH('PENERD1','E',IDENE1)
           ZR(IDENE1) = INDIGL
           CALL JEVECH('PENERD2','E',IDENE2)
           ZR(IDENE2) = VOLUME
-        ELSE IF (OPTION.EQ.'ENER_ELAS') THEN
+        ELSE IF (OPTION.EQ.'ENEL_ELEM') THEN
           CALL JEVECH('PENERD1','E',IDENE1)
           ZR(IDENE1) = WELAS
         ELSE IF (OPTION.EQ.'ENER_TOTALE') THEN
@@ -746,7 +746,7 @@ C ----  POUR LES OPTIONS ENER_ELAS ET ENER_TOTALE :
           ZR(IDENE1) = WTOTAL
         END IF
 
-C      FIN OPTION.EQ.'INDIC_ENER'.OR.OPTION.EQ.'ENER_ELAS'.OR.
+C      FIN OPTION.EQ.'INDIC_ENER'.OR.OPTION.EQ.'ENEL_ELEM'.OR.
 C     +    OPTION.EQ.'ENER_TOTALE') THEN
 C ===========================
 C =                         =

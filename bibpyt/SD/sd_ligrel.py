@@ -1,4 +1,4 @@
-#@ MODIF sd_ligrel SD  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_ligrel SD  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,10 +19,17 @@
 # ======================================================================
 
 from SD import *
-
 from SD.sd_maillage  import sd_maillage
 
+class sd_voisinage(AsBase):
+#-------------------------------
+    nomj = SDNom(fin=12)
+    PTVOIS = AsVI()
+    ELVOIS = AsVI()
+
+
 class sd_ligrel(AsBase):
+#-------------------------------
     nomj = SDNom(fin=19)
 
     LGRF = AsVK8(lonmax=2, docu=Parmi('ACOU', 'MECA', 'THER'), )
@@ -43,10 +50,18 @@ class sd_ligrel(AsBase):
     PRNS = Facultatif(AsVI())
     LGNS = Facultatif(AsVI())
 
+    # si le ligrel contient des éléments nécessitant le voisinage :
+    NVGE = Facultatif(AsVK16(lonmax=1,))
+
 
     def exists(self):
         # retourne True si la SD semble exister.
         return self.LGRF.exists
+
+    def check_NVGE(self,checker):
+        if not self.exists() : return
+        nvge=self.NVGE.get_stripped()
+        if len(nvge) > 0 : sd2=sd_voisinage(nvge[0]); sd2.check(checker)
 
     def check_LGRF(self,checker):
         if not self.exists() : return

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -327,5 +327,16 @@ C
       ENDIF
 C
  9999 CONTINUE
-      CALL JEDETC('V','&&CRICHO',1)
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&CRICHO.EFLOC')
+      CALL JEDETR('&&CRICHO.RFIMPOX')
+      CALL JEDETR('&&CRICHO.NORMXX')
+      CALL JEDETR('&&CRICHO.NORMY')
+      CALL JEDETR('&&CRICHO.A')
+      CALL JEDETR('&&CRICHO.W')
+      CALL JEDETR('&&CRICHO.U')
+      CALL JEDETR('&&CRICHO.V')
+
       END

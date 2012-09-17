@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,9 @@ C        --- ECLATE LE GROUP_NO EN NOEUD ---
       ENDIF
       CALL SIMUL2(RESU,NOMCMD,MASSE,MODSTA,NBDIR,DEPL,ZK8(IDNO),NBNO)
 C
-      CALL JEDETC(' ','&&SIMULT',1)
+C --- MENAGE
+      CALL JEDETR('&&SIMULT.NOEUD')
+      CALL JEDETR('&&SIMULT.GROUP_NO')
 C
       CALL JEDEMA()
       END

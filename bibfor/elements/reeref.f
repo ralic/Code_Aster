@@ -4,7 +4,7 @@
      &                  XE,FF,DFDI,F,EPS,GRAD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  ELREFP : TYPE DE L'ELEMENT DE REF PARENT
-C IN   AXI   : INDIQUER POUR MODEL AXIS 
+C IN   AXI   : INDIQUER POUR MODEL AXIS
 C IN  NNOP   : NOMBRE DE NOEUDS DE L'ELT DE RÉF PARENT
 C   L'ORDRE DES DDLS DOIT ETRE 'DC' 'H1' 'E1' 'E2' 'E3' 'E4' 'LAGC'
 C IN  GEOM   : COORDONNEES DES NOEUDS
@@ -88,11 +88,17 @@ C
       REAL*8      INVJAC(3,3)
       REAL*8      DFF(3,NBNOMX)
       REAL*8      KRON(3,3),TMP,EPSTAB(3,3)
+      LOGICAL CALBID
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
+
+C     -- QUAND ON APPELLE REEREF AVEC IDEPL=0,
+C        ON NE PEUT PAS S'EN SERVIR !
+      CALBID=IDEPL.EQ.0
+
+
 C --- INITIALISATIONS
 C
       CALL ASSERT(CINEM.EQ.'NON'.OR.CINEM.EQ.'OUI'.OR.CINEM.EQ.'DFF'
@@ -175,6 +181,7 @@ C --- DDLM=-1 PERMET D'EVITER D'AVOIR A FOURNIR DDLM DANS CHAQUE CAS
 C -- DDLS CLASSIQUES
         DO 403 I=1,NDIM
           CPT = CPT+1
+          IF (CALBID) GOTO 403
           DO 404 J=1,NDIM
             GRAD(I,J) = GRAD(I,J) + DFDI(N,J) *
      &                            ZR(IDEPL-1+NN+CPT)
@@ -185,6 +192,7 @@ C -- DDLS HEAVISIDE
         DO 405 IG=1,NFH
           DO 406 I=1,NDIM
             CPT = CPT+1
+            IF (CALBID) GOTO 406
             DO 407 J=1,NDIM
               GRAD(I,J) = GRAD(I,J) + HE(FISNO(N,IG)) * DFDI(N,J) *
      &                            ZR(IDEPL-1+NN+CPT)
@@ -196,6 +204,7 @@ C -- DDL ENRICHIS EN FOND DE FISSURE
         DO 408 IG=1,NFE
           DO 409 I=1,NDIM
             CPT = CPT+1
+            IF (CALBID) GOTO 409
             DO 410 J=1,NDIM
               GRAD(I,J) = GRAD(I,J) + ZR(IDEPL-1+NN+CPT) *
      &                    (DFDI(N,J) * FE(IG) + FF(N) * DGDGL(IG,J))

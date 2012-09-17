@@ -6,7 +6,7 @@
       INTEGER        VALRES(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,9 @@ C --- NBHIST
             VALRES(1) = NBHIST
 C --- NBTRC
             VALRES(2) = NBTRC
-            CALL JEDETC ( 'V', LISTR, 1 )
+C ---       MENAGE
+            CALL DETRSD ( 'LISTR8' , LISTR )
+C
             GOTO 9999
          ENDIF
   150 CONTINUE

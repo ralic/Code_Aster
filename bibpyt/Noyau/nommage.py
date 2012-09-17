@@ -1,4 +1,4 @@
-#@ MODIF nommage Noyau  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF nommage Noyau  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,8 +144,10 @@ def f_lineno(f):
    return line
 
 
-class NamingSystem:
+class NamingSystem(N_utils.Singleton):
     """Cette classe définit un système de nommage dynamique des concepts."""
+    _singleton_id = 'nommage.NamingSystem'
+    
     def __init__(self):
         """Initialisation"""
         self.native = _GetNomConceptResultat

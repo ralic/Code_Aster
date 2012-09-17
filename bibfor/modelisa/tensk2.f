@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -170,7 +170,13 @@ C
   80     CONTINUE
       ENDIF
 C
-      CALL JEDETC('V','&&TENSK2',1)
+C --- MENAGE
+      CALL JEDETR('&&TENSK2.ABSC2')
+      CALL JEDETR('&&TENSK2.ALPHA2')
+      CALL JEDETR('&&TENSK2.F1')
+      CALL JEDETR('&&TENSK2.F2')
+      CALL JEDETR('&&TENSK2.FMAX')
+C
       CALL JEDEMA()
 C
 C --- FIN DE TENSK2.

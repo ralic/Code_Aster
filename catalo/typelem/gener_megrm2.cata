@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,8 +50,7 @@ MODE_LOCAL__
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EENECNO  = ENER_R   ELEM__         (TOTALE   )
+    EENERR   = ENER_R   ELEM__         (TOTALE   )
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     )
@@ -101,12 +100,12 @@ OPTION__
     DEGE_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ECIN_ELEM           432   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_MECA PDEPLAR
                                      ZVARCPG  PVARCPR  COMEG2R  POMEGA2  DDL_MECA PVITESR
-                              OUT__  EENECNO  PENERCR
-    ENER_ELAS           -1    IN__    OUT__    XXXXXX   XXXXXX
+                              OUT__  EENERR   PENERCR
+    ENEL_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           433   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_MECA PDEPLAR
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENERR   PENERDR
     EPSI_ELGA           433   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFOPG  PDEFOPG
     EPSI_ELNO           4     IN__   EDEFOPG  PDEFOPG

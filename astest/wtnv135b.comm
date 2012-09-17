@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # RESPONSABLE FOUCAULT A.FOUCAULT
 # ======================================================================
 # TITRE ETUDE ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH :
@@ -336,7 +336,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 3.022E-2),),)
+                      VALE       = 3.026E-2),),)
 
 TEST_RESU(RESU=(
 
@@ -349,7 +349,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIZZ',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -1.1957E7),),)
+                      VALE       = -1.194E7),),)
 
 
 FIN () ;

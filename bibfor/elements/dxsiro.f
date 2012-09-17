@@ -1,6 +1,6 @@
       SUBROUTINE DXSIRO ( NE , T2VE , TENSAV , TENSAP )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C     PASSAGE DES CONTRAINTES (OU DEFORMATIONS) DU REPERE INTRINSEQUE DE
 C     L'ELEMENT AU REPERE UTILISATEUR (OU L'INVERSE)
 C     ------------------------------------------------------------------
 C     IN  NE    I      NOMBRE DE POINTS (OU SOUS-POINTS) A TRAITER
-C     IN  T2VE  R  2,2  MATRICE DE PASSAGE (OBTENUE PAR DXREPE) :
+C     IN  T2VE  R  2,2  MATRICE DE PASSAGE (OBTENUE PAR COQREP) :
 C                       T2VE : INTRINSEQUE -> UTILISATEUR
 C                       T2EV : UTILISATEUR -> INTRINSEQUE
 C     IN  TENSAV R    *   XX  YY  ZZ  XY  XZ  YZ
@@ -40,7 +40,7 @@ C     ------------------------------------------------------------------
 C
 C     TRANSPOSEE DE T2VE
 C-----------------------------------------------------------------------
-      INTEGER I 
+      INTEGER I
 C-----------------------------------------------------------------------
       T2EV(1,1) = T2VE(1,1)
       T2EV(1,2) = T2VE(2,1)

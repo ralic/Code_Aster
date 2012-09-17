@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -366,7 +366,11 @@ C
 C
   60  CONTINUE
 C
-      CALL JEDETC('V','&&CAELCA',1)
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&CAELCA.TEMP.TABL')
+
       CALL JEDEMA()
 C
 C --- FIN DE CAELCA.

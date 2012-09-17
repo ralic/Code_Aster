@@ -2,7 +2,7 @@
      &                  MODY,MODZ,I,J,MIJ)
 C-------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,8 +79,8 @@ C
            CALL JEDETR('&&CALCIN.VECTX')
            CALL JEDETR('&&CALCIN.VECTY')
 
-           CALL JEDETC('V',MODX,1)
-           CALL JEDETC('V',MODY,1)
+           CALL DETRSD('CHAM_NO',MODX)
+           CALL DETRSD('CHAM_NO',MODY)
 
 
 
@@ -97,7 +97,7 @@ C--------------------------+ PRESSION*MAZ*MODZ  EN 3D---------------
              CALL MRMULT('ZERO',IMATZ,ZR(IMODZ),ZR(IVECZ),1,.TRUE.)
              RZ= DDOT(NBPRES,ZR(IPRES), 1,ZR(IVECZ),1)
              CALL JEDETR('&&CALCIN.VECTZ')
-             CALL JEDETC('V',MODZ,1)
+             CALL DETRSD('CHAM_NO',MODZ)
              MIJ = RX+RY+RZ
 
            ELSE
@@ -111,7 +111,7 @@ C--------------------------+ PRESSION*MAZ*MODZ  EN 3D---------------
        CALL U2MESS('A','ALGORITH_61')
         ENDIF
 
-        CALL JEDETC('V',VEPRJ,1)
+        CALL DETRSD('CHAM_NO',VEPRJ)
 
 C-----------------------------------------------------------------
       CALL JEDEMA()

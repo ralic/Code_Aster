@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE  VALIDATION DES LOIS DE SECHAGE SUR UNE EPROUVETTE CYLINDRIQUE EN BETON
 # hsna102c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,7 +25,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED', )
 
 #  DEFINTION DES PROPRIETES HYDRIQUES DU BETON
 
-MENSI=DEFI_NAPPE(NOM_PARA='TSEC',
+MENSI1=DEFI_NAPPE(NOM_PARA='TSEC',
                  PARA=(0.0,20.0,),
                  NOM_PARA_FONC='TEMP',
                  DEFI_FONCTION=(_F(VALE=(0.0,7.3e-14,
@@ -61,11 +61,17 @@ MENSI=DEFI_NAPPE(NOM_PARA='TSEC',
                                         140.0,8.00542e-11,
                                         150.0,1.31987e-11,),),),);
 
+# Pour tester la possibilite d'utiliser une variable de commande pour SECH_NAPPE / FONCTION :
+# Remarque : NEUT1 n'a en realite aucune influence sur la fonction.
+MENSI = FORMULE(NOM_PARA=('TEMP','TSEC','NEUT1'),VALE='(1.+0.0*NEUT1)*MENSI1(TSEC,TEMP)')
+
 BETON=DEFI_MATERIAU(SECH_NAPPE=_F(FONCTION=MENSI,),)
 
+CHJ1  = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R', OPERATION='AFFE', MAILLAGE=MAIL,
+                     AFFE=_F(TOUT='OUI', NOM_CMP='X1', VALE=2.3,))
 CHMAT=AFFE_MATERIAU( MAILLAGE=MAIL,
-                     AFFE=_F( GROUP_MA  ='SURF' ,
-                              MATER = BETON, ),
+                     AFFE=_F( GROUP_MA  ='SURF' , MATER = BETON, ),
+                AFFE_VARC=_F(NOM_VARC='NEUT1', CHAMP_GD=CHJ1,),
                     ),
 
 MOTH=AFFE_MODELE( MAILLAGE=MAIL,

@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ C     ------------------------------------------------------------------
       INTEGER       JNBSPI, NBCOU, ICOU
       INTEGER       ICODRE,KPG,SPT
 
-      REAL*8        ZERO,EPI,EPAIS,EPTOT
+      REAL*8        ZERO,EPI,EPAIS,EPTOT,ALPHA,BETA,R8DGRD
       REAL*8        PGL(3,3), XYZL(3,4), R8BID,VALR(2)
       REAL*8        DEPL(24)
       REAL*8        EFFGT(32),EFFPG(32)
@@ -75,13 +75,13 @@ CC OPTION DE CALCUL INVALIDE
 
       IF ((NOMTE.EQ.'MEDKTG3').OR.
      &    (NOMTE.EQ.'MEDKQG4')) THEN
-        DKG = .TRUE.
+         DKG = .TRUE.
       END IF
 
       ZERO   = 0.0D0
 
       DO 10 I = 1,32
-        EFFGT(I) = ZERO
+         EFFGT(I) = ZERO
    10 CONTINUE
 
       CALL JEVECH('PGEOMER','L',JGEOM)
@@ -91,209 +91,191 @@ C --- PROVENANT DE DEFI_COQU_MULT ET DE AFFE_CARA_ELEM
 C     ----------------------------------
       JNBSPI = 0
       IF ( OPTION.EQ.'SIEF_ELGA'.OR.OPTION.EQ.'EPSI_ELGA' ) THEN
-        CALL JEVECH('PMATERC','L',JMATE)
-        CALL TECACH('NNN','PNBSP_I',1,JNBSPI,IRET)
-        IF (IRET.EQ.0) THEN
-          NBCOU = ZI(JNBSPI)
-          ICOU = 0
-          EPTOT = 0.D0
-          EPI = 0.D0
-          CALL JEVECH('PCACOQU','L',JCARA)
-          EPAIS  = ZR(JCARA)
-  5       CONTINUE
-          ICOU=ICOU+1
-          CALL CODENT(ICOU,'G',NUM)
-          CALL CODENT(1,'G',VAL)
-          NOMRES = 'C'//NUM//'_V'//VAL
-          FAMIL='FPG1'
-          KPG=1
-          SPT=1
-          POUM='+'
-          CALL RCVALB(FAMIL,KPG,SPT,POUM,ZI(JMATE),' ','ELAS_COQMU',
-     &         0,' ',R8BID,1,NOMRES,EPI,ICODRE,0)
-          IF (ICODRE.EQ.0) THEN
-            EPTOT=EPTOT+EPI
-            GOTO 5
-          ENDIF
-          IF (EPTOT.NE.0.D0) THEN
-            IF ((ICOU-1).NE.NBCOU) THEN
-              VALI(1) = ICOU-1
-              VALI(2) = NBCOU
-              CALL U2MESG('F','ELEMENTS3_51',0,' ',2,VALI,0,0.D0)
+         CALL JEVECH('PMATERC','L',JMATE)
+         CALL TECACH('NNN','PNBSP_I',1,JNBSPI,IRET)
+         IF (IRET.EQ.0) THEN
+            NBCOU = ZI(JNBSPI)
+            ICOU = 0
+            EPTOT = 0.D0
+            EPI = 0.D0
+            CALL JEVECH('PCACOQU','L',JCARA)
+            EPAIS  = ZR(JCARA)
+  5         CONTINUE
+            ICOU=ICOU+1
+            CALL CODENT(ICOU,'G',NUM)
+            CALL CODENT(1,'G',VAL)
+            NOMRES = 'C'//NUM//'_V'//VAL
+            FAMIL='FPG1'
+            KPG=1
+            SPT=1
+            POUM='+'
+            CALL RCVALB(FAMIL,KPG,SPT,POUM,ZI(JMATE),' ','ELAS_COQMU',
+     &                  0,' ',R8BID,1,NOMRES,EPI,ICODRE,0)
+            IF (ICODRE.EQ.0) THEN
+               EPTOT=EPTOT+EPI
+               GOTO 5
             ENDIF
-            IF (ABS(EPAIS-EPTOT)/EPAIS.GT.1.D-2) THEN
-              VALR(1) = EPTOT
-              VALR(2) = EPAIS
-              CALL U2MESG('F','ELEMENTS3_52',0,' ',0,0,2,VALR)
+            IF (EPTOT.NE.0.D0) THEN
+               IF ((ICOU-1).NE.NBCOU) THEN
+                  VALI(1) = ICOU-1
+                  VALI(2) = NBCOU
+                  CALL U2MESG('F','ELEMENTS3_51',0,' ',2,VALI,0,0.D0)
+               ENDIF
+               IF (ABS(EPAIS-EPTOT)/EPAIS.GT.1.D-2) THEN
+                  VALR(1) = EPTOT
+                  VALR(2) = EPAIS
+                  CALL U2MESG('F','ELEMENTS3_52',0,' ',0,0,2,VALR)
+               ENDIF
             ENDIF
-          ENDIF
-        ENDIF
+         ENDIF
       ENDIF
 
       IF (OPTION(8:9).EQ.'GA') THEN
-        NP = NPG
+         NP = NPG
       ELSE IF (OPTION(8:9).EQ.'NO') THEN
-        NP = NNO
+         NP = NNO
       END IF
 
       IF (NNO.EQ.3) THEN
-        CALL DXTPGL(ZR(JGEOM),PGL)
+         CALL DXTPGL(ZR(JGEOM),PGL)
       ELSE IF (NNO.EQ.4) THEN
-        CALL DXQPGL(ZR(JGEOM),PGL)
+         CALL DXQPGL(ZR(JGEOM),PGL)
       END IF
 
       CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
-      CALL DXREPE( PGL,T2EV, T2VE)
-
+C
+      CALL JEVECH ('PCACOQU', 'L', JCARA)
+      ALPHA = ZR(JCARA+1) * R8DGRD()
+      BETA  = ZR(JCARA+2) * R8DGRD()
+      CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE)
+C
       CALL JEVECH('PDEPLAR','L',JDEPG)
       CALL UTPVGL(NNO,6,PGL,ZR(JDEPG),DEPL)
 
 C     ---------- CONTRAINTES ET DEFORMATIONS --------------------------
-
-C          ----------------------------
       IF ( OPTION(1:9) .EQ. 'SIEF_ELGA' ) THEN
-C               ----------------------------
-        CALL JEVECH('PCONTRR','E',JSIGM)
+         CALL JEVECH('PCONTRR','E',JSIGM)
 C
-        IF (DKG) THEN
-          NBCOU = 1
-        ELSE
-          CALL JEVECH('PNBSP_I','L',JNBSPI)
-          NBCOU = ZI(JNBSPI)
-          IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
-        ENDIF
+         IF (DKG) THEN
+            NBCOU = 1
+         ELSE
+            CALL JEVECH('PNBSP_I','L',JNBSPI)
+            NBCOU = ZI(JNBSPI)
+            IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
+         ENDIF
 
-        IF ( NOMTE.EQ.'MEDKTR3' .OR.
-     &        NOMTE.EQ.'MEDKTG3' ) THEN
-           CALL DKTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
-           CALL DSTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
-     &           NOMTE.EQ.'MEDKQG4' ) THEN
-           CALL DKQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
-           CALL DSQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
-           CALL Q4GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        END IF
+         IF (NOMTE.EQ.'MEDKTR3' .OR.
+     &       NOMTE.EQ.'MEDKTG3' ) THEN
+            CALL DKTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
+            CALL DSTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
+     &            NOMTE.EQ.'MEDKQG4' ) THEN
+            CALL DKQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
+            CALL DSQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
+            CALL Q4GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         END IF
 C
-        CALL RCCOMA ( ZI(JMATE), 'ELAS', PHENOM, ICODRE )
-C       ON NE SAIT PAS TRAITER LE CAS ELAS_COQUE
-        IF ( PHENOM.EQ.'ELAS'      .OR.
+         CALL RCCOMA ( ZI(JMATE), 'ELAS', PHENOM, ICODRE )
+C        ON NE SAIT PAS TRAITER LE CAS ELAS_COQUE
+         IF (PHENOM.EQ.'ELAS'      .OR.
      &       PHENOM.EQ.'ELAS_ORTH' .OR.
      &       PHENOM.EQ.'ELAS_ISTR' ) THEN
-           CALL DXSITH (NOMTE,ZI(JMATE),ZR(JSIGM))
-        ELSE IF ( PHENOM.EQ.'ELAS_COQMU' ) THEN
-           CALL DXSIT2 (NOMTE,PGL,ZR(JSIGM))
-        ENDIF
-C
-C               ----------------------------
+            CALL DXSITH (NOMTE,ZI(JMATE),ZR(JSIGM))
+         ELSE IF ( PHENOM.EQ.'ELAS_COQMU' ) THEN
+            CALL DXSIT2 (NOMTE,PGL,ZR(JSIGM))
+         ENDIF
+C     ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'EPSI_ELGA' ) THEN
-C               ----------------------------
         CALL JEVECH('PDEFOPG','E',JSIGM)
 C
-        IF (DKG) THEN
-          NBCOU = 1
-        ELSE
-          CALL JEVECH('PNBSP_I','L',JNBSPI)
-          NBCOU = ZI(JNBSPI)
-          IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
-        ENDIF
-        IF ( NOMTE.EQ.'MEDKTR3' .OR.
-     &        NOMTE.EQ.'MEDKTG3' ) THEN
-           CALL DKTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
-           CALL DSTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
-     &           NOMTE.EQ.'MEDKQG4' ) THEN
-           CALL DKQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
-           CALL DSQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
-           CALL Q4GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        ELSE IF (NOMTE.EQ.'MET3TR3' ) THEN
-           CALL T3GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
-        END IF
-
-        CALL DXSIRO(NP*NBCOU*3,T2VE,ZR(JSIGM),ZR(JSIGM))
-
-C               ----------------------------
+         IF (DKG) THEN
+            NBCOU = 1
+         ELSE
+            CALL JEVECH('PNBSP_I','L',JNBSPI)
+            NBCOU = ZI(JNBSPI)
+            IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
+         ENDIF
+         IF (NOMTE.EQ.'MEDKTR3' .OR.
+     &       NOMTE.EQ.'MEDKTG3' ) THEN
+            CALL DKTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
+            CALL DSTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
+     &            NOMTE.EQ.'MEDKQG4' ) THEN
+            CALL DKQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
+            CALL DSQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
+            CALL Q4GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         ELSE IF (NOMTE.EQ.'MET3TR3' ) THEN
+            CALL T3GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+         END IF
+         CALL DXSIRO(NP*NBCOU*3,T2VE,ZR(JSIGM),ZR(JSIGM))
+C     ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'EFGE_ELNO' ) THEN
-C               ----------------------------
-C ---     CALCUL DES EFFORTS GENERALISES VRAIS
-C ---     AUX POINTS DE CALCUL
-C         --------------------
-        CALL DXEFGV(NOMTE,OPTION,XYZL,PGL,DEPL,EFFGT)
-
-C ---   PASSAGE DES EFFORTS GENERALISES DU REPERE INTRINSEQUE
-C ---   A L'ELEMENT AU REPERE LOCAL DE LA COQUE
-C       ---------------------------------------
-        CALL JEVECH('PEFFORR','E',JEFFG)
-        CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
-C
-C               ----------------------------
+C ---    CALCUL DES EFFORTS GENERALISES VRAIS AUX POINTS DE CALCUL
+         CALL DXEFGV(NOMTE,OPTION,XYZL,PGL,DEPL,EFFGT)
+C ---    PASSAGE DES EFFORTS GENERALISES DU REPERE INTRINSEQUE
+C ---    A L'ELEMENT AU REPERE LOCAL DE LA COQUE
+         CALL JEVECH('PEFFORR','E',JEFFG)
+         CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
+C     ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'DEGE_ELNO' ) THEN
-C               ----------------------------
         CALL JEVECH('PDEFOGR','E',JEFFG)
 
-        IF (NOMTE.EQ.'MEDKTR3' .OR.
+         IF (NOMTE.EQ.'MEDKTR3' .OR.
      &       NOMTE.EQ.'MEDKTG3' ) THEN
-          CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFGT,MULTIC)
-        ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
-          CALL DSTEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
-        ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
-     &           NOMTE.EQ.'MEDKQG4' ) THEN
-          CALL DKQEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
-        ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
-          CALL DSQEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
-        ELSE IF (NOMTE.EQ.'MEQ4QU4'.OR.
-     &           NOMTE.EQ.'MEQ4GG4' ) THEN
-          CALL Q4GEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
-        ELSE IF (NOMTE.EQ.'MET3TR3'.OR.
-     &           NOMTE.EQ.'MET3GG3') THEN
-          CALL T3GEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
-        END IF
+            CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFGT,MULTIC)
+         ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
+            CALL DSTEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
+         ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
+     &            NOMTE.EQ.'MEDKQG4' ) THEN
+            CALL DKQEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
+         ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
+            CALL DSQEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
+         ELSE IF (NOMTE.EQ.'MEQ4QU4'.OR.
+     &            NOMTE.EQ.'MEQ4GG4' ) THEN
+            CALL Q4GEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
+         ELSE IF (NOMTE.EQ.'MET3TR3'.OR.
+     &            NOMTE.EQ.'MET3GG3') THEN
+            CALL T3GEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
+         END IF
 C
-C ---     PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
-C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE
-C         ---------------------------------------
-        CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
-C
-C               ----------------------------
+C ---    PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
+C ---    A L'ELEMENT AU REPERE LOCAL DE LA COQUE
+         CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
+C     ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'DEGE_ELGA' ) THEN
-C               ----------------------------
-
-        CALL JEVECH('PDEFOPG','E',JEFFG)
+         CALL JEVECH('PDEFOPG','E',JEFFG)
 C
-        IF (NOMTE.EQ.'MEDKTR3' .OR.
-     &      NOMTE.EQ.'MEDKTG3' ) THEN
-          CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFPG,MULTIC)
-        ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
-          CALL DSTEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
-        ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
-     &           NOMTE.EQ.'MEDKQG4' ) THEN
-          CALL DKQEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
-        ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
-          CALL DSQEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
-        ELSE IF (NOMTE.EQ.'MEQ4QU4'.OR.
-     &           NOMTE.EQ.'MEQ4GG4' ) THEN
-          CALL Q4GEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
-        ELSE IF (NOMTE.EQ.'MET3TR3'.OR.
-     &           NOMTE.EQ.'MET3GG3') THEN
-          CALL T3GEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
-        END IF
-C
-C ---     PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
-C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE
-C         ---------------------------------------
-
-        CALL DXEFRO(NP,T2VE,EFFPG,ZR(JEFFG))
-
+         IF (NOMTE.EQ.'MEDKTR3' .OR.
+     &       NOMTE.EQ.'MEDKTG3' ) THEN
+            CALL DKTEDG(XYZL,OPTION,PGL,DEPL,EFFPG,MULTIC)
+         ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
+            CALL DSTEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
+         ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
+     &            NOMTE.EQ.'MEDKQG4' ) THEN
+            CALL DKQEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
+         ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
+            CALL DSQEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
+         ELSE IF (NOMTE.EQ.'MEQ4QU4'.OR.
+     &            NOMTE.EQ.'MEQ4GG4' ) THEN
+            CALL Q4GEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
+         ELSE IF (NOMTE.EQ.'MET3TR3'.OR.
+     &            NOMTE.EQ.'MET3GG3') THEN
+            CALL T3GEDG(XYZL,OPTION,PGL,DEPL,EFFPG)
+         END IF
+C ---    PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
+C ---    A L'ELEMENT AU REPERE LOCAL DE LA COQUE
+         CALL DXEFRO(NP,T2VE,EFFPG,ZR(JEFFG))
       END IF
 
       IF (OPTION.EQ.'SIEF_ELGA') THEN
-C ---   PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :
-        CALL COSIRO(NOMTE,'PCONTRR','IU','G',JSIGM,'S')
+C ---    PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :
+         CALL COSIRO(NOMTE,'PCONTRR','IU','G',JSIGM,'S')
       ENDIF
 
       END

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,8 +53,7 @@ MODE_LOCAL__
                                  EN2   (DRX      DRY      DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     ENONLIN  = NEUT_I   ELEM__         (X1)
-    EENECNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
+    EENERR   = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
     EDEFOPG  = EPSI_R   ELGA__ MASS    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFOPC  = EPSI_C   ELGA__ MASS    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
@@ -163,7 +162,7 @@ OPTION__
     DEGE_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ECIN_ELEM           406   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  DDL_MECA PVITESR
-                              OUT__  EENECNO  PENERCR
+                              OUT__  EENERR   PENERCR
     EFGE_ELGA           451   IN__   ECONTPG  PSIEFR   CCACOQU  PCACOQU  ENBSP_I  PNBSP_I  CMATERC  PMATERC
                               OUT__  EEFGEPGR PEFGER
                                      EEFGEPGC PEFGEC
@@ -171,11 +170,11 @@ OPTION__
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
                                      ENONLIN  PNONLIN  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
                               OUT__  EEFGENOR PEFFORR EEFGENOC PEFFORC
-    ENER_ELAS           -1    IN__    OUT__    XXXXXX   XXXXXX
+    ENEL_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           401   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENERR   PENERDR
     EPSI_ELGA           410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
                               OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC

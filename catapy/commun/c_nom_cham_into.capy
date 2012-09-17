@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 # encoding: iso-8859-1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,6 +115,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Déformations dues aux variables de commande aux noeuds"), ),
         }
         d['ENERGIE'] = {
+            "DISS_ELEM":        ( ("lin", "nonlin"),
+                                 _(u"Énergie de dissipation par élément"), ),
             "DISS_ELGA":        ( ("lin", "nonlin"),
                                  _(u"Densité d'énergie de dissipation aux points de Gauss"), ),
             "DISS_ELNO":        ( ("lin", "nonlin"),
@@ -123,6 +125,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Densité d'énergie de dissipation aux noeuds"), ),
             "ECIN_ELEM":        ( ("lin"),
                                  _(u"Énergie cinétique par élément"), ),
+            "ENEL_ELEM":        ( ("lin", "nonlin"),
+                                 _(u"Énergie élastique par élément"), ),
             "ENEL_ELGA":        ( ("lin", "nonlin"),
                                  _(u"Densité d'énergie élastique aux points de Gauss"), ),
             "ENEL_ELNO":        ( ("lin", "nonlin"),
@@ -137,6 +141,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Incrément de densité d'énergie de déformation totale aux points de Gauss"), ),
             "ETOT_ELNO":        ( ("lin", "nonlin"),
                                  _(u"Incrément de densité d'énergie de déformation totale aux noeuds par élément"), ),
+            "ETOT_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Incrément de densité d'énergie de déformation totale aux noeuds"), ),
         }                       
         d['CRITERES'] = {
             "DERA_ELGA":        ( ("nonlin"),

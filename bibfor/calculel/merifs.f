@@ -10,7 +10,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,7 +127,8 @@ C     SI LA RIGIDITE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:
      &                 'OUI')
         CALL REAJRE(MATEL,LCHOUT(1),'G')
    10 CONTINUE
-      CALL JEDETC('V','&&MECHTE',1)
+C --- MENAGE
+      CALL DETRSD('CHAM_ELEM',CHVARC)
 
       CALL JEDEMA()
       END

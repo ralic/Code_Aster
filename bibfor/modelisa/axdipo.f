@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -293,7 +293,12 @@ C
   50    CONTINUE
       ENDIF
 C
-      CALL JEDETC('V','&&AXDIPO',1)
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&AXDIPO.TEMP.TABL')
+      CALL JEDETR('&&AXDIPO.TEMP.ANGL')
       CALL JEDETC('V',CARTE,1)
+C
       CALL JEDEMA()
       END

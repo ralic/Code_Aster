@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR CUVILLIE M.CUVILLIEZ 
+# MODIF  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE TEST DE LA LOI DE HUJEUX SUR UN POINT MATERIEL
 # comp012a.para = tps_job 60 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,6 +57,16 @@ TABCISA2 = CO('TCISA2')
 TABTNDC1 = CO('TTNDC1')
 TABTNDC2 = CO('TTNDC2')
 
+# creation de courbes de reference (TABLE_REF) bidon pour couverture de code
+tabbid1 = CREA_TABLE(LISTE=(_F(PARA='TYPE'    , LISTE_K=['P-Q',]),
+                            _F(PARA='LEGENDE' , LISTE_K=['ma_legende',]),
+                            _F(PARA='ABSCISSE', LISTE_R=[0.,1.]),
+                            _F(PARA='ORDONNEE', LISTE_R=[0.,1.]),),);
+tabbid2 = CREA_TABLE(LISTE=(_F(PARA='TYPE'    , LISTE_K=['EPSXY-G',]),
+                            _F(PARA='LEGENDE' , LISTE_K=['ma_legende',]),
+                            _F(PARA='ABSCISSE', LISTE_R=[0.,1.]),
+                            _F(PARA='ORDONNEE', LISTE_R=[0.,1.]),),);
+
 CALC_ESSAI_GEOMECA(INFO=1,
                    MATER=MATE1,
                    COMP_INCR=_F(RELATION='HUJEUX',
@@ -68,21 +78,25 @@ CALC_ESSAI_GEOMECA(INFO=1,
 
                    ESSAI_TD = _F(PRES_CONF   = -5.E+4,
                                  EPSI_IMPOSE = -0.2, 
+                                 TABLE_REF   = tabbid1,
                                  TABLE_RESU  = TABTD),
 
                    ESSAI_TND = _F(PRES_CONF   = -5.E+4,
                                   EPSI_IMPOSE = -0.02, 
+                                  TABLE_REF   = tabbid1,
                                   TABLE_RESU  = TABTND),
 
                    ESSAI_TND_C = _F(PRES_CONF   = -3.E4,
                                     SIGM_IMPOSE = 1.5E+4,
                                     NB_CYCLE    =  3,
                                     UN_SUR_K    =  1.E-12,
+                                    TABLE_REF   = tabbid1,
                                     TABLE_RESU  = (TABTNDC1,TABTNDC2),),
 
                    ESSAI_CISA_C = _F(PRES_CONF   = -5.E+4,
                                      EPSI_IMPOSE =  1.95E-4 , 
                                      NB_CYCLE    = 1, 
+                                     TABLE_REF   = tabbid2,
                                      TABLE_RESU  = (TABCISA1,TABCISA2),),
 
                    )

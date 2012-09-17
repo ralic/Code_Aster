@@ -1,7 +1,7 @@
       SUBROUTINE NMSUIV(NOMA  ,SDIETO,SDSUIV,SDIMPR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,10 +21,9 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      INCLUDE 'jeveux.h'
-      CHARACTER*24  SDIMPR
+      INCLUDE       'jeveux.h'
+      CHARACTER*24  SDIMPR,SDSUIV
       CHARACTER*8   NOMA
-      CHARACTER*19  SDSUIV
       CHARACTER*24  SDIETO
 C
 C ----------------------------------------------------------------------
@@ -41,8 +40,7 @@ C IN  NOMA   : NOM DU MAILLAGE
 C IN  SDSUIV : NOM DE LA SD POUR SUIVI_DDL
 C IN  SDIETO : SD GESTION IN ET OUT
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       CHARACTER*24 LISTNO,LISTMA,LISTPI,LISTSP,LISTCP
       INTEGER      JNO   ,JMA

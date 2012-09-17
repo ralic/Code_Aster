@@ -7,7 +7,7 @@
      &                  LDCCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_21
 C
-      IMPLICIT NONE
-      INCLUDE 'jeveux.h'
+      IMPLICIT      NONE
       REAL*8        PARMET(*)
       CHARACTER*16  METHOD(*)
       INTEGER       FONACT(*)
@@ -97,8 +96,7 @@ C                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 C                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
 C OUT CODERE : CHAM_ELEM CODE RETOUR ERREUR INTEGRATION LDC
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       LOGICAL      REASMA,RENUME
       LOGICAL      LCRIGI,LCFINT,LCAMOR,LARIGI
@@ -115,7 +113,6 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
 C --- AFFICHAGE
@@ -233,9 +230,9 @@ C
      &              FONACT,LISCHA,SOLVEU,NUMEDD,SDDYNA,
      &              SDDISC,DEFICO,RESOCO,MEELEM,MEASSE,
      &              MATASS)
-        CALL IMPSDR(SDIMPR,'MATR_ASSE',METPRE,0.D0,0)
+        CALL NMIMCK(SDIMPR,'MATR_ASSE',METPRE,.TRUE.)
       ELSE
-        CALL IMPSDR(SDIMPR,'MATR_ASSE',K16BLA,0.D0,0)
+        CALL NMIMCK(SDIMPR,'MATR_ASSE',K16BLA,.FALSE.)
       ENDIF
 C
 C --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE
@@ -249,7 +246,5 @@ C
       ENDIF
 C
  9999 CONTINUE
-C
-      CALL JEDEMA()
 C
       END

@@ -2,7 +2,7 @@
      &                  FORCOL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,43 +49,9 @@ C              1: ENTIER
 C              2: REEL
 C              3: CHAINE
 C
-C
-C
-C
-      INTEGER      JIMPCO,JIMPTI,JIMPTY
-      CHARACTER*24 IMPCOL,IMPTIT,IMPTYP
-C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-C
-C --- ACCES SD
-C
-      IMPCOL = SDIMPR(1:14)//'.DEFI.COL'
-      IMPTIT = SDIMPR(1:14)//'.DEFI.TIT'
-      IMPTYP = SDIMPR(1:14)//'.DEFI.TYP'
-      CALL JEVEUO(IMPCOL,'E',JIMPCO)
-      CALL JEVEUO(IMPTIT,'E',JIMPTI)
-      CALL JEVEUO(IMPTYP,'E',JIMPTY)
-C
-C --- OPERATIONS
-C
-      IF (OPER.EQ.'LIRE') THEN
-        ICOD      = ZI(JIMPCO-1+ICOL)
-        TITCOL(1) = ZK16(JIMPTI+3*(ICOL-1))
-        TITCOL(2) = ZK16(JIMPTI+3*(ICOL-1)+1)
-        TITCOL(3) = ZK16(JIMPTI+3*(ICOL-1)+2)
-        FORCOL    = ZI(JIMPTY-1+ICOL)
-      ELSE IF (OPER.EQ.'AJOU') THEN
-        ZI(JIMPCO-1+ICOL)         = ICOD
-        ZK16(JIMPTI+3*(ICOL-1))   = TITCOL(1)
-        ZK16(JIMPTI+3*(ICOL-1)+1) = TITCOL(2)
-        ZK16(JIMPTI+3*(ICOL-1)+2) = TITCOL(3)
-        ZI(JIMPTY-1+ICOL)         = FORCOL
-      ELSE
-        CALL ASSERT(.FALSE.)   
-      ENDIF    
-C
-      CALL JEDEMA()
+C A RESORBER
+      CALL ASSERT(.FALSE.)
 
       END

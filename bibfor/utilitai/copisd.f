@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C-----------------------------------------------------------------------
       INTEGER       IRET, I, NBTU, JLTN1, JLTN2,IDD,NBSD,ILIMPI
       CHARACTER*1   BAS2
       CHARACTER*8   K8B, MAIL1, MAIL2
+      CHARACTER*12  K121, K122
       CHARACTER*14  COM1, COM2, NU1, NU2
       CHARACTER*16  TYP2SD, CORR1, CORR2
       CHARACTER*19  CH1, CH2, SDR1, K191, K192
@@ -283,6 +284,14 @@ C     -----------------------------------
         CALL RSCOPI(BASE,SD1,SD2)
 
 C ----------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'VOISINAGE') THEN
+C     -----------------------------------
+        K121 = SD1
+        K122 = SD2
+        CALL JEDUP1(K121//'.PTVOIS',BAS2,K122//'.PTVOIS')
+        CALL JEDUP1(K121//'.ELVOIS',BAS2,K122//'.ELVOIS')
+
+C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'LIGREL') THEN
 C     -----------------------------------
         K191 = SD1
@@ -292,6 +301,7 @@ C     -----------------------------------
         CALL JEDUP1(K191//'.NEMA',BAS2,K192//'.NEMA')
         CALL JEDUP1(K191//'.LGRF',BAS2,K192//'.LGRF')
         CALL JEDUP1(K191//'.NBNO',BAS2,K192//'.NBNO')
+        CALL JEDUP1(K191//'.NVGE',BAS2,K192//'.NVGE')
         CALL JEDUP1(K191//'.PRNM',BAS2,K192//'.PRNM')
         CALL JEDUP1(K191//'.PRNS',BAS2,K192//'.PRNS')
         CALL JEDUP1(K191//'.REPE',BAS2,K192//'.REPE')

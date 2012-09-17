@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -572,14 +572,17 @@ C     ---------------------------------------------------
 C     -- POUR LES VOLUMES FINIS, CREATION DU VOISINAGE :
 C     ---------------------------------------------------
       CALL DISMOI('F','EXI_VF',LIGREL,'LIGREL',IBID,EXIVF,IBID)
-C
+
 C     -- SCHEMAS NON VF AYANT BESOIN D'UN VOISINAGE :
 C     ---------------------------------------------------
       CALL DISMOI('F','BESOIN_VOISIN',LIGREL,'LIGREL',IBID,BEVOIS,IBID)
-C
 
-      IF ((BEVOIS.EQ.'OUI').OR.(EXIVF.EQ.'OUI')) CALL CREVGE(NOMA)
-C
+
+C     -- CREATION DE LA SD_VOISINAGE SI NECESSAIRE :
+C     ---------------------------------------------------
+      IF ((BEVOIS.EQ.'OUI').OR.(EXIVF.EQ.'OUI')) CALL CREVGE(LIGREL,'G')
+
+
 C     -- ON VERIFIE QUE LA GEOMETRIE DES MAILLES
 C        N'EST PAS TROP CHAHUTEE :
 C     ---------------------------------------------------

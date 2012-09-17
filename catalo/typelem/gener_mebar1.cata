@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,8 +40,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
-    EENECNO  = ENER_R   ELEM__         (TOTALE   )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   )
+    EENERR   = ENER_R   ELEM__         (TOTALE   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       REP      )
     CFORCER  = FORC_R   ELEM__         (FX       FY       FZ       REP      )
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
@@ -119,18 +118,18 @@ OPTION__
                               OUT__  EGGEOP_R PCOORPG
     ECIN_ELEM           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  COMEG2R  POMEGA2
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_MECA PVITESR
-                              OUT__  EENECNO  PENERCR
+                              OUT__  EENERR   PENERCR
     EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
                               OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
     EFGE_ELNO           185   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ENONLIN  PNONLIN  EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
-    ENER_ELAS           -1    IN__     OUT__  XXXXXX   XXXXXX
+    ENEL_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENERR   PENERDR
     EPSI_ELGA           154   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC

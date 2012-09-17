@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -357,7 +357,7 @@ C   ON REPREND UNE TABLE EXISTANTE
                VALK(2) = 'INST'
                CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
            ENDIF
-            CALL JEDETC(' ',NOMTA(1:8),1)
+            CALL DETRSD('TABLE',NOMTA)
             CALL TBEXTB(NEWTAB,'G',NOMTA,1,'INST','LE',IBID,DINST,C16B,
      &                  K8B,1.D-03,'RELA',IRET)
             IF ( IRET .EQ. 10 ) THEN

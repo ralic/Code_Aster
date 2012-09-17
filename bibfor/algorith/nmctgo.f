@@ -2,7 +2,7 @@
      &                  VALINC,MMCVGO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INCLUDE 'jeveux.h'
+      INCLUDE      'jeveux.h'
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*24 SDIMPR,SDERRO
@@ -48,8 +48,7 @@ C OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DE
 C              GEOMETRIE
 C               .TRUE. SI LA BOUCLE A CONVERGE
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      IFM,NIV
       LOGICAL      CFDISL,LCTCC,LCTCD,LXFCM
@@ -62,9 +61,7 @@ C
       CHARACTER*24 CLREAC
       INTEGER      JCLREA
       LOGICAL      CTCGEO,LERROG
-      REAL*8       CFDISR,R8BID,R8VIDE
-      INTEGER      IBID
-      CHARACTER*16 K16BLA
+      REAL*8       CFDISR,R8VIDE
 C
 C ----------------------------------------------------------------------
 C
@@ -79,7 +76,6 @@ C
 C
 C --- INITIALISATIONS
 C
-      K16BLA = ' '
       CVGNOE = ' '
       CVGVAL = R8VIDE()
       MMCVGO = .FALSE.
@@ -111,6 +107,9 @@ C
 C --- MISE A JOUR DES SEUILS
 C
       IF (LCTCC.OR.LXFCM) THEN
+C
+C ----- CALCUL DU CRITERE
+C
         CALL MMMCRI('GEOM',NOMA  ,DEPMOI,DEPGEO,DEPPLU,
      &              RESOCO,EPSGEO,CVGNOE,CVGVAL,MMCVGO)
 C
@@ -174,8 +173,8 @@ C
 C --- VALEUR ET ENDROIT OU SE REALISE L'EVALUATION DE LA BOUCLE
 C
       IF (LCTCC.OR.LXFCM) THEN
-        CALL IMPSDR(SDIMPR,'BOUC_NOEU',CVGNOE,R8BID ,IBID)
-        CALL IMPSDR(SDIMPR,'BOUC_VALE',K16BLA,CVGVAL,IBID)
+        CALL NMIMCK(SDIMPR,'BOUC_NOEU',CVGNOE,.TRUE.)
+        CALL NMIMCR(SDIMPR,'BOUC_VALE',CVGVAL,.TRUE.)
       ENDIF
 C
       CALL JEDEMA()

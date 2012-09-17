@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,18 +27,14 @@ C FONCTIONS REALISEES:
 C      CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE
 C      A L'EQUILIBRE POUR LES ELEMENTS ISOPARAMETRIQUES 3D
 C      .SOIT AUX POINTS D'INTEGRATION : OPTION 'ENEL_ELGA'
-C      .SOIT AUX NOEUDS               : OPTION 'ENEL_ELNO'
 
 C      OPTIONS : 'ENEL_ELGA'
-C                'ENEL_ELNO'
 
 C      CALCUL DE LA DENSITE D'ENERGIE TOTALE
 C      A L'EQUILIBRE POUR LES ELEMENTS ISOPARAMETRIQUES 3D
 C      .SOIT AUX POINTS D'INTEGRATION : OPTION 'ETOT_ELGA'
-C      .SOIT AUX NOEUDS               : OPTION 'ETOT_ELNO'
 
 C      OPTIONS : 'ETOT_ELGA'
-C                'ETOT_ELNO'
 
 
 C ENTREES  ---> OPTION : OPTION DE CALCUL
@@ -46,7 +42,7 @@ C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,IPOIDS,IVF,NBNOMX,
-     &        NBCONT,NPG1,NBSIG,IGAU,ISIG,INO,IGEOM,IDIM,ITEMPS,
+     &        NBCONT,NPG1,NBSIG,IGAU,ISIG,IGEOM,IDIM,ITEMPS,
      &        IMATE,JSIG,IDENER,IDFDE,IDEPL,IDEPLM,IDEPMM,
      &        IDSIG,IDSIGM,MXCMEL,IRET,IDENEM
       PARAMETER (NBNOMX=27)
@@ -54,7 +50,7 @@ C.......................................................................
       PARAMETER (MXCMEL=162)
       REAL*8 EPSI(NBCONT),REPERE(7)
       REAL*8 INSTAN,ZERO,UNDEMI,ENELEM
-      REAL*8 ENERPG(NBNOMX),ENERNO(NBNOMX)
+      REAL*8 ENERPG(NBNOMX)
       REAL*8 D1(NBCONT,NBCONT),XYZGAU(3),XYZ(3)
       REAL*8 NHARM,DEUX,INTEG1,INTEG2,INTEG
       REAL*8 EPSIM(NBCONT),DELTA(NBCONT),EPSS(MXCMEL)
@@ -84,7 +80,6 @@ C     -----------------
 
       DO 20 I = 1,NBNOMX
         ENERPG(I) = ZERO
-        ENERNO(I) = ZERO
    20 CONTINUE
 
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
@@ -291,45 +286,27 @@ C ---- OPTIONS ENEL_* ET ETOT_*
 C      ==============================
       IF (OPTION(1:4).EQ.'ETOT') THEN
         CALL JEVECH('PENERDM','L',IDENEM)
-        IF (OPTION(6:9).EQ.'ELGA') THEN
+C
+C ----   OPTION ETOT_ELGA
+C        ================
+        IF (OPTION.EQ.'ETOT_ELGA') THEN
           DO 120 IGAU = 1,NPG1
             ZR(IDENER+IGAU-1)=ZR(IDENEM+IGAU-1)+ENERPG(IGAU)
   120     CONTINUE
-
-C ----   OPTION ENEL_ELNO ET ETOT_ELNO
-C        =======================================
-        ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-
-C ----   DENSITE D'ENERGIE DE DEFORMATION AUX NOEUDS
-C        -------------------------------------------
-          CALL PPGAN2(JGANO,1,1,ENERPG,ENERNO)
-
-          DO 130 INO = 1,NNO
-            ZR(IDENER+INO-1)=ZR(IDENEM+INO-1)+ENERNO(INO)
-  130     CONTINUE
-
+C
 C ----   OPTION ETOT_ELEM
 C        ================
-        ELSE IF (OPTION(6:9).EQ.'ELEM') THEN
+        ELSE IF (OPTION.EQ.'ETOT_ELEM') THEN
           ZR(IDENER) = ZR(IDENEM)+ENELEM
         END IF
       ELSE
-        IF (OPTION(6:9).EQ.'ELGA') THEN
+C
+C ----   OPTION ENEL_ELGA
+C        ================
+        IF (OPTION.EQ.'ENEL_ELGA') THEN
           DO 220 IGAU = 1,NPG1
             ZR(IDENER+IGAU-1) = ENERPG(IGAU)
   220     CONTINUE
-
-C ----   OPTION ENEL_ELNO ET ETOT_ELNO
-C        =======================================
-        ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-
-C ----     DENSITE D'ENERGIE DE DEFORMATION AUX NOEUDS
-C          -------------------------------------------
-          CALL PPGAN2(JGANO,1,1,ENERPG,ENERNO)
-
-          DO 230 INO = 1,NNO
-            ZR(IDENER+INO-1) = ENERNO(INO)
-  230     CONTINUE
         END IF
       END IF
       END

@@ -1,6 +1,6 @@
       SUBROUTINE DEBCA1(NOMOP,LIGREL,NIN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,8 @@ C     ----------
       CHARACTER*19 LIGREL
       INTEGER NIN
 C ----------------------------------------------------------------------
+C     BUT : INITIALISER CERTAINS COMMONS DE CALCUL : CAII02, ...
 
-C     BUT : INITIALISER LES COMMONS CAII02 ET CAII11
 C     ENTREES:
 C        NOMOP  :  NOM D'1 OPTION
 C        LIGREL :  NOM DU LIGREL SUR LEQUEL ON DOIT FAIRE LE CALCUL
@@ -66,13 +66,18 @@ C---------------- COMMUNS POUR CALCUL ----------------------------------
 
       INTEGER EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
       COMMON /CAII19/EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
+
+      REAL*8 TIMED1,TIMEF1,TD1,TF1
+      COMMON /CARR01/TIMED1,TIMEF1,TD1,TF1
 C -------------------------------------------------------------------
 C VARIABLES LOCALES :
       INTEGER IRET,IER,IBID,IERD,OPT,IANBLC,NBSCMX,NBPARA
-      INTEGER NNOMX,NBOPT,NBTE,I
+      INTEGER NNOMX,NBOPT,NBTE,I,JNVGE
       CHARACTER*16 NOMOP2,NOMTE
       CHARACTER*8 KBID
       CHARACTER*3 BEVOIS,EXIVF,EXIELE
+      CHARACTER*12 VGE
+      REAL*8 R8NNEM, RUNDEF
 C -------------------------------------------------------------------
 
       CALL DISMOI('F','EXI_ELEM',LIGREL,'LIGREL',IBID,EXIELE,IERD)
@@ -159,8 +164,10 @@ C     ---------------------------------
         IF (IER.EQ.0) CALL CORMGI('V',LIGREL)
         CALL JEVEUO(LIGREL//'.REPE','L',JREPE)
         CALL DISMOI('F','NOM_MAILLA',LIGREL,'LIGREL',IBID,MA,IBID)
-        CALL JEVEUO(MA//'.VGE.PTVOIS','L',JPTVOI)
-        CALL JEVEUO(MA//'.VGE.ELVOIS','L',JELVOI)
+        CALL JEVEUO(LIGREL//'.NVGE','L',JNVGE)
+        VGE=ZK16(JNVGE-1+1)
+        CALL JEVEUO(VGE//'.PTVOIS','L',JPTVOI)
+        CALL JEVEUO(VGE//'.ELVOIS','L',JELVOI)
       ELSE
         JREPE=0
       ENDIF
@@ -200,6 +207,16 @@ C     -------------------------------------
 C     -- INITIALISATION DU COMMON CAII13 :
 C     -------------------------------------
       NBSAV=0
+
+C     -- INITIALISATION DU COMMON CARR01 :
+C     -------------------------------------
+      RUNDEF=R8NNEM()
+      TIMED1=RUNDEF
+      TIMEF1=RUNDEF
+      TD1=RUNDEF
+      TF1=RUNDEF
+
+
 
 
 C     LES TABLEAUX SUIVANTS PEUVENT N'ETRE CONSTRUITS QU'UNE

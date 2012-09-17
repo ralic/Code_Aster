@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -319,7 +319,7 @@ C          WRITE(8,*)'JE PASSE DANS ALIMRS 1 FOIS'
           CALL ALIMRS(MATE,MAILLA,MAFLUI,MOINT,NDBLE,NUM,NEWCHA,CHAMNZ,
      &               'DZ',ICOR)
           ENDIF
-          CALL JEDETC('V',NEWCHA,1)
+          CALL DETRSD('CHAM_NO',NEWCHA)
 
         ELSE
 
@@ -357,7 +357,7 @@ C----- PLONGEMENT DE LA COMPOSANTE DZ QUI DEVIENT TEMPERATURE
 
            ENDIF
 
-              CALL JEDETC('V',NEWCHA,1)
+              CALL DETRSD('CHAM_NO',NEWCHA)
 
            ENDIF
 
@@ -504,7 +504,7 @@ C----ON RESOUT L EQUATION DE LAPLACE
            CALL RESOUD(MA,MAPREC,CHFLU,SOLVEU,' ','V',CHSOL,
      &                 CRITER,0,RBID,CBID,.TRUE.)
            CALL JEDUPC('V',CHSOL(1:19),1,'V',CHFLU(1:19),.FALSE.)
-           CALL JEDETC('V',CHSOL,1)
+           CALL DETRSD('CHAMP_GD',CHSOL)
 
 C--------ON REPLONGE LA PRESSION SUR L INTERFACE
 C-----------------QU 'ON STOCKE
@@ -516,19 +516,19 @@ C-----------------QU 'ON STOCKE
            CALL PRSTOC(VEPR,VESTOC,ILIRES,K,ZI(IADRP+ISST-1),
      &                NBVALE,NBREFE,NBDESC)
 
-           CALL JEDETC('V',VEPR,1)
-           CALL JEDETC('V',CHCOMB,1)
-           CALL JEDETC('V',CHCMB2,1)
-           CALL JEDETC('V',CHFLU,1)
-           CALL JEDETC('V',VESOLX,1)
-           CALL JEDETC('V',VESOLY,1)
-           CALL JEDETC('V',VESOLZ,1)
-           CALL JEDETC('V',CHTMPX,1)
-           CALL JEDETC('V',CHTMPY,1)
-           CALL JEDETC('V',CHTMPZ,1)
-           CALL JEDETC('V',CHAMNX,1)
-           CALL JEDETC('V',CHAMNY,1)
-           CALL JEDETC('V',CHAMNZ,1)
+           CALL DETRSD('CHAM_NO',VEPR)
+           CALL DETRSD('CHAMP_GD',CHCOMB)
+           CALL DETRSD('CHAMP_GD',CHCMB2)
+           CALL DETRSD('CHAM_NO',CHFLU)
+           CALL DETRSD('CHAM_NO',VESOLX)
+           CALL DETRSD('CHAM_NO',VESOLY)
+           CALL DETRSD('CHAM_NO',VESOLZ)
+           CALL DETRSD('CHAM_NO',CHTMPX)
+           CALL DETRSD('CHAM_NO',CHTMPY)
+           CALL DETRSD('CHAM_NO',CHTMPZ)
+           CALL DETRSD('CHAM_NO',CHAMNX)
+           CALL DETRSD('CHAM_NO',CHAMNY)
+           CALL DETRSD('CHAM_NO',CHAMNZ)
 C
       CALL JEEXIN (CRITER(1:19)//'.CRTI',IRET)
       IF ( IRET .NE. 0 ) THEN

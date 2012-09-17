@@ -1,7 +1,7 @@
       SUBROUTINE OP0143()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -561,7 +561,7 @@ C       ==========
         CALL GETVIS(' ','INFO',0,IARG,1,NIV,IBID)
         IF (NIV.EQ.2) CALL TFIMPR(NOMU)
 
-      CALL JEDETC('G','&&OP0143',1)
+      CALL JEDETR('&&OP0143.TEMP.NBCR')
       CALL JEDETC('G','AJGR2.FLAG',4)
 
  1000 FORMAT(1P,'    COEF_MASS_AJOU CALCULE: ',E12.5)

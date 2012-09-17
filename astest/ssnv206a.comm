@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE LETK
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH LETK
@@ -164,11 +164,11 @@ U1=CALC_CHAMP(  reuse      = U1,
 
 TEMPS2=DEFI_LIST_REEL(   DEBUT=7000.,
                          INTERVALLE=(_F(  JUSQU_A = 8000.00,    NOMBRE = 100, ),
-                                     _F(  JUSQU_A = 9000.00,    NOMBRE = 100, ),
-                                     _F(  JUSQU_A =10000.00,    NOMBRE = 100, ),
-                                     _F(  JUSQU_A =11000.00,    NOMBRE = 100, ),
-                                     _F(  JUSQU_A =12000.00,    NOMBRE = 100, ),
-                                     _F(  JUSQU_A =13000.00,    NOMBRE = 100, ),
+                                     _F(  JUSQU_A = 9000.00,    NOMBRE = 200, ),
+                                     _F(  JUSQU_A =10000.00,    NOMBRE = 200, ),
+                                     _F(  JUSQU_A =11000.00,    NOMBRE = 200, ),
+                                     _F(  JUSQU_A =12000.00,    NOMBRE = 200, ),
+                                     _F(  JUSQU_A =13000.00,    NOMBRE = 200, ),
                                                         ))
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS2),
@@ -303,7 +303,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 3.010E-2),),)
+                      VALE       = 3.019E-2),),)
 
 TEST_RESU(RESU=(
 
@@ -325,7 +325,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIYY',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -11.958),),)
+                      VALE       = -11.941),),)
 
 
 FIN()

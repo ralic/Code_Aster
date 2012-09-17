@@ -4,7 +4,7 @@
      >                    NLSMAC, NLSNAC, NOMTAB, XNOVAR)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF POSTRELE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -233,7 +233,7 @@ C
                       CALL JEDETR(SDPOST//'.PNCO')
                       CALL JEDETR(SDPOST//'.PNSP')
 100                CONTINUE
-                   CALL JEDETC('V','&&RVIMPM',1)
+
                 ENDIF
                 CALL JEEXIN(SDNEWR//'.VEC1',N1)
                 IF ( N1 .NE. 0 ) THEN

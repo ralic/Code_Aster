@@ -8,7 +8,7 @@
       REAL*8 TOL,TOLDYN,VALPRO(NBVEC),VECT(NEQ,NBVEC)
       CHARACTER*19 SOLVEU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -265,8 +265,17 @@ C     ---   ET DONC DES VECTEURS PROPRES DU SYSTEME COMPLET  ---
 C     ------------------------------------------------------------------
 C     ------------- DESTRUCTION DES VARIABLES AUXILLIAIRES -------------
 C     ------------------------------------------------------------------
-
-      CALL JEDETC('V','&&SSPACE',1)
+      CALL JEDETR('&&SSPACE.IPOS')
+      CALL JEDETR('&&SSPACE.FPOS')
+      CALL JEDETR('&&SSPACE.RDIAK')
+      CALL JEDETR('&&SSPACE.RDIAM')
+      CALL JEDETR('&&SSPACE.VECT')
+      CALL JEDETR('&&SSPACE.AR')
+      CALL JEDETR('&&SSPACE.BR')
+      CALL JEDETR('&&SSPACE.VECPRO')
+      CALL JEDETR('&&SSPACE.TEMPOR')
+      CALL JEDETR('&&SSPACE.TOLVEC')
+      CALL JEDETR('&&SSPACE.JACOBI')
 
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # RESPONSABLE FOUCAULT A.FOUCAULT
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE LETK
@@ -312,7 +312,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 3.022E-2),),)
+                      VALE       = 3.026E-2),),)
 
 TEST_RESU(RESU=(
 
@@ -334,7 +334,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIYY',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -11.957),),)
+                      VALE       = -11.945),),)
 
 
 FIN()

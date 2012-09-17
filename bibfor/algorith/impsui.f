@@ -1,7 +1,7 @@
       SUBROUTINE IMPSUI(SDSUIV,ZDEF  ,COLACT,NCOL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,67 +21,12 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INCLUDE 'jeveux.h'
       INTEGER      ZDEF,NCOL
-      CHARACTER*19 SDSUIV,COLACT 
+      CHARACTER*19 SDSUIV,COLACT
 C
 C ----------------------------------------------------------------------
 C
-C ROUTINE MECA_NON_LINE (AFFICHAGE)
-C
-C CAS DU SUIVI_DDL
-C
-C ----------------------------------------------------------------------
-C
-C
-C IN  SDSUIV : NOM DE LA SD POUR LE SUIVI
-C IN  ZDEF   : NOMBRE MAXI DE COLONNES DISPONIBLES POUR L'AFFICHAGE
-C IN  COLACT : VECTEUR D'ACTIVATION DES COLONNES
-C OUT NCOL   : NOMBRE DE COLONNES ACTIVES DANS COLACT
-C
-C COLACT CONTIENT LA LISTE DES CODES D'AFFICHAGES
-C
-C
-C
-C      
-      INTEGER      ISUI,ICOL,NSUIMX
-      INTEGER      JIMCOL 
-      INTEGER      NBSUIV      
-      CHARACTER*24 OBSINF
-      INTEGER      JOBSIN       
-C
-C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
-C
-C --- NOMBRE DE SUIVI_DDL
-C
-      OBSINF = SDSUIV(1:14)//'     .INFO'
-      CALL JEVEUO(OBSINF,'L',JOBSIN)
-      NBSUIV = ZI(JOBSIN+1-1)
-C
-C --- NOMBRE DE COLONNES ACTIVES
-C
-      ICOL   = NCOL
-      NSUIMX = ZDEF - NCOL
-C
-C --- ACCES
-C
-      CALL JEVEUO(COLACT,'E',JIMCOL)       
-C
-      IF (NBSUIV.GT.NSUIMX) THEN
-        CALL U2MESI('F','OBSERVATION_5',1,NSUIMX)
-      ENDIF
-C
-      DO 10 ISUI = 1, NBSUIV
-        ICOL              = ICOL + 1
-        ZI(JIMCOL+ICOL-1) = -ISUI
-   10 CONTINUE
-C
-C --- NOMBRE DE COLONNES ACTIVES
-C
-      NCOL  = NCOL + NBSUIV
-C
-      CALL JEDEMA()
+C A RESORBER
+      CALL ASSERT(.FALSE.)
 
       END

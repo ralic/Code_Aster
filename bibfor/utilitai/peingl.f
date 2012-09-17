@@ -1,18 +1,18 @@
       SUBROUTINE PEINGL(RESU,MODELE,MATE,CARA,NCHAR,LCHAR,NH,NBOCC,
-     &                  OPTIOZ)
+     &                  MOTFAZ)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
       INTEGER NCHAR,NH,NBOCC
-      CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
+      CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),MOTFAZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C (AT YOUR OPTION) ANY LATER VERSION.
+C (AT YOUR OTPION) ANY LATER VERSION.
 
 C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
@@ -34,7 +34,7 @@ C                  DE PERTE DE PROPORTIONNALITE DU CHARGEMENT.
 
 C -----------------------------------------------------------------
 
-C           -POUR L'OPTION INDIC_ENER, ON CALCULE L'INDICATEUR
+C           -POUR LE MOT-CLE INDIC_ENER, ON CALCULE L'INDICATEUR
 C            GLOBAL ENERGETIQUE DETERMINE PAR L'EXPRESSION
 C            SUIVANTE :
 C            IE = (SOMME_DOMAINE((1 - PSI(EPS)/OMEGA(EPS,VARI)).DV)/V
@@ -48,7 +48,7 @@ C            .V EST LE VOLUME DU GROUPE DE MAILLES TRAITE
 
 C -----------------------------------------------------------------
 
-C           -POUR L'OPTION INDIC_SEUIL, ON CALCULE L'INDICATEUR
+C           -POUR LE MOT-CLE INDIC_SEUIL, ON CALCULE L'INDICATEUR
 C            GLOBAL  DETERMINE PAR L'EXPRESSION SUIVANTE :
 
 C   IS = (SOMME_DOMAINE(1 - ((SIG-X):EPS_PLAST)/((SIG_Y+R)*P)).DV)/V
@@ -62,8 +62,8 @@ C            .P         EST LA DEFORMATION PLASTIQUE CUMULEE
 C            .V EST LE VOLUME DU GROUPE DE MAILLES TRAITE
 C -----------------------------------------------------------------
 
-C  OPTION ENER_ELAS : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
-C  ================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
+C  MOT-CLE ENER_ELAS : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
+C  =================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
 
 C   ENELAS =  SOMME_VOLUME((SIG_T*(1/D)*SIG).DV)
 
@@ -72,8 +72,8 @@ C            .D         EST LE TENSEUR DE HOOKE
 
 C -----------------------------------------------------------------
 
-C  OPTION ENER_TOTALE : CALCUL DE L'ENERGIE DE DEFORMATION TOTALE
-C  ==================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
+C  MOT-CLE ENER_TOTALE : CALCUL DE L'ENERGIE DE DEFORMATION TOTALE
+C  ===================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
 
 C   ENER_TOTALE =  ENELAS + EPLAS
 
@@ -111,11 +111,11 @@ C    LCHAR(1)       IN     K*      LISTE  DES CHARGES
 C    NH             IN     I       NUMERO D'HARMONIQUE DE FOURIER
 C    NBOCC          IN     I       NOMBRE D'OCCURENCES DU MOT-FACTEUR
 C                                  INDIC_ENER
-C    OPTIOZ         IN     K*      NOM DE L'OPTION "INDIC_ENER"
-C                                              OU  "INDIC_SEUIL"
-C                                              OU  "ENER_ELAS"
-C                                              OU  "ENER_TOTALE"
-C                                              OU  "ENER_DISS"
+C    MOTFAZ         IN     K*      NOM DU MOT-CLE FACTEUR "INDIC_ENER"
+C                                                     OU  "INDIC_SEUIL"
+C                                                     OU  "ENER_ELAS"
+C                                                     OU  "ENER_TOTALE"
+C                                                     OU  "ENER_DISS"
 
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  VARIABLES LOCALES
@@ -129,7 +129,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*8 RESUL,CRIT,NOMA,NOMMAI,VALEK(2),KIORDM
       CHARACTER*8 KIORD,K8B,LPAIN(10),LPAOUT(2),TYPARR(7)
       CHARACTER*8 NOMGD
-      CHARACTER*16 TYPRES,OPTION,NOPARR(7),LIGRMO,COMPT
+      CHARACTER*16 TYPRES,MOTFAC,NOPARR(7),LIGRMO,COMPT,OPTION
       CHARACTER*19 KNUM,LIGREL,KINS,COMPOR
       CHARACTER*19 CHVARC,CHVREF
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,CHVARI,CHDEPL
@@ -149,19 +149,26 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C --- INITIALISATIONS :
 C     ---------------
       ZERO = 0.0D0
-      OPTION = OPTIOZ
+      MOTFAC = MOTFAZ
+      OPTION = MOTFAZ
       NOPARR(1) = 'NUME_ORDRE'
       NOPARR(2) = 'INST'
       NOPARR(3) = 'LIEU'
       NOPARR(4) = 'ENTITE'
-      NOPARR(5) = OPTION
+      NOPARR(5) = MOTFAC
       NBPARR    = 5
-      IF (OPTION(1:4).EQ.'ENER') THEN
+      IF (MOTFAC(1:4).EQ.'ENER') THEN
         NOPARR(5) = 'TOTALE'
-        IF (OPTION(6:9).EQ.'DISS') THEN
+        IF (MOTFAC.EQ.'ENER_DISS') THEN
+          OPTION='DISS_ELEM'
           NOPARR(6) = 'ENDO'
           NOPARR(7) = 'PLAS'
-        ELSE
+        ELSE IF (MOTFAC.EQ.'ENER_ELAS') THEN
+          OPTION='ENEL_ELEM'
+          NOPARR(6) = 'MEMBRANE'
+          NOPARR(7) = 'FLEXION'
+        ELSE IF (MOTFAC.EQ.'ENER_TOTALE') THEN
+          OPTION='ENER_TOTALE'
           NOPARR(6) = 'MEMBRANE'
           NOPARR(7) = 'FLEXION'
         ENDIF
@@ -228,7 +235,7 @@ C     ------------------------------------------------
       MLGNMA = NOMA//'.NOMMAI'
       MLGGMA = NOMA//'.GROUPEMA'
 
-      CALL EXLIM3(OPTIOZ,'V',MODELE,LIGREL)
+      CALL EXLIM3(MOTFAZ,'V',MODELE,LIGREL)
 
 C ---  CREATION DE LA TABLE 'GLOBALE' :
 C      -----------------------------
@@ -353,7 +360,7 @@ C      ----------------------
         CALL RSEXCH(' ',RESUL,'VARI_ELGA',NUMORD,CHVARI,IRET)
         IVARI=1
         IF (IRET.GT.0) THEN
-           IF (OPTION.NE.'ENER_ELAS') THEN
+           IF (MOTFAC.NE.'ENER_ELAS') THEN
                VALK(1) = RESUL
                VALK(2) = KIORD
                CALL U2MESK('F','UTILITAI3_79', 2 ,VALK)
@@ -421,12 +428,12 @@ C      --------------------------------
           LCHOUT(1) = '&&PEINGL.INDIC'
           LPAOUT(2) = 'PENERD2'
           LCHOUT(2) = '&&PEINGL.VOLUME'
-        ELSE IF (OPTION.EQ.'ENER_ELAS' .OR.
+        ELSE IF (OPTION.EQ.'ENEL_ELEM' .OR.
      &           OPTION.EQ.'ENER_TOTALE') THEN
           NBOUT = 1
           LPAOUT(1) = 'PENERD1'
           LCHOUT(1) = '&&PEINGL.INDIC'
-        ELSE IF (OPTION.EQ.'ENER_DISS') THEN
+        ELSE IF (OPTION.EQ.'DISS_ELEM') THEN
           NBOUT = 1
           LPAOUT(1) = 'PDISSD1'
           LCHOUT(1) = '&&PEINGL.INDIC'
@@ -442,17 +449,17 @@ C      -----------------------------------------------
 C ---   RECUPERATION DES MAILLES POUR LESQUELLES ON VA CALCULER
 C ---   L'INDICATEUR :
 C       ------------
-          CALL GETVTX(OPTION,'TOUT',IOCC,IARG,0,K8B,NT)
-          CALL GETVEM(NOMA,'MAILLE',OPTION,'MAILLE',IOCC,IARG,0,K8B,NM)
-          CALL GETVEM(NOMA,'GROUP_MA',OPTION,'GROUP_MA',IOCC,IARG,0,K8B,
+          CALL GETVTX(MOTFAC,'TOUT',IOCC,IARG,0,K8B,NT)
+          CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE',IOCC,IARG,0,K8B,NM)
+          CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',IOCC,IARG,0,K8B,
      &                NG)
 
 C ---   TRAITEMENT DU MOT CLE "TOUT" ,LA QUANTITE EST CALCULEE
 C ---   SUR TOUT LE MODELE :
 C       ------------------
           IF (NT.NE.0) THEN
-            IF (OPTION.EQ.'INDIC_ENER' .OR.
-     &          OPTION.EQ.'INDIC_SEUIL') THEN
+            IF (MOTFAC.EQ.'INDIC_ENER' .OR.
+     &          MOTFAC.EQ.'INDIC_SEUIL') THEN
 
 C ---     SOMMATION DES INTEGRALES SUIVANTES SUR LE MODELE
 C ---     LA PREMIERE INTEGRALE CALCULEE EST :
@@ -477,14 +484,14 @@ C         -------------------------------------------
               VALEK(1) = NOMA
               VALEK(2) = 'TOUT'
 
-            ELSE IF (OPTION.EQ.'ENER_ELAS'  .OR.
-     &               OPTION.EQ.'ENER_TOTALE'.OR.
-     &               OPTION.EQ.'ENER_DISS') THEN
+            ELSE IF (MOTFAC.EQ.'ENER_ELAS'  .OR.
+     &               MOTFAC.EQ.'ENER_TOTALE'.OR.
+     &               MOTFAC.EQ.'ENER_DISS') THEN
 
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              IF(OPTION.EQ.'ENER_TOTALE') THEN
+              IF(MOTFAC.EQ.'ENER_TOTALE') THEN
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,0,IBID)
               ELSE
                 CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,0,IBID)
@@ -493,8 +500,8 @@ C ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 C ---  L ENERGIE TOTAL
               IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
      &            (COMPT(1:4).NE.'ELAS') .AND.
-     &            (OPTION.NE.'ENER_ELAS').AND.
-     &            (OPTION.NE.'ENER_DISS')) THEN
+     &            (MOTFAC.NE.'ENER_ELAS').AND.
+     &            (MOTFAC.NE.'ENER_DISS')) THEN
                  ENERGI = ENERGI + WORK(1)
               ELSE
                 ENERGI = WORK(1)
@@ -519,7 +526,7 @@ C       -----------------------
           IF (NG.NE.0) THEN
             NBGRMA = -NG
             CALL WKVECT('&&PEINGL_GROUPM','V V K8',NBGRMA,JGR)
-            CALL GETVEM(NOMA,'GROUP_MA',OPTION,'GROUP_MA',IOCC,IARG,
+            CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',IOCC,IARG,
      &                  NBGRMA,
      &                  ZK8(JGR),NG)
 
@@ -538,8 +545,8 @@ C         ---------------------------------
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
 
-              IF (OPTION.EQ.'INDIC_ENER' .OR.
-     &            OPTION.EQ.'INDIC_SEUIL') THEN
+              IF (MOTFAC.EQ.'INDIC_ENER' .OR.
+     &            MOTFAC.EQ.'INDIC_SEUIL') THEN
 
 C ---      SOMMATION DES INTEGRALES SUIVANTES SUR LES
 C ---      MAILLES DU GROUP_ MA
@@ -564,14 +571,14 @@ C          -------------------------------------------
                 VALER(2) = INDIC1/VOLUME
                 VALEK(1) = NOMMAI
 
-              ELSE IF (OPTION.EQ.'ENER_ELAS' .OR.
-     &                 OPTION.EQ.'ENER_TOTALE' .OR.
-     &                 OPTION.EQ.'ENER_DISS') THEN
+              ELSE IF (MOTFAC.EQ.'ENER_ELAS' .OR.
+     &                 MOTFAC.EQ.'ENER_TOTALE' .OR.
+     &                 MOTFAC.EQ.'ENER_DISS') THEN
 
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              IF(OPTION.EQ.'ENER_TOTALE') THEN
+              IF(MOTFAC.EQ.'ENER_TOTALE') THEN
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,NBMA,ZI(JAD))
               ELSE
                 CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,NBMA,ZI(JAD))
@@ -582,8 +589,8 @@ C ---  L ENERGIE TOTAL
 
                 IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
      &             (COMPT(1:4).NE.'ELAS') .AND.
-     &             (OPTION.NE.'ENER_ELAS').AND.
-     &             (OPTION.NE.'ENER_DISS')) THEN
+     &             (MOTFAC.NE.'ENER_ELAS').AND.
+     &             (MOTFAC.NE.'ENER_DISS')) THEN
 
 
                   ENERGI = ENERGI + WORK(1)
@@ -616,7 +623,7 @@ C       ----------------------
           IF (NM.NE.0) THEN
             NBMAIL = -NM
             CALL WKVECT('&&PEINGL_MAILLE','V V K8',NBMAIL,JMA)
-            CALL GETVEM(NOMA,'MAILLE',OPTION,'MAILLE',IOCC,IARG,NBMAIL,
+            CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE',IOCC,IARG,NBMAIL,
      &                  ZK8(JMA),NM)
 
 C ---    BOUCLE SUR LES MAILLES :
@@ -630,8 +637,8 @@ C        ----------------------
               END IF
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUME)
 
-              IF (OPTION.EQ.'INDIC_ENER' .OR.
-     &            OPTION.EQ.'INDIC_SEUIL') THEN
+              IF (MOTFAC.EQ.'INDIC_ENER' .OR.
+     &            MOTFAC.EQ.'INDIC_SEUIL') THEN
 
 C ---      LES INTEGRALES SONT CALCULEES SUR LA MAILLE COURANTE
 C ---      LA PREMIERE INTEGRALE CALCULEE EST :
@@ -655,14 +662,14 @@ C          -------------------------------------------
                 VALER(2) = INDIC1/VOLUME
                 VALEK(1) = NOMMAI
 
-              ELSE IF (OPTION.EQ.'ENER_ELAS' .OR.
-     &                 OPTION.EQ.'ENER_TOTALE' .OR.
-     &                 OPTION.EQ.'ENER_DISS') THEN
+              ELSE IF (MOTFAC.EQ.'ENER_ELAS' .OR.
+     &                 MOTFAC.EQ.'ENER_TOTALE' .OR.
+     &                 MOTFAC.EQ.'ENER_DISS') THEN
 
 C ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 C ---          SUR LE MODELE :
 C              -------------
-              IF(OPTION.EQ.'ENER_TOTALE') THEN
+              IF(MOTFAC.EQ.'ENER_TOTALE') THEN
                 CALL MESOMM(LCHOUT(1),1,IBID,WORK(1),C16B,1,NUME)
               ELSE
                 CALL MESOMM(LCHOUT(1),3,IBID,WORK,C16B,1,NUME)
@@ -670,7 +677,7 @@ C              -------------
 
                 IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
      &            (COMPT(1:4).NE.'ELAS') .AND.
-     &            (OPTION.NE.'ENER_ELAS')) THEN
+     &            (MOTFAC.NE.'ENER_ELAS')) THEN
 
                   ENERGI = ENERGI + WORK(1)
                 ELSE
@@ -694,9 +701,9 @@ C          --------------------------------------
           END IF
    50   CONTINUE
         CALL JEDETR('&&MECHTI.CH_INST_R')
-        CALL JEDETR(CHVARC)
-        CALL JEDETR(CHVREF)
-        CALL JEDETC('V',COMPOR//'.PTMA',1)
+        CALL DETRSD('CHAM_ELEM',CHVARC)
+        CALL DETRSD('CHAM_ELEM',CHVREF)
+        CALL JEDETR(COMPOR//'.PTMA')
         CALL JEDEMA()
    60 CONTINUE
    70 CONTINUE

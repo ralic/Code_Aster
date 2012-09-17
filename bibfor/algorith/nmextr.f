@@ -1,8 +1,8 @@
-      SUBROUTINE NMEXTR(NOMA  ,NOMO  ,SDEXTR,SDIETO,MOTFAC,
+      SUBROUTINE NMEXTR(NOMA  ,NOMO  ,SDEXTZ,SDIETO,MOTFAC,
      &                  NBOCC ,NTEXTR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,13 +21,13 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
-      IMPLICIT     NONE
-      INCLUDE 'jeveux.h'
-      CHARACTER*8  NOMA,NOMO
-      CHARACTER*19 SDEXTR
-      CHARACTER*24 SDIETO
-      INTEGER      NBOCC,NTEXTR
-      CHARACTER*16 MOTFAC
+      IMPLICIT      NONE
+      INCLUDE       'jeveux.h'
+      CHARACTER*8   NOMA,NOMO
+      CHARACTER*(*) SDEXTZ
+      CHARACTER*24  SDIETO
+      INTEGER       NBOCC,NTEXTR
+      CHARACTER*16  MOTFAC
 C
 C ----------------------------------------------------------------------
 C
@@ -46,8 +46,7 @@ C IN  MOTFAC : MOT-FACTEUR POUR LIRE
 C IN  NBOCC  : NOMBRE D'OCCURRENCES DE MOTFAC
 C OUT NTEXTR : NOMBRE TOTAL D'EXTRACTIONS
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      IOCC,IOC2,ICHAM,IBID
       INTEGER      NBEXT,NBCHAM
@@ -64,6 +63,7 @@ C
       CHARACTER*24 LIST
       INTEGER      JLIST
       INTEGER      IARG
+      CHARACTER*19 SDEXTR
 C
 C ----------------------------------------------------------------------
 C
@@ -71,9 +71,10 @@ C
 C
 C --- INITIALISATIONS
 C
-      NTEXTR  = 0
-      LIST    = '&&NMEXTR.LIST'
-      NBCHAM  = 0
+      NTEXTR = 0
+      LIST   = '&&NMEXTR.LIST'
+      NBCHAM = 0
+      SDEXTR = SDEXTZ
 C
 C --- SD PRINCIPALE (INFO)
 C

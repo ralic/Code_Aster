@@ -3,7 +3,7 @@
 
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C-------------STOCKAGE DANS LE VECTEUR CREE -------------------------
 14          CONTINUE
 
 
-           CALL JEDETC('V',VECSOL,1)
+           CALL DETRSD('CHAM_NO',VECSOL)
 C
       CALL JEDEMA()
            END

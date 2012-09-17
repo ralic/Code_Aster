@@ -4,7 +4,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -300,9 +300,11 @@ C
          CALL JELIBE(KREFE//'.REFD')
       ENDIF
 
+C --- MENAGE
       CALL JEDETR ( '&&REGENE.NUME' )
-      CALL JEDETC(' ','&&REGENE',1)
-      CALL JEDETC(' ','&&REGEGL',1)
+      CALL JEDETR ( '&&REGENE.BASEMODE' )
+      CALL JEDETR ( '&&REGEGL'//'.INDIR.SST' )
+
       CALL TITRE
       CALL JEDEMA()
       END

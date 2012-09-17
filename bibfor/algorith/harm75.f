@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -361,7 +361,18 @@ C
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C
-      CALL JEDETC(' ','&&HARM75',1)
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&HARM75.NUME_NOEUD  ')
+      CALL JEDETR('&&HARM75.NOM_CMP     ')
+      CALL JEDETR('&&HARM75.NB_NEQ      ')
+      CALL JEDETR('&&HARM75.NUME_DDL    ')
+      CALL JEDETR('&&HARM75.NUM_RANG')
+      CALL JEDETR('&&HARM75.FREQ')
+      CALL JEDETR('&&HARM75.VECTGENE')
+      CALL DETRSD('CHAM_NO','&&HARM75.CHAMNO')
+
       CALL TITRE
 C
       CALL JEDEMA()

@@ -15,7 +15,7 @@ C
       REAL*8       ZG(*),HG(*),DG(*),TG(*),CDG(*),CPG(*),RUGG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -549,7 +549,20 @@ C
  7001 FORMAT (1P,1X,A,D13.6)
  7002 FORMAT (1P,1X,A,I4,A,D13.6,A,D13.6,A)
 C
-      CALL JEDETC('V','&&MEFIST',1)
+C --- MENAGE
+C
+      CALL JEDETR('&&MEFIST.TMP.PST')
+      CALL JEDETR('&&MEFIST.TMP.DIV')
+      CALL JEDETR('&&MEFIST.TMP.BET')
+      CALL JEDETR('&&MEFIST.TMP.SGN')
+      CALL JEDETR('&&MEFIST.TMP.VIT')
+      CALL JEDETR('&&MEFIST.TMP.VVV')
+      CALL JEDETR('&&MEFIST.TMP.MAT')
+      CALL JEDETR('&&MEFIST.TMP.VEC')
+      CALL JEDETR('&&MEFIST.TMP.IND')
+      CALL JEDETR('&&MEFIST.TMP.FRE')
+      CALL JEDETR('&&MEFIST.TMP.COEFG')
+      CALL JEDETR('&&MEFIST.TMP.SECTG')
 C
       CALL JEDEMA()
       END

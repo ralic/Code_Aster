@@ -1,0 +1,116 @@
+# MODIF  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+# TITRE TEST SOURCE THERMIQUE NON LINEAIRE
+# ttnl100a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='TTNL100A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+from math import *
+
+# Closed-form solution
+
+T0   = 0.0
+w    = 2.0
+tmax = 1.0
+Tmax = T0*exp(-w*tmax) + (1-exp(-w*tmax))/w
+
+SOURCE = DEFI_FONCTION(       # s(T) = 2 - 2*w * T
+  NOM_PARA    = 'TEMP',
+  VALE        = (0,2, 1,2-2*w),
+  PROL_DROITE = 'LINEAIRE',
+  PROL_GAUCHE = 'LINEAIRE',
+  )
+
+  
+# Usual data setting
+
+LAMBDA = DEFI_CONSTANTE(VALE = 0)
+RHO_CP = DEFI_CONSTANTE(VALE = 2)
+
+FAKE_MAT = DEFI_MATERIAU(
+  THER_NL = _F(LAMBDA=LAMBDA, RHO_CP=RHO_CP),
+  )
+  
+MESH = LIRE_MAILLAGE(FORMAT = 'MED')
+
+MAT_FLD = AFFE_MATERIAU(
+  MAILLAGE = MESH,
+  AFFE     = _F(GROUP_MA = 'BULK', MATER = FAKE_MAT),
+  )
+  
+MODEL = AFFE_MODELE(
+  MAILLAGE = MESH,
+  AFFE     = _F(GROUP_MA='BULK',PHENOMENE='THERMIQUE',MODELISATION='PLAN'),
+  )
+  
+# Non linear heating source
+
+HEATING = AFFE_CHAR_THER_F(
+  MODELE  = MODEL,
+  SOUR_NL = _F(GROUP_MA='BULK', SOUR=SOURCE),    
+  )
+
+  
+# Initial temperature field
+  
+INI_TEMP = CREA_CHAMP(
+  OPERATION ='AFFE', 
+  TYPE_CHAM ='NOEU_TEMP_R',
+  MAILLAGE  = MESH,
+  AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0),
+  )
+
+
+# Computation
+  
+TIME = DEFI_LIST_REEL(
+  DEBUT      =  0.0,
+  INTERVALLE = (
+    _F(JUSQU_A = tmax, NOMBRE = 100),
+    ),
+  )
+  
+EVOL = THER_NON_LINE(
+  MODELE      = MODEL,
+  INCREMENT   = _F(LIST_INST = TIME),
+  CHAM_MATER  = MAT_FLD,
+  EXCIT       = (
+    _F(CHARGE = HEATING),
+    ),
+  ETAT_INIT   = _F(CHAM_NO = INI_TEMP),
+  CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
+  NEWTON      = _F(REAC_ITER = 1),
+  )
+
+  
+# Result checking (middle of the rod)
+
+TEST_RESU(
+  RESU      = _F(
+    REFERENCE = 'ANALYTIQUE',
+    VALE      =  Tmax,
+    RESULTAT  =  EVOL,
+    INST      =  tmax,
+    NOM_CHAM  = 'TEMP',
+    NOM_CMP   = 'TEMP',
+    GROUP_NO  = 'PROBE',
+    ),
+  )
+    
+FIN()

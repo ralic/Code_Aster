@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # ======================================================================
 # TITRE ETUDE ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH : LETK
 # wtnv135a.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 3.015E-2),),)
+                      VALE       = 3.019E-2),),)
 
 TEST_RESU(RESU=(
 
@@ -344,7 +344,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIZZ',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -1.1956E7),),)
+                      VALE       = -1.1941E7),),)
 
 
 FIN () ;

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,13 +49,12 @@ MODE_LOCAL__
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    EENECNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
     EDISSR   = DISS_R   ELEM__         (TOTALE   ENDO     PLAS     )
     EDISSPG  = DISS_R   ELGA__ RIGI    (TOTALE   ENDO     PLAS     )
     EDISSNO  = DISS_R   ELNO__ IDEN__  (TOTALE   ENDO     PLAS     )
-    EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   MEMBRANE FLEXION  )
-    EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION  )
+    EENERR   = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
+    EENERPG  = ENER_R   ELGA__ RIGI    (TOTALE   MEMBRANE FLEXION  )
+    EENERNO  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION  )
     CEPSINR  = EPSI_R   ELEM__         (EXX      EYY      EXY      KXX      KYY      KXY      )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )
@@ -149,7 +148,7 @@ OPTION__
                               OUT__  EDISSNO  PDISSNO
     ECIN_ELEM           409   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  DDL_MECA PVITESR
-                              OUT__  EENECNO  PENERCR
+                              OUT__  EENERR   PENERCR
     EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
                               OUT__  EEFGEGA  PEFGER   EEFGEGC  PEFGEC
     EFGE_ELNO           185   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
@@ -159,22 +158,20 @@ OPTION__
     ENEL_ELGA           412   IN__   EEFGEGA  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR
                                      ZVARIPG  PVARIGR
-                              OUT__  EENEDPG  PENERDR
-    ENEL_ELNO           412   IN__   EEFGEGA  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
-                                     CTEMPSR  PTEMPSR  CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR
-                                     ZVARIPG  PVARIGR
-                              OUT__  EENEDNN  PENERDR
-    ENER_DISS           413   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIPR
+                              OUT__  EENERPG  PENERDR
+    ENEL_ELNO           4     IN__   EENERPG  PENERPG
+                              OUT__  EENERNO  PENERNO
+    DISS_ELEM           413   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIPR
                                      CCACOQU  PCACOQU
                               OUT__  EDISSR   PDISSD1
-    ENER_ELAS           412   IN__   CCOMPOR  PCOMPOR  EEFGEGA  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
+    ENEL_ELEM           412   IN__   CCOMPOR  PCOMPOR  EEFGEGA  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
                                      CCACOQU  PCACOQU
-                              OUT__  EENEDNO  PENERD1
+                              OUT__  EENERR   PENERD1
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           409   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENERR   PENERDR
     EPSI_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     FORC_NODA           409   IN__   CCACOQU  PCACOQU  EEFGEGA  PCONTMR  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
@@ -233,7 +230,7 @@ OPTION__
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCRR  ZVARCPG  PVARCMR
                                      ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELGA           422   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  CMATERC  PMATERC
+    SIEF_ELGA          422    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  CMATERC  PMATERC
                               OUT__  EEFGEGA  PCONTRR
     SIEF_ELNO           4     IN__   EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC

@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,10 +60,11 @@ C ----------------------------------------------------------------------
       INTEGER JLTNS
       CHARACTER*1 K1BID
       CHARACTER*8 MAILLA,METRES,K8BID,PARTIT
+      CHARACTER*12 VGE
       CHARACTER*14 NU,COM
       CHARACTER*16 TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC,RESU
-      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19,MATEL
+      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19,MATEL,LISTE
       CHARACTER*24 K24B,TYPOBJ,KNOMSD
       LOGICAL LFETI,LBID
 
@@ -172,6 +173,13 @@ C FETI OR NOT ?
         END IF
 
 C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'VOISINAGE') THEN
+C     ----------------------------------
+        VGE = NOMSD
+        CALL JEDETR(VGE//'.PTVOIS')
+        CALL JEDETR(VGE//'.ELVOIS')
+
+C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'LIGREL') THEN
 C     ----------------------------------
         LIGREL = NOMSD
@@ -180,6 +188,7 @@ C     ----------------------------------
         CALL JEDETR(LIGREL//'.NEMA')
         CALL JEDETR(LIGREL//'.LGRF')
         CALL JEDETR(LIGREL//'.NBNO')
+        CALL JEDETR(LIGREL//'.NVGE')
         CALL JEDETR(LIGREL//'.PRNM')
         CALL JEDETR(LIGREL//'.PRNS')
         CALL JEDETR(LIGREL//'.REPE')
@@ -642,6 +651,15 @@ C     -----------------------------------
         CALL JEDETR(RESU//'.LCHA')
         CALL JEDETR(RESU//'.INFC')
         CALL JEDETR(RESU//'.FCHA')
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'LISTR8') THEN
+C     -----------------------------------
+        LISTE = NOMSD
+        CALL JEDETR(LISTE//'.LPAS')
+        CALL JEDETR(LISTE//'.NBPA')
+        CALL JEDETR(LISTE//'.BINT')
+        CALL JEDETR(LISTE//'.VALE')
 
 C     ------------------------------------------------------------------
       ELSE

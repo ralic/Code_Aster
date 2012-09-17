@@ -1,6 +1,6 @@
       SUBROUTINE TE0477(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,18 +18,16 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
-C          ELEMENT SHB8PS
       INCLUDE 'jeveux.h'
 C-----------------------------------------------------------------------
       INTEGER I ,ICARCR ,ICOMPO ,ICONTM ,ICONTP ,IDEPLM ,IDEPLP 
       INTEGER IDFDE ,IGEOM ,IMATE ,IMATUU ,IPG ,IPOIDS ,IVARIM 
       INTEGER IVARIP ,IVECTU ,IVF ,J ,JCRET ,JGANO ,K 
       INTEGER LAG ,NBRES ,NBV ,NDIM ,NNO ,NNOS ,NPG 
-
       REAL*8 TEMPM ,YGOT 
 C-----------------------------------------------------------------------
       PARAMETER (NBRES=2)
-      CHARACTER*8 TYPMOD
+      CHARACTER*8 TYPMOD(2)
       CHARACTER*4 FAMI
       INTEGER ICODRE(NBRES)
       CHARACTER*8 NOMRES(NBRES)
@@ -39,13 +37,12 @@ C-----------------------------------------------------------------------
       REAL*8 VALRES(NBRES),SIGM(6),SIMP(6)
       REAL*8 R8VIDE,LC,G,ANGMAS(3),INSTM,INSTP,DSIDEP(6,6)
       REAL*8 DEPSLO(120),EPS2D(6),DEPS2D(6),EPSLOC(120)
-      INTEGER IINSTM,IINSTP,IRET,CODRET
+      INTEGER IINSTM,IINSTP,IRET,CODRET,JTAB(7),LGPG
       REAL*8 NU,E,PARA(11),RBID
       REAL*8 XIDEPP(60),RE6(18,18),RE15(45,45),RE20(60,60)
       REAL*8 DUDDD(180)
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-
 C --- INITIALISATIONS :
 C     -----------------
       CALL IDSSHB(NDIM,NNO,NPG,NOMSHB)
@@ -62,6 +59,9 @@ C - PARAMETRES EN ENTREE
         CALL JEVECH('PMATERC','L',IMATE)
         CALL JEVECH('PCONTMR','L',ICONTM)
         CALL JEVECH('PVARIMR','L',IVARIM)
+        CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
+C       LGPG : nombre de variables internes par sous point 
+        LGPG = MAX(JTAB(6),1)
         CALL JEVECH('PDEPLMR','L',IDEPLM)
         CALL JEVECH('PDEPLPR','L',IDEPLP)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
@@ -98,8 +98,6 @@ C -----------
         NU = VALRES(2)
 C ----   PARAMETRES MATERIAU
         YGOT = E
-C ----       PARAMETRES MATERIAUX POUR LE CALCUL DE LA
-C ----       MATRICE TANGENTE PLASTIQUE
 C ----       MATRICE TANGENTE PLASTIQUE SI WORK(13)=1
 C ----       WORK(150) : TYPE DE LOI DE COMPORTEMENT
 C ----       1: SHB8PS PLEXUS
@@ -136,21 +134,10 @@ C  -  CALCUL DES CONTRAINTES
 C  =============================================
         IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &      OPTION(1:9).EQ.'FULL_MECA') THEN
-
 C ----   PARAMETRES MATERIAU
           D(1) = E
           D(2) = NU
           YGOT = E
-C ----       PARAMETRES MATERIAUX POUR LE CALCUL DE LA
-C ----       MATRICE TANGENTE PLASTIQUE
-C ----       MATRICE TANGENTE PLASTIQUE SI WORK(13)=1
-C ----       WORK(150) : TYPE DE LOI DE COMPORTEMENT
-C ----       1: SHB8PS PLEXUS
-C ----       2: CONTRAINTES PLANES
-C ----       3: 3D COMPLETE
-C ----       LAG=0 LAGRANGIEN REACTUALISE (EPS=EPSLIN)
-C ----       LAG=1 LAGRANGIEN TOTAL (EPS=EPSLIN+EPSNL)
-          LAG = 0
           PARA(1) = E
           PARA(2) = NU
           PARA(3) = YGOT
@@ -163,18 +150,15 @@ C ----       LAG=1 LAGRANGIEN TOTAL (EPS=EPSLIN+EPSNL)
             EPSLOC(I) = 0.D0
             DEPSLO(I) = 0.D0
    30     CONTINUE
-C
           DO 40 I = 1,180
             DUSDX(I) = 0.D0
             DUDDD(I) = 0.D0
    40     CONTINUE
-C
           DO 60 I=1,NPG
             DO 50 J=1,6
              SIGMM(6*(I-1)+J)=ZR(ICONTM+18*(I-1)+J-1)
    50       CONTINUE
    60     CONTINUE
-C
           IF (NOMSHB.EQ.'SHB8') THEN
             DO 70 I=1,12
               FSTAB(I) = ZR(ICONTM+I-1+6)
@@ -193,7 +177,6 @@ C
             CALL SH2EPS(ZR(IGEOM),ZR(IDEPLM),EPSLOC,DUDDD)
             CALL SH2EPS(ZR(IGEOM),ZR(IDEPLP),DEPSLO,DUSDX)
           END IF
-C
           DO 80 IPG=1,NPG
              EPS2D(1)  = EPSLOC(6*(IPG-1)+1)
              EPS2D(2)  = EPSLOC(6*(IPG-1)+2)
@@ -201,35 +184,31 @@ C
              EPS2D(4)  = EPSLOC(6*(IPG-1)+4)/SQRT(2.D0)
              EPS2D(5)  = EPSLOC(6*(IPG-1)+5)
              EPS2D(6)  = EPSLOC(6*(IPG-1)+6)
-C
              DEPS2D(1) = DEPSLO(6*(IPG-1)+1)
              DEPS2D(2) = DEPSLO(6*(IPG-1)+2)
              DEPS2D(3) = DEPSLO(6*(IPG-1)+3)
              DEPS2D(4) = DEPSLO(6*(IPG-1)+4)/SQRT(2.D0)
              DEPS2D(5) = DEPSLO(6*(IPG-1)+5)
              DEPS2D(6) = DEPSLO(6*(IPG-1)+6)
-C
 C  recuperer SIG2D *SQRT(2.D0) /SQRT(2.D0)
-C
              SIGM(1)  = SIGMM(6*(IPG-1)+1)
              SIGM(2)  = SIGMM(6*(IPG-1)+2)
              SIGM(3)  = SIGMM(6*(IPG-1)+3)
              SIGM(4)  = SIGMM(6*(IPG-1)+4)*SQRT(2.D0)
              SIGM(5)  = SIGMM(6*(IPG-1)+5)
              SIGM(6)  = SIGMM(6*(IPG-1)+6)
-C
              TYPMOD='C_PLAN'
              CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
              CALL R8INIR(36,0.D0,DSIDEP,1)
              CALL NMCOMP('RIGI',IPG,1,2,TYPMOD,ZI(IMATE),
      &            ZK16(ICOMPO),ZR(ICARCR),INSTM,INSTP,
      &              6,EPS2D,DEPS2D,
-     &              6,SIGM,ZR(IVARIM+2*(IPG-1)),
+     &              6,SIGM,ZR(IVARIM+LGPG*(IPG-1)),
      &              OPTION,
      &              ANGMAS,
      &              1,LC,
      &              SIMP,
-     &              ZR(IVARIP+2*(IPG-1)),36,DSIDEP,1,RBID,CODRET)
+     &              ZR(IVARIP+LGPG*(IPG-1)),36,DSIDEP,1,RBID,CODRET)
              G = D(1)/(2.D0*(1.D0+D(2)))
              SIGMA(6*(IPG-1)+1) = SIMP(1)
              SIGMA(6*(IPG-1)+2) = SIMP(2)
@@ -251,18 +230,7 @@ C  -  MATRICE DE RIGIDITE TANGENTE
 C  ===========================================
         IF (OPTION(1:16).EQ.'RIGI_MECA_TANG' .OR.
      &      OPTION(1:9).EQ.'FULL_MECA') THEN
-C ----   PARAMETRES MATERIAU
           YGOT = E
-C ----       PARAMETRES MATERIAUX POUR LE CALCUL DE LA
-C ----       MATRICE TANGENTE PLASTIQUE
-C ----       MATRICE TANGENTE PLASTIQUE SI WORK(13)=1
-C ----       WORK(150) : TYPE DE LOI DE COMPORTEMENT
-C ----       1: SHB8PS PLEXUS
-C ----       2: CONTRAINTES PLANES
-C ----       3: 3D COMPLETE
-C ----       LAG=0 LAGRANGIEN REACTUALISE (EPS=EPSLIN)
-C ----       LAG=1 LAGRANGIEN TOTAL (EPS=EPSLIN+EPSNL)
-          LAG = 0
           PARA(1) = E
           PARA(2) = NU
           PARA(3) = YGOT
@@ -402,7 +370,6 @@ C  ===============================================================
         IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &      OPTION(1:9).EQ.'FULL_MECA') THEN
 C  -  ACTUALISATION : GEOM DEBUT PAS + INCR ITER
-
           IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
              DO 360 I = 1,3*NNO
               ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLP+I-1)
@@ -410,25 +377,12 @@ C  -  ACTUALISATION : GEOM DEBUT PAS + INCR ITER
           END IF
 C ----   PARAMETRES MATERIAU
           YGOT = E
-C ----       PARAMETRES MATERIAUX POUR LE CALCUL DE LA
-C ----       MATRICE TANGENTE PLASTIQUE SI WORK(13)=1
-C ----       WORK(150) : TYPE DE LOI DE COMPORTEMENT
-C ----       1: SHB8PS PLEXUS
-C ----       2: CONTRAINTES PLANES
-C ----       3: 3D COMPLETE
-C ----       LAG=0 LAGRANGIEN REACTUALISE (EPS=EPSLIN)
-C ----       LAG=1 LAGRANGIEN TOTAL (EPS=EPSLIN+EPSNL)
-          LAG = 0
-C           ON PASSE EN PARAMETRES
 C           ZR(IGEOM) : GEOMETRIE + DEPL DEBUT PAS + INCR DEPL
-C           WORK : PARAMETRES MATERIAU
-C                  WORK(1)=E  WORK(2)=NU  WORK(3)=LAG
+C           WORK(1)=E  WORK(2)=NU  WORK(3)=LAG
 C           ZR(IDEPLP) : INCR DEPLACEMENT
 C                        (PAS UTILISE CAR LAGRANGIEN ACTUALISE)
 C           ZR(ICONTP) : CONTRAINTE DE CAUCHY FIN DE PAS
 C           ZR(IVARIM) (DE 2 A 14) : CONTRAINTES DE STABILISATION
-C           ON RECUPERE :
-C ----      ZR(IVECTU) : FORCES INTERNES FIN DE PAS
           PARA(1) = E
           PARA(2) = NU
           PARA(3) = YGOT

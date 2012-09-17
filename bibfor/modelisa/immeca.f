@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -481,10 +481,14 @@ C .....
 
 C  FIN BOUCLE SUR NBNO
 
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&IMMECA.XYZ_NOEMAI')
+      CALL JEDETR('&&IMMECA.CNX_MAILLE')
+      CALL JEDETR('&&IMMECA.D2_MIN_MAX')
+      CALL JEDETR('&&IMMECA.NO_MIN_MAX')
 
-
-      CALL JEDETC('V','&&RECI3D',1)
-      CALL JEDETC('V','&&IMMECA',1)
       CALL JEDEMA()
 C
 C --- FIN DE IMMECA.

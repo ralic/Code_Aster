@@ -4,7 +4,7 @@ C
 C     THERMIQUE - DONNEES EN THERMIQUE
 C     *           **         **
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,14 +73,14 @@ C 0.3. ==> VARIABLES LOCALES
 C --- NOMBRE MAXIMUM DE TYPE DE CHARGE : NBTYCH
 
       INTEGER      NBTYCH
-      PARAMETER   (NBTYCH = 10)
+      PARAMETER   (NBTYCH = 11)
       CHARACTER*6  NOMLIG(NBTYCH)
       INTEGER      IARG
 
       DATA NOMLIG/
      &     '.CIMPO'  ,'.SOURE'  ,'.FLURE'  ,'.FLUR2'  ,
      &     '.T_EXT'  ,'.COEFH'  ,'.HECHP'  ,'.GRAIN'  ,'.FLUNL'  ,
-     &     '.RAYO'   /
+     &     '.SOUNL'  , '.RAYO'   /
 
 C====
 C 1. PREALABLES

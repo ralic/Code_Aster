@@ -1,0 +1,146 @@
+# MODIF  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+# TITRE TEST SOURCE THERMIQUE NON LINEAIRE
+# ttnl101b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='TTNL101B', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+from math import *
+
+rho_cp = 2.0
+LAMBDA = DEFI_CONSTANTE(VALE = rho_cp)
+RHO_CP = DEFI_CONSTANTE(VALE = rho_cp)
+
+
+# Closed-form solution
+
+w      = 2.0**0.5
+T_max  = (1-1/cosh(w))/w**2 - exp(-(w**2+pi**2/4))
+T_INF  = FORMULE(NOM_PARA='X',VALE="(1-cosh(w*X)/cosh(w))/w**2")
+T_INI  = FORMULE(NOM_PARA='X',VALE="T_INF(X)-cos(pi*X/2.0)")
+
+SOURCE = DEFI_FONCTION(       # source(T) = rho_cp - rho_cp*w**2 * T
+  NOM_PARA    = 'TEMP',
+  VALE        = (0,rho_cp, 1,rho_cp-rho_cp*w**2),
+  PROL_DROITE = 'LINEAIRE',
+  PROL_GAUCHE = 'LINEAIRE',
+  )
+
+  
+# Usual data setting
+
+FAKE_MAT = DEFI_MATERIAU(
+  THER_NL = _F(LAMBDA=LAMBDA, RHO_CP=RHO_CP),
+  )
+  
+MESH = LIRE_MAILLAGE(FORMAT = 'MED')
+
+MAT_FLD = AFFE_MATERIAU(
+  MAILLAGE = MESH,
+  AFFE     = _F(GROUP_MA = 'ROD', MATER = FAKE_MAT),
+  )
+  
+MODEL = AFFE_MODELE(
+  MAILLAGE = MESH,
+  AFFE     = _F(GROUP_MA='ROD',PHENOMENE='THERMIQUE',MODELISATION='3D_DIAG'),
+  )
+  
+BND_TEMP = AFFE_CHAR_THER(
+  MODELE    = MODEL,
+  TEMP_IMPO = _F(GROUP_MA = 'END', TEMP=0),
+  )
+  
+
+# Non linear heating source
+
+HEATING = AFFE_CHAR_THER_F(
+  MODELE  = MODEL,
+  SOUR_NL = _F(GROUP_MA='ROD', SOUR=SOURCE),    
+  )
+
+  
+# Initial temperature field
+
+ND_COOR = CREA_CHAMP(
+  OPERATION = 'EXTR',
+  TYPE_CHAM = 'NOEU_GEOM_R',
+  MAILLAGE  =  MESH,
+  NOM_CHAM  = 'GEOMETRIE',
+  )
+  
+TEMP_1 = CREA_CHAMP(
+  OPERATION ='AFFE', 
+  TYPE_CHAM ='NOEU_NEUT_F',
+  MAILLAGE  = MESH,
+  AFFE      =_F(TOUT='OUI', NOM_CMP='X1', VALE_F=T_INI),
+  )
+
+TEMP_2 = CREA_CHAMP(
+  OPERATION ='EVAL',
+  TYPE_CHAM ='NOEU_NEUT_R',
+  CHAM_F    = TEMP_1 , 
+  CHAM_PARA = ND_COOR,
+  )
+
+INI_TEMP = CREA_CHAMP(
+  OPERATION ='ASSE', 
+  TYPE_CHAM ='NOEU_TEMP_R',
+  MAILLAGE  = MESH,
+  ASSE      =_F(TOUT='OUI', CHAM_GD=TEMP_2, NOM_CMP='X1', NOM_CMP_RESU='TEMP'),
+  )
+
+
+# Computation
+  
+TIME = DEFI_LIST_REEL(
+  DEBUT      =  0.0,
+  INTERVALLE = (
+    _F(JUSQU_A = 1.0, NOMBRE = 100),
+    ),
+  )
+  
+EVOL = THER_NON_LINE(
+  MODELE      = MODEL,
+  INCREMENT   = _F(LIST_INST = TIME),
+  CHAM_MATER  = MAT_FLD,
+  EXCIT       = (
+    _F(CHARGE = BND_TEMP),
+    _F(CHARGE = HEATING),
+    ),
+  ETAT_INIT   = _F(CHAM_NO = INI_TEMP),
+  CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
+  NEWTON      = _F(REAC_ITER = 1),
+  )
+
+  
+# Result checking (middle of the rod)
+
+TEST_RESU(
+  RESU      = _F(
+    REFERENCE = 'ANALYTIQUE',
+    VALE      = T_max,
+    RESULTAT  = EVOL,
+    INST      = 1.0,
+    NOM_CHAM  = 'TEMP',
+    NOM_CMP   = 'TEMP',
+    GROUP_NO  = 'PROBE',
+    ),
+  )
+    
+FIN()

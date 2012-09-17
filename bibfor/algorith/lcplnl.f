@@ -8,7 +8,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -212,7 +212,7 @@ C         CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
           CALL LCJACB(FAMI,KPG,KSP,LOI,MOD,NMAT,MATERD,MATERF,
      &            TIMED,TIMEF,YF,DEPS,ITMAX,TOLER,NBCOMM,
      &            CPMONO, PGL,NFS,NSG,TOUTMS,HSR,NR,COMP,NVI,VIND,
-     &            EPSD,  YD,DY,    DRDY, IRET )
+     &            VINF,EPSD,  YD,DY,    DRDY, IRET )
           IF (IRET.NE.0)  THEN
              GOTO 3
           ENDIF

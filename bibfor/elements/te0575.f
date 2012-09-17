@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,35 +27,31 @@ C
 C      CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE
 C      A L'EQUILIBRE POUR LES ELEMENTS ISOPARAMETRIQUES 2D
 C      .SOIT AUX POINTS D'INTEGRATION : OPTION 'ENEL_ELGA'
-C      .SOIT AUX NOEUDS               : OPTION 'ENEL_ELNO'
 C
 C      OPTIONS : 'ENEL_ELGA'
-C                'ENEL_ELNO'
 C
 C      CALCUL DE LA DENSITE D'ENERGIE TOTALE
 C      A L'EQUILIBRE POUR LES ELEMENTS ISOPARAMETRIQUES 2D
 C      .SOIT AUX POINTS D'INTEGRATION : OPTION 'ETOT_ELGA'
-C      .SOIT AUX NOEUDS               : OPTION 'ETOT_ELNO'
 C
 C      OPTIONS : 'ETOT_ELGA'
-C                'ETOT_ELNO'
 C
 C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IDCONT ,IDENER ,IDEPL ,IDEPLM ,IDEPMM ,IDFDE 
-      INTEGER IDSIG ,IDSIGM ,IGAU ,IGEOM ,IMATE ,IPOIDS ,ISIG 
-      INTEGER ITEMPS ,IVF ,JGANO ,JSIG ,K ,MXCMEL ,NBCONT 
-      INTEGER NBNOMX ,NBSIG ,NCMP ,NDIM ,NNO ,NNOS ,NPG 
+      INTEGER I ,IDCONT ,IDENER ,IDEPL ,IDEPLM ,IDEPMM ,IDFDE
+      INTEGER IDSIG ,IDSIGM ,IGAU ,IGEOM ,IMATE ,IPOIDS ,ISIG
+      INTEGER ITEMPS ,IVF ,JGANO ,JSIG ,K ,MXCMEL ,NBCONT
+      INTEGER NBNOMX ,NBSIG  ,NDIM ,NNO ,NNOS ,NPG
 
-      REAL*8 DEUX ,ENELEM ,POIDS ,RAYON ,UNDEMI ,ZERO 
+      REAL*8 DEUX ,ENELEM ,POIDS ,RAYON ,UNDEMI ,ZERO
 C-----------------------------------------------------------------------
       PARAMETER          (MXCMEL = 162)
       PARAMETER          (NBNOMX = 27)
       PARAMETER          (NBCONT =  6)
-      INTEGER            NBSIGM, IHARMO, NH, IDIM, IRET, NBSP, INO
+      INTEGER            NBSIGM, IHARMO, NH, IDIM, IRET
       INTEGER            IDENEM
       REAL*8             EPSI(NBCONT), EPSIM(NBCONT), DELTA(NBCONT)
       REAL*8             INSTAN, NHARM, REPERE(7)
@@ -316,50 +312,27 @@ C --- OPTIONS ENEL_* ET ETOT_*
 C     ==============================
       IF (OPTION(1:4).EQ.'ETOT') THEN
         CALL JEVECH('PENERDM','L',IDENEM)
-        IF (OPTION(6:9).EQ.'ELGA') THEN
+C
+C ---   OPTION ETOT_ELGA
+C       ================
+        IF (OPTION.EQ.'ETOT_ELGA') THEN
           DO 100 IGAU = 1, NPG
             ZR(IDENER+IGAU-1)=ZR(IDENEM+IGAU-1)+ENERPG(IGAU)
  100      CONTINUE
 C
-C ---   OPTION ETOT_ELNO
-C       =======================================
-        ELSEIF (OPTION(6:9).EQ.'ELNO') THEN
-          IF (NPG.EQ.1) THEN
-            DO 110 I = 1, NNOS
-              ZR(IDENER+I-1)=ZR(IDENEM+I-1)+ENERPG(1)
- 110        CONTINUE
-          ELSE
-            NCMP = 1
-            NBSP = 1
-            CALL PPGAN2 ( JGANO, NBSP, NCMP, ENERPG, ZR(IDENER) )
-            DO 130 INO = 1,NNO
-              ZR(IDENER+INO-1)=ZR(IDENEM+INO-1)+ZR(IDENER+INO-1)
- 130        CONTINUE
-        ENDIF
-C
 C ---   OPTION ETOT_ELEM
 C       ================
-        ELSEIF (OPTION(6:9).EQ.'ELEM') THEN
+        ELSEIF (OPTION.EQ.'ETOT_ELEM') THEN
           ZR(IDENER) = ZR(IDENEM)+ENELEM
         ENDIF
       ELSE
-        IF (OPTION(6:9).EQ.'ELGA') THEN
+C
+C ---   OPTION ENEL_ELGA
+C       ================
+        IF (OPTION.EQ.'ENEL_ELGA') THEN
           DO 200 IGAU = 1, NPG
             ZR(IDENER+IGAU-1) = ENERPG(IGAU)
  200      CONTINUE
-C
-C --- OPTION ENEL_ELNO
-C     =======================================
-        ELSEIF (OPTION(6:9).EQ.'ELNO') THEN
-          IF (NPG.EQ.1) THEN
-            DO 210 I = 1, NNOS
-              ZR(IDENER+I-1) = ENERPG(1)
- 210        CONTINUE
-          ELSE
-            NCMP = 1
-            NBSP = 1
-            CALL PPGAN2 ( JGANO, NBSP, NCMP, ENERPG, ZR(IDENER) )
-          ENDIF
         ENDIF
       ENDIF
 C

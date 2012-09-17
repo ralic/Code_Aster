@@ -1,7 +1,7 @@
-      SUBROUTINE NMIMPX(SDIMPR,UNITE ,LIGNE)
+      SUBROUTINE NMIMPX(SDIMPR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,11 +20,9 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
-      IMPLICIT      NONE
-      INCLUDE 'jeveux.h'
-      CHARACTER*24  SDIMPR
-      INTEGER       UNITE
-      CHARACTER*(*) LIGNE
+      IMPLICIT     NONE
+      INCLUDE      'jeveux.h'
+      CHARACTER*24 SDIMPR
 C
 C ----------------------------------------------------------------------
 C
@@ -37,14 +35,12 @@ C
 C
 C IN  SDIMPR : SD AFFICHAGE
 C
+C ----------------------------------------------------------------------
 C
-C
-C
-      INTEGER          ZLIG
-      PARAMETER       (ZLIG = 255)
-      CHARACTER*24     IMPINF
-      INTEGER          JIMPIN,LARGE
-      CHARACTER*(ZLIG) TAMPON
+      CHARACTER*24  SDTABC
+      INTEGER       LARLIG
+      CHARACTER*255 LIGSEP
+      INTEGER       IUNIFI,UNIMES
 C
 C ----------------------------------------------------------------------
 C
@@ -52,18 +48,17 @@ C
 C
 C --- INITIALISATIONS
 C
-      CALL ASSERT(ZLIG.EQ.255)
+      CALL OBGETO(SDIMPR,'TABLEAU_CONV' ,SDTABC)
+      CALL OBGETI(SDTABC,'LARGEUR_LIGNE',LARLIG)
+      UNIMES = IUNIFI('MESSAGE')
 C
-C --- RECUPERATION DES PARAMETRES
+C --- CREATION LIGNE
 C
-      IMPINF = SDIMPR(1:14)//'.INFO'
-      CALL JEVEUO(IMPINF,'L',JIMPIN)
-      LARGE  = ZI(JIMPIN-1+2)
+      CALL IMPLIS(SDTABC,LIGSEP)
 C
-C --- LIGNE
+C --- IMPRESSION LIGNE
 C
-      TAMPON = LIGNE(1:LARGE)
-      CALL IMPFOK(TAMPON,LARGE ,UNITE )
+      CALL IMPFOK(LIGSEP,LARLIG,UNIMES)
 C
       CALL JEDEMA()
 

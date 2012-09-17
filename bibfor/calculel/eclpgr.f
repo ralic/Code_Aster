@@ -1,6 +1,6 @@
       SUBROUTINE ECLPGR
       IMPLICIT   NONE
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -117,7 +117,10 @@ C       -----------------------------------
         ZR(IAINS2)=ZR(IAINS1)
    30 CONTINUE
 
-      CALL JEDETC('V','&&ECLPGR',1)
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&ECLPGR.NUME_ORDRE')
 
       CALL JEDEMA
       END

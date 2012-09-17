@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -277,6 +277,12 @@ C
          DISFEN(NBNOP+INO-1) = ZR(IDISCS+INO-1) - XDECAL
   50  CONTINUE
 C
-      CALL JEDETC('V','&&FENEXC',1)
+C --- MENAGE
+C
+      CALL JEDETR('&&FENEXC.TEMP.NNOP')
+      CALL JEDETR('&&FENEXC.TEMP.DISP')
+      CALL JEDETR('&&FENEXC.TEMP.NNOS')
+      CALL JEDETR('&&FENEXC.TEMP.DISS')
+
       CALL JEDEMA()
       END

@@ -6,7 +6,7 @@
      &                    NMATYP,
      &                    INFMED, MODNUM, NUANOM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -283,7 +283,12 @@ C====
 C 4. LA FIN
 C====
 C
-      CALL JEDETC('V','&&'//NOMPRO,1)
+      DO 41 , ITYP = 1, NTYMAX
+        IF ( NMATYP(ITYP).NE.0 ) THEN
+          CALL JEDETR('&&'//NOMPRO//'.NOM.'//NOMTYP(ITYP))
+          CALL JEDETR('&&'//NOMPRO//'.CNX.'//NOMTYP(ITYP))
+        ENDIF
+ 41   CONTINUE
 C
       CALL JEDEMA()
 C

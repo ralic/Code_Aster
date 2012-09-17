@@ -8,7 +8,7 @@ C
       CHARACTER*19 TBINTH
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,7 +120,10 @@ C ======================================================================
 C ======================================================================
 C --- DESTRUCTION DES TABLES INUTILES ----------------------------------
 C ======================================================================
-      CALL JEDETC ('V', '&&RECHTH', 1)
+      CALL DETRSD ('TABLE', TMPTH1 )
+      CALL DETRSD ('TABLE', TMPTH2 )
+      CALL JEDETR ( DEFTH1 )
+      CALL JEDETR ( DEFTH2 )
 C ======================================================================
       CALL JEDEMA( )
 C ======================================================================

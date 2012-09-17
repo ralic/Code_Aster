@@ -1,4 +1,4 @@
-#@ MODIF sd_modele SD  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_modele SD  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,11 +54,6 @@ class sd_modele(AsBase):
             assert exi_maille
             assert exi_noeud
 
-
-    def check_maillage(self,checker) :
-        # on est obligé de re-checker le maillage pour permettre la creation de la sd_voisinage
-        lgrf=self.MODELE.LGRF.get_stripped()
-        sd2 = sd_maillage(lgrf[0]); sd2.check(checker)
 
     def check_PARTIT(self,checker) :
         if self.PARTIT.exists :

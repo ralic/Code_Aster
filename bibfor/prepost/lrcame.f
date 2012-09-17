@@ -8,7 +8,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -403,7 +403,8 @@ C
               VALR = INST
               CALL U2MESG('I','MED_86',1,VALK,4,VALI,1,VALR)
             ENDIF
-            CALL JEDETC ( 'V', PREFIX, 1 )
+            CALL JEDETR(PREFIX//'.INST')
+            CALL JEDETR(PREFIX//'.NUME')
           ENDIF
 C
 C       ENDIF <<< IF ( IINST.NE.0 )
@@ -590,7 +591,7 @@ C====
 C 4.0   LECTURE DES VALEURS
 C====
 C
-          CALL JEDETC ('V',NTVALE,1)
+          CALL JEDETR (NTVALE)
           CALL LRCMLE ( IDFIMD, NOCHMD,
      &                  NBCMFI, NLYVAL(LETYPE), NUMPT, NUMORD,
      &                  LYPENT(LETYPE), LYGEOM(LETYPE),
@@ -604,7 +605,7 @@ C
           IF ( NOMPRF.EQ.EDNOPF ) THEN
             LGPROA = 0
           ELSE
-            CALL JEDETC ('V',NTPROA,1)
+            CALL JEDETR (NTPROA)
             CALL LRCMPR ( IDFIMD, NOMPRF,
      &                    NTPROA, LGPROA,
      &                    CODRET )
@@ -693,7 +694,22 @@ C
 C
 C 5.2. ==> MENAGE
 C
-      CALL JEDETC ('V','&&'//NOMPRO,1)
+      CALL JEDETR (NUMCMP)
+      CALL JEDETR (NTNCMP)
+      CALL JEDETR (NTUCMP)
+      CALL JEDETR (NTVALE)
+      CALL JEDETR (NTPROA)
+C
+      DO 8 , LETYPE = 0 , NBTYP
+        CALL CODENT(LETYPE,'G',K2BID)
+        CALL JEDETR ('&&'//NOMPRO//'.NOMCMP_FICHIE'//K2BID)        
+ 8    CONTINUE
+C
+      IF (TYPECH(1:4).NE.'NOEU') THEN
+        DO 9 , LETYPE = 1 , NBTYLU
+          CALL JEDETR ('&&'//NOMPRO//'.NUM.'//NOMTYP(LTYP(LETYPE)))
+ 9      CONTINUE
+      ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'FIN DE '//NOMPRO

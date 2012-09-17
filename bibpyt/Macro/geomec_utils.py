@@ -1,4 +1,4 @@
-#@ MODIF geomec_utils Macro  DATE 06/08/2012   AUTEUR CUVILLIE M.CUVILLIEZ 
+#@ MODIF geomec_utils Macro  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -608,9 +608,9 @@ def impr_graphique(self,DicoEssai,Courbes,NomsFich,Leg_x,Leg_y,Ech_x,Ech_y):
     __ULINFO=INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', UNITE=iul)
     if __ULINFO['ETAT_UNITE', 1] == 'FERME   ':
       unite = iul
-      DETRUIRE(CONCEPT=_F(NOM=__ULINFO))
+      DETRUIRE(CONCEPT=_F(NOM=__ULINFO), INFO=1)
       break
-    DETRUIRE(CONCEPT=_F(NOM=__ULINFO))
+    DETRUIRE(CONCEPT=_F(NOM=__ULINFO), INFO=1)
   assert type(unite) is int
 
   # ---
@@ -901,7 +901,8 @@ def Calc_Gs_max(self,EPSI_ELAS,PRES_CONF,MATER,COMP_INCR,CONVERGENCE):
   eps_xy = TabRes['EPXY'][-1]
 
   DETRUIRE(CONCEPT=_F(NOM = (__CHAR1,__CHAR2,__EVOL,
-                             __RLIST,__DLIST),),)
+                             __RLIST,__DLIST),),
+           INFO=1)
   
   return 0.5*sig_xy/eps_xy
 # --------------------------------------------------------------

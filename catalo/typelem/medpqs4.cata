@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,10 +41,9 @@ MODE_LOCAL__
     EDEPLPG  = DEPL_R   ELGA__ RIGI    (DX       DY       )
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMA_R   ELNO__ IDEN__  (DOMA     )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   )
-    EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
-    EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )
-    EENECNO  = ENER_R   ELEM__         (TOTALE   )
+    EENERR   = ENER_R   ELEM__         (TOTALE   )
+    EENERPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
+    EENERNO  = ENER_R   ELNO__ IDEN__  (TOTALE   )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     )
@@ -213,20 +212,19 @@ OPTION__
                               OUT__  EDERANO  PDERANO
     ECIN_ELEM           82    IN__   DDL_MECA PDEPLAR  COMEG2R  POMEGA2   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  DDL_MECA PVITESR
-                              OUT__  EENECNO  PENERCR
+                              OUT__  EENERR   PENERCR
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                              OUT__  EENEDPG  PENERDR
-    ENEL_ELNO           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                              OUT__  EENEDNN  PENERDR
-    ENER_ELAS           490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
+                              OUT__  EENERPG  PENERDR
+    ENEL_ELNO           4     IN__   EENERPG  PENERPG
+                              OUT__  EENERNO  PENERNO
+    ENEL_ELEM           490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1
+                              OUT__  EENERR   PENERD1
     ENER_TOTALE         490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM
                                      DDL_MECA PDEPLR   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1
+                              OUT__  EENERR   PENERD1
     EPFD_ELGA           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ZVARIPG  PVARIGR
                               OUT__  EDEFOPG  PDEFOPG
     EPFD_ELNO           4     IN__   EDEFOPG  PDEFOPG
@@ -251,7 +249,7 @@ OPTION__
                               OUT__  EDEFONO  PDEFONO
     EPOT_ELEM           286   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENERR   PENERDR
     EPSG_ELGA           87    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EDEFOPG  PDEFOPG
@@ -290,14 +288,13 @@ OPTION__
                                      ESIGMNO  PSIGMAP  ESIGMNO PSIGMAD   ZVARCPG  PVARCPR
                               OUT__  EERREUR  PERREUR
     ETOT_ELEM           575   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                     NGEOMER  PGEOMER  EENEDNO  PENERDM
-                              OUT__  EENEDNO  PENERDR
+                                     NGEOMER  PGEOMER  EENERR   PENERDM
+                              OUT__  EENERR   PENERDR
     ETOT_ELGA           575   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                     NGEOMER  PGEOMER  EENEDPG  PENERDM
-                              OUT__  EENEDPG  PENERDR
-    ETOT_ELNO           575   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                     NGEOMER  PGEOMER  EENEDNN  PENERDM
-                              OUT__  EENEDNN  PENERDR
+                                     NGEOMER  PGEOMER  EENERPG  PENERDM
+                              OUT__  EENERPG  PENERDR
+    ETOT_ELNO           4     IN__   EENERPG  PENERPG
+                              OUT__  EENERNO  PENERNO
     FORC_NODA           351   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           350   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
@@ -316,10 +313,10 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
+                              OUT__  EENERR   PENERD1  EENERR   PENERD2
     INDIC_SEUIL         490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
+                              OUT__  EENERR   PENERD1  EENERR   PENERD2
     INIT_MAIL_VOIS      99    IN__  
                               OUT__  EVOISIN  PVOISIN
     INIT_VARC           99    IN__  

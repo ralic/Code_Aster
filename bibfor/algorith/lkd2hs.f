@@ -1,0 +1,96 @@
+      SUBROUTINE LKD2HS(NMAT,MATERF,DEVSIG,SII,RCOS3T,
+     &                  DHDS,D2HDS2)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE FOUCAULT A.FOUCAULT
+      IMPLICIT   NONE
+C     ------------------------------------------------------------------
+C     CALCUL DE DERIVEE 2NDE DE H PAR RAPPORT A DEVIATEUR SIGMA 
+C     IN  NMAT   : DIMENSION TABLE DES PARAMETRES MATERIAU
+C         MATERF : PARAMETRES MATERIAU A T+DT
+C         DEVSIG : DEVIATEUR DES CONTRAINTES
+C         SII    : 2EME INVARIANT DU DEVIATEUR
+C         RCOS3T : COS(3THETA) = SQRT(54)*DET(DEVSIG)/SII**3
+C         DHDS   : DERIVEE DE H PAR RAPPORT A DEVSIG
+C     OUT D2HDS2 :  DERIVEE 2NDE H PAR RAPPORT A SIGMA (NDT X NDT)
+C     ------------------------------------------------------------------
+      INTEGER         NMAT
+      REAL*8          DEVSIG(6),RCOS3T,SII,D2HDS2(6,6)
+      REAL*8          MATERF(NMAT,2),DHDS(6)
+C
+      INTEGER         NDI,NDT,I,J
+      REAL*8          MIDENT(6,6),ZERO,UN,RHLODE,LKHLOD,GAMCJS
+      REAL*8          COEF1,DEUX,TROIS,COEF3,COEF4,R54,COEF7,CINQ
+      REAL*8          COEF6,DDETDS(6),MAT1(6,6),MAT2(6,6)
+      REAL*8          MAT6(6,6),MAT7(6,6),D2DETS(6,6),MAT5(6,6)
+      REAL*8          COEF5,COEF2,SIX
+      PARAMETER       ( ZERO   = 0.0D0 )
+      PARAMETER       ( UN     = 1.0D0 )
+      PARAMETER       ( DEUX   = 2.0D0 )
+      PARAMETER       ( TROIS  = 3.0D0 )
+      PARAMETER       ( CINQ   = 5.0D0 )
+      PARAMETER       ( SIX    = 6.0D0 )
+      PARAMETER       ( R54    = 5.4D1 )
+C     ------------------------------------------------------------------
+      COMMON /TDIM/   NDT,NDI
+C     ------------------------------------------------------------------
+
+C --- RECUPERATION PROPRIETES MATERIAUX
+      GAMCJS = MATERF(5,2)
+
+C --- CONSTRUCTION TENSEUR IDENTITE
+      CALL LCINMA(ZERO,MIDENT)
+      DO 10 I = 1, NDT
+        MIDENT(I,I) = UN
+  10  CONTINUE
+
+      RHLODE = LKHLOD (GAMCJS, RCOS3T)
+
+      COEF1 = GAMCJS*SQRT(R54)/(DEUX*(RHLODE**5)*(SII**5))
+      COEF2 = TROIS*GAMCJS*RCOS3T/(DEUX*(RHLODE**5)*(SII**4))
+      COEF3 = RCOS3T*GAMCJS/(DEUX*RHLODE**5*SII**2)
+      COEF4 = COEF3*DEUX/SII**2
+      COEF5 = COEF3/RHLODE*CINQ
+      COEF6 = GAMCJS*SQRT(R54)*CINQ/SIX/SII**3/RHLODE**6
+      COEF7 = GAMCJS*SQRT(R54)/SIX/RHLODE**5/SII**3
+
+C --- CALCUL DERIVEE DET(DEVSIG) PAR RAPPORT A DEVSIG
+      CALL CJST(DEVSIG,DDETDS)
+      CALL LCPRTE(DEVSIG,DDETDS,MAT1)
+C
+      CALL LCPRTE(DEVSIG,DEVSIG,MAT2)
+C
+      CALL LCPRTE(DEVSIG,DHDS,MAT5)
+C
+      CALL LCPRTE(DDETDS,DHDS,MAT6)
+C
+      CALL LCPRTE(DDETDS,DEVSIG,MAT7)
+C
+      CALL LKD2DE(DEVSIG,D2DETS)
+C
+      DO 20 I = 1, NDT
+        DO 30 J = 1, NDT
+          D2HDS2(I,J) = COEF1*MAT1(I,J)-COEF2*MAT2(I,J)+
+     &                  COEF3*MIDENT(I,J)-COEF4*MAT2(I,J)-
+     &                  COEF5*MAT5(I,J)+COEF6*MAT6(I,J)+
+     &                  COEF1*MAT7(I,J)-COEF7*D2DETS(I,J)
+  30    CONTINUE
+  20  CONTINUE
+
+      END

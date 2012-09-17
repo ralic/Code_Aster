@@ -3,7 +3,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,6 +141,7 @@ C-----------------------------------------------------------------------
 
       END IF
 
-      CALL JEDETC('V','&&MERIT3',1)
+C --- MENAGE
+      CALL DETRSD('CARTE','&&MERIT3'//'.CONVECT.DECENT')
       CALL JEDEMA()
       END

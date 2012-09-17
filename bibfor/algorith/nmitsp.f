@@ -1,7 +1,7 @@
       SUBROUTINE NMITSP(SDIMPR,SDDISC,ITERAT,RETSUP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INCLUDE 'jeveux.h'
+      INCLUDE      'jeveux.h'
       CHARACTER*24 SDIMPR
       CHARACTER*19 SDDISC
       INTEGER      ITERAT,RETSUP
@@ -42,8 +42,7 @@ C OUT RETSUP : CODE RETOUR
 C               0 ON NE PEUT AJOUTER D'ITERATIONS
 C               1 ON FAIT DONC DES ITERATIONS EN PLUS
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       LOGICAL  LEXTRA
       REAL*8   VALEXT(4),CIBLEN
@@ -122,7 +121,7 @@ C
       IF (RETSUP.EQ.1) THEN
         CALL U2MESS('I','ITERSUPP_7')
         CALL AFFICH('MESSAGE',' ')
-        CALL NMIMPR(SDIMPR,'IMPR','LIGNE',' ',0.D0,0)
+        CALL NMIMPX(SDIMPR)
         ITESUP = 1
       ELSEIF (RETSUP.EQ.0) THEN
         CALL U2MESS('I','ITERSUPP_6')

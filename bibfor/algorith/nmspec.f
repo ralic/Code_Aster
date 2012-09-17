@@ -6,7 +6,7 @@
      &                  SDPOST,SDERRO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,10 +24,10 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
-C TOLE CRP_21 
+C TOLE CRP_21
 C
-      IMPLICIT     NONE
-      INCLUDE 'jeveux.h'
+      IMPLICIT      NONE
+      INCLUDE       'jeveux.h'
       INTEGER      NUMINS
       REAL*8       PARMET(*)
       CHARACTER*19 MEELEM(*)
@@ -36,7 +36,7 @@ C
       CHARACTER*19 LISCHA,SOLVEU,SDDISC,SDDYNA,SDPOST
       CHARACTER*24 MODELE,NUMEDD,NUMFIX,CARELE,COMPOR
       CHARACTER*19 VEELEM(*),MEASSE(*)
-      CHARACTER*19 SOLALG(*),VALINC(*) 
+      CHARACTER*19 SOLALG(*),VALINC(*)
       CHARACTER*24 MATE
       CHARACTER*24 CARCRI,COMREF
       INTEGER      FONACT(*)
@@ -46,7 +46,7 @@ C
 C ROUTINE MECA_NON_LINE (ALGORITHME)
 C
 C ANALYSE DE FLAMBEMENT OU STABILITE ET/OU MODES VIBRATOIRES
-C      
+C
 C ----------------------------------------------------------------------
 C
 C IN  MODELE : MODELE
@@ -74,8 +74,7 @@ C IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 C IN  MATASS : MATRICE ASSEMBLEE GLOBALE
 C IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       LOGICAL      ISFONC,LMVIB,LFLAM
       LOGICAL      CALCUL
@@ -83,13 +82,13 @@ C
       REAL*8       R8BID,INST,DIINST
       CHARACTER*16 OPTION
       CHARACTER*19 NOMLIS
-C      
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
 C --- INITIALISATIONS
-C      
+C
       INST   = DIINST(SDDISC,NUMINS)
       CALCUL = .FALSE.
       NOMLIS = ' '
@@ -100,25 +99,36 @@ C
       LMVIB  = ISFONC(FONACT,'MODE_VIBR')
       LFLAM  = ISFONC(FONACT,'CRIT_STAB')
 C
-C -- DOIT-ON FAIRE LE CALCUL ?
-C      
-      IF (LFLAM) THEN
-        NOMLIS = SDPOST(1:14)//'.FLAM'
-        CALL NMCRPO(NOMLIS,NUMINS,INST  ,CALCUL)   
-      ELSEIF (LMVIB) THEN
-        NOMLIS = SDPOST(1:14)//'.VIBR'
-        CALL NMCRPO(NOMLIS,NUMINS,INST  ,CALCUL) 
-      ELSE
-        GOTO 999  
-      ENDIF
-C            
-C -- CALCUL DE FLAMBEMENT EN STATIQUE ET DYNAMIQUE
+C --- DOIT-ON FAIRE LE CALCUL ?
 C
       IF (LFLAM) THEN
-        IF (CALCUL) THEN          
+        NOMLIS = SDPOST(1:14)//'.FLAM'
+        CALL NMCRPO(NOMLIS,NUMINS,INST  ,CALCUL)
+      ELSEIF (LMVIB) THEN
+        NOMLIS = SDPOST(1:14)//'.VIBR'
+        CALL NMCRPO(NOMLIS,NUMINS,INST  ,CALCUL)
+      ELSE
+        GOTO 999
+      ENDIF
+C
+C --- CALCUL DE FLAMBEMENT EN STATIQUE ET DYNAMIQUE
+C
+      IF (LFLAM) THEN
+        IF (CALCUL) THEN
           CALL NMLESD('POST_TRAITEMENT',SDPOST,'OPTION_CALCUL_FLAMB',
-     &                IBID             ,R8BID ,OPTION) 
-          CALL NMIMPR(SDIMPR,'TITR',OPTION,' ',0.D0,0)
+     &                IBID             ,R8BID ,OPTION)
+C
+C ------- IMPRESSION EN-TETE
+C
+          CALL NMIMPX(SDIMPR)
+          IF (OPTION.EQ.'FLAMBSTA') THEN
+            CALL U2MESS('I','MECANONLINE6_2')
+          ELSEIF (OPTION.EQ.'FLAMBDYN') THEN
+            CALL U2MESS('I','MECANONLINE6_2')
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+          CALL AFFICH('MESSAGE',' ')
 C
 C ------- CALCUL EFFECTIF
 C
@@ -128,7 +138,7 @@ C
      &                CARCRI,SDIMPR,SDSTAT,SDDISC,SDTIME,
      &                SDDYNA,SDPOST,VALINC,SOLALG,MEELEM,
      &                MEASSE,VEELEM,SDERRO)
-        ENDIF  
+        ENDIF
       ENDIF
 C
 C --- CALCUL DE MODES VIBRATOIRES EN DYNAMIQUE
@@ -136,8 +146,13 @@ C
       IF (LMVIB) THEN
         IF (CALCUL) THEN
           CALL NMLESD('POST_TRAITEMENT',SDPOST,'OPTION_CALCUL_VIBR',
-     &                IBID             ,R8BID ,OPTION) 
-          CALL NMIMPR(SDIMPR,'TITR',OPTION,' ',0.D0,0)
+     &                IBID             ,R8BID ,OPTION)
+C
+C ------- IMPRESSION EN-TETE
+C
+          CALL NMIMPX(SDIMPR)
+          CALL U2MESS('I','MECANONLINE6_3')
+          CALL AFFICH('MESSAGE',' ')
 C
 C ------- CALCUL EFFECTIF
 C
@@ -147,11 +162,11 @@ C
      &                CARCRI,SDIMPR,SDSTAT,SDDISC,SDTIME,
      &                SDDYNA,SDPOST,VALINC,SOLALG,MEELEM,
      &                MEASSE,VEELEM,SDERRO)
-        ENDIF  
+        ENDIF
       ENDIF
 C
- 999  CONTINUE      
+ 999  CONTINUE
 C
-      CALL JEDEMA()      
-C   
+      CALL JEDEMA()
+C
       END

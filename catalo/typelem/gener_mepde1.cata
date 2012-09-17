@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +45,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
-    EENEDNO  = ENER_R   ELEM__         (TOTALE   TRAC_COM TORSION  FLEX_Y   FLEX_Z   )
+    EENERR   = ENER_R   ELEM__         (TOTALE   TRAC_COM TORSION  FLEX_Y   FLEX_Z   )
     EENECNO  = ENER_R   ELEM__         (TOTALE   DX       DY       DZ       DRX      DRY
                                         DRZ      )
     CEPSINR  = EPSI_R   ELEM__         (EPX      KY       KZ       )
@@ -173,11 +173,11 @@ OPTION__
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
-    ENER_ELAS           -1    IN__     OUT__  XXXXXX   XXXXXX
+    ENEL_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           151   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENERR   PENERDR
     FORC_NODA           347   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR

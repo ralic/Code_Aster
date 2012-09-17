@@ -3,7 +3,7 @@
      &                   DSIDEP)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 17/09/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,16 +74,23 @@ C     VARIABLE LOCALE
       REPERE(2)=ANGMAS(1)
 
       VRAI = .FALSE.
-      IF (LTEATT(' ','DIM_TOPO_MAILLE','3')) THEN
-        REPERE(3)=ANGMAS(2)
-        REPERE(4)=ANGMAS(3)
-        VRAI = .TRUE.
-      ELSE IF (LTEATT(' ','C_PLAN','OUI')) THEN
-        VRAI = .TRUE.
-      ELSE IF (LTEATT(' ','D_PLAN','OUI')) THEN
-        VRAI = .TRUE.
-      ELSE IF (LTEATT(' ','AXIS','OUI'))   THEN
-        VRAI = .TRUE.
+      IF (FAMI.EQ.'PMAT') THEN
+C        ON VIENT DE OP0033      
+         REPERE(3)=ANGMAS(2)
+         REPERE(4)=ANGMAS(3)
+         VRAI = .TRUE.
+      ELSE
+         IF (LTEATT(' ','DIM_TOPO_MAILLE','3')) THEN
+           REPERE(3)=ANGMAS(2)
+           REPERE(4)=ANGMAS(3)
+           VRAI = .TRUE.
+         ELSE IF (LTEATT(' ','C_PLAN','OUI')) THEN
+           VRAI = .TRUE.
+         ELSE IF (LTEATT(' ','D_PLAN','OUI')) THEN
+           VRAI = .TRUE.
+         ELSE IF (LTEATT(' ','AXIS','OUI'))   THEN
+           VRAI = .TRUE.
+         ENDIF
       ENDIF
 
       IF(.NOT.VRAI) CALL U2MESS('F','ALGORITH8_22')
@@ -92,15 +99,27 @@ C     VARIABLE LOCALE
         DEPGTH(I)=0.D0
 2     CONTINUE
 
-C     APPEL A DMATMC POUR RECUPERER LA MATRICE TANGENTE
-      IF ( OPTION.EQ.'RIGI_MECA_TANG') THEN
-         CALL DMATMC(FAMI,K2BID,IMATE,RBID,'-',KPG,KSP,REPERE,
-     &               XYZGAU,NBSIGM,HOOKF)
+C     MATRICES TANGENTES
+
+      IF (FAMI.EQ.'PMAT') THEN
+C        ON VIENT DE OP0033      
+         IF ( OPTION.EQ.'RIGI_MECA_TANG') THEN         
+            CALL DMAT3D(FAMI,IMATE,RBID,'-',KPG,KSP,REPERE,XYZGAU,HOOKF)
+         ELSE
+            CALL D1MA3D(FAMI,IMATE,RBID,'-',KPG,KSP,REPERE,XYZGAU,MKOOH)
+            CALL DMAT3D(FAMI,IMATE,RBID,'+',KPG,KSP,REPERE,XYZGAU,HOOKF)
+         ENDIF
+
       ELSE
-         CALL D1MAMC(FAMI,IMATE,RBID,'-',KPG,KSP,REPERE,
-     &               XYZGAU,NBSIGM,MKOOH)
-         CALL DMATMC(FAMI,K2BID,IMATE,RBID,'+',KPG,KSP,REPERE,
-     &               XYZGAU,NBSIGM,HOOKF)
+         IF ( OPTION.EQ.'RIGI_MECA_TANG') THEN
+            CALL DMATMC(FAMI,K2BID,IMATE,RBID,'-',KPG,KSP,REPERE,
+     &                  XYZGAU,NBSIGM,HOOKF)
+         ELSE
+            CALL D1MAMC(FAMI,IMATE,RBID,'-',KPG,KSP,REPERE,
+     &                  XYZGAU,NBSIGM,MKOOH)
+            CALL DMATMC(FAMI,K2BID,IMATE,RBID,'+',KPG,KSP,REPERE,
+     &                  XYZGAU,NBSIGM,HOOKF)
+         ENDIF
       ENDIF
 
       IF ( OPTION.EQ.'RIGI_MECA_TANG'.OR.

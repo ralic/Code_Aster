@@ -5,7 +5,7 @@
       CHARACTER*32 LIPARA(NBPAMX)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/01/2012   AUTEUR BEAURAIN J.BEAURAIN 
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PELLET J.PELLET
+C TOLE CRP_20
 C ----------------------------------------------------------------------
 C BUT : CHOISIR LA LISTE DES PARAMETRES SUPPORTES PAR UN TYPE DE
 C       SD_RESULTAT
@@ -350,6 +351,18 @@ C     --------------------------------
         ICO=ICO+1
         LIPARA(ICO)='COEF_Z#P#R'
         ICO=ICO+1
+        LIPARA(ICO)='ERREUR_ERRE#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_ERZ1#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_ERZ2#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_QIRE#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_QIZ1#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_QIZ2#P#R'
+        ICO=ICO+1
         LIPARA(ICO)='EXCIT#P#K24'
         ICO=ICO+1
         LIPARA(ICO)='FACT_PARTICI_DX#P#R'
@@ -402,6 +415,18 @@ C     --------------------------------
         LIPARA(ICO)='CARAELEM#P#K8'
         ICO=ICO+1
         LIPARA(ICO)='CHAMPMAT#P#K8'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_ERRE#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_ERZ1#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_ERZ2#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_QIRE#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_QIZ1#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='ERREUR_QIZ2#P#R'
         ICO=ICO+1
         LIPARA(ICO)='EXCIT#P#K24'
         ICO=ICO+1

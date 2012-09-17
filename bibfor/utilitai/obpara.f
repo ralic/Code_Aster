@@ -1,0 +1,119 @@
+      SUBROUTINE OBPARA(NOMSTR,NOMPAZ,INDICE,TYPPAR)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      INCLUDE      'jeveux.h'
+      CHARACTER*24  NOMSTR
+      INTEGER       INDICE
+      CHARACTER*1   TYPPAR
+      CHARACTER*(*) NOMPAZ
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE UTILITAIRE (GESTION STRUCT)
+C
+C REPERAGE INDICE PARAMETRE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NOMSTR : NOM DU STRUCT
+C IN  NOMPAR : NOM DU PARAMETRE
+C OUT INDICE : INDICE CORRESPONDANT AU PARAMETRE DANS LE VECTEUR TYPVAL
+C OUT TYPPAR : TYPE PARAMETRE
+C               'B' - BOOLEEN
+C               'I' - ENTIER
+C               'K' - REEL
+C               'C' - CHAINE
+C               'O' - OBJET
+C
+C ----------------------------------------------------------------------
+C
+      CHARACTER*24 SDDESC,SDPARA
+      INTEGER      JSDESC,JSPARA
+      INTEGER      NBVALB,NBVALI,NBVALR,NBVALK,NBVALO,NBPARA
+      INTEGER      IPARA,INDABS
+      CHARACTER*24 NOMPAR,PARALU
+C
+C ----------------------------------------------------------------------
+C
+      INDICE = 0
+      INDABS = 0
+      NOMPAR = NOMPAZ
+      TYPPAR = ' '
+C
+C --- ACCES
+C
+      SDDESC = NOMSTR(1:19)//'.DESC'
+      SDPARA = NOMSTR(1:19)//'.PARA'
+      CALL JEVEUO(SDDESC,'L',JSDESC)
+      CALL JEVEUO(SDPARA,'L',JSPARA)
+C
+C --- DESCRIPTEURS
+C
+      NBVALB = ZI(JSDESC-1+1)
+      NBVALI = ZI(JSDESC-1+2)
+      NBVALR = ZI(JSDESC-1+3)
+      NBVALK = ZI(JSDESC-1+4)
+      NBVALO = ZI(JSDESC-1+5)
+      NBPARA = NBVALI+NBVALR+NBVALK+NBVALO+NBVALB
+C
+C --- REPERAGE INDICE ABSOLU
+C
+      DO 10 IPARA = 1,NBPARA
+        PARALU = ZK24(JSPARA-1+IPARA)
+        IF (PARALU.EQ.NOMPAR) THEN
+          INDABS = IPARA
+          GOTO 15
+        ENDIF
+  10  CONTINUE
+  15  CONTINUE
+C
+C --- ERREUR
+C
+      IF (INDABS.EQ.0) THEN
+        WRITE(6,*) 'PARAMETRE INCONNU: ',NOMPAR
+        WRITE(6,*) 'DANS SD: ',NOMSTR
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+C --- INDICE DANS TYPE DE PARAMETRE
+C
+      IF (INDABS.GT.NBVALB+NBVALI+NBVALR+NBVALK) THEN
+        INDICE = INDABS - (NBVALB+NBVALI+NBVALR+NBVALK)
+        TYPPAR = 'O'
+      ELSEIF (INDABS.GT.NBVALB+NBVALI+NBVALR) THEN
+        INDICE = INDABS - (NBVALB+NBVALI+NBVALR)
+        TYPPAR = 'K'
+      ELSEIF (INDABS.GT.NBVALB+NBVALI) THEN
+        INDICE = INDABS - (NBVALB+NBVALI)
+        TYPPAR = 'R'
+      ELSEIF (INDABS.GT.NBVALB) THEN
+        INDICE = INDABS - (NBVALB)
+        TYPPAR = 'I'
+       ELSE
+        INDICE = INDABS
+        TYPPAR = 'B'
+      ENDIF
+C
+      CALL ASSERT(INDICE.GT.0)
+      END

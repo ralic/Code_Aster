@@ -2,7 +2,7 @@
      &                  NOMBCL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INCLUDE 'jeveux.h'
+      INCLUDE      'jeveux.h'
       CHARACTER*4  NOMBCL
       CHARACTER*24 SDIMPR,SDERRO,SDCONV
       INTEGER      FONACT(*),NIVEAU
@@ -49,10 +49,8 @@ C               'NEWT' - BOUCLE DE NEWTON
 C               'FIXE' - BOUCLE DE POINT FIXE
 C               'INST' - BOUCLE SUR LES PAS DE TEMPS
 C
+C ----------------------------------------------------------------------
 C
-C
-C
-      CHARACTER*16 K16BLA
       LOGICAL      LERRNE,LERRFI,LERRIN,LCRITL
       LOGICAL      CVNEWT,CVINST
       LOGICAL      LTABL,MAXREL,MAXNOD
@@ -64,7 +62,6 @@ C
 C
 C --- INITIALISATIONS
 C
-      K16BLA = ' '
       LTABL  = .FALSE.
 C
 C --- FONCTIONNALITES ACTIVEES
@@ -101,7 +98,7 @@ C
           ENDIF
         ELSE
           LTABL = .TRUE.
-        ENDIF
+        ENDIF  
       ELSEIF (NOMBCL.EQ.'FIXE') THEN
         IF (LBOUCL)      LTABL = .TRUE.
         IF (.NOT.CVNEWT) LTABL = .FALSE.
@@ -112,9 +109,9 @@ C
 C --- AFFICHAGE LIGNE DU TABLEAU DE CONVERGENCE
 C
       IF (LTABL) THEN
-        CALL NMIMPR(SDIMPR,'TABL',' ',K16BLA,0.D0,0)
+        CALL NMIMPR(SDIMPR)
         IF (CVNEWT.AND..NOT.(LERRNE.OR.LERRFI)) THEN
-          CALL NMIMPR(SDIMPR,'IMPR','LIGNE',' ',0.D0,0)
+          CALL NMIMPX(SDIMPR)
         ENDIF
       ENDIF
 C
@@ -122,12 +119,12 @@ C --- AFFICHAGE DE L'ERREUR
 C
       IF (NOMBCL.EQ.'FIXE') THEN
         IF (LERRFI) THEN
-          CALL NMIMPR(SDIMPR,'IMPR','LIGNE',' ',0.D0,0)
+          CALL NMIMPX(SDIMPR)
           CALL NMERIM(SDERRO)
         ENDIF
       ELSEIF (NOMBCL.EQ.'NEWT') THEN
         IF (LERRNE) THEN
-          CALL NMIMPR(SDIMPR,'IMPR','LIGNE',' ',0.D0,0)
+          CALL NMIMPX(SDIMPR)
           CALL NMERIM(SDERRO)
         ENDIF
       ELSEIF (NOMBCL.EQ.'INST') THEN
@@ -146,7 +143,7 @@ C
         IF (MAXREL) THEN
           CALL U2MESS('I','MECANONLINE6_62')
         ENDIF
-        CALL NMIMPS(SDCONV,SDIMPR)
+        CALL NMIMPS(SDCONV)
       ENDIF
 C
       CALL JEDEMA()

@@ -6,7 +6,7 @@
      &                    ADSL, ADSV, ADSD,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -324,7 +324,7 @@ C====
 C 3. MENAGE
 C====
 C
-      CALL JEDETC ('V','&&'//NOMPRO,1)
+      CALL JEDETR (NTCMPL)
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'FIN DE '//NOMPRO

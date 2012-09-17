@@ -1,7 +1,7 @@
       SUBROUTINE OP5901(NBOCCM,IFM,NIV,COMPOR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF MODELISA  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -137,7 +137,7 @@ C           VERIF QUE LA MATRICE EST CARREE
             ZR(IPR+2+2*(NBTBSG-1)+1)=DECAL+1
             CALL DCOPY(6*NBSYS,ZR(IADLR+3),1,ZR(IPR+DECAL),1)
             TABDES(8+IOCC)=NBSYS
-            CALL JEDETC('V',LISTR,1 )
+            CALL DETRSD('LISTR8',LISTR)
             
             IF (NIV.EQ.2) THEN              
                WRITE(IFM,*) ' TABLE SYSTEMES DE GLISSEMENT FAMILLE',IOCC
@@ -311,7 +311,7 @@ C     8 : NOMBRE DE SYSTEMES DE GLISSEMENT TOTAL
       DO 999 I=1,13
          ZI(IMI+I-1)=TABDES(I)
 999   CONTINUE
-      CALL JEDETC('V',COMDES,1)
+      CALL DETRSD('TABLE',COMDES)
       
 C FIN ------------------------------------------------------------------
 

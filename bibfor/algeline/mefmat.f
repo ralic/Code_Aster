@@ -15,7 +15,7 @@ C
       REAL*8        ZG(*),AXG(*),RHOG(*),VITG(*),CDG(*),CPG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -452,6 +452,14 @@ C
   41  CONTINUE
   4   CONTINUE
 C
-      CALL JEDETC('V','&&MEFMAT',1)
+C --- MENAGE
+C
+      CALL JEDETR('&&MEFMAT.TMP.GH')
+      CALL JEDETR('&&MEFMAT.AIREG')
+      CALL JEDETR('&&MEFMAT.PHIXG')
+      CALL JEDETR('&&MEFMAT.PHIYG')
+      CALL JEDETR('&&MEFMAT.DPHIXG')
+      CALL JEDETR('&&MEFMAT.DPHIYG')
+C
       CALL JEDEMA()
       END

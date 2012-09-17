@@ -1,4 +1,4 @@
-#@ MODIF geomec_essais Macro  DATE 06/08/2012   AUTEUR CUVILLIE M.CUVILLIEZ 
+#@ MODIF geomec_essais Macro  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,7 +154,7 @@ def essai_TD(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
     Resu_Essai['P'][i]       = list(p      )
     Resu_Essai['Q'][i]       = list(q      )
 
-    DETRUIRE(CONCEPT=_F(NOM = (__CHAR1,__CHAR2,__EVOL),),)
+    DETRUIRE(CONCEPT=_F(NOM = (__CHAR1,__CHAR2,__EVOL),), INFO=1)
   # ---
   # Fin boucle sur les pressions de confinement PRES_CONF
   # --- 
@@ -165,7 +165,7 @@ def essai_TD(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
   # impression des graphiques
   impr_graphique(self,DicoEssai,Courbes,NomsFich,Leg_x,Leg_y,{},{})
 
-  DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST),),)
+  DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST),), INFO=1)
 
 
 
@@ -309,7 +309,7 @@ def essai_TND(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
     Resu_Essai['Q'][i]       = list(q      )
     Resu_Essai['PRE_EAU'][i] = list(pre_eau)
 
-    DETRUIRE(CONCEPT=_F(NOM = (__CHAR1,__CHAR2,__EVOL),),)
+    DETRUIRE(CONCEPT=_F(NOM = (__CHAR1,__CHAR2,__EVOL),), INFO=1)
   # ---
   # Fin boucle sur les pressions de confinement PRES_CONF
   # --- 
@@ -320,7 +320,7 @@ def essai_TND(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
   # impression des graphiques
   impr_graphique(self,DicoEssai,Courbes,NomsFich,Leg_x,Leg_y,{},{})
 
-  DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST),),)
+  DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST),), INFO=1)
 
 
 
@@ -506,7 +506,7 @@ def essai_CISA_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
       remplir_graphique(DicoEssai,Courbes_niv2,list(p),list(q),str_leg2,"P-Q")
       remplir_graphique(DicoEssai,Courbes_niv2,list(eps_xy),list(sig_xy),str_leg2,"EPSXY-SIGXY")
 
-      DETRUIRE(CONCEPT=_F(NOM = (__CHAR1,__CHAR2,__EVOL),),)
+      DETRUIRE(CONCEPT=_F(NOM = (__CHAR1,__CHAR2,__EVOL),), INFO=1)
     # ---
     # Fin boucle sur les amplitudes de cisaillement EPSI_IMPOSE
     # --- 
@@ -537,7 +537,7 @@ def essai_CISA_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
   impr_graphique(self,DicoEssai,Courbes_niv1,NomsFich_niv1,Leg_x_niv1,Leg_y_niv1,\
                  Ech_x_niv1,Ech_y_niv1)
 
-  DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST),),)
+  DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST),), INFO=1)
 
 
 
@@ -812,7 +812,7 @@ def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
             codret = "0"
             NCyc_list[i].append(i_cycle)
             DSig_list[i].append(SIGM_IMPOSE[j])
-            DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST,__CHAR1,__CHAR2,__EVOL),))
+            DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST,__CHAR1,__CHAR2,__EVOL)), INFO=1)
             break
           # si dernier cycle et que rien ne s'est passe :
           if i_cycle == NB_CYCLE :
@@ -828,10 +828,10 @@ def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
             codret = "2"
             NCyc_list[i].append(i_cycle)
             DSig_list[i].append(SIGM_IMPOSE[j])
-          DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST,__CHAR1,__CHAR2,),))
+          DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST,__CHAR1,__CHAR2,)), INFO=1)
           break
 
-        DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST,__CHAR1,__CHAR2,__EVOL),))
+        DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST,__CHAR1,__CHAR2,__EVOL)), INFO=1)
       # ---
       # Fin boucle sur les cycles en contrainte
       # --- 

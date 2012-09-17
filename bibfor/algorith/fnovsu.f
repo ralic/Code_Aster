@@ -3,13 +3,11 @@
      &                  MECANI,PRESS1,PRESS2,TEMPE,
      &                  DIMCON,DIMUEL,
      &                  TYPVF,AXI,
-     &                  NVOIMA,NSCOMA,NBVOIS,
-     &                  LIVOIS,TYVOIS,NBNOVO,NBSOCO,LISOCO,
      &                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO,
      &                  CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,9 +45,6 @@ C
       CHARACTER*16 OPTION
       INTEGER      NNO,NNOS,NNOM,NFACE
 C
-      INTEGER      NVOIMA,NSCOMA,NBVOIS
-      INTEGER      LIVOIS(1:NVOIMA),TYVOIS(1:NVOIMA),NBNOVO(1:NVOIMA),
-     &             NBSOCO(1:NVOIMA),LISOCO(1:NVOIMA,1:NSCOMA,1:2)
 C
       REAL*8       MFACE(1:MAXFA),DFACE(1:MAXFA),
      >             XFACE(1:MAXDIM,1:MAXFA),
@@ -147,8 +142,11 @@ C FONCTIONS FORMULES D ADRESSAGE DES DDL
 C
 C
 
+
       ADCF1(FA)=2*(FA-1)+1
       ADCF2(FA)=2*(FA-1)+2
+
+
       IF ( TYPVF.EQ.1) THEN
        ADCM1 = 1
        ADCM2 = 2

@@ -3,7 +3,7 @@
 C-----------------------------------------------------------------------
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -194,8 +194,12 @@ C          WRITE(6,*) 'NUM=', NUM
  900  CONTINUE
 
 C      WRITE(6,*) 'NPRO=', NPRO
-
-      CALL JEDETC('V','&&MPPSTA',1)
+C
+C     MENAGE
+C
+      CALL JEDETR('&&MPPSTA.VECT.TEM1')
+      CALL JEDETR('&&MPPSTA.VECT.TEM2')
+      CALL JEDETR('&&MPPSTA.VECT.TEM3')
 
 C     %---------------%
 C     | END OF ENDSTA |
