@@ -1,0 +1,92 @@
+# MODIF  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
+# TITRE VALIDATION DE LA RELECTURE AU FORMAT MED D'UN CHAMP ELGA
+# zzzz322a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ322A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),
+      IGNORE_ALARM=('MED_1',),);
+
+CoefRef = 1.0E-05
+
+MA=LIRE_MAILLAGE();
+
+MATE=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',MATER=MATE,),);
+
+LIS_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=1,),),);
+
+#-------------------------------------------------------------------------------------
+# 1 --> DIS_T : T_L (SEG2)
+# --------------------------
+MO_DISTL=AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='DIS_T',),);
+
+CA_DISTL=AFFE_CARA_ELEM(MODELE=MO_DISTL,
+                        DISCRET=(_F(GROUP_MA = 'TOUT',
+                                    CARA = 'K_T_D_L',
+     # K = EA/L
+                                    VALE = ( 2.6389E8, 2.6389E8, 2.6389E8,),),
+                                 _F(GROUP_MA = 'POI',
+                                    CARA = 'K_T_D_N',
+                                    VALE = ( 2.6389E8, 2.6389E8, 2.6389E8,),),),);
+
+CL_DISTL = AFFE_CHAR_MECA(MODELE=MO_DISTL,
+                          DDL_IMPO=_F(GROUP_NO='A',
+                                      DX=0.,
+                                      DY=0.,
+                                      DZ=0.,),);
+
+CH_DISTL=AFFE_CHAR_MECA(MODELE=MO_DISTL,
+                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),);
+
+RE_DISTL=STAT_NON_LINE(MODELE=MO_DISTL,
+                       CHAM_MATER=CHMAT,
+                       CARA_ELEM=CA_DISTL,
+                       EXCIT=(_F(CHARGE = CL_DISTL),
+                              _F(CHARGE = CH_DISTL),),
+                       COMP_INCR=_F(RELATION='ELAS',),
+                       INCREMENT=_F(LIST_INST = LIS_INST,),
+                       CONVERGENCE=_F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),);
+
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RE_DISTL,),);
+
+NVCHAM=LIRE_CHAMP(FORMAT='MED',
+                  MODELE=MO_DISTL,
+                  MAILLAGE=MA,
+                  NOM_MED='RE_DISTLSIEF_ELGA',
+                  TYPE_CHAM='ELGA_SIEF_R',
+                  INST=1.0,
+                  UNITE=80,
+                  NOM_CMP_IDEM='OUI',);
+
+# LES DEUX CHAMPS DOIVENT ETRE LES MEMES
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=NVCHAM,
+                       TYPE_TEST='SOMM_ABS',
+                       REFERENCE='NON_REGRESSION',
+                       VALE=2000.0,),
+          RESU=_F(RESULTAT=RE_DISTL,
+                  INST=1.0,
+                  NOM_CHAM='SIEF_ELGA',
+                  TYPE_TEST='SOMM_ABS',
+                  REFERENCE='NON_REGRESSION',
+                  VALE=2000.0),);
+
+FIN()

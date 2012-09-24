@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -246,9 +246,9 @@ OPTION__
                                      DDL_MECA PDEPLR   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
                               OUT__  EENERR   PENERD1
-    EPEQ_ELGA           336   IN__   EDEFOPG  PDEFORR
+    EPEQ_ELGA           335   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    EPEQ_ELNO           336   IN__   EDEFONO  PDEFORR
+    EPEQ_ELNO           335   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
     EPFD_ELGA           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ZVARIPG  PVARIGR
                               OUT__  EDEFOPG  PDEFOPG
@@ -271,9 +271,9 @@ OPTION__
                               OUT__  EDEFOPG  PDEFOPG
     EPMG_ELNO           4     IN__   EDEFOPG  PDEFOPG
                               OUT__  EDEFONO  PDEFONO
-    EPMQ_ELGA           336   IN__   EDEFOPG  PDEFORR
+    EPMQ_ELGA           335   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    EPMQ_ELNO           336   IN__   EDEFONO  PDEFORR
+    EPMQ_ELNO           335   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
     EPOT_ELEM           286   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
@@ -423,9 +423,9 @@ OPTION__
                                      ECONTPC  PCONTRC
     SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
-    SIEQ_ELGA           336   IN__   ECONTPG  PCONTRR
+    SIEQ_ELGA           335   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQPG  PCONTEQ
-    SIEQ_ELNO           330   IN__   ECONTNO  PCONTRR
+    SIEQ_ELNO           335   IN__   ECONTNO  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC

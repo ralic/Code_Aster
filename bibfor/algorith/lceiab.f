@@ -1,9 +1,7 @@
       SUBROUTINE LCEIAB(FAMI,KPG,KSP,MAT,OPTION,MU,SU,DE,
      &                  DDEDT,VIM,VIP,R,CODRET)
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/09/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,7 +51,7 @@ C-----------------------------------------------------------------------
       CHARACTER*1 POUM
 
       DATA NOM /'SIGM_C','GLIS_C','ALPHA','BETA','PENA_LAG',
-     &          'CINEMATIQUE'/
+     &          'CINEMATI'/
 C-----------------------------------------------------------------------
 
 C ---------------------------
@@ -124,7 +122,7 @@ C    RECUPERATION DES PARAMETRES PHYSIQUES
 
 C    ENTIER DECRIVANT LA CINEMATIQUE DU COMPORTEMENT DE L INTERFACE
 C     (CODE DANS LA ROUTINE RCSTOC)
-      CINEMA = VAL(4)
+      CINEMA = NINT(VAL(4))
 
 C    LECTURE DES VARIABLES INTERNES
       KA   = VIM(1)

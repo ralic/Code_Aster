@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,15 +27,15 @@ C
 C
       INCLUDE 'jeveux.h'
       INTEGER      ISLVK,ISLVI,JREFA,ITEST,NMULTC,LAMOR,
-     &             EXPO,PIVOT1,PIVOT2,MXDDL,NBRSS,IERD,II,IFAPM,
+     &             PIVOT1,PIVOT2,MXDDL,NBRSS,IERD,II,IFAPM,
      &             NBLAGR,NBCINE,NEQACT,NEQ,LTYPME,NITERC,
      &             LTYPRE,L,LBRSS,LMASSE,LRAIDE,LDDL,LDYNAM,NK,
-     &             LPROD,IRET,ICOMP,IERX,NBFREQ,KREFA,
+     &             LPROD,IRET,NBFREQ,KREFA,IDET(2),
      &             IFM,NIV,NBTETC,NBTET0,NBTET1,NBMODE(1),
-     &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID
+     &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID,IBID2(2)
       REAL*8       OMEGA2,OMGMIN,OMGMAX,OMIN,OMAX,FCORIG,OMECOR,
-     &             FMIN,FMAX,PRECDC,FREQOM,MANTIS,RAYONC,DIMC1,
-     &             CALPAR(2),CALPAC(3),CALPAF(2),RBID
+     &             FMIN,FMAX,PRECSH,RAYONC,DIMC1,
+     &             CALPAR(2),CALPAC(3),CALPAF(2),RBID,DET(2)
       COMPLEX*16   CENTRC,ZIMC1,CBID
       LOGICAL      LTEST,LC 
       CHARACTER*1  TYPEP,TPPARN(1),TPPARR(2),TPPARC(3),TPPARF(2)
@@ -58,7 +58,6 @@ C-----------------------------------------------------------------------
 
 
 C     --- FOR SAVE TIME IN FACTORIZATION PROCEDURE OF 'STURM' ---
-      EXPO = 0      
       FMIN = 0.D0
 
 C     --- OUTPUT CONCEPT ---
@@ -162,13 +161,13 @@ C     --- + DEFAULT VALUES                                      ---
 C     --- GET THE PARAMETERS OF THE METHOD                      --- 
 C     --- INITIALIZATION JUST IN CASE                           ---
       FCORIG=1.D-2
-      PRECDC=1.D-2
+      PRECSH=1.D-2
       NBRSS=5
       NBTETC=40
       NITERC=3     
       IF (TYPMET(1:5).EQ.'STURM') THEN
         CALL GETVR8('COMPTAGE','SEUIL_FREQ',1,IARG,1,FCORIG,L)
-        CALL GETVR8('COMPTAGE','PREC_SHIFT',1,IARG,1,PRECDC,L)
+        CALL GETVR8('COMPTAGE','PREC_SHIFT',1,IARG,1,PRECSH,L)
         CALL GETVIS('COMPTAGE','NMAX_ITER_SHIFT',1,IARG,1,NBRSS,LBRSS)
         IF (OMIN.GE.OMAX) CALL U2MESS('F','ALGELINE2_29')
       ELSE IF (TYPMET(1:3).EQ.'APM') THEN      
@@ -241,77 +240,9 @@ C-----------------------------STURM METHOD -----------------------------
 C-----------------------------------------------------------------------
       IF (TYPMET(1:5).EQ.'STURM') THEN
 
-C     --- STEP1: STURM WITH THE LOWER BOUND ---
-        OMGMIN = OMIN
-        ICOMP = 0
-  10    CONTINUE
-C     --- TO OPTIMIZE WE DON'T COMPUTE THE DETERMINANT AND WE DON'T KEEP
-C     --- THE FACTORS (IF MUMPS)
-        CALL VPSTUR(LRAIDE,OMGMIN,LMASSE,LDYNAM,MANTIS,
-     &              EXPO,PIVOT1,IERX,SOLVEU,.FALSE.,.FALSE.)
-        IF (IERX .NE. 0 ) THEN
-          IF (ABS(OMGMIN) .LT. OMECOR) THEN
-            OMGMIN=-OMECOR
-            IF (TYPMOD(1:9).EQ.'DYNAMIQUE') THEN
-              WRITE(IFM,1600) FREQOM(OMGMIN)
-            ELSE
-              WRITE(IFM,3600) OMGMIN
-            ENDIF
-          ELSE
-            IF (OMGMIN .GT. 0.D0) THEN
-              OMGMIN = (1.D0-PRECDC) * OMGMIN
-            ELSE
-              OMGMIN = (1.D0+PRECDC) * OMGMIN
-            ENDIF
-          ENDIF
-          ICOMP = ICOMP + 1
-          IF (ICOMP.GT.NBRSS) THEN
-            CALL U2MESS('A','ALGELINE2_31')
-          ELSE
-            IF (TYPMOD(1:9).EQ.'DYNAMIQUE') THEN
-              WRITE(IFM,1700) (PRECDC*100.D0),FREQOM(OMGMIN)
-            ELSE
-              WRITE(IFM,3700) (PRECDC*100.D0),OMGMIN
-            ENDIF
-            GOTO 10
-          ENDIF
-        ENDIF
-C
-C     --- STEP2: STURM WITH THE UPPER BOUND ---
-        OMGMAX = OMAX
-        ICOMP = 0
-  20    CONTINUE
-C     --- TO OPTIMIZE WE DON'T COMPUTE THE DETERMINANT AND WE DON'T KEEP
-C     --- THE FACTORS (IF MUMPS)
-        CALL VPSTUR(LRAIDE,OMGMAX,LMASSE,LDYNAM,MANTIS,
-     &              EXPO,PIVOT2,IERX,SOLVEU,.FALSE.,.FALSE.)
-        IF (IERX .NE. 0 ) THEN
-          IF (ABS(OMGMAX) .LT. OMECOR) THEN
-            OMGMAX=OMECOR
-            IF (TYPMOD(1:9).EQ.'DYNAMIQUE') THEN
-              WRITE(IFM,1800) FREQOM(OMGMAX)
-            ELSE
-              WRITE(IFM,3800) OMGMAX
-            ENDIF
-          ELSE
-            IF (OMGMAX .GT. 0.D0 ) THEN
-              OMGMAX = (1.D0 + PRECDC) * OMGMAX
-            ELSE
-              OMGMAX = (1.D0 - PRECDC) * OMGMAX
-            ENDIF
-          ENDIF
-          ICOMP = ICOMP + 1
-          IF (ICOMP.GT.NBRSS) THEN
-            CALL U2MESS('A','ALGELINE2_32')
-          ELSE
-            IF (TYPMOD(1:9).EQ.'DYNAMIQUE') THEN
-              WRITE(IFM,1900) (PRECDC*100.D0),FREQOM(OMGMAX)
-            ELSE
-              WRITE(IFM,3900) (PRECDC*100.D0),OMGMAX
-            ENDIF
-            GOTO 20
-          ENDIF
-        ENDIF
+        CALL VPFOPR('STURMA',TYPMOD,LMASSE,LRAIDE,LDYNAM,OMIN,OMAX,
+     &              RBID,NBFREQ,IBID2,OMECOR,PRECSH,NBRSS,NBLAGR,SOLVEU,
+     &              DET,IDET)
 
 C-----------------------------------------------------------------------
 C------------------------ ARGUMENT PRINCIPAL METHOD --------------------
@@ -435,18 +366,11 @@ C   --- (FREQ_MIN, FREQ_MAX, ETC. ) TO AN SD_TABLE                ---
           DIMC1=RAYONC
           ZIMC1=CENTRC
         ENDIF
-      ELSE IF (TYPMET(1:5).EQ.'STURM') THEN
-        TYPEP='R'
-        TYPCON=' '
-        DIMC1=0.D0
-        ZIMC1=DCMPLX(0.D0,0.D0)
-      ELSE
-        CALL ASSERT(.FALSE.)
+        CALL VPECST(IFM,TYPMOD,OMGMIN,OMGMAX,PIVOT1,PIVOT2,
+     &              NBFREQ,NBLAGR,TYPEP,TYPCON,DIMC1,ZIMC1)
       ENDIF
-      CALL VPECST(IFM,TYPMOD,OMGMIN,OMGMAX,PIVOT1,PIVOT2,
-     &            NBFREQ,NBLAGR,TYPEP,TYPCON,DIMC1,ZIMC1)
      
-      CALL TBCRSD (TABLE, 'G')
+      CALL TBCRSD(TABLE,'G')
       CALL TITRE
 
       NMPARN(1) = 'NB_MODE'
@@ -469,19 +393,19 @@ C   --- (FREQ_MIN, FREQ_MAX, ETC. ) TO AN SD_TABLE                ---
       
       NBMODE(1) = NBFREQ
       
-      CALL TBAJPA (TABLE,1,NMPARN,TPPARN)
-      CALL TBAJPA (TABLE,2,NMPARR,TPPARR)
-      CALL TBAJPA (TABLE,3,NMPARC,TPPARC)
-      CALL TBAJPA (TABLE,2,NMPARF,TPPARF)
+      CALL TBAJPA(TABLE,1,NMPARN,TPPARN)
+      CALL TBAJPA(TABLE,2,NMPARR,TPPARR)
+      CALL TBAJPA(TABLE,3,NMPARC,TPPARC)
+      CALL TBAJPA(TABLE,2,NMPARF,TPPARF)
 
-      CALL TBAJLI (TABLE,1,NMPARN,NBMODE,RBID,CBID,KBID,0)
+      CALL TBAJLI(TABLE,1,NMPARN,NBMODE,RBID,CBID,KBID,0)
       
       IF (TYPMOD(1:9).EQ.'DYNAMIQUE') THEN
-        CALL TBAJLI (TABLE,2,NMPARR,IBID,CALPAR,CBID,KBID,1)
+        CALL TBAJLI(TABLE,2,NMPARR,IBID,CALPAR,CBID,KBID,1)
       ELSE IF (TYPMOD(1:13).EQ.'MODE_COMPLEXE') THEN
-        CALL TBAJLI (TABLE,3,NMPARC,IBID,CALPAC,CBID,KBID,1)
+        CALL TBAJLI(TABLE,3,NMPARC,IBID,CALPAC,CBID,KBID,1)
       ELSE IF (TYPMOD(1:10).EQ.'MODE_FLAMB') THEN
-        CALL TBAJLI (TABLE,2,NMPARF,IBID,CALPAF,CBID,KBID,1)
+        CALL TBAJLI(TABLE,2,NMPARF,IBID,CALPAF,CBID,KBID,1)
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -491,22 +415,6 @@ C   --- (FREQ_MIN, FREQ_MAX, ETC. ) TO AN SD_TABLE                ---
 C-----------------------------------------------------------------------
 C-------------------------- FORTRAN PRINT FORMAT -----------------------
 C-----------------------------------------------------------------------
- 1600 FORMAT('LA BORNE MINIMALE EST INFERIEURE A LA FREQUENCE ',
-     &       'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT',1PE12.5)
- 1700 FORMAT('ON DIMINUE LA BORNE MINIMALE DE: ',1PE12.5,' POURCENTS',/,
-     &        'LA BORNE MINIMALE DEVIENT: ',6X,1PE12.5)
- 1800 FORMAT('LA BORNE MAXIMALE EST INFERIEURE A LA FREQUENCE ',
-     &       'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
- 1900 FORMAT('ON AUGMENTE LA BORNE MAXIMALE DE: ',1PE12.5,' POURCENTS',/
-     &       ,'LA BORNE MAXIMALE DEVIENT:',8X,1PE12.5,/)
- 3600 FORMAT('LA BORNE MINIMALE EST INFERIEURE A LA CHARGE CRITIQUE ',
-     &       'NULLE ON LA MODIFIE, ELLE DEVIENT',1PE12.5)
- 3700 FORMAT('ON DIMINUE LA BORNE MINIMALE DE: ',1PE12.5,' POURCENTS',/,
-     &        'LA BORNE MINIMALE DEVIENT: ',6X,1PE12.5)
- 3800 FORMAT('LA BORNE MAXIMALE EST INFERIEURE A LA CHARGE CRITIQUE ',
-     &       'NULLE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
- 3900 FORMAT('ON AUGMENTE LA BORNE MAXIMALE DE: ',1PE12.5,' POURCENTS',/
-     &       ,'LA BORNE MAXIMALE DEVIENT:',8X,1PE12.5,/)
  4000 FORMAT('(METHODE APM) POUR LES 3 NIVEAUX DE DISCRETISATION '
      &       'SUIVANTS',/,
      &       ' --- ',I5,' --- ',I5,' --- ',I5,' ---',/,

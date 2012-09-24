@@ -5,7 +5,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF PREPOST  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,17 +115,13 @@ C====
 C 3. ON NETTOIE
 C====
 C
-      IF ( CODRET.EQ.0 ) THEN
-C
       CALL DETRSD ( 'CHAM_ELEM_S', CHAMNS )
-C
-      ENDIF
 C
 C====
 C 4. BILAN
 C====
 C
-      IF ( CODRET.NE.0 ) THEN
+      IF ( CODRET.NE.0.AND.CODRET.NE.100 ) THEN
          CALL U2MESK('A','MED_89',1,CHANOM)
       ENDIF
 C

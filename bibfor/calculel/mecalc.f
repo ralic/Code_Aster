@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,7 +210,7 @@ C ----------------------------------------------------------------------
      &               OPTIO2.EQ.'EPVC_ELGA') THEN
                LPAOUT(1) = 'PDEFOVC'
             ELSE IF (OPTIO2.EQ.'EPOT_ELEM' .OR.
-     &               OPTIO2.EQ.'EPOT_ELEM_TEMP') THEN
+     &               OPTIO2.EQ.'ETHE_ELEM') THEN
                LPAOUT(1) = 'PENERDR'
             ELSE IF (OPTIO2.EQ.'ECIN_ELEM') THEN
                LPAOUT(1) = 'PENERCR'

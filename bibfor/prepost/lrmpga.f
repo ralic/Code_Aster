@@ -3,7 +3,7 @@
      &                  OPTION, PARAM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/08/2012   AUTEUR NICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ C
       PARAMETER ( NOMPRO = 'LRMPGA' )
 C
       INTEGER NTYGEO
-      PARAMETER (NTYGEO=14)
+      PARAMETER (NTYGEO=19)
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
       INTEGER EDMAIL
@@ -95,14 +95,16 @@ C
       CHARACTER*200 NOFIMD
       CHARACTER*255 KFIC
 
-      DATA TYGEO /    102,        103,         203,         206,
-     &                204,        208,         304,         310,
-     &                308,        320,         306,         315,
-     &                305,        313/
-      DATA TYELE /   'SE2',      'SE3',        'TR3',       'TR6',
-     &               'QU4',      'QU8',        'TE4',       'T10',
-     &               'HE8',      'H20',        'PE6',       'P15',
-     &               'PY5',      'P13'/
+      DATA TYGEO /    1,          102,        103,        104,
+     &                203,        204,        206,        207,
+     &                208,        209,        304,        305,
+     &                306,        308,        310,        313,
+     &                315,        320,        327/
+      DATA TYELE /   'PO1',      'SE2',      'SE3',      'SE4',
+     &               'TR3',      'QU4',      'TR6',      'TR7',
+     &               'QU8',      'QU9',      'TE4',      'PY5',
+     &               'PE6',      'HE8',      'T10',      'P13',
+     &               'P15',      'H20',      'H27'/
 
 C-----------------------------------------------------------------------
 C

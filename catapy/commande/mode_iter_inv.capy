@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
              NMAX_ITER_AJUSTE=SIMP(statut='f',typ='I',defaut= 15,val_min=0 ),
              PREC_AJUSTE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=0.E+0 ),
 
-             NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5,val_min=0 ),
+             NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 3,val_min=0 ),
              PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2,val_min=0.E+0, ),
              SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0, ),
              ),
@@ -65,7 +65,7 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
              NMAX_ITER_AJUSTE=SIMP(statut='f',typ='I',defaut= 15 ),
              PREC_AJUSTE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=0.E+0, ),
 
-             NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5,val_min=0 ),
+             NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 3,val_min=0 ),
              PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2,val_min=0.E+0, ),
              SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0, ),
              ),

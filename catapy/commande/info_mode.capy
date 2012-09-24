@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/04/2012   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,8 +43,8 @@ INFO_MODE=OPER(nom="INFO_MODE",op=32,sd_prod=table_sdaster,
          COMPTAGE         =FACT(statut='d',
            METHODE            =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("STURM","APM","AUTO")),                
              SEUIL_FREQ       =SIMP(statut='f',typ='R',defaut= 1.E-2 ),             
-             PREC_SHIFT       =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
-             NMAX_ITER_SHIFT  =SIMP(statut='f',typ='I',defaut= 5,val_min=0),
+             PREC_SHIFT       =SIMP(statut='f',typ='R',defaut= 5.E-2 ),
+             NMAX_ITER_SHIFT  =SIMP(statut='f',typ='I',defaut= 3,val_min=0),
              NBPOINT_CONTOUR  =SIMP(statut='f',typ='I',defaut= 40,val_min=10,val_max=1000),
              NMAX_ITER_CONTOUR=SIMP(statut='f',typ='I',defaut= 3, val_min=1,val_max=5),
          ),

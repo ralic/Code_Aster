@@ -7,7 +7,7 @@
       CHARACTER*(*) INTERP,CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 24/09/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,19 +80,8 @@ C        --- PAS D'INTERPOLATION ---
  20      CONTINUE
          IER = IER + 1
       ELSE
+C        ON INTERDIT L'INTERPOLATION POUR LES COMPLEXES
          CALL U2MESS('E','ALGORITH11_79')
-C
-C        --- INTERPOLATION LINEAIRE ---
-C         DO 30 I = 1, NBINST-1
-C            IF ( TEMPS.GE.TI(I) .AND. TEMPS.LT.TI(I+1) ) THEN
-C               ALPHA = ( TEMPS - TI(I) ) / ( TI(I+1) - TI(I) )
-C               CALL ZCOPY(NEQ,Y((I-1)*NEQ+1),1,XTRACT,1)
-C               CALL ZSCAL(NEQ,(1.D0-ALPHA),XTRACT,1)
-C               CALL ZAXPY(NEQ,ALPHA,Y(I*NEQ+1),1,XTRACT,1)
-C               GOTO 9999
-C            ENDIF
-C 30      CONTINUE
-C         IER = IER + 1
       ENDIF
 C
  9999 CONTINUE

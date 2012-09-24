@@ -1,6 +1,6 @@
       SUBROUTINE TE0370(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,7 @@ C.......................................................................
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      INTEGER            ICODRE
-      CHARACTER*8        FAMI,POUM
+      CHARACTER*8        FAMI
       CHARACTER*16       NOMTE,OPTION
       REAL*8             A(2,2,27,27)
       REAL*8             RHO
@@ -44,28 +43,35 @@ C
       REAL*8             DXDE,DXDK,DYDE,DYDK
       REAL*8             B(54,54),UL(54),C(1485)
       INTEGER            IVECTU,JCRET,NNO2,NT2,N1,N2,NN,KPG,SPT
-C
+      INTEGER CODRET(2)
+      CHARACTER*8 NOMPAR(2)
+      REAL*8      VALPAR(2)
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IDEPLM ,IDEPLP ,LPESA ,NPG2 
+      INTEGER IDEPLM ,IDEPLP ,NPG2 
       REAL*8 R8B 
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFRDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL JEVECH('PPESANR','L', LPESA)
-      PESA = ZR(LPESA)
       ZERO = 0.D0
       FAMI='FPG1'
       KPG=1
       SPT=1
-      POUM='+'
+      NOMPAR(1) = 'RHO'
+      NOMPAR(2) = 'PESA_Z'
 C
-      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ','FLUIDE',0,' ',R8B,1,
-     &          'RHO',RHO, ICODRE,1)
+C --- CARACTERISTIQUES MATERIAUX
 C
+      CALL RCVALB(FAMI,KPG,SPT,'+',ZI(IMATE),
+     &              ' ','FLUIDE',0,' ',R8B,2,
+     &            NOMPAR,VALPAR,CODRET,1)
+      RHO  = VALPAR(1)
+      PESA = VALPAR(2)
+C
+
 C     INITIALISATION DE LA MATRICE
 C
       DO 112 K=1,2

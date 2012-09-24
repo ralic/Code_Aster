@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 24/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -540,6 +540,8 @@ TEST_RESU(RESU=(
                    MAILLE='MA16',
                    NOEUD='NO50',
                    VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-8,
                    REFERENCE='NON_REGRESSION'),
 
                 _F(RESULTAT=RESU1,

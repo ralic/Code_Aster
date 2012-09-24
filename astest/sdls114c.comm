@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 25/09/2012   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES POUR UNE MODE PROPRE
 # sdls114c.para = tps_job 240 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,6 +180,33 @@ GLMO1 = CALC_G(  RESULTAT=MODE,
                                    ),
                          );
 IMPR_TABLE(TABLE=GLMO1);
+
+# validation de MACR_LIGN_COUPE sur un mode_meca
+PK = POST_K1_K2_K3(MODELISATION='C_PLAN',
+                   MATER=MA,
+                   RESULTAT=MODE,
+                   FISSURE=FISS,
+                   ABSC_CURV_MAXI=5.E-3)
+
+IMPR_TABLE(TABLE=PK)
+
+TEST_TABLE(TABLE=PK,
+           NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 5),
+           VALE=2.03766E+11,
+           PRECISION=0.002,
+           REFERENCE = 'NON_REGRESSION',
+          );
+
+TEST_TABLE(TABLE=PK,
+           NOM_PARA='G',
+           FILTRE=_F(NOM_PARA = 'FREQ',
+                     VALE = 4.30732E+04),
+           VALE=8.52712E+10,
+           PRECISION=0.002,
+           REFERENCE = 'NON_REGRESSION',
+          );
 
 ##############################################
 # CALCUL TRANSITOIRE EN COORDONNEES MODALES

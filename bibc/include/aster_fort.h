@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 24/09/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -148,6 +148,9 @@ extern void DEF0(MPICMW,mpicmw);
 #define CALL_MPISTP(a) CALLP(MPISTP,mpistp,a)
 extern void DEFP(MPISTP,mpistp,INTEGER *);
 
+/* routines intrinseques fortran */
+#define CALL_ABORTF() CALL0(ABORTF,abortf)
+extern void DEF0(ABORTF,abortf);
 
 /* routines de manipulation de la SD MATERIAU */
 #define CALL_RCVALE(a,b,c,d,e,f,g,h,i,j) CALLSSPSPPSPPP(RCVALE,rcvale,a,b,c,d,e,f,g,h,i,j)

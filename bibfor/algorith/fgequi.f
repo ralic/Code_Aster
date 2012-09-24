@@ -1,6 +1,6 @@
-      SUBROUTINE FGEQUI ( T, TYPZ, NDIM, EQUI )
+      SUBROUTINE FGEQUI ( TZ, TYPZ, NDIM, EQUI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,13 +37,13 @@ C                        . 2EME INV. * SIGNE (1ER.INV.) (= 1 VALEUR)
 C                        . DIRECTION DES CONTRAINTES PRINCIPALES
 C                                                       (=3*3 VALEURS)
 C ----------------------------------------------------------------------
-C     IN     T     TENSEUR CONTRAINTE OU DEFORMATION (XX YY ZZ XY XZ YZ)
+C     IN     TZ    TENSEUR CONTRAINTE OU DEFORMATION (XX YY ZZ XY XZ YZ)
 C            TYPZ  TYPE DU TENSEUR 'SIGM' OU 'EPSI' SUIVI EVENTUELLEMENT
 C            DES CARACTERES _DIR POUR CALCULER LES VECTEURS DIRECTEURS
 C            NDIM  DIMENSION ESPACE 3 OU 2
 C     OUT    EQUI  VECTEUR DES GRANDEURS EQUIVALENTES
 C ----------------------------------------------------------------------
-      REAL*8         T(*) ,    TN(6) , TR(6) , TU(6) , VECP(3,3), NUL(6)
+      REAL*8         TZ(*),T(6),TN(6),TR(6),TU(6),VECP(3,3), NUL(6)
       REAL*8         EQUI(*) , RAC2  , HYD, JACAUX(3)
       REAL*8         LCIV2S,   LCIV2E
       REAL*8         TOL, TOLDYN
@@ -60,7 +60,7 @@ C-----------------------------------------------------------------------
       DATA   NPERM ,TOL,TOLDYN    /12,1.D-10,1.D-2/
 C ----------------------------------------------------------------------
       TYP=TYPZ
-
+      
       IF      ( NDIM .EQ. 3 )THEN
          NT = 6
          ND = 3
@@ -71,6 +71,11 @@ C ----------------------------------------------------------------------
          NT = 1
          ND = 1
       ENDIF
+
+      CALL R8INIR(6,0.D0,T,1)
+      DO 30 I = 1,NT
+         T(I) = TZ(I)
+ 30   CONTINUE
 C
 C --- TENSEUR TN = (XX YY ZZ RAC2.XY RAC2.XZ RAC2.YZ) (POUR LCIV2E)
 C

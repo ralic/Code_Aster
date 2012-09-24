@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_error supervis  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_error supervis  DATE 24/09/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -26,6 +26,7 @@
 #endif
 
 #include "aster.h"
+#include "aster_fort.h"
 
 /*
  * Define a dedicated function to abort a Code_Aster execution.
@@ -52,7 +53,7 @@ void DEFP( ASABRT, asabrt, _IN INTEGER *iret )
 #ifdef _USE_MPI
     MPI_Abort( MPI_COMM_WORLD, (int)(*iret) );
 #else
-    abort();
+    CALL_ABORTF();
 #endif
     return;
 }

@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 24/09/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,7 +115,7 @@ class MESSAGE_LOGGER(Singleton):
         if not aster_exists:
             return
         rank = aster_core.mpi_info()[0]
-        self._mpi_rank = rank
+        self._mpi_rank = aster_core._USE_MPI and rank or None
         import platform
         node = platform.node()
 

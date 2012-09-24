@@ -4,7 +4,7 @@
       CHARACTER*(*)       HARMGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF UTILITAI  DATE 24/09/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,6 @@ C
 C --- LA FONCTION EST LA CONCATENATION DE DEUX VECTEURS:
 C --- ABSCISSES +  ( PARTIE REELLE | PARTIE IMAGINAIRE )
       CALL WKVECT ( NOMFON//'.VALE', 'G V R', 3*NBORDR, LVAR )
-
 C
       CALL JEVEUO(RESU//'.DESC','L',LDESC)
       NBMODE = ZI(LDESC+1)
@@ -115,23 +114,7 @@ C
         JJ = 0
         IF ( INTRES(1:3) .NE. 'NON' ) THEN
 C ---   CAS OU ON INTERPOLE      
-           CALL JEVEUO(RESU//'.DISC','L',IDINSG)
-           CALL JELIRA(RESU//'.DISC','LONMAX',NBINSG,K8B)
-           CALL WKVECT('&&RFHGE2.VECTGENE','V V C',NBMODE,IDVECG)
-           DO 40 IORDR = 0, NBORDR-1
-C             INTERPOLATION         
-              CALL ZXTRAC(INTRES,EPSI,CRIT,NBINSG,ZR(IDINSG),
-     &                    ZR(JINST+IORDR),ZC(ITRESU),NBMODE,
-     &                    CREP,IERD)
-C             REMPLISSAGE DES TROIS VECTEURS DE LA FONCTION           
-              ZR(LVAR+IORDR) = ZR(JINST+IORDR)
-              ZR(LFON+JJ) = DBLE(CREP)
-              JJ = JJ +1
-              ZR(LFON+JJ) = DIMAG(CREP)
-              JJ = JJ +1
- 40        CONTINUE
-           CALL JEDETR('&&RFHGE2.VECTGENE')
-C  
+          CALL U2MESS('E','ALGORITH11_79')
         ELSE
 C ---   CAS OU ON N'INTERPOLE PAS         
            DO 41 IORDR = 0, NBORDR-1

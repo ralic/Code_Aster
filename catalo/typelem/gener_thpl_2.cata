@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +82,7 @@ ENTETE__ ELEMENT__ THAXQL9          MAILLE__ QUAD9
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
    OPTION__   CHAR_THER_TNL           -1
    OPTION__   DURT_ELNO               -1
-   OPTION__   EPOT_ELEM_TEMP          -1
+   OPTION__   ETHE_ELEM               -1
    OPTION__   META_ELNO               -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1
@@ -103,7 +103,7 @@ ENTETE__ ELEMENT__ THAXTL6          MAILLE__ TRIA6
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
    OPTION__   CHAR_THER_TNL           -1
    OPTION__   DURT_ELNO               -1
-   OPTION__   EPOT_ELEM_TEMP          -1
+   OPTION__   ETHE_ELEM               -1
    OPTION__   META_ELNO               -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1
@@ -127,7 +127,7 @@ ENTETE__ ELEMENT__ THPLQL9          MAILLE__ QUAD9
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
    OPTION__   CHAR_THER_TNL           -1
    OPTION__   DURT_ELNO               -1
-   OPTION__   EPOT_ELEM_TEMP          -1
+   OPTION__   ETHE_ELEM               -1
    OPTION__   META_ELNO               -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1
@@ -151,7 +151,7 @@ ENTETE__ ELEMENT__ THPLTL6          MAILLE__ TRIA6
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
    OPTION__   CHAR_THER_TNL           -1
    OPTION__   DURT_ELNO               -1
-   OPTION__   EPOT_ELEM_TEMP          -1
+   OPTION__   ETHE_ELEM               -1
    OPTION__   META_ELNO               -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1
@@ -264,7 +264,7 @@ OPTION__
     ENEL_ELEM           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_TEMP      220   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
+    ETHE_ELEM           220   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCPR
                               OUT__  EENERR   PENERDR
     ERTH_ELEM           3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_P  NGEOMER  PGEOMER

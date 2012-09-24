@@ -7,7 +7,7 @@
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF PREPOST  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,7 +127,7 @@ C
       INTEGER TYMAST
       INTEGER ADVALE
       INTEGER ADPROA, ADNUCM
-      INTEGER NRIMPR
+      INTEGER NRIMPR, CODRE2, RETSAV
       INTEGER IDEB, IFIN
 C
       INTEGER IDFIMD
@@ -211,6 +211,7 @@ C====
 C
       IFIN = 0
 C
+      RETSAV = 0
       DO 41 , NRIMPR = 1 , NBIMPR
 C
         IF ( CODRET.EQ.0 ) THEN
@@ -280,10 +281,12 @@ C
           CALL WKVECT ( NTVALE, 'V V R', IAUX, ADVALE )
 C
           CALL IRCMVA ( ZI(ADNUCM), NCMPVE, NCMPRF,
-     &                  NVALEC, NBPG, NBSP, 
+     &                  NVALEC, NBPG, NBSP,
      &                  ADSV, ADSD, ADSL,ADSK, PARTIE,
      &                  TYMAST, MODNUM, NUANOM, TYPECH,
-     &                  ZR(ADVALE), ZI(ADPROA), IDEB, IFIN )
+     &                  ZR(ADVALE), ZI(ADPROA), IDEB, IFIN,
+     &                  CODRE2 )
+          IF ( CODRE2.NE.0 ) RETSAV = 100
 C
           ENDIF
 C
@@ -333,6 +336,7 @@ C
         SAUX08='MFFERM  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
+      IF ( RETSAV.EQ.100 ) CODRET=100
 C
 C====
 C 6. LA FIN

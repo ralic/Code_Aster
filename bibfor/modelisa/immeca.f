@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 25/09/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,22 +78,24 @@ C ---------
 C
 C VARIABLES LOCALES
 C -----------------
+      INTEGER       NSELEC
+      PARAMETER     (NSELEC=5)
       INTEGER       IDECA, IMMER, INOB1, INOB2, INOBE, INOCA, IPARA,
      &              ITETRA, JCOOR, JCXMA, JD2, JNOCA, JNOD2, JNUNOB,
      &              JTBLP, JTBNP, JXCA, JXYZMA, JYCA, JZCA, NBCNX,
-     &              NBLIGN, NBNO, NBPARA, NNOMAX, NOE, NOEBE, NUMAIL,
-     &              NBVAL,NBVAL2, IRET, IBID
-      REAL*8        D2, D2MIN, DX, DY, DZ, RBID, X3DCA(3), XBAR(4)
-      REAL*8        X3DCA2(3),AXE(3),XNORM,XNORM2,ZERO
+     &              NBLIGN, NBNO, NBPARA, NNOMAX, NOE, NOEBE(NSELEC),
+     &              NUMAIL,NBVAL,NBVAL2, IRET, IBID,NOEBEC
+      REAL*8        D2, D2MIN(NSELEC), DX, DY, DZ, RBID, X3DCA(3)
+      REAL*8        X3DCA2(3),AXE(3),XNORM,XNORM2,ZERO, XBAR(4)
       REAL*8        RAYON
-      REAL*8        LONG,LONGCY,LONGCA
+      REAL*8        LONG,LONGCY,LONGCA,R8MAEM,D2MINC
       INTEGER       IFM,NIV
       CHARACTER*8   NNOEC2, K8B, PRESEN(2),K8VIDE, NOANCR(2), NOGRNA(2)
       COMPLEX*16    CBID
       CHARACTER*3   K3B
       CHARACTER*8   NNOECA, VOISIN(2)
       CHARACTER*24  COORNO, NOMAMA, NONOCA, NONOMA
-      INTEGER        N1
+      INTEGER        N1,IBE,JBE
 C
       CHARACTER*24  PARAM(3), PARCR
       INTEGER      IARG
@@ -367,39 +369,58 @@ C
 C 2.2.1  DETERMINATION DU NOEUD DE LA STRUCTURE BETON LE PLUS PROCHE
 C .....  DU NOEUD CABLE COURANT
 C
-         NOEBE = ZI(JNUNOB)
-         DX = X3DCA(1) - ZR(JCOOR+3*(NOEBE-1)  )
-         DY = X3DCA(2) - ZR(JCOOR+3*(NOEBE-1)+1)
-         DZ = X3DCA(3) - ZR(JCOOR+3*(NOEBE-1)+2)
-         D2MIN = DX * DX + DY * DY + DZ * DZ
-         ZR(JD2) = D2MIN
-         ZI(JNOD2) = NOEBE
-         DO 110 INOBE = 2, NBNOBE
+C ON DETERMINE LES NSELEC NOEUDS LES PLUS PROCHES
+
+         DO 114 IBE=1,NSELEC
+           D2MIN(IBE) = R8MAEM()
+           NOEBE(IBE) = 0
+ 114     CONTINUE
+
+         NOEBEC=0
+         DO 110 INOBE = 1, NBNOBE
             NOE = ZI(JNUNOB+INOBE-1)
             DX = X3DCA(1) - ZR(JCOOR+3*(NOE-1)  )
             DY = X3DCA(2) - ZR(JCOOR+3*(NOE-1)+1)
             DZ = X3DCA(3) - ZR(JCOOR+3*(NOE-1)+2)
             D2 = DX * DX + DY * DY + DZ * DZ
-            IF ( D2.LT.D2MIN ) THEN
-               D2MIN = D2
-               NOEBE = NOE
-            ENDIF
+            DO 111 IBE=1,NSELEC
+              IF (D2.LT.D2MIN(IBE)) THEN
+                DO 122 JBE=0, NSELEC-IBE-1
+                  D2MIN(NSELEC-JBE)=D2MIN(NSELEC-JBE-1)
+                  NOEBE(NSELEC-JBE)=NOEBE(NSELEC-JBE-1)
+ 122            CONTINUE
+                D2MIN(IBE)=D2
+                NOEBE(IBE)=NOE
+                GOTO 113
+              ENDIF
+ 111        CONTINUE
+ 113        CONTINUE
             ZR(JD2+INOBE-1) = D2
             ZI(JNOD2+INOBE-1) = NOE
  110     CONTINUE
 
          IF (NIV.EQ.2) THEN
-           WRITE(IFM,*) '   INFOS : DISTANCE MINIMALE : ',SQRT(D2MIN)
+          WRITE(IFM,*) '   INFOS : DISTANCE MINIMALE : ',SQRT(D2MIN(1))
          END IF
 
 C
 C 2.2.2  TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 C .....  AUXQUELLES APPARTIENT LE NOEUD BETON LE PLUS PROCHE
 C
-         CALL IMMENO(NCNCIN,NMABET,MAILLA,X3DCA(1),NOEBE,
+         DO 115 IBE=1,NSELEC
+C          ATTENTION IL PEUT Y AVOIR MOINS QUE NSELEC NOEUDS
+C          DE BETON
+           IF (NOEBE(IBE).EQ.0)GOTO 116
+
+           CALL IMMENO(NCNCIN,NMABET,MAILLA,X3DCA(1),NOEBE(IBE),
      &               NUMAIL,NBCNX,ZI(JCXMA),ZR(JXYZMA),
      &               ITETRA,XBAR(1),IMMER)
-
+           IF ( IMMER.GE.0 ) THEN
+             NOEBEC = NOEBE(IBE)
+             GOTO 116
+           ENDIF
+ 115     CONTINUE
+ 116     CONTINUE
 C
 C 2.2.3  EN CAS D'ECHEC DE LA TENTATIVE PRECEDENTE
 C .....
@@ -409,21 +430,21 @@ C.......... ON CREE UNE LISTE ORDONNEE DES NOEUDS DE LA STRUCTURE BETON
 C.......... DU PLUS PROCHE AU PLUS ELOIGNE DU NOEUD CABLE CONSIDERE
 C
             DO 120 INOB1 = 1, NBNOBE-1
-               D2MIN = ZR(JD2+INOB1-1)
-               NOEBE = ZI(JNOD2+INOB1-1)
+               D2MINC = ZR(JD2+INOB1-1)
+               NOEBEC = ZI(JNOD2+INOB1-1)
                INOBE = INOB1
                DO 121 INOB2 = INOB1+1, NBNOBE
-                  IF ( ZR(JD2+INOB2-1).LT.D2MIN ) THEN
-                     D2MIN = ZR(JD2+INOB2-1)
-                     NOEBE = ZI(JNOD2+INOB2-1)
+                  IF ( ZR(JD2+INOB2-1).LT.D2MINC ) THEN
+                     D2MINC = ZR(JD2+INOB2-1)
+                     NOEBEC = ZI(JNOD2+INOB2-1)
                      INOBE = INOB2
                   ENDIF
  121           CONTINUE
                IF ( INOBE.GT.INOB1 ) THEN
                   D2 = ZR(JD2+INOB1-1)
                   NOE = ZI(JNOD2+INOB1-1)
-                  ZR(JD2+INOB1-1) = D2MIN
-                  ZI(JNOD2+INOB1-1) = NOEBE
+                  ZR(JD2+INOB1-1) = D2MINC
+                  ZI(JNOD2+INOB1-1) = NOEBEC
                   ZR(JD2+INOBE-1) = D2
                   ZI(JNOD2+INOBE-1) = NOE
                ENDIF
@@ -440,11 +461,11 @@ C.......... EFFECTUEE, SANS SUCCES
 C.......... ON EFFECTUE DE NOUVELLES TENTATIVES EN UTILISANT LES NOEUDS
 C.......... DE LA LISTE ORDONNEE PRECEDENTE, DU SECOND JUSQU'AU DERNIER
 C.......... REPETER
-            DO 130 INOBE = 2, NBNOBE
-               NOEBE = ZI(JNOD2+INOBE-1)
+            DO 130 INOBE = NSELEC, NBNOBE
+               NOEBEC = ZI(JNOD2+INOBE-1)
 C............. TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 C............. AUXQUELLES APPARTIENT LE NOEUD BETON COURANT
-               CALL IMMENO(NCNCIN,NMABET,MAILLA,X3DCA(1),NOEBE,
+               CALL IMMENO(NCNCIN,NMABET,MAILLA,X3DCA(1),NOEBEC,
      &                     NUMAIL,NBCNX,ZI(JCXMA),ZR(JXYZMA),
      &                     ITETRA,XBAR(1),IMMER)
 C............. SORTIE DU BLOC REPETER EN CAS DE SUCCES
@@ -467,13 +488,14 @@ C .....
 C
 C 2.2.5  DETERMINATION DES RELATIONS CINEMATIQUES
 C .....
-         CALL RECI3D(LIRELA,MAILLA,NNOECA,NOEBE,NBCNX,ZI(JCXMA),
+         CALL RECI3D(LIRELA,MAILLA,NNOECA,NOEBEC,NBCNX,ZI(JCXMA),
      &               ITETRA,XBAR(1),IMMER)
 C
 C 2.2.6  MISE A JOUR DE LA SD TABLE
 C .....
          CALL JENUNO(JEXNUM(NOMAMA,NUMAIL),VOISIN(1))
-         CALL JENUNO(JEXNUM(NONOMA,NOEBE) ,VOISIN(2))
+         CALL ASSERT(NOEBEC.NE.0)
+         CALL JENUNO(JEXNUM(NONOMA,NOEBEC) ,VOISIN(2))
          CALL TBAJLI(TABLCA,3,PARAM,
      &               IMMER,RBID,CBID,VOISIN(1),IDECA+INOCA)
 

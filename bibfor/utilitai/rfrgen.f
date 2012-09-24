@@ -4,7 +4,7 @@
       CHARACTER*19       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF UTILITAI  DATE 24/09/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,17 +68,8 @@ CCC  FONCTIONNALITE NON DEVELOPPEE
          GOTO 9999
 C TRAITEMENT DU HARM_GENE   
       ELSEIF ( TYSD .EQ. 'HARM_GENE' ) THEN
-C --> ALBERT: JE DECIDE DE CHANGER LA FACON DE FAIRE
-C             POUR HARM_GENE.       
         CALL  RFHGE2 ( TRANGE )
-C         CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,IARG,1, K8B,  N1 )
-C         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,IARG,1, IBID, N2 )
-C         IF ( (N1+N2) .NE. 0 ) THEN
-C            CALL RFHGE1 ( TRANGE )
-C         ELSE
-C            CALL RFHGE2 ( TRANGE )
-C         ENDIF
-         GOTO 9999
+        GOTO 9999
       ENDIF
 C TRAITEMENT DU TRAN_GENE
       RESU = TRANGE

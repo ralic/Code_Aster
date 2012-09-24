@@ -7,7 +7,7 @@
      &                  LERRIT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,13 +159,13 @@ C
         IF (LCRIGI) THEN
           CALL NMRIGI(MODELE,MATE  ,CARELE,COMPOR,CARCRI,
      &                SDDYNA,SDSTAT,SDTIME,FONACT,ITERAT,
-     &                VALINC,SOLALG,LISCHA,COMREF,MEELEM,
-     &                VEELEM,OPTION,LDCCVG,CODERE)
+     &                VALINC,SOLALG,COMREF,MEELEM,VEELEM,
+     &                OPTION,LDCCVG,CODERE)
         ELSE
           CALL NMFINT(MODELE,MATE  ,CARELE,COMREF,COMPOR,
-     &                LISCHA,CARCRI,FONACT,ITERAT,SDDYNA,
-     &                SDSTAT,SDTIME,VALINC,SOLALG,LDCCVG,
-     &                CODERE,VEFINT)
+     &                CARCRI,FONACT,ITERAT,SDDYNA,SDSTAT,
+     &                SDTIME,VALINC,SOLALG,LDCCVG,CODERE,
+     &                VEFINT)
         ENDIF
       ENDIF
 C

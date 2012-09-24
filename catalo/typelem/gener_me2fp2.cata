@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,26 +82,25 @@ OPTION__
     MASS_MECA_EXPLI     -1    IN__    OUT__    XXXXXX   XXXXXX
     M_GAMMA             -1    IN__    OUT__    XXXXXX   XXXXXX
     NORME_L2            -1    IN__    OUT__    XXXXXX   XXXXXX
-    RIGI_MECA           370   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
+    RIGI_MECA           370   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     FORC_NODA           370   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CPESANR  PPESANR
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           370   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CPESANR  PPESANR  CPESANR  PPESANR
+                                     CMATERC  PMATERC  
                               OUT__  ECODRET  PCODRET  MMATUUR  PMATUUR  MVECTUR  PVECTUR
     FULL_MECA_ELAS      -1    IN__    OUT__    XXXXXX   XXXXXX
     PAS_COURANT         405   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
     RAPH_MECA           370   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CPESANR  PPESANR
+                                     CMATERC  PMATERC
                               OUT__  ECODRET  PCODRET  MVECTUR  PVECTUR
     RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_ELAS      -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_HYST      370   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC 
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_TANG      370   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CPESANR  PPESANR
+                                     CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     NSPG_NBVA           99    IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I

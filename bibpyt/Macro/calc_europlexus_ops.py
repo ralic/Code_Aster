@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 17/09/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF calc_europlexus_ops Macro  DATE 24/09/2012   AUTEUR IDOUX L.IDOUX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1093,7 +1093,7 @@ class EUROPLEXUS:
             concept_mater = affe['MATER']
             # Recuperer le nom du materiau
             nom_mater = concept_mater.get_name()
-            print 'nom_mater',nom_mater
+            if debug: print 'nom_mater',nom_mater
             # Recuperer le group_ma concerne
             group_ma = self.get_group_ma(affe)
             if debug: print 'type(group_ma) = %s'%type(group_ma)
@@ -1112,7 +1112,7 @@ class EUROPLEXUS:
                        dic_mater[nom_mater][car] = None
                 beton = self.recupere_structure(concept_mater,'BETON')
                 if beton  :
-                    print 'on a trouve BETON'
+                    if debug: print 'on a trouve BETON'
                     typMat[nom_mater] = 'GLRC'
                     self.gmaGLRC.extend(group_ma)
                     dic_mater[nom_mater]['LINER']=[]
@@ -1143,7 +1143,7 @@ class EUROPLEXUS:
                         dic_mater[nom_mater]['BETON'][car] = self.get_motcle(beton,car)
                     for car in ['OMT','EAT','BT1','BT2'] :
                         dic_mater[nom_mater]['BETON'][car] = self.get_motcle(beton,car,None)
-                    for car in ['MP1X','MP1Y','MP2X','MP2Y'] :
+                    for car in ['MP1X','MP1Y','MP2X','MP2Y','MP1X_FO','MP1Y_FO','MP2X_FO','MP2Y_FO'] :
                         car_temp = self.get_motcle(beton,car,None)
                         if debug: print 'type(car_temp) = %s'%type(car_temp)
                         dic_mater[nom_mater]['BETON'][car] = None
@@ -1162,9 +1162,9 @@ class EUROPLEXUS:
                                 x = val[:len(val):2]
                                 y = val[1:len(val):2]
                                 # imprimer les valeurs de la table
-                                epx['FONC_MATER'].append(5*' ' +'%i LSQU 2 TABLE %i' %(ifonc,len(x)) )
-                                for ival in range(len(x)):
-                                    epx['FONC_MATER'].append(17*' ' +'%s %s' %(x[ival],y[ival]))
+                                epx['FONC_MATER'].append(5*' ' +'%i LSQU 2 TABLE %i' %(ifonc,len(val[0])) )
+                                for x, y in zip(*val):
+                                    epx['FONC_MATER'].append(17*' ' +'%s %s' % (x, y))
                                 dic_mater[nom_mater]['BETON'][car] = 'FONC %i'%ifonc
                                 self.ifonc=ifonc
 
@@ -1232,7 +1232,7 @@ class EUROPLEXUS:
         # Impression au format Europlexus
 
         for nom_mater in dic_mater.keys():
-            print 'nom_mater',nom_mater
+            if debug: print 'nom_mater',nom_mater
             epx[MODULE].append('*--MATERIAU %s' %nom_mater)
             # mot cle indicant qu'il s'agit des caracteristiques lineaires du materiau
             if typMat[nom_mater] == 'ELAS' :
@@ -1255,7 +1255,7 @@ class EUROPLEXUS:
                 dic_corresPrec = {'E' : 'EA','SY':'FY','OMX':'OMX','OMY':'OMY','RX':'RX','RY':'RY'}
                 dic_corresLinr = {'E' : 'EA','SY':'FY','OML':'OMLR','NU':'NULR','RLR':'RLR'}
                 dic_corres2 = {'OMT' : 'OMT','EAT':'EAT','BT1':'BT1','BT2':'BT2','SYT' : 'FT','GAMMA':'GAMM','QP1':'QP1','QP2':'QP2','C1N1':'C1N1','C1N2':'C1N2','C1N3':'C1N3','C2N1':'C2N1','C2N2':'C2N2','C2N3':'C2N3','C1M1':'C1M1','C1M2':'C1M2','C1M3':'C1M3','C2M1':'C2M1','C2M2':'C2M2','C2M3':'C2M3','SYC':'FC'}
-                dic_corres2b = {'MP1X':'MP1X','MP2X':'MP2X','MP1Y':'MP1Y','MP2Y':'MP2Y',}
+                dic_corres2b = {'MP1X':'MP1X','MP2X':'MP2X','MP1Y':'MP1Y','MP2Y':'MP2Y','MP1X_FO':'MP1X','MP2X_FO':'MP2X','MP1Y_FO':'MP1Y','MP2Y_FO':'MP2Y'}
                 dic_corres3 = {'PREX' : 'PREX', 'PREY' : 'PREY'}
                 dic_corres4 = {'AMOR_ALPHA':'KRAY','AMOR_BETA':'MRAY'}
                 dic_corres5 = {'BTD1' : 'BTD1','BTD2' : 'BTD2','TSD' : 'TSD'}
@@ -1309,7 +1309,7 @@ class EUROPLEXUS:
                             epx[MODULE].append('%s %s' %(car_epx,vale))
                 if l_cisail :
                     for car_aster in dic_corres5.keys():
-                        print 'car_aster',car_aster
+                        if debug: print 'car_aster',car_aster
                         vale    = dic_mater[nom_mater]['CISAIL_NL'][car_aster]
                         car_epx = dic_corres5[car_aster]
                         if vale is not None :

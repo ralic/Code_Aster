@@ -5,7 +5,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,7 @@ C       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 C_______________________________________________________________________
 C
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
 C
 C 0.1. ==> ARGUMENTS
 C
@@ -68,9 +69,10 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'IRCNME' )
 C
-      CHARACTER*19 CHAMNS
+      CHARACTER*19 CHAMNS,NONVPR
+      PARAMETER ( NONVPR = '&&IRCNME.NV_PRO' )
 C
-      INTEGER JCNSK,JCNSD,JCNSC,JCNSV,JCNSL
+      INTEGER JCNSK,JCNSD,JCNSC,JCNSV,JCNSL,JNVPRO,NBNVPR
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -84,6 +86,11 @@ C               1234567890123456789
       CHAMNS = '&&      .CNS.MED   '
       CHAMNS(3:8) = NOMPRO
       CALL CNOCNS ( CHANOM, 'V', CHAMNS )
+C
+C     MODIFICATION DU PROFIL
+      CALL IRMOPR ( CHAMNS, NBNOEC, LINOEC, NONVPR )
+      CALL JEVEUO ( NONVPR, 'L', JNVPRO )
+      NBNVPR = ZI(JNVPRO)
 C
 C    --- ON RECUPERE LES OBJETS
 C
@@ -101,25 +108,22 @@ C
      &              NBCMP, NOMCMP, ' ', PARTIE,
      &              NUMPT, INSTAN, NUMORD,
      &              JCNSK, JCNSD, JCNSC, JCNSV, JCNSL,
-     &              NBNOEC, LINOEC,
+     &              NBNVPR, ZI(JNVPRO+1),
      &              CODRET )
 C
 C====
 C 3. ON NETTOIE
 C====
 C
-      IF ( CODRET.EQ.0 ) THEN
-C
       CALL DETRSD ( 'CHAM_NO_S', CHAMNS )
-C
-      ENDIF
+      CALL JEDETR(NONVPR)
 C
 C====
 C 4. BILAN
 C====
 C
-      IF ( CODRET.NE.0 ) THEN
-         CALL U2MESK('A','MED_89',1,CHANOM)
+      IF ( CODRET.NE.0.AND.CODRET.NE.100 ) THEN
+        CALL U2MESK('A','MED_89',1,CHANOM)
       ENDIF
 C
       CALL JEDEMA()

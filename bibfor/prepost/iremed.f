@@ -14,7 +14,7 @@ C
       INTEGER           NBNOEC,LINOEC(*),NBMAEC,LIMAEC(*)
       LOGICAL           LRESU,LVARIE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,36 +64,42 @@ C     ------------------------------------------------------------------
       CHARACTER*64 NOMMED,NOCHMD
 C
       INTEGER      NUMORD,ISY,IORDR,IRET,LXLGUT,IBID,CODRET
-      INTEGER      NUMCMP(NBRCMP),LNOCHM,I
+      INTEGER      NUMCMP(NBRCMP),LNOCHM,I,CRESAV
+C
+      REAL*8       RBID
+C
+      LOGICAL      LFIRST
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
       NORESU=NOMCON
+      LFIRST=.TRUE.
 C
-C     *******************************************
-C     --- BOUCLE SUR LA LISTE DES NUMEROS D'ORDRE
-C     *******************************************
+C     --- BOUCLE SUR LE NOMBRE DE CHAMPS A IMPRIMER
 C
-      DO 21 IORDR = 1,NBORDR
-        CALL JEMARQ()
-        CALL JERECU('V')
+      DO 20 ISY = 1,NBCHAM
+        CRESAV=0
 C
-C       --- SI VARIABLE DE TYPE RESULTAT = RESULTAT COMPOSE :
-C           VERIFICHICATION CORRESPONDANCE ENTRE NUMERO D'ORDRE
-C           UTILISATEUR ORDR(IORDR) ET NUMERO DE RANGEMENT IRET
+C       --- BOUCLE SUR LA LISTE DES NUMEROS D'ORDRE
+C
+        DO 21 IORDR = 1,NBORDR
+C
+C         --- SI VARIABLE DE TYPE RESULTAT = RESULTAT COMPOSE :
+C             VERIFICATION CORRESPONDANCE ENTRE NUMERO D'ORDRE
+C             UTILISATEUR ORDR(IORDR) ET NUMERO DE RANGEMENT IRET
 C AU CAS OU ON NE PASSE PAS EN DESSOUS ON INITIALISE LORDR A FALSE
-        IF ( LRESU ) THEN
-          CALL RSUTRG(NOMCON,LIORDR(IORDR),IRET,IBID)
-          IF(IRET.EQ.0) THEN
-C           - MESSAGE NUMERO D'ORDRE NON LICITE
-            CALL CODENT(LIORDR(IORDR),'G',CHNUMO)
-            CALL U2MESK('A','PREPOST2_46',1,CHNUMO)
-            GOTO 22
+          IF ( LRESU ) THEN
+            CALL RSUTRG(NOMCON,LIORDR(IORDR),IRET,IBID)
+            IF(IRET.EQ.0) THEN
+C             - MESSAGE NUMERO D'ORDRE NON LICITE
+              IF ( LFIRST ) THEN
+                CALL CODENT(LIORDR(IORDR),'G',CHNUMO)
+                CALL U2MESK('A','PREPOST2_46',1,CHNUMO)
+              ENDIF
+              GOTO 22
+            ENDIF
           ENDIF
-        ENDIF
 C
-C       --- BOUCLE SUR LE NOMBRE DE CHAMPS A IMPRIMER
-        DO 20 ISY = 1,NBCHAM
           IF( LRESU ) THEN
 C         * RESULTAT COMPOSE
 C           - VERIFICHICATION EXISTENCE DANS LA SD RESULTAT NOMCON
@@ -101,7 +107,7 @@ C             DU CHAMP CHAM(ISY) POUR LE NO. D'ORDRE ORDR(IORDR)
 C             ET RECUPERATION DANS CHAM19 DU NOM SE LE CHAM_GD EXISTE
             CALL RSEXCH(' ',NOMCON,NOCHAM(ISY),LIORDR(IORDR),CHAM19,
      &                  IRET)
-            IF(IRET.NE.0) GOTO 20
+            IF(IRET.NE.0) GOTO 21
           ELSE
 C         * CHAM_GD
             CHAM19 = NOMCON
@@ -176,17 +182,23 @@ C
 C
  9999     CONTINUE
 C
-          IF ( CODRET.NE.0 ) THEN
+          IF ( CODRET.NE.0.AND.CODRET.NE.100 ) THEN
             VALK(1) = CHAM19
             VALK(2) = 'MED'
             CALL U2MESK('A','PREPOST_90', 2 ,VALK)
           ENDIF
+          IF ( CODRET.EQ.100 ) CRESAV=100
 C
-   20   CONTINUE
+   22     CONTINUE
 C
-   22   CONTINUE
-        CALL JEDEMA()
-   21 CONTINUE
+   21   CONTINUE
+        IF ( CRESAV.EQ.100 ) THEN
+          VALK(1) = NOSY16
+          CALL U2MESK('I','MED_30',1,VALK)
+        ENDIF
+        LFIRST=.FALSE.
+C
+   20 CONTINUE
 C
       CALL JEDEMA()
       END

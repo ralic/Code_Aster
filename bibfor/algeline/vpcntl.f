@@ -1,10 +1,10 @@
       SUBROUTINE VPCNTL
      &  (CTY, MODE, OPTION, OMEMIN, OMEMAX, SEUIL, NFREQ, IPOS, LMAT,
      &   OMECOR, PRECDC, IER, VPINF, VPMAX, FREQ, ERR, CHARGE,
-     &   TYPRES, STURM, NBLAGR,SOLVEU)
+     &   TYPRES, NBLAGR, SOLVEU, NBRSSA, PRECSH)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,56 +24,65 @@ C ======================================================================
 C TOLE CRP_21
 C     CONTROLE DE VALIDITE DES MODES TROUVES
 C-----------------------------------------------------------------------
-C IN  LMAT : I : POINTEUR SUR LE DESCRIPTEUR DE MATRICE
+C IN CTY   : K1 : COMPORTEMENT EN CAS D'ERREUR ('A' OU 'F')
+C IN MODE  : K* : TYPE DE RESULTAT
+C IN OPTION: K* : TYPE DE CALCUL. SI ' ' ON NE FAIT PAS STURM
+C IN OMEMIN/MAX: R8 : BORNES DE L'INTERVALLE
+C IN SEUIL  : R8 : POUR TEST DE VALIDITE DES MODES (VERI_MODE/SEUIL)
+C IN NFREQ : IN : NBRE DE FREQS (CHAR_CRITS) CALCULEES
+C IN IPOS(*) : IN(*) : VECTEUR DE POSITIONS MODALES
+C IN LMAT(*) : IN(*) : VECTEUR DES DESCRIPTEURS DES MATRICES DU PB 
 C            LMAT(1)  : MATRICE DE RAIDEUR
 C            LMAT(2)  : MATRICE DE MASSE
 C            LMAT(3)  : RESULTAT DE LA MATRICE SHIFTEE FACTORISEE
-C OUT IER  : I : CODE RETOUR
+C IN OMECOR : R8 : VALEUR MINIMALE ADMISSIBLE (SEUIL_FREQ)
+C IN PRECDC : R8 : POURCENTAGE DE DECALAGE (VERI_MODE/PREC_SHIFT)
+C IN NBRSSA : IN : NBRE DE DECALAGES ADMISSIBLES (NMAX_ITER_SHIFT)
+C OUT IER   : IN : CODE RETOUR
 C            0 TOUT C'EST BIEN PASSE
 C            > 0 NOMBRE D'ERREURS TROUVEES
-C IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
+C IN VPINF/MAX: R8 : REDONDANT AVEC OMEMIN/MAX ?
+C IN FREQ(*)/CHARGE(*)/ERR(*): R8(*) : LISTE DES FREQS/CHAR_CRITS ET
+C            DES ERREURS ASSOCIEES
+C IN TYPRES: K* : TYPE DE RESULTAT
+C IN NBLAGR: IN : NBRE DE LAGRANGES
+C IN SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
+C IN PRECSH  : R8 : POURCENTAGE DE DECALAGE (CALC_FREQ/PREC_SHIFT)
 C-----------------------------------------------------------------------
 C
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
-      CHARACTER*1  CTY
-      CHARACTER*(*) MODE, OPTION, TYPRES
+      INTEGER       NFREQ,IPOS(*),LMAT(3),IER,NBLAGR,NBRSSA,IBID2(2)
+      REAL*8        VPINF,VPMAX,OMEMIN,OMEMAX,SEUIL,PRECDC,OMECOR,
+     &              CHARGE(NFREQ),FREQ(NFREQ),ERR(NFREQ),PRECSH
+      CHARACTER*1   CTY
+      CHARACTER*16  K16B
       CHARACTER*19  SOLVEU
-      INTEGER      NFREQ, IPOS(*), LMAT(3), IER, NBLAGR
-      REAL*8       VPINF, VPMAX, OMEMIN, OMEMAX, SEUIL, PRECDC, OMECOR,
-     &             CHARGE(NFREQ), FREQ(NFREQ), ERR(NFREQ)
+      CHARACTER*24  VALK
+      CHARACTER*(*) MODE,OPTION,TYPRES
 
-      LOGICAL      STURM
-      CHARACTER*24 VALK
-C
 C     ------------------------------------------------------------------
-      REAL*8 ZMIN, ZMAX, MANTIS, FREQOM, OMEGA2, OMEGA, XFMAX, XFMIN
-      REAL*8 VALR(3)
-      INTEGER EXPO, IFM, NIV, IFREQ, NBMAX, NBMIN, NFREQT, IR
-      INTEGER VALI(2)
+      REAL*8  ZMIN,ZMAX,FREQOM,OMEGA2,OMEGA,VALR(3),RBID,DET(2)
+      INTEGER IFM,NIV,IFREQ,NFREQT,IBID,VALI(2),IDET(2)
 C     ------------------------------------------------------------------
       IER    = 0
 
 C     ---RECUPERATION DU NIVEAU D'IMPRESSION----
       CALL INFNIV(IFM,NIV)
-C
       IF (NIV.GE.1) THEN
         WRITE(IFM,1000)
         WRITE(IFM,1100)
         WRITE(IFM,1200)
       ENDIF
 
-      EXPO=0
-
 C     ------------------------------------------------------------------
 C     ------------------ CONTROLE DES NORMES D'ERREURS -----------------
 C     ------------------------------------------------------------------
-C
+
       IF ( SEUIL .GT. 0.0D0 ) THEN
 
          DO 100 IFREQ = 1, NFREQ
-C
             IF ( ERR(IFREQ) .GT. SEUIL ) THEN
                IER = IER + 1
                VALK = MODE
@@ -126,32 +135,24 @@ C     ------------------------------------------------------------------
             ENDIF
  210     CONTINUE
       ENDIF
-C
+
 C     ------------------------------------------------------------------
 C     -- POUR TOUTES LES OPTIONS :                                   ---
 C     -- VERIFICATION QU'ON A LE BON NOMBRE DE FREQUENCES            ---
 C     ------------------------------------------------------------------
-C
+
 C        --- RECHERCHE DE LA PLUS PETITE ET DE LA PLUS GRANDE FREQUENCES
 
-      IF ( OPTION .NE. '  ' ) THEN
+      IF ( OPTION .NE. ' ' ) THEN
 
 C --- POUR OPTIMISER ON NE CALCULE PAS LE DET, ON NE GARDE PAS LA FACTO
 C --- (SI MUMPS)
-         XFMAX = VPMAX
-         CALL VPSTUR(LMAT(1),XFMAX,LMAT(2),LMAT(3),MANTIS,EXPO,
-     +               NBMAX,IR,SOLVEU,.FALSE.,.FALSE.)
-         XFMIN = VPINF
-         CALL VPSTUR(LMAT(1),XFMIN,LMAT(2),LMAT(3),MANTIS,EXPO,
-     +               NBMIN,IR,SOLVEU,.FALSE.,.FALSE.)
-C
-C REGLES DE STURM ETENDUE
-         IF (.NOT.STURM) THEN
-           NFREQT = ABS(NBMAX - NBMIN)
-         ELSE
-           NFREQT = ABS(NBMAX + NBMIN) - 2*NBLAGR
-         ENDIF
-         IF ( NFREQT .NE. NFREQ ) THEN
+         K16B=TYPRES
+         CALL VPFOPR('STURM',K16B,LMAT(2),LMAT(1),LMAT(3),VPINF,VPMAX,
+     &               RBID,NFREQT,IBID2,OMECOR,PRECSH,NBRSSA,NBLAGR,
+     &               SOLVEU,DET,IDET)
+
+         IF (NFREQT.NE.NFREQ) THEN
            IER = IER + 1
            VALK = MODE
            CALL U2MESG(CTY//'+','ALGELINE5_23',1,VALK,0,0,0,0.D0)
@@ -181,15 +182,13 @@ C REGLES DE STURM ETENDUE
            ENDIF
          ENDIF
       ENDIF
-      IF (NIV.GE.1) THEN
-        WRITE(IFM,1000)
-      ENDIF
-C
+      IF (NIV.GE.1) WRITE(IFM,1000)
+
  1000 FORMAT (72('-'),/)
  1100 FORMAT (10X,'VERIFICATION A POSTERIORI DES MODES')
  1200 FORMAT (3X)
  1300 FORMAT (3X,'DANS L''INTERVALLE (',1PE12.5,',',1PE12.5,') ')
  1400 FORMAT (3X,'IL Y A BIEN ',I4,' FREQUENCE(S) ')
  1401 FORMAT (3X,'IL Y A BIEN ',I4,' CHARGE(S) CRITIQUE(S) ')
-C
+
       END

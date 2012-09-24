@@ -7,7 +7,7 @@
      &                  VEELEM,LDCCVG,CODERE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,8 +137,8 @@ C
           IF (TYPMAT.EQ.'MERIGI') THEN
             CALL NMRIGI(MODELZ,MATE  ,CARELE,COMPOR,CARCRI,
      &                  SDDYNA,SDSTAT,SDTIME,FONACT,ITERAT,
-     &                  VALINC,SOLALG,LISCHA,COMREF,MEELEM,
-     &                  VEELEM,OPTCAL,LDCCVG,CODERE)
+     &                  VALINC,SOLALG,COMREF,MEELEM,VEELEM,
+     &                  OPTCAL,LDCCVG,CODERE)
           ELSE
             IF ((TYPMAT.EQ.'MEELTC').OR.
      &          (TYPMAT.EQ.'MEELTF')) THEN

@@ -1,4 +1,4 @@
-#@ MODIF sd_dyna_gene SD  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF sd_dyna_gene SD  DATE 24/09/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,8 +75,6 @@ class sd_dyna_gene(sd_titre) :
     PROJM = Facultatif(sd_proj_mesu(SDNom(debut=8)))
 
 
-
-
     def u_dime(self):# --> ok
     
         desc=self.DESC.get()
@@ -122,12 +120,9 @@ class sd_dyna_gene(sd_titre) :
         
         
 
-    def check_REFD(self,checker):# --> presque ok
+    def check_REFD(self,checker):# --> ok
     
-#        # AJACOT : j'avais cru comprendre des choses ... mais sdld104a me prouve le contraire !
-#        # à revoir ?????
-#        return
-        
+      
         refd=self.REFD.get_stripped()
 
         if self.PROJM.exists :
@@ -221,14 +216,3 @@ class sd_dyna_gene(sd_titre) :
         assert self.REVD.lonmax == nbsauv*nbrevi
         assert self.REVN.lonmax == nbrevi
 
-##### Questions
-#        a) Il n'y a visiblement pas d'objet pour les relations effort vitesse --> il en faut?, il faut chekcer quoi?
-#         NON rien n'est sauvegardé dans ce cas --> a en parler en RTA
-#        b) Faut il faire une methode python pour extraire le pas de temps ici ou ailleurs?
-#         On a rajouté l'objet PTEM       
-#        c) J'ai rajoute un test de monotonie pour le .ORDR et .DISC. C'est peut etre tres riche comme verif....
-#         A rediscuter lors de l'eda
-#        d) manque la verif du type (complexe ou reel) pour les calculs TRAN ou HARM
-#         Sans objet
-#        e) Verfier avec JPellet que la definition des DEPL VITE ACCE est correcte
-#         RTA

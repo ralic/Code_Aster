@@ -1,8 +1,8 @@
-#@ MODIF algeline3 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline3 Messages  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -309,33 +309,69 @@ Le système à résoudre n'a pas de DDL actif.
 64: _(u"""
 On trouve plus de 9999 valeurs propres dans la bande demandée
 """),
+65: _(u"""
+  Le shift=%(r1)g
+  utilisé pour construire la matrice dynamique est une valeur propre !
+  Avec l'option 'CENTRE', ce shift vaut FREQ (ou CHAR_CRIT),
+  Avec l'option 'BANDE', c'est le milieu de la bande sélectionnée,
+  Avec l'option 'PLUS_PETITE' ou 'TOUT', il prend la valeur 0.
+  
+  Malgré la stratégie de décalage du shift, cette matrice dynamique reste
+  numériquement singulière.
+  
+  -> Risque :
+  Cette matrice étant abondamment utilisée pour résoudre des systèmes linéaires à chaque
+  itération du processus modal, cette quasi singularité peut fausser les résultats
+  (mauvais conditionnement matriciel).
 
+  -> Conseils :
+  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
+  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et SEUIL_FREQ) pour
+  vérifiez qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
+
+  Vous pouvez aussi décalez la valeur du shift pour évitez cette fréquence.
+  L'option 'BANDE' est plutôt conseillée. En cas de shift nul (et donc de matrice de
+  raideur suspectée d'être singulière), vous pouvez utilisez une borne légèrement
+  négative.
+  A défaut, si vous n'arrivez pas a capter tous les modes rigides, essayer la méthode
+  TRI_DIAG avec OPTION='MODE_RIGIDE'.
+"""),
 66: _(u"""
-  -> La borne minimale de la bande de fréquences est une valeur propre !
-     Malgré la stratégie de décalage, la matrice de raideur est numériquement
-     singulière (modes de corps rigide).
-  -> Risque & Conseil :
-     Augmenter (ou diminuer) la fréquence (ou la charge critique dans le cas du calcul de
-     flambement) qui définit la borne minimale de la bande de fréquence.
+  Cette borne minimale de la bande de fréquences est une valeur propre !
+  Malgré la stratégie de décalage, la matrice dynamique reste numériquement
+  singulière.
+  
+  -> Risque :
+  Le test de Sturm qui sert à évaluer le nombre de modes présents dans l'intervalle
+  peut être faussé.
+
+  -> Conseils :
+  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
+  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et SEUIL_FREQ) pour
+  vérifiez qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
+  
+  Si il ne s'agit pas d'un test de vérification ('VERIFICATION A POSTERIORI DES MODES'),
+  vous pouvez aussi relancez un autre calcul en décalant les bornes de l'intervalle
+  pour évitez cette fréquence.
 """),
 
 67: _(u"""
-La matrice de raideur est numériquement singulière (malgré la stratégie de décalage) :
-la borne maximale de la bande est une valeur propre.
-On poursuit tout de même.
-"""),
+  Cette borne maximale de la bande de fréquences est une valeur propre !
+  Malgré la stratégie de décalage, la matrice dynamique reste numériquement
+  singulière.
+  
+  -> Risque :
+  Le test de Sturm qui sert à évaluer le nombre de modes présents dans l'intervalle
+  peut être faussé.
 
-68: _(u"""
-  -> La matrice de raideur est singulière malgré la stratégie de décalage
-(structure avec des modes de corps rigide).
-
-  -> Risque & Conseil :
-  Pour passer avec l'option 'PLUS_PETITE', augmenter la valeur de SEUIL_FREQ
-  (0.1 par exemple) ou de PREC_SHIFT (0.5 par exemple).
-  En fait, il est plutôt conseille d'utiliser l'option 'BANDE'. Ici avec une borne minimale
-  de la bande de fréquence légèrement négative (ou positive).
-  A défaut, si vous n'arrivez pas a capter tous les modes rigides, essayer la méthode
-  TRI_DIAG avec OPTION='MODE_RIGIDE'.
+  -> Conseils :
+  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
+  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et SEUIL_FREQ) pour
+  vérifiez qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
+  
+  Si il ne s'agit pas d'un test de vérification ('VERIFICATION A POSTERIORI DES MODES'),
+  vous pouvez aussi relancez un autre calcul en décalant les bornes de l'intervalle
+  pour évitez cette fréquence.
 """),
 
 69: _(u"""

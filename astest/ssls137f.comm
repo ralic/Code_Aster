@@ -1,0 +1,278 @@
+# MODIF  DATE 24/09/2012   AUTEUR IDOUX L.IDOUX 
+# TITRE PLAQUE DE BETON PRECONTRAINT AVEC CABLE EXCENTRE EN FLEXION 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# ssls137f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+DEBUT(CODE=_F(  NOM = 'ssls137f',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('CALCULEL3_47'),)
+
+# ------------------------------------------------------------------------
+#                       Lecture du maillage
+# ------------------------------------------------------------------------
+MAIL=LIRE_MAILLAGE( FORMAT='MED', UNITE=20 )
+
+MODELE=AFFE_MODELE(
+                 MAILLAGE=MAIL,
+                 AFFE=(
+                       _F(  GROUP_MA = ('VOILE',),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'Q4GG'),
+                       _F( GROUP_MA = ('CABLE1'),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'BARRE'),
+                       )
+                   )
+
+EP=2.0E-1
+CARAELE=AFFE_CARA_ELEM(
+                      MODELE=MODELE,
+                       COQUE=(_F(  GROUP_MA = 'VOILE',
+                               EPAIS = EP,
+                               COQUE_NCOU=1,
+                               ),
+                               ),
+                       BARRE=_F(SECTION='GENERALE',
+                                GROUP_MA=('CABLE1'),
+                                CARA=('A'),
+                                VALE=(0.00015),),
+                              )
+
+# ------------------------------------------------------------------------
+#                       Definition des materiaux
+# ------------------------------------------------------------------------
+MBETON=DEFI_MATERIAU(ELAS=_F(E=4.E10,
+#                             NU=0.20,
+                             NU=0.0,
+                             RHO=2500,),
+                     BETON_ECRO_LINE = _F(
+                                         D_SIGM_EPSI = 0.0,
+                                         SYT   =  4.4E6,
+                                         SYC    = -52.5E6,
+                                         ),
+                     BPEL_BETON=_F(),);
+
+MAT_ARMA = DEFI_MATERIAU(ELAS=_F(
+#                    E = 210000E6,
+                    NU = 0.,
+#                    RHO = 7500,
+                    E = 0.,
+                    RHO = 0.,
+                   ),
+                   ECRO_LINE = _F(
+                                   D_SIGM_EPSI = 0.0,
+                                   SY   =  500.E6,
+                                   ),
+                  );
+
+MCABLE=DEFI_MATERIAU(ELAS=_F(E=1.93000000000E11,
+                             NU=0.0,
+                             RHO=7850,),
+                     BPEL_ACIER=_F(F_PRG=1.94000000000E11,),);
+
+MAT_GLRC = DEFI_GLRC(RELATION = 'GLRC_DAMAGE',
+                 BETON = _F(
+                            MATER = MBETON,
+                            EPAIS = EP,
+                            GAMMA = 0.0,
+                            QP1 = 0.5,
+                            QP2 = 0.5,
+                            BT1 = 1600.E6,
+                            BT2 = 1600.E6,
+
+                            C1M1 = 1.E6,   C1M2 =1.E6,   C1M3 =1.E6,
+                            C2M1 = 1.E6,   C2M2 =1.E6,   C2M3 =1.E6,
+                            C1N1 = 7.3E6,  C1N2 =7.3E6,  C1N3 =7.3E6,
+                            C2N1 = 7.3E6,  C2N2 =7.3E6,  C2N3 =7.3E6,
+
+                            ),
+                  NAPPE = (_F(
+                             MATER = MAT_ARMA,
+                             OMX = 7.854E-4,
+                             OMY = 7.854E-4,
+                             RX = 0.633,
+                             RY = 0.633,
+                             ),
+                          _F(
+                             MATER = MAT_ARMA,
+                             OMX = 7.854E-4,
+                             OMY = 7.854E-4,
+                             RX = -0.633,
+                             RY = -0.633,)
+                             ),
+                 INFO = 2,
+                 );
+
+CHMATER=AFFE_MATERIAU(
+                   MAILLAGE=MAIL,AFFE=(
+                       _F(  GROUP_MA = ('VOILE',),
+                              MATER = MAT_GLRC),
+                       _F(GROUP_MA=('CABLE1'),
+                             MATER=MCABLE),
+                              ),);
+
+# ------------------------------------------------------------------------
+#                       Definition du cable de precontrainte
+# ------------------------------------------------------------------------
+CAB_BP1=DEFI_CABLE_BP(MODELE=MODELE,
+                      CHAM_MATER=CHMATER,
+                      CARA_ELEM=CARAELE,
+                      GROUP_MA_BETON='VOILE',
+                      DEFI_CABLE=_F(GROUP_NO_ANCRAGE=('CABLE1_A','CABLE1_B'),
+                                    GROUP_MA='CABLE1',),
+                      TYPE_ANCRAGE=('PASSIF','ACTIF',),
+                      TENSION_INIT=3.750000E5,
+                      RECUL_ANCRAGE=0.00,);
+
+CMCAB1=AFFE_CHAR_MECA(MODELE=MODELE,
+                  RELA_CINE_BP=_F(CABLE_BP=CAB_BP1,
+                                   SIGM_BPEL='NON',
+                                   RELA_CINE='OUI',),)
+
+# ------------------------------------------------------------------------
+#                       Conditions aux limites et chargement
+# ------------------------------------------------------------------------
+CHARMECA=AFFE_CHAR_MECA(
+                      MODELE=MODELE,
+                      DDL_IMPO=(
+                        _F(  GROUP_NO='ENCAST',
+                               DX = 0.,
+                               DY = 0.,
+                               DZ = 0.,
+                               DRX = 0.,
+                               DRY = 0.,
+                               DRZ = 0.),
+                               ),);
+
+PRES =AFFE_CHAR_MECA(MODELE=MODELE,
+                    PRES_REP=_F(PRES = 1.E5,GROUP_MA = 'VOILE',),
+                        INFO=1 )
+
+FONCCB=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(1.0,    0,
+                           2.0,  1.0,
+                           ),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     );
+
+# ------------------------------------------------------------------------
+#                       Calculs
+# ------------------------------------------------------------------------
+LINST = DEFI_LIST_REEL (DEBUT = 0.0,
+                        INTERVALLE =(_F(JUSQU_A= 2.0, PAS= 0.1,),),
+                       );
+
+# Chargement 1 : Mise en tension du cable de precontrainte
+# ------------------------------------------------------------------------
+RES1 =  CALC_PRECONT(MODELE=MODELE,
+                     CHAM_MATER=CHMATER,
+                     CARA_ELEM=CARAELE,
+                     COMP_INCR=(_F( RELATION = 'ELAS',
+                                    GROUP_MA='VOILE',),
+                                _F( RELATION = 'ELAS',
+                                    GROUP_MA = ('CABLE1'),),),
+                     EXCIT   =(_F(CHARGE = CHARMECA,),),
+                     CABLE_BP   =( CAB_BP1,),
+                     INCREMENT=_F(LIST_INST = LINST,
+                                  INST_FIN  = 1., ),);
+
+# Chargement 2 : Pression
+# ------------------------------------------------------------------------
+
+RES1 = STAT_NON_LINE(reuse=RES1,
+                     ETAT_INIT=_F(EVOL_NOLI=RES1),
+                     MODELE=MODELE,
+                     CHAM_MATER=CHMATER,
+                     CARA_ELEM=CARAELE,
+                     COMP_INCR=(_F( RELATION = 'ELAS',
+                                    GROUP_MA='VOILE',),
+                                _F( RELATION = 'ELAS',
+                                    GROUP_MA = ('CABLE1',),),),
+                     EXCIT   =(_F(CHARGE = CHARMECA),
+                               _F(CHARGE = PRES,FONC_MULT=FONCCB),
+                               _F(CHARGE = CMCAB1),),
+                     INCREMENT=_F(LIST_INST = LINST,),);
+
+# ------------------------------------------------------------------------
+#                       Post-traitement
+# ------------------------------------------------------------------------
+#  Cable 1 - inst 1s
+# ------------------------------------------------------------------------
+TEST_RESU(  RESU=(_F( RESULTAT = RES1,
+                      INST = 1. ,
+                      MAILLE='M10',
+                      POINT=1,
+                      NOM_CHAM = 'SIEF_ELGA',
+                      NOM_CMP = 'N',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 3.75E+5,
+                      REFERENCE='ANALYTIQUE'),),);
+
+TEST_RESU(  RESU=(_F( RESULTAT = RES1,
+                      INST = 1. ,
+                      MAILLE='M70',
+                      POINT=1,
+                      NOM_CHAM = 'SIEF_ELGA',
+                      NOM_CMP = 'N',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 3.75E+5,
+                      REFERENCE='ANALYTIQUE'),),);
+
+TEST_RESU(  RESU=(_F( RESULTAT = RES1,
+                      INST = 1. ,
+                      MAILLE='M130',
+                      POINT=1,
+                      NOM_CHAM = 'SIEF_ELGA',
+                      NOM_CMP = 'N',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-3,
+                      VALE = 3.75E+5,
+                      REFERENCE='ANALYTIQUE'),),);
+
+#  Plaque - inst 2s
+# ------------------------------------------------------------------------
+TEST_RESU(  RESU=(_F( RESULTAT = RES1,
+                      INST = 2. ,
+                      GROUP_NO='NODE_REF',
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.0E-2,
+                      VALE = -0.101677,
+                      REFERENCE='ANALYTIQUE'),),);
+
+FIN();

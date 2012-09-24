@@ -5,7 +5,7 @@
      &                  OPTION,VECELE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -160,8 +160,8 @@ C
 
         CALL VEFNME(MODELE,SIGM  ,CARELE,DEPL  ,DEPDEL,
      &              VECELE,MATE  ,COMPOR,0     ,FNOEVO,
-     &              PARTPS,CARCRI,VARC  ,' '   ,LISCHA,
-     &              OPTIO2,STRX  )
+     &              PARTPS,CARCRI,VARC  ,' '   ,OPTIO2,
+     &              STRX  )
         CALL NMDEP0('OFF',SOLALG)
 C
 C --- DEPLACEMENTS DIRICHLET FIXE

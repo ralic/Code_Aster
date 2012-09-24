@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE MODES DE BALLOTTEMENT D UNE CUVE REMPLIE D EAU
 # adlv101e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,7 +40,7 @@ CUVE=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
 
 #
 
-MATER=DEFI_MATERIAU(    FLUIDE=_F(  RHO = 1000., CELE_R = 1400.))
+MATER=DEFI_MATERIAU(    FLUIDE=_F(  RHO = 1000., PESA_Z=9.81, CELE_R = 1400.))
 
 #
 
@@ -50,23 +50,16 @@ CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAYA,
                           )
 
 #
-
-CHARGE=AFFE_CHAR_MECA(   MODELE=CUVE,
-                               PESANTEUR=_F(GRAVITE=9.81,
-                                            DIRECTION=(0.,0.,-1.,),),)
-
-#
-
 RIGIELEM=CALC_MATR_ELEM(   MODELE=CUVE,
                            OPTION='RIGI_MECA',
-                           CHARGE=CHARGE,   CHAM_MATER=CHAMPMAT
+                           CHAM_MATER=CHAMPMAT
                              )
 
 #
 
 MASSELEM=CALC_MATR_ELEM(   MODELE=CUVE,
                            OPTION='MASS_MECA',
-                           CHARGE=CHARGE,   CHAM_MATER=CHAMPMAT
+                           CHAM_MATER=CHAMPMAT
                              )
 
 #

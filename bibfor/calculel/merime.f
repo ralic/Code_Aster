@@ -11,7 +11,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19 PMILTO,FISSNO,PINTER
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(32),LCHOUT(2)
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
-      CHARACTER*24 CHCHAR,ARGU,CHTIME
+      CHARACTER*24 ARGU,CHTIME
       COMPLEX*16 CBID
 C-----------------------------------------------------------------------
       INTEGER IAREFE ,IBID ,ICHA ,ICODE ,IER ,ILIRES ,IRET 
@@ -75,7 +75,6 @@ C-----------------------------------------------------------------------
       CALL MECHAM(OPTION,MODELE,NCHAR,LCHAR,CARA,NH,CHGEOM,CHCARA,
      &            CHHARM,ICODE)
 
-      CALL MECHPE(MODELE(1:8),NCHAR,LCHAR,CHCHAR)
 
       IF (.NOT.EXITIM) TIME = 0.D0
       CHTIME = '&&MERIME.CHAMP_INST'
@@ -126,17 +125,17 @@ C  ---  CAS DU MODELE X-FEM-----------
         FISSNO = MODELE(1:8)//'.FISSNO'
         PINTER = MODELE(1:8)//'.TOPOFAC.OE'
       ELSE
-        PINTTO = '&&MERIMO.PINTTO.BID'
-        CNSETO = '&&MERIMO.CNSETO.BID'
-        HEAVTO = '&&MERIMO.HEAVTO.BID'
-        LONCHA = '&&MERIMO.LONCHA.BID'
-        BASLOC = '&&MERIMO.BASLOC.BID'
-        PMILTO = '&&MERIMO.PMILTO.BID'
-        LSN    = '&&MERIMO.LNNO.BID'
-        LST    = '&&MERIMO.LTNO.BID'
-        STANO  = '&&MERIMO.STNO.BID'
-        FISSNO  = '&&MERIMO.FISSNO.BID'
-        PINTER  = '&&MERIMO.PINTER.BID'
+        PINTTO = '&&MERIME.PINTTO.BID'
+        CNSETO = '&&MERIME.CNSETO.BID'
+        HEAVTO = '&&MERIME.HEAVTO.BID'
+        LONCHA = '&&MERIME.LONCHA.BID'
+        BASLOC = '&&MERIME.BASLOC.BID'
+        PMILTO = '&&MERIME.PMILTO.BID'
+        LSN    = '&&MERIME.LNNO.BID'
+        LST    = '&&MERIME.LTNO.BID'
+        STANO  = '&&MERIME.STNO.BID'
+        FISSNO = '&&MERIME.FISSNO.BID'
+        PINTER = '&&MERIME.PINTER.BID'
       ENDIF
 
 C ----- REMPLISSAGE DES CHAMPS D'ENTREE
@@ -160,12 +159,8 @@ C
         LCHIN(8) = CHCARA(9)
         LPAIN(9) = 'PHARMON'
         LCHIN(9) = CHHARM
-        LPAIN(10) = 'PPESANR'
-        LCHIN(10) = CHCHAR
         LPAIN(11) = 'PGEOME2'
         LCHIN(11) = CHGEOM
-C        LPAIN(12) = ' '
-C        LCHIN(12) = ' '
         LPAIN(12) = 'PCAGNBA'
         LCHIN(12) = CHCARA(11)
         LPAIN(13) = 'PCAMASS'

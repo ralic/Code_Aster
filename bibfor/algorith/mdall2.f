@@ -5,7 +5,7 @@
       CHARACTER*16 BLAN16
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 24/09/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,6 +41,7 @@ C-----------------------------------------------------------------------
       INTEGER IBID,JINST,JORDR,JREFE,NBMODE,NBO
       REAL*8  DTBID
       CHARACTER*4 K4BID(3)
+      CHARACTER*8 K8B
 C-----------------------------------------------------------------------
       BLANC8 =  '        '
       BLAN16 = '                '
@@ -70,11 +71,11 @@ C---- EST FORCE A ZERO
       ENDIF
 C --- REMPLISSAGE DU .ORDR ET DU .DISC 
 C
-      CALL JEVEUO(RES//'           .RSPR','E',IINST)
       CALL JEVEUO(RES//'           .ORDR','E',IORDR)
       DO 10 INORD=1,NBO
         ZI(JORDR-1+INORD) = ZI(IORDR-1+INORD)
-        ZR(JINST-1+INORD) = ZR(IINST-1+INORD)
+        CALL RSADPA(RES,'L',1,'INST',ZI(IORDR-1+INORD),0,IINST,K8B)
+        ZR(JINST-1+INORD) = ZR(IINST)
 10    CONTINUE
 C
 C

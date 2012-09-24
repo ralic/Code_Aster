@@ -5,7 +5,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCTHER=17)
+      PARAMETER (NCTHER=18)
       CHARACTER*16 CHTHER(NCTHER)
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
@@ -150,7 +150,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'TEMP',
      & 'FLUX_ELGA',       'FLUX_ELNO',       'FLUX_NOEU',
      & 'META_ELNO',       'META_NOEU',
-     & 'DURT_ELNO',       'DURT_NOEU',
+     & 'DURT_ELNO',       'DURT_NOEU',       'ETHE_ELEM',
      & 'HYDR_ELNO',       'HYDR_NOEU',
      & 'DETE_ELNO',       'DETE_NOEU',
      & 'SOUR_ELGA',       'COMPORTHER',

@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 25/09/2012   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -798,7 +798,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   __macou=DEFI_GROUP( reuse =__macou , MAILLAGE=__macou , **motscles );
 
-  if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli') :
+  if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli','mode_meca') :
     __mocou=AFFE_MODELE(MAILLAGE=__macou,
                         AFFE=_F(TOUT='OUI',
                                 PHENOMENE='MECANIQUE',
@@ -841,7 +841,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   mcACTION=[]
   angtab=[]
 
-  if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli') :
+  if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli','mode_meca') :
 
    if  NOM_CHAM in ('DEPL','SIEF_ELNO','SIGM_NOEU','SIGM_ELNO'):icham=1
    iocc=0

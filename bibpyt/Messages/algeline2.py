@@ -1,8 +1,8 @@
-#@ MODIF algeline2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline2 Messages  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,14 +137,6 @@ cata_msg = {
  les matrices  " %(k1)s "  et  " %(k2)s "  n'ont pas le même domaine de définition.
 """),
 
-31 : _(u"""
- trop de réajustement de la borne minimale.
-"""),
-
-32 : _(u"""
- trop de réajustements de la borne maximale.
-"""),
-
 33 : _(u"""
  type de mode inconnu:  %(k1)s
 """),
@@ -251,14 +243,6 @@ cata_msg = {
 
 59 : _(u"""
  présence de fréquences négatives dans les données.
-"""),
-
-60 : _(u"""
-  trop de réajustement d'une borne de l'intervalle de recherche.
-"""),
-
-61 : _(u"""
- erreur trop de réajustement d'une borne de l'intervalle de recherche.
 """),
 
 62 : _(u"""

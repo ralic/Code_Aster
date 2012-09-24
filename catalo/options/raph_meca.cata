@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
 % RESPONSABLE ABBAS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -62,7 +62,6 @@ OPTION__
         PCNSETO  NEUT_I
         PHEAVTO  NEUT_I
         PLONCHA  NEUT_I
-        PPESANR  PESA_R
         PBASLOR  NEUT_R
         PLSN     NEUT_R
         PLST     NEUT_R

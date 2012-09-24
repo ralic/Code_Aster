@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ABBAS M.ABBAS
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -125,7 +125,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                 _F(
                                    NOM_CHAM   = 'SIEF_ELGA',
                                    NOM_CMP    = 'SIXX',
-                                   MAILLE     = 'M1',
+                                   MAILLE     = ('M1','M2'),
                                    POINT      = 1,),
                                 _F(
                                    NOM_CHAM   = 'SIEF_ELGA',

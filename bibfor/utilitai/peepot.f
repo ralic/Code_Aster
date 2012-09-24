@@ -4,7 +4,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -178,7 +178,7 @@ C        --- ON RECUPERE LES INSTANTS ---
              CALL VRCINS(MODELE,MATE,CARA,INST,CHVARC,CODRET)
              CALL VRCREF(MODELE(1:8),MATE(1:8),CARA(1:8),CHVREF(1:19))
            ELSE IF (NOMGD(1:4).EQ.'TEMP') THEN
-             OPTIO2 = 'EPOT_ELEM_TEMP'
+             OPTIO2 = 'ETHE_ELEM'
              CHAMGD = ' '
              CHTEMP = DEPLA
            ELSE

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 # encoding: iso-8859-1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,8 +115,6 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Déformations dues aux variables de commande aux noeuds"), ),
         }
         d['ENERGIE'] = {
-            "DISS_ELEM":        ( ("lin", "nonlin"),
-                                 _(u"Énergie de dissipation par élément"), ),
             "DISS_ELGA":        ( ("lin", "nonlin"),
                                  _(u"Densité d'énergie de dissipation aux points de Gauss"), ),
             "DISS_ELNO":        ( ("lin", "nonlin"),
@@ -125,8 +123,6 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Densité d'énergie de dissipation aux noeuds"), ),
             "ECIN_ELEM":        ( ("lin"),
                                  _(u"Énergie cinétique par élément"), ),
-            "ENEL_ELEM":        ( ("lin", "nonlin"),
-                                 _(u"Énergie élastique par élément"), ),
             "ENEL_ELGA":        ( ("lin", "nonlin"),
                                  _(u"Densité d'énergie élastique aux points de Gauss"), ),
             "ENEL_ELNO":        ( ("lin", "nonlin"),
@@ -179,7 +175,7 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Contraintes équivalentes aux noeuds par élément"), ),
             "SIEQ_NOEU":        ( ("lin", "nonlin"),
                                  _(u"Contraintes équivalentes aux noeuds"), ),
-        }                       
+        }
         d['VARI_INTERNE'] = {
             "VAEX_ELGA":        ( ("nonlin"),
                                  _(u"Extraction d'une variable interne aux points de Gauss"), ),
@@ -209,7 +205,9 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Hydratation aux noeuds"), ),
             "SOUR_ELGA":        ( (),
                                  _(u"Source de chaleur à partir d'un potentiel électrique"), ),
-        }                       
+            "ETHE_ELEM":        ( ("lin"),
+                                 _(u"Énergie dissipée thermiquement"), ),
+        }
         d['ACOUSTIQUE'] = {
             "PRAC_ELNO":        ( (),
                                  _(u"Pression acoustique aux noeuds par élément"), ),
@@ -261,7 +259,7 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Indicateur d'erreur en résidu en thermique aux noeuds par élément"), ),
             "ERTH_NOEU":        ( (),
                                  _(u"Indicateur d'erreur en résidu en thermique aux noeuds"), ),
-        }                       
+        }
         d['METALLURGIE'] = {
             "DURT_ELNO":        ( (),
                                  _(u"Dureté aux noeuds par élément"), ),

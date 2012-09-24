@@ -1,7 +1,6 @@
       SUBROUTINE LCERMA (MAT,FAMI,KPG,KSP,POUM)
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/09/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,7 +17,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-
       IMPLICIT NONE
       INTEGER MAT,KPG,KSP
       CHARACTER*1 POUM
@@ -50,8 +48,8 @@ C ----------------------------------------------------------------------
       COMMON /LCER/ PCH,PCT,PCS
 C ----------------------------------------------------------------------
       DATA NOMEL /'E','NU'/
-      DATA NOMER /'K','M','P','C_VOLU','C_COMP','COEF_RIGI_MINI'/
-      DATA NOMNL /'C_GRAD_VARI','PENA_LAGR'/
+      DATA NOMER /'K','M','P','C_VOLU','C_COMP','COEF_RIG'/
+      DATA NOMNL /'C_GRAD_V','PENA_LAG'/
 C ----------------------------------------------------------------------
 
 C - LECTURE DES PARAMETRES MECANIQUES

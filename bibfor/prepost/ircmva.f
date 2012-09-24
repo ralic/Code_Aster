@@ -1,10 +1,9 @@
-      SUBROUTINE IRCMVA ( NUMCMP, NCMPVE, NCMPRF,
-     &                    NVALEC, NBPG, NBSP,
-     &                    ADSV, ADSD, ADSL, ADSK, PARTIE,
-     &                    TYMAST, MODNUM, NUANOM, TYPECH,
-     &                    VAL, PROFAS, IDEB, IFIN )
+      SUBROUTINE IRCMVA ( NUMCMP, NCMPVE, NCMPRF, NVALEC, NBPG,
+     &                    NBSP,   ADSV,   ADSD,   ADSL,   ADSK,
+     &                    PARTIE, TYMAST, MODNUM, NUANOM, TYPECH,
+     &                    VAL,    PROFAS, IDEB,   IFIN,   CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE GNICOLAS G.NICOLAS
+C RESPONSABLE SELLENET N.SELLENET
 C_______________________________________________________________________
 C     ECRITURE D'UN CHAMP -  FORMAT MED - CREATION DES VALEURS
 C        -  -       -               -                  --
@@ -51,6 +50,8 @@ C       IDEB   : INDICE DE DEBUT DANS PROFAS
 C       IFIN   : INDICE DE FIN DANS PROFAS
 C     SORTIES :
 C       VAL    : VALEURS EN MODE ENTRELACE
+C       CODRET : CODE RETOUR, S'IL VAUT 100, IL Y A DES COMPOSANTES
+C                 MISES A ZERO
 C_______________________________________________________________________
 C
       IMPLICIT NONE
@@ -64,7 +65,7 @@ C
       INTEGER NCMPVE, NCMPRF, NVALEC, NBPG, NBSP
       INTEGER NUMCMP(NCMPRF)
       INTEGER ADSV, ADSD, ADSL, ADSK
-      INTEGER TYMAST
+      INTEGER TYMAST, CODRET
       INTEGER MODNUM(NTYMAX), NUANOM(NTYMAX,*)
       INTEGER PROFAS(*)
       INTEGER IDEB, IFIN
@@ -94,6 +95,7 @@ C====
       LPROLZ=.FALSE.
       PART=PARTIE
       GD=ZK8(ADSK-1+2)
+      CODRET=0
 C
       CALL DISMOI('F','TYPE_SCA',GD,'GRANDEUR',IBID,TYPCHA,IER)
 C
@@ -174,8 +176,8 @@ C
   211     CONTINUE
 C
    21   CONTINUE
-
-        IF(LPROLZ)CALL U2MESS('I','MED_30')
+C
+        IF(LPROLZ) CODRET = 100
 C
       ELSE
 C
