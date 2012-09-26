@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,11 +159,12 @@ MACRO_MATR_ASSE( MODELE = mode ,
                                          _F(  MATRICE = CO("amorto"),
                                                 OPTION = 'AMOR_MECA' , ) , ) , );
 #
-MODES=MODE_ITER_SIMULT(MATR_A=rigidite,
-                       MATR_B=masse,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=rigidite,
+                       MATR_MASS=masse,
                        CALC_FREQ=_F(NMAX_FREQ=20,),
                        VERI_MODE=_F(STOP_ERREUR='OUI',
                                     STURM='OUI',),);
+
 
 chpesa = AFFE_CHAR_MECA(  MODELE = mode ,
                           PESANTEUR = _F(GRAVITE=9.81 ,
@@ -569,3 +570,9 @@ TEST_TABLE(TABLE=tresy,NOM_PARA='DELTA_DY',
 #
 
 FIN();
+
+
+
+
+
+

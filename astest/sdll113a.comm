@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE EN TRACTION SIMPLE
 # sdll113a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,9 +116,10 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUMERO)
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE,
-                                 MATR_B=M_ASSE,
+MODES=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE,
+                                 MATR_MASS=M_ASSE,
                              CALC_FREQ=_F( NMAX_FREQ = 10))
+
 
 #
 ##
@@ -226,9 +227,10 @@ M_ASSE1=ASSE_MATRICE(  MATR_ELEM=M_ELEM1,
                            NUME_DDL=NUM1)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1,
-                                 MATR_B=M_ASSE1,
+MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
+                                 MATR_MASS=M_ASSE1,
                              CALC_FREQ=_F( NMAX_FREQ = 04))
+
 
 #
 INTERF1=DEFI_INTERF_DYNA(   NUME_DDL=NUM1,
@@ -296,9 +298,10 @@ V_ASSE2=ASSE_VECTEUR(  VECT_ELEM=V_ELEM2,
                            NUME_DDL=NUM2)
 
 #
-MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2,
-                                 MATR_B=M_ASSE2,
+MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
+                                 MATR_MASS=M_ASSE2,
                              CALC_FREQ=_F( NMAX_FREQ = 05))
+
 
 #
 INTERF2=DEFI_INTERF_DYNA(   NUME_DDL=NUM2,
@@ -344,10 +347,11 @@ K_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 M_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
                                   OPTION='MASS_GENE')
 
-MODAGENE=MODE_ITER_SIMULT(     MATR_A=K_GENE,
-                                 MATR_B=M_GENE,
+MODAGENE=MODE_ITER_SIMULT(     MATR_RIGI=K_GENE,
+                                 MATR_MASS=M_GENE,
                              CALC_FREQ=_F( NMAX_FREQ = 5)
                             )
+
 
 MODEF=EXTR_MODE(FILTRE_MODE=( _F(  MODE = MODAGENE,
                                    NUME_MODE = ( 4, 5)),
@@ -557,3 +561,9 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_A,
 #
 FIN()
 #
+
+
+
+
+
+

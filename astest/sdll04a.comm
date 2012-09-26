@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE POUTRE ELANCEE, 2 APPUIS, COUPLEE A UN SYSTEME MASSE-RESSORT
 # sdll04a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,11 +80,12 @@ MATASSMP=ASSE_MATRICE(MATR_ELEM=MELMP,NUME_DDL=NUMP)
 #--------- CALCUL MODAL
 
 MDP=MODE_ITER_SIMULT(
-         MATR_A=MATASSRP,
-         MATR_B=MATASSMP,
+         MATR_RIGI=MATASSRP,
+         MATR_MASS=MATASSMP,
          METHODE='TRI_DIAG',
         CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                     NMAX_FREQ = 2)  )
+
 
 #*********************************************************************
 #
@@ -154,10 +155,11 @@ MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM2)
 #--------- CALCUL MODAL
 
 MD2=MODE_ITER_INV(
-         MATR_A=MATASSR2,
-         MATR_B=MATASSM2,
+         MATR_RIGI=MATASSR2,
+         MATR_MASS=MATASSM2,
         CALC_FREQ=_F(  OPTION = 'PROCHE',
                     FREQ = (  1.5,  1.6,  6.5,  )) )
+
 
 #---------------------------------------------------------------------
 
@@ -203,9 +205,10 @@ MATASSM3=ASSE_MATRICE(MATR_ELEM=MELM3,NUME_DDL=NUM2)
 #--------- CALCUL MODAL
 
 MD3=MODE_ITER_INV(
-         MATR_A=MATASSR3,
-         MATR_B=MATASSM3,
+         MATR_RIGI=MATASSR3,
+         MATR_MASS=MATASSM3,
         CALC_FREQ=_F(   FREQ = (  1.,   7.,  )) )
+
 
 #----------------------------------------------------------------------
 
@@ -240,3 +243,9 @@ TEST_RESU(RESU=(
 
 FIN()
 #
+
+
+
+
+
+

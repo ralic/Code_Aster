@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 1000 mem_job 512Mo ncpus 1 liste_test S
@@ -884,7 +884,7 @@ MATASR=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NU, SYME='OUI',);
 
 IMPR_CO(CHAINE='MATASR             .LIME');
 
-MODET=MACRO_MODE_MECA(MATR_A=MATASR, MATR_B=MATASM,
+MODET=MACRO_MODE_MECA(MATR_RIGI=MATASR, MATR_MASS=MATASM,
                        NMAX_ITER_SOREN=80,
                        CALC_FREQ=_F(
                                     FREQ=(-0.1,15.,40.,68.,
@@ -893,6 +893,7 @@ MODET=MACRO_MODE_MECA(MATR_A=MATASR, MATR_B=MATASM,
                        VERI_MODE=_F(STOP_ERREUR='NON'),
                        IMPRESSION=_F(),
                        );
+
 
 
 BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODET),
@@ -908,13 +909,14 @@ RIGIGEN=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
 MASSGEN=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=MATASM );
 
-modgen=MODE_ITER_SIMULT(MATR_A=RIGIGEN, MATR_B=MASSGEN,
+modgen=MODE_ITER_SIMULT(MATR_RIGI=RIGIGEN, MATR_MASS=MASSGEN,
                        CALC_FREQ=_F(
                                     OPTION='BANDE',
                                     FREQ=(-0.1,215.),
                                     ),
                        VERI_MODE=_F(STOP_ERREUR='NON',),
                          );
+
 
 RESPHY=REST_GENE_PHYS(    RESU_GENE=modgen,
                           NOM_CHAM='DEPL',
@@ -1054,3 +1056,9 @@ TEST_FONCTION(ATTRIBUT=(_F(FONCTION=SPOSCI,PARA=2E-2,
                         REFERENCE='NON_REGRESSION',PRECISION=0.05,),)
 
 FIN( );
+
+
+
+
+
+

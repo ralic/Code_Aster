@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE POUTRE PLASTIQUE EN TRACTION DYNAMIQUE CONDENSEE PAR 
 # sdnv107b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -188,12 +188,13 @@ MACRO_MATR_ASSE(MODELE=MODELE1,
                            ),
                 ); 
                               
-MODE1=MODE_ITER_SIMULT(  MATR_A=MATR1,   MATR_B=MATM1,
+MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATR1,   MATR_MASS=MATM1,
                            CALC_FREQ=_F(
                                         NMAX_FREQ=30,  
                                        ),
                            VERI_MODE=_F(  STOP_ERREUR='NON')
                          );
+
                          
 MACRO_MATR_ASSE(MODELE=MODELE1,
                 CHAM_MATER=CHAMATN,
@@ -207,12 +208,13 @@ MACRO_MATR_ASSE(MODELE=MODELE1,
                            ),
                 ); 
                               
-MODSTA1=MODE_ITER_SIMULT(  MATR_A=MATRN,   MATR_B=MATMN,
+MODSTA1=MODE_ITER_SIMULT(  MATR_RIGI=MATRN,   MATR_MASS=MATMN,
                            CALC_FREQ=_F(
                                         NMAX_FREQ=12,  
                                        ),
                            VERI_MODE=_F(  STOP_ERREUR='NON')
                          );
+
                          
 INTERDY1=DEFI_INTERF_DYNA(  NUME_DDL=NUME1,
             INTERFACE=_F( NOM = 'DROITE',
@@ -478,4 +480,10 @@ TEST_RESU( RESU=_F( RESULTAT = RESUGLO,
                                 
 FIN( ); 
                       
+
+
+
+
+
+
 

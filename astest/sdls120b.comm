@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE 2D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdls120b.para = tps_job 30 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,11 +168,12 @@ MATRC=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATR,
 #                   CALCUL MODAL
 #----------------------------------------------
 
-MODES=MODE_ITER_SIMULT(MATR_A=MATRC,
-                       MATR_B=MATM,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=MATRC,
+                       MATR_MASS=MATM,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=8,),);
+
 
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,
                        INFO=1,);
@@ -212,3 +213,9 @@ TEST_RESU(RESU=_F(RESULTAT=MODES,
 
 
 FIN();
+
+
+
+
+
+

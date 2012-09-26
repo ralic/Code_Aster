@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE CORUS M.CORUS
 # TITRE ANALYSE MODALE D'UNE PLAQUE APPUYEE SUR SES COINS : SOUS-STRUCTURATION
 # sdls122a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -166,8 +166,8 @@ MACRO_MATR_ASSE(MODELE=MODELE3,
                  )
 
 #-- CALCULS DES MODES AVEC LES C.L. ASSOCIEES AUX TYPES D'INTERFACE              
-MODES_1=MODE_ITER_SIMULT(MATR_A=RAID1,
-                         MATR_B=MASS1,
+MODES_1=MODE_ITER_SIMULT(MATR_RIGI=RAID1,
+                         MATR_MASS=MASS1,
                          METHODE='SORENSEN',
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=1,),
@@ -176,8 +176,9 @@ MODES_1=MODE_ITER_SIMULT(MATR_A=RAID1,
                          VERI_MODE=_F(STOP_ERREUR='NON',
                                       STURM='NON',),);
 
-MODES_2=MODE_ITER_SIMULT(MATR_A=RAID2,
-                         MATR_B=MASS2,
+
+MODES_2=MODE_ITER_SIMULT(MATR_RIGI=RAID2,
+                         MATR_MASS=MASS2,
                          METHODE='SORENSEN',
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=1,),
@@ -186,8 +187,9 @@ MODES_2=MODE_ITER_SIMULT(MATR_A=RAID2,
                          VERI_MODE=_F(STOP_ERREUR='NON',
                                       STURM='NON',),);
 
-MODES_3=MODE_ITER_SIMULT(MATR_A=RAID3,
-                         MATR_B=MASS3,
+
+MODES_3=MODE_ITER_SIMULT(MATR_RIGI=RAID3,
+                         MATR_MASS=MASS3,
                          METHODE='SORENSEN',
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=5,),
@@ -195,6 +197,7 @@ MODES_3=MODE_ITER_SIMULT(MATR_A=RAID3,
                                       METHODE='MUMPS',),                                       
                          VERI_MODE=_F(STOP_ERREUR='NON',
                                       STURM='NON',),);
+
 
 #-- TEST DE L'ANALYSE MODALE DE LA PLAQUE COMPLETE
 TEST_RESU(RESU=(
@@ -304,8 +307,8 @@ ASSE_ELEM_SSD(RESU_ASSE_SSD = _F(MODELE = CO('MODEGE'),
                ),
 
 #-- CALCUL DES MODES DU MODELE REDUIT
-RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
-                         MATR_B=MASGEN,
+RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
+                         MATR_MASS=MASGEN,
                          METHODE='SORENSEN',
                          CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ=5,),
@@ -315,6 +318,7 @@ RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
                                       SEUIL=9.9999999999999995E-01),
                          STOP_FREQ_VIDE='NON',
                         )
+
 
 #-- TEST DES RESULTATS
 #--   AVEC LA BASE AINSI DEFINIE, LES 4 PREMIERS MODES SONT CORECTS
@@ -540,8 +544,8 @@ K_G2=ASSE_MATR_GENE(NUME_DDL_GENE=NUM_G2,
                       OPTION='RIGI_GENE',);
 
 #-- RESOLUTION DU PROBLEME GENERALISE
-RESGEN2=MODE_ITER_SIMULT( MATR_A=K_G2,
-                         MATR_B=M_G2,
+RESGEN2=MODE_ITER_SIMULT( MATR_RIGI=K_G2,
+                         MATR_MASS=M_G2,
                          METHODE='SORENSEN',
                          CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ=5,),
@@ -551,6 +555,7 @@ RESGEN2=MODE_ITER_SIMULT( MATR_A=K_G2,
                                       SEUIL=9.9999999999999995E-01),
                          STOP_FREQ_VIDE='NON',
                         )
+
 
 #-- CALCUL DES INDICATEURS DE QUALITE
 INDIC=CALC_CORR_SSD(MODELE_GENE=MODEGE2,
@@ -580,3 +585,9 @@ TEST_RESU(RESU=(
             
 #-- TESTER EGALEMENT UN DIMINUTION DE LA VALEUR DES INDICATEURS                        
 FIN();
+
+
+
+
+
+

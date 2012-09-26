@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 19/05/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD )
@@ -103,12 +103,13 @@ M_AS_RIG=ASSE_MATRICE(   MATR_ELEM=M_EL_RIG,   NUME_DDL=NU)
 M_AS_MAS=ASSE_MATRICE(   MATR_ELEM=M_EL_MAS,   NUME_DDL=NU)
 
 #
-MODES=MODE_ITER_SIMULT(      MATR_A=M_AS_RIG,
-                               MATR_B=M_AS_MAS,
+MODES=MODE_ITER_SIMULT(      MATR_RIGI=M_AS_RIG,
+                               MATR_MASS=M_AS_MAS,
                               METHODE='SORENSEN',
                             CALC_FREQ=_F( OPTION = 'BANDE',
                                        FREQ = (10., 350.,))   
                           );
+
 
 #
 #---------------------------------------------------------------------
@@ -179,3 +180,9 @@ TEST_RESU(RESU=(
 ),);
 
 FIN();
+
+
+
+
+
+

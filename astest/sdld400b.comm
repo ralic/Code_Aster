@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL DES FREQUENCES PROPRES D'UN SYSTEME ETOILE MASSE RESSORT
 # sdld400b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,11 +76,12 @@ M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
 
 # CALCUL DES MODES PAR SORENSEN + BANDE
 
-MODE3=MODE_ITER_SIMULT(       MATR_A=K_ASSE, 
-                                   MATR_B=M_ASSE, 
+MODE3=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
+                                   MATR_MASS=M_ASSE, 
                                CALC_FREQ=_F(  OPTION = 'BANDE',
                                            FREQ = ( 0.5, 3., ),)
                               )
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE3,
@@ -136,12 +137,13 @@ TEST_RESU(RESU=(
 
 # CALCUL DES MODES PAR SORENSEN + CENTRE
 
-MODE4=MODE_ITER_SIMULT(       MATR_A=K_ASSE, 
-                                   MATR_B=M_ASSE, 
+MODE4=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
+                                   MATR_MASS=M_ASSE, 
                                CALC_FREQ=_F(  OPTION = 'CENTRE',
                                            FREQ = 1.5,
                                            NMAX_FREQ = 6)
                               )
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE4,
@@ -197,11 +199,12 @@ TEST_RESU(RESU=(
 
 # CALCUL DES MODES PAR SORENSEN + PLUS_PETITE
 
-MODE5=MODE_ITER_SIMULT(       MATR_A=K_ASSE, 
-                                   MATR_B=M_ASSE, 
+MODE5=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
+                                   MATR_MASS=M_ASSE, 
                                CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                            NMAX_FREQ = 6)
                              )
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE5,
@@ -257,12 +260,13 @@ TEST_RESU(RESU=(
 
 # CALCUL DES MODES PAR JACOBI 
 
-MODE6=MODE_ITER_SIMULT(       MATR_A=K_ASSE, 
-                                   MATR_B=M_ASSE, 
+MODE6=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
+                                   MATR_MASS=M_ASSE, 
                                   METHODE='JACOBI',
                                CALC_FREQ=_F(  OPTION = 'BANDE',
                                            FREQ = ( 0.5, 3., ),)
                             )
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE6,
@@ -318,3 +322,9 @@ TEST_RESU(RESU=(
 
 FIN()
 #
+
+
+
+
+
+

@@ -110,8 +110,8 @@ M_AS_MAS=ASSE_MATRICE(MATR_ELEM=M_EL_MAS,
 #nombre de frequences
 NF=8
 
-MODES=MODE_ITER_SIMULT(MATR_A=M_AS_RIG,
-                       MATR_B=M_AS_MAS,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=M_AS_RIG,
+                       MATR_MASS=M_AS_MAS,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=NF),

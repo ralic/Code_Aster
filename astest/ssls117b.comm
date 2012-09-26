@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION
 # ssls117b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -153,10 +153,11 @@ MACRO_MATR_ASSE(MODELE=MO2,
                            _F(MATRICE=CO('MATASM2'),
                               OPTION='MASS_MECA',),),);
 
-MODE2=MODE_ITER_SIMULT(MATR_A=MATASS2,
-                       MATR_B=MATASM2,
+MODE2=MODE_ITER_SIMULT(MATR_RIGI=MATASS2,
+                       MATR_MASS=MATASM2,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=4,),);
+
 
 RESU2A=MECA_STATIQUE(MODELE=MO2,
                 CHAM_MATER=CHMAT2,
@@ -233,3 +234,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE2,
 # IMPR_RESU(RESU=_F(RESULTAT=RESU2A,GROUP_MA='L14',))
 
 FIN();
+
+
+
+
+
+

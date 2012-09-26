@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PISTON COUPLE A UNE COLONNE DE FLUIDE
 # adlv100k.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,11 +119,12 @@ MATM=ASSE_MATRICE(
 #
 # CALCUL DES MODES
 #
-MODES=MODE_ITER_INV(  MATR_A=MATK,
-                        MATR_B=MATM,
+MODES=MODE_ITER_INV(  MATR_RIGI=MATK,
+                        MATR_MASS=MATM,
                         CALC_FREQ=_F( OPTION = 'AJUSTE',
                                    FREQ = (10., 20.,))
                          )
+
 
 TEST_RESU(
           RESU=_F( RESULTAT = MODES,
@@ -136,3 +137,9 @@ TEST_RESU(
 
 FIN()
 #
+
+
+
+
+
+

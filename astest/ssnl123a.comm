@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE FLAMBEMENT D'UNE POUTRE DROITE MULTI-FIBRES
 # ssnl123a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -331,12 +331,13 @@ for i in range(1,3):
 # Calcul modal avec precontrainte
 # Creation du nom du concept de flambement
   FL[ i ]=MODE_ITER_SIMULT(
-    MATR_A=MASRI,
-    MATR_B=MASGEO,
+    MATR_RIGI=MASRI,
+    MATR_RIGI_GEOM=MASGEO,
     TYPE_RESU='MODE_FLAMB',
-    CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                 NMAX_FREQ= 6),
+    CALC_CHAR_CRIT=_F(OPTION='PLUS_PETITE',
+                 NMAX_CHAR_CRIT= 6),
     VERI_MODE=_F(STOP_ERREUR='NON',),)
+
 
   FL[ i ]=NORM_MODE(
     reuse =FL[ i ],
@@ -382,3 +383,9 @@ _F( RESULTAT = FL[1],  NUME_MODE = 2, PARA = 'CHAR_CRIT',
 
 
 FIN()
+
+
+
+
+
+

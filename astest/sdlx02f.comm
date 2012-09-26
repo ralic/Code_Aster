@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 26/09/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -106,12 +106,13 @@ MACRO_MATR_ASSE(      MODELE=MO,
                  )
 
 #
-MODES=MODE_ITER_SIMULT(      MATR_A=K,
-                               MATR_B=M,
+MODES=MODE_ITER_SIMULT(      MATR_RIGI=K,
+                               MATR_MASS=M,
                               METHODE='TRI_DIAG',
                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ = 9)
                           )
+
 
 #
 #---------------------------------------------------------------------
@@ -160,3 +161,9 @@ TEST_RESU(RESU=(
 FIN()
 #
 #
+
+
+
+
+
+

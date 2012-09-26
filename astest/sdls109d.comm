@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE FREQUENCES PROPRES D'UN ANNEAU CYLINDRIQUE EPAIS
 # sdls109d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,10 +52,11 @@ MATASS_K=ASSE_MATRICE(MATR_ELEM=MAT_K,
 MATASS_M=ASSE_MATRICE(MATR_ELEM=MAT_M,
                       NUME_DDL=NUM,);
 MODES=MODE_ITER_SIMULT(OPTION='SANS',
-                       MATR_A=MATASS_K,
-                       MATR_B=MATASS_M,
+                       MATR_RIGI=MATASS_K,
+                       MATR_MASS=MATASS_M,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(200.0,800.0),),);
+
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    RESULTAT=MODES,
                    PRECISION=1.E-2,
@@ -81,3 +82,9 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    REFERENCE='AUTRE_ASTER',
                    NUME_ORDRE=6,),),);
 FIN();
+
+
+
+
+
+

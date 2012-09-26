@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE ASSEMBLAGE DE PLAQUES RECTANGULAIRES MINCES ENTRETOISEES
 # sdlx03b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,15 +156,17 @@ MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM2)
 #
 #               CALCUL MODAL
 
-MODES_1=MODE_ITER_SIMULT(  MATR_A=MATASSR1,    MATR_B=MATASSM1,
+MODES_1=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR1,    MATR_MASS=MATASSM1,
                            CALC_FREQ=_F(  OPTION = 'BANDE',
                                        FREQ = ( 1.,   1400., ),
                                        )  )
 
-MODES_2=MODE_ITER_SIMULT(  MATR_A=MATASSR2,    MATR_B=MATASSM2,
+
+MODES_2=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR2,    MATR_MASS=MATASSM2,
                            CALC_FREQ=_F(  OPTION = 'BANDE',
                                        FREQ = ( 1.,   1400., ),
                                        )  )
+
 
 # --------------------------------------------------------------------
 TABMAS=POST_ELEM(       MODELE=MO,
@@ -218,3 +220,9 @@ TEST_RESU(RESU=(
 
 FIN()
 #
+
+
+
+
+
+

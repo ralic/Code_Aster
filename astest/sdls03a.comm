@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKT - DST
 # sdls03a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,10 +56,11 @@ MACRO_MATR_ASSE(   MODELE=MO,            CARA_ELEM=CA,
                          _F(  MATRICE = CO("MATM"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE=MODE_ITER_SIMULT(  MATR_A=MATR,   MATR_B=MATM,
+MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATR,   MATR_MASS=MATM,
              CALC_FREQ=_F(  FREQ = (5., 200., ),
                          OPTION = 'BANDE'),
                            VERI_MODE=_F(  SEUIL = 1.E-5)  )
+
 
 # --------------------------------------------------------------------
 
@@ -120,9 +121,10 @@ MACRO_MATR_ASSE(   MODELE=MO2,            CARA_ELEM=CA2,
                          _F(  MATRICE = CO("MATM2"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE2=MODE_ITER_SIMULT(  MATR_A=MATR2,        MATR_B=MATM2,
+MODE2=MODE_ITER_SIMULT(  MATR_RIGI=MATR2,        MATR_MASS=MATM2,
               CALC_FREQ=_F(  NMAX_FREQ = 4),
                VERI_MODE=_F(  SEUIL = 1.E-5)  )
+
 
 # --------------------------------------------------------------------
 
@@ -158,10 +160,11 @@ MACRO_MATR_ASSE(   MODELE=MO3,           CARA_ELEM=CA3,
                          _F(  MATRICE = CO("MATM3"), OPTION = 'MASS_MECA'))
                    )
 
-MODE3=MODE_ITER_SIMULT(  MATR_A=MATR3,   MATR_B=MATM3,
+MODE3=MODE_ITER_SIMULT(  MATR_RIGI=MATR3,   MATR_MASS=MATM3,
              CALC_FREQ=_F(  FREQ = ( 80., ),
                          OPTION = 'CENTRE'),
                            VERI_MODE=_F(  SEUIL = 1.E-5)  )
+
 
 # --------------------------------------------------------------------
 
@@ -221,9 +224,10 @@ MACRO_MATR_ASSE(   MODELE=MO4,            CARA_ELEM=CA4,
                          _F(  MATRICE = CO("MATM4"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE4=MODE_ITER_SIMULT(  MATR_A=MATR4,  MATR_B=MATM4,
+MODE4=MODE_ITER_SIMULT(  MATR_RIGI=MATR4,  MATR_MASS=MATM4,
               CALC_FREQ=_F(  NMAX_FREQ = 4),
                VERI_MODE=_F(  SEUIL = 1.E-5) )
+
 
 # --------------------------------------------------------------------
 
@@ -236,3 +240,9 @@ TEST_RESU(
 # --------------------------------------------------------------------
 FIN()
 #
+
+
+
+
+
+

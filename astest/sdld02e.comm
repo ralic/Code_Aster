@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
 # sdld02e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,11 +164,12 @@ IMPR_TABLE(TABLE=MASSIN,);
 
 # --------------------------------------------------------------------
 
-FREQ=MODE_ITER_INV(MATR_A=MATASSR,
-                   MATR_B=MATASSM,
+FREQ=MODE_ITER_INV(MATR_RIGI=MATASSR,
+                   MATR_MASS=MATASSM,
                    CALC_FREQ=_F(OPTION='AJUSTE',
                                 FREQ=(5.,10.,15.,20.,24.,27.,30.,32.,),),
                    CALC_MODE=_F(OPTION='DIRECT',),);
+
 
 FREQ=NORM_MODE(reuse =FREQ,
                MODE=FREQ,
@@ -676,4 +677,10 @@ TEST_RESU(RESU=(_F(RESULTAT=FREQ,
 FIN();
 
 #
+
+
+
+
+
+
 

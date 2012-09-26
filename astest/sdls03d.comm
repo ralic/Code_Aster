@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE Q4G
 # sdls03d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,10 +56,11 @@ MACRO_MATR_ASSE( MODELE=MO, CARA_ELEM=CA,
                          _F(  MATRICE = CO("MATM"),   OPTION = 'MASS_MECA'),
                  ))
 
-MODE=MODE_ITER_SIMULT(  MATR_A=MATR,   MATR_B=MATM,
+MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATR,   MATR_MASS=MATM,
              CALC_FREQ=_F(  FREQ = (5., 250., ),
                          OPTION = 'BANDE'),
                            VERI_MODE=_F(  SEUIL = 1.E-5)  )
+
 
 # --------------------------------------------------------------------
 
@@ -107,3 +108,9 @@ TEST_RESU(RESU=(
 
 FIN()
 #
+
+
+
+
+
+

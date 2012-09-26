@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE : BASE_MODALE
 # sdlv122b.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -122,10 +122,11 @@ MASSASSE=ASSE_MATRICE(   MATR_ELEM=MASSELEM,
                             NUME_DDL=NU                              )
 
 #
-MODES=MODE_ITER_SIMULT(      MATR_A=RIGIASSE,
-                               MATR_B=MASSASSE,
+MODES=MODE_ITER_SIMULT(      MATR_RIGI=RIGIASSE,
+                               MATR_MASS=MASSASSE,
                             CALC_FREQ=_F( NMAX_FREQ = 2),
                                       )
+
 
 #
 INTERF=DEFI_INTERF_DYNA(    NUME_DDL=NU,
@@ -259,3 +260,9 @@ TEST_RESU(RESU=(
 #
 FIN()
 #
+
+
+
+
+
+

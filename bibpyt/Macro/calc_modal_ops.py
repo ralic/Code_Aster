@@ -1,8 +1,8 @@
-#@ MODIF calc_modal_ops Macro  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF calc_modal_ops Macro  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -139,19 +139,19 @@ def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISSEMENT,
   self.DeclareOut('modes',self.sd)
   
   if AMORTISSEMENT=='NON':
-     modes=MODE_ITER_SIMULT(MATR_A  =_rigas,
-                            MATR_B  =_masas,
-                            METHODE =METHODE,
-                            OPTION  =mode_rigi,
-                            INFO    =INFO,
+     modes=MODE_ITER_SIMULT(MATR_RIGI  =_rigas,
+                            MATR_MASS  =_masas,
+                            METHODE    =METHODE,
+                            OPTION     =mode_rigi,
+                            INFO       =INFO,
                             **motscit)
   elif AMORTISSEMENT=='OUI':
-     modes=MODE_ITER_SIMULT(MATR_A  =_rigas,
-                            MATR_B  =_masas,
-                            MATR_C  =_amoras,
-                            METHODE =METHODE,
-                            OPTION  =mode_rigi,
-                            INFO    =INFO,
+     modes=MODE_ITER_SIMULT(MATR_RIGI  =_rigas,
+                            MATR_MASS  =_masas,
+                            MATR_AMOR  =_amoras,
+                            METHODE    =METHODE,
+                            OPTION     =mode_rigi,
+                            INFO       =INFO,
                             **motscit)
  
   return ier

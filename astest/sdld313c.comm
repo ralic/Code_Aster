@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
 # sdld313c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,13 +104,14 @@ MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,  NUME_DDL=INCONNUS )
 #-------------------------------------------------
 #
 # AVEC SORENSEN
-MODE_SO=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
-                       MATR_B=MATRMASS,
+MODE_SO=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
+                       MATR_MASS=MATRMASS,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=10.,
                                     NMAX_FREQ=2,),
                        INFO=1,);
+
 
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE_SO,
@@ -145,14 +146,15 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_SO,
                    REFERENCE='ANALYTIQUE',),
                    ),);
 # AVEC QZ
-MODE_QZ=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
-                       MATR_B=MATRMASS,
+MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
+                       MATR_MASS=MATRMASS,
                        METHODE='QZ',
                        TYPE_QZ='QZ_EQUI',
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=10.,
                                     NMAX_FREQ=2,),
                        INFO=1,);
+
 
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
@@ -190,3 +192,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
 #
 FIN( )
 #
+
+
+
+
+
+

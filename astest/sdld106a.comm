@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE VALIDATION INFORMATIQUE DE MACR_ADAP_MAIL
 # sdld106a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,11 +90,12 @@ df1m1 = -f1/(2.*m1)
 
 f1e = f1*(1.+1.e-4)
 
-MODES=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
-                       MATR_B=MATRMASS,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
+                       MATR_MASS=MATRMASS,
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     NMAX_FREQ=1,
                                     FREQ=(f1e,),),);
+
 
 TEST_RESU(RESU=(_F(RESULTAT=MODES,
                    NUME_ORDRE=1, 
@@ -220,4 +221,10 @@ TEST_RESU(RESU=(_F(RESULTAT=DYHAN,
 
 
 FIN()
+
+
+
+
+
+
 

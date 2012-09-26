@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL DES FREQUENCES PROPRES D'UNE POUTRE ARTICULEE
 # sdlx400c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,10 +87,11 @@ M_AS_1=ASSE_MATRICE(    MATR_ELEM=M_EL_1,
 
 # CALCUL DES MODES PAR SORENSEN + BANDE
 
-MODE_A_1=MODE_ITER_SIMULT(       MATR_A=K_AS_1,
-                                   MATR_B=M_AS_1,
+MODE_A_1=MODE_ITER_SIMULT(       MATR_RIGI=K_AS_1,
+                                   MATR_MASS=M_AS_1,
                                CALC_FREQ=_F(  OPTION = 'BANDE',
                                            FREQ = ( 10.,  2000., )))
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE_A_1,
@@ -137,11 +138,12 @@ TEST_RESU(RESU=(
 
 # CALCUL DES MODES PAR JACOBI + BANDE
 
-MODE_B_1=MODE_ITER_SIMULT(       MATR_A=K_AS_1,
-                                   MATR_B=M_AS_1,
+MODE_B_1=MODE_ITER_SIMULT(       MATR_RIGI=K_AS_1,
+                                   MATR_MASS=M_AS_1,
                                   METHODE='JACOBI',
                                CALC_FREQ=_F(  OPTION = 'BANDE',
                                            FREQ = ( 10.,  2000., )))
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE_B_1,
@@ -260,10 +262,11 @@ M_AS_2=ASSE_MATRICE(    MATR_ELEM=M_EL_2,
 # A - CALCUL DES MODES PAR SORENSEN + BANDE
 
 
-MODE_A_2=MODE_ITER_SIMULT(       MATR_A=K_AS_2,
-                                   MATR_B=M_AS_2,
+MODE_A_2=MODE_ITER_SIMULT(       MATR_RIGI=K_AS_2,
+                                   MATR_MASS=M_AS_2,
                                CALC_FREQ=_F(  OPTION = 'BANDE',
                                            FREQ = ( 10.,  2000., )))
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE_A_2,
@@ -318,11 +321,12 @@ TEST_RESU(RESU=(
 
 # B - CALCUL DES MODES PAR JACOBI + BANDE
 
-MODE_B_2=MODE_ITER_SIMULT(       MATR_A=K_AS_2,
-                                   MATR_B=M_AS_2,
+MODE_B_2=MODE_ITER_SIMULT(       MATR_RIGI=K_AS_2,
+                                   MATR_MASS=M_AS_2,
                                   METHODE='JACOBI',
                                CALC_FREQ=_F(  OPTION = 'BANDE',
                                            FREQ = ( 10.,  2000., )))
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE_B_2,
@@ -378,3 +382,9 @@ TEST_RESU(RESU=(
 #------------------------------------------------------------------
 FIN()
 #
+
+
+
+
+
+

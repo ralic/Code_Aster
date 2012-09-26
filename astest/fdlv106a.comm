@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL D AMORTISSEMENT AJOUTE EN ECOULEMENT ANNULAIRE
 # fdlv106a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -403,19 +403,21 @@ MASSE=ASSE_MATRICE(MATR_ELEM=MASSELEM,
 AMORT=ASSE_MATRICE(MATR_ELEM=AMORELEM,
                    NUME_DDL=NUMERO,);
 
-MODBIS=MODE_ITER_SIMULT(MATR_A=RAIDEUR,
-                        MATR_B=MASSE,
-                        MATR_C=AMORT,
+MODBIS=MODE_ITER_SIMULT(MATR_RIGI=RAIDEUR,
+                        MATR_MASS=MASSE,
+                        MATR_AMOR=AMORT,
                         METHODE='TRI_DIAG',
                         VERI_MODE=_F(SEUIL=1.E-2,),);
 
+
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 
-MODBISZ=MODE_ITER_SIMULT(MATR_A=RAIDEUR,
-                         MATR_B=MASSE,
-                         MATR_C=AMORT,
+MODBISZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDEUR,
+                         MATR_MASS=MASSE,
+                         MATR_AMOR=AMORT,
                          METHODE='QZ',
                          VERI_MODE=_F(SEUIL=1.E-2,),);
+
 
 # MODE COMPLEXE A VITESSE CRITIQUE
 
@@ -462,19 +464,21 @@ MASSCR=ASSE_MATRICE(MATR_ELEM=MASELCR,
 AMORCR=ASSE_MATRICE(MATR_ELEM=AMELCR,
                     NUME_DDL=NUMCR,);
 
-MODCRIT=MODE_ITER_SIMULT(MATR_A=RAIDCR,
-                         MATR_B=MASSCR,
-                         MATR_C=AMORCR,
+MODCRIT=MODE_ITER_SIMULT(MATR_RIGI=RAIDCR,
+                         MATR_MASS=MASSCR,
+                         MATR_AMOR=AMORCR,
                          METHODE='TRI_DIAG',
                          VERI_MODE=_F(SEUIL=1.E-2,),);
 
+
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 
-MODCRITZ=MODE_ITER_SIMULT(MATR_A=RAIDCR,
-                          MATR_B=MASSCR,
-                          MATR_C=AMORCR,
+MODCRITZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDCR,
+                          MATR_MASS=MASSCR,
+                          MATR_AMOR=AMORCR,
                           METHODE='QZ',
                           VERI_MODE=_F(SEUIL=1.E-2,),);
+
 
 # MODE COMPLEXE AU FLOTTEMENT
 
@@ -521,19 +525,21 @@ MASSFL=ASSE_MATRICE(MATR_ELEM=MASELFL,
 AMORFL=ASSE_MATRICE(MATR_ELEM=AMELFL,
                     NUME_DDL=NUMFL,);
 
-MODFLOT=MODE_ITER_SIMULT(MATR_A=RAIDFL,
-                         MATR_B=MASSFL,
-                         MATR_C=AMORFL,
+MODFLOT=MODE_ITER_SIMULT(MATR_RIGI=RAIDFL,
+                         MATR_MASS=MASSFL,
+                         MATR_AMOR=AMORFL,
                          METHODE='TRI_DIAG',
                          VERI_MODE=_F(SEUIL=1.E-2,),);
 
+
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 
-MODFLOTZ=MODE_ITER_SIMULT(MATR_A=RAIDFL,
-                          MATR_B=MASSFL,
-                          MATR_C=AMORFL,
+MODFLOTZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDFL,
+                          MATR_MASS=MASSFL,
+                          MATR_AMOR=AMORFL,
                           METHODE='QZ',
                           VERI_MODE=_F(SEUIL=1.E-2,),);
+
 
 TEST_RESU(RESU=(_F(RESULTAT=MODBIS,
                    NUME_ORDRE=1,
@@ -624,3 +630,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MODBISZ,
                    REFERENCE='ANALYTIQUE',),),);
 
 FIN();
+
+
+
+
+
+

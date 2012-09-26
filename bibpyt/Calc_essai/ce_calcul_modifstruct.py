@@ -1,4 +1,4 @@
-#@ MODIF ce_calcul_modifstruct Calc_essai  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ce_calcul_modifstruct Calc_essai  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,8 +344,8 @@ class CalcEssaiModifStruct:
                 calc_freq['NMAX_FREQ'] = len(nume_modes_sup)
 
         try:
-            __MODGEN = MODE_ITER_SIMULT( MATR_A = __KPROJ,
-                                     MATR_B = __MPROJ,
+            __MODGEN = MODE_ITER_SIMULT( MATR_RIGI = __KPROJ,
+                                     MATR_MASS = __MPROJ,
                                      VERI_MODE = _F(SEUIL = 1.E-05,
                                                     STOP_ERREUR = 'OUI',),
                                      CALC_FREQ = calc_freq)
@@ -687,8 +687,8 @@ class CalcEssaiModifStruct:
         self.modes_couple = None
         if mode_simult :
             try:
-                _MODCPL = MODE_ITER_SIMULT( MATR_A = kcouple,
-                                         MATR_B = mcouple,
+                _MODCPL = MODE_ITER_SIMULT( MATR_RIGI = kcouple,
+                                         MATR_MASS = mcouple,
                                          VERI_MODE = _F( SEUIL = 1.E-05,
                                                          STOP_ERREUR = 'OUI',),
                                          CALC_FREQ = calc_freq,);
@@ -698,8 +698,8 @@ class CalcEssaiModifStruct:
 
         else :
             try:
-                _MODCPL = MODE_ITER_INV( MATR_A = kcouple,
-                                     MATR_B = mcouple,
+                _MODCPL = MODE_ITER_INV( MATR_RIGI = kcouple,
+                                     MATR_MASS = mcouple,
                                      CALC_FREQ = calc_freq,
                                     );
             except aster.error,err :

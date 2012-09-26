@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE HARMONIQUE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,9 +130,9 @@ AMOGYRO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYRO,
                                   COEF_R=1.0,),),);
 
 MQ_SO=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
-                       MATR_C=AMOGYRO,
+                       MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
+                       MATR_AMOR=AMOGYRO,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10,
                                     APPROCHE='COMPLEXE',),
@@ -141,6 +141,7 @@ MQ_SO=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
+
 
 bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='N_DIS2',
@@ -219,3 +220,9 @@ TEST_FONCTION(VALEUR=_F(FONCTION=PHA_X_D2,
                         REFERENCE='AUTRE_ASTER',),);
 
 FIN();
+
+
+
+
+
+

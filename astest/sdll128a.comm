@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL MODAL D'UN ARBRE AVEC PALIERS A CARACTERISTIQUES VARIABLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -579,9 +579,9 @@ for kk in range(0,nbV):
    GYOM[kk]=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS[kk], COEF_R=OM,),
                                    _F(MATR_ASSE=AMOR[kk], COEF_R=1.,),))
 
-   _mod[kk]=MODE_ITER_SIMULT(MATR_A=RIGI[kk],
-                             MATR_B=MASS[kk],
-                             MATR_C=GYOM[kk],
+   _mod[kk]=MODE_ITER_SIMULT(MATR_RIGI=RIGI[kk],
+                             MATR_MASS=MASS[kk],
+                             MATR_AMOR=GYOM[kk],
                              METHODE='QZ',
                              CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=nbF,),
                              VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
@@ -589,6 +589,7 @@ for kk in range(0,nbV):
                                           STURM='NON',
                                           SEUIL=9.9999999999999995E-07),
                              )
+
    
    tab.append({'NUME_VITE' : kk, 'VITE_ROTA' : OM, 'NOM_OBJET': 'MODE_MECA', 'TYPE_OBJET': 'MODE_MECA', 'NOM_SD' : _mod[kk].nom})
 
@@ -779,9 +780,9 @@ OM=(L_VITROT[0]+L_VITROT[6])/2
 GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
                             _F(MATR_ASSE=AMOR, COEF_R=1.,),))
 
-MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                 MATR_B=MASSE,
-                 MATR_C=GYOM,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                 MATR_MASS=MASSE,
+                 MATR_AMOR=GYOM,
                  METHODE='QZ',
                  CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=nbF,),
                  VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
@@ -789,6 +790,7 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                               STURM='NON',
                               SEUIL=9.9999999999999995E-07),
                              )
+
 
 #VITESSE DE ROTATION OMEGA=602.139 RAD/S
 TEST_RESU(RESU=(
@@ -855,3 +857,9 @@ TEST_RESU(RESU=(
             ),)
 
 FIN();
+
+
+
+
+
+

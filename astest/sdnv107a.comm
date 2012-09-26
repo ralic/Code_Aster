@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 # sdnv107a.para = tps_job 600 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,11 +176,12 @@ MASS_1=ASSE_MATRICE(  MATR_ELEM=MEMAME_1,
                            NUME_DDL=NUMDDL_1)
 
 #
-MOD_CAL1=MODE_ITER_SIMULT(     MATR_A=RAID_1,
-                              MATR_B=MASS_1,
+MOD_CAL1=MODE_ITER_SIMULT(     MATR_RIGI=RAID_1,
+                              MATR_MASS=MASS_1,
                              VERI_MODE=_F(STOP_ERREUR='NON',),
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                               NMAX_FREQ = 6))
+
 
 #
 
@@ -245,11 +246,12 @@ MASS_2=ASSE_MATRICE(  MATR_ELEM=MEMAME_2,
                            NUME_DDL=NUMDDL_2)
 
 #
-MOD_CAL2=MODE_ITER_SIMULT(     MATR_A=RAID_2,
-                              MATR_B=MASS_2,
+MOD_CAL2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_2,
+                              MATR_MASS=MASS_2,
                              VERI_MODE=_F(STOP_ERREUR='NON',),
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                               NMAX_FREQ = 6))
+
                               
                               
 # CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
@@ -314,11 +316,12 @@ MASS_3=ASSE_MATRICE(  MATR_ELEM=MEMAME_3,
                            NUME_DDL=NUMDDL_3)
 
 #
-MODES_3=MODE_ITER_SIMULT(     MATR_A=RAID_3,
-                              MATR_B=MASS_3,
+MODES_3=MODE_ITER_SIMULT(     MATR_RIGI=RAID_3,
+                              MATR_MASS=MASS_3,
                              VERI_MODE=_F(STOP_ERREUR='NON',),
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                               NMAX_FREQ = 6))
+
                               
                               
 #
@@ -494,13 +497,14 @@ MASSGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                  COEF_R=1.0,),
                                  ),);
                                  
-RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGIGENE,
-                             MATR_B=MASSGENE,
+RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGIGENE,
+                             MATR_MASS=MASSGENE,
                              CALC_FREQ=_F(
                              OPTION = 'PLUS_PETITE',
                              NMAX_FREQ = 20
                                         )
                        )
+
 RESMOD=REST_GENE_PHYS(    RESU_GENE=RESGEN,
                           NOM_CHAM='DEPL',
                           TOUT_ORDRE='OUI'
@@ -667,3 +671,9 @@ TEST_RESU( RESU=_F( RESULTAT = RESUGLO, REFERENCE = 'AUTRE_ASTER',
 
 FIN( ) 
                
+
+
+
+
+
+

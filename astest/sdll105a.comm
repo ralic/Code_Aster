@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE TUBE REMPLI DE FLUIDE SOUS EXCITATIONS FLUIDES ALEATOIRES
 # sdll105a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,12 +117,13 @@ MATASM=ASSE_MATRICE(MATR_ELEM=MATELE_M,NUME_DDL=NUM)
 #**CALCUL MODAL ENTRE 1   ET  100HZ************************************
 #**********************************************************************
 
-MODES=MODE_ITER_SIMULT( MATR_A=MATASK,
-                             MATR_B=MATASM,
+MODES=MODE_ITER_SIMULT( MATR_RIGI=MATASK,
+                             MATR_MASS=MATASM,
                                OPTION='SANS',
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (1., 50.,))
                             )
+
 
 #*********************************************************************#
 # *****DEFINITION   INTERSPECTRE EXCITATION***************************#
@@ -393,3 +394,9 @@ TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
 
 FIN( )
 #
+
+
+
+
+
+

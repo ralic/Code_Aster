@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,9 +146,10 @@ V_ASSE=ASSE_VECTEUR(VECT_ELEM=V_ELEM,
 #
 # ----- CALCUL DES MODES PROPRES DES SS
 
-MODES_L=MODE_ITER_SIMULT(MATR_A=RAID_L,
-                         MATR_B=MASS_L,
+MODES_L=MODE_ITER_SIMULT(MATR_RIGI=RAID_L,
+                         MATR_MASS=MASS_L,
                          CALC_FREQ=_F(NMAX_FREQ=1,),);
+
 
 MODES_L=NORM_MODE(reuse=MODES_L,
                   MODE=MODES_L,
@@ -241,11 +242,12 @@ FGEN=ASSE_VECT_GENE(NUME_DDL_GENE=NUMEGE,
 #
 # ----- CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 
-RESGEN=MODE_ITER_SIMULT(MATR_A=RIGGEN,
-                        MATR_B=MASGEN,
+RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
+                        MATR_MASS=MASGEN,
                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                      NMAX_FREQ=3,),
                         TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE',);
+
 
 #---------------------------------------------------------------------
 
@@ -364,5 +366,11 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
                   PRECISION=0.01,),);
 
 FIN();
+
+
+
+
+
+
 
 

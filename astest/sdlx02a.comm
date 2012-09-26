@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PROBLEME DE HOVGAARD: CALCUL MODAL ET CALCUL SPECTRAL
 # ======================================================================
 # sdlx02a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -89,13 +89,15 @@ TABL_MAS=POST_ELEM(  MODELE=MODELE,
                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
                         MASS_INER=_F(  TOUT = 'OUI')                   )
 
-MODE=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
+MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                     METHODE='TRI_DIAG',
                   CALC_FREQ=_F(  NMAX_FREQ = 9) )
 
-MODE_DIA=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE_DI,
+
+MODE_DIA=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE_DI,
                     METHODE='TRI_DIAG',
                   CALC_FREQ=_F(  NMAX_FREQ = 9) )
+
 
 MODE_DIA=NORM_MODE(reuse=MODE_DIA,   MODE=MODE_DIA,   NORME='TRAN_ROTA',)
 
@@ -450,3 +452,9 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'DEPL',
 
 FIN( )
 #
+
+
+
+
+
+

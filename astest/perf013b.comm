@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE MODES PROPRES D'UNE PLAQUE CARRE ENCASTREE SUR 2 BORDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,11 +68,18 @@ MODES=MODE_ITER_SIMULT(INFO=1,
                       TYPE_RESU='DYNAMIQUE',
                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
                       METHODE='SORENSEN',
-                      MATR_B=MASS,
-                      MATR_A=RIGI,
+                      MATR_MASS=MASS,
+                      MATR_RIGI=RIGI,
                       );
+
 TEST_RESU(RESU=
        _F( RESULTAT = MODES, PARA = 'FREQ', CRITERE = 'RELATIF',
            PRECISION = 3.E-3, NUME_ORDRE = 3, VALE = 993.5, REFERENCE = 'NON_REGRESSION'),)
 
 FIN()
+
+
+
+
+
+

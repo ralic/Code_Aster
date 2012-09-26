@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,9 +128,10 @@ VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
 #  CALCUL DES MODES PROPRES ET DES K_MODAUX
 ##################################
 
-MODE=MODE_ITER_SIMULT(MATR_A=RIG_ASS,
-                      MATR_B=MA_ASS,
+MODE=MODE_ITER_SIMULT(MATR_RIGI=RIG_ASS,
+                      MATR_MASS=MA_ASS,
                       CALC_FREQ=_F(NMAX_FREQ=n_mode,),);
+
 
 MODE=NORM_MODE(reuse=MODE,
                MODE=MODE,
@@ -307,3 +308,9 @@ for i in range(1) :
 
 
 FIN();
+
+
+
+
+
+

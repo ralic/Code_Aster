@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_VIBRA
 # sdld31b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,13 +164,14 @@ VRACTION=ASSE_VECTEUR(VECT_ELEM=ERACTION,
 
 # CALCUL DES MODES AVEC AMORTISSEMENT HYSTERETIQUE + VISQUEUX
 
-MOSOREN=MODE_ITER_SIMULT(MATR_A=RIGHYST,
-                         MATR_B=MASS,
-                         MATR_C=AMOR,
+MOSOREN=MODE_ITER_SIMULT(MATR_RIGI=RIGHYST,
+                         MATR_MASS=MASS,
+                         MATR_AMOR=AMOR,
                          CALC_FREQ=_F(OPTION='CENTRE',
                                       FREQ=10.,
                                       NMAX_FREQ=1,
                                       APPROCHE='REEL',),);
+
 
 FRESOR=RECU_TABLE(CO=MOSOREN,
                   NOM_PARA=('FREQ','AMOR_REDUIT',),);
@@ -189,14 +190,15 @@ TEST_TABLE(TABLE=FRESOR,
 
 # CALCUL DES MODES AVEC AMORTISSEMENT VISQUEUX (LANCZOS, APPROCHE COMPLEXE)
 
-MOLANCZ=MODE_ITER_SIMULT(MATR_A=RIGI,
-                         MATR_B=MASS,
-                         MATR_C=AMO2,
+MOLANCZ=MODE_ITER_SIMULT(MATR_RIGI=RIGI,
+                         MATR_MASS=MASS,
+                         MATR_AMOR=AMO2,
                          METHODE='TRI_DIAG',
                          CALC_FREQ=_F(OPTION='CENTRE',
                                       FREQ=3.,
                                       NMAX_FREQ=1,
                                       APPROCHE='COMPLEXE',),);
+
 
 FRELAN=RECU_TABLE(CO=MOSOREN,
                   NOM_PARA=('FREQ','AMOR_REDUIT',),);
@@ -215,12 +217,13 @@ TEST_TABLE(TABLE=FRELAN,
 
 # CALCUL DES MODES NORMAUX (NON AMORTIS)
 
-MODES=MODE_ITER_SIMULT(MATR_A=RIGI,
-                       MATR_B=MASS,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGI,
+                       MATR_MASS=MASS,
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=3.,
                                     NMAX_FREQ=1,
                                     APPROCHE='COMPLEXE',),);
+
 
 PROJ_BASE(BASE=MODES,
                 STOCKAGE='DIAG',
@@ -375,3 +378,9 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=BDEVTRAN,
                          REFERENCE='ANALYTIQUE',),),);
 
 FIN();
+
+
+
+
+
+

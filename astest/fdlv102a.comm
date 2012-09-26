@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE MASSE AJOUTEE CALCULEE SUR MODELE GENERALISE - MODES MOUILLES
 # fdlv102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,11 +153,12 @@ MASS_E=ASSE_MATRICE(  MATR_ELEM=MEMAME_E,
                            NUME_DDL=NUMDDL_E)
 
 #
-MODES_E=MODE_ITER_SIMULT(     MATR_A=RAID_E,
-                                 MATR_B=MASS_E,
+MODES_E=MODE_ITER_SIMULT(     MATR_RIGI=RAID_E,
+                                 MATR_MASS=MASS_E,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (1.,80.,))
                              )
+
 
 #
 #  DEFINITION DES INTERFACES
@@ -323,38 +324,42 @@ MASDEF2=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MASGEN,
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE EN EAU
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
-                                 MATR_B=MASTOT,
+RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
+                                 MATR_MASS=MASTOT,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (2.,70.,))
                              )
+
 
 # NOUVELLE METHODE AVEC MACRO_MATR_AJOU
 
-RESGEN2=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
-                                 MATR_B=MASTOT2,
+RESGEN2=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
+                                 MATR_MASS=MASTOT2,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (2.,70.,))
                              )
+
 
 #
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE EN EAU
 #    SANS DEFORMEES STATIQUES
 #
-RESDEF=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
-                                 MATR_B=MASDEF,
+RESDEF=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
+                                 MATR_MASS=MASDEF,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (2.,70.,))
                              )
+
 
 # NOUVELLE METHODE AVEC MACRO_MATR_AJOU
 
-RESDEF2=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
-                                 MATR_B=MASDEF2,
+RESDEF2=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
+                                 MATR_MASS=MASDEF2,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (2.,70.,))
                              )
+
 
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
@@ -472,3 +477,9 @@ TEST_RESU(RESU=(_F( RESULTAT = MODDEF2, PARA = 'FREQ',
 
 FIN()
 #
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME MASSE-RESSORT AVEC AMORTISSEUR VISQUEUX NONPROPORTIONNEL
 # sdld27a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,20 +75,22 @@ MATASSM=ASSE_MATRICE(  MATR_ELEM=MELM,   NUME_DDL=NUM  )
 MATASSC=ASSE_MATRICE(  MATR_ELEM=MELC,   NUME_DDL=NUM  )
 
 # ----------------------------------------------------------------------
-MODE_QUA=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,
-                          MATR_C=MATASSC,
+MODE_QUA=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,
+                          MATR_AMOR=MATASSC,
                          METHODE='TRI_DIAG',
                         CALC_FREQ=_F(OPTION = 'PLUS_PETITE',NMAX_FREQ = 8),
                           VERI_MODE=_F( SEUIL = 1.E-5))
+
 IMPR_CO(CONCEPT=_F(NOM=MODE_QUA))
 
 MODE_QUA=NORM_MODE(reuse=MODE_QUA,   MODE=MODE_QUA,   NORME='MASS_GENE' )
 
 # AVEC QZ + OPTION 'PLUS_PETITE' + 'QZ_SIMPLE'
-MODE_QZ=MODE_ITER_SIMULT(MATR_A=MATASSR,MATR_B=MATASSM,MATR_C=MATASSC,
+MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,MATR_AMOR=MATASSC,
                          METHODE='QZ',INFO=1,TYPE_QZ='QZ_EQUI',
                         CALC_FREQ=_F(OPTION = 'PLUS_PETITE',NMAX_FREQ = 8),
                           VERI_MODE=_F( SEUIL = 1.E-5))
+
 
 MODE_QZ=NORM_MODE(reuse=MODE_QZ,   MODE=MODE_QZ,   NORME='MASS_GENE' )
 #-----------------------------------------------------------------------
@@ -573,3 +575,9 @@ TEST_RESU(RESU=(
                        )
 FIN()
 #
+
+
+
+
+
+

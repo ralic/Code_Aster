@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE LIBRE ET ENCASTREE
 # sdls01c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,10 +113,11 @@ MASS_L=ASSE_MATRICE(  MATR_ELEM=MEMAME_L,
                            NUME_DDL=NUMDDL_L)
 
 #
-MODES_L1=MODE_ITER_SIMULT(     MATR_A=RAID_L,
-                                 MATR_B=MASS_L,
+MODES_L1=MODE_ITER_SIMULT(     MATR_RIGI=RAID_L,
+                                 MATR_MASS=MASS_L,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (10.,1000.,)))
+
 
 MODES_L1=CALC_CHAMP(reuse=MODES_L1,CONTRAINTE=('SIEF_ELGA'),RESULTAT=MODES_L1)
 
@@ -125,16 +126,18 @@ MODES_L1=CALC_CHAMP(reuse =MODES_L1,
               FORCE='FORC_NODA');
 
 #
-MODES_L2=MODE_ITER_SIMULT(     MATR_A=RAID_L,
-                                 MATR_B=MASS_L,
+MODES_L2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_L,
+                                 MATR_MASS=MASS_L,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (1000.,2000.,)))
 
+
 #
-MODES_L3=MODE_ITER_SIMULT(     MATR_A=RAID_L,
-                                 MATR_B=MASS_L,
+MODES_L3=MODE_ITER_SIMULT(     MATR_RIGI=RAID_L,
+                                 MATR_MASS=MASS_L,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (2000.,3000.,)))
+
 
 #
 # SOUS-STRUCTURE ENCASTREE - INTERFACE TYPE CRAIG-BAMPTON
@@ -174,9 +177,10 @@ MASS_E=ASSE_MATRICE(  MATR_ELEM=MEMAME_E,
                            NUME_DDL=NUMDDL_E)
 
 #
-MODES_E=MODE_ITER_SIMULT(     MATR_A=RAID_E,
-                                 MATR_B=MASS_E,
+MODES_E=MODE_ITER_SIMULT(     MATR_RIGI=RAID_E,
+                                 MATR_MASS=MASS_E,
                              CALC_FREQ=_F( NMAX_FREQ = 25))
+
 
 #
 #  DEFINITION DES INTERFACES
@@ -274,12 +278,13 @@ RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
-                                 MATR_B=MASGEN,
+RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
+                                 MATR_MASS=MASGEN,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (8., 150.,)),
                              SOLVEUR=_F(NPREC=10,),
                              VERI_MODE=_F( SEUIL = 1.E-3))
+
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 #
@@ -379,9 +384,10 @@ MASS_A=ASSE_MATRICE(  MATR_ELEM=MEMAME_A,
                            NUME_DDL=NUMDDL_A)
 
 #
-MODES_A=MODE_ITER_SIMULT(     MATR_A=RAID_A,
-                                 MATR_B=MASS_A,
+MODES_A=MODE_ITER_SIMULT(     MATR_RIGI=RAID_A,
+                                 MATR_MASS=MASS_A,
                              CALC_FREQ=_F( NMAX_FREQ = 25))
+
 
 #
 #    DEFINITION DES INTERFACES
@@ -497,3 +503,9 @@ TEST_RESU(RESU=(
 #
 FIN()
 #
+
+
+
+
+
+

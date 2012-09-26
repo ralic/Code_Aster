@@ -1,4 +1,4 @@
-# MODIF  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE ROTOR FISSURE TOURNANT SOUMIS A UN MOMENT DE FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,11 +109,12 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                            _F(MATRICE=CO('MASSAS'),
                               OPTION='MASS_MECA',),),);
 
-MODES=MODE_ITER_SIMULT(MATR_A=RIGIAS,
-                       MATR_B=MASSAS,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIAS,
+                       MATR_MASS=MASSAS,
                        VERI_MODE=_F(STURM='NON',),
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(-1,fmax,),),);
+
 
 
 MACRO_MATR_ASSE(MODELE=MODELE,
@@ -139,11 +140,12 @@ RIGYEL=CALC_MATR_ELEM(OPTION='RIGI_GYRO',
 RIGYAF=ASSE_MATRICE(MATR_ELEM=RIGYEL,
                    NUME_DDL=NUD,);
 
-MODFF=MODE_ITER_SIMULT(MATR_A=RIGIAF,
-                       MATR_B=MASSAF,
+MODFF=MODE_ITER_SIMULT(MATR_RIGI=RIGIAF,
+                       MATR_MASS=MASSAF,
                        VERI_MODE=_F(STURM='NON',SEUIL=1.E-4),
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(-1,fmax,),),);
+
 
 
 MODEF=EXTR_MODE(FILTRE_MODE=_F(MODE=MODFF, NUME_MODE=(1,2,), ),);
@@ -317,3 +319,9 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=DEPN4Z,
 
 
 FIN();
+
+
+
+
+
+

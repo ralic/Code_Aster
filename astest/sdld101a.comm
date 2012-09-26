@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE OSCILLATEUR SIMPLE SOUMIS A UNE EXCITATION ALEATOIRE
 # sdld101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,12 +88,13 @@ MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,NUME_DDL=NUM1)
 # *****CALCUL DE MODES PROPRES ET IMPRESSION FORMAT IDEAS*************#
 #*********************************************************************#
 
-FREQ1=MODE_ITER_INV(   MATR_A=MATASSR1,      MATR_B=MATASSM1,
+FREQ1=MODE_ITER_INV(   MATR_RIGI=MATASSR1,      MATR_MASS=MATASSM1,
            CALC_FREQ=_F(  OPTION = 'AJUSTE',
                        FREQ = (0.1, 3000.0),
                        NMAX_FREQ = 1),
             CALC_MODE=_F( NMAX_ITER = 30)
                        )
+
 
 #*********************************************************************#
 # *****CALCUL DE MODES STATIQUES; IMPRESSION FORMAT IDEAS*************#
@@ -402,4 +403,10 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
 # PARTIR DES VALEURS (MOMENT SPECTRAUX) CALCULEES ET VERIFIEES
 FIN( )
 #
+
+
+
+
+
+
 

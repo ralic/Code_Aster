@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 # shll100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,9 +106,10 @@ MATASAD=ASSE_MATRICE(  MATR_ELEM=MATELD_A,
                           NUME_DDL=NUMD)
 
 #
-MODESD=MODE_ITER_SIMULT(  MATR_A=MATASKD,
-                              MATR_B=MATASMD,
+MODESD=MODE_ITER_SIMULT(  MATR_RIGI=MATASKD,
+                              MATR_MASS=MATASMD,
                               CALC_FREQ=_F( NMAX_FREQ = 10) )
+
 
 #CALCUL HARMO SUR BASE MODALE CALCULEE DIRECTEMENT
 
@@ -315,9 +316,10 @@ MATASA1=ASSE_MATRICE(  MATR_ELEM=MATEL1_A,
                           NUME_DDL=NUM1)
 
 #
-MODES1=MODE_ITER_SIMULT(  MATR_A=MATASK1,
-                              MATR_B=MATASM1,
+MODES1=MODE_ITER_SIMULT(  MATR_RIGI=MATASK1,
+                              MATR_MASS=MATASM1,
                               CALC_FREQ=_F( NMAX_FREQ = 05) )
+
 
 #
 INTERF1=DEFI_INTERF_DYNA(  NUME_DDL=NUM1,
@@ -404,9 +406,10 @@ VECTAS=ASSE_VECTEUR(  VECT_ELEM=VECTEL,
                           NUME_DDL=NUM2)
 
 #
-MODES2=MODE_ITER_SIMULT(  MATR_A=MATASK2,
-                              MATR_B=MATASM2,
+MODES2=MODE_ITER_SIMULT(  MATR_RIGI=MATASK2,
+                              MATR_MASS=MATASM2,
                               CALC_FREQ=_F( NMAX_FREQ = 05) )
+
 
 #
 INTERF2=DEFI_INTERF_DYNA(  NUME_DDL=NUM2,
@@ -465,11 +468,12 @@ AMOGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 ############################################################
 # concept mode_gene
 #
-RESGAIR=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
-                                 MATR_B=MASGEN,
+RESGAIR=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
+                                 MATR_MASS=MASGEN,
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 10)
                             )
+
 
 FOGEN1 = RECU_FONCTION ( RESU_GENE = RESGAIR,
                          NOM_CHAM = 'DEPL',
@@ -667,3 +671,9 @@ IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38,
 
 FIN()
 #
+
+
+
+
+
+

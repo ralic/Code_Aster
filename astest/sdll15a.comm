@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE POUTRE ENCASTREE-LIBRE, AVEC MASSE OU INERTIE EXCENTREE
 # sdll15a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -136,20 +136,22 @@ MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM2)
 #           CALCUL MODAL
 
 MD1=MODE_ITER_SIMULT(
-             MATR_A=MATASSR1,
-             MATR_B=MATASSM1,
+             MATR_RIGI=MATASSR1,
+             MATR_MASS=MATASSM1,
              METHODE='TRI_DIAG',
             CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                         NMAX_FREQ = 10)    )
 
+
 # ------------------------------------------------------------------
 
 MD2=MODE_ITER_SIMULT(
-             MATR_A=MATASSR2,
-             MATR_B=MATASSM2,
+             MATR_RIGI=MATASSR2,
+             MATR_MASS=MATASSM2,
               METHODE='TRI_DIAG',
             CALC_FREQ=_F(   OPTION = 'PLUS_PETITE',
                          NMAX_FREQ = 8)    )
+
 
 # --------------------------------------------------------------------
 
@@ -229,3 +231,9 @@ TEST_RESU(
 
 FIN()
 #
+
+
+
+
+
+

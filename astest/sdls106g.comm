@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106g.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,10 +105,11 @@ MASS_1=ASSE_MATRICE(  MATR_ELEM=MEMAME_1,
                            NUME_DDL=NUMDDL_1)
 
 #
-MODES_1=MODE_ITER_SIMULT(     MATR_A=RAID_1,
-                                 MATR_B=MASS_1,
+MODES_1=MODE_ITER_SIMULT(     MATR_RIGI=RAID_1,
+                                 MATR_MASS=MASS_1,
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                               NMAX_FREQ = 21))
+
 
 #
 
@@ -146,10 +147,11 @@ MASS_2=ASSE_MATRICE(  MATR_ELEM=MEMAME_2,
                            NUME_DDL=NUMDDL_2)
 
 #
-MODES_2=MODE_ITER_SIMULT(     MATR_A=RAID_2,
-                                 MATR_B=MASS_2,
+MODES_2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_2,
+                                 MATR_MASS=MASS_2,
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                               NMAX_FREQ = 21))
+
 
 #
 
@@ -226,10 +228,11 @@ RIGEEL=ASSE_MATR_GENE(  NUME_DDL_GENE=NUGEEL,
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
-RESGEL=MODE_ITER_SIMULT(     MATR_A=RIGEEL,
-                                 MATR_B=MAGEEL,
+RESGEL=MODE_ITER_SIMULT(     MATR_RIGI=RIGEEL,
+                                 MATR_MASS=MAGEEL,
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 6))
+
                                         
 
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
@@ -269,3 +272,9 @@ TEST_RESU(RESU=(_F( RESULTAT = RESGEL, PARA = 'FREQ',
 FIN()
 #
 #
+
+
+
+
+
+

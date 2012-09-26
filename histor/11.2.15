@@ -1,0 +1,602 @@
+========================================================================
+Version 11.2.15 du : 27/09/2012
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR brie         BRIE Nicolas           DATE 09/26/2012 - 03:34:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019086 DU 2012-06-29 15:12:27
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    MN03 - Nouvelle terminologie pour les matrices d'entrée des opérateurs de calcul modal
+FONCTIONNALITE
+   1 - Objectifs
+   ------------
+   Pour améliorer l'ergonomie, on renomme le nom des matrices d'entrée des opérateurs 
+   suivants:
+     - MODE_ITER_SIMULT , MODE_ITER_INV , INFO_MODE
+     - CALC_MODAL, MACRO_MODE_MECA, CALC_MODE_ROTATION
+   
+     si TYPE_RESU='DYNAMIQUE':
+        MATR_A -> MATR_RIGI
+        MATR_B -> MATR_MASS
+        MATR_C -> MATR_AMOR
+     si TYPE_RESU='MODE_FLAMB':
+        MATR_A -> MATR_RIGI
+        MATR_B -> MATR_RIGI_GEOM
+   
+   Pour MODE_ITER_SIMULT, MODE_ITER_INV et INFO_MODE on crée aussi un nouveau type de 
+   résultat :
+   TYPE_RESU='GENERAL' pour lequel les matrices gardent leur ancien nom (MATR_A, MATR_B, 
+   MATR_C).
+   
+   
+   On en profite aussi pour mettre en cohérence le vocabulaire utilisé dans le cas du calcul
+   de flambement : il y avait des mot-clés *_FREQ faisant allusion à de la dynamique, on les
+   renomme en *_CHAR_CRIT.
+   
+   2 - Modifications
+   -----------------
+     - catalogues : calc_mode_rotation, info_mode, macro_mode_meca, 
+                   mode_iter_inv, mode_iter_simult
+     - macros : calc_modal_ops, calc_mode_rotation_ops, crea_elem_ssd_ops, 
+   macro_mode_meca_ops
+     - python : ce_calcul_modifstruct
+     - src    : op0032, op0044, op0045
+     - cas-tests : 480 cas-tests modifies
+     - ajout d'un calcul de type "GENERAL" dans les cas_tests
+       INFO_MODE : ssll103b, sdld02a
+       MODE_ITER_SIMULT : sdls504, sdlv302b
+       MODE_ITER_INV : ssll103a
+   
+   3 - Validation 
+   --------------
+   -> Passage des cas-tests modifies
+   -> passage de la liste complète
+   
+   3 - Documentation modifiées 
+   --------------------------
+   Doc U2 
+     - U2.01.02
+     - U2.06.04, U2.06.09, U2.06.31, U2.06.32
+     - U2.07.03, U2.07.05
+     - U2.08.04
+     - U2.09.03
+   Doc U4
+     - U4.52.03: MODE_ITER_SIMULT
+     - U4.52.04: MODE_ITER_INV
+     - U4.52.01: INFO_MODE
+     - U4.52.10: CALC_MODAL 
+     - U4.52.02: MACRO_MODE_MECA
+     - U4.52.51: CALC_MODE_ROTATION
+     - U4.52.05
+     - U4.52.12, U4.52.13, U4.61.21, U4.63.01
+     - U4.63.31, U4.63.32, U4.66.01, U4.66.11
+     - U4.71.04, U4.73.02, U4.82.30
+   Doc U7
+     - U7.04.33
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste complète des cas-tests
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF adlv100a                    lebouvier F.LEBOUVIER        121      9      2
+ CASTEST MODIF adlv100b                    lebouvier F.LEBOUVIER        123      9      2
+ CASTEST MODIF adlv100c                    lebouvier F.LEBOUVIER        115      9      2
+ CASTEST MODIF adlv100d                    lebouvier F.LEBOUVIER        145     10      3
+ CASTEST MODIF adlv100e                    lebouvier F.LEBOUVIER        145     10      3
+ CASTEST MODIF adlv100f                    lebouvier F.LEBOUVIER        145     10      3
+ CASTEST MODIF adlv100g                    lebouvier F.LEBOUVIER        145     10      3
+ CASTEST MODIF adlv100h                    lebouvier F.LEBOUVIER        145     10      3
+ CASTEST MODIF adlv100i                    lebouvier F.LEBOUVIER        145     10      3
+ CASTEST MODIF adlv100j                    lebouvier F.LEBOUVIER        145     10      3
+ CASTEST MODIF adlv100k                    lebouvier F.LEBOUVIER        145     10      3
+ CASTEST MODIF adlv100l                    lebouvier F.LEBOUVIER        146     10      3
+ CASTEST MODIF adlv100m                    lebouvier F.LEBOUVIER        146     10      3
+ CASTEST MODIF adlv100n                    lebouvier F.LEBOUVIER        146     10      3
+ CASTEST MODIF adlv101a                    lebouvier F.LEBOUVIER         98      2      2
+ CASTEST MODIF adlv101b                    lebouvier F.LEBOUVIER         99      2      2
+ CASTEST MODIF adlv101c                    lebouvier F.LEBOUVIER        100      2      2
+ CASTEST MODIF adlv101d                    lebouvier F.LEBOUVIER        101      2      2
+ CASTEST MODIF adlv101e                    lebouvier F.LEBOUVIER        100      2      2
+ CASTEST MODIF adlv312a                    lebouvier F.LEBOUVIER        193      3      3
+ CASTEST MODIF ahlv100a                    lebouvier F.LEBOUVIER        294     10      3
+ CASTEST MODIF ahlv100g                    lebouvier F.LEBOUVIER        244     10      3
+ CASTEST MODIF ahlv100h                    lebouvier F.LEBOUVIER        240     10      3
+ CASTEST MODIF ahlv100i                    lebouvier F.LEBOUVIER        244     10      3
+ CASTEST MODIF ahlv100j                    lebouvier F.LEBOUVIER        244     10      3
+ CASTEST MODIF ahlv100k                    lebouvier F.LEBOUVIER        244     10      3
+ CASTEST MODIF ahlv100m                    lebouvier F.LEBOUVIER        222     10      3
+ CASTEST MODIF efica01a                    lebouvier F.LEBOUVIER        301     13      5
+ CASTEST MODIF fdll200a                    lebouvier F.LEBOUVIER        144     10      3
+ CASTEST MODIF fdlv100a                    lebouvier F.LEBOUVIER        152     11      3
+ CASTEST MODIF fdlv101a                    lebouvier F.LEBOUVIER        183     11      3
+ CASTEST MODIF fdlv102a                    lebouvier F.LEBOUVIER        485     22     11
+ CASTEST MODIF fdlv102b                    lebouvier F.LEBOUVIER        318     13      5
+ CASTEST MODIF fdlv102c                    lebouvier F.LEBOUVIER        344     16      7
+ CASTEST MODIF fdlv103a                    lebouvier F.LEBOUVIER        228     11      3
+ CASTEST MODIF fdlv104a                    lebouvier F.LEBOUVIER        315     13      5
+ CASTEST MODIF fdlv105a                    lebouvier F.LEBOUVIER        187     11      3
+ CASTEST MODIF fdlv106a                    lebouvier F.LEBOUVIER        638     31     19
+ CASTEST MODIF fdlv107a                    lebouvier F.LEBOUVIER        675     22     11
+ CASTEST MODIF fdlv108a                    lebouvier F.LEBOUVIER        171     10      3
+ CASTEST MODIF fdlv109a                    lebouvier F.LEBOUVIER        212     13      4
+ CASTEST MODIF fdlv110a                    lebouvier F.LEBOUVIER        546     19      9
+ CASTEST MODIF fdlv112a                    lebouvier F.LEBOUVIER        316     16      7
+ CASTEST MODIF fdlv112b                    lebouvier F.LEBOUVIER        474     14      6
+ CASTEST MODIF fdlv113a                    lebouvier F.LEBOUVIER        342      9      2
+ CASTEST MODIF forma02b                    lebouvier F.LEBOUVIER         83     10      3
+ CASTEST MODIF forma02d                    lebouvier F.LEBOUVIER        316     10      3
+ CASTEST MODIF forma11a                    lebouvier F.LEBOUVIER        312     34     17
+ CASTEST MODIF forma11b                    lebouvier F.LEBOUVIER        197     22     11
+ CASTEST MODIF forma11c                    lebouvier F.LEBOUVIER        207     27     11
+ CASTEST MODIF forma11d                    lebouvier F.LEBOUVIER        193     16      5
+ CASTEST MODIF forma12a                    lebouvier F.LEBOUVIER         86     10      3
+ CASTEST MODIF forma12c                    lebouvier F.LEBOUVIER        137     10      3
+ CASTEST MODIF forma12d                    lebouvier F.LEBOUVIER        171     10      3
+ CASTEST MODIF miss01a                     lebouvier F.LEBOUVIER        208      9      2
+ CASTEST MODIF miss02a                     lebouvier F.LEBOUVIER        551     10      3
+ CASTEST MODIF miss03a                     lebouvier F.LEBOUVIER        267     10      3
+ CASTEST MODIF miss03b                     lebouvier F.LEBOUVIER       1172     10      3
+ CASTEST MODIF miss03c                     lebouvier F.LEBOUVIER       1184     11      3
+ CASTEST MODIF miss04a                     lebouvier F.LEBOUVIER        344     10      3
+ CASTEST MODIF miss04b                     lebouvier F.LEBOUVIER        483     10      3
+ CASTEST MODIF miss05a                     lebouvier F.LEBOUVIER        773     12      4
+ CASTEST MODIF miss06a                     lebouvier F.LEBOUVIER        650     13      5
+ CASTEST MODIF miss06b                     lebouvier F.LEBOUVIER        846     16      6
+ CASTEST MODIF miss06c                     lebouvier F.LEBOUVIER        842     15      6
+ CASTEST MODIF miss07a                     lebouvier F.LEBOUVIER        375     10      3
+ CASTEST MODIF miss07b                     lebouvier F.LEBOUVIER        426     10      3
+ CASTEST MODIF miss08a                     lebouvier F.LEBOUVIER        390     10      3
+ CASTEST MODIF miss09a                     lebouvier F.LEBOUVIER        887     10      3
+ CASTEST MODIF perf003a                    lebouvier F.LEBOUVIER         59      8      1
+ CASTEST MODIF perf003b                    lebouvier F.LEBOUVIER         61      8      1
+ CASTEST MODIF perf003c                    lebouvier F.LEBOUVIER         61      8      1
+ CASTEST MODIF perf003d                    lebouvier F.LEBOUVIER        113     11      3
+ CASTEST MODIF perf006a                    lebouvier F.LEBOUVIER        221     13      5
+ CASTEST MODIF perf006b                    lebouvier F.LEBOUVIER        221     13      5
+ CASTEST MODIF perf013a                    lebouvier F.LEBOUVIER         85     10      3
+ CASTEST MODIF perf013b                    lebouvier F.LEBOUVIER         85     10      3
+ CASTEST MODIF perf013c                    lebouvier F.LEBOUVIER         86     10      3
+ CASTEST MODIF perf013d                    lebouvier F.LEBOUVIER         86     10      3
+ CASTEST MODIF perf013e                    lebouvier F.LEBOUVIER         86     10      3
+ CASTEST MODIF perf013f                    lebouvier F.LEBOUVIER         86     10      3
+ CASTEST MODIF rccm02a                     lebouvier F.LEBOUVIER        343      1      1
+ CASTEST MODIF rccm02b                     lebouvier F.LEBOUVIER        343      1      1
+ CASTEST MODIF rccm02c                     lebouvier F.LEBOUVIER        334      1      1
+ CASTEST MODIF rccm03a                     lebouvier F.LEBOUVIER       4173      1      1
+ CASTEST MODIF sdld02a                     lebouvier F.LEBOUVIER        435     32     11
+ CASTEST MODIF sdld02b                     lebouvier F.LEBOUVIER        603     11      3
+ CASTEST MODIF sdld02c                     lebouvier F.LEBOUVIER        348      9      2
+ CASTEST MODIF sdld02d                     lebouvier F.LEBOUVIER        361      9      2
+ CASTEST MODIF sdld02e                     lebouvier F.LEBOUVIER        686     10      3
+ CASTEST MODIF sdld02f                     lebouvier F.LEBOUVIER        370      9      2
+ CASTEST MODIF sdld04a                     lebouvier F.LEBOUVIER        863     11      3
+ CASTEST MODIF sdld101a                    lebouvier F.LEBOUVIER        412      9      2
+ CASTEST MODIF sdld102a                    lebouvier F.LEBOUVIER        916     16      7
+ CASTEST MODIF sdld102b                    lebouvier F.LEBOUVIER        493     16      7
+ CASTEST MODIF sdld102c                    lebouvier F.LEBOUVIER        453     19      6
+ CASTEST MODIF sdld102d                    lebouvier F.LEBOUVIER        376     13      5
+ CASTEST MODIF sdld102e                    lebouvier F.LEBOUVIER        592     10      3
+ CASTEST MODIF sdld103a                    lebouvier F.LEBOUVIER        692      9      2
+ CASTEST MODIF sdld103b                    lebouvier F.LEBOUVIER        434      9      2
+ CASTEST MODIF sdld104a                    lebouvier F.LEBOUVIER        311     11      3
+ CASTEST MODIF sdld104b                    lebouvier F.LEBOUVIER        320     10      3
+ CASTEST MODIF sdld105a                    lebouvier F.LEBOUVIER        289     10      3
+ CASTEST MODIF sdld106a                    lebouvier F.LEBOUVIER        230     10      3
+ CASTEST MODIF sdld21b                     lebouvier F.LEBOUVIER        672      9      2
+ CASTEST MODIF sdld21c                     lebouvier F.LEBOUVIER        384     12      4
+ CASTEST MODIF sdld22a                     lebouvier F.LEBOUVIER        328      9      2
+ CASTEST MODIF sdld22b                     lebouvier F.LEBOUVIER        417      9      2
+ CASTEST MODIF sdld23a                     lebouvier F.LEBOUVIER        513     15      7
+ CASTEST MODIF sdld25a                     lebouvier F.LEBOUVIER        240      9      2
+ CASTEST MODIF sdld27a                     lebouvier F.LEBOUVIER        583     12      4
+ CASTEST MODIF sdld27b                     lebouvier F.LEBOUVIER        353      9      2
+ CASTEST MODIF sdld27c                     lebouvier F.LEBOUVIER        356      9      2
+ CASTEST MODIF sdld27d                     lebouvier F.LEBOUVIER        363      9      2
+ CASTEST MODIF sdld27e                     lebouvier F.LEBOUVIER        670     16      7
+ CASTEST MODIF sdld29a                     lebouvier F.LEBOUVIER        236      9      2
+ CASTEST MODIF sdld301a                    lebouvier F.LEBOUVIER        537     10      3
+ CASTEST MODIF sdld301b                    lebouvier F.LEBOUVIER        832     10      3
+ CASTEST MODIF sdld30a                     lebouvier F.LEBOUVIER       1679     10      3
+ CASTEST MODIF sdld313c                    lebouvier F.LEBOUVIER        200     13      5
+ CASTEST MODIF sdld313d                    lebouvier F.LEBOUVIER        360     10      3
+ CASTEST MODIF sdld31b                     lebouvier F.LEBOUVIER        386     18      9
+ CASTEST MODIF sdld320a                    lebouvier F.LEBOUVIER        460     10      3
+ CASTEST MODIF sdld321a                    lebouvier F.LEBOUVIER        468      9      2
+ CASTEST MODIF sdld321b                    lebouvier F.LEBOUVIER        364      9      2
+ CASTEST MODIF sdld321c                    lebouvier F.LEBOUVIER        361      9      2
+ CASTEST MODIF sdld325a                    lebouvier F.LEBOUVIER        511     10      3
+ CASTEST MODIF sdld325b                    lebouvier F.LEBOUVIER        542     10      3
+ CASTEST MODIF sdld33a                     lebouvier F.LEBOUVIER        455     10      3
+ CASTEST MODIF sdld34a                     lebouvier F.LEBOUVIER        253     10      3
+ CASTEST MODIF sdld34b                     lebouvier F.LEBOUVIER        175     10      3
+ CASTEST MODIF sdld400a                    lebouvier F.LEBOUVIER        500     25     13
+ CASTEST MODIF sdld400b                    lebouvier F.LEBOUVIER        330     19      9
+ CASTEST MODIF sdll01a                     lebouvier F.LEBOUVIER        213     13      5
+ CASTEST MODIF sdll01b                     lebouvier F.LEBOUVIER        184     13      5
+ CASTEST MODIF sdll02a                     lebouvier F.LEBOUVIER        213      9      2
+ CASTEST MODIF sdll02b                     lebouvier F.LEBOUVIER        236      9      2
+ CASTEST MODIF sdll02c                     lebouvier F.LEBOUVIER        261     10      3
+ CASTEST MODIF sdll04a                     lebouvier F.LEBOUVIER        251     16      7
+ CASTEST MODIF sdll06a                     lebouvier F.LEBOUVIER        241      9      2
+ CASTEST MODIF sdll06b                     lebouvier F.LEBOUVIER        204      9      2
+ CASTEST MODIF sdll08a                     lebouvier F.LEBOUVIER        151     10      3
+ CASTEST MODIF sdll09a                     lebouvier F.LEBOUVIER        659     13      5
+ CASTEST MODIF sdll101a                    lebouvier F.LEBOUVIER        335     19      9
+ CASTEST MODIF sdll101b                    lebouvier F.LEBOUVIER        269     15      5
+ CASTEST MODIF sdll104a                    lebouvier F.LEBOUVIER        598     13      4
+ CASTEST MODIF sdll105a                    lebouvier F.LEBOUVIER        402     10      3
+ CASTEST MODIF sdll106a                    lebouvier F.LEBOUVIER        266      9      2
+ CASTEST MODIF sdll107a                    lebouvier F.LEBOUVIER       2038      9      2
+ CASTEST MODIF sdll108b                    lebouvier F.LEBOUVIER        454      9      2
+ CASTEST MODIF sdll109a                    lebouvier F.LEBOUVIER       2062     11      2
+ CASTEST MODIF sdll109b                    lebouvier F.LEBOUVIER       1952     25     10
+ CASTEST MODIF sdll109c                    lebouvier F.LEBOUVIER       1723     10      2
+ CASTEST MODIF sdll109d                    lebouvier F.LEBOUVIER       1788     11      2
+ CASTEST MODIF sdll10a                     lebouvier F.LEBOUVIER       1337      9      2
+ CASTEST MODIF sdll110a                    lebouvier F.LEBOUVIER        587     10      3
+ CASTEST MODIF sdll110b                    lebouvier F.LEBOUVIER        534     10      3
+ CASTEST MODIF sdll110c                    lebouvier F.LEBOUVIER        535     10      3
+ CASTEST MODIF sdll110d                    lebouvier F.LEBOUVIER        563     10      3
+ CASTEST MODIF sdll110e                    lebouvier F.LEBOUVIER        563     10      3
+ CASTEST MODIF sdll112a                    lebouvier F.LEBOUVIER        761      9      2
+ CASTEST MODIF sdll112b                    lebouvier F.LEBOUVIER        788      9      2
+ CASTEST MODIF sdll113a                    lebouvier F.LEBOUVIER        569     19      9
+ CASTEST MODIF sdll113b                    lebouvier F.LEBOUVIER        654      7      9
+ CASTEST MODIF sdll113c                    lebouvier F.LEBOUVIER        460     14      5
+ CASTEST MODIF sdll114a                    lebouvier F.LEBOUVIER        413     13      5
+ CASTEST MODIF sdll115a                    lebouvier F.LEBOUVIER       1563     10      3
+ CASTEST MODIF sdll115b                    lebouvier F.LEBOUVIER        867     13      5
+ CASTEST MODIF sdll116a                    lebouvier F.LEBOUVIER       5148     10      3
+ CASTEST MODIF sdll117a                    lebouvier F.LEBOUVIER       1499     10      3
+ CASTEST MODIF sdll118a                    lebouvier F.LEBOUVIER        430     10      3
+ CASTEST MODIF sdll118b                    lebouvier F.LEBOUVIER        358     10      3
+ CASTEST MODIF sdll119a                    lebouvier F.LEBOUVIER        507     10      3
+ CASTEST MODIF sdll119b                    lebouvier F.LEBOUVIER        519     10      3
+ CASTEST MODIF sdll11a                     lebouvier F.LEBOUVIER        464     19      9
+ CASTEST MODIF sdll11b                     lebouvier F.LEBOUVIER        195     10      3
+ CASTEST MODIF sdll11c                     lebouvier F.LEBOUVIER        196     10      3
+ CASTEST MODIF sdll11d                     lebouvier F.LEBOUVIER        196     10      3
+ CASTEST MODIF sdll11e                     lebouvier F.LEBOUVIER        211     10      3
+ CASTEST MODIF sdll11f                     lebouvier F.LEBOUVIER        148     10      3
+ CASTEST MODIF sdll11g                     lebouvier F.LEBOUVIER        148     10      3
+ CASTEST MODIF sdll11i                     lebouvier F.LEBOUVIER        149     10      3
+ CASTEST MODIF sdll120a                    lebouvier F.LEBOUVIER        582     10      3
+ CASTEST MODIF sdll121a                    lebouvier F.LEBOUVIER        551     10      3
+ CASTEST MODIF sdll123a                    lebouvier F.LEBOUVIER        381     35     16
+ CASTEST MODIF sdll123b                    lebouvier F.LEBOUVIER        477     29     17
+ CASTEST MODIF sdll123c                    lebouvier F.LEBOUVIER        814     29     17
+ CASTEST MODIF sdll123d                    lebouvier F.LEBOUVIER        252     14      6
+ CASTEST MODIF sdll123e                    lebouvier F.LEBOUVIER        234     14      6
+ CASTEST MODIF sdll123f                    lebouvier F.LEBOUVIER        249     14      6
+ CASTEST MODIF sdll124a                    lebouvier F.LEBOUVIER        284     10      3
+ CASTEST MODIF sdll125a                    lebouvier F.LEBOUVIER        305     10      3
+ CASTEST MODIF sdll125b                    lebouvier F.LEBOUVIER        306     10      3
+ CASTEST MODIF sdll125c                    lebouvier F.LEBOUVIER        282     10      3
+ CASTEST MODIF sdll126b                    lebouvier F.LEBOUVIER        220     10      3
+ CASTEST MODIF sdll126d                    lebouvier F.LEBOUVIER        228     11      4
+ CASTEST MODIF sdll127a                    lebouvier F.LEBOUVIER        439     14      6
+ CASTEST MODIF sdll127b                    lebouvier F.LEBOUVIER      10234     14      6
+ CASTEST MODIF sdll127c                    lebouvier F.LEBOUVIER      10235     14      6
+ CASTEST MODIF sdll128a                    lebouvier F.LEBOUVIER        865     15      7
+ CASTEST MODIF sdll129a                    lebouvier F.LEBOUVIER        773     18      9
+ CASTEST MODIF sdll130a                    lebouvier F.LEBOUVIER        270     10      3
+ CASTEST MODIF sdll130b                    lebouvier F.LEBOUVIER        307     10      3
+ CASTEST MODIF sdll131a                    lebouvier F.LEBOUVIER        988     10      3
+ CASTEST MODIF sdll132a                    lebouvier F.LEBOUVIER        682     14      4
+ CASTEST MODIF sdll132b                    lebouvier F.LEBOUVIER        690     14      4
+ CASTEST MODIF sdll133a                    lebouvier F.LEBOUVIER        244     10      3
+ CASTEST MODIF sdll133b                    lebouvier F.LEBOUVIER        377     10      3
+ CASTEST MODIF sdll134a                    lebouvier F.LEBOUVIER       1063     10      3
+ CASTEST MODIF sdll134b                    lebouvier F.LEBOUVIER        746     10      3
+ CASTEST MODIF sdll135a                    lebouvier F.LEBOUVIER        441     16      7
+ CASTEST MODIF sdll135b                    lebouvier F.LEBOUVIER        440     16      7
+ CASTEST MODIF sdll135c                    lebouvier F.LEBOUVIER        432     16      7
+ CASTEST MODIF sdll135d                    lebouvier F.LEBOUVIER        431     16      7
+ CASTEST MODIF sdll135e                    lebouvier F.LEBOUVIER        474     10      3
+ CASTEST MODIF sdll137a                    lebouvier F.LEBOUVIER        480     15      6
+ CASTEST MODIF sdll137b                    lebouvier F.LEBOUVIER        608     16      7
+ CASTEST MODIF sdll137c                    lebouvier F.LEBOUVIER        675     19     10
+ CASTEST MODIF sdll138a                    lebouvier F.LEBOUVIER        684     11      3
+ CASTEST MODIF sdll140a                    lebouvier F.LEBOUVIER        425     22     12
+ CASTEST MODIF sdll141a                    lebouvier F.LEBOUVIER        188     14      6
+ CASTEST MODIF sdll141b                    lebouvier F.LEBOUVIER        194     14      6
+ CASTEST MODIF sdll141c                    lebouvier F.LEBOUVIER        297     18      9
+ CASTEST MODIF sdll141d                    lebouvier F.LEBOUVIER        192     14      6
+ CASTEST MODIF sdll141e                    lebouvier F.LEBOUVIER        212     14      6
+ CASTEST MODIF sdll144a                    lebouvier F.LEBOUVIER        324     10      3
+ CASTEST MODIF sdll144b                    lebouvier F.LEBOUVIER        326     10      3
+ CASTEST MODIF sdll147a                    lebouvier F.LEBOUVIER        869     10      3
+ CASTEST MODIF sdll148a                    lebouvier F.LEBOUVIER        172     10      3
+ CASTEST MODIF sdll148b                    lebouvier F.LEBOUVIER        191     10      3
+ CASTEST MODIF sdll149a                    lebouvier F.LEBOUVIER       3156     10      3
+ CASTEST MODIF sdll149b                    lebouvier F.LEBOUVIER       2076     10      3
+ CASTEST MODIF sdll14a                     lebouvier F.LEBOUVIER        161     10      3
+ CASTEST MODIF sdll14b                     lebouvier F.LEBOUVIER        167     10      3
+ CASTEST MODIF sdll14c                     lebouvier F.LEBOUVIER        163     10      3
+ CASTEST MODIF sdll15a                     lebouvier F.LEBOUVIER        239     13      5
+ CASTEST MODIF sdll23a                     lebouvier F.LEBOUVIER        656     11      3
+ CASTEST MODIF sdll23b                     lebouvier F.LEBOUVIER        463      9      2
+ CASTEST MODIF sdll23c                     lebouvier F.LEBOUVIER        474      9      2
+ CASTEST MODIF sdll302a                    lebouvier F.LEBOUVIER        706     10      3
+ CASTEST MODIF sdll302b                    lebouvier F.LEBOUVIER        850     10      3
+ CASTEST MODIF sdll400a                    lebouvier F.LEBOUVIER        248     10      3
+ CASTEST MODIF sdll403a                    lebouvier F.LEBOUVIER        247     10      3
+ CASTEST MODIF sdll501a                    lebouvier F.LEBOUVIER        544     10      3
+ CASTEST MODIF sdll502a                    lebouvier F.LEBOUVIER        537     10      3
+ CASTEST MODIF sdll503a                    lebouvier F.LEBOUVIER        357     10      3
+ CASTEST MODIF sdll503b                    lebouvier F.LEBOUVIER        393     10      3
+ CASTEST MODIF sdll503c                    lebouvier F.LEBOUVIER        508     10      3
+ CASTEST MODIF sdll504a                    lebouvier F.LEBOUVIER        554     10      3
+ CASTEST MODIF sdll504b                    lebouvier F.LEBOUVIER        575     10      3
+ CASTEST MODIF sdll504c                    lebouvier F.LEBOUVIER        575     10      3
+ CASTEST MODIF sdll505a                    lebouvier F.LEBOUVIER        452     10      3
+ CASTEST MODIF sdll506a                    lebouvier F.LEBOUVIER        511     10      3
+ CASTEST MODIF sdll507a                    lebouvier F.LEBOUVIER        384     10      3
+ CASTEST MODIF sdll508a                    lebouvier F.LEBOUVIER        386     10      3
+ CASTEST MODIF sdll508b                    lebouvier F.LEBOUVIER        386     10      3
+ CASTEST MODIF sdll508c                    lebouvier F.LEBOUVIER        394     10      3
+ CASTEST MODIF sdls01a                     lebouvier F.LEBOUVIER        440     14      4
+ CASTEST MODIF sdls01b                     lebouvier F.LEBOUVIER        317     11      3
+ CASTEST MODIF sdls01c                     lebouvier F.LEBOUVIER        511     25     13
+ CASTEST MODIF sdls01d                     lebouvier F.LEBOUVIER        126      9      2
+ CASTEST MODIF sdls01e                     lebouvier F.LEBOUVIER        433     11      3
+ CASTEST MODIF sdls01f                     lebouvier F.LEBOUVIER        431     11      3
+ CASTEST MODIF sdls01g                     lebouvier F.LEBOUVIER        441     11      3
+ CASTEST MODIF sdls01h                     lebouvier F.LEBOUVIER        437     11      3
+ CASTEST MODIF sdls02a                     lebouvier F.LEBOUVIER        103      9      2
+ CASTEST MODIF sdls03a                     lebouvier F.LEBOUVIER        248     15      5
+ CASTEST MODIF sdls03b                     lebouvier F.LEBOUVIER        394     19      7
+ CASTEST MODIF sdls03c                     lebouvier F.LEBOUVIER        128     12      4
+ CASTEST MODIF sdls03d                     lebouvier F.LEBOUVIER        116      9      2
+ CASTEST MODIF sdls04a                     lebouvier F.LEBOUVIER        190     10      3
+ CASTEST MODIF sdls04b                     lebouvier F.LEBOUVIER        225     10      3
+ CASTEST MODIF sdls07a                     lebouvier F.LEBOUVIER        120     10      3
+ CASTEST MODIF sdls07b                     lebouvier F.LEBOUVIER         77     10      3
+ CASTEST MODIF sdls07c                     lebouvier F.LEBOUVIER        129     12      4
+ CASTEST MODIF sdls07d                     lebouvier F.LEBOUVIER        133     10      3
+ CASTEST MODIF sdls07e                     lebouvier F.LEBOUVIER        129     10      3
+ CASTEST MODIF sdls08a                     lebouvier F.LEBOUVIER        380     19      9
+ CASTEST MODIF sdls100a                    lebouvier F.LEBOUVIER        140      9      2
+ CASTEST MODIF sdls100b                    lebouvier F.LEBOUVIER        139      9      2
+ CASTEST MODIF sdls100c                    lebouvier F.LEBOUVIER        139      9      2
+ CASTEST MODIF sdls102a                    lebouvier F.LEBOUVIER         99      9      2
+ CASTEST MODIF sdls102b                    lebouvier F.LEBOUVIER        100      9      2
+ CASTEST MODIF sdls103a                    lebouvier F.LEBOUVIER        398     10      3
+ CASTEST MODIF sdls104a                    lebouvier F.LEBOUVIER        366     10      3
+ CASTEST MODIF sdls105a                    lebouvier F.LEBOUVIER        315     11      3
+ CASTEST MODIF sdls105b                    lebouvier F.LEBOUVIER        289     11      3
+ CASTEST MODIF sdls106a                    lebouvier F.LEBOUVIER        461     19      9
+ CASTEST MODIF sdls106b                    lebouvier F.LEBOUVIER        346     16      7
+ CASTEST MODIF sdls106c                    lebouvier F.LEBOUVIER        343     16      7
+ CASTEST MODIF sdls106d                    lebouvier F.LEBOUVIER        320     19      9
+ CASTEST MODIF sdls106e                    lebouvier F.LEBOUVIER        345     10      3
+ CASTEST MODIF sdls106f                    lebouvier F.LEBOUVIER        255     10      3
+ CASTEST MODIF sdls106g                    lebouvier F.LEBOUVIER        280     16      7
+ CASTEST MODIF sdls107a                    lebouvier F.LEBOUVIER        403     11      3
+ CASTEST MODIF sdls108a                    lebouvier F.LEBOUVIER       2480     10      3
+ CASTEST MODIF sdls109a                    lebouvier F.LEBOUVIER        139     13      5
+ CASTEST MODIF sdls109b                    lebouvier F.LEBOUVIER        139     13      5
+ CASTEST MODIF sdls109c                    lebouvier F.LEBOUVIER        139     13      5
+ CASTEST MODIF sdls109d                    lebouvier F.LEBOUVIER         90     10      3
+ CASTEST MODIF sdls109e                    lebouvier F.LEBOUVIER         90     10      3
+ CASTEST MODIF sdls109f                    lebouvier F.LEBOUVIER         87     10      3
+ CASTEST MODIF sdls109g                    lebouvier F.LEBOUVIER        145     13      5
+ CASTEST MODIF sdls109h                    lebouvier F.LEBOUVIER        187     10      3
+ CASTEST MODIF sdls111a                    lebouvier F.LEBOUVIER        426     31     17
+ CASTEST MODIF sdls112a                    lebouvier F.LEBOUVIER        446     10      3
+ CASTEST MODIF sdls113a                    lebouvier F.LEBOUVIER        406     10      3
+ CASTEST MODIF sdls114a                    lebouvier F.LEBOUVIER        314     10      3
+ CASTEST MODIF sdls114b                    lebouvier F.LEBOUVIER        261     10      3
+ CASTEST MODIF sdls114c                    lebouvier F.LEBOUVIER        304      3      3
+ CASTEST MODIF sdls114d                    lebouvier F.LEBOUVIER        301     10      3
+ CASTEST MODIF sdls118a                    lebouvier F.LEBOUVIER        470     11      3
+ CASTEST MODIF sdls118b                    lebouvier F.LEBOUVIER        577     11      3
+ CASTEST MODIF sdls119b                    lebouvier F.LEBOUVIER        578     10      3
+ CASTEST MODIF sdls120a                    lebouvier F.LEBOUVIER        293     10      3
+ CASTEST MODIF sdls120b                    lebouvier F.LEBOUVIER        221     10      3
+ CASTEST MODIF sdls121a                    lebouvier F.LEBOUVIER        122      1      1
+ CASTEST MODIF sdls121b                    lebouvier F.LEBOUVIER        111      1      1
+ CASTEST MODIF sdls121c                    lebouvier F.LEBOUVIER        115      1      1
+ CASTEST MODIF sdls121d                    lebouvier F.LEBOUVIER        359     10      3
+ CASTEST MODIF sdls122a                    lebouvier F.LEBOUVIER        593     22     11
+ CASTEST MODIF sdls139a                    lebouvier F.LEBOUVIER        651     10      3
+ CASTEST MODIF sdls300a                    lebouvier F.LEBOUVIER        162     10      3
+ CASTEST MODIF sdls501a                    lebouvier F.LEBOUVIER        234     10      3
+ CASTEST MODIF sdls501b                    lebouvier F.LEBOUVIER        131     10      3
+ CASTEST MODIF sdls502a                    lebouvier F.LEBOUVIER        173     10      3
+ CASTEST MODIF sdls502b                    lebouvier F.LEBOUVIER        173     10      3
+ CASTEST MODIF sdls502c                    lebouvier F.LEBOUVIER        188     10      3
+ CASTEST MODIF sdls502d                    lebouvier F.LEBOUVIER        188     10      3
+ CASTEST MODIF sdls502e                    lebouvier F.LEBOUVIER        191     10      3
+ CASTEST MODIF sdls502f                    lebouvier F.LEBOUVIER        191     10      3
+ CASTEST MODIF sdls502g                    lebouvier F.LEBOUVIER        186     10      3
+ CASTEST MODIF sdls503a                    lebouvier F.LEBOUVIER        195     10      3
+ CASTEST MODIF sdls503b                    lebouvier F.LEBOUVIER        187     10      3
+ CASTEST MODIF sdls503c                    lebouvier F.LEBOUVIER        180     10      3
+ CASTEST MODIF sdls503d                    lebouvier F.LEBOUVIER        177     10      3
+ CASTEST MODIF sdls504a                    lebouvier F.LEBOUVIER        192     23      4
+ CASTEST MODIF sdls504b                    lebouvier F.LEBOUVIER        179     11      4
+ CASTEST MODIF sdls505a                    lebouvier F.LEBOUVIER        297     11      4
+ CASTEST MODIF sdls505b                    lebouvier F.LEBOUVIER        268     11      4
+ CASTEST MODIF sdlv100a                    lebouvier F.LEBOUVIER        180     13      5
+ CASTEST MODIF sdlv100b                    lebouvier F.LEBOUVIER        181     13      5
+ CASTEST MODIF sdlv111a                    lebouvier F.LEBOUVIER        320     13      5
+ CASTEST MODIF sdlv111b                    lebouvier F.LEBOUVIER        209     10      3
+ CASTEST MODIF sdlv122a                    lebouvier F.LEBOUVIER        526     11      3
+ CASTEST MODIF sdlv122b                    lebouvier F.LEBOUVIER        268     10      3
+ CASTEST MODIF sdlv124a                    lebouvier F.LEBOUVIER        536     10      3
+ CASTEST MODIF sdlv125a                    lebouvier F.LEBOUVIER        498     10      3
+ CASTEST MODIF sdlv128a                    lebouvier F.LEBOUVIER        451     10      3
+ CASTEST MODIF sdlv128b                    lebouvier F.LEBOUVIER        297     10      3
+ CASTEST MODIF sdlv129a                    lebouvier F.LEBOUVIER        303      9      2
+ CASTEST MODIF sdlv130a                    lebouvier F.LEBOUVIER        267     10      3
+ CASTEST MODIF sdlv130b                    lebouvier F.LEBOUVIER        281     10      3
+ CASTEST MODIF sdlv131d                    lebouvier F.LEBOUVIER        294     11      3
+ CASTEST MODIF sdlv132a                    lebouvier F.LEBOUVIER        613     22     11
+ CASTEST MODIF sdlv132b                    lebouvier F.LEBOUVIER        282     10      3
+ CASTEST MODIF sdlv301a                    lebouvier F.LEBOUVIER        165     10      3
+ CASTEST MODIF sdlv301b                    lebouvier F.LEBOUVIER        193     10      3
+ CASTEST MODIF sdlv302a                    lebouvier F.LEBOUVIER        252     10      3
+ CASTEST MODIF sdlv302b                    lebouvier F.LEBOUVIER        395     16      7
+ CASTEST MODIF sdlv302c                    lebouvier F.LEBOUVIER        348     72      4
+ CASTEST MODIF sdlv302d                    lebouvier F.LEBOUVIER        402     11      4
+ CASTEST MODIF sdlv401a                    lebouvier F.LEBOUVIER        163     10      3
+ CASTEST MODIF sdlv401b                    lebouvier F.LEBOUVIER        163     10      3
+ CASTEST MODIF sdlv402a                    lebouvier F.LEBOUVIER        369     19      9
+ CASTEST MODIF sdlx01a                     lebouvier F.LEBOUVIER        166      9      2
+ CASTEST MODIF sdlx02a                     lebouvier F.LEBOUVIER        460     11      3
+ CASTEST MODIF sdlx02b                     lebouvier F.LEBOUVIER        116      9      2
+ CASTEST MODIF sdlx02c                     lebouvier F.LEBOUVIER        128     11      3
+ CASTEST MODIF sdlx02d                     lebouvier F.LEBOUVIER        163     10      3
+ CASTEST MODIF sdlx02e                     lebouvier F.LEBOUVIER        170     10      3
+ CASTEST MODIF sdlx02f                     lebouvier F.LEBOUVIER        169     10      3
+ CASTEST MODIF sdlx03a                     lebouvier F.LEBOUVIER        110      9      2
+ CASTEST MODIF sdlx03b                     lebouvier F.LEBOUVIER        228     11      3
+ CASTEST MODIF sdlx201a                    lebouvier F.LEBOUVIER       1258    119     67
+ CASTEST MODIF sdlx300a                    lebouvier F.LEBOUVIER        976     10      3
+ CASTEST MODIF sdlx301a                    lebouvier F.LEBOUVIER       4881     13      5
+ CASTEST MODIF sdlx301b                    lebouvier F.LEBOUVIER        185     10      3
+ CASTEST MODIF sdlx302a                    lebouvier F.LEBOUVIER        401     10      3
+ CASTEST MODIF sdlx400a                    lebouvier F.LEBOUVIER        389     19      9
+ CASTEST MODIF sdlx400b                    lebouvier F.LEBOUVIER        420     19      9
+ CASTEST MODIF sdlx400c                    lebouvier F.LEBOUVIER        390     19      9
+ CASTEST MODIF sdnd100a                    lebouvier F.LEBOUVIER        224      9      2
+ CASTEST MODIF sdnd100b                    lebouvier F.LEBOUVIER        220      9      2
+ CASTEST MODIF sdnd101a                    lebouvier F.LEBOUVIER        331      9      2
+ CASTEST MODIF sdnd102a                    lebouvier F.LEBOUVIER        396     11      3
+ CASTEST MODIF sdnd102b                    lebouvier F.LEBOUVIER        848     13      5
+ CASTEST MODIF sdnd102c                    lebouvier F.LEBOUVIER        259      9      2
+ CASTEST MODIF sdnd103a                    lebouvier F.LEBOUVIER        328      9      2
+ CASTEST MODIF sdnd104a                    lebouvier F.LEBOUVIER        684      9      2
+ CASTEST MODIF sdnd105a                    lebouvier F.LEBOUVIER        235      9      2
+ CASTEST MODIF sdnd105b                    lebouvier F.LEBOUVIER        241      9      2
+ CASTEST MODIF sdnd106a                    lebouvier F.LEBOUVIER        265     10      3
+ CASTEST MODIF sdnd110a                    lebouvier F.LEBOUVIER        332      9      2
+ CASTEST MODIF sdnd111a                    lebouvier F.LEBOUVIER        387      9      2
+ CASTEST MODIF sdnd112a                    lebouvier F.LEBOUVIER        306      9      2
+ CASTEST MODIF sdnd120a                    lebouvier F.LEBOUVIER        350      9      2
+ CASTEST MODIF sdnd121a                    lebouvier F.LEBOUVIER        256     10      3
+ CASTEST MODIF sdnl104a                    lebouvier F.LEBOUVIER        286     10      3
+ CASTEST MODIF sdnl104b                    lebouvier F.LEBOUVIER        509     16      7
+ CASTEST MODIF sdnl105a                    lebouvier F.LEBOUVIER        554     10      3
+ CASTEST MODIF sdnl105b                    lebouvier F.LEBOUVIER        584     13      5
+ CASTEST MODIF sdnl105c                    lebouvier F.LEBOUVIER        633     19      9
+ CASTEST MODIF sdnl105d                    lebouvier F.LEBOUVIER        572     13      5
+ CASTEST MODIF sdnl111a                    lebouvier F.LEBOUVIER        265      9      2
+ CASTEST MODIF sdnl111b                    lebouvier F.LEBOUVIER        186      9      2
+ CASTEST MODIF sdnl112a                    lebouvier F.LEBOUVIER        316     10      3
+ CASTEST MODIF sdnl112b                    lebouvier F.LEBOUVIER        569     10      3
+ CASTEST MODIF sdnl112c                    lebouvier F.LEBOUVIER        640     10      3
+ CASTEST MODIF sdnl120a                    lebouvier F.LEBOUVIER        543     10      3
+ CASTEST MODIF sdnl131a                    lebouvier F.LEBOUVIER        989     10      3
+ CASTEST MODIF sdnl132a                    lebouvier F.LEBOUVIER        449     10      3
+ CASTEST MODIF sdnl133a                    lebouvier F.LEBOUVIER        294     13      5
+ CASTEST MODIF sdnl133b                    lebouvier F.LEBOUVIER        323     13      5
+ CASTEST MODIF sdnl133c                    lebouvier F.LEBOUVIER        327     13      5
+ CASTEST MODIF sdnl136a                    lebouvier F.LEBOUVIER        671     10      3
+ CASTEST MODIF sdnl301a                    lebouvier F.LEBOUVIER        437     10      3
+ CASTEST MODIF sdnl32a                     lebouvier F.LEBOUVIER        262      9      2
+ CASTEST MODIF sdns01a                     lebouvier F.LEBOUVIER        708     10      3
+ CASTEST MODIF sdns01b                     lebouvier F.LEBOUVIER        382     10      3
+ CASTEST MODIF sdns107a                    lebouvier F.LEBOUVIER        432     10      3
+ CASTEST MODIF sdns107b                    lebouvier F.LEBOUVIER        433     10      3
+ CASTEST MODIF sdnv101a                    lebouvier F.LEBOUVIER       1385      9      2
+ CASTEST MODIF sdnv102a                    lebouvier F.LEBOUVIER        569     10      3
+ CASTEST MODIF sdnv106a                    lebouvier F.LEBOUVIER        673     14      5
+ CASTEST MODIF sdnv107a                    lebouvier F.LEBOUVIER        679     19      9
+ CASTEST MODIF sdnv107b                    lebouvier F.LEBOUVIER        489     11      3
+ CASTEST MODIF sdnv107c                    lebouvier F.LEBOUVIER        946     21     10
+ CASTEST MODIF shll100a                    lebouvier F.LEBOUVIER        679     19      9
+ CASTEST MODIF shll100b                    lebouvier F.LEBOUVIER        629     19      9
+ CASTEST MODIF shll100c                    lebouvier F.LEBOUVIER        605     16      7
+ CASTEST MODIF shll102a                    lebouvier F.LEBOUVIER        433     10      3
+ CASTEST MODIF shls200a                    lebouvier F.LEBOUVIER        576      5      7
+ CASTEST MODIF shlv301a                    lebouvier F.LEBOUVIER        506     13      5
+ CASTEST MODIF ssll103a                    lebouvier F.LEBOUVIER        316     24     17
+ CASTEST MODIF ssll103b                    lebouvier F.LEBOUVIER        286     30     15
+ CASTEST MODIF ssll105a                    lebouvier F.LEBOUVIER        122     13      5
+ CASTEST MODIF ssll105b                    lebouvier F.LEBOUVIER        121     13      5
+ CASTEST MODIF ssll105c                    lebouvier F.LEBOUVIER        121     13      5
+ CASTEST MODIF ssll106a                    lebouvier F.LEBOUVIER        776     10      3
+ CASTEST MODIF ssll106c                    lebouvier F.LEBOUVIER        836     10      3
+ CASTEST MODIF ssll106e                    lebouvier F.LEBOUVIER       1142     10      3
+ CASTEST MODIF ssll403a                    lebouvier F.LEBOUVIER        161     11      4
+ CASTEST MODIF ssll404a                    lebouvier F.LEBOUVIER        229     16      8
+ CASTEST MODIF ssls110a                    lebouvier F.LEBOUVIER        172     11      4
+ CASTEST MODIF ssls110b                    lebouvier F.LEBOUVIER        175     11      4
+ CASTEST MODIF ssls111a                    lebouvier F.LEBOUVIER        245     10      3
+ CASTEST MODIF ssls111b                    lebouvier F.LEBOUVIER        277     10      3
+ CASTEST MODIF ssls111c                    lebouvier F.LEBOUVIER        676     13      5
+ CASTEST MODIF ssls116a                    lebouvier F.LEBOUVIER        271     13      5
+ CASTEST MODIF ssls116b                    lebouvier F.LEBOUVIER        274     13      5
+ CASTEST MODIF ssls116c                    lebouvier F.LEBOUVIER        276     13      5
+ CASTEST MODIF ssls116d                    lebouvier F.LEBOUVIER        276     13      5
+ CASTEST MODIF ssls117a                    lebouvier F.LEBOUVIER        239     10      3
+ CASTEST MODIF ssls117b                    lebouvier F.LEBOUVIER        242     10      3
+ CASTEST MODIF ssls117c                    lebouvier F.LEBOUVIER        664     13      5
+ CASTEST MODIF ssls117d                    lebouvier F.LEBOUVIER        633     13      5
+ CASTEST MODIF ssls125a                    lebouvier F.LEBOUVIER        162     12      5
+ CASTEST MODIF ssls125b                    lebouvier F.LEBOUVIER        160     12      5
+ CASTEST MODIF ssls125c                    lebouvier F.LEBOUVIER        160     12      5
+ CASTEST MODIF ssls125d                    lebouvier F.LEBOUVIER        144     12      5
+ CASTEST MODIF sslv139a                    lebouvier F.LEBOUVIER        186     15      7
+ CASTEST MODIF sslv139b                    lebouvier F.LEBOUVIER        231     15      7
+ CASTEST MODIF sslv139c                    lebouvier F.LEBOUVIER        143     12      5
+ CASTEST MODIF sslx200a                    lebouvier F.LEBOUVIER        233     10      3
+ CASTEST MODIF ssnl123a                    lebouvier F.LEBOUVIER        391     12      5
+ CASTEST MODIF ssns102a                    lebouvier F.LEBOUVIER        329     12      5
+ CASTEST MODIF ssns102b                    lebouvier F.LEBOUVIER        316     12      5
+ CASTEST MODIF wdnp101a                    lebouvier F.LEBOUVIER       1064     11      3
+ CASTEST MODIF zzzz102a                    lebouvier F.LEBOUVIER       1560     34     19
+ CASTEST MODIF zzzz108a                    lebouvier F.LEBOUVIER       1195      9      2
+ CASTEST MODIF zzzz108b                    lebouvier F.LEBOUVIER        336     10      3
+ CASTEST MODIF zzzz115a                    lebouvier F.LEBOUVIER        406     10      3
+ CASTEST MODIF zzzz200a                    lebouvier F.LEBOUVIER        476     10      3
+ CASTEST MODIF zzzz200b                    lebouvier F.LEBOUVIER       1163     13      4
+ CASTEST MODIF zzzz200c                    lebouvier F.LEBOUVIER        516      9      2
+ CASTEST MODIF zzzz208a                    lebouvier F.LEBOUVIER        551     25     13
+ CASTEST MODIF zzzz208b                    lebouvier F.LEBOUVIER        484     19      9
+ CASTEST MODIF zzzz298c                    lebouvier F.LEBOUVIER        316     10      3
+CATALOPY MODIF commande/calc_modal         lebouvier F.LEBOUVIER        102      1      1
+CATALOPY MODIF commande/calc_mode_rotation  lebouvier F.LEBOUVIER         59      4      4
+CATALOPY MODIF commande/info_mode          lebouvier F.LEBOUVIER        104     57     12
+CATALOPY MODIF commande/macro_mode_meca    lebouvier F.LEBOUVIER         91      3      3
+CATALOPY MODIF commande/mode_iter_inv      lebouvier F.LEBOUVIER        108     31     14
+CATALOPY MODIF commande/mode_iter_simult   lebouvier F.LEBOUVIER        168     58     33
+ FORTRAN MODIF algeline/op0032             lebouvier F.LEBOUVIER        460     39      6
+ FORTRAN MODIF algeline/op0044             lebouvier F.LEBOUVIER        750     73     31
+ FORTRAN MODIF algeline/op0045             lebouvier F.LEBOUVIER       1224     57     22
+  PYTHON MODIF Calc_essai/ce_calcul_modifstruct  lebouvier F.LEBOUVIER       1181      7      7
+  PYTHON MODIF Macro/calc_modal_ops        lebouvier F.LEBOUVIER        157      7      7
+  PYTHON MODIF Macro/calc_mode_rotation_ops  lebouvier F.LEBOUVIER         93      5      5
+  PYTHON MODIF Macro/crea_elem_ssd_ops     lebouvier F.LEBOUVIER        276      3      3
+  PYTHON MODIF Macro/macro_mode_meca_ops   lebouvier F.LEBOUVIER        134      5      5
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :  493      234325      6117    2198     +3919
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  493      234325      6117    2198     +3919 

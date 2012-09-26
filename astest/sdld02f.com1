@@ -6,10 +6,11 @@
 POURSUITE(CODE=_F(NOM='SDLD02F'))
 
 
-AFREQ=MODE_ITER_INV(   MATR_A=MATASSR,      MATR_B=MATASSM,
+AFREQ=MODE_ITER_INV(   MATR_RIGI=MATASSR,      MATR_MASS=MATASSM,
           CALC_FREQ=_F(  OPTION = 'AJUSTE',
                       FREQ = (5., 10., 15., 20., 24., 27., 30., 32.,)),
            CALC_MODE=_F(  OPTION = 'DIRECT') )
+
 
 AFREQ=NORM_MODE( reuse=AFREQ,    MODE=AFREQ,
                       NORME='TRAN_ROTA',
@@ -132,3 +133,9 @@ TEST_RESU(
 
 FIN()
 #
+
+
+
+
+
+

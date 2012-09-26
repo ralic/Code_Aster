@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CAMPBELL POUR UN ROTOR AVEC PALIERS A CARACTERISTIQUES VARIABLES
 # sdll129a.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -326,11 +326,12 @@ MACRO_MATR_ASSE(MODELE=modele,
                            _F(MATRICE=CO('AMOR1'),
                               OPTION='AMOR_MECA',),),);
 
-MODET=MODE_ITER_SIMULT(MATR_A=RIGIDIT1,
-                       MATR_B=MASSE1,
+MODET=MODE_ITER_SIMULT(MATR_RIGI=RIGIDIT1,
+                       MATR_MASS=MASSE1,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(0.1,25000),));
+
 
 MODES=EXTR_MODE(FILTRE_MODE=_F(MODE=MODET,
                                NUME_ORDRE=(1,2,3,4,5,6,8,9,11,12,15,16,18,19,20,21,23,24,26,
@@ -493,9 +494,9 @@ for kk in range(0,nbV,1) :
                             _F(MATRICE=OMGE[kk],
                                MATR_ASSE=GYOM[kk],),),);
      
-   _mod1[kk]=MODE_ITER_SIMULT(MATR_A=RIGI[kk],
-                               MATR_B=MASS[kk],
-                               MATR_C=GYOM[kk],
+   _mod1[kk]=MODE_ITER_SIMULT(MATR_RIGI=RIGI[kk],
+                               MATR_MASS=MASS[kk],
+                               MATR_AMOR=GYOM[kk],
                                METHODE='QZ',
                                CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=nbF,),
                                VERI_MODE=_F(PREC_SHIFT=5.000000000000000E-3,
@@ -503,10 +504,11 @@ for kk in range(0,nbV,1) :
                                             STURM='NON',
                                             SEUIL=1.9999999999999995E-04),
                                )
+
    
-   _mod2[kk]=MODE_ITER_SIMULT(MATR_A=RIGE[kk],
-                               MATR_B=MAGE[kk],
-                               MATR_C=OMGE[kk],
+   _mod2[kk]=MODE_ITER_SIMULT(MATR_RIGI=RIGE[kk],
+                               MATR_MASS=MAGE[kk],
+                               MATR_AMOR=OMGE[kk],
                                METHODE='QZ',
                                CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=nbF,),
                                VERI_MODE=_F(PREC_SHIFT=5.000000000000000E-3,
@@ -514,6 +516,7 @@ for kk in range(0,nbV,1) :
                                             STURM='NON',
                                             SEUIL=1.9999999999999995E-04),
                                )
+
    
    tab.append({'NUME_VITE' : kk, 'VITE_ROTA' : OM, 'NOM_OBJET': 'MODE_MECA', 'TYPE_OBJET': 'MODE_MECA', 'NOM_SD' : _mod1[kk].nom})
 
@@ -762,3 +765,9 @@ IMPR_DIAG_CAMPBELL(MAILLAGE   =mail,
                  L_S        = L_S);
 
 FIN();
+
+
+
+
+
+

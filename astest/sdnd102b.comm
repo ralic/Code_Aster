@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102b.para = tps_job 430 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -240,12 +240,13 @@ MONO_X=CALC_CHAR_SEISME(MATR_MASS=MASSE,
 CHAR_SEI=AFFE_CHAR_MECA(MODELE=MODELE,
                         VECT_ASSE=MONO_X,);
 
-MODE=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                      MATR_B=MASSE,
+MODE=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                      MATR_MASS=MASSE,
                       METHODE='JACOBI',
                       OPTION='SANS',
                       CALC_FREQ=_F(OPTION='BANDE',
                                    FREQ=(1.,30.,),),);
+
 
 MODE=NORM_MODE(reuse =MODE,
                MODE=MODE,
@@ -612,12 +613,13 @@ CHAR_SE1=AFFE_CHAR_MECA(MODELE=BICHOC,
 CHAR_SE2=AFFE_CHAR_MECA(MODELE=BICHOC,
                         VECT_ASSE=MULT_X2,);
 
-MODE_BIC=MODE_ITER_SIMULT(MATR_A=RIGI_BIC,
-                          MATR_B=MASS_BIC,
+MODE_BIC=MODE_ITER_SIMULT(MATR_RIGI=RIGI_BIC,
+                          MATR_MASS=MASS_BIC,
                           METHODE='JACOBI',
                           OPTION='SANS',
                           CALC_FREQ=_F(OPTION='BANDE',
                                        FREQ=(1.,30.,),),);
+
 
 MODE_BIC=NORM_MODE(reuse =MODE_BIC,
                    MODE=MODE_BIC,
@@ -836,5 +838,11 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=DIFF,
 FIN();
 
 #
+
+
+
+
+
+
 
 

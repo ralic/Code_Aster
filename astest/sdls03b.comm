@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKQ - DSQ - Q4G
 # sdls03b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,10 +80,11 @@ MACRO_MATR_ASSE(   MODELE=MO2,            CARA_ELEM=CA2,
                          _F(  MATRICE = CO("MATM2"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE2=MODE_ITER_SIMULT(  MATR_A=MATR2,       MATR_B=MATM2,
+MODE2=MODE_ITER_SIMULT(  MATR_RIGI=MATR2,       MATR_MASS=MATM2,
               CALC_FREQ=_F(  NMAX_FREQ = 4,   FREQ = (  100., ),
                           OPTION = 'CENTRE'),
                VERI_MODE=_F(  SEUIL = 1.E-5)               )
+
 
 # --------------------------------------------------------------------
 
@@ -146,9 +147,10 @@ MACRO_MATR_ASSE(   MODELE=MO4,            CARA_ELEM=CA4,
                          _F(  MATRICE = CO("MATM4"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE4=MODE_ITER_SIMULT(  MATR_A=MATR4,  MATR_B=MATM4,
+MODE4=MODE_ITER_SIMULT(  MATR_RIGI=MATR4,  MATR_MASS=MATM4,
               CALC_FREQ=_F(  NMAX_FREQ = 4),
                VERI_MODE=_F(  SEUIL = 1.E-5)  )
+
 
 # --------------------------------------------------------------------
 
@@ -206,9 +208,10 @@ MACRO_MATR_ASSE(   MODELE=MO6,            CARA_ELEM=CA6,
                          _F(  MATRICE = CO("MATM6"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE6=MODE_ITER_SIMULT(  MATR_A=MATR6,  MATR_B=MATM6,
+MODE6=MODE_ITER_SIMULT(  MATR_RIGI=MATR6,  MATR_MASS=MATM6,
               CALC_FREQ=_F(  NMAX_FREQ = 4),
                VERI_MODE=_F(  SEUIL = 1.E-5)  )
+
 
 # --------------------------------------------------------------------
 
@@ -240,12 +243,13 @@ MACRO_MATR_ASSE(   MODELE=MO,            CARA_ELEM=CA,
                          _F(  MATRICE = CO("MATM"),  OPTION = 'MASS_MECA'))
                    )
 
-MODE=MODE_ITER_SIMULT(  MATR_A=MATR,        MATR_B=MATM,
+MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATR,        MATR_MASS=MATM,
                             METHODE='JACOBI',
                              OPTION='SANS',
             CALC_FREQ=_F(   FREQ = ( 25.,  200., ),
                         OPTION = 'BANDE'),
               VERI_MODE=_F(  SEUIL = 1.E-5)   )
+
 
 # --------------------------------------------------------------------
 
@@ -291,12 +295,13 @@ MACRO_MATR_ASSE(   MODELE=MO3,           CARA_ELEM=CA3,
                          _F(  MATRICE = CO("MATM3"), OPTION = 'MASS_MECA'))
                    )
 
-MODE3=MODE_ITER_SIMULT(  MATR_A=MATR3,   MATR_B=MATM3,
+MODE3=MODE_ITER_SIMULT(  MATR_RIGI=MATR3,   MATR_MASS=MATM3,
                             METHODE='JACOBI',
                              OPTION='SANS',
             CALC_FREQ=_F(   FREQ = ( 5.,  200., ),
                         OPTION = 'BANDE'),
               VERI_MODE=_F(  SEUIL = 1.E-5) )
+
 
 # --------------------------------------------------------------------
 
@@ -347,12 +352,13 @@ MACRO_MATR_ASSE(   MODELE=MO5,           CARA_ELEM=CA5,
                 MATR_ASSE=_F(  MATRICE = CO("MATM5"), OPTION = 'MASS_MECA')
                    )
 
-MODE5=MODE_ITER_SIMULT(  MATR_A=MATR5,   MATR_B=MATM5,
+MODE5=MODE_ITER_SIMULT(  MATR_RIGI=MATR5,   MATR_MASS=MATM5,
                             METHODE='JACOBI',
                              OPTION='SANS',
             CALC_FREQ=_F(   FREQ = ( 5.,  220., ),
                         OPTION = 'BANDE'),
               VERI_MODE=_F(  SEUIL = 1.E-5) )
+
 
 # --------------------------------------------------------------------
 
@@ -380,3 +386,9 @@ TEST_RESU(RESU=(
 
 FIN()
 #
+
+
+
+
+
+

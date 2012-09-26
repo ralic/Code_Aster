@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE AUBE DE COMPRESSEUR ENCASTREE SUR UN BORD
 # sdls102b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,9 +63,10 @@ MACRO_MATR_ASSE(   MODELE=MO,           CARA_ELEM=CARELEM,
 #====================================================================
 #                CALCUL MODAL
 
-MODE=MODE_ITER_INV(  MATR_A=MATASSR1,      MATR_B=MATASSM1,
+MODE=MODE_ITER_INV(  MATR_RIGI=MATASSR1,      MATR_MASS=MATASSM1,
                      CALC_FREQ=_F(  FREQ = (80., 570.,))
                         )
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE,        PARA = 'FREQ',
@@ -91,3 +92,9 @@ TEST_RESU(RESU=(
 #====================================================================
 FIN()
 #
+
+
+
+
+
+

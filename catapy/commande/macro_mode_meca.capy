@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,8 +24,8 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",
                      sd_prod=mode_meca,
                      reentrant='n',fr="Lancer une succession de calculs de modes propres réels",
             UIinfo={"groupes":("Résolution","Dynamique",)},
-         MATR_A          =SIMP(statut='o',typ=matr_asse_depl_r ),
-         MATR_B          =SIMP(statut='o',typ=matr_asse_depl_r ),
+         MATR_RIGI       =SIMP(statut='o',typ=matr_asse_depl_r ),
+         MATR_MASS       =SIMP(statut='o',typ=matr_asse_depl_r ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 #  ce mot cle ne devrait il pas etre dans calc_freq
          METHODE         =SIMP(statut='f',typ='TXM',defaut="SORENSEN",

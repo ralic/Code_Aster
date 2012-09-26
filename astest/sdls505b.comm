@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/07/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -151,15 +151,16 @@ MAS_RI_M=ASSE_MATRICE(   MATR_ELEM=MEL_RI_M,   NUME_DDL=NUM)
 MAS_RI_G=ASSE_MATRICE(   MATR_ELEM=MEL_RI_G,   NUME_DDL=NUM)
 
 #
-RESULT=MODE_ITER_SIMULT(      MATR_A=MAS_RI_M,
-                                MATR_B=MAS_RI_G,
+RESULT=MODE_ITER_SIMULT(      MATR_RIGI=MAS_RI_M,
+                                MATR_RIGI_GEOM=MAS_RI_G,
 #                               METHODE='TRI_DIAG',
                                METHODE='SORENSEN',
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',     ),
+                             CALC_CHAR_CRIT=_F( OPTION = 'PLUS_PETITE',     ),
                              TYPE_RESU='MODE_FLAMB',
                              VERI_MODE=_F( SEUIL = 5.E-5,   )
 
                            )
+
 
 RES_NORM=NORM_MODE(    MODE=RESULT,
                         NORME='TRAN'
@@ -259,3 +260,9 @@ TEST_RESU(RESU=(
 FIN()
 #
 # 
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,14 +96,15 @@ MACRO_MATR_ASSE(MODELE=MO,
 #
 
 
-MODES=MODE_ITER_SIMULT(MATR_A=MATASSR,
-                       MATR_B=MATASSM,
-                       MATR_C=MATASSC,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
+                       MATR_MASS=MATASSM,
+                       MATR_AMOR=MATASSC,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=5.0,
                                     NMAX_FREQ=5,
                                     APPROCHE='REEL',),);
+
 MODESN=NORM_MODE(MODE=MODES,NORME='MASS_GENE')
 
 # AVEC QZ + OPTION='CENTRE' + 'QZ_SIMPLE'
@@ -118,6 +119,7 @@ MODE_QZ1=CALC_MODAL(MODELE=MO,
                               FREQ=5.0,
                               NMAX_FREQ =5,
                 ),);
+
 
 
 MODE_QZ1=NORM_MODE(MODE=MODE_QZ1,reuse=MODE_QZ1,NORME='MASS_GENE')
@@ -374,3 +376,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ1,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.3.14'),),)
 FIN();
+
+
+
+
+
+

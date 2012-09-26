@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 # sdnl104b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,9 +92,10 @@ M_ASSE1=ASSE_MATRICE(  MATR_ELEM=M_ELEM1,
                            NUME_DDL=NUM1)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1,
-                                 MATR_B=M_ASSE1,
+MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
+                                 MATR_MASS=M_ASSE1,
                              CALC_FREQ=_F( NMAX_FREQ = 04) )
+
 
 #
 INTERF1=DEFI_INTERF_DYNA(   NUME_DDL=NUM1,
@@ -164,9 +165,10 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUM2)
 
 #
-MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2,
-                                 MATR_B=M_ASSE2,
+MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
+                                 MATR_MASS=M_ASSE2,
                              CALC_FREQ=_F( NMAX_FREQ = 05) )
+
 
 #
 INTERF2=DEFI_INTERF_DYNA(   NUME_DDL=NUM2,
@@ -224,9 +226,10 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 ###### CALCUL MODAL :
 ###
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_A=K_GENE,
-                                 MATR_B=M_GENE,
+RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=K_GENE,
+                                 MATR_MASS=M_GENE,
                              CALC_FREQ=_F( NMAX_FREQ = 5))
+
 
 #
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
@@ -498,3 +501,9 @@ TEST_TABLE(      TABLE=t_cin2,
 #
 FIN()
 #
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 # sdnl105d.para = tps_job 80 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,11 +132,12 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUM)
 
 #
-MODES=MODE_ITER_INV(     MATR_A=K_ASSE,
-                                 MATR_B=M_ASSE,
+MODES=MODE_ITER_INV(     MATR_RIGI=K_ASSE,
+                                 MATR_MASS=M_ASSE,
           CALC_FREQ=_F( NMAX_FREQ = 15, OPTION = 'AJUSTE', FREQ = (2., 40.,),
                      NMAX_ITER_AJUSTE = 100,PREC_AJUSTE=1.E-14),
           CALC_MODE=_F( NMAX_ITER = 100, PREC=1.E-14))
+
 
 
 #
@@ -315,9 +316,10 @@ for k in range(1,ns+1):
 ###### CALCUL MODAL :
 ###
 #
-   RESGEN=MODE_ITER_SIMULT(     MATR_A=K_GENE,
-                                 MATR_B=M_GENE,
+   RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=K_GENE,
+                                 MATR_MASS=M_GENE,
                              CALC_FREQ=_F( NMAX_FREQ = 15))
+
 
 
 
@@ -562,3 +564,9 @@ TEST_TABLE(      TABLE=RMS,
 #                   PRECISION=1.E-7,),
 )
 FIN();
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEUR GENERALISEES : POUTRE 3D ENCASTREE
 # zzzz208a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,12 +113,13 @@ FASC =CREA_CHAMP(OPERATION='ASSE',MODELE=MODEL,TYPE_CHAM='NOEU_DEPL_C',
 
 
 # calcul des modes propres de la structure
-MODES=MODE_ITER_SIMULT(MATR_A=KASS,
-                       MATR_B=MASS,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=KASS,
+                       MATR_MASS=MASS,
                        CALC_FREQ=_F(
                        NMAX_FREQ=10,),
                        VERI_MODE=_F(STOP_ERREUR='NON',
                                     STURM='NON',),);
+
 
 
 #######################################################
@@ -173,17 +174,18 @@ FDIAGC.RECU_VECT_GENE_C(FPYDC2)
 # CALCULS ASTER SUR MATRICES & VECTEURS MODIFIES DANS PYTHON
 #-----------------------------------------------------------
 # calcul des modes propres generalises(MATR_A= matrice generalisee reelle)
-MODEGD=MODE_ITER_SIMULT(MATR_A=KDIAG,
-                       MATR_B=MDIAG,
+MODEGD=MODE_ITER_SIMULT(MATR_RIGI=KDIAG,
+                       MATR_MASS=MDIAG,
                        CALC_FREQ=_F(
                        NMAX_FREQ=5,),
                        VERI_MODE=_F(STOP_ERREUR='NON',
                                     STURM='NON',),);
 
+
 # calcul des modes propres generalises (MATR_A= matrice generalisee complexe)
 # Avec Sorensen
-MODCGD=MODE_ITER_SIMULT(MATR_A=KDIAGC,
-                       MATR_B=MDIAG,
+MODCGD=MODE_ITER_SIMULT(MATR_RIGI=KDIAGC,
+                       MATR_MASS=MDIAG,
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=500.,
                                     NMAX_FREQ=5,),
@@ -191,9 +193,10 @@ MODCGD=MODE_ITER_SIMULT(MATR_A=KDIAGC,
                                     STURM='NON',),
                                     );
 
+
 # Avec QZ
-MODCQZ=MODE_ITER_SIMULT(MATR_A=KDIAGC,
-                       MATR_B=MDIAG,
+MODCQZ=MODE_ITER_SIMULT(MATR_RIGI=KDIAGC,
+                       MATR_MASS=MDIAG,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=500.,
@@ -201,6 +204,7 @@ MODCQZ=MODE_ITER_SIMULT(MATR_A=KDIAGC,
                        VERI_MODE=_F(STOP_ERREUR='NON',
                                     STURM='NON',),
                                     );
+
 # calcul de la reponse harmonique generalisee
 DYNDIAG=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                     MATR_MASS=MDIAG,
@@ -379,12 +383,13 @@ FPLEINC=PROJ_VECT_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMPLEIN,
                     VECT_ASSE=FASC,);
 
-MODEGP=MODE_ITER_SIMULT(MATR_A=KPLEIN,
-                       MATR_B=MPLEIN,
+MODEGP=MODE_ITER_SIMULT(MATR_RIGI=KPLEIN,
+                       MATR_MASS=MPLEIN,
                        CALC_FREQ=_F(
                        NMAX_FREQ=5,),
                        VERI_MODE=_F(STOP_ERREUR='NON',
                                     STURM='NON',),);
+
 
 DYNPLEIN=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                     MATR_MASS=MPLEIN,
@@ -417,12 +422,13 @@ FPLEINC.RECU_VECT_GENE_C(FPYPC2)
 
 # CALCULS ASTER SUR MATRICES & VECTEURS MODIFIES DANS PYTHON
 #-----------------------------------------------------------
-MODEGP2=MODE_ITER_SIMULT(MATR_A=KPLEIN,
-                       MATR_B=MPLEIN,
+MODEGP2=MODE_ITER_SIMULT(MATR_RIGI=KPLEIN,
+                       MATR_MASS=MPLEIN,
                        CALC_FREQ=_F(
                        NMAX_FREQ=5,),
                        VERI_MODE=_F(STOP_ERREUR='NON',
                                     STURM='NON',),);
+
 
 DYNPLEI2=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                     MATR_MASS=MPLEIN,
@@ -537,3 +543,9 @@ TEST_RESU(OBJET=(
 
 
 FIN();
+
+
+
+
+
+

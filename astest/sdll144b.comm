@@ -1,4 +1,4 @@
-# MODIF  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE ROTOR TOURNANT SUIVANT UNE LOI DE VITESSE DE ROTATION EXPONENTIELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,10 +149,11 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                            _F(MATRICE=CO('AMOR2'),
                               OPTION='AMOR_MECA',),),);
 
-MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(0.,1000.,),),);
+
 
 balou = 0.15 * 1e-04;
 
@@ -317,3 +318,9 @@ TEST_FONCTION(VALEUR=_F(FONCTION=MOD_GED2,
                         REFERENCE='NON_REGRESSION',),);
 
 FIN();
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE CARREE MINCE ENCASTREE SUR UN BORD (GUYAN)
 # sdls01d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,9 +87,10 @@ MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,NUME_DDL=NUM1)
 
 #====================================================================
 #                CALCUL MODAL
-MODE1=MODE_ITER_SIMULT(  MATR_A=MATASSR1,      MATR_B=MATASSM1,
+MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR1,      MATR_MASS=MATASSM1,
               CALC_FREQ=_F(   FREQ = ( 8.,   140., ),
                            OPTION = 'BANDE')  )
+
 
 # --------------------------------------------------------------------
 
@@ -117,3 +118,9 @@ TEST_RESU(RESU=(
 
 FIN()
 #
+
+
+
+
+
+

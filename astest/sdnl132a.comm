@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 DEBUT(CODE=_F(NOM='SDNL132A',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='ALGELINE3_66')
 # TITRE PENDULE RIGIDE AVEC CONTACT ET FROTTEMENT
@@ -96,8 +96,8 @@ ass_f=ASSE_VECTEUR(VECT_ELEM=vec_f,
 ass_cl=ASSE_VECTEUR(VECT_ELEM=vec_cl,
                     NUME_DDL=NU,);
 
-mode=MODE_ITER_SIMULT(MATR_A=K,
-                      MATR_B=M,
+mode=MODE_ITER_SIMULT(MATR_RIGI=K,
+                      MATR_MASS=M,
                       METHODE='TRI_DIAG',
                       OPTION='MODE_RIGIDE',
                       CALC_FREQ=_F(OPTION='BANDE',
@@ -107,6 +107,7 @@ mode=MODE_ITER_SIMULT(MATR_A=K,
                                    SEUIL=1e-02,
                                    STURM='NON',),
                       STOP_FREQ_VIDE='NON',);
+
 
 freq=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=50.0,
@@ -440,3 +441,9 @@ IMPR_RESU(FORMAT='GMSH',
 
 
 FIN();
+
+
+
+
+
+

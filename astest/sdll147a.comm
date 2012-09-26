@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 
 # TITRE SIMPLE POUTRE VERTICALE MONTEE SUR UN RESSORT SOUMISE A UN SEISME
 # sdll147a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -86,11 +86,12 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                            _F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),),);
 
-MODECA=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                        MATR_B=MASSE,
+MODECA=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                        MATR_MASS=MASSE,
                         VERI_MODE =_F( SEUIL = 1.E-4),
                         CALC_FREQ=_F(OPTION='BANDE',
                                      FREQ=(0.,60,),),);
+
 
 
 MODECA=NORM_MODE(reuse=MODECA,
@@ -860,3 +861,9 @@ TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    VERSION='11.2.2',),),);
 
 FIN()
+
+
+
+
+
+

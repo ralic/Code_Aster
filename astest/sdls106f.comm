@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,8 +194,8 @@ ASSE_ELEM_SSD(
 
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 
-RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
-                         MATR_B=MASGEN,
+RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
+                         MATR_MASS=MASGEN,
                          METHODE='SORENSEN',
                          CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ=10),
@@ -209,6 +209,7 @@ RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
                          STOP_FREQ_VIDE='NON',
                          INFO=1,
                         )
+
                         
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 
@@ -246,3 +247,9 @@ TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
                 NUME_ORDRE = 5,  VALE = 68.48, REFERENCE = 'ANALYTIQUE')) )
 
 FIN()
+
+
+
+
+
+

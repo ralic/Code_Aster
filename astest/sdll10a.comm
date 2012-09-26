@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (ENCASTREE-ENCASTREE)
 # sdll10a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1158,11 +1158,12 @@ MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM)
 
 # -------------------------------------------------------------------
 
-MODE=MODE_ITER_SIMULT(  MATR_A=MATASSR,       MATR_B=MATASSM,
+MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR,       MATR_MASS=MATASSM,
    TITRE=' CAS TEST &CODE   COMMANDE &COMMANDE SANS L-TX !!',
               METHODE='TRI_DIAG',
              CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                          NMAX_FREQ = 4) )
+
 
 MODE=NORM_MODE(reuse=MODE,    MODE=MODE,
                      NORME='TRAN'  )
@@ -1328,3 +1329,9 @@ FIN()
 #      WRITE(*,*) DXL*I5, V(I5+1)
 #      END
 #
+
+
+
+
+
+

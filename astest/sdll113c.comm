@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CONDENSATION DYNAMIQUE TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 # sdll113c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,9 +127,10 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUMERO);
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE,
-                                 MATR_B=M_ASSE,
+MODES=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE,
+                                 MATR_MASS=M_ASSE,
                              CALC_FREQ=_F( NMAX_FREQ = 10));
+
                                        
                   
 EVOL=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
@@ -218,12 +219,13 @@ MACRO_MATR_ASSE(MODELE=MODELE1,
                            ),
                 );
                 
-MODE1=MODE_ITER_SIMULT(  MATR_A=MATR1,   MATR_B=MATM1,
+MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATR1,   MATR_MASS=MATM1,
                            CALC_FREQ=_F(
                                         NMAX_FREQ=6,  
                                        ),
                            VERI_MODE=_F(  STOP_ERREUR='NON')
                          );
+
                                                  
                          
 MODSTA1=MODE_STATIQUE(MATR_RIGI=MATR1,
@@ -339,12 +341,13 @@ MACRO_MATR_ASSE(MODELE=MODELB,
                            ),
                );
                
-MODEB=MODE_ITER_SIMULT(  MATR_A=MATRRIGB,   MATR_B=MATRMASB,
+MODEB=MODE_ITER_SIMULT(  MATR_RIGI=MATRRIGB,   MATR_MASS=MATRMASB,
                            CALC_FREQ=_F(
                                         NMAX_FREQ=20,  
                                        ),
                            VERI_MODE=_F(  STOP_ERREUR='NON')
                          );
+
                          
 CHFONO=AFFE_CHAR_MECA(MODELE=MODELB,
                         FORCE_NODALE=_F( NOEUD = 'N4',  FX = 0.));                         
@@ -449,3 +452,9 @@ TEST_RESU( RESU=_F( RESULTAT = RESUGLOB,
 #
 FIN()
 #
+
+
+
+
+
+

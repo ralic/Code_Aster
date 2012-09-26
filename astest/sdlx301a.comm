@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE BATIMENT SOUMIS A UNE EXCITATION SISMIQUE
 # VERSION B de ce test : ajout de poutres afin de lier les DRZ
 #                        entre poteaux et plaques
@@ -161,20 +161,22 @@ MASSE=ASSE_MATRICE(MATR_ELEM=MASSELEM,
 #
 # CALCUL MODAL POUR LES RECOMBINAISOMS
 
-MODE2=MODE_ITER_INV(MATR_A=RIGIDITE,
-                    MATR_B=MASSE,
+MODE2=MODE_ITER_INV(MATR_RIGI=RIGIDITE,
+                    MATR_MASS=MASSE,
                     CALC_FREQ=_F(OPTION='PROCHE',
                                  PREC_SHIFT=0.02,
                                  NMAX_ITER_SHIFT=8,
                                  FREQ=(1.52,2.06,2.37,4.87,7.55,8.44,8.6,15.43,),
                                 ),
                     VERI_MODE=_F(SEUIL=0.0001,),);
+
 #
-MODE1=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
+MODE1=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=8,),
                        VERI_MODE=_F(SEUIL=0.000001,),);
+
 # NOUVEAU FV :
 IMPR_RESU(MODELE=MO,
           FORMAT='GMSH',
@@ -4871,3 +4873,9 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEPLMOR,
 FIN();
 #
 #
+
+
+
+
+
+

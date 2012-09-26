@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME 3 MASSES 2 RESSORTS  A 18 DDL (+AMORTISSEURS DISCRETS)
 # sdld320a.para = tps_job 360 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,14 +123,15 @@ VECTASS=ASSE_VECTEUR(VECT_ELEM=EFFOELEM,
 # CALCUL DE LA BASE MODALE COMPLETE
 # ---------------------------------
 
-MODES=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
-                       MATR_B=MATRMASS,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
+                       MATR_MASS=MATRMASS,
                        METHODE='JACOBI',
                        NMAX_ITER_BATHE=30,
                        OPTION='SANS',
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=200.,
                                     NMAX_FREQ=18,),);
+
 
 #
 #
@@ -450,4 +451,10 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=P3MP1,
 FIN();
 
 #
+
+
+
+
+
+
 

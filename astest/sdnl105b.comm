@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION
 # sdnl105b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,10 +106,11 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUM)
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE,
-                                 MATR_B=M_ASSE,
+MODES=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE,
+                                 MATR_MASS=M_ASSE,
                              CALC_FREQ=_F( NMAX_FREQ = 5)
                              )
+
 
 #
 INTERF1=DEFI_INTERF_DYNA(   NUME_DDL=NUM,
@@ -197,9 +198,10 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 ###### CALCUL MODAL :
 ###
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_A=K_GENE,
-                                 MATR_B=M_GENE,
+RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=K_GENE,
+                                 MATR_MASS=M_GENE,
                              CALC_FREQ=_F( NMAX_FREQ = 15))
+
 
 #
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
@@ -574,3 +576,9 @@ TABLE=POST_DYNA_MODA_T(  RESU_GENE=TRAN_GE1,
 #
 FIN()
 #
+
+
+
+
+
+

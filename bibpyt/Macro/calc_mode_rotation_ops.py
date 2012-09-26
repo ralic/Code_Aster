@@ -1,4 +1,4 @@
-#@ MODIF calc_mode_rotation_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_mode_rotation_ops Macro  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ from Accas import _F
 from types import ListType, TupleType
 
 
-def calc_mode_rotation_ops(self,MATR_A, MATR_B, MATR_AMOR, MATR_GYRO,
+def calc_mode_rotation_ops(self,MATR_RIGI, MATR_MASS, MATR_AMOR, MATR_GYRO,
                          VITE_ROTA,METHODE,CALC_FREQ,VERI_MODE,**args):
 # Macro pour calculer les frequences et modes en fonction des vitesses de rotation
 # MATR_A, matrice de raideur
@@ -80,9 +80,9 @@ def calc_mode_rotation_ops(self,MATR_A, MATR_B, MATR_AMOR, MATR_GYRO,
         __gyom=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATR_GYRO, COEF_R=OM,),
                             _F(MATR_ASSE=MATR_AMOR, COEF_R=1.,),))
 
-        _mod[ii]=MODE_ITER_SIMULT(MATR_A=MATR_A,
-                       MATR_B=MATR_B,
-                       MATR_C=__gyom,
+        _mod[ii]=MODE_ITER_SIMULT(MATR_RIGI=MATR_RIGI,
+                       MATR_MASS=MATR_MASS,
+                       MATR_AMOR=__gyom,
                        METHODE=METHODE,
                        **motscit)
         

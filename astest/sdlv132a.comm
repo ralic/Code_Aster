@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PRISE EN COMPTE D'UN MASSIF GENERALISE DANS LES ETUDES DE ROTORS
 # sdlv132a.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,13 +114,14 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                               OPTION='AMOR_MECA',),),
                 );
 
-MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
                        FREQ=(100.,400.),),
                                  VERI_MODE=_F(STOP_ERREUR='NON',
                                     SEUIL=9.9999999999999995E-07),
                        );
+
 
 TEST_RESU(RESU=(
           _F( RESULTAT = MODES, PARA = 'FREQ',
@@ -253,21 +254,23 @@ ASSM1_MN=ASSE_MATRICE(MATR_ELEM=MELM1_MN,
 #                      CALCUL MODAL
 #--------------------------------------------------------------------
 
-MODE1_CB=MODE_ITER_SIMULT(MATR_A=ASSR1_CB,
-                       MATR_B=ASSM1_CB,
+MODE1_CB=MODE_ITER_SIMULT(MATR_RIGI=ASSR1_CB,
+                       MATR_MASS=ASSM1_CB,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(200.,800.),),
                                  VERI_MODE=_F(STOP_ERREUR='NON',
                                     SEUIL=9.9999999999999995E-07),
                        );
 
-MODE1_MN=MODE_ITER_SIMULT(MATR_A=ASSR1_MN,
-                       MATR_B=ASSM1_MN,
+
+MODE1_MN=MODE_ITER_SIMULT(MATR_RIGI=ASSR1_MN,
+                       MATR_MASS=ASSM1_MN,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(200.,800.),),
                                  VERI_MODE=_F(STOP_ERREUR='NON',
                                     SEUIL=9.9999999999999995E-07),
                        );
+
 
 TEST_RESU(RESU=(
           _F( RESULTAT = MODE1_CB, PARA = 'FREQ',
@@ -438,14 +441,15 @@ MACRO_MATR_ASSE(MODELE=MO2,
 #                      CALCUL MODAL
 #--------------------------------------------------------------------
 
-MODE2=MODE_ITER_SIMULT(MATR_A=MATASSR2,
-                       MATR_B=MATASSM2,
+MODE2=MODE_ITER_SIMULT(MATR_RIGI=MATASSR2,
+                       MATR_MASS=MATASSM2,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(1.,900.),
                                                         ),
                        VERI_MODE=_F(STOP_ERREUR='NON',
                                     SEUIL=9.9999999999999995E-07),
                             );
+
 
 TEST_RESU(RESU=(
           _F( RESULTAT = MODE2, PARA = 'FREQ',
@@ -549,13 +553,14 @@ RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 #  CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #------------------------------------------------------------------
 
-RESGEN=MODE_ITER_SIMULT(MATR_A=RIGGEN,
-                        MATR_B=MASGEN,
+RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
+                        MATR_MASS=MASGEN,
                                   CALC_FREQ=_F(OPTION='BANDE',
                                      FREQ=(0.,400.),),
                                   VERI_MODE=_F(STOP_ERREUR='NON',
                                      SEUIL=9.9999999999999995E-07),
                             );
+
 
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
@@ -599,4 +604,10 @@ TEST_RESU(RESU=(
                 ),)
 
 FIN();
+
+
+
+
+
+
 

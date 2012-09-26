@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
 # sdll123c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -433,8 +433,8 @@ MATM=MASSE
 
 # CALCUL VIA SORENSEN
 MG_SO=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK,
-                       MATR_B=MATM,
+                       MATR_RIGI=MATK,
+                       MATR_MASS=MATM,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10),
                        VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
@@ -442,10 +442,11 @@ MG_SO=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
+
 # CALCUL VIA QZ
 MG_QZ=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK,
-                       MATR_B=MATM,
+                       MATR_RIGI=MATK,
+                       MATR_MASS=MATM,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10),
                        VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
@@ -453,6 +454,7 @@ MG_QZ=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
+
 
 # CALCUL VIA PYTHON
 rigF=MATK.EXTR_MATR()
@@ -588,9 +590,9 @@ MATC1=GYOM
 
 # CALCUL VIA SORENSEN (APPROCHE COMPLEXE, REELLE ET IMAGINAIRE)
 MQ_SO=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK1,
-                       MATR_B=MATM1,
-                       MATR_C=MATC1,
+                       MATR_RIGI=MATK1,
+                       MATR_MASS=MATM1,
+                       MATR_AMOR=MATC1,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10,
                                     APPROCHE='COMPLEXE',),
@@ -599,10 +601,11 @@ MQ_SO=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
+
 MQ_SOR=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK1,
-                       MATR_B=MATM1,
-                       MATR_C=MATC1,
+                       MATR_RIGI=MATK1,
+                       MATR_MASS=MATM1,
+                       MATR_AMOR=MATC1,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10,
                                     APPROCHE='REEL',),
@@ -611,10 +614,11 @@ MQ_SOR=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
+
 MQ_SOI=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK1,
-                       MATR_B=MATM1,
-                       MATR_C=MATC1,
+                       MATR_RIGI=MATK1,
+                       MATR_MASS=MATM1,
+                       MATR_AMOR=MATC1,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10,
                                     APPROCHE='IMAG',),
@@ -623,11 +627,12 @@ MQ_SOI=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
+
 # CALCUL VIA QZ
 MQ_QZ=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK1,
-                       MATR_B=MATM1,
-                       MATR_C=MATC1,
+                       MATR_RIGI=MATK1,
+                       MATR_MASS=MATM1,
+                       MATR_AMOR=MATC1,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=10,),
                        VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
@@ -635,6 +640,7 @@ MQ_QZ=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
+
 
 # CALCUL VIA PYTHON
 rigF=MATK1.EXTR_MATR()
@@ -799,4 +805,10 @@ del EXTR_MATR
 del rig,mas,amor,masI,HPRIME,frequence,fr
 del MATK,MATM,MATK1,MATM1,MATC1
 FIN()
+
+
+
+
+
+
 

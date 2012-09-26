@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CYLINDRE SOUMIS A UNE TUBULENCE
 # sdls107a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,10 +123,11 @@ MATASMS=ASSE_MATRICE( MATR_ELEM=MEL_MSTR,  NUME_DDL=NUSTR)
 
 
 
-MODES=MODE_ITER_SIMULT( MATR_A=MATASKS,  MATR_B=MATASMS,
+MODES=MODE_ITER_SIMULT( MATR_RIGI=MATASKS,  MATR_MASS=MATASMS,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (0.1,1.,))
                             )
+
 
 #CALCUL DES CARACTERISTIQUES MODALES EN EAU
 # AVEC MASSE AJOUTEE SIMPLEMENT
@@ -161,10 +162,11 @@ MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MGENE,
                                      _F( MATR_ASSE = MATRAJ,
                                       COEF_R = 1.)))
 
-MODHUMI=MODE_ITER_SIMULT( MATR_A=RIGGEN,  MATR_B=MASTOT,
+MODHUMI=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,  MATR_MASS=MASTOT,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (0.01,1.,))
                             )
+
 
 #RESTIT DES MODES EN EAU = F(MODE_EN_AIR) SUR BASE PHYSIQUE
 
@@ -393,3 +395,9 @@ FIN()
 #
 #FIN();
 #
+
+
+
+
+
+

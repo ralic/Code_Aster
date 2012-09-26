@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME DE DEUX POUTRES SOUMIS A UNE EXCITATION ALEATOIRE
 # sdll104a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,12 +140,13 @@ MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,NUME_DDL=NUM1)
 # *****CALCUL DE MODES PROPRES ET IMPRESSION FORMAT IDEAS*************#
 #*********************************************************************#
 
-FREQ1=MODE_ITER_INV(   MATR_A=MATASSR1,      MATR_B=MATASSM1,
+FREQ1=MODE_ITER_INV(   MATR_RIGI=MATASSR1,      MATR_MASS=MATASSM1,
            CALC_FREQ=_F(  OPTION = 'AJUSTE',
                        FREQ = (0.1, 3000.0,),
                        NMAX_FREQ = 10),
             CALC_MODE=_F( NMAX_ITER = 30)
                        )
+
 
 #*********************************************************************#
 # *****CALCUL DE MODES STATIQUES; IMPRESSION FORMAT IDEAS*************#
@@ -404,12 +405,13 @@ MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM2)
 
 #
 
-FREQ2=MODE_ITER_INV(   MATR_A=MATASSR2,      MATR_B=MATASSM2,
+FREQ2=MODE_ITER_INV(   MATR_RIGI=MATASSR2,      MATR_MASS=MATASSM2,
            CALC_FREQ=_F(  OPTION = 'AJUSTE',
                        FREQ = (0.1, 3000.0,),
                        NMAX_FREQ = 10),
             CALC_MODE=_F( NMAX_ITER = 30)
                        )
+
 
 MODESTA2=MODE_STATIQUE( MATR_RIGI=MATASSR2,
                         MATR_MASS=MATASSM2,
@@ -496,12 +498,13 @@ MATASSM3=ASSE_MATRICE(MATR_ELEM=MELM3,NUME_DDL=NUM3)
 
 #
 
-FREQ3=MODE_ITER_INV(   MATR_A=MATASSR3,      MATR_B=MATASSM3,
+FREQ3=MODE_ITER_INV(   MATR_RIGI=MATASSR3,      MATR_MASS=MATASSM3,
            CALC_FREQ=_F(  OPTION = 'AJUSTE',
                        FREQ = (0.1, 3000.0,),
                        NMAX_FREQ = 15),
             CALC_MODE=_F( NMAX_ITER = 30)
                        )
+
 
 MODESTA3=MODE_STATIQUE( MATR_RIGI=MATASSR3,
                         MATR_MASS=MATASSM3,
@@ -587,3 +590,9 @@ TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
 
 FIN( )
 #
+
+
+
+
+
+

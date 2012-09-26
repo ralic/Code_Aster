@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE RECTANGULAIRE SIMPLEMENT APPUIEE COMPRIMEE
 # ssls110a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -121,12 +121,13 @@ RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
 #
 #
 
-MOD_1=MODE_ITER_SIMULT(                   MATR_A=MATASS_1,
-                                              MATR_B=RIGASG_1,
+MOD_1=MODE_ITER_SIMULT(                   MATR_RIGI=MATASS_1,
+                                              MATR_RIGI_GEOM=RIGASG_1,
 ######                             NUME_MODE_NEGA        : 'NON'
                 TYPE_RESU='MODE_FLAMB',
-                CALC_FREQ=_F(  NMAX_FREQ = 9,    DIM_SOUS_ESPACE = 30,       ),
+                CALC_CHAR_CRIT=_F(  NMAX_CHAR_CRIT = 9,    DIM_SOUS_ESPACE = 30,       ),
                             )
+
 
 #
 #
@@ -161,5 +162,11 @@ TEST_RESU(    RESU=_F( RESULTAT = MOD_1, NUME_MODE = 7,  PARA = 'CHAR_CRIT',
 #
 FIN()
 #
+
+
+
+
+
+
 
 

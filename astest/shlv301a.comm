@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE REPONSE HARMONIQUE : POUTRE BI-APPUYEE
 # shlv301a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -198,9 +198,10 @@ V_ASSE1=ASSE_VECTEUR(   VECT_ELEM=V_ELEM1,
                             NUME_DDL=NUM1)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1,
-                                 MATR_B=M_ASSE1,
+MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
+                                 MATR_MASS=M_ASSE1,
                              CALC_FREQ=_F( NMAX_FREQ = 20))
+
 
 #
 INTERF1=DEFI_INTERF_DYNA(  NUME_DDL=NUM1,
@@ -350,9 +351,10 @@ V_ASSE2=ASSE_VECTEUR(   VECT_ELEM=V_ELEM2,
                             NUME_DDL=NUM2 )
 
 #
-MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2,
-                                 MATR_B=M_ASSE2,
+MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
+                                 MATR_MASS=M_ASSE2,
                              CALC_FREQ=_F( NMAX_FREQ = 20))
+
 
 #
 INTERF2=DEFI_INTERF_DYNA(   NUME_DDL=NUM2,
@@ -496,3 +498,9 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
 #
 FIN()
 #
+
+
+
+
+
+

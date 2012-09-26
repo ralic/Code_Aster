@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE POUTRE SOUMISE A UNE EXCITATION FLUIDELASTIQUE AXIALE
 # sdll118a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,12 +172,13 @@ MATM=ASSE_MATRICE(
 #
 
 MODES=MODE_ITER_SIMULT(
-                   MATR_A=MATR,
-                   MATR_B=MATM,
+                   MATR_RIGI=MATR,
+                   MATR_MASS=MATM,
                 CALC_FREQ=_F(
                 OPTION = 'PLUS_PETITE',
                 NMAX_FREQ = 2)
                              )
+
 
 #
 #---------------------------------------------
@@ -421,3 +422,9 @@ TEST_FONCTION(
 
 FIN()
 #
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL DES FREQUENCES PROPRES D'UNE POUTRE BI APPUYEE AMORTIE
 # sdlv302c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,6 +21,8 @@
 # AMORTISSEMENT VISQUEUX PROPORTIONNEL
 # ELEMENTS  : HEXA20
 # REFERENCE : ANALYTIQUE
+
+import numpy
 
 DEBUT(CODE=_F( NOM = 'SDLV302C',NIV_PUB_WEB='INTERNET'))
 
@@ -225,9 +227,9 @@ C_ASSE=ASSE_MATRICE(    MATR_ELEM=C_ELEM,
 
 # CALCUL DES MODES
 
-MODES=MODE_ITER_SIMULT(       MATR_A=K_ASSE, 
-                                   MATR_B=M_ASSE, 
-                                   MATR_C=C_ASSE, 
+MODES=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
+                                   MATR_MASS=M_ASSE, 
+                                   MATR_AMOR=C_ASSE, 
                                   METHODE='TRI_DIAG',
                                CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                           NMAX_FREQ = 10)
@@ -272,6 +274,72 @@ TEST_RESU(RESU=(
            PRECISION = 0.5E-2,
            NUME_ORDRE = 5,
            VALE = 1518.8,      
+           REFERENCE = 'SOURCE_EXTERNE'))
+
+          )
+
+# CALCUL DES MODES AVEC TYPE_RESU='GENERAL'
+ 
+
+MODEG=MODE_ITER_SIMULT(MATR_A=K_ASSE, TYPE_RESU='GENERAL',
+                       MATR_B=M_ASSE, 
+                       MATR_C=C_ASSE, 
+                       METHODE='TRI_DIAG',
+                       CALC_CHAR_CRIT=_F(OPTION = 'PLUS_PETITE',
+                                         NMAX_CHAR_CRIT = 10)
+                             )
+
+# COMMENTAIRES
+# ------------ 
+# LES SD RESULTATS "MODES" ET "MODEG" FONT LES MEMES CALCULS, 
+# AVEC LES MEMES MATRICES, MAIS 
+#   - LA SD "MODES" UTILISE LE MOT-CLE TYPE_RESU='DYNAMIQUE' (VALEUR PAR DEFAUT)
+#        ET ON TROUVE DES FREQUENCES 'FREQ'
+#   - LA SD "MODEG" UTILISE LE MOT-CLE TYPE_RESU='GENERAL'
+#        ET ON TROUVE DES 'CHARGES_CRITIQUES' 'CHAR_CRIT'
+#
+# BIEN QUE LES MATRICES SOIENT IDENTIQUES LES VALEURS TROUVEES SONT DIFFERENTES, ELLES
+# SONT RELIEES ENTRE ELLES PAR LA FORMULE SUIVANTES : CHAR_CRIT=(2*PI*FREQ)**2
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODEG,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 0.2E-2,
+           NUME_ORDRE = 1,
+           VALE = (115.6*2*pi)**2,      
+           REFERENCE = 'SOURCE_EXTERNE'),
+
+   _F(   RESULTAT = MODEG,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 0.35E-2,
+           NUME_ORDRE = 2,
+           VALE = (441.6*2*pi)**2,       
+           REFERENCE = 'SOURCE_EXTERNE'),
+
+   _F(   RESULTAT = MODEG,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 0.1E-2,
+           NUME_ORDRE = 3,
+           VALE = (647.2*2*pi)**2,     
+           REFERENCE = 'SOURCE_EXTERNE'),
+
+   _F(   RESULTAT = MODEG,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 0.7E-2,
+           NUME_ORDRE = 4,
+           VALE = (928.0*2*pi)**2,     
+           REFERENCE = 'SOURCE_EXTERNE'),
+
+   _F(   RESULTAT = MODEG,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 1.1E-2,
+           NUME_ORDRE = 5,
+           VALE = (1518.8*2*pi)**2,      
            REFERENCE = 'SOURCE_EXTERNE'))
 
           )

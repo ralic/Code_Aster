@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
 # RESPONSABLE VABHHTS J.PELLET
 # sdlx201a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test RI
@@ -30,6 +30,7 @@ DEBUT(CODE=_F( NOM = 'SDLX201A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
 #        - LEUR INTER-OPERABILITE AVEC LES SOLVEURS LINEAIRES DIRECTS
 #        - CERTAINES COMMANDES DE PRE ET POSTTRAITEMENTS MODAUX (INFO_MODE,
 #             NORM_MODE...)
+
 #
 #      MECANIQUE 3D + COQUE + POUTRE + MODES PROPRES
 #
@@ -131,17 +132,19 @@ MASAS=ASSE_MATRICE(MATR_ELEM=MASEL,NUME_DDL=NU)
 
 
 
-NBMOD1 = INFO_MODE(MATR_A=RIGAS,MATR_B=MASAS,FREQ_MAX=100.,
+NBMOD1 = INFO_MODE(MATR_RIGI=RIGAS,MATR_MASS=MASAS,FREQ_MAX=100.,
                           SOLVEUR=_F(METHODE='LDLT'))
+
 
 TEST_TABLE(TABLE=NBMOD1,REFERENCE='ANALYTIQUE',
            NOM_PARA='NB_MODE', VALE_I=66)                          
 
 #       1.1 MODE_ITER_SIMULT
+
 #       ---------------------
 
-MOD0=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,
+MOD0=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,
                          METHODE='SORENSEN',SOLVEUR=_F(METHODE='LDLT'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -150,8 +153,9 @@ MOD0=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         PREC_SHIFT = 0.008)
                           )
 
-MOD1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,
+
+MOD1=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,
                          METHODE='TRI_DIAG',SOLVEUR=_F(METHODE='LDLT'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -160,8 +164,9 @@ MOD1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         PREC_SHIFT = 0.008)
                           )
 
-MOD2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,
+
+MOD2=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,
                          METHODE='JACOBI',SOLVEUR=_F(METHODE='LDLT'),
                          NMAX_ITER_BATHE = 30,
                          OPTION='SANS',
@@ -169,8 +174,9 @@ MOD2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         FREQ = 2.E-2,
                                         NMAX_FREQ = 10,))
 
-MOD1_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,TYPE_QZ='QZ_SIMPLE',
+
+MOD1_QZ=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,TYPE_QZ='QZ_SIMPLE',
                          METHODE='QZ',SOLVEUR=_F(METHODE='LDLT'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -178,8 +184,9 @@ MOD1_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         SEUIL = 1.5E-2,
                                         PREC_SHIFT = 0.008)
                           )
-MOD2_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,TYPE_QZ='QZ_EQUI',
+
+MOD2_QZ=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,TYPE_QZ='QZ_EQUI',
                          METHODE='QZ',SOLVEUR=_F(METHODE='LDLT'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -187,39 +194,46 @@ MOD2_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         SEUIL = 1.5E-2,
                                         PREC_SHIFT = 0.008)
                           )
+
 
 #       1.2 MODE_ITER_INV:
+
 #       ---------------------
 
-MOD4=MODE_ITER_INV(MATR_A=RIGAS,MATR_B=MASAS,
+MOD4=MODE_ITER_INV(MATR_RIGI=RIGAS,MATR_MASS=MASAS,
                    SOLVEUR=_F(METHODE='LDLT'),
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 6.2E-3,  6.14E-2,)) )
 
-MOD5=MODE_ITER_INV(MATR_A=RIGAS, MATR_B=MASAS,
+
+MOD5=MODE_ITER_INV(MATR_RIGI=RIGAS, MATR_MASS=MASAS,
                    SOLVEUR=_F(METHODE='LDLT'),
           CALC_FREQ=_F( OPTION = 'SEPARE', FREQ = (1.E-2,6.E-2,)))
 
-MOD6=MODE_ITER_INV(MATR_A=RIGAS,  MATR_B=MASAS,
+
+MOD6=MODE_ITER_INV(MATR_RIGI=RIGAS,  MATR_MASS=MASAS,
                    SOLVEUR=_F(METHODE='LDLT'),
            CALC_FREQ=_F( OPTION = 'AJUSTE',  FREQ = (1.E-2,6.E-2,)))
+
 
 #-----------------------------------------------------------------------
 
 #       2. SOLVEUR : 'MULT_FRONT' :
 #       ---------------------
 
-NBMOD2 = INFO_MODE(MATR_A=RIGAS,MATR_B=MASAS,FREQ_MAX=100.,
+NBMOD2 = INFO_MODE(MATR_RIGI=RIGAS,MATR_MASS=MASAS,FREQ_MAX=100.,
                          SOLVEUR=_F(METHODE='MULT_FRONT'))
+
            
 TEST_TABLE(TABLE=NBMOD2,REFERENCE='ANALYTIQUE',
            NOM_PARA='NB_MODE', VALE_I=66) 
             
 #       2.1 MODE_ITER_SIMULT
+
 #       ---------------------
 
-MOF0=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,SOLVEUR=_F(METHODE='MULT_FRONT'),
+MOF0=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,SOLVEUR=_F(METHODE='MULT_FRONT'),
                          METHODE='SORENSEN',
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -228,8 +242,9 @@ MOF0=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         PREC_SHIFT = 0.008)
                            )
 
-MOF1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,
+
+MOF1=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,
                          METHODE='TRI_DIAG',
                          SOLVEUR=_F(METHODE='MULT_FRONT'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
@@ -239,8 +254,9 @@ MOF1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         PREC_SHIFT = 0.008)
                            )
 
-MOF2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,
+
+MOF2=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,
                          METHODE='JACOBI',
                          SOLVEUR=_F(METHODE='MULT_FRONT'),
                          NMAX_ITER_BATHE = 30,
@@ -249,8 +265,9 @@ MOF2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         FREQ = 2.E-2,
                                         NMAX_FREQ = 10,))
 
-MOF1_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,TYPE_QZ='QZ_SIMPLE',
+
+MOF1_QZ=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,TYPE_QZ='QZ_SIMPLE',
                          METHODE='QZ',SOLVEUR=_F(METHODE='MULT_FRONT'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -259,8 +276,9 @@ MOF1_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         PREC_SHIFT = 0.008)
                           )
 
-MOF2_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,TYPE_QZ='QZ_EQUI',
+
+MOF2_QZ=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,TYPE_QZ='QZ_EQUI',
                          METHODE='QZ',SOLVEUR=_F(METHODE='MULT_FRONT'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -268,21 +286,26 @@ MOF2_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         SEUIL = 1.5E-2,
                                         PREC_SHIFT = 0.008)
                           )
+
 #       2.2 MODE_ITER_INV:
+
 #       ---------------------
 
-MOF4=MODE_ITER_INV(   MATR_A=RIGAS,   MATR_B=MASAS,
+MOF4=MODE_ITER_INV(   MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
                    SOLVEUR=_F(METHODE='MULT_FRONT'),
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 6.2E-3,  6.14E-2,)))
 
-MOF5=MODE_ITER_INV(MATR_A=RIGAS, MATR_B=MASAS,
+
+MOF5=MODE_ITER_INV(MATR_RIGI=RIGAS, MATR_MASS=MASAS,
                    SOLVEUR=_F(METHODE='MULT_FRONT'),
            CALC_FREQ=_F( OPTION = 'SEPARE', FREQ = (1.E-2,6.E-2,)))
 
-MOF6=MODE_ITER_INV(MATR_A=RIGAS,  MATR_B=MASAS,
+
+MOF6=MODE_ITER_INV(MATR_RIGI=RIGAS,  MATR_MASS=MASAS,
                    SOLVEUR=_F(METHODE='MULT_FRONT'),
            CALC_FREQ=_F( OPTION = 'AJUSTE',  FREQ = (1.E-2,6.E-2,)))
+
 
 
 #-----------------------------------------------------------------------
@@ -290,17 +313,19 @@ MOF6=MODE_ITER_INV(MATR_A=RIGAS,  MATR_B=MASAS,
 #       3. SOLVEUR : 'MUMPS' :
 #       ---------------------
 
-NBMOD3 = INFO_MODE(MATR_A=RIGAS,MATR_B=MASAS,FREQ_MAX=100.,
+NBMOD3 = INFO_MODE(MATR_RIGI=RIGAS,MATR_MASS=MASAS,FREQ_MAX=100.,
                          SOLVEUR=_F(METHODE='MUMPS'))
+
 
 TEST_TABLE(TABLE=NBMOD3,REFERENCE='ANALYTIQUE',
            NOM_PARA='NB_MODE', VALE_I=66) 
            
 #       3.1 MODE_ITER_SIMULT
+
 #       ---------------------
 
-MOM0=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,SOLVEUR=_F(METHODE='MUMPS'),
+MOM0=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,SOLVEUR=_F(METHODE='MUMPS'),
                          METHODE='SORENSEN',
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -309,8 +334,9 @@ MOM0=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         PREC_SHIFT = 0.008)
                            )
 
-MOM1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,
+
+MOM1=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,
                          METHODE='TRI_DIAG',
                          SOLVEUR=_F(METHODE='MUMPS'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
@@ -320,8 +346,9 @@ MOM1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         PREC_SHIFT = 0.008)
                            )
 
-MOM2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,
+
+MOM2=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,
                          METHODE='JACOBI',
                          SOLVEUR=_F(METHODE='MUMPS'),
                          NMAX_ITER_BATHE = 30,
@@ -330,8 +357,9 @@ MOM2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         FREQ = 2.E-2,
                                         NMAX_FREQ = 10,))
 
-MOM1_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,TYPE_QZ='QZ_SIMPLE',
+
+MOM1_QZ=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,TYPE_QZ='QZ_SIMPLE',
                          METHODE='QZ',SOLVEUR=_F(METHODE='MUMPS'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -339,8 +367,9 @@ MOM1_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         SEUIL = 1.5E-2,
                                         PREC_SHIFT = 0.008)
                           )
-MOM2_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                         MATR_B=MASAS,TYPE_QZ='QZ_EQUI',
+
+MOM2_QZ=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                         MATR_MASS=MASAS,TYPE_QZ='QZ_EQUI',
                          METHODE='QZ',SOLVEUR=_F(METHODE='MUMPS'),
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
@@ -348,22 +377,27 @@ MOM2_QZ=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                                         SEUIL = 1.5E-2,
                                         PREC_SHIFT = 0.008)
                           )
+
 
 #       3.2 MODE_ITER_INV:
+
 #       ---------------------
 
-MOM4=MODE_ITER_INV(   MATR_A=RIGAS,   MATR_B=MASAS, INFO=1,
+MOM4=MODE_ITER_INV(   MATR_RIGI=RIGAS,   MATR_MASS=MASAS, INFO=1,
                    SOLVEUR=_F(METHODE='MUMPS'),
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 6.2E-3,  6.14E-2,)))
 
-MOM5=MODE_ITER_INV(MATR_A=RIGAS, MATR_B=MASAS, INFO=1,
+
+MOM5=MODE_ITER_INV(MATR_RIGI=RIGAS, MATR_MASS=MASAS, INFO=1,
                    SOLVEUR=_F(METHODE='MUMPS'),
            CALC_FREQ=_F( OPTION = 'SEPARE', FREQ = (1.E-2,6.E-2,)))
 
-MOM6=MODE_ITER_INV(MATR_A=RIGAS,  MATR_B=MASAS, INFO=1,
+
+MOM6=MODE_ITER_INV(MATR_RIGI=RIGAS,  MATR_MASS=MASAS, INFO=1,
                    SOLVEUR=_F(METHODE='MUMPS'),
            CALC_FREQ=_F( OPTION = 'AJUSTE',  FREQ = (1.E-2,6.E-2,)))
+
 
 
 #-----------------------------------------------------------------------
@@ -433,93 +467,105 @@ AMORT=COMB_MATR_ASSE(COMB_R=(
 #       5.1. SOLVEUR : 'LDLT' :
 #       ---------------------
 
-MOC0L=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
-                    MATR_C=AMORT,
+MOC0L=MODE_ITER_SIMULT(  MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                    MATR_AMOR=AMORT,
                  METHODE='SORENSEN',SOLVEUR=_F(METHODE='LDLT'),
                 CALC_FREQ=_F(  APPROCHE = 'REEL', FREQ = (0.1,),
                 OPTION='CENTRE',
                 NMAX_FREQ = 2) )
 
-MOC1L=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
-                    MATR_C=AMORT,
+
+MOC1L=MODE_ITER_SIMULT(  MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                    MATR_AMOR=AMORT,
                  METHODE='TRI_DIAG',SOLVEUR=_F(METHODE='LDLT'),
                   OPTION='SANS',
                 CALC_FREQ=_F(  APPROCHE = 'REEL', FREQ = (0.1,),
                 OPTION='CENTRE',
                 NMAX_FREQ = 2) )
 
-MOC2L=MODE_ITER_INV(   MATR_A=RIGAS,   MATR_B=MASAS,
-                   MATR_C=AMORT,SOLVEUR=_F(METHODE='LDLT'),
+
+MOC2L=MODE_ITER_INV(   MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                   MATR_AMOR=AMORT,SOLVEUR=_F(METHODE='LDLT'),
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 6.2E-3,  6.14E-2,)),
                VERI_MODE=_F(  STOP_ERREUR = 'OUI'))
 
-MOC3L=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
-                    MATR_C=AMORT,INFO=1,SOLVEUR=_F(METHODE='LDLT'),
+
+MOC3L=MODE_ITER_SIMULT(  MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                    MATR_AMOR=AMORT,INFO=1,SOLVEUR=_F(METHODE='LDLT'),
                  METHODE='QZ',TYPE_QZ='QZ_EQUI',
                 CALC_FREQ=_F( FREQ = (0.1,),OPTION='CENTRE',NMAX_FREQ = 2),
                 VERI_MODE=_F(SEUIL=1.E-05) )
 
+
 #       5.2. SOLVEUR : 'MULT_FRONT' :
 #       ---------------------
 
-MOC0F=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
-                    MATR_C=AMORT,
+MOC0F=MODE_ITER_SIMULT(  MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                    MATR_AMOR=AMORT,
                  METHODE='SORENSEN',SOLVEUR=_F(METHODE='MULT_FRONT'),
                   OPTION='SANS',
                 CALC_FREQ=_F(  APPROCHE = 'REEL', FREQ = (0.1,),
                 OPTION='CENTRE',
                 NMAX_FREQ = 2) )
-MOC1F=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
-                    MATR_C=AMORT,
+
+MOC1F=MODE_ITER_SIMULT(  MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                    MATR_AMOR=AMORT,
                  METHODE='TRI_DIAG',SOLVEUR=_F(METHODE='MULT_FRONT'),
                   OPTION='SANS',
                 CALC_FREQ=_F(  APPROCHE = 'REEL', FREQ = (0.1,),
                 OPTION='CENTRE',
                 NMAX_FREQ = 2) )
 
-MOC2F=MODE_ITER_INV(   MATR_A=RIGAS,   MATR_B=MASAS,
-                   MATR_C=AMORT,SOLVEUR=_F(METHODE='MULT_FRONT'),
+
+MOC2F=MODE_ITER_INV(   MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                   MATR_AMOR=AMORT,SOLVEUR=_F(METHODE='MULT_FRONT'),
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 6.2E-3,  6.14E-2,)),
                VERI_MODE=_F(  STOP_ERREUR = 'OUI'))
 
-MOC3F=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
-                    MATR_C=AMORT,INFO=1,SOLVEUR=_F(METHODE='MULT_FRONT'),
+
+MOC3F=MODE_ITER_SIMULT(  MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                    MATR_AMOR=AMORT,INFO=1,SOLVEUR=_F(METHODE='MULT_FRONT'),
                  METHODE='QZ',TYPE_QZ='QZ_EQUI',
                 CALC_FREQ=_F( FREQ = (0.1,),OPTION='CENTRE',NMAX_FREQ = 2),
                 VERI_MODE=_F(SEUIL=1.E-05) )
 
+
 #       5.3. SOLVEUR : 'MUMPS' :
 #       ---------------------
 
-MOC0M=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
-                    MATR_C=AMORT,
+MOC0M=MODE_ITER_SIMULT(  MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                    MATR_AMOR=AMORT,
                  METHODE='SORENSEN',SOLVEUR=_F(METHODE='MUMPS'),
                   OPTION='SANS',
                 CALC_FREQ=_F(  APPROCHE = 'REEL', FREQ = (0.1,),
                 OPTION='CENTRE',
                 NMAX_FREQ = 2) )
 
-MOC1M=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
-                    MATR_C=AMORT,
+
+MOC1M=MODE_ITER_SIMULT(  MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                    MATR_AMOR=AMORT,
                  METHODE='TRI_DIAG',SOLVEUR=_F(METHODE='MUMPS'),
                   OPTION='SANS',
                 CALC_FREQ=_F(  APPROCHE = 'REEL', FREQ = (0.1,),
                 OPTION='CENTRE',
                 NMAX_FREQ = 2) )
 
-MOC2M=MODE_ITER_INV(   MATR_A=RIGAS,   MATR_B=MASAS,
-                   MATR_C=AMORT,SOLVEUR=_F(METHODE='MUMPS'),
+
+MOC2M=MODE_ITER_INV(   MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                   MATR_AMOR=AMORT,SOLVEUR=_F(METHODE='MUMPS'),
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 6.2E-3,  6.14E-2,)),
                VERI_MODE=_F(  STOP_ERREUR = 'OUI'))
 
-MOC3M=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
-                    MATR_C=AMORT,INFO=1,SOLVEUR=_F(METHODE='MUMPS'),
+
+MOC3M=MODE_ITER_SIMULT(  MATR_RIGI=RIGAS,   MATR_MASS=MASAS,
+                    MATR_AMOR=AMORT,INFO=1,SOLVEUR=_F(METHODE='MUMPS'),
                  METHODE='QZ',TYPE_QZ='QZ_EQUI',
                 CALC_FREQ=_F( FREQ = (0.1,),OPTION='CENTRE',NMAX_FREQ = 2),
                 VERI_MODE=_F(SEUIL=1.E-05) )
+
 #-----------------------------------------------------------------------
 
 ENGENDRE_TEST (  CO = (MOD0, MOD1, MOD2, MOD1_QZ, MOD2_QZ, MOD4, MOD5, MOD6) )
@@ -1204,3 +1250,9 @@ TEST_RESU(RESU=(
                        ),)
 
 FIN()
+
+
+
+
+
+

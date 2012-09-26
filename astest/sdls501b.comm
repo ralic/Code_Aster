@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 19/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -93,12 +93,13 @@ MAT_AS_K=ASSE_MATRICE(   MATR_ELEM=K,    NUME_DDL=NUM)
 MAT_AS_M=ASSE_MATRICE(   MATR_ELEM=M,    NUME_DDL=NUM)
 
 #
-MOD=MODE_ITER_SIMULT(      MATR_A=MAT_AS_K,
-                             MATR_B=MAT_AS_M,
+MOD=MODE_ITER_SIMULT(      MATR_RIGI=MAT_AS_K,
+                             MATR_MASS=MAT_AS_M,
                             METHODE='TRI_DIAG',
                           CALC_FREQ=_F( OPTION = 'BANDE',
                                      FREQ = (500., 5000.,),)
                         )
+
 
 #
 #---------------------------------------------------------------------
@@ -122,3 +123,9 @@ TEST_RESU(RESU=(
 #
 FIN()
 #
+
+
+
+
+
+

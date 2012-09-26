@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE VIBRATION D'UNE POUTRE AVEC PRE-CONTRAINTES (PETIT MAILLAGE)
 # sdll101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,11 +186,12 @@ MATASSR1=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATASSR,
                                 _F(MATR_ASSE=MAR_0,
                                    COEF_R=1.0,),),);
 
-MD_0=MODE_ITER_SIMULT(MATR_A=MATASSR1,
-                      MATR_B=MATASSM,
+MD_0=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
+                      MATR_MASS=MATASSM,
                       METHODE='TRI_DIAG',
                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                    NMAX_FREQ=5,),);
+
 #
 # CALCUL MODAL AVEC PRECONTRAINTE F = 10 N.
 
@@ -200,11 +201,12 @@ MATASSR1=COMB_MATR_ASSE(reuse =MATASSR1,
                                 _F(MATR_ASSE=MAR_10,
                                    COEF_R=1.0,),),);
 
-MD_10=MODE_ITER_SIMULT(MATR_A=MATASSR1,
-                       MATR_B=MATASSM,
+MD_10=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
+                       MATR_MASS=MATASSM,
                        METHODE='TRI_DIAG',
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=5,),);
+
 #
 # CALCUL MODAL AVEC PRECONTRAINTE F = 100 N.
 
@@ -214,11 +216,12 @@ MATASSR1=COMB_MATR_ASSE(reuse =MATASSR1,
                                 _F(MATR_ASSE=MAR_100,
                                    COEF_R=1.0,),),);
 
-MD_100=MODE_ITER_SIMULT(MATR_A=MATASSR1,
-                        MATR_B=MATASSM,
+MD_100=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
+                        MATR_MASS=MATASSM,
                         METHODE='TRI_DIAG',
                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                      NMAX_FREQ=5,),);
+
 #
 # CALCUL MODAL AVEC PRECONTRAINTE F = 1000 N.
 
@@ -228,11 +231,12 @@ MATASSR1=COMB_MATR_ASSE(reuse =MATASSR1,
                                 _F(MATR_ASSE=MAR_1000,
                                    COEF_R=1.0,),),);
 
-MD_1000=MODE_ITER_SIMULT(MATR_A=MATASSR1,
-                         MATR_B=MATASSM,
+MD_1000=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
+                         MATR_MASS=MATASSM,
                          METHODE='TRI_DIAG',
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=5,),);
+
 #
 # VERIFICATION DES RESULTATS
 
@@ -323,3 +327,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MD_1000,
 
 FIN();
 #
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE VIBRATIONS D UN PENDULE EN ROTATION
 # RESPONSABLE VABHHTS J.PELLET
 # sdll403a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -161,13 +161,14 @@ K_MODAL=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=K2_ASSE,
 M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
                     NUME_DDL=NUMERO_2,);
 
-MODE_1=MODE_ITER_SIMULT(MATR_A=K_MODAL,
-                        MATR_B=M_ASSE,
+MODE_1=MODE_ITER_SIMULT(MATR_RIGI=K_MODAL,
+                        MATR_MASS=M_ASSE,
                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                      NMAX_FREQ=20,),
                         VERI_MODE=_F(SEUIL=0.0001,),
                         SOLVEUR=_F(NPREC=9),
                         );
+
 #----------------------------------------------------------------------
 # pour tester la possibilite d'imprimer un MODE_MECA au format 'IDEAS'
 # et de poursuivre la calcul apres l'avoir relu :
@@ -238,3 +239,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_2,
                    REFERENCE='SOURCE_EXTERNE',),),);
 
 FIN();
+
+
+
+
+
+

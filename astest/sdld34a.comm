@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE LACHER D'UN SIMPLE MASSE-RESSORT
 # sdld34a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,10 +147,11 @@ DXXDIS2=RECU_FONCTION(RESULTAT=TRANSX,
                       NOM_CMP='DX',
                       GROUP_NO='N',);
 
-MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='TOUT',),);
+
 
 PROJ_BASE(BASE=MODES,
                 STOCKAGE='DIAG',
@@ -244,3 +245,9 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          MARQUEUR=0,),),);
 
 FIN();
+
+
+
+
+
+

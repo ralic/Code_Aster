@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME MASSE-RESSORT AVEC AMORTISSEUR VISQUEUX NONPROPORTIONNEL
 # sdld27e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,25 +139,28 @@ MATASSC=ASSE_MATRICE(  MATR_ELEM=MELC,   NUME_DDL=NUM  )
 
 # --------------------------------------------------------------------
 
-MODE_QUA=MODE_ITER_SIMULT( MATR_A=MATASSR, MATR_B=MATASSM,
-                             MATR_C=MATASSC,
+MODE_QUA=MODE_ITER_SIMULT( MATR_RIGI=MATASSR, MATR_MASS=MATASSM,
+                             MATR_AMOR=MATASSC,
                               METHODE='TRI_DIAG',
              CALC_FREQ=_F( OPTION = 'CENTRE', FREQ = 20.0, NMAX_FREQ = 8))
+
 
 MODE_QUA=NORM_MODE(reuse=MODE_QUA,   MODE=MODE_QUA,   NORME='MASS_GENE' )
 
 # AVEC QZ
 # POUR TESTER LE TRI DE L'OPTION 'CENTRE' + 'QZ_SIMPLE'
-MODE_QZ1=MODE_ITER_SIMULT( MATR_A=MATASSR, MATR_B=MATASSM,
-                             MATR_C=MATASSC,
+MODE_QZ1=MODE_ITER_SIMULT( MATR_RIGI=MATASSR, MATR_MASS=MATASSM,
+                             MATR_AMOR=MATASSC,
                               METHODE='QZ',TYPE_QZ='QZ_SIMPLE',
              CALC_FREQ=_F( OPTION = 'CENTRE', FREQ = 20.0, NMAX_FREQ = 3))
+
 MODE_QZ1=NORM_MODE(reuse=MODE_QZ1,   MODE=MODE_QZ1,   NORME='MASS_GENE' )
 # POUR TESTER L'OPTION 'TOUT'  + 'QZ_EQUI'
-MODE_QZ2=MODE_ITER_SIMULT( MATR_A=MATASSR, MATR_B=MATASSM,
-                             MATR_C=MATASSC,
+MODE_QZ2=MODE_ITER_SIMULT( MATR_RIGI=MATASSR, MATR_MASS=MATASSM,
+                             MATR_AMOR=MATASSC,
                               METHODE='QZ',TYPE_QZ='QZ_EQUI',
              CALC_FREQ=_F( OPTION = 'TOUT', ))
+
 MODE_QZ2=NORM_MODE(reuse=MODE_QZ2,   MODE=MODE_QZ2,   NORME='MASS_GENE' )
 
 # --------------------------------------------------------------------
@@ -659,3 +662,9 @@ TEST_RESU(RESU=(
 
 FIN( )
 #
+
+
+
+
+
+

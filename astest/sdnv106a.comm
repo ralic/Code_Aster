@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
 # sdnv106a.para = tps_job 900 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,11 +98,12 @@ MACRO_MATR_ASSE ( MODELE = MO,
                    _F( MATRICE= CO('RIGSTA'), OPTION= 'RIGI_MECA'),
                    _F( MATRICE= CO('MASSTA'), OPTION= 'MASS_MECA'),),);
 #
-MODED=MODE_ITER_SIMULT(MATR_A=RIGSTA,
-                       MATR_B=MASSTA,
+MODED=MODE_ITER_SIMULT(MATR_RIGI=RIGSTA,
+                       MATR_MASS=MASSTA,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=95,),
                        VERI_MODE=_F(STOP_ERREUR='NON',),);
+
 #
 # Calcul des modes sur le modele souple
 #
@@ -115,11 +116,12 @@ MACRO_MATR_ASSE ( MODELE = MO,
                    _F( MATRICE= CO('RIGST2'), OPTION= 'RIGI_MECA'),
                    _F( MATRICE= CO('MASST2'), OPTION= 'MASS_MECA'),),);
 #
-MODE2=MODE_ITER_SIMULT(MATR_A=RIGST2,
-                       MATR_B=MASST2,
+MODE2=MODE_ITER_SIMULT(MATR_RIGI=RIGST2,
+                       MATR_MASS=MASST2,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=95,),
                        VERI_MODE=_F(STOP_ERREUR='NON',));
+
 #
 # CALCUL AVEC SOLVEUR LINEAIRE MULT_FRONT
 REPONSE=STAT_NON_LINE(MODELE=MO,
@@ -304,6 +306,7 @@ REPONSEM=DYNA_NON_LINE( reuse=REPONSEM,
 #
 #  Frequence du premier mode pour le materiau elastique raide
 #  Valeur venant de MODE_ITER_SIMULT
+
 #
 freqel = 3.58128E-01
 #
@@ -662,3 +665,9 @@ TEST_RESU(RESU=(
              ),),);
 #
 FIN();
+
+
+
+
+
+

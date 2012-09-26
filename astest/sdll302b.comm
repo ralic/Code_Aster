@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE REPONSE TEMPORELLE D'UNE POUTRE
 # sdll302b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -218,11 +218,12 @@ MASSE=ASSE_MATRICE(    MATR_ELEM=MASSELEM,
 #
 # CALCUL MODAL
 #
-MODE1=MODE_ITER_SIMULT(       MATR_A=RIGIDITE,
-                                   MATR_B=MASSE,
+MODE1=MODE_ITER_SIMULT(       MATR_RIGI=RIGIDITE,
+                                   MATR_MASS=MASSE,
                                 CALC_FREQ=_F( NMAX_FREQ = 6,
                                            OPTION = 'PLUS_PETITE')
                             )
+
 
 #
 # DEFINITION DE LA DIRECTION DU SEISME
@@ -841,3 +842,9 @@ TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
 #
 FIN()
 #
+
+
+
+
+
+

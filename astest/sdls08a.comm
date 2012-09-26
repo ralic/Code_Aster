@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 # sdls08a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,12 +102,13 @@ FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
 
 #CALCUL DE LA BASE DE MODES DYNAMIQUES
 #
-MODET=MODE_ITER_SIMULT(MATR_A=KASS,
-                       MATR_B=MASS,
+MODET=MODE_ITER_SIMULT(MATR_RIGI=KASS,
+                       MATR_MASS=MASS,
                        CALC_FREQ=_F(
                        NMAX_FREQ=6,),
                        VERI_MODE=_F(STOP_ERREUR='OUI',
                                     STURM='OUI',SEUIL=3.E-5,),);
+
 
 # TEST DE CREATION D'UNE BASE MODALE AVEC UNE OCCURENCE
 # DE MODE_MECA
@@ -120,20 +121,22 @@ MODES=DEFI_BASE_MODALE(RITZ=(
 # TEST DE CREATION D'UNE BASE MODALE PAR ASSEMBLAGE DE DEUX
 #CONCEPTS "MODE_MECA" DONNES DANS UNE LISTE SOUS LE MOT-CLE "RITZ"
 
-MODE_A=MODE_ITER_SIMULT(MATR_A=KASS,
-                       MATR_B=MASS,
+MODE_A=MODE_ITER_SIMULT(MATR_RIGI=KASS,
+                       MATR_MASS=MASS,
                        CALC_FREQ=_F(
                        NMAX_FREQ=4,),
                        VERI_MODE=_F(STOP_ERREUR='OUI',
                                     STURM='OUI',SEUIL=3.E-5,),);
 
-MODE_B=MODE_ITER_SIMULT(MATR_A=KASS,
-                       MATR_B=MASS,
+
+MODE_B=MODE_ITER_SIMULT(MATR_RIGI=KASS,
+                       MATR_MASS=MASS,
                        METHODE='JACOBI',
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(1000.,5100.),),
                        VERI_MODE=_F(STOP_ERREUR='OUI',
                                     STURM='OUI',SEUIL=3.E-5,),);
+
 
 MODE_T=DEFI_BASE_MODALE(RITZ=(
                            _F(MODE_MECA=(MODE_A,MODE_B),
@@ -229,11 +232,12 @@ FGEN=PROJ_VECT_BASE(BASE=MODSTA,
                     VECT_ASSE=FASS,);
 #CALCUL DES MODES SUR BASE REDUITE
 
-MODGEN=MODE_ITER_SIMULT(MATR_A=KGEN,
-                        MATR_B=MGEN,
+MODGEN=MODE_ITER_SIMULT(MATR_RIGI=KGEN,
+                        MATR_MASS=MGEN,
                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                      NMAX_FREQ=5,),
                         VERI_MODE=_F(STOP_ERREUR='NON',),);
+
 #RESTITUTION SUR BASE PHYSIQUE DES MODES PROPRES GENERALISES
 
 MODEEXP=REST_GENE_PHYS(RESU_GENE=MODGEN,
@@ -368,3 +372,9 @@ TEST_FICHIER(FICHIER='fort.38',
              INFO=1);
 
 FIN();
+
+
+
+
+
+

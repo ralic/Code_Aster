@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE SUR SES BORDS
 # perf006a.para = tps_job 500 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,14 +104,15 @@ MASSASS=ASSE_MATRICE(MATR_ELEM=MEMAME,
 
 #
 
-MODES=MODE_ITER_SIMULT(MATR_A=RAIDASS,
-                       MATR_B=MASSASS,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RAIDASS,
+                       MATR_MASS=MASSASS,
                        VERI_MODE=_F(PREC_SHIFT=5.0E-3,
                                       STOP_ERREUR='OUI',
                                       STURM='OUI',
                                       SEUIL=5E-04),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=12));
+
 
 #
 #  DEFINITION DES INTERFACES
@@ -194,8 +195,8 @@ RIGGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 
-RESGEN=MODE_ITER_SIMULT(MATR_A=RIGGEN,
-                        MATR_B=MASGEN,
+RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
+                        MATR_MASS=MASGEN,
                         VERI_MODE=_F(PREC_SHIFT=5.0E-3,
                                       STOP_ERREUR='OUI',
                                       STURM='OUI',
@@ -205,9 +206,16 @@ RESGEN=MODE_ITER_SIMULT(MATR_A=RIGGEN,
                                      NMAX_FREQ=12));
 
 
+
 TEST_RESU(RESU=
        _F( RESULTAT = RESGEN, PARA = 'FREQ', CRITERE = 'RELATIF',
            PRECISION = 5.E-4, NUME_ORDRE = 5, VALE = 8.28, REFERENCE = 'AUTRE_ASTER'))
 
 
 FIN();
+
+
+
+
+
+

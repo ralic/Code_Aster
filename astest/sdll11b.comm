@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL DES FREQUENCES PROPRES D'UN ANNEAU CIRCULAIRE MINCE   
 # sdll11b.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,10 +65,11 @@ M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
 
 # CALCUL DES MODES PAR SORENSEN
 
-MODE1=MODE_ITER_SIMULT(       MATR_A=K_ASSE, 
-                                   MATR_B=M_ASSE, 
+MODE1=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE, 
+                                   MATR_MASS=M_ASSE, 
                                CALC_FREQ=_F(  OPTION = 'BANDE',
                                            FREQ = ( 200., 3500., )))
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE1,
@@ -186,3 +187,9 @@ TEST_RESU(RESU=(
 
 FIN()
 #
+
+
+
+
+
+

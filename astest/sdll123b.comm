@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE TEST INFORMATIQUE QZ ET SORENSEN NON SYMETRIQUES
 # sdll123b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -136,18 +136,20 @@ else:
 
 # CALCUL VIA SORENSEN
 MG_SO=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK,
-                       MATR_B=MATM,
+                       MATR_RIGI=MATK,
+                       MATR_MASS=MATM,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10),
                         )
+
 # CALCUL VIA QZ
 MG_QZ=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK,
-                       MATR_B=MATM,
+                       MATR_RIGI=MATK,
+                       MATR_MASS=MATM,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10),
                         )
+
 
 # CALCUL VIA PYTHON
 rigF=MATK.EXTR_MATR()
@@ -301,39 +303,43 @@ else:
 
 # CALCUL VIA SORENSEN (APPROCHE COMPLEXE, REELLE ET IMAGINAIRE)
 MQ_SO=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK1,
-                       MATR_B=MATM1,
-                       MATR_C=MATC1,
+                       MATR_RIGI=MATK1,
+                       MATR_MASS=MATM1,
+                       MATR_AMOR=MATC1,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,
                        APPROCHE='COMPLEXE',),
                         )
+
 MQ_SOR=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK1,
-                       MATR_B=MATM1,
-                       MATR_C=MATC1,
+                       MATR_RIGI=MATK1,
+                       MATR_MASS=MATM1,
+                       MATR_AMOR=MATC1,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,
                        APPROCHE='REEL',),
                        VERI_MODE=_F(SEUIL=1.E-04),
                         )
+
 MQ_SOI=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK1,
-                       MATR_B=MATM1,
-                       MATR_C=MATC1,
+                       MATR_RIGI=MATK1,
+                       MATR_MASS=MATM1,
+                       MATR_AMOR=MATC1,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,
                        APPROCHE='IMAG',),
                         )
+
 # CALCUL VIA QZ
 MQ_QZ=MODE_ITER_SIMULT( INFO=1,
-                       MATR_A=MATK1,
-                       MATR_B=MATM1,
-                       MATR_C=MATC1,
+                       MATR_RIGI=MATK1,
+                       MATR_MASS=MATM1,
+                       MATR_AMOR=MATC1,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,),
                        VERI_MODE=_F(SEUIL=1.E-04),
                         )
+
 
 # CALCUL VIA PYTHON
 rigF=MATK1.EXTR_MATR()
@@ -462,4 +468,10 @@ TEST_RESU(RESU=(
                 NUME_ORDRE = 10,  VALE = 3.7000877864494E-01, VALE_ABS = 'OUI', REFERENCE='NON_REGRESSION',),
                 ),)
 FIN()
+
+
+
+
+
+
 

@@ -1,4 +1,4 @@
-#@ MODIF crea_elem_ssd_ops Macro  DATE 16/01/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#@ MODIF crea_elem_ssd_ops Macro  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,8 +113,8 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
                             APPROCHE =CALC_FREQ['APPROCHE'],
                             **motscfa)
 
-        __modes = MODE_ITER_SIMULT(MATR_A = _matrigi,
-                                   MATR_B = _mmass,
+        __modes = MODE_ITER_SIMULT(MATR_RIGI = _matrigi,
+                                   MATR_MASS = _mmass,
                                    INFO = args['INFO'],
                                    **motscit)
 

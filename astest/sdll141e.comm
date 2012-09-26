@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE SANS DISQUE
 # sdll141e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,10 +100,11 @@ GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
 GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
                    NUME_DDL=NUMEDDL,);
 
-MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(3.,3000.,),),);
+
 
 
 TEST_RESU(RESU=(_F(RESULTAT=MODES,
@@ -138,14 +139,15 @@ GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS,
                             _F(MATR_ASSE=AMOR,
                                COEF_R=1.,),),);
 
-MODEG=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
-                       MATR_C=GYOM,
+MODEG=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
+                       MATR_AMOR=GYOM,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=1.,
                                     NMAX_FREQ=30,),
                        VERI_MODE=_F(SEUIL=1.E-3,),);
+
 
 
 
@@ -202,3 +204,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MODEG,
 
 
 FIN();
+
+
+
+
+
+

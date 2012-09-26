@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD
 # sdls01a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,6 +68,7 @@ CHCAS1=AFFE_CHAR_MECA(MODELE=MO,
 #-------------------------------------------------------------------
 # -CALCUL MODAL POUR CAS1 AVEC LE MACRO CALC_MODAL
 
+
 MODE1=CALC_MODAL(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        CARA_ELEM=CARELEM,
@@ -77,6 +78,7 @@ MODE1=CALC_MODAL(MODELE=MO,
                                     FREQ=100.0,
                                     NMAX_FREQ = 20,
                                     ),);
+
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE1,
                    NUME_ORDRE=1,
@@ -121,7 +123,8 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE1,
                    PRECISION=0.01,
                    REFERENCE='ANALYTIQUE',),),);
 
-# _CAS2: CALCUL MODAL EN 2 PAS, MACRO_MATR_ASSE + MODE_ITER_SIMULT
+# _CAS2: CALCUL MODAL EN 2 PAS, MACRO_MATR_RIGISSE + MODE_ITER_SIMULT
+
 
 MACRO_MATR_ASSE(MODELE=MO,
                 CHAM_MATER=CHMAT,
@@ -133,10 +136,11 @@ MACRO_MATR_ASSE(MODELE=MO,
                               OPTION='MASS_MECA',),),);
 
 
-MODE2=MODE_ITER_SIMULT(MATR_A=MATASSR2,
-                       MATR_B=MATASSM2,
+MODE2=MODE_ITER_SIMULT(MATR_RIGI=MATASSR2,
+                       MATR_MASS=MATASSM2,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(0.0,90.0,),),);
+
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE2,
                    NUME_MODE=7,
@@ -428,3 +432,9 @@ TEST_TABLE(TABLE=ECIN2,
 
 FIN();
 #
+
+
+
+
+
+

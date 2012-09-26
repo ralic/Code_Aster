@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES : POUTRE 3D SOUS-STRUCTUREE
 # zzzz208b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,12 +140,13 @@ FASC =CREA_CHAMP(OPERATION='ASSE',MODELE=MODEL,TYPE_CHAM='NOEU_DEPL_C',
                           COEF_C=('RI',1.0,0.5,),),);
 
 # Calcul des modes dynamiques interfaces encastrees
-MODES=MODE_ITER_SIMULT(MATR_A=KASS,
-                       MATR_B=MASS,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=KASS,
+                       MATR_MASS=MASS,
                        CALC_FREQ=_F(
                        NMAX_FREQ=20,),
                        VERI_MODE=_F(STOP_ERREUR='NON',
                                     STURM='NON',),);
+
 
 # calcul des modes statiques dis contraints
 MODSTA2=MODE_STATIQUE(MATR_RIGI=KASS,
@@ -221,13 +222,14 @@ MGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGEN,
 
 # calcul des modes generalises du complement de Schur
 # a l'interface
-MODGEN=MODE_ITER_SIMULT(MATR_A=KGEN,
-                        MATR_B=MGEN,
+MODGEN=MODE_ITER_SIMULT(MATR_RIGI=KGEN,
+                        MATR_MASS=MGEN,
                         CALC_FREQ=_F(
                         NMAX_FREQ=5,),
                         VERI_MODE=_F(STOP_ERREUR='OUI',
                                      STURM='NON',),
                         STOP_FREQ_VIDE='NON',);
+
 
 # expansion des modes generalises d'interface sur chaque sous-structure
 MODPHY1=REST_SOUS_STRUC(RESU_GENE=MODGEN,
@@ -291,13 +293,14 @@ MGENR=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGENR,
                     OPTION='MASS_GENE',);
 
 # calcul des modes generalises
-MODGENR=MODE_ITER_SIMULT(MATR_A=KGENR,
-                        MATR_B=MGENR,
+MODGENR=MODE_ITER_SIMULT(MATR_RIGI=KGENR,
+                        MATR_MASS=MGENR,
                         CALC_FREQ=_F(
                         NMAX_FREQ=5,),
                         VERI_MODE=_F(STOP_ERREUR='OUI',
                                      STURM='NON',),
                         STOP_FREQ_VIDE='NON',);
+
 
 
 TEST_RESU(RESU=(
@@ -422,13 +425,14 @@ frequence=LA.eigvals(NP.dot(MACK,MPYPI))
 frequence=NP.sort(NP.sqrt(frequence)/2/NP.pi)
 
 # calcul des modes generalises avec Aster a partir des matrices assemblees dans Python
-MODPYR=MODE_ITER_SIMULT(MATR_A=KPYR,
-                        MATR_B=MPYR,
+MODPYR=MODE_ITER_SIMULT(MATR_RIGI=KPYR,
+                        MATR_MASS=MPYR,
                         CALC_FREQ=_F(
                         NMAX_FREQ=5,),
                         VERI_MODE=_F(STOP_ERREUR='OUI',
                                      STURM='NON',),
                         STOP_FREQ_VIDE='NON',);
+
 
 
 TEST_RESU(RESU=(
@@ -472,3 +476,9 @@ TEST_RESU(RESU=(
 
 
 FIN();
+
+
+
+
+
+

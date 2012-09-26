@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
 # shls200a.para = tps_job 310 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,19 +206,17 @@ MACRO_MATR_ASSE(MODELE=MO2,
                               OPTION='MASS_MECA',),),);
 
 
-MODE1=MODE_ITER_SIMULT( MATR_A=MATR1,
-                       MATR_B=MATM1,
+MODE1=MODE_ITER_SIMULT( MATR_RIGI=MATR1,
+                       MATR_MASS=MATM1,
                        CALC_FREQ=_F( NMAX_FREQ= 12,
-#                       CALC_FREQ=_F( NMAX_FREQ= 20,
                                      OPTION ='PLUS_PETITE'
                                     ),
                        VERI_MODE=_F( SEUIL = 1.E-5 )
                       )
 
-MODE2=MODE_ITER_SIMULT( MATR_A=MATR2,
-                       MATR_B=MATM2,
+MODE2=MODE_ITER_SIMULT( MATR_RIGI=MATR2,
+                       MATR_MASS=MATM2,
                        CALC_FREQ=_F( NMAX_FREQ= 6,
-#                        CALC_FREQ=_F( NMAX_FREQ= 20,
                                     OPTION ='PLUS_PETITE'
                                     ),
                        VERI_MODE=_F( SEUIL = 1.E-5 )

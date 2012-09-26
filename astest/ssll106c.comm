@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_6M MACRO_ELAS_MULT
 # ssll106c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -765,12 +765,13 @@ MACRO_MATR_ASSE(
                    )
 
 MODES=MODE_ITER_SIMULT(
-              MATR_A=MATASSR1,
-              MATR_B=MATASSM1,
+              MATR_RIGI=MATASSR1,
+              MATR_MASS=MATASSM1,
              CALC_FREQ=_F(
                   NMAX_FREQ = 13,
                   OPTION = 'CENTRE', FREQ = 1.)
                         )
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODES,       PARA = 'FREQ',
@@ -827,3 +828,9 @@ FIN()
 #
 #
 #
+
+
+
+
+
+

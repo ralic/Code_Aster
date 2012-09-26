@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,18 +149,21 @@ MACRO_MATR_ASSE(MODELE=MODELE3,
                
 # CALCULS DES MODES AVEC LES C.L. ASSOCIEES AUX TYPES D'INTERFACE
 
-MODES_1=MODE_ITER_SIMULT(MATR_A=RAID1,
-                         MATR_B=MASS1,
+MODES_1=MODE_ITER_SIMULT(MATR_RIGI=RAID1,
+                         MATR_MASS=MASS1,
                          CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
                          NMAX_FREQ = 10))
-MODES_2=MODE_ITER_SIMULT(MATR_A=RAID2,
-                         MATR_B=MASS2,
+
+MODES_2=MODE_ITER_SIMULT(MATR_RIGI=RAID2,
+                         MATR_MASS=MASS2,
                          CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
                          NMAX_FREQ = 10))
-MODES_3=MODE_ITER_SIMULT(MATR_A=RAID3,
-                         MATR_B=MASS3,
+
+MODES_3=MODE_ITER_SIMULT(MATR_RIGI=RAID3,
+                         MATR_MASS=MASS3,
                          CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
                          NMAX_FREQ = 10))
+
 
 #  DEFINITION DES INTERFACES
 
@@ -256,8 +259,8 @@ RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 
-RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
-                         MATR_B=MASGEN,
+RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
+                         MATR_MASS=MASGEN,
                          METHODE='SORENSEN',
                          CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ=10),
@@ -271,6 +274,7 @@ RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
                          STOP_FREQ_VIDE='NON',
                          INFO=1,
                         )
+
                         
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 
@@ -308,3 +312,9 @@ TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
                 NUME_ORDRE = 5,  VALE = 68.48, REFERENCE = 'ANALYTIQUE')) )
 
 FIN()
+
+
+
+
+
+

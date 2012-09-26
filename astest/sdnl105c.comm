@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 # sdnl105c.para = tps_job 140 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -211,24 +211,27 @@ M_ASSE3=ASSE_MATRICE(  MATR_ELEM=M_ELEM3,
                            NUME_DDL=NUM3)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1,
-                                 MATR_B=M_ASSE1,
+MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
+                                 MATR_MASS=M_ASSE1,
                              CALC_FREQ=_F( NMAX_FREQ = 6),
                              VERI_MODE=_F(STURM='OUI',
                                   SEUIL=1.0e-3,),
                               )
-MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2,
-                                 MATR_B=M_ASSE2,
+
+MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
+                                 MATR_MASS=M_ASSE2,
                              CALC_FREQ=_F( NMAX_FREQ = 6),
                              VERI_MODE=_F(STURM='OUI',
                                   SEUIL=1.0e-3,),
                              )
-MODES3=MODE_ITER_SIMULT(     MATR_A=K_ASSE3,
-                                 MATR_B=M_ASSE3,
+
+MODES3=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE3,
+                                 MATR_MASS=M_ASSE3,
                              CALC_FREQ=_F( NMAX_FREQ = 6),
                              VERI_MODE=_F(STURM='OUI',
                                   SEUIL=1.0e-3,),
                              )
+
 
 
 MODESTA1=MODE_STATIQUE(  MATR_RIGI=K_ASSE1,
@@ -398,8 +401,8 @@ F_GENE=PROJ_VECT_BASE(    BASE=BAMODA,
                           VECT_ASSE = V_ASSE)
 
 
-RESGEN=MODE_ITER_SIMULT(     MATR_A=MATRRIGI,
-                                 MATR_B=MATRMASS,
+RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=MATRRIGI,
+                                 MATR_MASS=MATRMASS,
                              CALC_FREQ=_F(
                              #OPTION='BANDE',
                                #FREQ=(1.0,35.0,),
@@ -408,6 +411,7 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=MATRRIGI,
                              VERI_MODE=_F(STURM='OUI',
                                   SEUIL=1.0e-2),
                                   )
+
 
 
 MODGLO=REST_GENE_PHYS(   RESU_GENE=RESGEN,
@@ -621,3 +625,9 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
 
 #
 FIN()
+
+
+
+
+
+

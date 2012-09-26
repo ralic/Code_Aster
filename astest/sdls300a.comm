@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE AEROREFRIGERANT SOUMIS A UNE EXCITATION SOL
 # sdls300a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,8 +102,8 @@ TABL_MAS=POST_ELEM(        MODELE=STRUC,
                           MASS_INER=_F(  TOUT = 'OUI')
                       )
 
-MODE1=MACRO_MODE_MECA(    MATR_A=K_ASSE,
-                          MATR_B=M_ASSE,
+MODE1=MACRO_MODE_MECA(    MATR_RIGI=K_ASSE,
+                          MATR_MASS=M_ASSE,
                           CALC_FREQ=_F(  FREQ_MIN = 1.,    
                                          FREQ_MAX = 7.,    
                                          COEF_DIM_ESPACE = 3,
@@ -112,6 +112,7 @@ MODE1=MACRO_MODE_MECA(    MATR_A=K_ASSE,
                           FILTRE_MODE=_F(  CRIT_EXTR = 'MASS_EFFE_UN'),
                           IMPRESSION=_F(  CUMUL = 'OUI')
                        )
+
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE1,
@@ -153,3 +154,9 @@ TEST_RESU(RESU=(
 
 FIN()
 #
+
+
+
+
+
+

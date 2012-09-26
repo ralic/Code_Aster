@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE DEFINITION D'UN INTER-SPECTRE D'EXCITATION ANALYTIQUE
 # sdll148a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,12 +80,13 @@ MATRR=ASSE_MATRICE( MATR_ELEM=MELR,
 MATRM=ASSE_MATRICE( MATR_ELEM=MELM,
                      NUME_DDL=NUM )
 
-MODES=MODE_ITER_SIMULT( MATR_A=MATRR,
-                        MATR_B=MATRM,
+MODES=MODE_ITER_SIMULT( MATR_RIGI=MATRR,
+                        MATR_MASS=MATRM,
                         CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                       NMAX_FREQ=2),
                         VERI_MODE=_F(STOP_ERREUR='NON',
                                      STURM='NON'),)
+
 
 MODES=NORM_MODE(reuse=MODES,MODE=MODES,AVEC_CMP='DX')
 
@@ -163,3 +164,9 @@ for ind in range(3):
     DETRUIRE( CONCEPT = _F(NOM = (REP0,)))
 
 FIN( )
+
+
+
+
+
+

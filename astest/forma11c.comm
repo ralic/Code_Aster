@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE TP ANALYSE MODALE TPAM3
 # forma11c.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,6 +22,7 @@
 #-------------------------------------------------------------------
 #                 CORRIGE TP ANALYSE MODAL N3 
 #                            MACRO_MODE_MECA
+
 #
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
@@ -82,9 +83,10 @@ TABL_MAS=POST_ELEM(MODELE=STRUC,
 
 IMPR_TABLE(TABLE=TABL_MAS,);
 
-NB_MODES=INFO_MODE(MATR_A=K_ASSE,
-                   MATR_B=M_ASSE,
+NB_MODES=INFO_MODE(MATR_RIGI=K_ASSE,
+                   MATR_MASS=M_ASSE,
                    FREQ_MAX=4.0,);
+
 
                           
 # TEST_TABLE UNIQUEMENT POUR FAIRE CAS TEST
@@ -98,6 +100,7 @@ TEST_TABLE(TABLE=NB_MODES,REFERENCE='NON_REGRESSION',
 # QUESTION 1: CALCUL BANDE DES MODES PAR SORENSEN - UTILISATION DE LA
 #             MACRO-COMMANDE "CALC_MODAL"
 
+
 MODES=CALC_MODAL(MODELE=STRUC,
                  CHAM_MATER=MATER,
                  CARA_ELEM=CARA,
@@ -105,10 +108,12 @@ MODES=CALC_MODAL(MODELE=STRUC,
                  CALC_FREQ=_F(OPTION='BANDE',
                               FREQ=(0.0,4.0,),),);
 
-#MODES=MODE_ITER_SIMULT(MATR_A=K_ASSE,
-#                       MATR_B=M_ASSE,
+
+#MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
+#                       MATR_MASS=M_ASSE,
 #                       CALC_FREQ=_F(OPTION='BANDE',
 #                                    FREQ=(0.0,4.0,),),);
+
 
 # TEST_RESU UNIQUEMENT POUR FAIRE CAS TEST
 TEST_RESU(RESU=(_F(RESULTAT=MODES,
@@ -147,8 +152,9 @@ IMPR_RESU(FORMAT='CASTEM',
 # QUESTION 2: ON REALISE LES TROIS OPERATIONS EN UNE 
 # (EN COUPANT EN 2 INTERVALLES) VIA MACRO_MODE_MECA
 
-MODES2=MACRO_MODE_MECA(MATR_A=K_ASSE,
-                       MATR_B=M_ASSE,
+
+MODES2=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
+                       MATR_MASS=M_ASSE,
                        CALC_FREQ=_F(FREQ_MIN=0.0,
                                     FREQ_MAX=4.0,
                                     NB_BLOC_FREQ=2,),
@@ -156,14 +162,16 @@ MODES2=MACRO_MODE_MECA(MATR_A=K_ASSE,
                        FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
                        IMPRESSION=_F(CUMUL='OUI',),);
 
+
 # FIN DE LA QUESTION 2.
 #FIN();
 
 # QUESTION 3: ON REALISE LES TROIS OPERATIONS EN UNE
 # (EN COUPANT EN 4 INTERVALLES) VIA MACRO_MODE_MECA
 
-MODES4=MACRO_MODE_MECA(MATR_A=K_ASSE,
-                       MATR_B=M_ASSE,
+
+MODES4=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
+                       MATR_MASS=M_ASSE,
                        CALC_FREQ=_F(FREQ_MIN=0.0,
                                     FREQ_MAX=4.0,
                                     NB_BLOC_FREQ=4,),
@@ -171,13 +179,14 @@ MODES4=MACRO_MODE_MECA(MATR_A=K_ASSE,
                        FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
                        IMPRESSION=_F(CUMUL='OUI',),);
 
+
 # FIN DE LA QUESTION 3.
 #FIN();
 
 # QUESTION 4: IDEM VIA LANCZOS
 
-MODEL4=MACRO_MODE_MECA(MATR_A=K_ASSE,
-                       MATR_B=M_ASSE,
+MODEL4=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
+                       MATR_MASS=M_ASSE,
                        METHODE='TRI_DIAG',
                        VERI_MODE=_F(SEUIL=1e-05,),
                        CALC_FREQ=_F(FREQ_MIN=0.0,
@@ -188,4 +197,11 @@ MODEL4=MACRO_MODE_MECA(MATR_A=K_ASSE,
                        FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
                        IMPRESSION=_F(CUMUL='OUI',),);
 
+
 FIN();
+
+
+
+
+
+

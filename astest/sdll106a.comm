@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE POUTRE SOUS EXCITATION ALEATOIRE IMPOSEE SUR FONCTION DE FORME
 # sdll106a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,10 +103,11 @@ VECTASS1=ASSE_VECTEUR(    VECT_ELEM=VECT1,
 #**  CALCUL MODAL        **********************************************
 #**********************************************************************
 
-MODES=MODE_ITER_INV( MATR_A=MATASK,  MATR_B=MATASM,
+MODES=MODE_ITER_INV( MATR_RIGI=MATASK,  MATR_MASS=MATASM,
                              CALC_FREQ=_F( OPTION = 'AJUSTE',
                                         FREQ = (0.1, 300.,))
                             )
+
 
 #**********************************************************************
 #**DEFINITION DE  L INTERSPECTRE D EXCITATION**************************
@@ -257,3 +258,9 @@ TEST_FONCTION(VALEUR=(
 
 FIN( )
 #
+
+
+
+
+
+

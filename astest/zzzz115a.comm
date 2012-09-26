@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE VALIDATION DU FORMAT MED
 # zzzz115a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -314,9 +314,10 @@ MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE,
 # CALCUL DES MODES :
 #---------------------------------------------
 
-MODE=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                      MATR_B=MASSE,
+MODE=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                      MATR_MASS=MASSE,
                       CALC_FREQ=_F(NMAX_FREQ=10,),);
+
 
 MODE=NORM_MODE(reuse =MODE,
                MODE=MODE,
@@ -397,3 +398,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
 FIN();
 #
 #
+
+
+
+
+
+

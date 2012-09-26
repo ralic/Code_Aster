@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE
 # sdll137a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,12 +157,13 @@ KASSUP=ASSE_MATRICE(MATR_ELEM=KELSUP,
 MASSUP=ASSE_MATRICE(MATR_ELEM=MELSUP,
                       NUME_DDL=NUMSUP,);
 
-MODESUP=MODE_ITER_SIMULT(MATR_A=KASSUP,
-                       MATR_B=MASSUP,
+MODESUP=MODE_ITER_SIMULT(MATR_RIGI=KASSUP,
+                       MATR_MASS=MASSUP,
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=20,
                                     SEUIL_FREQ=1.E-4,),);
+
 
 MODSTSUP=MODE_STATIQUE(MATR_RIGI=KASSUP,SOLVEUR=_F(METHODE='GCPC'),
                      FORCE_NODALE=(
@@ -272,11 +273,12 @@ MASCPL=ASSE_MATRICE(MATR_ELEM=MELCPL,NUME_DDL=NUMCPL)
 
 # CALCUL MODAL SUR LE MODELE COUPLE
 
-MODECPL=MODE_ITER_SIMULT(MATR_A=KASCPL,MATR_B=MASCPL,
+MODECPL=MODE_ITER_SIMULT(MATR_RIGI=KASCPL,MATR_MASS=MASCPL,
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=2,
                                     SEUIL_FREQ=1.E-4,),);
+
 
 # RETROPROJECTION SUR LE MODELE EXPERIMENTAL (INTERFACE -> DDL MESURE)
 
@@ -446,12 +448,13 @@ KASDIR=ASSE_MATRICE(MATR_ELEM=KELDIR,
 MASDIR=ASSE_MATRICE(MATR_ELEM=MELDIR,
                       NUME_DDL=NUMDIR,);
 
-MODEDIR=MODE_ITER_SIMULT(MATR_A=KASDIR,
-                       MATR_B=MASDIR,
+MODEDIR=MODE_ITER_SIMULT(MATR_RIGI=KASDIR,
+                       MATR_MASS=MASDIR,
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=2,
                                     SEUIL_FREQ=1.E-4,),);
+
 
 #tmodes = aster.getvectjev("MODEDIR            .FREQ        ")
 #tmodes[0] = 7.7807E+0
@@ -468,4 +471,10 @@ TEST_RESU(RESU=(
 
 
 FIN();
+
+
+
+
+
+
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE : Table de Neubert
 # sdll108b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,7 +93,7 @@ MODE_STA=CALC_CHAMP(reuse=MODE_STA,RESULTAT=MODE_STA,CONTRAINTE=('SIEF_ELGA','EF
 MODE_STA=CALC_CHAMP(reuse=MODE_STA,  RESULTAT=MODE_STA,
                    FORCE='REAC_NODA',)
 
-MODE_MEC=MODE_ITER_INV(  MATR_A=RIGIDITE,   MATR_B=MASSE,
+MODE_MEC=MODE_ITER_INV(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                   CALC_FREQ=_F(  OPTION = 'PROCHE',
                               FREQ = ( 110.91,   115.53,   136.01,
                                       213.71,   417.76,   435.23,
@@ -101,6 +101,7 @@ MODE_MEC=MODE_ITER_INV(  MATR_A=RIGIDITE,   MATR_B=MASSE,
                                       847.91,   979.29,   992.80,
                                      1022.58,  1041.03,  1057.81,
                                      1089.93,  1093.98,  1108.82, )) )
+
 
 IMPR_RESU(RESU=_F(RESULTAT=MODE_MEC))
 
@@ -445,3 +446,9 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'EFGE_ELNO',
 
 FIN( )
 #
+
+
+
+
+
+

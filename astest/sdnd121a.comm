@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME MASSE-RESSORT AVEC CHOCS SOUS EXCITATION FORCEE
 # sdnd121a.para = tps_job 600 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,11 +65,12 @@ MACRO_MATR_ASSE(MODELE=MODEL,
                               ),);
 
 # Calcul du mode associe au ressort de rappel :
-modes=MODE_ITER_SIMULT(MATR_A=K_ASSE,
-                       MATR_B=M_ASSE,
+modes=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
+                       MATR_MASS=M_ASSE,
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=50.,
                                     NMAX_FREQ=1,),);
+
 
 # Definition du chargement exterieur (force sinusoidale)
 f = 5 ;   # freq de l'excitation (Hz)
@@ -247,3 +248,9 @@ FC_ADAP2=RECU_FONCTION(RESU_GENE=DTMADAP2,
                        PARA_Y='FN',);
 
 FIN();
+
+
+
+
+
+

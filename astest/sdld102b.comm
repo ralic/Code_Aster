@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOUS-STRUCT. TRANS. (MNEAL) : SYSTEME 3 MASSES - 4 RESSORTS
 # sdld102b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,15 +140,17 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
 #  CALCUL DES MODES PROPRES DES SOUS-STRUCTURES
 #------------------------------------------------------------------
 
-MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1,
-                                 MATR_B=M_ASSE1,
+MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
+                                 MATR_MASS=M_ASSE1,
                              CALC_FREQ=_F( NMAX_FREQ = 1))
 
+
 #
-MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2,
-                                 MATR_B=M_ASSE2,
+MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
+                                 MATR_MASS=M_ASSE2,
                              CALC_FREQ=_F( NMAX_FREQ = 1,
                                         DIM_SOUS_ESPACE = 1))
+
 
 #  DEFINITION DES INTERFACES
 #------------------------------------------------------------------
@@ -227,10 +229,11 @@ FGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 #  CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #------------------------------------------------------------------
 
-RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
-                                 MATR_B=MASGEN,
+RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGGEN,
+                                 MATR_MASS=MASGEN,
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 3))
+
 
 #
 MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
@@ -482,3 +485,9 @@ FIN( )
 ##------------------------------------------------------------------
 ##
 #FIN();
+
+
+
+
+
+

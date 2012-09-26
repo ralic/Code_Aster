@@ -121,3 +121,9 @@ TEST_FONCTION(VALEUR=_F(FONCTION=MDHY_B,
                         VERSION='10.5.5',),);
 
 FIN();
+
+
+
+
+
+

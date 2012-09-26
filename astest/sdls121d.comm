@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE RECALAGE MODAL PAR DIAGONALISATION DES MATRICES GENERALISEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -244,13 +244,14 @@ M_AS_MAS=ASSE_MATRICE(MATR_ELEM=M_EL_MAS,
 #nombre de frequences
 nb_modes = 8
 
-MODES=MODE_ITER_SIMULT(MATR_A=M_AS_RIG,
-                       MATR_B=M_AS_MAS,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=M_AS_RIG,
+                       MATR_MASS=M_AS_MAS,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=nb_modes),
                        VERI_MODE=_F(STOP_ERREUR='NON'),             
                                     );
+
 #on effectue une expansion des modes identifies
 
 PROJ=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODEL,
@@ -349,4 +350,10 @@ TEST_FONCTION ( VALEUR =(_F( FONCTION = OPTIM,
 
 
 FIN();
+
+
+
+
+
+
 

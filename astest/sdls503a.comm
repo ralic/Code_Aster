@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 14/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -139,12 +139,13 @@ MA_AS_R1=ASSE_MATRICE(   MATR_ELEM=MA_EL_R1,   NUME_DDL=NUM1)
 MA_AS_M1=ASSE_MATRICE(   MATR_ELEM=MA_EL_M1,   NUME_DDL=NUM1)
 
 #
-MODE1=MODE_ITER_INV(      MATR_A=MA_AS_R1,
-                            MATR_B=MA_AS_M1,
+MODE1=MODE_ITER_INV(      MATR_RIGI=MA_AS_R1,
+                            MATR_MASS=MA_AS_M1,
                          CALC_FREQ=_F( OPTION = 'AJUSTE',
                        FREQ = (5.,8500.,),
                                    NMAX_FREQ = 10) 
                        )
+
 
 #
 #---------------------------------------------------------------------
@@ -186,3 +187,9 @@ TEST_RESU(RESU=(
 FIN()
 #
 # 
+
+
+
+
+
+

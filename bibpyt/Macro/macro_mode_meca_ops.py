@@ -1,8 +1,8 @@
-#@ MODIF macro_mode_meca_ops Macro  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF macro_mode_meca_ops Macro  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,7 +20,7 @@
 
 
 
-def macro_mode_meca_ops(self,MATR_A,MATR_B,INFO,METHODE,OPTION,CALC_FREQ,
+def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
                         VERI_MODE,NORM_MODE,FILTRE_MODE,IMPRESSION,**args):
   """
      Ecriture de la macro MACRO_MODE_MECA
@@ -100,11 +100,11 @@ def macro_mode_meca_ops(self,MATR_A,MATR_B,INFO,METHODE,OPTION,CALC_FREQ,
         if args.has_key('PREC_SOREN'):
            motscit['PREC_SOREN']      =args['PREC_SOREN']
 
-     __nomre0=MODE_ITER_SIMULT(MATR_A  =MATR_A,
-                                  MATR_B  =MATR_B,
-                                  INFO    =INFO,
-                                  METHODE =METHODE,
-                                  OPTION  =OPTION,
+     __nomre0=MODE_ITER_SIMULT(   MATR_RIGI  =MATR_RIGI,
+                                  MATR_MASS  =MATR_MASS,
+                                  INFO       =INFO,
+                                  METHODE    =METHODE,
+                                  OPTION     =OPTION,
                                   **motscit)
 
      __nomre0=NORM_MODE(reuse     =__nomre0,

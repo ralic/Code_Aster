@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # 3 calculs esclaves distribues : ncpus = 3 + 1 (maitre)
 # sdls121a.para = tps_job 600 mem_job 512Mo ncpus 4 liste_test S

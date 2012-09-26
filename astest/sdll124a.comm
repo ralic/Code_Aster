@@ -1,4 +1,4 @@
-# MODIF  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 # sdll124a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
@@ -143,14 +143,15 @@ L_VITROT=[VIT[ii]*pi/30. for ii in range(nbV)];
 Methode = 'QZ'
 #Methode = 'SORENSEN'
 
-l_mod=CALC_MODE_ROTATION(MATR_A =RIGIDITE,
-                 MATR_B   =MASSE, 
+l_mod=CALC_MODE_ROTATION(MATR_RIGI =RIGIDITE,
+                 MATR_MASS   =MASSE, 
                  MATR_AMOR=AMOR, 
                  MATR_GYRO =GYASS, 
                  VITE_ROTA =L_VITROT,
                  METHODE  =Methode,
                  CALC_FREQ=_F(OPTION='PLUS_PETITE',NMAX_FREQ=nbF),
                  VERI_MODE=_F(STOP_ERREUR='NON'));
+
 
 IMPR_TABLE(TABLE=l_mod);
 
@@ -274,4 +275,10 @@ IMPR_DIAG_CAMPBELL(MAILLAGE   =mail,
                  L_S        = L_S);
 
 FIN();
+
+
+
+
+
+
 

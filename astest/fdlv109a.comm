@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE COEFFICIENTS AJOUTES EN ECOULEMENT PLAN
 # fdlv109a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,13 +119,15 @@ MAILLAGE=MAYA,
                             VALE = (0.,0.,0.,)),
                             NUME_DDL=NUSTR)
 
-MODES=MODE_ITER_SIMULT( MATR_A=MATASKS,  MATR_B=MATASMS,
+MODES=MODE_ITER_SIMULT( MATR_RIGI=MATASKS,  MATR_MASS=MATASMS,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (0.1,2.,)))
 
-MODERIGI=MODE_ITER_SIMULT( MATR_A=MATASKS,  MATR_B=MATASMS,
+
+MODERIGI=MODE_ITER_SIMULT( MATR_RIGI=MATASKS,  MATR_MASS=MATASMS,
                                 CALC_FREQ=_F( OPTION = 'BANDE',
                                            FREQ = (0.1,2.,)))
+
 
 TEST_RESU(RESU=(_F( RESULTAT = MODES, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
                 CRITERE = 'RELATIF', PRECISION = 3.E-2,
@@ -184,9 +186,10 @@ MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MGENE,
                                      _F( MATR_ASSE = MATRAJ,
                                       COEF_R = 1.)))
 
-MODHUMI=MODE_ITER_SIMULT( MATR_A=RIGGEN,  MATR_B=MASTOT,
+MODHUMI=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,  MATR_MASS=MASTOT,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (0.01,1.,)))
+
 
 #RESTIT DES MODES EN EAU = F(MODE_EN_AIR) SUR BASE PHYSIQUE
 
@@ -201,3 +204,9 @@ TEST_RESU(RESU=_F( RESULTAT = MODEAU, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
 
 FIN()
 #
+
+
+
+
+
+

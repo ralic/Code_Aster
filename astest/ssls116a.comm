@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE DKT EXCENTREE SOUMISE A UNE FORCE MEMBRANAIRE
 # ssls116a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,11 +123,12 @@ MATASS=ASSE_MATRICE(  MATR_ELEM=MEL, NUME_DDL=NU )
 
 MATASM=ASSE_MATRICE(  MATR_ELEM=MASEL, NUME_DDL=NU )
 
-MODES=MODE_ITER_SIMULT(    MATR_A=MATASS,
-                             MATR_B=MATASM,
+MODES=MODE_ITER_SIMULT(    MATR_RIGI=MATASS,
+                             MATR_MASS=MATASM,
                              CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                          NMAX_FREQ = 4)
                         )
+
 
 DEP=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMUL,
@@ -151,11 +152,12 @@ MATASS2=ASSE_MATRICE(  MATR_ELEM=MEL2, NUME_DDL=NU2 )
 
 MATASM2=ASSE_MATRICE(  MATR_ELEM=MASEL2, NUME_DDL=NU2 )
 
-MODES2=MODE_ITER_SIMULT(    MATR_A=MATASS2,
-                              MATR_B=MATASM2,
+MODES2=MODE_ITER_SIMULT(    MATR_RIGI=MATASS2,
+                              MATR_MASS=MATASM2,
                              CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                          NMAX_FREQ = 4)
                         )
+
 
 DEP2=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMUL,
@@ -261,3 +263,9 @@ TEST_RESU(RESU=(
 
 FIN()
 #
+
+
+
+
+
+

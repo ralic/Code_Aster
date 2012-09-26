@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME 2 MASSES 3 RESSORTS
 #       SYSTEME MASSE-RESSORT A 2 DEGRES DE LIBERTE
 #       ANALYSE SPECTRALE MULTI SUPPORTEE
@@ -117,11 +117,12 @@ MAS=POST_ELEM(         MODELE=MODELE,
 #
 
 MODES=MODE_ITER_SIMULT(
-                                MATR_A=MATRRIGI,
-                                MATR_B=MATRMASS,
+                                MATR_RIGI=MATRRIGI,
+                                MATR_MASS=MATRMASS,
                                METHODE='SORENSEN',
                              CALC_FREQ=_F(  NMAX_FREQ = 2)
                           )
+
 
 #
 MODES=NORM_MODE(reuse=MODES,
@@ -528,3 +529,9 @@ TEST_RESU(RESU=(
 # --------------------------------------
 #
 FIN( )
+
+
+
+
+
+

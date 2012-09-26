@@ -56,3 +56,9 @@ TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='DY',),
 
 
 FIN();
+
+
+
+
+
+

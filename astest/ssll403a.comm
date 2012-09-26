@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE FLAMBEMENT D'UNE POUTRE VERTICALE SOUS POIDS PROPRE
 # ssll403a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,13 +131,14 @@ MARG=ASSE_MATRICE(   MATR_ELEM=MERG,
                     )
 
 #
-MD_0=MODE_ITER_SIMULT(      MATR_A=MATASSR,
-                              MATR_B=MARG,
+MD_0=MODE_ITER_SIMULT(      MATR_RIGI=MATASSR,
+                              MATR_RIGI_GEOM=MARG,
                              METHODE='JACOBI',
                            TYPE_RESU='MODE_FLAMB',
                            OPTION='SANS',
-                           CALC_FREQ=_F( NMAX_FREQ = 5, )
+                           CALC_CHAR_CRIT=_F( NMAX_CHAR_CRIT = 5, )
                         )
+
 
 #
 TEST_RESU(   RESU=_F(  RESULTAT = MD_0,
@@ -152,3 +153,9 @@ TEST_RESU(   RESU=_F(  RESULTAT = MD_0,
 FIN( )
 #
 #
+
+
+
+
+
+

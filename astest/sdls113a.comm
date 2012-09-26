@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdls113a.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,12 +114,13 @@ CASS=ASSE_MATRICE(MATR_ELEM=CELEM,
 FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
                   NUME_DDL=NUME,);
 
-#MODES=MODE_ITER_SIMULT(MATR_A=KASS,
-#                       MATR_B=MASS,
+#MODES=MODE_ITER_SIMULT(MATR_RIGI=KASS,
+#                       MATR_MASS=MASS,
 #                       CALC_FREQ=_F(
 #                       NMAX_FREQ=15,),
 #                       VERI_MODE=_F(STOP_ERREUR='OUI',
 #                                    STURM='OUI',),);
+
 
 
 #######################################################
@@ -397,3 +398,9 @@ TEST_FONCTION(VALEUR=_F(FONCTION=EGH11,
                         PRECISION=0.01)
               );
 FIN();
+
+
+
+
+
+

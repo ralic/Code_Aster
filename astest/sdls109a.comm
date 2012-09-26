@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE FREQUENCES PROPRES D'UN ANNEAU CYLINDRIQUE EPAIS
 # sdls109a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,10 +58,11 @@ MASK_DKQ=ASSE_MATRICE(MATR_ELEM=MK_DKQ,
 MASM_DKQ=ASSE_MATRICE(MATR_ELEM=MM_DKQ,
                       NUME_DDL=NUM_DKQ,);
 MODE_DKQ=MODE_ITER_SIMULT(OPTION='SANS',
-                       MATR_A=MASK_DKQ,
-                       MATR_B=MASM_DKQ,
+                       MATR_RIGI=MASK_DKQ,
+                       MATR_MASS=MASM_DKQ,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(200.,800.0),),);
+
 MK_DSQ=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MOD_DSQ,
                      CHAM_MATER=CHAM_MAT,
@@ -76,10 +77,11 @@ MASK_DSQ=ASSE_MATRICE(MATR_ELEM=MK_DSQ,
 MASM_DSQ=ASSE_MATRICE(MATR_ELEM=MM_DSQ,
                       NUME_DDL=NUM_DSQ,);
 MODE_DSQ=MODE_ITER_SIMULT(OPTION='SANS',
-                       MATR_A=MASK_DSQ,
-                       MATR_B=MASM_DSQ,
+                       MATR_RIGI=MASK_DSQ,
+                       MATR_MASS=MASM_DSQ,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(200.,800.0),),);
+
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    RESULTAT=MODE_DKQ,
                    PRECISION=1.E-2,
@@ -129,3 +131,9 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    REFERENCE='AUTRE_ASTER',
                    NUME_ORDRE=6,),),);
 FIN();
+
+
+
+
+
+

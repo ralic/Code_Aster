@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ANNEAU AVEC RAIDISSEUR SOUS PRESSION EXTERNE
 # ssns102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -120,12 +120,13 @@ RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
 
 ##### RESOLUTION DU PROBLEME DE VALEURS PROPRES
 #
-MOD_1=MODE_ITER_SIMULT( MATR_A=MATASS_1,
-                        MATR_B=RIGASG_1,
+MOD_1=MODE_ITER_SIMULT( MATR_RIGI=MATASS_1,
+                        MATR_RIGI_GEOM=RIGASG_1,
                         TYPE_RESU='MODE_FLAMB',
-                        CALC_FREQ =_F (OPTION ='PLUS_PETITE',
-                                       NMAX_FREQ = 1,),
+                        CALC_CHAR_CRIT =_F (OPTION ='PLUS_PETITE',
+                                       NMAX_CHAR_CRIT = 1,),
                         )
+
 
 # REFERENCE CODE INCA INSA LYON
 TEST_RESU(RESU=(
@@ -320,3 +321,9 @@ _F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.6E-01,VALE_REFE=0.,PRE
             ),)
 
 FIN();
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE MODES PROPRES D'UNE PLAQUE CARRE ENCASTREE SUR 2 BORDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,7 @@
 
 #       INTERET : CALCULER 10 MODES EN POSITION 11, 12, ..., 20 PAR
 #                 L'OPERATEUR MODE_ITER_INV AVEC COMME SOLVEUR LDLT
+
 #---------------------------------------------------------------------------
 
 DEBUT(CODE=_F(NOM='PERF003D',
@@ -89,10 +90,11 @@ RAIDASS=ASSE_MATRICE(MATR_ELEM=MERIME,
 MASSASS=ASSE_MATRICE(MATR_ELEM=MEMAME,
                      NUME_DDL=NUMDDL,);
 
-MODES=MODE_ITER_INV(MATR_A=RAIDASS,
-                    MATR_B=MASSASS,
+MODES=MODE_ITER_INV(MATR_RIGI=RAIDASS,
+                    MATR_MASS=MASSASS,
                     CALC_FREQ=_F(OPTION='SEPARE',
                                  FREQ=(840.,1600.,),),);
+
 
 TEST_RESU(RESU=_F(RESULTAT=MODES,
                   NUME_ORDRE=3,
@@ -103,3 +105,9 @@ TEST_RESU(RESU=_F(RESULTAT=MODES,
                   REFERENCE='NON_REGRESSION',),);
 
 FIN();
+
+
+
+
+
+

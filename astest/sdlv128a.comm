@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
 # sdlv128a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,8 +124,8 @@ MASNUM      = ASSE_MATRICE( MATR_ELEM = MELNUM,
 #-----------------------------------------------
 # Base d'expansion composee des modes dynamiques
 #-----------------------------------------------
-MODEAIRt    = MODE_ITER_SIMULT( MATR_A    = KASNUM,
-                                MATR_B    = MASNUM,
+MODEAIRt    = MODE_ITER_SIMULT( MATR_RIGI    = KASNUM,
+                                MATR_MASS    = MASNUM,
                                 METHODE   = 'TRI_DIAG',
                                 TYPE_RESU = 'DYNAMIQUE',
                                 OPTION    = 'SANS',
@@ -135,6 +135,7 @@ MODEAIRt    = MODE_ITER_SIMULT( MATR_A    = KASNUM,
                                 VERI_MODE = _F( STOP_ERREUR     = 'NON',
                                                 SEUIL           = 1e-03  ),
                                );
+
 
 MODEAIRt    = NORM_MODE( reuse = MODEAIRt,
                          MODE  = MODEAIRt,
@@ -439,6 +440,12 @@ for ind in range(4):
 
 
 FIN();
+
+
+
+
+
+
 
 
 

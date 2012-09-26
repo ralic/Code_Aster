@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2012   AUTEUR BERRO H.BERRO 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21b.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -66,9 +66,10 @@ VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECT,   NUME_DDL=NUM  )
 
 # --------------------------------------------------------------------
 
-MODES=MODE_ITER_INV(   MATR_A=MATASSR,  MATR_B=MATASSM,
+MODES=MODE_ITER_INV(   MATR_RIGI=MATASSR,  MATR_MASS=MATASSM,
                           CALC_FREQ=_F( OPTION = 'AJUSTE',
                          FREQ = (5.,10.,15.,20.,24.,27.,30.,32.,))  )
+
 
 PROJ_BASE( BASE=MODES,
            STOCKAGE = 'PLEIN',
@@ -663,3 +664,9 @@ TEST_RESU(RESU=(
 
 FIN( )
 #
+
+
+
+
+
+

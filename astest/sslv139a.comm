@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE
 # sslv139a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,21 +103,23 @@ MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
 MASSE=ASSE_MATRICE(MATR_ELEM=MAT_MAS,
                    NUME_DDL=NUM,);
 
-RESULT=MODE_ITER_SIMULT(MATR_A=MAS_RI_M,
-                        MATR_B=MAS_RI_G,
+RESULT=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
+                        MATR_RIGI_GEOM=MAS_RI_G,
                         METHODE='SORENSEN',
                         NMAX_ITER_SOREN=20,
                         TYPE_RESU='MODE_FLAMB',
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=10,),
+                        CALC_CHAR_CRIT=_F(OPTION='PLUS_PETITE',
+                                     NMAX_CHAR_CRIT=10,),
                         VERI_MODE=_F(SEUIL=1e-04,),);
 
 
-MODE=MODE_ITER_SIMULT(MATR_A=MAS_RI_M,
-                      MATR_B=MASSE,
+
+MODE=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
+                      MATR_MASS=MASSE,
                       METHODE='SORENSEN',
                       NMAX_ITER_SOREN=20,
                       VERI_MODE=_F(SEUIL=1e-04,),);
+
 
 MODE=CALC_CHAMP(reuse=MODE,RESULTAT=MODE,CONTRAINTE=('SIEF_ELGA'),ENERGIE=('ETOT_ELGA','ETOT_ELNO','ETOT_ELEM'))
 
@@ -176,3 +178,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    REFERENCE='AUTRE_ASTER',),),);
 
 FIN();
+
+
+
+
+
+

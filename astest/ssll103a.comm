@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE FLAMBEMENT D'UNE CORNIERE ELASTIQUE
 # ssll103a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,10 +124,10 @@ RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
 
 #
 
-MOD_1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                              MATR_B=RIGASG_1,
+MOD_1=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                              MATR_RIGI_GEOM=RIGASG_1,
                               TYPE_RESU='MODE_FLAMB',
-                            CALC_FREQ=_F(  NMAX_FREQ = 20,
+                            CALC_CHAR_CRIT=_F(  NMAX_CHAR_CRIT = 20,
                             DIM_SOUS_ESPACE = 40,   )
                           )
 
@@ -174,10 +174,10 @@ RIGASG_2=ASSE_MATRICE(MATR_ELEM=RIGELG_2,NUME_DDL=NU)
 
 #
 
-MOD_2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                              MATR_B=RIGASG_2,
+MOD_2=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                              MATR_RIGI_GEOM=RIGASG_2,
                               TYPE_RESU='MODE_FLAMB',
-                            CALC_FREQ=_F(  NMAX_FREQ = 20,
+                            CALC_CHAR_CRIT=_F(  NMAX_CHAR_CRIT = 20,
                             DIM_SOUS_ESPACE = 40,   )
                           )
 
@@ -223,10 +223,10 @@ RIGASG_3=ASSE_MATRICE(MATR_ELEM=RIGELG_3,NUME_DDL=NU)
 
 #
 
-MOD_3=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                              MATR_B=RIGASG_3,
+MOD_3=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                              MATR_RIGI_GEOM=RIGASG_3,
                               TYPE_RESU='MODE_FLAMB',
-                            CALC_FREQ=_F(  NMAX_FREQ = 20,
+                            CALC_CHAR_CRIT=_F(  NMAX_CHAR_CRIT = 20,
                             DIM_SOUS_ESPACE = 40,   )
                           )
 
@@ -269,21 +269,28 @@ RIGASG_4=ASSE_MATRICE(MATR_ELEM=RIGELG_4,NUME_DDL=NU)
 
 #
 
-MOD_4=MODE_ITER_SIMULT(   MATR_A=RIGAS,
-                              MATR_B=RIGASG_4,
+MOD_4=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
+                              MATR_RIGI_GEOM=RIGASG_4,
                               TYPE_RESU='MODE_FLAMB',
-                            CALC_FREQ=_F(  NMAX_FREQ = 4,
+                            CALC_CHAR_CRIT=_F(  NMAX_CHAR_CRIT = 4,
                             DIM_SOUS_ESPACE = 20,   )
                           )
 
-MOD_5=MODE_ITER_INV(   MATR_A=RIGAS,
-                              MATR_B=RIGASG_4,
+MOD_5=MODE_ITER_INV(   MATR_RIGI=RIGAS,
+                              MATR_RIGI_GEOM=RIGASG_4,
                               TYPE_RESU='MODE_FLAMB',
-                            CALC_FREQ=_F(  CHAR_CRIT = (-1.5E8, 1.7E8,), )
+                            CALC_CHAR_CRIT=_F(  CHAR_CRIT = (-1.5E8, 1.7E8,), )
 
                           )
 
 #
+
+MOD_6=MODE_ITER_INV(   MATR_A=RIGAS,
+                              MATR_B=RIGASG_4,
+                              TYPE_RESU='GENERAL',
+                            CALC_CHAR_CRIT=_F(  CHAR_CRIT = (-1.5E8, 1.7E8,), )
+
+                          )
 
 TEST_RESU(
    RESU=_F( RESULTAT = MOD_4, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = +7.0063121E7,
@@ -301,7 +308,7 @@ IMPR_RESU(  RESU=_F(  RESULTAT = MOD_4,
 #
 
 TEST_RESU(
-   RESU=_F( RESULTAT = MOD_4, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = +7.0063121E7,
+   RESU=_F( RESULTAT = MOD_6, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = +7.0063121E7,
     PRECISION = 5.E-3,))
 
 # --------------------------------------------------------------------

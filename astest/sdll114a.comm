@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (POSEE-POSEE)
 # sdll114a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -359,19 +359,21 @@ MASSEXY=ASSE_MATRICE(
 
 #52.01 MODE_MECA
 MODPOUX=MODE_ITER_INV(
-                          MATR_A=RIGIDXX,
-                          MATR_B=MASSEXX,
+                          MATR_RIGI=RIGIDXX,
+                          MATR_MASS=MASSEXX,
                           CALC_FREQ=_F( FREQ = (0., 300.,))
 #                ' (AFFINITE // X) &RL'
 #               ' 0.06X0.05 A 0.03X0.05 POSEE POSEE  SDLL114 ')
+
                         )
 
 MODPOUY=MODE_ITER_INV(
-                          MATR_A=RIGIDXY,
-                          MATR_B=MASSEXY,
+                          MATR_RIGI=RIGIDXY,
+                          MATR_MASS=MASSEXY,
                           CALC_FREQ=_F( FREQ = (0., 300.,))
 #                'TOURNEE DE 90 DEGRES AUTOUR DE Z (AFFINITE //Y) &RL'
 #               ' 0.06X0.05 A 0.03X0.05 POSEE POSEE  SDLL114 ')
+
                         )
 
 #72.01
@@ -403,3 +405,9 @@ TEST_RESU(RESU=(
 #
 FIN( )
 #
+
+
+
+
+
+

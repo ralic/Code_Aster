@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC CALC_ESSAI (LMME)
 # sdll137c.para = tps_job 70 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,13 +164,14 @@ MASSUP=ASSE_MATRICE(MATR_ELEM=MELSUP,
 AASSUP=ASSE_MATRICE(MATR_ELEM=AELSUP,
                       NUME_DDL=NUMSUP,);
 
-MODESUP=MODE_ITER_SIMULT(MATR_A=KASSUP,
-                         MATR_B=MASSUP,
-                         METHODE='TRI_DIAG', MATR_C=AASSUP,
+MODESUP=MODE_ITER_SIMULT(MATR_RIGI=KASSUP,
+                         MATR_MASS=MASSUP,
+                         METHODE='TRI_DIAG', MATR_AMOR=AASSUP,
                          VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=20,
                                       SEUIL_FREQ=1.E-4,),);
+
 
 
 #**********************************
@@ -439,13 +440,14 @@ TEST_TABLE(      TABLE=IERIM,
 nmodes=2
 
 # controle recuperation matrices rigidite - masse
-MODECPL3=MODE_ITER_SIMULT(MATR_A=KASCPL2,
-                       MATR_B=MASCPL2,
-                       MATR_C=AASCPL2,METHODE='TRI_DIAG',
+MODECPL3=MODE_ITER_SIMULT(MATR_RIGI=KASCPL2,
+                       MATR_MASS=MASCPL2,
+                       MATR_AMOR=AASCPL2,METHODE='TRI_DIAG',
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=nmodes,
                                     SEUIL_FREQ=1.E-4,),);
+
 
 
 I_DEBUT = 5.
@@ -541,13 +543,14 @@ MASDIR=ASSE_MATRICE(MATR_ELEM=MELDIR,
 AASDIR=ASSE_MATRICE(MATR_ELEM=AELDIR,
                       NUME_DDL=NUMDIR,);
 
-MODEDIR=MODE_ITER_SIMULT(MATR_A=KASDIR,
-                       MATR_B=MASDIR,
-                       MATR_C=AASDIR,METHODE='TRI_DIAG',
+MODEDIR=MODE_ITER_SIMULT(MATR_RIGI=KASDIR,
+                       MATR_MASS=MASDIR,
+                       MATR_AMOR=AASDIR,METHODE='TRI_DIAG',
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=nmodes,
                                     SEUIL_FREQ=1.E-4,),);
+
 
 #tmodes = aster.getvectjev("MODEDIR            .FREQ        ")
 #print 'tmodes : ',tmodes
@@ -663,4 +666,10 @@ TEST_TABLE(
 
 
 FIN();
+
+
+
+
+
+
 

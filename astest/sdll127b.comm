@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL MODAL D'UN ARBRE A SECTION CIRCULAIRE VARIABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -10085,10 +10085,11 @@ MACRO_MATR_ASSE(MODELE=MO,
                            _F(MATRICE=CO('AMOR'),
                               OPTION='AMOR_MECA',),),);
 
-MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(3.,4750.)));
+
 
 TEST_RESU(RESU=(_F(RESULTAT=MODES,
                   REFERENCE='SOURCE_EXTERNE',
@@ -10177,11 +10178,12 @@ PROJ_BASE(BASE=MODES,
                           _F(MATRICE=CO('OMGE'),
                              MATR_ASSE=GYOM,),),);
 
-MOD2ETAG=MODE_ITER_SIMULT(MATR_A=RIGE,
-                          MATR_B=MAGE,
-                          MATR_C=OMGE,
+MOD2ETAG=MODE_ITER_SIMULT(MATR_RIGI=RIGE,
+                          MATR_MASS=MAGE,
+                          MATR_AMOR=OMGE,
                           METHODE='QZ',
                           CALC_FREQ=_F(OPTION='TOUT'),)
+
 
 TEST_RESU(RESU=(
 # POUR QZ
@@ -10224,3 +10226,9 @@ TEST_RESU(RESU=(
                 ),)
 
 FIN()
+
+
+
+
+
+

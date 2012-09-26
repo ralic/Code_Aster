@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SYSTEME MASSE-RESSORT AVEC AMORTISSEUR VISQUEUX NONPROPORTIONNEL
 # sdld27d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,11 +107,12 @@ MATASSC=ASSE_MATRICE(MATR_ELEM=MELC,NUME_DDL=NUM)
 
 # --------------------------------------------------------------------
 
-MODE_QUA=MODE_ITER_INV(MATR_A=MATASSR,MATR_B=MATASSM,MATR_C=MATASSC,
+MODE_QUA=MODE_ITER_INV(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,MATR_AMOR=MATASSC,
                         CALC_MODE=_F( NMAX_ITER = 75),
                         CALC_FREQ=_F( OPTION = 'PROCHE',
                                    FREQ = ( 6., 10., 15., 19., 24., 28.,
                                                   30., 31., )))
+
 
 MODE_QUA=NORM_MODE(reuse=MODE_QUA,   MODE=MODE_QUA,   NORME='MASS_GENE' )
 
@@ -354,3 +355,9 @@ TEST_RESU(RESU=(
 FIN( )
 #
 #
+
+
+
+
+
+

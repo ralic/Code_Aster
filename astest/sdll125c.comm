@@ -1,4 +1,4 @@
-# MODIF  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,8 +168,8 @@ L_VITROT=[VIT[ii]*pi/30. for ii in range(nbV)];
 Methode = 'QZ'
 #Methode = 'SORENSEN'
 
-l_mod=CALC_MODE_ROTATION(MATR_A =RIGIDITE,
-                 MATR_B   =MASSE, 
+l_mod=CALC_MODE_ROTATION(MATR_RIGI =RIGIDITE,
+                 MATR_MASS   =MASSE, 
                  MATR_AMOR=AMOR, 
                  MATR_GYRO =GYASS, 
                  VITE_ROTA =L_VITROT,
@@ -177,6 +177,7 @@ l_mod=CALC_MODE_ROTATION(MATR_A =RIGIDITE,
                  CALC_FREQ=_F(OPTION='PLUS_PETITE',NMAX_FREQ=nbF),
                  VERI_MODE=_F(STOP_ERREUR='NON',
                               SEUIL=5.9999999999999995E-02));
+
 
 IMPR_TABLE(TABLE=l_mod);
 
@@ -272,4 +273,10 @@ TEST_RESU(RESU=(
             ),)
 
 FIN();
+
+
+
+
+
+
 

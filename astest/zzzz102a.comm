@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE LIRE_FONCTION ET SPECTRE D'OSCILLATEUR
 # zzzz102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1092,83 +1092,92 @@ MATASM35=ASSE_MATRICE(    MATR_ELEM=MELM35,
 #
 # 0.2HZ
 #
-MODE02=MODE_ITER_SIMULT(       MATR_A=MATASR02,
-                                   MATR_B=MATASM02,
+MODE02=MODE_ITER_SIMULT(       MATR_RIGI=MATASR02,
+                                   MATR_MASS=MATASM02,
                                 CALC_FREQ=_F( NMAX_FREQ = 1,
                                            OPTION = 'PLUS_PETITE')
                             )
+
 
 #
 # 1HZ
 #
-MODE1=MODE_ITER_SIMULT(       MATR_A=MATASSR1,
-                                   MATR_B=MATASSM1,
+MODE1=MODE_ITER_SIMULT(       MATR_RIGI=MATASSR1,
+                                   MATR_MASS=MATASSM1,
                                 CALC_FREQ=_F( NMAX_FREQ = 1,
                                            OPTION = 'PLUS_PETITE')
                             )
+
 
 #
 # 5HZ
 #
-MODE5=MODE_ITER_SIMULT(       MATR_A=MATASSR5,
-                                   MATR_B=MATASSM5,
+MODE5=MODE_ITER_SIMULT(       MATR_RIGI=MATASSR5,
+                                   MATR_MASS=MATASSM5,
                                 CALC_FREQ=_F( NMAX_FREQ = 1,
                                            OPTION = 'PLUS_PETITE')
                             )
+
 
 #
 # 10HZ
 #
-MODE10=MODE_ITER_SIMULT(       MATR_A=MATASR10,
-                                   MATR_B=MATASM10,
+MODE10=MODE_ITER_SIMULT(       MATR_RIGI=MATASR10,
+                                   MATR_MASS=MATASM10,
                                 CALC_FREQ=_F( NMAX_FREQ = 1,
                                            OPTION = 'PLUS_PETITE')
                             )
+
 
 #
 # 15HZ
 #
-MODE15=MODE_ITER_SIMULT(       MATR_A=MATASR15,
-                                   MATR_B=MATASM15,
+MODE15=MODE_ITER_SIMULT(       MATR_RIGI=MATASR15,
+                                   MATR_MASS=MATASM15,
                                 CALC_FREQ=_F( NMAX_FREQ = 1,
                                            OPTION = 'PLUS_PETITE')
                             )
+
 
 #
 # 20HZ
 #
-MODE20=MODE_ITER_SIMULT(       MATR_A=MATASR20,
-                                   MATR_B=MATASM20,
+MODE20=MODE_ITER_SIMULT(       MATR_RIGI=MATASR20,
+                                   MATR_MASS=MATASM20,
                                 CALC_FREQ=_F( NMAX_FREQ = 1,
                                            OPTION = 'PLUS_PETITE')
                             )
+
 
 #
 # 25HZ
 #
-MODE25=MODE_ITER_SIMULT(       MATR_A=MATASR25,
-                                   MATR_B=MATASM25,
+MODE25=MODE_ITER_SIMULT(       MATR_RIGI=MATASR25,
+                                   MATR_MASS=MATASM25,
                                 CALC_FREQ=_F( NMAX_FREQ = 1,
                                            OPTION = 'PLUS_PETITE')
                             )
+
 
 #
 # 29.5HZ
 #
-MODE29=MODE_ITER_SIMULT(       MATR_A=MATASR29,
-                                   MATR_B=MATASM29,
+MODE29=MODE_ITER_SIMULT(       MATR_RIGI=MATASR29,
+                                   MATR_MASS=MATASM29,
                                 CALC_FREQ=_F( NMAX_FREQ = 1,
                                            OPTION = 'PLUS_PETITE')
                             )
 
+
 #
 # 35.5HZ
 #
-MODE35=MODE_ITER_SIMULT(       MATR_A=MATASR35,
-                                   MATR_B=MATASM35,
+MODE35=MODE_ITER_SIMULT(       MATR_RIGI=MATASR35,
+                                   MATR_MASS=MATASM35,
                                 CALC_FREQ=_F( NMAX_FREQ = 1,
                                            OPTION = 'PLUS_PETITE')
                             )
+
 
 #
 # 0.2HZ
@@ -1543,3 +1552,9 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX35,
 #----------------------------------------------------------------------
 FIN()
 #
+
+
+
+
+
+

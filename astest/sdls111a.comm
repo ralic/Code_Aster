@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : TRIANGLE
 # sdls111a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,20 +92,23 @@ RAID_L=ASSE_MATRICE(MATR_ELEM=MERIME_L,
 MASS_L=ASSE_MATRICE(MATR_ELEM=MEMAME_L,
                     NUME_DDL=NUMDDL_L);
 
-MODES_L1=MODE_ITER_SIMULT(MATR_A=RAID_L,
-                          MATR_B=MASS_L,
+MODES_L1=MODE_ITER_SIMULT(MATR_RIGI=RAID_L,
+                          MATR_MASS=MASS_L,
                           CALC_FREQ=_F(OPTION='BANDE',
                                        FREQ=(10.0,1000.0)));
 
-MODES_L2=MODE_ITER_SIMULT(MATR_A=RAID_L,
-                          MATR_B=MASS_L,
+
+MODES_L2=MODE_ITER_SIMULT(MATR_RIGI=RAID_L,
+                          MATR_MASS=MASS_L,
                           CALC_FREQ=_F(OPTION='BANDE',
                                        FREQ=(1000.0,2000.0)));
 
-MODES_L3=MODE_ITER_SIMULT(MATR_A=RAID_L,
-                          MATR_B=MASS_L,
+
+MODES_L3=MODE_ITER_SIMULT(MATR_RIGI=RAID_L,
+                          MATR_MASS=MASS_L,
                           CALC_FREQ=_F(OPTION='BANDE',
                                        FREQ=(2000.0,3000.0)));
+
 #
 #
 #//////////////////////////////////////////////////////////////////////
@@ -156,21 +159,24 @@ RAID_M=ASSE_MATRICE(MATR_ELEM=MERIME_M,
 MASS_M=ASSE_MATRICE(MATR_ELEM=MEMAME_M,
                     NUME_DDL=NUMDDL_M);
 
-MODES_M1=MODE_ITER_SIMULT(MATR_A=RAID_M,
-                          MATR_B=MASS_M,
+MODES_M1=MODE_ITER_SIMULT(MATR_RIGI=RAID_M,
+                          MATR_MASS=MASS_M,
                           CALC_FREQ=_F(OPTION='BANDE',
                                        FREQ=(10.0,1000.0)));
 
-MODES_M2=MODE_ITER_SIMULT(MATR_A=RAID_M,
-                          MATR_B=MASS_M,
+
+MODES_M2=MODE_ITER_SIMULT(MATR_RIGI=RAID_M,
+                          MATR_MASS=MASS_M,
                           CALC_FREQ=_F(OPTION='BANDE',
                                        FREQ=(1000.0,2000.0)));
 
-MODES_M3=MODE_ITER_SIMULT(MATR_A=RAID_M,
-                          MATR_B=MASS_M,
+
+MODES_M3=MODE_ITER_SIMULT(MATR_RIGI=RAID_M,
+                          MATR_MASS=MASS_M,
                           NMAX_ITER_SOREN=25,
                           CALC_FREQ=_F(OPTION='BANDE',
                                        FREQ=(2000.0,3000.0)));
+
 #
 #
 #//////////////////////////////////////////////////////////////////////
@@ -215,10 +221,11 @@ RAID_E=ASSE_MATRICE(MATR_ELEM=MERIME_E,
 MASS_E=ASSE_MATRICE(MATR_ELEM=MEMAME_E,
                     NUME_DDL=NUMDDL_E);
 
-MODE_E=MODE_ITER_SIMULT(MATR_A=RAID_E,
-                        MATR_B=MASS_E,
+MODE_E=MODE_ITER_SIMULT(MATR_RIGI=RAID_E,
+                        MATR_MASS=MASS_E,
                         CALC_FREQ=_F(NMAX_FREQ=25),
                         VERI_MODE=_F(STOP_ERREUR='NON'));
+
 #
 #
 #//////////////////////////////////////////////////////////////////////
@@ -344,12 +351,13 @@ RIGIGENE=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
 MASSGENE=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
                         OPTION='MASS_GENE');
 
-RESGEN=MODE_ITER_SIMULT(MATR_A=RIGIGENE,
-                        MATR_B=MASSGENE,
+RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGIGENE,
+                        MATR_MASS=MASSGENE,
                         SOLVEUR=_F(METHODE='MUMPS',
    ),
                         CALC_FREQ=_F(OPTION='BANDE',
                                      FREQ=(0.0,250.0)));
+
 
 
 SKEL=DEFI_SQUELETTE(MODELE_GENE=MODEGENE,
@@ -410,3 +418,9 @@ TEST_RESU(RESU=(_F( RESULTAT = MODPHY, PARA = 'FREQ',
 
 
 FIN();
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL MODAL POUTRE MULTIFIBRE AVEC GYROSCOPIE
 # sdll123d.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,10 +127,11 @@ for ddd in d:
    i=i+1
 print "\n"
 
-MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
                        FREQ=(3.,3000.)));
+
 
 OM=10000.*pi/30.
 
@@ -138,14 +139,15 @@ GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
                             _F(MATR_ASSE=AMOR, COEF_R=1.,),))
 
 
-MODEQ=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
-                       MATR_B=MASSE,
-                       MATR_C=GYOM,
+MODEQ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
+                       MATR_AMOR=GYOM,
                        METHODE='QZ',
                        TYPE_QZ='QZ_SIMPLE',
                        CALC_FREQ=_F(NMAX_FREQ=106),
                        VERI_MODE=_F(SEUIL=0.5),
                         )
+
 
 [d,gyro]=EXTR_MATR(GYOM,1)
 
@@ -241,4 +243,10 @@ TEST_RESU(RESU=(
            ),)
 
 FIN()
+
+
+
+
+
+
 
