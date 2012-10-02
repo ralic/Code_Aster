@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 3 NOEUDS) MACRO_ELAS_MULT
 # ssll106a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -202,9 +202,10 @@ RESU=MACRO_ELAS_MULT(MODELE=MO,
                                     CHAR_MECA = CHAR9,
                                     SOUS_TITRE = 'LINEIQUE',),),);
 
-RESU=CALC_ELEM(reuse =RESU,
-               RESULTAT=RESU,
-               OPTION=('EPSI_ELGA','EFGE_ELNO','DEGE_ELNO'),);
+RESU=CALC_CHAMP(reuse =RESU,
+                RESULTAT=RESU,
+                CONTRAINTE=('EFGE_ELNO',),
+                DEFORMATION=('EPSI_ELGA','DEGE_ELNO'),);
 
 RESU=MACRO_ELAS_MULT(reuse =RESU,
                      MODELE=MO,
@@ -215,10 +216,11 @@ RESU=MACRO_ELAS_MULT(reuse =RESU,
                                     CHAR_MECA = CHAR9B,
                                     SOUS_TITRE = 'LINEIQUE',),),);
 
-RESU=CALC_ELEM(reuse =RESU,
-               RESULTAT=RESU,
-               NOM_CAS = 'CHARGE NUMERO91',
-               OPTION=('EPSI_ELGA','EFGE_ELNO','DEGE_ELNO'),);
+RESU=CALC_CHAMP(reuse =RESU,
+                RESULTAT=RESU,
+                NOM_CAS = 'CHARGE NUMERO91',
+                CONTRAINTE=('EFGE_ELNO',),
+                DEFORMATION=('EPSI_ELGA','DEGE_ELNO'),);
 
 TEST_RESU(RESU=(
 
@@ -633,17 +635,14 @@ REST=MECA_STATIQUE(             MODELE=MO,
 
                         )
 
-CALC_ELEM( reuse= REST ,RESULTAT= REST ,
+REST=CALC_CHAMP(reuse= REST,
+                RESULTAT= REST ,
+                DEFORMATION=('EPSI_ELGA',),
+                CONTRAINTE=('EFGE_ELNO',),);
 
-                  OPTION=('EPSI_ELGA',
-                          'EFGE_ELNO', )
-                        )
-
-CALC_CHAMP(reuse=REST,
-
-              FORCE='FORC_NODA',
-                 RESULTAT=REST
-         )
+REST=CALC_CHAMP(reuse=REST,
+                FORCE='FORC_NODA',
+                RESULTAT=REST,);
 
 TEST_RESU(RESU=(
 
@@ -768,9 +767,3 @@ TEST_RESU(RESU=(
               )
 
 FIN()
-
-
-
-
-
-

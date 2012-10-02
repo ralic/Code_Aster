@@ -10,7 +10,7 @@
       CHARACTER*19 SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,13 +74,14 @@ C     -----------------------------------------------------------------
       CHARACTER*1  KBID
       CHARACTER*24 VALE
       CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
+      INTEGER      IRET
 C     -----------------------------------------------------------------
-      CHARACTER*24 WORK(5)
+      CHARACTER*24 WORK(4)
       DATA WORK(1)/'&&VP2INI.VECTEUR_INITIAL'/
       DATA WORK(2)/'&&VP2INI.VECTEUR_MX     '/
       DATA WORK(3)/'&&VP2INI.VECTEURS_KX    '/
       DATA WORK(4)/'&&VP2INI.RDIAK          '/
-      DATA VALE/'                   .VALM'/
+      DATA VALE   /'                   .VALM'/
 C     -----------------------------------------------------------------
 
 C INIT. OBJETS ASTER
@@ -145,8 +146,9 @@ C     --- VECTEUR INITIAL : ALEATOIRE ---
       DO 70 IEQ = 1,NEQ
         ZR(LX+IEQ-1) = ZR(LX+IEQ-1)*DDLLAG(IEQ)*ZR(IRDIAK+IEQ-1)
    70 CONTINUE
-      CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
-     &              CRITER,1,ZR(LX),CBID,.FALSE.)
+      CALL RESOUD(MATASS,K19BID ,SOLVEU,CHCINE,1     ,
+     &            K19BID,K19BID ,KBID  ,ZR(LX),CBID  ,
+     &            CRITER,.FALSE.,0     ,IRET  )
       DO 80 IEQ = 1,NEQ
         ZR(LX+IEQ-1) = ZR(LX+IEQ-1)*DDLLAG(IEQ)
    80 CONTINUE
@@ -159,8 +161,9 @@ C     --- CALCUL DE (LDYNAM**-1)*MASSE * X0 ---
       DO 90 IEQ = 1,NEQ
         VECT(IEQ,IVECD) = ZR(LMX+IEQ-1)*DDLEXC(IEQ)
    90 CONTINUE
-      CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
-     &              CRITER,1,VECT(1,IVECD),CBID,.FALSE.)
+      CALL RESOUD(MATASS,K19BID ,SOLVEU,CHCINE       ,1     ,
+     &            K19BID,K19BID ,KBID  ,VECT(1,IVECD),CBID  ,
+     &            CRITER,.FALSE.,0     ,IRET         )
 
 C     --- K-ORTHONORMALISATION DU 1-ER VECTEUR ---
 
@@ -210,8 +213,9 @@ C     -----------------------------------------------------------------
         DO 140 IEQ = 1,NEQ
           VECT(IEQ,IVECP1) = ZR(LMX+IEQ-1)*DDLEXC(IEQ)
   140   CONTINUE
-        CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
-     &              CRITER,1,VECT(1,IVECP1),CBID,.FALSE.)
+        CALL RESOUD(MATASS,K19BID ,SOLVEU,CHCINE        ,1     ,
+     &              K19BID,K19BID ,KBID  ,VECT(1,IVECP1),CBID  ,
+     &              CRITER,.FALSE.,0     ,IRET          )
 
         IF (IVECM1.EQ. (IVECD-1)) THEN
           DO 150 IEQ = 1,NEQ

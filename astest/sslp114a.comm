@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE FISSURE PLANE SEMI-INFINIE
 # sslp114a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -288,11 +288,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU  = MOD_VISU,
                         RESULTAT = UTOT,INFO=2,)
 
-RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
-                   RESULTAT=RES_XFEM,
-                   OPTION=('SIEQ_ELGA','SIEQ_ELNO'),
-#                  INFO=2,
-                  );
+RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,
+                    RESULTAT=RES_XFEM,
+                    CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),);
 
 RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
                  RESULTAT=RES_XFEM,

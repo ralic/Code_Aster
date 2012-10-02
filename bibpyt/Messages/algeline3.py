@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline3 Messages  DATE 02/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,10 +133,6 @@ Conseils & solution :
 
 24: _(u"""
  Résolution LDLT : erreur de programmation.
-"""),
-
-25: _(u"""
- Erreur à l'appel de METIS
 """),
 
 26: _(u"""

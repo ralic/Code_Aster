@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -152,14 +152,12 @@ GRANDEUR_SIMPLE__
 >>
     CADISM   = R    M[144]
 
-<<  CADISA  Type:R  Matrice d'amortissement des éléments discrets (U4.24.01)
-                   (Modélisation='DIS_XXXX')
+<<  CADISA  Type:R  Matrice d'amortissement des éléments discrets
         A[144] : coefficients de la matrice d'amortissement
 >>
     CADISA   = R    A[144]
 
-<<  CADISK Type:R  Matrice de rigidité des éléments discrets (U4.24.01)
-                   (Modélisation='DIS_XXXX')
+<<  CADISK Type:R  Matrice de rigidité des éléments discrets
        K[144] : coefficients de la matrice de rigidité
 >>
     CADISK   = R    K[144]
@@ -189,7 +187,7 @@ GRANDEUR_SIMPLE__
 %
 
 <<  CAGEBA Type:R Caractéristiques géométriques des barres a section
-       rectangulaire ou circulaire (cf. (U4.24.01))
+       rectangulaire ou circulaire
        HY1 : dimension suivant GY du rectangle (noeud 1)
        HZ1 : dimension suivant GZ du rectangle (noeud 1)
        EPY1 : épaisseur suivant GY d'un rectangle creux (noeud 1)
@@ -208,7 +206,7 @@ GRANDEUR_SIMPLE__
                     R1       EP1      R2       EP2      TSEC
 
 <<  CAGEPO Type:R Caractéristiques géométriques des poutres a section
-    rectangulaire ou circulaire (cf. (U4.24.01))
+    rectangulaire ou circulaire
        HY1 : dimension suivant GY du rectangle (noeud 1)
        HZ1 : dimension suivant GZ du rectangle (noeud 1)
        EPY1 : épaisseur suivant GY d'un rectangle creux (noeud 1)
@@ -226,14 +224,12 @@ GRANDEUR_SIMPLE__
     CAGEPO   = R    HY1      HZ1      EPY1     EPZ1     HY2      HZ2      EPY2     EPZ2
                     R1       EP1      R2       EP2      TSEC
 
-<<  CAGNBA Type:R Caractéristiques géométriques d'une section de
-    barre (cf. (U4.24.01))
+<<  CAGNBA Type:R Caractéristiques géométriques d'une section de barre
        A1 : aire de la section transversale
 >>
     CAGNBA   = R    A1
 
-<<  CAGNPO Type:R Caractéristiques géométriques d'une section de
-    poutre (cf. (U4.24.01))
+<<  CAGNPO Type:R Caractéristiques géométriques d'une section de poutre
       A1 : aire de la section (noeud 1)
       IY1 : moment d'inertie principal par rapport a GZ (noeud 1)
       IZ1 : moment d'inertie principal par rapport a GY (noeud 1)
@@ -289,7 +285,7 @@ GRANDEUR_SIMPLE__
 >>
     CAMASS   = R    C        ALPHA    BETA     KAPPA    X        Y        Z
 
-<<  CAORIE Type:R Orientation d'un segment en 3D. Angles nautiques (U4.24.01)
+<<  CAORIE Type:R Orientation d'un segment en 3D. Angles nautiques
        ALPHA : 1er angle nautique pour la maille SEG2 (ou le 1er noeud
        d'une maille SEG3 ou SEG4)
        BETA : 2ème angle nautique pour la maille SEG2 (ou le 1er noeud
@@ -1955,8 +1951,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        SIGV_GX: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON X
        SIGV_GY: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON Y
        SIGV_GZ: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON Z
-       SIG_NX, SIG_NY, SIG_NZ, ...  ,SIG_T2Z, SIG_T2 : contraintes de "rosette":
-               Voir option SIRO_ELEM dans U4.81.04
+       SIG_NX, SIG_NY, SIG_NZ, ...  ,SIG_T2Z, SIG_T2 : contraintes de "rosette"
 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
        VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY

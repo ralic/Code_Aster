@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 01/10/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF_HYPOELAS CINEMATIQUE
 # ssnd107a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -21,7 +21,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM = 'SSND107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-IGNORE_ALARM='COMPOR1_70',DEBUG=_F(SDVERI='NON'))
+IGNORE_ALARM='COMPOR1_70',DEBUG=_F(SDVERI='NON',JXVERI='OUI'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # L'ALARME COMPOR1_70 EST EMISE CAR ON MET ITER_INTE_MAXI POUR TOUS LES COMPORTEMENTS TESTES, MEME
@@ -214,32 +214,6 @@ for icomp,comp in enumerate(compor) :
                          REFERENCE='AUTRE_ASTER',),
                          ),);
 
-
-
-IMPR_RESU(RESU=_F(RESULTAT=resu[1],),FORMAT='MED');
-
-DEFI_FICHIER( UNITE=38, FICHIER='./REPE_OUT/courbes_vmis_cinematique.agr')
-IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
-                  COURBE=(
-                   _F(FONCTION=vmis[0],LEGENDE=compor[0][0]+'_'+compor[0][1]),
-                   _F(FONCTION=vmis[1],LEGENDE=compor[1][0]+'_'+compor[1][1]),
-                   _F(FONCTION=vmis[2],LEGENDE=compor[2][0]+'_'+compor[2][1]),
-                   _F(FONCTION=vmis[3],LEGENDE=compor[3][0]+'_'+compor[2][1]),
-                   _F(FONCTION=vmis[4],LEGENDE=compor[4][0]+'_'+compor[2][1]),
-                   ),
-                  TITRE='courbes_vmis_cinematique');
-DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
-
-
-DEFI_FICHIER( UNITE=38, FICHIER='./REPE_OUT/courbes_epsg_cinematique.agr')
-IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
-                  COURBE=(
-                   _F(FONCTION=epsg[0],LEGENDE=compor[0][0]+'_'+compor[0][1]),
-                   _F(FONCTION=epsg[1],LEGENDE=compor[1][0]+'_'+compor[1][1]),
-                   _F(FONCTION=epsg[2],LEGENDE=compor[2][0]+'_'+compor[2][1]),
-                   ),
-                  TITRE='courbes_epsg_cinematique');
-DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
 
 FIN()

@@ -9,7 +9,7 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C
 C --- AUTORISE T'ON LES MAILLES DE PEAU COINCEES ENTRE
 C     DEUX MAILLES VOLUMIQUES ?
 C     -------------------------
-      IF(OPER(1:14).EQ.'CALC_ELEM')THEN
+      IF(OPER(1:14).EQ.'CALC_CHAMP')THEN
          LVNOR=.FALSE.
          OKCOIN=.TRUE.
       ENDIF

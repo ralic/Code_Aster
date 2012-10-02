@@ -1,8 +1,8 @@
       SUBROUTINE APETSC(ACTION,SOLVEZ,MATASZ,RSOLU ,VCINEZ,
-     &                  NBSOL ,IRET  )
+     &                  NBSOL ,ISTOP ,IRET  )
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSC PETSC  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF APETSC PETSC  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -23,16 +23,19 @@
       INCLUDE 'jeveux.h'
       CHARACTER*(*) ACTION,SOLVEZ,MATASZ,VCINEZ
       REAL*8        RSOLU(*)
-      INTEGER       NBSOL,IRET
+      INTEGER       NBSOL ,ISTOP ,IRET
 !-----------------------------------------------------------------------
 ! BUT : ROUTINE D'INTERFACE ENTRE CODE_ASTER ET LA BIBLIOTHEQUE PETSC
 !       DE RESOLUTION DE SYSTEMES LINEAIRES.
 
 ! IN  : ACTION
-!     /'DETR_MAT': POUR DEMANDER LA DESTRUCTION DE L'INSTANCE PETSC
-!                  ASSOCIEE A UNE MATRICE
-!     /'PRERES'  : POUR DEMANDER LA FACTORISATION DU PRECONDITIONNEUR
-!     /'RESOUD'  : POUR DEMANDER LA RESOLUTION ITERATIVE
+!     /'DETR_MAT': POUR DETRUIRE L'INSTANCE PETSC ASSOCIEE A UNE MATRICE
+!     /'PRERES'  : POUR CONSTRUIRE LE PRECONDITIONNEUR
+!                 (ATTENTION EN // LA CONSTRUCTION DE CERTAINS PC EST
+!                  RETARDEE)
+!     /'RESOUD'  : POUR RESOUDRE LE SYSTEME LINEAIRE
+!     /'FIN'     : POUR FERMER DEFINITIVEMENT PETSC
+!                  NECESSAIRE POUR DECLENCHER L'AFFICHAGE DU PROFILING
 
 ! IN  : SOLVEU   (K19) : NOM DE LA SD SOLVEUR
 !                       (SI ACTION=PRERES/RESOUD)
@@ -43,10 +46,11 @@
 !                       (SI ACTION=RESOUD)
 ! IN  : VCINE    (K19) : NOM DU CHAM_NO DE CHARGEMENT CINEMATIQUE
 !                       (SI ACTION=RESOUD)
-! IN  : NBSOL      (I) : NOMRE DE SYSTEMES A RESOUDRE
+! IN  : NBSOL      (I) : NOMBRE DE SYSTEMES A RESOUDRE
+! IN  : ISTOP      (I) : COMPORTEMENT EN CAS D'ERREUR
 ! OUT : IRET       (I) : CODE_RETOUR
 !                      /  0 : OK
-!                      / !0 : NOOK
+!                      /  1 : NOMBRE MAX D'ITERATIONS ATTEINT
 !-----------------------------------------------------------------------
 
 #ifdef _HAVE_PETSC
@@ -98,6 +102,20 @@
       SOLVEU = SOLVEZ
       MATAS = MATASZ
       VCINE = VCINEZ
+      IRET   = 0
+
+!     0. FERMETURE DE PETSC DANS FIN
+!     ------------------------------
+      IF (ACTION.EQ.'FIN') THEN
+!       PETSC A-T-IL ETE INITIALISE ?
+        IF (IPREM.EQ.1) THEN
+          call PetscFinalize(ierr)
+!         ON NE VERIFIE PAS LE CODE RETOUR CAR ON PEUT
+!         SE RETROUVER DANS FIN SUITE A UNE ERREUR DANS L'INITIALISATION
+          IPREM = 0
+        ENDIF
+        GOTO 9999
+      ENDIF
 
       IF (IPREM.EQ.0) THEN
 !     --------------------
@@ -118,7 +136,7 @@
          SPSOMU  = ' '
          SPMAT   = ' '
          SPSOLV  = ' '
-         IPREM = 1
+         IPREM   = 1
       END IF
 
       CALL ASSERT(MATAS.NE.' ')
@@ -152,9 +170,7 @@
          ENDIF
       ENDDO
 
-      IF (ACTION.EQ.'RESOUD') THEN
-         CALL ASSERT(.FALSE.)
-      ENDIF
+      CALL ASSERT(ACTION.NE.'RESOUD')
 
       IF (ACTION.EQ.'DETR_MAT') THEN
          GOTO 9999
@@ -203,6 +219,7 @@
 
       ELSE IF (ACTION.EQ.'RESOUD') THEN
          CALL ASSERT(NBSOL.GE.1)
+         CALL ASSERT((ISTOP.EQ.0).OR.(ISTOP.EQ.2))
       ELSE IF (ACTION.EQ.'DETR_MAT') THEN
 !        RIEN A VERIFIER
       ELSE
@@ -218,23 +235,23 @@
          DO K = 1,NBSOL
             KDEB = (K-1)*NSMDI+1
             CALL DCOPY(N4,RSOLU(KDEB),1,ZR(JTRAV),1)
-            CALL APETSR(ACTION,KPTSC,ZR(JTRAV),VCINE)
+            CALL APMAIN(ACTION,KPTSC ,ZR(JTRAV),VCINE ,ISTOP ,
+     &                  IRET  )
             CALL DCOPY(N4,ZR(JTRAV),1,RSOLU(KDEB),1)
          END DO
          CALL JEDETR('&&APETSC.TRAVAIL')
       ELSE
-         CALL APETSR(ACTION,KPTSC,RSOLU,VCINE)
+         CALL APMAIN(ACTION,KPTSC ,RSOLU ,VCINE ,ISTOP ,
+     &               IRET  )
       END IF
 
 9999  CONTINUE
-
-      IRET = 0
 
       CALL JEDEMA()
 
 #else
 
-      CALL U2MESS('F','FERMETUR_10')
+         CALL U2MESS('F','FERMETUR_10')
 
 #endif
 

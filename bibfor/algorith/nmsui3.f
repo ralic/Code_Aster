@@ -3,7 +3,7 @@
      &                  LISTMA,CHNOEU,CHELGA,CHAMP ,ISUIV )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -93,7 +93,9 @@ C
           NBNOR  = NBNO
         ELSEIF ((EXTRCH.EQ.'MIN').OR.
      &          (EXTRCH.EQ.'MAX').OR.
-     &          (EXTRCH.EQ.'MOY')) THEN
+     &          (EXTRCH.EQ.'MOY').OR.
+     &          (EXTRCH.EQ.'MINI_ABS').OR.
+     &          (EXTRCH.EQ.'MAXI_ABS')) THEN
           NBNOR = 1
         ELSE
           CALL ASSERT(.FALSE.)
@@ -107,7 +109,9 @@ C
           NBMAR  = NBMA
         ELSEIF ((EXTRCH.EQ.'MIN').OR.
      &          (EXTRCH.EQ.'MAX').OR.
-     &          (EXTRCH.EQ.'MOY')) THEN
+     &          (EXTRCH.EQ.'MOY').OR.
+     &          (EXTRCH.EQ.'MINI_ABS').OR.
+     &          (EXTRCH.EQ.'MAXI_ABS')) THEN
           NBMAR = 1
         ELSE
           CALL ASSERT(.FALSE.)

@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP,PREPOS,PCENTP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPS MUMPS  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPS MUMPS  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -69,7 +69,7 @@ C================================================================
       TYPE (SMUMPS_STRUC) , TARGET  :: SMPS(NMXINS)
       TYPE (SMUMPS_STRUC) , POINTER :: SMPSK
       INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB,IFACTM,
-     &             IETRAT,JREFA,NPREC,JSLVI,N,IFACT,IAUX,VALI(4),PCPI
+     &             IETRAT,JREFA,NPREC,JSLVI,IFACT,IAUX,VALI(4),PCPI
       CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE,PREC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM,KLAG2
       CHARACTER*8  KTYPR,K8BID
@@ -79,7 +79,7 @@ C================================================================
       CHARACTER*24 KMONIT(12),K24AUX,KVERS
       REAL*8       EPSMAX,VALR(2),RCTDEB,TEMPS(6),EPSMAT
       COMPLEX*16   CBID(1)
-      LOGICAL      LQUALI,LDIST,LRESOL,LMD,LBID,LMIXP,LPRECO,LBIS,LPB13,
+      LOGICAL      LQUALI,LDIST,LRESOL,LMD,LBID,LPRECO,LBIS,LPB13,
      &             LDET
       COMMON /MUMPSS/ SMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
@@ -141,9 +141,6 @@ C --- MATRICE ASTER DISTRIBUEE ?
 
 C --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
       LPRECO = ZK24(JSLVK-1+8)(1:3).EQ.'OUI'
-
-C --- MUMPS EST-IL UTILISE EN MIXTE-PRECISION ?
-      LMIXP = ZK24(JSLVK-1+7)(1:3).EQ.'OUI'
       
 C --- FILTRAGE DE LA MATRICE DONNEE A MUMPS (UNIQUEMENT NON LINEAIRE)
       EPSMAT=ZR(JSLVR-1+1)
@@ -206,7 +203,7 @@ C       ------------------------------------------------
         CALL AMUMPT(1,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPM(LDIST,KXMPS,KMONIT,IMPR,IFMUMP,KLAG2,
-     &              TYPE,LMD,EPSMAT,KTYPR,LPRECO.OR.LMIXP)
+     &              TYPE,LMD,EPSMAT,KTYPR)
 
 C       -----------------------------------------------------
 C       CONSERVE-T-ON LES FACTEURS OU NON ?
@@ -418,7 +415,7 @@ C       ------------------------------------------------
         CALL AMUMPT(7,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPP(0,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,LBIS,
-     &              RSOLU,CBID,VCINE,PREPOS,LPRECO,LMIXP)
+     &              RSOLU,CBID,VCINE,PREPOS,LPRECO)
 
 C       ------------------------------------------------
 C        RESOLUTION MUMPS :
@@ -462,7 +459,7 @@ C       ------------------------------------------------
 C        POST-TRAITEMENTS ASTER DE/DES (LA) SOLUTION(S) :
 C       ------------------------------------------------
         CALL AMUMPP(2,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,LBIS,
-     &              RSOLU,CBID,VCINE,PREPOS,LPRECO,LMIXP)
+     &              RSOLU,CBID,VCINE,PREPOS,LPRECO)
 
 C       ------------------------------------------------
 C        AFFICHAGE DU MONITORING :

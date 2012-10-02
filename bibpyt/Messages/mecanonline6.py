@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF mecanonline6 Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,6 +123,10 @@ cata_msg = {
  <Erreur> Interpénétration détectée.
  """),
 
+43 : _(u"""
+ <Erreur> Nombre maximum d'itérations atteint dans le solveur linéaire itératif.
+ """),
+
 50 : _(u"""
  <Action> On recommence le pas de temps en utilisant la solution de pilotage rejetée initialement.
  """),
@@ -141,6 +145,14 @@ cata_msg = {
 
 54 : _(u"""
           Sur la zone <%(i1)d>, le coefficient de pénalisation adapté vaut <%(r1)13.6G>.
+ """),
+
+55 : _(u"""
+ <Erreur> On ne peut pas réactualiser le préconditionneur (il l'a déjà été). On découpe.
+ """),
+
+56 : _(u"""
+ <Action> On recommence le pas de temps en réactualisant le préconditionneur.
  """),
 
 60 : _(u"""

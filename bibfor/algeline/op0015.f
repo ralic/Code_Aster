@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19 SOLVE1,SOLVE2
       COMPLEX*16   CBID
       REAL*8       EPS,RBID
-      INTEGER      IARG
+      INTEGER      IARG,IRET
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -90,8 +90,9 @@ C     -- MODIFICATION DU SOLVEUR DU FAIT DE CERTAINS MOTS CLES :
       ENDIF
 
 C     -- APPEL A LA ROUTINE RESOUD :
-      CALL RESOUD(MATR,MATF,SECMBR,SOLVE2,VCINE,'G',XSOL,
-     &                  ' ',0,RBID,CBID,.TRUE.)
+      CALL RESOUD(MATR  ,MATF  ,SOLVE2,VCINE ,0     ,
+     &            SECMBR,XSOL  ,'G'   ,RBID  ,CBID  ,
+     &            ' '   ,.TRUE.,0     ,IRET  )
 
       IF (METRES.NE.'MUMPS' .AND. METRES.NE.'PETSC') THEN
          CALL DETRSD('SOLVEUR',SOLVE2)

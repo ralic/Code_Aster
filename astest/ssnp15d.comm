@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 # ssnp15d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,12 +187,10 @@ EFGE=MODI_REPERE(RESULTAT=U,
                  REPERE='COQUE',
                  AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
 
-U=CALC_ELEM(reuse =U,
-            RESULTAT=USUP,
-            TOUT_ORDRE='OUI',
-            REPE_COQUE=_F(NUME_COUCHE=1,
-                          NIVE_COUCHE='SUP',),
-            OPTION='SIEQ_ELNO',);
+USUP=CALC_CHAMP(reuse=USUP,
+                RESULTAT=USUP,
+                TOUT_ORDRE='OUI',
+                CRITERES='SIEQ_ELNO',);
 
 TEST_RESU(RESU=(_F(
                    RESULTAT = U,  NOM_CHAM = 'DEPL',  NOEUD = 'NO1',
@@ -460,17 +458,17 @@ TEST_RESU(RESU=(
 
 
 TEST_RESU(RESU=(_F(
-                   RESULTAT = U,  NOM_CHAM = 'SIEQ_ELNO',REFERENCE='AUTRE_ASTER',
+                   RESULTAT = USUP,  NOM_CHAM = 'SIEQ_ELNO',REFERENCE='AUTRE_ASTER',
                    MAILLE = 'MA1',  NOEUD = 'NO1',
                    INST = 1.,     NOM_CMP = 'VMIS',
                    VALE = 2.21053E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SIEQ_ELNO',REFERENCE='AUTRE_ASTER',
+                   RESULTAT = USUP,   NOM_CHAM = 'SIEQ_ELNO',REFERENCE='AUTRE_ASTER',
                    MAILLE = 'MA1',   NOEUD = 'NO1',
                    INST = 1.,      NOM_CMP = 'PRIN_1',
                    VALE = -4.43290E+01,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SIEQ_ELNO',REFERENCE='AUTRE_ASTER',
+                   RESULTAT = USUP,   NOM_CHAM = 'SIEQ_ELNO',REFERENCE='AUTRE_ASTER',
                    MAILLE = 'MA1',   NOEUD = 'NO1',
                    INST = 1.,      NOM_CMP = 'PRIN_3',
                    VALE = 1.95529E+02,      PRECISION = 1.E-02),

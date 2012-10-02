@@ -8,7 +8,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,8 +69,7 @@ C              12345678
 C
       CALL GETRES(K8B,CONCEP,NOMCMD)
 C
-      LPOST = (NOMCMD.EQ.'CALC_ELEM').OR.
-     &        (NOMCMD.EQ.'POST_ELEM')
+      LPOST = (NOMCMD.EQ.'POST_ELEM')
 
       IF ( LPOST.AND.(RESULT(1:1).NE.' '))THEN
         CALL GETVIS(' ','NUME_ORDRE',0,IARG,1,NUORD,INUORD)

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE DISQUE FISSURE EN PRESENCE DE CONTRAINTES INITIALES
 # sslp115a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,13 +128,13 @@ RESUMECA=STAT_NON_LINE(MODELE=MO,
                               _F(CHARGE=BLOCFISS,),),
                        COMP_INCR=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=INSTMECA,),);
-RESUMECA=CALC_ELEM(reuse =RESUMECA,
-                   RESULTAT=RESUMECA,
-                   OPTION=('SIEQ_ELGA','EPSI_ELGA',
-                            'EPSP_ELNO','VARI_ELNO','SIEF_ELNO'),);
-RESUMECA=CALC_CHAMP(reuse =RESUMECA,
+RESUMECA=CALC_CHAMP(reuse=RESUMECA,
                     RESULTAT=RESUMECA,
-                    CONTRAINTE=('SIEF_NOEU',),);
+                    CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),
+                    DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+                    CRITERES=('SIEQ_ELGA',),
+                    VARI_INTERNE=('VARI_ELNO',),);
+
 ##Extraction des contraintes au noeuds et points de Gauss
 SIEFELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     OPERATION='EXTR',
@@ -158,10 +158,13 @@ RESOUVFI=STAT_NON_LINE(MODELE=MO,
                        EXCIT=(_F(CHARGE=ENCASTRE,),),
                        COMP_INCR=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=INSTMECA,),);
-RESOUVFI=CALC_ELEM(reuse =RESOUVFI,
-                   RESULTAT=RESOUVFI,
-                   OPTION=('SIEQ_ELGA','EPSI_ELGA',
-                           'EPSP_ELNO','VARI_ELNO','SIEF_ELNO'),);
+
+RESOUVFI=CALC_CHAMP(reuse=RESOUVFI,
+                    RESULTAT=RESOUVFI,
+                    CONTRAINTE=('SIEF_ELNO',),
+                    DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+                    CRITERES=('SIEQ_ELGA',),
+                    VARI_INTERNE=('VARI_ELNO',),);
 
 ##Definition du fond de fissure et des couronnes pour reutilisation dans resuini
 
@@ -208,9 +211,12 @@ RESUINI=STAT_NON_LINE(MODELE=MO,
                       CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-10),
                       INCREMENT=_F(LIST_INST=LIST3),);
 ## Calcul postraitement
-RESUINI=CALC_ELEM(reuse =RESUINI,
-                  RESULTAT=RESUINI,
-                  OPTION=('SIEQ_ELGA','EPSI_ELGA','EPSP_ELNO','VARI_ELNO'),);
+RESUINI=CALC_CHAMP(reuse=RESUINI,
+                   RESULTAT=RESUINI,
+                   DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+                   CRITERES=('SIEQ_ELGA',),
+                   VARI_INTERNE=('VARI_ELNO',),);
+
 ## Calcul de G en utilisant les couronnes precedemment definies (dans le calcul thermique)
 # et les differentes possibilites de l'etat initial.
 GINGA=CALC_G(THETA=_F(THETA=THETA1,FOND_FISS=FISS1,),

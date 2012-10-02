@@ -1,0 +1,114 @@
+# MODIF  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+# TITRE VALIDATION REAC_PRECOND (ERREUR)
+# erreu11a.para = tps_job 60 mem_job 1000Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# CE TEST EST INSPIRE DE PETSC01H
+# IL VALIDE LA BONNE EMISSION DE L'ERREUR MECANONLINE9_15
+
+DEBUT(CODE=_F(NOM='ERREU11A',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='NON'),
+      ERREUR=_F(ERREUR_F='EXCEPTION'),
+      IGNORE_ALARM='SUPERVIS_1',
+      PAR_LOT='NON',
+      DEBUG=_F(SDVERI='OUI'),);
+# ALARME 'SUPERVIS_1' : PAR_LOT='NON' necessaire pour intercepter l'exception
+
+import re
+fmt_raison='-'*80+"""
+
+   Exception interceptee
+   Raison : %s
+
+"""+'-'*80+'\n'
+
+MA=LIRE_MAILLAGE(FORMAT='MED',);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),
+               PARTITION=_F(PARALLELISME='MAIL_CONTIGU',),
+               );
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
+                          NU=0.3,
+                          RHO=1.e-1,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+
+CHA1=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=_F(GROUP_NO='GRNO7',
+                                 DX=0.0,
+                                 DY=0.01,),);
+
+CHA2=AFFE_CHAR_CINE(MODELE=MO,
+                    MECA_IMPO=(_F(GROUP_NO='GRNO1',
+                                 DZ=0.0,),
+                              _F(GROUP_NO='GRNO8',
+                                 DY=0.0,),),);
+
+LIST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1.0,
+                                  NOMBRE=10,),);
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0,0,1,1),);
+
+DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST,),
+                       ECHEC=_F(ACTION='REAC_PRECOND',),);
+
+is_ok = 0
+try :
+   EVOL=DYNA_NON_LINE(MODELE=MO,
+                      INFO=1,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=(_F(CHARGE=CHA1,FONC_MULT=RAMPE,),
+                             _F(CHARGE=CHA2,FONC_MULT=RAMPE,),),
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                      FORMULATION='DEPLACEMENT',),
+                      COMP_INCR=_F(RELATION='ELAS',
+                                   TOUT='OUI',),
+                      NEWTON=_F(REAC_ITER=1),
+                      INCREMENT=_F(LIST_INST=DEFLIST,),
+                      SOLVEUR=_F(METHODE='GCPC',
+                                 PRE_COND='LDLT_SP',
+                                 NMAX_ITER=1,
+                                 ),);
+
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if err.id_message == "MECANONLINE9_15":
+      is_ok = 1
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  '),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok)))
+
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  '),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE')
+
+FIN();

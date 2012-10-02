@@ -2,7 +2,7 @@
      &                  VALR  ,VALI  ,VALK  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,14 @@ C
 C
 C
 C
-      INTEGER      DFLLVD,LEEVR,LEEVK,LESUR,LAEVR,LATPR,LATPK
+      INTEGER      DFLLVD,LEEVR ,LEEVK ,LESUR ,LAEVR ,LATPR ,LATPK
       INTEGER      IECHEC,IADAPT
-      CHARACTER*24 TPSINF,TPSPIL
-      INTEGER      JLINR,JPIL
+      CHARACTER*24 TPSINF,TPSRPC,TPSPIL
+      INTEGER      JLINR ,JREAPC,JPIL
       CHARACTER*24 TPSEVR,TPSEVK,TPSESU
-      INTEGER      JEEVR,JEEVK,JESUR
+      INTEGER      JEEVR ,JEEVK ,JESUR
       CHARACTER*24 TPSAVR,TPSAVK,TPSTPR,TPSTPK
-      INTEGER      JAEVR,JAEVK,JATPR,JATPK
+      INTEGER      JAEVR ,JAEVK ,JATPR ,JATPK
 C
 C ----------------------------------------------------------------------
 C
@@ -165,6 +165,22 @@ C     ------------------------------------------------------------------
             ENDIF
           ENDIF
 
+        ELSEIF (QUEST.EQ.'EXIS_REAC_PRECOND') THEN
+          IF (GETSET.EQ.'L') THEN
+            VALI = NINT(ZR(JLINR-1+11))
+            IF (VALI.EQ.0) VALK = 'NON'
+            IF (VALI.EQ.1) VALK = 'OUI'
+          ELSEIF (GETSET.EQ.'E') THEN
+            IF (VALK.EQ.'NON') THEN
+              ZR(JLINR-1+11) = 0
+            ELSEIF (VALK.EQ.'OUI') THEN
+              ZR(JLINR-1+11) = 1
+            ELSE
+              WRITE(6,*) 'VALK: ',VALK
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+
         ELSEIF (QUEST.EQ.'NBINST') THEN
           IF (GETSET.EQ.'L') THEN
             VALI = NINT(ZR(JLINR-1+8))
@@ -199,10 +215,12 @@ C     ------------------------------------------------------------------
         TPSEVR = SDDISC(1:19)//'.EEVR'
         TPSEVK = SDDISC(1:19)//'.EEVK'
         TPSESU = SDDISC(1:19)//'.ESUR'
+        TPSRPC = SDDISC(1:19)//'.REPC'
         TPSPIL = SDDISC(1:19)//'.EPIL'
         CALL JEVEUO(TPSEVR,GETSET,JEEVR )
         CALL JEVEUO(TPSEVK,GETSET,JEEVK )
         CALL JEVEUO(TPSESU,GETSET,JESUR )
+        CALL JEVEUO(TPSRPC,GETSET,JREAPC)
         CALL JEVEUO(TPSPIL,GETSET,JPIL  )
         IECHEC = IOCC
 
@@ -239,24 +257,27 @@ C     ------------------------------------------------------------------
           IF (GETSET.EQ.'L') THEN
             VALI = NINT(ZR(JEEVR-1+LEEVR*(IECHEC-1)+2))
             IF (VALI.EQ.0) VALK = 'ARRET'
-            IF (VALI.EQ.1) VALK = 'DECOUPE'
-            IF (VALI.EQ.2) VALK = 'ITER_SUPPL'
-            IF (VALI.EQ.3) VALK = 'AUTRE_PILOTAGE'
-            IF (VALI.EQ.4) VALK = 'ADAPT_COEF_PENA'
-            IF (VALI.EQ.5) VALK = 'CONTINUE'
+            IF (VALI.EQ.1) VALK = 'REAC_PRECOND'
+            IF (VALI.EQ.2) VALK = 'DECOUPE'
+            IF (VALI.EQ.3) VALK = 'ITER_SUPPL'
+            IF (VALI.EQ.4) VALK = 'AUTRE_PILOTAGE'
+            IF (VALI.EQ.5) VALK = 'ADAPT_COEF_PENA'
+            IF (VALI.EQ.6) VALK = 'CONTINUE'
           ELSEIF (GETSET.EQ.'E') THEN
             IF (VALK.EQ.'ARRET') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 0.D0
-            ELSEIF (VALK.EQ.'DECOUPE') THEN
+            ELSEIF (VALK.EQ.'REAC_PRECOND') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 1.D0
-            ELSEIF (VALK.EQ.'EXTRAPOLE') THEN
+            ELSEIF (VALK.EQ.'DECOUPE') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 2.D0
-            ELSEIF (VALK.EQ.'AUTRE_PILOTAGE') THEN
+            ELSEIF (VALK.EQ.'ITER_SUPPL') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 3.D0
-            ELSEIF (VALK.EQ.'ADAPT_COEF_PENA') THEN
+            ELSEIF (VALK.EQ.'AUTRE_PILOTAGE') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 4.D0
-            ELSEIF (VALK.EQ.'CONTINUE') THEN
+            ELSEIF (VALK.EQ.'ADAPT_COEF_PENA') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 5.D0
+            ELSEIF (VALK.EQ.'CONTINUE') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 6.D0
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF
@@ -393,6 +414,15 @@ C
             ZR(JESUR-1+LESUR*(IECHEC-1)+9) = VALI
           ENDIF
 C
+C ---- PARAMETRES ACTION 'REAC_PRECOND'
+C
+        ELSEIF (QUEST.EQ.'ESSAI_REAC_PRECOND') THEN
+          IF(GETSET.EQ.'L') THEN
+             VALI = ZI(JREAPC)
+          ELSE IF(GETSET.EQ.'E') THEN
+            ZI(JREAPC) = VALI
+          ENDIF
+C
 C ----- PARAMETRES ACTION 'ITER_SUPPL'
 C
         ELSEIF (QUEST.EQ.'PCENT_ITER_PLUS') THEN
@@ -434,6 +464,7 @@ C
           ELSE IF(GETSET.EQ.'E') THEN
             ZI(JPIL+1) = VALI
           ENDIF
+
         ELSE
           CALL ASSERT(.FALSE.)
 

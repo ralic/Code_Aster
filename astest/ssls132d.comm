@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CONSOLE EN FLEXION TRIA3 GRILLE_MEMBRANE POIDS_PROPRE
 # ssls132d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,14 +161,11 @@ LEDEP=STAT_NON_LINE(
                 ),
               )
 
-
-LEDEP=CALC_ELEM( reuse = LEDEP,
-                 OPTION     = ('EPSI_ELGA','EPSI_ELNO','EFGE_ELNO', 'VARI_ELNO',),
-                 RESULTAT   = LEDEP,
-               )
-
 LEDEP=CALC_CHAMP(reuse =LEDEP,
                  RESULTAT=LEDEP,
+                 CONTRAINTE=('EFGE_ELNO',),
+                 DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),
+                 VARI_INTERNE=('VARI_ELNO',),
                  FORCE=('FORC_NODA','REAC_NODA'),);
 
 #

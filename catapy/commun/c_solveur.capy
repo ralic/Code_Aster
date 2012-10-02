@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMUN  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -165,7 +165,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    _singu_non = False
 
-#  Dans DEFI_BASE_MODALE, NON est le défaut de STOP_SINGULIER 
+#  Dans DEFI_BASE_MODALE, NON est le défaut de STOP_SINGULIER
    if COMMAND == 'DEFI_BASE_MODALE':
       _singu_non = True
 
@@ -190,6 +190,8 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _BlocGC_INC={}
    _BlocPE_INC={}
    _BlocXX_SP={}
+   _BlocPE_ML={}
+   _BlocPE_BOOMER={}
    _BlocXX_Autres={}
 
 # ----------------------------------------------------------------------------------------------------------------------------------
@@ -256,7 +258,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #  STOP_SINGULIER
    _into = ("OUI", "NON", )
    _defaut = "OUI"
-   
+
    if _singu_non:
       _defaut = "NON"
 
@@ -320,12 +322,13 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocPE['ALGORITHME'] = SIMP(statut='f', typ='TXM', defaut="GMRES", into=("BCGS", "BICG", "CG", "CR", "GMRES", "TFQMR", ), )
+   _BlocPE['ALGORITHME'] = SIMP(statut='f', typ='TXM', defaut="GMRES", into=("CG", "CR", "GMRES", "GCR", ), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
    _BlocGC['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_INC", into=("LDLT_INC", "LDLT_SP", ), )
-   _BlocPE['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_SP" , into=("LDLT_INC", "LDLT_SP", "JACOBI", "SOR", "SANS", ), )
+   _BlocPE['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_SP" ,
+                              into=("LDLT_INC", "LDLT_SP", "JACOBI", "SOR", "ML", "BOOMER", "SANS", ), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -361,9 +364,17 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocXX_SP['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS","RCMK"), )
+   _BlocXX_SP['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
    _BlocXX_SP['REAC_PRECOND'] = SIMP(statut='f', typ='I', defaut=30, )
-   _BlocXX_SP['PCENT_PIVOT' ] = SIMP(statut='f', typ='I', defaut=10, val_min=1, )
+   _BlocXX_SP['PCENT_PIVOT' ] = SIMP(statut='f', typ='I', defaut=20, val_min=1, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocPE_ML['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocPE_BOOMER['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -431,6 +442,14 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                                      b_simple     = BLOC(condition = "PRE_COND == 'LDLT_SP' ",
                                                          fr="Paramètres de la factorisation simple précision",
                                                          **_BlocXX_SP
+                                                         ),
+                                     b_ml         = BLOC(condition = "PRE_COND == 'ML' ",
+                                                         fr="Paramètres du multigrille algébrique ML",
+                                                         **_BlocPE_ML
+                                                         ),
+                                     b_boomer        = BLOC(condition = "PRE_COND == 'BOOMER' ",
+                                                         fr="Paramètres du multigrille algébrique HYPRE",
+                                                         **_BlocPE_BOOMER
                                                          ),
                                      b_autres     = BLOC(condition = "PRE_COND == 'JACOBI' or \
                                                                       PRE_COND == 'SOR'    or \

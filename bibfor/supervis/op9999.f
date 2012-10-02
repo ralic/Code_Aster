@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,28 +25,24 @@ C     ------------------------------------------------------------------
 C     FIN OP9999
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
-      INTEGER      IUNIFI, ICHK , INFO, NBENRE, NBOCT
-      INTEGER      IFM, IUNERR, IUNRES, IUNMES
-      INTEGER      I, L, ICMD, JCO, NBCO, NBEXT, NFHDF
+      INTEGER      IUNIFI,INFO  ,NBENRE,NBOCT
+      INTEGER      IFM   ,IUNERR,IUNRES,IUNMES
+      INTEGER      I     ,L     ,JCO   ,NBCO
+      INTEGER      NBEXT ,NFHDF ,IARG
       LOGICAL      ULEXIS
       CHARACTER*8  K8B, OUINON
       CHARACTER*16 FCHIER, FHDF, TYPRES
       CHARACTER*80 FICH
-      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       INFO = 1
-
-C     LIBERE TOUS LES COMPOSANTS CHARGES DYNAMIQUEMENT
-      CALL DLLCLS()
-
-C     VERIFICATION DES ALARMES EN PARALLELE
-      CALL MPIALR()
-C     TEST ERREUR E SANS ERREUR F ET ALARMES EMISES
-      CALL CHKMSG(1, ICHK)
-
-C     -----  FIN DE LA ZONE DE TEST ------------------------------------
+C
+C --- FERMETURE DES BIBLIOTHEQUES / VERIFICATION DES ALARMES ET ERREURS
+C
+      CALL FIN999()
+C
+C
 C
       IFM    = 0
       FCHIER = ' '
@@ -62,9 +58,9 @@ C
         CALL WKVECT('&&OP9999.NOM', 'V V K8', NBCO, JCO)
         CALL GETTYP(TYPRES, NBCO, ZK8(JCO))
         DO 10 I = 1 , NBCO
-           WRITE(IFM,1000)
+            WRITE(IFM,1000)
            CALL RSINFO ( ZK8(JCO-1+I) , IFM )
- 10     CONTINUE
+ 10      CONTINUE
       ENDIF
 C
       IUNERR = IUNIFI('ERREUR')

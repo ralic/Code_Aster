@@ -1,7 +1,7 @@
       SUBROUTINE CFGCIN(RESOCO,MATASS,SOLVEU,NEQ   ,NBLIAI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,13 +53,15 @@ C
       INTEGER      JSECMB
       CHARACTER*19 DDEPLC,DDELT
       INTEGER      JDDEPC,JDDELT
-      CHARACTER*8  K8BID
       COMPLEX*16   C16BID
       REAL*8       R8BID
+      CHARACTER*19 K19BLA
+      INTEGER      IRET
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      K19BLA = ' '
 C
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C
@@ -102,9 +104,9 @@ C
 C
 C ----- RESOLUTION
 C
-        CALL RESOUD(MATASS,K8BID ,SECMBR,SOLVEU,CNCIN0,
-     &              'V'   ,DDELT ,K8BID ,0     ,R8BID ,
-     &              C16BID,.TRUE.)
+        CALL RESOUD(MATASS,K19BLA,SOLVEU,CNCIN0,0     ,
+     &              SECMBR,DDELT ,'V'   ,R8BID ,C16BID,
+     &              K19BLA,.TRUE.,0     ,IRET  )
 C
 C ----- U = U + (-DELTA)
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE
 # RESPONSABLE PROIX J.M.PROIX
 # hsnv100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -150,9 +150,11 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                 INCREMENT=_F(LIST_INST=L_INST,),);
 
-U=CALC_ELEM(reuse =U,
-            RESULTAT=U,
-            OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
+U=CALC_CHAMP(reuse =U,
+             RESULTAT=U,
+             CONTRAINTE=('SIGM_ELNO',),
+             DEFORMATION=('EPSI_ELNO',),
+             VARI_INTERNE=('VARI_ELNO',),);
 
 #
 
@@ -263,9 +265,11 @@ VE=STAT_NON_LINE(MODELE=MOMECA,
                  INCREMENT=_F(LIST_INST=L_INST,),
                  NEWTON=_F(MATRICE='ELASTIQUE',),);
 
-VE=CALC_ELEM(reuse =VE,
-             RESULTAT=VE,
-             OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
+VE=CALC_CHAMP(reuse =VE,
+              RESULTAT=VE,
+              CONTRAINTE=('SIGM_ELNO',),
+              DEFORMATION=('EPSI_ELNO',),
+              VARI_INTERNE=('VARI_ELNO',),);
 
 #
 eps1 = ((1.3 * t1) * 1e-05);
@@ -331,9 +335,11 @@ VI=STAT_NON_LINE(MODELE=MOMECA,
                  INCREMENT=_F(LIST_INST=L_INST,),
                  NEWTON=_F(MATRICE='ELASTIQUE',),);
 
-VI=CALC_ELEM(reuse =VI,
-             RESULTAT=VI,
-             OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
+VI=CALC_CHAMP(reuse =VI,
+              RESULTAT=VI,
+              CONTRAINTE=('SIGM_ELNO',),
+              DEFORMATION=('EPSI_ELNO',),
+              VARI_INTERNE=('VARI_ELNO',),);
 
 #
 
@@ -419,9 +425,11 @@ W=STAT_NON_LINE(MODELE=MOMECA,
                 CONVERGENCE=_F(RESI_GLOB_RELA=.0001,
                                ITER_GLOB_MAXI=10,),);
 
-W=CALC_ELEM(reuse =W,
-            RESULTAT=W,
-            OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
+W=CALC_CHAMP(reuse =W,
+             RESULTAT=W,
+             CONTRAINTE=('SIGM_ELNO',),
+             DEFORMATION=('EPSI_ELNO',),
+             VARI_INTERNE=('VARI_ELNO',),);
 
 #
 
@@ -470,9 +478,9 @@ TEST_RESU(RESU=(_F(RESULTAT=W,
 
 #  ATESTS DES ENERGIES
 
-U=CALC_ELEM(reuse =U,
-            RESULTAT=U,
-            OPTION=('ETOT_ELGA','ENEL_ELGA',),);
+U=CALC_CHAMP(reuse =U,
+             RESULTAT=U,
+             ENERGIE=('ETOT_ELGA','ENEL_ELGA',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U,
                   INST=t1,

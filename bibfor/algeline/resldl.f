@@ -9,7 +9,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C     ------------------------------------------------------------------
 C --- SI ON NE FAIT PAS LES PREPOS, ON NE SE PREOCCUPE PAS DES
 C     AFFE_CHAR_CINE. DONC C'EST NORMAL QUE L'INFO SOIT INCOHERENTE
 C     A CE NIVEAU
-        IF ((NIMPO.NE.0) .AND. (PREPOS)) CALL U2MESS('F','ALGELINE3_41')
+        IF ((NIMPO.NE.0) .AND. PREPOS) CALL U2MESS('F','ALGELINE3_41')
         IDVALC=0
       ELSE
         CALL JEVEUO(VCI19//'.VALE','L',IDVALC)
@@ -95,6 +95,7 @@ C     A CE NIVEAU
       IF (TYPE.EQ.'R') THEN
 C     ----------------------------------------
         IF (PREPOS) THEN
+C         MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
           CALL MRCONL('MULT',LMAT,0,'R',RSOLU,NSECM)
           IF (IDVALC.NE.0) THEN
             DO 10,K=1,NSECM
@@ -104,12 +105,16 @@ C     ----------------------------------------
           ENDIF
         ENDIF
         CALL RLDLG3(METRES,LMAT,RSOLU,CBID,NSECM)
-        IF (PREPOS) CALL MRCONL('MULT',LMAT,0,'R',RSOLU,NSECM)
+        IF (PREPOS) THEN
+C         MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
+          CALL MRCONL('MULT',LMAT,0,'R',RSOLU,NSECM)
+        ENDIF
 
 
       ELSEIF (TYPE.EQ.'C') THEN
 C     ----------------------------------------
         IF (PREPOS) THEN
+C         MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
           CALL MCCONL('MULT',LMAT,0,'C',CSOLU,NSECM)
           IF (IDVALC.NE.0) THEN
             DO 20,K=1,NSECM
@@ -119,7 +124,10 @@ C     ----------------------------------------
           ENDIF
         ENDIF
         CALL RLDLG3(METRES,LMAT,RBID,CSOLU,NSECM)
-        IF (PREPOS) CALL MCCONL('MULT',LMAT,0,'C',CSOLU,NSECM)
+        IF (PREPOS) THEN
+C         MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
+          CALL MCCONL('MULT',LMAT,0,'C',CSOLU,NSECM)
+        ENDIF
       ENDIF
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD8
 # wtnp102d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
@@ -431,7 +431,7 @@ TEST_RESU(RESU=(
 
 # *******************************************************************
 #
-# VALIDATION INFORMATIQUE DE CALC_ELEM AVEC DEUX MODELES DIFFERENTS
+# VALIDATION INFORMATIQUE DE CALC_CHAMP AVEC DEUX MODELES DIFFERENTS
 # LE CALCUL EN LUI MEME N'A PAS D'INTERET
 #
 # *******************************************************************

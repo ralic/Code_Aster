@@ -1,0 +1,136 @@
+      SUBROUTINE APKSP (KPTSC)
+      IMPLICIT NONE
+!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
+!& MODIF APKSP PETSC  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+! ================================================================== 
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
+!                                                                    
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
+!                                                                    
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
+! ================================================================== 
+C RESPONSABLE DESOZA T.DESOZA
+      INCLUDE 'jeveux.h'
+      INTEGER KPTSC
+!----------------------------------------------------------------
+!
+!  CREATION DU SOLVEUR DE KRYLOV PETSC (INSTANCE NUMERO KPTSC)
+!
+!----------------------------------------------------------------
+
+#ifdef _HAVE_PETSC
+
+!================================================================
+#include "finclude/petscsys.h"
+#include "finclude/petscvec.h"
+#include "finclude/petscmat.h"
+#include "finclude/petscksp.h"
+#include "finclude/petscpc.h"
+!================================================================
+!----------------------------------------------------------------
+!     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
+      INTEGER      NMXINS
+      PARAMETER   (NMXINS=5)
+!
+!     VARIABLES LOCALES
+      INTEGER JSLVK,JSLVR,JSLVI
+      INTEGER NMAXIT,IFM,NIV
+!
+      CHARACTER*24 ALGO
+      CHARACTER*19 NOMAT,NOSOLV
+      CHARACTER*14 NONU
+!
+      REAL*8 RESIRE
+!
+!     COMMUN DE SAUVEGARDE DES INSTANCES
+      CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
+      CHARACTER*14  NONUS(NMXINS)
+      Mat              Ap(NMXINS)
+      KSP              Kp(NMXINS)
+      COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
+!=================================================================
+!     Variables PETSc
+      PetscInt maxits,ierr
+      PetscReal rtol,atol,dtol
+      Mat A
+      KSP ksp
+!=================================================================
+      CALL JEMARQ()
+
+      CALL INFNIV(IFM,NIV)
+
+!     -- LECTURE DU COMMUN
+      NOMAT  = NOMATS(KPTSC)
+      NOSOLV = NOSOLS(KPTSC)
+      NONU   =  NONUS(KPTSC)
+      A      =     Ap(KPTSC)
+      ksp    =     Kp(KPTSC)
+
+      CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
+      CALL JEVEUO(NOSOLV//'.SLVR','L',JSLVR)
+      CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
+      ALGO   = ZK24(JSLVK-1+6)
+      RESIRE = ZR(JSLVR-1+2)
+      NMAXIT = ZI(JSLVI-1+2)
+
+!     -- choix de l'algo KSP :
+!     ------------------------
+      IF (ALGO.eq.'CG') THEN
+         call KSPSetType(ksp,KSPCG,ierr)
+         CALL ASSERT(ierr.EQ.0)
+      ELSEIF (ALGO.eq.'CR') THEN
+         call KSPSetType(ksp,KSPCR,ierr)
+         CALL ASSERT(ierr.EQ.0)
+      ELSEIF (ALGO.eq.'GMRES') THEN
+         call KSPSetType(ksp,KSPGMRES,ierr)
+         CALL ASSERT(ierr.EQ.0)
+      ELSEIF (ALGO.eq.'GCR') THEN
+         call KSPSetType(ksp,KSPGCR,ierr)
+         CALL ASSERT(ierr.EQ.0)
+      ELSEIF (ALGO.eq.'BCGS') THEN
+         call KSPSetType(ksp,KSPBCGS,ierr)
+         CALL ASSERT(ierr.EQ.0)
+      ELSE
+         CALL ASSERT(.FALSE.)
+      ENDIF
+      CALL ASSERT(ierr.EQ.0)
+
+!     -- paramètres numériques :
+!     --------------------------
+
+!     -- nb iter max :
+      if (NMAXIT.LE.0) THEN
+        maxits = PETSC_DEFAULT_INTEGER
+      ELSE
+        maxits = NMAXIT
+      ENDIF
+
+      rtol = RESIRE
+      atol = PETSC_DEFAULT_DOUBLE_PRECISION
+      dtol = PETSC_DEFAULT_DOUBLE_PRECISION
+
+      call KSPSetTolerances(ksp,rtol,atol,dtol,maxits,ierr)
+      CALL ASSERT(ierr.EQ.0)
+
+!     - pour suivre les itérations de Krylov
+!     --------------------------------------
+      IF (NIV.GE.2) THEN
+         call KSPMonitorSet(ksp,KSPMonitorTrueResidualNorm,
+     &               PETSC_NULL_OBJECT,PETSC_NULL_FUNCTION,ierr)
+         CALL ASSERT(ierr.EQ.0)
+      ENDIF
+
+      CALL JEDEMA()
+
+#endif
+
+      END

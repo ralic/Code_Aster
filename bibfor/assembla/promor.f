@@ -5,7 +5,7 @@
       CHARACTER*1 BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ C----------------------------------------------------------------------
       INTEGER NNOV,NUMAV,KVOIS,RANG,JNUMSD,IMD,JSMH1,JPRTK
 
       CHARACTER*8 PARTIT
-      REAL*8  VALR(2)
+      REAL*8  VALR(2),RCOEF,REQU
       CHARACTER*16 CODVOI,NOMTE
       CHARACTER*12 VGE
       INTEGER NVOIMA,NSCOMA,JREPE,JPTVOI,JELVOI,NBVOIS
@@ -477,9 +477,10 @@ C     -- CREATION ET REMPLISSAGE DE .SMDE
         VALI(1) = NEQU
         VALI(2) = NCOEF
         VALI(3) = 2*NCOEF-NEQU
-        VALR(1) = (100.D0*NCOEF) / (NEQU*NEQU/2.D0)
-        VALR(2) = 100.D0*(2.D0*NCOEF-NEQU) / (NEQU*NEQU)
-        CALL U2MESG('I','FACTOR_2',0,' ',3,VALI,2,VALR)
+        RCOEF = NCOEF
+        REQU  = NEQU
+        VALR(1) = (100.D0*(2.D0*RCOEF-REQU)) / (REQU*REQU)
+        CALL U2MESG('I','FACTOR_2',0,' ',3,VALI,1,VALR)
       ENDIF
 
       IF (LFETI) CALL INFBAV()

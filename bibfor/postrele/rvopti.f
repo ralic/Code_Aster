@@ -9,7 +9,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C     ------------------------------------------------------------------
 C IN  NCH19  : K : NOM DU CHAMP_19
 C IN  NOMGD  : K : NOM DE LA GRANDEUR
 C IN  TYPEGD : K : VAUT 'CHNO' OU 'CHLM'
-C OUT OPTION : K : NOM OPTION CALC_ELEM POUR CHLM OU ADAPTATION CHNO
+C OUT OPTION : K : NOM OPTION POUR CHLM OU ADAPTATION CHNO
 C     ------------------------------------------------------------------
 C
       INTEGER    IOCC, NC, IER

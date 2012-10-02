@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE TEST THMS 3D, MODELISATION THMC=LIQU_SATU
 # wtnv113j.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,6 +176,25 @@ RESU0=STAT_NON_LINE(   MODELE=MODELE,
                                      RESI_GLOB_RELA = 1.E-8,
                                      ITER_GLOB_MAXI = 120),
                           ARCHIVAGE=_F(  LIST_INST = ARCHI),
+                          SUIVI_DDL=(_F(NOM_CMP='PRE1',
+                                        NOM_CHAM='DEPL',
+                                        EVAL_CHAM='MAXI_ABS',
+                                        NOEUD=('NO1'),
+                                        ),
+                                     _F(NOM_CMP='PRE1',
+                                        NOM_CHAM='DEPL',
+                                        EVAL_CHAM='MINI_ABS',
+                                        NOEUD=('NO1'),
+                                        ),
+                                      _F(NOM_CMP='SIP',
+                                         NOM_CHAM='SIEF_ELGA',
+                                         EVAL_ELGA='VALE',
+                                         POINT=1,
+                                         EVAL_CHAM='MIN',
+                                         GROUP_MA = 'VOLUME',
+                                       ),
+                                     ),
+                          
                           OBSERVATION=( _F(NOM_CMP='SIP',
                                        NOM_CHAM='SIEF_ELGA',
                                        EVAL_ELGA='VALE',

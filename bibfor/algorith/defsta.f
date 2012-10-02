@@ -2,7 +2,7 @@
      &                  NBDEF,TYDEF,INORD)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C
       CHARACTER*24  CHAMNO,NOMCVN,CREFE(2),BLANC
       CHARACTER*(*) NMRESZ, NUMRFZ, RAILDZ
       COMPLEX*16    CBID
+      INTEGER       IRET
 C
 C-----------------------------------------------------------------------
 C
@@ -129,8 +130,9 @@ C ----- RESOLUTION EN PLACE
 C
         MATPRE='&&OP0099.MATPRE'
         SOLVEU='&&OP0099.SOLVEUR'
-        CALL RESOUD(RAILDL,MATPRE,' ',SOLVEU,' ',' ',' ',
-     &                  ' ',1,ZR(LTCHAM),CBID,.TRUE.)
+        CALL RESOUD(RAILDL,MATPRE,SOLVEU,' '       ,1     ,
+     &              ' '   ,' '   ,' '   ,ZR(LTCHAM),CBID  ,
+     &              ' '   ,.TRUE.,0     ,IRET      )
 C
 C ----- CONVERSION NUMEROTATION
 C

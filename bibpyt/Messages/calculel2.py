@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -437,10 +437,6 @@ Conseils :
     sur la maille incriminée ?
 """),
 
-78 : _(u"""
-Attention : les numéros d'ordre ne sont pas contigus.
-"""),
-
 81: _(u"""
  pas de champ de géométrie
 """),
@@ -468,13 +464,6 @@ Attention : les numéros d'ordre ne sont pas contigus.
 92: _(u"""
  votre chargement contient plus d'une charge répartie
  le calcul n'est pas possible pour les modèles de poutre.
-"""),
-
-93: _(u"""
-  -> Vous avez renseigné un des mots-clés FONC_MULT_*, COEF_MULT_*,
-     PHAS_DEG, PUIS_PULS, or votre charge ne contient pas d'effort réparti
-     sur des poutres. Ces mots-clés seront donc ignorés.
-  -> Risque & Conseil :
 """),
 
 94: _(u"""

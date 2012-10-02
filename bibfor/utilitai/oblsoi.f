@@ -1,7 +1,7 @@
-      SUBROUTINE OBLSOI(SDLIST,ISTRU ,NOMSTR)
+      SUBROUTINE OBLSOI(SDLIST,IDNVAZ,NOMSTR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,9 +22,9 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
       INCLUDE       'jeveux.h'
-      CHARACTER*24 SDLIST
-      INTEGER      ISTRU
-      CHARACTER*24 NOMSTR
+      CHARACTER*24  SDLIST
+      CHARACTER*(*) IDNVAZ
+      CHARACTER*24  NOMSTR
 C
 C ----------------------------------------------------------------------
 C
@@ -36,14 +36,14 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  SDLIST : NOM DE LA LISTE
-C IN  ISTRU  : INDICE DU STRUCT DANS LA LISTE
+C IN  IDNVAL : VALEUR DU PARAMETRE IDENTIFIANT LE STRUCT
 C IN  NOMSTR : NOM DU STRUCT A METTRE DANS LA LISTE
 C
 C ----------------------------------------------------------------------
 C
       CHARACTER*24 LISNOM
       INTEGER      JLISNO
-      CHARACTER*24 TYPESD
+      CHARACTER*24 TYPESD,IDNVAL
 C
 C ----------------------------------------------------------------------
 C
@@ -53,12 +53,14 @@ C --- VERIFICATION
 C
       CALL OBGETT(SDLIST,TYPESD)
       IF (TYPESD.NE.'LISTE_STRUCTS') CALL ASSERT(.FALSE.)
+      IDNVAL = IDNVAZ
 C
 C --- SETUP DU STRUCT
 C
       CALL OBGETO(SDLIST,'NOM_STRUCTS',LISNOM)
-      CALL JEVEUO(LISNOM,'E',JLISNO)
-      ZK24(JLISNO-1+ISTRU) = NOMSTR
+      CALL JECROC(JEXNOM(LISNOM,IDNVAL))
+      CALL JEVEUO(JEXNOM(LISNOM,IDNVAL),'E',JLISNO)
+      ZK24(JLISNO) = NOMSTR
 C
       CALL JEDEMA()
       END

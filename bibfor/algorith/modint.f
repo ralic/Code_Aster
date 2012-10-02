@@ -1,7 +1,7 @@
       SUBROUTINE MODINT(SSAMI,RAIINT,NDDLIN,NBMOD,SHIFT,MATMOD,
      &                  MASSE,RAIDE,NEQ,COINT,NODDLI,NNOINT,
      &                  VEFREQ,SWITCH)
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_4
+C TOLE CRP_4 CRP_20
 C-----------------------------------------------------------------------
 C    M. CORUS     DATE 05/02/10
 C-----------------------------------------------------------------------
@@ -215,8 +215,9 @@ C-- REMPLISSAGE DE LA MATRICE DE HESSENBERG ET DU SE DE KRYLOV ASSOCIE
   110     CONTINUE
 
           CALL MRMULT('ZERO',LMATMA,ZR(LVTEMP),ZR(LVTMP2),1,.TRUE.)
-          CALL RESOUD(IMPED,' ',' ',SOLVEU,' ',' ',' ',
-     &                      ' ',1,ZR(LVTMP2),CBID,.TRUE.)
+          CALL RESOUD(IMPED ,' '   ,SOLVEU,' '       ,1     ,
+     &                ' '   ,' '   ,' '   ,ZR(LVTMP2),CBID  ,
+     &                ' '   ,.TRUE.,0     ,IRET      )
           DO 120 J1=1,K1-1
             NORM=DDOT(6*NNOINT,ZR(LVTMP2),1,
      &                ZR(LKRYL+(J1-1)*6*NNOINT),1)
@@ -316,8 +317,9 @@ C-- CONSTRUCTION DU SOUS ESPACE POUR LE PROBLEME COMPLET
 
 C-- RELEVE STATIQUE DU SOUS ESPACE DE KRYLOV SUR LE MODELE COMPLET
       CALL DISMOI('F','SOLVEUR',RAIDE,'MATR_ASSE',IBID,SOLVEU,IBID)
-      CALL RESOUD(RAIDE,'&&MOIN93.MATPRE',' ',SOLVEU,' ',' ',' ',
-     &            ' ',NSEKRY,ZR(LMAKRY),CBID,.TRUE.)
+      CALL RESOUD(RAIDE ,'&&MOIN93.MATPRE',SOLVEU,' '       ,NSEKRY,
+     &            ' '   ,' '              ,' '   ,ZR(LMAKRY),CBID  ,
+     &            ' '   ,.TRUE.           ,0     ,IRET      )
 
 C---------------------------------------------C
 C--                                         --C

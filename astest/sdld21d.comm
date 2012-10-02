@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -603,12 +603,10 @@ TEST_RESU(RESU=(
 
 # --------------------------------------------------------------------
 
-DYNAHARM=CALC_ELEM(reuse=DYNAHARM,    RESULTAT=DYNAHARM,
-                         NUME_ORDRE=1,
-
-
-
-                             OPTION='EFGE_ELNO'  )
+DYNAHARM=CALC_CHAMP(reuse=DYNAHARM,
+                    NUME_ORDRE=1,
+                    RESULTAT=DYNAHARM,
+                    CONTRAINTE=('EFGE_ELNO',),);
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = DYNAHARM,  NUME_ORDRE = 1,   NOM_CHAM = 'EFGE_ELNO',

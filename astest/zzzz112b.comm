@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 # zzzz112b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,16 +101,16 @@ RESU2=MECA_STATIQUE(        MODELE=MODAST,
                              LIST_INST=L_INST
                         )
 
-RESU2=CALC_ELEM( reuse=RESU2,
-                         RESULTAT=RESU2,
-                        LIST_INST=L_INST,
-                           OPTION='SIGM_ELNO'
-                     )
+RESU2=CALC_CHAMP(reuse=RESU2,
+                 RESULTAT=RESU2,
+                 LIST_INST=L_INST,
+                 CONTRAINTE='SIGM_ELNO',);
 
 RESUPOS=POST_CHAMP(RESULTAT=RESU2,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='MOY',),);
+
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
 # LE FICHIER DE DONNEES DE LIRE_PLEXUS
@@ -152,12 +152,10 @@ RESU_NL=STAT_NON_LINE(        MODELE=MODAST,
                )
                        )
 
-RESU_NL=CALC_ELEM( reuse=RESU_NL,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=RESU_NL,
-              )
-
+RESU_NL=CALC_CHAMP(reuse=RESU_NL,
+                   RESULTAT=RESU_NL,
+                   CONTRAINTE='SIGM_ELNO',
+                   VARI_INTERNE='VARI_ELNO',);
 
 RESNLPOS=POST_CHAMP(RESULTAT=RESU_NL,
                     INST=1.,

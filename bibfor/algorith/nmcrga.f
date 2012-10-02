@@ -1,28 +1,28 @@
       SUBROUTINE NMCRGA(SDERRO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       INCLUDE      'jeveux.h'
-      CHARACTER*24 SDERRO,CARCRI
+      CHARACTER*24 SDERRO
 C
 C ----------------------------------------------------------------------
 C
@@ -34,13 +34,12 @@ C ----------------------------------------------------------------------
 C
 C NB: LA SD S'APPELLE SDERRO
 C
-C IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 C IN  SDERRO : SD ERREUR
 C
 C ----------------------------------------------------------------------
 C
       INTEGER      ZEVEN
-      PARAMETER   (ZEVEN = 31)
+      PARAMETER   (ZEVEN = 32)
       CHARACTER*16 NEVEN(ZEVEN)
       CHARACTER*8  NCRET(ZEVEN)
       INTEGER      VCRET(ZEVEN)
@@ -66,7 +65,8 @@ C
      &              'DIVE_FIXF','DIVE_FIXC','ERRE_CTCG',
      &              'ERRE_CTCF','ERRE_CTCC','DIVE_FROT',
      &              'DIVE_GEOM','DIVE_RELA','DIVE_MAXI',
-     &              'DIVE_REFE','DIVE_COMP','DIVE_CTCC'/
+     &              'DIVE_REFE','DIVE_COMP','DIVE_CTCC',
+     &              'SOLV_ITMX'/
 C
 C --- NOM DU CODE RETOUR ATTACHE A L'EVENEMENT
 C
@@ -80,7 +80,8 @@ C
      &              'XXX','XXX','XXX',
      &              'XXX','XXX','XXX',
      &              'XXX','XXX','XXX',
-     &              'XXX','XXX','XXX'/
+     &              'XXX','XXX','XXX',
+     &              'RES'/
 C
 C --- VALEUR DU CODE RETOUR CORRESPONDANT A CHAQUE EVENEMENT
 C
@@ -94,7 +95,8 @@ C
      &               99,99,99,
      &               99,99,99,
      &               99,99,99,
-     &               99,99,99/
+     &               99,99,99,
+     &               1 /
 C
 C --- TYPE ET NIVEAU DE DECLENCHEMENT POSSIBLES DE L'EVENEMENT
 C TROIS TYPES
@@ -115,7 +117,8 @@ C
      &              'CONV_FIXE','CONV_FIXE','ERRI_FIXE',
      &              'ERRI_FIXE','ERRI_FIXE','CONV_RESI',
      &              'CONV_NEWT','CONV_RESI','CONV_RESI',
-     &              'CONV_RESI','CONV_RESI','CONV_NEWT'/
+     &              'CONV_RESI','CONV_RESI','CONV_NEWT',
+     &              'ERRI_NEWT'/
 C
 C --- FONCTIONNALITE ACTIVE SI NECESSAIRE POUR CONVERGENCE
 C
@@ -129,7 +132,8 @@ C
      &              ' ',' '       ,' ',
      &              ' ',' '       ,' ',
      &              ' ',' '       ,' ',
-     &              ' ',' '       ,' '/
+     &              ' ',' '       ,' ',
+     &              'LDLT_SP'/
 C
 C ----------------------------------------------------------------------
 C

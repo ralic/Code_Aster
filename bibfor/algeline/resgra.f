@@ -1,7 +1,8 @@
-      SUBROUTINE RESGRA(MAT,MATF,VCINE,NITER,EPSI,CRITER,NSECM,RSOLU,
-     &                  SOLVEU)
+      SUBROUTINE RESGRA(MAT   ,MATF  ,VCINE ,NITER ,EPSI  ,
+     &                  CRITER,NSECM ,RSOLU ,SOLVEU,ISTOP ,
+     &                  IRET  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,11 +22,11 @@ C ======================================================================
 C TOLE CRP_4
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*(*) MAT,VCINE,MATF
-      INTEGER NITER
-      REAL*8 EPSI,RSOLU(*)
-      CHARACTER*19 CRITER
-      CHARACTER*19 SOLVEU
+      CHARACTER*(*) MAT   ,MATF  ,VCINE
+      INTEGER       NITER ,NSECM
+      REAL*8        EPSI  ,RSOLU(*)
+      CHARACTER*19  CRITER,SOLVEU
+      INTEGER       ISTOP ,IRET
 C----------------------------------------------------------------------
 C     ROUTINE DE HAUT NIVEAU DE RESOLUTION PAR UNE METHODE DE GRADIENT
 C     CONJUGUE (GCPC)
@@ -35,11 +36,14 @@ C IN/JXIN  K19 MATF   : MATR_ASSE DE PRECONDITIONNEMENT
 C IN/JXIN  K*  VCINE  : CHAMP ASSOCIE AUX CHARGES CINEMATIQUES (OU ' ')
 C IN       I   NITER  : NOMBRE MAXIMUM D'ITERATIONS
 C IN       R   EPSI   : PARAMETRE D'ERREUR
-C IN       I   NSECM  : NOMBRE DE SECONDS MEMBRES
 C IN/JXOUT K19 CRITER : SD_CRITER (CRITERES DE CONVERGENCE)
+C IN       I   NSECM  : NOMBRE DE SECONDS MEMBRES
 C IN/OUT   R   RSOLU(*,NSECM)  :
 C        EN ENTREE : VECTEUR DE REELS CONTENANT LES SECONDS MEMBRES
 C        EN SORTIE : VECTEUR DE REELS CONTENANT LES SOLUTIONS
+C IN       K19 SOLVEU : SD_SOLVEUR
+C IN       I   ISTOP  : COMPORTEMENT EN CAS D'ERREUR
+C OUT      I   IRET   : CODE RETOUR
 C----------------------------------------------------------------------
 C----------------------------------------------------------------------
       COMPLEX*16 CBID
@@ -50,9 +54,9 @@ C----------------------------------------------------------------------
       CHARACTER*19 VCIN19,MATAS,MATFAC,SMBR
       CHARACTER*4 TYPE
       CHARACTER*24 PRECON
-      INTEGER IFM,NIV,IRET,IDVALC,IDIN,IDIP,JSMDE,NEQ,NBLC,ISLVK
+      INTEGER IFM,NIV,IER,IDVALC,IDIN,IDIP,JSMDE,NEQ,NBLC,ISLVK
       INTEGER IBID,IDAC,IDINPC,IDIPPC,IDACPC,IDW1,IDW2,IDW3
-      INTEGER JREFA,JREFAF,K,NSECM,LMAT,KDEB,IEQ,IDW4,ISMBR
+      INTEGER JREFA,JREFAF,K,LMAT,KDEB,IEQ,IDW4,ISMBR
 
 C----------------------------------------------------------------------
 C     DEBUT
@@ -80,8 +84,8 @@ C     3- SI CHARGE CINEMATIQUE :
 C     -----------------------------
       IF (VCINE.NE.' ') THEN
         VCIN19=VCINE
-        CALL JEEXIN(VCIN19//'.VALE',IRET)
-        IF (IRET.EQ.0) CALL U2MESK('F','ALGELINE3_34',1,VCIN19)
+        CALL JEEXIN(VCIN19//'.VALE',IER)
+        IF (IER.EQ.0) CALL U2MESK('F','ALGELINE3_34',1,VCIN19)
         CALL JEVEUO(VCIN19//'.VALE','L',IDVALC)
         DO 10,K=1,NSECM
           KDEB=(K-1)*NEQ+1
@@ -90,8 +94,8 @@ C     -----------------------------
       ENDIF
 
 
-C     4- PRECONDITIONNEMENT DES "LAGR" DE LA MATRICE
-C     ------------------------------------------------
+C     4- MISE A L'ECHELLE DES "LAGR" DANS LE SECOND MEMBRE :
+C     ------------------------------------------------------
       CALL MRCONL('MULT',LMAT,0,'R',RSOLU,NSECM)
 
 
@@ -99,8 +103,8 @@ C     5- RECUPERATION DE LA MATRICE ASSEMBLEE :
 C     ------------------------------------------------
       CALL JEVEUO(MATAS//'.REFA','L',JREFA)
       KSTOC=ZK24(JREFA-1+2)(1:14)//'.SMOS'
-      CALL JEEXIN(KSTOC//'.SMDI',IRET)
-      IF (IRET.EQ.0) CALL U2MESK('F','ALGELINE3_21',1,MATAS)
+      CALL JEEXIN(KSTOC//'.SMDI',IER)
+      IF (IER.EQ.0) CALL U2MESK('F','ALGELINE3_21',1,MATAS)
       CALL JEVEUO(KSTOC//'.SMDI','L',IDIN)
       CALL JEVEUO(KSTOC//'.SMHC','L',IDIP)
       CALL JEVEUO(KSTOC//'.SMDE','L',JSMDE)
@@ -117,8 +121,8 @@ C     ------------------------------------------------
 C     6- RECUPERATION DE LA MATRICE DE PRECONDITIONNEMENT:
 C     -----------------------------------------------------
       IF (PRECON(1:8).EQ.'LDLT_INC') THEN
-        CALL JEEXIN(MATFAC//'.REFA',IRET)
-        IF (IRET.EQ.0) CALL U2MESS('F','ALGELINE3_38')
+        CALL JEEXIN(MATFAC//'.REFA',IER)
+        IF (IER.EQ.0) CALL U2MESS('F','ALGELINE3_38')
 
         CALL JEVEUO(MATFAC//'.REFA','L',JREFAF)
         KSTOCF=ZK24(JREFAF-1+2)(1:14)//'.SMOS'
@@ -146,10 +150,11 @@ C        ---- SOLUTION POUR MUMPS
         CALL WKVECT(SMBR//'.VALE','V V R',NEQ,ISMBR)
 
         KDEB=(K-1)*NEQ+1
-        CALL GCPC(NEQ,ZI(IDIN),ZI4(IDIP),ZR(IDAC),ZI(IDINPC),
-     &            ZI4(IDIPPC),ZR(IDACPC),RSOLU(KDEB),ZR(IDW4),ZR(IDW1),
-     &            ZR(IDW2),ZR(IDW3),0,NITER,EPSI,CRITER,SOLVEU,MATAS,
-     &            SMBR)
+        CALL GCPC(NEQ       ,ZI(IDIN)  ,ZI4(IDIP)  ,ZR(IDAC),ZI(IDINPC),
+     &           ZI4(IDIPPC),ZR(IDACPC),RSOLU(KDEB),ZR(IDW4),ZR(IDW1)  ,
+     &           ZR(IDW2)   ,ZR(IDW3)  ,0          ,NITER   ,EPSI      ,
+     &           CRITER     ,SOLVEU    ,MATAS      ,SMBR    ,ISTOP     ,
+     &           IRET       )
         DO 20,IEQ=1,NEQ
           RSOLU(KDEB-1+IEQ)=ZR(IDW4-1+IEQ)
    20   CONTINUE
@@ -158,8 +163,8 @@ C        ---- SOLUTION POUR MUMPS
    30 CONTINUE
 
 
-C     10- MISE A JOUR DES COEFFICIENTS DE LAGRANGE :
-C     ---------------------------------
+C     10- MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION :
+C     -----------------------------------------------------
       CALL MRCONL('MULT',LMAT,0,'R',RSOLU,NSECM)
 
 

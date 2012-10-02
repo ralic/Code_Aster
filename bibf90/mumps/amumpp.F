@@ -1,9 +1,9 @@
       SUBROUTINE AMUMPP(OPTION,NBSOL ,KXMPS ,LDIST ,TYPE  ,IMPR  ,
      &                  IFMUMP,ELI2LG,RSOLU ,CSOLU ,VCINE ,PREPOS,
-     &                  LPRECO,LMIXP)
+     &                  LPRECO)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPP MUMPS  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 
@@ -43,13 +43,11 @@ C           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
 C           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
 C           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
 C IN  LPRECO :  LOG   : MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
-C IN  LMIXP  :  LOG   : MUMPS EST-IL UTILISE COMME SOLVEUR DIRECT SIMPLE
-C                       PRECISION (DANS UN PROCESSUS NON LINEAIRE) ?
 C-----------------------------------------------------------------------
 ! RESPONSABLE BOITEAU O.BOITEAU
 
       INTEGER      OPTION,NBSOL,KXMPS,IFMUMP
-      LOGICAL      LDIST,ELI2LG,PREPOS,LPRECO,LMIXP
+      LOGICAL      LDIST,ELI2LG,PREPOS,LPRECO
       CHARACTER*1  TYPE
       CHARACTER*14 IMPR
       CHARACTER*19 VCINE
@@ -87,7 +85,7 @@ C============================================================
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*24 VCIVAL
-      LOGICAL      LTYPR,LAPX
+      LOGICAL      LTYPR
       REAL*8       RBID,RR4MAX,RAUX,R4MAEM,R4MIEM,R8MAEM,R8MIEM,
      &             RMIN,RMAX,RTEST,VALR(2)
       COMPLEX*16   CBID,CAUX
@@ -96,7 +94,7 @@ C============================================================
       COMMON /MUMPSD/ DMPS
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
-      
+
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
@@ -104,7 +102,6 @@ C-----------------------------------------------------------------------
 C     ------------------------------------------------
 C     INITS
 C     ------------------------------------------------
-      LAPX=LPRECO.OR.LMIXP
       RR4MAX=R4MAEM()
       IF (TYPE.EQ.'S') THEN
         SMPSK=>SMPS(KXMPS)
@@ -151,7 +148,7 @@ C     ------------------------------------------------
       NOSOLV=NOSOLS(KXMPS)
       NONU=NONUS(KXMPS)
       ETAM=ETAMS(KXMPS)
-      
+
       VCIVAL=VCINE//'.VALE'
       CALL MTDSCR(NOMAT)
       CALL JEVEUO(NOMAT//'.&INT','E',LMAT)
@@ -159,80 +156,83 @@ C     ------------------------------------------------
 
       IF (OPTION.EQ.0) THEN
 
+         IF (RANG.EQ.0) THEN
+            IF (TYPE.EQ.'S') THEN
+               ALLOCATE(SMPSK%RHS(NNBSOL))
+            ELSE IF (TYPE.EQ.'C') THEN
+               ALLOCATE(CMPSK%RHS(NNBSOL))
+            ELSE IF (TYPE.EQ.'D') THEN
+               ALLOCATE(DMPSK%RHS(NNBSOL))
+            ELSE IF (TYPE.EQ.'Z') THEN
+               ALLOCATE(ZMPSK%RHS(NNBSOL))
+            ELSE
+               CALL ASSERT(.FALSE.)
+            ENDIF
+         ENDIF
+
 C       ------------------------------------------------
 C        PRETRAITEMENTS ASTER DU/DES SECONDS MEMBRES :
 C       ------------------------------------------------
 
-        IF (((RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
-          IF (RANG.EQ.0) THEN
-            IF (TYPE.EQ.'S') THEN
-              ALLOCATE(SMPSK%RHS(NNBSOL))
-            ELSE IF (TYPE.EQ.'C') THEN
-              ALLOCATE(CMPSK%RHS(NNBSOL))
-            ELSE IF (TYPE.EQ.'D') THEN
-              ALLOCATE(DMPSK%RHS(NNBSOL))
-            ELSE IF (TYPE.EQ.'Z') THEN
-              ALLOCATE(ZMPSK%RHS(NNBSOL))
-            ELSE
-              CALL ASSERT(.FALSE.)
+C        --- PAS DE PRETRAITEMENT SI NON DEMANDE
+         IF (.NOT.LPRECO.AND.PREPOS) THEN
+
+            IF (RANG.EQ.0) THEN
+C           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
+C           --- RANG 0 UNIQUEMENT
+               IF (LTYPR) THEN
+                  CALL MRCONL('MULT',LMAT,N,'R',RSOLU,NBSOL)
+               ELSE
+                  CALL MCCONL('MULT',LMAT,N,'C',CSOLU,NBSOL)
+               ENDIF
             ENDIF
-          ENDIF
 
-C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
-C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME 
-C         PRECONDITIONNEUR (DEJA FAIT DANS RESGRA.F)
-          IF ((RANG.EQ.0).AND.(.NOT.LPRECO).AND.PREPOS) THEN
-             IF (LTYPR) THEN
-               CALL MRCONL('MULT',LMAT,N,'R',RSOLU,NBSOL)
-             ELSE
-               CALL MCCONL('MULT',LMAT,N,'C',CSOLU,NBSOL)
-             ENDIF
-          ENDIF
+C           --- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
+            CALL JEEXIN(VCIVAL,IERD)
+            IF (IERD.NE.0) THEN
+C              --- ON RAZ RSOLU SUR LES RANGS > 0 POUR NE CUMULER QUE
+C              --- LA CONTRIBUTION DES CHARGES CINEMATIQUES EN DISTRIBUE
+               IF (LDIST.AND.RANG.NE.0) THEN
+                  DO I=1,NNBSOL
+                     IF (LTYPR) THEN
+                        RSOLU(I)=0.D0
+                     ELSE
+                        CSOLU(I)=DCMPLX(0.D0,0.D0)
+                     ENDIF
+                  ENDDO
+               ENDIF
+               CALL JEVEUO(VCIVAL,'L',IDVALC)
+               CALL JELIRA(VCIVAL,'TYPE',IBID,ROUC)
+               IF (LTYPR) THEN
+                  CALL ASSERT(ROUC.EQ.'R')
+                  DO I=1,NBSOL
+                     CALL CSMBGG(LMAT,RSOLU(N*(I-1)+1),ZR(IDVALC),
+     &                           CBID,CBID,'R')
+                  ENDDO
+               ELSE
+                  CALL ASSERT(ROUC.EQ.'C')
+                  DO I=1,NBSOL
+                     CALL CSMBGG(LMAT,RBID,RBID,CSOLU(N*(I-1)+1),
+     &                           ZC(IDVALC),'C')
+                  ENDDO
+               ENDIF
 
-C         --- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
-          CALL JEEXIN(VCIVAL,IERD)
-          IF ((VCINE.NE.' ').AND.(IERD.NE.0).AND.PREPOS) THEN
-            IF (LDIST) THEN
-C             -- POUR NE PAS CUMULER LE CHARGEMENT INITIAL:
-              IF (RANG.NE.0) THEN
-                DO I=1,NNBSOL
+C              --- REDUCTION DU SECOND MEMBRE AU PROC MAITRE EN DISTRIBUE
+C              --- POUR ETRE COHERENT AVEC LA MATRICE QUI CONTIENT DES N SUR LA DIAGONALE
+               IF (LDIST) THEN
                   IF (LTYPR) THEN
-                    RSOLU(I)=0.D0
+                     CALL MPICM1('REDUCE','R',NNBSOL,IBID,RSOLU)
                   ELSE
-                    CSOLU(I)=DCMPLX(0.D0,0.D0)
+                     CALL MPICM1('REDUCE','R',2*NNBSOL,IBID,CSOLU)
                   ENDIF
-                ENDDO
-              ENDIF
-            ENDIF
-            CALL JEVEUO(VCIVAL,'L',IDVALC)
-            CALL JELIRA(VCIVAL,'TYPE',IBID,ROUC)
-            IF (LTYPR) THEN
-              CALL ASSERT(ROUC.EQ.'R')
-              DO I=1,NBSOL
-                CALL CSMBGG(LMAT,RSOLU(N*(I-1)+1),ZR(IDVALC),
-     &                    CBID,CBID,'R')
-              ENDDO
-            ELSE
-              CALL ASSERT(ROUC.EQ.'C')
-              DO I=1,NBSOL
-                CALL CSMBGG(LMAT,RBID,RBID,CSOLU(N*(I-1)+1),
-     &                    ZC(IDVALC),'C')
-              ENDDO
-            ENDIF
-          ENDIF
+               ENDIF
 
-C         -- REDUCE DU SECOND MEMBRE AU PROC MAITRE
-          IF (LDIST.AND.PREPOS) THEN
-            IF (LTYPR) THEN
-              CALL MPICM1('REDUCE','R',NNBSOL,IBID,RSOLU)
-            ELSE
-              CALL MPICM1('REDUCE','R',2*NNBSOL,IBID,CSOLU)
             ENDIF
-          ENDIF
 
-          
-C         -- COPIE DE SOLU DANS %RHS:
-          IF (RANG.EQ.0) THEN
+         ENDIF
+
+C        --- COPIE DE RSOLU DANS %RHS:
+         IF (RANG.EQ.0) THEN
             IF (TYPE.EQ.'S') THEN
               DO I=1,NNBSOL
                 RAUX=RSOLU(I)
@@ -240,13 +240,7 @@ C         -- COPIE DE SOLU DANS %RHS:
                 IF (RTEST.LT.RMIN) THEN
                   RAUX=0.D0
                 ELSE IF (RTEST.GT.RMAX) THEN
-                  IF (LAPX) THEN
-                    RAUX=RMAX
-                  ELSE
-                    VALR(1)=RTEST
-                    VALR(2)=RMAX
-                    CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
-                  ENDIF
+                  RAUX=RMAX*SIGN(1.D0,RAUX)
                 ENDIF
                 SMPSK%RHS(I)=RAUX
               ENDDO
@@ -257,13 +251,9 @@ C         -- COPIE DE SOLU DANS %RHS:
                 IF (RTEST.LT.RMIN) THEN
                   CAUX=DCMPLX(0.D0,0.D0)
                 ELSE IF (RTEST.GT.RMAX) THEN
-                  IF (LAPX) THEN
-                    CAUX=DCMPLX(RMAX,0.D0)
-                  ELSE
-                    VALR(1)=RTEST
-                    VALR(2)=RMAX
-                    CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
-                  ENDIF
+                  CAUX=DCMPLX(RMAX*SIGN(1.D0,DBLE(CAUX)),0.D0)
+                  CAUX=RMAX*DCMPLX(1.D0*SIGN(1.D0,DBLE(CAUX)),
+     &                             1.D0*SIGN(1.D0,IMAG(CAUX)))
                 ENDIF
                 CMPSK%RHS(I)=CAUX
               ENDDO
@@ -274,13 +264,9 @@ C         -- COPIE DE SOLU DANS %RHS:
                 IF (RTEST.LT.RMIN) THEN
                   RAUX=0.D0
                 ELSE IF (RTEST.GT.RMAX) THEN
-                  IF (LAPX) THEN
-                    RAUX=RMAX
-                  ELSE
-                    VALR(1)=RTEST
-                    VALR(2)=RMAX
-                    CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
-                  ENDIF
+                  VALR(1)=RTEST
+                  VALR(2)=RMAX
+                  CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
                 ENDIF
                 DMPSK%RHS(I)=RAUX
               ENDDO
@@ -291,13 +277,9 @@ C         -- COPIE DE SOLU DANS %RHS:
                 IF (RTEST.LT.RMIN) THEN
                   CAUX=DCMPLX(0.D0,0.D0)
                 ELSE IF (RTEST.GT.RMAX) THEN
-                  IF (LAPX) THEN
-                    CAUX=DCMPLX(RMAX,0.D0)
-                  ELSE
-                    VALR(1)=RTEST
-                    VALR(2)=RMAX
-                    CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
-                  ENDIF
+                  VALR(1)=RTEST
+                  VALR(2)=RMAX
+                  CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
                 ENDIF
                 ZMPSK%RHS(I)=CAUX
               ENDDO
@@ -333,12 +315,11 @@ C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
             IF (IMPR(1:11).EQ.'OUI_NOSOLVE')
      &        CALL U2MESI('F','FACTOR_71',1,IFMUMP)
           ENDIF
-        ENDIF
 
 
       ELSE IF (OPTION.EQ.2) THEN
 
-        
+
 C       ------------------------------------------------
 C        POST-TRAITEMENTS ASTER DE LA SOLUTION :
 C       ------------------------------------------------
@@ -371,7 +352,7 @@ C           -- LAGR1 = LAGR1/2 PUIS LAGR2 = LAGR1
 C           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON
 C           -- BROADCAST LA SOLUTION APRES
             CALL JEVEUO(NONU//'.NUME.DELG','L',JDELG)
-            CALL NUDLG2(NONU)            
+            CALL NUDLG2(NONU)
             CALL JEVEUO(NONU//'.NUME.DLG2','L',JDLG2)
             IF (LTYPR) THEN
               DO I=1,NBSOL
@@ -396,9 +377,8 @@ C           -- BROADCAST LA SOLUTION APRES
             ENDIF
           ENDIF
 
-C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
-C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME 
-C         PRECONDITIONNEUR (DEJA FAIT DANS RESGRA.F)
+C         --- MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION :
+C         ON NE LE FAIT PAS SI NON DEMANDE
           IF (.NOT.LPRECO.AND.PREPOS) THEN
             IF (LTYPR) THEN
               CALL MRCONL('MULT',LMAT,N,'R',RSOLU,NBSOL)
@@ -412,10 +392,9 @@ C       -- BROADCAST DE SOLU A TOUS LES PROC
         IF (LTYPR) THEN
           CALL MPICM1('BCAST','R',NNBSOL,IBID,RSOLU)
         ELSE
-C         -- EST-CE AUSSI SIMPLE POUR LES COMPLEXES ?
           CALL MPICM1('BCAST','R',2*NNBSOL,IBID,CSOLU)
         ENDIF
-        
+
 C       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
         IF (IMPR(1:9).EQ.'OUI_SOLVE') THEN
           IF (RANG.EQ.0) THEN

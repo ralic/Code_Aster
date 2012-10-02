@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,9 +29,9 @@ bloc_auto   =BLOC(fr                = "Subdivision de type automatique",
                                            val_min           = 0.0,
                                            max               = 1,
                                            defaut            = 0.,
-                                           ),                                            
+                                           ),
                   )
-                 
+
 # Bloc pour decoupe manuel
 bloc_manu   =BLOC(fr                = "Subdivision de type manuel",
                   condition         = "SUBD_METHODE == 'MANUEL'",
@@ -43,7 +43,7 @@ bloc_manu   =BLOC(fr                = "Subdivision de type manuel",
                                            max               = 1,
                                            defaut            = 4,
                                            ),
-                                                                                             
+
                   SUBD_NIVEAU       = SIMP(fr                = "Nombre maximum de niveau de subdivision d'un pas de temps",
                                            statut            = 'f',
                                            typ               = 'I',
@@ -57,7 +57,7 @@ bloc_manu   =BLOC(fr                = "Subdivision de type manuel",
                                            val_min           = 0.0,
                                            max               = 1,
                                            defaut            = 0.,
-                                           ),               
+                                           ),
                  )
 
 # Bloc pour decoupe automatique - Cas de la collision
@@ -68,18 +68,18 @@ bloc_auto2  =BLOC(fr                = "Subdivision de type automatique",
                                            typ               = 'R',
                                            val_min           = 0.0,
                                            max               = 1,
-                                           ), 
+                                           ),
                   SUBD_DUREE        = SIMP(fr                = "Duree de decoupe apres collision",
                                            statut            = 'o',
                                            typ               = 'R',
                                            val_min           = 0.0,
                                            max               = 1,
-                                           ),                                          
+                                           ),
                   )
-                                        
+
 # Bloc pour decoupe du pas de temps
 bloc_deco   =BLOC(fr                = "Action de decoupe du pas temps",
-                  condition         = "ACTION == 'DECOUPE' or ACTION == 'AUTRE_PILOTAGE'",
+                  condition         = "ACTION == 'DECOUPE' or ACTION == 'REAC_PRECOND' or ACTION == 'AUTRE_PILOTAGE'",
                   SUBD_METHODE      = SIMP(fr                = "Méthode de subdivision des pas de temps en cas de divergence",
                                            statut            = 'f',
                                            typ               = 'TXM',
@@ -102,13 +102,13 @@ bloc_deco2  =BLOC(fr                = "Action de decoupe du pas temps",
                                            into              = ("MANUEL","AUTO"),
                                            defaut            = "AUTO",
                                            ),
-                  
-                   
-                                           
+
+
+
                   b_deco_manu       = bloc_manu,
                   b_deco_auto       = bloc_auto2,
                  )
-   
+
 # Bloc pour extrapolation du nombre d'iterations de Newton
 bloc_supp   =BLOC(fr                = "Action d'extrapolation du nombre d'iterations de Newton",
                   condition         = "ACTION == 'ITER_SUPPL'",
@@ -129,7 +129,7 @@ bloc_supp   =BLOC(fr                = "Action d'extrapolation du nombre d'iterat
                   b_deco_manu       = bloc_manu,
                   b_deco_auto       = bloc_auto,
                  )
-   
+
 # Bloc pour adaptation du coefficient de penalisation
 bloc_pene   =BLOC(fr                = "Action d' adaptation du coefficient de penalisation",
                   condition         = "ACTION == 'ADAPT_COEF_PENA'",
@@ -141,7 +141,7 @@ bloc_pene   =BLOC(fr                = "Action d' adaptation du coefficient de pe
                                            defaut            = 1E12,
                                            ),
                  )
-                
+
 DEFI_LIST_INST = OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n',
                       UIinfo={"groupes":("Fonctions",)},
                       fr="Définition de la gestion de la liste d'instants",
@@ -203,7 +203,7 @@ DEFI_LIST   =FACT(fr                = "Definition a priori de la liste d'instant
 # ----------------------------------------------------------------------------------------------------------------------------------
 # mot-cle pour le comportement en cas d'echec (on doit recommencer le meme instant)
 # ----------------------------------------------------------------------------------------------------------------------------------
-  
+
 ECHEC       =FACT(fr                = "Comportement en cas d'echec",
                   statut            = 'd',
                   max               = '**',
@@ -221,8 +221,8 @@ ECHEC       =FACT(fr                = "Comportement en cas d'echec",
                                                                     statut          = 'f',
                                                                     max             = 1,
                                                                     typ             = 'TXM',
-                                                                    into            = ("ARRET","DECOUPE","ITER_SUPPL",
-                                                                                       "AUTRE_PILOTAGE"),
+                                                                    into            = ("ARRET","DECOUPE","REAC_PRECOND",
+                                                                                       "ITER_SUPPL","AUTRE_PILOTAGE"),
                                                                     defaut          = "DECOUPE",
                                                                     ),
                                            b_deco            = bloc_deco,
@@ -273,8 +273,8 @@ ECHEC       =FACT(fr                = "Comportement en cas d'echec",
                                                                     typ             = 'R',
                                                                     max             = 1,
                                                                     ),
-                                           
-                                           
+
+
                                            ACTION            = SIMP(fr              = "Actions possibles",
                                                                     statut          = 'f',
                                                                     max             = 1,
@@ -283,7 +283,7 @@ ECHEC       =FACT(fr                = "Comportement en cas d'echec",
                                                                     defaut          = "ADAPT_COEF_PENA",
                                                                     ),
                                            b_pene            = bloc_pene,
-                                           ),                         
+                                           ),
                   b_dive_resi       = BLOC(fr                = "Event: divergence du residu",
                                            condition         = "EVENEMENT == 'DIVE_RESI' ",
                                            ACTION            = SIMP(fr              = "Actions possibles",
@@ -364,7 +364,7 @@ ADAPTATION  =FACT(fr                = "Parametres de l'evenement declencheur de 
                                            typ               = 'TXM',
                                            into              = ("FIXE","DELTA_GRANDEUR","ITER_NEWTON","IMPLEX"),
                                            defaut            = 'FIXE',
-                                           ), 
+                                           ),
 
                   b_mfixe           = BLOC(fr                = "Mode de calcul de dt+: fixe",
                                            condition         = "MODE_CALCUL_TPLUS == 'FIXE' ",
@@ -397,7 +397,6 @@ ADAPTATION  =FACT(fr                = "Parametres de l'evenement declencheur de 
                                                                     typ             = 'I',
                                                                     ),
                                            ),
-                  
 # les schemas pre-definis :
 #  abaqus :
 #      EVENEMENT       ='SEUIL'
@@ -432,24 +431,6 @@ ADAPTATION  =FACT(fr                = "Parametres de l'evenement declencheur de 
 
              ),
       ),
-#  b_adaplex  =   BLOC(condition = "METHODE == 'AUTO' and MODE_CALCUL_TPLUS == 'IMPLEX'",
-#
-#    ADAPTATION  =FACT(statut='d',max='**',
-#
-#     1 parametres de l'evenement declencheur
-#     ----------------------------------------
-#
-#      EVENEMENT       =SIMP(statut='f',typ='TXM',into=("TOUT_INST",),defaut="TOUT_INST",max=1 ),
-#
-#                           
-#     2 parametre du mode de calcul de dt+
-#     ----------------------------------------
-#
-#     MODE_CALCUL_TPLUS =SIMP(statut='f',typ='TXM',into=("IMPLEX",),defaut='IMPLEX',max=1,position='global' ),
-#
-#             ),
-#     ),
-
 # ----------------------------------------------------------------------------------------------------------------------------------
 
     INFO                  =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

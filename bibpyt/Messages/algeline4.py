@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline4 Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,8 +71,7 @@ Risques & conseils :
 
  Conseils :
   * Vous pouvez augmenter le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
-  * Vous pouvez aussi augmenter la fréquence de réactualisation du préconditionneur
-   (SOLVEUR/REAC_PRECOND).
+  * Vous pouvez aussi réactualiser plus souvent le préconditionneur en diminuant la valeur du mot-clé SOLVEUR/REAC_PRECOND.
   * Dans une commande non-linéaire (STAT_NON_LINE par exemple) vous pouvez aussi essayer de
     diminuer la précision demandée pour la convergence (SOLVEUR/RESI_RELA), mais c'est plus
     risqué car cela peut empêcher la convergence de l'algorithme non-linéaire.

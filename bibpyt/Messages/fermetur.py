@@ -1,8 +1,8 @@
-#@ MODIF fermetur Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fermetur Messages  DATE 02/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -105,6 +105,10 @@ Nom de la bibliothèque : %(k2)s
 
 Conseil : Vérifiez que l'environnement est correctement défini,
           notamment la variable LD_LIBRARY_PATH.
+"""),
+
+15 : _(u"""
+La bibliothèque "METIS" n'est pas installée dans cette version de Code_Aster.
 """),
 
 }

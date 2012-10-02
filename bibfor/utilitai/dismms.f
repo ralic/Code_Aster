@@ -1,6 +1,6 @@
       SUBROUTINE DISMMS(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +25,6 @@ C     ----------
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI
       CHARACTER*(*) NOMOBZ,REPKZ
-      CHARACTER*32  REPK
-      CHARACTER*19 NOMOB,SOLVEU
 C ----------------------------------------------------------------------
 C    IN:
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
@@ -39,18 +37,18 @@ C
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
+      CHARACTER*32 REPK
       CHARACTER*24 P1,P2,K24
-      CHARACTER*7 TYPMAT
-      CHARACTER*8 KBID
-C
-C
-C
+      CHARACTER*19 NOMOB ,SOLVEU,PRNO
+      INTEGER      JREFA ,JSLVK ,JPRNO,JDEEQ
+      CHARACTER*8  KBID  ,NOMGD
+      CHARACTER*7  TYPMAT
 C-----------------------------------------------------------------------
-      INTEGER I ,IALIME ,IBID ,IER ,JREFA ,JSLVK ,NBLIME
-
+      INTEGER      I,IBID,IER,NEC,IEQ,NEQ
+      INTEGER      IALIME,NBLIME,NBDDL,NBDDLC,NUMNO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
-      REPK  = ' '
+      REPK = ' '
       REPI  = 0
       IERD = 0
 
@@ -59,9 +57,9 @@ C-----------------------------------------------------------------------
 
 
       IF (QUESTI(1:9).EQ.'NUM_GD_SI') THEN
-         CALL DISMNU(QUESTI,ZK24(JREFA)(1:14),REPI,REPK,IERD)
+         CALL DISMNU(QUESTI,ZK24(JREFA-1+2)(1:14),REPI,REPK,IERD)
       ELSE IF (QUESTI(1:9).EQ.'NOM_GD_SI') THEN
-         CALL DISMNU('NOM_GD',ZK24(JREFA)(1:14),REPI,REPK,IERD)
+         CALL DISMNU('NOM_GD',ZK24(JREFA-1+2)(1:14),REPI,REPK,IERD)
 
       ELSE IF (QUESTI.EQ.'TYPE_MATRICE') THEN
          TYPMAT=ZK24(JREFA-1+9)
@@ -74,10 +72,10 @@ C-----------------------------------------------------------------------
          END IF
 
       ELSE IF (QUESTI.EQ.'NB_EQUA') THEN
-       CALL DISMNU(QUESTI,ZK24(JREFA-1+2)(1:14),REPI,REPK,IERD)
+         CALL DISMNU(QUESTI,ZK24(JREFA-1+2)(1:14),REPI,REPK,IERD)
 
       ELSE IF (QUESTI.EQ.'NOM_MODELE') THEN
-       CALL DISMNU(QUESTI,ZK24(JREFA-1+2)(1:14),REPI,REPK,IERD)
+         CALL DISMNU(QUESTI,ZK24(JREFA-1+2)(1:14),REPI,REPK,IERD)
 
       ELSE IF (QUESTI.EQ.'NOM_MAILLA') THEN
          REPK= ZK24(JREFA-1+1)(1:8)
@@ -85,12 +83,44 @@ C-----------------------------------------------------------------------
       ELSE IF (QUESTI.EQ.'NOM_NUME_DDL') THEN
          REPK= ZK24(JREFA-1+2)(1:14)
 
+      ELSE IF (QUESTI.EQ.'EXIS_LAGR') THEN
+         CALL JEEXIN(NOMOB//'.CONL',IER)
+         IF (IER.EQ.0) THEN
+            REPK = 'NON'
+         ELSE
+            REPK = 'OUI'
+         ENDIF
+
+      ELSE IF (QUESTI.EQ.'NB_DDL_NOEUD') THEN
+         PRNO = ZK24(JREFA-1+2)(1:14)//'.NUME'
+         CALL JEVEUO(JEXNUM(PRNO//'.PRNO',1),'L',JPRNO)
+         CALL JEVEUO(PRNO//'.DEEQ','L',JDEEQ)
+
+         CALL DISMNU('NOM_GD',ZK24(JREFA-1+2)(1:14),IBID,NOMGD,IERD)
+         IF (IERD.NE.0) GOTO 999
+         CALL DISMGD('NB_EC',NOMGD,NEC,KBID,IERD)
+         IF (IERD.NE.0) GOTO 999
+         CALL DISMNU('NB_EQUA',ZK24(JREFA-1+2)(1:14),NEQ,KBID,IERD)
+         IF (IERD.NE.0) GOTO 999
+
+         NBDDL  = ZI(JPRNO-1+2)
+         DO 100 IEQ = 2,NEQ
+            NUMNO  = ZI(JDEEQ-1+(IEQ  -1)* 2     +1)
+            NBDDLC = ZI(JPRNO-1+(NUMNO-1)*(2+NEC)+2)
+            IF (NBDDLC.NE.NBDDL) THEN
+               REPI  = -1
+               GOTO 200
+            ENDIF
+100      CONTINUE
+         REPI = NBDDL
+200      CONTINUE
+
       ELSE IF (QUESTI.EQ.'SOLVEUR') THEN
-       IF (ZK24(JREFA-1+7).NE.' ') THEN
-        REPK=ZK24(JREFA-1+7)
-       ELSE
-        CALL DISMNU(QUESTI,ZK24(JREFA-1+2)(1:14),REPI,REPK,IERD)
-       ENDIF
+         IF (ZK24(JREFA-1+7).NE.' ') THEN
+            REPK=ZK24(JREFA-1+7)
+         ELSE
+            CALL DISMNU(QUESTI,ZK24(JREFA-1+2)(1:14),REPI,REPK,IERD)
+         ENDIF
 
       ELSE IF (QUESTI.EQ.'METH_RESO'.OR.QUESTI.EQ.'RENUM_RESO') THEN
        IF (ZK24(JREFA-1+7).NE.' ') THEN
@@ -168,5 +198,6 @@ C-----------------------------------------------------------------------
       END IF
 C
       REPKZ = REPK
+999   CONTINUE
       CALL JEDEMA()
       END

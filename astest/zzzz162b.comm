@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,9 +163,11 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
                                ITER_GLOB_MAXI=10,),);
 
-U=CALC_ELEM(reuse =U,
-            RESULTAT=U,
-            OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
+U=CALC_CHAMP(reuse =U,
+             RESULTAT=U,
+             CONTRAINTE=('SIGM_ELNO',),
+             DEFORMATION=('EPSI_ELNO',),
+             VARI_INTERNE=('VARI_ELNO',),);
 
 DEFI_FICHIER(UNITE=71,
              FICHIER='MED_71',

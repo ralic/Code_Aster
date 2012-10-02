@@ -1,6 +1,6 @@
       SUBROUTINE OP0091()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -297,13 +297,16 @@ C-- CALCUL DES LA REPONSE AUX EFFORTS "INTERIEURS"
         CALL JEVEUO(ZK8(IBID)//'.MAEL_RAID_REFE','L',LBID)
         MRAID=ZK24(LBID+1)(1:8)
         CALL DISMOI('F','SOLVEUR',MRAID,'MATR_ASSE',IBID,SOLVEU,IBID)
-        CALL RESOUD(IMPED,' ',' ',SOLVEU,' ',' ',' ',
-     &            ' ',NBMOD,ZR(LSECME),CBID,.TRUE.)
+        CALL RESOUD(IMPED ,' '   ,SOLVEU,' '       ,NBMOD ,
+     &              ' '   ,' '   ,' '   ,ZR(LSECME),CBID  ,
+     &              ' '   ,.TRUE.,0     ,IRET      )
 C-- CALCUL DE LA REPONSE AUX DEPLACEMENTS D'INTERFACE
         DO 450 K1=1,NBSLA
           LBID=LSECME+2*NBEQ1*NBMOD
-          CALL RESOUD(IMPED,' ',' ',SOLVEU,' ',' ',' ',' ',NBMOD,
-     &                ZR(LBID+NBEQ1*NBMOD*(K1-1)),CBID,.TRUE.)
+          CALL RESOUD(IMPED ,' '   ,SOLVEU,' '   ,NBMOD ,
+     &                ' '   ,' '   ,' '   ,ZR(LBID+NBEQ1*NBMOD*(K1-1)),
+     &                CBID  ,' '   ,.TRUE.,0                          ,
+     &                IRET  )
   450   CONTINUE
 C-- "DEBLOQUAGE" DES DDL DE LAGRANGE ASSOCIES AUX INTERFACES DE LISINT
 C--   DANS LA MATRICE IMPED
@@ -317,8 +320,9 @@ C-- FACTORISATION DE LA MATRICE INTERFACE LIBRE
      &              -9999)
         IF (IRET.EQ.2) CALL U2MESK('F', 'ALGELINE4_37',1,IMPED)
 C-- CALCUL DE LA REPONSE AUX EFFORTS D'INTERFACE
-        CALL RESOUD(IMPED,' ',' ',SOLVEU,' ',' ',' ',' ',NBMOD,
-     &              ZR(LSECME+NBEQ1*NBMOD),CBID,.TRUE.)
+        CALL RESOUD(IMPED ,' '   ,SOLVEU,' '                   ,NBMOD ,
+     &              ' '   ,' '   ,' '   ,ZR(LSECME+NBEQ1*NBMOD),CBID  ,
+     &              ' '   ,.TRUE.,0     ,IRET                  )
 C-- RECOPIE DES MODES ETENDUS A LA SUITE DES CORRECTIONS A INTERF. LIBRE
         CALL JEDETC('V',IMPED,1)
         NBEXP=0

@@ -1,7 +1,7 @@
       LOGICAL FUNCTION ISCHAR(LISCHA,TYPCHA,SOUTYP,ICHAR )     
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -162,7 +162,9 @@ C
               LSIGM  = .TRUE. 
             ELSEIF (ZI(JINFCH+NCHAR+ICHA).EQ.10) THEN
               LNEUM  = .TRUE.
-              LELEM  = .TRUE.               
+              LELEM  = .TRUE.
+            ELSEIF (ZI(JINFCH+NCHAR+ICHA).EQ.20) THEN
+              LNEUM  = .TRUE.           
             ELSEIF (ZI(JINFCH+NCHAR+ICHA).EQ.0) THEN
               IF (ZI(JINFCH+2*NCHAR+2).NE.0) THEN
                 LNEUM = .TRUE.

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline3 Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,6 +93,14 @@ Contact méthode continue et pilotage sont incompatibles
 
   -> Conseil :
      Changez de solveur linéaire en utilisant le mot-clé METHODE de SOLVEUR.
+"""),
+
+97 : _(u"""
+  -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec un solveur itératif et le préconditionneur '%(k1)s'.
+     Le préconditionneur '%(k1)s' ne supporte pas les matrices issues de cette formulation du contact.
+
+  -> Conseil :
+     Changez de préconditionneur.
 """),
 
 

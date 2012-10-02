@@ -8,7 +8,7 @@
       CHARACTER*(*)       MATE, SOLVEZ
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -223,8 +223,9 @@ C
 
 C------------- RESOLUTION  DU LAPLACIEN EN 2D-----------------------
 
-        CALL RESOUD(MA,MAPREC,VECSO1,SOLVEU,' ','V',CHSOL,CRITER,0,RBID,
-     &              CBID,.TRUE.)
+        CALL RESOUD(MA    ,MAPREC,SOLVEU,' '   ,0     ,
+     &              VECSO1,CHSOL ,'V'   ,RBID  ,CBID  ,
+     &              CRITER,.TRUE.,0     ,IRET  )
         CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO1(1:19),.FALSE.)
         CALL DETRSD('CHAMP_GD',CHSOL)
 

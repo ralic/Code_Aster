@@ -1,6 +1,7 @@
-      SUBROUTINE NMCSOL(NBEXCI,LVISS)
+      SUBROUTINE NMCSOL(LISCHA,SDDYNA,LVISS )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,44 +18,83 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-      IMPLICIT NONE
 C
-C       NMCSOL -- DETERMINE LA PRESENCE DE CHARGES FORCE_SOL
+      IMPLICIT     NONE
+      INCLUDE      'jeveux.h'
+      LOGICAL      LVISS
+      CHARACTER*19 LISCHA,SDDYNA
 C
-C -------------------------------------------------------
-C    NBEXCI       - IN     NB CHARGES EXCIT
-C    LVISS        - OUT    - LOGIQUE
-C                - JXVAR -      -   LA  CHARGE EST ENRICHIE
-C                                   DU VECTEUR ASSEMBLE DONT LE NOM
-C                                   EST STOCKE DANS L'OBJET
-C                                   CHAR//'CHME.VEASS'
-C -------------------------------------------------------
+C ----------------------------------------------------------------------
 C
-C.========================= DEBUT DES DECLARATIONS ====================
+C ROUTINE MECA_NON_LINE (INITIALISATION)
 C
-C -----  ARGUMENTS
-      INCLUDE 'jeveux.h'
-      INTEGER       NBEXCI
-      LOGICAL       LVISS
-C ------ VARIABLES LOCALES
-      CHARACTER*8   CHARGE
-      INTEGER       IARG,IOCC,IRET,NC
+C DETERMINE LA PRESENCE DE CHARGES FORCE_SOL
 C
-C.========================= DEBUT DU CODE EXECUTABLE ==================
+C ----------------------------------------------------------------------
+C
+C
+C IN  LISCHA : SD LISTE DES CHARGES
+C IN  SDDYNA : SD DYNAMIQUE
+C OUT LVISS  : .TRUE SI PRESENCE D'UNE CHARGE FORCE_SOL
+C
+C ----------------------------------------------------------------------
+C
+      CHARACTER*8  CNFSOL
+      CHARACTER*24 CHARGE,INFCHA
+      INTEGER      JALICH,JINFCH
+      INTEGER      NCHAR,ICHAR,NFSOL
+      CHARACTER*24 NCHSOL
+      INTEGER      JCHSOL
+      CHARACTER*15 SDEXSO
+      CHARACTER*19 SDEXSZ
+C
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      LVISS=.FALSE.
-      DO 1 IOCC=1,NBEXCI
-        CALL GETVID('EXCIT','CHARGE',IOCC,IARG,1,CHARGE,NC)
-        CALL JEEXIN(CHARGE//'.CHME.VEISS',IRET)
-        IF (IRET.NE.0) THEN
-          LVISS=.TRUE.
-          GOTO 2
-        ENDIF          
- 1    CONTINUE
- 2    CONTINUE
+C --- INITIALISATIONS
+C
+      LVISS  = .FALSE.
+      NFSOL  = 0
+      CNFSOL = ' '
+      CALL NDYNKK(SDDYNA,'SDEXSO',SDEXSZ)
+      SDEXSO = SDEXSZ(1:15)
+C
+C --- ACCES SD LISTE_CHARGES
+C
+      CHARGE = LISCHA(1:19)//'.LCHA'
+      INFCHA = LISCHA(1:19)//'.INFC'
+      CALL JEVEUO(CHARGE,'E',JALICH)
+      CALL JEVEUO(INFCHA,'E',JINFCH)
+      NCHAR  = ZI(JINFCH)
+C
+C --- DETECTION CHARGE
+C
+      DO 30 ICHAR = 1,NCHAR
+        IF (ZI(JINFCH+NCHAR+ICHAR).EQ.20) THEN
+          NFSOL = NFSOL + 1
+          CNFSOL = ZK24(JALICH+ICHAR-1)(1:8)
+        END IF
+   30 CONTINUE
+C
+C --- ACTIVATION CHARGE
+C
+      IF (NFSOL.EQ.0) THEN
+        LVISS  = .FALSE.
+      ELSEIF (NFSOL.EQ.1) THEN
+        LVISS  = .TRUE.
+      ELSE
+        CALL U2MESS('F','DYNAMIQUE_9')
+      ENDIF
+C
+C --- NOM DE _LA_CHARGE
+C
+      IF (LVISS) THEN
+        NCHSOL = SDEXSO(1:15)//'.CHAR'
+        CALL WKVECT(NCHSOL,'V V K8',1,JCHSOL)
+        ZK8(JCHSOL) = CNFSOL
+      ENDIF
 C
       CALL JEDEMA()
-C.============================ FIN DE LA ROUTINE ======================
+C
       END

@@ -11,7 +11,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     SAISIE ET VERIFICATION DE LA COHERENCE DES DONNEES MECANIQUES
 C     DU PROBLEME
-C     COPIE DE MEDOME POUR LES COMMANDES CALC_ELEM, CALC_CHAM_ELEM,
-C                                        CALC_G
+C     COPIE DE MEDOME
 C ----------------------------------------------------------------------
 C OUT : MODELE : NOM DU MODELE
 C OUT : MATE   : CHAMP MATERIAU
@@ -70,8 +69,7 @@ C              12345678
 C
       CALL GETRES(K8B,CONCEP,NOMCMD)
 C
-      IF ( (NOMCMD.EQ.'CALC_ELEM'     ).OR.
-     &     (NOMCMD.EQ.'CALC_CHAMP'    ).OR.
+      IF ( (NOMCMD.EQ.'CALC_CHAMP'    ).OR.
      &     (NOMCMD.EQ.'CALC_ERREUR'   ).OR.
      &     (NOMCMD.EQ.'CALC_META  '   ).OR.
      &     (NOMCMD.EQ.'POST_ELEM'     ).OR.

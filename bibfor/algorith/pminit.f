@@ -6,7 +6,7 @@
      &                  OPTION, NOMVI, NBVITA, NBVRCM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,7 +151,7 @@ C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
              NOMPAR(1+NCMP+6+2+I)(1:1)='V'
              CALL CODENT(I,'G',NOMPAR(1+NCMP+6+2+I)(2:16))
   11      CONTINUE
-          IF (IMPTGT.EQ.1) THEN          
+          IF (IMPTGT.EQ.1) THEN
              DO 133 I=1,6
              DO 133 J=1,6
                 K=1+NCMP+6+2+NBVARI+6*(I-1)+J
@@ -261,7 +261,7 @@ C     ----------------------------------------
             IMES(2)=NBVARI
             CALL U2MESG('F','COMPOR1_72',0,' ',2,IMES,0,0.D0)
          ENDIF
-      ENDIF      
+      ENDIF
       KPG=1
       KSP=1
       CALL R8INIR(7, 0.D0, REP, 1)
@@ -405,7 +405,7 @@ C     CREATION SD DISCRETISATION
 C     ----------------------------------------
       CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LISINS,N1)
       INSTIN = R8VIDE()
-      CALL NMCRLI(FONACT,INSTIN,LISINS,SDDISC)
+      CALL NMCRLI(INSTIN,LISINS,SDDISC)
 C     ----------------------------------------
 C     LECTURE DE NEWTON
 C     ----------------------------------------
@@ -433,12 +433,12 @@ C     LECTURE DES PARAMETRES DE CONVERGENCE
 C     ----------------------------------------
       CALL NMDOCN(K24BID,PARCRI,PARCON)
 C     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
-      CALL NMCRSU(SDDISC,LISINS,PARCRI,FONACT,SOLVEU)      
-C     INSTANT INITIAL      
-      NUMINS=0 
-      INSTAM = DIINST(SDDISC, NUMINS) 
+      CALL NMCRSU(SDDISC,LISINS,PARCRI,FONACT,SOLVEU)
+C     INSTANT INITIAL
+      NUMINS=0
+      INSTAM = DIINST(SDDISC, NUMINS)
 C     CALCUL DES VARIABLES DE COMMANDE
-      CALL VRCINP(NBVRCM,2, INSTAM,INSTAM )      
+      CALL VRCINP(NBVRCM,2, INSTAM,INSTAM )
 C     ----------------------------------------
 C     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
 C     ----------------------------------------
@@ -449,7 +449,7 @@ C     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
       DO 67 J=4,6
         KEL(J,J) = KEL(J,J)*2.D0
         COEF=MAX(COEF,KEL(J,J))
- 67   CONTINUE 
+ 67   CONTINUE
       IF (IC1C2.EQ.1) THEN
          COEF=1.D0
       ENDIF

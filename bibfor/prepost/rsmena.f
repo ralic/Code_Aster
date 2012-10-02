@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -152,7 +152,6 @@ C     2.3 ON DETRUIT LES  LISTE_CHARGE NON REFERENCES :
 
 
 C     3. LES LIGREL REFERENCES PAR LES CHAM_ELEM
-C        (CALC_ELEM + GROUP_MA)
 C     ------------------------------
       CALL JEDETR('&&RSMENA.DICO')
       CALL JEDETR('&&RSMENA.COCHE')

@@ -1,4 +1,4 @@
-#@ MODIF E_Exception Execution  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Exception Execution  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,6 +128,9 @@ class InstabiliteError(error):
 class InterpenetrationError(error):
     """Echec lors de l'adaptation du coefficient de pénalisation"""
 
+class ResolutionError(error):
+    """Échec lors de la résolution du système linéaire"""
+
 class ExceptionsStore(object):
     """Class to store the exceptions of 'aster' module.
     """
@@ -181,6 +184,7 @@ ST.register(32, "BoucleContactError", BoucleContactError)
 ST.register(33, "CollisionError", CollisionError)
 ST.register(34, "InstabiliteError", InstabiliteError)
 ST.register(35, "InterpenetrationError", InterpenetrationError)
+ST.register(36, "ResolutionError", ResolutionError)
 
 def add_to_dict_module(dictmodule):
     """Wrapper to ExceptionsStore method to simplify call from astermodule."""

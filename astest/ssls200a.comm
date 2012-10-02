@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE PELLET J.PELLET
 # ssls200a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -164,19 +164,19 @@ MESTAT=MECA_STATIQUE(MODELE=MO,
                      EXCIT=(_F(CHARGE=CHPES,),
                             _F(CHARGE=CHME2,),),);
 
-MESTAT=CALC_ELEM(reuse =MESTAT,
-                 RESULTAT=MESTAT,
-                 OPTION=('EPSI_ELGA','SIGM_ELNO','EPSI_ELNO','EFGE_ELNO',),);
-
+MESTAT=CALC_CHAMP(reuse =MESTAT,
+                  RESULTAT=MESTAT,
+                  CONTRAINTE=('SIGM_ELNO','EFGE_ELNO',),
+                  DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),);
 
 MESTAT2=POST_CHAMP(RESULTAT=MESTAT,
                    EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO',),
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='MOY',),);
-MESTAT=CALC_ELEM(reuse =MESTAT,
-                 RESULTAT=MESTAT,
-                 MAILLE=('Q1','T1','Q2','Q3','T3','T4'),
-                 OPTION=('DEGE_ELNO','DEGE_ELGA',));
+MESTAT=CALC_CHAMP(reuse =MESTAT,
+                  RESULTAT=MESTAT,
+                  MAILLE=('Q1','T1','Q2','Q3','T3','T4'),
+                  DEFORMATION=('DEGE_ELNO','DEGE_ELGA',));
 
 MESTAT2=CALC_CHAMP(reuse =MESTAT2,
                RESULTAT=MESTAT2,

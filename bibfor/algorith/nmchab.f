@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 01/10/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -369,9 +369,11 @@ C
 C ---   DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES :
 C       --------------------------------------------------------
          DO 120 I = 1, NDIMSI
-           DEPSP(I) =  UN/DENOMI*(  1.5D0*DP*SIGEDV(I)
+            DEPSP(I) =  UN/DENOMI*(  1.5D0*DP*SIGEDV(I)
      &                   - MP*DP*ALFAM(I)- M2P*DP*ALFA2M(I))
-           EPSPP(I)=EPSPM(I)+DEPSP(I)
+            IF (MEMO.EQ.1) THEN
+               EPSPP(I)=EPSPM(I)+DEPSP(I)
+            ENDIF
   120    CONTINUE
 C
          DO 110 I = 1, NDIMSI

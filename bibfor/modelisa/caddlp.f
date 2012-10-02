@@ -5,7 +5,7 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 02/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -219,7 +219,7 @@ C           ----------------------------------------------
      &                    VALIMC, MOTCLE, ZR(JDIREC+3*(INO-1)),
      &                    ZI(JDIMEN+INO-1), MOD,LISREL,
      &                    ZK8(INOM), NBCMP, ZI(JCOMPT), .FALSE., IBID,
-     &                    IBID, K19BID, K19BID, K19BID)
+     &                    IBID, K19BID, K19BID, K19BID, K19BID)
 110      CONTINUE
          DO 111,K=1,NDDLA
             IF (ZI(JCOMPT-1+K) .EQ. 0 )

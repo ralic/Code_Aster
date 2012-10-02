@@ -1,7 +1,7 @@
       SUBROUTINE NMRLDB(LMAT,RESU,NBSM,CNCINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,38 +24,39 @@ C
       INTEGER      LMAT,NBSM
       REAL*8       RESU(*)
       CHARACTER*19 CNCINE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT
 C
 C ROUTINE DE CALCUL DE RESU = MAT-1(RESU,CNCINE)  NON LINEAIRE
-C 
+C
 C ----------------------------------------------------------------------
-C      
+C
 C
 C IN  LMAT   : DESCRIPTEUR DE LA MATR_ASSE
 C IN  CNCINE : NOM DU CHARGEMENT CINEMATIQUE
 C I/O RESU   : .VALE DU CHAM_NO RESULTAT EN OUT , SMB EN IN
 C
 C
-C 
+C
 C ----------------------------------------------------------------------
 C
       CHARACTER*19 SOLVEU,MATR
       COMPLEX*16   C16BID
+      INTEGER      IRET
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()      
+      CALL JEMARQ()
 C
       SOLVEU = '&&OP0070.SOLVEUR'
       MATR   = ZK24(ZI(LMAT+1))
 
-      CALL RESOUD(MATR  ,' ',' ',SOLVEU,CNCINE,
-     &            'V'   ,' ',' ',NBSM  ,RESU  ,
-     &            C16BID,.TRUE.)
-C 
+      CALL RESOUD(MATR  ,' '   ,SOLVEU,CNCINE,NBSM  ,
+     &            ' '   ,' '   ,'V'   ,RESU  ,C16BID,
+     &            ' '   ,.TRUE.,0     ,IRET  )
+C
       CALL JEDEMA()
 
       END

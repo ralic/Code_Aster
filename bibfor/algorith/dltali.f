@@ -9,7 +9,7 @@
      &                    BASENO, TABWK ,FORCE0,FORCE1)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,6 +91,7 @@ C
 
       INTEGER      IFORC0,IFORC1
       CHARACTER*24 CINE
+      INTEGER      IRET
 C
 C     -----------------------------------------------------------------
 C
@@ -107,6 +108,7 @@ C 1.2. ==> NOM DES STRUCTURES DE TRAVAIL
 C
       CHSOL  = '&&DLTALI.SOLUTION'
       CINE   = ' '
+      MAPREI = ' '
 
 C====
 C 2. L'INITIALISATION
@@ -153,8 +155,9 @@ C                                       ..          .
 C 5.3. ==> RESOLUTION DU PROBLEME:  M.X  =  F - C.X - K.X
 C                                       ..          .
 
-         CALL RESOUD ( MATREI, MAPREI, FORCE1, SOLVEU, CINE,
-     &                 'V', CHSOL, CRITER,0,RBID,CBID,.TRUE.)
+         CALL RESOUD (MATREI,MAPREI,SOLVEU,CINE  ,0     ,
+     &                FORCE1,CHSOL ,'V'   ,RBID  ,CBID  ,
+     &                CRITER,.TRUE.,0     ,IRET  )
 C
 C 5.4. ==> SAUVEGARDE DU CHAMP SOLUTION CHSOL DANS VDEPL
 C

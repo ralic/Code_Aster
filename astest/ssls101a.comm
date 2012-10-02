@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 # ssls101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,25 +74,27 @@ RESU=MECA_STATIQUE(     MODELE=MODEL,
                          EXCIT=_F(  CHARGE = CHARGE),
                              )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
-           OPTION=( 'EFGE_ELNO','EPOT_ELEM', )
-                             )
+RESU=CALC_CHAMP(reuse=RESU,
+                RESULTAT=RESU,
+                CONTRAINTE=('EFGE_ELNO',),);
 
 #
 #--------------------------------------------------------
 #
 # TEST DE L'OPTION SIEQ_ELNO EN ELASTICITE
 #
-RESU=CALC_ELEM( reuse=RESU, RESULTAT=RESU,
-           OPTION='SIGM_ELNO',)
+RESU=CALC_CHAMP(reuse=RESU,
+                RESULTAT=RESU,
+                CONTRAINTE='SIGM_ELNO',);
 
 RESU2=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM=('SIEF_ELGA','SIGM_ELNO',),
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
 #
-RESU2=CALC_ELEM( reuse=RESU2, RESULTAT=RESU2,
-           OPTION='SIEQ_ELNO',    )
+RESU2=CALC_CHAMP(reuse=RESU2,
+                 RESULTAT=RESU2,
+                 CRITERES='SIEQ_ELNO',);
 
 #
 SVM=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
@@ -457,30 +459,33 @@ STAT_NON_LINE( reuse=U3,
                        CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6)
               )
 
-CALC_ELEM( reuse=U3, RESULTAT=U3,
-           OPTION=('EFGE_ELNO',  'VARI_ELNO',),
-              )
+U3=CALC_CHAMP(reuse=U3,
+              RESULTAT=U3,
+              CONTRAINTE=('EFGE_ELNO',),
+              VARI_INTERNE=('VARI_ELNO',),);
 
 #--------------------------------------------------------
 #
 # TEST DE L'OPTION SIEQ_ELNO EN PLASTICITE
 
-CALC_ELEM( reuse=U3,  RESULTAT=U3,
-           NUME_ORDRE=4,
-           OPTION='SIGM_ELNO',)
+U3=CALC_CHAMP(reuse=U3,
+              RESULTAT=U3,
+              NUME_ORDRE=4,
+              CONTRAINTE='SIGM_ELNO',)
 
 U3POS=POST_CHAMP(RESULTAT=U3,
                  NUME_ORDRE=4,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
-U3=CALC_ELEM( reuse=U3, RESULTAT=U3POS,
-             NUME_ORDRE=4,
-             OPTION='SIEQ_ELNO'  )
+U3POS=CALC_CHAMP(reuse=U3POS,
+                 RESULTAT=U3POS,
+                 NUME_ORDRE=4,
+                 CRITERES='SIEQ_ELNO',);
 #
 SVMP=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
                                   INTITULE = 'SIG_VM_P',
-                                  RESULTAT = U3,
+                                  RESULTAT = U3POS,
                                   NOM_CHAM = 'SIEQ_ELNO',
                                   NOM_CMP = 'VMIS',
                                   OPERATION = 'EXTRACTION')      )
@@ -524,23 +529,13 @@ TEST_RESU(RESU=(
               NOEUD = 'E',          NOM_CMP = 'DZ',    VALE = -489.727))
           )
 #--------------------------------------------------------------------
-U3=CALC_CHAMP(reuse = U3,
-               FORCE='FORC_NODA',
-               PRECISION=1.E-3,
-               RESULTAT=U3,
+U3=CALC_CHAMP(reuse=U3,
+              FORCE='FORC_NODA',
+              RESULTAT=U3,);
 
-
-               );
-
-U3 =CALC_ELEM( reuse      = U3,
-              OPTION     = (
-                            'ENEL_ELGA',
-                            'ENEL_ELNO',
-              ),
-              RESULTAT   = U3,
-
-
-              )
+U3=CALC_CHAMP(reuse=U3,
+              RESULTAT=U3,
+              ENERGIE=('ENEL_ELGA','ENEL_ELNO',),);
 
 TRAV = POST_ELEM(
   RESULTAT = U3,

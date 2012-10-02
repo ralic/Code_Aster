@@ -1,8 +1,8 @@
-#@ MODIF charges Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF charges Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,10 +66,33 @@ La charge <%(k1)s> ne peut pas utiliser de fonction multiplicatrice FONC_MULT
 """),
 
 39 : _(u"""
-On ne peut pas piloter en l'absence de forces de type "FIXE_PILO"
+On ne peut pas piloter en l'absence de forces de type FIXE_PILO.
 """),
 
 40 : _(u"""
 On ne peut piloter plus d'une charge.
 """),
+
+50 : _(u"""
+Le chargement FORCE_SOL n'est utilisable qu'en dynamique.
+"""),
+
+51 : _(u"""
+Le chargement FORCE_SOL ne peut pas être de type suiveur
+"""),
+
+52 : _(u"""
+Le chargement FORCE_SOL ne peut pas être de type Dirichlet différentiel.
+"""),
+
+53 : _(u"""
+Le chargement FORCE_SOL ne peut pas être une fonction.
+"""),
+
+54 : _(u"""
+Le chargement FORCE_SOL ne doit pas avoir de fonction multiplicatrice.
+"""),
+
+
+
 }

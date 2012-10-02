@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 # zzzz112a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,10 +131,10 @@ RESU2=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
                            LIST_INST=L_INST
                          )
 
-RESU2=CALC_ELEM( reuse=RESU2,           RESULTAT=RESU2,
-                          OPTION='SIGM_ELNO',
-                       LIST_INST=L_INST
-                   )
+RESU2=CALC_CHAMP(reuse=RESU2,
+                 RESULTAT=RESU2,
+                 LIST_INST=L_INST,
+                 CONTRAINTE=('SIGM_ELNO',),);
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
@@ -203,10 +203,10 @@ RESU3=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
                            LIST_INST=L_INST2
                          )
 
-RESU3=CALC_ELEM( reuse=RESU3,           RESULTAT=RESU3,
-                          OPTION='SIGM_ELNO',
-                       LIST_INST=L_INST2
-                   )
+RESU3=CALC_CHAMP(reuse=RESU3,
+                 RESULTAT=RESU3,
+                 LIST_INST=L_INST2,
+                 CONTRAINTE=('SIGM_ELNO',),);
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER

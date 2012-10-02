@@ -7,7 +7,7 @@
       CHARACTER*19 SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,11 +49,12 @@ C IN  SOLVEU : K19: SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C     ------------------------------------------------------------------
 
 
-      INTEGER I
-      REAL*8  ZERO
-      COMPLEX*16  CBID
+      INTEGER      I
+      REAL*8       ZERO
+      COMPLEX*16   CBID
       CHARACTER*1  KBID
       CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
+      INTEGER      IRET
 C     -----------------------------------------------------------------
 C INIT. OBJETS ASTER
 C-----------------------------------------------------------------------
@@ -94,8 +95,9 @@ C        --- DECALAGE COMPLEXE ---
             U4(I) = U1(I) + SR*U3(I) + U2(I)
 30       CONTINUE
 C
-         CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
-     &               CRITER,1,U4,CBID,.FALSE.)
+         CALL RESOUD(MATASS,K19BID ,SOLVEU,CHCINE,1     ,
+     &               K19BID,K19BID ,KBID  ,U4    ,CBID  ,
+     &               CRITER,.FALSE.,0     ,IRET  )
          CALL MRMULT('ZERO',LAMOR,U4,ZH,1,.FALSE.)
          CALL MRMULT('ZERO',LMASSE,U4,ZB,1,.FALSE.)
 C

@@ -70,18 +70,12 @@ EVOL=STAT_NON_LINE(CHAM_MATER=CHMAT,
                             FONC_MULT=RAMPE,),
                    );
 
-EVOL=CALC_ELEM(reuse =EVOL,
+EVOL=CALC_CHAMP(reuse =EVOL,
                RESULTAT=EVOL,
                CHAM_MATER=CHMAT,
                MODELE=MO,
-               OPTION=('SIEF_ELNO','VARI_ELNO'),);
-
-EVOL=CALC_ELEM(reuse =EVOL,
-               RESULTAT=EVOL,
-               CHAM_MATER=CHMAT,
-               MODELE=MO,
-               OPTION=('SIEF_ELNO','VARI_ELNO'),
-               );
+               CONTRAINTE=('SIEF_ELNO',),
+               VARI_INTERNE=('VARI_ELNO',),);
 
 REPONSE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                        INTITULE = 'SIGYY',

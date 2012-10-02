@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 # zzzz112c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,11 +154,13 @@ TEST_RESU(
 #----------------------------------------------------------------------------
 # Validation EFGE_ELGA pour les elements de tuyau apres MECA_STATIQUE:
 #----------------------------------------------------------------------
-RESU2=CALC_ELEM( reuse= RESU2, RESULTAT= RESU2, OPTION=('EFGE_ELGA',), )
+RESU2=CALC_CHAMP( reuse= RESU2, RESULTAT= RESU2, CONTRAINTE=('EFGE_ELGA',), )
+
 TEST_RESU( RESU= _F( RESULTAT = RESU2, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
              MAILLE = 'M102', POINT = 2, NOM_CMP = 'N', VALE =  2.4522370015433E-03 , REFERENCE = 'NON_REGRESSION'))
 
 RESU2B=CALC_CHAMP(RESULTAT= RESU2, CONTRAINTE=('EFGE_ELGA',), )
+
 TEST_RESU( RESU= _F( RESULTAT = RESU2B, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
              MAILLE = 'M102', POINT = 2, NOM_CMP = 'N', VALE =  2.4522370015433E-03 , REFERENCE = 'NON_REGRESSION'))
 #----------------------------------------------------------------------------

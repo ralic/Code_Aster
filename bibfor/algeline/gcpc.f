@@ -1,8 +1,10 @@
-      SUBROUTINE GCPC(M,IN,IP,AC,INPC,IPPC,ACPC,BF,XP,R,RR,P,IREP,
-     &                NITER,EPSI,CRITER,
-     &                SOLVEU,MATAS,SMBR)
+      SUBROUTINE GCPC(M     ,IN    ,IP    ,AC    ,INPC  ,
+     &                IPPC  ,ACPC  ,BF    ,XP    ,R     ,
+     &                RR    ,P     ,IREP  ,NITER ,EPSI  ,
+     &                CRITER,SOLVEU,MATAS ,SMBR  ,ISTOP ,
+     &                IRET  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_4
+C TOLE CRP_4 CRP_21
 C    -------------------------------------------------------------------
 C     RESOLUTION D'UN SYSTEME LINEAIRE SYMETRIQUE PAR UNE METHODE DE
 C     GRADIENT CONJUGUE PRECONDITIONNE
@@ -34,17 +36,25 @@ C    . INPC          -->   IDEM IN POUR MATRICE DE PRECOND.
 C    . IPPC          -->   IDEM IP POUR MATRICE DE PRECOND.
 C    . ACPC          -->   IDEM AC POUR MATRICE DE PRECOND.
 C    . BF            -->   VECTEUR SECOND MEMBRE
+C    . XP           <-->   VECTEUR SOLUTION
 C    . R            <--    VECTEUR RESIDU
 C    . RR           <--    DIRECTION DE DESCENTE AVANT CONJUGAISON
 C    . P            <--    DIRECTION DE DESCENTE APRES CONJUGAISON
-C    . XP           <-->   VECTEUR SOLUTION
 C    -------------------------------------------------------------------
 C    . IREP          -->    0  XP INITIAL MIS A ZERO
 C                           1  XP INITIAL DONNEE DE GCPC
-C     ----------------- ------------------------------------------------
+C    -------------------------------------------------------------------
+C    . NITER         -->   NOMBRE MAXIMUM D'ITERATIONS
+C    . EPSI          -->   CRITERE DE CONVERGENCE
+C    . CRITER        -->   SD_CRITER (CRITERES DE CONVERGENCE)
+C    -------------------------------------------------------------------
+C    . SOLVEU        -->   SD_SOLVEUR (POUR LDLT_SP)
+C    . MATASS        -->   MATRICE ASSEMBLEE DU SYSTEME (POUR LDLT_SP)
+C    . SMBR          -->   VECTEUR SECOND MEMBRE (POUR LDLT_SP)
+C     ------------------------------------------------------------------
 C     - PRECAUTIONS D'EMPLOI:  XP PEUT ETRE EVENTUELLEMENT CONFONDU
 C                              AVEC BF SI MEME ARGUMENT
-C     ----------------- ------------------------------------------------
+C     ------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
@@ -53,16 +63,15 @@ C DECLARATION PARAMETRES D'APPELS
       INTEGER*4    IP(*),IPPC(*)
       INTEGER      M,IN(M),INPC(M),IREP,NITER
       REAL*8       AC(M),ACPC(M),BF(M),XP(M),R(M),RR(M),P(M),EPSI
-      CHARACTER*19 CRITER
-      CHARACTER*19 MATAS
-      CHARACTER*19 SMBR,SOLVEU
+      CHARACTER*19 CRITER,MATAS,SOLVEU,SMBR
+      INTEGER      ISTOP ,IRET
 
 
 C DECLARATION VARIABLES LOCALES
 
       REAL*8       ZERO,BNORM,DNRM2,ANORM,EPSIX,ANORMX,RRRI,GAMA,RRRIM1
       REAL*8       PARAAF,ANORXX,RAU,DDOT,VALR(2)
-      INTEGER      IFM,NIV,I,JCRI,JCRR,JCRK,ITER,IRET,VALI
+      INTEGER      IFM,NIV,JCRI,JCRR,JCRK,ITER,IER,VALI
       INTEGER      JSLVK,JSLVI,JSMBR
       CHARACTER*24 PRECON,SOLVBD
       COMPLEX*16   CBID
@@ -80,6 +89,7 @@ C     (SI ON GAGNE PARAAF * 100%)
       PARAAF = 0.1D0
 
 C-----INITS DIVERS
+      IRET = 0
       ZERO = 0.D0
       CALL ASSERT(IREP.EQ.0 .OR. IREP.EQ.1)
 
@@ -120,8 +130,8 @@ C       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
         IF (NIV.EQ.2) WRITE (IFM,1020) ANORM,EPSIX,EPSI
       END IF
 
-      CALL JEEXIN(CRITER//'.CRTI',IRET)
-      IF (IRET.EQ.0) THEN
+      CALL JEEXIN(CRITER//'.CRTI',IER)
+      IF (IER.EQ.0) THEN
         IF (CRITER.NE.' ') THEN
           CALL WKVECT(CRITER//'.CRTI','V V I',1,JCRI)
           CALL WKVECT(CRITER//'.CRTR','V V R8',1,JCRR)
@@ -151,16 +161,12 @@ C                                                  ZK <--- RR()
           CALL JEVEUO(SMBR//'.VALE','E',JSMBR)
           CALL DCOPY(M,R,1,ZR(JSMBR),1)
 C         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
-          CALL AMUMPH('RESOUD',SOLVBD,MATAS,ZR(JSMBR),CBID,' ',1,IRET,
+          CALL AMUMPH('RESOUD',SOLVBD,MATAS,ZR(JSMBR),CBID,' ',1,IER   ,
      &                .TRUE.)
           CALL JEVEUO(SMBR//'.VALE','L',JSMBR)
           CALL DCOPY(M,ZR(JSMBR),1,RR,1)
-         ELSE
-           CALL ASSERT(.FALSE.)
-C        ELSE IF (PRECON.EQ.'DIAG') THEN
-C          DO 40 I = 1,M
-C            RR(I) = R(I)*ACPC(I)
-C   40     CONTINUE
+        ELSE
+          CALL ASSERT(.FALSE.)
         END IF
 
 C                                             RRRI <--- (RK,ZK)
@@ -217,7 +223,13 @@ C        ---  NON CONVERGENCE
       IF (PRECON.EQ.'LDLT_INC') THEN
         CALL U2MESG('F', 'ALGELINE4_3',0,' ',1,VALI,2,VALR)
       ELSE IF (PRECON.EQ.'LDLT_SP') THEN
-        CALL U2MESG('F', 'ALGELINE4_6',0,' ',1,VALI,2,VALR)
+        IF (ISTOP.EQ.0) THEN
+          CALL U2MESG('F', 'ALGELINE4_6',0,' ',1,VALI,2,VALR)
+        ELSEIF (ISTOP.EQ.2) THEN
+          IRET = 1
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
       END IF
 C    -----------
  1010 FORMAT (/'   * GCPC   NORME DU RESIDU =',D11.4,

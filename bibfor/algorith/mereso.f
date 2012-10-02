@@ -5,7 +5,7 @@
      &                    BASE, COMPOR )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,8 +118,9 @@ C====
 C 4. RESOLUTION AVEC VECASS COMME SECOND MEMBRE
 C====
 
-      CALL RESOUD ( MATASS, MAPREC, VECASS, SOLVEU, CNCHCI,
-     &              'V', CHSOL, CRITER,0,RBID,CBID,.TRUE.)
+      CALL RESOUD (MATASS,MAPREC,SOLVEU,CNCHCI,0     ,
+     &             VECASS,CHSOL ,'V'   ,RBID  ,CBID  ,
+     &             CRITER,.TRUE.,0     ,IRET  )
 
 C 5.1. ==> NETTOYAGE DU CHAMP CINEMATIQUE CNCHCI QUI EST RECREE A
 C          CHAQUE FOIS

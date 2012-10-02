@@ -1,5 +1,5 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
-# TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_CHAMP)
 # szlz110a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

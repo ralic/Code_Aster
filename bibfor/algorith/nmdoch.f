@@ -1,7 +1,7 @@
       SUBROUTINE NMDOCH(LISCHA,IEXCIT,EXCIT )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -416,6 +416,35 @@ C
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
               CALL U2MESK('F','CHARGES_34',1,NOMCHA(1:8))
             END IF
+          ENDIF
+          IF (INFOCH.NE.'RIEN') THEN
+            NBINFO = NBINFO + 1
+            CALL ASSERT(NBINFO.LT.NBINMX)
+            LISINF(NBINFO) = INFOCH
+          ENDIF
+C
+C ------- CHARGE DE TYPE EXCIT_SOL
+C
+          INFOCH = 'RIEN'
+          LCHIN = LIGRCH(1:13)//'.VEISS'
+          CALL JEEXIN(LCHIN,IRET)
+          IF (IRET.NE.0) THEN
+            IF (NOMCMD.EQ.'STAT_NON_LINE') THEN
+              CALL U2MESK('F','CHARGES_50',1,NOMCHA(1:8))
+            ENDIF
+            IF (TYPCHA.EQ.'SUIV') THEN
+              CALL U2MESK('F','CHARGES_51',1,NOMCHA(1:8))
+            END IF
+            IF (TYPCHA.EQ.'DIDI') THEN
+              CALL U2MESK('F','CHARGES_52',1,NOMCHA(1:8))
+            END IF
+            IF (AFFCHA(5:6).EQ.'_F') THEN
+              CALL U2MESK('F','CHARGES_53',1,NOMCHA(1:8))
+            ENDIF
+            IF (NOMFCT.NE.FCTCSR) THEN
+              CALL U2MESK('F','CHARGES_54',1,NOMCHA(1:8))
+            ENDIF
+            INFOCH = 'EXCIT_SOL'
           ENDIF
           IF (INFOCH.NE.'RIEN') THEN
             NBINFO = NBINFO + 1

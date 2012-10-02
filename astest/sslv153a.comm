@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE INDICATEUR D'ERREUR MAILLES VOLUMIQUES ET FONCTIONS
 # sslv153a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
@@ -118,10 +118,9 @@ SOLUPR=MECA_STATIQUE(MODELE=MODE,
 # B.2. Calcul d'erreur
 # B.2.1. Erreur en residu
 
-SOLUPR=CALC_ELEM(reuse =SOLUPR,
-                 RESULTAT=SOLUPR,
-                 TYPE_OPTION='SIGM_MASSIF',
-                 OPTION='SIGM_ELNO',);
+SOLUPR=CALC_CHAMP(reuse=SOLUPR,
+                  RESULTAT=SOLUPR,
+                  CONTRAINTE='SIGM_ELNO',);
 
 SOLUPR=CALC_ERREUR(reuse =SOLUPR,
                    RESULTAT=SOLUPR,
@@ -163,10 +162,9 @@ SOLUDU=MECA_STATIQUE(MODELE=MODE,
 
 # B.2.2.3. Calcul d'erreur
 
-SOLUDU=CALC_ELEM(reuse =SOLUDU,
-                 RESULTAT=SOLUDU,
-                 TYPE_OPTION='SIGM_MASSIF',
-                 OPTION='SIGM_ELNO',);
+SOLUDU=CALC_CHAMP(reuse =SOLUDU,
+                  RESULTAT=SOLUDU,
+                  CONTRAINTE='SIGM_ELNO',);
 
 SOLUDU=CALC_ERREUR(reuse =SOLUDU,
                    RESULTAT=SOLUDU,
@@ -285,10 +283,9 @@ SOLUPR=MECA_STATIQUE(MODELE=MODE,
 # C.2. Calcul d'erreur
 # C.2.1. Erreur en residu
 
-SOLUPR=CALC_ELEM(reuse =SOLUPR,
-                 RESULTAT=SOLUPR,
-                 TYPE_OPTION='SIGM_MASSIF',
-                 OPTION='SIGM_ELNO',);
+SOLUPR=CALC_CHAMP(reuse =SOLUPR,
+                  RESULTAT=SOLUPR,
+                  CONTRAINTE='SIGM_ELNO',);
 
 SOLUPR=CALC_ERREUR(reuse =SOLUPR,
                    RESULTAT=SOLUPR,
@@ -326,20 +323,13 @@ SOLUDU=MECA_STATIQUE(MODELE=MODE,
 
 # C.2.2.3. Calcul d'erreur
 
-SOLUDU=CALC_ELEM(reuse =SOLUDU,
-                 RESULTAT=SOLUDU,
-                 TYPE_OPTION='SIGM_MASSIF',
-                 OPTION='SIGM_ELNO',);
+SOLUDU=CALC_CHAMP(reuse =SOLUDU,
+                  RESULTAT=SOLUDU,
+                  CONTRAINTE='SIGM_ELNO',);
 
 SOLUDU=CALC_ERREUR(reuse =SOLUDU,
                    RESULTAT=SOLUDU,
-                   OPTION=('ERME_ELEM','ERME_ELNO',),
-
-);
-
-SOLUDU=CALC_ERREUR(reuse =SOLUDU,
-                   RESULTAT=SOLUDU,
-                   OPTION='ERME_NOEU',);
+                   OPTION=('ERME_ELEM','ERME_ELNO','ERME_NOEU',),);
 
 # C.3. Calcul de l'estimateur d'erreur en quantite d'interet
 

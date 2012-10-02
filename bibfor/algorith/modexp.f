@@ -1,7 +1,7 @@
       SUBROUTINE MODEXP(MODGEN,SST1,INDIN1,LINO1,NBMOD,NUMLIA,
      &                  TRAMOD,MODET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,7 +57,7 @@ C
       CHARACTER*19  RAIDE,MASSE, SOLVEU,PRNO, SSAMI,RAIINT
       CHARACTER*24  COINT,NODDLI,MATMOD,VEFREQ,INDIN1,LINO1,TRAMOD,
      &              MODET
-      INTEGER      IARG
+      INTEGER       IARG,IRET
       
 C---------------------------------------------------C
 C--                                               --C
@@ -318,8 +318,9 @@ C-- EXPANSION STATIQUE
       
       CALL DISMOI('F','SOLVEUR',RAIDE,'MATR_ASSE',IBID,SOLVEU,IBID)
       CALL PRERES(SOLVEU,'V',INFO,'&&OP0091.MATPRE',RAIDE,IBID,1)
-      CALL RESOUD(RAIDE,'&&MOIN93.MATPRE',' ',SOLVEU,' ',' ',' ',
-     &            ' ',NBMOD,ZR(LMODET),CBID,.TRUE.)
+      CALL RESOUD(RAIDE ,'&&MOIN93.MATPRE',SOLVEU,' '       ,NBMOD ,
+     &            ' '   ,' '              ,' '   ,ZR(LMODET),CBID  ,
+     &            ' '   ,.TRUE.           ,0     ,IRET      )
 
 C------------C
 C-- MENAGE --C

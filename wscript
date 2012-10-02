@@ -45,6 +45,7 @@ def options(self):
     self.load('mathematics', tooldir='waftools')
     self.load('med', tooldir='waftools')
     self.load('mumps', tooldir='waftools')
+    self.load('metis', tooldir='waftools')
     self.load('scotch', tooldir='waftools')
     self.load('petsc', tooldir='waftools')
     self.load('legacy', tooldir='waftools')
@@ -105,6 +106,7 @@ def configure(self):
 
     self.load('med', tooldir='waftools')
     self.load('mumps', tooldir='waftools')
+    self.load('metis', tooldir='waftools')
     self.load('scotch', tooldir='waftools')
     self.load('petsc', tooldir='waftools')
 

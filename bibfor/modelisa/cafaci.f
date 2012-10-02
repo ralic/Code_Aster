@@ -5,7 +5,7 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 02/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C      FONREE  : TYPE DE LA VALEUR IMPOSEE :
 C                REEL OU FONC OU COMP
 C      CHAR  : NOM UTILISATEUR DU RESULTAT DE CHARGE
 
-C ROUTINES APPELEES:
+C TOLE CRP_20
 
       INTEGER NMOCL
       INTEGER VALI(2)
@@ -56,6 +56,7 @@ C ROUTINES APPELEES:
       CHARACTER*16 MOTFAC,MOTCLE(NMOCL),NOMCMD,TYPMCL(2),MOCLM(2)
       CHARACTER*16 MOCLM2(2),MOCLM3(2),TYPMC3(2)
       CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1,MESNO3
+      CHARACTER*19 CNXINV
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL,NOXFEM
       LOGICAL LXFEM
@@ -152,6 +153,10 @@ C    --------------------------------------------------------
         CH3 = ' '
       ELSE
         LXFEM = .TRUE.
+C       RECUPERATION DE LA CONNECTIVITE INVERSE
+        CNXINV='&&CAFACI.CNXINV'
+        CALL CNCINV(NOMA,IBID,0,'V',CNXINV)
+
         NOXFEM = '&&CAFACI.NOXFEM'
         CALL CNOCNS(MOD//'.NOXFEM','V',NOXFEM)
         CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
@@ -363,7 +368,7 @@ C   ----------------------
      &                        VALIMR(NDDLA+1),VALIMC(J),VALIMF(J),
      &                        FONREE,
      &                        IBID,LISREL,NDIM,DIRECT,JNOXFV,
-     &                        CH1, CH2, CH3)
+     &                        CH1, CH2, CH3, CNXINV)
                   GOTO 105
                 ENDIF
               ENDIF
@@ -388,7 +393,7 @@ C   ----------------------
      &                        VALIMR(NDDLA+2),VALIMC(J),VALIMF(J),
      &                        FONREE,
      &                        IBID,LISREL,NDIM,DIRECT,JNOXFV,
-     &                        CH1, CH2, CH3)
+     &                        CH1, CH2, CH3, CNXINV)
                   GOTO 120
                 ENDIF
               ENDIF
@@ -437,7 +442,7 @@ C                 ASSOCIE AUX DDLS IMPOSES PAR NOEUD
      &                    NOMNOE,IN,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
      &                    ZR(JDIREC+3* (IN-1)),0,MOD,LISREL,
      &                    ZK8(INOM),NBCMP,ZI(JCOMPT),LXFEM,JNOXFL,
-     &                    JNOXFV,CH1,CH2,CH3)
+     &                    JNOXFV,CH1,CH2,CH3,CNXINV)
   180     CONTINUE
           DO 181,K=1,NDDLA
              IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL U2MESK('F','MODELISA2_45',
@@ -467,6 +472,7 @@ C        -------------------------------------
       CALL JEDETR('&&CANORT.NORMALE')
       CALL JEDETR('&&CANORT.TANGENT')
       IF (LXFEM) THEN
+        CALL JEDETR(CNXINV)
         CALL DETRSD('CHAM_NO_S'  ,NOXFEM)
         CALL DETRSD('CHAM_ELEM_S',CH1)
         CALL DETRSD('CHAM_ELEM_S',CH2)

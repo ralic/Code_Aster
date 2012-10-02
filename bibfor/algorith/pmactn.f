@@ -2,7 +2,7 @@
      &                  LICCVG,ACTITE,ACTION)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C
       LOGICAL      ARRET
       INTEGER      LDCCVG,FACCVG
       CHARACTER*24 SDIMPR,K24BLA
+      CHARACTER*19 SOLVEU
 C
 C ----------------------------------------------------------------------
 C
@@ -76,6 +77,7 @@ C
       ACTION = 0
       SDIMPR = '&&PMACTN.SDIMPR'
       K24BLA = ' '
+      SOLVEU = '&&OP0033'
 C
 C --- CONTINUER LA BOUCLE DE NEWTON EST IMPOSSIBLE ICI
 C
@@ -117,7 +119,7 @@ C
         RETACT = 0
       ELSE
         CALL NMEVAC(SDIMPR,SDDISC,K24BLA,K24BLA,K24BLA,
-     &              IEVDAC,NUMINS,ITERAT,RETACT)
+     &              SOLVEU,IEVDAC,NUMINS,ITERAT,RETACT)
       ENDIF
 C
 C --- TRAITEMENT DE L'ACTION

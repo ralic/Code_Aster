@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION POST_ITER='CRIT_RUPT' 3D VISC_ISOT_TRAC
 # ssnv226d.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,9 +139,9 @@ SOLNL=DYNA_NON_LINE(MODELE=TROISD,
                                   TOUT='OUI',
                                   EVAL_ELGA='MAX',),),);
 
-SOLNL=CALC_ELEM(reuse =SOLNL,
-                RESULTAT=SOLNL,
-                OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+SOLNL=CALC_CHAMP(reuse =SOLNL,
+                 RESULTAT=SOLNL,
+                 DEFORMATION=('EPSI_ELGA','EPSP_ELGA',),);
 
 # Calcul des moyennes
 

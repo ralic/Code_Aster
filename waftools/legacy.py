@@ -25,7 +25,7 @@ class create_asrun_files(Task.Task):
         self.src = kw['src']
         self._relevant_env_keys = ('PREFIX', 'DEFINES', 'PYTHON',
                                    'PYTHONARCHDIR', 'LIBPATH', 'LIBDIR',
-                                   'ASTERDATADIR')
+                                   'ASTERDATADIR', 'OPT_ENV')
 
     def run(self):
         cfg = self.outputs[0].abspath()
@@ -40,6 +40,7 @@ class create_asrun_files(Task.Task):
         dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
         dico['LD_LIBRARY_PATH'] = sep.join(ld_path)
         dico['SRC'] = self.src
+        dico['OPT_ENV'] = self.env['OPT_ENV'] and os.linesep.join(self.env['OPT_ENV']) or ''
         open(cfg, 'w').write(TMPL_CONFIG_TXT % dico)
         open(prof, 'w').write(TMPL_PROFILE % dico)
         return 0
@@ -105,4 +106,6 @@ $ASTER_VERSION_DIR/lib:\
 %(LD_LIBRARY_PATH)s
 
 export LD_LIBRARY_PATH
+
+%(OPT_ENV)s
 """

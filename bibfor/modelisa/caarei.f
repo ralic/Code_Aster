@@ -4,7 +4,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 02/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C ROUTINES APPELEES:
       CHARACTER*16 MOTFAC,MOTCLE(NMOCL),NOMCMD,TYPMCL(2),MOCLM(2)
       CHARACTER*16 MOCLM2(2),MOCLM3(2),TYPMC3(2)
       CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1,MESNO3
+      CHARACTER*19 CNXINV
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL,NOXFEM
       LOGICAL LXFEM
@@ -96,28 +97,6 @@ C ROUTINES APPELEES:
       COEFC(2) = (1.0D0,0.0D0)
       COEFC(3) = (1.0D0,0.0D0)
 
-C --- MODELE X-FEM ?
-      CALL JEEXIN(MOD//'.XFEM_CONT',IER)
-      IF (IER.EQ.0) THEN
-        LXFEM = .FALSE.
-        NOXFEM = ' '
-        CH1 = ' '
-        CH2 = ' '
-        CH3 = ' '
-      ELSE
-        LXFEM = .TRUE.
-        NOXFEM = '&&CAFACI.NOXFEM'
-        CALL CNOCNS(MOD//'.NOXFEM','V',NOXFEM)
-        CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
-        CALL JEVEUO(NOXFEM//'.CNSV','L',JNOXFV)
-C       STATUT DU NOEUD ET LEVEL SETS
-        CH1 = '&&CAFACI.CHS1'
-        CH2 = '&&CAFACI.CHS2'
-        CH3 = '&&CAFACI.CHS3'
-        CALL CELCES(MOD//'.STNO','V',CH1)
-        CALL CELCES(MOD//'.LNNO','V',CH2)
-        CALL CELCES(MOD//'.LTNO','V',CH3)
-      ENDIF
 C
       TYPCOE = 'REEL'
       IF (FONREE.EQ.'COMP') CALL ASSERT(.FALSE.)
@@ -168,6 +147,35 @@ C
 C ----- RECUPERATION DES NOEUDS (A EXCLURE)
         CALL RELIEM ( ' ', NOMA, 'NO_NOEUD', MOTFAC, I, 2,
      &                     MOCLM3, TYPMC3, MESNO3, NBNO3 )
+
+
+C --- MODELE X-FEM ?
+      CALL JEEXIN(MOD//'.XFEM_CONT',IER)
+      IF (IER.EQ.0) THEN
+        LXFEM = .FALSE.
+        NOXFEM = ' '
+        CH1 = ' '
+        CH2 = ' '
+        CH3 = ' '
+      ELSE
+        LXFEM = .TRUE.
+C       RECUPERATION DE LA CONNECTIVITE INVERSE
+        CNXINV='&&CAAREI.CNXINV'
+        CALL CNCINV(NOMA,IBID,0,'V',CNXINV)
+
+        NOXFEM = '&&CAFACI.NOXFEM'
+        CALL CNOCNS(MOD//'.NOXFEM','V',NOXFEM)
+        CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
+        CALL JEVEUO(NOXFEM//'.CNSV','L',JNOXFV)
+C       STATUT DU NOEUD ET LEVEL SETS
+        CH1 = '&&CAFACI.CHS1'
+        CH2 = '&&CAFACI.CHS2'
+        CH3 = '&&CAFACI.CHS3'
+        CALL CELCES(MOD//'.STNO','V',CH1)
+        CALL CELCES(MOD//'.LNNO','V',CH2)
+        CALL CELCES(MOD//'.LTNO','V',CH3)
+      ENDIF
+
 C
 C ----- RECUPERATION DES MOTS-CLES DDL SOUS ARETE_IMPO
 C       MOTCLE(J): K8 CONTENANT LE J-EME MOT-CLE DDL
@@ -296,7 +304,7 @@ C       COURANTE
      &                        VALIMR(NDDLA+2),VALIMC(J),VALIMF(J),
      &                        FONREE,
      &                        IBID,LISREL,NDIM,DIRECT,JNOXFV,
-     &                        CH1, CH2, CH3)
+     &                        CH1, CH2, CH3, CNXINV)
                   GOTO 120
                 ENDIF
               ENDIF
@@ -344,7 +352,7 @@ C                 ASSOCIE AUX DDLS IMPOSES PAR NOEUD
      &                    NOMNOE,IN,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
      &                    ZR(JDIREC+3* (IN-1)),0,MOD,LISREL,
      &                    ZK8(INOM),NBCMP,ZI(JCOMPT),LXFEM,JNOXFL,
-     &                    JNOXFV,CH1,CH2,CH3)
+     &                    JNOXFV,CH1,CH2,CH3,CNXINV)
   180     CONTINUE
           DO 181,K=1,NDDLA
              IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL U2MESK('F','MODELISA2_45',
@@ -374,6 +382,7 @@ C        -------------------------------------
       CALL JEDETR('&&CANORT.NORMALE')
       CALL JEDETR('&&CANORT.TANGENT')
       IF (LXFEM) THEN
+        CALL JEDETR(CNXINV)
         CALL DETRSD('CHAM_NO_S'  ,NOXFEM)
         CALL DETRSD('CHAM_ELEM_S',CH1)
         CALL DETRSD('CHAM_ELEM_S',CH2)

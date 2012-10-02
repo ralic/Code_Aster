@@ -4,7 +4,7 @@
      &                   CI2,TESTI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       CHARACTER*24 BIDON,VERESI,VARESI,CRITER
 C
 C-----------------------------------------------------------------------
-      INTEGER IRET 
+      INTEGER IRET
 C-----------------------------------------------------------------------
       DATA TYPRES        /'R'/
       DATA CHSOL         /'&&NTTAIN.SOLUTION'/
@@ -93,8 +93,9 @@ C
           ZR(JTEMPP+K-1) = ZR(J2ND+K-1) + ZR(JVARE+K-1)
  130    CONTINUE
 C
-        CALL RESOUD(MATASS,MAPREC,VTEMPP,SOLVEU,CNCHCI,'V',CHSOL,CRITER,
-     &              0,RBID,CBID,.TRUE.)
+        CALL RESOUD(MATASS,MAPREC,SOLVEU,CNCHCI,0     ,
+     &              VTEMPP,CHSOL ,'V'   ,RBID  ,CBID  ,
+     &              CRITER,.TRUE.,0     ,IRET  )
 C
 C --- RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL
 C

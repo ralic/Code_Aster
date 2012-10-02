@@ -1,11 +1,10 @@
       SUBROUTINE CRESOL(SOLVEU)
       IMPLICIT   NONE
-
       INCLUDE 'jeveux.h'
       CHARACTER*19 SOLVEU
-C ----------------------------------------------------------
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,15 +21,16 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     CREATION D'UNE SD_SOLVEUR PAR LECTURE DU MOT CLE SOLVEUR
-
-C IN/JXOUT K19 SOLVEU  : SD_SOLVEUR
-C ----------------------------------------------------------------------
 C RESPONSABLE PELLET J.PELLET
-
-
-
-
+C ----------------------------------------------------------------------
+C
+C     CREATION D'UNE SD_SOLVEUR PAR LECTURE DU MOT CLE SOLVEUR
+C
+C IN/JXOUT K19 SOLVEU  : SD_SOLVEUR
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER      SDSOLV,ZSLVK ,ZSLVR ,ZSLVI
       INTEGER      ISTOP,NSOLVE,IBID,NPREC,ISLVK,ISLVR,ISLVI
       REAL*8       EPSMAT
       CHARACTER*3  SYME,MIXPRE,KMD
@@ -40,9 +40,11 @@ C RESPONSABLE PELLET J.PELLET
       CHARACTER*19 LIGRMO
       INTEGER      EXIMC,GETEXM
       INTEGER      IARG
-C------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
+C
 C --- INITS. GLOBALES (CAR MOT-CLES OPTIONNELS)
       NOMSOL='SOLVEUR'
       SYME='NON'
@@ -115,9 +117,12 @@ C     POUR FETI C'EST FAIT POUR LE DOMAINE GLOBAL ET CHAQUE SD
 C     VIA CRSVFE/CRESO1
 C ------------------------------------------------------
       IF (METHOD.NE.'FETI') THEN
-        CALL WKVECT(SOLVEU//'.SLVK','V V K24',12,ISLVK)
-        CALL WKVECT(SOLVEU//'.SLVR','V V R',4,ISLVR)
-        CALL WKVECT(SOLVEU//'.SLVI','V V I',7,ISLVI)
+        ZSLVK = SDSOLV('ZSLVK')
+        ZSLVR = SDSOLV('ZSLVR')
+        ZSLVI = SDSOLV('ZSLVI')
+        CALL WKVECT(SOLVEU//'.SLVK','V V K24',ZSLVK ,ISLVK )
+        CALL WKVECT(SOLVEU//'.SLVR','V V R'  ,ZSLVR ,ISLVR )
+        CALL WKVECT(SOLVEU//'.SLVI','V V I'  ,ZSLVI ,ISLVI )
       ENDIF
 
 C ------------------------------------------------------

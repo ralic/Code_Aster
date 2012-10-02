@@ -6,7 +6,7 @@
       CHARACTER*16 NOMCMD,MOTFAC
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 02/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
       CHARACTER*8 MOD,NOMA,K8BID
       CHARACTER*8 NOMN,VALIMF(NMOCL)
       CHARACTER*16 MOTCLE(NMOCL),MOTCL2(5),TYMOC2(5)
+      CHARACTER*19 CNXINV
       CHARACTER*19 LIGRMO,LISREL
       CHARACTER*19 NOXFEM,CH1,CH2,CH3
       CHARACTER*24 NOMNOE
@@ -126,6 +127,10 @@ C    --------------------------------------------------------
         CH3 = ' '
       ELSE
         LXFEM = .TRUE.
+C       CONNECTIVITE INVERSE
+        CNXINV='&&CADDLI.CNXINV'
+        CALL CNCINV(NOMA,IBID,0,'V',CNXINV)
+
         NOXFEM = '&&CADDLI.NOXFEM'
         CALL CNOCNS(MOD//'.NOXFEM','V',NOXFEM)
         CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
@@ -307,7 +312,7 @@ C---  GESTION DU MOT-CLEF "LIAISON"
      &                  INO,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
      &                  ZR(JDIREC+3*(INO-1)),0,MOD,LISREL,
      &                  ZK8(INOM),NBCMP,ZI(JCOMPT),LXFEM,JNOXFL,JNOXFV,
-     &                  CH1,CH2,CH3)
+     &                  CH1,CH2,CH3,CNXINV)
    90   CONTINUE
 
 C       -- IL NE FAUT PAS GRONDER L'UTILISATEUR SI 'ENCASTRE' :
@@ -331,6 +336,7 @@ C
       CALL AFLRCH(LISREL,CHAR)
 C
       IF (LXFEM) THEN
+        CALL JEDETR(CNXINV)
         CALL DETRSD('CHAM_NO_S'  ,NOXFEM)
         CALL DETRSD('CHAM_ELEM_S',CH1)
         CALL DETRSD('CHAM_ELEM_S',CH2)

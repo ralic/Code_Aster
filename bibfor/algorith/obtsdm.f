@@ -1,7 +1,7 @@
-      SUBROUTINE OBTSDM(SDTABL,TYPCOZ,MARQ  )
+      SUBROUTINE OBTSDM(LISNOM,TYPCOZ,MARQ  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      CHARACTER*24  SDTABL
+      INCLUDE       'jeveux.h'
+      CHARACTER*24  LISNOM
       CHARACTER*(*) TYPCOZ
       CHARACTER*1   MARQ
 C
@@ -34,25 +35,20 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  SDTABL : STRUCT TABLEAU POUR IMPRESSION
+C IN  LISNOM : REPERTOIRE DES NOMS DE LA STRUCT TABLEAU POUR IMPRESSION
 C IN  TYPCOL : CODE TYPE DE LA COLONNE
 C IN  MARQ   : MARQUAGE DE LA COLONNE
 C
 C ----------------------------------------------------------------------
 C
-      CHARACTER*24 SLCOLO,SDCOLO
+      INTEGER      JLISNO
+      CHARACTER*24 SDCOLO,TYPCOL
 C
 C ----------------------------------------------------------------------
 C
-
-C
-C --- LISTE DES COLONNES
-C
-      CALL OBGETO(SDTABL,'COLONNES_DISPOS',SLCOLO)
-C
-C --- COLONNE CORRESPONDANTE
-C
-      CALL OBLGOP(SLCOLO,TYPCOZ,SDCOLO)
+      TYPCOL = TYPCOZ
+      CALL JEVEUO(JEXNOM(LISNOM,TYPCOL),'L',JLISNO)
+      SDCOLO = ZK24(JLISNO)
 C
 C --- AFFECTATION MARQUE
 C

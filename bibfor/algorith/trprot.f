@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -501,8 +501,9 @@ C-----LE FLUX FLUIDE TOTAL.....
 
 C----ON RESOUT L EQUATION DE LAPLACE
 
-           CALL RESOUD(MA,MAPREC,CHFLU,SOLVEU,' ','V',CHSOL,
-     &                 CRITER,0,RBID,CBID,.TRUE.)
+           CALL RESOUD(MA    ,MAPREC,SOLVEU,' '   ,0     ,
+     &                 CHFLU ,CHSOL ,'V'   ,RBID  ,CBID  ,
+     &                 CRITER,.TRUE.,0     ,IRET  )
            CALL JEDUPC('V',CHSOL(1:19),1,'V',CHFLU(1:19),.FALSE.)
            CALL DETRSD('CHAMP_GD',CHSOL)
 

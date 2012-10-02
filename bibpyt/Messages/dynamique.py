@@ -1,8 +1,8 @@
-#@ MODIF dynamique Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dynamique Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -59,6 +59,9 @@ cata_msg={
   Pas de temps maximal (condition CFL) pour le schéma de Tchamwa-Wilgosz : %(r1)g s
 """),
 
+9: _(u"""
+  On ne peut pas avoir plus d'une charge de type FORCE_SOL.
+"""),
 
 10: _(u"""
    Arrêt par manque de temps CPU au groupe de pas de temps : %(i1)d
@@ -75,7 +78,7 @@ cata_msg={
       - Numéro d'ordre correspondant : %(i2)d
       - Temps moyen pour les %(i3)d pas de temps : %(r2)f
       - Temps CPU restant            : %(r3)f
-   
+
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
@@ -83,7 +86,7 @@ cata_msg={
  Dans l\'intervalle : %(i2)d
  Le pas de temps est trop grand : %(r1)f
  le pas de temps maximal est    : %(r2)f
- 
+
  Avec le pas de temps maximal, le nombre de pas de calcul est %(i1)d
 """),
 
@@ -91,7 +94,7 @@ cata_msg={
    Arrêt par manque de temps CPU à la fréquence : %(i1)d
       - Temps moyen par pas fréquence : %(r1)f
       - Temps CPU restant             : %(r2)f
-   
+
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
@@ -103,21 +106,21 @@ cata_msg={
 15 : _(u"""
  Pas de temps maximal (mot-clé PAS_MAXI) demandé : %(r1)f plus petit que
  le pas de temps initial demandé par l'utilisateur (mot-clé PAS) : %(r2)f
- Il faut s'assurer que PAS est bien inférieur ou égal à PAS_MAXI 
-"""), 
+ Il faut s'assurer que PAS est bien inférieur ou égal à PAS_MAXI
+"""),
 
 16 : _(u"""
  Pas de temps maximal calculé pour le schéma ADAPT : %(r1)f
- 
+
  Risque & Conseil : la méthode de calcul automatique de ce pas maximal semble être prise en défaut.
  On recommande donc de définir explicitement cette valeur avec le mot-clé PAS_MAXI (sous INCREMENT).
-"""), 
+"""),
 
 17 : _(u"""
  Pas de temps maximal (mot-clé PAS_MAXI) demandé trop grand :   %(r1)f
  Pas de temps nécessaire pour le calcul: %(r2)f
- Risques de problèmes de précision 
-"""), 
+ Risques de problèmes de précision
+"""),
 
 18 : _(u"""
  Le nombre maximal de sous division du pas : %(i1)d est atteint à l'instant : %(r1)f
@@ -130,12 +133,43 @@ cata_msg={
  - diminuer le pas de temps initial (mot-clé PAS),
  - augmenter le nombre maximal de sous découpages du pas (mot-clé NMAX_ITER_PAS),
  - augmenter le facteur de division du pas (mot-clé COEF_DIVI_PAS)
-"""), 
+"""),
 
 19 : _(u"""
  Le chargement contient plus d'une charge répartie.
  Le calcul n'est pas possible pour les modèles de poutre.
 """),
 
+20 : _(u"""
+ La fréquence d'actualisation de FORCE_SOL est prise dans le fichier des raideurs.
+"""),
+
+21 : _(u"""
+ La fréquence d'actualisation de FORCE_SOL est prise dans le fichier des masses.
+"""),
+
+22 : _(u"""
+ La fréquence d'actualisation de FORCE_SOL est prise dans le fichier des amortissements.
+"""),
+
+23 : _(u"""
+    Nombre de fréquences: %(i1)d
+    Intervalle des fréquences: %(r1)f
+"""),
+
+30 : _(u"""
+ La fréquence d'actualisation de FORCE_SOL dans le fichier des masses est incohérente avec
+celle choisie précédemment.
+"""),
+
+31 : _(u"""
+ La fréquence d'actualisation de FORCE_SOL dans le fichier des amortissements est incohérente avec
+celle choisie précédemment.
+"""),
+
+25 : _(u"""
+ La fréquence d'actualisation de FORCE_SOL n'est pas cohérente avec la fréquence d'archivage des résultats dans
+ DYNA_NON_LINE.
+"""),
 
 }

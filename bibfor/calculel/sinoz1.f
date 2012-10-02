@@ -1,6 +1,6 @@
       SUBROUTINE SINOZ1(MODELE,SIGMA,SIGNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF CALCULEL  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,8 +45,8 @@ C ----------------------- DECLARATIONS --------------------------------
       CHARACTER*24 NUME,VECASS,VECT(6)
       REAL*8 RCMP(6)
       INTEGER IBID,JVECT,NBCMP,REPDIM
-
       COMPLEX*16 CBID
+      INTEGER      IRET
 
 
 C-----------------------------------------------------------------------
@@ -125,8 +125,9 @@ C     -- ON FORCE STOP_SINGULIER='NON' MAIS POURQUOI ??
       CRITER=' '
       DO 20 I = 1,NBCMP
         CALL JEVEUO(VECT(I) (1:19)//'.VALE','E',JVECT)
-        CALL RESOUD('&&MASSAS',MATPRE,K19BID,SOLVEU,K19BID,K1BID,
-     &              K19BID,CRITER,1,ZR(JVECT),CBID,.TRUE.)
+        CALL RESOUD('&&MASSAS',MATPRE,SOLVEU,K19BID   ,1     ,
+     &              K19BID    ,K19BID,K1BID ,ZR(JVECT),CBID  ,
+     &              CRITER    ,.TRUE.,0     ,IRET     )
    20 CONTINUE
 
 C   CREATION DU CHAM_NO_SIEF_R A PARTIR DES 4 CHAM_NO_SIZZ_R (A 1 CMP)

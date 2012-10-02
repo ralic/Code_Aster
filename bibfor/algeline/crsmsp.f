@@ -1,6 +1,6 @@
       SUBROUTINE CRSMSP(SOLVBZ,MATASZ,PCPIV )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,8 @@ C IN  I   PCPIV     : VALEUR DE PCENT_PIVOT
 C-----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      INTEGER JSLVK,JSLVR,JSLVI,IBID,IRET
+      INTEGER      SDSOLV,ZSLVK ,ZSLVR ,ZSLVI
+      INTEGER      JSLVK ,JSLVR ,JSLVI ,IBID  ,IRET
       CHARACTER*19 MATASS,SOLVBD
       CHARACTER*8  SYMK
       CHARACTER*3  SYME
@@ -41,7 +42,7 @@ C----------------------------------------------------------------------
 
       SOLVBD = SOLVBZ
       MATASS = MATASZ
-      
+
       CALL JEEXIN(SOLVBD, IRET)
       IF (IRET.EQ.0) CALL DETRSD('SOLVEUR',SOLVBD)
 
@@ -55,9 +56,12 @@ C     LA MATRICE EST-ELLE NON SYMETRIQUE
         CALL ASSERT(.FALSE.)
       ENDIF
 
-      CALL WKVECT(SOLVBD//'.SLVK','V V K24',12,JSLVK)
-      CALL WKVECT(SOLVBD//'.SLVR','V V R',   4,JSLVR)
-      CALL WKVECT(SOLVBD//'.SLVI','V V I',   7,JSLVI)
+      ZSLVK = SDSOLV('ZSLVK')
+      ZSLVR = SDSOLV('ZSLVR')
+      ZSLVI = SDSOLV('ZSLVI')
+      CALL WKVECT(SOLVBD//'.SLVK','V V K24',ZSLVK ,JSLVK )
+      CALL WKVECT(SOLVBD//'.SLVR','V V R'  ,ZSLVR ,JSLVR )
+      CALL WKVECT(SOLVBD//'.SLVI','V V I'  ,ZSLVI ,JSLVI )
 
 C     ATTENTION A LA COHERENCE AVEC CRSVL2 ET CRSVMU
       ZK24(JSLVK-1+1)  = 'MUMPS'
@@ -99,6 +103,7 @@ C     POSTTRAITEMENTS
       ZI(JSLVI-1+5) = -9999
       ZI(JSLVI-1+6) = -9999
       ZI(JSLVI-1+7) = -9999
+      ZI(JSLVI-1+8) = 0
 
       CALL JEDEMA()
       END

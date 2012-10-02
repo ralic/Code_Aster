@@ -8,7 +8,7 @@
       COMPLEX*16        CBID
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,8 +59,9 @@ C     ------------------------------------------------------------------
       CHARACTER*8  NOMCMP(3)
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IC ,IE ,ILA1 ,ILA2 ,IM ,IMOD ,IN 
-      INTEGER IN2 ,IND ,JDDL ,JDDR 
+      INTEGER IC ,IE ,ILA1 ,ILA2 ,IM ,IMOD ,IN
+      INTEGER IN2 ,IND ,JDDL ,JDDR
+      INTEGER IRET
 C-----------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
 C     ------------------------------------------------------------------
@@ -109,8 +110,9 @@ C
                   ENDIF
                   ZR(JDDR+ILA1-1) = UN
                   ZR(JDDR+ILA2-1) = UN
-                  CALL RESOUD(MATFAC,MATPRE,' ',SOLVEU,' ',' ',' ',
-     &                  ' ',1,ZR(JDDR),CBID,.TRUE.)
+                  CALL RESOUD(MATFAC,MATPRE,SOLVEU,' '     ,1     ,
+     &                        ' '   ,' '   ,' '   ,ZR(JDDR),CBID  ,
+     &                        ' '   ,.TRUE.,0     ,IRET    )
                   CALL MRMULT('ZERO',LMATM,ZR(JDDR),ZRMOD(1,IMOD),1,
      &.TRUE.)
                   CALL JEDETR('&&MODSTA.POSITION_DDR')
@@ -121,8 +123,9 @@ C
 C
 C     --- RESOLUTION ---
       IF ( IMOD .GT. 0 ) THEN
-         CALL RESOUD(MATFAC,MATPRE,' ',SOLVEU,' ',' ',' ',
-     &                  ' ',IMOD,ZRMOD,CBID,.TRUE.)
+         CALL RESOUD(MATFAC,MATPRE,SOLVEU,' '   ,IMOD  ,
+     &               ' '   ,' '   ,' '   ,ZRMOD ,CBID  ,
+     &               ' '   ,.TRUE.,0     ,IRET  )
       ENDIF
       CALL JEDEMA()
       END

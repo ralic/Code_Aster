@@ -4,7 +4,7 @@
       CHARACTER*(*)      METHOD, RENUM, SOLVE , BAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C
 C     CREATION D'UNE STRUCTURE SOLVEUR
 C
 C-----------------------------------------------------------------------
@@ -28,12 +29,14 @@ C-----------------------------------------------------------------------
        REAL*8  RESIRE
 C-----------------------------------------------------------------------
 C
-C
+      INTEGER            SDSOLV,ZSLVK ,ZSLVR ,ZSLVI
       REAL*8             JEVTBL,EPSMAT
       CHARACTER*1        BASE
       CHARACTER*3        SYME
       CHARACTER*8        PRECO
       CHARACTER*19       SOLVEU
+C
+C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
 C
@@ -51,9 +54,14 @@ C
 C
 C --- CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SOLVEUR
 C
-      CALL WKVECT(SOLVEU//'.SLVK',BASE//' V K24',12,ISLVK)
-      CALL WKVECT(SOLVEU//'.SLVR',BASE//' V R'  ,4,ISLVR)
-      CALL WKVECT(SOLVEU//'.SLVI',BASE//' V I'  ,7,ISLVI)
+      ZSLVK = SDSOLV('ZSLVK')
+      ZSLVR = SDSOLV('ZSLVR')
+      ZSLVI = SDSOLV('ZSLVI')
+      CALL WKVECT(SOLVEU//'.SLVK',BASE//' V K24',ZSLVK ,ISLVK )
+      CALL WKVECT(SOLVEU//'.SLVR',BASE//' V R'  ,ZSLVR ,ISLVR )
+      CALL WKVECT(SOLVEU//'.SLVI',BASE//' V I'  ,ZSLVI ,ISLVI )
+C
+C --- REMPLISSAGE DE LA S.D. SOLVEUR
 C
       ZK24(ISLVK-1+1) = METHOD
       IF ((METHOD.EQ.'MULT_FRONT').OR.(METHOD.EQ.'LDLT')) THEN
@@ -76,7 +84,6 @@ C
       ZK24(ISLVK-1+10) = 'XXXX'
       ZK24(ISLVK-1+11) = 'XXXX'
       ZK24(ISLVK-1+12) = 'XXXX'
-
 C
       ZR(ISLVR-1+1) = EPSMAT
       ZR(ISLVR-1+2) = RESIRE
@@ -90,9 +97,8 @@ C
       ZI(ISLVI-1+5) =-9999
       ZI(ISLVI-1+6) =-9999
       ZI(ISLVI-1+7) =-9999
-
+      ZI(ISLVI-1+8) = 0
 C
       CALL JEDEMA()
 C
-C     CALL CHEKSD(SOLVEU,'sd_solveur',IRET)
       END

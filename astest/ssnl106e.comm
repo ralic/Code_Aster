@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -304,15 +304,8 @@ TEST_RESU(RESU=(
 RESM=CALC_CHAMP(reuse=RESM,
                 RESULTAT=RESM,
                 CONTRAINTE=('SIGM_ELNO'),
+                DEFORMATION=('DEGE_ELNO','DEGE_ELGA'),
                 VARI_INTERNE=('VARI_ELNO'),);
-
-RESM=CALC_ELEM( reuse=RESM,  RESULTAT=RESM,
-                      TOUT_ORDRE='OUI',
-                     OPTION=('DEGE_ELNO','DEGE_ELGA'),
-                 REPE_COQUE =_F( NUME_COUCHE=1,
-                                 NIVE_COUCHE='SUP',
-                                 ANGLE=90,),
-                   )
 
 RESM1=POST_CHAMP(RESULTAT=RESM,
                  TOUT_ORDRE='OUI',

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE  CALCUL DU FACTEUR D'INTENSITE DE CONTRAINTES PAR LA REGULARISATION DES
 # ssnp148a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -218,24 +218,6 @@ EVOEL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MULT_FRONT',),
                                         RESI_GLOB_RELA=1.E-4,
                                      ),),
                        );
-
-#IMPRESSION DE TOUS LES CHAMPS AU FORMAT GMSH
-
-#EVOEL=CALC_ELEM(reuse =EVOEL,
-#                RESULTAT=EVOEL,
-#                CHAM_MATER=MAT,
-#                MODELE=MO_MECA,
-#                OPTION=('SIGM_ELNO', 'VARI_ELNO'),
-#      );
-
-#IMPR_RESU(MODELE=MO_MECA,
-#          FORMAT='GMSH',
-#          UNITE=56,
-#          RESU=_F(MAILLAGE=MAIL,
-#                  RESULTAT=EVOEL,
-#                  NOM_CHAM=('VARI_ELNO','DEPL')
-#                 ),
-#         );
 
 #
 # RECUPERATION DES CONTRAINTES REGULARISEES

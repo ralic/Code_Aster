@@ -10,7 +10,7 @@ C
       CHARACTER*19 SOLVEU
 C     ----------------------- ------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C     INIT. OBJETS ASTER
 C-----------------------------------------------------------------------
       INTEGER IDET0 ,IEQ ,IER ,IQUOTI ,JTER 
       REAL*8 DSEED ,TOL 
+      INTEGER IRET
 C-----------------------------------------------------------------------
       MATASS=ZK24(ZI(LDYNAM+1))
       CHCINE=' '
@@ -95,8 +96,9 @@ C        --- ELIMINATION DES DDL EXTERNES ---
   110   CONTINUE
 C
 C        --- RESOLUTION DE (K-W.M) X = (M).X ---
-        CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
-     &              CRITER,1,X(1,IMODE),CBID,.FALSE.)
+        CALL RESOUD(MATASS,K19BID ,SOLVEU,CHCINE    ,1     ,
+     &              K19BID,K19BID ,KBID  ,X(1,IMODE),CBID  ,
+     &              CRITER,.FALSE.,0     ,IRET      )
 C
 C        --- ORTHOGONALISATION EN CAS DE MODES MULTIPLES  ---
         CALL VPMORT(NEQ,X(1,IMODE),X,MX,IMODE)

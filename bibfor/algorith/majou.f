@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -250,7 +250,7 @@ C-----LE FLUX FLUIDE TOTAL.....
              TYPECH(1) ='R'
              TYPECH(2) ='R'
 
-             NOMCH(1) = CHCOMB
+             NOMCH(1) = CHCOMB(1:8)
              NOMCH(2) = VESOLZ(1:8)
 
              CALL VTCMBL(2,TYPCST,CONST,TYPECH,NOMCH,'R',CHCMB2)
@@ -268,8 +268,9 @@ C-----LE FLUX FLUIDE TOTAL.....
 C----ON RESOUT L EQUATION DE LAPLACE
 
            CALL JEVEUO(CHFLU//'.VALE','E',JCHFLU)
-           CALL RESOUD(MA,' ',' ',SOLVEU,' ',' ',' ',
-     &                  ' ',1,ZR(JCHFLU),CBID,.TRUE.)
+           CALL RESOUD(MA    ,' '   ,SOLVEU,' '       ,1     ,
+     &                 ' '   ,' '   ,' '   ,ZR(JCHFLU),CBID  ,
+     &                 ' '   ,.TRUE.,0     ,IRET      )
 
 
 C--------ON REPLONGE LA PRESSION SUR L INTERFACE

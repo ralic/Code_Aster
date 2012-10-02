@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (QUAD9) AXISYM
 # shlv100j.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,14 +105,9 @@ DEP=CREA_RESU(OPERATION='AFFE',
                 );
 
 
-CAL1=CALC_ELEM(RESULTAT=DEP,
-              OPTION='SIGM_ELNO',
-              INST=0.,)
-
-CAL1=CALC_ELEM(reuse=CAL1,
-              RESULTAT=DEP,
-              OPTION='SIEF_ELGA',
-              INST=0.,)
+CAL1=CALC_CHAMP(RESULTAT=DEP,
+                CONTRAINTE=('SIEF_ELGA','SIGM_ELNO',),
+                INST=0.,)
 
 #--------------------------------------------------------------------
 RELEVE_1=POST_RELEVE_T(

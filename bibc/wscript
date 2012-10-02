@@ -58,7 +58,7 @@ def build(self):
 
     # order is important
     uses = ['MATH', 'MPI', 'OPENMP', 'CLIB']
-    for deps in ('PETSC', 'SCOTCH', 'MUMPS', 'MED'):
+    for deps in ('PETSC', 'SCOTCH', 'MUMPS', 'METIS', 'MED'):
         if buildenv['HAVE_' + deps]:
             uses.insert(0, deps)
 

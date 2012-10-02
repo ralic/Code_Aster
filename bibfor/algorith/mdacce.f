@@ -12,7 +12,7 @@
       COMPLEX*16         CBID
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,9 +56,10 @@ C
 C
 C
       REAL*8  X1, X2
+      CHARACTER*19 MATR
 C
 C-----------------------------------------------------------------------
-      INTEGER IM ,IRET ,JMASS 
+      INTEGER IM ,IRET ,JMASS
 C-----------------------------------------------------------------------
       IF (TYPBAS(1:9).EQ.'MODE_MECA'.OR.
      &    TYPBAS(1:9).EQ.'MODE_GENE') THEN
@@ -113,7 +114,11 @@ C
           ACCGEN(IM) = FEXGEN(IM) - WORK1(IM)
 140     CONTINUE
 
-        CALL RESOU2(' ',DESCM,1,ACCGEN,CBID)
+        CALL ASSERT(DESCM.NE.0)
+        MATR  = ZK24(ZI(DESCM+1))(1:19)
+        CALL RESOUD(MATR  ,' '   ,' '   ,' '   ,1     ,
+     &              ' '   ,' '   ,' '   ,ACCGEN,CBID  ,
+     &              ' '   ,.TRUE.,0     ,IRET  )
       ENDIF
 C
       END

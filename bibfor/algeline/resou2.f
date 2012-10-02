@@ -1,6 +1,6 @@
       SUBROUTINE RESOU2(MATR,LMAT,NSECM,RSOLU,CSOLU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,18 +45,10 @@ C-----------------------------------------------------------------------
       REAL*8 RSOLU(*)
       COMPLEX*16 CSOLU(*)
 
-      CHARACTER*19 MATR2
 C ----------------------------------------------------------------------
 
-      IF (MATR.NE.' ') THEN
-        CALL ASSERT(LMAT.EQ.0)
-        MATR2=MATR
-      ELSE
-        CALL ASSERT(LMAT.NE.0)
-        MATR2=ZK24(ZI(LMAT+1))
-      ENDIF
-      CALL ASSERT(MATR2.NE.' ')
+C     A SUPPRIMER
 
-      CALL RESOUD(MATR2,' ',' ',' ',' ',' ',' ',
-     &                  ' ',NSECM,RSOLU,CSOLU,.TRUE.)
+      CALL ASSERT(.FALSE.)
+
       END

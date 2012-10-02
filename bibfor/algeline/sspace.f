@@ -8,7 +8,7 @@
       REAL*8 TOL,TOLDYN,VALPRO(NBVEC),VECT(NEQ,NBVEC)
       CHARACTER*19 SOLVEU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C-----------------------------------------------------------------------
       COMPLEX*16 CBID
       CHARACTER*1  KBID
       CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
+      INTEGER      IRET
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER I ,IAA ,IAR ,IBR ,ICOMP ,ICONV ,IFPOS 
@@ -169,8 +170,9 @@ C     ---       ON NE STOCKE QUE LA MOITIE DE LA MATRICE      ---
         DO 100 KK = 1,NEQ
           ZR(IVECT+KK-1) = VECT(KK,JJ)*LPROD(KK)
   100   CONTINUE
-        CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
-     &              CRITER,1,ZR(IVECT),CBID,.FALSE.)
+        CALL RESOUD(MATASS,K19BID ,SOLVEU,CHCINE   ,1     ,
+     &              K19BID,K19BID ,KBID  ,ZR(IVECT),CBID  ,
+     &              CRITER,.FALSE.,0     ,IRET     )
         DO 120 LL = JJ,NBVEC
           ART = 0.D0
           DO 110 KK = 1,NEQ
@@ -216,8 +218,6 @@ C     ---   ET DONC DES VECTEURS PROPRES DU SYSTEME PROJETE   ---
       IF (NITJA.GT.NITJAC) THEN
         NITJAC = NITJA
       END IF
-
-  190 CONTINUE
 
 C     --- CALCUL DES VECTEURS PROPRES DU SYSTEME COMPLET ---
 

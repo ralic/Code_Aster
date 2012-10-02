@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF SOUSTRUC  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,7 +146,9 @@ C             -- ON RETABLIT ISTOP
             ENDIF
 
 C           FIMPO : DEFORMEE STATIQUE (K-1*N)
-            CALL RESOU2(MARIG,0,1,FIMPO,CBID)
+            CALL RESOUD(MARIG ,' '   ,' '   ,' '   ,1     ,
+     &                  ' '   ,' '   ,' '   ,FIMPO ,CBID  ,
+     &                  ' '   ,.TRUE.,0     ,IRET  )
 C           NORMX : NORME K-1*N
             NORMX=DDOT(NEQ,FIMPO,1,FIMPO,1)
             ZR(JNORMX-1+ICOLC)=NORMX

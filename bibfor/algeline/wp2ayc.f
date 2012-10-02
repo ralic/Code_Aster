@@ -9,7 +9,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     ------------------------------------------------------------------
       REAL*8       RBID
       CHARACTER*1  KBID
       CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
+      INTEGER      IRET
 C     ------------------------------------------------------------------
 C
 C INIT. OBJETS ASTER
@@ -80,8 +81,9 @@ C-RM-FIN
       DO 10, I = 1, N, 1
          U1(I) = U1(I) + SIGMA*U3(I) + U2(I)
 10    CONTINUE
-      CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
-     &            CRITER,1,RBID,U1,.FALSE.)
+      CALL RESOUD(MATASS,K19BID ,SOLVEU,CHCINE,1     ,
+     &            K19BID,K19BID ,KBID  ,RBID  ,U1    ,
+     &            CRITER,.FALSE.,0     ,IRET  )
       DO 20, I = 1, N, 1
          ZH(I) = - U1(I)
          ZB(I) = (YH(I) - SIGMA*U1(I))*LBLOQ(I)

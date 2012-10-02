@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE (MODE_MECA)
 # sdlv122a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,8 +127,9 @@ MODES=MODE_ITER_SIMULT(      MATR_RIGI=RIGIASSE,
 
 
 #
-MODES=CALC_ELEM( reuse=MODES,    RESULTAT=MODES,
-                          OPTION='SIGM_ELNO'                    )
+MODES=CALC_CHAMP(reuse=MODES,
+                 RESULTAT=MODES,
+                 CONTRAINTE=('SIGM_ELNO',),);
 
 #
 MODES=CALC_CHAMP(reuse=MODES,
@@ -288,12 +289,12 @@ TEST_TABLE(
 LTEMPS=DEFI_LIST_REEL(   VALE=(9.E-4,  17.E-4,  25.E-4,)              )
 
 #
-REPONS=CALC_ELEM( RESULTAT=REPONSE,
-                 CARA_ELEM=CARAELEM,
-                            MODELE=MODELE,
-                        CHAM_MATER=MATER,
-                         LIST_INST=LTEMPS,
-                            OPTION='EPSI_ELNO'                  )
+REPONS=CALC_CHAMP(RESULTAT=REPONSE,
+                  CARA_ELEM=CARAELEM,
+                  MODELE=MODELE,
+                  CHAM_MATER=MATER,
+                  LIST_INST=LTEMPS,
+                  DEFORMATION='EPSI_ELNO',);
 
 #
 REPON2=CALC_CHAMP(RESULTAT=REPONS,
@@ -302,17 +303,11 @@ REPON2=CALC_CHAMP(RESULTAT=REPONS,
                   DEFORMATION='EPSI_NOEU',);
 
 #
-REPON=CALC_ELEM( RESULTAT=REPONSE,
-                          MODELE=MODELE,
-                        CHAM_MATER=MATER,
-                         LIST_INST=LTEMPS,
-                            OPTION='SIGM_ELNO'                  )
-
-#
-REPON=CALC_CHAMP(reuse=REPON,
-                 RESULTAT=REPON,
+REPON=CALC_CHAMP(RESULTAT=REPONSE,
+                 MODELE=MODELE,
+                 CHAM_MATER=MATER,
                  LIST_INST=LTEMPS,
-                 CONTRAINTE='SIGM_NOEU',);
+                 CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),);
 
 SIXX4=POST_RELEVE_T(ACTION=_F(INTITULE='SIXX4',
                       GROUP_NO=('NRES4'),
@@ -518,9 +513,3 @@ TEST_RESU(RESU=(  _F( RESULTAT = REPONSE,      GROUP_NO = 'NRES2',
 #
 FIN()
 #
-
-
-
-
-
-

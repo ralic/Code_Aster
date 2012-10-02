@@ -10,7 +10,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,10 +55,11 @@ C     ------------------------------------------------------------------
 
 
       REAL*8       ZERO, SR, SI,RBID
-      INTEGER   I
+      INTEGER      I
       COMPLEX*16   CBID
       CHARACTER*1  KBID
       CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
+      INTEGER      IRET
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -87,8 +88,9 @@ C-RM-FIN
          DO 10, I = 1, N, 1
             V(I) = DCMPLX(U1(I)) + SIGMA*DCMPLX(U3(I)) + DCMPLX(U2(I))
 10       CONTINUE
-         CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
-     &              CRITER,1,RBID,V,.FALSE.)
+         CALL RESOUD(MATASS,K19BID ,SOLVEU,CHCINE,1     ,
+     &               K19BID,K19BID ,KBID  ,RBID  ,V     ,
+     &               CRITER,.FALSE.,0     ,IRET  )
          IF ( APPR .EQ. 'R' ) THEN
             DO 20, I = 1, N, 1
                ZH(I) = - DBLE(V(I))
@@ -104,8 +106,9 @@ C-RM-FIN
          DO 30, I = 1, N, 1
             U1(I) = U1(I) + SR*U3(I) + U2(I)
 30       CONTINUE
-         CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
-     &              CRITER,1,U1,CBID,.FALSE.)
+         CALL RESOUD(MATASS,K19BID ,SOLVEU,CHCINE,1     ,
+     &               K19BID,K19BID ,KBID  ,U1    ,CBID  ,
+     &               CRITER,.FALSE.,0     ,IRET  )
          DO 31, I = 1, N, 1
             ZH(I) = -U1(I)
             ZB(I) = (YH(I) - SR*U1(I))*LBLOQ(I)

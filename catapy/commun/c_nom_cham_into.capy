@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMUN  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
 # encoding: iso-8859-1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,6 +115,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Déformations dues aux variables de commande aux noeuds"), ),
         }
         d['ENERGIE'] = {
+            "DISS_ELEM":        ( ("lin", "nonlin"),
+                                 _(u"Énergie de dissipation par élément"), ),
             "DISS_ELGA":        ( ("lin", "nonlin"),
                                  _(u"Densité d'énergie de dissipation aux points de Gauss"), ),
             "DISS_ELNO":        ( ("lin", "nonlin"),
@@ -123,6 +125,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Densité d'énergie de dissipation aux noeuds"), ),
             "ECIN_ELEM":        ( ("lin"),
                                  _(u"Énergie cinétique par élément"), ),
+            "ENEL_ELEM":        ( ("lin", "nonlin"),
+                                 _(u"Énergie élastique par élément"), ),
             "ENEL_ELGA":        ( ("lin", "nonlin"),
                                  _(u"Densité d'énergie élastique aux points de Gauss"), ),
             "ENEL_ELNO":        ( ("lin", "nonlin"),
@@ -205,7 +209,7 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Hydratation aux noeuds"), ),
             "SOUR_ELGA":        ( (),
                                  _(u"Source de chaleur à partir d'un potentiel électrique"), ),
-            "ETHE_ELEM":        ( ("lin"),
+            "ETHE_ELEM":        ( (),
                                  _(u"Énergie dissipée thermiquement"), ),
         }
         d['ACOUSTIQUE'] = {
@@ -213,6 +217,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Pression acoustique aux noeuds par élément"), ),
             "PRAC_NOEU":        ( (),
                                  _(u"Pression acoustique aux noeuds"), ),
+            "PRME_ELNO":        ( (),
+                                 _(u"Pression aux noeuds par élément pour les éléments FLUIDE"), ),
             "INTE_ELNO":        ( (),
                                  _(u"Intensité acoustique aux noeuds par élément"), ),
             "INTE_NOEU":        ( (),
@@ -327,8 +333,6 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Variable de commande 'neutre'"), ),
             "PRES":             ( (),
                                  _(u"Chargement de pression"), ),
-            "PRME_ELNO":        ( (),
-                                 _(u"Pression aux noeuds par élément pour les éléments FLUIDE"), ),
             "PTOT":             ( (),
                                  _(u"Pression totale de fluide en THM"), ),
             "SISE_ELNO":        ( (),

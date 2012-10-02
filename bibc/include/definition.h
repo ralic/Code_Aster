@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF definition include  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF definition include  DATE 02/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -325,5 +325,7 @@
 #define CALLPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i)
 #define DEFPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j)
 #define CALLPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j)
+#define DEFPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m)
+#define CALLPPPPPSPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m)                 F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m)
 
 #endif
