@@ -1,6 +1,6 @@
       SUBROUTINE TE0344(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C     CALCUL DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C     POUR LES ELEMENTS DE POUTRE DE TIMOSHENKO AVEC GAUCHISSEMENT.
 C --- ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-C        EFGE_ELNO
 C        SIGM_ELNO
 C        SIPO_ELNO
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
@@ -52,8 +51,7 @@ C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU'/
 C     ------------------------------------------------------------------
 
-      OKOPT =  (OPTION.EQ.'EFGE_ELNO') .OR.
-     &         (OPTION.EQ.'SIPM_ELNO') .OR.
+      OKOPT =  (OPTION.EQ.'SIPM_ELNO') .OR.
      &         (OPTION.EQ.'SIPO_ELNO')
       CALL ASSERT( OKOPT )
 
@@ -195,16 +193,8 @@ C --- PRISE EN COMPTE DES EFFORTS REPARTIS (SOUS FORME DE FONCTION)
 
 C --- ------------------------------------------------------------------
 C --- ARCHIVAGE
-      IF(OPTION.EQ.'EFGE_ELNO') THEN
-C ---    NOTER L INVERSION DU SIGNE DES EFFORTS SUR LE PREMIER NOEUD
-C        (CONVENTION ADOPTEE/AL95-205)
-         CALL JEVECH('PEFFORR','E',JEFFO)
-         DO 200 I = 1,7
-             ZR(JEFFO-1+I)   = - FLR(I)
-             ZR(JEFFO-1+I+7) =   FLR(I+7)
-200      CONTINUE
 
-      ELSEIF (OPTION.EQ.'SIPM_ELNO') THEN
+      IF (OPTION.EQ.'SIPM_ELNO') THEN
          CALL JEVECH('PCONTRR','E',JEFFO)
          DO 210 I = 1,6
              FE(I)   =   FLR(I)

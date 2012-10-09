@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai5 Messages  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,7 +158,7 @@ cata_msg = {
 """),
 
 37 : _(u"""
- Le numéro de point demandé est supérieur au numéro maximum de point.
+ Le numéro de point demandé (%(i1)d) est supérieur au numéro maximum de point (%(i2)d).
 """),
 
 38 : _(u"""

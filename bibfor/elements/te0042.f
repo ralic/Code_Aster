@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C     ------------------------------------------------------------------
 C     CALCUL DU VECTEUR ELEMENTAIRE EFFORT GENERALISE
 C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-C                   'SIEF_ELGA'  'EFGE_ELNO'
+C                   'SIEF_ELGA'
 C IN  NOMTE  : K16 : NOM DU TYPE D'ELEMENT DISCRET :
 C         MECA_DIS_T_N      MECA_DIS_T_L       MECA_DIS_TR_N
 C         MECA_DIS_TR_L
@@ -107,20 +107,6 @@ C     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
 C     --- CALCUL DES VECTEURS ELEMENTAIRES ----
       IF (OPTION.EQ.'SIEF_ELGA') THEN
          CALL JEVECH('PCONTRR','E',JEFFO)
-         CALL JEVECH('PDEPLAR','L',JDEPL)
-
-C        --- VECTEUR DEPLACEMENT LOCAL  ULR = PGL * UG  ---
-         IF (NDIM.EQ.3) THEN
-            CALL UTPVGL(NNO,NC,PGL,ZR(JDEPL),ULR)
-         ELSE IF (NDIM.EQ.2) THEN
-            CALL UT2VGL(NNO,NC,PGL,ZR(JDEPL),ULR)
-         END IF
-
-C        --- VECTEUR EFFORT      LOCAL  FLR = KLC * ULR  ---
-         CALL PMAVEC('ZERO',NEQ,KLC,ULR,FLR)
-
-      ELSE IF (OPTION.EQ.'EFGE_ELNO') THEN
-         CALL JEVECH('PEFFORR','E',JEFFO)
          CALL JEVECH('PDEPLAR','L',JDEPL)
 
 C        --- VECTEUR DEPLACEMENT LOCAL  ULR = PGL * UG  ---

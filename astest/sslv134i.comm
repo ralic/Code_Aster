@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL K_I EN X-FEM AXI-SYMMETRIQUE
 # sslv134i.para = tps_job 150 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -221,6 +221,6 @@ TEST_TABLE(       TABLE=TAB_ROT,
                   NOM_PARA='K1',
                    REFERENCE='AUTRE_ASTER',
                    VALE=K1_REF,
-                 PRECISION=0.008        )
+                 PRECISION=0.01        )
 
 FIN();

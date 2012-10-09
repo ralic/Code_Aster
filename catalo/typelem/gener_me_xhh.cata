@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -311,6 +311,8 @@ OPTION__
                                      E10NEUTI  PLONCHA  N1NEUT_R PLSN
                                      N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
                               OUT__  ECONTPG  PCONTRR
+    SIEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
+    SIEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX

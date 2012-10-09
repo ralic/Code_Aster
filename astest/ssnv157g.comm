@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 # TITRE LOIS NON LOCALES A DEFO REGULARISEES SUR BARREAU 2D DPLAN
 # ssnv157g.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,10 +26,10 @@ TOTO=DEFI_GROUP(reuse =TOTO,
                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MAT1=DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0**0.5,),
-                       MAZARS=_F(BETA=1.0,
+                       MAZARS=_F(K=0.7,
                        EPSD0=9.375e-5,
                        AC=1.15,
-                       AT=0.8,
+                       AT=1.,
                        BC=1391.3,
                        BT=10000.,),
                    ELAS=_F(NU=0.1,
@@ -120,7 +120,7 @@ TEST_RESU(RESU=(  _F(
                NOEUD = 'N2',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DY',
-               VALE = 2.71156E-3), _F(
+               VALE = 2.39773E-3), _F(
                RESULTAT = EVOL1,
                REFERENCE = 'NON_REGRESSION',
                NUME_ORDRE = 51,
@@ -128,6 +128,6 @@ TEST_RESU(RESU=(  _F(
                POINT = 2,
                NOM_CHAM = 'VARI_ELGA',
                NOM_CMP = 'V1',
-               VALE = 9.10946E-01))
+               VALE = 9.16055E-01))
                )
 FIN();

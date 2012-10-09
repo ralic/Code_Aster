@@ -41,6 +41,7 @@ class create_asrun_files(Task.Task):
         dico['LD_LIBRARY_PATH'] = sep.join(ld_path)
         dico['SRC'] = self.src
         dico['OPT_ENV'] = self.env['OPT_ENV'] and os.linesep.join(self.env['OPT_ENV']) or ''
+        dico['ADDMEM'] = self.env['ADDMEM'] or 250
         open(cfg, 'w').write(TMPL_CONFIG_TXT % dico)
         open(prof, 'w').write(TMPL_PROFILE % dico)
         return 0
@@ -67,6 +68,7 @@ TMPL_CONFIG_TXT = r"""# Configuration file created by waftools/legacy
 # Libraries, compilers are not relevant 
 #
 ENV_SH         | env     | -     | profile.sh
+ADDMEM         | memory  | -     | %(ADDMEM)s
 DEFS           | defined | ?     | %(DEFINES)s
 #
 PYTHON         | python  | 2.7   | %(PYTHON)s

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF onmetl scotch  DATE 02/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF onmetl renum  DATE 08/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -279,7 +279,7 @@ int ComputeFillInL(GraphType *graph, idxtype *iperm,idxtype *parent,
 
 
  
-   printf("\nSymbolic factorization... --------------------------------------------\n"); 
+/*   printf("\nSymbolic factorization... --------------------------------------------\n"); */
  
 
    nvtxs = graph->nvtxs; 
@@ -319,7 +319,7 @@ int ComputeFillInL(GraphType *graph, idxtype *iperm,idxtype *parent,
     */ 
    int errs;
    errs=smbfctl(nvtxs, xadj, adjncy, perm, iperm, xlnz, maxlnz, xnzsub, nzsub, &maxsub,supnd,parent,nbsn,&lgind,opc);
-   printf("errs %d \n",errs);
+/*   printf("errs %d \n",errs);*/
    if (errs) {
      int errs2;
      free(nzsub); 
@@ -327,7 +327,7 @@ int ComputeFillInL(GraphType *graph, idxtype *iperm,idxtype *parent,
      maxsub = 4*maxsub;  
      nzsub = idxmalloc(maxsub, "ComputeFillIn: nzsub");
      errs2= smbfctl(nvtxs, xadj, adjncy, perm, iperm, xlnz, maxlnz, xnzsub, nzsub, &maxsub,supnd,parent,nbsn,&lgind,opc);
-   printf("errs2 %d \n",errs2);
+/*   printf("errs2 %d \n",errs2);*/
      if (errs2)  
        errexit("MAXSUB is too small!"); 
    } 
@@ -652,6 +652,7 @@ correction des fiches 12345 et 12503  */
    if(aux < taille2) k2++; 
    if(aux < taille3) k3++; 
   } 
+/*  
  printf("\n "); 
  printf(" taille du plus petit super-noeud %8d\n ",minsn); 
  printf(" taille du plus grand super-noeud %8d\n ",maxsn); 
@@ -659,6 +660,7 @@ correction des fiches 12345 et 12503  */
  printf(" nb de super-noeuds de taille < %4d : %8d\n ",taille1,k1); 
  printf(" nb de super-noeuds de taille < %4d : %8d\n ",taille2,k2); 
  printf(" nb de super-noeuds de taille < %4d : %8d\n ",taille3,k3); 
+*/
  /* for (i=1; i<=snode+1; i++) {printf(" i pt. %4d%4d\n ",i,supnd[i]);} */ 
 
  /* parent des super-noeuds */ 
@@ -697,7 +699,7 @@ correction des fiches 12345 et 12503  */
           for (i=1; i<=neqns; i++) { 
      *opc += (xlnz[i+1]-xlnz[i])*(xlnz[i+1]-xlnz[i]) - (xlnz[i+1]-xlnz[i]); 
           } 
-  printf("    Nonzeros: %d, \tOperation Count: %6.4le \n", *maxlnz, *opc); 
+/*  printf("    Nonzeros: %d, \tOperation Count: %6.4le \n", *maxlnz, *opc); */
   /* ecriture sur le fichier 85
   ecri11_(invp,perm,supnd,parsnode,&neqns,&snode,&opc,maxlnz,&lgind); 
   */

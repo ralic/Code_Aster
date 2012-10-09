@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI
 # wtnv134a.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
@@ -623,7 +623,12 @@ U2=STAT_NON_LINE(MODELE=MODELE,
 #-------------------------
 #    TEST_RESU AU POINT C
 #-------------------------
-U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U2)
+U2=CALC_CHAMP(reuse=U2,
+              CONTRAINTE=('SIGM_ELNO'),
+              CRITERES=('SIEQ_ELGA','SIEQ_ELNO','EPEQ_ELGA','EPEQ_ELNO'),
+              VARI_INTERNE=('VARI_ELNO'),
+              DEFORMATION=('EPSI_ELNO'),
+              RESULTAT=U2,);
 
 
 U2=CALC_CHAMP(reuse      = U2,

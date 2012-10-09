@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,6 +41,7 @@ MODE_LOCAL__
     EENERR   = ENER_R   ELEM__         (TOTALE   DX       DY       DZ       DRX      DRY      DRZ      )
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
     CINSTPR  = INST_R   ELEM__         (INST     )
@@ -146,6 +147,8 @@ OPTION__
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      39    IN__   EREFCO   PREFCO   CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
+    REPERE_LOCAL        135   IN__   CCAORIE  PCAORIE  NGEOMER  PGEOMER
+                              OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
     RIGI_FLUI_STRU      41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
     RIGI_GYRO          464    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CCINFDI  PCINFDI
@@ -173,6 +176,8 @@ OPTION__
                               OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
+    TOU_INI_ELEM        99    IN__
+                              OUT__  CGEOMER  PGEOM_R
     TOU_INI_ELGA        99    IN__
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F

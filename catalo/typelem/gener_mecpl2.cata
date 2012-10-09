@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,9 +98,11 @@ MODE_LOCAL__
     EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
                                         VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
                                         VECT_3_Y VECT_3_Z )
+    EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
     EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  EPPTOT)
     EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  EPPTOT)
-    EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
                                         TERMN2   TERMSA   TERMS2   TAILLE   )
     EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
@@ -116,6 +118,7 @@ MODE_LOCAL__
     EGTHETA  = G        ELEM__         (GTHETA   )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
+    CGEOMER  = GEOM_R   ELEM__         (X        Y        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
@@ -155,8 +158,10 @@ MODE_LOCAL__
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
-                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  TRSIG    )
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
     EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   IND_DCHA VAL_DCHA X11      X22      X33 
                                         X12      X13      X23      RADI_V   ERR_RADI   ) 
     EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   IND_DCHA VAL_DCHA X11      X22      X33 
@@ -420,6 +425,8 @@ OPTION__
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      8     IN__   NGEOMER  PGEOMER  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
+    REPERE_LOCAL        133   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER
+                              OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2
     RICE_TRACEY         332   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NGEOMER  PGEOMER  EGNEUT1R PSDRMR
                                      CSOUSOP  PSOUSOP  ZVARIPG  PVARIMR  ZVARIPG  PVARIPR
                               OUT__  ERICTRA  PRICTRA  EGNEUT1R PSDRPR
@@ -472,6 +479,8 @@ OPTION__
                               OUT__  MMATUUR  PSYM
     TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  E6NEUTR  PPINTTO
+    TOU_INI_ELEM        99    IN__
+                              OUT__  CGEOMER  PGEOM_R
     TOU_INI_ELGA        99    IN__  
                               OUT__  EDOMGGA  PDOMMAG  EDEFOPG  PEPSI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R

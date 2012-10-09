@@ -1,6 +1,6 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C        POU_D_T
 C        POU_D_E
 C
 C     CALCUL DES OPTIONS :
-C        EFGE_ELNO (OU SIEF_ELNO)
+C        SIEF_ELNO
 C        FORC_NODA
 C        REFE_FORC_NODA
 C        VARI_ELNO
@@ -70,14 +70,8 @@ C
          NC = 6
       ENDIF
 
-      LEFGNO=(OPTION.EQ.'EFGE_ELNO'.OR.OPTION.EQ.'SIEF_ELNO')
-      IF (LEFGNO) THEN
-         IF (OPTION.EQ.'EFGE_ELNO') THEN
-            PEFFOR='PEFFORR'
-         ELSE
-            PEFFOR='PSIEFNOR'
-         ENDIF
-      ENDIF
+      LEFGNO=(OPTION.EQ.'SIEF_ELNO')
+      IF (LEFGNO) PEFFOR='PSIEFNOR'
 C
 C --- ------------------------------------------------------------------
       IF ( OPTION .EQ. 'REFE_FORC_NODA  ' ) THEN

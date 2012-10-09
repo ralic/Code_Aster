@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,6 +182,13 @@ Risques et conseils :
    Mais il faut que les instants consécutifs soient croissants (en tenant compte de TRANSLATION).
    Ici, l'instant %(r1)f  est affecté plusieurs fois.
    Pour cet instant, les champs sont écrasés.
+"""),
+
+23 : _(u"""
+ Erreur utilisateur :
+   Incohérence du MODELE et du CHAM_MATER :
+     Le MODELE de calcul est associé au maillage %(k1)s
+     Le CHAM_MATER de calcul est associé au maillage %(k2)s
 """),
 
 

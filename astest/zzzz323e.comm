@@ -1,0 +1,330 @@
+# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# TITRE VALIDATION DE L'IMPRESSION DES REPERES LOCAUX PAR IMPR_RESU/CONCEPT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# zzzz323e.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
+
+
+DEBUT(CODE=_F(NOM='ZZZZ323E',NIV_PUB_WEB='INTERNET',),);
+
+# MODELISATION C_PLAN, D_PLAN ET AXIS
+
+MAILLAGE=LIRE_MAILLAGE(    UNITE=20 )
+
+
+MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
+                    AFFE=(_F( MAILLE = ('CPL4','CPL3'),
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'C_PLAN'
+                            ),
+                          _F( MAILLE = ('DPL4','DPL3'),
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'D_PLAN'
+                            ),
+                          _F( MAILLE = ('AXI4','AXI3'),
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'AXIS'
+                            ),
+                         ),
+                  )
+
+CARAELEM=AFFE_CARA_ELEM(
+                       MODELE=MODELE,
+                       MASSIF=(_F( GROUP_MA='QUAD4',
+                                   ANGL_REP=(90.0,),
+                                ),
+                              _F(  GROUP_MA='TRIA3',
+                                   ANGL_REP=(45.0),
+                                )
+                               ),
+
+                         )
+
+# IMPRESSION AU FORMAT ASTER
+IMPR_RESU(
+          CONCEPT=_F(CARA_ELEM=CARAELEM,REPERE_LOCAL='OUI',MODELE=MODELE
+                      ))
+
+
+# IMPRESSION AU FORMAT MED
+DEFI_FICHIER(UNITE=82, FICHIER='./fort.82')
+
+IMPR_RESU(FORMAT='MED',UNITE=82,
+          CONCEPT=_F(CARA_ELEM=CARAELEM,REPERE_LOCAL='OUI',MODELE=MODELE
+                      ))
+
+
+DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
+
+# RELECTURE DU FICHIER MED
+REPLO_1 = LIRE_CHAMP(
+                      TYPE_CHAM   = 'ELEM_GEOM_R',
+                      UNITE       = 82,
+                      NUME_PT     = 0,
+                      NUME_ORDRE  = 0,
+                      MAILLAGE    = MAILLAGE,
+                      MODELE      = MODELE,
+                      NOM_MED     = 'CARAELEM.REPLO_1',
+                      NOM_CMP_IDEM='OUI',
+                     )
+REPLO_2 = LIRE_CHAMP(
+                      TYPE_CHAM   = 'ELEM_GEOM_R',
+                      UNITE       = 82,
+                      NUME_PT     = 0,
+                      NUME_ORDRE  = 0,
+                      MAILLAGE    = MAILLAGE,
+                      MODELE      = MODELE,
+                      NOM_MED     = 'CARAELEM.REPLO_2',
+                      NOM_CMP_IDEM='OUI',
+                     )
+
+# TEST_RESU
+
+# VECTEUR x local
+TEST_RESU(CHAM_ELEM=(_F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='CPL4',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = 0.E0,
+                        CRITERE='ABSOLU',
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='CPL4',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 1.E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='DPL4',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = 0.E0,
+                        CRITERE='ABSOLU',
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='DPL4',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 1.E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='AXI4',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = 0.E0,
+                        CRITERE='ABSOLU',
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='AXI4',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 1.E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='CPL3',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = 0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='CPL3',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='DPL3',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = 0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='DPL3',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='AXI3',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = 0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_1,
+                        MAILLE='AXI3',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                    ),
+         )
+
+# VECTEUR y local
+TEST_RESU(CHAM_ELEM=(_F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='CPL4',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = -1.0E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='CPL4',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 0.E0,
+                        CRITERE='ABSOLU',
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='DPL4',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = -1.E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='DPL4',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 0.E0,
+                        CRITERE='ABSOLU',
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='AXI4',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = -1.E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='AXI4',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 0.E0,
+                        CRITERE='ABSOLU',
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='CPL3',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = -0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='CPL3',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='DPL3',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = -0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='DPL3',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='AXI3',
+                        POINT= 1,
+                        NOM_CMP = 'X',
+                        VALE    = -0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                      _F(
+                        CHAM_GD = REPLO_2,
+                        MAILLE='AXI3',
+                        POINT= 1,
+                        NOM_CMP = 'Y',
+                        VALE    = 0.707106781186547E0,
+                        REFERENCE = 'ANALYTIQUE',
+                        PRECISION = 1.E-8
+                       ),
+                    ),
+         )
+
+
+
+FIN()

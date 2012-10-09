@@ -1,6 +1,11 @@
-      SUBROUTINE FGEQUI ( TZ, TYPZ, NDIM, EQUI )
+      SUBROUTINE FGEQUI (TZ,TYPZ,NDIM,EQUI)
+      IMPLICIT NONE
+      INTEGER NDIM
+      REAL*8 TZ(*),EQUI(*)
+      CHARACTER*(*) TYPZ
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,25 +22,25 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ----------------------------------------------------------------------
-      IMPLICIT NONE
-C     CALCUL DES GRANDEURS EQUIVALENTES EN CONTRAINTE ET DEFORMATION
-C     SOIT DANS L ORDRE :
-C                . CONTRAINTES EQUIVALENTES  :
-C                        . VON MISES                    (= 1 VALEUR)
-C                        . TRESCA                       (= 1 VALEUR)
-C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
-C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
-C                        . DIRECTION DES CONTRAINTES PRINCIPALES
-C                                                       (=3*3 VALEURS)
-C                        . TRACE                        (= 1 VALEUR)
-C                        . TAUX DE TRIAXIALITE          (= 1 VALEUR)
-C               . DEFORMATIONS EQUIVALENTES  :
-C                        . SECOND INVARIANT             (= 1 VALEUR)
-C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
-C                        . 2EME INV. * SIGNE (1ER.INV.) (= 1 VALEUR)
-C                        . DIRECTION DES CONTRAINTES PRINCIPALES
-C                                                       (=3*3 VALEURS)
+C RESPONSABLE DELMAS J.DELMAS
+C
+C     BUT:
+C       CALCULER LES GRANDEURS EQUIVALENTES SUIVANTES
+C       . CONTRAINTES EQUIVALENTES               (= 17 VALEURS)
+C          . VON MISES                               (= 1 VALEUR)
+C          . TRESCA                                  (= 1 VALEUR)
+C          . CONTRAINTES PRINCIPALES                 (= 3 VALEURS)
+C          . VON-MISES * SIGNE (PRESSION)            (= 1 VALEUR)
+C          . DIRECTIONS DES CONTRAINTES PRINCIPALES  (= 3*3 VALEURS)
+C          . TRACE                                   (= 1 VALEUR)
+C          . TAUX DE TRIAXIALITE                     (= 1 VALEUR)
+C
+C       . DEFORMATIONS EQUIVALENTES              (= 14 VALEURS)
+C          . SECOND INVARIANT                        (= 1 VALEUR)
+C          . DEFORMATIONS PRINCIPALES                (= 3 VALEURS)
+C          . 2EME INV. * SIGNE (1ER.INV.)            (= 1 VALEUR)
+C          . DIRECTIONS DES DEFORMATIONS PRINCIPALES (= 3*3 VALEURS)
+C
 C ----------------------------------------------------------------------
 C     IN     TZ    TENSEUR CONTRAINTE OU DEFORMATION (XX YY ZZ XY XZ YZ)
 C            TYPZ  TYPE DU TENSEUR 'SIGM' OU 'EPSI' SUIVI EVENTUELLEMENT
@@ -43,13 +48,12 @@ C            DES CARACTERES _DIR POUR CALCULER LES VECTEURS DIRECTEURS
 C            NDIM  DIMENSION ESPACE 3 OU 2
 C     OUT    EQUI  VECTEUR DES GRANDEURS EQUIVALENTES
 C ----------------------------------------------------------------------
-      REAL*8         TZ(*),T(6),TN(6),TR(6),TU(6),VECP(3,3), NUL(6)
-      REAL*8         EQUI(*) , RAC2  , HYD, JACAUX(3)
+      REAL*8         T(6),TN(6),TR(6),TU(6),VECP(3,3), NUL(6)
+      REAL*8         RAC2  , HYD, JACAUX(3)
       REAL*8         LCIV2S,   LCIV2E
       REAL*8         TOL, TOLDYN
       INTEGER        NBVEC, NPERM
-      INTEGER        NDIM, TYPE, IORDRE
-      CHARACTER*(*)    TYPZ
+      INTEGER        TYPE, IORDRE
       CHARACTER*8 TYP
       CHARACTER*3    LCQEQV
       COMMON /TDIM/  NT,ND

@@ -5,7 +5,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -199,8 +199,15 @@ C     ----------------------------
       IF (NOMGD.NE.'VARI_R') THEN
         DIFF = (ZI(JMOLO-1+4).GT.10000)
         NBPT = MOD(ZI(JMOLO-1+4),10000)
+
+C       -- SI CHAM_ELEM / ELEM (NBPT=1) ET QUE L'ON NA PAS PRECISE NUPO
+C          ON PREND NUPO2=1
+        IF ((NUPO2.EQ.0).AND.(NBPT.EQ.1)) NUPO2=1
+
         IF (NUPO2.GT.NBPT) THEN
-            CALL U2MESS(AOF,'UTILITAI5_37')
+            VALI(1)=NUPO2
+            VALI(2)=NBPT
+            CALL U2MESI(AOF,'UTILITAI5_37',2,VALI)
             IDDL=0
             GOTO 9999
         END IF

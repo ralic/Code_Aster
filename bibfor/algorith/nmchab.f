@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/10/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/10/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,16 +23,10 @@ C RESPONSABLE JMBHH01 J.M.PROIX
 C.======================================================================
       IMPLICIT NONE
 C
-C      NMCHAB   -- REALISE L'INTEGRATION DE LA LOI DE COMPORTEMENT
-C                  'VISC_CIN1_CHAB' :
-C                  INTEGRATION DU MODELE DE COMPORTEMENT ELASTOPLASTIQUE
-C                  DE CHABOCHE A ECROUISSAGE CINEMATIQUE NON LINEAIRE
-C                  ET ISOTROPE POUR LES ELEMENTS ISOPARAMETRIQUES
-C                  2D ET 3D EN PETITES DEFORMATIONS.
-C                  CE MODELE COMPORTE UNE SEULE VARIABLE CINEMATIQUE,
-C                  IL PREND EN COMPTE TOUTES LES VARIATIONS DES
-C                  DES COEFFICIENTS AVEC LA TEMPERATURE ET POSSEDE
-C                  UN TERME D'ECROUISSAGE SUR LE TERME DE RAPPEL.
+C      NMCHAB   -- INTEGRATION DU MODELE DE COMPORTEMENT ELASTOPLASTIQUE
+C                  DE CHABOCHE A ECROUISSAGE CINEMATIQUE NON LINEAIRE 
+C                  ET ISOTROPE ET EFFET DE MEMOIRE.
+C                  CE MODELE COMPORTE UNE OU DEUX VARIABLES CINEMATIQUES
 C                  CE MODELE EST INTEGRE PAR LA RESOLUTION D'UNE
 C                  SEULE EQUATION SCALAIRE NON LINEAIRE EN P.
 C
@@ -121,46 +115,33 @@ C                              IRET=1 => ABSENCE DE CONVERGENCE DANS
 C                                        LORS DE L'INTEGRATION DE LA
 C                                        LOI VISC_CINX_CHAB
 C
-C -----  ARGUMENTS
-          INTEGER             KPG,KSP,NDIM,IMATE,NBVAR,IRET
-           REAL*8             CRIT(10),INSTAM,INSTAP
-           REAL*8             DEPS(6),DEUXMU
-           REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
-           CHARACTER*(*)      FAMI
-           CHARACTER*8        TYPMOD(*)
-           CHARACTER*16       COMPOR(3),OPTION
-C -----  VARIABLES LOCALES
-           REAL*8      DEPSTH(6),PM,C2INF,GAMM20,M2P
-           REAL*8      PLAST,DEPSMO,SIGMMO,E,NU,TROISK
-           REAL*8      RP,RPM,SIELEQ,SEUIL,DP
-           REAL*8      COEF,SIGEDV(6),KRON(6),DEPSDV(6),EPSPM(6)
-           REAL*8      SIGMDV(6),SIGPDV(6),EM,NUM,KSIP(6),QP
-           REAL*8      TROIKM,DEUMUM,SIGMP(6),SIGEL(6),PP,EPSPP(6)
-           REAL*8      UN,RAC2,C2P,RADI
-           REAL*8      R0,RINF,B,CINF,K,W,MAT(16),C2M,GAMM2P
-           REAL*8      DENOMI
-           REAL*8      MP,GAMMA0,GAMMAP
-           REAL*8      DEPSP(6),ALFAM(6),ALFA(6),DALFA(6),RPVP
-           REAL*8      CM,AINF,CP
-           REAL*8      ALFA2M(6),ALFA2(6),DALFA2(6)
-           REAL*8      DT,KVI,VALDEN,KSIM(6),QM,RPVM
-           REAL*8      MATEL(4),XM(6),XP(6)
-           INTEGER     NDIMSI,I,NITER,VISC,MEMO
-           DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-C.========================= DEBUT DU CODE EXECUTABLE ==================
-C
-C --- POUR L'INSTANT ON NE TRAITE PAS LE CAS DES CONTRAINTES PLANES :
-C     -------------------------------------------------------------
-      IF (TYPMOD(1) .EQ. 'C_PLAN') THEN
-        CALL U2MESS('F','ALGORITH6_66')
-      ENDIF
+      INTEGER KPG,KSP,NDIM,IMATE,NBVAR,IRET
+      REAL*8 DEPSTH(6),PM,C2INF,GAMM20,M2P,DENOMI
+      REAL*8 PLAST,DEPSMO,SIGMMO,E,NU,TROISK,DEPS(6),DEUXMU
+      REAL*8 RP,RPM,SIELEQ,SEUIL,DP,CM,AINF,CP,RPVM,RPVP
+      REAL*8 COEF,SIGEDV(6),KRON(6),DEPSDV(6),EPSPM(6)
+      REAL*8 SIGMDV(6),SIGPDV(6),EM,NUM,KSIP(6),QP
+      REAL*8 TROIKM,DEUMUM,SIGMP(6),SIGEL(6),PP,EPSPP(6)
+      REAL*8 UN,RAC2,C2P,RADI,MP,GAMMA0,GAMMAP
+      REAL*8 R0,RINF,B,CINF,K,W,MAT(16),C2M,GAMM2P
+      REAL*8 DEPSP(6),ALFAM(6),ALFA(6),DALFA(6)
+      REAL*8 SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
+      REAL*8 ALFA2M(6),ALFA2(6),DALFA2(6),MATEL(4),XM(6),XP(6)
+      REAL*8 DT,KVI,VALDEN,KSIM(6),QM,CRIT(10),INSTAM,INSTAP
+      CHARACTER*(*) FAMI
+      CHARACTER*8   TYPMOD(*)
+      CHARACTER*16  COMPOR(3),OPTION
+      COMMON/FCHAB/MAT,PM,SIGEDV,EPSPM,ALFAM,ALFA2M,DEUXMU,RPVM,RPVP,
+     &             QM,QP,KSIM,KSIP,DT,  NDIMSI,NBVAR,VISC,MEMO
+      INTEGER NDIMSI,I,NITER,VISC,MEMO
+      DATA    KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+C=======================================================================
 C
       IRET=0
       CALL NMCHAM(FAMI,KPG,KSP,IMATE,COMPOR,
      &            MATEL,MAT,NBVAR,MEMO,VISC,COEF)
      
 C     NBVARI=2+6*NBVAR+MEMO*14
-
       UN     = 1.0D0
       RAC2   = SQRT(2.D0)
       EM     = MATEL(1)
@@ -188,7 +169,6 @@ C     NBVARI=2+6*NBVAR+MEMO*14
          VALDEN=UN
          KVI=0.D0
       ENDIF
-
 C
 C --- INITIALISATIONS :
 C     ===============
@@ -206,18 +186,12 @@ C
          RPVM   = VIM(15)
          RPM    = RPVM + R0
          QM     = VIM(16)
-         DO 103 I=1,6
-            KSIM(I)=0.D0
-            KSIP(I)=0.D0
-            EPSPM(I)=0.D0
-            EPSPP(I)=0.D0
- 103     CONTINUE
-         DO 101 I=1,NDIMSI
-            KSIM(I) = VIM(I+16)
-  101    CONTINUE
-         DO 91 I = 1,NDIMSI
-            EPSPM(I)=VIM(22+I)
- 91      CONTINUE
+         CALL R8INIR(6,0.D0,KSIM,1)
+         CALL R8INIR(6,0.D0,KSIP,1)
+         CALL R8INIR(6,0.D0,EPSPM,1)
+         CALL R8INIR(6,0.D0,EPSPP,1)
+         CALL DCOPY(NDIMSI,VIM(17),1,KSIM,1)
+         CALL DCOPY(NDIMSI,VIM(23),1,EPSPM,1)
       ENDIF
       CM     = CINF  * (UN + (K-UN)*EXP(-W*PM))
       C2M    = C2INF * (UN + (K-UN)*EXP(-W*PM))
@@ -303,8 +277,7 @@ C       --------------------
       DO 90 I = 1,NDIMSI
         SIGMDV(I) = SIGMP(I)- SIGMMO*KRON(I)
         SIGEDV(I) = SIGMDV(I) + DEUXMU * DEPSDV(I)
-        SIGEL(I)=SIGEDV(I)
-     &           -CM*ALFAM(I)/1.5D0-C2M*ALFA2M(I)/1.5D0
+        SIGEL(I)  = SIGEDV(I)-CM*ALFAM(I)/1.5D0-C2M*ALFA2M(I)/1.5D0
         SIELEQ    = SIELEQ + SIGEL(I)*SIGEL(I)
  90   CONTINUE
       SIELEQ     = SQRT(1.5D0*SIELEQ)
@@ -331,13 +304,8 @@ C       ------------
             DP    = 0.D0
          ELSE
 C
-C ---   DETERMINATION DE L'INCREMENT DE DEFORMATION PLASTIQUE CUMULEE
-C ---   QUI EST LA SOLUTION D'UNE EQUATION NON LINEAIRE EN UTILISANT
-C ---   UNE METHODE DE SECANTES :
-C       =======================
-            CALL NMCHDP(MAT,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,ALFA2M,
-     &                  DEUXMU,CRIT,SEUIL,VISC,MEMO,DT,RPVM,QM,KSIM,
-     &                  RPVP,QP,KSIP,DP,IRET,NITER)
+C ---       DETERMINATION DE DP SOLUTION D'UNE EQUATION NON LINEAIRE
+            CALL NMCHDP(CRIT,SEUIL,DP,IRET,NITER)
             IF (IRET.GT.0) GOTO 9999
             PLAST = UN
          ENDIF
@@ -362,14 +330,13 @@ C
 C ---   REACTUALISATION DE SIGEL A CAUSE DE CP :
 C       --------------------------------------
          DO 100 I = 1,NDIMSI
-           SIGEL(I)  = SIGEDV(I)-CP*ALFAM(I)/1.5D0
-     &                          -C2P*ALFA2M(I)/1.5D0
+           SIGEL(I)  = SIGEDV(I)-CP*ALFAM(I)/1.5D0-C2P*ALFA2M(I)/1.5D0
  100     CONTINUE
 C
 C ---   DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES :
 C       --------------------------------------------------------
          DO 120 I = 1, NDIMSI
-            DEPSP(I) =  UN/DENOMI*(  1.5D0*DP*SIGEDV(I)
+           DEPSP(I) =  UN/DENOMI*(  1.5D0*DP*SIGEDV(I)
      &                   - MP*DP*ALFAM(I)- M2P*DP*ALFA2M(I))
             IF (MEMO.EQ.1) THEN
                EPSPP(I)=EPSPM(I)+DEPSP(I)
@@ -417,7 +384,7 @@ C      ===========
      &               PM,DP,NDIMSI,DT,RPVP,QP,VIM,DSIDEP)
 C
       ENDIF
-      
+
 C --- MISE AU FORMAT DES CONTRAINTES DE RAPPEL :
 C     ========================================
       IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.

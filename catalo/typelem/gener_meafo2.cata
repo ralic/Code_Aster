@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,12 +49,20 @@ MODE_LOCAL__
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
-                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  TRSIG    )
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
+    EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
@@ -117,6 +125,12 @@ OPTION__
                               OUT__  EENERNO  PENERNO
     ENEL_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPEQ_ELGA           335   IN__   EDEFOPG  PDEFORR
+                              OUT__  EDFEQPG  PDEFOEQ
+    EPEQ_ELNO           335   IN__   EDEFONO  PDEFORR
+                              OUT__  EDFEQNO  PDEFOEQ
+    EPMQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPMQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           286   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CHARMON  PHARMON
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENERR   PENERDR
@@ -124,10 +138,6 @@ OPTION__
                               OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC
     EPSI_ELNO           4     IN__   EDEFOPG  PDEFOPG
                               OUT__  EDEFONO  PDEFONO  EDEFONC  PDEFONC
-    EPMQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPMQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ETOT_ELEM           575   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
                                      NGEOMER  PGEOMER  CHARMON  PHARMON  EENERR   PENERDM
                               OUT__  EENERR   PENERDR
@@ -162,8 +172,7 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA           115   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CHARMON  PHARMON
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  ECONTPG  PCONTRR
-                                     ECONTPC  PCONTRC
+                              OUT__  ECONTPG  PCONTRR  ECONTPC  PCONTRC
     SIEQ_ELGA           335   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQPG  PCONTEQ
     SIEQ_ELNO           335   IN__   ECONTNO  PCONTRR

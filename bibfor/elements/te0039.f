@@ -1,6 +1,6 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ C ======================================================================
       CHARACTER*16   OPTION,NOMTE
 C ----------------------------------------------------------------------
 C IN OPTION    : K16 :  OPTION DE CALCUL
-C     'EFGE_ELNO'  'SIEQ_ELNO'       'SIEQ_ELGA'
+C      'SIEQ_ELNO'       'SIEQ_ELGA'
 C     'FORC_NODA'  'REFE_FORC_NODA'  'CHAR_MECA_EPSI_R'
 C     'FONL_NOEU'
 C IN NOMTE     : K16 : NOM DU TYPE ELEMENT
@@ -155,12 +155,8 @@ C --- ------------------------------------------------------------------
             CALL U2MESK('F','DISCRETS_15',2,KMESS)
          ENDIF
 C --- ------------------------------------------------------------------
-      ELSEIF (OPTION.EQ.'EFGE_ELNO'.OR.OPTION.EQ.'SIEF_ELNO') THEN
-         IF (OPTION.EQ.'EFGE_ELNO') THEN
-            CALL JEVECH('PEFFORR','E',IVECTU)
-         ELSE
-            CALL JEVECH('PSIEFNOR','E',IVECTU)
-         ENDIF
+      ELSEIF (OPTION.EQ.'SIEF_ELNO') THEN
+         CALL JEVECH('PSIEFNOR','E',IVECTU)
          CALL JEVECH('PCONTRR','L',ICONTG)
          DO 10 I = 1,NEQ
             ZR(IVECTU-1+I) = ZR(ICONTG-1+I)

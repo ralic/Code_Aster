@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,6 @@ C     CALCUL DE CONTRAINTES, DEFORMATIONS, EFFORTS ET DEFORMATIONS
 C     GENERALISES POUR LES ELEMENTS DKT, DKTG, DST, DKQ, DSQ ET Q4G
 C     POUR UN MATERIAU ISOTROPE OU MULTICOUCHE
 C         OPTIONS TRAITEES  ==>  SIEF_ELGA
-C                                EFGE_ELNO
 C                                EPSI_ELGA
 C                                DEGE_ELGA
 C                                DEGE_ELNO
@@ -63,7 +62,6 @@ C
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
 C
       IF (OPTION.NE.'SIEF_ELGA' .AND.
-     &    OPTION.NE.'EFGE_ELNO' .AND.
      &    OPTION.NE.'EPSI_ELGA' .AND.
      &    OPTION.NE.'DEGE_ELNO' .AND.
      &    OPTION.NE.'DEGE_ELGA') THEN
@@ -214,14 +212,6 @@ C
             CALL T3GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
          END IF
          CALL DXSIRO(NP*NBCOU*3,T2VE,ZR(JSIGM),ZR(JSIGM))
-C     ----------------------------
-      ELSE IF ( OPTION(1:9) .EQ. 'EFGE_ELNO' ) THEN
-C ---    CALCUL DES EFFORTS GENERALISES VRAIS AUX POINTS DE CALCUL
-         CALL DXEFGV(NOMTE,OPTION,XYZL,PGL,DEPL,EFFGT)
-C ---    PASSAGE DES EFFORTS GENERALISES DU REPERE INTRINSEQUE
-C ---    A L'ELEMENT AU REPERE LOCAL DE LA COQUE
-         CALL JEVECH('PEFFORR','E',JEFFG)
-         CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
 C     ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'DEGE_ELNO' ) THEN
         CALL JEVECH('PDEFOGR','E',JEFFG)

@@ -9,7 +9,7 @@
       REAL*8              PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C                                 A REORIENTER
 C    NBMAIL         IN    I       NB DE MAILLES DE LA LISTE
 C    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 C    REORIE         IN    L       INDIQUE SI L'ON DOIT APPELER ORIEMA
-C    PREC           IN    R       PRECISION
+C    PREC           IN    R       (INUTILISE)
 C    MAILVO         IN    I       SI ORIE_PEAU_3D ("GROUP_MA_VOLU")
 C                                   = LISTE DES MAILLES VOLUMIQUES
 C                                     UTILES A LA REORIENTATION
@@ -130,12 +130,13 @@ C
 C
 C --- RECHERCHE DES MAILLES SUPPORTS
 C
-      KDIM ='  '
+      KDIM =' '
       IF ( DIME1 ) KDIM ='2D'
       IF ( DIME2 ) KDIM ='3D'
+      CALL ASSERT(KDIM.NE.' ')
       NOMOB1 = '&&ORILMA.MAILLE_3D'
-      CALL UTMASU ( NOMA, KDIM, NBMAIL, LISTMA, NOMOB1, PREC, ZR(JCOOR),
-     &              NBMAVO, MAILVO)
+      CALL UTMASU ( NOMA, KDIM, NBMAIL, LISTMA, NOMOB1,ZR(JCOOR),
+     &              NBMAVO, MAILVO,.FALSE.)
       CALL JEVEUO ( NOMOB1, 'L', JM3D )
 C
       NORIEG = 0

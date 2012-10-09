@@ -5,7 +5,7 @@
       CHARACTER*8      TYPMA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/10/2012   AUTEUR MARTIN A.MARTIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,9 +44,9 @@ C......................................................................
  110    CONTINUE
  100  CONTINUE
 
-      IF (TYPMA.EQ.'HEXA8' .OR. TYPMA.EQ.'HEXA20') THEN
+      IF (TYPMA.EQ.'HEXA8') THEN
         NBAR=12
-C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA8 OU HEXA20
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA8
         AR(1,1)=1
         AR(1,2)=2
         AR(2,1)=2
@@ -71,7 +71,46 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA8 OU HEXA20
         AR(11,2)=7
         AR(12,1)=4
         AR(12,2)=8
-      ELSEIF (TYPMA.EQ.'PENTA6'.OR.TYPMA.EQ.'PENTA15') THEN
+      ELSEIF (TYPMA.EQ.'HEXA20') THEN   
+        NBAR=12
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA20
+        AR(1,1)=1
+        AR(1,2)=2
+        AR(1,3)=9
+        AR(2,1)=2
+        AR(2,2)=3
+        AR(2,3)=10
+        AR(3,1)=3
+        AR(3,2)=4
+        AR(3,3)=11
+        AR(4,1)=4
+        AR(4,2)=1
+        AR(4,3)=12
+        AR(5,1)=5
+        AR(5,2)=6
+        AR(5,3)=17
+        AR(6,1)=6
+        AR(6,2)=7
+        AR(6,3)=18
+        AR(7,1)=7
+        AR(7,2)=8
+        AR(7,3)=19
+        AR(8,1)=8
+        AR(8,2)=5
+        AR(8,3)=20
+        AR(9,1)=1
+        AR(9,2)=5
+        AR(9,3)=13
+        AR(10,1)=2
+        AR(10,2)=6
+        AR(10,3)=14
+        AR(11,1)=3
+        AR(11,2)=7
+        AR(11,3)=15
+        AR(12,1)=4
+        AR(12,2)=8 
+        AR(12,3)=16    
+      ELSEIF (TYPMA.EQ.'PENTA6') THEN
         NBAR=9
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
         AR(1,1)=1
@@ -92,7 +131,37 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
         AR(8,2)=5
         AR(9,1)=3
         AR(9,2)=6
-      ELSEIF (TYPMA.EQ.'PYRAM5'.OR.TYPMA.EQ.'PYRAM13') THEN
+      ELSEIF (TYPMA.EQ.'PENTA15') THEN
+        NBAR=9
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
+        AR(1,1)=1
+        AR(1,2)=2
+        AR(1,3)=7
+        AR(2,1)=2
+        AR(2,2)=3
+        AR(2,3)=8
+        AR(3,1)=3
+        AR(3,2)=1
+        AR(3,3)=9
+        AR(4,1)=4
+        AR(4,2)=5
+        AR(4,3)=13
+        AR(5,1)=5
+        AR(5,2)=6
+        AR(5,3)=14
+        AR(6,1)=6
+        AR(6,2)=4
+        AR(6,3)=15
+        AR(7,1)=1
+        AR(7,2)=4
+        AR(7,3)=10
+        AR(8,1)=2
+        AR(8,2)=5
+        AR(8,3)=11
+        AR(9,1)=3
+        AR(9,2)=6
+        AR(9,3)=12
+      ELSEIF (TYPMA.EQ.'PYRAM5') THEN
         NBAR=8
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
         AR(1,1)=1
@@ -111,7 +180,34 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
         AR(7,2)=5
         AR(8,1)=4
         AR(8,2)=5
-      ELSEIF (TYPMA.EQ.'TETRA4'.OR.TYPMA.EQ.'TETRA10') THEN
+      ELSEIF (TYPMA.EQ.'PYRAM13') THEN
+        NBAR=8
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
+        AR(1,1)=1
+        AR(1,2)=2
+        AR(1,3)=6
+        AR(2,1)=2
+        AR(2,2)=3
+        AR(2,3)=7
+        AR(3,1)=3
+        AR(3,2)=4
+        AR(3,3)=8
+        AR(4,1)=1
+        AR(4,2)=4
+        AR(4,3)=9
+        AR(5,1)=1
+        AR(5,2)=5
+        AR(5,3)=10
+        AR(6,1)=2
+        AR(6,2)=5
+        AR(6,3)=11
+        AR(7,1)=3
+        AR(7,2)=5
+        AR(7,3)=12
+        AR(8,1)=4
+        AR(8,2)=5
+        AR(8,3)=13    
+      ELSEIF (TYPMA.EQ.'TETRA4') THEN
         NBAR=6
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
         AR(1,1)=1
@@ -126,6 +222,27 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
         AR(5,2)=4
         AR(6,1)=3
         AR(6,2)=4
+      ELSEIF (TYPMA.EQ.'TETRA10') THEN
+        NBAR=6
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
+        AR(1,1)=1
+        AR(1,2)=2
+        AR(1,3)=5
+        AR(2,1)=1
+        AR(2,2)=3
+        AR(2,3)=7
+        AR(3,1)=1
+        AR(3,2)=4
+        AR(3,3)=8
+        AR(4,1)=2
+        AR(4,2)=3
+        AR(4,3)=6
+        AR(5,1)=2
+        AR(5,2)=4
+        AR(5,3)=9
+        AR(6,1)=3
+        AR(6,2)=4
+        AR(6,3)=10
       ELSEIF (TYPMA.EQ.'QUAD4') THEN
         NBAR=4
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD4

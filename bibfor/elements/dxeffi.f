@@ -2,11 +2,12 @@
       IMPLICIT  NONE
       INCLUDE 'jeveux.h'
       REAL*8              PGL(3,3), CONT(*), EFFINT(*)
-      CHARACTER*16        OPTION, NOMTE
+      CHARACTER*16 NOMTE
+      CHARACTER*(*) OPTION
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +130,7 @@ C         --------------------------------------------------------------
                M(3) = M(3) + COEHSD*ZIC*CONT(ICPG+4)
                T(1) = T(1) + COEHSD*CONT(ICPG+5)
                T(2) = T(2) + COEHSD*CONT(ICPG+6)
-               
+
  120        CONTINUE
  110     CONTINUE
 C

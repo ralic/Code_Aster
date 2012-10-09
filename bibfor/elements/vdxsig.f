@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       REAL*8 SIGMPG(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,14 +26,15 @@ C                    EFGE_ELNO
 C  POUR LES COQUE_3D
 C
 C ======================================================================
-      CHARACTER*16 NOMTE,OPTION
+      CHARACTER*16 NOMTE
+      CHARACTER*(*) OPTION
       INTEGER NB1,NB2,NPGE,NPGSR,NPGSN
       INTEGER NBCOU,JCOU,IMOY,IRET,IRET1,IRET2,IRET3
 C-----------------------------------------------------------------------
-      INTEGER I ,ICOU ,INDITH ,INTE ,INTSN ,INTSR ,J 
-      INTEGER JCARA ,JDEPG ,K ,K1 ,KPGS ,KWGT ,LZI 
-      INTEGER LZR ,NCOUMX 
-      REAL*8 TREF 
+      INTEGER I ,ICOU ,INDITH ,INTE ,INTSN ,INTSR ,J
+      INTEGER JCARA ,JDEPG ,K ,K1 ,KPGS ,KWGT ,LZI
+      INTEGER LZR ,NCOUMX
+      REAL*8 TREF
 C-----------------------------------------------------------------------
       PARAMETER(NCOUMX=10)
       REAL*8 XI(3,9),SIG(NCOUMX*162),EPS(NCOUMX*162),TEM(NCOUMX*27)
@@ -242,7 +243,7 @@ C
 C
       IF (OPTION(1:9).EQ.'EFGE_ELNO') THEN
 C
-        CALL VDEFGE(NOMTE,OPTION,NB1,NPGSR,ZR(LZR),EPAIS,SIGMA,EFFGT)
+        CALL VDEFGE(NOMTE,NB1,NPGSR,ZR(LZR),EPAIS,SIGMA,EFFGT)
 C
       ENDIF
 C

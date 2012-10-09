@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,6 +59,12 @@ MODE_LOCAL__
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     )
+    EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
+    EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     CVENTCX  = VENTCX_F ELEM__         (FCXP     )
     EREFCO   = PREC     ELEM__         (EFFORT   )
@@ -127,6 +133,10 @@ OPTION__
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
     ENEL_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
+    EPEQ_ELGA           335   IN__   EDEFOPG  PDEFORR
+                              OUT__  EDFEQPG  PDEFOEQ
+    EPEQ_ELNO           335   IN__   EDEFONO  PDEFORR
+                              OUT__  EDFEQNO  PDEFOEQ
     EPOT_ELEM           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENERR   PENERDR

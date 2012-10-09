@@ -1,6 +1,6 @@
       SUBROUTINE TE0156 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,13 +22,13 @@ C ======================================================================
       CHARACTER*16        OPTION , NOMTE
 C-----------------------------------------------------------------------
 C REALISE LES OPTIONS :
-C     EFGE_ELNO (OU SIEF_ELNO): PASSAGE DU POINT DE GAUSS AUX NOEUD
+C     SIEF_ELNO
 C                POUR  LES CONTRAINTES DE L'ELEMENT MECA_BARRE
 C     FORC_NODA      : FORCES NODALE DE L'ELEMENT MECA_BARRE
 C
 C ----------------------------------------------------------------------
 C IN OPTION    : K16 :  OPTION DE CALCUL
-C                       'EFGE_ELNO' OU 'FORC_NODA' OU  'SIEF_ELNO'
+C                       'FORC_NODA' OU  'SIEF_ELNO'
 C                       OU 'REFE_FORC_NODA'
 C IN NOMTE     : K16 : NOM DU TYPE ELEMENT
 C                      'MECA_BARRE'
@@ -56,12 +56,6 @@ C
 102         CONTINUE
 101      CONTINUE
 
-      ELSEIF (OPTION.EQ.'EFGE_ELNO') THEN
-         CALL JEVECH('PEFFORR','E',IVECTU)
-         CALL JEVECH('PCONTRR','L',ICONTG)
-         ZR(IVECTU)   = ZR(ICONTG)
-         ZR(IVECTU+1) = ZR(ICONTG)
-C
       ELSEIF ( OPTION .EQ. 'FORC_NODA' ) THEN
          CALL JEVECH ( 'PCONTMR', 'L', ICONTG )
          CALL JEVECH ( 'PCAORIE', 'L', LORIEN )

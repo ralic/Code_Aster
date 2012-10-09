@@ -6,7 +6,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C  IN/OUT         MODELE    : NOM DE L'OBJET MODELE
 C
 C     ------------------------------------------------------------------
 C
-      REAL*8        R8B,ARMIN,PREC,GBO(3),GPR(3),NEXT(3),NORME,LSN
+      REAL*8        R8B,GBO(3),GPR(3),NEXT(3),NORME,LSN
       REAL*8        CO(3,3),AB(3),AC(3),N2D(3),DDOT,A(3),B(3),C(3)
       COMPLEX*16    CBID
       INTEGER       IMA,NBMA,J,IER,KK,I,JMOFIS,IFIS,JNFIS,NFIS,IAD2
@@ -41,7 +41,7 @@ C
       INTEGER       JCONX1,JCONX2,INO,NUNO,JTYPMA,JTMDIM
       INTEGER       ICH,JCESD(5),JCESV(5),JCESL(5),IAD,NSE,ISE,IN
       INTEGER       NDIME,ICMP,NDIM,ID(3),INTEMP,NSEORI,IFM,NIV,NNCP
-      INTEGER       S1,S2,JGRP,NMAENR,JINDIC,ZERO,JLSNV,JLSND,JLSNL
+      INTEGER       S1,S2,JGRP,NMAENR,JINDIC,JLSNV,JLSND,JLSNL
       INTEGER       NSIGNP,NSIGNM,NSIGNZ,IHE,HE,ITYPMA
       INTEGER       IFISS,NFISS
       CHARACTER*8   NOMA,K8BID,K8B,TYPBO,FISS
@@ -76,26 +76,6 @@ C     RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
       CALL JEVEUO('&CATA.TM.TMDIM','L',JTMDIM)
       CALL JEVEUO(NOMA//'.TYPMAIL','L',JTYPMA)
-
-C     RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE :
-      CALL JEEXIN ( NOMA//'           .LTNT', IRET )
-      IF ( IRET .NE. 0 ) THEN
-         CALL LTNOTB ( NOMA , 'CARA_GEOM' , NOMT19 )
-         NBPAR = 0
-         PARA = 'AR_MIN                  '
-         CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, CBID, K8B,
-     &                K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
-     &                K8B, IRET )
-         IF ( IRET .EQ. 0 ) THEN
-            PREC = ARMIN*1.D-06
-         ELSEIF ( IRET .EQ. 1 ) THEN
-            PREC = 1.D-10
-         ELSE
-            CALL U2MESS('F','MODELISA2_13')
-         ENDIF
-      ELSE
-         CALL U2MESS('F','MODELISA3_18')
-      ENDIF
 
       CHLSN = '&&XORIPE.CHLSN'
       CALL CELCES(MODELE//'.LNNO','V',CHLSN)
@@ -152,13 +132,14 @@ C             NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
 C     ------------------------------------------------------------------
 C     II°) RECHERCHE DES MAILLES SUPPORT
 C     ------------------------------------------------------------------
-      CALL CODENT(NDIM,'D',KDIM)
-      KDIM = KDIM//'D'
+      CALL ASSERT(NDIM.EQ.2.OR.NDIM.EQ.3)
+      IF (NDIM.EQ.2) KDIM='2D'
+      IF (NDIM.EQ.3) KDIM='3D'
+      write(6,*) 'AJACOT KDIM=',KDIM
       NOMOB = '&&XORIPE.NU_MAILLE_3D'
-      ZERO=0
 
-      CALL UTMASU(NOMA, KDIM, NBMAIL, ZI(JMAIL), NOMOB,PREC,ZR(JCOOR),
-     &             ZERO,IBID)
+      CALL UTMASU(NOMA, KDIM, NBMAIL, ZI(JMAIL), NOMOB,ZR(JCOOR),
+     &             0,0,.FALSE.)
       CALL JEVEUO (NOMOB,'L',JM3D)
 
 C     ------------------------------------------------------------------

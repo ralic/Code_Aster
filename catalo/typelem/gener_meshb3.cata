@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,8 +91,10 @@ MODE_LOCAL__
                                         Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
-                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  TRSIG    )
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
     ESIGMPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -154,6 +156,8 @@ OPTION__
     ENEL_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENEL_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPFP_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPFP_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPFD_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -162,6 +166,8 @@ OPTION__
     EPME_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPMG_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPMG_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPMQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPMQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSG_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSG_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -171,10 +177,6 @@ OPTION__
     EPSP_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPVC_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPVC_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPMQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPMQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ERME_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ERME_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ETOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX

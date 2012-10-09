@@ -1,7 +1,7 @@
       SUBROUTINE NMPLRU(FAMI,KPG,KSP,POUM,NDIM,TYPMOD,IMATE,COMPOR,
      &                  PPG,EPS,EPSP,RP,ENER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/10/2012   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,19 +89,27 @@ C
         IF ((IRET2.GE.1).OR.(ICODRE(3).NE.0)) THEN
           CALL U2MESS('F','CALCULEL_15')
         ELSE
-          CALL RCVAD2 (FAMI,KPG,KSP,POUM,IMATE,'ELAS',3,
-     &             NOMRES,VALRES,DEVRES,ICODRE)
-
+           ALPHA = VALRES(3)
+           DALPHA = DEVRES(3)
+C          CALL RCVAD2 (FAMI,KPG,KSP,POUM,IMATE,'ELAS',3,
+C     &             NOMRES,VALRES,DEVRES,ICODRE)
+C
         ENDIF
+      ELSE
+        IF (ICODRE(3).EQ.0) THEN
+            ALPHA = VALRES(3)
+            DALPHA =DEVRES(3)
+        ELSE
+           ALPHA =0
+           DALPHA =0
+        END IF
       ENDIF
 C
       E     = VALRES(1)
       NU    = VALRES(2)
-      ALPHA = VALRES(3)
 C
       DE    = DEVRES(1)
       DNU   = DEVRES(2)
-      DALPHA= DEVRES(3)
 C
       DEMU  = E/(1.D0+NU)
       DEMUDT= ((1.D0+NU)*DE-E*DNU)/(1.D0+NU)**2
@@ -113,6 +121,9 @@ C
 C
 C - LECTURE DES CARACTERISTIQUES DE NON LINEARITE DU MATERIAU
 C
+      AIREP=0.D0
+      DAIREP=0.D0
+      
       IF (LINE) THEN
         NOMRES(1)='D_SIGM_EPSI'
         NOMRES(2)='SY'

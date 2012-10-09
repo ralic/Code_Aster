@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF stanley_engine Stanley  DATE 08/10/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2083,6 +2083,12 @@ class DRIVER :
     if selection.geom[0] == 'POINT': type_modelisation = 'DIS_T'
     else:                            type_modelisation = 'BARRE'
 
+
+    try:
+       DETRUIRE(CONCEPT = _F(NOM = __MO_P), INFO=2)
+    except Exception,e:
+       pass
+
     try:
       __MO_P = AFFE_MODELE(MAILLAGE = __MA,
                            AFFE = _F(
@@ -2101,7 +2107,7 @@ class DRIVER :
     motscles = { 'METHODE' : 'COLLOCATION' }
 
     try:
-       DETRUIRE(CONCEPT = _F(NOM    = _RESU_P), INFO=2)
+       DETRUIRE(CONCEPT = _F(NOM = __RESU_P), INFO=2)
     except Exception,e:
        pass
 
@@ -2162,6 +2168,11 @@ class DRIVER :
       para['GROUP_MA'] = selection.geom[1]
 
     try:
+       DETRUIRE(CONCEPT = _F(NOM = __MA_G), INFO=1)
+    except Exception,e:
+       pass
+
+    try:
       __MA_G = CREA_MAILLAGE(MAILLAGE = contexte.maillage,
                              ECLA_PG  = para,
                             )
@@ -2184,6 +2195,11 @@ class DRIVER :
       para['GROUP_MA'] = selection.geom[1]
 
     try:
+       DETRUIRE(CONCEPT = _F(NOM = __RESU_G), INFO=1)
+    except Exception,e:
+       pass
+
+    try:
       __RESU_G = CREA_RESU(
         OPERATION   = 'ECLA_PG',
         TYPE_RESU   = type_resu,
@@ -2201,6 +2217,11 @@ class DRIVER :
     else:
         if   selection.geom[0] == 'VOLUME':  pmod = '3D'
         else:                                pmod = 'D_PLAN'
+
+        try:
+            DETRUIRE(CONCEPT = _F(NOM = __MO_G), INFO=1)
+        except Exception,e:
+            pass
 
         try:
            __MO_G = AFFE_MODELE(
@@ -2569,9 +2590,6 @@ class DRIVER_COURBES(DRIVER) :
         l_nom_cmp = selection.nom_cmp
 
 
-    DETR( 'STNTBLGR' )
-
-
     if selection.geom[0] == 'POINT' :
 
         para['NUME_ORDRE'] = selection.numeros
@@ -2583,28 +2601,30 @@ class DRIVER_COURBES(DRIVER) :
             para['RESULTAT'] = contexte.resultat
             para['GROUP_NO'] = point
 
+            isOk = False
             try:
-                STNTBLGR = POST_RELEVE_T(ACTION = para)
+                __COTMP1 = POST_RELEVE_T(ACTION = para)
+                isOk = True
             except aster.error,err:
-                return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
+                return self.erreur.Remonte_Erreur(err, [__COTMP1], 1)
             except Exception,err:
                 texte = "Cette action n'est pas realisable.\n"+str(err)
-                return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
+                return self.erreur.Remonte_Erreur(err, [__COTMP1], 1, texte)
 
             for comp in l_nom_cmp :
                 try:
                     vale_x = selection.vale_va
                     courbe = as_courbes.Courbe(vale_x,vale_x)
 
-                    courbe.Lire_y(STNTBLGR,comp)
-                    tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
+                    courbe.Lire_y(__COTMP1,comp)
+                    tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD __COTMP1 n'est pas complete
                     nom = comp + ' --- ' + string.ljust(point,8)
                 except Exception, e:
                     print e
                 else:
                     l_courbes.append( (courbe, nom) )
 
-            DETR( 'STNTBLGR' )
+            if isOk: DETR( __COTMP1 )
             if l_detr: DETR( tuple(l_detr) )
 
 
@@ -2622,21 +2642,24 @@ class DRIVER_COURBES(DRIVER) :
 
         for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
             para['NUME_ORDRE'] = no,
+            #__COTMP1 = POST_RELEVE_T(ACTION = para)
+            isOk = False
             try:
-                STNTBLGR = POST_RELEVE_T(ACTION = para)
+                __COTMP1 = POST_RELEVE_T(ACTION = para)
+                isOk = True
             except aster.error,err:
-                return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
+                return self.erreur.Remonte_Erreur(err, [__COTMP1], 1)
             except Exception,err:
                 texte = "Cette action n'est pas realisable.\n"+str(err)
-                return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
+                return self.erreur.Remonte_Erreur(err, [__COTMP1], 1, texte)
 
             for comp in l_nom_cmp :
                 courbe = as_courbes.Courbe()
 
                 try:
-                    courbe.Lire_x(STNTBLGR, 'ABSC_CURV')
-                    courbe.Lire_y(STNTBLGR, comp)
-                    tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
+                    courbe.Lire_x(__COTMP1, 'ABSC_CURV')
+                    courbe.Lire_y(__COTMP1, comp)
+                    tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD __COTMP1 n'est pas complete
                     nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
                     #l_courbes.append( (courbe, nom) )
                 except Exception, e:
@@ -2645,7 +2668,7 @@ class DRIVER_COURBES(DRIVER) :
                     l_courbes.append( (courbe, nom) )
                 #l_courbes.append( (courbe, nom) )
 
-            DETR( 'STNTBLGR' )
+            if isOk: DETR( __COTMP1 )
 
         if l_detr: DETR( tuple(l_detr) )
 

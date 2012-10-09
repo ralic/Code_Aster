@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -231,15 +231,15 @@ C
       IF ( NOMOPT(6:14) .EQ. 'ELGA_SIGM' ) THEN
          NTCMP = 17
       ELSEIF( NOMOPT(6:14) .EQ. 'ELNO_SIGM' ) THEN
-         NTCMP = 7
+         NTCMP = 17
       ELSEIF( NOMOPT(6:14) .EQ. 'ELGA_EPSI' ) THEN
          NTCMP = 14
       ELSEIF( NOMOPT(6:14) .EQ. 'ELNO_EPSI' ) THEN
-         NTCMP = 5
+         NTCMP = 14
       ELSEIF( NOMOPT(6:14) .EQ. 'ELGA_EPME' ) THEN
          NTCMP = 14
       ELSEIF( NOMOPT(6:14) .EQ. 'ELNO_EPME' ) THEN
-         NTCMP = 5
+         NTCMP = 14
       ELSE
          CALL ASSERT(.FALSE.)
       ENDIF

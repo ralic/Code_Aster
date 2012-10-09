@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 #======================================================================
 #
 # TITRE : VALIDATION DE LA TEMPERATURE RELATION = 'VISC_IRRA_LOG'
@@ -106,8 +106,7 @@ U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,),
                         VALE_FONC=TIMP,
                         VALE_REF=TREF),
                    _F(  NOM_VARC='IRRA',
-                        VALE_FONC=FLU_IMP,
-                        VALE_REF=0.)),
+                        VALE_FONC=FLU_IMP )),
                  INCREMENT=_F(LIST_INST=L_INST,),
                  NEWTON=_F(PREDICTION='ELASTIQUE',
                            MATRICE='TANGENTE',
@@ -174,9 +173,7 @@ for i in range(NCAL):
                                                 VALE_FONC=tempi,
                                                 VALE_REF=TREF),
                                              _F(NOM_VARC='IRRA',
-                                               # VALE_FONC=fluxi,
-                                                VALE_FONC=FLU_IMP,
-                                                VALE_REF=0.)),
+                                                VALE_FONC=FLU_IMP)),
                                  INCREMENT=_F(LIST_INST = list, ),
                                  NEWTON=_F( PREDICTION='ELASTIQUE',
                                              MATRICE='TANGENTE',

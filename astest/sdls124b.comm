@@ -1,0 +1,219 @@
+# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# TITRE PLAQUE EXCENTREE EN FLEXION SOUS CHARGEMENT DYNAMIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# sdls124b.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test R
+DEBUT(CODE=_F(  NOM = 'sdls124b',NIV_PUB_WEB='INTERNET'),)
+
+MA=LIRE_MAILLAGE()
+
+DEFI_GROUP(reuse=MA,MAILLAGE=MA,
+            CREA_GROUP_NO=_F(GROUP_MA='LIFO'))
+
+
+MO=AFFE_MODELE(INFO=2,MAILLAGE=MA,
+                  AFFE=_F(GROUP_MA='PLAQ', PHENOMENE='MECANIQUE', MODELISATION='DKT',),)
+
+
+
+
+
+CARA=AFFE_CARA_ELEM(MODELE=MO,    INFO=1,
+           COQUE=_F(GROUP_MA = ('PLAQ'),
+                    EPAIS = 0.05,
+                    COQUE_NCOU=2,
+                    EXCENTREMENT = 0.05,
+                    INER_ROTA='OUI',
+                  ))
+
+ACIER = DEFI_MATERIAU(ELAS=_F(
+                      E=2.E11,
+                      NU=0.2,
+                      RHO=7800,),
+                      )
+
+CHMATER=AFFE_MATERIAU(
+                   MAILLAGE=MA,AFFE=(
+                       _F(  GROUP_MA = ('PLAQ',),
+                              MATER = ACIER),
+                              )
+                              )
+BLOQ=AFFE_CHAR_MECA(
+                      MODELE=MO,
+                      DDL_IMPO=(_F(  GROUP_MA='ENCA',
+                                     DX = 0.,
+                                     DZ = 0.,
+                                     DRY = 0.,),
+                                _F(  GROUP_NO='P1',
+                                     DY = 0.,
+                                     ),
+                               ),)
+FORC=AFFE_CHAR_MECA(
+                      MODELE=MO,
+                      FORCE_NODALE=(_F(GROUP_NO='LIFO',
+                                       FZ= 10000),
+                                    _F(GROUP_NO=('P2','P3'),
+                                       FZ= 5000),
+
+                      ))
+
+FONC=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,    0,
+                           0.01,  1,
+                           10,  1,
+                           ),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     );
+
+temps=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=0.044,NOMBRE=5500,),
+                                    ),);
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),)
+
+
+U=DYNA_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMATER,
+                      CARA_ELEM=CARA,
+                      MASS_DIAG='OUI',
+                      SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',FORMULATION='ACCELERATION'),
+                      EXCIT=(_F(CHARGE=BLOQ,),
+                             _F(CHARGE=FORC,FONC_MULT=FONC),),
+                      COMP_INCR=(_F(RELATION='ELAS',GROUP_MA='PLAQ',DEFORMATION='GROT_GDEP',),
+                                ),
+                      INCREMENT   =_F(LIST_INST=DEFLIST,),
+                      )
+
+#DEPX=RECU_FONCTION(RESULTAT=U,
+                   #TOUT_ORDRE='OUI',
+                   #NOM_CHAM='DEPL',
+                   #NOM_CMP='DX',
+                   #GROUP_NO='P2',);
+
+#DEPZ=RECU_FONCTION(RESULTAT=U,
+                   #TOUT_ORDRE='OUI',
+                   #NOM_CHAM='DEPL',
+                   #NOM_CMP='DZ',
+                   #GROUP_NO='P2',);
+
+#DEPRY=RECU_FONCTION(RESULTAT=U,
+                   #TOUT_ORDRE='OUI',
+                   #NOM_CHAM='DEPL',
+                   #NOM_CMP='DRY',
+                   #GROUP_NO='P2',);
+
+#SIXX=RECU_FONCTION(RESULTAT=U,
+                   #TOUT_ORDRE='OUI',
+                   #NOM_CHAM='SIEF_ELGA',
+                   #NOM_CMP='SIXX',
+                   #POINT= 1,
+                   #SOUS_POINT=1,
+                   #MAILLE='M1',);
+
+#IMPR_FONCTION(UNITE=56,FORMAT='XMGRACE',
+              #COURBE=(_F(FONCTION=DEPX,
+                         #MARQUEUR=0,),
+                      #),);
+
+#IMPR_FONCTION(UNITE=57,FORMAT='XMGRACE',
+              #COURBE=(_F(FONCTION=DEPZ,
+                         #MARQUEUR=0,),
+                      #),);
+
+#IMPR_FONCTION(UNITE=58,FORMAT='XMGRACE',
+              #COURBE=(_F(FONCTION=DEPRY,
+                         #MARQUEUR=0,),
+                      #),);
+#IMPR_FONCTION(UNITE=59,FORMAT='XMGRACE',
+              #COURBE=(_F(FONCTION=SIXX,
+                         #MARQUEUR=0,),
+                      #),);
+#IMPR_FONCTION(UNITE=56,FORMAT='XMGRACE',
+              #COURBE=(_F(FONCTION=DEPX,
+                         #MARQUEUR=0,),
+                      #),);
+
+#IMPR_FONCTION(UNITE=57,FORMAT='XMGRACE',
+              #COURBE=(_F(FONCTION=DEPZ,
+                         #MARQUEUR=0,),
+                      #),);
+
+#IMPR_FONCTION(UNITE=58,FORMAT='XMGRACE',
+              #COURBE=(_F(FONCTION=DEPRY,
+                         #MARQUEUR=0,),
+                      #),);
+#IMPR_FONCTION(UNITE=59,FORMAT='XMGRACE',
+              #COURBE=(_F(FONCTION=SIXX,
+                         #MARQUEUR=0,),
+                      #),);
+
+#TABLEX = CREA_TABLE( RESU = _F( RESULTAT = U,
+                               #NOM_CHAM = 'DEPL',
+                               #NOM_CMP = 'DX',
+                               #GROUP_NO = 'P2',
+                              #),
+                   #)
+
+#TABLEZ = CREA_TABLE( RESU = _F( RESULTAT = U,
+                               #NOM_CHAM = 'DEPL',
+                               #NOM_CMP = 'DZ',
+                               #GROUP_NO = 'P2',
+                              #),
+                   #)
+#TABLRY = CREA_TABLE( RESU = _F( RESULTAT = U,
+                               #NOM_CHAM = 'DEPL',
+                               #NOM_CMP = 'DRY',
+                               #GROUP_NO = 'P2',
+                              #),
+                   #)
+#IMPR_TABLE(UNITE=38,TABLE=TABLEX)
+#IMPR_TABLE(UNITE=39,TABLE=TABLEZ)
+#IMPR_TABLE(UNITE=40,TABLE=TABLRY)
+
+TEST_RESU(RESU=(
+                _F(  RESULTAT=U,
+                  GROUP_NO='P2',
+                  NOM_CHAM = 'DEPL',
+                  NOM_CMP  = 'DX',
+                  NUME_ORDRE=5214,
+                  VALE = 8.83837E-4,
+                  REFERENCE='SOURCE_EXTERNE',
+                  PRECISION = 3.0E-3),
+                _F(  RESULTAT=U,
+                  GROUP_NO='P2',
+                  NOM_CHAM = 'DEPL',
+                  NOM_CMP  = 'DZ',
+                  NUME_ORDRE=5250,
+                  VALE = 1.32879E-2,
+                  REFERENCE='SOURCE_EXTERNE',
+                  PRECISION = 9.0E-3),
+                _F(  RESULTAT=U,
+                  GROUP_NO='P2',
+                  NOM_CHAM = 'DEPL',
+                  NOM_CMP  = 'DRY',
+                  NUME_ORDRE=5220,
+                  VALE = -1.97352E-2,
+                  REFERENCE='SOURCE_EXTERNE',
+                  PRECISION = 2.0E-3),
+               )
+           )
+
+
+FIN()

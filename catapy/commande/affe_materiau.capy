@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,10 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                   PRESENT_ABSENT('GROUP_MA','TOUT'),
                   PRESENT_ABSENT('MAILLE','TOUT'),
-                  AU_MOINS_UN('EVOL','CHAMP_GD','VALE_REF'),
+                # La règle suivante permet de donner VALE_REF sans donner EVOL ni CHAMP_GD
+                # Elle est nécessaire pour la THM (voir doc U4.43.03)
+                # Mais on ne peut plus l'écrire depuis de VALE_REF est dans un bloc
+                # AU_MOINS_UN('EVOL','CHAMP_GD','VALE_REF'),
                   EXCLUS('EVOL','CHAMP_GD'),
                   ),
 
@@ -76,7 +79,12 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
               PROL_GAUCHE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
               FONC_INST     =SIMP(statut='f',typ=(fonction_sdaster,formule)),
           ),
-          VALE_REF          =SIMP(statut='f',typ='R'),
+
+          # VALE_REF est nécessaire pour certaines VARC :
+          B_VALE_REF          =BLOC(condition="NOM_VARC in ('TEMP', 'SECH')",
+               VALE_REF          =SIMP(statut='o',typ='R'),
+          ),
+
          ),
 
          #  mots clés cachés pour les variables de commande NEUTi :

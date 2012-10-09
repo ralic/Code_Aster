@@ -1,4 +1,4 @@
-#@ MODIF archivage Messages  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF archivage Messages  DATE 08/10/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,6 @@ cata_msg = {
  Vous risquez d'écraser des données déjà stockées dans la structure de données résultat.
  Dernier instant stocké dans la structure de données résultat: %(r1)19.12e
  Premier instant du calcul: %(r2)19.12e
- Si vous êtes sûr de vous, vous pouvez autoriser l'écrasement avec le mot-clef DETR_NUME_SUIV dans ARCHIVAGE.
 """),
 
 4 : _(u"""

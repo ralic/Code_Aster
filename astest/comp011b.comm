@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 #======================================================================
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'MAZARS'
@@ -56,8 +56,8 @@ AC=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(     0., 1.4,
                                           500., 1.0,
                                            ),);
 
-AT=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(     0., 0.8,
-                                          500., 0.5,
+AT=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(     0., 1,
+                                          500., 0.8,
                                            ),);
 
 BC=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 2000.,
@@ -68,11 +68,15 @@ BT=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(     0., 10000,
                                           500., 20000,
                                            ),);
 
+K=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(     0., 0.7,
+                                          500., 0.7,
+                                           ),);
+
 MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                NU=NU0 ,
                                TEMP_DEF_ALPHA=TREF,
                                ALPHA=ALPH,),
-                  MAZARS_FO  =_F(BETA = 1.06,
+                  MAZARS_FO  =_F(K=K,
                                  EPSD0= EPSD0,
                                  AC   = AC,
                                  AT   = AT,
@@ -92,7 +96,7 @@ for i in range(NCAL):
     LMAT2[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti),
                                         NU=NU0(Ti),
                                         ALPHA=0.,),
-                          MAZARS   =_F(BETA  = 1.06,
+                          MAZARS   =_F(K  = K(Ti),
                                        EPSD0 = EPSD0(Ti),
                                        AC    = AC(Ti),
                                        AT    = AT(Ti),

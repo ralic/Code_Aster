@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C ======================================================================
 C .  - FONCTION REALISEE:  CALCUL DES EFFORTS GENERALISES AUX NOEUDS
 C .                                              OU AUX POINTS DE GAUSS
 C .                        COQUE 1D
-C .                        OPTION : 'EFGE_ELNO  '
 C .                        ELEMENT: MECXSE3,METCSE3,METDSE3
 C .  - ARGUMENTS:
 C .      DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -43,8 +42,8 @@ C ......................................................................
       INTEGER JCOOPG,IP,CORREC,JDFD2
 
 C-----------------------------------------------------------------------
-      INTEGER IEFFOR ,IPOIDS ,JGANO ,NDIM ,NNOS 
-      REAL*8 R8NNEM 
+      INTEGER IEFFOR ,IPOIDS ,JGANO ,NDIM ,NNOS
+      REAL*8 R8NNEM
 C-----------------------------------------------------------------------
       CALL ELREF1(ELREFE)
 

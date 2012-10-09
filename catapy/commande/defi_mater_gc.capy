@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,8 +46,8 @@ DEFI_MATER_GC=MACRO(nom="DEFI_MATER_GC",
                            fr="Coefficient de poisson"),
       EPSD0          =SIMP(statut='f',typ='R',     val_min=0.0E+0,
                            fr="Déformation, seuil d'endommagement"),
-      BETA           =SIMP(statut='f',typ='R',     val_min=0.0E+0,
-                           fr="Exposant pour le cisaillement"),
+      K              =SIMP(statut='f',typ='R',     val_min=0.0E+0,
+                           fr="Asymptote en cisaillement pur"),
       AC             =SIMP(statut='f',typ='R',     val_min=0.0E+0, val_max=1.0E+0,
                            fr="Paramètre de décroissance post-pic en compression"),
       BC             =SIMP(statut='f',typ='R',     val_min=0.0E+0,

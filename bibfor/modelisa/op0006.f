@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,11 +31,11 @@ C ----------------------------------------------------------------------
       INTEGER IFAC,NBFAC,NMXFAC,NMXCMP,IBID,NBVARC,NBTOU,JMA
       INTEGER IOCC,JNCMP1,JNCMP2,JVALV1,JVALV2,KVARC,NBCVRC,NBAFFE
       INTEGER JCVNOM,JCVVAR,JCVCMP,JCVGD,JCVDEF,ITROU,NBM1,NBGM1,IER
+      INTEGER GETEXM,EXIST,IARG,NREF
 
       CHARACTER*8 K8B,CHMAT,NOMAIL,NOMODE,TYPMCL(2),NOMGD,KBID
       CHARACTER*8 NOMGD2,CHAMGD,EVOL,NOCMP1,NOCMP2,FINST,EVOUCH
       CHARACTER*16 MOTCLE(2),TYPE,NOMCMD,NOMCHA,PROLGA,PROLDR
-      INTEGER      GETEXM,EXIST
       CHARACTER*24 MESMAI,CVNOM,CVVAR,CVGD,CVCMP,CVDEF,VALK(3)
       PARAMETER (NMXFAC=20,NMXCMP=20)
       CHARACTER*16 MOTFAC(NMXFAC),LIMFAC(NMXFAC),MOFAC
@@ -43,7 +43,6 @@ C ----------------------------------------------------------------------
       CHARACTER*8  NOVARC,NOVAR1,NOVAR2,LIVARC(NMXFAC),KNUMER
       REAL*8 VRCREF(NMXCMP),R8NNEM,RCMP(10),R8VIDE
       LOGICAL ERRGD
-      INTEGER      IARG
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -190,9 +189,10 @@ C       ------------------------------------------------------------
 C         2-3 CALCUL DE  VRCREF(:) :
 C         ---------------------------
           CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,IARG,NMXCMP,VRCREF,N1)
-          CALL ASSERT(N1.GE.0)
-          IF (N1.GT.0) THEN
-            IF(N1.NE.NCMP) THEN
+          NREF=N1
+          CALL ASSERT(NREF.GE.0)
+          IF (NREF.GT.0) THEN
+            IF(NREF.NE.NCMP) THEN
               VALK(1) = CHMAT
               VALK(2) = NOVARC
               CALL U2MESK('F','CALCULEL6_60', 2 ,VALK)
@@ -222,6 +222,9 @@ C         ------------------------------------------------------------
             EVOUCH='VIDE'
             IF (NOVARC.NE.'TEMP') CALL U2MESK('F','CALCULEL4_11',
      &                                        1 ,NOVARC)
+C           -- POUR LA THM, ON PEUT UTILISER VALE_REF SANS DONNER
+C              CHAMP_GD NI EVOL :
+            CALL ASSERT(NREF.EQ.1)
           ENDIF
 
 

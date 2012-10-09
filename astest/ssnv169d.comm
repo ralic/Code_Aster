@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
 # ssnv169d.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
@@ -75,7 +75,7 @@ BETON = DEFI_MATERIAU(ELAS_FO = _F(E = E,
                                    BT = 21330.,
                                    AC = 1.15,
                                    BC = 1390.,
-                                   BETA = 1.,
+                                   K=0.7,
                                    CHI = 0.6,
                                    ),
                       BETON_UMLV_FP = _F( 

@@ -1,6 +1,6 @@
       SUBROUTINE TE0410 ( OPTIOZ , NOMTZ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,13 +26,12 @@ C     ----------------------------------------------------------------
 C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
 C                EPSI_ELGA
 C                SIEF_ELGA
-C                EFGE_ELNO
 C
       INTEGER    NPGT,NCOUMX,VALI(2)
 C-----------------------------------------------------------------------
-      INTEGER I ,ICONTR ,JCOU ,JEFFG ,JGEOM ,LZI ,NB2 
-      INTEGER NBCOU ,NP ,NPGSN ,NPGSR 
-      REAL*8 R8BID 
+      INTEGER I ,ICONTR ,JCOU ,JEFFG ,JGEOM ,LZI
+      INTEGER NBCOU ,NP ,NPGSN ,NPGSR
+      REAL*8 R8BID
 C-----------------------------------------------------------------------
       PARAMETER (NPGT=10,NCOUMX=10)
       INTEGER    NB1,ITAB(7),IRET
@@ -45,7 +44,6 @@ C
 C
       CALL JEVECH ('PGEOMER' , 'L' , JGEOM)
       CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ', LZI )
-      NB2  =ZI(LZI-1+2)
       NPGSN=ZI(LZI-1+4)
 C
       CALL JEVECH('PNBSP_I','L',JCOU)
@@ -82,8 +80,7 @@ C ---         PASSAGE DES DEFORMATIONS DANS LE REPERE UTILISATEUR :
      &                    ZR(ICONTR),ZR(ICONTR))
 C
 
-      ELSE IF ( OPTION(1:9) .EQ. 'SIEF_ELGA'.OR.
-     &          OPTION(1:9) .EQ. 'EFGE_ELNO') THEN
+      ELSE IF ( OPTION(1:9) .EQ. 'SIEF_ELGA') THEN
            IF ( OPTION(1:9) .EQ. 'SIEF_ELGA') THEN
               CALL TECACH('OOO','PCONTRR',7,ITAB,IRET)
               ICONTR=ITAB(1)
@@ -107,18 +104,6 @@ C --- DES DEFORMATIONS-COURBURES DEFINI AUX POINTS D'INTEGRATION
 C --- DE L'ELEMENT DU REPERE INTRINSEQUE AU REPERE UTILISATEUR :
 C     --------------------------------------------------------
 C
-           ELSE IF ( OPTION(1:9) .EQ. 'EFGE_ELNO') THEN
-              CALL JEVECH('PEFFORR','L',JEFFG)
-C
-C     CES CHAMPS SONT CALCULES AUX NB2 NOEUDS
-C
-              NP=NB2
-C
-C --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES OU DU VECTEUR
-C --- DES DEFORMATIONS-COURBURES DEFINI AUX NOEUDS
-C --- DE L'ELEMENT DU REPERE INTRINSEQUE AU REPERE UTILISATEUR :
-C     --------------------------------------------------------
-             CALL VDEFRO(NP, MATEVN, EFFGT, ZR(JEFFG))
            ENDIF
 C
       ENDIF

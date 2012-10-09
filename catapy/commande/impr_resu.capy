@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,6 +76,13 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
            CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
            CHARGE          =SIMP(statut='f',typ=char_meca),
+
+           b_cara_elem        =BLOC(condition="CARA_ELEM != None", fr="impression des reperes locaux.",
+              REPERE_LOCAL    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+              b_reploc        =BLOC(condition="REPERE_LOCAL == 'OUI'", fr="impression des reperes locaux.",
+                 MODELE          =SIMP(statut='o',typ=modele_sdaster),
+              ),
+           ),
          ),
 
          RESU            =FACT(statut='f',max='**',
@@ -187,7 +194,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
              BORNE_INF       =SIMP(statut='f',typ='R'),
              IMPR_COOR       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            ),
-           
+
            b_format_r=BLOC(condition="""((FORMAT == 'RESULTAT')or(FORMAT == 'ASTER'))""",
                            fr="Format des nombres réels",
              FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE21.14"),

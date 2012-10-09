@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,6 +79,7 @@ MODE_LOCAL__
                                         REP      )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     EGGEMA_R = GEOM_R   ELGA__ MATER   (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -96,18 +97,23 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     )
+    ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     CVENTCX  = VENTCX_F ELEM__         (FCXP     )
-    EREFCO   = PREC     ELEM__         (EFFORT    MOMENT)
+    EREFCO   = PREC     ELEM__         (EFFORT   MOMENT   )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     EEINST_R = INST_R   ELNO__ IDEN__  (INST     )
     ESTRAUX  = STRX_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ
                                         BX       EPXX     GAXY     GAXZ     GAT      KY
-                                        KZ        GAX     DXINT    ALPHA    BETA     GAMMA)
-
-    EGAMIMA  = SPMX_R   ELGA__ RIGI    ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
-    ENOMIMA  = SPMX_R   ELNO__ IDEN__  ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
+                                        KZ       GAX      DXINT    ALPHA    BETA     GAMMA   )
+    EGAMIMA  = SPMX_R   ELGA__ RIGI    (VAL      NUCOU    NUSECT   NUFIBR   POSIC   POSIS    )
+    ENOMIMA  = SPMX_R   ELNO__ IDEN__  (VAL      NUCOU    NUSECT   NUFIBR   POSIC   POSIS    )
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -183,6 +189,8 @@ OPTION__
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ESTRAUX  PSTRXRR  ECONTPG  PCONTRR
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
     ENEL_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSI_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSI_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -242,6 +250,8 @@ OPTION__
                                      ESTRAUX  PSTRXPR
     REFE_FORC_NODA      517   IN__   EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
+    REPERE_LOCAL        135   IN__   CCAORIE  PCAORIE  NGEOMER  PGEOMER
+                              OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
     RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_FLUI_STRU      140   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
@@ -267,6 +277,10 @@ OPTION__
     SIEF_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+    SIEQ_ELGA           335   IN__   ECONTPG  PCONTRR
+                              OUT__  ECOEQPG  PCONTEQ
+    SIEQ_ELNO           335   IN__   ECONTNO  PCONTRR
+                              OUT__  ECOEQNO  PCONTEQ
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           4     IN__   ECONTPG  PCONTRR
@@ -275,7 +289,7 @@ OPTION__
     MINMAX_SP           99    IN__
                               OUT__  EGAMIMA  PGAMIMA  ENOMIMA  PNOMIMA
     TOU_INI_ELEM        99    IN__
-                              OUT__  ECAFIEL  PCAFI_R  ENBSP_I  PNBSP_I
+                              OUT__  ECAFIEL  PCAFI_R  ENBSP_I  PNBSP_I  CGEOMER  PGEOM_R
     TOU_INI_ELGA        99    IN__
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_R PNEUT_R  EGNEUT_F PNEUT_F

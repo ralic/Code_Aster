@@ -1,8 +1,8 @@
-#@ MODIF algorith6 Messages  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF algorith6 Messages  DATE 08/10/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -231,11 +231,6 @@ cata_msg = {
  a la pression initiale PA
 """),
 
-66 : _(u"""
- pour l'instant, on ne traite pas le cas des contraintes planes
- dans le modèle de CHABOCHE à une variable cinématique.
-"""),
-
 67 : _(u"""
  N doit être strictement positif.
 """),
@@ -247,10 +242,6 @@ cata_msg = {
 69 : _(u"""
  loi VISC_CINX_CHAB
  on doit obligatoirement avoir UN_SUR_M = zéro
-"""),
-
-78 : _(u"""
- F reste toujours négative.
 """),
 
 79 : _(u"""

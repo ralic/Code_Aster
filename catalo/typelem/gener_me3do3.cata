@@ -1,20 +1,20 @@
-%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-% (AT YOUR OPTION) ANY LATER VERSION.                                   
-%                                                                       
-% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-% GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-%                                                                       
-% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+% (AT YOUR OPTION) ANY LATER VERSION.
+%
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+%
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
 GENER_ME3DO3
 TYPE_GENE__
@@ -51,16 +51,20 @@ MODE_LOCAL__
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1  )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
+    CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1   (DX       DY       DZ       PRES     PIX      PIY      PIZ)
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
-    EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
+    EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
                                         VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
                                         VECT_3_Y VECT_3_Z )
     EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
@@ -85,14 +89,16 @@ MODE_LOCAL__
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     SIP)
-    ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
-                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
-                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG   )
+    ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
     ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
     ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
@@ -107,7 +113,13 @@ MODE_LOCAL__
                                         T5       T6       )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
-
+    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
+    G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27]    )
+    N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
+    EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     FIC3
+                                        K1       K2       K3       BETA     )
+    EGTHETA  = G        ELEM__         (GTHETA   )
+    
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
     VVECTUR = VDEP_R NDEPLAR
@@ -116,6 +128,44 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
+    CALC_G              27    IN__   NDEPLAR  PACCELE  CCOMPOR  PCOMPOR  ESIGMPG  PCONTRR  EDEFONO  PDEFOPL
+                                     NDEPLAR  PDEPINR  NDEPLAR  PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
+                                     ESIGMNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  NDEPLAR PTHETAR
+                                     ZVARINO  PVARIPR  NDEPLAR  PVITESS  ESIGMPG  PCONTGR
+                              OUT__  EGTHETA  PGTHETA
+                              
+    CALC_G_F            27    IN__   NDEPLAR PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
+                                     NDEPLAR PDEPINR  NDEPLAR PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
+                                     ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
+                                     NDEPLAR PTHETAR  ZVARINO  PVARIPR  NDEPLAR PVITESS  ECONTPG  PCONTGR
+                              OUT__  EGTHETA  PGTHETA
+                              
+    CALC_G_GLOB         27    IN__   NDEPLAR PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
+                                     NDEPLAR PDEPINR  NDEPLAR PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
+                                     ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   NDEPLAR PTHETAR
+                                     ZVARINO  PVARIPR  NDEPLAR PVITESS  ECONTPG  PCONTGR
+                              OUT__  EGTHETA  PGTHETA
+    CALC_G_GLOB_F       27    IN__   NDEPLAR PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
+                                     NDEPLAR PDEPINR  NDEPLAR PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
+                                     ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
+                                     NDEPLAR PTHETAR  ZVARINO  PVARIPR  NDEPLAR PVITESS  ECONTPG  PCONTGR
+                              OUT__  EGTHETA  PGTHETA
+    CALC_K_G            295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   NDEPLAR PDEPINR
+                                     NDEPLAR PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
+                                     CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                     NDEPLAR PTHETAR
+                              OUT__  EKTHETA  PGTHETA
+    CALC_K_G_F          295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   NDEPLAR PDEPINR
+                                     NDEPLAR PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
+                                     CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
+                                     ZVARCPG  PVARCRR   NDEPLAR PTHETAR
+                              OUT__  EKTHETA  PGTHETA                        
     CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_LIMITE         483   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR
@@ -163,6 +213,19 @@ OPTION__
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
+    G_BILI              95    IN__   NDEPLAR PDEPLAU  NDEPLAR PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ZVARCPG  PVARCRR  NDEPLAR PTHETAR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     CEPSINR  UEPSINR  CPESANR  UPESANR  NFORCER  UPFRVOL  CROTATR  UROTATR
+                                     CEPSINR  VEPSINR  CPESANR  VPESANR  NFORCER  VPFRVOL  CROTATR  VROTATR
+                              OUT__  EGTHETA  PGTHETA
+    G_BILI_F            95    IN__   NDEPLAR PDEPLAU  NDEPLAR PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ZVARCPG  PVARCRR  NDEPLAR PTHETAR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     CEPSINF  UEPSINF  CPESANR  UPESANR  CFORCEF  UPFFVOL  CROTATR  UROTATR
+                                     CTEMPSR  UTEMPSR  CEPSINF  VEPSINF  CPESANR  VPESANR  CFORCEF  VPFFVOL
+                                     CROTATR  VROTATR  CTEMPSR  VTEMPSR
+                              OUT__  EGTHETA  PGTHETA
+    GRAD_NEUT9_R        398   IN__   NGEOMER  PGEOMER  N9NEUT_R PNEUTER
+                              OUT__  G27NEUTR PGNEUTR
     INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
     INIT_MAIL_VOIS      99    IN__    OUT__  EVOISIN  PVOISIN

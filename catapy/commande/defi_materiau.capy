@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -795,7 +795,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            ),
          MAZARS=FACT(statut='f',min=0 ,
              EPSD0           =SIMP(statut='o',typ='R'),
-             BETA            =SIMP(statut='o',typ='R'),
+             K               =SIMP(statut='o',typ='R'),
              AC              =SIMP(statut='o',typ='R'),
              BC              =SIMP(statut='o',typ='R'),
              AT              =SIMP(statut='o',typ='R'),
@@ -806,7 +806,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            ),
          MAZARS_FO=FACT(statut='f',min=0 ,
              EPSD0           =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             BETA            =SIMP(statut='o',typ='R'),
+             K               =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              AC              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              BC              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              AT              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),

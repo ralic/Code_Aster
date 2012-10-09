@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,6 +95,12 @@ MODE_LOCAL__
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
+    EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
@@ -127,11 +133,16 @@ MODE_LOCAL__
                                         SIP      M11      FH11X    FH11Y    FH11Z    M12
                                         FH12X    FH12Y    FH12Z    M21      FH21X    FH21Y
                                         FH21Z    M22      FH22X    FH22Y    FH22Z    )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG   TRSIG    )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      M11      FH11X    FH11Y    FH11Z    M12
                                         FH12X    FH12Y    FH12Z    M21      FH21X    FH21Y
                                         FH21Z    M22      FH22X    FH22Y    FH22Z    )
+    ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
@@ -158,6 +169,10 @@ OPTION__
     ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENEL_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPEQ_ELGA           335   IN__   EDEFOPG  PDEFORR
+                              OUT__  EDFEQPG  PDEFOEQ
+    EPEQ_ELNO           335   IN__   EDEFONO  PDEFORR
+                              OUT__  EDFEQNO  PDEFOEQ
     EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSI_ELGA           600   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC
@@ -218,6 +233,8 @@ OPTION__
                               OUT__  MMATUNS  PMATUNS
     SIEF_ELNO           600   IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+    SIEQ_ELGA           335   IN__   ESIGMPG  PCONTRR
+                              OUT__  ECOEQPG  PCONTEQ
     SIEQ_ELNO           335   IN__   ESIGMNO  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
     SIGM_ELGA           546   IN__   ESIGMPG  PSIEFR

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,7 @@ MODE_LOCAL__
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
     CINSTPR  = INST_R   ELEM__         (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
@@ -99,14 +100,14 @@ OPTION__
                               OUT__  EGGEOP_R PCOORPG
     ECIN_ELEM           44    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  COMEG2R  POMEGA2
                                      CCINFDI  PCINFDI  DDL_MECA PVITESR
-                              OUT__  EENERR   PENERCR
+                              OUT__  EENERR  PENERCR
     EFGE_ELNO           185   IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CCINFDI  PCINFDI
                                      EEFGEGA  PCONTRR  ENONLIN  PNONLIN
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
     ENEL_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           44    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CCINFDI  PCINFDI
-                              OUT__  EENERR   PENERDR
+                              OUT__  EENERR  PENERDR
     FORC_NODA           39    IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR  CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
     FONL_NOEU           39    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER
@@ -152,6 +153,8 @@ OPTION__
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      39    IN__   EREFCO   PREFCO   CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
+    REPERE_LOCAL        135   IN__   CCAORIE  PCAORIE  NGEOMER  PGEOMER
+                              OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
     RICE_TRACEY         -1    IN__     OUT__  XXXXXX   XXXXXX
     RIGI_FLUI_STRU      41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
@@ -178,6 +181,8 @@ OPTION__
                               OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
+    TOU_INI_ELEM        99    IN__
+                              OUT__  CGEOMER  PGEOM_R
     TOU_INI_ELGA        99    IN__
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_R PNEUT_R  EGNEUT_F PNEUT_F

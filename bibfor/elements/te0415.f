@@ -1,5 +1,5 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,18 +23,18 @@ C TOLE CRP_20
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
 C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
-C     OPTIONS : EFGE_ELNO , VARI_ELNO
+C     OPTIONS : VARI_ELNO
 C          -----------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,IC ,ICHG ,ICOMP ,ICOMPO ,II 
-      INTEGER INO ,INP ,INTE ,INTSN ,INTSR ,IRET ,ISOM 
-      INTEGER J ,J1 ,JCARA ,JCONN ,JEFFG ,JGEOM ,JJ 
-      INTEGER JVARI ,K ,K1 ,K2 ,KPGS ,L ,LGPG 
-      INTEGER LZI ,LZR ,NBCOU ,NBVARI ,NCMP ,NEP ,NP1 
-      INTEGER NP2 ,NP3 ,NP4 ,NPGE ,NPGT ,NPO ,NPP 
-      INTEGER NSO 
-      REAL*8 HIC ,S ,ZERO ,ZIC ,ZMIN 
+      INTEGER I ,I1 ,IC ,ICHG ,ICOMP ,ICOMPO ,II
+      INTEGER INO ,INP ,INTE ,INTSN ,INTSR ,IRET ,ISOM
+      INTEGER J ,J1 ,JCARA ,JCONN ,JEFFG ,JGEOM ,JJ
+      INTEGER JVARI ,K ,K1 ,K2 ,KPGS ,L ,LGPG
+      INTEGER LZI ,LZR ,NBCOU ,NBVARI ,NCMP ,NEP ,NP1
+      INTEGER NP2 ,NP3 ,NP4 ,NPGE ,NPGT ,NPO ,NPP
+      INTEGER NSO
+      REAL*8 S
 C-----------------------------------------------------------------------
       PARAMETER (NPGE=3)
       PARAMETER (NPGT=10)
@@ -50,7 +50,6 @@ C-----------------------------------------------------------------------
 
       OPTION = OPTIOZ
       NOMTE = NOMTZ
-      ZERO = 0.0D0
       LGREEN = .FALSE.
       CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ',LZI)
       NB1 = ZI(LZI-1+1)
@@ -63,13 +62,12 @@ C-----------------------------------------------------------------------
       ELSE IF (NOMTE.EQ.'MEC3TR7H') THEN
         NSO = 3
       END IF
-      IF (OPTION.EQ.'EFGE_ELNO' .OR.
-     &    OPTION.EQ.'SICO_ELNO') THEN
+
+      IF (OPTION.EQ.'SICO_ELNO') THEN
 
         CALL JEVECH('PGEOMER','L',JGEOM)
         CALL JEVECH('PCACOQU','L',JCARA)
 
-C
         CALL COSIRO (NOMTE,'PCONTRR','UI','G',ICHG,'S')
 
         CALL TECACH('ONN','PCOMPOR',1,ICOMPO,IRET)
@@ -80,20 +78,10 @@ C
         IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_12')
         IF (NBCOU.GT.10) CALL U2MESS('F','ELEMENTS_13')
         EPAIS = ZR(JCARA)
-        ZMIN = -EPAIS/2.D0
-        HIC = EPAIS/NBCOU
         CALL VECTAN(NB1,NB2,ZR(JGEOM),ZR(LZR),VECTA,VECTN,VECTPT)
         KPGS = 0
         DO 50 ICOU = 1,NBCOU
           DO 40 INTE = 1,NPGE
-            IF (INTE.EQ.1) THEN
-              ZIC = ZMIN + (ICOU-1)*HIC
-            ELSE IF (INTE.EQ.2) THEN
-              ZIC = ZMIN + HIC/2.D0 + (ICOU-1)*HIC
-            ELSE
-              ZIC = ZMIN + HIC + (ICOU-1)*HIC
-            END IF
-
             DO 30 INTSN = 1,NPGSN
               KPGS = KPGS + 1
               K1=6*((INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE +INTE - 1)
@@ -130,7 +118,7 @@ C --- D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR
 C     --------------------------------------------------------------
         K = 0
         DO 90 INTSR = 1,NPGSR
-          CALL VECTGT(0,NB1,ZR(JGEOM),ZERO,INTSR,ZR(LZR),EPAIS,VECTN,
+          CALL VECTGT(0,NB1,ZR(JGEOM),0.D0,INTSR,ZR(LZR),EPAIS,VECTN,
      &                VECTG,VECTT)
 
           DO 80 J = 1,3
@@ -205,29 +193,6 @@ C
             CALL VDSIRO(NB2,1,MATEVN,'IU','N',SIGGN,ZR(JCONN))
           ENDIF
 
-        ELSE IF (OPTION.EQ.'EFGE_ELNO') THEN
-          DO 170 I = 1,NB2
-            DO 160 J = 1,8
-              EFFGT(J,I) = 0.D0
-  160       CONTINUE
-  170     CONTINUE
-          DO 200 IC = 1,NBCOU
-            J = (IC-1)*NPGE*NSO + 1
-            ZIC = ZMIN + (IC-1)*HIC
-            CALL VDEFGN(NOMTE,NB2,HIC,ZIC,SIGMA(1,J),EFFGC)
-            DO 190 ISOM = 1,NB2
-              DO 180 ICOMP = 1,8
-                EFFGT(ICOMP,ISOM) = EFFGT(ICOMP,ISOM) +
-     &                              EFFGC(ICOMP,ISOM)
-  180         CONTINUE
-  190       CONTINUE
-  200     CONTINUE
-
-C --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES DEFINI AUX NOEUDS
-C --- DE L'ELEMENT DU REPERE INTRINSEQUE AU REPERE UTILISATEUR :
-C     --------------------------------------------------------
-          CALL JEVECH('PEFFORR','L',JEFFG)
-          CALL VDEFRO(NB2,MATEVN,EFFGT,ZR(JEFFG))
         END IF
 
        ELSE IF (OPTION.EQ.'VARI_ELNO') THEN

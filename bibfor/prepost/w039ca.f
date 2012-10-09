@@ -5,7 +5,7 @@
       CHARACTER*(*) FORM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,8 @@ C
 C
 C
       INTEGER NOCC,IOCC,N1,IBID
-      CHARACTER*8 CHMAT,CARELE,MAILLA,CHARGE
+      CHARACTER*3 RPLO
+      CHARACTER*8 CHMAT,CARELE,MAILLA,CHARGE,MODELE
       CHARACTER*80 TITRE
       CHARACTER*19 LIGREL
       LOGICAL LEXI
@@ -117,6 +118,19 @@ C       ----------------
 
           TITRE='Orientation des coques et des poutres'
           CALL W039C1(CARELE//'.CARORIEN',IFI,FORM,LIGREL,TITRE)
+
+          CALL GETVTX('CONCEPT','REPERE_LOCAL',IOCC,IARG,1,RPLO,IBID)
+          CALL ASSERT(IBID.EQ.1)
+          IF (RPLO.EQ.'OUI') THEN
+            CALL GETVID('CONCEPT','MODELE',IOCC,IARG,1,MODELE,IBID)
+            CALL ASSERT(IBID.EQ.1)
+
+            TITRE = 'vecteur du repere local'
+            CALL W039C3(CARELE,MODELE,IFI,FORM,TITRE)
+
+
+          ENDIF
+
         ENDIF
 
 C       -- CHARGE :

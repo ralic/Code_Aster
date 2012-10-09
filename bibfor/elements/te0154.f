@@ -20,7 +20,7 @@ C ======================================================================
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -29,7 +29,6 @@ C       - DE L'ENERGIE CINETIQUE
 C     POUR LES ELEMENTS DE BARRE
 C ----------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-C        'EFGE_ELNO'   : CALCUL DU VECTEUR EFFORT GENERALISE
 C        'SIEF_ELGA'   : CALCUL DU VECTEUR EFFORT GENERALISE
 C        'EPSI_ELGA'   : CALCUL DU VECTEUR DEFORMATION
 C        'EPOT_ELEM'   : CALCUL DE L'ENERGIE DE DEFORMATION
@@ -250,11 +249,6 @@ C
          IF ( OPTION .EQ. 'SIEF_ELGA' ) THEN
             CALL JEVECH('PCONTRR','E',JEFFO)
             ZR(JEFFO  ) = -FLR(1)
-C
-         ELSEIF (OPTION .EQ. 'EFGE_ELNO') THEN
-            CALL JEVECH('PEFFORR','E',JEFFO)
-            ZR(JEFFO  ) = -FLR(1)
-            ZR(JEFFO+1) = FLR(4)
 C
          ELSE
 C OPTION NON PROGRAMMEE

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -169,9 +169,12 @@ OPTION__
                                      CCACOQU  PCACOQU
                               OUT__  EENERR   PENERD1
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
+    EPEQ_ELGA           -1    IN__     OUT__  XXXXXX   XXXXXX
+    EPEQ_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           409   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENERR   PENERDR
+    EPSI_ELGA           -1    IN__     OUT__  XXXXXX   XXXXXX
     EPSI_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     FORC_NODA           409   IN__   CCACOQU  PCACOQU  EEFGEGA  PCONTMR  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
@@ -212,6 +215,8 @@ OPTION__
                                      ZVARCPG  PVARCPR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  CITERAT  PITERAT
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__     OUT__  XXXXXX   XXXXXX
+    REPERE_LOCAL        134   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER
+                              OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
     RICE_TRACEY         -1    IN__     OUT__  XXXXXX   XXXXXX
     RIGI_MECA           409   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR
@@ -234,7 +239,10 @@ OPTION__
                               OUT__  EEFGEGA  PCONTRR
     SIEF_ELNO           4     IN__   EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC
+    SIEQ_ELGA           -1    IN__     OUT__  XXXXXX   XXXXXX
     SIEQ_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
+    TOU_INI_ELEM        99    IN__
+                              OUT__  CGEOMER  PGEOM_R
     TOU_INI_ELGA        99    IN__  
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R  EGNEUT_F PNEUT_F
     TOU_INI_ELNO        99    IN__  

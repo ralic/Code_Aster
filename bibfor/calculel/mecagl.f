@@ -19,7 +19,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,MILIEU,PAIR,THLAG2,LMELAS
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF CALCULEL  DATE 08/10/2012   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,9 @@ C     ------------------------------------------------------------------
 
       CHVARC = '&&MECAGL.VARC'
       CHVREF = '&&MECAGL.VARC.REF'
-
+      CHSIGI = '&&MECALG.CHSIGI'
+      CELMOD = '&&MECALG.CELMOD'
+      SIGOUT = '&&MECALG.SIGOUT'
 C- RECUPERATION DU CHAMP GEOMETRIQUE
 
       CALL MEGEOM(MODELE,' ',EXIGEO,CHGEOM)
@@ -144,8 +146,6 @@ C- VERIFICATION DU TYPE DE CHAMP + TRANSFO, SI NECESSAIRE, EN CHAMP ELNO
                  CALL U2MESS('F','RUPTURE1_12')
               ELSE IF (INGA.EQ.0) THEN
                  LIGRMO = MODELE//'.MODELE'
-                 CELMOD = '&&MECALG.CELMOD'
-                 SIGOUT = '&&MECALG.SIGOUT'
                  CALL ALCHML(LIGRMO,'CALC_G','PSIGINR','V',CELMOD,
      &            IRET,' ')
                  CALL CHPCHD(CHSIGI,'ELNO',CELMOD,'NON','V',

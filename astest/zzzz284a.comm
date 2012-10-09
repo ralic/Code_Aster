@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 # TITRE Validation de CHAR_MECA_HYDR_R et CHAR_MECA_SECH_R
 # zzzz284a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -136,7 +136,7 @@ TEST_RESU(RESU=(
 
 CHMA2=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MAT2),
-                        AFFE_VARC=_F(NOM_VARC='HYDR',  EVOL = TEMPLIN,  NOM_CHAM='TEMP', VALE_REF = 0.),
+                        AFFE_VARC=_F(NOM_VARC='HYDR',  EVOL = TEMPLIN,  NOM_CHAM='TEMP'),
          VARC_HYDR    =_F(
            NOM_VARC        ='HYDR',  GRANDEUR        ='TEMP_R',
            CMP_GD          ='TEMP',  CMP_VARC        ='HYDR',

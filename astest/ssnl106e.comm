@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -92,20 +92,9 @@ REST=STAT_NON_LINE(
 # EFFORTS GENERALISES
 REST=CALC_CHAMP(reuse=REST,
                 RESULTAT=REST,
-                CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),
+                CONTRAINTE=('EFGE_ELNO','SIGM_ELGA','SIGM_ELNO'),
                 VARI_INTERNE=('VARI_ELNO'),
-                DEFORMATION=('EPSI_ELNO','DEGE_ELGA','DEGE_ELNO'),);
-
-REST=CALC_CHAMP(reuse=REST,
-                CRITERES=('SIEQ_ELGA'),
-                RESULTAT=REST,);
-
-REST=CALC_CHAMP(reuse=REST,
-                CRITERES=('EPEQ_ELGA'),
-                RESULTAT=REST,);
-
-IMPR_RESU(RESU=_F(RESULTAT=REST,NOM_CHAM=('SIEQ_ELGA','EPEQ_ELGA'),NUME_ORDRE=1))
-
+                DEFORMATION=('EPSI_ELGA','EPSI_ELNO','DEGE_ELGA','DEGE_ELNO'),);
 
 REST=CALC_CHAMP(reuse=REST,
                 RESULTAT=REST,
@@ -114,10 +103,26 @@ REST=CALC_CHAMP(reuse=REST,
 # LES CONTRAINTES LOCALES SONT UNIFORMES
 # A UN NIVEAU D'EPAISSEUR DONNE
 RESTPOS=POST_CHAMP(RESULTAT=REST,
-                   EXTR_TUYAU=_F(NOM_CHAM=('SIEF_ELGA','VARI_ELNO','SIEQ_ELGA','SIGM_ELNO','EPSI_ELNO',),
+                   EXTR_TUYAU=_F(NOM_CHAM=('SIEF_ELGA','VARI_ELNO','SIGM_ELNO','EPSI_ELNO',),
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='SUP',
                                  ANGLE=90,),);
+
+RESTPOS=CALC_CHAMP(reuse=RESTPOS,
+                   RESULTAT=RESTPOS,
+                   CRITERES=('SIEQ_ELGA',),);
+
+REST3=POST_CHAMP(RESULTAT=REST,
+                 TOUT_ORDRE='OUI',
+                 EXTR_TUYAU=_F(NOM_CHAM=('SIGM_ELGA','EPSI_ELGA'),
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='INF',
+                               ANGLE=0,),);
+
+REST3=CALC_CHAMP(reuse=REST3,
+                 RESULTAT=REST3,
+                 CRITERES=('SIEQ_ELGA','EPEQ_ELGA'),);
+
 
 # TEST PAR RAPPORT A LA SOLUTION ANALYTIQUE
 TEST_RESU(RESU=(
@@ -130,23 +135,21 @@ TEST_RESU(RESU=(
                  VALE=-2.25000E-04,
                  PRECISION=1.0E-04,
                  REFERENCE='NON_REGRESSION',),
-            _F(RESULTAT=REST,
+            _F(RESULTAT=REST3,
                  NUME_ORDRE=1,
                  NOM_CHAM='EPEQ_ELGA',
                  NOM_CMP='INVA_2',
                  MAILLE='M1',
                  POINT=1,
-                 SOUS_POINT=1,
                  VALE=5.89491E-04,
                  PRECISION=1.0E-04,
                  REFERENCE='NON_REGRESSION',),
-            _F(RESULTAT=REST,
+            _F(RESULTAT=REST3,
                  NUME_ORDRE=1,
                  NOM_CHAM='SIEQ_ELGA',
                  NOM_CMP='VMIS',
                  MAILLE='M1',
                  POINT=1,
-                 SOUS_POINT=1,
                  VALE=1.500000000E+08,
                  PRECISION=1.0E-03,
                  REFERENCE='NON_REGRESSION',),

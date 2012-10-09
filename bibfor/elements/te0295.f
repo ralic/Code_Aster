@@ -1,7 +1,7 @@
       SUBROUTINE TE0295(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF ELEMENTS  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,25 +38,24 @@ C
       CHARACTER*8  NOMRES(3),NOMPAR(4)
       CHARACTER*16 NOMTE,OPTION,PHENOM, COMPOR(4), VALK
 C
-      REAL*8   EPSI,DEPI,R8DEPI,R8PREM
+      REAL*8   EPSI,R8PREM
       REAL*8   DFDI(60),F(3,3),EPS(6),FNO(81),E1(3),E2(3),E3(3)
       REAL*8   DUDM(3,4),DFDM(3,4),DTDM(3,4),DER(4)
       REAL*8   U1L(3),U2L(3),U3L(3), DFVDM(3,4)
-      REAL*8   U1G(3),U2G(3),U3G(3)
       REAL*8   DU1DM(3,4),DU2DM(3,4),DU3DM(3,4)
-      REAL*8   DU1DPO(3,2),DU2DPO(3,2),DU3DPO(3,2),P(3,3),INVP(3,3)
-      REAL*8   DU1DL(3,4),DU2DL(3,4),DU3DL(3,4),COURB(3,3,3)
+      REAL*8   P(3,3),INVP(3,3)
+      REAL*8   COURB(3,3,3)
       REAL*8   RHO,OM,OMO,RBID,E,NU,ALPHA,TREF
       REAL*8   THET,TG(27),TPN(20),TGDM(3),TTRG,LA,MU, KA
       REAL*8   XG,YG,ZG,FF
       REAL*8   C1,C2,C3, RG, PHIG
       REAL*8   VALRES(3),DEVRES(3)
-      REAL*8   COEFF,COEFF3,CR1,CR2
+      REAL*8   COEFF,COEFF3
       REAL*8   GUV,GUV1,GUV2,GUV3,K1,K2,K3,G,POIDS
       REAL*8   NORME,K3A,TTRGV,TGVDM(3)
       REAL*8   VALPAR(4),LSNG,LSTG
 C
-      INTEGER  IPOIDS,IVF,IDFDE,NNO,KP,NPG,COMPT,IER, NNOS, IDEPI
+      INTEGER  IPOIDS,IVF,IDFDE,NNO,KP,NPG,COMPT,IER, NNOS
       INTEGER  JGANO,IEPSR,ICOMP,ISIGI,IBALO,ICOUR
       INTEGER  IGEOM,ITHET, IGTHET, IROTA,IPESA,IDEPL,IRET
       INTEGER  IMATE,IFORC,IFORF,ITEMPS,K,I,J,KK,L,NDIM,INO
@@ -69,8 +68,7 @@ C DEB ------------------------------------------------------------------
 
       CALL JEMARQ()
       EPSI = R8PREM()
-      DEPI=R8DEPI()
-      
+
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       CALL JEVECH('PTHETAR','L',ITHET)
@@ -142,7 +140,7 @@ C RECUPERATION CHARGE, MATER...
         VALK='G_BILI'
         CALL U2MESK('F','RUPTURE1_13',1,VALK)
       END IF
-      
+
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'ALPHA'
@@ -223,9 +221,6 @@ C     BOUCLE SUR LES POINTS DE GAUSS
           TGVDM(I) = 0.D0
           DO 111 J=1,4
             DUDM(I,J) = 0.D0
-            DU1DL(I,J)= 0.D0
-            DU2DL(I,J)= 0.D0
-            DU3DL(I,J)= 0.D0
             DU1DM(I,J)= 0.D0
             DU2DM(I,J)= 0.D0
             DU3DM(I,J)= 0.D0
@@ -370,151 +365,27 @@ C       ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 C       CAR ON SE TROUVE SUR LE FOND DE FISSURE
         CALL ASSERT(IRET.NE.0)
 
-C       COEFFS  DE CALCUL
-        CR1=1.D0/(4.D0*MU*SQRT(DEPI*RG))
-        CR2=SQRT(RG)/(2.D0*MU*SQRT(DEPI))
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C       ------------------------------------------------
+C       CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES
+C       -----------------------------------------------------
 
-C-----------------------------------------------------------------------
-C       DÉFINITION DU CHAMP SINGULIER AUXILIAIRE U1 ET SA DÉRIVÉE
-C-----------------------------------------------------------------------
-C       CHAMP SINGULIER AUXILIAIRE U1 DANS LA BASE LOCALE
-        U1L(1)=CR2*COS(PHIG*0.5D0)*(KA-COS(PHIG))
-        U1L(2)=CR2*SIN(PHIG*0.5D0)*(KA-COS(PHIG))
-        U1L(3)=0.D0
+C       PRISE EN COMPTE DE LA COURBURE
+        LCOUR=.TRUE.
+C       RECUPERATION DU TENSEUR DE COURBURE
+        CALL JEVECH('PCOURB','L',ICOUR)
+        DO 500 I=1,NDIM
+          DO 501 J=1,NDIM
+            COURB(I,1,J)=ZR(ICOUR-1+NDIM*(I-1)+J)
+            COURB(I,2,J)=ZR(ICOUR-1+NDIM*(I+3-1)+J)
+            COURB(I,3,J)=ZR(ICOUR-1+NDIM*(I+6-1)+J)
+ 501      CONTINUE
+ 500    CONTINUE
 
-C       MATRICE DES DÉRIVÉES DE U1 DANS LA BASE POLAIRE (3X2)
-        DU1DPO(1,1)=CR1*(COS(PHIG*0.5D0)*(KA-COS(PHIG)))
-        DU1DPO(2,1)=CR1*(SIN(PHIG*0.5D0)*(KA-COS(PHIG)))
-        DU1DPO(3,1)=0.D0
-        DU1DPO(1,2)=CR2*(-0.5D0*SIN(PHIG*0.5D0)*(KA-COS(PHIG))
-     &                                 + COS(PHIG*0.5D0)*SIN(PHIG))
-        DU1DPO(2,2)=CR2*(0.5D0*COS(PHIG*0.5D0)*(KA-COS(PHIG))
-     &                                 + SIN(PHIG*0.5D0)*SIN(PHIG))
-        DU1DPO(3,2)=0.D0
 
-C       MATRICE DES DÉRIVÉES DE U1 DANS LA BASE LOCALE (3X3)
-        DO 140 I=1,3
-          DU1DL(I,1)=COS(PHIG)*DU1DPO(I,1)-SIN(PHIG)/RG*DU1DPO(I,2)
-          DU1DL(I,2)=SIN(PHIG)*DU1DPO(I,1)+COS(PHIG)/RG*DU1DPO(I,2)
-          DU1DL(I,3)=0.D0
- 140    CONTINUE
-C
-C       U1 DANS LA BASE GLOBALE
-        DO 1400 I = 1,NDIM
-          U1G(I) = 0.0D0
-          DO 1410 J = 1,NDIM
-            U1G(I) = U1G(I) + P(I,J) * U1L(J)
- 1410     CONTINUE
-        DU1DM(I,4) = U1G(I)
- 1400   CONTINUE
-C
+        CALL CHAUXI(NDIM,MU,KA,RG,PHIG,INVP,LCOUR,COURB,
+     &              DU1DM,DU2DM,DU3DM,U1L,U2L,U3L)
 
-C       MATRICE DES DÉRIVÉES DE U1 DANS LA BASE GLOBALE (3X3)
-        DO 141 I=1,NDIM
-          DO 142 J=1,NDIM
-            DO 143 K=1,NDIM
-              DO 144 L=1,NDIM
-                DU1DM(I,J)=DU1DM(I,J)+DU1DL(K,L)*INVP(L,J)*INVP(K,I)
- 144          CONTINUE
-C             PRISE EN COMPTE DE LA BASE MOBILE
-              IF (LCOUR) DU1DM(I,J)=DU1DM(I,J)+U1L(K)*COURB(K,I,J)
- 143        CONTINUE
- 142      CONTINUE
- 141    CONTINUE
-
-C-----------------------------------------------------------------------
-C       DÉFINITION DU CHAMP SINGULIER AUXILIAIRE U2 ET SA DÉRIVÉE
-C-----------------------------------------------------------------------
-C       CHAMP SINGULIER AUXILIAIRE U2 DANS LA BASE LOCALE
-        U2L(1)=CR2*SIN(PHIG*0.5D0)*(KA+2.D0+COS(PHIG))
-        U2L(2)=CR2*COS(PHIG*0.5D0)*(2.D0-KA-COS(PHIG))
-        U2L(3)=0.D0
-
-C       MATRICE DES DÉRIVÉES DE U2 DANS LA BASE POLAIRE (3X2)
-        DU2DPO(1,1)=CR1*(SIN(PHIG*0.5D0)*(KA+2.D0+COS(PHIG)))
-        DU2DPO(2,1)=CR1*(COS(PHIG*0.5D0)*(2.D0-KA-COS(PHIG)))
-        DU2DPO(3,1)=0.D0
-        DU2DPO(1,2)=CR2*(0.5D0*COS(PHIG*0.5D0)*(KA+2.D0+COS(PHIG))
-     &                                 - SIN(PHIG*0.5D0)*SIN(PHIG))
-        DU2DPO(2,2)=CR2*(-0.5D0*SIN(PHIG*0.5D0)*(2.D0-KA-COS(PHIG))
-     &                                 + COS(PHIG*0.5D0)*SIN(PHIG))
-        DU2DPO(3,2)=0.D0
-
-C       MATRICE DES DÉRIVÉES DE U2 DANS LA BASE LOCALE (3X3)
-        DO 150 I=1,3
-          DU2DL(I,1)=COS(PHIG)*DU2DPO(I,1)-SIN(PHIG)/RG*DU2DPO(I,2)
-          DU2DL(I,2)=SIN(PHIG)*DU2DPO(I,1)+COS(PHIG)/RG*DU2DPO(I,2)
-          DU2DL(I,3)=0.D0
- 150    CONTINUE
-C
-C       U2 DANS LA BASE GLOBALE
-        DO 1500 I = 1,NDIM
-          U2G(I) = 0.0D0
-          DO 1510 J = 1,NDIM
-            U2G(I) = U2G(I) + P(I,J) * U2L(J)
- 1510     CONTINUE
-        DU2DM(I,4) = U2G(I)
- 1500   CONTINUE
-C
-
-C       MATRICE DES DÉRIVÉES DE U2 DANS LA BASE GLOBALE (3X3)
-        DO 151 I=1,NDIM
-          DO 152 J=1,NDIM
-            DO 153 K=1,NDIM
-              DO 154 L=1,NDIM
-                DU2DM(I,J)=DU2DM(I,J)+DU2DL(K,L)*INVP(L,J)*INVP(K,I)
- 154          CONTINUE
-C             PRISE EN COMPTE DE LA BASE MOBILE
-              IF (LCOUR) DU2DM(I,J)=DU2DM(I,J)+U2L(K)*COURB(K,I,J)
- 153        CONTINUE
- 152      CONTINUE
- 151    CONTINUE
-
-C-----------------------------------------------------------------------
-C       DÉFINITION DU CHAMP SINGULIER AUXILIAIRE U3 ET SA DÉRIVÉE
-C-----------------------------------------------------------------------
-C       CHAMP SINGULIER AUXILIAIRE U3 DANS LA BASE LOCALE
-        U3L(1)=0.D0
-        U3L(2)=0.D0
-        U3L(3)=4.D0*CR2*SIN(PHIG*0.5D0)
-
-C       MATRICE DES DÉRIVÉES DE U3 DANS LA BASE POLAIRE (3X2)
-        DU3DPO(1,1)=0.D0
-        DU3DPO(2,1)=0.D0
-        DU3DPO(1,2)=0.D0
-        DU3DPO(2,2)=0.D0
-        DU3DPO(3,1)=4.D0*CR1*SIN(PHIG*0.5D0)
-        DU3DPO(3,2)=2.D0*CR2*COS(PHIG*0.5D0)
-
-C       MATRICE DES DÉRIVÉES DE U3 DANS LA BASE LOCALE (3X3)
-        DO 160 I=1,3
-          DU3DL(I,1)=COS(PHIG)*DU3DPO(I,1)-SIN(PHIG)/RG*DU3DPO(I,2)
-          DU3DL(I,2)=SIN(PHIG)*DU3DPO(I,1)+COS(PHIG)/RG*DU3DPO(I,2)
-          DU3DL(I,3)=0.D0
- 160    CONTINUE
-C
-C       U3 DANS LA BASE GLOBALE
-        DO 1600 I = 1,NDIM
-          U3G(I) = 0.D0
-          DO 1610 J = 1,NDIM
-            U3G(I) = U3G(I) + P(I,J) * U3L(J)
- 1610     CONTINUE
-        DU3DM(I,4) = U3G(I)
- 1600   CONTINUE
-C
-
-C       MATRICE DES DÉRIVÉES DE U3 DANS LA BASE GLOBALE (3X3)
-        DO 161 I=1,NDIM
-          DO 162 J=1,NDIM
-            DO 163 K=1,NDIM
-              DO 164 L=1,NDIM
-                DU3DM(I,J)=DU3DM(I,J)+DU3DL(K,L)*INVP(L,J)*INVP(K,I)
- 164          CONTINUE
-C             PRISE EN COMPTE DE LA BASE MOBILE
-              IF (LCOUR) DU3DM(I,J)=DU3DM(I,J)+U3L(K)*COURB(K,I,J)
- 163        CONTINUE
- 162      CONTINUE
- 161    CONTINUE
 C-----------------------------------------------------------------------
 C       CALCUL DE G, K1, K2, K2 AU POINT DE GAUSS
 C-----------------------------------------------------------------------

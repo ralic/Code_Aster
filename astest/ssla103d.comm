@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 # ssla103d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,6 +56,8 @@ AC   =DEFI_CONSTANTE(VALE = 1.4)
 
 BC   =DEFI_CONSTANTE(VALE = 2000.)
 
+K   =DEFI_CONSTANTE(VALE = 0.7)
+
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
                                K_DESSIC =1.66E-5,
@@ -63,7 +65,7 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                TEMP_DEF_ALPHA = 20.,
                                ALPHA=ALPHA),
                     NON_LOCAL = _F(LONG_CARA=0.0,),
-                    MAZARS_FO  =_F(BETA = 1.06,
+                    MAZARS_FO  =_F(K = K,
                                    EPSD0= EPSD0,
                                    AC   = AC,
                                    AT   = AT,

@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -322,23 +322,6 @@ C
             CALL JEVECH('PMATUUR','E',JMATR)
             CALL UTPSLG(NNO,6,PGL,MATLOC,ZR(JMATR))
          ENDIF
-C
-C
-      ELSEIF (OPTION.EQ.'EFGE_ELNO') THEN
-C     ------------------------------------------
-         CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
-         CALL JEVECH('PCONTRR','L',ICONTP)
-         IND=8
-         CALL DXEFFI(OPTION,NOMTE,PGL,ZR(ICONTP),IND,EFFINT)
-C
-         CALL JEVECH ('PCACOQU', 'L', JCARA)
-         ALPHA = ZR(JCARA+1) * R8DGRD()
-         BETA  = ZR(JCARA+2) * R8DGRD()
-         CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE)
-C
-         CALL DXEFRO(NPG,T2VE,EFFINT,EFFGT)
-         CALL JEVECH('PEFFORR','E',ICHN)
-         CALL PPGAN2(JGANO,1,IND,EFFGT,ZR(ICHN))
 C
 C
       ELSEIF (OPTION.EQ.'FORC_NODA') THEN

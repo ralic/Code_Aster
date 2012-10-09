@@ -8,13 +8,13 @@
       CHARACTER*16  COMPOR(*),OPTION
       REAL*8        ANGMAS(*),TAMPON(*)
       REAL*8        CRIT(1),INSTAM,INSTAP,EPSM(6),DEPS(6)
-      REAL*8        SIGM(6),VIM(7),SIGP(6),VIP(7),DSIDEP(6,6)
+      REAL*8        SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
 
 C
 C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/10/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

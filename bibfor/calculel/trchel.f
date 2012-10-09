@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -215,6 +215,7 @@ C             RIEN A FAIRE.
           CALL GETVIS('CHAM_ELEM','SOUS_POINT',IOCC,IARG,1,NUSP,N2)
           IF (N2.EQ.0) NUSP = 0
           CALL GETVIS('CHAM_ELEM','POINT',IOCC,IARG,1,NUPO,N2)
+          IF (N2.EQ.0) NUPO = 0
 
           IF (N2.NE.0) THEN
             NL1 = LXLGUT(LIGN1)

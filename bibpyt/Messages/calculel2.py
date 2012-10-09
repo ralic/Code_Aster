@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel2 Messages  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -457,9 +457,23 @@ Conseils :
 """),
 
 89: _(u"""
- option  %(k1)s  non disponible sur les éléments du modèle
- pas de champ créé
+ Alarme utilisateur :
+   Le champ  %(k1)s  n'a pas pu être calculé.
+
+ Risques & conseils :
+   * Si le champ est un champ par éléments, c'est que le calcul élémentaire n'est pas disponible
+     pour les éléments finis utilisés. Cela peut se produire soit parce que ce
+     calcul n'a pas été encore programmé, soit parce que ce calcul n'a pas de sens.
+     Par exemple, le champ EFGE_ELNO n'a pas de sens pour les éléments de la modélisation '3D'.
+   * Si le champ est un champ aux noeuds (XXXX_NOEU), cela veut dire que le champ XXXX_ELNO
+     n'existe pas sur les éléments spécifiés.
+     Par exemple, le calcul de SIGM_NOEU sur les éléments de bord est impossible.
+
 """),
+
+
+
+
 
 92: _(u"""
  votre chargement contient plus d'une charge répartie

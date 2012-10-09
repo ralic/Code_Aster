@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 08/10/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185b.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,13 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV185B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV185B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('CALCULEL2_63'))
+
+# <CALCULEL2_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" 
+#                  QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
+#                  LE MODELE PROVOQUANT CES ALARMES NE SERT QU'A LA VISUALISATION
 
 # MODELISATION B : X-FEM FISSURE COINCIDENTE - TRACTION (FACE SUP)
 
@@ -83,7 +89,7 @@ nu=0.
 rho=7800.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 
-CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
@@ -107,14 +113,12 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                   RESOLUTION
 #----------------------------------------------
 
-UTOT2=MECA_STATIQUE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMA1,
-                   EXCIT=(
-                          _F(CHARGE=CH1),
+RESU=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CH1),
                           _F(CHARGE=CH2),
                           ),
-                   INFO=1,
-                   ); 
+                   ) 
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
@@ -135,7 +139,7 @@ GLO = [None]*nbc
 
 for i in range(0,nbc) :
 
-   SIF[i]=CALC_G(RESULTAT=UTOT2,
+   SIF[i]=CALC_G(RESULTAT=RESU,
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
@@ -144,7 +148,7 @@ for i in range(0,nbc) :
                             LISSAGE_G='LAGRANGE',),);
 
    IMPR_TABLE(TABLE=SIF[i],);
-   GLO[i]=CALC_G(RESULTAT=UTOT2,
+   GLO[i]=CALC_G(RESULTAT=RESU,
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
                           R_SUP=RS[i],),
@@ -197,13 +201,13 @@ for i in range(0,nbc) :
               PRECISION=2.5*prec,
               REFERENCE='ANALYTIQUE',);
 
-GLeg=CALC_G(RESULTAT=UTOT2,
-                 THETA=_F(FISSURE=FISS,
-                          R_INF=RI[0],
-                          R_SUP=RS[0],),
-                 LISSAGE=_F(DEGRE =1,),);
+GLeg=CALC_G(RESULTAT=RESU,
+            THETA=_F(FISSURE=FISS,
+                     R_INF=RI[0],
+                     R_SUP=RS[0],),
+            LISSAGE=_F(DEGRE =1,),);
 
-IMPR_TABLE(TABLE=GLeg,);   
+IMPR_TABLE(TABLE=GLeg)
  
 TEST_TABLE(TABLE=GLeg,
            NOM_PARA='G',
@@ -221,14 +225,14 @@ TEST_TABLE(TABLE=GLeg,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
            
-GLagr=CALC_G(RESULTAT=UTOT2,
-                 THETA=_F(FISSURE=FISS,
-                          R_INF=RI[0],
-                          R_SUP=RS[0],),
-                 LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE',),);
+GLagr=CALC_G(RESULTAT=RESU,
+             THETA=_F(FISSURE=FISS,
+                      R_INF=RI[0],
+                      R_SUP=RS[0],),
+             LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                        LISSAGE_G='LAGRANGE'))
 
-IMPR_TABLE(TABLE=GLagr,);         
+IMPR_TABLE(TABLE=GLagr)
 
 TEST_TABLE(TABLE=GLagr,
            NOM_PARA='G',
@@ -236,7 +240,7 @@ TEST_TABLE(TABLE=GLagr,
            VALE=GREF,
            CRITERE='RELATIF',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=GLagr,
            NOM_PARA='G',
@@ -244,43 +248,40 @@ TEST_TABLE(TABLE=GLagr,
            VALE=GREF,
            CRITERE='RELATIF',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE')
+
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS AVEC POST_K1_K2_K3
 #------------------------------------------------------------------------
 
 PK=POST_K1_K2_K3(MODELISATION='3D',
-                     MATER=ACIER,
-                     FISSURE = FISS,
-                     RESULTAT  = UTOT2,
-                     ABSC_CURV_MAXI = 1.5,
-                     NB_NOEUD_COUPE = 6,
-                    )
+                 MATER=ACIER,
+                 FISSURE = FISS,
+                 RESULTAT  = RESU,
+                 ABSC_CURV_MAXI = 1.5,
+                 NB_NOEUD_COUPE = 6,
+                 )
 
 IMPR_TABLE(TABLE = PK)
 
-TEST_TABLE( TABLE=PK,
-            NOM_PARA='K1',
-            FILTRE=(_F( NOM_PARA = 'PT_FOND',  
-                        VALE_I = 1,  ),
-                    _F( NOM_PARA = 'INST',  
-                        VALE = 0.,  ),),
-            VALE=K1REF,
-            PRECISION=0.05,
-            REFERENCE='ANALYTIQUE' )
+TEST_TABLE(TABLE=PK,
+           NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA = 'PT_FOND',  
+                     VALE_I = 1,  ),
+           VALE=K1REF,
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE')
 
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : MAILLAGE FISSURE
 #------------------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(
-                       MODELE        = MODELEK,
-                       INFO          = 2)
+MA_VISU=POST_MAIL_XFEM(MODELE = MODELEK)
 
 TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                GROUP_NO='VOL',
-                               RESULTAT=UTOT2,
+                               RESULTAT=RESU,
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='DX',
@@ -322,39 +323,44 @@ TEST_TABLE(TABLE=TABDEP,
 
 
 #------------------------------------------------------------------------
-# POST-TRAITEMENT : DELACEMENTS POUR LE MAILLAGE FISSURE
+# POST-TRAITEMENT DES DEPLACEMENTS, CONTRAINTES ET DEFORMATIONS POUR VISU
 #------------------------------------------------------------------------
 
-MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
                      AFFE=_F(TOUT='OUI',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D')) 
 
-RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT2,
-                        
-                        INFO          = 2)
+RES_VISU=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
+                        RESULTAT = RESU)
 
-DEFI_FICHIER(UNITE=82);
+MAT_VISU=AFFE_MATERIAU(MAILLAGE=MA_VISU,
+                       AFFE=_F(TOUT = 'OUI',
+                               MATER=ACIER))
 
-IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
+RES_VISU=CALC_CHAMP(reuse =RES_VISU,
+                    RESULTAT=RES_VISU,
+                    CHAM_MATER=MAT_VISU,
+                    DEFORMATION='EPSI_ELGA',
+                    )
 
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RES_VISU))
 
-TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(  RESULTAT=RES_VISU,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DX',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'ABSOLU',
                      VALE = 5.9178358450956E-04,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '9.0.21'),
-                _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
+                _F(  RESULTAT=RES_VISU,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DY',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'ABSOLU',
                      VALE = 1.6944743324555,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '10.2.17'),
-                _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
+                _F(  RESULTAT=RES_VISU,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DZ',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'ABSOLU',
@@ -363,4 +369,4 @@ TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      VERSION = '10.2.17'),
             ),)
 
-FIN();
+FIN()

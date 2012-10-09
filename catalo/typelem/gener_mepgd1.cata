@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ MODE_LOCAL__
     CFORCER  = FORC_R   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CINSTMR  = INST_R   ELEM__         (INST     )
@@ -123,7 +124,7 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          -1    IN__     OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__     OUT__  XXXXXX   XXXXXX
-    INIT_VARC           99    IN__  
+    INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
     MASS_FLUI_STRU      -1    IN__     OUT__  XXXXXX   XXXXXX
     MASS_INER           -1    IN__     OUT__  XXXXXX   XXXXXX
@@ -147,6 +148,8 @@ OPTION__
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      393   IN__   EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
+    REPERE_LOCAL        135   IN__   CCAORIE  PCAORIE  NGEOMER  PGEOMER
+                              OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
     RICE_TRACEY         -1    IN__     OUT__  XXXXXX   XXXXXX
     RIGI_FLUI_STRU      -1    IN__     OUT__  XXXXXX   XXXXXX
     RIGI_MECA           -1    IN__     OUT__  XXXXXX   XXXXXX
@@ -167,7 +170,9 @@ OPTION__
     SIPO_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
-    TOU_INI_ELGA        99    IN__  
+    TOU_INI_ELEM        99    IN__
+                              OUT__  CGEOMER  PGEOM_R
+    TOU_INI_ELGA        99    IN__
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
     VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR

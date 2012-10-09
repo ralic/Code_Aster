@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 # TITRE ESSAI DE COMPRESSION-DILATATION POUR ETUDE
 # hsnv129b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,9 +53,10 @@ BC=DEFI_FONCTION(NOM_PARA='TEMP',
 NU   =DEFI_CONSTANTE(VALE = 0.2)
 ALPHA=DEFI_CONSTANTE(VALE = 1.2e-05)
 EPSD0=DEFI_CONSTANTE(VALE = 0.0001)
-AT   =DEFI_CONSTANTE(VALE = 0.8)
+AT   =DEFI_CONSTANTE(VALE = 1.0)
 BT   =DEFI_CONSTANTE(VALE = 10000.)
 AC   =DEFI_CONSTANTE(VALE = 1.4)
+K   =DEFI_CONSTANTE(VALE = 0.7)
 
 MAT=DEFI_MATERIAU( ELAS_FO=_F(E = E,
                               NU = NU,
@@ -63,7 +64,7 @@ MAT=DEFI_MATERIAU( ELAS_FO=_F(E = E,
                               TEMP_DEF_ALPHA = 0.0),
                    THER = _F(LAMBDA = 2.2,
                              RHO_CP = 2.2e6),
-                   MAZARS_FO  =_F(BETA = 1.06,
+                   MAZARS_FO  =_F(K = K,
                                  EPSD0= EPSD0,
                                  AC   = AC,
                                  AT   = AT,

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,9 +56,11 @@ MODE_LOCAL__
     EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
                                         VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
                                         VECT_3_Y VECT_3_Z )
+    EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
+                                        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
+                                        VECT_3_Y VECT_3_Z )
     EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR   EPPTOT)
     EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR   EPPTOT)
-    EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
                                         TERMN2   TERMSA   TERMS2   TAILLE   )
     EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
@@ -108,9 +110,10 @@ MODE_LOCAL__
     ERICTRA  = RICE_TRA ELEM__         (TRIAX    RSR0     VOLU     NUMEMA   DEPSEQ   )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
-    ESIGMNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
-    ESIGMPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
-    ESIGMPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
+    ESIGMNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ESIGMNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ESIGMPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ESIGMPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         FSTAB[72]    )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
@@ -122,8 +125,9 @@ MODE_LOCAL__
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
-    ESIGMNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  TRSIG )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
     EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   IND_DCHA VAL_DCHA X11      X22      X33 
                                         X12      X13      X23      RADI_V   ERR_RADI   ) 
     EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   IND_DCHA VAL_DCHA X11      X22      X33 
@@ -255,6 +259,10 @@ OPTION__
                                      DDL_MECA PDEPLR   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
                               OUT__  EENERR   PENERD1
+    EPEQ_ELGA           335   IN__   EDEFOPG  PDEFORR
+                              OUT__  EDFEQPG  PDEFOEQ
+    EPEQ_ELNO           335   IN__   EDEFONO  PDEFORR
+                              OUT__  EDFEQNO  PDEFOEQ
     EPFD_ELGA           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ZVARIPG  PVARIGR
                               OUT__  EDEFOPG  PDEFOPG
     EPFD_ELNO           4     IN__   EDEFOPG  PDEFOPG
@@ -274,6 +282,10 @@ OPTION__
                               OUT__  EDEFOPG  PDEFOPG
     EPMG_ELNO           4     IN__   EDEFOPG  PDEFOPG
                               OUT__  EDEFONO  PDEFONO
+    EPMQ_ELGA           335   IN__   EDEFOPG  PDEFORR
+                              OUT__  EDFEQPG  PDEFOEQ
+    EPMQ_ELNO           335   IN__   EDEFONO  PDEFORR
+                              OUT__  EDFEQNO  PDEFOEQ
     EPOT_ELEM           218   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENERR   PENERDR
@@ -297,14 +309,6 @@ OPTION__
                               OUT__  EDFVCPG  PDEFOPG
     EPVC_ELNO           4     IN__   EDFVCPG  PDEFOPG
                               OUT__  EDFVCNO  PDEFONO
-    EPMQ_ELGA           335   IN__   EDEFOPG  PDEFORR
-                              OUT__  EDFEQPG  PDEFOEQ
-    EPEQ_ELGA           335   IN__   EDEFOPG  PDEFORR
-                              OUT__  EDFEQPG  PDEFOEQ
-    EPMQ_ELNO           335   IN__   EDEFONO  PDEFORR
-                              OUT__  EDFEQNO  PDEFOEQ
-    EPEQ_ELNO           335   IN__   EDEFONO  PDEFORR
-                              OUT__  EDFEQNO  PDEFOEQ
     ERME_ELEM           375   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
                                      EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ESIGMNO  PCONTNO

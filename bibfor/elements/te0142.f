@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,6 @@ C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
 C     POUR LES ELEMENTS DE POUTRE D'EULER ET DE TIMOSHENKO.
 C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-C        'EFGE_ELNO'
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 C        'MECA_POU_D_E' : POUTRE DROITE D'EULER (SECTION VARIABLE)
 C        'MECA_POU_D_EM': POUTRE DROITE D'EULER (SECTION MULTIFIBRES)
@@ -36,10 +35,10 @@ C        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 C     ------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER I ,JEFFO ,LABSC ,LCAGE ,LMATER ,LOPT ,NBPAR 
-      INTEGER NBREF ,NBRES 
-      REAL*8 ABSMOY ,CM ,PHIE ,PHII ,RHOFE ,RHOFI ,RHOS 
-      REAL*8 VALPAR 
+      INTEGER I ,JEFFO ,LABSC ,LCAGE ,LMATER ,LOPT ,NBPAR
+      INTEGER NBREF ,NBRES
+      REAL*8 ABSMOY ,CM ,PHIE ,PHII ,RHOFE ,RHOFI ,RHOS
+      REAL*8 VALPAR
 C-----------------------------------------------------------------------
       PARAMETER (NBRES=3,NBREF=6)
       REAL*8 VALRES(NBRES),VALREF(NBREF)
@@ -115,15 +114,5 @@ C     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
 
       CALL VECMA(KLV,78,KLC,12)
 
-      IF (OPTION.EQ.'EFGE_ELNO') THEN
-        CALL JEVECH('PEFFORR','E',JEFFO)
-        CALL POEFGR(NOMTE,KLC,ZI(LMATER),E,NU,RHO,ZR(JEFFO))
-        DO 10 I = 1,6
-          ZR(JEFFO+I-1) = -ZR(JEFFO+I-1)
-          ZR(JEFFO+I+6-1) = ZR(JEFFO+I+6-1)
-   10   CONTINUE
-      ELSE
-        CALL ASSERT(.FALSE.)
-      END IF
 
       END

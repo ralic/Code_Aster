@@ -1,7 +1,7 @@
       SUBROUTINE DXEFGV (NOMTE,OPTION,XYZL,PGL ,DEPL,
      +                   EFFGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*16 NOMTE, OPTION
+      CHARACTER*16 NOMTE
+      CHARACTER*(*) OPTION
       REAL*8       XYZL(3,1) , PGL(3,3)
       REAL*8       DEPL(1)
       REAL*8       EFFGT(1)
@@ -52,9 +53,12 @@ C --- CALCUL DES EFFORTS GENERALISES D'ORIGINE MECANIQUE
 C --- AUX POINTS DE CALCUL
 C     --------------------
 C-----------------------------------------------------------------------
-      INTEGER I 
+      INTEGER I
+      CHARACTER*16 OPTI16
 C-----------------------------------------------------------------------
-      CALL DXEFGM(NOMTE, OPTION, XYZL, PGL, DEPL, EFFGT)
+      OPTI16=OPTION
+
+      CALL DXEFGM(NOMTE, OPTI16, XYZL, PGL, DEPL, EFFGT)
 C
 C --- CALCUL DES EFFORTS GENERALISES D'ORIGINE THERMIQUE
 C --- AUX POINTS DE CALCUL

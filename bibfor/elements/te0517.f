@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,11 +24,9 @@ C
 C ======================================================================
 C     CALCUL DES OPTIONS POUR L'ELEMENT POU_D_TGM (MULTI-FIBRES)
 C        VARI_ELNO
-C        EFGE_ELNO
 C        FORC_NODA
 C
 C     CALCUL DES OPTIONS POUR L'ELEMENT POU_D_EM (MULTI-FIBRES)
-C        EFGE_ELNO
 C        FORC_NODA
 C
 C IN  OPTION : OPTION DE CALCUL
@@ -38,13 +36,12 @@ C
       INTEGER NC,NNO
       INTEGER CODRES(2)
       CHARACTER*2 NOMRES(2)
-      REAL*8 ZERO
 
-      REAL*8 PGL(3,3),FL(14), D1B3(2,3),KSI1,TMAX(2),TMIN(2),XIY,XIZ
+      REAL*8 PGL(3,3),FL(14), KSI1,TMAX(2),TMIN(2),XIY,XIZ
       REAL*8 SIGFIB
-      REAL*8 NX,TY,TZ,MX,MY,MZ,DEUX
+      REAL*8 NX,TY,TZ,MX,MY,MZ
 
-      INTEGER NBFIB,KP,ADR,NCOMP,I,CARA,NE,JACF,NCARFI
+      INTEGER NBFIB,KP,ADR,NCOMP,I,CARA,NE,JACF
       INTEGER ICOMPO,ICGP,ICONTN,IORIEN,IVECTU
       INTEGER JTAB(7), LX,INO,ISTRXR,ISTRXM,NBSP
 C
@@ -55,7 +52,6 @@ C
       REAL*8  FORREF,MOMREF
       LOGICAL REACTU
 
-      PARAMETER (ZERO=0.D+0, DEUX=2.0D+0)
 C ----------------------------------------------------------------------
       NNO = 2
 
@@ -92,23 +88,9 @@ C       --- RECUPERATION DES CARACTERISTIQUES DES FIBRES
         CALL JEVECH('PNBSP_I','L',I)
         NBFIB = ZI(I)
         CALL JEVECH('PFIBRES','L',JACF)
-        NCARFI = 3
 
 C       --- NOMBRE DE POINT DE GAUSS
         NPG = 3
-
-C       ON PROJETTE AVEC LES FCTS DE FORME
-C       SUR LES NOEUDS DEBUT ET FIN DE L'ELEMENT
-C       POUR LE POINT 1
-        KSI1 = -SQRT( 5.D0 / 3.D0 )
-        D1B3(1,1) = KSI1*(KSI1-1.D0)/2.0D0
-        D1B3(1,2) = 1.D0-KSI1*KSI1
-        D1B3(1,3) = KSI1*(KSI1+1.D0)/2.0D0
-C       POUR LE POINT 2
-        KSI1 = SQRT( 5.D0 / 3.D0 )
-        D1B3(2,1) = KSI1*(KSI1-1.D0)/2.0D0
-        D1B3(2,2) = 1.D0-KSI1*KSI1
-        D1B3(2,3) = KSI1*(KSI1+1.D0)/2.0D0
       ENDIF
 
 C     --------------------------------------
@@ -118,72 +100,8 @@ C  A QUOI SERT-ELLE, POUR CET ELEMENT ?
          CALL U2MESS('F','ELEMENTS4_16')
 
 C     --------------------------------------
-      ELSEIF ( OPTION .EQ. 'EFGE_ELNO'.AND.
-     &         NOMTE(1:13).EQ.'MECA_POU_D_TG') THEN
-
-         CALL JEVECH('PCONTRR','L',ICGP)
-         CALL JEVECH('PSTRXRR','L',ISTRXR)
-         CALL JEVECH('PEFFORR','E',ICONTN)
-
-
-C --- CALCUL DES FORCES INTEGREES
-         DO 200 I = 1 , NC
-            FL(I)    = ZERO
-            FL(I+NC) = ZERO
-            DO 202 KP = 1 , 3
-               ADR=ISTRXR+NCOMP*(KP-1)+I-1
-               FL(I)   = FL(I)   +ZR(ADR)*D1B3(1,KP)
-               FL(I+NC)= FL(I+NC)+ZR(ADR)*D1B3(2,KP)
-202         CONTINUE
-200      CONTINUE
-
-C !!!   A CAUSE DE LA PLASTIFICATION DE LA SECTION LES EFFORTS
-C          N,MFY,MFZ DOIVENT ETRE RECALCULES POUR LES NOEUDS 1 ET 2
-         FL(1)    = ZERO
-         FL(5)    = ZERO
-         FL(6)    = ZERO
-         FL(1+NC) = ZERO
-         FL(5+NC) = ZERO
-         FL(6+NC) = ZERO
-
-C       POUR LES NOEUDS 1 ET 2
-C          CALCUL DES CONTRAINTES
-C          CALCUL DES EFFORTS GENERALISES A PARTIR DES CONTRAINTES
-         DO 220 NE = 1 , 2
-            DO 230 I= 1 , NBFIB
-               SIGFIB = ZERO
-               DO 240 KP = 1 , 3
-                  ADR = ICGP+NBFIB*(KP-1) + I - 1
-                  SIGFIB = SIGFIB + ZR(ADR)*D1B3(NE,KP)
-240            CONTINUE
-               IF ( I .EQ. 1 ) THEN
-                  TMAX(NE) = SIGFIB
-                  TMIN(NE) = SIGFIB
-               ELSE
-                  IF ( SIGFIB .GT. TMAX(NE) ) TMAX(NE) = SIGFIB
-                  IF ( SIGFIB .LT. TMIN(NE) ) TMIN(NE) = SIGFIB
-               ENDIF
-               ADR  = NC*(NE-1)
-               CARA = JACF+(I-1)*NCARFI
-               FL(1+ADR) = FL(1+ADR) + SIGFIB*ZR(CARA+2)
-               FL(5+ADR) = FL(5+ADR) + SIGFIB*ZR(CARA+2)*ZR(CARA+1)
-               FL(6+ADR) = FL(6+ADR) - SIGFIB*ZR(CARA+2)*ZR(CARA)
-230         CONTINUE
-220      CONTINUE
-
-         DO 310 I = 1 , NC
-            ZR(ICONTN+I-1) = FL(I)
-310      CONTINUE
-         ZR(ICONTN+(NC+1)-1) = TMAX(1)
-         ZR(ICONTN+(NC+2)-1) = TMIN(1)
-         DO 312 I = (NC+1) , 2*NC
-            ZR(ICONTN+2+I-1) = FL(I)
-312      CONTINUE
-         ZR(ICONTN+2*(NC+1)+1-1) = TMAX(2)
-         ZR(ICONTN+2*(NC+1)+2-1) = TMIN(2)
 C     --------------------------------------
-      ELSEIF ( OPTION .EQ. 'FORC_NODA'.OR.
-     &         OPTION .EQ. 'EFGE_ELNO' ) THEN
+      ELSEIF ( OPTION .EQ. 'FORC_NODA') THEN
 
          CALL JEVECH('PCAORIE','L',IORIEN)
 
@@ -208,7 +126,7 @@ C ---       LONGUEUR DE L'ELEMENT ---
             XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2 +
      &                 (ZR(LX+5)-ZR(LX+2))**2 +
      &                 (ZR(LX+6)-ZR(LX+3))**2 )
-            XL2 = XL/DEUX
+            XL2 = XL/2.D0
 
             NX=ZR(ISTRXR-1+1)
             TY=ZR(ISTRXR-1+2)

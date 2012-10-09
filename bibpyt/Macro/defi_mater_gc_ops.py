@@ -1,4 +1,4 @@
-#@ MODIF defi_mater_gc_ops Macro  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF defi_mater_gc_ops Macro  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ def Mazars_Unil(DMATER,args):
       FTJ    [Unite] = Contrainte au pic en traction
       NU             = Coefficient de poisson
       EPSD0          = Déformation, seuil d'endommagement
-      BETA           = Exposant
+      K              = Paramètre de décroissance post-pic en cisaillement
       AC             = Paramètre de décroissance post-pic en compression
       BC             = 1/(Déformation au pic en compression)
       AT             = Paramètre de décroissance post-pic en traction
@@ -73,7 +73,7 @@ def Mazars_Unil(DMATER,args):
       coeff = 1.0E+06
       MATER['UNITE'] = 'Pa'
    #
-   listepara = ['EIJ','FTJ','EPSI_C','NU','EPSD0','BETA','BT','AT','BC','AC','SIGM_ELS','EPSI_ELU']
+   listepara = ['EIJ','FTJ','EPSI_C','NU','EPSD0','K','BT','AT','BC','AC','SIGM_ELS','EPSI_ELU']
    for xx in listepara:
       if ( MATER.has_key(xx) ):
          if ( MATER[xx] != None ):
@@ -88,8 +88,8 @@ def Mazars_Unil(DMATER,args):
             NU = 0.200
          elif ( xx == 'EPSD0' ):
             EPSD0 = FTJ/EIJ
-         elif ( xx == 'BETA' ):
-            BETA = 1.10
+         elif ( xx == 'K' ):
+            K = 0.7
          elif ( xx == 'BT'):
             BT = EIJ/FTJ
          elif ( xx == 'AT'):
@@ -117,7 +117,7 @@ def Mazars_Unil(DMATER,args):
       if ( args.has_key(xx) ):
          if ( args[xx] != None ): mclef['ELAS'][xx] = args[xx]
    # Mot clef MATER
-   mclef['MAZARS'] = {'BETA':BETA, 'EPSD0':EPSD0, 'AC':AC, 'AT':AT, 'BC':BC, 'BT':BT,
+   mclef['MAZARS'] = {'K':K, 'EPSD0':EPSD0, 'AC':AC, 'AT':AT, 'BC':BC, 'BT':BT,
                            'SIGM_ELS':SIGM_ELS, 'EPSI_ELU':EPSI_ELU}
    #
    # On affiche dans tous les cas

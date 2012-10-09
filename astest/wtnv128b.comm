@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 # TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN
 #              EN CONTRAINTES EFFECTIVES
@@ -210,7 +210,7 @@ U1=STAT_NON_LINE(
                 LIST_INST = TEMPS1)
               )
 
-U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
+U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO',),CRITERES=('SIEQ_ELNO',),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
 
 
 #***********************************************************************

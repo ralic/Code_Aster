@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION ET D'HYDRATATION
 #       SUR UN CYLINDRE - LOI DE MAZARS LOCALE
 # -----------------------------------------------------------------
@@ -43,8 +43,8 @@ ALPHA=DEFI_CONSTANTE(VALE= 1.E-5)
 EPSD0=DEFI_CONSTANTE(VALE=1.E-4,);
 
 AT=DEFI_FONCTION(NOM_PARA='SECH',
-                VALE=( 80., 0.8,
-                      100., 0.6),)
+                VALE=( 80., 1.,
+                      100., 0.8),)
 
 BT=DEFI_FONCTION(NOM_PARA='HYDR',
                 VALE=(  0., 10000.,
@@ -54,6 +54,8 @@ AC   =DEFI_CONSTANTE(VALE = 1.4)
 
 BC   =DEFI_CONSTANTE(VALE = 2000.)
 
+K   =DEFI_CONSTANTE(VALE = 0.7)
+
 
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
@@ -61,7 +63,7 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                B_ENDOGE = 1.5E-5,
                                TEMP_DEF_ALPHA = 20.,
                                ALPHA=ALPHA ),
-                    MAZARS_FO  =_F(BETA = 1.06,
+                    MAZARS_FO  =_F(K = K,
                                    EPSD0= EPSD0,
                                    AC   = AC,
                                    AT   = AT,

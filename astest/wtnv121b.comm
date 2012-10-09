@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 # wtnv121b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -183,10 +183,10 @@ MATERIAU=DEFI_MATERIAU(
                             ALPHA = 1.E-5,
                             ),
                   COMP_THM = 'LIQU_GAZ',
-                  MAZARS=_F(BETA =1.06,
+                  MAZARS=_F(K=0.7,
                             EPSD0=1.5e-4,
                             AC   =1.15,
-                            AT   =0.8,
+                            AT   =1.0,
                             BC   =1391.3,
                             BT   =10000.),
                   THM_LIQU=_F(
@@ -343,7 +343,7 @@ TEST_RESU(RESU=(
                        INST = 1.,
                        REFERENCE='NON_REGRESSION',
                        PRECISION = 1.E-5,
-                       VALE = 1.4117451E+06,
+                       VALE = 2531.64454,
                      ),
 
 

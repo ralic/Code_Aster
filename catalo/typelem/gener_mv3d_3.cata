@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/09/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,12 +120,14 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
-                                        VECT_3_X VECT_3_Y VECT_3_Z )
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
+                                        VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
+                                        VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIGV_A   SIGV_L   SIGV_GX  SIGV_GY  SIGV_GZ  )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIGV_A   SIGV_L   SIGV_GX  SIGV_GY  SIGV_GZ  )
-    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   RADI_V   ERR_RADI   )
     EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   RADI_V   ERR_RADI   )
     ESINGUL  = SING_R   ELEM__         (DEGRE    RAPPORT  TAILLE   )
@@ -203,10 +205,14 @@ OPTION__
     ENEL_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENEL_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPME_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPME_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPMG_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPMG_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPMQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPMQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSG_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSG_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -214,10 +220,6 @@ OPTION__
     EPSI_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSP_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSP_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPMQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPMQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
-    EPEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ERME_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ERME_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     FORC_NODA           508   IN__   ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER 
@@ -287,8 +289,10 @@ OPTION__
     SIEF_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
-    SIEQ_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
-    SIEQ_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
+    SIEQ_ELGA           335   IN__   ESIGMPG  PCONTRR
+                              OUT__  ECOEQPG  PCONTEQ
+    SIEQ_ELNO           335   IN__   ESIGMNO  PCONTRR
+                              OUT__  ECOEQNO  PCONTEQ
     SIGM_ELGA           546   IN__   ESIGMPG  PSIEFR
                               OUT__  ESIGMPG  PSIGMR   ESIGMPC  PSIGMC
     SIGM_ELNO           4     IN__   ESIGMPG  PCONTRR

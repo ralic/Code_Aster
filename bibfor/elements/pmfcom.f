@@ -4,7 +4,7 @@
      &                  CONTM,DEFM,DDEFP,EPSM,MODF,
      &                  SIGF,VARIP,ISECAN,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,7 +77,7 @@ C
       DATA NOMPIM /'SY','EPSI_ULT','SIGM_ULT','EPSP_HAR','R_PM',
      &             'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM',
      &              'A_PM'/
-      DATA MAZARS /'EPSD0','BETA','AC','BC','AT','BT',
+      DATA MAZARS /'EPSD0','K','AC','BC','AT','BT',
      &             'SIGM_ELS','EPSI_ELU'/
 
       DATA ECROLI /'D_SIGM_E','SY','SIGM_ELS','EPSI_ELU'/

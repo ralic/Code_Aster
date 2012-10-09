@@ -1,7 +1,7 @@
-      SUBROUTINE NMRLDB(LMAT,RESU,NBSM,CNCINE)
+      SUBROUTINE NMRLDB(SOLVEU,LMAT,RESU,NBSM,CNCINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 08/10/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C
       INCLUDE 'jeveux.h'
       INTEGER      LMAT,NBSM
       REAL*8       RESU(*)
-      CHARACTER*19 CNCINE
+      CHARACTER*19 SOLVEU,CNCINE
 C
 C ----------------------------------------------------------------------
 C
@@ -34,6 +34,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C IN  SOLVEU : SD SOLVEUR
 C IN  LMAT   : DESCRIPTEUR DE LA MATR_ASSE
 C IN  CNCINE : NOM DU CHARGEMENT CINEMATIQUE
 C I/O RESU   : .VALE DU CHAM_NO RESULTAT EN OUT , SMB EN IN
@@ -42,7 +43,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CHARACTER*19 SOLVEU,MATR
+      CHARACTER*19 MATR
       COMPLEX*16   C16BID
       INTEGER      IRET
 C
@@ -50,7 +51,6 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      SOLVEU = '&&OP0070.SOLVEUR'
       MATR   = ZK24(ZI(LMAT+1))
 
       CALL RESOUD(MATR  ,' '   ,SOLVEU,CNCINE,NBSM  ,
