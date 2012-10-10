@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION INFORMATIQUE DE DEFI_FOND_FISS
 # zzzz314e.para = tps_job 30 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,52 +95,64 @@ for i in range(0,len(ndfon)):
 
 for i in range(0,len(ndfon)):
 
-   TEST_TABLE(TABLE=TABL0,
-              FILTRE=_F(  NOM_PARA = 'ND_FOND',
-                          VALE_I = i+1),
+   TEST_TABLE(CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE',
+              VALE_CALC= 0.00000000E+00,
+              VALE_REFE=0.0,
               NOM_PARA='VNORX',
-              VALE=0.,
-              CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE' )
+              TABLE=TABL0,
+              FILTRE=_F(NOM_PARA='ND_FOND',
+                        VALE_I=i+1,),
+              )
 
-   TEST_TABLE(TABLE=TABL0,
-              FILTRE=_F(  NOM_PARA = 'ND_FOND',
-                          VALE_I = i+1),
+   TEST_TABLE(CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE',
+              VALE_CALC= 0.00000000E+00,
+              VALE_REFE=0.0,
               NOM_PARA='VNORY',
-              VALE=0.,
-              CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE' )
+              TABLE=TABL0,
+              FILTRE=_F(NOM_PARA='ND_FOND',
+                        VALE_I=i+1,),
+              )
 
-   TEST_TABLE(TABLE=TABL0,
-              FILTRE=_F(  NOM_PARA = 'ND_FOND',
-                          VALE_I = i+1),
+   TEST_TABLE(CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE',
+              VALE_CALC=1.000000000,
+              VALE_REFE=1.0,
               NOM_PARA='VNORZ',
-              VALE=1.,
-              CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE' )
+              TABLE=TABL0,
+              FILTRE=_F(NOM_PARA='ND_FOND',
+                        VALE_I=i+1,),
+              )
 
-   TEST_TABLE(TABLE=TABL0,
-              FILTRE=_F(  NOM_PARA = 'ND_FOND',
-                          VALE_I = i+1),
+   TEST_TABLE(CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE',
+              VALE_CALC=vdirX_ana[i],
+              VALE_REFE=vdirX_ana[i],
               NOM_PARA='VDIRX',
-              VALE=vdirX_ana[i],
-              CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE' )
+              TABLE=TABL0,
+              FILTRE=_F(NOM_PARA='ND_FOND',
+                        VALE_I=i+1,),
+              )
 
-   TEST_TABLE(TABLE=TABL0,
-              FILTRE=_F(  NOM_PARA = 'ND_FOND',
-                          VALE_I = i+1),
+   TEST_TABLE(CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE',
+              VALE_CALC=vdirY_ana[i],
+              VALE_REFE=vdirY_ana[i],
               NOM_PARA='VDIRY',
-              VALE=vdirY_ana[i],
-              CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE' )
+              TABLE=TABL0,
+              FILTRE=_F(NOM_PARA='ND_FOND',
+                        VALE_I=i+1,),
+              )
 
-   TEST_TABLE(TABLE=TABL0,
-              FILTRE=_F(  NOM_PARA = 'ND_FOND',
-                          VALE_I = i+1),
+   TEST_TABLE(CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE',
+              VALE_CALC=vdirZ_ana[i],
+              VALE_REFE=vdirZ_ana[i],
               NOM_PARA='VDIRZ',
-              VALE=vdirZ_ana[i],
-              CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE' )
+              TABLE=TABL0,
+              FILTRE=_F(NOM_PARA='ND_FOND',
+                        VALE_I=i+1,),
+              )
 
 FIN();

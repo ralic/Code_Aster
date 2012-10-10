@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL AXIS_INCO_ DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134k.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,28 +139,31 @@ for i in range(2):
    TEST_TABLE(       TABLE=G0[i],
                   NOM_PARA='G',
                    REFERENCE='ANALYTIQUE',
-                   VALE=GREF,
+                   VALE_CALC=GREF,      #TODO vale_calc
+                   VALE_REFE=GREF,
+                   TOLE_MACHINE=0.02,
                  PRECISION=0.02        )
 
    TEST_TABLE(       TABLE=GK0[i],
                   NOM_PARA='G',
                    REFERENCE='ANALYTIQUE',
-                   VALE=GLOC,
+                   VALE_CALC=GLOC,      #TODO vale_calc
+                   VALE_REFE=GLOC,
+                   TOLE_MACHINE=0.02,
                  PRECISION=0.02        )
 
    TEST_TABLE(       TABLE=GK0[i],
                   NOM_PARA='K1',
                    REFERENCE='ANALYTIQUE',
-                   VALE=K1,
+                   VALE_CALC=K1,      #TODO vale_calc
+                   VALE_REFE=K1,
+                   TOLE_MACHINE=0.035,
                  PRECISION=0.035        )
 
    TEST_TABLE(       TABLE=GK0[i],
                   NOM_PARA='K1',
-                   REFERENCE='NON_REGRESSION',
-                   VALE=1.64307E+06,
-                 PRECISION=0.003        )
-
-###MODELISATION AXIS_INCO_UP
+                   VALE_CALC=1.64307E+06,
+                 TOLE_MACHINE=0.003        )
 
 FIN()
 #

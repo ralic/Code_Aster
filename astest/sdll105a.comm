@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TUBE REMPLI DE FLUIDE SOUS EXCITATIONS FLUIDES ALEATOIRES
 # sdll105a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,23 +172,41 @@ FP1=RECU_FONCTION(    INTE_SPEC=INTPRESS,
                             NOM_CMP_I = 'PRES',
                       )
 #
-TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
-               VALE_PARA = 10., VALE_REFE = 9.5991E+00,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.5991,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=10.0,
+                        FONCTION=FP1,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
-               VALE_PARA = 12., VALE_REFE = 2.5952E+02))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=259.51999999999998,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=12.0,
+                        FONCTION=FP1,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
-               VALE_PARA = 14., VALE_REFE = 1.2365E+01))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=12.365,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=14.0,
+                        FONCTION=FP1,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
-               VALE_PARA = 36., VALE_REFE = 3.2428E+00,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.2427999999999999,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=36.0,
+                        FONCTION=FP1,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
-               VALE_PARA = 38., VALE_REFE = 1.3681E+01,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=13.680999999999999,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=38.0,
+                        FONCTION=FP1,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
-               VALE_PARA = 40., VALE_REFE = 1.1649E+00,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.1649,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=40.0,
+                        FONCTION=FP1,),
+              )
 
 #**********************************************************************#
 #*********   SOURCE DE FORCE******************************************#
@@ -222,23 +240,41 @@ REP2=RECU_FONCTION(    INTE_SPEC=INTFORCE,
                             NOM_CMP_I = 'PRES',
                       )
 #
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 10., VALE_REFE = 1.9931E+05,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.99310E5,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=10.0,
+                        FONCTION=REP2,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 12., VALE_REFE = 5.3887E+06,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.388700E6,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=12.0,
+                        FONCTION=REP2,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 14., VALE_REFE = 2.5675E+05,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.56750E5,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=14.0,
+                        FONCTION=REP2,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 36., VALE_REFE = 6.7334E+04,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.7334E4,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=36.0,
+                        FONCTION=REP2,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 38., VALE_REFE = 2.8408E+05,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.84080E5,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=38.0,
+                        FONCTION=REP2,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 40., VALE_REFE = 2.4189E+04,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.4189E4,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=40.0,
+                        FONCTION=REP2,),
+              )
 
 #**********************************************************************#
 #*********   SOURCE DE DEBIT-VOLUME***********************************#
@@ -272,23 +308,41 @@ REP3=RECU_FONCTION(    INTE_SPEC=INTDEBVO,
                             NOM_CMP_I = 'PRES',
                       )
 #
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 10., VALE_REFE = 9.1954E+11,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.19540000000E11,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=10.0,
+                        FONCTION=REP3,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 12., VALE_REFE = 4.3709E+13,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.3709000000000E13,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=12.0,
+                        FONCTION=REP3,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 14., VALE_REFE = 3.6428E+12,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.642800000000E12,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=14.0,
+                        FONCTION=REP3,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 36., VALE_REFE = 1.1142E+13,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.1142000000000E13,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=36.0,
+                        FONCTION=REP3,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 38., VALE_REFE = 3.6976E+13,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.6976000000000E13,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=38.0,
+                        FONCTION=REP3,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 40., VALE_REFE = 2.6238E+12,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.623800000000E12,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=40.0,
+                        FONCTION=REP3,),
+              )
 
 #**********************************************************************#
 #*********   SOURCE DE DEBIT-MASSE************************************#
@@ -322,23 +376,41 @@ REP4=RECU_FONCTION(    INTE_SPEC=INTDEBMA,
                             NOM_CMP_I = 'PRES',
                       )
 #
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
-               VALE_PARA = 10., VALE_REFE = 1.3347E+10,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.3347000000E10,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=10.0,
+                        FONCTION=REP4,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
-               VALE_PARA = 12., VALE_REFE = 6.3448E+11,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.34480000000E11,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=12.0,
+                        FONCTION=REP4,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
-               VALE_PARA = 14., VALE_REFE = 5.2879E+10,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.2879000000E10,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=14.0,
+                        FONCTION=REP4,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
-               VALE_PARA = 36., VALE_REFE = 1.6173E+11,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.61730000000E11,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=36.0,
+                        FONCTION=REP4,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
-               VALE_PARA = 38., VALE_REFE = 5.3675E+11,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.36750000000E11,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=38.0,
+                        FONCTION=REP4,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
-               VALE_PARA = 40., VALE_REFE = 3.8088E+10,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.8088000000E10,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=40.0,
+                        FONCTION=REP4,),
+              )
 
 #**********************************************************************#
 #*********   FORCE MECANIQUE SUR LA MASSE*****************************#
@@ -372,23 +444,41 @@ REP5=RECU_FONCTION(    INTE_SPEC=INTFORMA,
                             NOM_CMP_I = 'PRES',
                       )
 #
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
-               VALE_PARA = 10., VALE_REFE = 2.6542E-03,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.6541999999999998E-3,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=10.0,
+                        FONCTION=REP5,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
-               VALE_PARA = 12., VALE_REFE = 4.5780E-02,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.045780000000000001,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=12.0,
+                        FONCTION=REP5,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
-               VALE_PARA = 14., VALE_REFE = 9.0979E-04,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.0978999999999995E-4,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=14.0,
+                        FONCTION=REP5,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
-               VALE_PARA = 36., VALE_REFE = 3.3472E-02,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.033472000000000002,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=36.0,
+                        FONCTION=REP5,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
-               VALE_PARA = 38., VALE_REFE = 1.1863E-01,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.11863,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=38.0,
+                        FONCTION=REP5,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
-               VALE_PARA = 40., VALE_REFE = 8.8587E-03,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.8587000000000006E-3,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=40.0,
+                        FONCTION=REP5,),
+              )
 
 #
 

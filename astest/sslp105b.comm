@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : TUNNEL CIRCULAIRE REVETU EN CHAMP DE CONTRAINTES INITIAL ISOTROPE
 # sslp105b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -364,72 +364,83 @@ RESU1=CALC_CHAMP(reuse=RESU1,
                  GROUP_MA='SOL_REST',
                  CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),);
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  INST = 1000,
+TEST_RESU(RESU=_F(INST=1000,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
+                  NOEUD='NO1',
                   NOM_CMP='DX',
-                  NOEUD='NO1',
-                  VALE=-0.0016925,
-                  PRECISION = 0.02,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC=-1.66866542E-03,
+                  VALE_REFE=-1.6925E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  INST = 1000,
+TEST_RESU(RESU=_F(INST=1000,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
+                  NOEUD='NO8359',
                   NOM_CMP='DY',
-                  NOEUD='NO8359',
-                  VALE=-0.0016925,
-                  PRECISION = 0.02,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC=-1.71802685E-03,
+                  VALE_REFE=-1.6925E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  INST = 1000,
+TEST_RESU(RESU=_F(INST=1000,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU1,
                   NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP='SIXX',
                   NOEUD='NO1',
-                  MAILLE = 'MA1',
-                  VALE=-1.52821E6,
-                  PRECISION = 0.01,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  INST = 1000,
-                  NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP='SIYY',
-                  NOEUD='NO8359',
-                  MAILLE = 'MA2240',
-                  VALE=-1.52821E6,
-                  PRECISION = 0.01,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  INST = 1000,
-                  NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP='SIYY',
-                  NOEUD='NO1',
-                  MAILLE = 'MA1',
-                  VALE=-8.47179E6,
-                  PRECISION = 0.01,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  INST = 1000,
-                  NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIXX',
+                  VALE_CALC=-1.53618671E+06,
+                  VALE_REFE=-1.528210E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='MA1',),
+          )
+
+TEST_RESU(RESU=_F(INST=1000,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='SIGM_ELNO',
                   NOEUD='NO8359',
-                  MAILLE = 'MA2240',
-                  VALE=-8.47179E6,
-                  PRECISION = 0.01,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='ANALYTIQUE',),);
+                  NOM_CMP='SIYY',
+                  VALE_CALC=-1.52967224E+06,
+                  VALE_REFE=-1.528210E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='MA2240',),
+          )
+
+TEST_RESU(RESU=_F(INST=1000,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='NO1',
+                  NOM_CMP='SIYY',
+                  VALE_CALC=-8.53167245E+06,
+                  VALE_REFE=-8.471790E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='MA1',),
+          )
+
+TEST_RESU(RESU=_F(INST=1000,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='NO8359',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-8.41158118E+06,
+                  VALE_REFE=-8.471790E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='MA2240',),
+          )
 
 FIN();
-
 
 
 

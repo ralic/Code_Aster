@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  LE COMPTAGE DE CYCLE POUR CHARGEMENT CONSTANT
 # szlz108b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,12 +82,14 @@ TAB_1=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                 CUMUL='LINEAIRE',
                                  INFO=2                   )
 
-TEST_TABLE(        TABLE=TAB_1,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.0000000000000004E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
 #
 #-----------------------------------------------------------------------
@@ -100,12 +102,14 @@ TAB_2=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                 CUMUL='LINEAIRE',
                                  INFO=2                )
 
-TEST_TABLE(        TABLE=TAB_2,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.0000000000000004E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_2,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
 #
 #-----------------------------------------------------------------------
@@ -119,12 +123,14 @@ TAB_3=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                 CUMUL='LINEAIRE',
                                  INFO=2                )
 
-TEST_TABLE(        TABLE=TAB_3,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.0000000000000004E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_3,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
 #
 #-----------------------------------------------------------------------
@@ -137,13 +143,14 @@ TAB_4=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                 CUMUL='LINEAIRE',
                                  INFO=2                  )
 
-TEST_TABLE(        TABLE=TAB_4,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.E-6,
-                PRECISION=1.E-5                )
-
+TEST_TABLE(
+           VALE_CALC=5.0000000000000004E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_4,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
 #
 #-----------------------------------------------------------------------
@@ -156,13 +163,14 @@ TAB_5=POST_FATIGUE(    CHARGEMENT='UNIAXIAL',
                             CUMUL='LINEAIRE',
                              INFO=2                )
 
-TEST_TABLE(        TABLE=TAB_5,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.E-6,
-                PRECISION=1.E-5                )
-
+TEST_TABLE(
+           VALE_CALC=5.0000000000000004E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_5,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
 FIN( )
 #

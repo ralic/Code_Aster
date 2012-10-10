@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES AVEC BI_CERC_INT
 # sdnl111b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,29 +151,54 @@ DEPLX4=RECU_FONCTION(   NOEUD='NO1', NOM_CMP='DX',
                     RESU_GENE=DYNAMOD4,
                      NOM_CHAM='DEPL' )
 
-TEST_FONCTION(VALEUR=(
-
-               _F(  FONCTION = DEPLX4,  PRECISION = 1.E-02,
-                 VALE_PARA = 2.0E-4,  VALE_REFE = -1.0E-4),
-               _F(  FONCTION = DEPLX4,  PRECISION = 3.5E-02,
-                 VALE_PARA = 4.0E-4,  VALE_REFE = -2.0E-4),
-               _F(  FONCTION = DEPLX4,  PRECISION = 5.E-02,
-                 VALE_PARA = 6.0E-4,  VALE_REFE = -1.0E-4),
-               _F(  FONCTION = DEPLX4,  PRECISION = 1.E-05,
-                 CRITERE = 'ABSOLU',
-                 VALE_PARA = 8.0E-4,   VALE_REFE = -1.E-9),
-
-               _F(  FONCTION = DEPLX4,  PRECISION = 7.E-02,
-                 VALE_PARA = 10.E-4,  VALE_REFE = 1.0E-4),
-               _F(  FONCTION = DEPLX4,  PRECISION = 5.E-02,
-                 VALE_PARA = 12.E-4,  VALE_REFE = 2.0E-4),
-               _F(  FONCTION = DEPLX4,  PRECISION = 7.E-02,
-                 VALE_PARA = 14.E-4,  VALE_REFE = 1.0E-4),
-               _F(  FONCTION = DEPLX4,  PRECISION = 1.E-05,
-                 CRITERE = 'ABSOLU',
-                 VALE_PARA = 16.0E-4,   VALE_REFE = -1.E-9))
-
-  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.000100779663808,
+                         VALE_REFE=-1.E-4,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=2.0000000000000001E-4,
+                         PRECISION=1.E-2,
+                         FONCTION=DEPLX4,),
+                      _F(VALE_CALC=-0.000194020239425,
+                         VALE_REFE=-2.0000000000000001E-4,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=4.0000000000000002E-4,
+                         PRECISION=0.035000000000000003,
+                         FONCTION=DEPLX4,),
+                      _F(VALE_CALC=-9.60855118304e-05,
+                         VALE_REFE=-1.E-4,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=5.9999999999999995E-4,
+                         PRECISION=0.050000000000000003,
+                         FONCTION=DEPLX4,),
+                      _F(VALE_CALC=-1.0000000000000001E-09,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=8.0000000000000004E-4,
+                         FONCTION=DEPLX4,),
+                      _F(VALE_CALC=0.00010636743016,
+                         VALE_REFE=1.E-4,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=1.E-3,
+                         PRECISION=0.070000000000000007,
+                         FONCTION=DEPLX4,),
+                      _F(VALE_CALC=0.000191445504196,
+                         VALE_REFE=2.0000000000000001E-4,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=1.1999999999999999E-3,
+                         PRECISION=0.050000000000000003,
+                         FONCTION=DEPLX4,),
+                      _F(VALE_CALC=9.3354764353e-05,
+                         VALE_REFE=1.E-4,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=1.4E-3,
+                         PRECISION=0.070000000000000007,
+                         FONCTION=DEPLX4,),
+                      _F(VALE_CALC=-1.0000000000000001E-09,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.6000000000000001E-3,
+                         FONCTION=DEPLX4,),
+                      ),
+              )
 
 #
 FIN()

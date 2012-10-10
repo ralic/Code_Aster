@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE INDENTATION ELASTOPLASTIQUE D UN DEMI-PLAN
 # ssnv506f.para = tps_job 780 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -204,13 +204,15 @@ IMPR_TABLE(TABLE=TAB_REAC,
 #                   TESTS DES RESULTATS
 #----------------------------------------------------------------------
 # TESTS SUR DES VALEURS ANALYTIQUES
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.20000000000000001,
+           VALE_CALC=-3.64771189E+05,
+           VALE_REFE=-3.2013509999999998E5,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.02),
-           VALE=-3.201351E+05,
-           PRECISION=0.20,
-           REFERENCE='ANALYTIQUE',);
+                     VALE=0.02,),
+           )
 
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
@@ -246,13 +248,14 @@ TEST_TABLE(TABLE=TAB_REAC,
 
 
 # TESTS DE NON REGRESSION
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(
+           VALE_CALC=-3.6493430274393997E5,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.02),
-           VALE=-3.6493430274394E+05,
-           VERSION='11.1.9',
-           REFERENCE='NON_REGRESSION',);
+                     VALE=0.02,),
+           )
 
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
@@ -260,7 +263,7 @@ TEST_TABLE(TABLE=TAB_REAC,
 #                      VALE=0.04),
 #            VALE=-7.02671E+05,
 #            VERSION='9.2.18',
-#            REFERENCE='NON_REGRESSION',);
+#            REFERENCE='NON_DEFINI',);
 #
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
@@ -268,7 +271,7 @@ TEST_TABLE(TABLE=TAB_REAC,
 #                      VALE=0.06),
 #            VALE=-9.41081E+05,
 #            VERSION='9.2.18',
-#            REFERENCE='NON_REGRESSION',);
+#            REFERENCE='NON_DEFINI',);
 #
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
@@ -276,7 +279,7 @@ TEST_TABLE(TABLE=TAB_REAC,
 #                      VALE=0.08),
 #            VALE=-1.32923E+06,
 #            VERSION='9.2.18',
-#            REFERENCE='NON_REGRESSION',);
+#            REFERENCE='NON_DEFINI',);
 #
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
@@ -284,5 +287,5 @@ TEST_TABLE(TABLE=TAB_REAC,
 #                      VALE=0.1),
 #            VALE=-1.67127E+06,
 #            VERSION='9.2.18',
-#            REFERENCE='NON_REGRESSION',);
+#            REFERENCE='NON_DEFINI',);
 FIN();

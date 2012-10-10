@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE MAZARS)
 # ssnl120b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,16 +129,19 @@ MPa = 1.0E+06
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],VALE=sigma[ii]*MPa,
-                           NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.0E-04,1.0E-04), ), )
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],VALE=critels[ii],
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(2.0E-03,2.0E-03), ), )
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],VALE=domtrac[ii],
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(2.0E-03,2.0E-03), ), )
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V4',  INST=instant[ii],VALE=domcomp[ii],
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(2.0E-03,2.0E-03), ), )
+   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],
+                           VALE_CALC=sigma[ii]*MPa, VALE_REFE=sigma[ii]*MPa,   #TODO vale_calc
+                           NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=1.0E-04, TOLE_MACHINE=(1.0E-04,1.0E-04), ), )
+   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],
+                           VALE_CALC=critels[ii], VALE_REFE=critels[ii],   #TODO vale_calc
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03,2.0E-03), ), )
+   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+                           VALE_CALC=domtrac[ii], VALE_REFE=domtrac[ii],   #TODO vale_calc
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03,2.0E-03), ), )
+   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V4',  INST=instant[ii],
+                           VALE_CALC=domcomp[ii], VALE_REFE=domcomp[ii],   #TODO vale_calc
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03,2.0E-03), ), )
 TEST_RESU(**mclf)
-
 
 # Pour tester V2 = CRITELU = epsi / EPSI_ELU = DX /35.0E-04 pour les espi <0 sinon 0
 instant = [ 1.0, 2.0, 3.0,  4.0,       5.0,       6.0,      7.0  ]
@@ -146,13 +149,10 @@ critelu = [ 0.0, 0.0, 0.0, 40.0/35.0, 20.0/35.0, 50.0/35.0, 0.0  ]
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],VALE=critelu[ii],
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(2.0E-03,2.0E-03), ), )
+   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],
+                           VALE_CALC=critelu[ii], VALE_REFE=critelu[ii],   #TODO vale_calc
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03, 2.0E-03), ), )
 TEST_RESU(**mclf)
-
-
-
-
 
 FOFO2=DEFI_FONCTION(
    NOM_PARA='INST',
@@ -200,16 +200,19 @@ MPa = 1.0E+06
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],VALE=sigma[ii]*MPa,
-                           NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.0E-04,1.0E-04), ), )
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],VALE=critels[ii],
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(1.0E-04,1.0E-04), ), )
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],VALE=domtrac[ii],
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(2.0E-03,2.0E-03), ), )
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V4',  INST=instant[ii],VALE=domcomp[ii],
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(2.0E-03,2.0E-03), ), )
+   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],
+                           VALE_CALC=sigma[ii]*MPa, VALE_REFE=sigma[ii]*MPa,   #TODO vale_calc
+                           NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=1.0E-04, TOLE_MACHINE=(1.0E-04, 1.0E-04), ), )
+   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],
+                           VALE_CALC=critels[ii], VALE_REFE=critels[ii],   #TODO vale_calc
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=1.0E-04, TOLE_MACHINE=(1.0E-04, 1.0E-04), ), )
+   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+                           VALE_CALC=domtrac[ii], VALE_REFE=domtrac[ii],   #TODO vale_calc
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03, 2.0E-03), ), )
+   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V4',  INST=instant[ii],
+                           VALE_CALC=domcomp[ii], VALE_REFE=domcomp[ii],   #TODO vale_calc
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03, 2.0E-03), ), )
 TEST_RESU(**mclf)
-
 
 # Pour tester V2 = CRITELU = epsi / EPSI_ELU = DX /35.0E-04 pour les espi <0 sinon 0
 instant = [  1.0,  2.0,      3.0,  4.0,      5.0 ]
@@ -217,8 +220,9 @@ critelu = [  0.0, 40.0/35.0, 0.0, 50.0/35.0, 0.0 ]
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],VALE=critelu[ii],
-                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(2.0E-03,2.0E-03), ), )
+   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],
+                           VALE_CALC=critelu[ii], VALE_REFE=critelu[ii],    #TODO vale_calc
+                           NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), PRECISION=2.0E-03, TOLE_MACHINE=(2.0E-03, 2.0E-03), ), )
 TEST_RESU(**mclf)
 
 

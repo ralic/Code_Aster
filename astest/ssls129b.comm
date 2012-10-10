@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  :  MODELISATION D UNE COQUE DOUBLEMENT SINUSOIDALE
 # ssls129b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,144 +178,157 @@ PSNL3=CALC_TABLE(reuse =PSNL3,
 
 # DEPLACEMENT
 
-TEST_RESU(RESU=_F(RESULTAT=SNL1,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='B',
-                  CRITERE='RELATIF',
-                  PRECISION=5.E-02,
-                  VALE=5.6766753846415E-03,
-                  REFERENCE='AUTRE_ASTER'),);
-
-TEST_RESU(RESU=_F(RESULTAT=SNL1,
-                  NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=SNL1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='C',
+                  VALE_CALC= 5.43585109E-03,
+                  VALE_REFE=5.6766753846415E-3,
                   CRITERE='RELATIF',
-                  PRECISION=5.E-02,
-                  VALE=5.8374935232020E-03,
-                  REFERENCE='AUTRE_ASTER'),);
+                  PRECISION=0.050000000000000003,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=SNL1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC= 5.66124091E-03,
+                  VALE_REFE=5.837493523202E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,),
+          )
 
 # FORCES NODALES
 
-TEST_TABLE(       TABLE=PSNL1,
-                NOM_PARA='RESULT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',
-                           VALE_K = 'PSNL1_GAUCHE',      ),
-                    VALE=-2.00000E+03,
-                    PRECISION=1.E-09,
-               REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-09,
+           VALE_CALC=-2.000000000E+03,
+           VALE_REFE=-2000.0,
+           TOLE_MACHINE=1.0000000000000001E-09,
+           NOM_PARA='RESULT_X',
+           TABLE=PSNL1,
+           FILTRE=_F(NOM_PARA='INTITULE',
+                     VALE_K='PSNL1_GAUCHE',),
            )
 
-TEST_TABLE(       TABLE=PSNL1,
-                NOM_PARA='RESULT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',
-                           VALE_K = 'PSNL1_DROITE',      ),
-                    VALE=2.00000E+03,
-                    PRECISION=1.E-09,
-               REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-09,
+           VALE_CALC= 2.000000000E+03,
+           VALE_REFE=2000.0,
+           TOLE_MACHINE=1.0000000000000001E-09,
+           NOM_PARA='RESULT_X',
+           TABLE=PSNL1,
+           FILTRE=_F(NOM_PARA='INTITULE',
+                     VALE_K='PSNL1_DROITE',),
            )
-
-
 
 #EFFORTS GENERALISES
 
-TEST_RESU(RESU=(_F(RESULTAT=SNL1,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='EFGE_NOEU',
-                   NOM_CMP='NXX',
-                   GROUP_NO='A',
-                   VALE=2.50331639552E+01,
-                   CRITERE='RELATIF',
-                   PRECISION=5.E-02,
-                   REFERENCE='AUTRE_ASTER',
-                   ),
-                   ),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=SNL1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='NXX',
+                  VALE_CALC=23.840215666,
+                  VALE_REFE=25.033163955199999,
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=SNL1,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='EFGE_NOEU',
-                   NOM_CMP='NXX',
-                   GROUP_NO='D',
-                   VALE=2.50228554928E+01,
-                   CRITERE='RELATIF',
-                   PRECISION=5.E-02,
-                   REFERENCE='AUTRE_ASTER',
-                   ),
-                   ),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=SNL1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='NXX',
+                  VALE_CALC=23.849848646,
+                  VALE_REFE=25.022855492800002,
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,),
+          )
 
 # TEST SUR LE RESULTAT STAT_NON_LINE 3
 
 
 # DEPLACEMENT
 
-TEST_RESU(RESU=_F(RESULTAT=SNL3,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='B',
-                  CRITERE='RELATIF',
-                  PRECISION=2.5E-02,
-                  VALE=-6.2097302104194,
-                  REFERENCE='AUTRE_ASTER',),);
-
-
-TEST_RESU(RESU=_F(RESULTAT=SNL3,
-                  NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=SNL3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='C',
+                  VALE_CALC=-6.084816832,
+                  VALE_REFE=-6.2097302104193997,
                   CRITERE='RELATIF',
-                  PRECISION=2.5E-02,
-                  VALE=-6.2082328310698,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=0.025000000000000001,),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=SNL3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-6.082225323,
+                  VALE_REFE=-6.2082328310698003,
+                  CRITERE='RELATIF',
+                  PRECISION=0.025000000000000001,),
+          )
 
 # FORCES NODALES
 
-TEST_TABLE(       TABLE=PSNL3,
-                NOM_PARA='RESULT_Z',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',
-                           VALE_K = 'PSNL3_GAUCHE',      ),
-                    VALE=2.00000E+03,
-                  PRECISION=1.E-09,
-               REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-09,
+           VALE_CALC= 2.000000001E+03,
+           VALE_REFE=2000.0,
+           TOLE_MACHINE=1.0000000000000001E-09,
+           NOM_PARA='RESULT_Z',
+           TABLE=PSNL3,
+           FILTRE=_F(NOM_PARA='INTITULE',
+                     VALE_K='PSNL3_GAUCHE',),
            )
 
-TEST_TABLE(       TABLE=PSNL3,
-                NOM_PARA='RESULT_Z',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',
-                           VALE_K = 'PSNL3_DROITE',      ),
-                    VALE=-2.00000E+03,
-                  PRECISION=1.E-09,
-               REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-09,
+           VALE_CALC=-2.000000000E+03,
+           VALE_REFE=-2000.0,
+           TOLE_MACHINE=1.0000000000000001E-09,
+           NOM_PARA='RESULT_Z',
+           TABLE=PSNL3,
+           FILTRE=_F(NOM_PARA='INTITULE',
+                     VALE_K='PSNL3_DROITE',),
            )
-
 
 # EFFORTS GENERALISES
 
-TEST_RESU(RESU=(_F(RESULTAT=SNL3,
-                  NUME_ORDRE=1,
-                  NOM_CMP='NXX',
-                  NOM_CHAM='EFGE_NOEU',
-                  GROUP_NO='A',
-                  CRITERE='RELATIF',
-                  PRECISION=0.09,
-                  VALE=-9.52577169452E+02,
-                  REFERENCE='AUTRE_ASTER',),
-                  _F(RESULTAT=SNL3,
-                  NUME_ORDRE=1,
-                  NOM_CMP='NXX',
-                  NOM_CHAM='EFGE_NOEU',
-                  GROUP_NO='D',
-                  CRITERE='RELATIF',
-                  PRECISION=0.10,
-                  VALE=-9.53727461895E+02,
-                  REFERENCE='AUTRE_ASTER',),
-                  ),)
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SNL3,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='NXX',
+                   VALE_CALC=-869.295391685,
+                   VALE_REFE=-952.57716945200002,
+                   CRITERE='RELATIF',
+                   PRECISION=0.089999999999999997,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='D',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SNL3,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='NXX',
+                   VALE_CALC=-862.999330461,
+                   VALE_REFE=-953.72746189500003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.10000000000000001,),
+                ),
+          )
 
 # RESOLUTION PAR MECA_STATIQUE
 
@@ -383,144 +396,155 @@ PSL3=POST_RELEVE_T(ACTION=(_F(INTITULE='PSL3_GAUCHE',
 
 # DEPLACEMENT
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='B',
-                  CRITERE='RELATIF',
-                  PRECISION=5.E-02,
-                  VALE=5.6766753846415E-03,
-                  REFERENCE='AUTRE_ASTER'),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='C',
+                  VALE_CALC= 5.43614490E-03,
+                  VALE_REFE=5.6766753846415E-3,
                   CRITERE='RELATIF',
-                  PRECISION=5.E-02,
-                  VALE=5.8374935232020E-03,
-                  REFERENCE='AUTRE_ASTER'),);
+                  PRECISION=0.050000000000000003,),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC= 5.66157083E-03,
+                  VALE_REFE=5.837493523202E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,),
+          )
 
 # FORCES NODALES
 
-TEST_TABLE(       TABLE=PSL1,
-                NOM_PARA='RESULT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',
-                           VALE_K = 'PSL1_GAUCHE',      ),
-                    VALE=-2.00000E+03,
-                    PRECISION=1.E-05,
-               REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=-1.99999935E+03,
+           VALE_REFE=-2000.0,
+           NOM_PARA='RESULT_X',
+           TABLE=PSL1,
+           FILTRE=_F(NOM_PARA='INTITULE',
+                     VALE_K='PSL1_GAUCHE',),
            )
 
-TEST_TABLE(       TABLE=PSL1,
-                NOM_PARA='RESULT_X',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',
-                           VALE_K = 'PSL1_DROITE',      ),
-                    VALE=2.00000E+03,
-                    PRECISION=1.E-05,
-               REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 2.00000344E+03,
+           VALE_REFE=2000.0,
+           NOM_PARA='RESULT_X',
+           TABLE=PSL1,
+           FILTRE=_F(NOM_PARA='INTITULE',
+                     VALE_K='PSL1_DROITE',),
            )
-
 
 # EFFORTS GENERALISES
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU1,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='EFGE_NOEU',
-                   NOM_CMP='NXX',
-                   GROUP_NO='A',
-                   VALE=2.50331639552E+01,
-                   CRITERE='RELATIF',
-                   PRECISION=5.E-02,
-                   REFERENCE='AUTRE_ASTER',
-                   ),
-                   ),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='NXX',
+                  VALE_CALC=23.845650839,
+                  VALE_REFE=25.033163955199999,
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU1,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='EFGE_NOEU',
-                   NOM_CMP='NXX',
-                   GROUP_NO='D',
-                   VALE=2.50228554928E+01,
-                   CRITERE='RELATIF',
-                   PRECISION=5.E-02,
-                   REFERENCE='AUTRE_ASTER',
-                   ),
-                   ),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='NXX',
+                  VALE_CALC=23.853847561,
+                  VALE_REFE=25.022855492800002,
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,),
+          )
 
 # TEST SUR LE RESULTAT STAT_NON_LINE 3
 
 
 # DEPLACEMENT
 
-TEST_RESU(RESU=_F(RESULTAT=RESU3,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='B',
-                  CRITERE='RELATIF',
-                  PRECISION=2.5E-02,
-                  VALE=-6.2097302104194,
-                  REFERENCE='AUTRE_ASTER',),);
-
-
-TEST_RESU(RESU=_F(RESULTAT=RESU3,
-                  NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='C',
+                  VALE_CALC=-6.085880067,
+                  VALE_REFE=-6.2097302104193997,
                   CRITERE='RELATIF',
-                  PRECISION=2.5E-02,
-                  VALE=-6.2082328310698,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=0.025000000000000001,),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-6.083276191,
+                  VALE_REFE=-6.2082328310698003,
+                  CRITERE='RELATIF',
+                  PRECISION=0.025000000000000001,),
+          )
 
 # FORCES NODALES
 
-TEST_TABLE(       TABLE=PSL3,
-                NOM_PARA='RESULT_Z',
-                  FILTRE=_F(  NOM_PARA = 'INTITULE',
-                           VALE_K = 'PSL3_GAUCHE',      ),
-                    VALE=2.00000E+03,
-                  PRECISION=1.E-05,
-               REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 1.99999814E+03,
+           VALE_REFE=2000.0,
+           NOM_PARA='RESULT_Z',
+           TABLE=PSL3,
+           FILTRE=_F(NOM_PARA='INTITULE',
+                     VALE_K='PSL3_GAUCHE',),
            )
 
-TEST_TABLE(       TABLE=PSL3,
-                NOM_PARA='RESULT_Z',
-                  FILTRE=(_F(  NOM_PARA = 'INTITULE',
-                           VALE_K = 'PSL3_DROITE',      ),
-                           _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
-                    VALE=-2.00000E+03,
-                  PRECISION=1.E-05,
-               REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=-2.00000073E+03,
+           VALE_REFE=-2000.0,
+           NOM_PARA='RESULT_Z',
+           TABLE=PSL3,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='PSL3_DROITE',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
            )
-
 
 # EFFORTS GENERALISES
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU3,
-                  NUME_ORDRE=1,
-                  NOM_CMP='NXX',
-                  NOM_CHAM='EFGE_NOEU',
-                  GROUP_NO='A',
-                  CRITERE='RELATIF',
-                  PRECISION=0.09,
-                  VALE=-9.52577169452E+02,
-                  REFERENCE='AUTRE_ASTER',),
-                  _F(RESULTAT=RESU3,
-                  NUME_ORDRE=1,
-                  NOM_CMP='NXX',
-                  NOM_CHAM='EFGE_NOEU',
-                  GROUP_NO='D',
-                  CRITERE='RELATIF',
-                  PRECISION=0.10,
-                  VALE=-9.53727461895E+02,
-                  REFERENCE='AUTRE_ASTER',),
-                  ),)
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU3,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='NXX',
+                   VALE_CALC=-869.859569227,
+                   VALE_REFE=-952.57716945200002,
+                   CRITERE='RELATIF',
+                   PRECISION=0.089999999999999997,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='D',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU3,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='NXX',
+                   VALE_CALC=-863.906076472,
+                   VALE_REFE=-953.72746189500003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.10000000000000001,),
+                ),
+          )
 
 FIN();

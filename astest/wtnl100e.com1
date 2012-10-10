@@ -46,18 +46,23 @@ RESU[nbadap]=CALC_ERREUR(reuse =RESU[nbadap],
                          INST=T2_FIN,
                          OPTION='ERME_NOEU',);
 
-TEST_RESU( RESU = (
-           _F(  RESULTAT = RESU[nbadap],  INST=T2_FIN,
-                NOM_CHAM = 'ERME_NOEU',   NOM_CMP = 'ESTERG1',
-                CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-                GROUP_NO = 'NO_TEST',      VALE = 6.8723106927078E-03,
-                REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
-           _F(  RESULTAT = RESU[nbadap],  INST=T2_FIN,
-                PARA = 'ERRE_TPS_GLOB',
-                CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-                VALE = 9.7220198405059E-02,
-                REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
-                  ),
+TEST_RESU(RESU=(_F(GROUP_NO='NO_TEST',
+                   INST=500.0,
+                   RESULTAT=RESU_2,
+                   NOM_CHAM='ERME_NOEU',
+                   NOM_CMP='ESTERG1',
+                   VALE_CALC=6.8723106927078004E-3,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(PARA='ERRE_TPS_GLOB',
+                   INST=500.0,
+                   RESULTAT=RESU_2,
+                   VALE_CALC=0.097220198405058994,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
           )
 
 #  le meme calcul en 1 seul coup
@@ -94,18 +99,23 @@ RESU_TOT=CALC_ERREUR(reuse =RESU_TOT,
                      INST=T2_FIN,
                      OPTION='ERME_NOEU',);
 
-TEST_RESU( RESU = (
-        _F(  RESULTAT = RESU_TOT,  INST=T2_FIN,
-            NOM_CHAM = 'ERME_NOEU',   NOM_CMP = 'ESTERG1',
-            CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-            GROUP_NO = 'NO_TEST',      VALE = 6.8723106927078E-03,
-            REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
-        _F(  RESULTAT = RESU_TOT,  INST=T2_FIN,
-            PARA = 'ERRE_TPS_GLOB',
-            CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-            VALE = 9.7220198405059E-02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
-                  )
+TEST_RESU(RESU=(_F(GROUP_NO='NO_TEST',
+                   INST=500.0,
+                   RESULTAT=RESU_TOT,
+                   NOM_CHAM='ERME_NOEU',
+                   NOM_CMP='ESTERG1',
+                   VALE_CALC=6.8723106927078004E-3,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(PARA='ERRE_TPS_GLOB',
+                   INST=500.0,
+                   RESULTAT=RESU_TOT,
+                   VALE_CALC=0.097220198405058994,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
           )
 
 FIN();

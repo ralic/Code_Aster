@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219b.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -700,9 +700,13 @@ IMPR_RESU(FORMAT='MED',
 # Deplacement
 # -----------
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD= dicResu['DIFFUN'],
-                     REFERENCE= 'ANALYTIQUE', PRECISION= 5.E-11    ,
-                     TYPE_TEST= 'MAX', VALE=  4.1704914693391E-05, ),
+TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
+                     PRECISION=5.0000000000000002E-11,
+                     TYPE_TEST='MAX',
+                     CHAM_GD=DIFFUN,
+                     VALE_CALC= 4.1704914693E-05,
+                     VALE_REFE=4.1704914693391002E-05,
+                     TOLE_MACHINE=5.0000000000000002E-11,),
           )
 
 # On cree une liste bidon pour pouvoir
@@ -711,11 +715,12 @@ BIDONU=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2U));
 
-TEST_FONCTION(VALEUR=_F(FONCTION = BIDONU,
-                        PRECISION = 1.E-2,
-                        VALE_PARA = 1.,
-                        REFERENCE = 'ANALYTIQUE',
-                        VALE_REFE = 3.,)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.99109503574,
+                        VALE_REFE=3.0,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        FONCTION=BIDONU,),
               )
 
 # Pression de contact
@@ -727,23 +732,22 @@ BIDONP=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2P));
 
-TEST_FONCTION(VALEUR=_F(FONCTION = BIDONP,
-                        PRECISION = 0.03,
-                        VALE_PARA = 1.,
-                        REFERENCE = 'ANALYTIQUE',
-                        VALE_REFE = 2.5,)
-              );
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.56322923254,
+                        VALE_REFE=2.5,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=0.029999999999999999,
+                        FONCTION=BIDONP,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION = BIDONP,
-                        PRECISION = 4.E-7,
-                        VALE_PARA = 1.,
-                        REFERENCE = 'NON_REGRESSION',
-                        VALE_REFE = 2.56323,)
-              );
-
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.5632299999999999,
+                        TOLE_MACHINE=3.9999999999999998E-07,
+                        VALE_PARA=1.0,
+                        FONCTION=BIDONP,
+                        ),
+              )
 
 FIN();
-
 
 
 

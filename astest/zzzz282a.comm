@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA DEFINITION D'UNE FISSURE SUR UN GRILLE PAR DEFI_FISS_XFEM
 # zzzz282a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -398,69 +398,85 @@ for i in range(1,8) :
     TEST_TABLE(TABLE=DIFFN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='DIFF',
+               TOLE_MACHINE=tol,
                PRECISION=tol,
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               VALE= 0.0)
+               VALE_CALC=0.0,
+               VALE_REFE=0.)
 
     TEST_TABLE(TABLE=DIFFN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='DIFF',
+               TOLE_MACHINE=tol,
                PRECISION=tol,
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               VALE= 0.0)
+               VALE_CALC=0.0,
+               VALE_REFE=0.)
 
     if ( i < 5 ) :
        TEST_TABLE(TABLE=DIFFT[i],
                   REFERENCE='ANALYTIQUE',
                   NOM_PARA='DIFF',
+                  TOLE_MACHINE=tol,
                   PRECISION=tol,
                   TYPE_TEST='MAX',
                   CRITERE='ABSOLU',
-                  VALE= 0.0)
+                  VALE_CALC=0.0,
+                  VALE_REFE=0.)
 
        TEST_TABLE(TABLE=DIFFT[i],
                   REFERENCE='ANALYTIQUE',
                   NOM_PARA='DIFF',
+                  TOLE_MACHINE=tol,
                   PRECISION=tol,
                   TYPE_TEST='MIN',
                   CRITERE='ABSOLU',
-                  VALE= 0.0)
+                  VALE_CALC=0.0,
+                  VALE_REFE=0.0)
 
 #   VERIFICATION GRADIENTS LEVEL SETS
 
     TEST_TABLE(TABLE=DIFFGN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='DIFF',
+               TOLE_MACHINE=tol,
                PRECISION=tol,
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               VALE= 0.0)
+               VALE_CALC=0.0,
+               VALE_REFE=0.0)
 
     TEST_TABLE(TABLE=DIFFGN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='DIFF',
+               TOLE_MACHINE=tol,
                PRECISION=tol,
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               VALE= 0.0)
+               VALE_CALC=0.0,
+               VALE_REFE=0.0)
 
     if ( i < 5 ) :
        TEST_TABLE(TABLE=DIFFGT[i],
                   REFERENCE='ANALYTIQUE',
                   NOM_PARA='DIFF',
+                  TOLE_MACHINE=tol,
                   PRECISION=tol,
                   TYPE_TEST='MAX',
                   CRITERE='ABSOLU',
-                  VALE= 0.0)
+                  VALE_CALC=0.0,
+                  VALE_REFE=0.0)
 
        TEST_TABLE(TABLE=DIFFGT[i],
                   REFERENCE='ANALYTIQUE',
                   NOM_PARA='DIFF',
+                  TOLE_MACHINE=tol,
                   PRECISION=tol,
                   TYPE_TEST='MIN',
                   CRITERE='ABSOLU',
-                  VALE= 0.0)
+                  VALE_CALC=0.0,
+                  VALE_REFE=0.0)
 
 FIN()

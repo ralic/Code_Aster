@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE PERFORMANCE : POMPE RIS
 # perf009c.para = tps_job 500 mem_job 4188Mo ncpus 4 liste_test M
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,31 +67,34 @@ DEPLM=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
 
 IMPR_TABLE(TABLE=DEPLM,);
 
-TEST_TABLE(TABLE=DEPLM,
-           FILTRE=_F(NOM_PARA='QUANTITE',
-                     CRIT_COMP='EQ',
-                     VALE_K='MOMENT_0',),
+TEST_TABLE(
+           VALE_CALC=3.8367900000000001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
-           VALE=3.83679E+00,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.11',);
-
-TEST_TABLE(TABLE=DEPLM,
-           FILTRE=_F(NOM_PARA='QUANTITE',
-                     CRIT_COMP='EQ',
+           TABLE=DEPLM,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='QUANTITE',
                      VALE_K='MOMENT_0',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-7.4144699999999997,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
-           VALE=-7.41447E+00,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.11',);
-
-TEST_TABLE(TABLE=DEPLM,
-           FILTRE=_F(NOM_PARA='QUANTITE',
-                     CRIT_COMP='EQ',
+           TABLE=DEPLM,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='QUANTITE',
                      VALE_K='MOMENT_0',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2.8753299999999999,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
-           VALE=2.87533E+00,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.11',);
+           TABLE=DEPLM,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='QUANTITE',
+                     VALE_K='MOMENT_0',),
+           )
 
 FIN();

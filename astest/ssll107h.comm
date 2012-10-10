@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE MACR_CARA_POUTRE - POUTRE EN U
 # ssll107h.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,67 +31,92 @@ TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LPOU',FORMAT='MED',
 # --- VALEURS DE REFERENCE: OPERATEUR AFFE_CARA_ELEM
 #
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000002'),
-                NOM_PARA='A',
-                PRECISION=0.005,
-                    VALE=29.5        )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC=29.500000000,
+           VALE_REFE=29.5,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='A',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000002'),
-                NOM_PARA='CDG_Y',
-                PRECISION=0.002,
-                     VALE=6.8612     )
+TEST_TABLE(PRECISION=2.E-3,
+           VALE_CALC=6.860169492,
+           VALE_REFE=6.8612000000000002,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='CDG_Y',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000002'),
-                NOM_PARA='CDG_Z',
-                     VALE=10.        )
+TEST_TABLE(VALE_CALC=10.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Z',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000002'),
-                NOM_PARA='JX',
-                PRECISION=0.004,
-                     VALE=2.4583     )
+TEST_TABLE(PRECISION=4.0000000000000001E-3,
+           VALE_CALC=2.449398298,
+           VALE_REFE=2.4582999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='JX',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000002'),
-                NOM_PARA='AY',
-                PRECISION=0.06,
-                     VALE=4.253      )
+TEST_TABLE(PRECISION=0.059999999999999998,
+           VALE_CALC=4.486205846,
+           VALE_REFE=4.2530000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='AY',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000002'),
-                NOM_PARA='AZ',
-                PRECISION=0.19,
-                     VALE=1.618      )
+TEST_TABLE(PRECISION=0.19,
+           VALE_CALC=1.916878253,
+           VALE_REFE=1.6180000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='AZ',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000002'),
-                NOM_PARA='EY',
-                 CRITERE='ABSOLU',
-                     VALE=0.         )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='EY',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000002'),
-                NOM_PARA='EZ',
-                PRECISION=0.02,
-                     VALE=-15.0908    )
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=-15.077436213,
+           VALE_REFE=-15.0908,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='EZ',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000002'),
-                NOM_PARA='JG',
-                PRECISION=0.003,
-                     VALE=86899.     )
+TEST_TABLE(PRECISION=3.0000000000000001E-3,
+           VALE_CALC= 8.71192435E+04,
+           VALE_REFE=8.6899E4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='JG',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
 FIN( )
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE RESERVOIR CYLINDRIQUE SOUPLE REMPLI D'EAU
 # adlv312a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,56 +138,56 @@ MODES=MODE_ITER_SIMULT(        MATR_RIGI=K_ASSE,
                                              FREQ = (70.,  300., ))
                             )
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 4.6E-2,
-           NUME_MODE = 158,
-           VALE = 71.2,
-           REFERENCE='NON_REGRESSION',),
-
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 3.5E-2,
-           NUME_MODE = 160,
-           VALE = 77.4,
-           REFERENCE='NON_REGRESSION',),
-
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 5.4E-2,
-           NUME_MODE = 169,
-           VALE = 98.9,
-           REFERENCE='NON_REGRESSION',),
-
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 2.E-2,
-           NUME_MODE = 170,
-           VALE = 133.4,
-           REFERENCE='NON_REGRESSION',),
-
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 6.5E-2,
-           NUME_MODE = 171,
-           VALE = 147.8,
-           REFERENCE='NON_REGRESSION',),
-
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 7.7E-2,
-           NUME_MODE = 172,
-           VALE = 212.6,
-           REFERENCE='NON_REGRESSION',))
-
-        )
+TEST_RESU(RESU=(_F(PARA='FREQ',
+                   NUME_MODE=158,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODES,
+                   VALE_CALC=74.340815511,
+                   VALE_REFE=71.200000000000003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.045999999999999999,),
+                _F(PARA='FREQ',
+                   NUME_MODE=160,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODES,
+                   VALE_CALC=80.030205192,
+                   VALE_REFE=77.400000000000006,
+                   CRITERE='RELATIF',
+                   PRECISION=0.035000000000000003,),
+                _F(PARA='FREQ',
+                   NUME_MODE=169,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODES,
+                   VALE_CALC=104.112005083,
+                   VALE_REFE=98.900000000000006,
+                   CRITERE='RELATIF',
+                   PRECISION=0.053999999999999999,),
+                _F(PARA='FREQ',
+                   NUME_MODE=170,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODES,
+                   VALE_CALC=135.918862351,
+                   VALE_REFE=133.40000000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,),
+                _F(PARA='FREQ',
+                   NUME_MODE=171,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODES,
+                   VALE_CALC=157.169759664,
+                   VALE_REFE=147.80000000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=0.065000000000000002,),
+                _F(PARA='FREQ',
+                   NUME_MODE=172,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODES,
+                   VALE_CALC=228.606256092,
+                   VALE_REFE=212.59999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.076999999999999999,),
+                ),
+          )
 
 FIN()
 #

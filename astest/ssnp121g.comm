@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121g.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,68 +147,79 @@ SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                     NUME_ORDRE=1
                        );
 
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      NOEUD = 'N14',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-2,
-                      NOM_CMP = 'LAGS_C',
-                      VALE = -1.E+5),
-            );
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      GROUP_NO = 'A',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-2,
-                      NOM_CMP = 'LAGS_C',
-                      VALE = -1.E+5),
-            );
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      GROUP_NO = 'B',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-2,
-                      NOM_CMP = 'LAGS_C',
-                      VALE = -1.E+5),
-            );
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N14',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=-1.00350805E+05,
+                  VALE_REFE=-1.E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=-1.00080194E+05,
+                  VALE_REFE=-1.E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=-1.00080148E+05,
+                  VALE_REFE=-1.E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
 #
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      NOEUD = 'N14',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-2,
-                      NOM_CMP = 'DY',
-                      VALE = -0.05),
-            );
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      GROUP_NO = 'A',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-2,
-                      NOM_CMP = 'DY',
-                      VALE = -0.05),
-            );
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      GROUP_NO = 'B',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-2,
-                      NOM_CMP = 'DY',
-                      VALE = -0.05),
-            );
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N14',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.049978394,
+                  VALE_REFE=-0.050000000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.049996688,
+                  VALE_REFE=-0.050000000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.049996703,
+                  VALE_REFE=-0.050000000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
 #
 FIN( );
 #
-

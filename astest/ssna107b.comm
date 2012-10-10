@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE CYLINDRE CREUX VISCOPLASTICITE NON-LINEAIRE
 # ssna107b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -120,42 +120,42 @@ RESU = CALC_CHAMP ( reuse= RESU,
                   RESULTAT = RESU,
                   CONTRAINTE='SIGM_NOEU',)
 
-TEST_RESU(
-          RESU=(_F(RESULTAT = RESU,
-                   NUME_ORDRE = 320,
-                   NOM_CHAM ='DEPL',
-                   GROUP_NO ='B',
-                   NOM_CMP ='DX',
-                   VALE= -0.2109,
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT = RESU,
-                   NUME_ORDRE = 320,
-                   NOM_CHAM ='SIGM_NOEU',
-                   GROUP_NO ='B',
-                   NOM_CMP ='SIYY',
-                   VALE= 0.21616,
-                   PRECISION = 2.E-3,
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT = RESU,
-                   NUME_ORDRE = 320,
-                   NOM_CHAM ='SIGM_NOEU',
-                   GROUP_NO ='B',
-                   NOM_CMP ='SIXX',
-                   VALE= 0.,
-                   CRITERE='ABSOLU',
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT = RESU,
-                   NUME_ORDRE = 320,
-                   NOM_CHAM ='SIGM_NOEU',
-                   GROUP_NO ='B',
-                   NOM_CMP ='SIZZ',
-                   VALE= 0.,
-                   CRITERE='ABSOLU',
-                   REFERENCE='ANALYTIQUE')
-
-         ))
-
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=320,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.210846000,
+                   VALE_REFE=-0.2109,),
+                _F(NUME_ORDRE=320,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=0.216441175,
+                   VALE_REFE=0.21615999999999999,
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=320,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.55137349E-10,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(NUME_ORDRE=320,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC= 1.55136161E-10,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',),
+                ),
+          )
 
 FIN()

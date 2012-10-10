@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU SOLVEUR MUMPS POUR UN MODELE DPLAN_INCO
 # mumps02a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test RI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,13 +58,27 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU1, INST       = 1.0,  NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE'),
-                _F(RESULTAT   = RESU1, INST       = 1.0, NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE')
-                   ));
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=1.E-08,),
+                _F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   PRECISION=1.E-08,),
+                ),
+          )
+
 RESU11=STAT_NON_LINE(MODELE=MO, 
                    SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
                    RESI_RELA=1.E-5,POSTTRAITEMENTS='SANS'),
@@ -75,13 +89,26 @@ RESU11=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU11, INST       = 1.0,  NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-5, REFERENCE  = 'ANALYTIQUE'),
-                _F(RESULTAT   = RESU11, INST       = 1.0, NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-5, REFERENCE  = 'ANALYTIQUE')
-                   ));
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU11,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=1.0000000000000001E-05,),
+                _F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU11,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   PRECISION=1.0000000000000001E-05,),
+                ),
+          )
 
 RESU12=STAT_NON_LINE(MODELE=MO,     
                    SOLVEUR=_F(METHODE='MUMPS',MIXER_PRECISION='OUI'),
@@ -92,13 +119,26 @@ RESU12=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU12, INST       = 1.0,  NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 5.E-7, REFERENCE  = 'ANALYTIQUE'),
-                _F(RESULTAT   = RESU12, INST       = 1.0, NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 5.E-7, REFERENCE  = 'ANALYTIQUE')
-                   ));
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU12,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=4.9999999999999998E-07,),
+                _F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU12,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   PRECISION=4.9999999999999998E-07,),
+                ),
+          )
 
 RESU13=STAT_NON_LINE(MODELE=MO,     
                    SOLVEUR=_F(METHODE='MUMPS',FILTRAGE_MATRICE=1.E-8),
@@ -109,13 +149,27 @@ RESU13=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU13, INST       = 1.0,  NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE'),
-                _F(RESULTAT   = RESU13, INST       = 1.0, NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE')
-                   ));
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU13,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=1.E-08,),
+                _F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU13,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   PRECISION=1.E-08,),
+                ),
+          )
+
 #  2 : MUMPS (distribue par mailles)
 # ------------------------------------
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
@@ -129,13 +183,26 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU2, INST       = 1.0,  NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE'),
-                _F(RESULTAT   = RESU2, INST       = 1.0, NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE')
-                   ));
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=1.E-08,),
+                _F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   PRECISION=1.E-08,),
+                ),
+          )
 
 #  3 : MUMPS (distribue par sous-domaines)
 # ------------------------------------------
@@ -156,13 +223,26 @@ RESU3=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU3, INST       = 1.0,  NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE'),
-                _F(RESULTAT   = RESU3, INST       = 1.0, NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE')
-                   ));
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=1.E-08,),
+                _F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   PRECISION=1.E-08,),
+                ),
+          )
 
 #  4 : MUMPS (distribue par sous-domaines avec matrice distribuee)
 # ------------------------------------------
@@ -181,11 +261,25 @@ RESU4=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU4, INST       = 1.0,  NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE'),
-                _F(RESULTAT   = RESU4, INST       = 1.0, NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE')
-                   ));
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU4,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=1.E-08,),
+                _F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU4,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   PRECISION=1.E-08,),
+                ),
+          )
+
 FIN();

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE EXTRUSION D'UN LOPIN
 # ssnv504a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -208,62 +208,62 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
 
-TEST_RESU(RESU=(_F(RESULTAT=U,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='K',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
+                   VALE_CALC=5.000000000,
+                   VALE_REFE=5.0,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=4,
                    GROUP_NO='K',
-                   VALE=5.0,
-                   PRECISION=1.E-3,
-                   REFERENCE='ANALYTIQUE',),
-
-                _F(RESULTAT=U,
-                   NUME_ORDRE=4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
+                   VALE_CALC=20.790988854,
+                   VALE_REFE=20.824999999999999,
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=10,
                    GROUP_NO='K',
-                   VALE=20.824999999999999,
-                   PRECISION=2.E-3,
-                   REFERENCE='ANALYTIQUE',),
-
-                _F(RESULTAT=U,
-                   NUME_ORDRE=10,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
+                   VALE_CALC=55.821428961,
+                   VALE_REFE=55.880000000000003,
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=14,
                    GROUP_NO='K',
-                   VALE=55.880000000000003,
-                   PRECISION=2.E-3,
-                   REFERENCE='ANALYTIQUE',),
-
-                _F(RESULTAT=U,
-                   NUME_ORDRE=14,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
+                   VALE_CALC=78.683341980,
+                   VALE_REFE=78.689999999999998,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=28,
                    GROUP_NO='K',
-                   VALE=78.689999999999998,
-                   PRECISION=1.E-3,
-                   REFERENCE='ANALYTIQUE',),
-
-                _F(RESULTAT=U,
-                   NUME_ORDRE=28,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
+                   VALE_CALC=144.893516936,
+                   VALE_REFE=144.89500000000001,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=31,
                    GROUP_NO='K',
-                   VALE=144.89500000000001,
-                   PRECISION=1.E-3,
-                   REFERENCE='ANALYTIQUE',),
-
-                _F(RESULTAT=U,
-                   NUME_ORDRE=31,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   GROUP_NO='K',
-                   VALE=155.096,
-                   PRECISION=1.E-3,
-                   REFERENCE='ANALYTIQUE',),
-                   ),);
-
-
+                   VALE_CALC=155.107145081,
+                   VALE_REFE=155.096,
+                   PRECISION=1.E-3,),
+                ),
+          )
 
 U2=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                  MODELE=MO,
@@ -289,35 +289,39 @@ TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 IMPR_TABLE(TABLE=TAB_VC);
 
-TEST_RESU(RESU=(
-                _F(RESULTAT=U2,
-                   NUME_ORDRE=31,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='K',
-                   VALE=155.096,
-                   PRECISION=1.E-3,
-                   VERSION = '8.0.6',
-                   REFERENCE='NON_REGRESSION',),
-),);
+TEST_RESU(RESU=_F(NUME_ORDRE=31,
+                  GROUP_NO='K',
+                  RESULTAT=U2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=155.096,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
-TEST_TABLE(TABLE=TAB_VC,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-5.000000000,
+           VALE_REFE=-5.0,
+           NOM_PARA='JEU',
+           TABLE=TAB_VC,
            FILTRE=(_F(NOM_PARA='ABSC_CURV',
                       VALE=65.0,),
                    _F(NOM_PARA='INST',
-                      VALE=100.0,),),
-           NOM_PARA='JEU',
-           VALE=-5.0,
-           REFERENCE='ANALYTIQUE',);
+                      VALE=100.0,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TAB_VC,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-2.000000000,
+           VALE_REFE=-2.0,
+           NOM_PARA='JEU',
+           TABLE=TAB_VC,
            FILTRE=(_F(NOM_PARA='ABSC_CURV',
                       VALE=65.0,),
                    _F(NOM_PARA='INST',
-                      VALE=155.0,),),
-           NOM_PARA='JEU',
-           VALE=-2.0,
-           REFERENCE='ANALYTIQUE',);
+                      VALE=155.0,),
+                   ),
+           )
 
 FIN();
 #

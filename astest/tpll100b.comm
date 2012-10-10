@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE ANISOTROPE (QUAD4)
 # tpll100b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,22 +95,60 @@ TEMPE=CALC_CHAMP(reuse=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'),RESULTAT=TEMPE)
 
 
 
-TEST_RESU(RESU=(
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP',
-   NOEUD = 'N5',     NOM_CMP = 'TEMP', VALE = 100.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP',
-   NOEUD = 'N2',     NOM_CMP = 'TEMP', VALE = 20.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP',
-   NOEUD = 'N8',     NOM_CMP = 'TEMP', VALE = 60.0),
-
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO',
-   MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 720.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO',
-   MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 1040.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA',
-   MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 720.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA',
-   MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 1040.0))
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N5',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=100.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N2',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=20.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N8',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=60.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   POINT=3,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='FLUX_ELNO',
+                   NOM_CMP='FLUX',
+                   VALE_CALC=720.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='FLUX_ELNO',
+                   NOM_CMP='FLUY',
+                   VALE_CALC=1040.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=2,
+                   POINT=3,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='FLUX_ELGA',
+                   NOM_CMP='FLUX',
+                   VALE_CALC=720.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='FLUX_ELGA',
+                   NOM_CMP='FLUY',
+                   VALE_CALC=1040.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M2',),
+                ),
           )
 
 FIN()

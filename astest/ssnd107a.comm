@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF_HYPOELAS CINEMATIQUE
 # ssnd107a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -188,33 +188,37 @@ for icomp,comp in enumerate(compor) :
                               NOM_CMP='VMIS',MAILLE='M2',POINT=1,);
     epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA',
                               NOM_CMP='EPZZ',MAILLE='M2',POINT=1,);
-    TEST_FONCTION(VALEUR=(_F(FONCTION=vmis[icomp],
-                         NOM_PARA='INST',
-                         VALE_PARA=1.0,
-                         VALE_REFE=1126.4,
-                         PRECISION=2.E-3,
-                         REFERENCE='AUTRE_ASTER',),
-                      _F(FONCTION=vmis[icomp],
-                         NOM_PARA='INST',
-                         VALE_PARA=2.0,
-                         VALE_REFE=1368.8,
-                         PRECISION=1.E-3,
-                         REFERENCE='AUTRE_ASTER',),
-                      _F(FONCTION=vmis[icomp],
-                         NOM_PARA='INST',
-                         VALE_PARA=3.0,
-                         VALE_REFE=1557.4,
-                         PRECISION=1.E-3,
-                         REFERENCE='AUTRE_ASTER',),
-                      _F(FONCTION=vmis[icomp],
-                         NOM_PARA='INST',
-                         VALE_PARA=4.0,
-                         VALE_REFE=1750.7,
-                         PRECISION=1.E-3,
-                         REFERENCE='AUTRE_ASTER',),
-                         ),);
+    TEST_FONCTION(VALEUR=(_F(VALE_CALC=1126.42126829,
+                             VALE_REFE=1126.4000000000001,
+                             VALE_PARA=1.0,
+                             REFERENCE='AUTRE_ASTER',
+                             PRECISION=2.E-3,
+                             NOM_PARA='INST',
+                             FONCTION=vmis[icomp],),
+                          _F(VALE_CALC=1368.79650694,
+                             VALE_REFE=1368.8,
+                             VALE_PARA=2.0,
+                             REFERENCE='AUTRE_ASTER',
+                             PRECISION=1.E-3,
+                             NOM_PARA='INST',
+                             FONCTION=vmis[icomp],),
+                          _F(VALE_CALC=1557.3925662,
+                             VALE_REFE=1557.4000000000001,
+                             VALE_PARA=3.0,
+                             REFERENCE='AUTRE_ASTER',
+                             PRECISION=1.E-3,
+                             NOM_PARA='INST',
+                             FONCTION=vmis[icomp],),
+                          _F(VALE_CALC=1750.68785603,
+                             VALE_REFE=1750.7,
+                             VALE_PARA=4.0,
+                             REFERENCE='AUTRE_ASTER',
+                             PRECISION=1.E-3,
+                             NOM_PARA='INST',
+                             FONCTION=vmis[icomp],),
+                          ),
+                  )
 
 
 
 FIN()
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST OSCILLATEUR FLUIDE-ELASTIQUE MERIDIEN
 # adls102a.para = tps_job 160 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,18 +187,25 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 # EXTRACTIONS ET TESTS:
 #----------------------
 #
-TEST_RESU(RESU=(
- _F(
-    RESULTAT = DYNA, GROUP_NO='MASSPONC', NOM_CHAM = 'DEPL',
-       NOM_CMP = 'DY',
-       INST = 20.15E-03, VALE = -1.3536E-03,
-       REFERENCE = 'NON_REGRESSION', VERSION = '6.04.01'),
- _F(
-       RESULTAT = DYNA, GROUP_NO='MASSPONC', NOM_CHAM = 'DEPL',
-       NOM_CMP = 'DY',
-       INST = 26.05E-03, VALE = -0.42071E-03,
-       REFERENCE = 'NON_REGRESSION', VERSION = '6.04.01'),),
-         )
+TEST_RESU(RESU=(_F(GROUP_NO='MASSPONC',
+                   INST=0.020150000000000001,
+                   RESULTAT=DYNA,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.3535999999999999E-3,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(GROUP_NO='MASSPONC',
+                   INST=0.02605,
+                   RESULTAT=DYNA,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.2070999999999998E-4,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
+
 #
 FIN( )
 #

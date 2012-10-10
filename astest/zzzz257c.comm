@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -213,73 +213,67 @@ RESU=CALC_ERREUR(reuse =RESU,
 # tests sur les resultats
 # ---------------------------
 
-TEST_TABLE(TABLE=POST_K,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=6.361244159,
+           VALE_REFE=6.3300000000000001,
            NOM_PARA='K1',
-           VALE=6.33,
-           CRITERE='RELATIF',
-           PRECISION=0.005,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=POST_K,)
 
-TEST_TABLE(TABLE=POST_K,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=6.3612441586618997,
+           
            NOM_PARA='K1',
-           VALE=6.3612441586619,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.00.04',);
+           TABLE=POST_K,
+           )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERRE',
-                  VALE=2.2009669815803E-03,
+                  RESULTAT=RESU,
+                  VALE_CALC=2.2009669815803001E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.21',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERZ1',
-                  VALE=2.2766563775709E-03,
+                  RESULTAT=RESU,
+                  VALE_CALC=2.2766563775709001E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.21',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUDUAL,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERRE',
-                  VALE=5.2902256540711E+01,
+                  RESULTAT=RESUDUAL,
+                  VALE_CALC=52.902256540711001,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.21',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUDUAL,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERZ1',
-                  VALE=5.5578633368626E+01,
+                  RESULTAT=RESUDUAL,
+                  VALE_CALC=55.578633368626001,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.21',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_QIRE',
-                  VALE=7.6783302550272E+01,
+                  RESULTAT=RESU,
+                  VALE_CALC=76.783302550271998,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.21',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_QIZ1',
-                  VALE=2.2766563775709E-03,
+                  RESULTAT=RESU,
+                  VALE_CALC=2.2766563775709001E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.21',),);
+                  ),
+          )
 
 FIN();

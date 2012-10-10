@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 # forma02b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
@@ -68,11 +68,13 @@ IMPR_RESU(FORMAT='MED',
                   RESULTAT=MODES,
                   NOM_CHAM='DEPL',),);
 
-TEST_RESU(RESU=(
-                _F( RESULTAT = MODES, PARA = 'FREQ',
-                    NUME_ORDRE =1, VALE=8.91505,
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='10.5.5'),))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=8.9150500000000008,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 FIN();
 

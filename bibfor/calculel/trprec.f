@@ -3,9 +3,9 @@
       CHARACTER*(*)       MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,7 +24,7 @@ C ----------------------------------------------------------------------
 C     COMMANDE:  TEST_RESU
 C
 C     REMARQUES:  MCF=_F( ...
-C                         PRECISION: ( EPSI , PREC  )           L_R8
+C                         TOLE_MACHINE: ( EPSI , PREC  )        L_R8
 C                         CRITERE  : ( CRIT , CRIT2 )           L_TXM
 C     EPSI ET CRIT  SONT LA PRECISION ET LE CRITERE DU TEST
 C     PREC ET CRIT2 SONT LA PRECISION ET LE CRITERE DE L'EXTRACTION
@@ -35,16 +35,16 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
-      CALL GETVR8 ( MCF, 'PRECISION', IOCC,IARG,0, EPSI, NP )
+      CALL GETVR8 ( MCF, 'TOLE_MACHINE', IOCC,IARG,0, EPSI, NP )
       NP = -NP
       IF (NP.EQ.0) THEN
-         EPSI = 0.001D0
+         EPSI = 1.D-6
          PREC = 1.D-6
       ELSE IF (NP.EQ.1) THEN
-         CALL GETVR8 ( MCF, 'PRECISION', IOCC,IARG,1, EPSI, NP )
+         CALL GETVR8 ( MCF, 'TOLE_MACHINE', IOCC,IARG,1, EPSI, NP )
          PREC = EPSI
       ELSE
-         CALL GETVR8 ( MCF, 'PRECISION', IOCC,IARG,2, EPSIR, NP )
+         CALL GETVR8 ( MCF, 'TOLE_MACHINE', IOCC,IARG,2, EPSIR, NP )
          EPSI = EPSIR(1)
          PREC = EPSIR(2)
       END IF

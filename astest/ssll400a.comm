@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE DE SECTION CIRCULAIRE VARIABLE,
 # ssll400a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -222,70 +222,71 @@ CALC_CHAMP(reuse=MCVF100X,RESULTAT=MCVF100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DX',
-                    VALE = 3.1831E-08,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100X,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.1831000000000002E-08,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  ),
           )
 
 #
 # EFFORT NORMAL A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'N',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='N',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT NORMAL A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'N',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='N',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = 3183.10E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=3183.0999999999999,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXX A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXX',
-                    VALE = 12732.40E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=1.27324E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
@@ -302,135 +303,139 @@ CALC_CHAMP(reuse=MCVF100Y,RESULTAT=MCVF100Y,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DY',
-                    VALE = 4.24413E-06,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DY',
+                  VALE_CALC=4.2441300000000001E-06,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DRZ',
-                    VALE = 8.48826E-06,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=8.4882600000000003E-06,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  ),
           )
 
 #
 # EFFORT TANGENTIEL Y A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'VY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='VY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT TANGENTIEL Y A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'VY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='VY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
 # MOMENT DE FLEXION Z A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'MFZ',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # MOMENT DE FLEXION Z A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'MFZ',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = (127324.0E0,-127324.0E0,),
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=(1.27324E5, -1.27324E5),
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXX A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXX',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # SXY A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXY',
-                    VALE = 3183.10E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=3183.0999999999999,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXY A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXY',
-                    VALE = 12732.40E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=1.27324E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
@@ -447,98 +452,99 @@ CALC_CHAMP(reuse=MCVM100X,RESULTAT=MCVM100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DRX',
-                    VALE = 3.86216E-05,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100X,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DRX',
+                  VALE_CALC=3.8621600000000003E-05,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  ),
           )
 
 #
 # MOMENT DE TORSION A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'MT',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MT',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # MOMENT DE TORSION A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'MT',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='MT',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
 # SXY A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXY',
-                    VALE = 63661.90E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=6.3661900000000001E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXY A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXY',
-                    VALE = 509295.80E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=5.0929579999999999E5,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
 # SXZ A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXZ',
-                    VALE = 63661.90E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXZ',
+                  VALE_CALC=6.3661900000000001E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXZ A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXZ',
-                    VALE = 509295.80E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXZ',
+                  VALE_CALC=5.0929579999999999E5,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
@@ -556,107 +562,111 @@ CALC_CHAMP(reuse=MCVM100Y,RESULTAT=MCVM100Y,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DZ',
-                    VALE = -8.48826E-06,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-8.4882600000000003E-06,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DRY',
-                    VALE = 2.97089E-05,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DRY',
+                  VALE_CALC=2.9708899999999999E-05,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  ),
           )
 
 #
 # EFFORT TRANCHANT Z A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'VZ',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='VZ',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT TRANCHANT Z A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'VZ',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='VZ',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # MOMENT FLECHISSANT Y A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'MFY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MFY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # MOMENT FLECHISSANT Y A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'MFY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='MFY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = (127323.95E0,-127323.95E0),
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=(1.2732395E5, -1.2732395E5),
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXXY A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXX',
-                    VALE = (1018591.60E0,-1018591.60E0),
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=(1.0185916E6, -1.0185916E6),
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
@@ -673,68 +683,72 @@ CALC_CHAMP(reuse=MCVD100X,RESULTAT=MCVD100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
-                   NOM_CHAM = 'DEPL',
-                   NUME_ORDRE = 1,
-                   NOM_CMP = 'DX',
-                   NOEUD = 'N2',
-                   VALE = 1.22961E-8,
-                   PRECISION = 1.E-2,
-                   CRITERE = 'RELATIF')
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVD100X,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DX',
+                  VALE_CALC= 1.23358707E-08,
+                  VALE_REFE=1.22961E-08,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
 # EFFORT NORMAL A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'N',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVD100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='N',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT NORMAL A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'N',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVD100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='N',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = 3183.09E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVD100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=3183.0900000000001,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXX A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXX',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVD100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
@@ -751,107 +765,115 @@ CALC_CHAMP(reuse=MCVDENY,RESULTAT=MCVDENY,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'DY',
-                    NOEUD = 'N2',
-                    VALE = 1.34864E-6,
-                    PRECISION = 1.E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVDENY,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.34865633E-06,
+                  VALE_REFE=1.3486399999999999E-06,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'DRZ',
-                    NOEUD = 'N2',
-                    VALE = 2.12207E-6,
-                    PRECISION = 1.E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVDENY,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DRZ',
+                  VALE_CALC= 2.12201148E-06,
+                  VALE_REFE=2.12207E-06,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
           )
 
 #
 # EFFORT TANGENTIEL Y A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'VY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVDENY,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='VY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT TANGENTIEL Y A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'VY',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVDENY,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='VY',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # MOMENT DE FLEXION Z A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'MFZ',
-                    VALE = 50.E0,
-                    PRECISION = 1.E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVDENY,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=50.000000000,
+                  VALE_REFE=50.0,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='S13',),
           )
 
 #
 # MOMENT DE FLEXION Z A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'MFZ',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVDENY,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = (63662.0E0,-63662.0E0),
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVDENY,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=(6.3662E4, -6.3662E4),
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXY A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXY',
-                    VALE = (3183.1E0,-3183.1E0,),
-                    PRECISION = 0.001,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVDENY,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=(3183.0999999999999, -3183.0999999999999),
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
@@ -915,70 +937,71 @@ CALC_CHAMP(reuse=MRVF100X,RESULTAT=MRVF100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DX',
-                    VALE = 1.38629E-07,
-                    PRECISION = 1.E-3,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100X,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.3862899999999999E-07,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
           )
 
 #
 # EFFORT NORMAL A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'N',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='N',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT NORMAL A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'N',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='N',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = 2.0E4,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=2.E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXX A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXX',
-                    VALE = 4.0E4,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=4.E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
@@ -995,135 +1018,141 @@ CALC_CHAMP(reuse=MRVF100Y,RESULTAT=MRVF100Y,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DY',
-                    VALE = 1.89696E-04,
-                    PRECISION = 0.023,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.85457679E-04,
+                  VALE_REFE=1.8969599999999999E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.023,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DRZ',
-                    VALE = 3.02381E-04,
-                    PRECISION = 0.027,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DRZ',
+                  VALE_CALC= 2.94645544E-04,
+                  VALE_REFE=3.02381E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.027,),
           )
 
 #
 # EFFORT TANGENTIEL Y A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'VY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='VY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT TANGENTIEL Y A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'VY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='VY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
 # MOMENT DE FLEXION Z A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'MFZ',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # MOMENT DE FLEXION Z A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'MFZ',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = (2.4E6,-2.4E6,),
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=(2.400000E6, -2.400000E6),
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXX A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXX',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # SXY A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXY',
-                    VALE = 2.0E4,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=2.E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXY A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXY',
-                    VALE = 4.0E4,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=4.E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
@@ -1140,102 +1169,104 @@ CALC_CHAMP(reuse=MRVM100X,RESULTAT=MRVM100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DRX',
-                    VALE = 8.35063E-04,
-                    PRECISION = 0.057,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100X,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DRX',
+                  VALE_CALC= 7.88174429E-04,
+                  VALE_REFE=8.3506300000000004E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.057000000000000002,),
           )
 
 #
 # MOMENT DE TORSION A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'MT',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MT',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # MOMENT DE TORSION A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'MT',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='MT',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
 # SXY A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXY',
-#                    VALE       : 1.056D4
-                    VALE = 1.56E6,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=1.560000E6,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXY A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXY',
-#                    VALE       : 1.92D4
-                    VALE = 4.0371E6,
-                    PRECISION = 5.0E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXY',
+                  VALE_CALC= 3.84000000E+06,
+                  VALE_REFE=4.037100E6,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,
+                  MAILLE='S112',),
           )
 
 #
 # SXZ A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXZ',
-#                    VALE       : 1.056D4
-                    PRECISION = 1.E-5,
-                    VALE = 1.56E6,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXZ',
+                  VALE_CALC=1.560000E6,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXZ A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXZ',
-                    VALE = 4.0371E6,
-#                    VALE       : 1.92D4
-                    PRECISION = 5.0E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXZ',
+                  VALE_CALC= 3.84000000E+06,
+                  VALE_REFE=4.037100E6,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,
+                  MAILLE='S112',),
           )
 
 #
@@ -1253,107 +1284,113 @@ CALC_CHAMP(reuse=MRVM100Y,RESULTAT=MRVM100Y,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DZ',
-                    VALE = -1.20E-04,
-                    PRECISION = 0.003,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-1.19725058E-04,
+                  VALE_REFE=-1.2E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOEUD = 'N2',
-                    NOM_CMP = 'DRY',
-                    VALE = 3.60E-04,
-                    PRECISION = 0.004,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DRY',
+                  VALE_CALC= 3.58882008E-04,
+                  VALE_REFE=3.6000000000000002E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=4.0000000000000001E-3,),
           )
 
 #
 # EFFORT TRANCHANT Z A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'VZ',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='VZ',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT TRANCHANT Z A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'VZ',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='VZ',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # MOMENT FLECHISSANT Y A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'MFY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MFY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # MOMENT FLECHISSANT Y A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'MFY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='MFY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = (1.2E6,-1.2E6),
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=(1.200000E6, -1.200000E6),
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXX A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXX',
-                    VALE = (-4.8E6,4.8E6,),
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=(-4.800000E6, 4.800000E6),
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
           )
 
 #
@@ -1370,82 +1407,86 @@ CALC_CHAMP(reuse=MRVD100X,RESULTAT=MRVD100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
-                   NOM_CHAM = 'DEPL',
-                   NUME_ORDRE = 1,
-                   NOM_CMP = 'DX',
-                   NOEUD = 'N2',
-                   VALE = 6.13706E-8,
-                   PRECISION = 0.002,
-                   CRITERE = 'RELATIF')
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVD100X,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DX',
+                  VALE_CALC= 6.14538488E-08,
+                  VALE_REFE=6.1370600000000006E-08,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
 
 #
 # EFFORT NORMAL A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'N',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVD100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='N',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT NORMAL A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'N',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVD100X,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='N',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = 2.0E4,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVD100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=2.E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXX A X = L/2
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S67',
-                    NOEUD = 'N7',
-                    NOM_CMP = 'SIXX',
-                    VALE = 1.33333E4,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVD100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N7',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=1.3333299999999999E4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S67',),
           )
 
 #
 # SXX A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXX',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVD100X,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
@@ -1462,133 +1503,145 @@ CALC_CHAMP(reuse=MRVDENY,RESULTAT=MRVDENY,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'DY',
-                    NOEUD = 'N2',
-                    VALE = 6.86265E-5,
-                    PRECISION = 2.E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DY',
+                  VALE_CALC= 6.73016222E-05,
+                  VALE_REFE=6.8626499999999998E-05,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.02,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'DRZ',
-                    NOEUD = 'N2',
-                    VALE = 9.48479E-5,
-                    PRECISION = 2.4E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DRZ',
+                  VALE_CALC= 9.27287728E-05,
+                  VALE_REFE=9.4847900000000004E-05,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.024,),
           )
 
 #
 # EFFORT TANGENTIEL Y A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'VY',
-                    VALE = 100.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='VY',
+                  VALE_CALC=100.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # EFFORT TANGENTIEL Y A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'VY',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='VY',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # MOMENT DE FLEXION Z A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'MFZ',
-                    VALE = 50.E0,
-                    PRECISION = 1.E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=49.999999998,
+                  VALE_REFE=50.0,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='S13',),
           )
 
 #
 # MOMENT DE FLEXION Z A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'MFZ',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # SXX A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXX',
-                    VALE = (1.2E6,-1.2E6,),
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=(1.200000E6, -1.200000E6),
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # SXX A X = L
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXX',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
 # SXY A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'SIXY',
-                    VALE = 2.0E4,
-                    PRECISION = 1.E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXY',
+                  VALE_CALC= 2.00000000E+04,
+                  VALE_REFE=2.E4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='S13',),
           )
 
 #
 # SXY A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S112',
-                    NOEUD = 'N2',
-                    NOM_CMP = 'SIXY',
-                    VALE = 0.E0,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  MAILLE='S112',),
           )
 
 #
@@ -1745,52 +1798,59 @@ CALC_CHAMP(reuse=MCGPESX,RESULTAT=MCGPESX,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
 
 
 #
-TEST_RESU(   RESU=_F(  RESULTAT = MCGPESX,
-                     NOM_CHAM = 'DEPL',
-                     NUME_ORDRE = 1,
-                     NOM_CMP = 'DZ',
-                     NOEUD = 'N2',
-                     VALE = -3.8259E-5,
-                     PRECISION = 1.E-2,
-                     CRITERE = 'RELATIF')
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCGPESX,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-3.82593540E-05,
+                  VALE_REFE=-3.8259000000000001E-05,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
-TEST_RESU(   RESU=_F(  RESULTAT = MCGPESX,
-                     NOM_CHAM = 'DEPL',
-                     NUME_ORDRE = 1,
-                     NOM_CMP = 'DRY',
-                     NOEUD = 'N2',
-                     VALE = 5.73885E-5,
-                     PRECISION = 1.E-2,
-                     CRITERE = 'RELATIF')
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCGPESX,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DRY',
+                  VALE_CALC= 5.73870400E-05,
+                  VALE_REFE=5.7388500000000001E-05,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
 # EFFORT TANGENTIEL Z A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCGPESX,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'VZ',
-                    VALE = -446.335E0,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCGPESX,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='VZ',
+                  VALE_CALC=-446.33499999999998,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
           )
 
 #
 # MOMENT DE FLEXION Y A X = 0
 #
-TEST_RESU(   RESU=_F( RESULTAT = MCGPESX,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    MAILLE = 'S13',
-                    NOEUD = 'N1',
-                    NOM_CMP = 'MFY',
-                    VALE = 175.354E0,
-                    PRECISION = 1.E-2,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCGPESX,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MFY',
+                  VALE_CALC=175.353750000,
+                  VALE_REFE=175.35400000000001,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='S13',),
           )
 
 #

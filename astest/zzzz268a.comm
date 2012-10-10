@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE POST_BORDET EN 2D ET 3D
 # zzzz268a.para = tps_job 45 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,70 +147,76 @@ BORDET=POST_BORDET(
 #########################################################
 # --COMPARAISON AVEC L'ANALYTIQUE--
 #########################################################
-TEST_TABLE( TABLE     = BORDET,
-            NOM_PARA  = 'SIG_BORDET',
-            FILTRE    = (_F(NOM_PARA  = 'INST',
-                            VALE      = 2.,
-                            CRIT_COMP = 'EQ',),),
-            VALE      = 247.66,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-3,
-            REFERENCE = 'ANALYTIQUE',
-            )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=247.665037466,
+           VALE_REFE=247.66,
+           NOM_PARA='SIG_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='INST',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE( TABLE     = BORDET,
-            NOM_PARA  = 'SIG_BORDET',
-            FILTRE    = (_F(NOM_PARA  = 'INST',
-                            VALE      = 3.,
-                            CRIT_COMP = 'EQ',),),
-            VALE      = 252.23,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-3,
-            REFERENCE = 'ANALYTIQUE',
-            )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=252.229241186,
+           VALE_REFE=252.22999999999999,
+           NOM_PARA='SIG_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
-TEST_TABLE( TABLE     = BORDET,
-            NOM_PARA  = 'SIG_BORDET',
-            FILTRE    = (_F(NOM_PARA  = 'INST',
-                            VALE      = 5.,
-                            CRIT_COMP = 'EQ',),),
-            VALE      = 254.70,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-3,
-            REFERENCE = 'ANALYTIQUE',
-            )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=254.703437925,
+           VALE_REFE=254.69999999999999,
+           NOM_PARA='SIG_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='INST',
+                     VALE=5.0,),
+           )
 
-TEST_TABLE( TABLE     = BORDET,
-            NOM_PARA  = 'PROBA_BORDET',
-            FILTRE    = (_F(NOM_PARA  = 'INST',
-                            VALE      = 2.,
-                            CRIT_COMP = 'EQ',),),
-            VALE      = 1,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-3,
-            REFERENCE = 'ANALYTIQUE',
-            )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.999998687,
+           VALE_REFE=1,
+           NOM_PARA='PROBA_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='INST',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE( TABLE     = BORDET,
-            NOM_PARA  = 'PROBA_BORDET',
-            FILTRE    = (_F(NOM_PARA  = 'INST',
-                            VALE      = 3.,
-                            CRIT_COMP = 'EQ',),),
-            VALE      = 0.9995,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-3,
-            REFERENCE = 'ANALYTIQUE',
-            )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.999505417,
+           VALE_REFE=0.99950000000000006,
+           NOM_PARA='PROBA_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
-TEST_TABLE( TABLE     = BORDET,
-            NOM_PARA  = 'PROBA_BORDET',
-            FILTRE    = (_F(NOM_PARA  = 'INST',
-                            VALE      = 5.,
-                            CRIT_COMP = 'EQ',),),
-            VALE      = 0.778,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-3,
-            REFERENCE = 'ANALYTIQUE',
-            )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.778405008,
+           VALE_REFE=0.77800000000000002,
+           NOM_PARA='PROBA_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='INST',
+                     VALE=5.0,),
+           )
 
 FIN();

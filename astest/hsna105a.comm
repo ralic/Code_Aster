@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE Expansion d'un cylindre creux infini avec prise en compte des dissipations thermiques dues aux deformations mecaniques
 # hsna105a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -598,12 +598,14 @@ TRESUTH=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 IMPR_TABLE(TABLE=TRESUTH,
            FORMAT='ASTER',);
 
-TEST_TABLE(TABLE=TRESUTH,
-           NOM_PARA='TEMP',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=6.,),
-           VALE=-31.5+TREF,
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=2.E-3,
-           REFERENCE='SOURCE_EXTERNE',);
+           VALE_CALC=261.652308587,
+           VALE_REFE=261.5,
+           NOM_PARA='TEMP',
+           TABLE=TRESUTH,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=6.0,),
+           )
 
 FIN();

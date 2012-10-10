@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP THERMOPLASTICITE : TUBE SOUMIS A UN CHOC FROID
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,11 +148,14 @@ IMPR_TABLE(FORMAT='AGRAF',
            TABLE=T1LBAS,
            NOM_PARA=('ABSC_CURV','TEMP',),)
 
-TEST_RESU(RESU=_F(RESULTAT=TEMPE,
-                  INST=4.0,
+TEST_RESU(RESU=_F(INST=4.0,
+                  TYPE_TEST='MAX',
+                  RESULTAT=TEMPE,
                   NOM_CHAM='TEMP',
                   NOM_CMP='TEMP',
-                  TYPE_TEST='MAX',REFERENCE='NON_REGRESSION',VERSION='6.3.24',
-                  VALE=126.651,),);
+                  VALE_CALC=126.651,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA MODELISATION AXIS_GRAD_VARI
 # comp005c.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -225,15 +225,13 @@ for i in range(0,len(modelisation)):
 
 IMPR_TABLE(TABLE=DIFF);
 
-TEST_TABLE(TABLE=DIFF,
-         FILTRE=_F(NOM_PARA='DIFF',
-                   CRIT_COMP='MAXI_ABS',
-                   ),
-         NOM_PARA='DIFF',
-         VALE=0.0,
-         CRITERE='ABSOLU',
-         PRECISION=1e-03,
-         REFERENCE='NON_REGRESSION');
-
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DIFF',
+           TABLE=DIFF,
+           FILTRE=_F(CRIT_COMP='MAXI_ABS',
+                     NOM_PARA='DIFF',),
+           )
 
 FIN();

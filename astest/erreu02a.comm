@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ---------------------------------------------------------------------
 # TITRE VERIFICATION GARDES-FOUS S'IL MANQUE DES VARIABLES DE COMMANDE
 # erreu02a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -93,14 +93,22 @@ U1=CALC_CHAMP(reuse=U1,RESULTAT=U1,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_E
 
 U1=CALC_CHAMP(reuse =U1,RESULTAT = U1,DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU')
 
-TEST_RESU(RESU=(
-  _F(  RESULTAT = U1,  NOM_CHAM = 'EPSI_NOEU', INST = 1800.,
-         NOM_CMP = 'EPXX',   NOEUD = 'N5', REFERENCE = 'NON_REGRESSION', VALE = 1.4519999999992E-03 ),
-  _F(  RESULTAT = U1,  NOM_CHAM = 'SIGM_NOEU', INST = 1800.,
-         NOM_CMP = 'SIYY',   NOEUD = 'N5', REFERENCE = 'NON_REGRESSION', VALE =-1.3794000000007E+08 ),
-                  ))
-
-
+TEST_RESU(RESU=(_F(INST=1800.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N5',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=1.4519999999992E-3,
+                   TOLE_MACHINE=1.E-3,),
+                _F(INST=1800.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N5',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-1.3794000000007001E8,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 # CM2 : CHAMP DE MATERIAU FONCTION DE LA TEMPERATURE ET DU SECHAGE :
 #---------------------------------------------------------------------
@@ -115,14 +123,22 @@ U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_E
 
 U2=CALC_CHAMP(reuse =U2,RESULTAT = U2,DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU')
 
-TEST_RESU(RESU=(
-  _F(  RESULTAT = U2,  NOM_CHAM = 'EPSI_NOEU', INST = 1800.,
-         NOM_CMP = 'EPXX',   NOEUD = 'N5', REFERENCE = 'NON_REGRESSION', VALE = 1.4519999999986E-03 ),
-  _F(  RESULTAT = U2,  NOM_CHAM = 'SIGM_NOEU', INST = 1800.,
-         NOM_CMP = 'SIYY',   NOEUD = 'N5', REFERENCE = 'NON_REGRESSION', VALE =-2.6208600000007E+08 ),
-                  ))
-
-
+TEST_RESU(RESU=(_F(INST=1800.0,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='N5',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=1.4519999999986E-3,
+                   TOLE_MACHINE=1.E-3,),
+                _F(INST=1800.0,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N5',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-2.6208600000007001E8,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 # CM1A : CHAMP DE MATERIAU =F(TEMP) + TEMP OUBLIEE => CALCULEL6_56 CAR ALPHA=F(TEMP):
 #-----------------------------------------------------------------------------------
@@ -141,8 +157,15 @@ except aster.error,err:
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
 
 
@@ -164,8 +187,15 @@ except aster.error,err:
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
 
 
@@ -188,8 +218,15 @@ except  aster.error,err:
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
 
 
@@ -212,8 +249,15 @@ except  aster.error,err:
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
 
 
@@ -236,8 +280,15 @@ except  aster.error,err:
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
 
 
@@ -260,8 +311,15 @@ except  aster.error,err:
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN', VALE_I=1, REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
 
 

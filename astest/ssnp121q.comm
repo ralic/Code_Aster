@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121q.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,110 +139,126 @@ IMPR_RESU(MODELE=MO,FORMAT='RESULTAT',
                       NOM_CHAM='DEPL',
                       NOM_CMP=('LAGS_C','DX','DY','DZ'),),),);
 
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      GROUP_NO = 'A21',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-3,
-                      NOM_CMP = 'LAGS_C',
-                      VALE = -1.E+5),
-            );
-
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      GROUP_NO = 'A22',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-3,
-                      NOM_CMP = 'LAGS_C',
-                      VALE = -1.E+5),
-            );
-
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      GROUP_NO = 'A23',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-3,
-                      NOM_CMP = 'LAGS_C',
-                      VALE = -1.E+5),
-            );
-
-TEST_RESU(   RESU=_F(  RESULTAT = RESU,
-                     NUME_ORDRE = 1,
-                      GROUP_NO = 'A24',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'ANALYTIQUE',
-                      PRECISION = 1.E-3,
-                      NOM_CMP = 'LAGS_C',
-                      VALE = -1.E+5),
-            );
-
-
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  TYPE_TEST='MAX',
-                  VALE=-100000.0,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  TYPE_TEST='MIN',
-                  VALE=-100000.0,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A21',
-                  VALE=-0.05,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=-1.00000000E+05,
+                  VALE_REFE=-1.E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A22',
-                  VALE=-0.05,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=-1.00000000E+05,
+                  VALE_REFE=-1.E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A23',
-                  VALE=-0.05,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=-1.00000000E+05,
+                  VALE_REFE=-1.E5,
                   CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A24',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=-1.00000000E+05,
+                  VALE_REFE=-1.E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  TYPE_TEST='MAX',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=-1.00000000E+05,
+                  VALE_REFE=-1.E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  TYPE_TEST='MIN',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=-1.00000000E+05,
+                  VALE_REFE=-1.E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A21',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='A24',
-                  VALE=-0.05,
+                  VALE_CALC=-0.050000000,
+                  VALE_REFE=-0.050000000000000003,
                   CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A22',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.050000000,
+                  VALE_REFE=-0.050000000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A23',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.050000000,
+                  VALE_REFE=-0.050000000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A24',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.050000000,
+                  VALE_REFE=-0.050000000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
 #;
 FIN( );
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKQ - DSQ - Q4G
 # sdls03b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,10 +92,14 @@ FREQ1=sqrt(100./117.) / (2. * pi)
 
 # --------------------------------------------------------------------
 
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE2, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.6E-2,
-           NUME_ORDRE = 1,         VALE = FREQ1)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODE2,
+                  VALE_CALC=0.147138795,
+                  VALE_REFE=0.14713879693881587,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,),
           )
 
 #====================================================================
@@ -154,10 +158,14 @@ MODE4=MODE_ITER_SIMULT(  MATR_RIGI=MATR4,  MATR_MASS=MATM4,
 
 # --------------------------------------------------------------------
 
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE4,        PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.6E-2,
-           NUME_ORDRE = 1, REFERENCE = 'ANALYTIQUE', VALE = FREQ1)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODE4,
+                  VALE_CALC=0.147138787,
+                  VALE_REFE=0.14713879693881587,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,),
           )
 
 #====================================================================
@@ -215,10 +223,14 @@ MODE6=MODE_ITER_SIMULT(  MATR_RIGI=MATR6,  MATR_MASS=MATM6,
 
 # --------------------------------------------------------------------
 
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE6,        PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.6E-2,
-           NUME_ORDRE = 1, REFERENCE = 'ANALYTIQUE', VALE = FREQ1)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODE6,
+                  VALE_CALC=0.147138801,
+                  VALE_REFE=0.14713879693881587,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,),
           )
 
 #====================================================================
@@ -253,25 +265,56 @@ MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATR,        MATR_MASS=MATM,
 
 # --------------------------------------------------------------------
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.8E-2,
-           NUME_ORDRE = 1,       VALE = 35.63),
-   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.5E-2,
-           NUME_ORDRE = 2,       VALE = 68.51),
-   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
-           NUME_ORDRE = 3,       VALE = 109.62),
-   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.8E-2,
-           NUME_ORDRE = 4,       VALE = 123.32),
-   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 2.9E-2,
-           NUME_ORDRE = 5,       VALE = 142.51),
-   _F(   RESULTAT = MODE, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 4.5E-2,
-           NUME_ORDRE = 6,       VALE = 197.32)) )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=35.359116989,
+                   VALE_REFE=35.630000000000003,
+                   CRITERE='RELATIF',
+                   PRECISION=8.0000000000000002E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=67.490938392,
+                   VALE_REFE=68.510000000000005,
+                   CRITERE='RELATIF',
+                   PRECISION=0.014999999999999999,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=108.562911676,
+                   VALE_REFE=109.62,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=121.143977248,
+                   VALE_REFE=123.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.017999999999999999,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=138.402325115,
+                   VALE_REFE=142.50999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029000000000000001,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=188.500744771,
+                   VALE_REFE=197.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.044999999999999998,),
+                ),
+          )
 
 #====================================================================
 # ---- FLEXION PLAQUE DSQ APPUYEE SUR LES BORDS
@@ -305,25 +348,56 @@ MODE3=MODE_ITER_SIMULT(  MATR_RIGI=MATR3,   MATR_MASS=MATM3,
 
 # --------------------------------------------------------------------
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.8E-2,
-           NUME_ORDRE = 1,       VALE = 35.63),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.6E-2,
-           NUME_ORDRE = 2,       VALE = 68.51),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
-           NUME_ORDRE = 3,       VALE = 109.62),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.9E-2,
-           NUME_ORDRE = 4,       VALE = 123.32),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 3.0E-2,
-           NUME_ORDRE = 5,       VALE = 142.51),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 4.6E-2,
-           NUME_ORDRE = 6,       VALE = 197.32)) )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=35.351442622,
+                   VALE_REFE=35.630000000000003,
+                   CRITERE='RELATIF',
+                   PRECISION=8.0000000000000002E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=67.463880769,
+                   VALE_REFE=68.510000000000005,
+                   CRITERE='RELATIF',
+                   PRECISION=0.016,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=108.493654624,
+                   VALE_REFE=109.62,
+                   CRITERE='RELATIF',
+                   PRECISION=0.010999999999999999,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=121.060290195,
+                   VALE_REFE=123.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.019,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=138.290884625,
+                   VALE_REFE=142.50999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=188.297747178,
+                   VALE_REFE=197.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.045999999999999999,),
+                ),
+          )
 
 #====================================================================
 # ---- FLEXION PLAQUE Q4G APPUYEE SUR LES BORDS
@@ -362,25 +436,56 @@ MODE5=MODE_ITER_SIMULT(  MATR_RIGI=MATR5,   MATR_MASS=MATM5,
 
 # --------------------------------------------------------------------
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
-           NUME_ORDRE = 1,       VALE = 35.63),
-   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
-           NUME_ORDRE = 2,       VALE = 68.51),
-   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
-           NUME_ORDRE = 3,       VALE = 109.62),
-   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
-           NUME_ORDRE = 4,       VALE = 123.32),
-   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 2.5E-2,
-           NUME_ORDRE = 5,       VALE = 142.51),
-   _F(   RESULTAT = MODE5, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 4.0E-2,
-           NUME_ORDRE = 6,       VALE = 197.32)) )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE5,
+                   VALE_CALC=35.423187055,
+                   VALE_REFE=35.630000000000003,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE5,
+                   VALE_CALC=67.923174086,
+                   VALE_REFE=68.510000000000005,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE5,
+                   VALE_CALC=109.942386015,
+                   VALE_REFE=109.62,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE5,
+                   VALE_CALC=123.976774773,
+                   VALE_REFE=123.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE5,
+                   VALE_CALC=139.459850970,
+                   VALE_REFE=142.50999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.025000000000000001,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE5,
+                   VALE_CALC=190.384846564,
+                   VALE_REFE=197.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.040000000000000001,),
+                ),
+          )
 
 # --------------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT AVEC MACRO-ELEMENTS STATIQUE
 # ssnv193a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,28 +120,30 @@ UCTCC=STAT_NON_LINE(MODELE=MO,
                 SOLVEUR=_F(SYME='OUI',),
                 INFO=1,);
 
-TEST_RESU(RESU=_F(RESULTAT=UCTCC,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A',
+                  RESULTAT=UCTCC,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RZ',
-                  GROUP_NO='A',
-                  VALE=-1.3801560770878E+09,
+                  VALE_CALC=-1.3801560770878E9,
+                  
                   CRITERE='RELATIF',
-                  PRECISION=1E-6,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.3.0',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=UCTCC,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=UCTCC,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='A',
-                  VALE=0.0,
+                  VALE_CALC= 3.851859888774E-33,
+                  VALE_REFE=0.0,
+                  TOLE_MACHINE=9.9999999999999998E-13,
                   CRITERE='ABSOLU',
-                  PRECISION=1E-12,
-                  REFERENCE='ANALYTIQUE',
-                  VERSION='10.3.0',),);
-
+                  PRECISION=9.9999999999999998E-13,
+                  ),
+          )
 
 #CREATION DU MACRO-ELEMENT STATIQUE
 MODSS=AFFE_MODELE(MAILLAGE=MA,
@@ -232,28 +234,32 @@ UMCTCC=STAT_NON_LINE(MODELE=MOMACR,
                           REAC_ITER=1,),
                 INFO=1,);
 
-TEST_RESU(RESU=_F(RESULTAT=UMCTCC,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=UMCTCC,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RZ',
-                  GROUP_NO='A',
-                  VALE=-1.3801560770878E+09,
+                  VALE_CALC=-1.38015608E+09,
+                  VALE_REFE=-1.3801560770878E9,
                   CRITERE='RELATIF',
-                  PRECISION=1E-6,
-                  REFERENCE='AUTRE_ASTER',
-                  VERSION='10.3.0',),);
+                  PRECISION=9.9999999999999995E-07,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=UMCTCC,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=UMCTCC,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='A',
-                  VALE=0.0,
+                  VALE_CALC= 0.000000000000E+00,
+                  VALE_REFE=0.0,
+                  TOLE_MACHINE=9.9999999999999998E-13,
                   CRITERE='ABSOLU',
-                  PRECISION=1E-12,
-                  REFERENCE='ANALYTIQUE',
-                  VERSION='10.3.0',),);
-
+                  PRECISION=9.9999999999999998E-13,
+                  ),
+          )
 
 UMCTCD=STAT_NON_LINE(MODELE=MOMACR,
                    CHAM_MATER=CHMAT2,
@@ -273,27 +279,31 @@ UMCTCD=STAT_NON_LINE(MODELE=MOMACR,
                           REAC_ITER=1,),
                 INFO=1,);
 
-TEST_RESU(RESU=_F(RESULTAT=UMCTCD,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=UMCTCD,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RZ',
-                  GROUP_NO='A',
-                  VALE=-1.3801560770878E+09,
+                  VALE_CALC=-1.38015608E+09,
+                  VALE_REFE=-1.3801560770878E9,
                   CRITERE='RELATIF',
-                  PRECISION=1E-6,
-                  REFERENCE='AUTRE_ASTER',
-                  VERSION='10.3.0',),);
+                  PRECISION=9.9999999999999995E-07,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=UMCTCD,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=UMCTCD,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='A',
-                  VALE=0.0,
+                  VALE_CALC=-3.035766082959E-18,
+                  VALE_REFE=0.0,
+                  TOLE_MACHINE=9.9999999999999998E-13,
                   CRITERE='ABSOLU',
-                  PRECISION=1E-12,
-                  REFERENCE='ANALYTIQUE',
-                  VERSION='10.3.0',),);
-
+                  PRECISION=9.9999999999999998E-13,
+                  ),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PB 2D AXISYMETRIQUE STATIONNAIRE AVEC RAYONNEMENT - QUAD4 DIAG
 # tpna01e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -194,59 +194,73 @@ resu2=MACR_LIGN_COUPE(RESULTAT=TEMPE,
 
 # test de la temperature
 
-TEST_TABLE(TABLE=resu,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=105.557579301,
+           VALE_REFE=105.55,
+           NOM_PARA='TEMP',
+           TABLE=resu,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.0,),
-           NOM_PARA='TEMP',
-           VALE=105.55,
-           REFERENCE='ANALYTIQUE',);
+           )
 
-TEST_TABLE(TABLE=resu,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.02275,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=99.219123959,
+           VALE_REFE=99.209999999999994,
            NOM_PARA='TEMP',
-           VALE=99.21,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=resu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.022749999999999999,),
+           )
 
-TEST_TABLE(TABLE=resu,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.0455,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=93.306542800,
+           VALE_REFE=93.299999999999997,
            NOM_PARA='TEMP',
-           VALE=93.3,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=resu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.045499999999999999,),
+           )
 
-TEST_TABLE(TABLE=resu,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.06825,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=2.E-3,
+           VALE_CALC=87.766685427,
+           VALE_REFE=87.670000000000002,
            NOM_PARA='TEMP',
-           VALE=87.67,
-           PRECISION=0.002,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=resu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.068250000000000005,),
+           )
 
-TEST_TABLE(TABLE=resu,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.091,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=82.555705539,
+           VALE_REFE=82.560000000000002,
            NOM_PARA='TEMP',
-           VALE=82.56,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=resu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.090999999999999998,),
+           )
 
 # test du flux
 
-TEST_TABLE(TABLE=resu2,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 1.13855257E+04,
+           VALE_REFE=1.157749E4,
+           NOM_PARA='FLUX',
+           TABLE=resu2,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.0,),
-           NOM_PARA='FLUX',
-           VALE=11577.49,
-           PRECISION=0.02,
-           REFERENCE='ANALYTIQUE',);
+           )
 
-TEST_TABLE(TABLE=resu2,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.091,),
-           NOM_PARA='FLUX',
-           VALE=8822.98,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE',);
+           VALE_CALC= 8.99926902E+03,
+           VALE_REFE=8822.9799999999996,
+           NOM_PARA='FLUX',
+           TABLE=resu2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.090999999999999998,),
+           )
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=TEMPE,),);

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU PILOTAGE PRED_ELAS EN PLASTICITE
 # ssnp145b.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,19 +172,20 @@ ETA_PILO=RECU_FONCTION(RESULTAT=EVOL,
                        TOUT_ORDRE='OUI',);
 
 
-TEST_FONCTION(VALEUR=( _F(FONCTION=ETA_PILO,
-                         NOM_PARA='INST',
-                         VALE_PARA=20,
-                         VALE_REFE=P(b),
-                         PRECISION = 0.02,
-                         REFERENCE='ANALYTIQUE',),),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=422.416834701,
+                        VALE_REFE=415.88830833596717,
+                        VALE_PARA=20,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=0.02,
+                        NOM_PARA='INST',
+                        FONCTION=ETA_PILO,),
+              )
 
-
-TEST_FONCTION(VALEUR=( _F(FONCTION=ETA_PILO,
-                         NOM_PARA='INST',
-                         VALE_PARA=20,
-                         VALE_REFE=422.4168347,
-                         PRECISION = 1E-8,
-                         REFERENCE='NON_REGRESSION',),),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=422.41683469999998,
+                        VALE_PARA=20,
+                        NOM_PARA='INST',
+                        FONCTION=ETA_PILO,
+                        ),
+              )
 
 FIN()

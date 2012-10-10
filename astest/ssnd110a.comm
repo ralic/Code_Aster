@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CFC 
 # ssnd110a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -330,32 +330,40 @@ for i in range(1,13):
 
 # densites de dislocation
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho[9],
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.17406381861e-09,
+                        VALE_REFE=7.1740499999999996E-09,
                         VALE_PARA=1.0,
-                        VALE_REFE=7.17405E-09,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=rho_9,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho[1],
-                        NOM_PARA='INST',
-                        VALE_PARA=1.0,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.60769788699e-09,
                         VALE_REFE=6.60769E-09,
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=rho_1,),
+              )
 
 # glissement plastiques
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.00356013725e-05,
+                        VALE_REFE=8.0039271199999995E-05,
                         VALE_PARA=1.0,
-                        VALE_REFE=8.00392712e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=gamma_9,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamma[1],
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.72095549006e-05,
+                        VALE_REFE=1.7210938199999999E-05,
                         VALE_PARA=1.0,
-                        PRECISION=0.002,
-                        VALE_REFE=1.72109382e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=2.E-3,
+                        NOM_PARA='INST',
+                        FONCTION=gamma_1,),
+              )
 
 # deformation viscoplastique globale
 
@@ -364,46 +372,52 @@ EVIXX=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_Y='V1',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIXX,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-3.97001688044e-05,
+                        VALE_REFE=-3.97022317E-05,
                         VALE_PARA=1.0,
-                        VALE_REFE=-3.97022317e-05,
-                        REFERENCE='ANALYTIQUE',),);
-
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=EVIXX,),
+              )
 
 EVIZZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V3',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIZZ,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.97001688044e-05,
+                        VALE_REFE=3.97022317E-05,
                         VALE_PARA=1.0,
-                        VALE_REFE=3.97022317e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=EVIZZ,),
+              )
 
 EVIXY=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V4',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIXY,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.81363174213e-05,
+                        VALE_REFE=1.8136977500000001E-05,
                         VALE_PARA=1.0,
-                        VALE_REFE=1.81369775e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=EVIXY,),
+              )
 
 EVIYZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V6',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIYZ,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.80722585758e-05,
+                        VALE_REFE=2.80737173E-05,
                         VALE_PARA=1.0,
-                        VALE_REFE=2.80737173e-05,
-                        REFERENCE='ANALYTIQUE',),);
-
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=EVIYZ,),
+              )
 
 # DD_CFC  en IMPLICITE
 
@@ -487,34 +501,42 @@ for i in range(1,13):
 
 # densites de dislocation
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rhoi[9],
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.17932631676e-09,
+                        VALE_REFE=7.1740499999999996E-09,
                         VALE_PARA=1.0,
-                        VALE_REFE=7.17405E-09,
-                        PRECISION=0.005,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=5.0000000000000001E-3,
+                        NOM_PARA='INST',
+                        FONCTION=rhoi_9,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rhoi[1],
-                        NOM_PARA='INST',
-                        VALE_PARA=1.0,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.6097717366e-09,
                         VALE_REFE=6.60769E-09,
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=rhoi_1,),
+              )
 
 # glissement plastiques
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gammi[9],
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.06183565266e-05,
+                        VALE_REFE=8.0039271199999995E-05,
                         VALE_PARA=1.0,
-                        PRECISION=0.01,
-                        VALE_REFE=8.00392712e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=gammi_9,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gammi[1],
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.74370825229e-05,
+                        VALE_REFE=1.7210938199999999E-05,
                         VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
                         PRECISION=0.02,
-                        VALE_REFE=1.72109382e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        NOM_PARA='INST',
+                        FONCTION=gammi_1,),
+              )
 
 # deformation viscoplastique globale
 
@@ -523,51 +545,56 @@ EVIiXX=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_Y='V1',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIiXX,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.00309653626e-05,
+                        VALE_REFE=-3.97022317E-05,
                         VALE_PARA=1.0,
-                        PRECISION=0.01,
-                        VALE_REFE=-3.97022317e-05,
-                        REFERENCE='ANALYTIQUE',),);
-
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=EVIiXX,),
+              )
 
 EVIiZZ=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V3',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIiZZ,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.00309653626e-05,
+                        VALE_REFE=3.97022317E-05,
                         VALE_PARA=1.0,
-                        PRECISION=0.01,
-                        VALE_REFE=3.97022317e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=EVIiZZ,),
+              )
 
 EVIiXY=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V4',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIiXY,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.82388627769e-05,
+                        VALE_REFE=1.8136977500000001E-05,
                         VALE_PARA=1.0,
-                        VALE_REFE=1.81369775e-05,
-                        PRECISION=0.01,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=EVIiXY,),
+              )
 
 EVIiYZ=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V6',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIiYZ,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.83061670654e-05,
+                        VALE_REFE=2.80737173E-05,
                         VALE_PARA=1.0,
-                        VALE_REFE=2.80737173e-05,
-                        PRECISION=0.01,
-                        REFERENCE='ANALYTIQUE',),);
-
-
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=EVIiYZ,),
+              )
 
 # DD_CFC  en EXPLICITE + POLYCRISTAL
 
@@ -624,34 +651,42 @@ for i in range(1,13):
               
 # densites de dislocation
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rhop[9],
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.17406381861e-09,
+                        VALE_REFE=7.1740499999999996E-09,
                         VALE_PARA=1.0,
-                        VALE_REFE=7.17405E-09,
-                        PRECISION=0.005,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=5.0000000000000001E-3,
+                        NOM_PARA='INST',
+                        FONCTION=rhop_9,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rhop[1],
-                        NOM_PARA='INST',
-                        VALE_PARA=1.0,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.60769788699e-09,
                         VALE_REFE=6.60769E-09,
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=rhop_1,),
+              )
 
 # glissement plastiques
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gammp[9],
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.00356013725e-05,
+                        VALE_REFE=8.0039271199999995E-05,
                         VALE_PARA=1.0,
-                        PRECISION=0.01,
-                        VALE_REFE=8.00392712e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=gammp_9,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gammp[1],
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.72095549006e-05,
+                        VALE_REFE=1.7210938199999999E-05,
                         VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
                         PRECISION=0.02,
-                        VALE_REFE=1.72109382e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        NOM_PARA='INST',
+                        FONCTION=gammp_1,),
+              )
 
 # deformation viscoplastique globale
 
@@ -660,50 +695,56 @@ EVIpXX=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_Y='V1',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIpXX,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.00309653626e-05,
+                        VALE_REFE=-3.97022317E-05,
                         VALE_PARA=1.0,
-                        PRECISION=0.01,
-                        VALE_REFE=-3.97022317e-05,
-                        REFERENCE='ANALYTIQUE',),);
-
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=EVIpXX,),
+              )
 
 EVIpZZ=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V3',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIpZZ,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.00309653626e-05,
+                        VALE_REFE=3.97022317E-05,
                         VALE_PARA=1.0,
-                        PRECISION=0.01,
-                        VALE_REFE=3.97022317e-05,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=EVIpZZ,),
+              )
 
 EVIpXY=RECU_FONCTION(TABLE=POLYDD,
                    PARA_X='INST',
                    PARA_Y='V4',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIpXY,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.81363174213e-05,
+                        VALE_REFE=1.8136977500000001E-05,
                         VALE_PARA=1.0,
-                        VALE_REFE=1.81369775e-05,
-                        PRECISION=0.01,
-                        REFERENCE='ANALYTIQUE',),);
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=EVIpXY,),
+              )
 
 EVIpYZ=RECU_FONCTION(TABLE=POLYDD,
                    PARA_X='INST',
                    PARA_Y='V6',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=EVIpYZ,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.80722585758e-05,
+                        VALE_REFE=2.80737173E-05,
                         VALE_PARA=1.0,
-                        VALE_REFE=2.80737173e-05,
-                        PRECISION=0.01,
-                        REFERENCE='ANALYTIQUE',),);
-
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=EVIpYZ,),
+              )
 
 # tests de la rotation de reseau
 
@@ -712,82 +753,90 @@ OMP1=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_Y='V64',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=OMP1,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.39820276751e-07,
+                        VALE_REFE=3.3981999999999998E-07,
                         VALE_PARA=1.0,
-                        VALE_REFE=3.39820E-07,
-                        PRECISION=0.01,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        REFERENCE='NON_DEFINI',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=OMP1,
+                        ),
+              )
 
 OMP2=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V65',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=OMP2,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.95455453269e-07,
+                        VALE_REFE=2.9545499999999999E-07,
                         VALE_PARA=1.0,
-                        VALE_REFE=2.95455E-07,
-                        PRECISION=0.01,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        REFERENCE='NON_DEFINI',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=OMP2,
+                        ),
+              )
 
 OMP3=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V66',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=OMP3,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.47724162198e-07,
+                        VALE_REFE=-1.4772400000000001E-07,
                         VALE_PARA=1.0,
-                        VALE_REFE=-1.47724E-07,
-                        PRECISION=0.01,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        REFERENCE='NON_DEFINI',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=OMP3,
+                        ),
+              )
 
 OME1=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V67',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=OME1,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-3.39820276751e-07,
+                        VALE_REFE=-3.3981999999999998E-07,
                         VALE_PARA=1.0,
-                        VALE_REFE=-3.39820E-07,
-                        PRECISION=0.01,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        REFERENCE='NON_DEFINI',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=OME1,
+                        ),
+              )
 
 OME2=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V68',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=OME2,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-2.95455453269e-07,
+                        VALE_REFE=-2.9545499999999999E-07,
                         VALE_PARA=1.0,
-                        VALE_REFE=-2.95455E-07,
-                        PRECISION=0.01,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        REFERENCE='NON_DEFINI',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=OME2,
+                        ),
+              )
 
 OME3=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V69',
                    INTERPOL='LIN');
                    
-TEST_FONCTION(VALEUR=_F(FONCTION=OME3,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.47724162198e-07,
+                        VALE_REFE=1.4772400000000001E-07,
                         VALE_PARA=1.0,
-                        VALE_REFE=1.47724E-07,
-                        PRECISION=0.01,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-
-
-
+                        REFERENCE='NON_DEFINI',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=OME3,
+                        ),
+              )
 
 FIN()
                    
-

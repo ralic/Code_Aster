@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CABLE PESANT AVEC DILATATION THERMIQUE. MODELISATION A : CABLE
 # ssnl114a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,20 +98,23 @@ RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO')
 # SOLUTION ANALYTIQUE : FORTRAN DANS SSNL114.38
 
 
-TEST_RESU(RESU=(_F( RESULTAT = RESU1,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'DEPL',
-                 NOEUD = 'N36',
-                 NOM_CMP = 'DZ',
-                 VALE = -6.352,
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = RESU1,
-                 NUME_ORDRE = 2,
-                 NOM_CHAM = 'DEPL',
-                 NOEUD = 'N36',
-                 NOM_CMP = 'DZ',
-                 VALE = -8.1955,
-                 PRECISION = 1.E-3))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N36',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-6.3520000000000003,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N36',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-8.1954999999999991,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
           )
 
 FIN( )

@@ -1,8 +1,8 @@
-#@ MODIF test_temps_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_temps_ops Macro  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -213,8 +213,10 @@ def test_temps_ops(self, RESU, INFO, **args):
    
    TEST_TABLE(TABLE=tab1__,
               NOM_PARA='DIAGNOSTIC',
-              VALE_I=1,
+              VALE_CALC_I=1,
+              VALE_REFE_I=1,
               CRITERE='ABSOLU',
+              TOLE_MACHINE=0,
               PRECISION=0,
               REFERENCE='NON_REGRESSION')
 

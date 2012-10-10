@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LIRE_FONCTION D'UN SPECTRE D'OSCILLATEUR
 # zzzz102b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,34 +63,48 @@ D001=VAL/AM1
 
 D005=D01 + ((5./9.)*( D001 - D01))
 
-TEST_FONCTION(VALEUR=(
-         _F(  FONCTION = SPO,
-                  NOM_PARA = ( 'FREQ',  'AMOR', ),
-                  VALE_PARA = ( 5.E-1,   AM1,    ),
-                  VALE_REFE = D001),
-         _F(  FONCTION = SPO,
-                  NOM_PARA = ( 'FREQ',  'AMOR', ),
-                  VALE_PARA = ( 5.E-1,   AM2,   ),
-                  VALE_REFE = D005),
-         _F(  FONCTION = SPO,
-                  NOM_PARA = ( 'FREQ',  'AMOR', ),
-                  VALE_PARA = ( 5.E-1,   AM3,   ),
-                  VALE_REFE = D01)),ATTRIBUT=(
-       _F(  FONCTION = SPO,   ATTR = 'NOM_RESU',
-                     PARA = AM1,     ATTR_REFE = 'ACCE'),
-       _F(  FONCTION = SPO,   ATTR = 'PROL_DROITE',
-                                   ATTR_REFE = 'LINEAIRE'),
-       _F(  FONCTION = SPO,   ATTR = 'PROL_GAUCHE',
-                                   ATTR_REFE = 'CONSTANT'),
-       _F(  FONCTION = SPO,   ATTR = 'INTERPOL',
-                     PARA = AM1,     ATTR_REFE = 'LIN LIN '),
-       _F(  FONCTION = SPO,   ATTR = 'PROL_DROITE_FONC',
-                                   ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = SPO,   ATTR = 'PROL_GAUCHE_FONC',
-                                   ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = SPO,   ATTR = 'INTERPOL_FONC',
-                     PARA = AM1,     ATTR_REFE = 'LIN LIN '))
-                 )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.09558,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=(0.5, 1.E-2),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPO,),
+                      _F(VALE_CALC=0.65734800000000004,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=(0.5, 0.050000000000000003),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPO,),
+                      _F(VALE_CALC=0.10955799999999999,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=(0.5, 0.10000000000000001),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPO,),
+                      ),
+              ATTRIBUT=(_F(PARA=1.E-2,
+                           ATTR_REFE='ACCE',
+                           FONCTION=SPO,
+                           ATTR='NOM_RESU',),
+                        _F(ATTR_REFE='LINEAIRE',
+                           FONCTION=SPO,
+                           ATTR='PROL_DROITE',),
+                        _F(ATTR_REFE='CONSTANT',
+                           FONCTION=SPO,
+                           ATTR='PROL_GAUCHE',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='LIN LIN ',
+                           FONCTION=SPO,
+                           ATTR='INTERPOL',),
+                        _F(ATTR_REFE='EXCLU',
+                           FONCTION=SPO,
+                           ATTR='PROL_DROITE_FONC',),
+                        _F(ATTR_REFE='EXCLU',
+                           FONCTION=SPO,
+                           ATTR='PROL_GAUCHE_FONC',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='LIN LIN ',
+                           FONCTION=SPO,
+                           ATTR='INTERPOL_FONC',),
+                        ),
+              )
 
 #----------------------------------------------------------------------
 

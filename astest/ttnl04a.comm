@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE THERMIQUE AVEC FLUX NON LINEAIRE EN TRANSITOIRE 2D
 # ttnl04a.para = tps_job 110 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -335,32 +335,77 @@ NOM_CHAM='TEMP', RESULTAT=TEMPE, NUME_ORDRE=150)
 T3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE, NUME_ORDRE=200)
 
-TEST_RESU(CHAM_NO=(
-_F(  CHAM_GD = T1, NOEUD = 'N939', NOM_CMP = 'TEMP', VALE = 20.0,
-  PRECISION = 1.E-2),
-_F(  CHAM_GD = T2, NOEUD = 'N939', NOM_CMP = 'TEMP', VALE = 79.3,
-  PRECISION = 1.E-2),
-_F(  CHAM_GD = T3, NOEUD = 'N939', NOM_CMP = 'TEMP', VALE = 49.6,
-  PRECISION = 1.E-2))
-           )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N939',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T1,
+                      VALE_CALC=20.016066515,
+                      VALE_REFE=20.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N939',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T2,
+                      VALE_CALC=79.289730453,
+                      VALE_REFE=79.299999999999997,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N939',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T3,
+                      VALE_CALC=49.602835865,
+                      VALE_REFE=49.600000000000001,
+                      REFERENCE='NON_DEFINI',),
+                   ),
+          )
 
-TEST_RESU(CHAM_NO=(
-_F(  CHAM_GD = T1, NOEUD = 'N1334', NOM_CMP = 'TEMP', VALE = 61.0,
-  PRECISION = 1.E-2),
-_F(  CHAM_GD = T2, NOEUD = 'N1334', NOM_CMP = 'TEMP', VALE = 96.8,
-  PRECISION = 1.E-2),
-_F(  CHAM_GD = T3, NOEUD = 'N1334', NOM_CMP = 'TEMP', VALE = 49.9,
-  PRECISION = 1.E-2))
-           )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N1334',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T1,
+                      VALE_CALC=60.950518497,
+                      VALE_REFE=61.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N1334',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T2,
+                      VALE_CALC=96.810309799,
+                      VALE_REFE=96.799999999999997,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N1334',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T3,
+                      VALE_CALC=49.911754161,
+                      VALE_REFE=49.899999999999999,
+                      REFERENCE='NON_DEFINI',),
+                   ),
+          )
 
-TEST_RESU(CHAM_NO=(
-_F(  CHAM_GD = T1, NOEUD = 'N1498', NOM_CMP = 'TEMP', VALE = 527.0,
-  PRECISION = 1.E-2),
-_F(  CHAM_GD = T2, NOEUD = 'N1498', NOM_CMP = 'TEMP', VALE = 108.0,
-  PRECISION = 1.E-2),
-_F(  CHAM_GD = T3, NOEUD = 'N1498', NOM_CMP = 'TEMP', VALE = 49.9,
-  PRECISION = 1.E-2))
-           )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N1498',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T1,
+                      VALE_CALC=526.990310620,
+                      VALE_REFE=527.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N1498',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T2,
+                      VALE_CALC=108.007871749,
+                      VALE_REFE=108.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N1498',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T3,
+                      VALE_CALC=49.923844612,
+                      VALE_REFE=49.899999999999999,
+                      REFERENCE='NON_DEFINI',),
+                   ),
+          )
 
 FIN()
 #

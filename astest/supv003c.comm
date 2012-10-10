@@ -1,4 +1,4 @@
-# MODIF  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE GESTION DES ERREURS EN PARALLELE
 # supv003c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,9 +103,10 @@ assert test == 0, 'we should never pass here'
 # checks nothing
 tab = CREA_TABLE(LISTE=_F(PARA='NBOK', LISTE_I=1))
 
-TEST_TABLE(TABLE=tab,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
            NOM_PARA='NBOK',
-           VALE_I=1,
-           REFERENCE='ANALYTIQUE',)
+           TABLE=tab,)
 
 FIN()

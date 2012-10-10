@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURATION INTERFACE 3D (HEXA20), LOIS CZM_OUV_MIX ET CZM_TAC_MIX
 # ssnp118h.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -261,123 +261,99 @@ FETA_OUV=RECU_FONCTION( RESULTAT=U_OUV,
 TETA_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FETA_OUV))
 
 
-TEST_TABLE(TABLE=TDX_OUV,
-           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00)),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.795229356,
+           VALE_REFE=1.7952300000000001,
            NOM_PARA='DX',
-           VALE=1.79523E+00,
-           REFERENCE='ANALYTIQUE');
+           TABLE=TDX_OUV,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=4.0000600000000004,),
+           )
 
-TEST_TABLE(TABLE=TETA_OUV,
-           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00)),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.829180921,
+           VALE_REFE=0.82918099999999995,
            NOM_PARA='ETA_PILO',
-           VALE=8.29181E-01,
-           REFERENCE='ANALYTIQUE');
+           TABLE=TETA_OUV,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=4.0000600000000004,),
+           )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_OUV,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DX',
-      VALE      = 2.16506E-08,
-      GROUP_NO  = 'TOUTSEUL',
-      INST      = 0
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(GROUP_NO='TOUTSEUL',
+                  INST=0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC= 2.16506351E-08,
+                  VALE_REFE=2.1650600000000001E-08,),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_OUV,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIXX',
-      VALE      = 7.37899E-01,
-      MAILLE    = 'CUBE',
-      POINT     = 1,
-      INST      = 2.00008E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=2.0000800000000001,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.737898743,
+                  VALE_REFE=0.73789899999999997,
+                  MAILLE='CUBE',),
+          )
 
+TEST_RESU(RESU=_F(INST=9.0000099999999996,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=0.347848803,
+                  VALE_REFE=0.34784900000000002,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_OUV,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIGN',
-      VALE      = 3.47849E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 9.00001E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=9.0000099999999996,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NS19',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=0.347848803,
+                  VALE_REFE=0.34784900000000002,),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_OUV,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'SIGN',
-      VALE      = 3.47849E-01,
-      NOEUD    = 'NS19',
-      INST      = 9.00001E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=8.0000199999999992,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITX',
+                  VALE_CALC=-1.34651179E-14,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_OUV,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITX',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 8.00002E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=3.00007,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.267290438,
+                  VALE_REFE=0.26729000000000003,
+                  MAILLE='CUBEDEG',),
+          )
 
-
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_OUV,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V1',
-      VALE      = 2.67290E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 3.00007E+00,
-      ),
-    )
-  )
-
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_OUV,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V4',
-      VALE      = 7.00003E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 2,
-      INST      = 7.00003E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=7.0000299999999998,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=2,
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V4',
+                  VALE_CALC=0.700003000,
+                  VALE_REFE=0.70000300000000004,
+                  MAILLE='CUBEDEG',),
+          )
 
 #----------------------------------------------------------------------------------
 # TESTS CALCUL MODE I AVEC LOI CZM_TAC_MIX
@@ -393,123 +369,99 @@ FETA_TAC=RECU_FONCTION( RESULTAT=U_TAC,
 TETA_TAC=CREA_TABLE(FONCTION=_F(FONCTION=FETA_TAC))
 
 
-TEST_TABLE(TABLE=TDX_TAC,
-           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00)),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.795229356,
+           VALE_REFE=1.7952300000000001,
            NOM_PARA='DX',
-           VALE=1.79523E+00,
-           REFERENCE='ANALYTIQUE');
+           TABLE=TDX_TAC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=4.0000600000000004,),
+           )
 
-TEST_TABLE(TABLE=TETA_TAC,
-           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00)),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.829180921,
+           VALE_REFE=0.82918099999999995,
            NOM_PARA='ETA_PILO',
-           VALE=8.29181E-01,
-           REFERENCE='ANALYTIQUE');
+           TABLE=TETA_TAC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=4.0000600000000004,),
+           )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TAC,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DX',
-      VALE      = 2.16506E-08,
-      GROUP_NO  = 'TOUTSEUL',
-      INST      = 0
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(GROUP_NO='TOUTSEUL',
+                  INST=0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_TAC,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC= 2.16506351E-08,
+                  VALE_REFE=2.1650600000000001E-08,),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TAC,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIXX',
-      VALE      = 7.37899E-01,
-      MAILLE    = 'CUBE',
-      POINT     = 1,
-      INST      = 2.00008E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=2.0000800000000001,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TAC,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.737898743,
+                  VALE_REFE=0.73789899999999997,
+                  MAILLE='CUBE',),
+          )
 
+TEST_RESU(RESU=_F(INST=9.0000099999999996,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TAC,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=0.347848803,
+                  VALE_REFE=0.34784900000000002,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TAC,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIGN',
-      VALE      = 3.47849E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 9.00001E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=9.0000099999999996,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_TAC,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NS19',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=0.347848803,
+                  VALE_REFE=0.34784900000000002,),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TAC,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'SIGN',
-      VALE      = 3.47849E-01,
-      NOEUD    = 'NS19',
-      INST      = 9.00001E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=8.0000199999999992,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TAC,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITX',
+                  VALE_CALC= 1.42167926E-15,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TAC,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITX',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 8.00002E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=3.00007,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TAC,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.267290438,
+                  VALE_REFE=0.26729000000000003,
+                  MAILLE='CUBEDEG',),
+          )
 
-
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TAC,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V1',
-      VALE      = 2.67290E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 3.00007E+00,
-      ),
-    )
-  )
-
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TAC,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V4',
-      VALE      = 7.00003E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 2,
-      INST      = 7.00003E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=7.0000299999999998,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=2,
+                  RESULTAT=U_TAC,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V4',
+                  VALE_CALC=0.700003000,
+                  VALE_REFE=0.70000300000000004,
+                  MAILLE='CUBEDEG',),
+          )
 
 #-----------------------------------------------------------------------------------
 
@@ -526,6 +478,5 @@ IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_OUV,NOM_CHAM='DEPL',TYPE_CHAM='VECT_
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_TAC,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
 
 FIN()
-
 
 

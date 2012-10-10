@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ETUDE: DRAINED CYCLIC STRESS-CONTROLLED SHEAR TEST WITH HUJEUX MODEL (MECA PUR)
 # ssnv207a.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,99 +119,117 @@ IMPR_TABLE(TABLE=U1,);
 ################################################################
 # TEST DE DE LA COMPOSANTE XY DES DEFORMATIONS PAR RAPPORT
 # AUX REFERENCES CODE_ASTER SANS MICRO-DECHARGES
-TEST_TABLE(TABLE=U1,
-           NOM_PARA='EPXY',
-           VALE=-1.94922E-4,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=10.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
+           TOLE_MACHINE=1.E-5,
+           PRECISION=1.E-2,
+           VALE_CALC=-1.94030788E-04,
+           VALE_REFE=-1.9492199999999999E-4,
+           NOM_PARA='EPXY',
+           TABLE=U1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=10.0,),
+           )
 
-TEST_TABLE(TABLE=U1,
-           NOM_PARA='EPXY',
-           VALE=1.93789E-4,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=25.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
+           TOLE_MACHINE=1.E-5,
+           PRECISION=1.E-2,
+           VALE_CALC= 1.93974296E-04,
+           VALE_REFE=1.9378900000000001E-4,
+           NOM_PARA='EPXY',
+           TABLE=U1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=25.0,),
+           )
 
-TEST_TABLE(TABLE=U1,
-           NOM_PARA='EPXY',
-           VALE=-1.94861E-4,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=40.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
+           TOLE_MACHINE=1.E-5,
+           PRECISION=1.E-2,
+           VALE_CALC=-1.93996036E-04,
+           VALE_REFE=-1.94861E-4,
+           NOM_PARA='EPXY',
+           TABLE=U1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=40.0,),
+           )
 
 # TEST DE LA DEFORMATION VOLUMIQUE PLASTIQUE PAR RAPPORT
 # AUX REFERENCES CODE_ASTER
-TEST_TABLE(TABLE=U1,
-           NOM_PARA='V23',
-           VALE=-1.34613E-5,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=10.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
-
-TEST_TABLE(TABLE=U1,
+           VALE_CALC=-1.32942628E-05,
+           VALE_REFE=-1.3461299999999999E-05,
            NOM_PARA='V23',
-           VALE=-4.278E-5,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=25.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
+           TABLE=U1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=10.0,),
+           )
 
-TEST_TABLE(TABLE=U1,
-           NOM_PARA='V23',
-           VALE=-7.20879E-5,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=40.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
+           PRECISION=1.E-2,
+           VALE_CALC=-4.24725059E-05,
+           VALE_REFE=-4.278E-05,
+           NOM_PARA='V23',
+           TABLE=U1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=25.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=-7.16468188E-05,
+           VALE_REFE=-7.2087899999999998E-05,
+           NOM_PARA='V23',
+           TABLE=U1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=40.0,),
+           )
 
 # TEST DES RAYONS DEVIATOIRES CYCLIQUES PAR RAPPORT
 # AUX REFERENCES CODE_ASTER
 
-TEST_TABLE(TABLE=U1,
-           NOM_PARA='V7',
-           VALE=0.229613,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=25.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
-
-TEST_TABLE(TABLE=U1,
+           PRECISION=1.E-2,
+           VALE_CALC=0.229614081,
+           VALE_REFE=0.22961300000000001,
            NOM_PARA='V7',
-           VALE=0.229593,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=40.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
+           TABLE=U1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=25.0,),
+           )
 
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.229593034,
+           VALE_REFE=0.22959299999999999,
+           NOM_PARA='V7',
+           TABLE=U1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=40.0,),
+           )
 
 ################################################################
 #     ESSAI DE CISAILLEMENT CYCLIQUE SANS MICRO-DECHARGES      #
@@ -230,36 +248,44 @@ U3=TEST_INIT(TINI=0.0,
 
 IMPR_TABLE(TABLE=U3,);
 
-TEST_TABLE(TABLE=U3,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=-1.94102697E-04,
+           VALE_REFE=-1.94861E-4,
            NOM_PARA='EPXY',
-           VALE=-1.94861E-4,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=40.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
-TEST_TABLE(TABLE=U3,
-           NOM_PARA='V23',
-           VALE=-7.20879E-5,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=40.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
-TEST_TABLE(TABLE=U3,
-           NOM_PARA='V7',
-           VALE=0.229593,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=40.00,
-                     PRECISION=.00009,
-                     CRITERE='ABSOLU'));
-FIN();
+           TABLE=U3,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=40.0,),
+           )
 
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=-7.16392835E-05,
+           VALE_REFE=-7.2087899999999998E-05,
+           NOM_PARA='V23',
+           TABLE=U3,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=40.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.229593071,
+           VALE_REFE=0.22959299999999999,
+           NOM_PARA='V7',
+           TABLE=U3,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='INST',
+                     VALE=40.0,),
+           )
+
+FIN();
 

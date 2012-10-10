@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MISE EN OEUVRE DU "ZOOM STRUCTURAL" SUR UN PROBLEME 2D
 # zzzz230a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,12 +101,23 @@ RESU1=STAT_NON_LINE(MODELE=MO1, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE = CHAR1,FONC_
                     ARCHIVAGE=_F(LIST_INST=LIST1,),)
 
 
-TEST_RESU( RESU=_F(RESULTAT = RESU1,  NUME_ORDRE = 2, NOM_CHAM = 'DEPL', REFERENCE='NON_REGRESSION',
-                   GROUP_NO='HG',NOM_CMP = 'DX', VALE = 1.116E-01 ))
-TEST_RESU( RESU=_F(RESULTAT = RESU1,  NUME_ORDRE = 2, NOM_CHAM = 'DEPL', REFERENCE='NON_REGRESSION',
-                   GROUP_NO='HG',NOM_CMP = 'DY', VALE = 8.777E-02 ))
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='HG',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.1116,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='HG',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.087770000000000001,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
 # 2. : 2eme modele (zoom) et 2eme calcul :
 #---------------------------------------
@@ -126,12 +137,36 @@ RESU21=STAT_NON_LINE(MODELE=MO2, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE = CHAR21,),
                     COMP_INCR=_F(TOUT='OUI',RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LIST2,),)
 
-TEST_RESU( RESU=_F(RESULTAT = RESU21,  NUME_ORDRE = 3, NOM_CHAM = 'DEPL', REFERENCE='AUTRE_ASTER',
-                   GROUP_NO='HZ',NOM_CMP = 'DX', VALE = 1.116E-01 , PRECISION=0.03 ))
-TEST_RESU( RESU=_F(RESULTAT = RESU21,  NUME_ORDRE = 3, NOM_CHAM = 'DEPL', REFERENCE='AUTRE_ASTER',
-                   GROUP_NO='HZ',NOM_CMP = 'DY', VALE = 8.777E-02 , PRECISION=0.03 ))
-TEST_RESU( RESU=_F(RESULTAT = RESU21,  NUME_ORDRE = 3, NOM_CHAM = 'DEPL', REFERENCE='NON_REGRESSION',
-                   GROUP_NO='HZ',NOM_CMP = 'DX', VALE = 0.10925050833372 , PRECISION=1.E-8 ))
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  GROUP_NO='HZ',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU21,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.109250508,
+                  VALE_REFE=0.1116,
+                  PRECISION=0.029999999999999999,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  GROUP_NO='HZ',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU21,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.085470014,
+                  VALE_REFE=0.087770000000000001,
+                  PRECISION=0.029999999999999999,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  GROUP_NO='HZ',
+                  RESULTAT=RESU21,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.10925050833372001,
+                  ),
+          )
 
 # 2.2 : on valide EVOL_IMPO (avec le mot cle NOM_CMP) :
 #------------------------------------------------------
@@ -144,15 +179,36 @@ RESU22=STAT_NON_LINE(MODELE=MO2, CHAM_MATER=CHMAT,
                     COMP_INCR=_F(TOUT='OUI',RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LIST2,),)
 
-TEST_RESU( RESU=_F(RESULTAT = RESU22,  NUME_ORDRE = 3, NOM_CHAM = 'DEPL', REFERENCE='AUTRE_ASTER',
-                   GROUP_NO='HZ',NOM_CMP = 'DX', VALE = 1.116E-01 , PRECISION=0.03 ))
-TEST_RESU( RESU=_F(RESULTAT = RESU22,  NUME_ORDRE = 3, NOM_CHAM = 'DEPL', REFERENCE='AUTRE_ASTER',
-                   GROUP_NO='HZ',NOM_CMP = 'DY', VALE = 8.777E-02 , PRECISION=0.03 ))
-TEST_RESU( RESU=_F(RESULTAT = RESU22,  NUME_ORDRE = 3, NOM_CHAM = 'DEPL', REFERENCE='NON_REGRESSION',
-                   GROUP_NO='HZ',NOM_CMP = 'DX', VALE = 0.10925050833372 , PRECISION=1.E-8 ))
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  GROUP_NO='HZ',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU22,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.109250508,
+                  VALE_REFE=0.1116,
+                  PRECISION=0.029999999999999999,),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  GROUP_NO='HZ',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU22,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.085470014,
+                  VALE_REFE=0.087770000000000001,
+                  PRECISION=0.029999999999999999,),
+          )
 
-
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  GROUP_NO='HZ',
+                  RESULTAT=RESU22,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.10925050833372001,
+                  ),
+          )
 
 # 3. VALIDATION DE CREA_CHAMP / COMB
 #------------------------------------
@@ -162,11 +218,19 @@ X2=CREA_CHAMP(OPERATION='COMB',TYPE_CHAM='NOEU_DEPL_R',
                    COMB=(_F(CHAM_GD=X1,COEF_R=0.75),
                          _F(CHAM_GD=X1,COEF_R=0.25),),)
 
-TEST_RESU(CHAM_NO=(
-_F( CHAM_GD = X1, NOEUD = 'N61', NOM_CMP = 'DX', VALE =5.5777803490584E-02, REFERENCE = 'NON_REGRESSION'),
-# X2 = X1 :
-_F( CHAM_GD = X2, NOEUD = 'N61', NOM_CMP = 'DX', VALE =5.5777803490584E-02, REFERENCE = 'AUTRE_ASTER'),
-))
+TEST_RESU(CHAM_NO=(_F(NOEUD='N61',
+                      NOM_CMP='DX',
+                      CHAM_GD=X1,
+                      VALE_CALC=0.055777803490583998,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N61',
+                      REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='DX',
+                      CHAM_GD=X2,
+                      VALE_CALC=0.055777803,
+                      VALE_REFE=0.055777803490583998,),
+                   ),
+          )
 
 # 4. VALIDATION DE MAJ_CATA / TYPE_ELEM (fiche 16581)
 #----------------------------------------------------

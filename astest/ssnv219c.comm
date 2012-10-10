@@ -1,4 +1,4 @@
-# MODIF  DATE 17/09/2012   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219c.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -628,11 +628,13 @@ IMPR_RESU(FORMAT='MED',
 # Deplacement
 # -----------
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD= dicResu['DIFFUN'],
-                     REFERENCE= 'ANALYTIQUE', PRECISION= 1.E-7    ,
-                     TYPE_TEST= 'MAX', VALE=  4.1705290544269E-05, ),
+TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
+                     PRECISION=9.9999999999999995E-08,
+                     TYPE_TEST='MAX',
+                     CHAM_GD=DIFFUN,
+                     VALE_CALC= 4.17052891E-05,
+                     VALE_REFE=4.1705290544268997E-05,),
           )
-
 
 # Taux de convergence de l'erreur en deplacement sur la surface
 # --------------------------------------------------------------
@@ -643,13 +645,12 @@ BIDONU_S=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2U_Surf));
 
-TEST_FONCTION(VALEUR=_F(FONCTION = BIDONU_S,
-                        PRECISION = 1.E-5,
-                        VALE_PARA = 1.,
-                        REFERENCE = 'NON_REGRESSION',
-                        VALE_REFE = 3.514655,)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.5146549999999999,
+                        TOLE_MACHINE=1.0000000000000001E-05,
+                        VALE_PARA=1.0,
+                        FONCTION=BIDONU_S,
+                        ),
               )
-
 
 # Taux de convergence de l'erreur en deplacement dans le volume
 # --------------------------------------------------------------
@@ -660,16 +661,15 @@ BIDONU_V=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2U_Volu));
 
-TEST_FONCTION(VALEUR=_F(FONCTION = BIDONU_V,
-                        PRECISION = 1.E-2,
-                        VALE_PARA = 1.,
-                        REFERENCE = 'ANALYTIQUE',
-                        VALE_REFE = 3.,)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.99233184337,
+                        VALE_REFE=3.0,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        FONCTION=BIDONU_V,),
               )
 
-
 FIN();
-
 
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP THERMOMECANIQUE
 # forma02a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -134,28 +134,30 @@ IMPR_RESU(FORMAT='MED',
 
 #TEST DE NON REGRESSION
 
-TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
+TEST_RESU(RESU=(_F(GROUP_NO='AI1',
                    INST=10,
+                   RESULTAT=TEMPE,
                    NOM_CHAM='TEMP',
                    NOM_CMP='TEMP',
-                   GROUP_NO='AI1',
-                   VALE=70,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.5.5',),
-                _F(RESULTAT=RESU,
+                   VALE_CALC=70,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(GROUP_NO='N_TEST',
                    INST=0,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N_TEST',
-                   VALE=-4.51718E-04,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.5.5',),
-                _F(RESULTAT=RESU,
-                   INST=10,
+                   VALE_CALC=-4.5171799999999999E-4,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=10,
+                   TYPE_TEST='MAX',
+                   RESULTAT=RESU,
                    NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='VMIS',
-                   TYPE_TEST='MAX',
-                   VALE=1.971846E+08,
-                   REFERENCE='NON_REGRESSION',),),);
+                   VALE_CALC=1.97184600E8,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 FIN();

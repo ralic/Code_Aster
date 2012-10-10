@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #  DATE   : 06/04/12
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : REPONSE DYNAMIQUE D UNE DALLE EN BETON ARME (MODELE GLRC_DAMAGE)
@@ -180,17 +180,16 @@ IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_DEP,),),);
 # INSTANT = 0.00913
 # EUROPLEXUS (Q4GS GLRC) t=0.009125, DZ=-0.04574386
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = DYNA_AMO,
-               NUME_ORDRE=9130,
-               NOM_CHAM = 'DEPL',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.01,
-               GROUP_NO='Point_C',
-               NOM_CMP = 'DZ',
-               VALE = -0.04574386,
-               REFERENCE = 'SOURCE_EXTERNE'),
-             ),
-          );
+TEST_RESU(RESU=_F(NUME_ORDRE=9130,
+                  GROUP_NO='Point_C',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=DYNA_AMO,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.045659351,
+                  VALE_REFE=-0.045743859999999997,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 FIN();

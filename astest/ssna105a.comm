@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 # ssna105a.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test R
@@ -192,42 +192,43 @@ RESU = CALC_CHAMP ( reuse= RESU,
                   RESULTAT = RESU,
                   CONTRAINTE='SIGM_NOEU',)
 
-TEST_RESU(
-          RESU=( _F(RESULTAT = RESU,
-                   NUME_ORDRE =125,
-                   NOM_CHAM ='DEPL',
-                   GROUP_NO ='BG',
-                   NOM_CMP ='DX',
-                   VALE= 2.14E-3,
-                   REFERENCE ='ANALYTIQUE',
-                   PRECISION =1.2E-2),
-                _F(RESULTAT = RESU,
-                   NUME_ORDRE =125,
-                   NOM_CHAM ='SIGM_NOEU',
-                   GROUP_NO ='BG',
-                   NOM_CMP ='SIXX',
-                   VALE= 0.,
-                   CRITERE='ABSOLU',
-                   REFERENCE='ANALYTIQUE'),
-                 _F(RESULTAT = RESU,
-                   NUME_ORDRE =125,
-                   NOM_CHAM ='SIGM_NOEU',
-                   GROUP_NO ='BG',
-                   NOM_CMP ='SIYY',
-                   VALE= 2.7912E-4,
-                   PRECISION=3.5E-2,
-                   REFERENCE='ANALYTIQUE'),
-                 _F(RESULTAT = RESU,
-                   NUME_ORDRE =125,
-                   NOM_CHAM ='SIGM_NOEU',
-                   GROUP_NO ='BG',
-                   NOM_CMP ='SIZZ',
-                   VALE= 6.666E-4,
-                   PRECISION=2.5E-2,
-                   REFERENCE='ANALYTIQUE'))
-         )
-
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=125,
+                   GROUP_NO='BG',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.11960763E-03,
+                   VALE_REFE=2.14E-3,
+                   PRECISION=0.012,),
+                _F(NUME_ORDRE=125,
+                   GROUP_NO='BG',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-9.57114220E-06,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(NUME_ORDRE=125,
+                   GROUP_NO='BG',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   VALE_CALC= 2.69662874E-04,
+                   VALE_REFE=2.7912E-4,
+                   PRECISION=0.035000000000000003,),
+                _F(NUME_ORDRE=125,
+                   GROUP_NO='BG',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC= 6.52992162E-04,
+                   VALE_REFE=6.6660000000000005E-4,
+                   PRECISION=0.025000000000000001,),
+                ),
+          )
 
 FIN()

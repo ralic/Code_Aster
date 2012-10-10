@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DEPOUILLEMENT WEIBULL EPROUVETTE AE2 M=8 OPTION GAUSS
 # ssna108a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,14 +109,19 @@ U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTA
 
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = U,              NUME_ORDRE = 10,
-             PARA = 'INST',             VALE = 1.00000E+01),
-           _F(  RESULTAT = U,              NUME_ORDRE = 10,
-             PARA = 'ITER_GLOB',        VALE_I = 8,
-             CRITERE = 'ABSOLU',        PRECISION = 0.),
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   PARA='INST',
+                   RESULTAT=U,
+                   VALE_CALC=10.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=10,
+                   PARA='ITER_GLOB',
+                   VALE_CALC_I=8,
+                   RESULTAT=U,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
           )
-           )
 
 AE2=POST_ELEM(
                       RESULTAT=U,
@@ -141,101 +146,137 @@ RET=POST_ELEM(
 
 
 
-TEST_TABLE(      TABLE=AE2,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 2),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'M')),
-               NOM_PARA='SIGMA_WEIBULL',
-                   VALE=1.407895313E+3      )
+TEST_TABLE(VALE_CALC=1407.895313,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=AE2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=AE2,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 4),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'M')),
-               NOM_PARA='SIGMA_WEIBULL',
-                   VALE=2.497270069E+03      )
+TEST_TABLE(VALE_CALC=2497.2700690000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=AE2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=4,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=AE2,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 6),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'M')),
-               NOM_PARA='SIGMA_WEIBULL',
-                   VALE=3.333235482E+03      )
+TEST_TABLE(VALE_CALC=3333.235482,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=AE2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=6,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=AE2,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 8),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'M')),
-               NOM_PARA='SIGMA_WEIBULL',
-                   VALE=3.753693846E+03      )
+TEST_TABLE(VALE_CALC=3753.6938460000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=AE2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=8,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=AE2,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 10),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'M')),
-               NOM_PARA='SIGMA_WEIBULL',
-                   VALE=4.047655057E+03      )
+TEST_TABLE(VALE_CALC=4047.6550569999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=AE2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=10,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
 
-TEST_TABLE(     TABLE=RET,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 1),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA101')),
-               NOM_PARA='TX_CROIS_CAVITES',
-                   VALE=1.0000E+00           )
+TEST_TABLE(VALE_CALC=1.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TX_CROIS_CAVITES',
+           TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA101',),
+                   ),
+           )
 
-TEST_TABLE(     TABLE=RET,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 1),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA101')),
-               NOM_PARA='VOLUME_CONCERNE',
-                   VALE=3.7500E+00           )
+TEST_TABLE(VALE_CALC=3.75,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VOLUME_CONCERNE',
+           TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA101',),
+                   ),
+           )
 
-TEST_TABLE(     TABLE=RET,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 3),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA281')),
-               NOM_PARA='TX_CROIS_CAVITES',
-                   VALE=1.0014E+00           )
+TEST_TABLE(VALE_CALC=1.0014000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TX_CROIS_CAVITES',
+           TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=3,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA281',),
+                   ),
+           )
 
-TEST_TABLE(     TABLE=RET,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 3),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA281')),
-               NOM_PARA='VOLUME_CONCERNE',
-                   VALE=6.2372E-01           )
+TEST_TABLE(VALE_CALC=0.62372000000000005,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VOLUME_CONCERNE',
+           TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=3,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA281',),
+                   ),
+           )
 
-TEST_TABLE(     TABLE=RET,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 5),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA281')),
-               NOM_PARA='TX_CROIS_CAVITES',
-                   VALE=1.0076E+00           )
+TEST_TABLE(VALE_CALC=1.0076000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TX_CROIS_CAVITES',
+           TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=5,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA281',),
+                   ),
+           )
 
-TEST_TABLE(     TABLE=RET,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 7),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA281')),
-               NOM_PARA='TX_CROIS_CAVITES',
-                   VALE=1.0170E+00           )
+TEST_TABLE(VALE_CALC=1.0169999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TX_CROIS_CAVITES',
+           TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=7,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA281',),
+                   ),
+           )
 
-TEST_TABLE(     TABLE=RET,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 10),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA281')),
-               NOM_PARA='TX_CROIS_CAVITES',
-                   VALE=1.0315E+00           )
+TEST_TABLE(VALE_CALC=1.0315000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TX_CROIS_CAVITES',
+           TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=10,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA281',),
+                   ),
+           )
 
 #####################################################
 #Pour validation de POST_BORDET
@@ -270,37 +311,45 @@ BORDET=POST_BORDET(
 
 
 
-TEST_TABLE(      TABLE=BORDET,
-                  FILTRE=(
-                          _F(  NOM_PARA = 'INST',
-                               VALE = 2.),),
-               NOM_PARA='SIG_BORDET',
-                   VALE=0.     )
+TEST_TABLE(VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIG_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE(      TABLE=BORDET,FILTRE=(
-                 _F(  NOM_PARA = 'INST',
-                          VALE = 4.),),
-               NOM_PARA='SIG_BORDET',
-                   VALE=721.8      )
+TEST_TABLE(VALE_CALC=721.79999999999995,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIG_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=4.0,),
+           )
 
-TEST_TABLE(      TABLE=BORDET,FILTRE=(
-                 _F(  NOM_PARA = 'INST',
-                          VALE = 6.,),),
-                  NOM_PARA='SIG_BORDET',
-                   VALE=1302.4      )
+TEST_TABLE(VALE_CALC=1302.4000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIG_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=6.0,),
+           )
 
-TEST_TABLE(      TABLE=BORDET,FILTRE=(
-                 _F(  NOM_PARA = 'INST',
-                          VALE = 8.),),
-               NOM_PARA='SIG_BORDET',
-                   VALE=1730.5      )
+TEST_TABLE(VALE_CALC=1730.5,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIG_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=8.0,),
+           )
 
-TEST_TABLE(      TABLE=BORDET,FILTRE=(
-                 _F(  NOM_PARA = 'INST',
-                          VALE = 10.),),
-               NOM_PARA='SIG_BORDET',
-                   VALE=2022.5      )
-
+TEST_TABLE(VALE_CALC=2022.5,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIG_BORDET',
+           TABLE=BORDET,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=10.0,),
+           )
 
 FIN( )
 #

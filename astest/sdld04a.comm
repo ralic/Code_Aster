@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 # sdld04a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,12 +80,22 @@ MODE_MEC=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,  MATR_MASS=MASSE,
 
 
 #
-TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,
-                  PARA = 'FREQ',  NUME_ORDRE = 1,  VALE = 2.239),
-           _F(  RESULTAT = MODE_MEC,
-                  PARA = 'FREQ',  NUME_ORDRE = 2,  VALE = 6.275),
-           _F(  RESULTAT = MODE_MEC,
-                  PARA = 'FREQ',  NUME_ORDRE = 3,  VALE = 9.069))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODE_MEC,
+                   VALE_CALC=2.2389999999999999,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODE_MEC,
+                   VALE_CALC=6.2750000000000004,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MODE_MEC,
+                   VALE_CALC=9.0690000000000008,
+                   TOLE_MACHINE=1.E-3,),
+                ),
           )
 
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,  MODE=MODE_MEC,   NORME='MASS_GENE',
@@ -175,19 +185,44 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 N04_DX_1=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                            RESU_GENE=TRAN_GEN,  LIST_INST=L_RECU  )
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N04_DX_1,  PRECISION = 1.5E-02,
-                 VALE_PARA = 0.02,   VALE_REFE = -0.0027),
-               _F(  FONCTION = N04_DX_1,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.04,   VALE_REFE = -0.0426),
-               _F(  FONCTION = N04_DX_1,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.05,   VALE_REFE = -0.1041),
-               _F(  FONCTION = N04_DX_1,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.06,   VALE_REFE = -0.2158),
-               _F(  FONCTION = N04_DX_1,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.08,   VALE_REFE = -0.6813),
-               _F(  FONCTION = N04_DX_1,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.10,   VALE_REFE = -1.658))  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.00267999871748,
+                         VALE_REFE=-2.7000000000000001E-3,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.02,
+                         PRECISION=0.014999999999999999,
+                         FONCTION=N04_DX_1,),
+                      _F(VALE_CALC=-0.0427188728197,
+                         VALE_REFE=-0.042599999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.040000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_1,),
+                      _F(VALE_CALC=-0.104239985229,
+                         VALE_REFE=-0.1041,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.050000000000000003,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_1,),
+                      _F(VALE_CALC=-0.216060920736,
+                         VALE_REFE=-0.21579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.059999999999999998,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_1,),
+                      _F(VALE_CALC=-0.682019955545,
+                         VALE_REFE=-0.68130000000000002,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.080000000000000002,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_1,),
+                      _F(VALE_CALC=-1.6595390694,
+                         VALE_REFE=-1.6579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.10000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_1,),
+                      ),
+              )
 
 #
 # LA MEME REPONSE DYNAMIQUE EST TRAITEE PAR EULER ET L'EXCITATION
@@ -212,20 +247,44 @@ TRAN_NUM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 N04_DX_N=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                            RESU_GENE=TRAN_NUM,   LIST_INST=L_RECU  )
 
-TEST_FONCTION(VALEUR=(
-             _F(  FONCTION = N04_DX_N,  PRECISION = 1.5E-02,
-               VALE_PARA = 0.02,   VALE_REFE = -0.0027),
-             _F(  FONCTION = N04_DX_N,  PRECISION = 1.E-02,
-               VALE_PARA = 0.04,   VALE_REFE = -0.0426),
-             _F(  FONCTION = N04_DX_N,  PRECISION = 1.E-02,
-               VALE_PARA = 0.05,   VALE_REFE = -0.1041),
-             _F(  FONCTION = N04_DX_N,  PRECISION = 1.E-02,
-               VALE_PARA = 0.06,   VALE_REFE = -0.2158),
-             _F(  FONCTION = N04_DX_N,  PRECISION = 1.E-02,
-               VALE_PARA = 0.08,   VALE_REFE = -0.6813),
-             _F(  FONCTION = N04_DX_N,  PRECISION = 1.E-02,
-               VALE_PARA = 0.10,   VALE_REFE = -1.658))
-             )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.00265999850778,
+                         VALE_REFE=-2.7000000000000001E-3,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.02,
+                         PRECISION=0.014999999999999999,
+                         FONCTION=N04_DX_N,),
+                      _F(VALE_CALC=-0.0426389234463,
+                         VALE_REFE=-0.042599999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.040000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_N,),
+                      _F(VALE_CALC=-0.10411529206,
+                         VALE_REFE=-0.1041,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.050000000000000003,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_N,),
+                      _F(VALE_CALC=-0.21588217781,
+                         VALE_REFE=-0.21579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.059999999999999998,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_N,),
+                      _F(VALE_CALC=-0.681631733529,
+                         VALE_REFE=-0.68130000000000002,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.080000000000000002,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_N,),
+                      _F(VALE_CALC=-1.6589102649,
+                         VALE_REFE=-1.6579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.10000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_N,),
+                      ),
+              )
 
 # ON TESTE ICI LE CUMUL OBTENU PAR LES VECT_ASSE ET NUME_MODE DANS
 # DYNA_VIBRA
@@ -244,19 +303,44 @@ TRAN_NUC=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 N04_DX_C=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_NUC,  LIST_INST=L_RECU  )
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N04_DX_C,  PRECISION = 1.5E-02,
-                 VALE_PARA = 0.02,   VALE_REFE = -0.0054),
-               _F(  FONCTION = N04_DX_C,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.04,   VALE_REFE = -0.0852),
-               _F(  FONCTION = N04_DX_C,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.05,   VALE_REFE = -0.2082),
-               _F(  FONCTION = N04_DX_C,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.06,   VALE_REFE = -0.4316),
-               _F(  FONCTION = N04_DX_C,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.08,   VALE_REFE = -1.3626),
-               _F(  FONCTION = N04_DX_C,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.10,   VALE_REFE = -3.316))  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.00531999747653,
+                         VALE_REFE=-5.4000000000000003E-3,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.02,
+                         PRECISION=0.014999999999999999,
+                         FONCTION=N04_DX_C,),
+                      _F(VALE_CALC=-0.0852778546671,
+                         VALE_REFE=-0.085199999999999998,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.040000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_C,),
+                      _F(VALE_CALC=-0.208230603775,
+                         VALE_REFE=-0.2082,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.050000000000000003,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_C,),
+                      _F(VALE_CALC=-0.431764397995,
+                         VALE_REFE=-0.43159999999999998,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.059999999999999998,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_C,),
+                      _F(VALE_CALC=-1.36326361265,
+                         VALE_REFE=-1.3626,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.080000000000000002,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_C,),
+                      _F(VALE_CALC=-3.31782091529,
+                         VALE_REFE=-3.3159999999999998,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.10000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_C,),
+                      ),
+              )
 
 # -----------------------------------------
 # PRISE EN COMPTE DE LA CORRECTION STATIQUE
@@ -327,19 +411,44 @@ N04_DXC3=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                            CORR_STAT='OUI',
                            RESU_GENE=TRA_GCS,  LIST_INST=L_RECU  )
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N04_DXC3,  PRECISION = 1.5E-02,
-                 VALE_PARA = 0.02,   VALE_REFE = -0.0040),
-               _F(  FONCTION = N04_DXC3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.04,   VALE_REFE = -0.0464),
-               _F(  FONCTION = N04_DXC3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.05,   VALE_REFE = -0.1085),
-               _F(  FONCTION = N04_DXC3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.06,   VALE_REFE = -0.2203),
-               _F(  FONCTION = N04_DXC3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.08,   VALE_REFE = -0.6842),
-               _F(  FONCTION = N04_DXC3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.10,   VALE_REFE = -1.659))  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.00398508919334,
+                         VALE_REFE=-4.0000000000000001E-3,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.02,
+                         PRECISION=0.014999999999999999,
+                         FONCTION=N04_DXC3,),
+                      _F(VALE_CALC=-0.0464044082231,
+                         VALE_REFE=-0.046399999999999997,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.040000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DXC3,),
+                      _F(VALE_CALC=-0.108590696489,
+                         VALE_REFE=-0.1085,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.050000000000000003,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DXC3,),
+                      _F(VALE_CALC=-0.220385250552,
+                         VALE_REFE=-0.2203,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.059999999999999998,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DXC3,),
+                      _F(VALE_CALC=-0.684347003728,
+                         VALE_REFE=-0.68420000000000003,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.080000000000000002,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DXC3,),
+                      _F(VALE_CALC=-1.65943739538,
+                         VALE_REFE=-1.659,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.10000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DXC3,),
+                      ),
+              )
 
 #-----------------------------------------------------------------------
 # CALCULS TRANSITOIRES DIRECTS
@@ -362,71 +471,96 @@ ENERLI1=RECU_TABLE(CO=TRAN_LI1,NOM_TABLE='PARA_CALC',);
 
 IMPR_TABLE(TABLE=ENERLI1);
 
-TEST_TABLE(TABLE=ENERLI1,
+TEST_TABLE(
+           VALE_CALC=297.98917705174,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENERLI1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.06,),
-           PRECISION=1e-8,
-           VALE=297.98917705174,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.059999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENERLI1,
+TEST_TABLE(
+           VALE_CALC=18.890174787928999,
            NOM_PARA='ENER_TOT',
+           TABLE=ENERLI1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.06,),
-           PRECISION=1e-8,
-           VALE=18.890174787929,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.059999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENERLI1,
+TEST_TABLE(
+           VALE_CALC=279.09900226382001,
            NOM_PARA='ENER_CIN',
+           TABLE=ENERLI1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.06,),
-           PRECISION=1e-8,
-           VALE=279.09900226382,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.059999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENERLI1,
+TEST_TABLE(
+           VALE_CALC=1.0343480087247999E4,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENERLI1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=10343.480087248,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENERLI1,
+TEST_TABLE(
+           VALE_CALC=1718.1508336654999,
            NOM_PARA='ENER_TOT',
+           TABLE=ENERLI1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=1718.1508336655,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENERLI1,
+TEST_TABLE(
+           VALE_CALC=8625.3292535832006,
            NOM_PARA='ENER_CIN',
+           TABLE=ENERLI1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=8625.3292535832,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
 N04_DX_2=RECU_FONCTION(
                          NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=TRAN_LI1,  LIST_INST=L_RECU  )
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N04_DX_2,  PRECISION = 1.5E-02,
-                 VALE_PARA = 0.02,   VALE_REFE = -0.0027),
-               _F(  FONCTION = N04_DX_2,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.04,   VALE_REFE = -0.0426),
-               _F(  FONCTION = N04_DX_2,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.05,   VALE_REFE = -0.1041),
-               _F(  FONCTION = N04_DX_2,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.06,   VALE_REFE = -0.2158),
-               _F(  FONCTION = N04_DX_2,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.08,   VALE_REFE = -0.6813),
-               _F(  FONCTION = N04_DX_2,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.10,   VALE_REFE = -1.658))  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.00267999871748,
+                         VALE_REFE=-2.7000000000000001E-3,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.02,
+                         PRECISION=0.014999999999999999,
+                         FONCTION=N04_DX_2,),
+                      _F(VALE_CALC=-0.0427188728197,
+                         VALE_REFE=-0.042599999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.040000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_2,),
+                      _F(VALE_CALC=-0.104239985229,
+                         VALE_REFE=-0.1041,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.050000000000000003,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_2,),
+                      _F(VALE_CALC=-0.216060920736,
+                         VALE_REFE=-0.21579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.059999999999999998,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_2,),
+                      _F(VALE_CALC=-0.681941201483,
+                         VALE_REFE=-0.68130000000000002,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.080000000000000002,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_2,),
+                      _F(VALE_CALC=-1.65936107315,
+                         VALE_REFE=-1.6579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.10000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_2,),
+                      ),
+              )
 
 #-----------------------------------------------------------------------
 #
@@ -465,53 +599,53 @@ ENERLI2=RECU_TABLE(CO=TRAN_LI2,NOM_TABLE='PARA_CALC',);
 
 IMPR_TABLE(TABLE=ENERLI2);
 
-TEST_TABLE(TABLE=ENERLI2,
+TEST_TABLE(
+           VALE_CALC=297.98917705174,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENERLI2,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.06,),
-           PRECISION=1e-8,
-           VALE=297.98917705174,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.059999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENERLI2,
+TEST_TABLE(
+           VALE_CALC=18.890174787928999,
            NOM_PARA='ENER_TOT',
+           TABLE=ENERLI2,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.06,),
-           PRECISION=1e-8,
-           VALE=18.890174787929,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.059999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENERLI2,
+TEST_TABLE(
+           VALE_CALC=279.09900226382001,
            NOM_PARA='ENER_CIN',
+           TABLE=ENERLI2,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.06,),
-           PRECISION=1e-8,
-           VALE=279.09900226382,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.059999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENERLI2,
+TEST_TABLE(
+           VALE_CALC=1.0045490910196E4,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENERLI2,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=10045.490910196,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENERLI2,
+TEST_TABLE(
+           VALE_CALC=1699.2606588776,
            NOM_PARA='ENER_TOT',
+           TABLE=ENERLI2,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=1699.2606588776,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENERLI2,
+TEST_TABLE(
+           VALE_CALC=8346.2302513194008,
            NOM_PARA='ENER_CIN',
+           TABLE=ENERLI2,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=8346.2302513194,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
 DEPL_0_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI2, NOM_CHAM='DEPL', INST=0.10  )
@@ -523,19 +657,44 @@ N04_DX_3=RECU_FONCTION(
                         NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=TRAN_LI2,  LIST_INST=L_RECU  )
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N04_DX_3,  PRECISION = 1.5E-02,
-                 VALE_PARA = 0.02,   VALE_REFE = -0.0027),
-               _F(  FONCTION = N04_DX_3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.04,   VALE_REFE = -0.0426),
-               _F(  FONCTION = N04_DX_3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.05,   VALE_REFE = -0.1041),
-               _F(  FONCTION = N04_DX_3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.06,   VALE_REFE = -0.2158),
-               _F(  FONCTION = N04_DX_3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.08,   VALE_REFE = -0.6813),
-               _F(  FONCTION = F_D_0_10,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.10,   VALE_REFE = -1.658))  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.00267999871748,
+                         VALE_REFE=-2.7000000000000001E-3,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.02,
+                         PRECISION=0.014999999999999999,
+                         FONCTION=N04_DX_3,),
+                      _F(VALE_CALC=-0.0427188728197,
+                         VALE_REFE=-0.042599999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.040000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_3,),
+                      _F(VALE_CALC=-0.104239985229,
+                         VALE_REFE=-0.1041,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.050000000000000003,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_3,),
+                      _F(VALE_CALC=-0.216060920736,
+                         VALE_REFE=-0.21579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.059999999999999998,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_3,),
+                      _F(VALE_CALC=-0.681941201483,
+                         VALE_REFE=-0.68130000000000002,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.080000000000000002,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_3,),
+                      _F(VALE_CALC=-1.65936107315,
+                         VALE_REFE=-1.6579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.10000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=F_D_0_10,),
+                      ),
+              )
 
 #-----------------------------------------------------------------------
 LISTDIF=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
@@ -574,53 +733,53 @@ ENERLI4=RECU_TABLE(CO=TRAN_LI4,NOM_TABLE='PARA_CALC',);
 
 IMPR_TABLE(TABLE=ENERLI4);
 
-TEST_TABLE(TABLE=ENERLI4,
+TEST_TABLE(
+           VALE_CALC=297.83780745173999,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENERLI4,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.06,),
-           PRECISION=1e-8,
-           VALE=297.83780745174,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.059999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENERLI4,
+TEST_TABLE(
+           VALE_CALC=18.868804672244,
            NOM_PARA='ENER_TOT',
+           TABLE=ENERLI4,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.06,),
-           PRECISION=1e-8,
-           VALE=18.868804672244,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.059999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENERLI4,
+TEST_TABLE(
+           VALE_CALC=279.13238261395003,
            NOM_PARA='ENER_CIN',
+           TABLE=ENERLI4,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.06,),
-           PRECISION=1e-8,
-           VALE=279.13238261395,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.059999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENERLI4,
+TEST_TABLE(
+           VALE_CALC=9981.5172542499004,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENERLI4,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=9981.5172542499,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENERLI4,
+TEST_TABLE(
+           VALE_CALC=1677.4128729798001,
            NOM_PARA='ENER_TOT',
+           TABLE=ENERLI4,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=1677.4128729798,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENERLI4,
+TEST_TABLE(
+           VALE_CALC=8305.2841327717997,
            NOM_PARA='ENER_CIN',
+           TABLE=ENERLI4,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=8305.2841327718,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
 DEPLB0_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI4, NOM_CHAM='DEPL', INST=0.10  )
@@ -631,19 +790,44 @@ F_DB0_10=RECU_FONCTION(  CHAM_GD=DEPLB0_1,
 N04BDX_3=RECU_FONCTION( NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=TRAN_LI4,  LIST_INST=L_RECU  )
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N04BDX_3,  PRECISION = 1.5E-02,
-                 VALE_PARA = 0.02,   VALE_REFE = -0.0027),
-               _F(  FONCTION = N04BDX_3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.04,   VALE_REFE = -0.0426),
-               _F(  FONCTION = N04BDX_3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.05,   VALE_REFE = -0.1041),
-               _F(  FONCTION = N04BDX_3,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.06,   VALE_REFE = -0.2158),
-               _F(  FONCTION = N04BDX_3,  PRECISION = 1.5E-02,
-                 VALE_PARA = 0.08,   VALE_REFE = -0.6813),
-               _F(  FONCTION = F_DB0_10,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.10,   VALE_REFE = -1.658))  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.00265999896874,
+                         VALE_REFE=-2.7000000000000001E-3,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.02,
+                         PRECISION=0.014999999999999999,
+                         FONCTION=N04BDX_3,),
+                      _F(VALE_CALC=-0.0426389312208,
+                         VALE_REFE=-0.042599999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.040000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=N04BDX_3,),
+                      _F(VALE_CALC=-0.104115311715,
+                         VALE_REFE=-0.1041,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.050000000000000003,
+                         PRECISION=1.E-2,
+                         FONCTION=N04BDX_3,),
+                      _F(VALE_CALC=-0.215882220185,
+                         VALE_REFE=-0.21579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.059999999999999998,
+                         PRECISION=1.E-2,
+                         FONCTION=N04BDX_3,),
+                      _F(VALE_CALC=-0.674459451667,
+                         VALE_REFE=-0.68130000000000002,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.080000000000000002,
+                         PRECISION=0.014999999999999999,
+                         FONCTION=N04BDX_3,),
+                      _F(VALE_CALC=-1.64468650599,
+                         VALE_REFE=-1.6579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.10000000000000001,
+                         PRECISION=1.E-2,
+                         FONCTION=F_DB0_10,),
+                      ),
+              )
 
 #-----------------------------------------------------------------------
 #
@@ -669,51 +853,79 @@ ENERLI3=RECU_TABLE(CO=TRAN_LI3,NOM_TABLE='PARA_CALC',);
 
 IMPR_TABLE(TABLE=ENERLI3);
 
-TEST_TABLE(TABLE=ENERLI3,
+TEST_TABLE(
+           VALE_CALC=1.0045490910196E4,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENERLI3,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=10045.490910196,
-           REFERENCE = 'NON_REGRESSION');
-
-TEST_TABLE(TABLE=ENERLI3,
-           NOM_PARA='ENER_TOT',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=1699.2606588776,
-           REFERENCE = 'NON_REGRESSION');
-
-TEST_TABLE(TABLE=ENERLI3,
-           NOM_PARA='ENER_CIN',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.11,),
-           PRECISION=1e-8,
-           VALE=8346.2302513197,
-           REFERENCE = 'NON_REGRESSION');
-
-TEST_RESU(RESU=(
-           _F(  RESULTAT = TRAN_LI3,  NUME_ORDRE = 0,  NOM_CHAM = 'ACCE',
-             CRITERE = 'ABSOLU',
-             NOEUD = 'N01',  NOM_CMP = 'DX',  VALE = 0.00000E+00),
-           _F(  RESULTAT = TRAN_LI3,  NUME_ORDRE = 0,  NOM_CHAM = 'ACCE',
-             NOEUD = 'N02',  NOM_CMP = 'DX',  VALE = -5.48342E+02),
-           _F(  RESULTAT = TRAN_LI3,  NUME_ORDRE = 0,  NOM_CHAM = 'ACCE',
-             NOEUD = 'N03',  NOM_CMP = 'DX',  VALE = -6.99859E+02),
-           _F(  RESULTAT = TRAN_LI3,  NUME_ORDRE = 0,  NOM_CHAM = 'ACCE',
-             NOEUD = 'N04',  NOM_CMP = 'DX',  VALE = -7.18626E+02))
            )
+
+TEST_TABLE(
+           VALE_CALC=1699.2606588776,
+           NOM_PARA='ENER_TOT',
+           TABLE=ENERLI3,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=8346.2302513196992,
+           NOM_PARA='ENER_CIN',
+           TABLE=ENERLI3,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+                   RESULTAT=TRAN_LI3,
+                   NOM_CHAM='ACCE',
+                   NOEUD='N01',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='ABSOLU',),
+                _F(NUME_ORDRE=0,
+                   RESULTAT=TRAN_LI3,
+                   NOM_CHAM='ACCE',
+                   NOEUD='N02',
+                   NOM_CMP='DX',
+                   VALE_CALC=-548.34199999999998,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=0,
+                   RESULTAT=TRAN_LI3,
+                   NOM_CHAM='ACCE',
+                   NOEUD='N03',
+                   NOM_CMP='DX',
+                   VALE_CALC=-699.85900000000004,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=0,
+                   RESULTAT=TRAN_LI3,
+                   NOM_CHAM='ACCE',
+                   NOEUD='N04',
+                   NOM_CMP='DX',
+                   VALE_CALC=-718.62599999999998,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 N04_DX_4=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=TRAN_LI3   )
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N04_DX_4,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.06,   VALE_REFE = -0.2158),
-               _F(  FONCTION = N04_DX_4,  PRECISION = 1.E-02,
-                 VALE_PARA = 0.08,   VALE_REFE = -0.6813))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.216060920736,
+                         VALE_REFE=-0.21579999999999999,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.059999999999999998,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_4,),
+                      _F(VALE_CALC=-0.681941201483,
+                         VALE_REFE=-0.68130000000000002,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=0.080000000000000002,
+                         PRECISION=1.E-2,
+                         FONCTION=N04_DX_4,),
+                      ),
+              )
 
 #-----------------------------------------------------------------------
 
@@ -722,26 +934,53 @@ INST_MAX=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI3, NOM_CHAM='ACCE',
                      TYPE_RESU='INST',     TYPE_MAXI='NORM_TRAN' )
 
-TEST_RESU(CHAM_NO=(
-           _F(  CHAM_GD = INST_MAX,
-             NOEUD = 'N02',  NOM_CMP = 'DX',  VALE = 1.10000E-01),
-           _F(  CHAM_GD = INST_MAX,
-             NOEUD = 'N03',  NOM_CMP = 'DX',  VALE = 1.10000E-01),
-           _F(  CHAM_GD = INST_MAX,
-             NOEUD = 'N04',  NOM_CMP = 'DX',  VALE = 1.10000E-01),
-           _F(  CHAM_GD = INST_MAX,
-             NOEUD = 'N02',  NOM_CMP = 'DY',  VALE = 1.10000E-01),
-           _F(  CHAM_GD = INST_MAX,
-             NOEUD = 'N03',  NOM_CMP = 'DY',  VALE = 1.10000E-01),
-           _F(  CHAM_GD = INST_MAX,
-             NOEUD = 'N04',  NOM_CMP = 'DY',  VALE = 1.10000E-01),
-           _F(  CHAM_GD = INST_MAX,
-             NOEUD = 'N02',  NOM_CMP = 'DZ',  VALE = 1.10000E-01),
-           _F(  CHAM_GD = INST_MAX,
-             NOEUD = 'N03',  NOM_CMP = 'DZ',  VALE = 1.10000E-01),
-           _F(  CHAM_GD = INST_MAX,
-             NOEUD = 'N04',  NOM_CMP = 'DZ',  VALE = 1.10000E-01))
-           )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N02',
+                      NOM_CMP='DX',
+                      CHAM_GD=INST_MAX,
+                      VALE_CALC=0.11,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N03',
+                      NOM_CMP='DX',
+                      CHAM_GD=INST_MAX,
+                      VALE_CALC=0.11,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N04',
+                      NOM_CMP='DX',
+                      CHAM_GD=INST_MAX,
+                      VALE_CALC=0.11,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N02',
+                      NOM_CMP='DY',
+                      CHAM_GD=INST_MAX,
+                      VALE_CALC=0.11,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N03',
+                      NOM_CMP='DY',
+                      CHAM_GD=INST_MAX,
+                      VALE_CALC=0.11,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N04',
+                      NOM_CMP='DY',
+                      CHAM_GD=INST_MAX,
+                      VALE_CALC=0.11,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N02',
+                      NOM_CMP='DZ',
+                      CHAM_GD=INST_MAX,
+                      VALE_CALC=0.11,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N03',
+                      NOM_CMP='DZ',
+                      CHAM_GD=INST_MAX,
+                      VALE_CALC=0.11,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N04',
+                      NOM_CMP='DZ',
+                      CHAM_GD=INST_MAX,
+                      VALE_CALC=0.11,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
+          )
 
 #-----------------------------------------------------------------------
 # TEST DU MOT-CLE ACCE_MONO_APPUI : OBTENTION DES ACCELERATONS ABSOLUES
@@ -800,59 +1039,95 @@ RECU_ABS=RECU_FONCTION(   RESU_GENE=TRAN_GEN,
                           INTERPOL='LIN'
                              )
 
-TEST_FONCTION(VALEUR=(
-                  _F(  FONCTION = ACCE_R_1,
-                    VALE_PARA = 0.03,    VALE_REFE = -1.79994E+02),
-                  _F(  FONCTION = ACCE_R_1,
-                    VALE_PARA = 0.07,    VALE_REFE = -9.75620E+02),
-                  _F(  FONCTION = ACCE_R_1,
-                    VALE_PARA = 0.10,    VALE_REFE = -1.94261E+03))
-                  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-179.994,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.029999999999999999,
+                         FONCTION=ACCE_R_1,),
+                      _F(VALE_CALC=-975.62,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.070000000000000007,
+                         FONCTION=ACCE_R_1,),
+                      _F(VALE_CALC=-1942.6099999999999,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=ACCE_R_1,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(
-                  _F(  FONCTION = ACCE_A_1,
-                    VALE_PARA = 0.03,    VALE_REFE = 6.37449E-03),
-                  _F(  FONCTION = ACCE_A_1,
-                    VALE_PARA = 0.07,    VALE_REFE = 4.38046E+00),
-                  _F(  FONCTION = ACCE_A_1,
-                    VALE_PARA = 0.10,    VALE_REFE = 5.73871E+01))
-                  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=6.37449E-3,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.029999999999999999,
+                         FONCTION=ACCE_A_1,),
+                      _F(VALE_CALC=4.3804600000000002,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.070000000000000007,
+                         FONCTION=ACCE_A_1,),
+                      _F(VALE_CALC=57.387099999999997,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=ACCE_A_1,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(
-                  _F(  FONCTION = ACCE_R_2,
-                    VALE_PARA = 0.03,    VALE_REFE = -1.79994E+02),
-                  _F(  FONCTION = ACCE_R_2,
-                    VALE_PARA = 0.07,    VALE_REFE = -9.75620E+02),
-                  _F(  FONCTION = ACCE_R_2,
-                    VALE_PARA = 0.10,    VALE_REFE = -1.94261E+03))
-                  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-179.994,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.029999999999999999,
+                         FONCTION=ACCE_R_2,),
+                      _F(VALE_CALC=-975.62,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.070000000000000007,
+                         FONCTION=ACCE_R_2,),
+                      _F(VALE_CALC=-1942.6099999999999,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=ACCE_R_2,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(
-                  _F(  FONCTION = ACCE_A_2,
-                    VALE_PARA = 0.03,    VALE_REFE = 6.37449E-03),
-                  _F(  FONCTION = ACCE_A_2,
-                    VALE_PARA = 0.07,    VALE_REFE = 4.38046E+00),
-                  _F(  FONCTION = ACCE_A_2,
-                    VALE_PARA = 0.10,    VALE_REFE = 5.73871E+01))
-                  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=6.37449E-3,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.029999999999999999,
+                         FONCTION=ACCE_A_2,),
+                      _F(VALE_CALC=4.3804600000000002,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.070000000000000007,
+                         FONCTION=ACCE_A_2,),
+                      _F(VALE_CALC=57.387099999999997,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=ACCE_A_2,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(
-                  _F(  FONCTION = RECU_ABS,
-                    VALE_PARA = 0.03,    VALE_REFE = 6.37449E-03),
-                  _F(  FONCTION = RECU_ABS,
-                    VALE_PARA = 0.07,    VALE_REFE = 4.38046E+00),
-                  _F(  FONCTION = RECU_ABS,
-                    VALE_PARA = 0.10,    VALE_REFE = 5.73871E+01))
-                  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=6.37449E-3,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.029999999999999999,
+                         FONCTION=RECU_ABS,),
+                      _F(VALE_CALC=4.3804600000000002,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.070000000000000007,
+                         FONCTION=RECU_ABS,),
+                      _F(VALE_CALC=57.387099999999997,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=RECU_ABS,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(
-                  _F(  FONCTION = REST_ABS,
-                    VALE_PARA = 0.03,    VALE_REFE = 6.37449E-03),
-                  _F(  FONCTION = REST_ABS,
-                    VALE_PARA = 0.07,    VALE_REFE = 4.38046E+00),
-                  _F(  FONCTION = REST_ABS,
-                    VALE_PARA = 0.10,    VALE_REFE = 5.73871E+01))
-                  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=6.37449E-3,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.029999999999999999,
+                         FONCTION=REST_ABS,),
+                      _F(VALE_CALC=4.3804600000000002,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.070000000000000007,
+                         FONCTION=REST_ABS,),
+                      _F(VALE_CALC=57.387099999999997,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=REST_ABS,),
+                      ),
+              )
 
 FIN()
 

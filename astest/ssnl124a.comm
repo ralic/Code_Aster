@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE FLUAGE AXIAL D'UN ELEMENT HEXA8 AVEC COMPORTEMENT
 # ssnl124a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -350,30 +350,56 @@ REST=CALC_CHAMP(reuse=REST,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),R
 
 # MATERIAU LEMAITRE
 
-TEST_RESU(RESU=(
-
-    _F( RESULTAT = REST, NUME_ORDRE =31, NOM_CHAM = 'VARI_ELGA', NOM_CMP = 'V1',
-     MAILLE = 'MA1', POINT = 1, VALE = 0.164696,  PRECISION = 5.E-3,
-     REFERENCE = 'ANALYTIQUE'),
-
-    _F( RESULTAT = REST, NUME_ORDRE =31, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-     NOEUD = 'NO2', VALE = 0.166804,    PRECISION = 1.E-2,
-     REFERENCE = 'ANALYTIQUE'),
-
-    _F( RESULTAT = REST, NUME_ORDRE =41, NOM_CHAM = 'VARI_ELGA', NOM_CMP = 'V1',
-     MAILLE = 'MA1', POINT = 1, VALE = 0.19833,   PRECISION = 5.E-3,
-     REFERENCE = 'ANALYTIQUE'),
-
-    _F( RESULTAT = REST, NUME_ORDRE =41, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-     NOEUD = 'NO2', VALE = 0.20057,   PRECISION = 1.E-2,
-     REFERENCE = 'ANALYTIQUE'),
-
-    _F( RESULTAT = REST, NUME_ORDRE =41, NOM_CHAM = 'SIEF_ELGA', NOM_CMP =
-     'SIXX',MAILLE = 'MA1', POINT = 1, VALE = 100.,   PRECISION = 1.E-4,
-     REFERENCE = 'ANALYTIQUE'))
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=31,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=REST,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.164464022,
+                   VALE_REFE=0.16469600000000001,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=31,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO2',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.166571883,
+                   VALE_REFE=0.16680400000000001,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=41,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=REST,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.198115921,
+                   VALE_REFE=0.19833000000000001,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=41,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO2',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.200357415,
+                   VALE_REFE=0.20057,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=41,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=REST,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=99.999925344,
+                   VALE_REFE=100.0,
+                   PRECISION=1.E-4,
+                   MAILLE='MA1',),
+                ),
           )
-
 
 FIN()
 #

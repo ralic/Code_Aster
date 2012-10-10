@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 3D  3D_DIAG - HEXA8 PENTA6 TETRA4
 # ttnl03a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -251,82 +251,86 @@ T60D=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 NOM_CHAM='TEMP',
                 NUME_ORDRE=200,);
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=T05,
-                      GROUP_NO='A',
+TEST_RESU(CHAM_NO=(_F(REFERENCE='SOURCE_EXTERNE',
                       NOM_CMP='TEMP',
-                      VALE=22.5,
-                      PRECISION=0.01,
-                      REFERENCE='SOURCE_EXTERNE',),
-                   _F(CHAM_GD=T05D,
                       GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T05,
+                      VALE_CALC=22.456743277,
+                      VALE_REFE=22.5,),
+                   _F(REFERENCE='SOURCE_EXTERNE',
                       NOM_CMP='TEMP',
-                      VALE=22.5,
-                      PRECISION=0.01,
-                      REFERENCE='SOURCE_EXTERNE',),
-                   _F(CHAM_GD=T15,
                       GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T05D,
+                      VALE_CALC=22.456743277,
+                      VALE_REFE=22.5,),
+                   _F(REFERENCE='SOURCE_EXTERNE',
                       NOM_CMP='TEMP',
-                      VALE=57.8,
-                      PRECISION=0.01,
-                      REFERENCE='SOURCE_EXTERNE',),
-                   _F(CHAM_GD=T15D,
                       GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T15,
+                      VALE_CALC=58.347956282,
+                      VALE_REFE=57.799999999999997,),
+                   _F(REFERENCE='SOURCE_EXTERNE',
                       NOM_CMP='TEMP',
-                      VALE=57.8,
-                      PRECISION=0.01,
-                      REFERENCE='SOURCE_EXTERNE',),
-                   _F(CHAM_GD=T60,
                       GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T15D,
+                      VALE_CALC=58.347956282,
+                      VALE_REFE=57.799999999999997,),
+                   _F(REFERENCE='SOURCE_EXTERNE',
                       NOM_CMP='TEMP',
-                      VALE=79.1,
-                      PRECISION=0.01,
-                      REFERENCE='SOURCE_EXTERNE',),
-                   _F(CHAM_GD=T60D,
                       GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T60,
+                      VALE_CALC=78.842395754,
+                      VALE_REFE=79.099999999999994,),
+                   _F(REFERENCE='SOURCE_EXTERNE',
                       NOM_CMP='TEMP',
-                      VALE=79.1,
-                      PRECISION=0.01,
-                      REFERENCE='SOURCE_EXTERNE',),),);
+                      GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T60D,
+                      VALE_CALC=78.842395754,
+                      VALE_REFE=79.099999999999994,),
+                   ),
+          )
 
 # NON REGRESSION
 # VALEURS DE REFERENCE ASTER DE LA VERSION 10.01
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=T05,
-                      GROUP_NO='A',
+TEST_RESU(CHAM_NO=(_F(
                       NOM_CMP='TEMP',
-                      VALE=22.45674327733735,
-                      PRECISION=1E-9,
-                      REFERENCE='NON_REGRESSION',),
-                   _F(CHAM_GD=T05D,
                       GROUP_NO='A',
+                      CHAM_GD=T05,
+                      VALE_CALC=22.456743277337349,),
+                   _F(
                       NOM_CMP='TEMP',
-                      VALE=22.45674327733772,
-                      PRECISION=1E-9,
-                      REFERENCE='NON_REGRESSION',),
-                   _F(CHAM_GD=T15,
                       GROUP_NO='A',
+                      CHAM_GD=T05D,
+                      VALE_CALC=22.456743277337718,),
+                   _F(
                       NOM_CMP='TEMP',
-                      VALE=58.34795628170952,
-                      PRECISION=1e-9,
-                      REFERENCE='NON_REGRESSION',),
-                   _F(CHAM_GD=T15D,
                       GROUP_NO='A',
+                      CHAM_GD=T15,
+                      VALE_CALC=58.347956281709521,),
+                   _F(
                       NOM_CMP='TEMP',
-                      VALE=58.34795628170559,
-                      PRECISION=1E-9,
-                      REFERENCE='NON_REGRESSION',),
-                   _F(CHAM_GD=T60,
                       GROUP_NO='A',
+                      CHAM_GD=T15D,
+                      VALE_CALC=58.347956281705592,),
+                   _F(
                       NOM_CMP='TEMP',
-                      VALE=78.84239575351849,
-                      PRECISION=1E-9,
-                      REFERENCE='NON_REGRESSION',),
-                   _F(CHAM_GD=T60D,
                       GROUP_NO='A',
+                      CHAM_GD=T60,
+                      VALE_CALC=78.842395753518488,),
+                   _F(
                       NOM_CMP='TEMP',
-                      VALE=78.84239575351843,
-                      PRECISION=1E-9,
-                      REFERENCE='NON_REGRESSION',),),);
+                      GROUP_NO='A',
+                      CHAM_GD=T60D,
+                      VALE_CALC=78.842395753518431,),
+                   ),
+          )
 
 # TESTS DE HYDR_ELNO ET HYDR_NOEU
 
@@ -362,46 +366,55 @@ HYDRNOED=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                     NOM_CHAM='HYDR_NOEU',
                     NUME_ORDRE=120,);
 
-TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=HYDRELNO,
-                        MAILLE='M143',
+TEST_RESU(CHAM_ELEM=(_F(REFERENCE='SOURCE_EXTERNE',
                         POINT=1,
                         NOM_CMP='HYDR',
-                        VALE=0.594,
                         PRECISION=0.02,
-                        REFERENCE='SOURCE_EXTERNE',),
-                     _F(CHAM_GD=HYDELNOD,
                         MAILLE='M143',
+                        CHAM_GD=HYDRELNO,
+                        VALE_CALC=0.603026672,
+                        VALE_REFE=0.59399999999999997,),
+                     _F(REFERENCE='SOURCE_EXTERNE',
                         POINT=1,
                         NOM_CMP='HYDR',
-                        VALE=0.594,
                         PRECISION=0.02,
-                        REFERENCE='SOURCE_EXTERNE',),),);
+                        MAILLE='M143',
+                        CHAM_GD=HYDELNOD,
+                        VALE_CALC=0.603026672,
+                        VALE_REFE=0.59399999999999997,),
+                     ),
+          )
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=HYDRNOEU,
-                      GROUP_NO='A',
+TEST_RESU(CHAM_NO=(_F(REFERENCE='SOURCE_EXTERNE',
                       NOM_CMP='HYDR',
-                      VALE=0.594,
-                      PRECISION=0.02,
-                      REFERENCE='SOURCE_EXTERNE',),
-                   _F(CHAM_GD=HYDRNOED,
                       GROUP_NO='A',
-                      NOM_CMP='HYDR',
-                      VALE=0.594,
                       PRECISION=0.02,
-                      REFERENCE='SOURCE_EXTERNE',),),);
+                      CHAM_GD=HYDRNOEU,
+                      VALE_CALC=0.603026672,
+                      VALE_REFE=0.59399999999999997,),
+                   _F(REFERENCE='SOURCE_EXTERNE',
+                      NOM_CMP='HYDR',
+                      GROUP_NO='A',
+                      PRECISION=0.02,
+                      CHAM_GD=HYDRNOED,
+                      VALE_CALC=0.603026672,
+                      VALE_REFE=0.59399999999999997,),
+                   ),
+          )
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=HYDRNOEU,
-                      GROUP_NO='A',
+TEST_RESU(CHAM_NO=(_F(
                       NOM_CMP='HYDR',
-                      VALE=0.6030266723864861,
-                      PRECISION=1E-9,
-                      REFERENCE='NON_REGRESSION',),
-                   _F(CHAM_GD=HYDRNOED,
                       GROUP_NO='A',
+                      CHAM_GD=HYDRNOEU,
+                      VALE_CALC=0.60302667238648611,),
+                   _F(
                       NOM_CMP='HYDR',
-                      VALE=0.6030266723864798,
-                      PRECISION=1E-9,
-                      REFERENCE='NON_REGRESSION',),),);
+                      GROUP_NO='A',
+                      CHAM_GD=HYDRNOED,
+                      VALE_CALC=0.60302667238647978,),
+                   ),
+          )
+
 ###################
 
 
@@ -514,13 +527,14 @@ RESUMECA=STAT_NON_LINE(MODELE=MOMECA,
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=RESUMECA,
-                  NUME_ORDRE=20,
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  GROUP_NO='PSUP',
+                  RESULTAT=RESUMECA,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='PSUP',PRECISION=1E-9,
-                  VALE=-7.643783925044902E-04,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=-7.6437839250449019E-4,
+                  ),
+          )
 
 #
 
@@ -533,15 +547,15 @@ RESUSTAT=MECA_STATIQUE(MODELE=MOMECA,
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=RESUSTAT,
-                  NUME_ORDRE=21,
+TEST_RESU(RESU=_F(NUME_ORDRE=21,
+                  GROUP_NO='PSUP',
+                  RESULTAT=RESUSTAT,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='PSUP',
-                  VALE=-7.643783925044902E-04,PRECISION=1E-9,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=-7.6437839250449019E-4,
+                  ),
+          )
 
 FIN();
 
 #
-

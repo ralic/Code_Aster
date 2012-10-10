@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE AVEC MODULE D'YOUNG FONCTION DE LA TEMPERATURE
 # hplp300a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -393,115 +393,154 @@ T2=POST_RELEVE_T(    ACTION=_F(
             )
 
 #
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N1'),
-               NOM_PARA='TEMP',
-                   VALE=75.        )
+TEST_TABLE(VALE_CALC=75.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N23'),
-               NOM_PARA='TEMP',
-                   VALE=25.        )
+TEST_TABLE(VALE_CALC=25.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N16'),
-               NOM_PARA='TEMP',
-                   VALE=20.        )
+TEST_TABLE(VALE_CALC=20.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N16',),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N3'),
-               NOM_PARA='TEMP',
-                   VALE=5.         )
+TEST_TABLE(VALE_CALC=5.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N9'),
-               NOM_PARA='TEMP',
-                   VALE=55.        )
+TEST_TABLE(VALE_CALC=55.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N9',),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N30'),
-               NOM_PARA='TEMP',
-                   VALE=60.        )
+TEST_TABLE(VALE_CALC=60.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N30',),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N38'),
-               NOM_PARA='TEMP',
-                   VALE=40.        )
+TEST_TABLE(VALE_CALC=40.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N38',),
+           )
 
 #
 #
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N1'),
-               NOM_PARA='DX',
-              PRECISION=0.018,
-                   VALE=2.68975        )
+TEST_TABLE(PRECISION=0.017999999999999999,
+           VALE_CALC=2.642490571,
+           VALE_REFE=2.6897500000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='DX',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N1'),
-               NOM_PARA='DY',
-              PRECISION=0.002,
-                   VALE=2.55        )
+TEST_TABLE(PRECISION=2.E-3,
+           VALE_CALC=2.555019629,
+           VALE_REFE=2.5499999999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='DY',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N23'),
-               NOM_PARA='DX',
-                CRITERE='ABSOLU',
-                   VALE=0.          )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N23'),
-               NOM_PARA='DY',
-              PRECISION=0.014,
-                   VALE=-2.65125        )
+TEST_TABLE(PRECISION=0.014,
+           VALE_CALC=-2.686248694,
+           VALE_REFE=-2.6512500000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='DY',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N16'),
-               NOM_PARA='DX',
-                   VALE=-2.695        )
+TEST_TABLE(VALE_CALC=-2.6949999999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N16',),
+           )
 
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N3'),
-               NOM_PARA='DX',
-              PRECISION=0.018,
-                   VALE=-2.70028        )
+TEST_TABLE(PRECISION=0.017999999999999999,
+           VALE_CALC=-2.747513644,
+           VALE_REFE=-2.7002799999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='DX',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N3'),
-               NOM_PARA='DY',
-                   VALE=-2.695        )
+TEST_TABLE(VALE_CALC=-2.6949999999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N9'),
-               NOM_PARA='DX',
-                   VALE=0.0700        )
+TEST_TABLE(VALE_CALC=0.070000000000000007,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N9',),
+           )
 
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N9'),
-               NOM_PARA='DY',
-              PRECISION=0.014,
-                   VALE=2.59875        )
+TEST_TABLE(PRECISION=0.014,
+           VALE_CALC=2.633764787,
+           VALE_REFE=2.5987499999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='DY',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N9',),
+           )
 
-TEST_TABLE(      TABLE=T2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N30'),
-               NOM_PARA='DX',
-                   VALE=2.625          )
+TEST_TABLE(VALE_CALC=2.625,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N30',),
+           )
 
 FIN()
 #

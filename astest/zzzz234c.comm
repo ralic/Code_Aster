@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS CABLES
 # zzzz234c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,22 +70,22 @@ RE_CAB=STAT_NON_LINE(MODELE     = MO_CAB,
 TB_CAB = RECU_TABLE(CO=RE_CAB,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_CAB)
-TEST_TABLE(TABLE=TB_CAB, NOM_PARA='ITER_GLOB', VALE_I=3, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0.,REFERENCE='NON_REGRESSION',); 
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC_I=3,
+           NOM_PARA='ITER_GLOB',
+           TABLE=TB_CAB,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-
-TEST_RESU(RESU=(_F(RESULTAT   = RE_CAB,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'B',
-                   NOM_CMP    = 'DX',
-                   VALE       = 3.7893850685387E-06,
-                   
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.2.20',
-                   PRECISION  = 1E-8,
-                   ),),
-       )
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  RESULTAT=RE_CAB,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.7893850685387E-06,
+                  ),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
 
@@ -123,7 +123,14 @@ SELG01=CREA_CHAMP(
    MODELE=MO_CAB,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VELG01, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELG01,NOM_CMP='N',MAILLE='M1',POINT=1,VALE=-7.57874e-3,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=1,
+                       NOM_CMP='N',
+                       MAILLE='M1',
+                       CHAM_GD=SELG01,
+                       VALE_CALC=-7.57874142E-03,
+                       VALE_REFE=-7.5787399999999996E-3,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---   
 FELN01=CREA_CHAMP(
@@ -158,7 +165,14 @@ SELN01=CREA_CHAMP(
    MODELE=MO_CAB,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VELN01, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELN01,NOM_CMP='N',MAILLE='M1',NOEUD='N2',VALE=-7.5787414e-3,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='N',
+                       MAILLE='M1',
+                       CHAM_GD=SELN01,
+                       VALE_CALC=-7.57874142E-03,
+                       VALE_REFE=-7.5787414000000001E-3,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
 FNOE01=CREA_CHAMP(
@@ -193,6 +207,12 @@ SNOE01=CREA_CHAMP(
    MODELE=MO_CAB,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VNOE01, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=SNOE01,NOM_CMP='N',NOEUD='N2',VALE=-7.57874142e-3,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='N',
+                     CHAM_GD=SNOE01,
+                     VALE_CALC=-7.57874142E-03,
+                     VALE_REFE=-7.57874142E-3,),
+          )
 
 FIN()

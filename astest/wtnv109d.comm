@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST THM, 3D
 # wtnv109d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -214,45 +214,53 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
 MESTAT=CALC_CHAMP(reuse=MESTAT,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=MESTAT)
 
 
-TEST_RESU(RESU=_F(RESULTAT=MESTAT,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MESTAT,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='TEMP',
                   NOEUD='NO1',
-                  VALE=-1.2860000000000001E-08,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MESTAT,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='TEMP',
+                  VALE_CALC=-1.28598914E-08,
+                  VALE_REFE=-1.2860000000000001E-08,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MESTAT,
+                  NOM_CHAM='DEPL',
                   NOEUD='NO16',
-                  VALE=-1.2860000000000001E-08,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MESTAT,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='TEMP',
+                  VALE_CALC=-1.28598914E-08,
+                  VALE_REFE=-1.2860000000000001E-08,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MESTAT,
+                  NOM_CHAM='DEPL',
                   NOEUD='NO19',
-                  VALE=-1.2860000000000001E-08,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MESTAT,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='TEMP',
-                  NOEUD='NO7',
-                  VALE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.28598914E-08,
+                  VALE_REFE=-1.2860000000000001E-08,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MESTAT,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO7',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=-1.28598914E-08,
+                  VALE_REFE=-1.2860000000000001E-08,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
 
 FIN();
 #

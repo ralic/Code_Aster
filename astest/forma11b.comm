@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP ANALYSE MODALE TPAM2
 # forma11b.para = tps_job 480 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,23 +73,22 @@ MODE_SOB=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
                                        FREQ=(-.1,2700.0,),),
                           TITRE='1/ METHODE DE SORENSEN',);
 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODE_SOB,
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_SOB,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   VALE=0.0,
-                   PRECISION=1E-03,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='ABSOLU',
-                   VERSION='9.2.28',)))
-TEST_RESU(RESU=(_F(RESULTAT=MODE_SOB,
-                   NUME_ORDRE=7,
-                   PARA='FREQ',
-                   VALE=2.4696406072596E+03,
-                   PRECISION=1E-08,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   VERSION='9.2.28',)))
+TEST_RESU(RESU=_F(NUME_ORDRE=7,
+                  PARA='FREQ',
+                  RESULTAT=MODE_SOB,
+                  VALE_CALC=2469.6406072596001,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
                           MATR_MASS=M_ASSE,
@@ -99,23 +98,25 @@ MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
                                        FREQ=(0.0,2700.0,),),
                           TITRE='1/ METHODE QZ',);
 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=MODE_QZ,
+                  VALE_CALC=-1.9359975896016E-03,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  TOLE_MACHINE=3.E-3,
+                  PRECISION=3.E-3,
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   VALE=0.,
-                   PRECISION=3E-03,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='ABSOLU',
-                   VERSION='9.2.28',)))
-TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
-                   NUME_ORDRE=16,
-                   PARA='FREQ',
-                   VALE=2.6136412395659E+03,
-                   PRECISION=1E-08,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   VERSION='9.2.28',)))
+TEST_RESU(RESU=_F(NUME_ORDRE=16,
+                  PARA='FREQ',
+                  RESULTAT=MODE_QZ,
+                  VALE_CALC=2613.6412395658999,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 # IMPRESSIONS DES PARAMETRES EN SUS DANS .RESU
 IMPR_RESU(RESU=_F(RESULTAT=MODE_SOB,
@@ -146,7 +147,6 @@ IMPR_RESU(FORMAT='CASTEM',UNITE=55,
 #                                       FREQ=(0.0,2800.0,),),
 #                          VERI_MODE=_F(STOP_ERREUR='NON',),
 #                          TITRE='2/ METHODE DE LANCZOS AVEC OPTION MODE RIGIDE',);
-
 #IMPR_RESU(RESU=_F(RESULTAT=MODE_LAS,
 #                  TOUT_CHAM='NON',
 #                  TOUT_PARA='OUI',),);
@@ -162,13 +162,13 @@ IMPR_RESU(RESU=_F(RESULTAT=MODE_LAA,
                   TOUT_CHAM='NON',
                   TOUT_PARA='OUI',),);
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_LAA,
-                   NUME_ORDRE=11,
-                   PARA='FREQ',
-                   VALE=2470.841,
-                   PRECISION=1e-05,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='7.3.11',)))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  PARA='FREQ',
+                  RESULTAT=MODE_LAA,
+                  VALE_CALC=2470.8409999999999,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
 # FIN DE LA QUESTION 2.
 #FIN();
@@ -189,9 +189,3 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_LAA,
 #                  TOUT_PARA='OUI',),);
 
 FIN();
-
-
-
-
-
-

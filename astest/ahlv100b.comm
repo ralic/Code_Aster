@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 # ahlv100b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,38 +82,76 @@ DYNAHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                              EXCIT=_F( VECT_ASSE = VECTASS,  COEF_MULT = 1.,
                                     PUIS_PULS = 1,  PHAS_DEG = 90.))
 
-TEST_RESU(RESU=(
-            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 1,
-             NOEUD = 'NO1',    NOM_CMP = 'PRES',  VALE_C = ('RI',-6.2426,0.,)),
-            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 1,
-             NOEUD = 'NO780',  NOM_CMP = 'PRES',  VALE_C = ('MP',6.2426,180.,)),
-            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 1,
-       # VALEUR EN RADIAN DANS LE FICHIER TEST INITIAL : 0.265615
-             NOEUD = 'NO751',  NOM_CMP = 'PRES',  VALE_C = ('MP',6.2426,15.2186,)),
-            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 1,
-             NOEUD = 'NO763',  NOM_CMP = 'PRES',  VALE_C = ('MP',6.2426,15.2186,)))
-            )
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   VALE_CALC_C=('RI', -6.2426000000000004, 0.0),
+                   TOLE_MACHINE=1.E-3,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='PRES',),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=('MP', 6.2426000000000004, 180.0),
+                   TOLE_MACHINE=1.E-3,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO780',
+                   NOM_CMP='PRES',),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=('MP', 6.2426000000000004, 15.2186),
+                   TOLE_MACHINE=1.E-3,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO751',
+                   NOM_CMP='PRES',),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=('MP', 6.2426000000000004, 15.2186),
+                   TOLE_MACHINE=1.E-3,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO763',
+                   NOM_CMP='PRES',),
+                ),
+          )
 
 DYNAHARM=CALC_CHAMP(reuse=DYNAHARM,
                     TOUT_ORDRE='OUI',
                     RESULTAT=DYNAHARM,
                     ACOUSTIQUE='PRME_ELNO',);
 
-TEST_RESU(RESU=(
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRME_ELNO', NUME_ORDRE = 1,
-              MAILLE = 'MA1',
-              NOEUD = 'NO1',  NOM_CMP = 'DB',  VALE = 109.8867),
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRME_ELNO', NUME_ORDRE = 1,
-              MAILLE = 'MA1',
-              NOEUD = 'NO780', NOM_CMP = 'DB',  VALE = 109.8867),
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRME_ELNO', NUME_ORDRE = 1,
-              MAILLE = 'MA57',
-              NOEUD = 'NO751', NOM_CMP = 'DB',  VALE = 109.8867),
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRME_ELNO', NUME_ORDRE = 1,
-              MAILLE = 'MA57',
-              NOEUD = 'NO763', NOM_CMP = 'DB',  VALE = 109.8867))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='PRME_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='DB',
+                   VALE_CALC=109.8867,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='PRME_ELNO',
+                   NOEUD='NO780',
+                   NOM_CMP='DB',
+                   VALE_CALC=109.8867,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='PRME_ELNO',
+                   NOEUD='NO751',
+                   NOM_CMP='DB',
+                   VALE_CALC=109.8867,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA57',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='PRME_ELNO',
+                   NOEUD='NO763',
+                   NOM_CMP='DB',
+                   VALE_CALC=109.8867,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA57',),
+                ),
+          )
 
 FIN()
 #

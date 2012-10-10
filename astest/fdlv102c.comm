@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE MASSE AJOUTEE SUR BASE MODALE CALCULEE PAR SSD
 # fdlv102c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -319,18 +319,40 @@ MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                            TOUT_CHAM='OUI')
 
 #
-TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_MODE = 1,  VALE = 15.8782),
-          _F( RESULTAT = MODGLO, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_MODE = 2,  VALE = 16.7811),
-          _F( RESULTAT = MODGLO, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_MODE = 3,  VALE = 39.0389),
-          _F( RESULTAT = MODGLO, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_MODE = 4,  VALE = 53.0488)))
+TEST_RESU(RESU=(_F(PARA='FREQ',
+                   NUME_MODE=1,
+                   RESULTAT=MODGLO,
+                   VALE_CALC=15.878232025,
+                   VALE_REFE=15.8782,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(PARA='FREQ',
+                   NUME_MODE=2,
+                   RESULTAT=MODGLO,
+                   VALE_CALC=16.781481395,
+                   VALE_REFE=16.781099999999999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(PARA='FREQ',
+                   NUME_MODE=3,
+                   RESULTAT=MODGLO,
+                   VALE_CALC=39.030823447,
+                   VALE_REFE=39.038899999999998,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(PARA='FREQ',
+                   NUME_MODE=4,
+                   RESULTAT=MODGLO,
+                   VALE_CALC=53.058550511,
+                   VALE_REFE=53.0488,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 FIN()
 #

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astercore_module supervis  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astercore_module supervis  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -28,7 +28,7 @@
  *  - give informations about the execution.
  */
 
-#include <Python.h>
+#include "Python.h"
 #include "aster.h"
 #include "aster_core.h"
 #include "aster_module.h"

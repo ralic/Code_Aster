@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CANTILEVER EN GRANDE ROTATION SOUMISE A UN MOMENT LINEIQUE
 # ssnv138c.para = tps_job 70 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,113 +89,147 @@ NONLI=STAT_NON_LINE(CHAM_MATER=CHMAT1,
                            _F(CHARGE=CHA2,
                               FONC_MULT=D_FONC,),),);
 
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=_F(GROUP_NO='P2',
+                  INST=0.59999999999999998,
                   RESULTAT=NONLI,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DRY',
+                  VALE_CALC=-0.599356666,
+                  VALE_REFE=-0.59999999999999998,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  INST=0.6,
-                  VALE=-0.6,
-                  GROUP_NO='P2',
-                  NOM_CMP='DRY',),);
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
-                  RESULTAT=NONLI,
-                  PRECISION=1.E-2,
-                  CRITERE='RELATIF',
+TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=1.2,
-                  VALE=-1.2,
-                  GROUP_NO='P2',
-                  NOM_CMP='DRY',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLI,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DRY',
+                  VALE_CALC=-1.195069143,
+                  VALE_REFE=-1.2,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=1.8,
-                  VALE=-1.8,
-                  GROUP_NO='P2',
-                  NOM_CMP='DRY',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLI,
-                  PRECISION=2.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DRY',
+                  VALE_CALC=-1.784371832,
+                  VALE_REFE=-1.8,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  INST=2.2,
-                  VALE=-2.2,
-                  GROUP_NO='P2',
-                  NOM_CMP='DRY',),);
+                  PRECISION=1.E-2,),
+          )
 
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=_F(GROUP_NO='P2',
+                  INST=2.2000000000000002,
                   RESULTAT=NONLI,
-                  PRECISION=5.E-3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DRY',
+                  VALE_CALC=-2.172821931,
+                  VALE_REFE=-2.2000000000000002,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  INST=0.6,
-                  VALE=-0.58929211,
-                  GROUP_NO='P2',
-                  NOM_CMP='DX',),);
+                  PRECISION=0.02,),
+          )
 
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=_F(GROUP_NO='P2',
+                  INST=0.59999999999999998,
                   RESULTAT=NONLI,
-                  PRECISION=1.E-3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.588148517,
+                  VALE_REFE=-0.58929211000000004,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  INST=0.6,
-                  VALE=2.91107,
-                  GROUP_NO='P2',
-                  NOM_CMP='DZ',),);
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=_F(GROUP_NO='P2',
+                  INST=0.59999999999999998,
                   RESULTAT=NONLI,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=2.91107,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=1.2,
-                  VALE=-2.2330076,
-                  GROUP_NO='P2',
-                  NOM_CMP='DX',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLI,
-                  PRECISION=5.E-3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-2.216985985,
+                  VALE_REFE=-2.2330076000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=1.2,
-                  VALE=5.313685,
-                  GROUP_NO='P2',
-                  NOM_CMP='DZ',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLI,
-                  PRECISION=2.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=5.297857536,
+                  VALE_REFE=5.3136850000000004,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=1.8,
-                  VALE=-4.5897353,
-                  GROUP_NO='P2',
-                  NOM_CMP='DX',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLI,
-                  PRECISION=5.E-3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-4.526617947,
+                  VALE_REFE=-4.5897353000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=0.02,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=1.8,
-                  VALE=6.8177894,
-                  GROUP_NO='P2',
-                  NOM_CMP='DZ',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLI,
-                  PRECISION=2.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=6.792622968,
+                  VALE_REFE=6.8177893999999997,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  INST=2.2,
-                  VALE=-6.3250163,
-                  GROUP_NO='P2',
-                  NOM_CMP='DX',),);
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=_F(GROUP_NO='P2',
+                  INST=2.2000000000000002,
                   RESULTAT=NONLI,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-6.212783555,
+                  VALE_REFE=-6.3250162999999997,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  INST=2.2,
-                  VALE=7.2204596,
-                  GROUP_NO='P2',
-                    NOM_CMP='DZ',),);
+                  PRECISION=0.02,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='P2',
+                  INST=2.2000000000000002,
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=7.207771113,
+                  VALE_REFE=7.2204595999999999,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
 FIN();
-

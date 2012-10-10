@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:POU_D_E)
 # hsnv100f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,11 +152,14 @@ T_POT=POST_ELEM(    CHAM_MATER=CM,
                       CHARGE=CHMECA,
                     ENER_POT=_F( TOUT = 'OUI',)  )
 
-TEST_TABLE ( TABLE=T_POT,
-             FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                       VALE_I=1),
-             NOM_PARA='TOTALE',
-             REFERENCE='ANALYTIQUE',
-             VALE= 3.5556E-1    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.355548444,
+           VALE_REFE=0.35555999999999999,
+           NOM_PARA='TOTALE',
+           TABLE=T_POT,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST SOURCE THERMIQUE NON LINEAIRE
 # ttnl101b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,16 +131,14 @@ EVOL = THER_NON_LINE(
   
 # Result checking (middle of the rod)
 
-TEST_RESU(
-  RESU      = _F(
-    REFERENCE = 'ANALYTIQUE',
-    VALE      = T_max,
-    RESULTAT  = EVOL,
-    INST      = 1.0,
-    NOM_CHAM  = 'TEMP',
-    NOM_CMP   = 'TEMP',
-    GROUP_NO  = 'PROBE',
-    ),
-  )
-    
+TEST_RESU(RESU=_F(GROUP_NO='PROBE',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=EVOL,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.258826656,
+                  VALE_REFE=0.25897382948803593,),
+          )
+
 FIN()

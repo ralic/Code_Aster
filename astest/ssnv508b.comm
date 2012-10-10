@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BLOC AVEC INTERFACE EN TRACTION ET PRESSION LATERALE SANS CONTACT
 # ssnv508b.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -208,59 +208,70 @@ DXMAX=10*1.E-6
 
 
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-13,
+           VALE_CALC= 1.000000000000E-05,
+           VALE_REFE=9.9999999999999991E-06,
+           TOLE_MACHINE=9.9999999999999998E-13,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=DXMAX,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-12,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP2,)
 
-
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-13,
+           VALE_CALC=-1.000000000000E-05,
+           VALE_REFE=-9.9999999999999991E-06,
+           TOLE_MACHINE=9.9999999999999998E-13,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=DXMIN,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-12,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP2,)
+
 #DY=8.02*1.E-6 - 2.5*1.E-6*x*x*1.E-6
 DYMIN=8.02*1.E-6 - 2.5*1.E-6
 DYMAX=8.02*1.E-6
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-13,
+           VALE_CALC= 5.520000000000E-06,
+           VALE_REFE=5.5199999999999997E-06,
+           TOLE_MACHINE=9.9999999999999998E-13,
            NOM_PARA='DY',
            TYPE_TEST='MIN',
-           VALE=DYMIN,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-12,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP2,)
 
-
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-13,
+           VALE_CALC= 8.020000000000E-06,
+           VALE_REFE=8.0199999999999994E-06,
+           TOLE_MACHINE=9.9999999999999998E-13,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
-           VALE=DYMAX,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-12,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP2,)
 
-
-TEST_RESU(RESU=(_F(  RESULTAT=RES_X1,NUME_ORDRE=1,
-                     NOM_CHAM='DEPL',NOM_CMP='DX',
-                     TYPE_TEST='SOMM_ABS',
-                     CRITERE = 'RELATIF',
-                     VALE = 1.875083E-03,PRECISION=1.E-6,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.12'),
-                _F(  RESULTAT=RES_X1,NUME_ORDRE=1,
-                     NOM_CHAM='DEPL',NOM_CMP='DY',
-                     TYPE_TEST='SOMM_ABS',
-                     CRITERE = 'RELATIF',
-                     VALE = 4.2588145833333E-03,PRECISION=1.E-6,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.12'),),)
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_X1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.875083E-3,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_X1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=4.2588145833332997E-3,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 IMPR_TABLE(TABLE=DEP2,
            FORMAT='AGRAF',

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FLAMBEMENT D'UNE POUTRE VERTICALE SOUS POIDS PROPRE
 # ssll403a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,12 +141,13 @@ MD_0=MODE_ITER_SIMULT(      MATR_RIGI=MATASSR,
 
 
 #
-TEST_RESU(   RESU=_F(  RESULTAT = MD_0,
-                     NUME_MODE = 5,
-                     PARA = 'CHAR_CRIT',
-                     VALE = -170.701E0,
-                     PRECISION = 0.01E0,
-                   )
+TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
+                  NUME_MODE=5,
+                  RESULTAT=MD_0,
+                  VALE_CALC=-170.004856678,
+                  VALE_REFE=-170.70099999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=1.E-2,),
           )
 
 #

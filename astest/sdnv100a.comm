@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100a.para = tps_job 80 mem_job 512Mo liste_test R
@@ -144,45 +144,45 @@ ENER=RECU_TABLE(CO=U,NOM_TABLE='PARA_CALC',);
 
 IMPR_TABLE(TABLE=ENER);
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=-265.61970899411,
            NOM_PARA='ENER_CIN',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=14e-5,),
-           PRECISION=1e-8,
-           VALE=-265.61970899411,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.3999999999999999E-4,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=12.150682708322,
            NOM_PARA='ENER_TOT',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=14e-5,),
-           PRECISION=1e-8,
-           VALE=12.150682708322,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.3999999999999999E-4,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=0.0,
            NOM_PARA='TRAV_AMOR',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=14e-5,),
-           PRECISION=1e-8,
-           VALE=0.0,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.3999999999999999E-4,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=-0.59234613044326001,
            NOM_PARA='TRAV_LIAI',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=14e-5,),
-           PRECISION=1e-8,
-           VALE=-0.59234613044326,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.3999999999999999E-4,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=254.06137241623,
            NOM_PARA='DISS_SCH',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=14e-5,),
-           PRECISION=1e-8,
-           VALE=254.06137241623,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.3999999999999999E-4,),
+           )
 
 #############
 ############# CONTRAINTES SIEF_ELGA OBTENUES DU RESULTAT
@@ -238,197 +238,225 @@ VI5=RECU_FONCTION(RESULTAT=U,
                      NOEUD='N5',
                      TITRE='VITE',);
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 20,
-                     NOEUD = 'N5',
-                     PRECISION = 2.E-2,
-                     REFERENCE = 'ANALYTIQUE',
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DZ',
-                     VALE = -2.E-3))
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-2.02899518E-03,
+                  VALE_REFE=-2.E-3,
+                  PRECISION=0.02,),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N100',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-3.99999998E-03,
+                  VALE_REFE=-4.0000000000000001E-3,
+                  PRECISION=1.E-3,),
+          )
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 20,
-                     NOEUD = 'N100',
-                     PRECISION = 1.E-3,
-                     REFERENCE = 'ANALYTIQUE',
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DZ',
-                     VALE = -4.E-3))
+TEST_RESU(RESU=_F(NUME_ORDRE=40,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N100',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-4.07373647E-03,
+                  VALE_REFE=-4.0000000000000001E-3,
+                  PRECISION=0.02,),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-2.01353186E-03,
+                  VALE_REFE=-2.E-3,
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 40,
-                     NOEUD = 'N100',
-                     REFERENCE = 'ANALYTIQUE',
-                     PRECISION = 2.E-2,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DZ',
-                     VALE = -4.E-3))
-
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 50,
-                     NOEUD = 'N5',
-                     REFERENCE = 'ANALYTIQUE',
-                     PRECISION = 1.E-2,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DZ',
-                     VALE = -2.E-3))
-
-
-
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 60,
-                     NOEUD = 'N100',
-                     REFERENCE = 'ANALYTIQUE',
-                     PRECISION = 1.E-3,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DZ',
-                     CRITERE='ABSOLU',
-                     VALE = 0.))
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N100',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-7.98601165E-05,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-3,),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 20,
-                     REFERENCE = 'ANALYTIQUE',
-                     NOEUD = 'N5',
-                     PRECISION = 3.,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     CRITERE='ABSOLU',
-                     VALE = 0.E+0))
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='VITE',
+                  NOEUD='N5',
+                  NOM_CMP='DZ',
+                  VALE_CALC=2.198925963,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=3.0,),
+          )
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 20,
-                     REFERENCE = 'ANALYTIQUE',
-                     NOEUD = 'N100',
-                     PRECISION = 1.E-3,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     VALE = -100.E+0))
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='VITE',
+                  NOEUD='N100',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-99.999984595,
+                  VALE_REFE=-100.0,
+                  PRECISION=1.E-3,),
+          )
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 40,
-                     REFERENCE = 'ANALYTIQUE',
-                     NOEUD = 'N100',
-                     PRECISION = 5.E-2,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     VALE = 100.E+0))
+TEST_RESU(RESU=_F(NUME_ORDRE=40,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='VITE',
+                  NOEUD='N100',
+                  NOM_CMP='DZ',
+                  VALE_CALC=95.057627743,
+                  VALE_REFE=100.0,
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 50,
-                     REFERENCE = 'ANALYTIQUE',
-                     NOEUD = 'N5',
-                     PRECISION = 6.,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     CRITERE='ABSOLU',
-                     VALE = 0.E+0))
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='VITE',
+                  NOEUD='N5',
+                  NOM_CMP='DZ',
+                  VALE_CALC=5.214660160,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=6.0,),
+          )
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 60,
-                     REFERENCE = 'ANALYTIQUE',
-                     NOEUD = 'N100',
-                     PRECISION = 1.E-2,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     VALE = 100.E+0))
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='VITE',
+                  NOEUD='N100',
+                  NOM_CMP='DZ',
+                  VALE_CALC=100.330226086,
+                  VALE_REFE=100.0,
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 60,
-                     NOEUD = 'N5',
-                     REFERENCE = 'ANALYTIQUE',
-                     PRECISION = 5.E-2,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     VALE = 100.E+0))
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='VITE',
+                  NOEUD='N5',
+                  NOM_CMP='DZ',
+                  VALE_CALC=104.313139260,
+                  VALE_REFE=100.0,
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU( RESU=_F(  RESULTAT = U,
-                     NUME_ORDRE = 65,
-                     NOEUD = 'N5',
-                     REFERENCE = 'ANALYTIQUE',
-                     PRECISION = 5.E-2,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     VALE = 100.E+0))
+TEST_RESU(RESU=_F(NUME_ORDRE=65,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U,
+                  NOM_CHAM='VITE',
+                  NOEUD='N5',
+                  NOM_CMP='DZ',
+                  VALE_CALC=103.637815351,
+                  VALE_REFE=100.0,
+                  PRECISION=0.050000000000000003,),
+          )
 
-
-
-TEST_FONCTION(VALEUR=_F(FONCTION=MVC,
-                         NOM_PARA='INST',
-                         VALE_PARA=1.E-4,
-                         REFERENCE = 'ANALYTIQUE',
-                         VALE_REFE=0.,
-                         CRITERE='ABSOLU',
-                         PRECISION=2.E-1,
-                         ),),
-
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.16840244462,
+                        VALE_REFE=0.0,
+                        CRITERE='ABSOLU',
+                        VALE_PARA=1.E-4,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=0.20000000000000001,
+                        NOM_PARA='INST',
+                        FONCTION=MVC,),
+              )
 
 #Non Regression
 
-TEST_RESU( RESU=(_F(  RESULTAT = U,
-                     NUME_ORDRE = 20,
-                     NOEUD = 'N5',
-                     REFERENCE = 'NON_REGRESSION',
-                     PRECISION = 1.E-3,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DZ',
-                     VALE = -2.029E-3,),
-                _F(  RESULTAT = U,
-                     NUME_ORDRE = 40,
-                     NOEUD = 'N100',
-                     REFERENCE = 'NON_REGRESSION',
-                     PRECISION = 1.E-3,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DZ',
-                     VALE = -4.074E-3,),
-                _F(  RESULTAT = U,
-                     NUME_ORDRE = 40,
-                     NOEUD = 'N100',
-                     REFERENCE = 'NON_REGRESSION',
-                     PRECISION = 1.E-3,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     VALE = 95.06,),
-                _F(  RESULTAT = U,
-                     NUME_ORDRE = 60,
-                     NOEUD = 'N5',
-                     REFERENCE = 'NON_REGRESSION',
-                     PRECISION = 1.E-3,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     VALE = 104.31,),
-                _F(  RESULTAT = U,
-                     NUME_ORDRE = 65,
-                     NOEUD = 'N5',
-                     REFERENCE = 'NON_REGRESSION',
-                     PRECISION = 1.E-3,
-                     NOM_CHAM = 'VITE',
-                     NOM_CMP = 'DZ',
-                     VALE = 103.64,),
-                     ),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=20,
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-2.029E-3,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=40,
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N100',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-4.0740000000000004E-3,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=40,
+                   RESULTAT=U,
+                   NOM_CHAM='VITE',
+                   NOEUD='N100',
+                   NOM_CMP='DZ',
+                   VALE_CALC=95.060000000000002,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=60,
+                   RESULTAT=U,
+                   NOM_CHAM='VITE',
+                   NOEUD='N5',
+                   NOM_CMP='DZ',
+                   VALE_CALC=104.31,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=65,
+                   RESULTAT=U,
+                   NOM_CHAM='VITE',
+                   NOEUD='N5',
+                   NOM_CMP='DZ',
+                   VALE_CALC=103.64,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
+
 #
 # Test de l energie cinetique
 #
 
-TEST_TABLE(      TABLE=ECITPS,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MAILL',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA='TOTALE',
-                   VALE=3.20000E+03,
-                   PRECISION=0.0001)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC= 3.20000000E+03,
+           VALE_REFE=3200.0,
+           NOM_PARA='TOTALE',
+           TABLE=ECITPS,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MAILL',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=ECITPS,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MAILL',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 70,),),
-                   REFERENCE='NON_REGRESSION',VERSION='8.1.15',
-                   NOM_PARA='TOTALE',
-                   VALE=2.93438E+03,
-                   PRECISION=0.0001)
+TEST_TABLE(
+           VALE_CALC=2934.3800000000001,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='TOTALE',
+           TABLE=ECITPS,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MAILL',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=70,),
+                   ),
+           )
 
 FIN();
-

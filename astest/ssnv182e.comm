@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,37 +153,41 @@ LAREF=-.05*3./4.
 LA1REF=-1./(3.**.5)
 
 # TESTS
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC=-0.037500000,
+           VALE_REFE=-0.037500000000000006,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MAX',
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=1.E-4,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC=-0.037500000,
+           VALE_REFE=-0.037500000000000006,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=1.E-4,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC=-0.577350269,
+           VALE_REFE=-0.57735026918962584,
            NOM_PARA='LAGS_F1',
            TYPE_TEST='MAX',
-           VALE=LA1REF,
-           CRITERE='ABSOLU',
-           PRECISION=1.E-4,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC=-0.577350269,
+           VALE_REFE=-0.57735026918962584,
            NOM_PARA='LAGS_F1',
            TYPE_TEST='MIN',
-           VALE=LA1REF,
-           CRITERE='ABSOLU',
-           PRECISION=1.E-4,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
@@ -209,4 +213,3 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
 
 
 FIN();
-

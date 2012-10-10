@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE DYNAMIQUE D'UN PORTIQUE FORME DE 16 ELEMENTS POU_D_T_GD.
 # sdnl103a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -174,21 +174,53 @@ NOM_CHAM='DEPL', RESULTAT=RESU2, INST=0.47)
 
 #
 
-TEST_RESU(CHAM_NO=(
-_F( CHAM_GD = DEPL1, NOEUD = 'N9', NOM_CMP = 'DX', VALE = 2.9069E-02, PRECISION = 1.E-3),
-_F( CHAM_GD = DEPL2, NOEUD = 'N9', NOM_CMP = 'DX', VALE = -2.5376E-02, PRECISION = 5.E-4),
-_F( CHAM_GD = DEPL3, NOEUD = 'N9', NOM_CMP = 'DX', VALE = 2.5147E-02, PRECISION = 1.E-3),
-_F( CHAM_GD = DEPL4, NOEUD = 'N9', NOM_CMP = 'DX', VALE = -2.5390E-02, PRECISION = 8.E-4))
-           )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N9',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEPL1,
+                      VALE_CALC=0.029069000000000001,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N9',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEPL2,
+                      VALE_CALC=-0.025375999999999999,
+                      TOLE_MACHINE=5.0000000000000001E-4,),
+                   _F(NOEUD='N9',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEPL3,
+                      VALE_CALC=0.025146999999999999,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N9',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEPL4,
+                      VALE_CALC=-0.025389999999999999,
+                      TOLE_MACHINE=8.0000000000000004E-4,),
+                   ),
+          )
 
 #
 
-TEST_RESU(CHAM_NO=(
-_F( CHAM_GD = DEPL6, NOEUD = 'N9', NOM_CMP = 'DX', VALE = 2.9706E-02, PRECISION = 1.E-4),
-_F( CHAM_GD = DEPL7, NOEUD = 'N9', NOM_CMP = 'DX', VALE = -2.6290E-02, PRECISION = 1.E-4),
-_F( CHAM_GD = DEPL8, NOEUD = 'N9', NOM_CMP = 'DX', VALE = 2.5126E-02, PRECISION = 1.E-4),
-_F( CHAM_GD = DEPL9, NOEUD = 'N9', NOM_CMP = 'DX', VALE = -2.5488E-02, PRECISION = 1.E-4))
-           )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N9',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEPL6,
+                      VALE_CALC=0.029706,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N9',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEPL7,
+                      VALE_CALC=-0.026290000000000001,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N9',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEPL8,
+                      VALE_CALC=0.025125999999999999,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N9',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEPL9,
+                      VALE_CALC=-0.025488,
+                      TOLE_MACHINE=1.E-4,),
+                   ),
+          )
 
 #
 

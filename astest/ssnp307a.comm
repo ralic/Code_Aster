@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA MODELISATION GVNO + LOI ENDO_CARRE EN D_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,29 +116,34 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
 #*********************************************************************** 
 
                                          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DAMG',
                   NOEUD='N7',
-                  VALE=0.,
-                  PRECISION=1.E-6,),);                
-          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='DAMG',
-                  NOEUD='N7',
-                  VALE=0.36,
-                  PRECISION=1.E-6,),);  
-                                                                                          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DAMG',
-                  NOEUD='N7',
-                  VALE=0.75,
-                  PRECISION=1.E-6,),);         
-                                                                                       
-FIN();
+                  VALE_CALC=0.0,
+                  
+                  ),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  RESULTAT=EVOL,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N7',
+                  NOM_CMP='DAMG',
+                  VALE_CALC=0.35999999999999999,
+                  
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
+                  RESULTAT=EVOL,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N7',
+                  NOM_CMP='DAMG',
+                  VALE_CALC=0.75,
+                  
+                  ),
+          )
+
+FIN();

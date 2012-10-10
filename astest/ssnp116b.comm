@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN D_PLAN
 # ssnp116b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -254,50 +254,66 @@ RELEVE_1=POST_RELEVE_T(ACTION=(
                             OPERATION = 'EXTRACTION'),)
                        )
 
-TEST_TABLE(  TABLE=RELEVE_1,
-                NOM_PARA='SIXX',FILTRE=(
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=3.205409E+00,
-               PRECISION=1.E-4,
-              REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=3.205409,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='SIXX',
+           TABLE=RELEVE_1,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='SIEF',),
+                   _F(NOM_PARA='INST',
+                      VALE=10.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_1,
-              NOM_PARA='EPXX',FILTRE=(
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=7.357178E-07,
-               PRECISION=2.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=7.3571779999999999E-07,
+           TOLE_MACHINE=2.0000000000000001E-4,
+           NOM_PARA='EPXX',
+           TABLE=RELEVE_1,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='EPSF',),
+                   _F(NOM_PARA='INST',
+                      VALE=10.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_1,
-                NOM_PARA='SIXX',FILTRE=(
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=4.382555E+00,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=4.382555,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='SIXX',
+           TABLE=RELEVE_1,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='SIEF',),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_1,
-              NOM_PARA='EPXX',FILTRE=(
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=2.307822E-05,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=2.307822E-05,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='EPXX',
+           TABLE=RELEVE_1,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='EPSF',),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_1,
-              NOM_PARA='EPXX',FILTRE=(
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.217046E-04,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=8.2170460000000002E-4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='EPXX',
+           TABLE=RELEVE_1,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='EPSP',),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
+                   ),
            )
+
 RELEVE_2=POST_RELEVE_T(ACTION=(
                    _F(  RESULTAT = COUPLA,
                             INTITULE = 'SIEF',
@@ -324,50 +340,66 @@ RELEVE_2=POST_RELEVE_T(ACTION=(
                             GROUP_NO = 'C1',
                             OPERATION = 'EXTRACTION'),)
                        )
-TEST_TABLE(  TABLE=RELEVE_2,
-                NOM_PARA='SIXX',FILTRE=(
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=3.205409E+00,
-               PRECISION=1.E-4,
-              REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=3.205409,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='SIXX',
+           TABLE=RELEVE_2,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='SIEF',),
+                   _F(NOM_PARA='INST',
+                      VALE=10.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_2,
-              NOM_PARA='EPXX',FILTRE=(
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=7.357178E-07,
-               PRECISION=2.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=7.3571779999999999E-07,
+           TOLE_MACHINE=2.0000000000000001E-4,
+           NOM_PARA='EPXX',
+           TABLE=RELEVE_2,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='EPSF',),
+                   _F(NOM_PARA='INST',
+                      VALE=10.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_2,
-                NOM_PARA='SIXX',FILTRE=(
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=4.382555E+00,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=4.382555,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='SIXX',
+           TABLE=RELEVE_2,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='SIEF',),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_2,
-              NOM_PARA='EPXX',FILTRE=(
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=2.307822E-05,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=2.307822E-05,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='EPXX',
+           TABLE=RELEVE_2,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='EPSF',),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_2,
-              NOM_PARA='EPXX',FILTRE=(
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.217039E-04,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=8.217039E-4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='EPXX',
+           TABLE=RELEVE_2,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='EPSP',),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
+                   ),
            )
+
 ################################################
 ###    COUPLAGE GRANGER_FP  VMIS_ISOT_LINE   ###
 ################################################
@@ -425,49 +457,64 @@ RELEVE_3=POST_RELEVE_T(ACTION=(
                             OPERATION = 'EXTRACTION'),)
                        )
 
-TEST_TABLE(  TABLE=RELEVE_3,
-                NOM_PARA='SIXX',FILTRE=(
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=3.205409+00,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=3.205409,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='SIXX',
+           TABLE=RELEVE_3,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='SIEF',),
+                   _F(NOM_PARA='INST',
+                      VALE=10.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_3,
-              NOM_PARA='EPXX',FILTRE=(
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 10.)),
-                    VALE=7.357178E-07,
-               PRECISION=2.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=7.3571779999999999E-07,
+           TOLE_MACHINE=2.0000000000000001E-4,
+           NOM_PARA='EPXX',
+           TABLE=RELEVE_3,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='EPSF',),
+                   _F(NOM_PARA='INST',
+                      VALE=10.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_3,
-                NOM_PARA='SIXX',FILTRE=(
-                  _F(  NOM_PARA = 'INTITULE', VALE_K = 'SIEF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=4.614209E+00,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=4.6142089999999998,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='SIXX',
+           TABLE=RELEVE_3,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='SIEF',),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_3,
-              NOM_PARA='EPXX',FILTRE=(
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=2.195353E-05,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=2.1953530000000001E-05,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='EPXX',
+           TABLE=RELEVE_3,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='EPSF',),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
+                   ),
            )
 
-TEST_TABLE(  TABLE=RELEVE_3,
-              NOM_PARA='EPXX',FILTRE=(
-              _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
-                  _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.429335E-04,
-               PRECISION=1.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.3.10'
+TEST_TABLE(
+           VALE_CALC=8.4293349999999998E-4,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='EPXX',
+           TABLE=RELEVE_3,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='EPSP',),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
+                   ),
            )
 
 FIN()

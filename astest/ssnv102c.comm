@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 # ssnv102c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -185,14 +185,21 @@ SOLNL=CALC_CHAMP(reuse=SOLNL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO')
 
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 6,
-             PARA = 'INST',             VALE = 1.00000E+00),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 6,
-             PARA = 'ITER_GLOB',        VALE_I = 4,
-             CRITERE = 'ABSOLU',         PRECISION = 1.),
-           )
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=6,
+                   PARA='INST',
+                   RESULTAT=SOLNL,
+                   VALE_CALC=1.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=6,
+                   PARA='ITER_GLOB',
+                   VALE_CALC_I=4,
+                   VALE_REFE_I=4,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=SOLNL,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.0,),
+                ),
+          )
 
 SOLNL=CALC_CHAMP(reuse=SOLNL,DEFORMATION=('EPSI_ELNO'),RESULTAT=SOLNL)
 
@@ -203,32 +210,72 @@ SOLNL=CALC_CHAMP(reuse=SOLNL,DEFORMATION=('EPSP_ELGA'),RESULTAT=SOLNL)
 SOLNL=CALC_CHAMP(reuse=SOLNL,DEFORMATION=('EPSP_ELNO'),RESULTAT=SOLNL)
 
 
-TEST_RESU(RESU=(
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 6,
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 1.721E-2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 6,
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 2.573E-2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSP_ELGA',       NUME_ORDRE = 6,
-                 MAILLE = 'MA1',  POINT = 1,    NOM_CMP = 'EPXX',  VALE = 1.678E-2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSP_ELGA',       NUME_ORDRE = 6,
-                 MAILLE = 'MA1',  POINT = 1,    NOM_CMP = 'EPXY',  VALE = 2.515E-2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSP_ELNO',       NUME_ORDRE = 6,
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 1.678E-2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSP_ELNO',       NUME_ORDRE = 6,
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 2.515E-2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 6,
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1', VALE = 3.356E-2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 6,
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V2', VALE = 1.760E+2))
-         )
+TEST_RESU(RESU=(_F(NUME_ORDRE=6,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.01721,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=6,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.025729999999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=6,
+                   POINT=1,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.01678,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=6,
+                   POINT=1,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.025149999999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=6,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.01678,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=6,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.025149999999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=6,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.03356,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=6,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V2',
+                   VALE_CALC=176.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                ),
+          )
 
 #
 FIN()

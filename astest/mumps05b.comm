@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05b.para = tps_job 8660 mem_job 22714Mo mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 1 liste_test MI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,23 +107,27 @@ MECAC=MECA_STATIQUE(INFO=niv_info,
                      SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, PCENT_PIVOT=mem_pivot,
                      GESTION_MEMOIRE='IN_CORE'));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAC,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAC,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.100000000,
+                  VALE_REFE=0.10000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAC,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAC,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=-1.18363658E-12,
+                  VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 # 2.1 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
 #       EQUILIBRAGE DE CHARGE AUTOMATIQUE

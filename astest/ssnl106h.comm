@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106h.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -116,38 +116,46 @@ REST=CALC_CHAMP( reuse=REST,     RESULTAT=REST,
                     FORCE='REAC_NODA' )
 
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'SIEF_ELGA',REFERENCE='ANALYTIQUE',
-                 MAILLE = 'M2',
-                 POINT = 1,
-                 SOUS_POINT = 1,
-                 NOM_CMP = 'SIXX',
-                 VALE = 1.5E+08,
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'EFGE_ELNO',REFERENCE='ANALYTIQUE',
-                 MAILLE = 'M2',
-                 GROUP_NO = 'B',
-                 NOM_CMP = 'N',
-                 VALE = 9.37713E+04,
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 11,
-                 NOM_CHAM = 'REAC_NODA',REFERENCE='ANALYTIQUE',
-                 GROUP_NO = 'B',
-                 NOM_CMP = 'DX',
-                 VALE = 9.47152E+04,
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 21,
-                 NOM_CHAM = 'REAC_NODA',REFERENCE='ANALYTIQUE',
-                 GROUP_NO = 'B',
-                 NOM_CMP = 'DX',
-                 VALE = 9.56530E+04,
-                 PRECISION = 1.E-3))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=REST,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.50000000E+08,
+                   VALE_REFE=1.50000000E8,
+                   PRECISION=1.E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='N',
+                   VALE_CALC= 9.37717798E+04,
+                   VALE_REFE=9.3771300000000003E4,
+                   PRECISION=1.E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=11,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   VALE_CALC= 9.47094976E+04,
+                   VALE_REFE=9.4715199999999997E4,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=21,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   VALE_CALC= 9.56472154E+04,
+                   VALE_REFE=9.5653E4,
+                   PRECISION=1.E-3,),
+                ),
           )
 
 MATC1=DEFI_MATERIAU(   ELAS=_F( E = 2.E11, NU = 0.3),
@@ -196,17 +204,25 @@ RESM=CALC_CHAMP( reuse=RESM,
 RESM=CALC_CHAMP( reuse=RESM,     RESULTAT=RESM,
                     FORCE='REAC_NODA' )
 
-TEST_RESU(RESU=(
-# MOMENT DE PREMIERE PLASTIFICATION TUYAU EN HYPOTHESE DE POUTRE
-           _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',REFERENCE='ANALYTIQUE',
-                 GROUP_NO = 'B', NOM_CMP = 'DRZ',
-                 NUME_ORDRE = 1, VALE = 4.64217E+03),
-# CHARGE LIMITE TUYAU EN HYPOTHESE DE POUTRE
-           _F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA',REFERENCE='ANALYTIQUE',
-                 GROUP_NO = 'B', NOM_CMP = 'DRZ', PRECISION = 0.005,
-                 NUME_ORDRE = 21, VALE = 5.9106E+03))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESM,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DRZ',
+                   VALE_CALC= 4.64146683E+03,
+                   VALE_REFE=4642.1700000000001,),
+                _F(NUME_ORDRE=21,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESM,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DRZ',
+                   VALE_CALC= 5.89944570E+03,
+                   VALE_REFE=5910.6000000000004,
+                   PRECISION=5.0000000000000001E-3,),
+                ),
           )
-
 
 DRZB=RECU_FONCTION(RESULTAT=RESM,
                    NOM_CHAM='DEPL',
@@ -250,4 +266,3 @@ IMPR_FONCTION(UNITE=25, UNITE_DIGR=26,
                        MARQUEUR=2,),),);
 
 FIN( )
-

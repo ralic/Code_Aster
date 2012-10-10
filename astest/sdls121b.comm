@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # 3 calculs esclaves distribues : ncpus = 3 + 1 (maitre)
 # sdls121b.para = tps_job 600 mem_job 512Mo ncpus 4 liste_test S
@@ -90,22 +90,19 @@ OPTIM=DEFI_FONCTION(NOM_PARA='INST',
                     VALE_PARA=BIDON,
                     VALE_FONC=RESU);
 
-TEST_FONCTION ( VALEUR =(_F( FONCTION = OPTIM,
-                           PRECISION = 0.5E-1,
-                           VALE_PARA = 1.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = 0.5,
-                         ),
-                       _F( FONCTION = OPTIM,
-                           PRECISION = 0.5E-1,
-                           VALE_PARA = 2.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = 5.0E4,
-                         ),
-
-                         ),
-
-              ) ;
-
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.502953351952,
+                         VALE_REFE=0.5,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.050000000000000003,
+                         FONCTION=OPTIM,),
+                      _F(VALE_CALC=48195.7346824,
+                         VALE_REFE=5.E4,
+                         VALE_PARA=2.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.050000000000000003,
+                         FONCTION=OPTIM,),
+                      ),
+              )
 
 FIN()

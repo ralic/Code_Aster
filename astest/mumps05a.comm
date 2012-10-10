@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05a.para = tps_job 3000 mem_job 15521Mo mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test MI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -115,23 +115,27 @@ MECAC=MECA_STATIQUE(INFO=1,
                                 NPREC=-1,
                                 ));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAC,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAC,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.1,
+                  VALE_REFE=0.1,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAC,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAC,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=0.0,
+                  VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 # 1.2 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE + SCOTCH
 #--------------------------------------------------------
@@ -150,23 +154,27 @@ MECAC2=MECA_STATIQUE(INFO=niv_info,
                                 NPREC=-1,
                                 ));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAC2,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAC2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.1,
+                  VALE_REFE=0.1,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAC2,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAC2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=0.,
+                  VALE_REFE=0.,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 # 2.1 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
 #       EQUILIBRAGE DE CHARGE AUTOMATIQUE
@@ -187,23 +195,27 @@ MECAD1=MECA_STATIQUE(INFO=niv_info,
                                 NPREC=-1,                       
                                 ));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD1,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.1,
+                  VALE_REFE=0.1,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD1,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=0.,
+                  VALE_REFE=0.,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 # 2.2 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
 #       EQUILIBRAGE DE CHARGE FORCE POUR SOULAGER LE PROC 0
@@ -224,23 +236,27 @@ MECAD2=MECA_STATIQUE(INFO=niv_info,
                                 NPREC=-1,
                                 ));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD2,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.1,
+                  VALE_REFE=0.1,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD2,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=0.,
+                  VALE_REFE=0.,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 # 3.1 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR SOUS-DOMAINES
 #       EQUILIBRAGE DE CHARGE AUTOMATIQUE
@@ -268,23 +284,27 @@ MECAD3=MECA_STATIQUE(INFO=niv_info,
                                 NPREC=-1,
                                 ));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD3,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.1,
+                  VALE_REFE=0.1,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD3,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=0.,
+                  VALE_REFE=0.,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 # 3.2 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR SOUS-DOMAINES
 #       EQUILIBRAGE DE CHARGE FORCE POUR SOULAGER LE PROC 0
@@ -305,23 +325,27 @@ MECAD4=MECA_STATIQUE(INFO=niv_info,
                                 NPREC=-1,
                                 ));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD4,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD4,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.1,
+                  VALE_REFE=0.1,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD4,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD4,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=0.,
+                  VALE_REFE=0.,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 # 3.3 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR SOUS-DOMAINES
 #       AVEC MATRICE_DISTRIBUEE
@@ -341,23 +365,27 @@ MECAD5=MECA_STATIQUE(INFO=niv_info,
                                 NPREC=-1,
                                 ));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD5,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD5,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.1,
+                  VALE_REFE=0.1,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAD5,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAD5,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=0.,
+                  VALE_REFE=0.,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 # 4.1 : FETI SUR LA PARTITION EN SD UTILISEE POUR MUMPS
 #       DISTRIBUE PAR SOUS-DOMAINES
@@ -377,23 +405,27 @@ MECAF1=MECA_STATIQUE(INFO=niv_info,
                                 RESI_RELA=1.E-8,
                                 ));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAF1,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAF1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.1,
+                  VALE_REFE=0.1,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAF1,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAF1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=0.,
+                  VALE_REFE=0.,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 # 4.2 : IDEM 4.1 MAIS SUR UNE PARTITION EN SD MOINS FINE
 #----------------------------------------------------------
@@ -419,22 +451,26 @@ MECAF2=MECA_STATIQUE(INFO=niv_info,
                                 RESI_RELA=1.E-8,
                                 ));
 
-TEST_RESU(RESU=_F(RESULTAT=MECAF2,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAF2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='D',
-                  VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  VALE_CALC=0.1,
+                  VALE_REFE=0.1,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MECAF2,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MECAF2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='D',
-                  VALE=0.0,
+                  VALE_CALC=0.,
+                  VALE_REFE=0.,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE'));
+                  PRECISION=1.E-08,),
+          )
 
 FIN();

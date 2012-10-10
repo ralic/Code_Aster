@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 # zzzz161a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
@@ -226,52 +226,45 @@ DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
 
 
 TEST_FICHIER(FICHIER='./fort.82',
-             REFERENCE='NON_REGRESSION',
              NB_VALE=1145,
-             VALE=4.4221124e+03,
-             VERSION='9.1.21')
+             VALE_CALC=4.4221124e+03,)
 
 #
 # 7. Test de non-regression
 #
-TEST_RESU(CHAM_NO=(
-                 _F( CHAM_GD=DEPLRELU,
-                     CRITERE = 'RELATIF',
-                     PRECISION = 1.E-6,
-                     GROUP_NO='OPPOSE',
-                     NOM_CMP = 'DX',
-                     VALE =  4.183044E-01,
-                     REFERENCE = 'NON_REGRESSION' ),
-                 _F( CHAM_GD=DEPLRELU,
-                     CRITERE = 'RELATIF',
-                     PRECISION = 1.E-6,
-                     GROUP_NO='OPPOSE',
-                     NOM_CMP = 'DY',
-                     VALE = -1.639849E+00,
-                     REFERENCE = 'NON_REGRESSION' ),
+TEST_RESU(CHAM_NO=(_F(CRITERE='RELATIF',
+                      NOM_CMP='DX',
+                      GROUP_NO='OPPOSE',
+                      CHAM_GD=DEPLRELU,
+                      VALE_CALC=0.41830440000000002,
+                      ),
+                   _F(CRITERE='RELATIF',
+                      NOM_CMP='DY',
+                      GROUP_NO='OPPOSE',
+                      CHAM_GD=DEPLRELU,
+                      VALE_CALC=-1.6398489999999999,
+                      ),
                    ),
           )
 
 #
-TEST_RESU(CHAM_ELEM=(
-                 _F( CHAM_GD=SIGMRELU,
-                     CRITERE = 'RELATIF',
-                     PRECISION = 1.E-4,
-                     MAILLE='M43',
-                     GROUP_NO='OPPOSE',
-                     NOM_CMP = 'SIYY',
-                     VALE =  -3.25565E+02,
-                     REFERENCE = 'NON_REGRESSION' ),
-                 _F( CHAM_GD=SIGMRELU,
-                     CRITERE = 'RELATIF',
-                     PRECISION = 1.E-4,
-                     MAILLE='M43',
-                     GROUP_NO='OPPOSE',
-                     NOM_CMP = 'SIXY',
-                     VALE = -1.20895E+02,
-                     REFERENCE = 'NON_REGRESSION' ),
-                   ),
+TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
+                        NOM_CMP='SIYY',
+                        GROUP_NO='OPPOSE',
+                        MAILLE='M43',
+                        CHAM_GD=SIGMRELU,
+                        VALE_CALC=-325.565,
+                        TOLE_MACHINE=1.E-4,),
+                     _F(CRITERE='RELATIF',
+                        NOM_CMP='SIXY',
+                        GROUP_NO='OPPOSE',
+                        MAILLE='M43',
+                        CHAM_GD=SIGMRELU,
+                        VALE_CALC=-120.895,
+                        TOLE_MACHINE=1.E-4,),
+                     ),
           )
 
 #
 FIN( )
+

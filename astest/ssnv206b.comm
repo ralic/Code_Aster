@@ -1,4 +1,4 @@
-# MODIF  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE FOUCAULT A.FOUCAULT
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE LETK
@@ -292,49 +292,42 @@ TFIN1 = 7000.
 TFIN2 = 13000.
 
 
-TEST_RESU(RESU=(
+TEST_RESU(RESU=(_F(INST=7000.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N4',
+                   NOM_CMP='DX',
+                   VALE_CALC=-7.6000000000000004E-4,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=1.3000E4,
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N4',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.030259999999999999,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
 
-# DX
-                 _F(  RESULTAT   = U1,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '9.1.15',
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DX',
-                      INST       = TFIN1,
-                      PRECISION  = 1.E-3,
-                      VALE       = -7.6E-4),
-                 _F(  RESULTAT   = U2,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '9.1.15',
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DX',
-                      INST       = TFIN2,
-                      PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 3.026E-2),),)
-
-TEST_RESU(RESU=(
-
-# CONTRAINTE SIYY
-                 _F(  RESULTAT   = U1,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '9.1.15',
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIGM_NOEU',
-                      NOM_CMP    = 'SIYY',
-                      INST       = TFIN1,
-                      PRECISION  = 1.E-3,
-                      VALE       = -5.),
-                 _F(  RESULTAT   = U2,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '9.1.15',
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIGM_NOEU',
-                      NOM_CMP    = 'SIYY',
-                      INST       = TFIN2,
-                      PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -11.945),),)
-
+TEST_RESU(RESU=(_F(INST=7000.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N4',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-5.0,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=1.3000E4,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N4',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-11.945,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
 
 FIN()

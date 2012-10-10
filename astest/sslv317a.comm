@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -400,23 +400,27 @@ for i_propa in xrange(pas_debut,nb_pas) :
    # test des valeurs de K au dernier pas de propagation
    if i_propa == nb_pas-1 :
 
-      TEST_TABLE(TABLE=TAB_KG,
+      TEST_TABLE(CRITERE='RELATIF',
+                 PRECISION=0.02,
+                 TOLE_MACHINE=2.e-2,
+                 VALE_CALC= 8.03470557E+04,
+                 REFERENCE='NON_DEFINI',
+                 VALE_REFE=8.0513970000000001E4,
                  NOM_PARA='K1',
                  TYPE_TEST='MAX',
-                 VALE=80513.97,
-                 CRITERE='RELATIF',
-                 PRECISION=0.02,
-                 VERSION='11.1.13',
-                 REFERENCE='NON_REGRESSION')
+                 TABLE=TAB_KG,
+                 )
 
-      TEST_TABLE(TABLE=TAB_KG,
+      TEST_TABLE(CRITERE='RELATIF',
+                 PRECISION=0.02,
+                 TOLE_MACHINE=2.e-2,
+                 VALE_CALC= 3.72492541E+04,
+                 REFERENCE='NON_DEFINI',
+                 VALE_REFE=3.6617610000000001E4,
                  NOM_PARA='K1',
                  TYPE_TEST='MIN',
-                 VALE=36617.61,
-                 CRITERE='RELATIF',
-                 PRECISION=0.02,
-                 VERSION='11.1.13',
-                 REFERENCE='NON_REGRESSION')
+                 TABLE=TAB_KG,
+                 )
 
 #-----------------------------------------------------------------------------------------
 #                PROPAGATION

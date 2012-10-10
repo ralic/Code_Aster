@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PORTIQUE A LIAISON LATERALE  (EULER) FORCE PONCTUELLE + REPARTIE
 # ssll10a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,31 +86,109 @@ MEST12=MECA_STATIQUE(        MODELE=MO2,     CHAM_MATER=CHMAT,
 MEST12=CALC_CHAMP(reuse=MEST12,CONTRAINTE=('EFGE_ELNO'),RESULTAT=MEST12)
 
 
-TEST_RESU(RESU=(
-   _F( RESULTAT = MEST11, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-              NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,      PRECISION = 2.E-3),
-   _F( RESULTAT = MEST11, NOM_CHAM = 'EFGE_ELNO', NUME_ORDRE = 1,
-    MAILLE = 'AB', NOEUD = 'A',  NOM_CMP = 'MFZ', VALE = -11023.72,    PRECISION = 2.E-3),
-   _F( RESULTAT = MEST11, NOM_CHAM = 'EFGE_ELNO', NUME_ORDRE = 1,
-    MAILLE = 'AC', NOEUD = 'A',  NOM_CMP = 'MFZ', VALE = -113.559,     PRECISION = 2.E-3),
-   _F( RESULTAT = MEST11, NOM_CHAM = 'EFGE_ELNO', NUME_ORDRE = 1,
-    MAILLE = 'AG', NOEUD = 'A',  NOM_CMP = 'MFZ', VALE = 12348.588,    PRECISION = 2.E-3),
-   _F( RESULTAT = MEST11, NOM_CHAM = 'EFGE_ELNO', NUME_ORDRE = 1,
-    MAILLE = 'AE', NOEUD = 'A',  NOM_CMP = 'MFZ', VALE = -1211.2994,   PRECISION = 2.E-3))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=MEST11,
+                   NOM_CHAM='DEPL',
+                   NOEUD='A',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=0.227441498,
+                   VALE_REFE=0.22711799999999999,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=MEST11,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='A',
+                   NOM_CMP='MFZ',
+                   VALE_CALC=-1.10209874E+04,
+                   VALE_REFE=-1.1023719999999999E4,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,
+                   MAILLE='AB',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=MEST11,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='A',
+                   NOM_CMP='MFZ',
+                   VALE_CALC=-113.717904875,
+                   VALE_REFE=-113.559,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,
+                   MAILLE='AC',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=MEST11,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='A',
+                   NOM_CMP='MFZ',
+                   VALE_CALC= 1.23474765E+04,
+                   VALE_REFE=1.2348588E4,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,
+                   MAILLE='AG',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=MEST11,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='A',
+                   NOM_CMP='MFZ',
+                   VALE_CALC=-1.21277121E+03,
+                   VALE_REFE=-1211.2994000000001,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,
+                   MAILLE='AE',),
+                ),
+          )
 
-TEST_RESU(RESU=(
-   _F( RESULTAT = MEST12, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-              NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,      PRECISION = 2.E-3),
-   _F( RESULTAT = MEST12, NOM_CHAM = 'EFGE_ELNO', NUME_ORDRE = 1,
-    MAILLE = 'AB', NOEUD = 'A',  NOM_CMP = 'MFZ', VALE = -11023.72,    PRECISION = 2.E-3),
-   _F( RESULTAT = MEST12, NOM_CHAM = 'EFGE_ELNO', NUME_ORDRE = 1,
-    MAILLE = 'AC', NOEUD = 'A',  NOM_CMP = 'MFZ', VALE = -113.559,     PRECISION = 2.E-3),
-   _F( RESULTAT = MEST12, NOM_CHAM = 'EFGE_ELNO', NUME_ORDRE = 1,
-    MAILLE = 'AG', NOEUD = 'A',  NOM_CMP = 'MFZ', VALE = 12348.588,    PRECISION = 2.E-3),
-   _F( RESULTAT = MEST12, NOM_CHAM = 'EFGE_ELNO', NUME_ORDRE = 1,
-    MAILLE = 'AE', NOEUD = 'A',  NOM_CMP = 'MFZ', VALE = -1211.2994,   PRECISION = 2.E-3))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=MEST12,
+                   NOM_CHAM='DEPL',
+                   NOEUD='A',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=0.227441498,
+                   VALE_REFE=0.22711799999999999,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=MEST12,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='A',
+                   NOM_CMP='MFZ',
+                   VALE_CALC=-1.10209874E+04,
+                   VALE_REFE=-1.1023719999999999E4,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,
+                   MAILLE='AB',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=MEST12,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='A',
+                   NOM_CMP='MFZ',
+                   VALE_CALC=-113.717904875,
+                   VALE_REFE=-113.559,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,
+                   MAILLE='AC',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=MEST12,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='A',
+                   NOM_CMP='MFZ',
+                   VALE_CALC= 1.23474765E+04,
+                   VALE_REFE=1.2348588E4,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,
+                   MAILLE='AG',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=MEST12,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='A',
+                   NOM_CMP='MFZ',
+                   VALE_CALC=-1.21277121E+03,
+                   VALE_REFE=-1211.2994000000001,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,
+                   MAILLE='AE',),
+                ),
+          )
 
 #======================================================================
 
@@ -133,9 +211,16 @@ CH221=AFFE_CHAR_MECA_F(   MODELE=MO1,
 MEST21=MECA_STATIQUE(        MODELE=MO1,     CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL1,EXCIT=( _F( CHARGE = CH111),_F( CHARGE = CH221)) )
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST21, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST21,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 CH222=AFFE_CHAR_MECA_F(   MODELE=MO2,
           FORCE_NODALE=_F( NOEUD = 'G',    FY = C15),
@@ -144,9 +229,16 @@ CH222=AFFE_CHAR_MECA_F(   MODELE=MO2,
 MEST22=MECA_STATIQUE(        MODELE=MO2,     CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL2,EXCIT=( _F( CHARGE = CH112),_F( CHARGE = CH222)) )
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST22, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST22,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 #
 # -- AFFE_CHAR_MECA       FORCE_POUTRE VY        :
@@ -159,9 +251,16 @@ CH321=AFFE_CHAR_MECA(   MODELE=MO1,
 MEST31=MECA_STATIQUE(        MODELE=MO1,     CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL1,EXCIT=( _F( CHARGE = CH111),_F( CHARGE = CH321)))
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST31, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST31,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 CH322=AFFE_CHAR_MECA(   MODELE=MO2,
           FORCE_NODALE=_F( NOEUD = 'G',    FY = -1.E5),
@@ -170,9 +269,16 @@ CH322=AFFE_CHAR_MECA(   MODELE=MO2,
 MEST32=MECA_STATIQUE(        MODELE=MO2,     CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL2,EXCIT=( _F( CHARGE = CH112),_F( CHARGE = CH322)))
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST32, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST32,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 #
 # -- AFFE_CHAR_MECA_F FORCE_POUTRE GROUP_MA VY :
@@ -185,9 +291,16 @@ CH421=AFFE_CHAR_MECA_F(   MODELE=MO1,
 MEST41=MECA_STATIQUE(        MODELE=MO1,     CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL1,EXCIT=( _F( CHARGE = CH111),_F( CHARGE = CH421)) )
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST41, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST41,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 CH422=AFFE_CHAR_MECA_F(   MODELE=MO2,
           FORCE_NODALE=_F( NOEUD = 'G',      FY = C15),
@@ -196,9 +309,16 @@ CH422=AFFE_CHAR_MECA_F(   MODELE=MO2,
 MEST42=MECA_STATIQUE(        MODELE=MO2,     CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL2,EXCIT=( _F( CHARGE = CH112),_F( CHARGE = CH422)) )
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST42, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST42,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 #
 # -- AFFE_CHAR_MECA_F FORCE_POUTRE GROUP_MA VZ :
@@ -220,9 +340,16 @@ CH521=AFFE_CHAR_MECA_F(   MODELE=MO1,
 MEST51=MECA_STATIQUE(        MODELE=MO1,     CHAM_MATER=CHMAT,
             CARA_ELEM=CARE21,EXCIT=( _F( CHARGE = CH111),_F( CHARGE = CH521)) )
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST51, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST51,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 CARE22=AFFE_CARA_ELEM( MODELE=MO2,
                     ORIENTATION=_F(  MAILLE = 'AB', CARA = 'ANGL_VRIL', VALE = -90.),
@@ -240,9 +367,16 @@ CH522=AFFE_CHAR_MECA_F(   MODELE=MO2,
 MEST52=MECA_STATIQUE(        MODELE=MO2,     CHAM_MATER=CHMAT,
             CARA_ELEM=CARE22,EXCIT=( _F( CHARGE = CH112),_F( CHARGE = CH522)) )
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST52, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST52,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 #
 # -- AFFE_CHAR_MECA   FORCE_POUTRE GROUP_MA VZ :
@@ -255,9 +389,16 @@ CH621=AFFE_CHAR_MECA(     MODELE=MO1,
 MEST61=MECA_STATIQUE(        MODELE=MO1,     CHAM_MATER=CHMAT,
             CARA_ELEM=CARE21,EXCIT=( _F( CHARGE = CH111),_F( CHARGE = CH621)) )
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST61, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST61,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 CH622=AFFE_CHAR_MECA(     MODELE=MO2,
           FORCE_NODALE=_F( NOEUD = 'G',      FY = -1.E5),
@@ -266,9 +407,16 @@ CH622=AFFE_CHAR_MECA(     MODELE=MO2,
 MEST62=MECA_STATIQUE(        MODELE=MO2,     CHAM_MATER=CHMAT,
             CARA_ELEM=CARE22,EXCIT=( _F( CHARGE = CH112),_F( CHARGE = CH622)) )
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MEST62, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-   NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,       PRECISION = 2.E-3) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST62,
+                  NOM_CHAM='DEPL',
+                  NOEUD='A',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=0.227441498,
+                  VALE_REFE=0.22711799999999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 #
 FIN()

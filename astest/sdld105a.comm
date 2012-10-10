@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE REPONSE TRANSITOIRE D UN SYSTEME MASSES-RESSORTS A UN SEISME AVEC CORRECTION STATIQUE
 # sdld105a.para = tps_job 180 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,10 +84,22 @@ MODE_MEC=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                                        NMAX_FREQ=5,),);
 
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = MODE_MEC, PARA = 'FREQ',  NUME_ORDRE = 1,  VALE = 0.948538, REFERENCE='NON_REGRESSION'),
-           _F(  RESULTAT = MODE_MEC, PARA = 'FREQ',  NUME_ORDRE = 2,  VALE = 2.53344, REFERENCE='NON_REGRESSION'),
-           _F(  RESULTAT = MODE_MEC, PARA = 'FREQ',  NUME_ORDRE = 3,  VALE = 5.30513, REFERENCE='NON_REGRESSION'))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODE_MEC,
+                   VALE_CALC=0.94853799999999999,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODE_MEC,
+                   VALE_CALC=2.5334400000000001,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MODE_MEC,
+                   VALE_CALC=5.3051300000000001,
+                   TOLE_MACHINE=1.E-3,),
+                ),
           )
 
 MODE_MEC=NORM_MODE(reuse =MODE_MEC,
@@ -257,33 +269,42 @@ MOD2C=RECU_FONCTION(RESU_GENE=TRA_GCS,NOM_CHAM='DEPL',NUME_CMP_GENE=2);
 #MOD3C=RECU_FONCTION(RESU_GENE=TRA_GCS,NOM_CHAM='DEPL',NUME_CMP_GENE=3);
 
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N04_DX_1,  PRECISION = .2E-02,
-                 REFERENCE='AUTRE_ASTER',
-                 VALE_PARA = 19.4,   VALE_REFE = -0.011301357),
-               _F(  FONCTION = N04_DX_2, PRECISION = 1.E-08,
-                 REFERENCE='NON_REGRESSION',
-                 VALE_PARA = 19.4,   VALE_REFE = -0.011301357),
-               _F(  FONCTION = N04_DXC3,  PRECISION = .1E-02,
-                 REFERENCE='AUTRE_ASTER',
-                 VALE_PARA = 19.4,   VALE_REFE = -0.011301357),
-               ))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.0113112110732,
+                         VALE_REFE=-0.011301357,
+                         VALE_PARA=19.399999999999999,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=2.E-3,
+                         FONCTION=N04_DX_1,),
+                      _F(VALE_CALC=-0.011301357,
+                         VALE_PARA=19.399999999999999,
+                         FONCTION=N04_DX_2,
+                         ),
+                      _F(VALE_CALC=-0.0113028604273,
+                         VALE_REFE=-0.011301357,
+                         VALE_PARA=19.399999999999999,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.E-3,
+                         FONCTION=N04_DXC3,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N02_DX_1,  PRECISION = 1.5,
-                 REFERENCE='AUTRE_ASTER',
-                 VALE_PARA = 19.4,   VALE_REFE = 0.00073316249),
-               _F(  FONCTION = N02_DX_2, PRECISION = 1.E-08,
-                 REFERENCE='NON_REGRESSION',
-                 VALE_PARA = 19.4,   VALE_REFE = 0.00073316249),
-               _F(  FONCTION = N02_DXC3,  PRECISION = .2,
-                 REFERENCE='AUTRE_ASTER',
-                 VALE_PARA = 19.4,   VALE_REFE = 0.00073316249),
-               ))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.000164749085744,
+                         VALE_REFE=7.3316248999999998E-4,
+                         VALE_PARA=19.399999999999999,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.5,
+                         FONCTION=N02_DX_1,),
+                      _F(VALE_CALC=7.3316248999999998E-4,
+                         VALE_PARA=19.399999999999999,
+                         FONCTION=N02_DX_2,
+                         ),
+                      _F(VALE_CALC=0.000596166768965,
+                         VALE_REFE=7.3316248999999998E-4,
+                         VALE_PARA=19.399999999999999,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.20000000000000001,
+                         FONCTION=N02_DXC3,),
+                      ),
+              )
+
 FIN();
-
-
-
-
-
-

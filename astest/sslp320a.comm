@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION D UNE FISSURE X-FEM DEBOUCHANTE SOLLICITEE EN MODE I
 # sslp320a.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,8 +175,10 @@ for i in range(NPAS+1) :
     TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K1',
                TYPE_TEST='MAX',
-               VALE=K1REF[i],
+               VALE_CALC=K1REF[i],
+               VALE_REFE=K1REF[i],
                CRITERE='RELATIF',
+               TOLE_MACHINE=0.02,   # TODO: vale_calc
                PRECISION=0.02,
                REFERENCE='ANALYTIQUE',);               
 
@@ -184,9 +186,11 @@ for i in range(NPAS+1) :
     TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K2',
                TYPE_TEST='MAX',
-               VALE=0,
+               VALE_CALC=0,
+               VALE_REFE=0,
                CRITERE='ABSOLU',
                PRECISION=(10**(-4))*K1REF[i],
+               TOLE_MACHINE=(10**(-4))*K1REF[i],   # TODO: vale_calc
                REFERENCE='AUTRE_ASTER',); 
 
 #Propagation de la fissure avec la methode maillage
@@ -236,8 +240,10 @@ for i in range(NPAS+1) :
         TEST_TABLE(TABLE=TAB[i+1],
                    REFERENCE='ANALYTIQUE',
                    NOM_PARA='Y',
+                   TOLE_MACHINE=1.E-4,
                    PRECISION=1.E-4,
-                   VALE= yinit)
+                   VALE_CALC= yinit,
+                   VALE_REFE= yinit)
                 
 
 FIN();

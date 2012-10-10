@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE : Cylindre mince sous pression hydrostatique
 # demo005a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -146,32 +146,25 @@ IMPR_RESU(FORMAT='MED',
 #
 # Verification du deplacement suivant x au point A
 
-TEST_RESU(RESU=(
-                _F( RESULTAT = res1,
-                    NOM_CHAM = 'DEPL',
-                    GROUP_NO = 'NOEUDA',
-                    NOM_CMP  = 'DX',
-                    VALE     = 9.956E-06,
-                    NUME_ORDRE = 1,
-                    REFERENCE='NON_REGRESSION',
-                  ),
-                )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='NOEUDA',
+                  RESULTAT=res1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=9.9559999999999992E-06,
+                  TOLE_MACHINE=1.E-3,),
           )
 
 # Verification du deplacement suivant y au point C
 
-TEST_RESU(RESU=(
-                _F( RESULTAT = res1,
-                    NOM_CHAM = 'DEPL',
-                    GROUP_NO = 'NOEUDC',
-                    NOM_CMP  = 'DY',
-                    VALE     = -5.318E-06,
-                    NUME_ORDRE = 1,
-                    REFERENCE='NON_REGRESSION',
-                  ),
-                )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='NOEUDC',
+                  RESULTAT=res1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.3179999999999997E-06,
+                  TOLE_MACHINE=1.E-3,),
           )
-
 
 # Commande obligatoire pour clore une execution
 # ---------------------------------------------

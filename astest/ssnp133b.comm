@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES ELEMENTS A DISCONTINUITE SUR UNE PLAQUE TROUEE
 # ssnp133b.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -239,51 +239,77 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 # TESTS SUR LA REPONSE GLOBALE
 #--------------------------------------------------------------
 
-TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
-              NOM_PARA='DY',
-              VALE=3.60651E-03,
-              REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
-              NOM_PARA='DY',
-              VALE=5.78832E+07,
-              REFERENCE='NON_REGRESSION')
+TEST_TABLE(
+           VALE_CALC=3.6065099999999998E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50,),
+           )
 
-TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=75)),
-              NOM_PARA='DY',
-              VALE=3.54604E-03,
-              REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=75)),
-              NOM_PARA='DY',
-              VALE=5.11117E+07,
-              REFERENCE='NON_REGRESSION')
+TEST_TABLE(
+           VALE_CALC=5.7883200E7,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50,),
+           )
 
-TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
-              NOM_PARA='DY',
-              VALE=3.39435E-03,
-              REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
-              NOM_PARA='DY',
-              VALE=4.43684E+07,
-              REFERENCE='NON_REGRESSION')
+TEST_TABLE(
+           VALE_CALC=3.5460399999999999E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=75,),
+           )
 
-TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=159)),
-              NOM_PARA='DY',
-              VALE=4.32977E-03,
-              REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=159)),
-              NOM_PARA='DY',
-              VALE=1.01265E+07,
-              REFERENCE='NON_REGRESSION')
+TEST_TABLE(
+           VALE_CALC=5.1111700E7,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=75,),
+           )
 
+TEST_TABLE(
+           VALE_CALC=3.39435E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=100,),
+           )
 
+TEST_TABLE(
+           VALE_CALC=4.4368400E7,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=100,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=4.3297700000000001E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=159,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.0126500E7,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=159,),
+           )
 
 #--------------------------------------------------------------
 IMPR_FONCTION(

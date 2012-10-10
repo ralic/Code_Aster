@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE MINCE VRILLEE OU FLECHIE
 # ssls27a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,21 +147,57 @@ VECASS2=RESOUDRE(reuse=VECASS2, MATR=MATASS,     CHAM_NO=VECASS2  )
 # ---------------------------------------------------------------------
 
 
-TEST_RESU(CHAM_NO=(
-            _F(  CHAM_GD = VECASS1,  CRITERE = 'RELATIF',   PRECISION = 5.E-3,
-              NOEUD = 'N13', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = -3.537E-6),
-            _F(  CHAM_GD = VECASS1,  CRITERE = 'ABSOLU',   PRECISION = 1.E-12,
-              NOEUD = 'N39', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 0.0),
-            _F(  CHAM_GD = VECASS1,  CRITERE = 'RELATIF',   PRECISION = 5.E-3,
-              NOEUD = 'N65', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 3.537E-6),
-#
-            _F(  CHAM_GD = VECASS2,  CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-              NOEUD = 'N13', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 1.1059E-3),
-            _F(  CHAM_GD = VECASS2,  CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-              NOEUD = 'N39', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 1.1059E-3),
-            _F(  CHAM_GD = VECASS2,  CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-             NOEUD = 'N65', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 1.1059E-3))
-             )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N13',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=5.0000000000000001E-3,
+                      CHAM_GD=VECASS1,
+                      VALE_CALC=-3.52430938E-06,
+                      VALE_REFE=-3.5370000000000002E-06,),
+                   _F(NOEUD='N39',
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999998E-13,
+                      CHAM_GD=VECASS1,
+                      VALE_CALC=-1.264604316032E-15,
+                      VALE_REFE=0.0,
+                      TOLE_MACHINE=9.9999999999999998E-13,),
+                   _F(NOEUD='N65',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=5.0000000000000001E-3,
+                      CHAM_GD=VECASS1,
+                      VALE_CALC= 3.52430938E-06,
+                      VALE_REFE=3.5370000000000002E-06,),
+                   _F(NOEUD='N13',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=1.E-2,
+                      CHAM_GD=VECASS2,
+                      VALE_CALC= 1.09495946E-03,
+                      VALE_REFE=1.1058999999999999E-3,),
+                   _F(NOEUD='N39',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=1.E-2,
+                      CHAM_GD=VECASS2,
+                      VALE_CALC= 1.09497593E-03,
+                      VALE_REFE=1.1058999999999999E-3,),
+                   _F(NOEUD='N65',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=1.E-2,
+                      CHAM_GD=VECASS2,
+                      VALE_CALC= 1.09495946E-03,
+                      VALE_REFE=1.1058999999999999E-3,),
+                   ),
+          )
 
 FIN()
 #

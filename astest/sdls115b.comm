@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 # sdls115b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -275,26 +275,26 @@ RESU3 = DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 # --------------------- TESTS -------------------------
 # ANALYTIQUES
 UXRES = Q0*sin(K*LONG)*sin(FREQ*TMAX)
-TEST_RESU(RESU=(
-                _F(RESULTAT=RESU1,
-                  NOEUD='N2',
-                  INST=1.2E-3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE = UXRES,
-                  PRECISION = 5.E-4,
-                  REFERENCE='ANALYTIQUE',
-                  ),
-                _F(RESULTAT=RESU2,
-                  NOEUD='N2',
-                  INST=1.2E-3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE = UXRES,
-                  PRECISION = 5.E-3,
-                  REFERENCE='ANALYTIQUE',
-                  ),
-                  ),);
+TEST_RESU(RESU=(_F(INST=1.1999999999999999E-3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 3.51995724E-05,
+                   VALE_REFE=3.5195652396428836E-05,
+                   PRECISION=5.0000000000000001E-4,),
+                _F(INST=1.1999999999999999E-3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 3.52808306E-05,
+                   VALE_REFE=3.5195652396428836E-05,
+                   PRECISION=5.0000000000000001E-3,),
+                ),
+          )
 
 # NON-REGRESSION
 # VERIFICATION DE LA BONNE CONSTRUCTION DE LA TABLE D'OBSERVATION
@@ -305,49 +305,44 @@ TAB_OBS = RECU_TABLE (CO = RESU1,
 IMPR_TABLE(TABLE=TAB_OBS);
 
 
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(_F(NOM_PARA='INST',
-                     CRIT_COMP='EQ',
-                     VALE=3.0E-4,),
-                   _F(NOM_PARA='NOM_OBSERVATION',
-                     VALE_K='OBSERVATION_1',),
-
-                     ),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=2.4686700000000001E-20,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='VALE',
-           VALE=2.46867E-20,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.21',);
-
-
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(_F(NOM_PARA='INST',
-                     CRIT_COMP='EQ',
-                     VALE=9.0E-4,),
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='INST',
+                      VALE=2.9999999999999997E-4,),
                    _F(NOM_PARA='NOM_OBSERVATION',
-                     VALE_K='OBSERVATION_1',),
+                      VALE_K='OBSERVATION_1',),
+                   ),
+           )
 
-                     ),
-
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=5.6180499999999998E-20,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='VALE',
-           VALE=5.61805E-20,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.21',);
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='INST',
+                      VALE=8.9999999999999998E-4,),
+                   _F(NOM_PARA='NOM_OBSERVATION',
+                      VALE_K='OBSERVATION_1',),
+                   ),
+           )
 
 RESU4=CALC_CHAMP(RESULTAT=RESU3,CARA_ELEM=CELE1,ENERGIE=('ECIN_ELEM'))
 
 
-TEST_RESU(RESU=_F( RESULTAT = RESU4,
-                   NOM_CHAM = 'ECIN_ELEM',
-                   NOM_CMP='TOTALE',
-                   MAILLE = 'M21',
-                   POINT = 1,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.0001,
-                   NUME_ORDRE = 1,
-                   REFERENCE='NON_REGRESSION',
-                   VALE = 9.10387E-02),
-                 );
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  POINT=1,
+                  RESULTAT=RESU4,
+                  NOM_CHAM='ECIN_ELEM',
+                  NOM_CMP='TOTALE',
+                  VALE_CALC=0.0910387,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  MAILLE='M21',),
+          )
 
 FIN();

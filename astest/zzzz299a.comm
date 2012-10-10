@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA VERIFICATION DES REPERES POUR LES POUTRES ET LES COQUES
 # zzzz299a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -69,21 +69,23 @@ MESTA=CALC_CHAMP(reuse=MESTA,
                  RESULTAT=MESTA,
                  CONTRAINTE=('EFGE_NOEU',),);
 
-TEST_RESU(RESU=(_F(RESULTAT=MESTA,
-                   GROUP_NO='POINT',
-                   NOM_CHAM = 'DEPL',
+TEST_RESU(RESU=(_F(GROUP_NO='POINT',
+                   INST=0.0,
+                   RESULTAT=MESTA,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   INST=0.,
-                   PRECISION=1.E-5,
-                   VALE=2.5064E-03,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MESTA,
-                   GROUP_NO='POINT',
-                   NOM_CHAM = 'DEPL',
+                   VALE_CALC=2.5064000000000002E-3,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   ),
+                _F(GROUP_NO='POINT',
+                   INST=0.0,
+                   RESULTAT=MESTA,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   INST=0.,
-                   PRECISION=1.E-5,
-                   VALE=1.8357E-2,
-                   REFERENCE='NON_REGRESSION',),),);
+                   VALE_CALC=0.018356999999999998,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   ),
+                ),
+          )
 
 FIN();

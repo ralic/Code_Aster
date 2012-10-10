@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE NON DIVERGENCE D'UNE PLAQUE EN DYNAMIQUE EXPLICITE
 # sdls116a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -137,26 +137,25 @@ RESU1 = DYNA_NON_LINE(
                        MASS_DIAG = 'OUI',
                      );
 
-TEST_RESU(RESU=(
-                 _F(RESULTAT=RESU1,
-                  NOEUD='N2',
-                  INST=1.2E-3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  VALE = 1.17509E-02,
-                  PRECISION = (0.5E-2,0.5E-5),
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-                 _F(RESULTAT=RESU1,
-                  NOEUD='N4',
-                  INST=1.2E-3,
-                  NOM_CHAM='VITE',
-                  NOM_CMP='DRX',
-                  VALE = 4.57826E+00,
-                  PRECISION = (2.E-2,0.5E-5),
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-               )
-         );
+TEST_RESU(RESU=(_F(INST=1.1999999999999999E-3,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.011750853,
+                   VALE_REFE=0.0117509,
+                   PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 5.0000000000000004E-06),),
+                _F(INST=1.1999999999999999E-3,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='VITE',
+                   NOEUD='N4',
+                   NOM_CMP='DRX',
+                   VALE_CALC=4.577056970,
+                   VALE_REFE=4.5782600000000002,
+                   PRECISION=0.02, TOLE_MACHINE=(0.02, 5.0000000000000004E-06),),
+                ),
+          )
 
 FIN();

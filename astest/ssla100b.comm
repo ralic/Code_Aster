@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE INFINI SOUMIS A UN CHAMP DE FORCES SURFACIQUES
 # ssla100b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,13 +119,25 @@ RESU=STAT_NON_LINE(
                       )
 
 # ----------------------------------------------------------------------
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU, INST = 1., NOM_CHAM = 'DEPL',
-             GROUP_NO = 'P1', NOM_CMP = 'DX',
-             VALE = 0.52130982, PRECISION = 1.E-4, CRITERE = 'RELATIF'),
-           _F(  RESULTAT = RESU, INST = 1., NOM_CHAM = 'DEPL',
-             GROUP_NO = 'P2', NOM_CMP = 'DX',
-             VALE = 0.44203108,  PRECISION = 1.E-4, CRITERE = 'RELATIF'))
-           )
+TEST_RESU(RESU=(_F(GROUP_NO='P1',
+                   INST=1.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.52130982000000003,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   ),
+                _F(GROUP_NO='P2',
+                   INST=1.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.44203108000000002,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TUYAUTERIE COUDEE EN FLEXION
 # sslx102f.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,28 +98,26 @@ RESU1=MECA_STATIQUE(  MODELE=MO,   INFO=1,
                           SOLVEUR=_F(  METHODE = 'LDLT')
                         )
 
-TEST_RESU(
-           RESU=_F( RESULTAT = RESU1,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D',
-                 NOM_CMP = 'DY',
-                 VALE = 2.E-2,
-                 PRECISION = 4.E-2,
-                 REFERENCE = 'AUTRE_ASTER')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.019221904,
+                  VALE_REFE=0.02,
+                  PRECISION=0.040000000000000001,),
+          )
 
-TEST_RESU(
-           RESU=_F( RESULTAT = RESU1,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D',
-                 NOM_CMP = 'DY',
-                 VALE = 1.92219E-02,
-                 PRECISION = 1.E-5,
-                 REFERENCE = 'NON_REGRESSION',
-                 VERSION = '5.4')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.0192219,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
 # FLEXION HORS PLAN
 
@@ -145,28 +143,26 @@ RESU2=MECA_STATIQUE(  MODELE=MO,   INFO=1,
                           SOLVEUR=_F(  METHODE = 'LDLT')
                         )
 
-TEST_RESU(
-           RESU=_F( RESULTAT = RESU2,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D',
-                 NOM_CMP = 'DZ',
-                 VALE = -1.5657E-2,
-                 PRECISION = 0.5E-2,
-                 REFERENCE = 'AUTRE_ASTER')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.015609652,
+                  VALE_REFE=-0.015657000000000001,
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
-TEST_RESU(
-           RESU=_F( RESULTAT = RESU2,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D',
-                 NOM_CMP = 'DZ',
-                 VALE = -1.560965E-2,
-                 PRECISION = 1.E-5,
-                 REFERENCE = 'NON_REGRESSION',
-                 VERSION = '5.4')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  RESULTAT=RESU2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.015609649999999999,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
 FIN()
 #

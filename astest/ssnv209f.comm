@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209f.para = tps_job 320 mem_job 1536Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -216,55 +216,47 @@ IMPR_TABLE(TABLE=DEP,);
 #                   TEST TABLE
 #----------------------------------------------
 
-TEST_RESU(RESU=(_F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPA',
-                   NOM_CMP    = 'DX',
-                   VALE       = 3.0697055365649E-05,
-                   PRECISION  = 1.E-6,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '7.1.11',
+TEST_RESU(RESU=(_F(GROUP_NO='PPA',
+                   INST=1.0,
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=3.0697055365648997E-05,
+                   
                    ),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPB',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.9258807505021E-05,
-                   PRECISION  = 1.E-6,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '7.1.11',
+                _F(GROUP_NO='PPB',
+                   INST=1.0,
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=2.9258807505021E-05,
+                   
                    ),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPC',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.4735987440628E-05,
-                   PRECISION  = 1.E-6,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '7.1.11',
+                _F(GROUP_NO='PPC',
+                   INST=1.0,
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=2.4735987440627999E-05,
+                   
                    ),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPD',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.1587122445096E-05,
-                   PRECISION  = 1.E-6,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '7.1.11',
+                _F(GROUP_NO='PPD',
+                   INST=1.0,
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=2.1587122445095999E-05,
+                   
                    ),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPE',
-                   NOM_CMP    = 'DX',
-                   VALE       =  1.7004520074141E-05  ,
-                   PRECISION  = 1.E-6,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '7.1.11',),),)
+                _F(GROUP_NO='PPE',
+                   INST=1.0,
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.7004520074141002E-05,
+                   
+                   ),
+                ),
+          )
 
 FIN()
-

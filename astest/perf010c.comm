@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE PERFORMANCE : DIABOLO PLEIN
 # perf010c.para = tps_job 2000 mem_job 6478Mo ncpus 4 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,23 +95,27 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    OPTION='SANS',
                    INFO=1,);
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='NON_DEFINI',
+                   TYPE_TEST='MAX',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   TYPE_TEST='MAX',
-                   VALE=5.2e-5,
+                   VALE_CALC=5.1903092295532E-05,
+                   VALE_REFE=5.2E-05,
                    CRITERE='RELATIF',
-                   PRECISION=0.003,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   PRECISION=3.E-3,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='NON_DEFINI',
+                   TYPE_TEST='MAX',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   TYPE_TEST='MAX',
-                   VALE=2.6e-5,
+                   VALE_CALC=2.5951546147894E-05,
+                   VALE_REFE=2.6E-05,
                    CRITERE='RELATIF',
-                   PRECISION=0.003,
-                   REFERENCE='NON_REGRESSION',),),);
+                   PRECISION=3.E-3,),
+                ),
+          )
 
 FIN();

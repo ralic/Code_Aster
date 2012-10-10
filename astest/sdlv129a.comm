@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FATIGUE VIBRATOIRE D'UNE AUBE DE VENTILATEUR
 # sdlv129a.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,23 +64,25 @@ RES_STAT=CALC_CHAMP(reuse=RES_STAT,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONTRAINTE
 
 
 
-TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RES_STAT,
                   NOM_CHAM='SIEQ_ELNO',
+                  NOEUD='N111',
                   NOM_CMP='VMIS_SG',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=307.712514,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=307.712514,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M294',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RES_STAT,
                   NOM_CHAM='SIEQ_ELNO',
+                  NOEUD='N111',
                   NOM_CMP='VMIS',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=307.712514,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=307.712514,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M294',),
+          )
 
 #
 # CALCUL DES CONTRAINTES MODALES
@@ -105,41 +107,46 @@ MODE=MODE_ITER_SIMULT(    MATR_RIGI=A,     MATR_MASS=B,
 MODE=CALC_CHAMP(reuse=MODE,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),RESULTAT=MODE)
 
 
-TEST_RESU(RESU=_F(RESULTAT=MODE,
-                  NUME_MODE=1,
+TEST_RESU(RESU=_F(NUME_MODE=1,
+                  RESULTAT=MODE,
                   NOM_CHAM='SIEQ_ELNO',
+                  NOEUD='N111',
                   NOM_CMP='VMIS_SG',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=9.800254,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=9.8002540000000007,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M294',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE,
-                  NUME_MODE=2,
+TEST_RESU(RESU=_F(NUME_MODE=2,
+                  RESULTAT=MODE,
                   NOM_CHAM='SIEQ_ELNO',
+                  NOEUD='N111',
                   NOM_CMP='VMIS_SG',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=-31.150885,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=-31.150884999999999,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M294',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE,
-                  NUME_MODE=1,
+TEST_RESU(RESU=_F(NUME_MODE=1,
+                  RESULTAT=MODE,
                   NOM_CHAM='SIEQ_ELNO',
+                  NOEUD='N111',
                   NOM_CMP='VMIS',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=9.800254,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=9.8002540000000007,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M294',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE,
-                  NUME_MODE=2,
+TEST_RESU(RESU=_F(NUME_MODE=2,
+                  RESULTAT=MODE,
                   NOM_CHAM='SIEQ_ELNO',
+                  NOEUD='N111',
                   NOM_CMP='VMIS',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=31.150885,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=31.150884999999999,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M294',),
+          )
+
 #
 #
 # CALCUL EN FATIGUE
@@ -169,18 +176,22 @@ D_MOD1=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                        INFO        = 1
                      )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1,
-                  NOM_CMP='DOMA',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=35.32,
-                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N111',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='DOMA',
+                       MAILLE='M294',
+                       CHAM_GD=D_MOD1,
+                       VALE_CALC=35.319871188,
+                       VALE_REFE=35.32,),
+          )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1,
-                  NOM_CMP='DOMA',
-                  TYPE_TEST='MIN',
-                  VALE=21.138430,
-                  REFERENCE='NON_REGRESSION',),);
+TEST_RESU(CHAM_ELEM=_F(
+                       NOM_CMP='DOMA',
+                       TYPE_TEST='MIN',
+                       CHAM_GD=D_MOD1,
+                       VALE_CALC=21.13843,
+                       TOLE_MACHINE=1.E-3,),
+          )
 
 # MODE 1 SEUL (AUX NOEUDS, GERBER)
 D_MOD1b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
@@ -196,18 +207,22 @@ D_MOD1b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                        INFO        = 1
                      )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1b,
-                  NOM_CMP='DOMA',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=46.18,
-                  REFERENCE='ANALYTIQUE',),);
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N111',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='DOMA',
+                       MAILLE='M294',
+                       CHAM_GD=D_MOD1b,
+                       VALE_CALC=46.188237538,
+                       VALE_REFE=46.18,),
+          )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1b,
-                  NOM_CMP='DOMA',
-                  TYPE_TEST='MIN',
-                  VALE=27.712900,
-                  REFERENCE='NON_REGRESSION',),);
+TEST_RESU(CHAM_ELEM=_F(
+                       NOM_CMP='DOMA',
+                       TYPE_TEST='MIN',
+                       CHAM_GD=D_MOD1b,
+                       VALE_CALC=27.712900000000001,
+                       TOLE_MACHINE=1.E-3,),
+          )
 
 # MODE 1 SEUL (AUX PTS DE GAUSS, GERBER)
 D_MOD1G=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
@@ -240,25 +255,28 @@ D_MOD12=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                      )
 
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12,
-                  NOM_CMP='DOMA',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=13.64,
-                  REFERENCE='ANALYTIQUE',),);
-
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N111',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='DOMA',
+                       MAILLE='M294',
+                       CHAM_GD=D_MOD12,
+                       VALE_CALC=13.640757790,
+                       VALE_REFE=13.640000000000001,),
+          )
 
 TDMG12=POST_RELEVE_T(ACTION=_F(     INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     CHAM_GD=D_MOD12,
                                     TOUT_CMP='OUI',
                                     OPERATION='EXTREMA',) ,) ;
 
-TEST_TABLE(TABLE=TDMG12,
-           FILTRE=( _F(NOM_PARA='EXTREMA',
-                       VALE_K='MIN'),),
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(
+           VALE_CALC=6.6633585000000002,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='VALE',
-           VALE=6.66335850,);
+           TABLE=TDMG12,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MIN',),
+           )
 
 # (MODE 1) + 0,5 * (MODE 2) (AUX NOEUDS, GERBER)
 D_MOD12b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
@@ -275,25 +293,29 @@ D_MOD12b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                      )
 
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12b,
-                  NOM_CMP='DOMA',
-                  MAILLE='M294',
-                  NOEUD = 'N111',
-                  VALE=17.83,
-                  REFERENCE='ANALYTIQUE',),);
-
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N111',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='DOMA',
+                       MAILLE='M294',
+                       CHAM_GD=D_MOD12b,
+                       VALE_CALC=17.838189659,
+                       VALE_REFE=17.829999999999998,),
+          )
 
 TDMG12b=POST_RELEVE_T(ACTION=_F(    INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     CHAM_GD=D_MOD12b,
                                     TOUT_CMP='OUI',
                                     OPERATION='EXTREMA',) ,) ;
 
-TEST_TABLE(TABLE=TDMG12b,
-           FILTRE=(_F(NOM_PARA='EXTREMA',
-                      VALE_K='MIN',),),
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(
+           VALE_CALC=8.7357949999999995,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='VALE',
-           VALE=8.735795,);
+           TABLE=TDMG12b,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MIN',),
+           )
+
 FIN();
 
 

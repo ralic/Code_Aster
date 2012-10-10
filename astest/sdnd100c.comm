@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LACHER D'UN PATIN FROTTANT
 # sdnd100c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,19 +129,41 @@ TRAN_DI=DYNA_NON_LINE(
 # VALEUR DU TEST_RESU EST PASSEE A 5%
 
 
-TEST_RESU(RESU=( _F(  RESULTAT = TRAN_DI,  INST = 3.15E-2,
-                  NOM_CHAM = 'DEPL',   NOEUD = 'NO1',  NOM_CMP = 'DX',
-                  PRECISION = 0.001,    VALE = -4.585E-4),
-                _F(  RESULTAT = TRAN_DI,  INST = 6.30E-2,
-                  NOM_CHAM = 'DEPL',   NOEUD = 'NO1',  NOM_CMP = 'DX',
-                  PRECISION = 0.001,    VALE = 3.173E-4),
-                _F(  RESULTAT = TRAN_DI,  INST = 9.45E-2,
-                  NOM_CHAM = 'DEPL',   NOEUD = 'NO1',  NOM_CMP = 'DX',
-                  PRECISION = 0.001,    VALE = -1.754E-4),
-                _F(  RESULTAT = TRAN_DI,  NUME_ORDRE = 251,
-                  NOM_CHAM = 'DEPL',   NOEUD = 'NO1',  NOM_CMP = 'DX',
-                  PRECISION = 0.05,    VALE = 3.550E-5))
-           )
+TEST_RESU(RESU=(_F(INST=0.0315,
+                   RESULTAT=TRAN_DI,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='DX',
+                   VALE_CALC=-4.5849999999999998E-4,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=0.063,
+                   RESULTAT=TRAN_DI,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='DX',
+                   VALE_CALC=3.1730000000000001E-4,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=0.094500000000000001,
+                   RESULTAT=TRAN_DI,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.7540000000000001E-4,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=251,
+                   RESULTAT=TRAN_DI,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='DX',
+                   VALE_CALC= 3.54955942E-05,
+                   VALE_REFE=3.5500000000000002E-05,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
 
 FIN()
 #

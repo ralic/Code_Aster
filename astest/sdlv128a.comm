@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
 # sdlv128a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -418,11 +418,14 @@ RESET = DEFI_BASE_MODALE( NUME_REF = NUMENUM,
 TABLAMOR = RECU_TABLE( CO = RESET, NOM_PARA = 'AMOR_REDUIT')
 
 for ind in range(6):
-    TEST_TABLE( TABLE = TABLAMOR,
-                FILTRE = _F( NOM_PARA = 'NUME_ORDRE', VALE_I = ind+1 ),
-                NOM_PARA = 'AMOR_REDUIT',
-                REFERENCE = 'NON_REGRESSION',
-                VALE =  vale_amor[ind] )
+    TEST_TABLE(
+               VALE_CALC=vale_amor[ind],
+               TOLE_MACHINE=1.E-3,
+               NOM_PARA='AMOR_REDUIT',
+               TABLE=TABLAMOR,
+               FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                         VALE_I=ind+1,),
+               )
 
 MAC = MAC_MODES( BASE_2 = RESET, BASE_1 = MODEAIR, INFO = 2 );
 
@@ -431,12 +434,19 @@ vale_mac = (0.952, 0.916, 0.926, 0.950)
 
 # Test du resultat :
 for ind in range(4):
-    TEST_TABLE( TABLE = MAC,
-                FILTRE = ( _F( NOM_PARA = 'NUME_MODE_1', VALE_I = ind+1 ),
-                           _F( NOM_PARA = 'NUME_MODE_2', VALE_I = ind+1 )),
-                NOM_PARA = 'MAC',
-                REFERENCE = 'NON_REGRESSION',
-                VALE = vale_mac[ind], PRECISION = 0.1 );
+    TEST_TABLE(TOLE_MACHINE=0.10,
+               PRECISION=0.10,
+               VALE_CALC=vale_mac[ind],
+               REFERENCE='NON_DEFINI',      #TODO
+               VALE_REFE=vale_mac[ind],
+               NOM_PARA='MAC',
+               TABLE=MAC,
+               FILTRE=(_F(NOM_PARA='NUME_MODE_1',
+                          VALE_I=ind+1,),
+                       _F(NOM_PARA='NUME_MODE_2',
+                          VALE_I=ind+1,),
+                       ),
+               )
 
 
 FIN();

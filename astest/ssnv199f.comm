@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURATION INTERFACE 3D (PENTA15) SUR DCB, LOI CZM_OUV_MIX
 # ssnv199f.para = tps_job 860 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -274,68 +274,59 @@ FRES = POST_RELEVE_T(
     ))
 
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = U,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 4.85116,
-      GROUP_NO  = 'NO7',
-      INST      = 2.0
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(GROUP_NO='NO7',
+                  INST=2.0,
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=4.8511600000000001,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_TABLE(TABLE=FRES,
-           FILTRE=(_F(NOM_PARA='INST',VALE=2.0)),
+TEST_TABLE(
+           VALE_CALC=6.8909000000000002,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
-           VALE=6.89090,
-           REFERENCE='NON_REGRESSION')
+           TABLE=FRES,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
 
+TEST_RESU(RESU=_F(GROUP_NO='NO7',
+                  INST=3.0,
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=6.7463600000000001,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = U,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 6.74636,
-      GROUP_NO  = 'NO7',
-      INST      = 3.0
-      ),
-    )
-  )
+TEST_TABLE(
+           VALE_CALC=5.8339299999999996,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=FRES,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
-TEST_TABLE(TABLE=FRES,
-           FILTRE=(_F(NOM_PARA='INST',VALE=3.0)),
-           NOM_PARA  = 'DY',
-           VALE      = 5.83393,
-           REFERENCE = 'NON_REGRESSION')
+TEST_RESU(RESU=_F(GROUP_NO='NO7',
+                  INST=4.0,
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=8.9282000000000004,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = U,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 8.92820,
-      GROUP_NO  = 'NO7',
-      INST      = 4.0
-      ),
-    )
-  )
-
-TEST_TABLE(TABLE=FRES,
-           FILTRE=(_F(NOM_PARA='INST',VALE=4.0)),
-           NOM_PARA  = 'DY',
-           VALE      = 5.06475,
-           REFERENCE = 'NON_REGRESSION')
-
+TEST_TABLE(
+           VALE_CALC=5.0647500000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=FRES,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=4.0,),
+           )
 
 IMPR_TABLE(TABLE = UPILO)
 IMPR_TABLE(TABLE = FRES)
@@ -364,5 +355,4 @@ IMPR_TABLE(TABLE = FRES)
 #  )
 
 FIN(FORMAT_HDF='OUI')
-
 

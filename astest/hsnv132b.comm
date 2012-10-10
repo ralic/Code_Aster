@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 # hsnv132b.para = tps_job 50 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,22 +165,27 @@ IMPR_TABLE(TABLE=TABDEP)
 
 
 # REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES)
-TEST_TABLE(TABLE=TABDEP,
-           NOM_PARA='DX',
-           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
-           VALE= -8.740426289951E-04,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER');                        
+           VALE_CALC=-8.75308651E-04,
+           VALE_REFE=-8.7404262899510004E-4,
+           NOM_PARA='DX',
+           TABLE=TABDEP,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
-TEST_TABLE(TABLE=TABDEP,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 3.82725446E-03,
+           VALE_REFE=3.8260958514619E-3,
            NOM_PARA='DY',
-           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
-           VALE=  3.8260958514619E-03,
-           CRITERE='RELATIF',
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER');                     
-
+           TABLE=TABDEP,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 # CALCUL AVEC POST_K1_K2_K3
 PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
@@ -193,13 +198,16 @@ PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
 IMPR_TABLE(TABLE = PK)
 
 # REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES - CALCUL AVEC POST_K1_K2_K3)
-TEST_TABLE(TABLE=PK,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC= 8.78622505E+06,
+           VALE_REFE=8.4543655482163001E6,
            NOM_PARA='K1',
-           VALE= 8.4543655482163E+06,
-           CRITERE='RELATIF',
-           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
-           PRECISION=0.04,
-           REFERENCE='AUTRE_ASTER');                      
+           TABLE=PK,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 # CALCUL AVEC CALC_G
 SIF=CALC_G(RESULTAT=UTOT,
@@ -220,20 +228,26 @@ TABG=CALC_G(RESULTAT=UTOT,
 IMPR_TABLE(TABLE=TABG,);
 
 # REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES - CALCUL AVEC CALC_G)
-TEST_TABLE(TABLE=SIF,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC= 9.07949519E+06,
+           VALE_REFE=9.0328413451143E6,
            NOM_PARA='K1',
-           VALE= 9.0328413451143E+06,
-           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
-           CRITERE='RELATIF',
+           TABLE=SIF,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER');       
-                          
-TEST_TABLE(TABLE=TABG,
+           VALE_CALC=490.663445803,
+           VALE_REFE=492.81784641923002,
            NOM_PARA='G',
-           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
-           VALE= 492.81784641923,
-           CRITERE='RELATIF',
-           PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER');                      
+           TABLE=TABG,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 FIN();

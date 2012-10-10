@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ONDE DE CISAILLEMENT DANS UNE COLONNE ELASTIQUE
 # sdlv121a.para = tps_job 190 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,9 +141,12 @@ NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE,   METHODE='LDLT')
 #--------------------------------------------------------------------------------
 VECT_EL1=CALC_VECT_ELEM(INST=5.E-3, OPTION='CHAR_MECA', CHAM_MATER=CHAMPMAT, CHARGE=ONDE)
 VECA1=ASSE_VECTEUR(VECT_ELEM=VECT_EL1, NUME_DDL=NUMEDDL)
-TEST_RESU(CHAM_NO= _F( CHAM_GD = VECA1, NOM_CMP = 'DY', NOEUD = 'N41',
-                      REFERENCE = 'NON_REGRESSION', VALE = -7.62317084127261 ))
-
+TEST_RESU(CHAM_NO=_F(NOEUD='N41',
+                     NOM_CMP='DY',
+                     CHAM_GD=VECA1,
+                     VALE_CALC=-7.6231708412726098,
+                     TOLE_MACHINE=1.E-3,),
+          )
 
 #------------------------------------------------------------------------------------
 
@@ -197,37 +200,31 @@ DZN22=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N22',
                          NOM_CMP='DZ'
                        )
 
-TEST_FONCTION(VALEUR=(   _F(
-                   FONCTION = DXN22,
-                   VALE_PARA = 2.65600E-01,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-10),
-                  _F(
-                   FONCTION = DYN22,
-                   VALE_PARA = 2.65600E-01,
-                   VALE_REFE = 1.00410E-03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3),
-                  _F(
-                   FONCTION = DYN22,
-                   VALE_PARA = 4.38400E-01,
-                   VALE_REFE = 9.94716E-04,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3),
-                  _F(
-                   FONCTION = DYN22,
-                   VALE_PARA = 8.00000E-01,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-5),
-                  _F(
-                   FONCTION = DZN22,
-                   VALE_PARA = 2.65600E-01,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-10))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.2656,
+                         FONCTION=DXN22,),
+                      _F(VALE_CALC=1.0041E-3,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.2656,
+                         FONCTION=DYN22,),
+                      _F(VALE_CALC=9.9471600000000009E-4,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.43840000000000001,
+                         FONCTION=DYN22,),
+                      _F(VALE_CALC=0.0,
+                         TOLE_MACHINE=1.0000000000000001E-05,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.80000000000000004,
+                         FONCTION=DYN22,),
+                      _F(VALE_CALC=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.2656,
+                         FONCTION=DZN22,),
+                      ),
+              )
 
 TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 0.72, NOMBRE = 450))
 
@@ -274,37 +271,36 @@ DZNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
                          NOM_CMP='DZ'
                        )
 
-TEST_FONCTION(VALEUR=(   _F(
-                   FONCTION = DXNB22,
-                   VALE_PARA = 2.67200E-01,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-10),
-                  _F(
-                   FONCTION = DYNB22,
-                   VALE_PARA = 2.67200E-01,
-                   VALE_REFE = 1.00396E-03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 7.E-3),
-                  _F(
-                   FONCTION = DYNB22,
-                   VALE_PARA = 4.40000E-01,
-                   VALE_REFE = 9.94928E-04,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 5.E-3),
-                  _F(
-                   FONCTION = DYNB22,
-                   VALE_PARA = 7.20000E-01,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 2.E-5),
-                  _F(
-                   FONCTION = DZNB22,
-                   VALE_PARA = 2.67200E-01,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-10))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.26719999999999999,
+                         FONCTION=DXNB22,),
+                      _F(VALE_CALC=0.000998905071549,
+                         VALE_REFE=1.0039599999999999E-3,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.26719999999999999,
+                         PRECISION=7.0000000000000001E-3,
+                         FONCTION=DYNB22,),
+                      _F(VALE_CALC=0.00099149434467,
+                         VALE_REFE=9.9492799999999996E-4,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.44,
+                         PRECISION=5.0000000000000001E-3,
+                         FONCTION=DYNB22,),
+                      _F(VALE_CALC=0.0,
+                         TOLE_MACHINE=2.0000000000000002E-05,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.71999999999999997,
+                         FONCTION=DYNB22,),
+                      _F(VALE_CALC=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.26719999999999999,
+                         FONCTION=DZNB22,),
+                      ),
+              )
+
 FIN();
 #
 #     POST-TRAITEMENT

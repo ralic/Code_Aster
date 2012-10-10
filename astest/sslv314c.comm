@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv314c.para = tps_job 140 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,18 +179,20 @@ TAB= POST_RELEVE_T(ACTION=_F(INTITULE='test',
                                             TOUT_CMP='OUI',
                                             OPERATION='EXTRACTION',),);               
 
-TEST_TABLE(TABLE=TAB,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(
+           VALE_CALC=2.5996800000000002,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='COOR_Y',
-           PRECISION=1.E-3,
            TYPE_TEST='MAX',
-           VALE= 2.59968  )
+           TABLE=TAB,
+           )
 
-TEST_TABLE(TABLE=TAB,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(
+           VALE_CALC=2.5918700000000001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='COOR_Y',
-           PRECISION=1.E-3,
            TYPE_TEST='MIN',
-           VALE= 2.59187     )
+           TABLE=TAB,
+           )
 
 FIN();

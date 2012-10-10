@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,10 +64,10 @@ errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
 # Permet d'afficher la liste des nouveaux mots interdits ajoutes.
 previous_errors = set([
     'ALCHML', 'ALITMI', 'AMDBAR', 'AMUMPS.F', 'ASCSEP', 'AU-YANG',
-    'BiCG', 'CHABOCHE', 'CHARAC', 'CHARACTER', 'CHNO', 'CHNO.NUEQ', 'CHOUT', 'CHPVER',
+    'BiCG', 'CHARAC', 'CHARACTER', 'CHNO', 'CHNO.NUEQ', 'CHOUT', 'CHPVER',
     'CINX', 'CINx', 'CLAV', 'CLO', 'COMBU', 'CVRC', 'D-POUTRE', 'DAMAX', 'DEEQ', 'DELG',
     'DEP', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
-    'DPMAX', 'DPSIDS', 'DRMAX', 'DSIGM', 'DTREVC', 'DVP', 'ECLAU', 'EDITGD', 'EFNEMA',
+    'DPMAX', 'DPSIDS', 'DRMAX', 'DTREVC', 'DVP', 'ECLAU', 'EDITGD', 'EFNEMA',
     'ELREFA', 'ELREFE', 'ETENCA', 'FATEMI', 'FETG', 'FINSF', 'FLAHQR',
     'FONREE', 'FTREVC', 'GAMDEV', 'GERPAS', 'GILIRE.INDIRECT', 'GL', 'GREL', 'Gnuplot.py',
     'HDFCRF', 'HEXS', 'HUJCI', 'HUJCRI', 'HUJDDD', 'HUJDP', 'HUJELA', 'HUJIID', 'HUJJID',
@@ -85,7 +85,7 @@ previous_errors = set([
     'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'STOGI', 'SV', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
     'TRIA-QUAD', 'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY',
     'USASTE.F', 'UTTCPU', 'VALF', 'VCINE', 'VITG', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
-    'XOUS', 'YM', 'ZEDGAR', 'acearp', 'alchml', 'alfint', 'apetsc.F',
+    'XOUS', 'ZEDGAR', 'acearp', 'alchml', 'alfint', 'apetsc.F',
     'autor', 'breakdown', 'cabl', 'cagnba', 'cata', 'chckma', 'chno', 'chvari', 'clcplq.f',
     'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn', "d'ACIER",
     'deltat', 'dfdi', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa', 'elrefe', 'ep',
@@ -123,25 +123,30 @@ if nbwrn > 0:
 
 tab = CREA_TABLE(LISTE=_F(PARA='NBERR', LISTE_I=nberr))
 
-TEST_TABLE(TABLE=tab,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,
            NOM_PARA='NBERR',
-           VALE_I=0,
-           REFERENCE='ANALYTIQUE',)
+           TABLE=tab,)
 
 tnew = CREA_TABLE(LISTE=_F(PARA='NBNEW_ERR', LISTE_I=nbnew))
 
-TEST_TABLE(TABLE=tnew,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,
            NOM_PARA='NBNEW_ERR',
-           VALE_I=0,
-           REFERENCE='ANALYTIQUE',)
+           TABLE=tnew,)
 
 tabw = CREA_TABLE(LISTE=_F(PARA='NBWARN', LISTE_I=nbwrn))
 
-TEST_TABLE(TABLE=tabw,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,
+           TOLE_MACHINE=313.1,
+           PRECISION=313.1,
            NOM_PARA='NBWARN',
-           VALE_I=0,
-           CRITERE='ABSOLU',
-           PRECISION=316.1,
-           REFERENCE='NON_REGRESSION',)
-    
+           TABLE=tabw,
+           )
+
 FIN()

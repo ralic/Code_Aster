@@ -151,207 +151,270 @@ IMPR_TABLE(    TABLE=FAT_D,)
 #   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
 #--------------------------------------------------------------------------------
 # PM - - SITUATION 1
-TEST_TABLE(TABLE=PMPB1,
-           REFERENCE='ANALYTIQUE',
-           TYPE_TEST = 'MAX',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
            NOM_PARA='PM',
-           VALE=200.  )
-TEST_TABLE(TABLE=PMPB1,
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=PMPB1,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
            NOM_PARA='PB',
-           VALE=100.  )
-TEST_TABLE(TABLE=PMPB1,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=PMPB1,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
            NOM_PARA='PMB',
-           VALE=100.  )
-TEST_TABLE(TABLE=PMPB1,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=PMPB1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=300.000000000,
+           VALE_REFE=300.0,
            NOM_PARA='PMB',
-           VALE=300.  )
+           TYPE_TEST='MAX',
+           TABLE=PMPB1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # PM - - SITUATION 2
-TEST_TABLE(TABLE=PMPB2,
-           REFERENCE='ANALYTIQUE',
-           TYPE_TEST = 'MAX',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=50.000000000,
+           VALE_REFE=50.0,
            NOM_PARA='PM',
-           VALE=50.  )
-TEST_TABLE(TABLE=PMPB2,
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=PMPB2,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=150.000000000,
+           VALE_REFE=150.0,
            NOM_PARA='PB',
-           VALE=150.  )
-TEST_TABLE(TABLE=PMPB2,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=PMPB2,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
            NOM_PARA='PMB',
-           VALE=200.  )
-TEST_TABLE(TABLE=PMPB2,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=PMPB2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
            NOM_PARA='PMB',
-           VALE=100.  )         
+           TYPE_TEST='MAX',
+           TABLE=PMPB2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # PM - - TRANSITOIRE THERMIQUE 1 
-TEST_TABLE(TABLE=PMPB3,
-           REFERENCE='ANALYTIQUE',
-           TYPE_TEST = 'MAX',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=250.000000000,
+           VALE_REFE=250.0,
            NOM_PARA='PM',
-           VALE=250.  )
-TEST_TABLE(TABLE=PMPB3,
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='PB',
-           VALE=100.  )
-TEST_TABLE(TABLE=PMPB3,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='PMB',
-           VALE=200.  )
-TEST_TABLE(TABLE=PMPB3,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='PMB',
-           VALE=300.  )     
+           TYPE_TEST='MAX',
+           TABLE=PMPB3,)
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
+           NOM_PARA='PB',
+           TYPE_TEST='MAX',
+           TABLE=PMPB3,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='PMB',
+           TYPE_TEST='MAX',
+           TABLE=PMPB3,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=300.000000000,
+           VALE_REFE=300.0,
+           NOM_PARA='PMB',
+           TYPE_TEST='MAX',
+           TABLE=PMPB3,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # SN - - SITUATION 1
-TEST_TABLE(TABLE=SN1,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
            NOM_PARA='SN',
-           VALE=200.  )
-TEST_TABLE(TABLE=SN1,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=SN1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=225.000000000,
+           VALE_REFE=225.0,
            NOM_PARA='SN',
-           VALE=225.  )
+           TYPE_TEST='MAX',
+           TABLE=SN1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # SN - - SITUATION 2
-TEST_TABLE(TABLE=SN2,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
            NOM_PARA='SN',
-           VALE=200.  )
-TEST_TABLE(TABLE=SN2,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=SN2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
            NOM_PARA='SN',
-           VALE=100.  )
-         
+           TYPE_TEST='MAX',
+           TABLE=SN2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
 # SN* - SITUATION 1 
-TEST_TABLE(TABLE=SN1,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=275.000000000,
+           VALE_REFE=275.0,
            NOM_PARA='SN*',
-           VALE=275.  )
-TEST_TABLE(TABLE=SN1,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=SN1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=150.000000000,
+           VALE_REFE=150.0,
            NOM_PARA='SN*',
-           VALE=150.  )
+           TYPE_TEST='MAX',
+           TABLE=SN1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # ROCHET THERMIQUE 
-TEST_TABLE(TABLE=SNROC,
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=300.000000000,
+           VALE_REFE=300.0,
            NOM_PARA='VALE_MAXI_LINE',
-           VALE=300.  )
-TEST_TABLE(TABLE=SNROC,
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=SNROC,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=390.000000000,
+           VALE_REFE=390.0,
            NOM_PARA='VALE_MAXI_PARAB',
-           VALE=390.  )
+           TYPE_TEST='MAX',
+           TABLE=SNROC,)
 
 # FU - CAS A
-TEST_TABLE(TABLE=FAT_A,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 5.00000000E-04,
+           VALE_REFE=5.0000000000000001E-4,
            NOM_PARA='DOMMAGE_CUMU',
-           VALE=5.E-4  )
-TEST_TABLE(TABLE=FAT_A,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=FAT_A,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 7.00000000E-04,
+           VALE_REFE=6.9999999999999999E-4,
            NOM_PARA='DOMMAGE_CUMU',
-           VALE=7.E-4  )
+           TYPE_TEST='MAX',
+           TABLE=FAT_A,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # FU - CAS B
-TEST_TABLE(TABLE=FAT_B,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 2.30000000E-03,
+           VALE_REFE=2.3E-3,
            NOM_PARA='DOMMAGE_CUMU',
-           VALE=2.3E-3  )
-TEST_TABLE(TABLE=FAT_B,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=FAT_B,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 1.80000000E-03,
+           VALE_REFE=1.8E-3,
            NOM_PARA='DOMMAGE_CUMU',
-           VALE=1.8E-3  )
+           TYPE_TEST='MAX',
+           TABLE=FAT_B,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # FU - CAS C
-TEST_TABLE(TABLE=FAT_C,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 1.70000000E-03,
+           VALE_REFE=1.6999999999999999E-3,
            NOM_PARA='DOMMAGE_CUMU',
-           VALE=1.7E-3 )
-TEST_TABLE(TABLE=FAT_C,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+           TYPE_TEST='MAX',
+           TABLE=FAT_C,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 3.50000000E-03,
+           VALE_REFE=3.5000000000000001E-3,
            NOM_PARA='DOMMAGE_CUMU',
-           VALE=3.5E-3  )
+           TYPE_TEST='MAX',
+           TABLE=FAT_C,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # FU - CAS D
-TEST_TABLE(TABLE=FAT_D,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 5.54277133E-04,
+           VALE_REFE=5.5427700000000005E-4,
            NOM_PARA='DOMMAGE_CUMU',
-           VALE=5.54277E-04 )
-TEST_TABLE(TABLE=FAT_D,
-           FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
-           TYPE_TEST = 'MAX',
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='DOMMAGE_CUMU',
-           VALE=1.17685E-03  )           
-                             
-FIN()
+           TYPE_TEST='MAX',
+           TABLE=FAT_D,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 1.17685313E-03,
+           VALE_REFE=1.1768499999999999E-3,
+           NOM_PARA='DOMMAGE_CUMU',
+           TYPE_TEST='MAX',
+           TABLE=FAT_D,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+FIN()

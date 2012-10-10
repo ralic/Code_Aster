@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,9 @@ C ----------------------------------------------------------------------
       PARAMETER (NOMPRO='TRCHNO')
 
       INTEGER       IOCC, IBID, IRET, NBCMP,JCMP,N1,N2,N3,N4
+      INTEGER       N1R,N2R,N3R,IREFRR, IREFIR,IREFCR
       INTEGER      IREFR, IREFI,IREFC,NREF, NL1, LXLGUT, NL2,NL11,NL22
-      REAL*8        EPSI, R8B
+      REAL*8        EPSI, EPSIR, R8B
       COMPLEX*16    C16B
       CHARACTER*1  TYPRES
       CHARACTER*3  SSIGNE
@@ -39,11 +40,12 @@ C ----------------------------------------------------------------------
       CHARACTER*8  CRIT, NODDL, NOGRNO, NOMMA, TYPTES
       CHARACTER*11 MOTCLE
       CHARACTER*19 CHAM19
-      CHARACTER*16 TBTXT(2)
+      CHARACTER*16 TBTXT(2),TBREF(2)
       CHARACTER*17 NONOEU
-      CHARACTER*24 TRAVR,TRAVI,TRAVC
+      CHARACTER*24 TRAVR,TRAVI,TRAVC,TRAVRR,TRAVIR,TRAVCR
       CHARACTER*200 LIGN1,LIGN2
       INTEGER      IARG
+      LOGICAL       LREF
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -51,6 +53,9 @@ C     ------------------------------------------------------------------
       TRAVR  = '&&'//NOMPRO//'_TRAVR          '
       TRAVI  = '&&'//NOMPRO//'_TRAVI          '
       TRAVC  = '&&'//NOMPRO//'_TRAVC          '
+      TRAVRR = '&&'//NOMPRO//'_TRAVR_R        '
+      TRAVIR = '&&'//NOMPRO//'_TRAVI_R        '
+      TRAVCR = '&&'//NOMPRO//'_TRAVC_R        '
 
       DO 100 IOCC = 1,NOCC
         LIGN1  = ' '
@@ -84,32 +89,66 @@ C     ------------------------------------------------------------------
             LIGN1(NL1+17:NL1+17)='.'
             LIGN2(NL2+17:NL2+17)='.'
         ENDIF
-        CALL GETVR8 ( 'CHAM_NO', 'PRECISION', IOCC,IARG,1, EPSI,  N1 )
-        CALL GETVTX ( 'CHAM_NO', 'CRITERE',   IOCC,IARG,1, CRIT,  N1 )
+        CALL GETVR8 ( 'CHAM_NO', 'TOLE_MACHINE', IOCC,IARG,1, EPSI,IRET)
+        CALL GETVTX ( 'CHAM_NO', 'CRITERE',   IOCC,IARG,1, CRIT,IRET )
 
-        CALL GETVR8('CHAM_NO','VALE'    , IOCC,IARG,0,R8B   ,N1)
-        CALL GETVIS('CHAM_NO','VALE_I'  , IOCC,IARG,0,IBID  ,N2)
-        CALL GETVC8('CHAM_NO','VALE_C'  , IOCC,IARG,0,C16B  ,N3)
+        CALL GETVR8('CHAM_NO','VALE_CALC'    , IOCC,IARG,0,R8B   ,N1)
+        CALL GETVIS('CHAM_NO','VALE_CALC_I'  , IOCC,IARG,0,IBID  ,N2)
+        CALL GETVC8('CHAM_NO','VALE_CALC_C'  , IOCC,IARG,0,C16B  ,N3)
         IF( N1 .NE. 0) THEN
           NREF=-N1
           TYPRES = 'R'
           CALL JEDETR(TRAVR)
           CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
-          CALL GETVR8('CHAM_NO','VALE', IOCC,IARG,NREF,ZR(IREFR),IRET)
+          CALL GETVR8('CHAM_NO','VALE_CALC', IOCC,IARG,
+     &                NREF,ZR(IREFR),IRET)
         ELSEIF( N2 .NE. 0) THEN
           NREF=-N2
           TYPRES = 'I'
           CALL JEDETR(TRAVI)
           CALL WKVECT(TRAVI,'V V I',NREF,IREFI)
-          CALL GETVIS('CHAM_NO','VALE_I', IOCC,IARG,NREF,ZI(IREFI),IRET)
+          CALL GETVIS('CHAM_NO','VALE_CALC_I', IOCC,IARG,
+     &                NREF,ZI(IREFI),IRET)
         ELSEIF( N3 .NE. 0) THEN
           NREF=-N3
           TYPRES = 'C'
           CALL JEDETR(TRAVC)
           CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
-          CALL GETVC8('CHAM_NO','VALE_C', IOCC,IARG,NREF,ZC(IREFC),IRET)
+          CALL GETVC8('CHAM_NO','VALE_CALC_C', IOCC,IARG,
+     &                NREF,ZC(IREFC),IRET)
         ENDIF
-
+C ----------------------------------------------------------------------
+        LREF=.FALSE.
+        CALL GETVR8('CHAM_NO','PRECISION',IOCC,IARG,1,EPSIR,IRET)
+        IF (IRET.NE.0) THEN
+           LREF=.TRUE.
+           CALL GETVR8('CHAM_NO','VALE_REFE'     ,IOCC,IARG,0,R8B ,N1R)
+           CALL GETVIS('CHAM_NO','VALE_REFE_I'   ,IOCC,IARG,0,IBID,N2R)
+           CALL GETVC8('CHAM_NO','VALE_REFE_C'   ,IOCC,IARG,0,C16B,N3R)
+           IF (N1R.NE.0) THEN
+             CALL ASSERT((N1R.EQ.N1))
+             NREF=-N1R
+             CALL JEDETR(TRAVRR)
+             CALL WKVECT(TRAVRR,'V V R',NREF,IREFRR)
+             CALL GETVR8('CHAM_NO','VALE_REFE', IOCC,IARG,NREF,
+     &                   ZR(IREFRR),IRET)
+           ELSEIF (N2R.NE.0) THEN
+             CALL ASSERT((N2R.EQ.N2))
+             NREF=-N2R
+             CALL JEDETR(TRAVIR)
+             CALL WKVECT(TRAVIR,'V V I',NREF,IREFIR)
+             CALL GETVIS('CHAM_NO','VALE_REFE_I', IOCC,IARG,NREF,
+     &                   ZI(IREFIR),IRET)
+           ELSEIF (N3R.NE.0) THEN
+             CALL ASSERT((N3R.EQ.N3))
+             NREF=-N3R
+             CALL JEDETR(TRAVCR)
+             CALL WKVECT(TRAVCR,'V V C',NREF,IREFCR)
+             CALL GETVC8('CHAM_NO','VALE_REFE_C', IOCC,IARG,NREF,
+     &                  ZC(IREFCR),IRET)
+           ENDIF
+        ENDIF
+C ----------------------------------------------------------------------
 
         CALL GETVTX('CHAM_NO','TYPE_TEST',IOCC,IARG,1,TYPTES,N1)
 
@@ -124,9 +163,9 @@ C     ------------------------------------------------------------------
 
           CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,IARG,0,NODDL,N4)
           IF (N4.EQ.0) THEN
-            NL1 = LXLGUT(LIGN1)
+            NL1  = LXLGUT(LIGN1)
             NL11 = LXLGUT(LIGN1(1:NL1-1))
-            NL2 = LXLGUT(LIGN2)
+            NL2  = LXLGUT(LIGN2)
             NL22 = LXLGUT(LIGN2(1:NL2-1))
             IF(NL11.LT.80)THEN
               WRITE (IFIC,*) LIGN1(1:NL11)
@@ -144,16 +183,38 @@ C     ------------------------------------------------------------------
               WRITE (IFIC,1200) LIGN2(1:80),LIGN2(81:160),
      &                          LIGN2(161:NL22)
             ENDIF
+
+            IF (LREF) THEN 
+              TBREF(1)=TBTXT(1)
+              TBREF(2)=TBTXT(2)
+              TBTXT(1)='NON_REGRESSION'
+            ENDIF
             CALL UTEST1(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
-     &                  ZR(IREFR),ZC(IREFC),EPSI,CRIT,IFIC,SSIGNE)
+     &           ZR(IREFR),ZC(IREFC),EPSI,CRIT,IFIC,.TRUE.,SSIGNE)
+            IF (LREF) THEN
+              CALL UTEST1(CHAM19,TYPTES,TYPRES,NREF,TBREF,
+     &                    ZI(IREFIR),ZR(IREFRR),ZC(IREFCR),EPSIR,CRIT,
+     &                    IFIC,.FALSE.,SSIGNE)
+            ENDIF
+
           ELSE
             NBCMP = -N4
             CALL WKVECT('&&TRCHNO.NOM_CMP','V V K8',NBCMP,JCMP)
             CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,IARG,NBCMP,
      &                  ZK8(JCMP),N4)
+            IF (LREF) THEN 
+              TBREF(1)=TBTXT(1)
+              TBREF(2)=TBTXT(2)
+              TBTXT(1)='NON_REGRESSION'
+            ENDIF
             CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
      &                  ZR(IREFR),ZC(IREFC),EPSI,LIGN1,LIGN2,
-     &                  CRIT,IFIC,NBCMP,ZK8(JCMP),SSIGNE)
+     &                  CRIT,IFIC,NBCMP,ZK8(JCMP),.TRUE.,SSIGNE)
+            IF (LREF) THEN
+              CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,TBREF,ZI(IREFIR),
+     &                  ZR(IREFRR),ZC(IREFCR),EPSIR,LIGN1,LIGN2,
+     &                  CRIT,IFIC,NBCMP,ZK8(JCMP),.FALSE.,SSIGNE)
+            ENDIF
             CALL JEDETR('&&TRCHNO.NOM_CMP')
           END IF
 
@@ -195,8 +256,20 @@ C            RIEN A FAIRE.
             END IF
             NONOEU(10:17) = NOGRNO
           END IF
-          CALL UTESTR(CHAM19,NONOEU,NODDL,NREF,TBTXT,ZI(IREFI),
-     &                ZR(IREFR),ZC(IREFC),TYPRES,EPSI,CRIT,IFIC,SSIGNE)
+
+          IF (LREF) THEN 
+            TBREF(1)=TBTXT(1)
+            TBREF(2)=TBTXT(2)
+            TBTXT(1)='NON_REGRESSION'
+          END IF
+          CALL UTESTR(CHAM19,NONOEU,NODDL,NREF,TBTXT,
+     &                ZI(IREFI),ZR(IREFR),ZC(IREFC),
+     &                TYPRES,EPSI,CRIT,IFIC,.TRUE.,SSIGNE)
+          IF (LREF) THEN
+            CALL UTESTR(CHAM19,NONOEU,NODDL,NREF,TBREF,
+     &                  ZI(IREFIR),ZR(IREFRR),ZC(IREFCR),
+     &                  TYPRES,EPSIR,CRIT,IFIC,.FALSE.,SSIGNE)
+          ENDIF
         END IF
         WRITE (IFIC,*)' '
  100  CONTINUE

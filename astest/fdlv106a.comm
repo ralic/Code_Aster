@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL D AMORTISSEMENT AJOUTE EN ECOULEMENT ANNULAIRE
 # fdlv106a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -250,12 +250,18 @@ ENGENDRE_TEST(FORMAT='OBJET',
 #TESTS DES VALEURS DES MATRICES D'AMORTISSEMENT ET DE MASSE AJOUTES
 #NE COMPRENNENT QU'UN ELEMENT
 
-TEST_RESU(OBJET=(_F(NOM='MASS               .VALM',
-                    S_R=1666800000.0,
-                    PRECISION=0.01,),
-                 _F(NOM='AMOR               .VALM',
-                    S_R=-400040000.0,
-                    PRECISION=0.01,),),);
+TEST_RESU(OBJET=(_F(VALE_CALC= 1.66014403E+09,
+                    VALE_REFE=1.666800000E9,
+                    REFERENCE='NON_DEFINI',
+                    NOM='MASS               .VALM',
+                    PRECISION=1.E-2,),
+                 _F(VALE_CALC=-3.96644423E+08,
+                    VALE_REFE=-4.00040000E8,
+                    REFERENCE='NON_DEFINI',
+                    NOM='AMOR               .VALM',
+                    PRECISION=1.E-2,),
+                 ),
+          )
 
 #NOUVELLE METHODE AVEC MACRO_MATR_AJOU
 
@@ -302,12 +308,18 @@ MASSCRIT=CALC_MATR_AJOU(MODELE_FLUIDE=FLUIDE2,
 ENGENDRE_TEST(FORMAT='OBJET',
               CO=(MASSCRIT,AMORCRIT,),);
 
-TEST_RESU(OBJET=(_F(NOM='MASSCRIT           .VALM',
-                    S_R=1666800000.0,
-                    PRECISION=0.01,),
-                 _F(NOM='AMORCRIT           .VALM',
-                    S_R=-424042000.0,
-                    PRECISION=0.01,),),);
+TEST_RESU(OBJET=(_F(VALE_CALC= 1.66014403E+09,
+                    VALE_REFE=1.666800000E9,
+                    REFERENCE='NON_DEFINI',
+                    NOM='MASSCRIT           .VALM',
+                    PRECISION=1.E-2,),
+                 _F(VALE_CALC=-4.20443084E+08,
+                    VALE_REFE=-4.24042000E8,
+                    REFERENCE='NON_DEFINI',
+                    NOM='AMORCRIT           .VALM',
+                    PRECISION=1.E-2,),
+                 ),
+          )
 
 # MASSE ET AMORTISSEMENT AJOUTES A 6 M/S
 
@@ -329,12 +341,18 @@ MASSFLOT=CALC_MATR_AJOU(MODELE_FLUIDE=FLUIDE2,
                         POTENTIEL=PHIBFLOT,
                         SOLVEUR=_F(METHODE='MULT_FRONT',),);
 
-TEST_RESU(OBJET=(_F(NOM='MASSFLOT           .VALM',
-                    S_R=1666800000.0,
-                    PRECISION=0.01,),
-                 _F(NOM='AMORFLOT           .VALM',
-                    S_R=-600060000.0,
-                    PRECISION=0.01,),),);
+TEST_RESU(OBJET=(_F(VALE_CALC= 1.66014403E+09,
+                    VALE_REFE=1.666800000E9,
+                    REFERENCE='NON_DEFINI',
+                    NOM='MASSFLOT           .VALM',
+                    PRECISION=1.E-2,),
+                 _F(VALE_CALC=-5.94966629E+08,
+                    VALE_REFE=-6.00060000E8,
+                    REFERENCE='NON_DEFINI',
+                    NOM='AMORFLOT           .VALM',
+                    PRECISION=1.E-2,),
+                 ),
+          )
 
 # SYSTEME A UN DDL EQUIVALENT SUR LEQUEL ON CALCULE LES MODES
 # COMPLEXES
@@ -409,7 +427,6 @@ MODBIS=MODE_ITER_SIMULT(MATR_RIGI=RAIDEUR,
                         METHODE='TRI_DIAG',
                         VERI_MODE=_F(SEUIL=1.E-2,),);
 
-
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 
 MODBISZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDEUR,
@@ -417,7 +434,6 @@ MODBISZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDEUR,
                          MATR_AMOR=AMORT,
                          METHODE='QZ',
                          VERI_MODE=_F(SEUIL=1.E-2,),);
-
 
 # MODE COMPLEXE A VITESSE CRITIQUE
 
@@ -470,7 +486,6 @@ MODCRIT=MODE_ITER_SIMULT(MATR_RIGI=RAIDCR,
                          METHODE='TRI_DIAG',
                          VERI_MODE=_F(SEUIL=1.E-2,),);
 
-
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 
 MODCRITZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDCR,
@@ -478,7 +493,6 @@ MODCRITZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDCR,
                           MATR_AMOR=AMORCR,
                           METHODE='QZ',
                           VERI_MODE=_F(SEUIL=1.E-2,),);
-
 
 # MODE COMPLEXE AU FLOTTEMENT
 
@@ -531,7 +545,6 @@ MODFLOT=MODE_ITER_SIMULT(MATR_RIGI=RAIDFL,
                          METHODE='TRI_DIAG',
                          VERI_MODE=_F(SEUIL=1.E-2,),);
 
-
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 
 MODFLOTZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDFL,
@@ -540,99 +553,108 @@ MODFLOTZ=MODE_ITER_SIMULT(MATR_RIGI=RAIDFL,
                           METHODE='QZ',
                           VERI_MODE=_F(SEUIL=1.E-2,),);
 
-
-TEST_RESU(RESU=(_F(RESULTAT=MODBIS,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=12.5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODBIS,
+                   VALE_CALC=12.409011239,
+                   VALE_REFE=12.5,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODBIS,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='AMOR_REDUIT',
-                   VALE=0.00011,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODBIS,
+                   VALE_CALC= 1.09155365E-04,
+                   VALE_REFE=1.1E-4,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODCRIT,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=12.5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODCRIT,
+                   VALE_CALC=12.409011312,
+                   VALE_REFE=12.5,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODCRIT,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='AMOR_REDUIT',
-                   VALE=1.38e-05,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODCRIT,
+                   VALE_CALC= 1.38783249E-05,
+                   VALE_REFE=1.38E-05,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODFLOT,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=12.5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODFLOT,
+                   VALE_CALC=12.409008588,
+                   VALE_REFE=12.5,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODFLOT,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='AMOR_REDUIT',
-                   VALE=-0.00066,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODFLOT,
+                   VALE_CALC=-6.62728999E-04,
+                   VALE_REFE=-6.6E-4,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),),);
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 # POUR QZ
 
-TEST_RESU(RESU=(_F(RESULTAT=MODBISZ,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=12.5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODBISZ,
+                   VALE_CALC=12.409011239,
+                   VALE_REFE=12.5,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODBISZ,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='AMOR_REDUIT',
-                   VALE=0.00011,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODBISZ,
+                   VALE_CALC= 1.09155365E-04,
+                   VALE_REFE=1.1E-4,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODCRITZ,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=12.5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODCRITZ,
+                   VALE_CALC=12.409011312,
+                   VALE_REFE=12.5,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODCRITZ,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='AMOR_REDUIT',
-                   VALE=1.38e-05,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODCRITZ,
+                   VALE_CALC= 1.38783249E-05,
+                   VALE_REFE=1.38E-05,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODFLOTZ,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=12.5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODFLOTZ,
+                   VALE_CALC=12.409008588,
+                   VALE_REFE=12.5,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODFLOTZ,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
                    PARA='AMOR_REDUIT',
-                   VALE=-0.00066,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODFLOTZ,
+                   VALE_CALC=-6.62728999E-04,
+                   VALE_REFE=-6.6E-4,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),),);
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 FIN();
-
-
-
-
-
-

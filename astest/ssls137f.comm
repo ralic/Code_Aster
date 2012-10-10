@@ -1,4 +1,4 @@
-# MODIF  DATE 24/09/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE DE BETON PRECONTRAINT AVEC CABLE EXCENTRE EN FLEXION 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -238,7 +238,8 @@ TEST_RESU(  RESU=(_F( RESULTAT = RES1,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-3,
-                      VALE = 3.75E+5,
+                      VALE_CALC = 3.75E+5,
+                      VALE_REFE = 3.75E+5,
                       REFERENCE='ANALYTIQUE'),),);
 
 TEST_RESU(  RESU=(_F( RESULTAT = RES1,
@@ -249,7 +250,8 @@ TEST_RESU(  RESU=(_F( RESULTAT = RES1,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-3,
-                      VALE = 3.75E+5,
+                      VALE_CALC = 3.75E+5,
+                      VALE_REFE = 3.75E+5,
                       REFERENCE='ANALYTIQUE'),),);
 
 TEST_RESU(  RESU=(_F( RESULTAT = RES1,
@@ -260,7 +262,8 @@ TEST_RESU(  RESU=(_F( RESULTAT = RES1,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-3,
-                      VALE = 3.75E+5,
+                      VALE_CALC = 3.75E+5,
+                      VALE_REFE = 3.75E+5,
                       REFERENCE='ANALYTIQUE'),),);
 
 #  Plaque - inst 2s
@@ -272,7 +275,8 @@ TEST_RESU(  RESU=(_F( RESULTAT = RES1,
                       NOM_CMP = 'DZ',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-2,
-                      VALE = -0.101677,
+                      VALE_CALC=-0.10193989748272,
+                      VALE_REFE = -0.101677,
                       REFERENCE='ANALYTIQUE'),),);
 
 FIN();

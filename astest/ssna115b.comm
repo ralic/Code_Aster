@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURATION JOINT 2D AXIS SUR ARRACHEMENT, LOI CZM_LIN_REG
 # ssna115b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -199,53 +199,65 @@ FRES=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              GROUP_NO='GN_J_G',
                              RESULTANTE=('DX','DY',),),);
 
-TEST_TABLE(TABLE=UPILO,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.229833795,
+           VALE_REFE=0.2298338,
+           NOM_PARA='DY',
+           TABLE=UPILO,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.0,),
-           NOM_PARA='DY',
-           VALE=0.2298338,
-           PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           )
 
-TEST_TABLE(TABLE=FRES,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=10.499850000,
+           VALE_REFE=10.49985,
+           NOM_PARA='DY',
+           TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.0,),
-           NOM_PARA='DY',
-           VALE=10.49985,
-           PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           )
 
-TEST_TABLE(TABLE=UPILO,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.388479778,
+           VALE_REFE=0.38847979999999999,
+           NOM_PARA='DY',
+           TABLE=UPILO,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=6.0,),
-           NOM_PARA='DY',
-           VALE=0.3884798,
-           PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           )
 
-TEST_TABLE(TABLE=FRES,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=5.999820000,
+           VALE_REFE=5.9998199999999997,
+           NOM_PARA='DY',
+           TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=6.0,),
-           NOM_PARA='DY',
-           VALE=5.99982,
-           PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           )
 
-TEST_TABLE(TABLE=UPILO,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.528090105,
+           VALE_REFE=0.52808999999999995,
+           NOM_PARA='DY',
+           TABLE=UPILO,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=8.0,),
-           NOM_PARA='DY',
-           VALE=0.52809,
-           PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           )
 
-TEST_TABLE(TABLE=FRES,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=2.039740800,
+           VALE_REFE=2.0397400000000001,
+           NOM_PARA='DY',
+           TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=8.0,),
-           NOM_PARA='DY',
-           VALE=2.03974,
-           PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           )
 
 IMPR_TABLE(TABLE=UPILO,);
 

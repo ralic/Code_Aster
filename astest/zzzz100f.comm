@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FONCTIONS, NAPPES, VALIDATION DE CALC_FONCTION / FRACTILE
 # zzzz100f.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,17 +64,21 @@ F3=DEFI_FONCTION(  NOM_PARA='INST',
 N4=CALC_FONCTION(FRACTILE=_F(FONCTION=(N1,N2,N3),
                              FRACT=1.) )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=N4,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(222.,1.,),
-                        VALE_REFE=8.,
-                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.0,
+                        VALE_REFE=8.0,
+                        VALE_PARA=(222.0, 1.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=N4,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=N4,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(111.,2.,),
-                        VALE_REFE=9.,
-                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.0,
+                        VALE_REFE=9.0,
+                        VALE_PARA=(111.0, 2.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=N4,),
+              )
 
 #========================================================================
 #     CAS NAPPE. FRACTILE = 0 : CORRESPOND A L ENVELOPPE INF DE LA NAPPE
@@ -82,17 +86,21 @@ TEST_FONCTION(VALEUR=_F(FONCTION=N4,
 N5=CALC_FONCTION(FRACTILE=_F(FONCTION=(N1,N2,N3),
                              FRACT=0.) )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=N5,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(222.,1.,),
-                        VALE_REFE=3.,
-                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.0,
+                        VALE_REFE=3.0,
+                        VALE_PARA=(222.0, 1.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=N5,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=N5,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(111.,2.,),
-                        VALE_REFE=4.,
-                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.0,
+                        VALE_REFE=4.0,
+                        VALE_PARA=(111.0, 2.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=N5,),
+              )
 
 #========================================================================
 #     CAS NAPPE. FRACTILE = 0.7
@@ -100,17 +108,21 @@ TEST_FONCTION(VALEUR=_F(FONCTION=N5,
 N6=CALC_FONCTION(FRACTILE=_F(FONCTION=(N1,N2,N3),
                              FRACT=0.7) )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=N6,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(222.,1.,),
-                        VALE_REFE=5.6,
-                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.6,
+                        VALE_REFE=5.5999999999999996,
+                        VALE_PARA=(222.0, 1.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=N6,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=N6,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(111.,2.,),
-                        VALE_REFE=7.8,
-                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.8,
+                        VALE_REFE=7.7999999999999998,
+                        VALE_PARA=(111.0, 2.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=N6,),
+              )
 
 #========================================================================
 #     CAS FONCTION. FRACTILE = 0 : CORRESPOND A L ENVELOPPE INF DE LA FONCTION
@@ -118,23 +130,29 @@ TEST_FONCTION(VALEUR=_F(FONCTION=N6,
 F4=CALC_FONCTION(FRACTILE=_F(FONCTION=(F1,F2,F3),
                              FRACT=0.) )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F4,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        VALE_REFE=1.0,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=1.,
-                        VALE_REFE=1.,
-                        REFERENCE='ANALYTIQUE'),)
+                        FONCTION=F4,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F4,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        VALE_REFE=1.0,
+                        VALE_PARA=3.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=3.,
-                        VALE_REFE=1.,
-                        REFERENCE='ANALYTIQUE'),)
+                        FONCTION=F4,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F4,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-3.0,
+                        VALE_REFE=-3.0,
+                        VALE_PARA=5.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=5.,
-                        VALE_REFE=-3.,
-                        REFERENCE='ANALYTIQUE'),)
+                        FONCTION=F4,),
+              )
 
 #========================================================================
 #     CAS FONCTION. FRACTILE = 1 : CORRESPOND A L ENVELOPPE SUP DE LA FONCTION
@@ -142,23 +160,29 @@ TEST_FONCTION(VALEUR=_F(FONCTION=F4,
 F5=CALC_FONCTION(FRACTILE=_F(FONCTION=(F1,F2,F3),
                              FRACT=1.) )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F5,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.0,
+                        VALE_REFE=7.0,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=1.,
-                        VALE_REFE=7.,
-                        REFERENCE='ANALYTIQUE'),)
+                        FONCTION=F5,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F5,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.0,
+                        VALE_REFE=4.0,
+                        VALE_PARA=3.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=3.,
-                        VALE_REFE=4.,
-                        REFERENCE='ANALYTIQUE'),)
+                        FONCTION=F5,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F5,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.0,
+                        VALE_REFE=3.0,
+                        VALE_PARA=5.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=5.,
-                        VALE_REFE=3.,
-                        REFERENCE='ANALYTIQUE'),)
+                        FONCTION=F5,),
+              )
 
 #========================================================================
 #     CAS FONCTION. FRACTILE = 0.9
@@ -166,23 +190,29 @@ TEST_FONCTION(VALEUR=_F(FONCTION=F5,
 F6=CALC_FONCTION(FRACTILE=_F(FONCTION=(F1,F2,F3),
                              FRACT=0.9) )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F6,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.2,
+                        VALE_REFE=6.2000000000000002,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=1.,
-                        VALE_REFE=6.2,
-                        REFERENCE='ANALYTIQUE'),)
+                        FONCTION=F6,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F6,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.8,
+                        VALE_REFE=3.7999999999999998,
+                        VALE_PARA=3.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=3.,
-                        VALE_REFE=3.8,
-                        REFERENCE='ANALYTIQUE'),)
+                        FONCTION=F6,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F6,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.8,
+                        VALE_REFE=2.7999999999999998,
+                        VALE_PARA=5.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=5.,
-                        VALE_REFE=2.8,
-                        REFERENCE='ANALYTIQUE'),)
+                        FONCTION=F6,),
+              )
 
 #========================================================================
 #     VALIDATION DE L ENVELOPPE DE NAPPES A SUPPORTS DISJOINTS
@@ -214,35 +244,52 @@ E3=DEFI_NAPPE(NOM_PARA='INST',
 
 E4=CALC_FONCTION(ENVELOPPE=_F(FONCTION=(E1,E2,E3),) )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=E4,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(111.,1.,),
-                        VALE_REFE=13.,
-                        REFERENCE='ANALYTIQUE'),)
-TEST_FONCTION(VALEUR=_F(FONCTION=E4,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(111.,2.,),
-                        VALE_REFE=9.,
-                        REFERENCE='ANALYTIQUE'),)
-TEST_FONCTION(VALEUR=_F(FONCTION=E4,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(222.,1.,),
-                        VALE_REFE=8.,
-                        REFERENCE='ANALYTIQUE'),)
-TEST_FONCTION(VALEUR=_F(FONCTION=E4,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(222.,2.,),
-                        VALE_REFE=10.,
-                        REFERENCE='ANALYTIQUE'),)
-TEST_FONCTION(VALEUR=_F(FONCTION=E4,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(333.,1.,),
-                        VALE_REFE=6.,
-                        REFERENCE='ANALYTIQUE'),)
-TEST_FONCTION(VALEUR=_F(FONCTION=E4,
-                        NOM_PARA=('INST','X',),
-                        VALE_PARA=(333.,2.,),
-                        VALE_REFE=13.,
-                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=13.0,
+                        VALE_REFE=13.0,
+                        VALE_PARA=(111.0, 1.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=E4,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.0,
+                        VALE_REFE=9.0,
+                        VALE_PARA=(111.0, 2.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=E4,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.0,
+                        VALE_REFE=8.0,
+                        VALE_PARA=(222.0, 1.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=E4,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=10.0,
+                        VALE_REFE=10.0,
+                        VALE_PARA=(222.0, 2.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=E4,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.0,
+                        VALE_REFE=6.0,
+                        VALE_PARA=(333.0, 1.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=E4,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=13.0,
+                        VALE_REFE=13.0,
+                        VALE_PARA=(333.0, 2.0),
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA=('INST', 'X'),
+                        FONCTION=E4,),
+              )
 
 FIN();

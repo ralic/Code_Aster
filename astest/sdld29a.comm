@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. NON PROPORTION.)
 # sdld29a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -155,75 +155,146 @@ DYNATRAN=REST_GENE_PHYS(  RESU_GENE=DYNAMODA,    NOM_CHAM='DEPL',
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 1,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.00000001,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.95408E-5)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.9540799999999999E-05,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 2,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.0002,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 5.1359E-6)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=5.1359000000000002E-06,
+                  TOLE_MACHINE=2.0000000000000001E-4,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 3,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.00003,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.7679E-5)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.7679000000000003E-05,
+                  TOLE_MACHINE=3.0000000000000001E-05,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 4,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.0002,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 7.3551E-6)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=7.3551000000000001E-06,
+                  TOLE_MACHINE=2.0000000000000001E-4,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 5,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.00004,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.5852E-5)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.5852000000000002E-05,
+                  TOLE_MACHINE=4.0000000000000003E-05,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 6,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.00006,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 8.8191E-6)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=8.8191E-06,
+                  TOLE_MACHINE=6.0000000000000002E-05,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 7,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.00002,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.46578E-5)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=7,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.4657799999999999E-05,
+                  TOLE_MACHINE=2.0000000000000002E-05,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 8,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.00005,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 1.00942E-5)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.0094200000000001E-05,
+                  TOLE_MACHINE=5.0000000000000002E-05,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 9,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.000008,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.36216E-5)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=9,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.3621599999999997E-05,
+                  TOLE_MACHINE=7.9999999999999996E-06,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 10,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.00005,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 1.1308E-5)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.1308000000000001E-05,
+                  TOLE_MACHINE=5.0000000000000002E-05,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 11,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.00002,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = 3.26106E-5)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.2610600000000002E-05,
+                  TOLE_MACHINE=2.0000000000000002E-05,
+                  ),
+          )
 
 #
 
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 12,
-                   NOM_CHAM = 'DEPL', PRECISION = 0.0000006,
-                   NOEUD = 'N5', NOM_CMP = 'DX', VALE = -2.19248E-5)  )
+TEST_RESU(RESU=_F(NUME_ORDRE=12,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=-2.1924800000000001E-05,
+                  TOLE_MACHINE=5.9999999999999997E-07,
+                  ),
+          )
 
 #
 FIN( )

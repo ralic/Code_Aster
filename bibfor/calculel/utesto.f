@@ -1,14 +1,15 @@
       SUBROUTINE UTESTO(NOMOBJ,TYPE,TBTXT,REFI,REFR,EPSI,CRIT,IFIC,
-     &                  SSIGNE)
+     &                  LLAB,SSIGNE)
       IMPLICIT NONE
       CHARACTER*24 NOMOBJ
       REAL*8 REFR,EPSI
       CHARACTER*(*) CRIT,TYPE,SSIGNE
       CHARACTER*16 TBTXT(2)
       INTEGER REFI,IFIC
+      LOGICAL LLAB
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +39,7 @@ C        REFR   : VALEUR REELLE ATTENDUE POUR L'OBJET
 C        CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 C        EPSI   : PRECISION ESPEREE
 C        IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
+C        LLAB   : FLAG D IMPRESSION DES LABELS
 C     SORTIES:
 C      LISTING ...
 C ----------------------------------------------------------------------
@@ -47,21 +49,19 @@ C     VARIABLES LOCALES:
       REAL*8 RBID,SOMMR
       INTEGER IBID,RESUME,SOMMI,LONUTI,LONMAX,NI,IRET,IRET2
 C
-C-----------------------------------------------------------------------
-C-----------------------------------------------------------------------
       CALL TSTOBJ(NOMOBJ,'NON',RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYSC,
      &            IRET,NI)
 
       IF (IRET.EQ.0) THEN
         IF (TYPE.EQ.'RESUME') THEN
           CALL UTITES(TBTXT(1),TBTXT(2),'I',1,REFI,RBID,CBID,RESUME,
-     +                RBID,CBID,EPSI,CRIT,IFIC,SSIGNE)
-        ELSE IF (TYPE.EQ.'S_I') THEN
+     +                RBID,CBID,EPSI,CRIT,IFIC,LLAB,SSIGNE)
+        ELSE IF (TYPE.EQ.'I') THEN
           CALL UTITES(TBTXT(1),TBTXT(2),'I',1,REFI,RBID,CBID,SOMMI,
-     +                RBID,CBID,EPSI,CRIT,IFIC,SSIGNE)
-        ELSE IF (TYPE.EQ.'S_R') THEN
+     +                RBID,CBID,EPSI,CRIT,IFIC,LLAB,SSIGNE)
+        ELSE IF (TYPE.EQ.'R') THEN
           CALL UTITES(TBTXT(1),TBTXT(2),'R',1,IBID,REFR,CBID,IBID,
-     +                SOMMR,CBID,EPSI,CRIT,IFIC,SSIGNE)
+     +                SOMMR,CBID,EPSI,CRIT,IFIC,LLAB,SSIGNE)
         END IF
       ELSE
         CALL JEEXIN(NOMOBJ,IRET2)

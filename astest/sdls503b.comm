@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 14/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -152,28 +152,38 @@ MODE1=MODE_ITER_INV(      MATR_RIGI=MA_AS_R1,
 #                     VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
 #
-TEST_RESU(RESU=(
-       _F( RESULTAT = MODE1,             PARA = 'FREQ',
-             CRITERE = 'RELATIF', 
-             REFERENCE = 'NON_REGRESSION', 
-             NUME_ORDRE = 1,  VALE = 2.7778808230898E+02),
-       _F( RESULTAT = MODE1,             PARA = 'FREQ',
-             CRITERE = 'RELATIF',
-             REFERENCE = 'NON_REGRESSION',   
-             NUME_ORDRE = 2,  VALE = 1.1112250222013E+03),
-       _F( RESULTAT = MODE1,             PARA = 'FREQ',
-             CRITERE = 'RELATIF', 
-             REFERENCE = 'NON_REGRESSION', 
-             NUME_ORDRE = 4,  VALE = 2.5009303877671E+03),
-       _F( RESULTAT = MODE1,             PARA = 'FREQ',
-             CRITERE = 'RELATIF', 
-             REFERENCE = 'NON_REGRESSION', 
-             NUME_ORDRE = 5,  VALE = 4.4490733713781E+03),
-       _F( RESULTAT = MODE1,             PARA = 'FREQ',
-             CRITERE = 'RELATIF', 
-             REFERENCE = 'NON_REGRESSION', 
-             NUME_ORDRE = 7,   VALE = 6.9603240125279E+03))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC=277.78808230897999,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC=1111.2250222012999,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC=2500.9303877671,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC=4449.0733713781001,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',),
+                _F(NUME_ORDRE=7,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC=6960.3240125278999,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',),
+                ),
+          )
 
 #
 FIN()

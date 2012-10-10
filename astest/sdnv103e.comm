@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103e.para = tps_job 5000 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,100 +108,103 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
 
 # DEPLACEMENT VERTICAL POINT A
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   INST=2.5e-07,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='A1',
-                   VALE=-2.27,
-                   CRITERE='RELATIF',
-                   PRECISION=1.E-10,
-                   REFERENCE='ANALYTIQUE',),));
+TEST_RESU(RESU=_F(GROUP_NO='A1',
+                  INST=2.4999999999999999E-07,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-2.27000000000,
+                  VALE_REFE=-2.27,
+                  TOLE_MACHINE=1.E-10,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-10,),
+          )
 
 # VITESSE VERTICALE POINT A
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   INST=2.5e-07,
-                   NOM_CHAM='VITE',
-                   NOM_CMP='DZ',
-                   GROUP_NO='A1',
-                   VALE=-1.9453030264492E+05,
-                   CRITERE='RELATIF',
-                   PRECISION=1.E-10,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.3.16',),));
+TEST_RESU(RESU=_F(GROUP_NO='A1',
+                  INST=2.4999999999999999E-07,
+                  RESULTAT=RESU,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-1.9453030264492001E5,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 # DEPLACEMENT VERTICAL POINT B
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   INST=2.5e-07,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='B1',
-                   VALE=-2.32675,
-                   CRITERE='RELATIF',
-                   PRECISION=1.E-10,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.3.16',),),);
+TEST_RESU(RESU=_F(GROUP_NO='B1',
+                  INST=2.4999999999999999E-07,
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-2.3267500000000001,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 # VITESSE VERTICALE POINT B
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   INST=2.5e-07,
-                   NOM_CHAM='VITE',
-                   NOM_CMP='DZ',
-                   GROUP_NO='B1',
-                   VALE=-2.2700000000001E+05,
-                   CRITERE='RELATIF',
-                   PRECISION=1.E-10,
-                   REFERENCE='ANALYTIQUE',
-                   ),),);
+TEST_RESU(RESU=_F(GROUP_NO='B1',
+                  INST=2.4999999999999999E-07,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-2.2700000000E+05,
+                  VALE_REFE=-2.2700000000001001E5,
+                  TOLE_MACHINE=1.E-10,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-10,),
+          )
 
 # DEPLACEMENT ET VITESSE RADIAL POINT A
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   INST=2.5e-07,
+TEST_RESU(RESU=(_F(GROUP_NO='A1',
+                   INST=2.4999999999999999E-07,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='A1',
-                   VALE=1.5613650399252E-03,
+                   VALE_CALC=1.5613650399252E-3,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-10,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.3.16',),
-                _F(RESULTAT=RESU,
-                   INST=2.5e-07,
+                   ),
+                _F(GROUP_NO='A1',
+                   INST=2.4999999999999999E-07,
+                   RESULTAT=RESU,
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
-                   GROUP_NO='A1',
-                   VALE=-16297.463201374,
+                   VALE_CALC=-1.6297463201373999E4,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-10,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.3.16',),),);
-
+                   ),
+                ),
+          )
 
 # DEPLACEMENT ET VITESSE RADIAL POINT B
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   INST=2.5e-07,
+TEST_RESU(RESU=(_F(GROUP_NO='B1',
+                   INST=2.4999999999999999E-07,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   GROUP_NO='B1',
-                   VALE=0.0,
+                   VALE_CALC=-2.792052094135E-14,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=9.9999999999999998E-13,
                    CRITERE='ABSOLU',
-                   PRECISION=1.E-12,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU,
-                   INST=2.5e-07,
+                   PRECISION=9.9999999999999998E-13,),
+                _F(GROUP_NO='B1',
+                   INST=2.4999999999999999E-07,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
                    NOM_CHAM='VITE',
                    NOM_CMP='DY',
-                   GROUP_NO='B1',
-                   VALE=0.0,
+                   VALE_CALC=-3.40618242E-09,
+                   VALE_REFE=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=1.E-8,
-                   REFERENCE='ANALYTIQUE',),),);
-
-
+                   PRECISION=1.E-08,),
+                ),
+          )
 
 FIN()

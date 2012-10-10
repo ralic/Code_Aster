@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE ENCASTREE ET MASSE CONCENTREE SOUMISE A UNE FORCE
 # sdlx302a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,93 +195,113 @@ MODE1=CALC_CHAMP(reuse=MODE1,     RESULTAT=MODE1,
 #
 # MODES PROPRES
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.01,
-                   NUME_ORDRE = 1,
-                   VALE = 0.702)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=0.703968595,
+                  VALE_REFE=0.70199999999999996,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.01,
-                   NUME_ORDRE = 2,
-                   VALE = 5.043)
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=5.028968725,
+                  VALE_REFE=5.0430000000000001,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.038,
-                   NUME_ORDRE = 3,
-                   VALE = 14.066)
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=14.587489455,
+                  VALE_REFE=14.066000000000001,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.037999999999999999,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.01,
-                   NUME_ORDRE = 4,
-                   VALE = 28.657)
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=28.429257310,
+                  VALE_REFE=28.657,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.012,
-                   NUME_ORDRE = 5,
-                   VALE = 45.89)
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=45.377653666,
+                  VALE_REFE=45.890000000000001,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.012,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.019,
-                   NUME_ORDRE = 6,
-                   VALE = 66.27)
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=65.069267459,
+                  VALE_REFE=66.269999999999996,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.019,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.026,
-                   NUME_ORDRE = 7,
-                   VALE = 91.51)
+TEST_RESU(RESU=_F(NUME_ORDRE=7,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=89.174540997,
+                  VALE_REFE=91.510000000000005,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.025999999999999999,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.034,
-                   NUME_ORDRE = 8,
-                   VALE = 122.77)
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=118.677744747,
+                  VALE_REFE=122.77,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.034000000000000002,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.03,
-                   NUME_ORDRE = 9,
-                   VALE = 157.79)
+TEST_RESU(RESU=_F(NUME_ORDRE=9,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=153.247292978,
+                  VALE_REFE=157.78999999999999,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.029999999999999999,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.061,
-                   NUME_ORDRE = 10,
-                   VALE = 204.69)
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=192.413031345,
+                  VALE_REFE=204.69,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.060999999999999999,),
           )
 
 #
@@ -383,14 +403,18 @@ POSALEA1=POST_DYNA_ALEA(    INTE_SPEC=INTEREP1,
                           )
 
 #
-TEST_TABLE(      TABLE=POSALEA1,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'N1'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'N1')),
-              PRECISION=0.11,
-               NOM_PARA='ECART',
-                   VALE=0.038      )
+TEST_TABLE(PRECISION=0.11,
+           VALE_CALC=0.034424456,
+           VALE_REFE=0.037999999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='ECART',
+           TABLE=POSALEA1,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N1',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N1',),
+                   ),
+           )
 
 FIN( )
 

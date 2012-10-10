@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106h.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -787,111 +787,111 @@ IMPR_TABLE(TABLE=TD_G1,);
 
 #----- TRACTION - PHASE ELASTIQUE -----
 
-TEST_TABLE(TABLE=D_FX_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.25,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.19528858586600001,
+           
            NOM_PARA='FXG_FX',
-           VALE=0.195288585866,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_FX_1,
+           TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.9533810452,
+           
            NOM_PARA='FXG_FXL',
-           VALE=1.9533810452,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_DY_1,
+           TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.33511651877655002,
+           
            NOM_PARA='DYG_DY',
-           VALE=0.33511651877655,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_DY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.25,),
+           )
 
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
-TEST_TABLE(TABLE=D_FX_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.38598977845999999,
+           
            NOM_PARA='FXG_FX',
-           VALE=0.38598977846,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_FX_1,
+           TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.35971002195079999,
+           
            NOM_PARA='FXG_FXL',
-           VALE=0.3597100219508,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_FX_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 #----- TRACTION - PHASE DECHARGEMENT -----
 
-TEST_TABLE(TABLE=D_FX_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.5,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.38598977846600002,
+           
            NOM_PARA='FXG_FX',
-           VALE=0.385989778466,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_FX_1,
+           TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=14.049651989919999,
+           TOLE_MACHINE=4.0000000000000003E-05,
            NOM_PARA='FXG_FXL',
-           VALE=14.04965198992,
-           CRITERE='ABSOLU',
-           PRECISION=4.e-05,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_FX_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.5,),
+           )
 
 #----- COMPRESSION - PHASE CHARGEMENT(TOUJOURS ELASTIQUE) -----
 
-TEST_TABLE(TABLE=D_FX_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.5,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.078395170335,
+           
            NOM_PARA='FXG_FX',
-           VALE=0.078395170335,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_FX_1,
+           TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.065780266480000002,
+           
            NOM_PARA='FXG_FXL',
-           VALE=-0.06578026648,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_FX_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.5,),
+           )
 
 #----- COMPRESSION - PHASE DECHARGEMENT -----
 
-TEST_TABLE(TABLE=D_FX_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.5,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.078395170439999995,
+           
            NOM_PARA='FXG_FX',
-           VALE=0.07839517044,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_FX_1,
+           TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.10120894938,
+           
            NOM_PARA='FXG_FXL',
-           VALE=0.10120894938,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_FX_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
+           )
 
 FIN();

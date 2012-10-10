@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE COEFFICIENTS AJOUTES A MASSE VOLUMIQUE VARIABLE
 # fdlv108a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,14 +95,16 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=MATASKS,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(20.0,30.0,),),);
 
-
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
-                  VALE=22.54,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODES,
+                  VALE_CALC=22.538990675,
+                  VALE_REFE=22.539999999999999,
                   CRITERE='RELATIF',
-                  PRECISION=0.03,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=0.029999999999999999,),
+          )
+
 # AFFECTATION DU DEPLACEMENT AU CYLINDRE EXTERNE
 # ROTATION AUTOUR D UN PIVOT EN AVAL DE L ECOULEMENT
 
@@ -149,23 +151,19 @@ MACRO_MATR_AJOU(MAILLAGE=MAYA,
                 MATR_AMOR_AJOU=CO('AMORAJ'),
                 INFO=2,);
 
-TEST_RESU(OBJET=_F(NOM='MASSAJ             .VALM',
-                   S_R=1608230000.0,
-                   REFERENCE = 'NON_REGRESSION',),)
+TEST_RESU(OBJET=_F(VALE_CALC=1.608230000E9,
+                   TOLE_MACHINE=1.E-3,
+                   NOM='MASSAJ             .VALM',),
+          )
 
-TEST_RESU(OBJET=_F(NOM='AMORAJ             .VALM',
-                   S_R=-393555000.0,
-                   REFERENCE = 'NON_REGRESSION',),)
+TEST_RESU(OBJET=_F(VALE_CALC=-3.93555000E8,
+                   TOLE_MACHINE=1.E-3,
+                   NOM='AMORAJ             .VALM',),
+          )
 
-
-TEST_RESU(OBJET=_F(NOM='RIGIAJ             .VALM',
-                   S_R=3496300.0,
-                   REFERENCE = 'NON_REGRESSION',),)
+TEST_RESU(OBJET=_F(VALE_CALC=3.496300E6,
+                   TOLE_MACHINE=1.E-3,
+                   NOM='RIGIAJ             .VALM',),
+          )
 
 FIN();
-
-
-
-
-
-

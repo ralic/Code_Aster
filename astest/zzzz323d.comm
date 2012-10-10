@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE L'IMPRESSION DES REPERES LOCAUX PAR IMPR_RESU/CONCEPT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,7 +107,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX1',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -116,7 +117,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX1',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -125,7 +127,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX1',
                         POINT= 1,
                         NOM_CMP = 'Z',
-                        VALE    = -0.707106781186547E0,
+                        VALE_CALC=-0.707106781186547E0,
+                        VALE_REFE=-0.707106781186547E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-6
                        ),
@@ -134,7 +137,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX2',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = 0.707106781186547E0,
+                        VALE_CALC=0.707106781186547E0,
+                        VALE_REFE=0.707106781186547E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -143,7 +147,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = 0.E0,
+                        VALE_CALC=0.E0,
+                        VALE_REFE=0.E0,
                         CRITERE='ABSOLU',
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
@@ -153,7 +158,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Z',
-                        VALE    = 0.707106781186547E0,
+                        VALE_CALC=0.707106781186547E0,
+                        VALE_REFE=0.707106781186547E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -166,7 +172,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX1',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -175,7 +182,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX1',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -184,7 +192,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX1',
                         POINT= 1,
                         NOM_CMP = 'Z',
-                        VALE    = 0.707106781186547E0,
+                        VALE_CALC=0.707106781186547E0,
+                        VALE_REFE=0.707106781186547E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -193,7 +202,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = 1.E0,
+                        VALE_CALC=1.E0,
+                        VALE_REFE=1.E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -207,7 +217,8 @@ TEST_RESU(CHAM_ELEM=(
                         MAILLE='HEX2',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = -0.707106781186547E0,
+                        VALE_CALC=-0.707106781186547E0,
+                        VALE_REFE=-0.707106781186547E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -216,7 +227,8 @@ TEST_RESU(CHAM_ELEM=(
                         MAILLE='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = 0.E0,
+                        VALE_CALC=0.E0,
+                        VALE_REFE=0.E0,
                         CRITERE='ABSOLU',
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
@@ -226,7 +238,8 @@ TEST_RESU(CHAM_ELEM=(
                         MAILLE='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Z',
-                        VALE    = 0.707106781186547E0,
+                        VALE_CALC=0.707106781186547E0,
+                        VALE_REFE=0.707106781186547E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),

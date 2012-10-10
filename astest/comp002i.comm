@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GENIAUT S.GENIAUT
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISCOCHAB
 # comp002i.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test R
@@ -309,35 +309,51 @@ DIFF_MAT=VERI_MATR_TANG()
 
 IMPR_TABLE(TABLE=DIFF_MAT)
 
-TEST_TABLE(TABLE=DIFF_MAT,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC= 9.44465954E-05,
+           VALE_REFE=0.0,
            NOM_PARA='MAT_DIFF',
            TYPE_TEST='MAX',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=prec_tgt,
-           REFERENCE='ANALYTIQUE',);
-
+           TABLE=DIFF_MAT,)
 
 # TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
-TEST_TABLE(TABLE=R_SI[0],
-           NOM_PARA='V13_Pa_1',VALE=1.26418E-02,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);
+TEST_TABLE(
+           VALE_CALC=0.0126418,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V13_Pa_1',
+           TABLE=R_SI_0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5000.0,),
+           )
 
-TEST_TABLE(TABLE=R_SI[1],
-           NOM_PARA='VMIS_Pa_1',VALE=7.19733E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);
+TEST_TABLE(
+           VALE_CALC=7.19733000E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VMIS_Pa_1',
+           TABLE=R_SI_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5000.0,),
+           )
 
-TEST_TABLE(TABLE=R_SI[3],
-           NOM_PARA='V16_Pa_1',VALE=-3.516423E-03,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);
+TEST_TABLE(
+           VALE_CALC=-3.5164229999999999E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V16_Pa_1',
+           TABLE=R_SI_3,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5000.0,),
+           )
 
-TEST_TABLE(TABLE=R_SI[4],
-           NOM_PARA='SIXX_Pa_1',VALE=1.54275E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);
-
+TEST_TABLE(
+           VALE_CALC=1.54275000E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXX_Pa_1',
+           TABLE=R_SI_4,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5000.0,),
+           )
 
 FIN()
+

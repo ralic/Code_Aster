@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtnp104b.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test R
@@ -254,24 +254,28 @@ U0=CALC_CHAMP(reuse=U0,CONTRAINTE=('SIGM_ELNO',),CRITERES=('SIEQ_ELGA',),VARI_IN
 
 
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=60,
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE2',
                   NOEUD='N12',
-                  VALE=11200.,
-                  CRITERE='RELATIF',
-                  PRECISION=5.E-2,
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=100,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE2',
-                  NOEUD='N12',
-                  VALE=12240.,
+                  VALE_CALC= 1.12814469E+04,
+                  VALE_REFE=1.1200E4,
                   CRITERE='RELATIF',
-                  PRECISION=5.E-2,
-                  REFERENCE='NON_REGRESSION',),);
+                  PRECISION=0.050000000000000003,),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=U0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N12',
+                  NOM_CMP='PRE2',
+                  VALE_CALC= 1.22692283E+04,
+                  VALE_REFE=1.2240E4,
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,),
+          )
 
 FIN();

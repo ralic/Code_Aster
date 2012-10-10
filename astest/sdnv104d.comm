@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 # sdnv104d.para = tps_job 720 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,25 +157,27 @@ ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                     )
 
 
-TEST_RESU(RESU=(_F(RESULTAT   = ULM,
-                   INST       = 1.70,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 14.91,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                _F(RESULTAT   = ULM,
-                   INST       = 3.4,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 3.5,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                   ),)
+TEST_RESU(RESU=(_F(GROUP_NO='A',
+                   INST=1.7,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=ULM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=14.836109440,
+                   VALE_REFE=14.91,
+                   PRECISION=0.050000000000000003, TOLE_MACHINE=(0.050000000000000003, 1.E-3),),
+                _F(GROUP_NO='A',
+                   INST=3.3999999999999999,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=ULM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=3.624710118,
+                   VALE_REFE=3.5,
+                   PRECISION=0.050000000000000003, TOLE_MACHINE=(0.050000000000000003, 1.E-3),),
+                ),
+          )
+
 #############################
 
          
@@ -199,25 +201,27 @@ ULL =  DYNA_NON_LINE(MODELE=MODE,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
                      )
                     
-TEST_RESU(RESU=(_F(RESULTAT   = ULL,
-                   INST       = 1.70,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 14.91,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                _F(RESULTAT   = ULL,
-                   INST       = 3.4,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 3.5,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                   ),)
+TEST_RESU(RESU=(_F(GROUP_NO='A',
+                   INST=1.7,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=ULL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=14.836109440,
+                   VALE_REFE=14.91,
+                   PRECISION=0.050000000000000003, TOLE_MACHINE=(0.050000000000000003, 1.E-3),),
+                _F(GROUP_NO='A',
+                   INST=3.3999999999999999,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=ULL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=3.624710118,
+                   VALE_REFE=3.5,
+                   PRECISION=0.050000000000000003, TOLE_MACHINE=(0.050000000000000003, 1.E-3),),
+                ),
+          )
+
 ################################
 
 

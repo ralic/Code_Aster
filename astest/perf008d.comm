@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL ELASTIQUE D'UN DIABOLO PLEIN SOUMIS A UN CHARGEMENT THERMIQUE
 # perf008d.para = tps_job 2000 mem_job 4601Mo ncpus 1 liste_test W
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,24 +95,28 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    SOLVEUR=_F(METHODE='GCPC',),
                    INFO=1,);
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='NON_DEFINI',
+                   TYPE_TEST='MAX',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   TYPE_TEST='MAX',
-                   VALE=6.10e-5,
+                   VALE_CALC= 6.10113203E-05,
+                   VALE_REFE=6.0999999999999999E-05,
                    CRITERE='RELATIF',
-                   PRECISION=0.003,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   PRECISION=3.0000000000000001E-3,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='NON_DEFINI',
+                   TYPE_TEST='MAX',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   TYPE_TEST='MAX',
-                   VALE=3.05e-5,
+                   VALE_CALC= 3.05055711E-05,
+                   VALE_REFE=3.0499999999999999E-05,
                    CRITERE='RELATIF',
-                   PRECISION=0.003,
-                   REFERENCE='NON_REGRESSION',),),);
+                   PRECISION=3.0000000000000001E-3,),
+                ),
+          )
 
 if 0 :   # pour faire une belle image :
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE EN ROTATION
 # sslv104b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,11 +100,29 @@ DEPL=RESOUDRE(   MATR=ELAS,
 
 #
 
-TEST_RESU(CHAM_NO=(
- _F( CHAM_GD = DEPL,GROUP_NO = 'D',REFERENCE='ANALYTIQUE',    PRECISION = 1.E-3,NOM_CMP = 'DX',VALE = 0.00844),
- _F( CHAM_GD = DEPL,GROUP_NO = 'D',REFERENCE='ANALYTIQUE',    PRECISION = 1.E-3,NOM_CMP = 'DY',VALE = 0.00844),
- _F( CHAM_GD = DEPL,GROUP_NO = 'D',REFERENCE='ANALYTIQUE',    PRECISION = 1.E-3,NOM_CMP = 'DZ',VALE = 0.00844))
-                         )
+TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      GROUP_NO='D',
+                      PRECISION=1.E-3,
+                      CHAM_GD=DEPL,
+                      VALE_CALC= 8.44360585E-03,
+                      VALE_REFE=8.4399999999999996E-3,),
+                   _F(REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      GROUP_NO='D',
+                      PRECISION=1.E-3,
+                      CHAM_GD=DEPL,
+                      VALE_CALC= 8.44358430E-03,
+                      VALE_REFE=8.4399999999999996E-3,),
+                   _F(REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      GROUP_NO='D',
+                      PRECISION=1.E-3,
+                      CHAM_GD=DEPL,
+                      VALE_CALC= 8.44401008E-03,
+                      VALE_REFE=8.4399999999999996E-3,),
+                   ),
+          )
 
 #
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE LABORDERIE)
 # ssnl120a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,72 +112,114 @@ U1=CALC_CHAMP(DEFORMATION=('DEGE_ELNO'),reuse =U1,RESULTAT=U1,)
 
 #test de quelques resultats
 
-TEST_RESU(RESU=(
-# AUX POINTS EXTREMES IMPOSES
-_F( RESULTAT=U1,NUME_ORDRE=50,NOM_CHAM='SIEF_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='SIXX',VALE=1.707816E6,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-_F( RESULTAT=U1,NUME_ORDRE=100,NOM_CHAM='SIEF_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='SIXX',VALE=0.247022E6,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-
-#### RESTITUTION RATE TEST ####
-_F( RESULTAT=U1,NUME_ORDRE=100,NOM_CHAM='VARI_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='V3',VALE=4.48E+02,REFERENCE='NON_REGRESSION',PRECISION=1.E-3),
-
-_F( RESULTAT=U1,NUME_ORDRE=100,NOM_CHAM='VARI_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='V4',VALE=0.000,REFERENCE='NON_REGRESSION',CRITERE='ABSOLU',PRECISION=1.E-5),
-
-_F( RESULTAT=U1,NUME_ORDRE=300,NOM_CHAM='VARI_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='V3',VALE=2.45E+03,REFERENCE='NON_REGRESSION',PRECISION=1.E-3),
-
-#_F( RESULTAT=U1,NUME_ORDRE=300,NOM_CHAM='VARI_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-#NOM_CMP='V4',VALE=3.41E+05,REFERENCE='NON_REGRESSION',PRECISION=1.E-3),
-
-#####
-
-_F( RESULTAT=U1,NUME_ORDRE=150,NOM_CHAM='SIEF_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='SIXX',VALE=0.0688618E6,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-_F( RESULTAT=U1,NUME_ORDRE=200,NOM_CHAM='SIEF_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='SIXX',VALE=-22.2404E6,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-_F( RESULTAT=U1,NUME_ORDRE=250,NOM_CHAM='SIEF_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='SIXX',VALE=-2.14356E6,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-#_F( RESULTAT=U1,NUME_ORDRE=300,NOM_CHAM='SIEF_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-#NOM_CMP='SIXX',VALE=-16.3512E6,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-# ET LES MAXIS EN CONTRAINTES AVEC LES EPSILONS CORRESPONDANTS
-_F( RESULTAT=U1,NUME_ORDRE=37,NOM_CHAM='SIEF_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='SIXX',VALE=3.86138E6,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-_F( RESULTAT=U1,NUME_ORDRE=37,NOM_CHAM='DEGE_ELNO',MAILLE='M1',NOEUD='N1',
-NOM_CMP='EPXX',VALE=1.036E-4,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-_F( RESULTAT=U1,NUME_ORDRE=178,NOM_CHAM='SIEF_ELGA',MAILLE='M1',POINT=1,SOUS_POINT=1,
-NOM_CMP='SIXX',VALE=-40.9496E6,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-_F( RESULTAT=U1,NUME_ORDRE=178,NOM_CHAM='DEGE_ELNO',MAILLE='M1',NOEUD='N1',
-NOM_CMP='EPXX',VALE=-1.8E-3,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
-
-))
-
-"""
-# ===========================================================================
-# COURBES DES FIGURES DE LA DOCUMENTATION : EN COMMENTAIRE CI-DESSOUS
-# ===========================================================================
-CONBET=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='SIEF_ELGA',NOM_CMP='SIXX', MAILLE='M1', POINT=1, SOUS_POINT=1,)
-DEFBET=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='DEPL',     NOM_CMP='DX',   GROUP_NO='B',)
-
-fic = './REPE_OUT/courbes.post'
-unit = DEFI_FICHIER(FICHIER = fic, ACTION='ASSOCIER', TYPE='ASCII',ACCES='NEW')
-IMPR_FONCTION(UNITE=unit,FORMAT='TABLEAU',
-   COURBE=(
-      _F(FONCTION=DEFBET), _F(FONCTION=CONBET), )
-)
-DEFI_FICHIER(UNITE = unit, ACTION='LIBERER',)
-DETRUIRE(INFO=1,ALARME='NON',CONCEPT=(_F(NOM=unit,),),)
-"""
+TEST_RESU(RESU=(_F(NUME_ORDRE=50,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=1.707816E6,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=100,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=2.47022E5,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=100,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V3',
+                   VALE_CALC=448.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=100,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V4',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=300,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V3',
+                   VALE_CALC=2450.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=150,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=6.8861800000000003E4,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=200,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-2.2240400E7,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=250,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-2.143560E6,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=37,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=3.861380E6,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=37,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=1.036E-4,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=178,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-4.0949600E7,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=178,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-1.8E-3,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   MAILLE='M1',),
+                ),
+          )
 
 FIN()

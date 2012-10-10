@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257d.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,41 +196,37 @@ RESU=CALC_ERREUR(reuse =RESU,
 # tests sur les resultats
 # ---------------------------
 
-TEST_TABLE(TABLE=POST_K,
-           FILTRE=(_F(NOM_PARA='NOEUD_FOND',
-                      VALE_K='N10',),),
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=9.9535512918319995,
+           
            NOM_PARA='K1',
-           VALE=9.953551291832,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.00.04',);
+           TABLE=POST_K,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N10',),
+           )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERRE',
-                  VALE=7.0776387474151E+00,
+                  RESULTAT=RESU,
+                  VALE_CALC=7.0776387474150999,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.17',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUDUAL,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERRE',
-                  VALE=3.6974027831675E+05,
+                  RESULTAT=RESUDUAL,
+                  VALE_CALC=3.6974027831675002E5,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='11.1.0',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_QIRE',
-                  VALE=444.81850965289,
+                  RESULTAT=RESU,
+                  VALE_CALC=444.81850965288999,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='11.1.0',),);
+                  ),
+          )
 
 FIN();

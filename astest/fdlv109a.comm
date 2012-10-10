@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COEFFICIENTS AJOUTES EN ECOULEMENT PLAN
 # fdlv109a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,13 +128,24 @@ MODERIGI=MODE_ITER_SIMULT( MATR_RIGI=MATASKS,  MATR_MASS=MATASMS,
                                 CALC_FREQ=_F( OPTION = 'BANDE',
                                            FREQ = (0.1,2.,)))
 
-
-TEST_RESU(RESU=(_F( RESULTAT = MODES, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 3.E-2,
-                NUME_ORDRE = 1,  VALE = 0.47),
-          _F( RESULTAT = MODES, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 3.E-2,
-                NUME_ORDRE = 2,  VALE = 1.88)))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=0.481400190,
+                   VALE_REFE=0.46999999999999997,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=1.925601269,
+                   VALE_REFE=1.8799999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                ),
+          )
 
 NUMGEN=NUME_DDL_GENE(  BASE=MODES,
                          STOCKAGE='PLEIN')
@@ -190,7 +201,6 @@ MODHUMI=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,  MATR_MASS=MASTOT,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (0.01,1.,)))
 
-
 #RESTIT DES MODES EN EAU = F(MODE_EN_AIR) SUR BASE PHYSIQUE
 
 MODEAU=REST_GENE_PHYS(RESU_GENE=MODHUMI,
@@ -198,15 +208,15 @@ MODEAU=REST_GENE_PHYS(RESU_GENE=MODHUMI,
                       NOM_CHAM='DEPL')
 
 #
-TEST_RESU(RESU=_F( RESULTAT = MODEAU, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 1,  VALE = 0.45562))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODEAU,
+                  VALE_CALC=0.453257163,
+                  VALE_REFE=0.45562000000000002,
+                  CRITERE='RELATIF',
+                  PRECISION=0.012500000000000001,),
+          )
 
 FIN()
 #
-
-
-
-
-
-

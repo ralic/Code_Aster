@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE CADRE DE BARRES HAUBANE.
 # ssnl105a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -107,34 +107,84 @@ RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('SIEF_ELNO'),RESULTAT=RESU1)
 RESU1=CALC_CHAMP(reuse=RESU1,  FORCE='FORC_NODA',
                         RESULTAT=RESU1)
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU1,          NUME_ORDRE = 2,
-             PARA = 'INST',             VALE = 2.00000E+00),
-           _F(  RESULTAT = RESU1,          NUME_ORDRE = 2,
-CRITERE = 'ABSOLU',        PRECISION = 0.,
-             PARA = 'ITER_GLOB',        VALE_I = 2),
-
-           ))
-
-TEST_RESU(RESU=(
-    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
-     MAILLE = 'N01N03', POINT = 1, VALE = 1414.2, PRECISION = 3.E-4),
-    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
-     MAILLE = 'N03N04', POINT = 1, VALE = -1000., PRECISION = 3.E-4),
-    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
-MAILLE = 'N01N02', POINT = 1, VALE = 0., PRECISION = 1.E-3, CRITERE = 'ABSOLU'),
-    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
-MAILLE = 'N02N03', POINT = 1, VALE = 0., PRECISION = 1.E-3, CRITERE = 'ABSOLU'),
-    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
-MAILLE = 'N04N01', POINT = 1, VALE = 0., PRECISION = 1.E-3, CRITERE = 'ABSOLU'),
-    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
-MAILLE = 'N04N02', POINT = 1, VALE = 0., PRECISION = 1.E-3, CRITERE = 'ABSOLU'))
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   PARA='INST',
+                   RESULTAT=RESU1,
+                   VALE_CALC=2.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='ITER_GLOB',
+                   VALE_CALC_I=2,
+                   RESULTAT=RESU1,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
           )
 
-TEST_RESU(
-    RESU=_F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'FORC_NODA', NOM_CMP = 'DX',
-     NOEUD = 'N03', VALE = 1000., PRECISION = 3.E-4)
-         )
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC=1414.2,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   MAILLE='N01N03',),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC=-1000.0,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   MAILLE='N03N04',),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='ABSOLU',
+                   MAILLE='N01N02',),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='ABSOLU',
+                   MAILLE='N02N03',),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='ABSOLU',
+                   MAILLE='N04N01',),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='ABSOLU',
+                   MAILLE='N04N02',),
+                ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=RESU1,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='N03',
+                  NOM_CMP='DX',
+                  VALE_CALC=1000.0,
+                  TOLE_MACHINE=2.9999999999999997E-4,
+                  ),
+          )
 
 FIN( )
 #

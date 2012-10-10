@@ -26,20 +26,24 @@ MODE_CO=CALC_CHAMP(reuse =MODE_CO,
                 RESULTAT=MODE_CO,
                 FORCE='REAC_NODA')
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MODE_CO,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('ACCE','X'),
-                   VALE=0.02533,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.025330000,
+                   VALE_REFE=0.025329999999999998,
+                   NOEUD_CMP=('ACCE', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MODE_CO,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('ACCE','X'),
-                   VALE=0.02533,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.025330000,
+                   VALE_REFE=0.025329999999999998,
+                   NOEUD_CMP=('ACCE', 'X'),),
+                ),
+          )
 
 #-----------------------------------------------------------------------
 
@@ -56,20 +60,24 @@ COABS=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=COABS,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=COABS,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
 
 #-----------------------------------------------------------------------
 
@@ -87,20 +95,24 @@ COSRS=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=COSRS,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=COSRS,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
 
 #-----------------------------------------------------------------------
 
@@ -117,20 +129,24 @@ CODPC=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=CODPC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=CODPC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
 
 #-----------------------------------------------------------------------
 
@@ -147,20 +163,24 @@ COCQC=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=COCQC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=COCQC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
 
 #-----------------------------------------------------------------------
 
@@ -178,20 +198,25 @@ CODSC=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=CODSC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=CODSC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.02302302705,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.023027055,
+                   VALE_REFE=0.023023027049999999,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
+
 FIN();
 
 

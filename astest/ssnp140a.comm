@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI DE TRACTION D UNE PLAQUE TROUEE AVEC LA METHODE IMPLEX
 # ssnp140a.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,18 +144,78 @@ DIFF=CALC_FONCTION(COMB=(
                           _F( FONCTION = FXIE, COEF = -1.),
                           ) );
 
-TEST_FONCTION(VALEUR=(
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 4.00000E-02,VALE_REFE=0.,PRECISION=1e-6,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 8.00000E-02,VALE_REFE=0.,PRECISION=5.7e-4,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 1.20000E-01,VALE_REFE=0.,PRECISION=5.1e-3,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 1.60000E-01,VALE_REFE=0.,PRECISION=9.e-3,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 2.00000E-01,VALE_REFE=0.,PRECISION=0.03,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 3.20000E-01,VALE_REFE=0.,PRECISION=0.0013,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 4.00000E-01,VALE_REFE=0.,PRECISION=5.64e-4,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 6.00000E-01,VALE_REFE=0.,PRECISION=1.61e-4,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 8.00000E-01,VALE_REFE=0.,PRECISION=9.44e-5,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 1.00000E+00,VALE_REFE=0.,PRECISION=8.7e-5,CRITERE='ABSOLU',),
-            ),);
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.040000000000000001,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=9.9999999999999995E-07,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.000565856185452,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.080000000000000002,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=5.6999999999999998E-4,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.00500015233082,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.12,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=5.1000000000000004E-3,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.00895122810039,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.16,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=8.9999999999999993E-3,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.0294154198527,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.20000000000000001,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.029999999999999999,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.00126786955284,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.32000000000000001,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.2999999999999999E-3,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.00056339261269,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.40000000000000002,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=5.6400000000000005E-4,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.000160995064821,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.59999999999999998,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.6100000000000001E-4,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-9.43465332592e-05,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.80000000000000004,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=9.4400000000000004E-05,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-8.69697596493e-05,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.0,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=8.7000000000000001E-05,
+                         FONCTION=DIFF,),
+                      ),
+              )
 
 # CALCUL DU CRITERE DES MOINDRES CARRES ENTRE LES DEUX COURBES
 # ON INTEGRE LA DIFF DES DEUX COURBES ET ON SOMME LES TERMES
@@ -166,12 +226,11 @@ INT=CALC_FONCTION(INTEGRE=(
 TINT=CREA_TABLE(FONCTION= _F(FONCTION = DIFF,
                              PARA = ('INST','DY')),);
 
-TEST_TABLE( TABLE=TINT,
-            NOM_PARA='DY',
-            TYPE_TEST='SOMM_ABS',
-            REFERENCE='NON_REGRESSION',
-            PRECISION=1.E-10,
-            VALE=0.082413281462864,);
-
+TEST_TABLE(
+           VALE_CALC=0.082413281462864002,
+           NOM_PARA='DY',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TINT,
+           )
 
 FIN();

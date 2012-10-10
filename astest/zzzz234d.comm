@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS DISCRETS 3D
 # zzzz234d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,21 +65,22 @@ RE_DISTL=STAT_NON_LINE(MODELE  = MO_DISTL,
 TB_DISTL = RECU_TABLE(CO=RE_DISTL,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_DISTL)
-TEST_TABLE(TABLE=TB_DISTL, NOM_PARA='ITER_GLOB', VALE_I=1,FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC_I=1,
+           NOM_PARA='ITER_GLOB',
+           TABLE=TB_DISTL,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_RESU(RESU=(_F(RESULTAT   = RE_DISTL,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'B',
-                   NOM_CMP    = 'DY',
-                   VALE       = -3.789457728599E-06,
-                   
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.2.20',
-                   PRECISION  = 1E-8,
-                   ),),
-       )
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  RESULTAT=RE_DISTL,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-3.789457728599E-06,
+                  ),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
 
@@ -118,7 +119,14 @@ SELG01=CREA_CHAMP(
    MODELE=MO_DISTL,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VELG01, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELG01,NOM_CMP='N',MAILLE='M1',POINT=1,VALE=-4000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=1,
+                       NOM_CMP='N',
+                       MAILLE='M1',
+                       CHAM_GD=SELG01,
+                       VALE_CALC=-4.00000000E+03,
+                       VALE_REFE=-4000.0,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds par element  --- 
   
@@ -154,7 +162,14 @@ SELN01=CREA_CHAMP(
    MODELE=MO_DISTL,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VELN01, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELN01,NOM_CMP='N',MAILLE='M1',NOEUD='N2',VALE=-4000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='N',
+                       MAILLE='M1',
+                       CHAM_GD=SELN01,
+                       VALE_CALC=-4.00000000E+03,
+                       VALE_REFE=-4000.0,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
 
@@ -190,7 +205,13 @@ SNOE01=CREA_CHAMP(
    MODELE=MO_DISTL,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VNOE01, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=SNOE01,NOM_CMP='N',NOEUD='N2',VALE=-4000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='N',
+                     CHAM_GD=SNOE01,
+                     VALE_CALC=-4.00000000E+03,
+                     VALE_REFE=-4000.0,),
+          )
 
 #----------------------------------------------------------------------
 # 2 --> DIST_T : T_N (NOEUD)
@@ -234,21 +255,22 @@ RE_DISTN=STAT_NON_LINE(MODELE  = MO_DISTN,
 TB_DISTN = RECU_TABLE(CO=RE_DISTN,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_DISTN)
-TEST_TABLE(TABLE=TB_DISTN, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC_I=1,
+           NOM_PARA='ITER_GLOB',
+           TABLE=TB_DISTN,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_RESU(RESU=(_F(RESULTAT   = RE_DISTN,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'B',
-                   NOM_CMP    = 'DY',
-                   VALE       = -0.012646628704071,
-                   
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '11.01.18',
-                   PRECISION  = 1E-8,
-                   ),),
-       )
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  RESULTAT=RE_DISTN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.012646628704070999,
+                  ),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
 
@@ -285,7 +307,14 @@ SELG02=CREA_CHAMP(
    MODELE=MO_DISTN,  PROL_ZERO='OUI',
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VELG02, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELG02,NOM_CMP='N',MAILLE='N1',POINT=1,VALE=-4000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=1,
+                       NOM_CMP='N',
+                       MAILLE='N1',
+                       CHAM_GD=SELG02,
+                       VALE_CALC=-4.00000000E+03,
+                       VALE_REFE=-4000.0,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds par element  ---   
 FELN02=CREA_CHAMP(
@@ -320,7 +349,14 @@ SELN02=CREA_CHAMP(
    MODELE=MO_DISTN,  PROL_ZERO='OUI',
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VELN02, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELN02,NOM_CMP='N',MAILLE='N1',NOEUD='N1',VALE=-4000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='N',
+                       MAILLE='N1',
+                       CHAM_GD=SELN02,
+                       VALE_CALC=-4.00000000E+03,
+                       VALE_REFE=-4000.0,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds  --- 
   
@@ -356,7 +392,13 @@ SNOE02=CREA_CHAMP(
    MODELE=MO_DISTN,  PROL_ZERO='OUI',
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VNOE02, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=SNOE02,NOM_CMP='N',NOEUD='N1',VALE=-4318.81182,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='N',
+                     CHAM_GD=SNOE02,
+                     VALE_CALC=-4.31881182E+03,
+                     VALE_REFE=-4318.8118199999999,),
+          )
 
 #-------------------------------------------------------------------------------------
 # 3 --> DIS_TR : TR_L (SEG2)
@@ -395,21 +437,22 @@ RE_DITRL=STAT_NON_LINE(MODELE  = MO_DITRL,
 TB_DITRL = RECU_TABLE(CO=RE_DITRL,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_DITRL)
-TEST_TABLE(TABLE=TB_DITRL, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC_I=1,
+           NOM_PARA='ITER_GLOB',
+           TABLE=TB_DITRL,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_RESU(RESU=(_F(RESULTAT   = RE_DITRL,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'B',
-                   NOM_CMP    = 'DY',
-                   VALE       = 4.1684035014589E-06,
-                   
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.2.20',
-                   PRECISION  = 1E-8,
-                   ),),
-       )
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  RESULTAT=RE_DITRL,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=4.1684035014589001E-06,
+                  ),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
 
@@ -446,7 +489,14 @@ SELG03=CREA_CHAMP(
    MODELE=MO_DITRL,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VELG03, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELG03,NOM_CMP='N',MAILLE='M1',POINT=1,VALE=2000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=1,
+                       NOM_CMP='N',
+                       MAILLE='M1',
+                       CHAM_GD=SELG03,
+                       VALE_CALC= 2.00000000E+03,
+                       VALE_REFE=2000.0,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds par element  --- 
   
@@ -482,7 +532,14 @@ SELN03=CREA_CHAMP(
    MODELE=MO_DITRL,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VELN03, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELN03,NOM_CMP='N',MAILLE='M1',NOEUD='N2',VALE=2000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='N',
+                       MAILLE='M1',
+                       CHAM_GD=SELN03,
+                       VALE_CALC= 2.00000000E+03,
+                       VALE_REFE=2000.0,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
 FNOE03=CREA_CHAMP(
@@ -517,7 +574,13 @@ SNOE03=CREA_CHAMP(
    MODELE=MO_DITRL,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VNOE03, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=SNOE03,NOM_CMP='N',NOEUD='N2',VALE=2000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='N',
+                     CHAM_GD=SNOE03,
+                     VALE_CALC= 2.00000000E+03,
+                     VALE_REFE=2000.0,),
+          )
 
 #-------------------------------------------------------------------------------------
 # 4 --> DIS_TR : TR_N (POI)
@@ -553,20 +616,22 @@ RE_DITRN=STAT_NON_LINE(MODELE  = MO_DITRN,
 TB_DITRN = RECU_TABLE(CO=RE_DITRN,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_DITRN)
-TEST_TABLE(TABLE=TB_DITRN, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
-TEST_RESU(RESU=(_F(RESULTAT   = RE_DISTN,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'B',
-                   NOM_CMP    = 'DY',
-                   VALE       = -0.012646628704071,
-                   
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '11.01.18',
-                   PRECISION  = 1E-8,
-                   ),),
-       )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC_I=1,
+           NOM_PARA='ITER_GLOB',
+           TABLE=TB_DITRN,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  RESULTAT=RE_DISTN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.012646628704070999,
+                  ),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---   
 
@@ -603,7 +668,14 @@ SELG04=CREA_CHAMP(
    MODELE=MO_DITRN,  PROL_ZERO='OUI',
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VELG04, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELG04,NOM_CMP='N',MAILLE='N1',POINT=1,VALE=2000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=1,
+                       NOM_CMP='N',
+                       MAILLE='N1',
+                       CHAM_GD=SELG04,
+                       VALE_CALC= 2.00000000E+03,
+                       VALE_REFE=2000.0,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds par element  --- 
   
@@ -639,7 +711,14 @@ SELN04=CREA_CHAMP(
    MODELE=MO_DITRN,  PROL_ZERO='OUI',
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VELN04, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SELN04,NOM_CMP='N',MAILLE='N1',NOEUD='N1',VALE=2000.0,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='N',
+                       MAILLE='N1',
+                       CHAM_GD=SELN04,
+                       VALE_CALC= 2.00000000E+03,
+                       VALE_REFE=2000.0,),
+          )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds  ---   
 
@@ -675,6 +754,12 @@ SNOE04=CREA_CHAMP(
    MODELE=MO_DITRN,  PROL_ZERO='OUI',
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VNOE04, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=SNOE04,NOM_CMP='N',NOEUD='N1',VALE=2637.623643,REFERENCE='ANALYTIQUE'),)
+TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='N',
+                     CHAM_GD=SNOE04,
+                     VALE_CALC= 2.63762364E+03,
+                     VALE_REFE=2637.6236429999999,),
+          )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185o.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,37 +158,30 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',               
-              VALE=1.23E+07,
+              VALE_CALC=1.23E+07,
               CRITERE='RELATIF',
-              PRECISION=0.003,
-              REFERENCE='NON_REGRESSION',);
+              TOLE_MACHINE=0.003,);
 
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',               
-              VALE=1.23E+07,
+              VALE_CALC=1.23E+07,
               CRITERE='RELATIF',
-              PRECISION=0.003,
-              REFERENCE='NON_REGRESSION',);
+              TOLE_MACHINE=0.003,);
               
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',               
-              VALE=1.23E+07,
+              VALE_CALC=1.23E+07,
               CRITERE='RELATIF',
-              PRECISION=0.003,
-              REFERENCE='NON_REGRESSION',);
+              TOLE_MACHINE=0.003,);
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',               
-              VALE=1.23E+07,
+              VALE_CALC=1.23E+07,
               CRITERE='RELATIF',
-              PRECISION=0.003,
-              REFERENCE='NON_REGRESSION',);           
-
-
-#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=UTOT1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')));
+              TOLE_MACHINE=0.003,);           
 
 
 FIN();

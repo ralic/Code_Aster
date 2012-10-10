@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,11 +27,9 @@ def hash_new():
    try:
       import hashlib
       _hash_new = hashlib.md5()
-      print 'hashlib'
    except ImportError:
       import md5
       _hash_new = md5.new()
-      print 'md5'
    return _hash_new
 
 
@@ -70,8 +68,8 @@ dict_func_test = {
 }
 
 #-------------------------------------------------------------------------------
-def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
-                           CRITERE, PRECISION, INFO, **kwargs):
+def test_fichier_ops(self, FICHIER, NB_VALE, VALE_CALC, VALE_CALC_K, TYPE_TEST,
+                     TOLE_MACHINE, CRITERE, INFO, **kwargs):
    """
      Macro permettant de tester la non-regression d'un fichier.
      On teste le nombre de réels présents, et, facultativement, la
@@ -93,6 +91,7 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
    from Utilitai.Utmess import  UTMESS
 
    is_ok = 0
+   TYPE_TEST = TYPE_TEST or 'SOMM'
 
    # vérifier que le fichier a été fermé
    __tinfo = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', FICHIER=FICHIER)
@@ -115,43 +114,36 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
    fileobj.close()
 
    # produit le TEST_TABLE
-   refsum = VALE_K or 'non testé'
+   refsum = VALE_CALC_K or 'non testé'
    is_ok = int(chksum == refsum)
    __tab1 = CREA_TABLE(LISTE=(_F(PARA='NBVAL',  LISTE_I=nbval,),
                               _F(PARA='VALEUR', LISTE_R=valeur,),
                               _F(PARA='TEXTE',  LISTE_I=is_ok),),)
-   if VALE is not None:
-      sVALE = '%20.13e' % VALE
+   if VALE_CALC is not None:
+      sVALE = '%20.13e' % VALE_CALC
    else:
       sVALE = 'non testé'
    UTMESS('I', 'TEST0_4', vali=(nbval, NB_VALE), valr=valeur, valk=(chksum, refsum, FICHIER, sVALE))
    
-   kwopt = { 'REFERENCE' : kwargs['REFERENCE'], }
-   if kwargs['REFERENCE'] == 'NON_REGRESSION':
-      kwopt['VERSION'] = kwargs['VERSION']
-   
    TEST_TABLE(TABLE=__tab1,
               NOM_PARA='NBVAL',
-              VALE_I=NB_VALE,
+              VALE_CALC_I=NB_VALE,
               CRITERE='ABSOLU',
-              PRECISION=0,
-              **kwopt)
+              TOLE_MACHINE=0,)
 
-   if VALE:
+   if VALE_CALC:
       TEST_TABLE(TABLE=__tab1,
                  NOM_PARA='VALEUR',
-                 VALE=VALE,
                  CRITERE=CRITERE,
-                 PRECISION=PRECISION,
-                 **kwopt)
+                 VALE_CALC=VALE_CALC,
+                 TOLE_MACHINE=TOLE_MACHINE,)
 
-   if VALE_K:
+   if VALE_CALC_K:
       TEST_TABLE(TABLE=__tab1,
                  NOM_PARA='TEXTE',
-                 VALE_I=int(True),
-                 PRECISION=0,
-                 CRITERE='ABSOLU',
-                 **kwopt)
+                 VALE_CALC_I=int(True),
+                 TOLE_MACHINE=0,
+                 CRITERE='ABSOLU',)
 
    return ier
 

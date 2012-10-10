@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106g.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -379,66 +379,71 @@ DETRUIRE(CONCEPT=_F(NOM=TDXA4_G2,),);
 
 DETRUIRE(CONCEPT=_F(NOM=TFYA4_G2,),);
 
-TEST_TABLE(TABLE=D_DXA4,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=(t1 * 0.25),),
-           NOM_PARA='DX_DXG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
            PRECISION=0.25,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=D_FYA4,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=(t1 * 0.25),),
-           NOM_PARA='DY_DYG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TFYA4_G0,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=t1,),
-           NOM_PARA='DY',
-           VALE=3353.497694,
-           CRITERE='RELATIF',
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_DXA4,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=t2,),
+           VALE_CALC=-0.205467750,
+           VALE_REFE=0.0,
            NOM_PARA='DX_DXG',
-           VALE=-0.2487559789,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_FYA4,
+           TABLE=D_DXA4,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=t2,),
+                     VALE=0.25,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.040139557,
+           VALE_REFE=0.0,
            NOM_PARA='DY_DYG',
-           VALE=0.2670950681,
-           CRITERE='ABSOLU',
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=TFYA4_G0,
+           TABLE=D_FYA4,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=t2,),
-           NOM_PARA='DY',
-           VALE=-2577.113397,
-           CRITERE='RELATIF',
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+                     VALE=0.25,),
+           )
 
-TEST_TABLE(TABLE=TFYA4_G0,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=t3,),
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=3353.4976940000001,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='DY',
-           VALE=25.02051934,
-           CRITERE='RELATIF',
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=TFYA4_G0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-0.24875597890000001,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='DX_DXG',
+           TABLE=D_DXA4,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.2670950681,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='DY_DYG',
+           TABLE=D_FYA4,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=-2577.1133970000001,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='DY',
+           TABLE=TFYA4_G0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=25.02051934,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='DY',
+           TABLE=TFYA4_G0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
 FIN();

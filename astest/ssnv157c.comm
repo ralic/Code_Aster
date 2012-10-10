@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LOIS NON LOCALES A DEFO REGULARISEES SUR BARREAU 2D DPLAN
 # ssnv157c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,22 +117,22 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                                  ETA_PILO_MIN=0.4,),
                        );
 
-TEST_RESU(RESU=(  _F(
-               RESULTAT = EVOL1,
-               REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = 42,
-               NOEUD = 'N2',
-               NOM_CHAM = 'DEPL',
-               NOM_CMP = 'DY',
-               VALE = 9.54359E-3), _F(
-               RESULTAT = EVOL1,
-               REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = 42,
-               MAILLE = 'M31',
-               POINT = 2,
-               NOM_CHAM = 'VARI_ELGA',
-               NOM_CMP = 'V1',
-               VALE = 9.97659E-01))
-            )
+TEST_RESU(RESU=(_F(NUME_ORDRE=42,
+                   RESULTAT=EVOL1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DY',
+                   VALE_CALC=9.5435899999999994E-3,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=42,
+                   POINT=2,
+                   RESULTAT=EVOL1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.99765899999999996,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M31',),
+                ),
+          )
 
 FIN();

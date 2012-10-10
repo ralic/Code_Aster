@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  MODELISATION DE L'AMORCAGE DE FISSURE AVEC LE MODELE ENDO_HETEROGENE
 # ssnp147a.para = tps_job 30 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,16 +206,15 @@ IMPR_TABLE(TABLE = RESTEST,
            UNITE=8,
            );
 
-TEST_RESU(RESU=(  _F(
-               RESULTAT = EVOEL,
-               REFERENCE = 'NON_REGRESSION',
-               INST = 1.0,
-               GROUP_NO = 'testptn',
-               NOM_CHAM = 'DEPL',
-               NOM_CMP = 'DX',
-               VALE = 1.0138E-04 , PRECISION=1.E-3, )
-               )
-            )
+TEST_RESU(RESU=_F(GROUP_NO='testptn',
+                  INST=1.0,
+                  RESULTAT=EVOEL,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.0137999999999999E-4,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 EVOEL = CALC_CHAMP(reuse = EVOEL,
                 RESULTAT = EVOEL,

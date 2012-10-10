@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP DYNAMIQUE TRANSITOIRE
 # forma12a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,26 +61,27 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=20,),);
 
-
-TEST_RESU(RESU=(
-    _F(   RESULTAT = MODES,         PARA = 'FREQ',
-          NUME_ORDRE = 1,           VALE = 70.261,
-          REFERENCE='NON_REGRESSION',),
-    _F(   RESULTAT = MODES,         PARA = 'FREQ',
-          NUME_ORDRE = 2,           VALE = 128.256,
-          REFERENCE='NON_REGRESSION',),
-    _F(   RESULTAT = MODES,         PARA = 'FREQ',
-          NUME_ORDRE = 4,           VALE = 189.140,
-          REFERENCE='NON_REGRESSION',),
-    _F(   RESULTAT = MODES,         PARA = 'FREQ',
-          NUME_ORDRE = 6,           VALE = 236.595,
-          REFERENCE='NON_REGRESSION',),
-                ))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   VALE_CALC=70.260999999999996,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   VALE_CALC=128.256,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   VALE_CALC=189.13999999999999,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   VALE_CALC=236.595,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 FIN();
-
-
-
-
-
-

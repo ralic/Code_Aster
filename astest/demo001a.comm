@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 # demo001a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -293,9 +293,12 @@ ETA_PILO=RECU_FONCTION(RESULTAT=RESUPILO,
                        NOM_PARA_RESU='ETA_PILOTAGE',
                        );
 
-TEST_FONCTION(VALEUR=( _F(FONCTION=ETA_PILO,
-                         NOM_PARA='INST',
-                         VALE_PARA=1.6,
-                         VALE_REFE=5.67,
-                         REFERENCE='NON_REGRESSION',),),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.6699999999999999,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=1.6000000000000001,
+                        NOM_PARA='INST',
+                        FONCTION=ETA_PILO,
+                        ),
+              )
+
 FIN();

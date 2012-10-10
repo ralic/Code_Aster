@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE L'OPERATEUR DEFI_CABLE_BP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,38 +116,47 @@ IMPR_TABLE(   TABLE=TABL_CA,
 # TESTS
 ########################################################################
 
-TEST_TABLE(
-        TABLE=TABL_CA,
-        REFERENCE='ANALYTIQUE',
-        FILTRE=_F( NOM_PARA = 'NOEUD_CABLE', VALE_K = 'N101'),
-        NOM_PARA='INDICE_PROJECTION',
-        CRITERE='ABSOLU',
-        VALE_I=0 )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,
+           NOM_PARA='INDICE_PROJECTION',
+           TABLE=TABL_CA,
+           FILTRE=_F(NOM_PARA='NOEUD_CABLE',
+                     VALE_K='N101',),
+           )
 
-TEST_TABLE(
-        TABLE=TABL_CA,
-        REFERENCE='ANALYTIQUE',
-        FILTRE=_F( NOM_PARA = 'NOEUD_CABLE', VALE_K = 'N105'),
-        NOM_PARA='INDICE_PROJECTION',
-        CRITERE='ABSOLU',
-        VALE_I=2 )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=2,
+           VALE_REFE_I=2,
+           NOM_PARA='INDICE_PROJECTION',
+           TABLE=TABL_CA,
+           FILTRE=_F(NOM_PARA='NOEUD_CABLE',
+                     VALE_K='N105',),
+           )
 
-TEST_TABLE(
-        TABLE=TABL_CA,
-        REFERENCE='ANALYTIQUE',
-        FILTRE=_F( NOM_PARA = 'NOEUD_CABLE', VALE_K = 'N105'),
-        NOM_PARA='EXCENTRICITE',
-        CRITERE='ABSOLU',
-        PRECISION=1.0E-10,
-        VALE=0.1 )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC=0.10000000000,
+           VALE_REFE=0.10000000000000001,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='EXCENTRICITE',
+           TABLE=TABL_CA,
+           FILTRE=_F(NOM_PARA='NOEUD_CABLE',
+                     VALE_K='N105',),
+           )
 
-TEST_TABLE(
-        TABLE=TABL_CA,
-        REFERENCE='ANALYTIQUE',
-        FILTRE=_F( NOM_PARA = 'NOEUD_CABLE', VALE_K = 'N109'),
-        NOM_PARA='INDICE_PROJECTION',
-        CRITERE='ABSOLU',
-        VALE_I=0 )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,
+           NOM_PARA='INDICE_PROJECTION',
+           TABLE=TABL_CA,
+           FILTRE=_F(NOM_PARA='NOEUD_CABLE',
+                     VALE_K='N109',),
+           )
 
 FIN( )
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE calcul non lineaire mecanique avec changement de maillage
 # zzzz253a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,38 +173,58 @@ CALC_CHAMP(reuse =RESU2,RESULTAT=RESU2,INST=1.0,VARI_INTERNE='VARI_NOEU',CONTRAI
 CALC_CHAMP(reuse =RESU3,RESULTAT=RESU3,INST=1.0,VARI_INTERNE='VARI_NOEU',CONTRAINTE='SIGM_NOEU')
 #IMPR_RESU(RESU=_F(RESULTAT=RESU2,INST=1.)) ; IMPR_RESU(RESU=_F(RESULTAT=RESU3,INST=1.))
 
-TEST_RESU(RESU=(
-
-# Les valeurs obtenues pour RESU2 sont de non-regression.
-# Elles servent de reference pour RESU3 et RESU1
-   _F(RESULTAT=RESU2, INST=1.0, NOM_CHAM='SIGM_NOEU', NOM_CMP='SIXX',
-                   GROUP_NO='C2', VALE= 3.1907992568411E+06 , REFERENCE='NON_REGRESSION'),
-   _F(RESULTAT=RESU2, INST=1.0, NOM_CHAM='VARI_NOEU', NOM_CMP='V1',
-                   GROUP_NO='C2', VALE= 2.6584363130216E-06 , REFERENCE='NON_REGRESSION'),
-
-# Pour RESU3, on doit trouver des valeurs pas trop differentes de celles de RESU2 :
-   _F(RESULTAT=RESU3, INST=1.0, NOM_CHAM='SIGM_NOEU', NOM_CMP='SIXX',
-                   GROUP_NO='C2', VALE= 3.1907992568411E+06 , PRECISION=1.E-3, REFERENCE='AUTRE_ASTER'),
-# Attention : comme l'erreur sur VARI_NOEU est importante (18%), on est oblige
-#             de fournir 2 valeurs a PRECISON=(prec1,prec2) :
-#                    - prec1 est la tolerance pour la solution
-#                    - prec2 est la tolerance choisir l'instant
-
-# L'erreur importante (prec1) n'est pourtant pas inquietante car c'est la valeur obtenue par
-# moyenne arithmetique des 2 champs ELNO le long la discontinuite de materiau.
-# Ces 2 champs ELNO etant eux-memes extrapoles des points de Gauss vers les noeuds sur les 2 elements les plus
-# chahutes car ils bordent la discontinuite.
-# Quand on regarde la courbe V1(=deformation-plastique-cumulee) = f(x) sur les points de Gauss,
-# on voit que la difference RESU2 / RESU3 n'est pas si importante que cela.
-   _F(RESULTAT=RESU3, INST=1.0, NOM_CHAM='VARI_NOEU', NOM_CMP='V1',
-                   GROUP_NO='C2', VALE= 2.6584363130216E-06 , PRECISION=(20.E-2,1.E-3), REFERENCE='AUTRE_ASTER'),
-
-# Pour RESU1, on doit trouver des valeurs pas trop differentes de celles de RESU2 :
-   _F(RESULTAT=RESU1, INST=1.0, NOM_CHAM='SIGM_NOEU', NOM_CMP='SIXX',
-                   GROUP_NO='C1', VALE= 3.1907992568411E+06 , PRECISION=1.E-2, REFERENCE='AUTRE_ASTER'),
-   _F(RESULTAT=RESU1, INST=1.0, NOM_CHAM='VARI_NOEU', NOM_CMP='V1',
-                   GROUP_NO='C1', VALE= 2.6584363130216E-06 , PRECISION=2.E-2, REFERENCE='AUTRE_ASTER'),
-))
+TEST_RESU(RESU=(_F(GROUP_NO='C2',
+                   INST=1.0,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=3.1907992568410998E6,
+                   TOLE_MACHINE=1.E-3,),
+                _F(GROUP_NO='C2',
+                   INST=1.0,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='VARI_NOEU',
+                   NOM_CMP='V1',
+                   VALE_CALC=2.6584363130215999E-06,
+                   TOLE_MACHINE=1.E-3,),
+                _F(GROUP_NO='C2',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU3,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 3.19185117E+06,
+                   VALE_REFE=3.1907992568410998E6,
+                   PRECISION=1.E-3,),
+                _F(GROUP_NO='C2',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU3,
+                   NOM_CHAM='VARI_NOEU',
+                   NOM_CMP='V1',
+                   VALE_CALC= 3.15599684E-06,
+                   VALE_REFE=2.6584363130215999E-06,
+                   PRECISION=0.20000000000000001, TOLE_MACHINE=(0.20000000000000001, 1.E-3),),
+                _F(GROUP_NO='C1',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 3.20927848E+06,
+                   VALE_REFE=3.1907992568410998E6,
+                   PRECISION=1.E-2,),
+                _F(GROUP_NO='C1',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='VARI_NOEU',
+                   NOM_CMP='V1',
+                   VALE_CALC= 2.69538740E-06,
+                   VALE_REFE=2.6584363130215999E-06,
+                   PRECISION=0.02,),
+                ),
+          )
 
 FIN()
 

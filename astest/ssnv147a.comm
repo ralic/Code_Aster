@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BARREAU FRAGILE EN TRACTION
 # ssnv147a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,62 +163,67 @@ TRAVAIL = POST_ELEM(
   )
 
 
-TEST_RESU(RESU=(  _F(
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 11,
-               GROUP_NO = 'E',
-               NOM_CHAM = 'DEPL',
-               NOM_CMP = 'DZ',
-               VALE = 9.25E-5), _F(
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 11,
-               MAILLE = 'M1',
-               POINT = 1,
-               NOM_CHAM = 'SIEF_ELGA',
-               NOM_CMP = 'SIZZ',
-               VALE = 5.E-1), _F(
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 11,
-               MAILLE = 'M1',
-               POINT = 1,
-               NOM_CHAM = 'VARI_ELGA',
-               NOM_CMP = 'V1',
-               VALE = 0.964285714286))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=11,
+                   GROUP_NO='E',
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=9.2499999999999999E-05,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=11,
+                   POINT=1,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=0.5,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=11,
+                   POINT=1,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.96428571428599996,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                ),
+          )
 
+TEST_TABLE(
+           VALE_CALC=11.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INST',
+           TABLE=PILO,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=11,),
+           )
 
-TEST_TABLE (
-  TABLE = PILO,
-  NOM_PARA = 'INST',
-  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=11),
-  VALE = 11.,
-  REFERENCE = 'NON_REGRESSION'
-  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.500000000,
+           VALE_REFE=0.5,
+           NOM_PARA='ETA_PILOTAGE',
+           TABLE=PILO,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=11,),
+           )
 
-TEST_TABLE (
-  TABLE = PILO,
-  NOM_PARA = 'ETA_PILOTAGE',
-  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=11),
-  VALE = 0.5,
-  REFERENCE = 'ANALYTIQUE'
-  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 2.31250003E-07,
+           VALE_REFE=2.3125000000000001E-07,
+           NOM_PARA='TRAV_ELAS',
+           TABLE=TRAVAIL,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=11,),
+           )
 
-TEST_TABLE (
-  TABLE = TRAVAIL,
-  NOM_PARA = 'TRAV_ELAS',
-  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=11),
-  VALE = 2.3125E-7,
-  REFERENCE = 'ANALYTIQUE'
-  )
-
-TEST_TABLE (
-  TABLE = TRAVAIL,
-  NOM_PARA = 'TRAV_REEL',
-  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=11),
-  VALE = 1.91875E-6,
-  REFERENCE = 'ANALYTIQUE'
-  )
-
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 1.91875003E-06,
+           VALE_REFE=1.9187500000000001E-06,
+           NOM_PARA='TRAV_REEL',
+           TABLE=TRAVAIL,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=11,),
+           )
 
 FIN()
 #

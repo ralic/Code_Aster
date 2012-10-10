@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,10 +34,11 @@ from Noyau.N_info import message, SUPERV
 
 from strfunc import convert
 
-import genpy
 import aster_core
 import aster
 import checksd
+from command_text import CommandTextVisitor
+from code_file import CodeVisitor
 
 class ETAPE:
    """
@@ -138,23 +139,9 @@ class ETAPE:
       # impression du fichier .code : compte rendu des commandes et
       # mots clés activés par l'ETAPE
       if self.jdc.fico != None:
-        v=genpy.genpy(defaut='avec',simp='into')
-        self.accept(v)
-        chaine = ' %-10s%-20s' % (self.jdc.fico, self.nom)
-        for mc in v.args.keys():
-            if type(v.args[mc]) in (str, unicode):
-              chainec = '%s %-20s%-20s%-20s' % (chaine, '--', mc, v.args[mc])
-              aster.affiche('CODE', chainec)
-            elif type(v.args[mc]) == list:
-              for mcs in v.args[mc]:
-                 for mcf in mcs.keys():
-                  chainec = '%s %-20s%-20s%s' % (chaine, mc, mcf, mcs[mcf])
-                  aster.affiche('CODE', chainec)
-            elif type(v.args[mc]) == dict:
-                mcs = v.args[mc]
-                for mcf in mcs.keys():
-                  chainec = '%s %-20s%-20s%s' % (chaine, mc, mcf, mcs[mcf])
-                  aster.affiche('CODE', chainec)
+        fcode = CodeVisitor(self.jdc.fico)
+        self.accept(fcode)
+        aster.affiche('CODE', fcode.get_text())
 
       if (not isinstance(self.parent,MACRO_ETAPE)) or \
          (self.parent.nom=='INCLUDE'             ) or \
@@ -175,14 +162,12 @@ class ETAPE:
             # commande non comptabilisée (INCLUDE)
             UTMESS('I', 'SUPERVIS2_72', valk=type_concept)
 
-         # recuperation du texte de la commande courante dans la chaine
-         # commande_formatee
-         v=genpy.genpy(defaut='avec')
-         self.accept(v)
+         # recuperation du texte de la commande courante
          if self.jdc.ctree:
             self.accept(self.jdc.ctree)
-         commande_formatee = v.formate_etape()
-         aster.affiche('MESSAGE', convert(commande_formatee))
+         cmdtext = CommandTextVisitor()
+         self.accept(cmdtext)
+         aster.affiche('MESSAGE', convert(cmdtext.get_text()))
 
       return
 

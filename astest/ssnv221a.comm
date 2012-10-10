@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI HYDROSTATIQUE AVEC LA LOI DRUCKER-PRAGER ASSOCIEE, ECROUISSAGE LINEAIRE
 # ssnv221a.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,59 +165,65 @@ U1 = CALC_TABLE(reuse = U1,
 #----------------------------------------------------------------#
 
 tol = 1.E-8
-TEST_TABLE(TABLE     = U1,
-           REFERENCE = 'ANALYTIQUE',
-           NOM_PARA  = 'TRACE',
-           PRECISION = tol,
-           TYPE_TEST = 'MAX',
-           CRITERE   = 'RELATIF',
-           VALE      = traceSigUlt )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=50.000000000,
+           VALE_REFE=50.0,
+           NOM_PARA='TRACE',
+           TYPE_TEST='MAX',
+           TABLE=U1,)
 
-TEST_TABLE(TABLE     = U1,
-           REFERENCE = 'ANALYTIQUE',
-           NOM_PARA  = 'V2',
-           PRECISION = tol,
-           TYPE_TEST = 'MAX',
-           CRITERE   = 'RELATIF',
-           VALE      = epspMax )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=0.051666667,
+           VALE_REFE=0.051666666666666666,
+           NOM_PARA='V2',
+           TYPE_TEST='MAX',
+           TABLE=U1,)
 
-TEST_TABLE(TABLE     = U1,
-           REFERENCE = 'ANALYTIQUE',
-           NOM_PARA  = 'TRACE',
-           VALE      = I1_1,
-           PRECISION = tol,
-           CRITERE   = 'RELATIF',
-           FILTRE    = (_F( NOM_PARA  = 'INST',
-                            CRIT_COMP = 'EQ' ,
-                            VALE      = 10.,
-                            PRECISION = tol,
-                            CRITERE   = 'RELATIF',),),)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=39.512195122,
+           VALE_REFE=39.512195121951216,
+           NOM_PARA='TRACE',
+           TABLE=U1,
+           FILTRE=_F(CRITERE='RELATIF',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-08,
+                     NOM_PARA='INST',
+                     VALE=10.0,),
+           )
 
-TEST_TABLE(TABLE     = U1,
-           REFERENCE = 'ANALYTIQUE',
-           NOM_PARA  = 'V2',
-           VALE      =  epsp1,
-           CRITERE   = 'RELATIF',
-           PRECISION = tol,
-           FILTRE    = (_F( NOM_PARA  = 'TRACE',
-                            CRIT_COMP = 'EQ' ,
-                            VALE      = I1c,
-                            PRECISION = tol,
-                            CRITERE   = 'RELATIF',),),)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=0.011414634146341,
+           VALE_REFE=0.011414634146341463,
+           NOM_PARA='V2',
+           TABLE=U1,
+           FILTRE=_F(CRITERE='RELATIF',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-08,
+                     NOM_PARA='TRACE',
+                     VALE=-68.487804878048777,),
+           )
 
-TEST_TABLE(TABLE     = U1,
-           REFERENCE = 'ANALYTIQUE',
-           NOM_PARA  = 'V2',
-           VALE      = epsp2,
-           CRITERE   = 'RELATIF',
-           PRECISION = tol,
-           FILTRE    = (_F( NOM_PARA  = 'TREPSI',
-                            CRIT_COMP = 'EQ' ,
-                            VALE      = espsVol2,
-                            PRECISION = tol,
-                            CRITERE   = 'RELATIF',),),)
-
-
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=0.036666667,
+           VALE_REFE=0.036666666666666667,
+           NOM_PARA='V2',
+           TABLE=U1,
+           FILTRE=_F(CRITERE='RELATIF',
+                     CRIT_COMP='EQ',
+                     PRECISION=1.E-08,
+                     NOM_PARA='TREPSI',
+                     VALE=0.044999999999999998,),
+           )
 
 #----------------------------------------------------------------#
 # IMRESSION DES RESULTATS                                        #
@@ -233,4 +239,3 @@ TEST_TABLE(TABLE     = U1,
 #IMPR_TABLE( TABLE    = U1, )
 
 FIN()
-

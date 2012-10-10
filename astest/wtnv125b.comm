@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX
 # wtnv125b.para = tps_job 70 mem_job 512Mo ncpus 1 liste_test R
@@ -401,85 +401,92 @@ ZTRB3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                               NOM_CMP=('V2'),
                               OPERATION='EXTRACTION',),);
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='N203',
-                  VALE=3.7574E+07,
-                  CRITERE='RELATIF',
-                  PRECISION=1E-3,
-                  VERSION = '7.2.26',
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=3.7574000E7,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=U0,
+                  NOM_CHAM='DEPL',
                   NOEUD='N166',
-                  VALE=6.720E+07,
-                  CRITERE='RELATIF',
-                  PRECISION=1E-3,
-                  VERSION = '7.2.26',
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=10,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=6.7200000E7,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=U0,
+                  NOM_CHAM='DEPL',
                   NOEUD='N203',
-                  VALE=4.5653E+07,
-                  CRITERE='RELATIF',
-                  PRECISION=1E-3,
-                  VERSION = '7.2.26',
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=10,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=4.5653000E7,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=U0,
+                  NOM_CHAM='DEPL',
                   NOEUD='N166',
-                  VALE=5.3575E+07,
-                  CRITERE='RELATIF',
-                  PRECISION=1E-3,
-                  VERSION = '7.2.26',
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=11,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=5.3575000E7,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  RESULTAT=U0,
+                  NOM_CHAM='DEPL',
                   NOEUD='N203',
-                  VALE=4.6916E+07,
-                  CRITERE='RELATIF',
-                  PRECISION=1E-3,
-                  VERSION = '7.2.26',
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=11,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=4.6916000E7,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  RESULTAT=U0,
+                  NOM_CHAM='DEPL',
                   NOEUD='N166',
-                  VALE=4.7538E+07,
-                  CRITERE='RELATIF',
-                  PRECISION=1E-4,
-                  VERSION = '7.2.26',
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=20,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=4.7538000E7,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  RESULTAT=U0,
+                  NOM_CHAM='DEPL',
                   NOEUD='N203',
-                  VALE=4.50655E+07,
-                  CRITERE='RELATIF',
-                  PRECISION=1E-4,
-                  VERSION = '7.2.26',
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=20,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
-                  NOEUD='N166',
-                  VALE=4.5075E+07,
+                  VALE_CALC=4.5065500E7,
+                  TOLE_MACHINE=1.E-4,
                   CRITERE='RELATIF',
-                  PRECISION=1E-4,
-                  VERSION = '7.2.26',
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  RESULTAT=U0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N166',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=4.5075000E7,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 FIN();

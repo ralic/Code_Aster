@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 # hpla311b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -227,32 +227,33 @@ G03=CALC_G(
 # LA VALEUR A TESTER POUR L OPTION CALC_G VAUT 4.2019*2.5E-5=1.050475E-4
 #
 
-TEST_TABLE(       TABLE=G00,
-                   NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                       VALE=1.050475E-4,
-                  PRECISION=0.02        )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 1.03867238E-04,
+           VALE_REFE=1.0504749999999999E-4,
+           NOM_PARA='G',
+           TABLE=G00,)
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 1.03879503E-04,
+           VALE_REFE=1.0504749999999999E-4,
+           NOM_PARA='G',
+           TABLE=G01,)
 
-TEST_TABLE(       TABLE=G01,
-                    NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                        VALE=1.050475E-4,
-                   PRECISION=0.02        )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 1.03880571E-04,
+           VALE_REFE=1.0504749999999999E-4,
+           NOM_PARA='G',
+           TABLE=G02,)
 
-
-TEST_TABLE(       TABLE=G02,
-                       NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=1.050475E-4,
-                      PRECISION=0.02        )
-
-
-TEST_TABLE(       TABLE=G03,
-                       NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=1.050475E-4,
-                      PRECISION=0.02        )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 1.03875287E-04,
+           VALE_REFE=1.0504749999999999E-4,
+           NOM_PARA='G',
+           TABLE=G03,)
 
 # CALCUL DE K ET G AVEC CALC_G / OPTION CALC_K_G
 #
@@ -269,18 +270,19 @@ KG=CALC_G(RESULTAT=RESU,
 #
 # LA VALEUR A TESTER POUR L OPTION CALC_K_G EST DIRECTEMENT LA VALEUR DE REFERENCE
 #
-TEST_TABLE(       TABLE=KG,
-                   NOM_PARA='G',
-                       VALE=4.2019,
-                   REFERENCE='ANALYTIQUE',
-                  PRECISION=0.02        )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=4.165343641,
+           VALE_REFE=4.2019000000000002,
+           NOM_PARA='G',
+           TABLE=KG,)
 
-TEST_TABLE(       TABLE=KG,
-                   NOM_PARA='K1',
-                   REFERENCE='ANALYTIQUE',
-                       VALE=9.609E5,
-                  PRECISION=0.02        )
-
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 9.65298315E+05,
+           VALE_REFE=9.60900E5,
+           NOM_PARA='K1',
+           TABLE=KG,)
 
 #
 FIN()

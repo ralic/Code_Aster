@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE L'OPTIMISATION DE L'OPERATEUR DEFI_CABLE_BP
 # zzzz999a.para = tps_job 500 mem_job 5000Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -213,48 +213,17 @@ DEFI_FICHIER(UNITE=83, ACTION='LIBERER')
 
 
 TEST_FICHIER(FICHIER='./fort.82',
-             REFERENCE='NON_REGRESSION',
-             VERSION='11.02.13',
              NB_VALE=8584488,
-             VALE=2.979387165549E+12,
-             PRECISION = 1E-7,
+             VALE_CALC=2.979387165549E+12,
+             TOLE_MACHINE = 1E-7,
              EXPR_IGNORE = ( 'ASTER',),
              )
 
 TEST_FICHIER(FICHIER='./fort.83',
-             REFERENCE='NON_REGRESSION',
              NB_VALE=18355435,
-             VALE=1.1032120645186E+13,
-             PRECISION = 1E-7,
+             VALE_CALC=1.1032120645186E+13,
+             TOLE_MACHINE = 1E-7,
              EXPR_IGNORE = ( 'ASTER',),
              )
-
-#CINE_CAB = AFFE_CHAR_MECA(MODELE=MODELE,
-                          #RELA_CINE_BP=l_cable_bp_cine,
-                         #)
-
-##------------------------------------------------------------------------
-## Calculs
-##------------------------------------------------------------------------
-#LINST = DEFI_LIST_REEL (DEBUT = 0.0,
-                        #INTERVALLE =(_F(JUSQU_A= 1.0, PAS= 0.5,),),
-                       #);
-
-## Chargement 1 : précontrainte de tous les cables
-##------------------------------------------------------------------------
-#RES1 =  CALC_PRECONT(MODELE=MODELE,
-                     #CHAM_MATER=CHMATER,
-                     #CARA_ELEM=CARAELE,
-                     #COMP_INCR=(_F( RELATION = 'ELAS',
-                                    #GROUP_MA=l_beton,),
-                                #_F( RELATION = 'ELAS',
-                                    #GROUP_MA =l_cable,),),
-                     #EXCIT   =l_excit_encast,
-                     #CABLE_BP   = tuple(l_cable_bp),
-                     #INCREMENT=_F(LIST_INST = LINST,
-                                  #INST_INIT  = 0.0,
-                                  #INST_FIN  = 1.0, ),);
-
-
 
 FIN();

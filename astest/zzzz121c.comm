@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 # zzzz121c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -256,23 +256,36 @@ REME01=MECA_STATIQUE( MODELE=MOME01,
 #
 # 6. TEST DE NON REGRESSION
 #
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RETH01,   NUME_ORDRE = 2,
-            NOM_CHAM = 'TEMP',      GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',    PRECISION = 1.E-6,
-            NOM_CMP = 'TEMP',       VALE = 3.02571345E+02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '8.03.19' ),
-       _F(  RESULTAT = REME01,   NUME_ORDRE = 3,
-            NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',    PRECISION = 1.E-6,
-            NOM_CMP = 'DX',         VALE = 1.24150129E-02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '8.03.19' ),
-       _F(  RESULTAT = REME01,   NUME_ORDRE = 3,
-            NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',    PRECISION = 1.E-6,
-            NOM_CMP = 'DY',         VALE = -2.54077755E-02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '8.03.19' ))
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=RETH01,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=302.57134500000001,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=3,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=REME01,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.012415012899999999,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=3,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=REME01,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.0254077755,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
           )
+
 #
 # 7. ADAPTATION DU MAILLAGE DE 01 VERS 02
 #    REMARQUE : PAR RAPPORT A L'ADAPTATION PRECEDENTE, ON TESTE DES VARIANTES
@@ -396,23 +409,36 @@ REME02=MECA_STATIQUE( MODELE=MOME02,
 #
 # 9. TEST DE NON REGRESSION
 #
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RETH02,   NUME_ORDRE = 2,
-            NOM_CHAM = 'TEMP',      GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',    PRECISION = 1.E-6,
-            NOM_CMP = 'TEMP',       VALE = 3.03305718E+02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '8.03.19'  ),
-       _F(  RESULTAT = REME02,   NUME_ORDRE = 3,
-            NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',    PRECISION = 1.E-6,
-            NOM_CMP = 'DX',         VALE = 1.23762443E-02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '8.03.19' ),
-       _F(  RESULTAT = REME02,   NUME_ORDRE = 3,
-            NOM_CHAM = 'DEPL',      GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',    PRECISION = 1.E-6,
-            NOM_CMP = 'DY',         VALE = -2.56470180E-02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '8.03.19' ))
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=RETH02,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=303.30571800000001,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=3,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=REME02,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0123762443,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=3,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=REME02,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.025647018000000001,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
           )
+
 #
 # 10. ADAPTATION DU MAILLAGE DE 02 VERS 03
 #    REMARQUE : PAR RAPPORT A L'ADAPTATION PRECEDENTE, ON TESTE DES VARIANTES
@@ -475,12 +501,16 @@ RETH03=THER_LINEAIRE( MODELE=MOTH03,
 #
 # 12. TEST DE NON REGRESSION
 #
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RETH03,   NUME_ORDRE = 2,
-            NOM_CHAM = 'TEMP',      GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',    PRECISION = 1.E-6,
-            NOM_CMP = 'TEMP',       VALE = 3.030801408E+02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '9.02.15'  ))
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='OPPOSE',
+                  RESULTAT=RETH03,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=303.08014079999998,
+                  
+                  CRITERE='RELATIF',
+                  ),
           )
+
 #
 FIN( )

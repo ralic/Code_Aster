@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA MODELISATION GVNO + LOI ENDO_CARRE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,38 +139,44 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
 #*********************************************************************** 
 
                                          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DAMG',
                   NOEUD='N7',
-                  VALE=0.1,
-                  PRECISION=1.E-6,),);                
-          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='DAMG',
-                  NOEUD='N7',
-                  VALE=0.5,
-                  PRECISION=1.E-6,),);  
-                                                                                          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DAMG',
-                  NOEUD='N7',
-                  VALE=0.7,
-                  PRECISION=1.E-6,),);                                                
-                               
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DAMG',
-                  NOEUD='N7',
-                  VALE=0.85,
-                  PRECISION=1.E-6,),);                                 
-                               
-                               
-FIN();
+                  VALE_CALC=0.10000000000000001,
+                  
+                  ),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=EVOL,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N7',
+                  NOM_CMP='DAMG',
+                  VALE_CALC=0.5,
+                  
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=EVOL,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N7',
+                  NOM_CMP='DAMG',
+                  VALE_CALC=0.69999999999999996,
+                  
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  RESULTAT=EVOL,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N7',
+                  NOM_CMP='DAMG',
+                  VALE_CALC=0.84999999999999998,
+                  
+                  ),
+          )
+
+FIN();

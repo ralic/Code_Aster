@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CARRE CYLINDRIQUE SOUS PRESSION SUIVEUSE
 # ssnv140b.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,27 +147,31 @@ NONLIN=STAT_NON_LINE(
 #
 #
 
-TEST_RESU(  RESU=_F(  RESULTAT = NONLIN,
-                     INST = 0.4,
-                     NOM_CHAM = 'DEPL',
-                     CRITERE = 'RELATIF',
-                     PRECISION = 0.3E-2,
-                     GROUP_NO = 'G_11',
-                     NOM_CMP = 'DZ',
-                     VALE = -3.93E-01)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_11',
+                  INST=0.40000000000000002,
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.391979455,
+                  VALE_REFE=-0.39300000000000002,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
 #
 
-TEST_RESU(  RESU=_F(  RESULTAT = NONLIN,
-                     INST = 0.7,
-                     NOM_CHAM = 'DEPL',
-                     CRITERE = 'RELATIF',
-                     PRECISION = 0.3E-2,
-                     GROUP_NO = 'G_11',
-                     NOM_CMP = 'DZ',
-                     VALE = -5.1268E-01)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_11',
+                  INST=0.69999999999999996,
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.511224210,
+                  VALE_REFE=-0.51268000000000002,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
 #
 FIN( )

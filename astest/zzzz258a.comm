@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  VALIDATION DE STAT_NON_LINE / ETAT_INIT
 # zzzz258a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,12 +158,20 @@ U2_2=STAT_NON_LINE(MODELE=MOMEC2,  CHAM_MATER=CHMAT,
 
 # TEST_RESU (NON-REGRESSION) :
 #------------------------------
-TEST_RESU(OBJET=(
-        _F( NOM='U1      .001.000005.VALE', REFERENCE='NON_REGRESSION', PRECISION=1.E-7,   S_R=4.169889608  ),
-        _F( NOM='U2_1    .001.000002.VALE', REFERENCE='NON_REGRESSION', PRECISION=1.E-7,   S_R=8.989960536  ),
-        _F( NOM='U2_2    .001.000002.VALE', REFERENCE='NON_REGRESSION', PRECISION=1.E-7,   S_R=8.989960536  ),
-))
-
+TEST_RESU(OBJET=(_F(VALE_CALC=4.1698896080000001,
+                    TOLE_MACHINE=9.9999999999999995E-08,
+                    NOM='U1      .001.000005.VALE',
+                    ),
+                 _F(VALE_CALC=8.9899605359999999,
+                    TOLE_MACHINE=9.9999999999999995E-08,
+                    NOM='U2_1    .001.000002.VALE',
+                    ),
+                 _F(VALE_CALC=8.9899605359999999,
+                    TOLE_MACHINE=9.9999999999999995E-08,
+                    NOM='U2_2    .001.000002.VALE',
+                    ),
+                 ),
+          )
 
 #--------------------------------------------------------------------------------------------------------
 # 3. Validation de DEFI_GROUP / CREA_GROUP_NO /OPTION='NOEUD_ORDO' sur une ligne fermee (boucle) :
@@ -183,8 +191,8 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=50)
 
 TEST_FICHIER(
    FICHIER='./REPE_OUT/zzzz258a.pos',
-   VALE_K='dd686a4b7c7aa4b1913867c4e97c370b',
-   NB_VALE=214,VALE=2525.0, REFERENCE='NON_REGRESSION')
+   VALE_CALC_K='dd686a4b7c7aa4b1913867c4e97c370b',
+   NB_VALE=214,VALE_CALC=2525.0, )
 
 # 3.2 : Pour valider l'orientation du pourtour, on utilise MACR_LIGN_COUP :
 CH1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=MAIL, INFO=2,
@@ -198,8 +206,14 @@ TB1=MACR_LIGN_COUPE( CHAM_GD= CH1,  MODELE=MOMEC2,  NOM_CHAM='TEMP',
                      LIGN_COUPE = _F( TYPE='GROUP_MA',  MAILLAGE=MAIL, GROUP_MA='BORD',
                                       GROUP_NO_ORIG='A', GROUP_NO_EXTR='A', VECT_ORIE=(1.,0.)
                                     ))
-TEST_TABLE(TABLE=TB1, FILTRE=_F(NOM_PARA = 'ABSC_CURV', VALE = 1.),
-           NOM_PARA='TEMP', VALE=1. , REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.000000000,
+           VALE_REFE=1.0,
+           NOM_PARA='TEMP',
+           TABLE=TB1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 # dans le sens anti-trigo, on doit retrouver 2. pour ABSC_CURV=1.
 MAIL=DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, DETR_GROUP_NO=_F(NOM='BORD'))
@@ -207,9 +221,14 @@ TB2=MACR_LIGN_COUPE( CHAM_GD= CH1,  MODELE=MOMEC2,  NOM_CHAM='TEMP',
                      LIGN_COUPE = _F( TYPE='GROUP_MA',  MAILLAGE=MAIL, GROUP_MA='BORD',
                                       GROUP_NO_ORIG='A', GROUP_NO_EXTR='A', VECT_ORIE=(0.,1.)
                                     ))
-TEST_TABLE(TABLE=TB2, FILTRE=_F(NOM_PARA = 'ABSC_CURV', VALE = 1.),
-           NOM_PARA='TEMP', VALE=2. , REFERENCE='ANALYTIQUE',)
-
-
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.000000000,
+           VALE_REFE=2.0,
+           NOM_PARA='TEMP',
+           TABLE=TB2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 FIN()
+

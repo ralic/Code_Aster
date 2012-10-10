@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION ELEMENTAIRE DE DEFI_CABLE_BP
 # zzzz305b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,372 +183,442 @@ EVOLNOLI=CALC_CHAMP(reuse=EVOLNOLI,CRITERES=('SIEQ_ELGA'),CONTRAINTE=('SIEF_ELNO
 # ------------
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N5',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.8732520246917E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.8732520246917E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N52',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.4885223859893E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N52',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.4885223859892999E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N99',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.106440249582E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N99',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.106440249582E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N178',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -9.2044942288452E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N178',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.2044942288451993E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N225',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -5.3546324954695E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N225',
+                  NOM_CMP='DX',
+                  VALE_CALC=-5.3546324954695E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N225',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DY',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -9.5395937394181E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N225',
+                  NOM_CMP='DY',
+                  VALE_CALC=-9.5395937394180999E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N225',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DZ',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -3.8461626775262E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N225',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-3.8461626775261998E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N272',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.5148263831416E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N272',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.5148263831416E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N351',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = 3.2979325244965E-06) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N351',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.2979325244964998E-06,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N398',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = 4.1820133272535E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N398',
+                  NOM_CMP='DX',
+                  VALE_CALC=4.1820133272534999E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N445',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = 8.0304006354868E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N445',
+                  NOM_CMP='DX',
+                  VALE_CALC=8.0304006354868003E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 # PLAN X = 1.5
 # ------------
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N16',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -7.0648804463072E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N16',
+                  NOM_CMP='DX',
+                  VALE_CALC=-7.0648804463072003E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N63',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -5.6052464035754E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N63',
+                  NOM_CMP='DX',
+                  VALE_CALC=-5.6052464035753996E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N110',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -4.1451868378736E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N110',
+                  NOM_CMP='DX',
+                  VALE_CALC=-4.1451868378736002E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N189',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -3.4703039970029E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N189',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.4703039970029003E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N236',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -2.009847690913E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N236',
+                  NOM_CMP='DX',
+                  VALE_CALC=-2.009847690913E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N236',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DY',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.3450576829023E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N236',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.3450576829023E-3,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N236',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DZ',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -5.4416068658635E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N236',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-5.4416068658634997E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N283',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -5.4989737757885E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N283',
+                  NOM_CMP='DX',
+                  VALE_CALC=-5.4989737757885001E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N362',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = 1.2445579354129E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N362',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.2445579354129001E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N409',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = 1.5855962442209E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N409',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.5855962442209E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N456',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = 3.0458998003742E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N456',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.0458998003742E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 # PLAN X = 2.6
 # ------------
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N27',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.2366205262253E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N27',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.2366205262253E-3,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N74',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -9.7129518675857E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N74',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.7129518675857004E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N121',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 3.0E-2,
-                      VALE = -7.0725209534396E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N121',
+                  NOM_CMP='DX',
+                  VALE_CALC=-7.07252095E-04,
+                  VALE_REFE=-7.0725209534395995E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.029999999999999999,),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N200',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-2,
-                      VALE = -6.1238249584712E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N200',
+                  NOM_CMP='DX',
+                  VALE_CALC=-6.12382496E-04,
+                  VALE_REFE=-6.1238249584711995E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N247',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -3.4771839053799E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N247',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.4771839053798998E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N247',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DY',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -4.0505437725294E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N247',
+                  NOM_CMP='DY',
+                  VALE_CALC=-4.0505437725294E-3,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N247',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DZ',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.6594080417736E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N247',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-1.6594080417736E-3,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N294',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -8.389004829871E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N294',
+                  NOM_CMP='DX',
+                  VALE_CALC=-8.389004829871E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N373',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-2,
-                      VALE = 1.274000061868E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N373',
+                  NOM_CMP='DX',
+                  VALE_CALC= 1.27400006E-05,
+                  VALE_REFE=1.274000061868E-05,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N420',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = 2.7624046361016E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N420',
+                  NOM_CMP='DX',
+                  VALE_CALC=2.7624046361016E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N467',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DX',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-2,
-                      VALE = 5.3921775951568E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N467',
+                  NOM_CMP='DX',
+                  VALE_CALC= 5.39217760E-04,
+                  VALE_REFE=5.3921775951567999E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
 ########################################################################
@@ -556,135 +626,160 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
 ########################################################################
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N477',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DY',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.4903256302604E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N477',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.4903256302603999E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N477',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DZ',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -6.0113215206541E-05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N477',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-6.0113215206541002E-05,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N482',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DY',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -5.9650831220639E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N482',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.9650831220639002E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N482',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DZ',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -2.407434077249E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N482',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-2.4074340772490001E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N487',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DY',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.3450593053916E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N487',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.3450593053916E-3,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N487',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DZ',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -5.442092864393E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N487',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-5.4420928643930005E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N492',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DY',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -2.3958618020899E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N492',
+                  NOM_CMP='DY',
+                  VALE_CALC=-2.3958618020899001E-3,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N492',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DZ',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -9.7180725201021E-04) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N492',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-9.7180725201021E-4,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N497',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DY',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -3.7440623740812E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N497',
+                  NOM_CMP='DY',
+                  VALE_CALC=-3.7440623740811999E-3,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N497',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DZ',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -1.5299599812764E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N497',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-1.5299599812764E-3,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N502',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DY',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = -5.3902717899436E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N502',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.3902717899436004E-3,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N502',
-                      NOM_CHAM = 'DEPL',
-                      NOM_CMP = 'DZ',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-2,
-                      VALE = -2.2250644605321E-03) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N502',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-2.22506446E-03,
+                  VALE_REFE=-2.2250644605321E-3,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
 ########################################################################
@@ -692,15 +787,16 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
 ########################################################################
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      NOEUD = 'N487',
-                      MAILLE = 'M15',
-                      NOM_CHAM = 'SIEF_ELNO',
-                      NOM_CMP = 'N',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-3,
-                      VALE = 8.5776265243847E+05) )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_ELNO',
+                  NOEUD='N487',
+                  NOM_CMP='N',
+                  VALE_CALC=8.5776265243847005E5,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  MAILLE='M15',),
+          )
 
 #
 ########################################################################
@@ -708,39 +804,41 @@ TEST_RESU(   RESU=_F(  RESULTAT = EVOLNOLI,
 ########################################################################
 #
 
-TEST_RESU(   RESU=(_F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      MAILLE = 'M67',
-                      POINT=1,
-                      NOM_CHAM = 'SIEQ_ELGA',
-                      NOM_CMP = 'VECT_1_X',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.0E-7,
-                      REFERENCE='ANALYTIQUE',
-                      VALE = 0.99999835781693),
-                  _F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      MAILLE = 'M67',
-                      POINT=1,
-                      NOM_CHAM = 'SIEQ_ELGA',
-                      NOM_CMP = 'VECT_1_Y',
-                      CRITERE = 'ABSOLU',
-                      PRECISION = 1.0E-7,
-                      REFERENCE='ANALYTIQUE',
-                      VALE = -1.8089356750324E-03),
-                  _F(  RESULTAT = EVOLNOLI,
-                      NUME_ORDRE = 1,
-                      MAILLE = 'M67',
-                      POINT=1,
-                      NOM_CHAM = 'SIEQ_ELGA',
-                      NOM_CMP = 'VECT_1_Z',
-                      CRITERE = 'ABSOLU',
-                      REFERENCE='ANALYTIQUE',
-                      PRECISION = 1.0E-7,
-                      VALE = -1.1006894421341E-04),),
-
-         )
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOLNOLI,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='VECT_1_X',
+                   VALE_CALC=0.999998358,
+                   VALE_REFE=0.99999835781693003,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-08,
+                   MAILLE='M67',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOLNOLI,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='VECT_1_Y',
+                   VALE_CALC=-1.80893568E-03,
+                   VALE_REFE=-1.8089356750324E-3,
+                   CRITERE='ABSOLU',
+                   PRECISION=9.9999999999999995E-08,
+                   MAILLE='M67',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOLNOLI,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='VECT_1_Z',
+                   VALE_CALC=-1.10068944E-04,
+                   VALE_REFE=-1.1006894421341E-4,
+                   CRITERE='ABSOLU',
+                   PRECISION=9.9999999999999995E-08,
+                   MAILLE='M67',),
+                ),
+          )
 
 FIN()
 #

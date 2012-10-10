@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 # ssnv127d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -229,211 +229,265 @@ IMPR_TABLE(TABLE=TCONT)
 #
 
 
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N783',),),
-           NOM_PARA='SIXX',
-           VALE=-178.13E5,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.0482,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N782',),),
+           VALE_CALC=-1.86714195E+07,
+           VALE_REFE=-1.7813000E7,
            NOM_PARA='SIXX',
-           VALE=-178.13E5,
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N783',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.1075,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N781',),),
+           VALE_CALC=-1.97269568E+07,
+           VALE_REFE=-1.7813000E7,
            NOM_PARA='SIXX',
-           VALE=-177.50E5,
-           PRECISION=0.1264,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TPRESS,
+           TABLE=TPRESS,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
+                      VALE=1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N780',),),
-           NOM_PARA='SIXX',
-           VALE=-176.88E5,
-           PRECISION=0.1243,
-           REFERENCE='ANALYTIQUE',);
+                      VALE_K='N782',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N774',),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.12640000000000001,
+           VALE_CALC=-1.99928812E+07,
+           VALE_REFE=-1.7750000E7,
            NOM_PARA='SIXX',
-           VALE=-175.94E5,
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N781',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.12429999999999999,
+           VALE_CALC=-1.98849557E+07,
+           VALE_REFE=-1.7688000E7,
+           NOM_PARA='SIXX',
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N780',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.12081,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N775',),),
+           VALE_CALC=-1.97193595E+07,
+           VALE_REFE=-1.7594000E7,
            NOM_PARA='SIXX',
-           VALE=-174.70E5,
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N774',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.1186,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N776',),),
+           VALE_CALC=-1.95408777E+07,
+           VALE_REFE=-1.7470000E7,
            NOM_PARA='SIXX',
-           VALE=-173.12E5,
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N775',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10682,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N777',),),
+           VALE_CALC=-1.91611588E+07,
+           VALE_REFE=-1.7312000E7,
            NOM_PARA='SIXX',
-           VALE=-171.25E5,
-           PRECISION=0.0982,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TPRESS,
+           TABLE=TPRESS,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
+                      VALE=1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N788',),),
-           NOM_PARA='SIXX',
-           VALE=-169.06E5,
-           PRECISION=0.0793,
-           REFERENCE='ANALYTIQUE',);
+                      VALE_K='N776',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N787',),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.098199999999999996,
+           VALE_CALC=-1.88051392E+07,
+           VALE_REFE=-1.7125000E7,
            NOM_PARA='SIXX',
-           VALE=-166.56E5,
-           PRECISION=0.07,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N777',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N786',),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.079299999999999995,
+           VALE_CALC=-1.82459265E+07,
+           VALE_REFE=-1.6906000E7,
            NOM_PARA='SIXX',
-           VALE=-163.43E5,
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N788',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC=-1.78217114E+07,
+           VALE_REFE=-1.6656000E7,
+           NOM_PARA='SIXX',
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N787',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.0482,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TPRESS,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N785',),),
+           VALE_CALC=-1.71305793E+07,
+           VALE_REFE=-1.6343000E7,
            NOM_PARA='SIXX',
-           VALE=-159.37E5,
-           PRECISION=0.0297,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TPRESS,
+           TABLE=TPRESS,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
+                      VALE=1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N800',),),
-           NOM_PARA='SIXX',
-           VALE=-154.06E5,
-           PRECISION=0.0153,
-           REFERENCE='ANALYTIQUE',);
+                      VALE_K='N786',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TPRESS,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029700000000000001,
+           VALE_CALC=-1.64093752E+07,
+           VALE_REFE=-1.5937000E7,
+           NOM_PARA='SIXX',
+           TABLE=TPRESS,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
+                      VALE=1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N805',),),
-           NOM_PARA='SIXX',
-           VALE=-147.81E5,
-           PRECISION=0.007,
-           REFERENCE='ANALYTIQUE',);
+                      VALE_K='N785',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TPRESS,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.015299999999999999,
+           VALE_CALC=-1.55834408E+07,
+           VALE_REFE=-1.5406000E7,
+           NOM_PARA='SIXX',
+           TABLE=TPRESS,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
+                      VALE=1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N806',),),
-           NOM_PARA='SIXX',
-           VALE=-140.31E5,
-           PRECISION=0.026,
-           REFERENCE='ANALYTIQUE',);
+                      VALE_K='N800',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TPRESS,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=7.0000000000000001E-3,
+           VALE_CALC=-1.46776185E+07,
+           VALE_REFE=-1.4781000E7,
+           NOM_PARA='SIXX',
+           TABLE=TPRESS,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
+                      VALE=1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N807',),),
-           NOM_PARA='SIXX',
-           VALE=-130.94E5,
-           PRECISION=0.026,
-           REFERENCE='ANALYTIQUE',);
+                      VALE_K='N805',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TPRESS,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.025999999999999999,
+           VALE_CALC=-1.36676364E+07,
+           VALE_REFE=-1.4031000E7,
+           NOM_PARA='SIXX',
+           TABLE=TPRESS,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
+                      VALE=1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N819',),),
-           NOM_PARA='SIXX',
-           VALE=-111.69E5,
-           PRECISION=0.1117,
-           REFERENCE='ANALYTIQUE',);
+                      VALE_K='N806',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TPRESS,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.025999999999999999,
+           VALE_CALC=-1.27602244E+07,
+           VALE_REFE=-1.3094000E7,
+           NOM_PARA='SIXX',
+           TABLE=TPRESS,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
+                      VALE=1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N820',),),
-           NOM_PARA='SIXX',
-           VALE=-105.93E5,
-           PRECISION=0.0261,
-           REFERENCE='ANALYTIQUE',);
+                      VALE_K='N807',),
+                   ),
+           )
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.11169999999999999,
+           VALE_CALC=-1.24155074E+07,
+           VALE_REFE=-1.1169000E7,
+           NOM_PARA='SIXX',
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N819',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.026100000000000002,
+           VALE_CALC=-1.08692339E+07,
+           VALE_REFE=-1.0593000E7,
+           NOM_PARA='SIXX',
+           TABLE=TPRESS,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N820',),
+                   ),
+           )
 
 #
 # ADHERENT OU GLISSANT
 #
-TEST_TABLE(TABLE=TCONT,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
-                   _F(NOM_PARA='NOEUD',
-                      VALE_K='N787',),),
+TEST_TABLE(
+           VALE_CALC=2.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='CONT',
-           VALE=2.,
-           PRECISION=1.E-5,
-           REFERENCE='NON_REGRESSION',
-           VERSION='V6.3.22',);
-
-TEST_TABLE(TABLE=TCONT,
+           TABLE=TCONT,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.,),
+                      VALE=1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N786',),),
-           NOM_PARA='CONT',
-           VALE=2.,
-           PRECISION=1.E-5,
-           REFERENCE='NON_REGRESSION',
-           VERSION='V6.3.22',);
+                      VALE_K='N787',),
+                   ),
+           )
 
+TEST_TABLE(
+           VALE_CALC=2.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='CONT',
+           TABLE=TCONT,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N786',),
+                   ),
+           )
 
 FIN();

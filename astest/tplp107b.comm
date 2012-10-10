@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : THERMIQUE 2D
 # tplp107b.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -329,11 +329,11 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 #================================================================================================
 
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFFN   ,                              
-                     REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-                     TYPE_TEST= 'SOMM_ABS', VALE=  1.6435694872364 ),
+TEST_RESU(CHAM_NO=_F(
+                     TYPE_TEST='SOMM_ABS',
+                     CHAM_GD=DIFFN,
+                     VALE_CALC=1.6435694872364,),
           )
-
 
 # On cree une liste bidon pour pouvoir
 # definir une fonction testable par TEST_RESU
@@ -341,16 +341,15 @@ BIDON=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0., 1.,
                           1., PenteL2));
 
-TEST_FONCTION(VALEUR=_F(FONCTION = BIDON,
-                        PRECISION = 1.E-2,
-                        VALE_PARA = 1.,
-                        REFERENCE = 'ANALYTIQUE',
-                        VALE_REFE = 3.,)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.98481026669,
+                        VALE_REFE=3.0,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        FONCTION=BIDON,),
               )
 
-
 FIN();
-
 
 
 

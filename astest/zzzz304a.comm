@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE Projection d'un champ par elements ELNO discontinu
 # zzzz304a.para = tps_job 30 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,12 +97,25 @@ CH2=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_HYDR_R', MODELE=MO2, INFO=1,
 #    Il appartient a la maille M9  de CARR1
 #    Il appartient a la maille M10 de CARR2
 
-TEST_RESU(CHAM_ELEM=(
-    _F(CHAM_GD= CH2, MAILLE='M9',  NOEUD='N36', NOM_CMP='HYDR',
-       REFERENCE= 'ANALYTIQUE', PRECISION= 1.E-10, VALE=  0.8 ),
-    _F(CHAM_GD= CH2, MAILLE='M10', NOEUD='N36', NOM_CMP='HYDR',
-       REFERENCE= 'ANALYTIQUE', PRECISION= 1.E-10, VALE=  0.2 ),
-))
-
+TEST_RESU(CHAM_ELEM=(_F(NOEUD='N36',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='HYDR',
+                        PRECISION=1.E-10,
+                        MAILLE='M9',
+                        CHAM_GD=CH2,
+                        VALE_CALC=0.80000000000,
+                        VALE_REFE=0.80000000000000004,
+                        TOLE_MACHINE=1.E-10,),
+                     _F(NOEUD='N36',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='HYDR',
+                        PRECISION=1.E-10,
+                        MAILLE='M10',
+                        CHAM_GD=CH2,
+                        VALE_CALC=0.20000000000,
+                        VALE_REFE=0.20000000000000001,
+                        TOLE_MACHINE=1.E-10,),
+                     ),
+          )
 
 FIN()

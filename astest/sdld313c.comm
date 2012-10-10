@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
 # sdld313c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,37 +114,44 @@ MODE_SO=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
 
 
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_SO,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=6.4537,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SO,
+                   VALE_CALC=6.445680930,
+                   VALE_REFE=6.4537000000000004,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODE_SO,
-                   NUME_ORDRE=2,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
                    PARA='FREQ',
-                   VALE=15.5806,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SO,
+                   VALE_CALC=15.561250321,
+                   VALE_REFE=15.5806,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                   ),);
+                   PRECISION=1.E-2,),
+                ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_SO,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='AMOR_REDUIT',
-                   VALE=0.05,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SO,
+                   VALE_CALC=0.050000000,
+                   VALE_REFE=0.050000000000000003,
                    CRITERE='RELATIF',
-                   PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODE_SO,
-                   NUME_ORDRE=2,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=2,
                    PARA='AMOR_REDUIT',
-                   VALE=0.05,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SO,
+                   VALE_CALC=0.050000000,
+                   VALE_REFE=0.050000000000000003,
                    CRITERE='RELATIF',
-                   PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
-                   ),);
+                   PRECISION=1.E-3,),
+                ),
+          )
+
 # AVEC QZ
 MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
                        MATR_MASS=MATRMASS,
@@ -157,37 +164,44 @@ MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
 
 
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=6.4537,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_QZ,
+                   VALE_CALC=6.445680930,
+                   VALE_REFE=6.4537000000000004,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODE_QZ,
-                   NUME_ORDRE=2,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
                    PARA='FREQ',
-                   VALE=15.5806,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_QZ,
+                   VALE_CALC=15.561250321,
+                   VALE_REFE=15.5806,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                   ),);
+                   PRECISION=1.E-2,),
+                ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_QZ,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='AMOR_REDUIT',
-                   VALE=0.05,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_QZ,
+                   VALE_CALC=0.050000000,
+                   VALE_REFE=0.050000000000000003,
                    CRITERE='RELATIF',
-                   PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODE_QZ,
-                   NUME_ORDRE=2,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=2,
                    PARA='AMOR_REDUIT',
-                   VALE=0.05,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_QZ,
+                   VALE_CALC=0.050000000,
+                   VALE_REFE=0.050000000000000003,
                    CRITERE='RELATIF',
-                   PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
-                   ),);
+                   PRECISION=1.E-3,),
+                ),
+          )
+
 #
 #
 FIN( )

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LACHER D'UN PATIN FROTTANT
 # sdnd100a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,22 +196,41 @@ DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
                                INST=( T1, T2, T3, T4, )
                           )
 
-TEST_RESU(RESU=( _F(  RESULTAT = DYNATRA1,  NUME_ORDRE = 1,
-                   NOM_CHAM = 'DEPL',    NOEUD = 'NO1',    NOM_CMP = 'DY',
-                   PRECISION = 0.001,     VALE = R1),
-
-                 _F(  RESULTAT = DYNATRA1,  NUME_ORDRE = 2,
-                   NOM_CHAM = 'DEPL',    NOEUD = 'NO1',    NOM_CMP = 'DY',
-                   PRECISION = 0.001,     VALE = R2),
-
-                 _F(  RESULTAT = DYNATRA1,  NUME_ORDRE = 3,
-                   NOM_CHAM = 'DEPL',    NOEUD = 'NO1',    NOM_CMP = 'DY',
-                   PRECISION = 0.001,     VALE = R3),
-
-                 _F(  RESULTAT = DYNATRA1,  NUME_ORDRE = 4,
-                   NOM_CHAM = 'DEPL',    NOEUD = 'NO1',    NOM_CMP = 'DY',
-                   PRECISION = 0.005,     VALE = R4))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=DYNATRA1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.5961940777125592E-4,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=DYNATRA1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='DY',
+                   VALE_CALC=3.1819805153394639E-4,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=3,
+                   RESULTAT=DYNATRA1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.7677669529663682E-4,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=4,
+                   RESULTAT=DYNATRA1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='DY',
+                   VALE_CALC= 3.55038361E-05,
+                   VALE_REFE=3.5355339059327316E-05,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=5.0000000000000001E-3,),
+                ),
+          )
 
 #
 FIN( )

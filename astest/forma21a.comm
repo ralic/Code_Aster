@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -318,14 +318,27 @@ ERRETM0=FORMULE(VALE='ertm0*1.',NOM_PARA='BIDON')
 ERREEN0=FORMULE(VALE='eren0*1.',NOM_PARA='BIDON')
 ERRETM4=FORMULE(VALE='ertm4*1.',NOM_PARA='BIDON')
 ERREEN4=FORMULE(VALE='eren4*1.',NOM_PARA='BIDON')
-TEST_FONCTION(VALEUR=(
-    _F(FONCTION=ERRETM0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=9.2181911966178E-01,REFERENCE='NON_REGRESSION'),
-    _F(FONCTION=ERREEN0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=4.9181945496292E-01,REFERENCE='NON_REGRESSION'),
-    _F(FONCTION=ERRETM4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=4.34881059E+02,REFERENCE='NON_REGRESSION',VERSION = '9.2.15'),
-    _F(FONCTION=ERREEN4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=3.25886535E-02,REFERENCE='NON_REGRESSION',VERSION = '9.2.15')))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.92181911966177998,
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERRETM0,
+                         ),
+                      _F(VALE_CALC=0.49181945496292001,
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERREEN0,
+                         ),
+                      _F(VALE_CALC=434.88105899999999,
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERRETM4,
+                         ),
+                      _F(VALE_CALC=0.032588653500000002,
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERREEN4,
+                         ),
+                      ),
+              )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU CLAVAGE EN 2D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
 # ssnp143a.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -215,75 +215,118 @@ SIG_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 ################### TESTS COMPARAISON GEFDYN ####################
 
-TEST_TABLE(TABLE=VAR_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=2.0)),
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC= 6.02102542E-07,
+           VALE_REFE=6.3799999999999997E-07,
            NOM_PARA='V7',
-           VALE=6.38E-7,
-           PRECISION=0.06,
-           REFERENCE='SOURCE_EXTERNE')
-TEST_TABLE(TABLE=VAR_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=5.0)),
-           NOM_PARA='V7',
-           VALE=2.14E-6,
-           PRECISION=0.07,
-           REFERENCE='SOURCE_EXTERNE')
-TEST_TABLE(TABLE=VAR_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=8.0)),
-           NOM_PARA='V7',
-           VALE=3.88E-6,
-           PRECISION=0.07,
-           REFERENCE='SOURCE_EXTERNE')
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
 
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC= 2.00318942E-06,
+           VALE_REFE=2.1399999999999998E-06,
+           NOM_PARA='V7',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=5.0,),
+           )
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC= 3.62260622E-06,
+           VALE_REFE=3.8800000000000001E-06,
+           NOM_PARA='V7',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.0,),
+           )
 
 ################ TESTS NON REGRESSION ###########################
 
-TEST_TABLE(TABLE=VAR_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=2.0)),
+TEST_TABLE(
+           VALE_CALC=6.0216299999999996E-07,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='V7',
-           VALE=6.02163E-07,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=VAR_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=2.0)),
-           NOM_PARA='V10',
-           VALE=6.52163E-07,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=SIG_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=2.0)),
-           NOM_PARA='SIGN',
-           VALE=-4.99999E+04,
-           REFERENCE='NON_REGRESSION')
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE(TABLE=VAR_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=4.5)),
-           NOM_PARA='V7',
-           VALE=1.74369E-06,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=VAR_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=4.5)),
+TEST_TABLE(
+           VALE_CALC=6.5216300000000001E-07,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='V10',
-           VALE=1.79369E-06,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=SIG_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=4.5)),
-           NOM_PARA='SIGN',
-           VALE=-4.99997E+04,
-           REFERENCE='NON_REGRESSION')
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE(TABLE=VAR_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=8.5)),
-           NOM_PARA='V7',
-           VALE=3.89115E-06,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=VAR_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=8.5)),
-           NOM_PARA='V10',
-           VALE=3.94115E-06,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=SIG_AP,
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=8.5)),
+TEST_TABLE(
+           VALE_CALC=-4.9999900000000001E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIGN',
-           VALE=-4.99992E+04,
-           REFERENCE='NON_REGRESSION')
+           TABLE=SIG_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.7436900000000001E-06,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V7',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=4.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.79369E-06,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V10',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=4.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-4.9999699999999997E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGN',
+           TABLE=SIG_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=4.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.89115E-06,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V7',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.9411500000000004E-06,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V10',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-4.9999199999999997E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGN',
+           TABLE=SIG_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.5,),
+           )
 
 IMPR_TABLE(TABLE=VAR_AV,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','V7','V10'),);
 IMPR_TABLE(TABLE=SIG_AV,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','SIGN',),);

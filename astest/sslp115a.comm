@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2012   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DISQUE FISSURE EN PRESENCE DE CONTRAINTES INITIALES
 # sslp115a.para = tps_job 300 mem_job 640Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -249,28 +249,43 @@ GTHER=CALC_G(THETA=_F(THETA=THETAc2,
              COMP_INCR=_F(RELATION='ELAS',),
              OPTION='CALC_G',);
 ## Impression des resultats
-TEST_TABLE(TABLE=GINGA,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 3),
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=54.638386953,
+           VALE_REFE=55.359999999999999,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='G',
-           VALE=55.36,
-           PRECISION=2.E-2   )
-TEST_TABLE(TABLE=GINNO,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 3),
+           TABLE=GINGA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3,),
+           )
+
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=55.363857227,
+           VALE_REFE=55.359999999999999,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='G',
-           VALE=55.36,
-           PRECISION=2E-2   )
-TEST_TABLE(TABLE=GINELNO,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 3),
+           TABLE=GINNO,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3,),
+           )
+
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=55.370142028,
+           VALE_REFE=55.359999999999999,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='G',
-           VALE=55.36,
-           PRECISION=2.E-2   )
-TEST_TABLE(TABLE=GTHER,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 1),
+           TABLE=GINELNO,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=55.359999999999999,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=55.36,
-           PRECISION=1.E-3   )
+           TABLE=GTHER,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1,),
+           )
+
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FLAMBEMENT NON LINEAIRE POUTRE 3D GROT_GDEP
 # ssnl126b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,14 +91,13 @@ resuel=STAT_NON_LINE(reuse=resuel,
                    CRIT_STAB=_F()
                   );
 
-TEST_RESU(RESU=(
-                 _F(RESULTAT=resuel,
-                   INST=1.0,
-                   PARA='CHAR_CRIT',
-                   VALE=-19.065,
-                   PRECISION=1.E-4,
-                   REFERENCE='NON_REGRESSION',),
-                   ),)
+TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
+                  INST=1.0,
+                  RESULTAT=resuel,
+                  VALE_CALC=-19.065000000000001,
+                  TOLE_MACHINE=1.E-4,
+                  ),
+          )
 
 # ELASTOPLASTIQUE
 CS=AFFE_CHAR_MECA(MODELE=modele,
@@ -137,39 +136,40 @@ resu=STAT_NON_LINE(reuse=resu,
                                   ITER_GLOB_MAXI=10,),
                    CRIT_STAB=_F()
                   );
-TEST_RESU(RESU=(
-                 _F(RESULTAT=resu,
-                   INST=0.4,
-                   PARA='CHAR_CRIT',
-                   VALE=4.9917,
-                   REFERENCE='NON_REGRESSION',),
-
-                 _F(RESULTAT=resu,
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   INST=0.40000000000000002,
+                   RESULTAT=resu,
+                   VALE_CALC=4.9916999999999998,
+                   TOLE_MACHINE=1.E-3,),
+                _F(PARA='CHAR_CRIT',
                    INST=0.5,
-                   PARA='CHAR_CRIT',
-                   VALE=-1.3186,
-                   REFERENCE='NON_REGRESSION',),
-                   ),)
+                   RESULTAT=resu,
+                   VALE_CALC=-1.3186,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
-TEST_RESU(RESU=(
-   _F( RESULTAT  = resu,
-       NOM_CHAM  = 'MODE_FLAMB',
-       NOM_CMP   = 'DX',
-       NOEUD     = 'N1',
-       CRITERE   = 'RELATIF',
-       PRECISION = 1.E-4,
-       INST      = 0.4,
-       VALE      = 0.,
-       REFERENCE = 'ANALYTIQUE'),
-   _F( RESULTAT  = resu,
-       NOM_CHAM  = 'MODE_FLAMB',
-       NOM_CMP   = 'DX',
-       NOEUD     = 'N1',
-       CRITERE   = 'RELATIF',
-       PRECISION = 1.E-4,
-       INST      = 1.0,
-       VALE      = 0.,
-       REFERENCE = 'ANALYTIQUE'),
-       ),);
+TEST_RESU(RESU=(_F(INST=0.40000000000000002,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=resu,
+                   NOM_CHAM='MODE_FLAMB',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.00000000E+00,
+                   VALE_REFE=0.0,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-4,),
+                _F(INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=resu,
+                   NOM_CHAM='MODE_FLAMB',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.00000000E+00,
+                   VALE_REFE=0.0,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-4,),
+                ),
+          )
 
 FIN();

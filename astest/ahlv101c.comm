@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE GUIDE D'ONDE INCIDENTE A SORTIE ANECHOIQUE EN U,P,PHI-CAS AXIS
 # ahlv101c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,16 +95,36 @@ DYNAHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                              EXCIT=_F( VECT_ASSE = VECTASS,  COEF_MULT = 1.,
                                     PUIS_PULS = 1,  PHAS_DEG = 90.))
 
-TEST_RESU(RESU=(
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'N1',  NOM_CMP = 'PRES',  VALE_C = 0.50000+0.0j),
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'N3',  NOM_CMP = 'PRES',  VALE_C = 0.50000+0.0j),
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'N151', NOM_CMP = 'PRES',  VALE_C = -0.4825-0.1313j),
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
-              NOEUD = 'N153',  NOM_CMP = 'PRES',  VALE_C = -0.4825-0.1313j))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   VALE_CALC_C=(0.5+0j),
+                   TOLE_MACHINE=1.E-3,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='PRES',),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=(0.5+0j),
+                   TOLE_MACHINE=1.E-3,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='PRES',),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=(-0.48249999999999998-0.1313j),
+                   TOLE_MACHINE=1.E-3,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N151',
+                   NOM_CMP='PRES',),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=(-0.48249999999999998-0.1313j),
+                   TOLE_MACHINE=1.E-3,
+                   RESULTAT=DYNAHARM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N153',
+                   NOM_CMP='PRES',),
+                ),
+          )
 
 FIN()
 #

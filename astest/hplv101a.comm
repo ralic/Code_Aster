@@ -1,4 +1,4 @@
-# MODIF  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - CONT. PLANES - QUAD8
 # hplv101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,47 +183,68 @@ IMPR_TABLE(   TABLE=ENER_ELA)
 
 IMPR_TABLE(   TABLE=ENER_TOT )
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = TEMPGR, NUME_ORDRE=0,          PRECISION = 1.E-7,
-              MAILLE = 'M1',      POINT=1,           NOM_CHAM='ETHE_ELEM',
-              NOM_CMP = 'TOTALE', VALE = -0.500))
-            )
+TEST_RESU(RESU=(_F(RESULTAT=TEMPGR,
+                   NUME_ORDRE=0,
+                   MAILLE='M1',
+                   POINT=1,
+                   NOM_CHAM='ETHE_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=-0.500)
+                ),
+          )
 
-TEST_RESU(CHAM_NO=(
+TEST_RESU(CHAM_NO=(_F(NOEUD='A',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=T_DZETA,
+                      VALE_CALC=-1.0,
+                      ),
+                   _F(NOEUD='A',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEM_KI11,
+                      VALE_CALC=-1.0,
+                      ),
+                   _F(NOEUD='N6',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DX',
+                      CHAM_GD=DEM_KI11,
+                      VALE_CALC=-0.5,
+                      ),
+                   ),
+          )
 
-     # TEMPERATURES
-            _F(  CHAM_GD = T_DZETA,  CRITERE = 'RELATIF',   PRECISION = 1.E-6,
-              NOEUD = 'A',        NOM_CMP = 'TEMP',  VALE = -1.000000000),
-     # DEPLACEMENTS
-            _F(  CHAM_GD = DEM_KI11, CRITERE = 'RELATIF',   PRECISION = 1.E-6,
-              NOEUD = 'A',        NOM_CMP = 'DX',    VALE = -1.000000000),
-            _F(  CHAM_GD = DEM_KI11, CRITERE = 'RELATIF',   PRECISION = 1.E-6,
-              NOEUD = 'N6',       NOM_CMP = 'DX',    VALE = -0.500000000))
-            )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=0.500000000,
+           VALE_REFE=0.5,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TT,)
 
-TEST_TABLE(      TABLE=TT,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=0.500,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=0.549450549,
+           VALE_REFE=0.54945049999999995,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=PM,)
 
-TEST_TABLE(      TABLE=PM,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=0.5494505,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=0.549450549,
+           VALE_REFE=0.54945049999999995,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=ENER_ELA,)
 
-TEST_TABLE(      TABLE=ENER_ELA,        NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=0.5494505,
-                 PRECISION=1.E-6 )
-
-TEST_TABLE(      TABLE=ENER_TOT,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=0.5494505,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=0.549450549,
+           VALE_REFE=0.54945049999999995,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=ENER_TOT,)
 
 FIN( )
 #

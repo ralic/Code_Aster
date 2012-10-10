@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103f.para = tps_job 360 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,28 +179,52 @@ DEPLB1_1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
 # TESTS DE DEPLACEMENTS, VITESSES ET ACCELERATIONS
 #####################################################
 
-TEST_RESU(RESU=(
-     _F(  RESULTAT = RESU1,   INST = IFIN,
-          NOM_CHAM = 'DEPL',   GROUP_NO = 'B1',
-          CRITERE = 'RELATIF', PRECISION = (3.E-2, 1.E-10),
-          NOM_CMP = 'DX',    VALE =1.7496298183762, REFERENCE = 'NON_REGRESSION',
-          VERSION='11.0.28' ),
-     _F(  RESULTAT = RESU1,   INST = IFIN,
-          NOM_CHAM = 'DEPL',   GROUP_NO = 'A2',
-          CRITERE = 'RELATIF', PRECISION = (7.E-3, 1.E-10),
-          NOM_CMP = 'DY',    VALE = -6.708400431849, REFERENCE = 'NON_REGRESSION',
-          VERSION='11.0.22' ),
-     _F(  RESULTAT = RESU1,   INST = IFIN,
-          NOM_CHAM = 'VITE',   GROUP_NO = 'B1',
-          CRITERE = 'RELATIF', PRECISION = (3.E-2, 1.E-10),
-          NOM_CMP = 'DX',    VALE = 78981.886179879, REFERENCE = 'NON_REGRESSION',
-          VERSION='11.0.22' ),
-     _F(  RESULTAT = RESU1,   INST = IFIN,
-          NOM_CHAM = 'VITE',   GROUP_NO = 'A2',
-          CRITERE = 'RELATIF', PRECISION = (4.E-2, 1.E-10),
-          NOM_CMP = 'DY',    VALE = -2.0385434072951E+05, REFERENCE = 'NON_REGRESSION',
-          VERSION='11.0.22' ),
-        ),);
+TEST_RESU(RESU=(_F(GROUP_NO='B1',
+                   INST=2.0000000000000002E-05,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.7496298183762,
+                   VALE_REFE=1.7496298183762,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999, TOLE_MACHINE=(1.E-5, 1.E-10),
+                   ),
+                _F(GROUP_NO='A2',
+                   INST=2.0000000000000002E-05,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-6.725626223,
+                   VALE_REFE=-6.7084004318490003,
+                   CRITERE='RELATIF',
+                   PRECISION=7.0000000000000001E-3, TOLE_MACHINE=(7.0000000000000001E-3, 1.E-10),
+                   ),
+                _F(GROUP_NO='B1',
+                   INST=2.0000000000000002E-05,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DX',
+                   VALE_CALC= 7.73672482E+04,
+                   VALE_REFE=7.8981886179879002E4,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999, TOLE_MACHINE=(0.029999999999999999, 1.E-10),
+                   ),
+                _F(GROUP_NO='A2',
+                   INST=2.0000000000000002E-05,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DY',
+                   VALE_CALC=-2.05560631E+05,
+                   VALE_REFE=-2.0385434072951E5,
+                   CRITERE='RELATIF',
+                   PRECISION=0.040000000000000001, TOLE_MACHINE=(0.040000000000000001, 1.E-10),
+                   ),
+                ),
+          )
 
 #####################################################
 # TESTS SUR LA VALEUR DU JEU ET DU FROTTEMENT
@@ -208,27 +232,23 @@ TEST_RESU(RESU=(
 
 
 
-TEST_TABLE(TABLE     = CONTB1_1,
-           FILTRE    =_F(NOM_PARA = 'INST',
-                         PRECISION=1.E-10,
-                         VALE = IFIN,),
-           NOM_PARA  = 'JEU',
-           CRITERE   = 'RELATIF',
-           PRECISION = 1.E-10,
-           VALE      = 0.089534326856020,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.21' )
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.089534326856020002,
+           NOM_PARA='JEU',
+           TABLE=CONTB1_1,
+           FILTRE=_F(PRECISION=1.E-10,
+                     NOM_PARA='INST',
+                     VALE=2.0000000000000002E-05,),
+           )
 
-TEST_TABLE(TABLE     = CONTB1_1,
-           FILTRE    =_F(NOM_PARA = 'INST',
-                         PRECISION=1.E-10,
-                         VALE = IFIN,),
-           NOM_PARA  = 'R',
-           CRITERE   = 'ABSOLU',
-           PRECISION = 1.E-15,
-           VALE      = 0.0,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.21' )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='R',
+           TABLE=CONTB1_1,
+           FILTRE=_F(PRECISION=1.E-10,
+                     NOM_PARA='INST',
+                     VALE=2.0000000000000002E-05,),
+           )
 
 #
 ### COURBES
@@ -347,28 +367,52 @@ DEPLB1_2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
 # TESTS DE DEPLACEMENTS, VITESSES ET ACCELERATIONS
 #####################################################
 
-TEST_RESU(RESU=(
-     _F(  RESULTAT = RESU2,   INST = IFIN,
-          NOM_CHAM = 'DEPL',   GROUP_NO = 'B1',
-          CRITERE = 'RELATIF', PRECISION = (3.E-2, 1.E-10),
-          NOM_CMP = 'DX',    VALE =1.767749149604, REFERENCE = 'NON_REGRESSION',
-          VERSION='11.0.28' ),
-     _F(  RESULTAT = RESU2,   INST = IFIN,
-          NOM_CHAM = 'DEPL',   GROUP_NO = 'A2',
-          CRITERE = 'RELATIF', PRECISION = (7.E-3, 1.E-10),
-          NOM_CMP = 'DY',    VALE = -6.708400431849, REFERENCE = 'NON_REGRESSION',
-          VERSION='11.0.22' ),
-     _F(  RESULTAT = RESU2,   INST = IFIN,
-          NOM_CHAM = 'VITE',   GROUP_NO = 'B1',
-          CRITERE = 'RELATIF', PRECISION = (3.E-2, 1.E-10),
-          NOM_CMP = 'DX',    VALE = 79430.997053331, REFERENCE = 'NON_REGRESSION',
-          VERSION='11.0.22' ),
-     _F(  RESULTAT = RESU2,   INST = IFIN,
-          NOM_CHAM = 'VITE',   GROUP_NO = 'A2',
-          CRITERE = 'RELATIF', PRECISION = (4.E-2, 1.E-10),
-          NOM_CMP = 'DY',    VALE = -2.0385434072951E+05, REFERENCE = 'NON_REGRESSION',
-          VERSION='11.0.22' ),
-        ),);
+TEST_RESU(RESU=(_F(GROUP_NO='B1',
+                   INST=2.0000000000000002E-05,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.767850613,
+                   VALE_REFE=1.7677491496040001,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999, TOLE_MACHINE=(0.029999999999999999, 1.E-10),
+                   ),
+                _F(GROUP_NO='A2',
+                   INST=2.0000000000000002E-05,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-6.734531069,
+                   VALE_REFE=-6.7084004318490003,
+                   CRITERE='RELATIF',
+                   PRECISION=7.0000000000000001E-3, TOLE_MACHINE=(7.0000000000000001E-3, 1.E-10),
+                   ),
+                _F(GROUP_NO='B1',
+                   INST=2.0000000000000002E-05,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DX',
+                   VALE_CALC= 7.94321072E+04,
+                   VALE_REFE=7.9430997053330997E4,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999, TOLE_MACHINE=(0.029999999999999999, 1.E-10),
+                   ),
+                _F(GROUP_NO='A2',
+                   INST=2.0000000000000002E-05,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DY',
+                   VALE_CALC=-2.07946961E+05,
+                   VALE_REFE=-2.0385434072951E5,
+                   CRITERE='RELATIF',
+                   PRECISION=0.040000000000000001, TOLE_MACHINE=(0.040000000000000001, 1.E-10),
+                   ),
+                ),
+          )
 
 #####################################################
 # TESTS SUR LA VALEUR DU JEU ET DU FROTTEMENT
@@ -376,28 +420,23 @@ TEST_RESU(RESU=(
 
 
 
-TEST_TABLE(TABLE     = CONTB1_2,
-           FILTRE    =_F(NOM_PARA = 'INST',
-                         PRECISION=1.E-10,
-                         VALE = IFIN,),
-           NOM_PARA  = 'JEU',
-           CRITERE   = 'RELATIF',
-           PRECISION = 5.E-10,
-           VALE      = 0.084020393828398,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.21' )
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.084020393828398002,
+           NOM_PARA='JEU',
+           TABLE=CONTB1_2,
+           FILTRE=_F(PRECISION=1.E-10,
+                     NOM_PARA='INST',
+                     VALE=2.0000000000000002E-05,),
+           )
 
-TEST_TABLE(TABLE     = CONTB1_2,
-           FILTRE    =_F(NOM_PARA = 'INST',
-                         PRECISION=1.E-10,
-                         VALE = IFIN,),
-           NOM_PARA  = 'R',
-           CRITERE   = 'ABSOLU',
-           PRECISION = 1.E-15,
-           VALE      = 0.,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.21' )
-
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='R',
+           TABLE=CONTB1_2,
+           FILTRE=_F(PRECISION=1.E-10,
+                     NOM_PARA='INST',
+                     VALE=2.0000000000000002E-05,),
+           )
 
 #
 ### COURBES
@@ -425,4 +464,3 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 
 
 FIN()
-

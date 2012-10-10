@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 # sdll126a.para = tps_job 600 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,26 +171,34 @@ DY_DIS2=RECU_FONCTION(RESULTAT=TRANSI,
                       GROUP_NO='N_DIS2',
                       INTERPOL='LIN',);
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DY_DIS2,
-                        VALE_PARA=4.99791,
-                        VALE_REFE=0.0005721,
-                        PRECISION=.02,
-                        REFERENCE='AUTRE_ASTER',),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.000566724403068,
+                        VALE_REFE=5.7209999999999997E-4,
+                        VALE_PARA=4.9979100000000001,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.02,
+                        FONCTION=DY_DIS2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DY_DIS2,
-                        VALE_PARA=4.99791,
-                        VALE_REFE=0.0005668,
-                        REFERENCE='NON_REGRESSION',),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.6680000000000001E-4,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=4.9979100000000001,
+                        FONCTION=DY_DIS2,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DZ_DIS2,
-                        VALE_PARA=4.99893,
-                        VALE_REFE=0.0007023,
-                        PRECISION=.02,
-                        REFERENCE='AUTRE_ASTER',),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.000693973337188,
+                        VALE_REFE=7.0229999999999999E-4,
+                        VALE_PARA=4.9989299999999997,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.02,
+                        FONCTION=DZ_DIS2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DZ_DIS2,
-                        VALE_PARA=4.99893,
-                        VALE_REFE=0.0006945,
-                        REFERENCE='NON_REGRESSION',),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.9450000000000002E-4,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=4.9989299999999997,
+                        FONCTION=DZ_DIS2,
+                        ),
+              )
 
 FIN();

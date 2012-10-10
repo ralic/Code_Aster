@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DETECTION DE SINGULARITE SIMPLE AVEC LES SOLVEURS LINEAIRES
 # erreu04a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,8 +76,15 @@ except aster.error,err:
       is_ok = 1
 TAB130=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB130,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB130,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM130,MATAS130,TAB130),),)
 
 # 1 : MANQUE DE BLOCAGE DETECTE VIA LE MECANISME NPREC/STOP_SINGULIER
@@ -95,8 +102,15 @@ except aster.error,err:
       is_ok = 1
 TAB11=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB11,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB11,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM11,MATAS11,TAB11),),)
 
 is_ok = 0
@@ -111,8 +125,15 @@ except aster.error,err:
       is_ok = 1
 TAB12=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB12,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB12,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM12,MATAS12,TAB12),),)
 
 is_ok = 0
@@ -127,8 +148,15 @@ except aster.error,err:
       is_ok = 1
 TAB130=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB130,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB130,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM130,MATAS130,TAB130),),)
 
 is_ok = 0
@@ -147,8 +175,15 @@ except aster.error,err:
       is_ok = 1
 TAB131=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB131,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB131,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM131,MATAS131,VECTE131,VECTA131,TAB131,MEL11),),)
 
 # 2 : REDONDANCE DE BLOCAGES DETECTE VIA LE MECANISME NPREC/STOP_SINGULIER
@@ -168,8 +203,15 @@ except aster.error,err:
       is_ok = 1
 TAB21=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB21,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB21,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM21,MATAS21,TAB21),),)
 
 is_ok = 0
@@ -184,8 +226,15 @@ except aster.error,err:
       is_ok = 1
 TAB22=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB22,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB22,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM22,MATAS22,TAB22),),)
 
 is_ok = 0
@@ -200,8 +249,15 @@ except aster.error,err:
       is_ok = 1
 TAB230=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB230,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB230,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM230,MATAS230,TAB230),),)
 
 is_ok = 0
@@ -221,8 +277,15 @@ except aster.error,err:
       is_ok = 1
 TAB231=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB231,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB231,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM231,MATAS231,VECTE231,VECTA231,VCIN231,TAB231),),)
 
 is_ok = 0
@@ -240,7 +303,14 @@ except aster.error,err:
       is_ok = 1
 TAB232=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
-TEST_TABLE(TABLE=TAB232,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB232,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 DETRUIRE(CONCEPT=_F(NOM=(NUM232,MATAS232,VECTE232,VECTA232,VCIN232,TAB232,MEL21),),)
 FIN()

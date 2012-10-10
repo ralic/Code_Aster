@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GREFFET
 #
 # TITRE GESTION EXCEPTION INSTABILITE (CAS-TEST INSPIRE PAR SSLL105)
@@ -112,11 +112,15 @@ except aster.error,err:
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                        _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
 
-TEST_TABLE(TABLE=TAB1,
-           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
            NOM_PARA='BOOLEEN',
-           VALE_I=1,
-           REFERENCE='ANALYTIQUE',)
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
 #
 #  On teste avec l'arret sur valeur de charge critique -1 :
 #  sous CRIT_STAB on met SIGNE = 'NEGATIF'
@@ -145,11 +149,14 @@ except aster.error,err:
 TAB1N=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
 
-TEST_TABLE(TABLE=TAB1N,
-           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
            NOM_PARA='BOOLEEN',
-           VALE_I=1,
-           REFERENCE='ANALYTIQUE',)
+           TABLE=TAB1N,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
 
 #DETRUIRE(CONCEPT=_F(NOM=(res2L_A, TAB1),),)
 
@@ -181,11 +188,14 @@ except aster.error,err:
 TAB1P=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
 
-TEST_TABLE(TABLE=TAB1P,
-           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,
            NOM_PARA='BOOLEEN',
-           VALE_I=0,
-           REFERENCE='ANALYTIQUE',)
+           TABLE=TAB1P,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
 
 #DETRUIRE(CONCEPT=_F(NOM=(res2L_A, TAB1),),)
 

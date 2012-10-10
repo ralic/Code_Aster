@@ -105,20 +105,22 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                         MARQUEUR=0,),
                         ECHELLE_Y='LOG',);
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN,
+TEST_RESU(RESU=_F(GROUP_NO='P_EFOND',
                   INST=1.0,
+                  RESULTAT=TRAN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='P_EFOND',
-                  VALE=-0.132956,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.5.5',),);
+                  VALE_CALC=-0.13295599999999999,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=MDHY_B,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.93400000000000005,
+                        TOLE_MACHINE=1.E-3,
                         VALE_PARA=10.0,
-                        VALE_REFE=0.934,
-                        REFERENCE='NON_REGRESSION',
-                        VERSION='10.5.5',),);
+                        FONCTION=MDHY_B,
+                        ),
+              )
 
 FIN();
 

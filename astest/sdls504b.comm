@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 17/05/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -156,17 +156,24 @@ RESULT=MODE_ITER_SIMULT(      MATR_RIGI=MAS_RI_M,
 #                        VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
 #
-TEST_RESU(RESU=(
-      _F( RESULTAT = RESULT,             NUME_MODE = 5,  
-            PARA = 'CHAR_CRIT',      
-            VALE = -104797.82,              PRECISION = 0.07,  
-            CRITERE = 'RELATIF',   
-            ),
-      _F( RESULTAT = RESULT,             NUME_MODE = 6,  
-            PARA = 'CHAR_CRIT',      
-            VALE = 104797.82,             PRECISION = 0.07,  
-            CRITERE = 'RELATIF',   
-            ))           )
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   NUME_MODE=5,
+                   RESULTAT=RESULT,
+                   VALE_CALC=-9.76364015E+04,
+                   VALE_REFE=-1.0479782000000001E5,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.070000000000000007,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=6,
+                   RESULTAT=RESULT,
+                   VALE_CALC= 9.76363946E+04,
+                   VALE_REFE=1.0479782000000001E5,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.070000000000000007,),
+                ),
+          )
 
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHOC D'UNE MASSE SUR UNE PAROI AU COMPORTEMENT FLAMBAGE
 # sdnd105a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -198,32 +198,43 @@ tfl = pi/6
 dp = 3.
 t0 = pi/6 +2*sqrt(3.) +(pi+6)/sqrt(2.)
 
-TEST_TABLE(TABLE=TABLE,FILTRE=(
-                _F(  NOM_PARA = 'CALCUL',
-                         VALE_K = 'FLAMBAGE'),
-                _F(  NOM_PARA = 'NOEUD',
-                         VALE_K = 'N02')),
-               NOM_PARA='ECRAS_RESI',
-               VALE=dp,    PRECISION=1.E-3,
-               REFERENCE='ANALYTIQUE' )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=2.998584194,
+           VALE_REFE=3.0,
+           NOM_PARA='ECRAS_RESI',
+           TABLE=TABLE,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='FLAMBAGE',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N02',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TABLE,FILTRE=(
-                _F(  NOM_PARA = 'CALCUL',
-                         VALE_K = 'FLAMBAGE'),
-                _F(  NOM_PARA = 'NOEUD',
-                         VALE_K = 'N02')),
-               NOM_PARA='INST_FLAMB',
-               VALE=tfl,    PRECISION=1.E-3,
-               REFERENCE='ANALYTIQUE' )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.524108941,
+           VALE_REFE=0.52359877559829882,
+           NOM_PARA='INST_FLAMB',
+           TABLE=TABLE,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='FLAMBAGE',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N02',),
+                   ),
+           )
 
-TEST_RESU(RESU=_F( RESULTAT = TRAN,
-                    NOM_CHAM = 'DEPL',  INST = t0,
-                    NOEUD = 'N02',       NOM_CMP = 'DX',
-                    CRITERE = ('ABSOLU', 'RELATIF',),
-                    PRECISION = ( 3.E-3, 5.E-5,),
-                    VALE = 0.,
-                    REFERENCE = 'ANALYTIQUE')
-             )
+TEST_RESU(RESU=_F(INST=10.45178254693452,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=TRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N02',
+                  NOM_CMP='DX',
+                  VALE_CALC=-2.15416813E-03,
+                  VALE_REFE=0.0,
+                  CRITERE=('ABSOLU', 'RELATIF'),
+                  PRECISION=3.0000000000000001E-3, TOLE_MACHINE=(3.0000000000000001E-3, 5.0000000000000002E-05),),
+          )
 
 FIN()
 #

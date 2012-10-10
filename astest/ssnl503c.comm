@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 21/09/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -231,50 +231,55 @@ IMPR_TABLE(  TABLE=TAB_DRZ)
 #                        VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
 #
-TEST_RESU(RESU=(
-# INSTANT T=15
-           _F(  RESULTAT = RESUL,
-                  PARA = 'ETA_PILOTAGE',
-                  NUME_ORDRE = 17,
-                  VALE = 1.0,
-                  PRECISION = 0.2),
-# INSTANT T=16
-           _F(  RESULTAT = RESUL,
-                  PARA = 'ETA_PILOTAGE',
-                  NUME_ORDRE = 18,
-                  VALE = 1.0,
-                  PRECISION = 0.2),
-# INSTANT T=17
-           _F(  RESULTAT = RESUL,
-                  PARA = 'ETA_PILOTAGE',
-                  NUME_ORDRE = 19,
-                  VALE = 1.0,
-                  PRECISION = 0.2),
-# INSTANT T=18
-           _F(  RESULTAT = RESUL,
-                  PARA = 'ETA_PILOTAGE',
-                  NUME_ORDRE = 20,
-                  VALE = 1.0,
-                  PRECISION = 0.2),
-# INSTANT T=19
-           _F(  RESULTAT = RESUL,
-                  PARA = 'ETA_PILOTAGE',
-                  NUME_ORDRE = 21,
-                  VALE = 1.0,
-                  PRECISION = 0.2),
-# INSTANT T=20
-           _F(  RESULTAT = RESUL,
-                  PARA = 'ETA_PILOTAGE',
-                  NUME_ORDRE = 22,
-                  VALE = 1.0,
-                  PRECISION = 0.2),
-# INSTANT T=20
-           _F(  RESULTAT = RESUL,
-                  PARA = 'ETA_PILOTAGE',
-                  REFERENCE = 'NON_REGRESSION',
-                  NUME_ORDRE = 22,
-                  VALE = 1.1905008036769E+00))
-                )
+TEST_RESU(RESU=(_F(NUME_ORDRE=17,
+                   PARA='ETA_PILOTAGE',
+                   RESULTAT=RESUL,
+                   VALE_CALC=1.149845005,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.20000000000000001,),
+                _F(NUME_ORDRE=18,
+                   PARA='ETA_PILOTAGE',
+                   RESULTAT=RESUL,
+                   VALE_CALC=1.159214591,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.20000000000000001,),
+                _F(NUME_ORDRE=19,
+                   PARA='ETA_PILOTAGE',
+                   RESULTAT=RESUL,
+                   VALE_CALC=1.167865560,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.20000000000000001,),
+                _F(NUME_ORDRE=20,
+                   PARA='ETA_PILOTAGE',
+                   RESULTAT=RESUL,
+                   VALE_CALC=1.175913396,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.20000000000000001,),
+                _F(NUME_ORDRE=21,
+                   PARA='ETA_PILOTAGE',
+                   RESULTAT=RESUL,
+                   VALE_CALC=1.183440304,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.20000000000000001,),
+                _F(NUME_ORDRE=22,
+                   PARA='ETA_PILOTAGE',
+                   RESULTAT=RESUL,
+                   VALE_CALC=1.190550721,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.20000000000000001,),
+                _F(NUME_ORDRE=22,
+                   PARA='ETA_PILOTAGE',
+                   RESULTAT=RESUL,
+                   VALE_CALC=1.1905008036769,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 FIN()
 #

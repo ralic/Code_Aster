@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 # ssnv129d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,77 +146,105 @@ IMPR_RESU(MODELE=MO,
                    NOM_CMP=('SIXX','SIYY','SIXY',),)
                 ));
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='CENTE1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='CENTE1',
-                   VALE=-0.3426875,
+                   VALE_CALC=-0.345769898,
+                   VALE_REFE=-0.34268749999999998,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESUPOS,
-                   NUME_ORDRE=1,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='CENTE1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUPOS,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   GROUP_NO='CENTE1',
-                   VALE=7648100000.0,
+                   VALE_CALC= 7.68531573E+09,
+                   VALE_REFE=7.648100000E9,
                    CRITERE='RELATIF',
-                   PRECISION=0.012,
-                   REFERENCE='ANALYTIQUE',),),);
+                   PRECISION=0.012,),
+                ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=RESUPOS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIXY',
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='A1',
-                   VALE=-3.2908316392694E+09,
-                   CRITERE='RELATIF',
-                   PRECISION=4e-04,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='9.0.11',),
-                _F(RESULTAT=RESUPOS,
-                   NUME_ORDRE=1,
+                   RESULTAT=RESUPOS,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXY',
+                   VALE_CALC=-3.2908316392694001E9,
+                   TOLE_MACHINE=4.0000000000000002E-4,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='A3',
-                   VALE=-3.2926195900234E+09,
-                   CRITERE='RELATIF',
-                   PRECISION=4e-04,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='9.0.11',),
-                _F(RESULTAT=RESUPOS,
-                   NUME_ORDRE=1,
+                   RESULTAT=RESUPOS,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXY',
+                   VALE_CALC=-3.2926195900233998E9,
+                   TOLE_MACHINE=4.0000000000000002E-4,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='B1',
-                   VALE=3.2908712114235E+09,
-                   CRITERE='RELATIF',
-                   PRECISION=4e-03,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='9.0.11',),
-                _F(RESULTAT=RESUPOS,
-                   NUME_ORDRE=1,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUPOS,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXY',
-                   GROUP_NO='B3',
-                   VALE=3.2926268685777E+09,
+                   VALE_CALC= 3.29169097E+09,
+                   VALE_REFE=3.2908712114235001E9,
                    CRITERE='RELATIF',
-                   PRECISION=4e-03,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='9.0.11',),),);
+                   PRECISION=4.0000000000000001E-3,
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='B3',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUPOS,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXY',
+                   VALE_CALC= 3.29169097E+09,
+                   VALE_REFE=3.2926268685777001E9,
+                   CRITERE='RELATIF',
+                   PRECISION=4.0000000000000001E-3,
+                   ),
+                ),
+          )
 
 #----------------------------------------------------------------------------
 # Validation EFGE_ELGA pour les elements DKT :
 #----------------------------------------------------------------------
 CALC_CHAMP(reuse=RESU, RESULTAT= RESU, CONTRAINTE=('EFGE_ELGA'), )
 #IMPR_RESU(RESU=_F(RESULTAT=RESU, INST=1.))
-TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-8, CRITERE='ABSOLU',
-           MAILLE = 'M2', POINT = 4, NOM_CMP = 'NXX', VALE =  0.0  , REFERENCE = 'NON_REGRESSION'))
-TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
-           MAILLE = 'M2', POINT = 4, NOM_CMP = 'MYY', VALE =  -4.9744425883916E+07  , REFERENCE = 'NON_REGRESSION'))
-TEST_RESU( RESU= _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
-           MAILLE = 'M2', POINT = 4, NOM_CMP = 'MXY', VALE =  1.0563751966343E+08   , REFERENCE = 'NON_REGRESSION'))
+TEST_RESU(RESU=_F(INST=1.0,
+                  POINT=4,
+                  RESULTAT=RESU,
+                  NOM_CHAM='EFGE_ELGA',
+                  NOM_CMP='NXX',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='M2',),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  POINT=4,
+                  RESULTAT=RESU,
+                  NOM_CHAM='EFGE_ELGA',
+                  NOM_CMP='MYY',
+                  VALE_CALC=-4.9744425883915998E7,
+                  MAILLE='M2',),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  POINT=4,
+                  RESULTAT=RESU,
+                  NOM_CHAM='EFGE_ELGA',
+                  NOM_CMP='MXY',
+                  VALE_CALC=1.0563751966343001E8,
+                  MAILLE='M2',),
+          )
+
 #----------------------------------------------------------------------------
 
 FIN();

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN
 # ssnd112c.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -418,104 +418,103 @@ DEFI_FICHIER(UNITE = 31,
 
 # NON REGRESSION
 
-TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.224443,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=2.24443E-01,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=epsDIR,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=230.7133,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=230.7133,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-TEST_FONCTION(VALEUR=_F(FONCTION=gamma[1],
-                        NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=0.35670,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=sigDIR,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho[1],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.35670000000000002,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=1.490252E-05,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=gamma_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.490252E-05,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=0.05493,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=rho_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05493,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=6.30676E-06,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=gamma_9,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.3067600000000001E-06,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
+                        NOM_PARA='INST',
+                        FONCTION=rho_9,
+                        ),
+              )
 
 tdep=0.02
 
-TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0202331,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=2.02331E-02,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=epsDIR,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=114.125,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=1.14125E+02,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-TEST_FONCTION(VALEUR=_F(FONCTION=rho[1],
+                        FONCTION=sigDIR,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.8085199999999995E-07,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=9.80852E-07,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=rho_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamma[1],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0385454,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=3.85454E-02,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=gamma_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.07407E-07,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=1.07407E-07,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=rho_9,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.04944E-3,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=1.04944E-03 ,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-
-
-
+                        FONCTION=gamma_9,
+                        ),
+              )
 
 ######### TEST MATRICE D'INTERACTION UTILISATEUR
 
@@ -612,102 +611,103 @@ for i in range(1,13):
 
 # NON REGRESSION
 
-TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.224443,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=2.24443E-01,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=epsDIR2,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=230.7133,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=230.7133,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-TEST_FONCTION(VALEUR=_F(FONCTION=gamm2[1],
-                        NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=0.35670,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=sigDIR2,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho2[1],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.35670000000000002,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=1.490252E-05,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=gamm2_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamm2[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.490252E-05,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=0.05493,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=rho2_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho2[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05493,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=6.30676E-06,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=gamm2_9,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.3067600000000001E-06,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
+                        NOM_PARA='INST',
+                        FONCTION=rho2_9,
+                        ),
+              )
 
 tdep=0.02
 
-TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0202331,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=2.02331E-02,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=epsDIR2,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=114.125,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=1.14125E+02,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-TEST_FONCTION(VALEUR=_F(FONCTION=rho2[1],
-                        NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=9.80852E-07,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=sigDIR2,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamm2[1],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.8085199999999995E-07,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=3.85454E-02,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=rho2_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho2[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0385454,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=1.07407E-07,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=gamm2_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamm2[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.07407E-07,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=1.04944E-03 ,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=rho2_9,
+                        ),
+              )
 
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.04944E-3,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
+                        NOM_PARA='INST',
+                        FONCTION=gamm2_9,
+                        ),
+              )
 
 #########" TEST SYSTEMES DE GLISSEMENT UTILISATEUR
 
@@ -805,100 +805,102 @@ for i in range(1,13):
 
 # NON REGRESSION
 
-TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.224443,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=2.24443E-01,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=epsDIR3,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=230.7133,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=230.7133,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-TEST_FONCTION(VALEUR=_F(FONCTION=gamm3[1],
-                        NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=0.35670,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=sigDIR3,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho3[1],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.35670000000000002,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=1.490252E-05,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=gamm3_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamm3[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.490252E-05,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=0.05493,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=rho3_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho3[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05493,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
                         NOM_PARA='INST',
-                        VALE_PARA=tmax,
-                        VALE_REFE=6.30676E-06,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=gamm3_9,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.3067600000000001E-06,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.20000000000000001,
+                        NOM_PARA='INST',
+                        FONCTION=rho3_9,
+                        ),
+              )
 
 tdep=0.02
 
-TEST_FONCTION(VALEUR=_F(FONCTION=epsDIR3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0202331,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=2.02331E-02,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=epsDIR3,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=114.125,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=1.14125E+02,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-TEST_FONCTION(VALEUR=_F(FONCTION=rho3[1],
-                        NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=9.80852E-07,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=sigDIR3,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamm3[1],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.8085199999999995E-07,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=3.85454E-02,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=rho3_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=rho3[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0385454,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=1.07407E-07,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=gamm3_1,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=gamm3[9],
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.07407E-07,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
                         NOM_PARA='INST',
-                        VALE_PARA=tdep,
-                        VALE_REFE=1.04944E-03 ,
-                        PRECISION=0.001,
-                        REFERENCE='NON_REGRESSION',),
-                        );
+                        FONCTION=rho3_9,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.04944E-3,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.02,
+                        NOM_PARA='INST',
+                        FONCTION=gamm3_9,
+                        ),
+              )
 
 FIN()

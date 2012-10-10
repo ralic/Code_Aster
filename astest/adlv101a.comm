@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODES DE BALLOTTEMENT D UNE CUVE REMPLIE D EAU
 # adlv101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,19 +78,40 @@ MODE=MODE_ITER_INV(   MATR_RIGI=MATRAS,   MATR_MASS=MATMAS,
 #
 #
 
-TEST_RESU(RESU=(_F( RESULTAT = MODE,  PARA = 'FREQ',
-                    CRITERE = 'RELATIF',  PRECISION = 2.E-3,
-                    NUME_ORDRE = 1,  VALE = 0.89825),
-                   _F( RESULTAT = MODE,  PARA = 'FREQ',
-                    CRITERE = 'RELATIF',  PRECISION = 5.E-3,
-                    NUME_ORDRE = 2,  VALE = 1.38452),
-                   _F( RESULTAT = MODE,  PARA = 'FREQ',
-                    CRITERE = 'RELATIF',  PRECISION = 9.E-3,
-                    NUME_ORDRE = 3,  VALE = 1.70952),
-                   _F( RESULTAT = MODE,  PARA = 'FREQ',
-                    CRITERE = 'RELATIF',  PRECISION = 1.6E-2,
-                    NUME_ORDRE = 4,  VALE = 1.97551))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=0.899460084,
+                   VALE_REFE=0.89824999999999999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=1.390098736,
+                   VALE_REFE=1.38452,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=1.724063879,
+                   VALE_REFE=1.7095199999999999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=8.9999999999999993E-3,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=2.005260827,
+                   VALE_REFE=1.9755100000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.016,),
+                ),
+          )
 
 #
 

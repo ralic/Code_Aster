@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN ELASTICITE
 # forma03a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -101,45 +101,48 @@ IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESU,),);
 
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='B',
-                  VALE=30.0,
+                  VALE_CALC=29.809234113,
+                  VALE_REFE=30.0,
                   CRITERE='RELATIF',
-                  PRECISION=0.01,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIXX',
-                  GROUP_NO='A',
-                  VALE=-10.0,
+                  VALE_CALC=-9.821390921,
+                  VALE_REFE=-10.0,
                   CRITERE='RELATIF',
-                  PRECISION=0.02,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=0.02,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='B',
+                  RESULTAT=RESU,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='B',
-                  VALE=29.809234113416,
+                  VALE_CALC=29.809234113416,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A',
+                  RESULTAT=RESU,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIXX',
-                  GROUP_NO='A',
-                  VALE=-9.8213909205095,
+                  VALE_CALC=-9.8213909205095007,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
-
+                  ),
+          )
 
 FIN();

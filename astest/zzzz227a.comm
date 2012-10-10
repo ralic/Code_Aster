@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA CREATION DE LA CARTE DE TEMPERATURE DE REFERENCE
 # zzzz227a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,9 +99,14 @@ RESU2=MECA_STATIQUE(MODELE=MO,CHAM_MATER=CHMAT2,LIST_INST=L1,
          EXCIT=(_F(CHARGE=CHARST),_F(CHARGE=CHARCI)))
 
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1, NOM_CMP='DZ', GROUP_NO='C', REFERENCE='NON_REGRESSION',
-          VALE=-3.8209964322068E-01, RESULTAT=RESU2, NOM_CHAM='DEPL'))
-
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  RESULTAT=RESU2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.38209964322068002,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
 # CALCUL 2: CALCUL AVEC PLUSIEURS MATERIAUX PAR MAILLE:
 #----------------------------------------------------------------------------
@@ -123,9 +128,15 @@ RESU3=MECA_STATIQUE(MODELE=MO,CHAM_MATER=CHMAT3,LIST_INST=L1,
          EXCIT=(_F(CHARGE=CHARST),_F(CHARGE=CHARCI)))
 
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1, NOM_CMP='DZ', GROUP_NO='C', REFERENCE='AUTRE_ASTER',
-          VALE=-3.8209964322068E-01, RESULTAT=RESU3, NOM_CHAM='DEPL'))
-
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.382099643,
+                  VALE_REFE=-0.38209964322068002,),
+          )
 
 #--------------------------------------------------------------------------------------------------------------
 # pour tester la commande TEST_RESU sur des cartes (fiche 18997) :
@@ -133,18 +144,33 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1, NOM_CMP='DZ', GROUP_NO='C', REFERENCE='AUTRE_AST
 
 CH1=CREA_CHAMP(TYPE_CHAM='CART_TEMP_R', OPERATION='AFFE', MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',NOM_CMP='TEMP',VALE=30.))
-TEST_RESU(CARTE=_F(CHAM_GD=CH1, NOM_CMP='TEMP', MAILLE='M1', REFERENCE='ANALYTIQUE', VALE=30., ))
-
+TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=30.000000000,
+                   VALE_REFE=30.0,
+                   MAILLE='M1',
+                   CHAM_GD=CH1,),
+          )
 
 CH2=CREA_CHAMP(TYPE_CHAM='CART_DEPL_C', OPERATION='AFFE', MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',NOM_CMP='DZ', VALE_C = ('RI',1.0,0.5,)))
-TEST_RESU(CARTE=_F(CHAM_GD=CH2, NOM_CMP='DZ', MAILLE='M1', REFERENCE='ANALYTIQUE', VALE_C = ('RI',1.0,0.5,) ))
-
+TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
+                   VALE_CALC_C=1.000000000+0.500000000j,
+                   VALE_REFE_C=('RI', 1.0, 0.5),
+                   NOM_CMP='DZ',
+                   MAILLE='M1',
+                   CHAM_GD=CH2,),
+          )
 
 CH3=CREA_CHAMP(TYPE_CHAM='CART_NEUT_I', OPERATION='AFFE', MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',NOM_CMP='X3', VALE_I = 17))
-TEST_RESU(CARTE=_F(CHAM_GD=CH3, NOM_CMP='X3', MAILLE='M1', REFERENCE='ANALYTIQUE', VALE_I = 17 ))
-
+TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
+                   NOM_CMP='X3',
+                   VALE_CALC_I=17,
+                   VALE_REFE_I=17,
+                   MAILLE='M1',
+                   CHAM_GD=CH3,),
+          )
 
 # VALIDATION DE L'ASSEMBLAGE DE 2 CARTES (CREA_CHAMP / ASSE) (fiche 18995) :
 #---------------------------------------------------------------------------
@@ -159,9 +185,20 @@ CART3=CREA_CHAMP(TYPE_CHAM='CART_TEMP_R', OPERATION='ASSE', MAILLAGE=MA,
                         _F(MAILLE='M3', CHAM_GD=CART2, CUMUL='OUI', COEF_R=3.,),
                  ),INFO=1,)
 # 158=3*32 + 2*31
-TEST_RESU(CARTE=_F(CHAM_GD=CART3, NOM_CMP='TEMP', MAILLE='M3', REFERENCE='ANALYTIQUE', VALE = 158. ))
-TEST_RESU(CARTE=_F(CHAM_GD=CART3, NOM_CMP='TEMP', MAILLE='M1', REFERENCE='ANALYTIQUE', VALE = 62. ))
+TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=158.000000000,
+                   VALE_REFE=158.0,
+                   MAILLE='M3',
+                   CHAM_GD=CART3,),
+          )
 
+TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=62.000000000,
+                   VALE_REFE=62.0,
+                   MAILLE='M1',
+                   CHAM_GD=CART3,),
+          )
 
 FIN()
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE SYME = 'NON' POUR DISCRET EN 2D REPERE LOCAL
 # zzzz274b.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,20 +100,24 @@ RDEPNS_G=CALC_CHAMP(reuse =RDEPNS_G,
                  RESULTAT=RDEPNS_G,
                  FORCE='REAC_NODA');
 
-TEST_RESU(RESU=(_F(RESULTAT=RDEPNS_G,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RDEPNS_G,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
-                   NUME_ORDRE=1,
+                   VALE_CALC=0.283493649,
+                   VALE_REFE=0.28349999999999997,),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='P1',
-                   VALE=0.2835,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RDEPNS_G,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RDEPNS_G,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DY',
-                   NUME_ORDRE=1,
-                   GROUP_NO='P1',
-                   VALE=0.01346,
-                   REFERENCE='ANALYTIQUE',),),);
+                   VALE_CALC=0.013461894,
+                   VALE_REFE=0.01346,),
+                ),
+          )
 
 RFORNS_G=MECA_STATIQUE(
    MODELE=MO,
@@ -123,20 +127,24 @@ RFORNS_G=MECA_STATIQUE(
    EXCIT=_F(CHARGE=FORC,),
 )
 
-TEST_RESU(RESU=(_F(RESULTAT=RFORNS_G,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RFORNS_G,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NUME_ORDRE=1,
+                   VALE_CALC=1.154700538,
+                   VALE_REFE=1.1547000000000001,),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='P1',
-                   VALE=1.1547,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RFORNS_G,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RFORNS_G,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   NUME_ORDRE=1,
-                   GROUP_NO='P1',
-                   VALE=1.3333,
-                   REFERENCE='ANALYTIQUE',),),);
+                   VALE_CALC=1.333333333,
+                   VALE_REFE=1.3332999999999999,),
+                ),
+          )
 
 RDEPNS_L=MECA_STATIQUE(
    MODELE=MO,
@@ -149,20 +157,24 @@ RDEPNS_L=CALC_CHAMP(reuse =RDEPNS_L,
                  RESULTAT=RDEPNS_L,
                  FORCE='REAC_NODA');
 
-TEST_RESU(RESU=(_F(RESULTAT=RDEPNS_L,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RDEPNS_L,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
-                   NUME_ORDRE=1,
+                   VALE_CALC=0.283493649,
+                   VALE_REFE=0.28349999999999997,),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='P1',
-                   VALE=0.2835,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RDEPNS_L,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RDEPNS_L,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DY',
-                   NUME_ORDRE=1,
-                   GROUP_NO='P1',
-                   VALE=0.01346,
-                   REFERENCE='ANALYTIQUE',),),);
+                   VALE_CALC=0.013461894,
+                   VALE_REFE=0.01346,),
+                ),
+          )
 
 RFORNS_L=MECA_STATIQUE(
    MODELE=MO,
@@ -172,19 +184,23 @@ RFORNS_L=MECA_STATIQUE(
    EXCIT=_F(CHARGE=FORC,),
 )
 
-TEST_RESU(RESU=(_F(RESULTAT=RFORNS_L,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RFORNS_L,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NUME_ORDRE=1,
+                   VALE_CALC=1.154700538,
+                   VALE_REFE=1.1547000000000001,),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='P1',
-                   VALE=1.1547,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RFORNS_L,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RFORNS_L,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   NUME_ORDRE=1,
-                   GROUP_NO='P1',
-                   VALE=1.3333,
-                   REFERENCE='ANALYTIQUE',),),);
+                   VALE_CALC=1.333333333,
+                   VALE_REFE=1.3332999999999999,),
+                ),
+          )
 
 FIN();

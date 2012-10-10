@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE EN FLEXION A EPAISSEUR VARIABLE. MODELISATION SHB20 VARIATION QUADRATIQUE
 # ssls133d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,12 +82,25 @@ RESU31=CALC_CHAMP(reuse=RESU31,RESULTAT=RESU31,CONTRAINTE=('SIGM_ELNO'))
 Uz=.4712388984e-9;
 
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU31, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P7',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 4.67543354E-10,
+                   VALE_REFE=4.7123889840000003E-10,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P8',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 4.67543354E-10,
+                   VALE_REFE=4.7123889840000003E-10,
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 FIN()

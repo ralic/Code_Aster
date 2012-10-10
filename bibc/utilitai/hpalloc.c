@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF HPALLOC UTILITAI  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF HPALLOC UTILITAI  DATE 10/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -18,17 +18,22 @@
 /* ================================================================== */
 #include "aster.h"
 #include <errno.h>
+#include <sys/mman.h>
+#include <malloc.h>
 
 void DEFPPPP(HPALLOC, hpalloc, void **addr,INTEGER *length, INTEGER *errcode, INTEGER *abrt)
 {
-    void *malloc(),abort();
+    void abort();
+    int ir;
     if ( *length <= 0 ) {
         *errcode = -1;
     }
     else
     {
-        *addr = (void *)malloc(*length * sizeof(INTEGER));
-        if ( *addr == (void *)0 )
+        ir=mallopt(M_MMAP_THRESHOLD,0);
+        *addr = (void *)malloc(*length * sizeof(INTEGER)); 
+        ir=mallopt(M_MMAP_THRESHOLD,128*1024);
+        if ( *addr == (void *)-1 )
         {
             *errcode = -2;
         }

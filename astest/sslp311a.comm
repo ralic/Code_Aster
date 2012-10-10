@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 # sslp311a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,10 +91,12 @@ G01A=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G01A,
-                       NOM_PARA='G',
-                           VALE=1.012506E2,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.05    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=96.763309969,
+           VALE_REFE=101.25060000000001,
+           NOM_PARA='G',
+           TABLE=G01A,)
 
 #
 #
@@ -113,10 +115,12 @@ G01B=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G01B,
-                       NOM_PARA='G',
-                           VALE=1.012506E2,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=100.931193666,
+           VALE_REFE=101.25060000000001,
+           NOM_PARA='G',
+           TABLE=G01B,)
 
 #
 THETA01C=CALC_THETA(    MODELE=MO,
@@ -136,10 +140,12 @@ G01C=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G01C,
-                       NOM_PARA='G',
-                           VALE=1.012506E2,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=100.951311739,
+           VALE_REFE=101.25060000000001,
+           NOM_PARA='G',
+           TABLE=G01C,)
 
 #
 THETA01D=CALC_THETA(    MODELE=MO,
@@ -157,10 +163,12 @@ G01D=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G01D,
-                       NOM_PARA='G',
-                           VALE=1.012506E2,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=100.955538185,
+           VALE_REFE=101.25060000000001,
+           NOM_PARA='G',
+           TABLE=G01D,)
 
 #
 #
@@ -186,10 +194,12 @@ G02A=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G02A,
-                       NOM_PARA='G',
-                           VALE=9.673620E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.05    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=92.428855395,
+           VALE_REFE=96.736199999999997,
+           NOM_PARA='G',
+           TABLE=G02A,)
 
 #
 #
@@ -208,10 +218,12 @@ G02B=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G02B,
-                       NOM_PARA='G',
-                           VALE=9.673620E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=96.392111473,
+           VALE_REFE=96.736199999999997,
+           NOM_PARA='G',
+           TABLE=G02B,)
 
 #
 THETA02C=CALC_THETA(    MODELE=MO,
@@ -229,10 +241,12 @@ G02C=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G02C,
-                       NOM_PARA='G',
-                           VALE=9.673620E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=96.417052027,
+           VALE_REFE=96.736199999999997,
+           NOM_PARA='G',
+           TABLE=G02C,)
 
 #
 THETA02D=CALC_THETA(    MODELE=MO,
@@ -250,10 +264,11 @@ G02D=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G02D,
-                       NOM_PARA='G',
-                           VALE=9.673620E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.05    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=96.421246924,
+           VALE_REFE=96.736199999999997,
+           NOM_PARA='G',
+           TABLE=G02D,)
 
 FIN()
-

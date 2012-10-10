@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURATION JOINT 3D : HEXA8 LOI CZM_LIN_REG
 # ssnp118e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -325,99 +325,81 @@ IMPR_TABLE(TABLE=T_SITY_1)
 
 
 
-TEST_TABLE(TABLE=T_DX_1,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.6,),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=1.472017048,
+           VALE_REFE=1.4720169999999999,
            NOM_PARA='DX',
-           VALE=1.4720170,
-           PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=T_DX_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.6000000000000001,),
+           )
 
-TEST_TABLE(TABLE=T_ETA_1,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.6,),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.679895551,
+           VALE_REFE=0.67989555099999999,
            NOM_PARA='ETA_PILO',
-           VALE=6.79895551E-1,
-           PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=T_ETA_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.6000000000000001,),
+           )
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_1,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DX',
-      VALE      = 2.16506E-08,
-      GROUP_NO  = 'TOUTSEUL',
-      INST      = 0
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(GROUP_NO='TOUTSEUL',
+                  INST=0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC= 2.16506351E-08,
+                  VALE_REFE=2.1650600000000001E-08,),
+          )
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_1,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIXX',
-      VALE      = 9.27629539E-02,
-      MAILLE    = 'CUBE',
-      POINT     = 4,
-      INST      = 1.6000059,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=1.6000059,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=4,
+                  RESULTAT=U_1,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.092762954,
+                  VALE_REFE=0.0927629539,
+                  MAILLE='CUBE',),
+          )
 
+TEST_RESU(RESU=_F(INST=1.000041,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_1,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=0.548877353,
+                  VALE_REFE=0.54887556000000004,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_1,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIGN',
-      VALE      = 5.4887556E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 1.000041,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=0.4000765,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_1,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITX',
+                  VALE_CALC=-2.96599509E-15,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
-
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_1,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITX',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 0.4000765,
-      ),
-    )
-  )
-
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_1,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITY',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 4,
-      INST      = 0.5000706,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=0.50007060000000003,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=4,
+                  RESULTAT=U_1,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITY',
+                  VALE_CALC=-1.63796750E-16,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
 #----------------------------------------------------------------------------------
 # TESTS CALCUL MODE II
@@ -456,56 +438,40 @@ T_SITY_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITY_2))
 IMPR_TABLE(TABLE=T_SITY_2)
 
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIGN',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 1.000041,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=1.000041,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_2,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=-7.68869343E-14,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
+TEST_RESU(RESU=_F(INST=1.200029,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=4,
+                  RESULTAT=U_2,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITX',
+                  VALE_CALC=0.433148729,
+                  VALE_REFE=0.43314616,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITX',
-      VALE      = 0.43314616,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 4,
-      INST      = 1.200029,
-      ),
-    )
-  )
-
-
-
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITY',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 1.400018,
-      ),
-    )
-  )
-
+TEST_RESU(RESU=_F(INST=1.400018,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_2,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITY',
+                  VALE_CALC=-1.64789673E-20,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
 #----------------------------------------------------------------------------------
 # TESTS CALCUL MODE III
@@ -544,54 +510,41 @@ T_SITY_3=CREA_TABLE(FONCTION=_F(FONCTION=F_SITY_3))
 IMPR_TABLE(TABLE=T_SITY_3)
 
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_3,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIGN',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 3,
-      INST      = 1.000041,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=1.000041,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=3,
+                  RESULTAT=U_3,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIGN',
+                  VALE_CALC= 6.77615794E-21,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
+TEST_RESU(RESU=_F(INST=1.200029,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=3,
+                  RESULTAT=U_3,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITX',
+                  VALE_CALC=-6.56056005E-21,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_3,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITX',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 3,
-      INST      = 1.200029,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=1.400018,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_3,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITY',
+                  VALE_CALC=0.293118592,
+                  VALE_REFE=0.29311860000000001,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_3,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITY',
-      VALE      = 2.931186E-1,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 1.400018,
-      ),
-    )
-  )
-  
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_3,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  

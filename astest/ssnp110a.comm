@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 # ssnp110a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,15 +89,13 @@ IMPR_TABLE(TABLE=TABDEP,);
 # CETTE VALEUR A ETE OBTENUE PAR LA VERSION 9.0.11
 DEPREF=9.8756898959655e-02;
 
-TEST_TABLE(TABLE=TABDEP,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 150),
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.098756898959655004,
            NOM_PARA='DY',
-           VALE=DEPREF,
-           CRITERE='RELATIF',
-           PRECISION=2.e-10,
-           REFERENCE='NON_REGRESSION',
-           VERSION='9.0.11');
+           TABLE=TABDEP,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=150,),
+           )
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
@@ -155,139 +153,140 @@ G_2=CALC_G( THETA=_F(THETA=THETA2,SYME='OUI'),
 IMPR_TABLE(TABLE=G_2,);
 #
 # TEST
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 30),
+TEST_TABLE(
+           VALE_CALC=3.2908090218925001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=3.2908090218925E+00,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=30,),
+           )
 
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 60),
+TEST_TABLE(
+           VALE_CALC=13.603188101422001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=1.3603188101422E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=60,),
+           )
 
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 90),
+TEST_TABLE(
+           VALE_CALC=31.970374749379999,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=3.1970374749380E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=90,),
+           )
 
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 120),
+TEST_TABLE(
+           VALE_CALC=58.993613915841003,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=5.8993613915841E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=120,),
+           )
 
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 150),
+TEST_TABLE(
+           VALE_CALC=91.415076304037001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=9.1415076304037E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=150,),
+           )
 
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 30),
+TEST_TABLE(
+           VALE_CALC=3.2013930606905001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=3.2013930606905E+00,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=30,),
+           )
 
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 60),
+TEST_TABLE(
+           VALE_CALC=13.237527356542,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=1.3237527356542E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=60,),
+           )
 
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 90),
+TEST_TABLE(
+           VALE_CALC=31.227047674314001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=3.1227047674314E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=90,),
+           )
 
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 120),
+TEST_TABLE(
+           VALE_CALC=57.745644672712999,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=5.7745644672713E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=120,),
+           )
 
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 150),
+TEST_TABLE(
+           VALE_CALC=89.637167577271995,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=8.9637167577272E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=150,),
+           )
 
-TEST_TABLE(TABLE=G_2,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 30),
+TEST_TABLE(
+           VALE_CALC=3.2017793873037999,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=3.2017793873038E+00,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=30,),
+           )
 
-TEST_TABLE(TABLE=G_2,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 60),
+TEST_TABLE(
+           VALE_CALC=13.241393129831,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=1.3241393129831E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=60,),
+           )
 
-TEST_TABLE(TABLE=G_2,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 90),
+TEST_TABLE(
+           VALE_CALC=31.236316620385001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=3.1236316620385E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=90,),
+           )
 
-TEST_TABLE(TABLE=G_2,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 120),
+TEST_TABLE(
+           VALE_CALC=57.767467919559998,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=5.7767467919560E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=120,),
+           )
 
-TEST_TABLE(TABLE=G_2,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 150),
+TEST_TABLE(
+           VALE_CALC=89.708336760251996,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='G',
-           VALE=8.9708336760252E+01,
-           PRECISION=0.001,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.1'            )
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=150,),
+           )
+
 FIN()
 #

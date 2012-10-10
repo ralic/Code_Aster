@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,110 +183,131 @@ GLOC2=CALC_G( RESULTAT=RESU,
 #----------------------------------------------------------------------
 
 
-TEST_TABLE(       TABLE=G0,
-                       NOM_PARA='G',
-                           VALE=1.44E-3,
-                      PRECISION=2.1E-2,
-                      REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.021000000000000001,
+           VALE_CALC= 1.41027420E-03,
+           VALE_REFE=1.4400000000000001E-3,
+           NOM_PARA='G',
+           TABLE=G0,)
 
-TEST_TABLE(       TABLE=G1,
-                       NOM_PARA='G',
-                           VALE=1.44E-3,
-                      PRECISION=3.E-2,
-                      REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 1.45116164E-03,
+           VALE_REFE=1.4400000000000001E-3,
+           NOM_PARA='G',
+           TABLE=G1,)
 
-TEST_TABLE(       TABLE=G2,
-                       NOM_PARA='G',
-                           VALE=1.44E-3,
-                      PRECISION=1.2E-2,
-                      REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.012,
+           VALE_CALC= 1.42355345E-03,
+           VALE_REFE=1.4400000000000001E-3,
+           NOM_PARA='G',
+           TABLE=G2,)
 
 #----------------------------------------------------------------------
 #              TEST DE G(A) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
 
 
-TEST_TABLE(      TABLE=GLOC0,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                             VALE_K = 'NO1099'),
-                 NOM_PARA='G',
-                 VALE=7.171E-5,
-                 PRECISION=1.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 7.11935112E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G',
+           TABLE=GLOC0,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1099',),
+           )
 
-TEST_TABLE(      TABLE=GLOC1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                             VALE_K = 'NO1099'),
-                 NOM_PARA='G',
-                 VALE=7.171E-5,
-                 PRECISION=5.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 7.45150501E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1099',),
+           )
 
-TEST_TABLE(      TABLE=GLOC2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                             VALE_K = 'NO1099'),
-                 NOM_PARA='G',
-                 VALE=7.171E-5,
-                 PRECISION=4.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC= 7.43011345E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1099',),
+           )
 
 #----------------------------------------------------------------------
 #              TEST DE G(B) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
 
 
-TEST_TABLE(      TABLE=GLOC0,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                             VALE_K = 'NO1259'),
-                 NOM_PARA='G',
-                 VALE=1.721E-5,
-                 PRECISION=7.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC= 1.60730720E-05,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G',
+           TABLE=GLOC0,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1259',),
+           )
 
-TEST_TABLE(      TABLE=GLOC1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                             VALE_K = 'NO1259'),
-                 NOM_PARA='G',
-                 VALE=1.721E-5,
-                 PRECISION=5.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 1.66206026E-05,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1259',),
+           )
 
-TEST_TABLE(      TABLE=GLOC2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                             VALE_K = 'NO1259'),
-                 NOM_PARA='G',
-                 VALE=1.721E-5,
-                 PRECISION=1.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.70551927E-05,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1259',),
+           )
 
 #----------------------------------------------------------------------
 #              TEST DE G(C) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
 
 
-TEST_TABLE(      TABLE=GLOC0,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                             VALE_K = 'NO1179'),
-                 NOM_PARA='G',
-                 VALE=5.215E-5,
-                 PRECISION=5.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 4.97847529E-05,
+           VALE_REFE=5.215E-05,
+           NOM_PARA='G',
+           TABLE=GLOC0,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1179',),
+           )
 
-TEST_TABLE(      TABLE=GLOC1,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                             VALE_K = 'NO1179'),
-                 NOM_PARA='G',
-                 VALE=5.215E-5,
-                 PRECISION=3.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 5.09690471E-05,
+           VALE_REFE=5.215E-05,
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1179',),
+           )
 
-TEST_TABLE(      TABLE=GLOC2,
-                 FILTRE=_F(  NOM_PARA = 'NOEUD',
-                             VALE_K = 'NO1179'),
-                 NOM_PARA='G',
-                 VALE=5.215E-5,
-                 PRECISION=4.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC= 5.01423957E-05,
+           VALE_REFE=5.215E-05,
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1179',),
+           )
 
 FIN()
 #

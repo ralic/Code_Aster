@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
 # ssnp102b.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -231,144 +231,174 @@ IMPR_TABLE(       TABLE=G4,)
 # EPAISSEUR DE LA PLAQUE
 EPAIS = 0.25
 
-TEST_TABLE(       TABLE=G1,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 5),
-                       NOM_PARA='G',
-                           VALE=2.769*EPAIS,
-                      PRECISION=3.5E-2 ,
-                      REFERENCE='SOURCE_EXTERNE'  )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.035000000000000003,
+           VALE_CALC=0.714466138,
+           VALE_REFE=0.69225000000000003,
+           NOM_PARA='G',
+           TABLE=G1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(       TABLE=G2,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 5),
-                       NOM_PARA='G',
-                           VALE=2.769*EPAIS,
-                      PRECISION=3.5E-2  ,
-                      REFERENCE='SOURCE_EXTERNE' )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.035000000000000003,
+           VALE_CALC=0.714456278,
+           VALE_REFE=0.69225000000000003,
+           NOM_PARA='G',
+           TABLE=G2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(       TABLE=G3,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 5),
-                       NOM_PARA='G',
-                           VALE=2.769*EPAIS,
-                      PRECISION=3.5E-2  ,
-                      REFERENCE='SOURCE_EXTERNE' )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.035000000000000003,
+           VALE_CALC=0.714515041,
+           VALE_REFE=0.69225000000000003,
+           NOM_PARA='G',
+           TABLE=G3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(       TABLE=G4,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 5),
-                       NOM_PARA='G',
-                           VALE=2.769*EPAIS,
-                      PRECISION=3.5E-2 ,
-                      REFERENCE='SOURCE_EXTERNE'  )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.035000000000000003,
+           VALE_CALC=0.714491765,
+           VALE_REFE=0.69225000000000003,
+           NOM_PARA='G',
+           TABLE=G4,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.760221971,
+           VALE_REFE=0.79574999999999996,
+           NOM_PARA='G',
+           TABLE=G1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
+           )
 
-TEST_TABLE(       TABLE=G1,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 10),
-                       NOM_PARA='G',
-                           VALE=3.183*EPAIS,
-                      PRECISION=5.E-2  ,
-                      REFERENCE='SOURCE_EXTERNE' )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.761886296,
+           VALE_REFE=0.79574999999999996,
+           NOM_PARA='G',
+           TABLE=G2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
+           )
 
-TEST_TABLE(       TABLE=G2,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 10),
-                       NOM_PARA='G',
-                           VALE=3.183*EPAIS,
-                      PRECISION=5.E-2 ,
-                      REFERENCE='SOURCE_EXTERNE'  )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.761893645,
+           VALE_REFE=0.79574999999999996,
+           NOM_PARA='G',
+           TABLE=G3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
+           )
 
-TEST_TABLE(       TABLE=G3,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 10),
-                       NOM_PARA='G',
-                           VALE=3.183*EPAIS,
-                      PRECISION=5.E-2  ,
-                      REFERENCE='SOURCE_EXTERNE' )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.761893689,
+           VALE_REFE=0.79574999999999996,
+           NOM_PARA='G',
+           TABLE=G4,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
+           )
 
-TEST_TABLE(       TABLE=G4,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 10),
-                       NOM_PARA='G',
-                           VALE=3.183*EPAIS,
-                      PRECISION=5.E-2  ,
-                      REFERENCE='SOURCE_EXTERNE' )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.025000000000000001,
+           VALE_CALC=1.047446911,
+           VALE_REFE=1.069,
+           NOM_PARA='G',
+           TABLE=G1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=15,),
+           )
 
-TEST_TABLE(       TABLE=G1,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 15),
-                       NOM_PARA='G',
-                           VALE=4.276*EPAIS,
-                      PRECISION=2.5E-2  ,
-                      REFERENCE='SOURCE_EXTERNE' )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.025000000000000001,
+           VALE_CALC=1.047436782,
+           VALE_REFE=1.069,
+           NOM_PARA='G',
+           TABLE=G2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=15,),
+           )
 
-TEST_TABLE(       TABLE=G2,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 15),
-                       NOM_PARA='G',
-                           VALE=4.276*EPAIS,
-                      PRECISION=2.5E-2 ,
-                      REFERENCE='SOURCE_EXTERNE'  )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.025000000000000001,
+           VALE_CALC=1.047495645,
+           VALE_REFE=1.069,
+           NOM_PARA='G',
+           TABLE=G3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=15,),
+           )
 
-TEST_TABLE(       TABLE=G3,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 15),
-                       NOM_PARA='G',
-                           VALE=4.276*EPAIS,
-                      PRECISION=2.5E-2 ,
-                      REFERENCE='SOURCE_EXTERNE'  )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.025000000000000001,
+           VALE_CALC=1.047472356,
+           VALE_REFE=1.069,
+           NOM_PARA='G',
+           TABLE=G4,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=15,),
+           )
 
-TEST_TABLE(       TABLE=G4,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 15),
-                       NOM_PARA='G',
-                           VALE=4.276*EPAIS,
-                      PRECISION=2.5E-2  ,
-                      REFERENCE='SOURCE_EXTERNE'  )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC=1.095021994,
+           VALE_REFE=1.16275,
+           NOM_PARA='G',
+           TABLE=G1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=20,),
+           )
 
-TEST_TABLE(       TABLE=G1,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 20),
-                       NOM_PARA='G',
-                           VALE=4.651*EPAIS,
-                      PRECISION=6.E-2 ,
-                      REFERENCE='SOURCE_EXTERNE'   )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC=1.096702136,
+           VALE_REFE=1.16275,
+           NOM_PARA='G',
+           TABLE=G2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=20,),
+           )
 
-TEST_TABLE(       TABLE=G2,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 20),
-                       NOM_PARA='G',
-                           VALE=4.651*EPAIS,
-                      PRECISION=6.E-2  ,
-                      REFERENCE='SOURCE_EXTERNE'  )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC=1.096709537,
+           VALE_REFE=1.16275,
+           NOM_PARA='G',
+           TABLE=G3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=20,),
+           )
 
-TEST_TABLE(       TABLE=G3,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 20),
-                       NOM_PARA='G',
-                           VALE=4.651*EPAIS,
-                      PRECISION=6.E-2 ,
-                      REFERENCE='SOURCE_EXTERNE'   )
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC=1.096709583,
+           VALE_REFE=1.16275,
+           NOM_PARA='G',
+           TABLE=G4,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=20,),
+           )
 
-TEST_TABLE(       TABLE=G4,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 20),
-                       NOM_PARA='G',
-                           VALE=4.651*EPAIS,
-                      PRECISION=6.E-2 ,
-                      REFERENCE='SOURCE_EXTERNE'  )
-
-TEST_TABLE(       TABLE=G1,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 20),
-                       NOM_PARA='G',
-                           VALE=1.09502,
-                      PRECISION=1.E-4 ,
-                      REFERENCE='NON_REGRESSION'  )
-
-
+TEST_TABLE(
+           VALE_CALC=1.0950200000000001,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='G',
+           TABLE=G1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=20,),
+           )
 
 FIN()
 #

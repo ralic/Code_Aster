@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRANSPORT DE CHALEUR PAR CONVECTION DANS UN PARALLELEPIPEDE
 # tplv102a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,20 +74,51 @@ RESU=THER_NON_LINE_MO(   MODELE=MODCAV,
 T=CREA_CHAMP( OPERATION='EXTR',  TYPE_CHAM='NOEU_TEMP_R',
                    RESULTAT=RESU,   NOM_CHAM='TEMP', NUME_ORDRE=0 )
 
-TEST_RESU(CHAM_NO=(
-   _F( CHAM_GD = T, NOEUD = 'N31',    NOM_CMP = 'TEMP', VALE = 1.,
-             PRECISION = 0.00125, CRITERE = 'ABSOLU'),
-   _F( CHAM_GD = T, NOEUD = 'N29',    NOM_CMP = 'TEMP', VALE = 1.,
-             PRECISION = 0.0002, CRITERE = 'ABSOLU'),
-   _F( CHAM_GD = T, NOEUD = 'N27',    NOM_CMP = 'TEMP', VALE = 1.,
-             PRECISION = 0.003, CRITERE = 'ABSOLU'),
-   _F( CHAM_GD = T, NOEUD = 'N25',    NOM_CMP = 'TEMP', VALE = 1.,
-             PRECISION = 0.100, CRITERE = 'ABSOLU'),
-   _F( CHAM_GD = T, NOEUD = 'N23',    NOM_CMP = 'TEMP', VALE = 0.,
-             PRECISION = 0.012, CRITERE = 'ABSOLU'),
-   _F( CHAM_GD = T, NOEUD = 'N1',    NOM_CMP = 'TEMP', VALE = 0.,
-             PRECISION = 0.0000000001, CRITERE = 'ABSOLU'))
-         )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N31',
+                      CRITERE='ABSOLU',
+                      NOM_CMP='TEMP',
+                      PRECISION=1.25E-3,
+                      CHAM_GD=T,
+                      VALE_CALC=1.001232765,
+                      VALE_REFE=1.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N29',
+                      CRITERE='ABSOLU',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=T,
+                      VALE_CALC=1.0,
+                      TOLE_MACHINE=2.0000000000000001E-4,),
+                   _F(NOEUD='N27',
+                      CRITERE='ABSOLU',
+                      NOM_CMP='TEMP',
+                      PRECISION=3.0000000000000001E-3,
+                      CHAM_GD=T,
+                      VALE_CALC=0.998142584,
+                      VALE_REFE=1.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N25',
+                      CRITERE='ABSOLU',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.10000000000000001,
+                      CHAM_GD=T,
+                      VALE_CALC=0.907836008,
+                      VALE_REFE=1.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N23',
+                      CRITERE='ABSOLU',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.012,
+                      CHAM_GD=T,
+                      VALE_CALC=-0.011479657,
+                      VALE_REFE=0.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N1',
+                      CRITERE='ABSOLU',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=T,
+                      VALE_CALC=0.0,),
+                   ),
+          )
 
 FIN()
 #

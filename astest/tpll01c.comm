@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (QUAD9/TRIA6)
 # tpll01c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,22 +64,60 @@ TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'))
 
 
 
-TEST_RESU(RESU=(
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP',
-   NOEUD = 'N24',  NOM_CMP = 'TEMP', VALE = 100.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP',
-   NOEUD = 'N6',   NOM_CMP = 'TEMP', VALE = 20.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP',
-   NOEUD = 'N14',  NOM_CMP = 'TEMP', VALE = 60.0),
-
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO',
-   MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO',
-   MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA',
-   MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA',
-   MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0))
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N24',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=100.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N6',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=20.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N14',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=60.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   POINT=3,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='FLUX_ELNO',
+                   NOM_CMP='FLUX',
+                   VALE_CALC=960.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='FLUX_ELNO',
+                   NOM_CMP='FLUY',
+                   VALE_CALC=720.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=2,
+                   POINT=3,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='FLUX_ELGA',
+                   NOM_CMP='FLUX',
+                   VALE_CALC=960.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='FLUX_ELGA',
+                   NOM_CMP='FLUY',
+                   VALE_CALC=720.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M2',),
+                ),
           )
 
 CHEM=INTE_MAIL_2D(   MAILLAGE=MAIL,
@@ -96,26 +134,29 @@ TR1_C=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
                            OPERATION = 'EXTRACTION')  )
 
-TEST_TABLE(    TABLE=TR1_C,
-                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
-                         VALE = 0.00000E+00),
-                NOM_PARA='TRAC_NOR',
-                    VALE=1200.0
-            )
+TEST_TABLE(VALE_CALC=1200.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TRAC_NOR',
+           TABLE=TR1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
 
-TEST_TABLE(    TABLE=TR1_C,
-                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
-                         VALE = 2.50000E-02),
-                NOM_PARA='TRAC_NOR',
-                    VALE=1200.0
-            )
+TEST_TABLE(VALE_CALC=1200.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TRAC_NOR',
+           TABLE=TR1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.025000000000000001,),
+           )
 
-TEST_TABLE(    TABLE=TR1_C,
-                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
-                         VALE = 5.00000E-02),
-                NOM_PARA='TRAC_NOR',
-                    VALE=1200.0
-            )
+TEST_TABLE(VALE_CALC=1200.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TRAC_NOR',
+           TABLE=TR1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.050000000000000003,),
+           )
 
 FIN()
 #

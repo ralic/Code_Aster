@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 # 4 calculs esclaves distribues : ncpus = 4 + 1 (maitre),
 # on met 4 car c'est une limite courante en interactif (interactif_nbpmax)
@@ -97,26 +97,25 @@ OPTIM=DEFI_FONCTION(NOM_PARA='INST',
                     VALE_PARA=BIDON,
                     VALE_FONC=RESU);
 
-TEST_FONCTION ( VALEUR =(_F( FONCTION = OPTIM,
-                           PRECISION = 1.E-4,
-                           VALE_PARA = 1.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = 150000.,
-                         ),
-                       _F( FONCTION = OPTIM,
-                           PRECISION = 1.E-4,
-                           VALE_PARA = 2.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = 10000.,
-                         ),
-                       _F( FONCTION = OPTIM,
-                           PRECISION = 1.E-3,
-                           VALE_PARA = 3.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = 115.174,
-                         ),
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=150000.0,
+                         VALE_REFE=1.50000E5,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-4,
+                         FONCTION=OPTIM,),
+                      _F(VALE_CALC=10000.0,
+                         VALE_REFE=1.E4,
+                         VALE_PARA=2.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-4,
+                         FONCTION=OPTIM,),
+                      _F(VALE_CALC=115.173924487,
+                         VALE_REFE=115.17400000000001,
+                         VALE_PARA=3.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
+                         FONCTION=OPTIM,),
+                      ),
               )
-              ) ;
-
 
 FIN()

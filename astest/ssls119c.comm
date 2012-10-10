@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  : TEST DU RAASCH HOOK
 # ssls119c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,12 +89,15 @@ SIGMA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               RESULTAT=RESUPOS,
                               NOM_CHAM='SIGM_ELNO',),);
 
-TEST_RESU(RESU=(
-     _F( RESULTAT = RESU,         NOM_CHAM = 'DEPL',
-           NUME_ORDRE = 1,             GROUP_NO = 'C',
-           NOM_CMP = 'DZ',          VALE = 1.31195E-01,
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 0.00001,          CRITERE = 'RELATIF'),),)
-
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=0.13119500000000001,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 FIN();

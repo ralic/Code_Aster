@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 2D
 # ssnv191c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -257,85 +257,109 @@ DEP1M = CALC_TABLE(TABLE = DEP1,
                                CRIT_COMP = 'REGEXP',
                                VALE_K    = 'N[^M]',),),);
 
-TEST_TABLE(TABLE=DEP1P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=0,),
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1P,
+           TABLE=DEP1P,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
-           NOM_PARA='DX',
-           TYPE_TEST='MIN',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
-           NOM_PARA='DX',
-           TYPE_TEST='MAX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1M,
+           TABLE=DEP1P,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE(TABLE=DEP1M,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP1M,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1M,
+           TABLE=DEP1M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1M,
+           TABLE=DEP1M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP1M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
 
 #DEUXIEME CHARGEMENT
 
@@ -363,86 +387,110 @@ DEP2M = CALC_TABLE(TABLE = DEP2,
                                CRIT_COMP = 'REGEXP',
                                VALE_K    = 'N[^M]',),),);
 
-TEST_TABLE(TABLE=DEP2P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=0,),
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2P,
+           TABLE=DEP2P,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
-           NOM_PARA='DX',
-           TYPE_TEST='MIN',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
-           NOM_PARA='DX',
-           TYPE_TEST='MAX',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2M,
+           TABLE=DEP2P,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE(TABLE=DEP2M,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP2M,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2M,
+           TABLE=DEP2M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2M,
+           TABLE=DEP2M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-           
+           TABLE=DEP2M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
 #TROISIEME CHARGEMENT
 
 DEP3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -469,85 +517,109 @@ DEP3M = CALC_TABLE(TABLE = DEP3,
                                CRIT_COMP = 'REGEXP',
                                VALE_K    = 'N[^M]',),),);
 
-TEST_TABLE(TABLE=DEP3P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=0,),
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3P,
+           TABLE=DEP3P,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
-           NOM_PARA='DX',
-           TYPE_TEST='MIN',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
-           NOM_PARA='DX',
-           TYPE_TEST='MAX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3M,
+           TABLE=DEP3P,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE(TABLE=DEP3M,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP3M,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3M,
+           TABLE=DEP3M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3M,
+           TABLE=DEP3M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);    
+           TABLE=DEP3M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
 
 #QUATRIEME CHARGEMENT
 
@@ -575,85 +647,108 @@ DEP4M = CALC_TABLE(TABLE = DEP4,
                                CRIT_COMP = 'REGEXP',
                                VALE_K    = 'N[^M]',),),);
 
-TEST_TABLE(TABLE=DEP4P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=0,),
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4P,
+           TABLE=DEP4P,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
-           NOM_PARA='DX',
-           TYPE_TEST='MIN',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4P,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
-           NOM_PARA='DX',
-           TYPE_TEST='MAX',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4M,
+           TABLE=DEP4P,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE(TABLE=DEP4M,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP4M,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE= 1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4M,
+           TABLE=DEP4M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4M,
+           TABLE=DEP4M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=lx,),
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP4M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
 
 FIN();
-

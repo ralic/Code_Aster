@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SIMULATION DE L'ESSAI SAFE
 # ssns108a.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -409,60 +409,59 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  RESULTANTE='DX',
                                  OPERATION = 'EXTRACTION'),);
 
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.59999999999999998,
+           VALE_CALC= 1.64144456E+06,
+           VALE_REFE=1.079760E6,
            NOM_PARA='DX',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.03),
-           VALE=1.07976E+06,
-           PRECISION=0.60,
-           REFERENCE='SOURCE_EXTERNE',);
+                     VALE=0.029999999999999999,),
+           )
 
-TEST_TABLE(TABLE=TAB_REAC,
-           NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.0495),
-           VALE=1.32921E+06,
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.11,
-           REFERENCE='SOURCE_EXTERNE',);
+           VALE_CALC= 1.46471710E+06,
+           VALE_REFE=1.329210E6,
+           NOM_PARA='DX',
+           TABLE=TAB_REAC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.049500000000000002,),
+           )
 
-TEST_RESU(RESU=(
-                 _F(RESULTAT=RESU,
-                   INST = 0.03,
+TEST_RESU(RESU=(_F(INST=0.029999999999999999,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
+                   NOEUD='N283',
                    NOM_CMP='DX',
-                   NOEUD ='N283',
-                   VALE= 2.5652E-04,
-                   PRECISION = 1E-4,
-                   REFERENCE='NON_REGRESSION',),
-
-                 _F(RESULTAT=RESU,
-                   INST = 0.03,
+                   VALE_CALC=2.5651999999999999E-4,
+                   TOLE_MACHINE=1.E-4,
+                   ),
+                _F(INST=0.029999999999999999,
+                   RESULTAT=RESU,
                    NOM_CHAM='FORC_NODA',
+                   NOEUD='N332',
                    NOM_CMP='DX',
-                   NOEUD ='N332',
-                   VALE= 1.18879E+05,
-                   PRECISION = 1E-4,
-                   REFERENCE='NON_REGRESSION',),
-
-                 _F(RESULTAT=RESU,
-                   INST = Tmax,
+                   VALE_CALC=1.18879E5,
+                   TOLE_MACHINE=1.E-4,
+                   ),
+                _F(INST=0.049500000000000002,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
+                   NOEUD='N311',
                    NOM_CMP='DX',
-                   NOEUD ='N311',
-                   VALE= 4.54121E-04,
-                   PRECISION = (1E-4,1E-6),
-                   REFERENCE='NON_REGRESSION',),
-
-                 _F(RESULTAT=RESU,
-                   INST = Tmax,
+                   VALE_CALC=4.5412099999999998E-4,
+                   TOLE_MACHINE=1.E-4,
+                   ),
+                _F(INST=0.049500000000000002,
+                   RESULTAT=RESU,
                    NOM_CHAM='FORC_NODA',
+                   NOEUD='N332',
                    NOM_CMP='DX',
-                   NOEUD ='N332',
-                   VALE= 1.3695795E+05,
-                   PRECISION = (1E-4,1E-6),
-                   REFERENCE='NON_REGRESSION',),
-                )
-          );
+                   VALE_CALC=1.3695795000000001E5,
+                   TOLE_MACHINE=1.E-4,
+                   ),
+                ),
+          )
 
 FIN()
-

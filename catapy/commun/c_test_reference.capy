@@ -1,0 +1,75 @@
+#& MODIF COMMUN  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
+def C_TEST_REFERENCE(keyword, max=1):       #COMMUN#
+    """Mots-clés communs pour TEST_RESU, TEST_TABLE, TEST_FONCTION.
+    On retourne un bloc pour ajouter la règle UN_PARMI."""
+    assert keyword in ('CHAM_NO', 'CHAM_ELEM', 'CARTE', 'RESU', 'GENE', 'OBJET',
+                       'TABLE', 'FONCTION', 'FICHIER')
+    with_int     = keyword not in ('FONCTION', 'FICHIER')
+    with_complex = keyword not in ('OBJET', 'FICHIER')
+    with_string  = keyword in ('FICHIER', )
+    vale_abs     = keyword not in ('CARTE', 'FICHIER')
+    type_test    = keyword not in ('CARTE', 'GENE', 'OBJET')
+    multi_prec   = keyword in ('RESU', 'GENE')
+    reference    = keyword not in ('FICHIER', )
+    un_parmi     = keyword not in ('FICHIER', )
+
+    opts = {}
+    opts_ref = {}
+    types = ['',]
+    def add_type(typ):
+        ttyp = typ == 'K' and 'TXM' or typ
+        types.append('_' + typ)
+        opts['VALE_CALC_' + typ] = SIMP(statut='f',typ=ttyp,max=max)
+        opts_ref['VALE_REFE_' + typ] = SIMP(statut='f',typ=ttyp,max=max)
+    if with_int:
+        add_type('I')
+    if with_complex:
+        add_type('C')
+    if with_string:
+        add_type('K')
+    if vale_abs:
+        opts['VALE_ABS'] = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"))
+    if type_test:
+        opts['TYPE_TEST'] = SIMP(statut='f',typ='TXM',into=("SOMM_ABS","SOMM","MAX","MIN"))
+    if not multi_prec:
+        opts['TOLE_MACHINE'] = SIMP(statut='f',typ='R',defaut=1.e-6)
+        opts['CRITERE']      = SIMP(statut='f',typ='TXM',defaut='RELATIF',into=("RELATIF","ABSOLU"))
+    else:
+        opts['TOLE_MACHINE'] = SIMP(statut='f',typ='R',max=2)
+        opts['CRITERE']      = SIMP(statut='f',typ='TXM',max=2,into=("RELATIF","ABSOLU"))
+    if un_parmi:
+        opts['regles'] = (UN_PARMI(*['VALE_CALC' + t for t in types]))
+        opts_ref['regles'] = (UN_PARMI(*['VALE_REFE' + t for t in types]))
+    if reference:
+        opts['b_reference'] = BLOC(condition = "REFERENCE != None",
+            VALE_REFE   = SIMP(statut='f',typ='R',max=max),
+            PRECISION   = SIMP(statut='f',typ='R',defaut=1.e-3),
+            **opts_ref)
+        opts['REFERENCE'] = SIMP(statut='f',typ='TXM',
+                                 into=("ANALYTIQUE","SOURCE_EXTERNE","AUTRE_ASTER","NON_DEFINI"))
+    kwargs = {
+        'b_values' : BLOC(condition = "True",
+            VALE_CALC    = SIMP(statut='f',typ='R',max=max),
+            LEGENDE      = SIMP(statut='f',typ='TXM'),
+            **opts
+        )
+    }
+    return kwargs

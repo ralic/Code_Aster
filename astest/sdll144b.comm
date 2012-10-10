@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ROTOR TOURNANT SUIVANT UNE LOI DE VITESSE DE ROTATION EXPONENTIELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -305,17 +305,20 @@ DY2_GED2=CALC_FONCTION(PUISSANCE=_F(FONCTION=DY_GED2,
 MOD_GED2=CALC_FONCTION(COMB=(_F(FONCTION=DX2_GED2,COEF=1.0),
                              _F(FONCTION=DY2_GED2,COEF=1.0),), )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=MOD_GED2,
-                        VALE_PARA=3.19675,
-                        VALE_REFE=2.01601E-09,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.02638987341e-09,
+                        VALE_REFE=2.0160099999999999E-09,
+                        VALE_PARA=3.1967500000000002,
+                        REFERENCE='SOURCE_EXTERNE',
                         PRECISION=1.E-2,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        FONCTION=MOD_GED2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=MOD_GED2,
-                        VALE_PARA=3.19675,
-                        VALE_REFE=2.02640E-09,
-                        PRECISION=1.E-5,
-                        REFERENCE='NON_REGRESSION',),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.0264E-09,
+                        TOLE_MACHINE=1.0000000000000001E-05,
+                        VALE_PARA=3.1967500000000002,
+                        FONCTION=MOD_GED2,
+                        ),
+              )
 
 FIN();
 

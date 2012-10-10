@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE HEMISPHERE DOUBLEMENT PINCE MODELISATION 300 SHB8
 # ssls105c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -73,14 +73,25 @@ RESU31=CALC_CHAMP(reuse =RESU31,
                  CONTRAINTE=('SIGM_ELNO'),
                 RESULTAT=RESU31,);
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='DEPL', PRECISION = 1.E-3, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
-              GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -0.185),
-
-            _F(   RESULTAT = RESU31, NOM_CHAM='DEPL',  PRECISION = 1.E-3, REFERENCE='SOURCE_EXTERNE',NUME_ORDRE=1,
-              GROUP_NO = 'PBE',      NOM_CMP = 'DY',           VALE = 0.185),
-              ),)
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='PAE',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.184837630,
+                   VALE_REFE=-0.185,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='PBE',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.184837758,
+                   VALE_REFE=0.185,
+                   PRECISION=1.E-3,),
+                ),
+          )
 
 FIN()

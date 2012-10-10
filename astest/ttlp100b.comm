@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ECHANGE_PAROI EN THERMIQUE NON LINEAIRE TRANSITOIRE
 # ttlp100b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,30 +171,33 @@ TEMPD - COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*(LONMAX-X)""",
                 NOM_PARA='X',);
 #
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=TSTAT,
-                      NOEUD='N46',
-                      NOM_CMP='TEMP',
-                      VALE=TINTG(0.2475,),
+TEST_RESU(CHAM_NO=(_F(NOEUD='N46',
                       CRITERE='RELATIF',
-                      PRECISION=1e-06,),
-                   _F(CHAM_GD=TSTAT,
-                      NOEUD='N3',
                       NOM_CMP='TEMP',
-                      VALE=TINTG(0.495,),
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=133.22147651006711,
+                      ),
+                   _F(NOEUD='N3',
                       CRITERE='RELATIF',
-                      PRECISION=1e-06,),
-                   _F(CHAM_GD=TSTAT,
-                      NOEUD='N15',
                       NOM_CMP='TEMP',
-                      VALE=TINTD(0.505,),
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=166.44295302013421,
+                      ),
+                   _F(NOEUD='N15',
                       CRITERE='RELATIF',
-                      PRECISION=1e-06,),
-                   _F(CHAM_GD=TSTAT,
-                      NOEUD='N92',
                       NOM_CMP='TEMP',
-                      VALE=TINTD(0.7525,),
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=233.55704697986579,
+                      ),
+                   _F(NOEUD='N92',
                       CRITERE='RELATIF',
-                      PRECISION=1e-06,),),);
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=266.77852348993287,
+                      ),
+                   ),
+          )
+
 #
 
 FIN();

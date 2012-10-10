@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -169,128 +169,148 @@ IMPR_TABLE      ( TABLE           =  GBIL,
                   UNITE=8,
                 );
 
-TEST_TABLE(        TABLE=G,
-                  NOM_PARA='G',
-                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                             VALE_I = 1),
-                      VALE=36.4,
-                 PRECISION=0.0043,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=4.3E-3,
+           VALE_CALC=36.555291332,
+           VALE_REFE=36.399999999999999,
+           NOM_PARA='G',
+           TABLE=G,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(        TABLE=GBIL,FILTRE=(
-                    _F(  NOM_PARA = 'NUME_CMP_I',
-                             VALE_I = 1),
-                    _F(  NOM_PARA = 'NUME_CMP_J',
-                             VALE_I = 1)),
-                  NOM_PARA='G_BILIN',
-                      VALE=36.4,
-                 PRECISION=0.0043,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=4.3E-3,
+           VALE_CALC=36.555291332,
+           VALE_REFE=36.399999999999999,
+           NOM_PARA='G_BILIN',
+           TABLE=GBIL,
+           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_CMP_J',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(        TABLE=G,
-                  NOM_PARA='G',
-                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                             VALE_I = 2),
-                 VALE=13.72,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=13.717285809,
+           VALE_REFE=13.720000000000001,
+           NOM_PARA='G',
+           TABLE=G,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(        TABLE=GBIL,FILTRE=(
-                    _F(  NOM_PARA = 'NUME_CMP_I',
-                             VALE_I = 2),
-                    _F(  NOM_PARA = 'NUME_CMP_J',
-                             VALE_I = 2)),
-                  NOM_PARA='G_BILIN',
-                 VALE=13.72,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=13.717285809,
+           VALE_REFE=13.720000000000001,
+           NOM_PARA='G_BILIN',
+           TABLE=GBIL,
+           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
+                      VALE_I=2,),
+                   _F(NOM_PARA='NUME_CMP_J',
+                      VALE_I=2,),
+                   ),
+           )
 
-TEST_TABLE(        TABLE=G,
-                  NOM_PARA='G',
-                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                             VALE_I = 3),
-                 VALE=95.04,
-                 REFERENCE='AUTRE_ASTER'
-             )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=95.064893923,
+           VALE_REFE=95.040000000000006,
+           NOM_PARA='G',
+           TABLE=G,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(        TABLE=GBIL,FILTRE=(
-                    _F(  NOM_PARA = 'NUME_CMP_I',
-                             VALE_I = 3),
-                    _F(  NOM_PARA = 'NUME_CMP_J',
-                             VALE_I = 3)),
-                  NOM_PARA='G_BILIN',
-                 VALE=95.04,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=95.064893923,
+           VALE_REFE=95.040000000000006,
+           NOM_PARA='G_BILIN',
+           TABLE=GBIL,
+           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
+                      VALE_I=3,),
+                   _F(NOM_PARA='NUME_CMP_J',
+                      VALE_I=3,),
+                   ),
+           )
 
-TEST_TABLE(        TABLE=G,
-                  NOM_PARA='G',
-                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                             VALE_I = 4),
-                      VALE=5.48,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=5.480260359,
+           VALE_REFE=5.4800000000000004,
+           NOM_PARA='G',
+           TABLE=G,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(        TABLE=GBIL,FILTRE=(
-                    _F(  NOM_PARA = 'NUME_CMP_I',
-                             VALE_I = 4),
-                    _F(  NOM_PARA = 'NUME_CMP_J',
-                             VALE_I = 4)),
-                  NOM_PARA='G_BILIN',
-                      VALE=5.48,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=5.480260359,
+           VALE_REFE=5.4800000000000004,
+           NOM_PARA='G_BILIN',
+           TABLE=GBIL,
+           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
+                      VALE_I=4,),
+                   _F(NOM_PARA='NUME_CMP_J',
+                      VALE_I=4,),
+                   ),
+           )
 
-TEST_TABLE(        TABLE=GBIL,FILTRE=(
-                    _F(  NOM_PARA = 'NUME_CMP_I',
-                             VALE_I = 2),
-                    _F(  NOM_PARA = 'NUME_CMP_J',
-                             VALE_I = 1)),
-                  NOM_PARA='G_BILIN',
-                      VALE=22.41,
-                 REFERENCE='AUTRE_ASTER',
-                 PRECISION=1.5E-3,
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.5E-3,
+           VALE_CALC=22.396158391,
+           VALE_REFE=22.41,
+           NOM_PARA='G_BILIN',
+           TABLE=GBIL,
+           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
+                      VALE_I=2,),
+                   _F(NOM_PARA='NUME_CMP_J',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(        TABLE=GBIL,FILTRE=(
-                    _F(  NOM_PARA = 'NUME_CMP_I',
-                             VALE_I = 4),
-                    _F(  NOM_PARA = 'NUME_CMP_J',
-                             VALE_I = 3)),
-                  NOM_PARA='G_BILIN',
-                      VALE=22.82,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=22.838005523,
+           VALE_REFE=22.82,
+           NOM_PARA='G_BILIN',
+           TABLE=GBIL,
+           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
+                      VALE_I=4,),
+                   _F(NOM_PARA='NUME_CMP_J',
+                      VALE_I=3,),
+                   ),
+           )
 
-TEST_TABLE(        TABLE=GMAX,FILTRE=(
-                    _F(  NOM_PARA = 'Q_1',
-                             VALE = 1.),
-                    _F(  NOM_PARA = 'Q_2',
-                             VALE = 1.),
-                    _F(  NOM_PARA = 'Q_3',
-                             VALE = 0.),
-                    _F(  NOM_PARA = 'Q_4',
-                             VALE = 0.)),
-                  NOM_PARA='G',
-                  VALE=94.978274807446,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=95.064893923,
+           VALE_REFE=94.978274807445999,
+           NOM_PARA='G',
+           TABLE=GMAX,
+           FILTRE=(_F(NOM_PARA='Q_1',
+                      VALE=1.0,),
+                   _F(NOM_PARA='Q_2',
+                      VALE=1.0,),
+                   _F(NOM_PARA='Q_3',
+                      VALE=0.0,),
+                   _F(NOM_PARA='Q_4',
+                      VALE=0.0,),
+                   ),
+           )
 
-TEST_TABLE(        TABLE=GMAX,FILTRE=(
-                    _F(  NOM_PARA = 'Q_1',
-                             VALE = 1.),
-                    _F(  NOM_PARA = 'Q_2',
-                             VALE = 1.),
-                    _F(  NOM_PARA = 'Q_3',
-                             VALE = 1.),
-                    _F(  NOM_PARA = 'Q_4',
-                             VALE = 1.)),
-                  NOM_PARA='G',
-                      VALE=476.66324081188,
-                 REFERENCE='AUTRE_ASTER'
-            )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=477.091858143,
+           VALE_REFE=476.66324081187997,
+           NOM_PARA='G',
+           TABLE=GMAX,
+           FILTRE=(_F(NOM_PARA='Q_1',
+                      VALE=1.0,),
+                   _F(NOM_PARA='Q_2',
+                      VALE=1.0,),
+                   _F(NOM_PARA='Q_3',
+                      VALE=1.0,),
+                   _F(NOM_PARA='Q_4',
+                      VALE=1.0,),
+                   ),
+           )
 
 FIN()
 #

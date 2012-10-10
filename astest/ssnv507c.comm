@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE GRANDES ROTATIONS AVEC X-FEM
 # ssnv507c.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,12 +179,14 @@ for i in [1,2,3,4]: #Boucle sur les increments
 
   IMPR_TABLE(TABLE=DEP[i]);
 
-  TEST_TABLE(TABLE=DEP[i],
-                 NOM_PARA='DIST',
-                 TYPE_TEST='SOMM',
-                 VALE=0.0,
-                 REFERENCE ='ANALYTIQUE',
-                 CRITERE='ABSOLU',
-                 PRECISION=1E-10);
+  TEST_TABLE(CRITERE='ABSOLU',
+             REFERENCE='ANALYTIQUE',
+             PRECISION=1.E-10,
+             VALE_CALC=0.0,
+             VALE_REFE=0.0,
+             TOLE_MACHINE=1.E-10,
+             NOM_PARA='DIST',
+             TYPE_TEST='SOMM',
+             TABLE=DEP[i],)
 
 FIN();                  

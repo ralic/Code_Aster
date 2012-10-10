@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,25 +27,12 @@ TEST_FONCTION=MACRO(nom="TEST_FONCTION",
          TEST_NOOK       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          VALEUR          =FACT(statut='f',max='**',
                                fr="Tester la valeur d une fonction ou d une nappe",
-           regles=(UN_PARMI('VALE_REFE','VALE_REFE_C',),
-                   UN_PARMI('VALE_PARA','INTERVALLE'),),
+           regles=(UN_PARMI('VALE_PARA','INTERVALLE'),),
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c,nappe_sdaster,formule) ),
            NOM_PARA        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2),
            VALE_PARA       =SIMP(statut='f',typ='R'  ,validators=NoRepeat(),max=2),
            INTERVALLE      =SIMP(statut='f',typ='R'  ,validators=NoRepeat(),min=2,max=2),
-           VALE_REFE       =SIMP(statut='f',typ='R',max='**' ),
-           VALE_REFE_C     =SIMP(statut='f',typ='C',max='**' ),
-           VALE_ABS        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-           LEGENDE         =SIMP(statut='f',typ='TXM'),
-           CRITERE         =SIMP(statut='f',typ='TXM',fr="Critère de comparaison avec la solution de référence",
-                                 defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-           PRECISION       =SIMP(statut='f',typ='R',fr="Ecart maximal autorisé avec la solution de référence",
-                                 defaut= 1.E-3 ),
-           REFERENCE       =SIMP(statut='f',typ='TXM',
-                                 into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
-           b_version = BLOC (condition = "REFERENCE == 'NON_REGRESSION'",
-             VERSION         =SIMP(statut='f',typ='TXM' ),
-           ),
+           **C_TEST_REFERENCE('FONCTION', max='**')
          ),
          ATTRIBUT        =FACT(statut='f',max='**',
                                fr="Tester la valeur d un attribut d une fonction ou d''une nappe",
@@ -58,9 +45,6 @@ TEST_FONCTION=MACRO(nom="TEST_FONCTION",
                                        "PROL_GAUCHE_FONC","PROL_DROITE_FONC","INTERPOL_FONC","NOM_PARA_FONC") ),
            ATTR_REFE       =SIMP(statut='o',typ='TXM' ),
            REFERENCE       =SIMP(statut='f',typ='TXM',
-                                 into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
-           b_version       =BLOC(condition = "REFERENCE == 'NON_REGRESSION'",
-             VERSION         =SIMP(statut='f',typ='TXM' ),
-           ),
+                                 into=("ANALYTIQUE","SOURCE_EXTERNE","AUTRE_ASTER") ),
          ),
-)  ;
+)

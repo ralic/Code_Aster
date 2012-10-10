@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 # sslv311a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -149,190 +149,216 @@ GLO1=CALC_G(RESULTAT=CHAMDEPL,
 ###########################
 IMPR_TABLE(TABLE=GLO1,)
 
-TEST_TABLE(TABLE=GLO1,
-           NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 1),
-           VALE=566.E+5,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.12,
-           REFERENCE = 'ANALYTIQUE')
-
-
-TEST_TABLE(TABLE=GLO1,
+           VALE_CALC= 6.33686998E+07,
+           VALE_REFE=5.6600000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 2),
-           VALE=595.E+5,
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.106,
-           REFERENCE = 'ANALYTIQUE')
-
-
-TEST_TABLE(TABLE=GLO1,
+           VALE_CALC= 6.22775043E+07,
+           VALE_REFE=5.9500000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 3),
-           VALE=629.E+5,
-           PRECISION=0.10,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=2,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC= 6.54255802E+07,
+           VALE_REFE=6.2900000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 4),
-           VALE=664.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=3,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 6.64188047E+07,
+           VALE_REFE=6.6400000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 5),
-           VALE=698.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=4,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 6.94122117E+07,
+           VALE_REFE=6.9800000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 6),
-           VALE=727.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=5,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 7.28598925E+07,
+           VALE_REFE=7.2700000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 7),
-           VALE=756.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=6,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 7.60795844E+07,
+           VALE_REFE=7.5600000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 8),
-           VALE=791.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=7,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 8.05522517E+07,
+           VALE_REFE=7.9100000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 9),
-           VALE=820.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=8,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 8.26175330E+07,
+           VALE_REFE=8.2000000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 10),
-           VALE=854.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=9,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 8.69681483E+07,
+           VALE_REFE=8.5400000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 11),
-           VALE=889.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=10,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 8.78450343E+07,
+           VALE_REFE=8.8900000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 12),
-           VALE=918.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=11,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 9.19000967E+07,
+           VALE_REFE=9.1800000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 13),
-           VALE=947.E+5,
-           PRECISION=0.04,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=12,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC= 9.16983032E+07,
+           VALE_REFE=9.4700000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 14),
-           VALE=964.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=13,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 9.56022931E+07,
+           VALE_REFE=9.6400000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 15),
-           VALE=975.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=14,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 9.50262271E+07,
+           VALE_REFE=9.7500000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 16),
-           VALE=975.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=15,),
+           )
 
-
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 9.82711100E+07,
+           VALE_REFE=9.7500000E7,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 17),
-           VALE=964.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=16,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 9.71927561E+07,
+           VALE_REFE=9.6400000E7,
+           NOM_PARA='K1',
+           TABLE=GLO1,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=17,),
+           )
 
 # TESTS SUR K2 ET K3 POUR S'ASSURER QU'ILS SONT BIEN NULS
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC= 0.0000000000000000E+00,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
            NOM_PARA='K2',
            TYPE_TEST='MAX',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,)
 
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC= 0.0000000000000000E+00,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
            NOM_PARA='K2',
            TYPE_TEST='MIN',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,)
 
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC= 0.0000000000000000E+00,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
            NOM_PARA='K3',
            TYPE_TEST='MAX',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,)
 
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC= 0.0000000000000000E+00,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
            NOM_PARA='K3',
            TYPE_TEST='MIN',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO1,)
 
 ###################################
 # VERIFICATION : SOLUTION IDENTIQUE AVEC ROTATION
@@ -359,29 +385,35 @@ GLO2=CALC_G(RESULTAT=CHAMDEP2,
                        LISSAGE_G='LAGRANGE',),
             )
 
-TEST_TABLE(TABLE=GLO2,
-           NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA = 'NUM_PT',
-                     VALE_I = 1),
-           VALE=566.E+5,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.12,
-           REFERENCE = 'ANALYTIQUE')
-
-TEST_TABLE(TABLE=GLO2,
+           VALE_CALC= 6.33686998E+07,
+           VALE_REFE=5.6600000E7,
            NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA = 'NUM_PT',
-                     VALE_I = 8),
-           VALE=791.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO2,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=GLO2,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 8.05522517E+07,
+           VALE_REFE=7.9100000E7,
            NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA = 'NUM_PT',
-                     VALE_I = 17),
-           VALE=964.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO2,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=8,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 9.71927561E+07,
+           VALE_REFE=9.6400000E7,
+           NOM_PARA='K1',
+           TABLE=GLO2,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=17,),
+           )
 
 # lissage de lagrange Regu
 GLO4=CALC_G(RESULTAT=CHAMDEP2,
@@ -393,12 +425,14 @@ GLO4=CALC_G(RESULTAT=CHAMDEP2,
                        LISSAGE_G='LAGRANGE_REGU',),
             )
 
-TEST_TABLE(TABLE=GLO4,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 9.45419713E+07,
+           VALE_REFE=9.6400000E7,
            NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA = 'NUM_PT',
-                     VALE_I = 17),
-           VALE=964.E+5,
-           PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')
+           TABLE=GLO4,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=17,),
+           )
 
 FIN()

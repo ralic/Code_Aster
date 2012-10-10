@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DISCRETS AVEC COMPORTEMENT VISQUEUX 3D : T ET TR SUR NOEUD ET SEG2
 # ssnd101a.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -340,7 +340,8 @@ for LeDiscret in ListeDiscrets:
          motclefs['VALEUR'] = []
          for ind in range(len(Linst)):
             motclefs['VALEUR'].append(_F(FONCTION=LaF[ii],NOM_PARA='INST',PRECISION=0.70E-2,
-                                         VALE_PARA=Linst[ind],VALE_REFE=Lvale[ind],
+                                         VALE_PARA=Linst[ind],TOLE_MACHINE=0.70E-2,    #TODO vale_calc
+                                         VALE_CALC=Lvale[ind], VALE_REFE=Lvale[ind],
                                          REFERENCE='ANALYTIQUE',CRITERE='RELATIF'))
          TEST_FONCTION(**motclefs)
       ii += 1
@@ -354,8 +355,9 @@ for LeDiscret in ListeDiscrets:
          vale = Energie[jj]
          vari = "V%d" % (jj*2+2)
          motclefs['RESU'].append(_F(RESULTAT=RESU,INST=TempsMaxi,NOM_CHAM='VARI_ELGA',REFERENCE='ANALYTIQUE',
-                                    CRITERE=('RELATIF','ABSOLU'),PRECISION=(0.25E-02,1.0E-05),
-                                    MAILLE=LaMaille,POINT=1,NOM_CMP=vari,VALE=vale,))
+                                    CRITERE=('RELATIF','ABSOLU'),
+                                    TOLE_MACHINE=(0.25E-02,1.0E-05),PRECISION=0.25E-02,   #TODO vale_calc
+                                    MAILLE=LaMaille,POINT=1,NOM_CMP=vari,VALE_CALC=vale,VALE_REFE=vale,))
       TEST_RESU(**motclefs)
 
    motclefs = {}
@@ -505,37 +507,42 @@ D_N_L2=DYNA_NON_LINE(MODELE=MOD2,
                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                      FORMULATION='DEPLACEMENT',),);
 
-TEST_RESU(RESU=(_F(RESULTAT=D_N_L1,
+TEST_RESU(RESU=(_F(INST=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=D_N_L1,
+                   NOM_CHAM='DEPL',
                    NOEUD='N7',
-                   NOM_CHAM = 'DEPL',
                    NOM_CMP='DX',
-                   INST=1,
-                   PRECISION=1.E-5,
-                   VALE=4.91083E-02,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=D_N_L1,
+                   VALE_CALC=0.049108316,
+                   VALE_REFE=0.049108300000000001,
+                   PRECISION=1.0000000000000001E-05,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=D_N_L1,
+                   NOM_CHAM='DEPL',
                    NOEUD='N7',
-                   NOM_CHAM = 'DEPL',
                    NOM_CMP='DX',
-                   INST=1,
-                   PRECISION=(6.E-3,1.E-5),
-                   VALE=4.8853406E-02,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=D_N_L2,
+                   VALE_CALC=0.049108316,
+                   VALE_REFE=0.048853406000000002,
+                   PRECISION=6.0000000000000001E-3, TOLE_MACHINE=(6.0000000000000001E-3, 1.0000000000000001E-05),),
+                _F(INST=1,
+                   RESULTAT=D_N_L2,
+                   NOM_CHAM='DEPL',
                    NOEUD='N7',
-                   NOM_CHAM = 'DEPL',
                    NOM_CMP='DX',
-                   INST=1,
-                   PRECISION=1.E-5,
-                   VALE=4.88534E-02,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=D_N_L2,
+                   VALE_CALC=0.048853399999999998,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   ),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=D_N_L2,
+                   NOM_CHAM='DEPL',
                    NOEUD='N7',
-                   NOM_CHAM = 'DEPL',
                    NOM_CMP='DX',
-                   INST=1,
-                   PRECISION=1.E-5,
-                   VALE=4.8853406E-02,
-                   REFERENCE='ANALYTIQUE',),),);
+                   VALE_CALC=0.048853406,
+                   VALE_REFE=0.048853406000000002,
+                   PRECISION=1.0000000000000001E-05,),
+                ),
+          )
 
 FIN()

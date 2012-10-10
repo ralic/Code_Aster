@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE EPROUVETTE ENTAILLEE EN GRANDES DEFORMATIONS GDEF_LOG
 # ssna303b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -136,53 +136,65 @@ EFFORT_R=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  GROUP_NO='EFFO',
                                  RESULTANTE='DY',),);
 
-TEST_TABLE(TABLE=EFFORT_R,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 6.61659675E+03,
+           VALE_REFE=6616.5900000000001,
+           NOM_PARA='DY',
+           TABLE=EFFORT_R,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=5,),
-           NOM_PARA='DY',
-           VALE=6616.59,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=CONTR_R,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=-0.084493226,
+           VALE_REFE=-0.084500000000000006,
+           NOM_PARA='DX',
+           TABLE=CONTR_R,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=5,),
-           NOM_PARA='DX',
-           VALE=-0.0845,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=EFFORT_R,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.15415707E+04,
+           VALE_REFE=2.154157E4,
+           NOM_PARA='DY',
+           TABLE=EFFORT_R,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=25,),
-           NOM_PARA='DY',
-           VALE=21541.57,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=CONTR_R,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=-0.376658376,
+           VALE_REFE=-0.37659999999999999,
+           NOM_PARA='DX',
+           TABLE=CONTR_R,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=25,),
-           NOM_PARA='DX',
-           VALE=-0.3766,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=EFFORT_R,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=50,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 3.38210257E+04,
+           VALE_REFE=3.3821029999999999E4,
            NOM_PARA='DY',
-           VALE=33821.03,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=CONTR_R,
+           TABLE=EFFORT_R,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=50,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=-0.825727666,
+           VALE_REFE=-0.82599999999999996,
            NOM_PARA='DX',
-           VALE=-0.826,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=CONTR_R,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=50,),
+           )
 
 CONTR_L=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='Contraction diametrale',
@@ -198,53 +210,65 @@ EFFORT_L=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  GROUP_NO='EFFO',
                                  RESULTANTE='DY',),);
 
-TEST_TABLE(TABLE=EFFORT_L,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 6.59686480E+03,
+           VALE_REFE=6616.5900000000001,
+           NOM_PARA='DY',
+           TABLE=EFFORT_L,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=5,),
-           NOM_PARA='DY',
-           VALE=6616.59,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=CONTR_L,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=-0.085041571,
+           VALE_REFE=-0.084500000000000006,
+           NOM_PARA='DX',
+           TABLE=CONTR_L,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=5,),
-           NOM_PARA='DX',
-           VALE=-0.0845,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=EFFORT_L,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=25,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 2.13629549E+04,
+           VALE_REFE=2.154157E4,
            NOM_PARA='DY',
-           VALE=21541.57,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=CONTR_L,
+           TABLE=EFFORT_L,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=25,),
-           NOM_PARA='DX',
-           VALE=-0.3766,
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=EFFORT_L,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=50,),
-           NOM_PARA='DY',
-           VALE=33821.0,
-           PRECISION=0.03,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=CONTR_L,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=50,),
+           VALE_CALC=-0.381447104,
+           VALE_REFE=-0.37659999999999999,
            NOM_PARA='DX',
-           VALE=-0.826,
-           PRECISION=0.04,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=CONTR_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=25,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 3.31088713E+04,
+           VALE_REFE=3.3821E4,
+           NOM_PARA='DY',
+           TABLE=EFFORT_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=50,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=-0.857560748,
+           VALE_REFE=-0.82599999999999996,
+           NOM_PARA='DX',
+           TABLE=CONTR_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=50,),
+           )
 
 IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=UL,),

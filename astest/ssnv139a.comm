@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE BIAISE SOUS CHARGEMENT CONCENTRE
 # ssnv139a.para = tps_job 190 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,30 +120,34 @@ NONLIN=STAT_NON_LINE(
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          NUME_ORDRE = 10,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 2.6E-2,
-                      NOM_CMP = 'DX',
-                                VALE = -3.8069E1)
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  GROUP_NO='G_10',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-39.025971681,
+                  VALE_REFE=-38.069000000000003,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.025999999999999999,),
+          )
 
 #
 #   DEPLACEMENT VERTICAL
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          NUME_ORDRE = 10,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 1.E-2,
-                      NOM_CMP = 'DZ',
-                                VALE = -7.2409E1)
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  GROUP_NO='G_10',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-72.186491696,
+                  VALE_REFE=-72.409000000000006,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
 #   NON REGRESSION
@@ -153,34 +157,36 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          NUME_ORDRE = 10,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '5.02.13',
-                      PRECISION = 0.5E-2,
-                      NOM_CMP = 'DX',
-                                VALE = -3.902E1)
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  GROUP_NO='G_10',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-39.025971681,
+                  VALE_REFE=-39.020000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,
+                  ),
+          )
 
 #
 #   DEPLACEMENT VERTICAL
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          NUME_ORDRE = 10,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '5.02.13',
-                      PRECISION = 0.5E-2,
-                      NOM_CMP = 'DZ',
-                                VALE = -7.218E1)
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  GROUP_NO='G_10',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-72.186491696,
+                  VALE_REFE=-72.180000000000007,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,
+                  ),
+          )
 
 #
 #
@@ -195,15 +201,17 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          NUME_ORDRE = 14,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 7.E-2,
-                      NOM_CMP = 'DX',
-                                VALE = -5.2002E1)
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=14,
+                  GROUP_NO='G_10',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-54.326141807,
+                  VALE_REFE=-52.002000000000002,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.070000000000000007,),
+          )
 
 #
 #
@@ -211,15 +219,17 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          NUME_ORDRE = 14,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 3.6E-2,
-                      NOM_CMP = 'DZ',
-                                VALE = -8.0734E1)
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=14,
+                  GROUP_NO='G_10',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-81.033097263,
+                  VALE_REFE=-80.733999999999995,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.035999999999999997,),
+          )
 
 #
 #   NON REGRESSION
@@ -228,17 +238,18 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          NUME_ORDRE = 14,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '5.02.13',
-                      PRECISION = 0.5E-2,
-                      NOM_CMP = 'DX',
-                                VALE = -5.432E1)
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=14,
+                  GROUP_NO='G_10',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-54.326141807,
+                  VALE_REFE=-54.32,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,
+                  ),
+          )
 
 #
 #
@@ -246,17 +257,18 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          NUME_ORDRE = 14,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '5.02.13',
-                      PRECISION = 0.5E-2,
-                      NOM_CMP = 'DZ',
-                                VALE = -8.103E1)
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=14,
+                  GROUP_NO='G_10',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-81.033097263,
+                  VALE_REFE=-81.030000000000001,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,
+                  ),
+          )
 
 #
 FIN( )

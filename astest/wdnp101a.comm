@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 1000 mem_job 512Mo ncpus 1 liste_test S
@@ -1026,19 +1026,40 @@ TAB_INF2 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.06,
 TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.47,
                                     INST_FIN = 3.55, ))
 
-TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
-           VALE = 1.785,PRECISION = 0.01,
-           REFERENCE = 'NON_REGRESSION')
-TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
-           VALE = 1.785,PRECISION = 0.01,
-           REFERENCE = 'AUTRE_ASTER')
-TEST_TABLE(TABLE=TAB_INF2,NOM_PARA='RMS',
-           VALE = 1.259,PRECISION = 0.01,
-           REFERENCE = 'NON_REGRESSION')
-TEST_TABLE(TABLE=TAB_INF3,NOM_PARA='RMS',
-           VALE = 2.146,PRECISION = 0.01,
-           REFERENCE = 'NON_REGRESSION')
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           TOLE_MACHINE=1.E-2,
+           PRECISION=1.E-2,
+           VALE_CALC=1.790067796,
+           VALE_REFE=1.7849999999999999,
+           NOM_PARA='RMS',
+           TABLE=TAB_INF1,
+           )
 
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           TOLE_MACHINE=1.E-2,
+           PRECISION=1.E-2,
+           VALE_CALC=1.790067796,
+           VALE_REFE=1.7849999999999999,
+           NOM_PARA='RMS',
+           TABLE=TAB_INF1,)
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           TOLE_MACHINE=1.E-2,
+           PRECISION=1.E-2,
+           VALE_CALC=1.255307104,
+           VALE_REFE=1.2589999999999999,
+           NOM_PARA='RMS',
+           TABLE=TAB_INF2,
+           )
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           TOLE_MACHINE=1.E-2,
+           PRECISION=1.E-2,
+           VALE_CALC=2.138964379,
+           VALE_REFE=2.1459999999999999,
+           NOM_PARA='RMS',
+           TABLE=TAB_INF3,
+           )
 
 SPOSCI = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC_A47X,
                                  NORME=9.81, ),);
@@ -1046,19 +1067,28 @@ SPOSCI = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC_A47X,
 
 MAXSP = INFO_FONCTION(MAX = _F(FONCTION = SPOSCI,))
 
-TEST_FONCTION(ATTRIBUT=(_F(FONCTION=SPOSCI,PARA=2E-2,
-                           ATTR='NOM_PARA_FONC',ATTR_REFE='FREQ',
-                           REFERENCE='NON_REGRESSION'),
-                        _F(FONCTION=SPOSCI,ATTR='NOM_PARA',
-                           ATTR_REFE='AMOR',REFERENCE='NON_REGRESSION'),),
-              VALEUR=_F(FONCTION=SPOSCI,NOM_PARA=('AMOR','FREQ'),
-                        VALE_PARA=(2E-2,2.5),VALE_REFE=8.658E-01,
-                        REFERENCE='NON_REGRESSION',PRECISION=0.05,),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.864944625363,
+                        VALE_REFE=0.86580000000000001,
+                        VALE_PARA=(0.02, 2.5),
+                        REFERENCE='NON_DEFINI',
+                        TOLE_MACHINE=1.E-3,
+                        PRECISION=0.050000000000000003,
+                        NOM_PARA=('AMOR', 'FREQ'),
+                        FONCTION=SPOSCI,
+                        ),
+              ATTRIBUT=(_F(REFERENCE='ANALYTIQUE',
+                           PARA=0.02,
+                           ATTR_REFE='FREQ',
+                           FONCTION=SPOSCI,
+                           ATTR='NOM_PARA_FONC',
+                           ),
+                        _F(REFERENCE='ANALYTIQUE',
+                           ATTR_REFE='AMOR',
+                           FONCTION=SPOSCI,
+                           ATTR='NOM_PARA',
+                           ),
+                        ),
+              )
 
 FIN( );
-
-
-
-
-
 

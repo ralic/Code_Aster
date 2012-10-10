@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PISTON COUPLE A UNE COLONNE DE FLUIDE
 # adlv100b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,26 +92,39 @@ MASSES=POST_ELEM(
                                       TOUT = 'OUI')
                      )
 
-TEST_TABLE( TABLE=MASSES,
-                NOM_PARA='MASSE',
-                VALE=12.2545,  PRECISION=1.E-6)
+TEST_TABLE(
+           VALE_CALC=12.2545,
+           
+           NOM_PARA='MASSE',
+           TABLE=MASSES,)
 
-TEST_TABLE( TABLE=MASSES,
-                NOM_PARA='CDG_X',
-                VALE=2.013189E-2,   PRECISION=1.E-6)
+TEST_TABLE(
+           VALE_CALC=0.02013189,
+           
+           NOM_PARA='CDG_X',
+           TABLE=MASSES,)
 
-TEST_TABLE( TABLE=MASSES,
-                NOM_PARA='IX_G',
-                VALE=2.5530208E-3,   PRECISION=1.E-6)
+TEST_TABLE(
+           VALE_CALC=2.5530207999999999E-3,
+           
+           NOM_PARA='IX_G',
+           TABLE=MASSES,)
 
-TEST_TABLE( TABLE=MASSES,
-                NOM_PARA='IY_G',
-                VALE=3.8438577E-3,   PRECISION=1.E-6)
+TEST_TABLE(
+           VALE_CALC=3.8438576999999998E-3,
+           
+           NOM_PARA='IY_G',
+           TABLE=MASSES,)
 
-TEST_RESU(RESU=_F( RESULTAT = MODES,  PARA = 'FREQ',
-                    CRITERE = 'RELATIF',  PRECISION = 5.E-3,
-                    NUME_ORDRE = 1,  VALE = 13.82)
-             )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=13.827700577,
+                  VALE_REFE=13.82,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
 FIN()
 #

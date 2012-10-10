@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 # sdnl104b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -356,76 +356,118 @@ TRAN3=REST_GENE_PHYS(   RESU_GENE=TRAN_GE3,
 DEBUG(SDVERI='OUI')
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'DEPL',
-                  INST = 1.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 5.E-4,
-                  NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = -1.25483E-04))
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO12',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.2548299999999999E-4,
+                  TOLE_MACHINE=5.0000000000000001E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'VITE',
-                  INST = 1.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-2,
-                  NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = 8.35213E-04))
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='VITE',
+                  NOEUD='NO12',
+                  NOM_CMP='DY',
+                  VALE_CALC= 8.28908211E-04,
+                  VALE_REFE=8.3521300000000001E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'ACCE',
-                  INST = 1.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 7.E-2,
-                  NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = 3.63952E-01))
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='ACCE',
+                  NOEUD='NO12',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.386958868,
+                  VALE_REFE=0.363952,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.070000000000000007,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'DEPL',
-                  INST = 1.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 5.E-4,
-                  NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = -1.25437E-04))
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO12',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.25437E-4,
+                  TOLE_MACHINE=5.0000000000000001E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'VITE',
-                  INST = 1.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 1.5E-2,
-                  NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = 8.40985E-04))
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='VITE',
+                  NOEUD='NO12',
+                  NOM_CMP='DY',
+                  VALE_CALC= 8.31932263E-04,
+                  VALE_REFE=8.4098500000000004E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.014999999999999999,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'ACCE',
-                  INST = 1.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 8.E-2,
-                  NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = 2.85454E-01))
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='ACCE',
+                  NOEUD='NO12',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.307855088,
+                  VALE_REFE=0.28545399999999999,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.080000000000000002,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'DEPL',
-                  INST = 1.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 5.E-4,
-                  NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = -1.25525E-04))
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=TRAN3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO12',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.25525E-4,
+                  TOLE_MACHINE=5.0000000000000001E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'VITE',
-                  INST = 1.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 9.0E-3,
-                  NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = 8.32855E-04))
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=TRAN3,
+                  NOM_CHAM='VITE',
+                  NOEUD='NO12',
+                  NOM_CMP='DY',
+                  VALE_CALC= 8.25849828E-04,
+                  VALE_REFE=8.3285499999999997E-4,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=8.9999999999999993E-3,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'ACCE',
-                  INST = 1.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 7.E-2,
-                  NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = 3.45781E-01))
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=TRAN3,
+                  NOM_CHAM='ACCE',
+                  NOEUD='NO12',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.368281679,
+                  VALE_REFE=0.34578100000000001,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.070000000000000007,),
+          )
 
 mod1=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                     SOUS_STRUC='COTE1',
@@ -442,15 +484,19 @@ resu_dy=CALC_CHAMP(RESULTAT= resu_dy1,
                     CONTRAINTE=('SIPM_ELNO'))
 
 
-TEST_RESU( RESU=_F( RESULTAT = resu_dy,
-                  NOM_CHAM = 'SIPM_ELNO',
-                  INST = 0.00000E+00,
-                  CRITERE = 'RELATIF',    PRECISION = 9.E-3,
-                  NOEUD = 'N1',MAILLE='S1',   NOM_CMP = 'SIXX',
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.3.23',
-                  VALE = 6.65452E+02))
-
-
+TEST_RESU(RESU=_F(INST=0.0,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=resu_dy,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=665.452033642,
+                  VALE_REFE=665.452,
+                  CRITERE='RELATIF',
+                  PRECISION=8.9999999999999993E-3,
+                  MAILLE='S1',
+                  ),
+          )
 
 t_cin1=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                             ),
@@ -462,13 +508,17 @@ t_cin1=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                 );
 
 
-TEST_TABLE(      TABLE=t_cin1,
-                 FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),
-                         _F(  NOM_PARA = 'INST', VALE = 1.0,),),
-                REFERENCE='NON_REGRESSION',
-                NOM_PARA='TOTALE',
-                VALE=1.93800E-02,
-                PRECISION=0.001)
+TEST_TABLE(
+           VALE_CALC=0.019380000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TOTALE',
+           TABLE=t_cin1,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='TOUT',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   ),
+           )
 
 mod2=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                     SOUS_STRUC='COTE2',
@@ -491,13 +541,18 @@ t_cin2=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                 );
 
 
-TEST_TABLE(      TABLE=t_cin2,
-                 FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),
-                         _F(  NOM_PARA = 'INST', VALE = 1.0,),),
-                 REFERENCE='NON_REGRESSION',
-                 NOM_PARA='TOTALE',
-                 VALE=4.93814E-02,
-                 PRECISION=0.001)
+TEST_TABLE(
+           VALE_CALC=0.049381399999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TOTALE',
+           TABLE=t_cin2,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='TOUT',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   ),
+           )
+
 #
 FIN()
 #

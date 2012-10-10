@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (AXI HH2MS)
 # wtna110a.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -408,24 +408,28 @@ IMPR_TABLE(TABLE=SAT,
                   ORDRE='CROISSANT',),
            NOM_PARA=('INST','V4',),);
 
-TEST_RESU(RESU=_F(RESULTAT=U2,
-                  INST=0.7,
+TEST_RESU(RESU=_F(INST=0.69999999999999996,
+                  RESULTAT=U2,
                   NOM_CHAM='SIEF_NOEU',
-                  NOM_CMP='SIXX',
                   NOEUD='N3',
-                  VALE=-4.56E+04,
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-4.5600E4,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U2,
-                  INST=0.8,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST=0.80000000000000004,
+                  RESULTAT=U2,
                   NOM_CHAM='SIEF_NOEU',
-                  NOM_CMP='SIXX',
                   NOEUD='N3',
-                  VALE=-5.67E+06,
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-5.670000E6,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
+
 FIN()
 #
 #

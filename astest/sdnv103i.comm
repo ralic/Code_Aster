@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103i.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -221,67 +221,52 @@ VITE_B1=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN B1',
 # TESTS DE DEPLACEMENTS ET VITESSES 
 #
 
-TEST_RESU(RESU=(
-     _F(  RESULTAT  = RESU,   
-          INST      = IFIN,
-          NOM_CHAM  = 'DEPL',   
-          GROUP_NO  = 'B1',
-          CRITERE   = 'RELATIF', 
-          PRECISION = 1.E-10,
-          NOM_CMP   = 'DX',    
-          VALE      = 1.4464242806669, 
-          REFERENCE = 'NON_REGRESSION',
-          VERSION   = '11.0.21' ),
-          
-     _F(  RESULTAT  = RESU,   
-          INST      = IFIN,
-          NOM_CHAM  = 'DEPL',   
-          GROUP_NO  = 'A2',
-          CRITERE   = 'ABSOLU', 
-          PRECISION = 1.E-10,
-          NOM_CMP   = 'DY',    
-          VALE      = 0.0000000000000E+00, 
-          REFERENCE = 'NON_REGRESSION',
-          VERSION   = '11.0.21' ),
-          
-     _F(  RESULTAT  = RESU,   
-          INST      = IFIN,
-          NOM_CHAM  = 'VITE',   
-          GROUP_NO  = 'B1',
-          CRITERE   = 'RELATIF', 
-          PRECISION = 2.5E-10,
-          NOM_CMP   = 'DX',    
-          VALE      = 83900.271694816, 
-          REFERENCE = 'NON_REGRESSION',
-          VERSION   = '11.0.21' ),
-          
-     _F(  RESULTAT  = RESU,   
-          INST      = IFIN,
-          NOM_CHAM  = 'VITE',   
-          GROUP_NO  = 'A2',
-          CRITERE   = 'ABSOLU', 
-          PRECISION = 1.E-10,
-          NOM_CMP   = 'DY',    
-          VALE      = 0.0000000000000E+00,
-          REFERENCE = 'NON_REGRESSION',
-          VERSION   = '11.0.21' ),
-        ),);
+TEST_RESU(RESU=(_F(GROUP_NO='B1',
+                   INST=2.0000000000000002E-05,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.4464242806669001,
+                   CRITERE='RELATIF',
+                   ),
+                _F(GROUP_NO='A2',
+                   INST=2.0000000000000002E-05,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(GROUP_NO='B1',
+                   INST=2.0000000000000002E-05,
+                   RESULTAT=RESU,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DX',
+                   VALE_CALC=8.3900271694815994E4,
+                   CRITERE='RELATIF',
+                   ),
+                _F(GROUP_NO='A2',
+                   INST=2.0000000000000002E-05,
+                   RESULTAT=RESU,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
 
 #
 # TESTS SUR LE CONTACT
 #
 
-TEST_TABLE(TABLE     = TABJEU,
-           FILTRE    =_F(NOM_PARA = 'JEU',
-                         CRIT_COMP = 'MINI',
-                         ),
-           NOM_PARA  = 'JEU',
-           CRITERE   = 'ABSOLU',
-           PRECISION = 1.E-10,
-           VALE      = 0.0000000000000E+00,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.21' )
-
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='JEU',
+           TABLE=TABJEU,
+           FILTRE=_F(CRIT_COMP='MINI',
+                     NOM_PARA='JEU',),
+           )
 
 IMPR_TABLE(TABLE=TABJEU,)
                    

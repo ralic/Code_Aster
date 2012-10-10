@@ -1,14 +1,15 @@
       SUBROUTINE UTEST2(CHAM19,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NOCMP,
      &              NBREF,TBTXT,REFI,REFR,REFC,TYPRES,EPSI,CRIT,IFIC,
-     &              SSIGNE)
+     &              LLAB,SSIGNE)
       IMPLICIT NONE
       INTEGER NBREF,REFI(NBREF),NUPO,IVARI,IFIC,NUSP
       REAL*8 REFR(NBREF),EPSI
       CHARACTER*(*) CHAM19,NOMAIL,NONOEU,TYPRES,NOCMP,CRIT,SSIGNE
       CHARACTER*16 TBTXT(2)
       COMPLEX*16 REFC(NBREF)
+      LOGICAL       LLAB
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +44,7 @@ C IN  : REFC   : VALEUR COMPLEXE ATTENDUE SUR LE DDL DU POINT.
 C IN  : CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 C IN  : EPSI   : PRECISION ESPEREE
 C IN  : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
+C IN  : LLAB   : FLAG D IMPRESSION DE LABELS
 C OUT : IMPRESSION SUR LISTING
 C ----------------------------------------------------------------------
       INTEGER VALI,IBID,IE,IER
@@ -51,8 +53,6 @@ C ----------------------------------------------------------------------
       CHARACTER*8 NOMMA
 C     ------------------------------------------------------------------
 
-C-----------------------------------------------------------------------
-C-----------------------------------------------------------------------
       CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAM_ELEM',IBID,NOMMA,IE)
 
       CALL UTCH19(CHAM19,NOMMA,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NOCMP,
@@ -61,7 +61,7 @@ C-----------------------------------------------------------------------
         WRITE (IFIC,*) 'NOOK '
       ELSE
         CALL UTITES(TBTXT(1),TBTXT(2),TYPRES,NBREF,REFI,REFR,REFC,
-     &            VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+     &            VALI,VALR,VALC,EPSI,CRIT,IFIC,LLAB,SSIGNE)
       END IF
 
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION SIMPLE LEMAITRE (VITESSE DE DEFORMATION CONSTANTE)
 # ssnv170a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,26 +90,25 @@ U=STAT_NON_LINE(        MODELE=MOMECA,
 U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO','EPSP_ELNO'),RESULTAT=U)
 
 
-TEST_RESU(RESU=(
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'SIGM_ELNO',
-                MAILLE = 'M1',
-                NOEUD = 'N6',
-                INST = 40.,
-                NOM_CMP = 'SIYY',
-                VALE = 632.29325,
-                REFERENCE = 'AUTRE_ASTER'),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'SIGM_ELNO',
-                MAILLE = 'M1',
-                NOEUD = 'N6',
-                INST = 240.,
-                NOM_CMP = 'SIYY',
-                VALE = 761.7493,
-                REFERENCE = 'AUTRE_ASTER')))
-
-
+TEST_RESU(RESU=(_F(INST=40.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=632.293250581,
+                   VALE_REFE=632.29324999999994,
+                   MAILLE='M1',),
+                _F(INST=240.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=761.749298068,
+                   VALE_REFE=761.74929999999995,
+                   MAILLE='M1',),
+                ),
+          )
 
 FIN()

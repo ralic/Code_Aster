@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FREQUENCES PROPRES D'UN ANNEAU CYLINDRIQUE EPAIS
 # sdls109e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,30 +57,37 @@ MODES=MODE_ITER_SIMULT(OPTION='SANS',
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(200.0,800.0),),);
 
-TEST_RESU(RESU=(_F(PARA='FREQ',
-                   RESULTAT=MODES,
-                   PRECISION=1.E-2,
-                   VALE=210.55,
+TEST_RESU(RESU=(_F(NUME_ORDRE=3,
+                   PARA='FREQ',
                    REFERENCE='AUTRE_ASTER',
-                   NUME_ORDRE=3,),
-                _F(PARA='FREQ',
                    RESULTAT=MODES,
-                   PRECISION=1.E-2,
-                   VALE=210.55,
+                   VALE_CALC=211.194721463,
+                   VALE_REFE=210.55000000000001,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
                    REFERENCE='AUTRE_ASTER',
-                   NUME_ORDRE=4,),
-                _F(PARA='FREQ',
                    RESULTAT=MODES,
-                   PRECISION=1.E-2,
-                   VALE=587.92,
+                   VALE_CALC=211.194721816,
+                   VALE_REFE=210.55000000000001,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
                    REFERENCE='AUTRE_ASTER',
-                   NUME_ORDRE=5,),
-                _F(PARA='FREQ',
                    RESULTAT=MODES,
-                   PRECISION=1.E-2,
-                   VALE=587.92,
+                   VALE_CALC=590.982026762,
+                   VALE_REFE=587.91999999999996,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
                    REFERENCE='AUTRE_ASTER',
-                   NUME_ORDRE=6,),),);
+                   RESULTAT=MODES,
+                   VALE_CALC=590.982028367,
+                   VALE_REFE=587.91999999999996,
+                   PRECISION=1.E-2,),
+                ),
+          )
+
 FIN();
 
 

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 11/09/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : TESTS DE FONCTIONNALITE DE POST_RELEVE_T
 # zzzz136d.para = tps_job 60 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,29 +78,35 @@ TB3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EF REPERE UTILISATEUR',
                             NOM_CMP='DX',
                             GROUP_NO='GEF'),)
 
-TEST_TABLE( TABLE=TB1,
-           FILTRE=_F( NOM_PARA = 'ABSC_CURV', VALE = 47.2783),
+TEST_TABLE(
+           VALE_CALC=6.8481239601528001E8,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
-           PRECISION=0.001,
-           VALE=6.8481239601528E+08,
-           REFERENCE='NON_REGRESSION')
+           TABLE=TB1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=47.278300000000002,),
+           )
 
 IMPR_TABLE(TABLE=TB2)
 
-TEST_TABLE( TABLE=TB2,
-            FILTRE=_F( NOM_PARA = 'QUANTITE', VALE_K = 'MINIMUM'),
-            NOM_PARA='TRESCA',
-            PRECISION=0.001,
-            VALE=3.0314779240868E+08,
-            REFERENCE='NON_REGRESSION')
+TEST_TABLE(
+           VALE_CALC=3.0314779240868002E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TRESCA',
+           TABLE=TB2,
+           FILTRE=_F(NOM_PARA='QUANTITE',
+                     VALE_K='MINIMUM',),
+           )
 
 IMPR_TABLE(TABLE=TB3)
 
-TEST_TABLE( TABLE=TB3,
-            FILTRE=_F( NOM_PARA = 'ABSC_CURV', VALE = 4.91197),
-            NOM_PARA='DX',
-            PRECISION=0.001,
-            VALE=0.06461675,
-            REFERENCE='NON_REGRESSION')
+TEST_TABLE(
+           VALE_CALC=0.064616750000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TB3,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=4.9119700000000002,),
+           )
 
 FIN()

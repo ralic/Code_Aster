@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE EN BETON ARME CHAUFFEE
 # hsns102b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -205,36 +205,36 @@ DEPB=CALC_CHAMP(reuse =DEPB,
 # -------------------------------------------------
 # TESTS DES RESULTATS (REFERENCE ANALYTIQUE)
 # -------------------------------------------------
-TEST_RESU(
-          RESU=(
-            _F( RESULTAT = DEP,
-             INST = 1.,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'DX',
-             GROUP_NO = 'PMB',
-             VALE = 1.4285714E-04/2.,
-             PRECISION = 1E-2,
-             REFERENCE='ANALYTIQUE',
-         ),
-            _F( RESULTAT = DEP,
-             INST = 1.,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'DZ',
-             GROUP_NO = 'PMB',
-             VALE = 2.1428571E-03/4.,
-             PRECISION = 1.05E-2,
-             REFERENCE='ANALYTIQUE',
-            ),
-            _F( RESULTAT = DEPB,
-             INST = 1.,
-             NOM_CHAM = 'SIGM_NOEU',
-             NOM_CMP = 'SIXX',
-             GROUP_NO = 'PMB',
-             VALE = 8.571429E+05/0.2,
-             PRECISION = 1E-2,
-             REFERENCE='ANALYTIQUE',
-            ),
-         ))
+TEST_RESU(RESU=(_F(GROUP_NO='PMB',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 7.19892140E-05,
+                   VALE_REFE=7.1428569999999994E-05,
+                   PRECISION=1.E-2,),
+                _F(GROUP_NO='PMB',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 5.30112955E-04,
+                   VALE_REFE=5.3571427500000005E-4,
+                   PRECISION=0.010500000000000001,),
+                _F(GROUP_NO='PMB',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEPB,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 4.31992334E+06,
+                   VALE_REFE=4.2857145E6,
+                   PRECISION=1.E-2,),
+                ),
+          )
+
 DEPA=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=DEP,GROUP_MA='GEOA')
 
 
@@ -242,17 +242,15 @@ DEPA=CALC_CHAMP(reuse=DEPA,
                 RESULTAT=DEPA,
                 CONTRAINTE='SIGM_NOEU',);
 
-TEST_RESU(
-          RESU=(
-            _F( RESULTAT = DEPA,
-             INST = 1.,
-             NOM_CHAM = 'SIGM_NOEU',
-             NOM_CMP = 'SIXX',
-             GROUP_NO = 'PMA',
-             VALE = -8.571429E+07,
-             PRECISION = 1E-2,
-             REFERENCE='ANALYTIQUE',
-            ),
-         ))
+TEST_RESU(RESU=_F(GROUP_NO='PMA',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DEPA,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-8.63879617E+07,
+                  VALE_REFE=-8.5714290E7,
+                  PRECISION=1.E-2,),
+          )
 
 FIN()

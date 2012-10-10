@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102k.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,47 +108,55 @@ MEST1=MECA_STATIQUE(MODELE=MO,
 MEST1=CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO'))
 
 
-TEST_RESU(RESU=_F(RESULTAT=MEST1,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
                   NOEUD='N7',
-                  VALE=0.003228713,
+                  NOM_CMP='DY',
+                  VALE_CALC= 3.24622565E-03,
+                  VALE_REFE=3.2287129999999998E-3,
                   CRITERE='RELATIF',
-                  PRECISION=0.006,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=6.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MEST1,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
                   NOM_CHAM='EFGE_ELNO',
-                  NOM_CMP='VY',
-                  MAILLE='S11',
                   NOEUD='N1',
-                  VALE=6000.0,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=MEST1,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='EFGE_ELNO',
                   NOM_CMP='VY',
-                  MAILLE='S110',
-                  NOEUD='N11',
-                  VALE=-12000.0,
+                  VALE_CALC= 6.00000000E+03,
+                  VALE_REFE=6000.0,
                   CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=9.9999999999999995E-07,
+                  MAILLE='S11',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MEST1,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
                   NOM_CHAM='EFGE_ELNO',
-                  NOM_CMP='MFZ',
-                  MAILLE='S17',
-                  NOEUD='N8',
-                  VALE=-13856.41,
+                  NOEUD='N11',
+                  NOM_CMP='VY',
+                  VALE_CALC=-1.20000000E+04,
+                  VALE_REFE=-1.2000E4,
                   CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=9.9999999999999995E-07,
+                  MAILLE='S110',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N8',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=-1.38564065E+04,
+                  VALE_REFE=-1.385641E4,
+                  CRITERE='RELATIF',
+                  PRECISION=9.9999999999999995E-07,
+                  MAILLE='S17',),
+          )
 
 FIN();

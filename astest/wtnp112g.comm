@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THH2D, 2D ,
 # wtnp112g.para = tps_job 110 mem_job 512Mo ncpus 1 liste_test S
@@ -285,22 +285,27 @@ IMPR_TABLE(TABLE=TRV,
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','V4'),);
 
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  INST = 36000,
+TEST_RESU(RESU=_F(INST=36000,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='N58',
-                  VALE=0.44,
+                  NOM_CMP='PRE1',
+                  VALE_CALC=0.462670844,
+                  VALE_REFE=0.44,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  INST = 36000,
+                  PRECISION=0.10000000000000001,),
+          )
+
+TEST_RESU(RESU=_F(INST=36000,
+                  RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='N58',
-                  VALE=0.4627,
+                  NOM_CMP='PRE1',
+                  VALE_CALC=0.4627,
+                  TOLE_MACHINE=1.E-4,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-4,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
+
 FIN()

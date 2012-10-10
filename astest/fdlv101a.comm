@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRES CONCENTRIQUES SEPARES PAR UN FLUIDE INCOMPRESSIBLE
 # fdlv101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -121,7 +121,6 @@ MODES=MODE_ITER_SIMULT( MATR_RIGI=MATASKS,  MATR_MASS=MATASMS,
                                         NMAX_FREQ = 2)
                             )
 
-
 NUMGEN=NUME_DDL_GENE(       BASE=MODES,
                              STOCKAGE='PLEIN'    )
 
@@ -163,21 +162,22 @@ MODHUMI=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,  MATR_MASS=MASTOT,
                                         NMAX_FREQ = 2)
                             )
 
-
-TEST_RESU(RESU=(
-    _F(   RESULTAT = MODHUMI,        PARA = 'FREQ',
-            CRITERE = 'RELATIF',     PRECISION = 1.E-3,
-            NUME_ORDRE = 1,         VALE = 1.696),
-    _F(   RESULTAT = MODHUMI,        PARA = 'FREQ',
-            CRITERE = 'RELATIF',     PRECISION = 1.E-3,
-            NUME_ORDRE = 2,         VALE = 4.128))
-         )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODHUMI,
+                   VALE_CALC=1.696,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODHUMI,
+                   VALE_CALC=4.1280000000000001,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 FIN()
 #
-
-
-
-
-
-

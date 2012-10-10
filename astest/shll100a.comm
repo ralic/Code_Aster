@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 # shll100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,15 +158,18 @@ HARMDIR=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                                    COEF_MULT = 1.))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = HARMDIR,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N11',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=HARMDIR,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N11',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  ),
+          )
 
 #CALCUL HARMONIQUE A UN NIVEAU DE PROJECTION
 # BASE MODALE DIRECTE CALCULEE SANS SOUS STRUCTURATION
@@ -193,10 +196,13 @@ HFOG1 = RECU_FONCTION ( RESU_GENE = DYNPROD,
 
 IMPR_FONCTION ( COURBE = _F( FONCTION = HFOG1 ) ) ;
 
-TEST_FONCTION( VALEUR= _F( FONCTION = HFOG1 ,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                           VALE_PARA = 0.00000E+00,
-                           VALE_REFE_C = -5.50231E-11+4.11411E-09j ), ) ;
+TEST_FONCTION(VALEUR=_F(VALE_CALC_C=(-5.50231e-11+4.11411e-09j),
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.0,
+                        FONCTION=HFOG1,
+                        ),
+              )
+
 #
 DYNHARD=REST_GENE_PHYS(   RESU_GENE=DYNPROD,
                           NOEUD = 'N11',
@@ -204,15 +210,18 @@ DYNHARD=REST_GENE_PHYS(   RESU_GENE=DYNPROD,
                           MODE_MECA=MODESD,
                           NOM_CHAM = 'DEPL',   )
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHARD,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 01,
-                    CRITERE = 'RELATIF',
-                    PRECISION = 2.E-3,
-                    NOEUD = 'N11',
-                    NOM_CMP = 'DX',
-                    VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHARD,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N11',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  ),
+          )
 
 #
 HFX_NO11 = RECU_FONCTION ( RESU_GENE = DYNPROD,
@@ -222,10 +231,12 @@ HFX_NO11 = RECU_FONCTION ( RESU_GENE = DYNPROD,
 
 IMPR_FONCTION ( COURBE = _F( FONCTION = HFX_NO11 ) ) ;
 
-TEST_FONCTION( VALEUR= _F( FONCTION = HFX_NO11 ,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                           VALE_PARA = FD,
-                           VALE_REFE_C = -7.00E-11+5.07E-9j ), ) ;
+TEST_FONCTION(VALEUR=_F(VALE_CALC_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=100.0,
+                        FONCTION=HFX_NO11,
+                        ),
+              )
 
 ##########################################################################
 #----------------------------------------------
@@ -479,19 +490,23 @@ FOGEN1 = RECU_FONCTION ( RESU_GENE = RESGAIR,
                          NOM_CHAM = 'DEPL',
                          NUME_CMP_GENE = 7 ) ;
 
-TEST_FONCTION( VALEUR= _F( FONCTION = FOGEN1 ,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                           VALE_PARA = 0.00000E+00,
-                           VALE_REFE = 5.46277E+03, ), ) ;
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5462.7700000000004,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=0.0,
+                        FONCTION=FOGEN1,
+                        ),
+              )
 
 FOGEN2 = RECU_FONCTION ( RESU_GENE = RESGAIR,
                          INTERPOL = 'LIN',
                          NOM_PARA_RESU = 'MASS_GENE'  ) ;
 
-TEST_FONCTION( VALEUR= _F( FONCTION = FOGEN2 ,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                           VALE_PARA = 2.50258E+02,
-                           VALE_REFE = 3.35302E+01, ), ) ;
+TEST_FONCTION(VALEUR=_F(VALE_CALC=33.530200000000001,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=250.25800000000001,
+                        FONCTION=FOGEN2,
+                        ),
+              )
 
 #
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,
@@ -604,60 +619,75 @@ DYNHAR2=REST_SOUS_STRUC( RESU_GENE=DYNGEN,
 #RESTITUTION SUR BASE PHYSIQUE
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N5',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHAR2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  ),
+          )
 
 #
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHARC,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N5',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHARC,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                  NOM_CHAM = 'VITE',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N5',
-                  NOM_CMP = 'DX',
-                  VALE_C = -3.18E-6-4.40E-8j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-3.18248712E-06+-4.39853761E-08j,
+                  VALE_REFE_C=(-3.18e-06-4.3999999999999997e-08j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHAR2,
+                  NOM_CHAM='VITE',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                  NOM_CHAM = 'ACCE',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N5',
-                  NOM_CMP = 'DX',
-                  VALE_C = 2.76E-5-2.00E-3j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C= 2.76368269E-05+-1.99961563E-03j,
+                  VALE_REFE_C=(2.76e-05-0.002j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHAR2,
+                  NOM_CHAM='ACCE',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHARM2,
-                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'NO12',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHARM2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO12',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  ),
+          )
 
 #
 #----------------------------------------------------------

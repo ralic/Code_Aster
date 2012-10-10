@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE POST_ELEM NORME EN 3D
 # zzzz291a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -321,125 +321,137 @@ TBB6=POST_ELEM(NORME=_F(TYPE_NORM='L2',
 #-------------------------
 # champ DEPL (3D)
 
-TEST_TABLE(TABLE=NDEPL3D,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.5E-3,
+           VALE_CALC=0.931098810,
+           VALE_REFE=0.93237081353046525,
            NOM_PARA='VALE_NORM',
-           VALE=Norm00,
-           PRECISION=0.0015,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=NDEPL3D,)
 
 # champ SIEF_ELGA (3D)
 
-TEST_TABLE(TABLE=NSIEGA,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 9.03146507E+10,
+           VALE_REFE=9.0314650667997894E10,
            NOM_PARA='VALE_NORM',
-           VALE=Norm11,
-           PRECISION=0.000001,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=NSIEGA,)
 
 # champ SIGM_ELNO (3D)
 
-TEST_TABLE(TABLE=NSIGNO,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 9.03146507E+10,
+           VALE_REFE=9.0314650667997864E10,
            NOM_PARA='VALE_NORM',
-           VALE=Norm22,
-           PRECISION=0.000001,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=NSIGNO,)
 
 #-------------------------
 
 # champ DEPL (2D et 3D) : TOUT='OUI'
-TEST_TABLE(TABLE=TB3,
+TEST_TABLE(
+           VALE_CALC=2.4263499999999998,
+           
            NOM_PARA='VALE_NORM',
-           VALE=2.42635E+00,
-           PRECISION=0.000001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=TB3,
+           )
 
 # champ DEPL (2D et 3D) : GROUP_MA='CUBE'
-TEST_TABLE(TABLE=TB4,
+TEST_TABLE(
+           VALE_CALC=2.4263499999999998,
+           
            NOM_PARA='VALE_NORM',
-           VALE=2.42635E+00,
-           PRECISION=0.000001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=TB4,
+           )
 
 # champ DEPL (2D) : GROUP_MA='CUBE'
-TEST_TABLE(TABLE=TB6,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=2.240588536,
+           VALE_REFE=2.2512414458642365,
            NOM_PARA='VALE_NORM',
-           VALE=Norm03,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=TB6,)
 
 #-------------------------
 
 # champ SIEF_ELGA (3D) : TOUT='OUI'
-TEST_TABLE(TABLE=TBA1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 9.03146507E+10,
+           VALE_REFE=9.0314650667997894E10,
            NOM_PARA='VALE_NORM',
-           VALE=Norm11,
-           PRECISION=0.000001,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=TBA1,)
 
 # champ SIEF_ELGA (3D) : GROUP_MA='CUBE'
-TEST_TABLE(TABLE=TBA2,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 9.03146507E+10,
+           VALE_REFE=9.0314650667997894E10,
            NOM_PARA='VALE_NORM',
-           VALE=Norm11,
-           PRECISION=0.000001,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=TBA2,)
 
 # champ SIEF_ELGA (2D et 3D) :  TOUT='OUI'
 # apres interpolation aux noeuds
-TEST_TABLE(TABLE=TBA3,
+TEST_TABLE(
+           VALE_CALC=2.6616249434387E11,
+           
            NOM_PARA='VALE_NORM',
-           VALE=2.6616249434387E+11,
-           PRECISION=0.000001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=TBA3,
+           )
 
 # champ SIEF_ELGA (2D et 3D) :  GROUP_MA='CUBE'
 # apres interpolation aux noeuds
-TEST_TABLE(TABLE=TBA4,
+TEST_TABLE(
+           VALE_CALC=2.6616249434387E11,
+           
            NOM_PARA='VALE_NORM',
-           VALE=2.6616249434387E+11,
-           PRECISION=0.000001,
-           REFERENCE='NON_REGRESSION',);
-
+           TABLE=TBA4,
+           )
 
 #-------------------------
 
 # champ SIGM_ELNO (3D) : TOUT='OUI'
-TEST_TABLE(TABLE=TBB1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 9.03146507E+10,
+           VALE_REFE=9.0314650667997864E10,
            NOM_PARA='VALE_NORM',
-           VALE=Norm22,
-           PRECISION=0.000001,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=TBB1,)
 
 # champ SIGM_ELNO (3D) : GROUP_MA='CUBE'
-TEST_TABLE(TABLE=TBB2,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 9.03146507E+10,
+           VALE_REFE=9.0314650667997864E10,
            NOM_PARA='VALE_NORM',
-           VALE=Norm22,
-           PRECISION=0.000001,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=TBB2,)
 
 # champ SIGM_ELNO (2D et 3D) :  TOUT='OUI'
 # apres interpolation aux noeuds
-TEST_TABLE(TABLE=TBB3,
+TEST_TABLE(
+           VALE_CALC=2.6616249434387E11,
+           
            NOM_PARA='VALE_NORM',
-           VALE=2.6616249434387E+11,
-           PRECISION=0.000001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=TBB3,
+           )
 
 # champ SIGM_ELNO (2D et 3D) :  GROUP_MA='CUBE'
 # apres interpolation aux noeuds
-TEST_TABLE(TABLE=TBB4,
+TEST_TABLE(
+           VALE_CALC=2.6616249434387E11,
+           
            NOM_PARA='VALE_NORM',
-           VALE=2.6616249434387E+11,
-           PRECISION=0.000001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=TBB4,
+           )
 
 # champ SIGM_ELNO (2D) :  GROUP_MA='CUBE'
 # apres interpolation aux noeuds
-TEST_TABLE(TABLE=TBB6,
+TEST_TABLE(
+           VALE_CALC=2.5926081379162E11,
+           
            NOM_PARA='VALE_NORM',
-           VALE=2.5926081379162E+11,
-           PRECISION=0.000001,
-           REFERENCE='NON_REGRESSION',);
-
-
+           TABLE=TBB6,
+           )
 
 #  VERIFICATION DE LA PRISE EN COMPTE DU FILTRAGE DES ELEMENTS FINIS
 #
@@ -500,16 +512,14 @@ NormeZZ=POST_ELEM(MODELE=MOMIX,
 NormZZ=math.sqrt(NormeZZ['INTE_X1',1]);
 
 # Comparaison
-TEST_TABLE(TABLE=NSIGMIX,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-08,
+           VALE_CALC= 9.38681238E+10,
+           VALE_REFE=9.3868123779196365E10,
            NOM_PARA='VALE_NORM',
-           VALE=NormZZ,
-           PRECISION=1.e-8,
-           REFERENCE='AUTRE_ASTER',);
-
-
+           TABLE=NSIGMIX,)
 
 FIN();
-
 
 
 

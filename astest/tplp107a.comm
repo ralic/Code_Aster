@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : THERMIQUE 2D
 # tplp107a.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -155,12 +155,14 @@ DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=MO,
 #          Verification
 # ========================================================================================
 
-TEST_RESU(CHAM_NO= 
-          _F(CHAM_GD= DIFF   , 
-             REFERENCE= 'ANALYTIQUE', PRECISION= 1.E-10    ,
-             TYPE_TEST= 'SOMM_ABS', VALE=  0.59734630434863 ),
+TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
+                     PRECISION=1.E-10,
+                     TYPE_TEST='SOMM_ABS',
+                     CHAM_GD=DIFF,
+                     VALE_CALC=0.59734630435,
+                     VALE_REFE=0.59734630434863001,
+                     TOLE_MACHINE=1.E-10,),
           )
-
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
@@ -173,4 +175,3 @@ IMPR_RESU(FORMAT='MED',
 
 
 FIN();
-

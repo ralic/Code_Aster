@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BARRE ELASTOPLASTIQUE EN TRACTION AVEC IMPLEX
 # ssnl137a.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,23 +101,24 @@ STATIQU1=STAT_NON_LINE(MODELE=MODELE,
 STATIQU1=CALC_CHAMP(reuse=STATIQU1,RESULTAT=STATIQU1,CONTRAINTE=('SIEF_ELNO'),DEFORMATION=('EPSI_ELNO'))
 
 
-TEST_RESU(RESU=_F(NOM_CHAM='SIEF_ELNO',
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=10,
                   RESULTAT=STATIQU1,
-                  MAILLE='M4',
-                  REFERENCE='NON_REGRESSION',
-                  VALE=190,
+                  NOM_CHAM='SIEF_ELNO',
                   NOM_CMP='N',
-                  INST = TFIN,
-                  GROUP_NO='B',),);
+                  VALE_CALC=190,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M4',),
+          )
 
-
-TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO',
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=10,
                   RESULTAT=STATIQU1,
-                  MAILLE='M4',
-                  REFERENCE='NON_REGRESSION',
-                  VALE=0.01,
+                  NOM_CHAM='EPSI_ELNO',
                   NOM_CMP='EPXX',
-                  INST = TFIN,
-                  GROUP_NO='B',),);
+                  VALE_CALC=1.E-2,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M4',),
+          )
 
 FIN();

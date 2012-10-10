@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAIS BIAXIAUX
 # ssnp161b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,21 +103,39 @@ STAT=CALC_CHAMP  ( reuse  = STAT,
                 );
 
 
-TEST_RESU(RESU=(
-#  NUMERO ORDRE = 6
-          _F( RESULTAT = STAT, NUME_ORDRE = 6, NOM_CHAM = 'SIGM_NOEU',NOM_CMP = 'SIYY',
-               NOEUD = 'N1',    MAILLE = 'M1', REFERENCE = 'SOURCE_EXTERNE',
-              CRITERE = 'RELATIF',   PRECISION = 5.E-2, VALE = -3589800., ),
-          _F( RESULTAT = STAT, NUME_ORDRE = 6, NOM_CHAM = 'EPSI_NOEU',NOM_CMP = 'EPYY',
-               NOEUD = 'N1',    MAILLE = 'M1', REFERENCE = 'SOURCE_EXTERNE',
-              CRITERE = 'RELATIF',   PRECISION = 5.E-2, VALE = -1.05E-04, ),
-
-
-#  NUMERO ORDRE = 46
-          _F( RESULTAT = STAT, NUME_ORDRE = 46, NOM_CHAM = 'SIGM_NOEU',NOM_CMP = 'SIYY',
-                NOEUD = 'N1',    MAILLE = 'M1', REFERENCE = 'SOURCE_EXTERNE',
-                CRITERE = 'RELATIF',   PRECISION = 5.E-2, VALE = -27899998., ),
-                  ))
+TEST_RESU(RESU=(_F(RESULTAT=STAT,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   NOEUD='N1',
+                   MAILLE='M1',
+                   REFERENCE='SOURCE_EXTERNE',
+                   CRITERE='RELATIF',
+                   PRECISION=5.E-2,
+                   VALE_CALC=-3.5997984448939E+06,
+                   VALE_REFE=-3589800.,),
+               _F( RESULTAT=STAT,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOM_CMP='EPYY',
+                   NOEUD='N1',
+                   MAILLE='M1',
+                   REFERENCE='SOURCE_EXTERNE',
+                   CRITERE='RELATIF',
+                   PRECISION=5.E-2,
+                   VALE_CALC=-1.0692366883424E-04,
+                   VALE_REFE=-1.05E-04,),
+                _F(RESULTAT=STAT,
+                   NUME_ORDRE=46,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   NOEUD='N1',
+                   MAILLE='M1',
+                   REFERENCE='SOURCE_EXTERNE',
+                   CRITERE='RELATIF',
+                   PRECISION=5.E-2,
+                   VALE_CALC=-2.7600630870447E+07,
+                   VALE_REFE=-27899998.,),),)
 
 FIN();
 

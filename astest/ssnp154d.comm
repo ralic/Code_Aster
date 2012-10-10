@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 1 CYLINDER ROLLER CONTACT
 # ssnp154d.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -301,24 +301,25 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 # ===========================================
 # Tests
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'B',
-                   NOM_CMP    = 'DY',
-                   VALE       = -1.3026356448389,
-                   REFERENCE  = 'SOURCE_EXTERNE',
-                   VERSION    = '11.0.27',
+TEST_RESU(RESU=(_F(GROUP_NO='B',
+                   INST=1.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.302689962,
+                   VALE_REFE=-1.3026356448389,
                    ),
-                _F(RESULTAT   = RESU,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'SIEF_NOEU',
-                   GROUP_NO   = 'B',
-                   NOM_CMP    = 'SIYY',
-                   VALE       = -3542.6878770218,
-                   REFERENCE  = 'SOURCE_EXTERNE',
-                   VERSION    = '11.0.27',
+                _F(GROUP_NO='B',
+                   INST=1.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-3.54180440E+03,
+                   VALE_REFE=-3542.6878770218,
                    ),
-                ),);
+                ),
+          )
 
 FIN();

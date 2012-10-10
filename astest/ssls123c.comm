@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SPHERE SOUS PRESSION EXTERNE MODELISATION 3D
 # ssls123c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,25 +71,58 @@ RESUT=CALC_CHAMP(reuse =RESUT,
 
 
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESUT, NOM_CHAM='DEPL',  REFERENCE='NON_REGRESSION',NUME_ORDRE=1,
-              GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -1.33247E-5),
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='PAE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.33247E-05,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='PBE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.33243E-05,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='PCE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-1.2682400000000001E-05,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
-            _F(  RESULTAT = RESUT, NOM_CHAM='DEPL',  REFERENCE='NON_REGRESSION',NUME_ORDRE=1,
-              GROUP_NO = 'PBE',      NOM_CMP = 'DY',           VALE = -1.33243E-5),
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='PAE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.33247648E-05,
+                   VALE_REFE=-1.28279E-05,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='PBE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.33243007E-05,
+                   VALE_REFE=-1.28279E-05,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='PCE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-1.26824444E-05,
+                   VALE_REFE=-1.28279E-05,
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
 
-            _F(   RESULTAT = RESUT, NOM_CHAM='DEPL', REFERENCE='NON_REGRESSION',NUME_ORDRE=1,
-              GROUP_NO = 'PCE',      NOM_CMP = 'DZ',           VALE = -1.26824E-5),
-              ),)
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESUT, NOM_CHAM='DEPL', PRECISION = 5.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -1.28279E-5),
-
-            _F(  RESULTAT = RESUT, NOM_CHAM='DEPL', PRECISION = 5.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'PBE',      NOM_CMP = 'DY',           VALE = -1.28279E-5),
-
-            _F(   RESULTAT = RESUT, NOM_CHAM='DEPL',  PRECISION = 5.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'PCE',      NOM_CMP = 'DZ',           VALE = -1.28279E-5),
-              ),)
 FIN()

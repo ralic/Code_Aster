@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,25 +130,33 @@ for num_calc in range(nb_raff+1) :
       REF3 = -2.69258E-01
       REF4 = -3.20156E-01
 
-      TEST_TABLE(TABLE=DEP1[num_calc],
+      TEST_TABLE(REFERENCE='ANALYTIQUE',
+                 VALE_CALC=REF1,
+                 TOLE_MACHINE=1.e-3,
+                 VALE_REFE=REF1,
                  NOM_PARA='X1',
-                 VALE=REF1,
-                 REFERENCE='ANALYTIQUE')
+                 TABLE=DEP1[num_calc],)
 
-      TEST_TABLE(TABLE=DEP2[num_calc],
+      TEST_TABLE(REFERENCE='ANALYTIQUE',
+                 VALE_CALC=REF2,
+                 TOLE_MACHINE=1.e-3,
+                 VALE_REFE=REF2,
                  NOM_PARA='X1',
-                 VALE=REF2,
-                 REFERENCE='ANALYTIQUE')
+                 TABLE=DEP2[num_calc])
 
-      TEST_TABLE(TABLE=DEP3[num_calc],
+      TEST_TABLE(REFERENCE='ANALYTIQUE',
+                 VALE_CALC=REF3,
+                 TOLE_MACHINE=1.e-3,
+                 VALE_REFE=REF3,
                  NOM_PARA='X1',
-                 VALE=REF3,
-                 REFERENCE='ANALYTIQUE')
+                 TABLE=DEP3[num_calc])
 
-      TEST_TABLE(TABLE=DEP4[num_calc],
+      TEST_TABLE(REFERENCE='ANALYTIQUE',
+                 VALE_CALC=REF4,
+                 TOLE_MACHINE=1.e-3,
+                 VALE_REFE=REF4,
                  NOM_PARA='X1',
-                 VALE=REF4,
-                 REFERENCE='ANALYTIQUE')
+                 TABLE=DEP4[num_calc])
 
       # SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES  
       MA[num_calc+1]=CO('MA_%d' % (num_calc+1))

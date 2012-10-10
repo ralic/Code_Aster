@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 # ssnv177a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -236,20 +236,21 @@ ROT_ENDO=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(1.,angle_endo),
                      PROL_DROITE='CONSTANT',);
 
-TEST_FONCTION(VALEUR=_F(FONCTION=ROT_EPSI,
-                        VALE_PARA=1.,
-                        VALE_REFE=(refe_defi, refe_defi - 180.),
-                        REFERENCE = 'NON_REGRESSION',),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=(135.71600000000001, -44.283999999999992),
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=1.0,
+                        FONCTION=ROT_EPSI,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=ROT_ENDO,
-                        VALE_PARA=1.,
-                        VALE_REFE=(refe_endo, refe_endo - 180.),
-                        REFERENCE = 'NON_REGRESSION',),);
-
-
+TEST_FONCTION(VALEUR=_F(VALE_CALC=(23.0825, -156.91749999999999),
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=1.0,
+                        FONCTION=ROT_ENDO,
+                        ),
+              )
 
 FIN()
-
 
 
 

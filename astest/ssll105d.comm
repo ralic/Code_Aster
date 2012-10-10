@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FLAMBEMENT NON LINEAIRE POUTRE EN L
 # ssll105d.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,16 +80,14 @@ res=STAT_NON_LINE(MODELE=modele,
                   CRIT_STAB=_F(CHAR_CRIT=(-2.,0.),),
                   );
 
-TEST_RESU(RESU=(
-                 _F(RESULTAT=res,
-                   INST=1.,
-                   PARA='CHAR_CRIT',
-                   VALE=-1.088,
-                   PRECISION=0.02,
-                   REFERENCE='ANALYTIQUE',),
-                   ),)
-
-
+TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=res,
+                  VALE_CALC=-1.086655673,
+                  VALE_REFE=-1.0880000000000001,
+                  PRECISION=0.02,),
+          )
 
 effort2=AFFE_CHAR_MECA(MODELE=modele,
                       FORCE_NODALE=_F(GROUP_NO='C',
@@ -135,26 +133,28 @@ res2M=STAT_NON_LINE(MODELE=modele,
                   SOLVEUR=_F(METHODE='MUMPS'),
                   CRIT_STAB=_F(CHAR_CRIT=(-1., 0.),),
                   );
-TEST_RESU(RESU=(
-                 _F(RESULTAT=res2L,
-                   INST=1.,
-                   PARA='CHAR_CRIT',
-                   VALE=-0.68,
-                   PRECISION=0.02,
-                   REFERENCE='ANALYTIQUE',),
-                 _F(RESULTAT=res2F,
-                   INST=1.,
-                   PARA='CHAR_CRIT',
-                   VALE=-0.68,
-                   PRECISION=0.02,
-                   REFERENCE='ANALYTIQUE',),
-                 _F(RESULTAT=res2M,
-                   INST=1.,
-                   PARA='CHAR_CRIT',
-                   VALE=-0.68,
-                   PRECISION=0.02,
-                   REFERENCE='ANALYTIQUE',),
-                   ),)
-
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=res2L,
+                   VALE_CALC=-0.679830918,
+                   VALE_REFE=-0.68000000000000005,
+                   PRECISION=0.02,),
+                _F(PARA='CHAR_CRIT',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=res2F,
+                   VALE_CALC=-0.679830918,
+                   VALE_REFE=-0.68000000000000005,
+                   PRECISION=0.02,),
+                _F(PARA='CHAR_CRIT',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=res2M,
+                   VALE_CALC=-0.679830918,
+                   VALE_REFE=-0.68000000000000005,
+                   PRECISION=0.02,),
+                ),
+          )
 
 FIN();

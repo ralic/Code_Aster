@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST MONOCRISTAL  3D UTILISANT SIMU_POINT_MAT
 # comp002j.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -225,15 +225,23 @@ TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,coef_
 
 # TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
 
-TEST_TABLE(TABLE=R_SI[1],
-           NOM_PARA='VMIS_Pa_1',VALE=3.31336E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);
+TEST_TABLE(
+           VALE_CALC=3.31336000E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VMIS_Pa_1',
+           TABLE=R_SI_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.0,),
+           )
 
-TEST_TABLE(TABLE=R_SI[3],
-           NOM_PARA='SIXX_Pa_1',VALE=2.07949E+07,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);
+TEST_TABLE(
+           VALE_CALC=2.0794900E7,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXX_Pa_1',
+           TABLE=R_SI_3,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.0,),
+           )
 
 for i in range(Ncal):
     DETRUIRE ( CONCEPT = _F (NOM = RESU[i]))
@@ -292,15 +300,13 @@ DIFF_MAT=VERI_MATR_TANG()
 IMPR_TABLE(TABLE=DIFF_MAT)
 
 
-TEST_TABLE(TABLE=DIFF_MAT,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 6.54788450E-04,
+           VALE_REFE=0.0,
            NOM_PARA='MAT_DIFF',
            TYPE_TEST='MAX',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=prec_tgt,
-           REFERENCE='ANALYTIQUE',);
-
-
+           TABLE=DIFF_MAT,)
 
 FIN();
-#

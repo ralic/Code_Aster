@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 # sdnv107a.para = tps_job 600 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -614,64 +614,80 @@ RESUGLO=REST_COND_TRAN(   RESULTAT=DYTREX,
                                         )
                                         
                                         
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 1.12284E-02))
-                                     
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'VITE',      INST=3.E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 4.13173E+00))
-                  
-                                    
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'DEPL',      INST=1.4E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -1.00389E-02))
-                                     
-                  
-                                                      
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
-                  PRECISION = 1.1E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 1.13478E-02))
-                                                          
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 1.12284E-02))
-                                     
-                  
-                                    
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='8.2.12',
-                  NOM_CHAM = 'DEPL',      INST=1.4E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -1.00389E-02))
-                                     
-                  
-                                    
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
-                  PRECISION = 1.1E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 1.13478E-02))
-                                        
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=5.0000000000000001E-3,
+                  RESULTAT=DYTREX,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.011228399999999999,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=3.0000000000000001E-3,
+                  RESULTAT=DYTREX,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DX',
+                  VALE_CALC=4.1317300000000001,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=0.014,
+                  RESULTAT=DYTREX,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.0100389,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=5.0000000000000001E-3,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=DYTREX,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.011228400,
+                  VALE_REFE=0.0113478,
+                  PRECISION=0.010999999999999999,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=5.0000000000000001E-3,
+                  RESULTAT=RESUGLO,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.011228399999999999,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=0.014,
+                  RESULTAT=RESUGLO,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.0100389,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=5.0000000000000001E-3,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESUGLO,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.011228400,
+                  VALE_REFE=0.0113478,
+                  PRECISION=0.010999999999999999,),
+          )
 
 FIN( ) 
                
-
 
 
 

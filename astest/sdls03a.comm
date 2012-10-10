@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKT - DST
 # sdls03a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,25 +64,56 @@ MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATR,   MATR_MASS=MATM,
 
 # --------------------------------------------------------------------
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE,        PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 0.5E-2,
-           NUME_MODE = 4,       VALE = 35.63),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
-           NUME_MODE = 5,       VALE = 68.51),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 0.9E-2,
-           NUME_MODE = 6,       VALE = 109.62),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 1.2E-2,
-           NUME_MODE = 7,       VALE = 123.32),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 1.8E-2,
-           NUME_MODE = 8,      VALE = 142.51),
-   _F(   RESULTAT = MODE,        PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 2.9E-2,
-           NUME_MODE = 9,       VALE = 197.32)) )
+TEST_RESU(RESU=(_F(PARA='FREQ',
+                   NUME_MODE=4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=35.460211135,
+                   VALE_REFE=35.630000000000003,
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                _F(PARA='FREQ',
+                   NUME_MODE=5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=67.822973122,
+                   VALE_REFE=68.510000000000005,
+                   CRITERE='RELATIF',
+                   PRECISION=0.010999999999999999,),
+                _F(PARA='FREQ',
+                   NUME_MODE=6,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=108.669630989,
+                   VALE_REFE=109.62,
+                   CRITERE='RELATIF',
+                   PRECISION=8.9999999999999993E-3,),
+                _F(PARA='FREQ',
+                   NUME_MODE=7,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=121.902245538,
+                   VALE_REFE=123.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.012,),
+                _F(PARA='FREQ',
+                   NUME_MODE=8,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=139.999927503,
+                   VALE_REFE=142.50999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.017999999999999999,),
+                _F(PARA='FREQ',
+                   NUME_MODE=9,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE,
+                   VALE_CALC=191.704979697,
+                   VALE_REFE=197.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029000000000000001,),
+                ),
+          )
 
 # -------------------------------------------------------------------
 # ---- MODE DE MEBRANE SUR APPUIS ELASTIQUES
@@ -132,10 +163,14 @@ FREQ1=sqrt(100./117.) / (2. * pi)
 
 # --------------------------------------------------------------------
 
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE2,        PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.1E-2,
-           NUME_ORDRE = 1, REFERENCE = 'ANALYTIQUE', VALE = FREQ1)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODE2,
+                  VALE_CALC=0.147138774,
+                  VALE_REFE=0.14713879693881587,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
           )
 
 #====================================================================
@@ -168,25 +203,56 @@ MODE3=MODE_ITER_SIMULT(  MATR_RIGI=MATR3,   MATR_MASS=MATM3,
 
 # --------------------------------------------------------------------
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.5E-2,
-           NUME_ORDRE = 4,       VALE = 35.63),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
-           NUME_ORDRE = 5,       VALE = 68.51),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
-           NUME_ORDRE = 6,       VALE = 109.62),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.3E-2,
-           NUME_ORDRE = 7,       VALE = 123.32),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 1.9E-2,
-           NUME_ORDRE = 8,       VALE = 142.51),
-   _F(   RESULTAT = MODE3, REFERENCE = 'ANALYTIQUE', PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 3.0E-2,
-           NUME_ORDRE = 9,       VALE = 197.32)) )
+TEST_RESU(RESU=(_F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=35.452556232,
+                   VALE_REFE=35.630000000000003,
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=67.796785303,
+                   VALE_REFE=68.510000000000005,
+                   CRITERE='RELATIF',
+                   PRECISION=0.010999999999999999,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=108.603127018,
+                   VALE_REFE=109.62,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=7,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=121.817577355,
+                   VALE_REFE=123.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.012999999999999999,),
+                _F(NUME_ORDRE=8,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=139.892573427,
+                   VALE_REFE=142.50999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.019,),
+                _F(NUME_ORDRE=9,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE3,
+                   VALE_CALC=191.517544407,
+                   VALE_REFE=197.31999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                ),
+          )
 
 # -------------------------------------------------------------------
 # ---- MODE DE MEBRANE SUR APPUIS ELASTIQUES
@@ -231,10 +297,14 @@ MODE4=MODE_ITER_SIMULT(  MATR_RIGI=MATR4,  MATR_MASS=MATM4,
 
 # --------------------------------------------------------------------
 
-TEST_RESU(
-   RESU=_F(   RESULTAT = MODE4,        PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.6E-2,
-           NUME_ORDRE = 1, REFERENCE = 'ANALYTIQUE', VALE = FREQ1)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODE4,
+                  VALE_CALC=0.147138778,
+                  VALE_REFE=0.14713879693881587,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,),
           )
 
 # --------------------------------------------------------------------

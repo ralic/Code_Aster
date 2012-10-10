@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS SOUS PRESSION ET CHARGEMENT THERMIQUE EQUIVALENT A L'AUTOFRETTAGE
 # hplp310b.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -448,49 +448,65 @@ GK3_C=CALC_G(   RESULTAT=CHAMDEP0,
 ## ----------------------------------------------------
 
 
-TEST_TABLE(       TABLE=GK0_P,
-                       NOM_PARA='K1',
-                           VALE=1.1482,
-                      PRECISION=0.02    )
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=1.128837234,
+           VALE_REFE=1.1482000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK0_P,)
 
-TEST_TABLE(       TABLE=GK1_P,
-                       NOM_PARA='K1',
-                           VALE=1.1482,
-                      PRECISION=0.02    )
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=1.128828568,
+           VALE_REFE=1.1482000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1_P,)
 
-TEST_TABLE(       TABLE=GK2_P,
-                       NOM_PARA='K1',
-                           VALE=1.1482,
-                      PRECISION=0.02    )
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=1.128855392,
+           VALE_REFE=1.1482000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2_P,)
 
-TEST_TABLE(       TABLE=GK3_P,
-                       NOM_PARA='K1',
-                           VALE=1.1482,
-                      PRECISION=0.02    )
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=1.128848829,
+           VALE_REFE=1.1482000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3_P,)
 
 ## IMPRESSION DES RESULTATS CHARGEMENT 2 SANS CONTACT
 ## ----------------------------------------------------
 
 
-TEST_TABLE(       TABLE=GK0_T,
-                       NOM_PARA='K1',
-                           VALE=-.412369,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC=-0.384783859,
+           VALE_REFE=-0.41236899999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK0_T,)
 
-TEST_TABLE(       TABLE=GK1_T,
-                       NOM_PARA='K1',
-                           VALE=-.412369,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC=-0.384780803,
+           VALE_REFE=-0.41236899999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1_T,)
 
-TEST_TABLE(       TABLE=GK2_T,
-                       NOM_PARA='K1',
-                           VALE=-.412369,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC=-0.384789923,
+           VALE_REFE=-0.41236899999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2_T,)
 
-TEST_TABLE(       TABLE=GK3_T,
-                       NOM_PARA='K1',
-                           VALE=-.412369,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC=-0.384787024,
+           VALE_REFE=-0.41236899999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3_T,)
 
 ## IMPRESSION DES RESULTATS CHARGEMENT CH3 AVEC CONTACT
 ## ----------------------------------------------------
@@ -503,291 +519,390 @@ IMPR_TABLE(       TABLE=GK3_C,)
 # ------------
 
 
-TEST_TABLE(       TABLE=G0_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=0.,
-                      CRITERE='ABSOLU',
-                      PRECISION=1.E-11   )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='G',
+           TABLE=G0_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(       TABLE=G1_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=0.,
-                      CRITERE='ABSOLU',
-                      PRECISION=1.E-11   )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='G',
+           TABLE=G1_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(       TABLE=G2_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=0.,
-                      CRITERE='ABSOLU',
-                      PRECISION=1.E-11   )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='G',
+           TABLE=G2_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(       TABLE=G3_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=0.,
-                      CRITERE='ABSOLU',
-                      PRECISION=1.E-11   )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='G',
+           TABLE=G3_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
 # ALPHA = 0.32
 # ------------
 
 
-TEST_TABLE(       TABLE=G0_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 2),
-                       NOM_PARA='G',
-                           VALE=0.,
-                      CRITERE='ABSOLU',
-                      PRECISION=1.E-11   )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='G',
+           TABLE=G0_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(       TABLE=G1_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 2),
-                       NOM_PARA='G',
-                           VALE=0.,
-                      CRITERE='ABSOLU',
-                      PRECISION=1.E-11   )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='G',
+           TABLE=G1_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(       TABLE=G2_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 2),
-                       NOM_PARA='G',
-                           VALE=0.,
-                      CRITERE='ABSOLU',
-                      PRECISION=1.E-11   )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='G',
+           TABLE=G2_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(       TABLE=G3_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 2),
-                       NOM_PARA='G',
-                           VALE=0.,
-                      CRITERE='ABSOLU',
-                      PRECISION=1.E-11   )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='G',
+           TABLE=G3_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
 # ALPHA = 0.33
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 3),
-                       NOM_PARA='K1',
-                           VALE=1.2075E-3,
-                      PRECISION=0.045    )
+TEST_TABLE(PRECISION=0.044999999999999998,
+           VALE_CALC= 1.25344244E-03,
+           VALE_REFE=1.2075E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK0_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(       TABLE=GK1_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 3),
-                       NOM_PARA='K1',
-                           VALE=1.2075E-3,
-                      PRECISION=0.045    )
+TEST_TABLE(PRECISION=0.044999999999999998,
+           VALE_CALC= 1.25351843E-03,
+           VALE_REFE=1.2075E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(       TABLE=GK2_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 3),
-                       NOM_PARA='K1',
-                           VALE=1.2075E-3,
-                      PRECISION=0.045    )
-
-
+TEST_TABLE(PRECISION=0.044999999999999998,
+           VALE_CALC= 1.25357213E-03,
+           VALE_REFE=1.2075E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
 
 # ALPHA = 0.335
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 4),
-                       NOM_PARA='K1',
-                           VALE=3.0187E-3,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 3.10472508E-03,
+           VALE_REFE=3.0187E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK0_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(       TABLE=GK1_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 4),
-                       NOM_PARA='K1',
-                           VALE=3.0187E-3,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 3.10479143E-03,
+           VALE_REFE=3.0187E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(       TABLE=GK2_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 4),
-                       NOM_PARA='K1',
-                           VALE=3.0187E-3,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 3.10488393E-03,
+           VALE_REFE=3.0187E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(       TABLE=GK3_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 4),
-                       NOM_PARA='K1',
-                           VALE=3.0187E-3,
-                      PRECISION=0.10   )
+TEST_TABLE(PRECISION=0.10000000000000001,
+           VALE_CALC= 2.79899919E-03,
+           VALE_REFE=3.0187E-3,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
 
 # ALPHA = 0.34
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 5),
-                       NOM_PARA='K1',
-                           VALE=5.4336E-3,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 5.45510761E-03,
+           VALE_REFE=5.4336000000000002E-3,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK0_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(       TABLE=GK1_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 5),
-                       NOM_PARA='K1',
-                           VALE=5.4336E-3,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 5.45515998E-03,
+           VALE_REFE=5.4336000000000002E-3,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(       TABLE=GK2_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 5),
-                       NOM_PARA='K1',
-                           VALE=5.4336E-3,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 5.45531035E-03,
+           VALE_REFE=5.4336000000000002E-3,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(       TABLE=GK3_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 5),
-                       NOM_PARA='K1',
-                           VALE=5.4336E-3,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 5.42282215E-03,
+           VALE_REFE=5.4336000000000002E-3,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
 # ALPHA = 0.345
 # -------------
 
 
-TEST_TABLE(       TABLE=GK0_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 6),
-                       NOM_PARA='K1',
-                           VALE=8.5865E-3,
-                      PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC= 8.26837245E-03,
+           VALE_REFE=8.5865000000000004E-3,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK0_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=6,),
+           )
 
-TEST_TABLE(       TABLE=GK1_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 6),
-                       NOM_PARA='K1',
-                           VALE=8.5865E-3,
-                      PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC= 8.26840677E-03,
+           VALE_REFE=8.5865000000000004E-3,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=6,),
+           )
 
-TEST_TABLE(       TABLE=GK2_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 6),
-                       NOM_PARA='K1',
-                           VALE=8.5865E-3,
-                      PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC= 8.26862518E-03,
+           VALE_REFE=8.5865000000000004E-3,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=6,),
+           )
 
-TEST_TABLE(       TABLE=GK3_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 6),
-                       NOM_PARA='K1',
-                           VALE=8.5865E-3,
-                      PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC= 8.26915509E-03,
+           VALE_REFE=8.5865000000000004E-3,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=6,),
+           )
 
 # ALPHA = 0.35
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 7),
-                       NOM_PARA='K1',
-                           VALE=1.2075E-2,
-                      PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=0.011618991,
+           VALE_REFE=0.012075000000000001,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK0_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=7,),
+           )
 
-TEST_TABLE(       TABLE=GK1_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 7),
-                       NOM_PARA='K1',
-                           VALE=1.2075E-2,
-                      PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=0.011619003,
+           VALE_REFE=0.012075000000000001,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=7,),
+           )
 
-TEST_TABLE(       TABLE=GK2_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 7),
-                       NOM_PARA='K1',
-                           VALE=1.2075E-2,
-                      PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=0.011619301,
+           VALE_REFE=0.012075000000000001,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=7,),
+           )
 
-TEST_TABLE(       TABLE=GK3_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 7),
-                       NOM_PARA='K1',
-                           VALE=1.2075E-2,
-                      PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=0.011619883,
+           VALE_REFE=0.012075000000000001,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=7,),
+           )
 
 # ALPHA = 0.36
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 8),
-                       NOM_PARA='K1',
-                           VALE=2.1757E-2,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.021597545,
+           VALE_REFE=0.021756999999999999,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK0_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=8,),
+           )
 
-TEST_TABLE(       TABLE=GK1_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 8),
-                       NOM_PARA='K1',
-                           VALE=2.1757E-2,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.021597482,
+           VALE_REFE=0.021756999999999999,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=8,),
+           )
 
-TEST_TABLE(       TABLE=GK2_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 8),
-                       NOM_PARA='K1',
-                           VALE=2.1757E-2,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.021598018,
+           VALE_REFE=0.021756999999999999,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=8,),
+           )
 
-TEST_TABLE(       TABLE=GK3_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 8),
-                       NOM_PARA='K1',
-                           VALE=2.1757E-2,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.021598554,
+           VALE_REFE=0.021756999999999999,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=8,),
+           )
 
 # ALPHA = 0.40
 # ------------
 
 
-TEST_TABLE(       TABLE=GK0_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 10),
-                       NOM_PARA='K1',
-                           VALE=6.6478E-2,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.066751035,
+           VALE_REFE=0.066477999999999995,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK0_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
+           )
 
-TEST_TABLE(       TABLE=GK1_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 10),
-                       NOM_PARA='K1',
-                           VALE=6.6478E-2,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.066750624,
+           VALE_REFE=0.066477999999999995,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
+           )
 
-TEST_TABLE(       TABLE=GK2_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 10),
-                       NOM_PARA='K1',
-                           VALE=6.6478E-2,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.066752233,
+           VALE_REFE=0.066477999999999995,
+           
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
+           )
 
-TEST_TABLE(       TABLE=GK3_C,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 10),
-                       NOM_PARA='K1',
-                           VALE=6.6478E-2,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.066752507,
+           VALE_REFE=0.066477999999999995,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
+           )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE EXTRACTION D UNE NAPPE D'ARMATURES REPRESENTEE PAR UNE MEMBRANE
 # ssns110a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,38 +176,44 @@ IMPR_TABLE(TABLE = TAB_DY);
 
 # Comparaison a une resolution 3D du meme probleme
 
-TEST_TABLE(TABLE     = TAB_DY,
-           NOM_PARA  = 'MOYENNE',
-           FILTRE    =_F(NOM_PARA = 'NUME_ORDRE',
-                         VALE_I   = 1),
-           VALE      = -140.36714E-6,
-           PRECISION = 2.E-2,
-           REFERENCE = 'AUTRE_ASTER',);
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC=-1.37996535E-04,
+           VALE_REFE=-1.4036714E-4,
+           NOM_PARA='MOYENNE',
+           TABLE=TAB_DY,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE     = TAB_DY,
-           NOM_PARA  = 'MOYENNE',
-           FILTRE    =_F(NOM_PARA = 'NUME_ORDRE',
-                         VALE_I   = 2),
-           VALE      = -318.45792E-6,
-           PRECISION = 2.E-2,
-           REFERENCE = 'AUTRE_ASTER',);
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC=-3.14931052E-04,
+           VALE_REFE=-3.1845791999999997E-4,
+           NOM_PARA='MOYENNE',
+           TABLE=TAB_DY,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
 # Tests de non-regression
 
-TEST_TABLE(TABLE     = TAB_DY,
-           NOM_PARA  = 'MOYENNE',
-           FILTRE    =_F(NOM_PARA = 'NUME_ORDRE',
-                         VALE_I   = 1),
-           VALE      = -137.99653E-6,
-           PRECISION = 1.E-6,
-           REFERENCE = 'NON_REGRESSION',);
+TEST_TABLE(
+           VALE_CALC=-1.3799653000000001E-4,
+           
+           NOM_PARA='MOYENNE',
+           TABLE=TAB_DY,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE     = TAB_DY,
-           NOM_PARA  = 'MOYENNE',
-           FILTRE    =_F(NOM_PARA = 'NUME_ORDRE',
-                         VALE_I   = 2),
-           VALE      = -314.93105E-6,
-           PRECISION = 1.E-6,
-           REFERENCE = 'NON_REGRESSION',);
+TEST_TABLE(
+           VALE_CALC=-3.1493104999999997E-4,
+           
+           NOM_PARA='MOYENNE',
+           TABLE=TAB_DY,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
 FIN();

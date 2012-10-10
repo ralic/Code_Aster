@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA COMMANDE PROD_MATR_CHAM (MATRICE REELLE)
 # zzzz315a.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,13 +63,32 @@ IMPR_CO(CONCEPT=_F(NOM=(SECM1,PRODUIT1)))
 # VALIDATION : on doit trouver les memes valeurs pour secm1 et produit1 sur les
 # ddls non contraints.
 # sur les ddls contraints, on ne peut pas retrouver le second membre
-TEST_RESU(CHAM_NO=(
-   _F(REFERENCE= 'NON_REGRESSION', CHAM_GD=SECM1,    NOEUD='N4',  NOM_CMP='DY',  VALE=2.0, PRECISION=1.E-7),
-   _F(REFERENCE= 'AUTRE_ASTER',    CHAM_GD=PRODUIT1, NOEUD='N4',  NOM_CMP='DY',  VALE=2.0, PRECISION=1.E-7),
-   _F(REFERENCE= 'NON_REGRESSION', CHAM_GD=SECM1,    NOEUD='N3',  NOM_CMP='DZ',  VALE=3.0, PRECISION=1.E-7),
-   _F(REFERENCE= 'AUTRE_ASTER',    CHAM_GD=PRODUIT1, NOEUD='N3',  NOM_CMP='DZ',  VALE=3.0, PRECISION=1.E-7),
-  ))
-
+TEST_RESU(CHAM_NO=(_F(NOEUD='N4',
+                      NOM_CMP='DY',
+                      CHAM_GD=SECM1,
+                      VALE_CALC=2.0,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N4',
+                      REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='DY',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=PRODUIT1,
+                      VALE_CALC=2.000000000,
+                      VALE_REFE=2.0,),
+                   _F(NOEUD='N3',
+                      NOM_CMP='DZ',
+                      CHAM_GD=SECM1,
+                      VALE_CALC=3.0,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N3',
+                      REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=PRODUIT1,
+                      VALE_CALC=3.000000000,
+                      VALE_REFE=3.0,),
+                   ),
+          )
 
 #------------------------------------------------------------------------------------------
 # 2. C.L. DUALISE :
@@ -100,11 +119,18 @@ SOLU2=RESOUDRE(MATR=FACTOR2, CHAM_NO=SECM2B)
 PRODUIT2=PROD_MATR_CHAM(MATR_ASSE=MATAS2, CHAM_NO=SOLU2,);
 
 # VALIDATION : on doit trouver la meme valeur pour secm2b et produit2 :
-TEST_RESU(OBJET=(
- _F( NOM='SECM2B             .VALE',  S_R=49.74 ,  REFERENCE='NON_REGRESSION' , PRECISION=1.E-7)))
-TEST_RESU(OBJET=(
- _F( NOM='PRODUIT2           .VALE',  S_R=49.74 ,  REFERENCE='AUTRE_ASTER' , PRECISION=1.E-7)))
+TEST_RESU(OBJET=_F(VALE_CALC=49.740000000000002,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   NOM='SECM2B             .VALE',
+                   ),
+          )
 
+TEST_RESU(OBJET=_F(VALE_CALC=49.740000000,
+                   VALE_REFE=49.740000000000002,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM='PRODUIT2           .VALE',
+                   PRECISION=9.9999999999999995E-08,),
+          )
 
 #------------------------------------------------------------------------------------------
 # 3. MELANGE C.L. DUALISE + C.L. ELIMINEE:
@@ -142,14 +168,43 @@ PRODUIT3=PROD_MATR_CHAM(MATR_ASSE=MATAS3, CHAM_NO=SOLU3,);
 
 # VALIDATION : on doit trouver les memes valeurs pour secm3b et produit3 sur les
 # ddls qui ne sont pas contraints par une charge cinematique
-TEST_RESU(CHAM_NO=(
-   _F(REFERENCE= 'NON_REGRESSION', CHAM_GD=SECM3B,   NOEUD='N1',  NOM_CMP='DY',  VALE=2.0, PRECISION=1.E-7),
-   _F(REFERENCE= 'AUTRE_ASTER',    CHAM_GD=PRODUIT3, NOEUD='N1',  NOM_CMP='DY',  VALE=2.0, PRECISION=1.E-7),
-   _F(REFERENCE= 'NON_REGRESSION', CHAM_GD=SECM3B,   NOEUD='N2',  NOM_CMP='DX',  VALE=1.0, PRECISION=1.E-7),
-   _F(REFERENCE= 'AUTRE_ASTER',    CHAM_GD=PRODUIT3, NOEUD='N2',  NOM_CMP='DX',  VALE=1.0, PRECISION=1.E-7),
-   _F(REFERENCE= 'NON_REGRESSION', CHAM_GD=SECM3B,   NOEUD='N4',  NOM_CMP='DZ',  VALE=3.0, PRECISION=1.E-7),
-   _F(REFERENCE= 'AUTRE_ASTER',    CHAM_GD=PRODUIT3, NOEUD='N4',  NOM_CMP='DZ',  VALE=3.0, PRECISION=1.E-7),
-  ))
-
+TEST_RESU(CHAM_NO=(_F(NOEUD='N1',
+                      NOM_CMP='DY',
+                      CHAM_GD=SECM3B,
+                      VALE_CALC=2.0,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N1',
+                      REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='DY',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=PRODUIT3,
+                      VALE_CALC=2.000000000,
+                      VALE_REFE=2.0,),
+                   _F(NOEUD='N2',
+                      NOM_CMP='DX',
+                      CHAM_GD=SECM3B,
+                      VALE_CALC=1.0,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N2',
+                      REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=PRODUIT3,
+                      VALE_CALC=1.000000000,
+                      VALE_REFE=1.0,),
+                   _F(NOEUD='N4',
+                      NOM_CMP='DZ',
+                      CHAM_GD=SECM3B,
+                      VALE_CALC=3.0,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N4',
+                      REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=PRODUIT3,
+                      VALE_CALC=3.000000000,
+                      VALE_REFE=3.0,),
+                   ),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #  -*- coding: iso-8859-1 -*-
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 # forma02d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -100,7 +100,6 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=5,),);
-
 
 #
 # ECRITURE DES MODES AU FORMAT MED
@@ -276,41 +275,39 @@ IMPR_RESU(MODELE=MODELE,
 
 # TEST_RESU UNIQUEMENT POUR FAIRE TEST
 
-TEST_RESU(RESU=(_F(RESULTAT=DYNATRA,
+TEST_RESU(RESU=(_F(GROUP_NO='BASE',
                    INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=DYNATRA,
                    NOM_CHAM='SIPO_NOEU',
                    NOM_CMP='SN',
-                   GROUP_NO='BASE',
-                   VALE=-4.8538255E+08,
-                   PRECISION=(0.005,1e-06,),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.5.5',),
-                _F(RESULTAT=DYNATRA,
+                   VALE_CALC=-4.85217817E+08,
+                   VALE_REFE=-4.85382550E8,
+                   TOLE_MACHINE=(0.05,1e-06,),
+                   PRECISION=0.05,
+                   ),
+                _F(GROUP_NO='BASE',
                    INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=DYNATRA,
                    NOM_CHAM='SIPO_NOEU',
                    NOM_CMP='SVY',
-                   GROUP_NO='BASE',
-                   VALE=2.26529763E+09,
-                   PRECISION=(0.05,1e-06,),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.5.5',),
-                _F(RESULTAT=DYNATRA,
+                   VALE_CALC= 2.25450723E+09,
+                   VALE_REFE=2.265297630E9,
+                   TOLE_MACHINE=(0.05,1e-06,),
+                   PRECISION=0.05,
+                   ),
+                _F(GROUP_NO='BASE',
                    INST=2.0,
+                   RESULTAT=DYNATRA,
                    NOM_CHAM='SIPO_NOEU',
                    NOM_CMP='SMFZ',
-                   GROUP_NO='BASE',
-                   VALE=-2.578787993E+10,
-                   PRECISION=(0.001,1e-06,),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.5.5',),),);
+                   VALE_CALC=-2.5787879930E10,
+                   TOLE_MACHINE=(0.001,1e-06,),
+                   ),
+                ),
+          )
 
 FIN();
 
 #
-
-
-
-
-
-
-

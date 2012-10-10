@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC VISC_DRUC_PRAG
 # wtnv138a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
@@ -292,49 +292,42 @@ U2=CALC_CHAMP(  reuse=U2,
 TFIN1 = 7000.
 TFIN2 = 13000.
 
-TEST_RESU(RESU=(
+TEST_RESU(RESU=(_F(INST=7000.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=-2.4529999999999999E-3,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=1.3000E4,
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.02632,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
 
-# DX
-                 _F(  RESULTAT   = U1,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '10.0.6',
-                      NOEUD      = 'NO8',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DX',
-                      INST       = TFIN1,
-                      PRECISION  = 1.E-3,
-                      VALE       = -2.453E-3),
-                 _F(  RESULTAT   = U2,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '10.0.6',
-                      NOEUD      = 'NO8',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DX',
-                      INST       = TFIN2,
-                      PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 2.632E-2),),)
-
-TEST_RESU(RESU=(
-
-# CONTRAINTE SIYY
-                 _F(  RESULTAT   = U1,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '10.0.6',
-                      NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIGM_NOEU',
-                      NOM_CMP    = 'SIYY',
-                      INST       = TFIN1,
-                      PRECISION  = 1.E-3,
-                      VALE       = -8.E6),
-                 _F(  RESULTAT   = U2,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '10.0.6',
-                      NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIGM_NOEU',
-                      NOM_CMP    = 'SIYY',
-                      INST       = TFIN2,
-                      PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -1.4280E7),),)
-
+TEST_RESU(RESU=(_F(INST=7000.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-8.E6,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=1.3000E4,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-1.4280000E7,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
 
 FIN()

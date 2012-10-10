@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 # sdll113b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -197,35 +197,43 @@ RESULT2=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
                           LIST_INST=LIST_R,
                           INTERPOL='LIN')
 #
-TEST_RESU( RESU=_F( RESULTAT = RESULT1,
-                  NOM_CHAM = 'DEPL',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
+TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = -9.54882E-07));
+                  RESULTAT=RESULT1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.54881749E-07,
+                  VALE_REFE=-9.5488200000000009E-07,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
+
 #
-TEST_RESU( RESU=_F( RESULTAT = RESULT1,
-                  NOM_CHAM = 'VITE',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
+TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = 1.22190E-03));
+                  RESULTAT=RESULT1,
+                  NOM_CHAM='VITE',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC= 1.22189642E-03,
+                  VALE_REFE=1.2218999999999999E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
+
 #
-TEST_RESU( RESU=_F( RESULTAT = RESULT1,
-                  NOM_CHAM = 'ACCE',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
+TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = -1.91712E+00));
+                  RESULTAT=RESULT1,
+                  NOM_CHAM='ACCE',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.917116291,
+                  VALE_REFE=-1.9171199999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 ########################################################################
 #          CALCUL PAR SOUS-STRUCTURATION DYNAMIQUE TRANSITOIRE         #
@@ -504,34 +512,41 @@ TRAN_SS2=REST_SOUS_STRUC(   RESU_GENE=TRANGENE,
                            SOUS_STRUC='COTE2')
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN_GLO,
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 12,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'NO12',
-                  NOM_CMP = 'DX',
-                  VALE = -9.54882E-07))
+TEST_RESU(RESU=_F(NUME_ORDRE=12,
+                  RESULTAT=TRAN_GLO,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO12',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.5488200000000009E-07,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN_GLO,
-                  NOM_CHAM = 'VITE',
-                  NUME_ORDRE = 12,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'NO12',
-                  NOM_CMP = 'DX',
-                  VALE = 1.22190E-03))
+TEST_RESU(RESU=_F(NUME_ORDRE=12,
+                  RESULTAT=TRAN_GLO,
+                  NOM_CHAM='VITE',
+                  NOEUD='NO12',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.2218999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN_GLO,
-                  NOM_CHAM = 'ACCE',
-                  NUME_ORDRE = 12,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'NO12',
-                  NOM_CMP = 'DX',
-                  VALE = -1.91712E+00))
+TEST_RESU(RESU=_F(NUME_ORDRE=12,
+                  RESULTAT=TRAN_GLO,
+                  NOM_CHAM='ACCE',
+                  NOEUD='NO12',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.9171199999999999,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
 #
 #####################################################################################
 #          VERIFICATION QUE LE CACUL DIRECT ET SSD DONNENT LE MEME RESULTAT         #
@@ -630,25 +645,37 @@ DIFF_A=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
                       _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
                       ),);
 #
-TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_D,
-                     CRITERE='ABSOLU',
-                     REFERENCE='AUTRE_ASTER', 
-                     PRECISION=1.E-15    ,
-                     TYPE_TEST='SOMM_ABS', 
-                     VALE=0.0 ),)
-#
-TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_V,
-                     CRITERE='ABSOLU',
+TEST_RESU(CHAM_NO=_F(CRITERE='ABSOLU',
                      REFERENCE='AUTRE_ASTER',
-                     PRECISION=1.E-12    ,
-                     TYPE_TEST='SOMM_ABS', 
-                     VALE=0.0 ),)
+                     PRECISION=1.0000000000000001E-15,
+                     TYPE_TEST='SOMM_ABS',
+                     CHAM_GD=DIFF_D,
+                     VALE_CALC= 4.501450719064572E-19,
+                     VALE_REFE=0.0,
+                     TOLE_MACHINE=1.0000000000000001E-15,),
+          )
+
 #
-TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_A,
-                     CRITERE='ABSOLU',
-                     REFERENCE='AUTRE_ASTER', 
-                     PRECISION=1.E-9    ,
-                     TYPE_TEST='SOMM_ABS', 
-                     VALE=0.0 ),)
+TEST_RESU(CHAM_NO=_F(CRITERE='ABSOLU',
+                     REFERENCE='AUTRE_ASTER',
+                     PRECISION=9.9999999999999998E-13,
+                     TYPE_TEST='SOMM_ABS',
+                     CHAM_GD=DIFF_V,
+                     VALE_CALC= 3.943378826601E-16,
+                     VALE_REFE=0.0,
+                     TOLE_MACHINE=9.9999999999999998E-13,),
+          )
+
+#
+TEST_RESU(CHAM_NO=_F(CRITERE='ABSOLU',
+                     REFERENCE='AUTRE_ASTER',
+                     PRECISION=1.0000000000000001E-09,
+                     TYPE_TEST='SOMM_ABS',
+                     CHAM_GD=DIFF_A,
+                     VALE_CALC= 1.733502231E-12,
+                     VALE_REFE=0.0,
+                     TOLE_MACHINE=1.0000000000000001E-09,),
+          )
+
 FIN()
 #

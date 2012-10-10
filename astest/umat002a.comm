@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE COMPORTEMENT UMAT 3D CHARGEMENT MULTIDIRECTIONNEL EN DEFORMATION CF COMP001x
 # umat002a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -235,14 +235,18 @@ for i in range(len(ch_param)):
 # TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
 
 TEST_TABLE(TABLE=R_SI[1],
-           NOM_PARA='VMIS_Pa_1',VALE=1.612E+09,
+           NOM_PARA='VMIS_Pa_1',
+           VALE_CALC=1.6120022281101E+09,
+           VALE_REFE=1.612E+09,
            FILTRE=_F(NOM_PARA='INST',VALE=6.0*t_0),
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_DEFINI',);
 
 TEST_TABLE(TABLE=R_SI[3],
-           NOM_PARA='SIXX_Pa_1',VALE=-1.848E+09,
+           NOM_PARA='SIXX_Pa_1',
+           VALE_CALC=-1.8475961538462E+09,
+           VALE_REFE=-1.848E+09,
            FILTRE=_F(NOM_PARA='INST',VALE=6.0*t_0),
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_DEFINI',);
 
 
 # Test de la matrice tangente sur le calcul le plus fin
@@ -279,7 +283,8 @@ DIFF_MAT=VERI_MATR_TANG()
 TEST_TABLE(TABLE=DIFF_MAT,
            NOM_PARA='MAT_DIFF',
            TYPE_TEST='MAX',
-           VALE=0.,
+           VALE_CALC=0.,
+           VALE_REFE=0.,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
            REFERENCE='ANALYTIQUE',);

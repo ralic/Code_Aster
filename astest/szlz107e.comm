@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE VARIABLE POUR
 # szlz107e.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -259,9 +259,9 @@ for i in range(2) :
 
         TEST_TABLE( TABLE=FATN[i],
                 NOM_PARA = NPAR[j],
-                VALE=RESU[j+ i*4],
+                VALE_CALC=RESU[j+ i*4],
                 CRITERE = CTEST[j],
-                PRECISION=1.0E-10                
+                TOLE_MACHINE=1.0E-10                
                 )
 
 FATNW = [None]*2
@@ -299,9 +299,9 @@ for i in range(2) :
 
         TEST_TABLE( TABLE=FATNW[i],
                 NOM_PARA = NPAR[j],
-                VALE=RESU[j+ i*4],
+                VALE_CALC=RESU[j+ i*4],
                 CRITERE = CTEST[j],
-                PRECISION=1.0E-10                
+                TOLE_MACHINE=1.0E-10                
                 )
                   
 ### FORMULE_VIE = WHOL_F,
@@ -343,9 +343,9 @@ for i in range(2) :
 
         TEST_TABLE( TABLE=FATNF[i],
                 NOM_PARA = NPAR[j],
-                VALE=RESUF[j+ i*4],
+                VALE_CALC=RESUF[j+ i*4],
                 CRITERE = CTEST[j],
-                PRECISION=1.0E-10                
+                TOLE_MACHINE=1.0E-10                
                 ) 
                 
 ## POUR RETROUVER LES CRITERES EN NOM                             
@@ -380,9 +380,9 @@ for i in range(2) :
 
         TEST_TABLE( TABLE=FATN[i+2],
                 NOM_PARA = NPAR[j],
-                VALE=RESU[j+ i*4],
+                VALE_CALC=RESU[j+ i*4],
                 CRITERE = CTEST[j],
-                PRECISION=1.0E-10                
+                TOLE_MACHINE=1.0E-10                
                 )                
                 
 
@@ -455,9 +455,9 @@ for j in range(4) :
 
     TEST_TABLE( TABLE=FATN2,
             NOM_PARA = NPAR[j],
-            VALE=RESU2[j],
+            VALE_CALC=RESU2[j],
             CRITERE = CTEST[j],
-            PRECISION=1.0E-10                
+            TOLE_MACHINE=1.0E-10                
             ) 
 
 # POUR FORMULE_VIE = MANCOF,                      
@@ -491,9 +491,9 @@ for j in range(4) :
 
     TEST_TABLE( TABLE=FATN2M,
             NOM_PARA = NPAR[j],
-            VALE=RESU2[j],
+            VALE_CALC=RESU2[j],
             CRITERE = CTEST[j],
-            PRECISION=1.0E-10                
+            TOLE_MACHINE=1.0E-10                
             )
 # POUR FORMULE_VIE = MANCO1,
 RESU2F = [(-4.3837114678908E-01,4.3837114678908E-01), 8.9879404629917E-01, 0, 0.61422410176668]                      
@@ -527,9 +527,9 @@ for j in range(4) :
 
     TEST_TABLE( TABLE=FATN2F,
             NOM_PARA = NPAR[j],
-            VALE=RESU2F[j],
+            VALE_CALC=RESU2F[j],
             CRITERE = CTEST[j],
-            PRECISION=1.0E-10                
+            TOLE_MACHINE=1.0E-10                
             )  
              
 ## POUR RETROUVER LES CRITERES EN NOM  
@@ -561,9 +561,9 @@ for j in range(4) :
 
     TEST_TABLE( TABLE=FATN2SF,
             NOM_PARA = NPAR[j],
-            VALE=RESU2[j],
+            VALE_CALC=RESU2[j],
             CRITERE = CTEST[j],
-            PRECISION=1.0E-10                
+            TOLE_MACHINE=1.0E-10                
             )
 
 ## POUR RETROUVER LES CRITERES EN NOM AVEC PROJECTION = DEUX_AXES  
@@ -594,9 +594,9 @@ for j in range(4) :
 
     TEST_TABLE( TABLE=FATN2SF2,
             NOM_PARA = NPAR[j],
-            VALE=RESU2[j],
+            VALE_CALC=RESU2[j],
             CRITERE = CTEST[j],
-            PRECISION=1.0E-10                
+            TOLE_MACHINE=1.0E-10                
             )                               
 FIN()
 #

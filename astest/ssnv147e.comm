@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION D UN BARREAU FRAGILE - PRED_ELAS - ENDO_ISOT_BETON
 # ssnv147e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,31 +152,31 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
 
 TABLE = RECU_TABLE(CO=REPONSE, NOM_PARA='ETA_PILOTAGE')
 
-TEST_RESU(RESU=(  _F(
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 19,
-               GROUP_NO = 'E',
-               REFERENCE = 'NON_REGRESSION',
-               NOM_CHAM = 'DEPL',
-               NOM_CMP = 'DZ',
-               VALE = 9.25E-05), _F(
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 19,
-               MAILLE = 'M1',
-               POINT = 1,
-               REFERENCE = 'NON_REGRESSION',
-               NOM_CHAM = 'SIEF_ELGA',
-               NOM_CMP = 'SIZZ',
-               VALE = 0.5), _F(
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 19,
-               MAILLE = 'M1',
-               POINT = 1,
-               REFERENCE = 'NON_REGRESSION',
-               NOM_CHAM = 'VARI_ELGA',
-               NOM_CMP = 'V1',
-               VALE = 9.E-01))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=19,
+                   GROUP_NO='E',
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=9.2499999999999999E-05,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=19,
+                   POINT=1,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=0.5,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=19,
+                   POINT=1,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.90000000000000002,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                ),
+          )
 
 FIN()
 #

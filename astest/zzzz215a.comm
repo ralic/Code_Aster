@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHAINAGE 3D CODE_SATURNE CODE_ASTER
 # zzzz215a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -137,32 +137,35 @@ RESU=STAT_NON_LINE(MODELE=MOSOLIDE,
                    INCREMENT=_F(LIST_INST=L_INST,),
                    );
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   INST=1.,
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   REFERENCE='NON_REGRESSION',
-                   MAILLE='M81',NOEUD='N134',NOM_CMP='DX',
-                   VALE=-4.03149E+01,
-                   PRECISION=1.E-6,
-                   VERSION='8.02.12',),
-                _F(RESULTAT=RESU,
-                   INST=1.,
+                   NOEUD='N134',
+                   NOM_CMP='DX',
+                   VALE_CALC=-40.314900000000002,
+                   
+                   MAILLE='M81',
+                   ),
+                _F(INST=1.0,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   REFERENCE='NON_REGRESSION',
-                   MAILLE='M81',NOEUD='N134',NOM_CMP='DY',
-                   VALE=-6.81884E+01,
-                   PRECISION=1.E-6,
-                   VERSION='8.02.12',),
-                _F(RESULTAT=RESU,
-                   INST=1.,
+                   NOEUD='N134',
+                   NOM_CMP='DY',
+                   VALE_CALC=-68.188400000000001,
+                   
+                   MAILLE='M81',
+                   ),
+                _F(INST=1.0,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   REFERENCE='NON_REGRESSION',
-                   MAILLE='M81',NOEUD='N134',NOM_CMP='DZ',
-                   VALE=3.02618E+01,
-                   PRECISION=1.E-6,
-                   VERSION='8.02.12',)
-                   ))
-
+                   NOEUD='N134',
+                   NOM_CMP='DZ',
+                   VALE_CALC=30.261800000000001,
+                   
+                   MAILLE='M81',
+                   ),
+                ),
+          )
 
 #IMPR_RESU(FORMAT='GMSH',
 #          UNITE=99,

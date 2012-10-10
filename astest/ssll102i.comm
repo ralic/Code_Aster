@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102i.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,62 +110,75 @@ MEST1=CALC_CHAMP( reuse=MEST1,
                            FORCE=('FORC_NODA','REAC_NODA'),CONTRAINTE='EFGE_NOEU'
                    )
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    GROUP_NO = 'P7',
-                    NOM_CMP = 'DY',
-                    REFERENCE='ANALYTIQUE',VALE=0.0093888,
-                    PRECISION = 0.006,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P7',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC= 9.44033108E-03,
+                  VALE_REFE=9.3887999999999992E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,),
           )
 
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_NOEU',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'VY',
-                    GROUP_NO = 'P1',
-                    REFERENCE='ANALYTIQUE',VALE=6000.,
-                    PRECISION = 0.002,
-                    CRITERE = 'RELATIF')
-          )
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'REAC_NODA',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'DY',
-                    GROUP_NO = 'P1',
-                    REFERENCE='ANALYTIQUE',VALE=-6000.,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='VY',
+                  VALE_CALC= 6.00764159E+03,
+                  VALE_REFE=6000.0,
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
           )
 
-#
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_NOEU',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'VY',
-                    GROUP_NO='P11',
-                    REFERENCE='ANALYTIQUE',VALE=-12000.,
-                    CRITERE = 'RELATIF')
-          )
-
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'REAC_NODA',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'DY',
-                    GROUP_NO='P11',
-                    REFERENCE='ANALYTIQUE',VALE=-12000.,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.99999999E+03,
+                  VALE_REFE=-6000.0,
+                  CRITERE='RELATIF',),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_NOEU',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'MFZ',
-                    GROUP_NO='P8',
-                    REFERENCE='ANALYTIQUE',VALE=-13856.41,
-                    PRECISION = 0.002,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P11',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='VY',
+                  VALE_CALC=-1.19949387E+04,
+                  VALE_REFE=-1.2000E4,
+                  CRITERE='RELATIF',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P11',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.20000000E+04,
+                  VALE_REFE=-1.2000E4,
+                  CRITERE='RELATIF',),
+          )
+
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=-1.38800780E+04,
+                  VALE_REFE=-1.385641E4,
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
           )
 
 #
@@ -182,63 +195,77 @@ MEST1B=CALC_CHAMP( reuse=MEST1B,
                          RESULTAT=MEST1B,
                            FORCE=('FORC_NODA','REAC_NODA'),CONTRAINTE='EFGE_NOEU'
                    )
-TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 1,
-                    GROUP_NO = 'P7',
-                    NOM_CMP = 'DY',
-                    REFERENCE='ANALYTIQUE',VALE=0.0093888,
-                    PRECISION = 0.006,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P7',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC= 9.44033108E-03,
+                  VALE_REFE=9.3887999999999992E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,),
           )
 
-TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
-                    NOM_CHAM = 'EFGE_NOEU',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'VY',
-                    GROUP_NO = 'P1',
-                    REFERENCE='ANALYTIQUE',VALE=6000.,
-                    PRECISION = 0.002,
-                    CRITERE = 'RELATIF')
-          )
-TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
-                    NOM_CHAM = 'REAC_NODA',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'DY',
-                    GROUP_NO = 'P1',
-                    REFERENCE='ANALYTIQUE',VALE=-6000.,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='VY',
+                  VALE_CALC= 6.00764159E+03,
+                  VALE_REFE=6000.0,
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
           )
 
-#
-TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
-                    NOM_CHAM = 'EFGE_NOEU',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'VY',
-                    GROUP_NO='P11',
-                    REFERENCE='ANALYTIQUE',VALE=-12000.,
-                    CRITERE = 'RELATIF')
-          )
-
-TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
-                    NOM_CHAM = 'REAC_NODA',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'DY',
-                    GROUP_NO='P11',
-                    REFERENCE='ANALYTIQUE',VALE=-12000.,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.99999999E+03,
+                  VALE_REFE=-6000.0,
+                  CRITERE='RELATIF',),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
-                    NOM_CHAM = 'EFGE_NOEU',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'MFZ',
-                    GROUP_NO='P8',
-                    REFERENCE='ANALYTIQUE',VALE=-13856.41,
-                    PRECISION = 0.002,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P11',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='VY',
+                  VALE_CALC=-1.19949387E+04,
+                  VALE_REFE=-1.2000E4,
+                  CRITERE='RELATIF',),
           )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P11',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.20000000E+04,
+                  VALE_REFE=-1.2000E4,
+                  CRITERE='RELATIF',),
+          )
+
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST1B,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=-1.38800780E+04,
+                  VALE_REFE=-1.385641E4,
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
+
 # test de ANGLE
 
 IY=2.70098E-05
@@ -261,27 +288,31 @@ SITU90=POST_CHAMP(RESULTAT=MEST1B,
                                 NIVE_COUCHE='SUP',
                                 ANGLE=90,),);
 # la maille la plus proche de L/SQRT(3)
-TEST_RESU(   RESU=_F( RESULTAT = SITU90,
-                    NOM_CHAM = 'SIGM_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'SIXX',
-                    MAILLE='M12',
-                    GROUP_NO='P8',
-                    REFERENCE='ANALYTIQUE',VALE=SIMAX,
-                    PRECISION = 0.01,
-                    CRITERE = 'RELATIF')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU90,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-4.90169180E+07,
+                  VALE_REFE=-4.8736345696747109E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='M12',),
+          )
 
-TEST_RESU(   RESU=_F( RESULTAT = SITU90,
-                    NOM_CHAM = 'SIGM_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'SIXX',
-                    MAILLE='M11',
-                    GROUP_NO='P8',
-                    REFERENCE='ANALYTIQUE',VALE=SIMAX,
-                    PRECISION = 0.01,
-                    CRITERE = 'RELATIF')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU90,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-4.90623803E+07,
+                  VALE_REFE=-4.8736345696747109E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='M11',),
+          )
 
 SITU89=POST_CHAMP(RESULTAT=MEST1B,
 
@@ -290,16 +321,18 @@ SITU89=POST_CHAMP(RESULTAT=MEST1B,
                                 NIVE_COUCHE='SUP',
                                 ANGLE=89,),);
 # la maille la plus proche de L/SQRT(3)
-TEST_RESU(   RESU=_F( RESULTAT = SITU89,
-                    NOM_CHAM = 'SIGM_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'SIXX',
-                    MAILLE='M12',
-                    GROUP_NO='P8',
-                    REFERENCE='ANALYTIQUE',VALE=SIMAX,
-                    PRECISION = 0.01,
-                    CRITERE = 'RELATIF')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU89,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-4.89331983E+07,
+                  VALE_REFE=-4.8736345696747109E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='M12',),
+          )
 
 SITU91=POST_CHAMP(RESULTAT=MEST1B,
 
@@ -308,17 +341,18 @@ SITU91=POST_CHAMP(RESULTAT=MEST1B,
                                 NIVE_COUCHE='SUP',
                                 ANGLE=91,),);
 # la maille la plus proche de L/SQRT(3)
-TEST_RESU(   RESU=_F( RESULTAT = SITU91,
-                    NOM_CHAM = 'SIGM_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'SIXX',
-                    MAILLE='M12',
-                    GROUP_NO='P8',
-                    REFERENCE='ANALYTIQUE',VALE=SIMAX,
-                    PRECISION = 0.01,
-                    CRITERE = 'RELATIF')
-                    )
-
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU91,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-4.89331983E+07,
+                  VALE_REFE=-4.8736345696747109E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='M12',),
+          )
 
 SITU0=POST_CHAMP(RESULTAT=MEST1B,
 
@@ -327,16 +361,18 @@ SITU0=POST_CHAMP(RESULTAT=MEST1B,
                                NIVE_COUCHE='SUP',
                                ANGLE=360,),);
 # la maille la plus proche de L/SQRT(3)
-TEST_RESU(   RESU=_F( RESULTAT = SITU0,
-                    NOM_CHAM = 'SIGM_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'SIXX',
-                    MAILLE='M12',
-                    GROUP_NO='P8',
-                    REFERENCE='ANALYTIQUE',VALE=0.,
-                    PRECISION = 0.01,
-                    CRITERE = 'ABSOLU')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P8',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=SITU0,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-1.35852902E-05,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-2,
+                  MAILLE='M12',),
+          )
 
 FIN( )
 #

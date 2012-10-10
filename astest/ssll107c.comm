@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE POST_ELEM MOT CLE FACTEUR CARA_GEOM
 # ssll107c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -44,125 +44,163 @@ TCARS=POST_ELEM(          MODELE=MO,
                                       SYME_Y = 'OUI')
                     )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='A_M',
-                    VALE=9.00000E-05       )
+TEST_TABLE(VALE_CALC=9.0000000000000006E-05,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='A_M',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='CDG_Y_M',
-                    VALE=6.77777E-03     )
+TEST_TABLE(VALE_CALC=6.7777699999999998E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Y_M',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='CDG_Z_M',
-                    VALE=1.69444E-02     )
+TEST_TABLE(VALE_CALC=0.016944399999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Z_M',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IY_G_M',
-                    VALE=4.90972E-09     )
+TEST_TABLE(VALE_CALC=4.9097199999999999E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_G_M',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IZ_G_M',
-                    VALE=7.85556E-10     )
+TEST_TABLE(VALE_CALC=7.8555599999999999E-10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_G_M',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IYZ_G_M',
-                    VALE=-1.11111E-09    )
+TEST_TABLE(VALE_CALC=-1.1111099999999999E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IYZ_G_M',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
 #
 # --- VALEURS DE REFERENCE: OPERATEUR AFFE_CARA_ELEM
 #
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='A',
-                    VALE=3.60000E-04     )
+TEST_TABLE(VALE_CALC=3.6000000000000002E-4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='A',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='CDG_Y',
-                 CRITERE='ABSOLU',
-                     VALE=0.             )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Y',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='CDG_Z',
-                 CRITERE='ABSOLU',
-                     VALE=0.             )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Z',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IY_G',
-                    VALE=1.23000E-07     )
+TEST_TABLE(VALE_CALC=1.23E-07,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_G',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IZ_G',
-                    VALE=1.96800E-08     )
+TEST_TABLE(VALE_CALC=1.9680000000000002E-08,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_G',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IY',
-                    VALE=1.96800E-08     )
+TEST_TABLE(VALE_CALC=1.9680000000000002E-08,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IZ',
-                    VALE=1.23000E-07     )
+TEST_TABLE(VALE_CALC=1.23E-07,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='ALPHA',
-                     VALE=90.            )
+TEST_TABLE(VALE_CALC=90.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ALPHA',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='Y_MIN',
-                   VALE=-2.50000E-02     )
+TEST_TABLE(VALE_CALC=-0.025000000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='Y_MIN',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='Y_MAX',
-                    VALE=2.50000E-02     )
+TEST_TABLE(VALE_CALC=0.025000000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='Y_MAX',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='Z_MIN',
-                   VALE=-1.0000E-02     )
+TEST_TABLE(VALE_CALC=-1.E-2,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='Z_MIN',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='Z_MAX',
-                    VALE=1.00000E-02     )
+TEST_TABLE(VALE_CALC=1.E-2,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='Z_MAX',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='R_MAX',
-                    VALE=2.6926E-02      )
+TEST_TABLE(VALE_CALC=0.026925999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='R_MAX',
+           TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
 TCARA=POST_ELEM(          MODELE=MO,
                           CHAM_MATER=CHMAT,CARA_GEOM=(
@@ -171,65 +209,85 @@ TCARA=POST_ELEM(          MODELE=MO,
                                     _F(  GROUP_MA = 'SURF1'))
                     )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='A',
-                    VALE=9.00000E-05     )
+TEST_TABLE(VALE_CALC=9.0000000000000006E-05,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='A',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='CDG_Y',
-                    VALE=6.77777E-03     )
+TEST_TABLE(VALE_CALC=6.7777699999999998E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Y',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='CDG_Z',
-                    VALE=1.69444E-02     )
+TEST_TABLE(VALE_CALC=0.016944399999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Z',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IY_G',
-                    VALE=4.90972E-09     )
+TEST_TABLE(VALE_CALC=4.9097199999999999E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_G',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IZ_G',
-                    VALE=7.85556E-10     )
+TEST_TABLE(VALE_CALC=7.8555599999999999E-10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_G',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IYZ_G',
-                    VALE=-1.11111E-09    )
+TEST_TABLE(VALE_CALC=-1.1111099999999999E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IYZ_G',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'SURF1'),
-                NOM_PARA='IY',
-                     VALE=5.05256E-10   )
+TEST_TABLE(VALE_CALC=5.0525600000000004E-10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='SURF1',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'SURF1'),
-                NOM_PARA='IZ',
-                     VALE=5.19002E-09   )
+TEST_TABLE(VALE_CALC=5.1900200000000002E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='SURF1',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'SURF1'),
-                NOM_PARA='ALPHA',
-                     VALE=1.041585E+02   )
+TEST_TABLE(VALE_CALC=104.1585,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ALPHA',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='SURF1',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'M5'),
-                NOM_PARA='A',
-                    VALE=2.25000E-05     )
+TEST_TABLE(VALE_CALC=2.2500000000000001E-05,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='A',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='M5',),
+           )
 
 TMASS=POST_ELEM(          MODELE=MO,
                           CHAM_MATER=CHMAT,MASS_INER=(
@@ -238,71 +296,93 @@ TMASS=POST_ELEM(          MODELE=MO,
                                     _F(  GROUP_MA = 'SURF1'))
                     )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='MASSE',
-                    VALE=9.00000E-05     )
+TEST_TABLE(VALE_CALC=9.0000000000000006E-05,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MASSE',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='CDG_X',
-                    VALE=6.77777E-03     )
+TEST_TABLE(VALE_CALC=6.7777699999999998E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_X',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='CDG_Y',
-                    VALE=1.69444E-02     )
+TEST_TABLE(VALE_CALC=0.016944399999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Y',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IX_G',
-                    VALE=4.90972E-09     )
+TEST_TABLE(VALE_CALC=4.9097199999999999E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IX_G',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IY_G',
-                    VALE=7.85556E-10     )
+TEST_TABLE(VALE_CALC=7.8555599999999999E-10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_G',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IZ_G',
-                    VALE=5.69527E-09     )
+TEST_TABLE(VALE_CALC=5.6952699999999999E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_G',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'MA'),
-                NOM_PARA='IXY_G',
-                    VALE=-1.11111E-09    )
+TEST_TABLE(VALE_CALC=-1.1111099999999999E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IXY_G',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'SURF1'),
-                NOM_PARA='IX_PRIN_G',
-                     VALE=5.05256E-10   )
+TEST_TABLE(VALE_CALC=5.0525600000000004E-10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IX_PRIN_G',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='SURF1',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'SURF1'),
-                NOM_PARA='IY_PRIN_G',
-                     VALE=5.19002E-09   )
+TEST_TABLE(VALE_CALC=5.1900200000000002E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_PRIN_G',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='SURF1',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'SURF1'),
-                NOM_PARA='IZ_PRIN_G',
-                     VALE=5.69527E-09   )
+TEST_TABLE(VALE_CALC=5.6952699999999999E-09,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_PRIN_G',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='SURF1',),
+           )
 
-TEST_TABLE(     TABLE=TMASS,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = 'SURF1'),
-                NOM_PARA='ALPHA',
-                     VALE=1.041585E+02   )
+TEST_TABLE(VALE_CALC=104.1585,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ALPHA',
+           TABLE=TMASS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='SURF1',),
+           )
 
 FIN( )
 #

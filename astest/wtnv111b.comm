@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST THM_D_PLAN_DPQ8, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 # wtnv111b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,26 +161,28 @@ MESTAT=STAT_NON_LINE(   MODELE=MODELE,
                                      RESI_GLOB_RELA = 1.E-6),
                         )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'TEMP',
-             NOEUD = 'N1',
-             VALE = 0.,
-             CRITERE = 'ABSOLU',
-             PRECISION = 1.E-6)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MESTAT,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.0,
+                  
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'TEMP',
-             NOEUD = 'N3',
-             VALE = 2.94118E-01,
-             CRITERE = 'RELATIF',
-             PRECISION = 1.E-2)
-           )
-
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MESTAT,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.294091352,
+                  VALE_REFE=0.29411799999999999,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FONCTIONNALITES PYTHON ET FORTRAN : COMPILATION DES CATALOGUES D'ELEMENTS ET CREATION DE LA BASE JEVEUX elem.1
 # zzzz281a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,12 +82,13 @@ is_ok = int( osp.exists('elem.1') )
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                        _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
 
-TEST_TABLE(TABLE=TAB1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB1,
            FILTRE=_F(NOM_PARA='TEST',
                      VALE_K='VALEUR  ',),
-                     NOM_PARA='BOOLEEN',
-                     VALE_I=1,
-                     REFERENCE='ANALYTIQUE',)
+           )
 
 FIN()
-

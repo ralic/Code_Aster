@@ -1,4 +1,4 @@
-# MODIF  DATE 17/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ONDE DE COMPRESSION DANS UNE COLONNE POROELASTIQUE
 # wdnp102a.para = tps_job 100 mem_job 1280Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -340,28 +340,27 @@ DYNV56=RECU_FONCTION(RESULTAT=DYNB,
                     NOM_CHAM='VITE',
                     NOM_CMP='DY');
 
-TEST_FONCTION(VALEUR=(_F(
-                   FONCTION = DYNV56,
-                   VALE_PARA = 6.2E-02,
-                   VALE_REFE = 0.08575917,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = DYNV56,
-                   VALE_PARA = 1.0E-01,
-                   VALE_REFE = -0.08522978,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = DYNV56,
-                   VALE_PARA = 1.8E-01,
-                   VALE_REFE = 0.,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-5,
-                   REFERENCE = 'ANALYTIQUE'),
-                ));
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.085759169999999996,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.062,
+                         FONCTION=DYNV56,
+                         ),
+                      _F(VALE_CALC=-0.085229780000000005,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=DYNV56,
+                         ),
+                      _F(VALE_CALC=-3.54248783191e-06,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.17999999999999999,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=DYNV56,),
+                      ),
+              )
 
 # TEST DE LA PRESSION HYDRAULIQUE
 
@@ -370,27 +369,25 @@ DYNP56=RECU_FONCTION(RESULTAT=DYNB,
                     NOM_CHAM='DEPL',
                     NOM_CMP='PRE1');
 
-TEST_FONCTION(VALEUR=(_F(
-                   FONCTION = DYNP56,
-                   VALE_PARA = 6.2E-02,
-                   VALE_REFE = 219.5247,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = DYNP56,
-                   VALE_PARA = 1.0E-01,
-                   VALE_REFE = 219.05956,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = DYNP56,
-                   VALE_PARA = 1.8E-01,
-                   VALE_REFE = 149.44342,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                ));
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=219.5247,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.062,
+                         FONCTION=DYNP56,
+                         ),
+                      _F(VALE_CALC=219.05956,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=DYNP56,
+                         ),
+                      _F(VALE_CALC=149.44342,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.17999999999999999,
+                         FONCTION=DYNP56,
+                         ),
+                      ),
+              )
 
 FIN();

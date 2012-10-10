@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 # ssnv504c.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -198,25 +198,25 @@ IMPR_RESU(MODELE=MO,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
-TEST_RESU(RESU=(_F(RESULTAT=U,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='K',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
+                   VALE_CALC=5.000000000,
+                   VALE_REFE=5.0,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=28,
                    GROUP_NO='K',
-                   VALE=5.0,
-                   PRECISION=1.E-3,
-                   REFERENCE='ANALYTIQUE',),
-
-                _F(RESULTAT=U,
-                   NUME_ORDRE=28,
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   GROUP_NO='K',
-                   VALE=144.22400000000001,
-                   PRECISION=1.E-3,
-                   VERSION = '8.0.6',
-                   REFERENCE='NON_REGRESSION',),
-),);
+                   VALE_CALC=144.22400000000002,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
 
 FIN();
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION REAC_PRECOND (ERREUR)
 # erreu11a.para = tps_job 60 mem_job 1000Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,9 +106,11 @@ TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  '),
                        _F(PARA='BOOLEEN',LISTE_I=is_ok)))
 
 TEST_TABLE(TABLE=TAB1,
-           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  '),
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  '),
            NOM_PARA='BOOLEEN',
-           VALE_I=1,
+           VALE_REFE_I=1,
+           VALE_CALC_I=1,
            REFERENCE='ANALYTIQUE')
 
 FIN();

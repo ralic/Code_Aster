@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -234,36 +234,31 @@ RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
 #                COMPARAISON SOURCE EXTRENE
 # --------------------------------------------------------------------
 
-TEST_RESU(
-            RESU=_F(
-                  RESULTAT = RESU,
-                  NUME_ORDRE = 1,
-                  REFERENCE = 'SOURCE_EXTERNE',
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'PA4',
-                  NOM_CMP = 'DY',
-                  VALE = -0.81,
-                  PRECISION = 4.0E-2,
-                  CRITERE = 'RELATIF')
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='PA4',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.841258704,
+                  VALE_REFE=-0.81000000000000005,
+                  CRITERE='RELATIF',
+                  PRECISION=0.040000000000000001,),
+          )
 
 # --------------------------------------------------------------------
 #                NON REGRESSION
 # --------------------------------------------------------------------
 
-TEST_RESU(
-            RESU=_F(
-                  RESULTAT = RESU,
-                  NUME_ORDRE = 1,
-                  REFERENCE = 'NON_REGRESSION',
-                  VERSION   = '9.4.1',
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'PA4',
-                  NOM_CMP = 'DY',
-                  VALE = -8.4125870375171E-01,
-                  PRECISION = 1.0E-10,
-                  CRITERE = 'RELATIF')
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='PA4',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.84125870375170997,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 # --------------------------------------------------------------------
@@ -286,25 +281,23 @@ REACENC=POST_RELEVE_T(
 
 #
 
-TEST_TABLE(    TABLE=REACENC,
-               NOM_PARA='DY',
-               REFERENCE='SOURCE_EXTERNE',
-               VALE=17229.58,
-               PRECISION=1.6E-2,
-               CRITERE='RELATIF' )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.016,
+           VALE_CALC= 1.74965941E+04,
+           VALE_REFE=1.7229580000000002E4,
+           NOM_PARA='DY',
+           TABLE=REACENC,)
 
 # --------------------------------------------------------------------
 #                NON REGRESSION
 # --------------------------------------------------------------------
 
-TEST_TABLE(     TABLE=REACENC,
-                NOM_PARA='DY',
-                REFERENCE='NON_REGRESSION',
-                VERSION = '9.4.1',
-                VALE=1.7496594129268E+04,
-                PRECISION=1.E-10,
-                CRITERE='RELATIF' )
-
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=1.7496594129268E4,
+           NOM_PARA='DY',
+           TABLE=REACENC,
+           )
 
 #
 # --------------------------------------------------------------------
@@ -339,29 +332,23 @@ TAB_VC3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 IMPR_TABLE(TABLE=TAB_VC3);
 
-TEST_TABLE(TABLE=TAB_VC3,
-           FILTRE=(
-                    _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),),
-           TYPE_TEST = 'MIN',
-           NOM_PARA  = 'JEU',
-           PRECISION = 1.E-8,
-           VALE      = -1.7485414747862,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '10.2.14',
-           );
+TEST_TABLE(
+           VALE_CALC=-1.7485414747862,
+           NOM_PARA='JEU',
+           TYPE_TEST='MIN',
+           TABLE=TAB_VC3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=TAB_VC3,
-           FILTRE=(
-                    _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),),
-           TYPE_TEST = 'MAX',
-           NOM_PARA  = 'JEU',
-           PRECISION = 1.E-8,
-           VALE      = 3.2799451080147,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '10.2.14',
-           );
+TEST_TABLE(
+           VALE_CALC=3.2799451080147,
+           NOM_PARA='JEU',
+           TYPE_TEST='MAX',
+           TABLE=TAB_VC3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
 FIN()
 #

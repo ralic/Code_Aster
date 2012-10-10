@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,27 +110,32 @@ IMPR_TABLE(TABLE=TABK)
 
 Kpt3 = 2.33861E+05
 
-TEST_TABLE(TABLE=TABK,
-           FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=3),
+TEST_TABLE(
+           VALE_CALC=2.33861E5,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.1.16',
-           VALE=Kpt3)
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=3,),
+           )
 
 # on verifie que l'on trouve la meme valeur pour les points 1 et 2
-TEST_TABLE(TABLE=TABK,
-           FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 2.33861404E+05,
+           VALE_REFE=2.33861E5,
            NOM_PARA='K1',
-           REFERENCE='AUTRE_ASTER',
-           VALE=Kpt3)
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=TABK,
-           FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=2),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 2.33861404E+05,
+           VALE_REFE=2.33861E5,
            NOM_PARA='K1',
-           REFERENCE='AUTRE_ASTER',
-           VALE=Kpt3)
-                     
-         
-                     
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=2,),
+           )
+
 FIN();
-

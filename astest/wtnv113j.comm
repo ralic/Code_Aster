@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST THMS 3D, MODELISATION THMC=LIQU_SATU
 # wtnv113j.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -255,60 +255,66 @@ RESU0=STAT_NON_LINE(   MODELE=MODELE,
                    ),)
 
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 8,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',
-             VALE = -65.,
-             CRITERE = 'RELATIF',
-             PRECISION = 2.E-2,
-             REFERENCE='NON_REGRESSION',)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-65.592233039,
+                  VALE_REFE=-65.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 8,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',
-             VALE = 65.,
-             CRITERE = 'RELATIF',
-             PRECISION = 2.E-2,
-             REFERENCE='NON_REGRESSION',)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO20',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=65.592217098,
+                  VALE_REFE=65.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 16,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',
-             VALE = -5.E3,
-             CRITERE = 'RELATIF',
-             PRECISION = 1.E-2,
-             REFERENCE='NON_REGRESSION',)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=16,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-5.00004693E+03,
+                  VALE_REFE=-5000.0,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 16,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',
-             VALE = 5.E3,
-             CRITERE = 'RELATIF',
-             PRECISION = 1.E-2,
-             REFERENCE='NON_REGRESSION',)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=16,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO20',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 4.99995270E+03,
+                  VALE_REFE=5000.0,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 16,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',
-             VALE = 5.E3,
-             CRITERE = 'RELATIF',
-             PRECISION = 1.E-1,
-             REFERENCE='AUTRE_ASTER',)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=16,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO20',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 4.99995270E+03,
+                  VALE_REFE=5000.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.10000000000000001,),
+          )
+
 ####
 
 TAB_OBS=RECU_TABLE(CO=RESU0,
@@ -318,121 +324,113 @@ IMPR_TABLE(TABLE=TAB_OBS,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=16,),);
 
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(_F(NOM_PARA='NOM_CHAM',
-                      CRIT_COMP='EQ',
+TEST_TABLE(
+           VALE_CALC=2886.7983561532001,
+           NOM_PARA='VALE',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CHAM',
                       VALE_K='SIEF_ELGA',),
-                   _F(NOM_PARA='EVAL_CHAM',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='EVAL_CHAM',
                       VALE_K='MIN',),
-                   _F(NOM_PARA='NOM_CMP',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CMP',
                       VALE_K='SIP',),
-                   _F(NOM_PARA='POINT',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='POINT',
                       VALE_I=1,),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,),
+                      VALE_I=16,),
                    ),
-           NOM_PARA='VALE',
-           VALE=2886.7983561532,
-           PRECISION = 1E-8,
-           REFERENCE='NON_REGRESSION',);
+           )
 
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(_F(NOM_PARA='NOM_CHAM',
-                      CRIT_COMP='EQ',
+TEST_TABLE(
+           VALE_CALC=-4999.9526983562,
+           NOM_PARA='VALE',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CHAM',
                       VALE_K='SIEF_ELGA',),
-                   _F(NOM_PARA='EVAL_CHAM',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='EVAL_CHAM',
                       VALE_K='MIN',),
-                   _F(NOM_PARA='NOM_CMP',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CMP',
                       VALE_K='SIP',),
-                   _F(NOM_PARA='EVAL_ELGA',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='EVAL_ELGA',
                       VALE_K='MIN',),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,),
+                      VALE_I=16,),
                    ),
-           NOM_PARA='VALE',
-           VALE=-4999.9526983562,
-           PRECISION = 1E-8,
-           REFERENCE='NON_REGRESSION',);
+           )
 
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(_F(NOM_PARA='NOM_CHAM',
-                      CRIT_COMP='EQ',
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           NOM_PARA='VALE',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CHAM',
                       VALE_K='SIEF_ELGA',),
-                   _F(NOM_PARA='EVAL_CHAM',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='EVAL_CHAM',
                       VALE_K='MIN',),
-                   _F(NOM_PARA='NOM_CMP',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CMP',
                       VALE_K='SIYY',),
-                   _F(NOM_PARA='EVAL_ELGA',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='EVAL_ELGA',
                       VALE_K='MIN',),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,),
+                      VALE_I=16,),
                    ),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
            NOM_PARA='VALE',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION = 1E-12,
-           REFERENCE='NON_REGRESSION',);
-
-
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(_F(NOM_PARA='NOM_CHAM',
-                      CRIT_COMP='EQ',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CHAM',
                       VALE_K='SIEF_ELGA',),
-                   _F(NOM_PARA='EVAL_CHAM',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='EVAL_CHAM',
                       VALE_K='MIN',),
-                   _F(NOM_PARA='NOM_CMP',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CMP',
                       VALE_K='SIZZ',),
-                   _F(NOM_PARA='EVAL_ELGA',
-                      CRIT_COMP='EQ',
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='EVAL_ELGA',
                       VALE_K='MIN',),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,),
+                      VALE_I=16,),
                    ),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=5000.0469320953998,
            NOM_PARA='VALE',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1E-12,
-           REFERENCE='NON_REGRESSION',);
-
-
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(
-                   _F(NOM_PARA='NOM_OBSERVATION',
-                      CRIT_COMP='EQ',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_OBSERVATION',
                       VALE_K='MAXI_ABS_PRE1',),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,),
+                      VALE_I=16,),
                    ),
-           NOM_PARA='VALE',
-           VALE=5000.0469320954,
-           CRITERE='RELATIF',
-           PRECISION=1E-8,
-           REFERENCE='NON_REGRESSION',);
+           )
 
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(
-                   _F(NOM_PARA='NOM_OBSERVATION',
-                      CRIT_COMP='EQ',
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=4999.9526983751002,
+           NOM_PARA='VALE',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_OBSERVATION',
                       VALE_K='MINI_ABS_PRE1',),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,),
+                      VALE_I=16,),
                    ),
-           NOM_PARA='VALE',
-           VALE=4999.9526983751,
-           CRITERE='RELATIF',
-           PRECISION=1E-8,
-           REFERENCE='NON_REGRESSION',);
+           )
 
 IMPR_RESU(FORMAT='RESULTAT',
           RESU=_F(RESULTAT=RESU0,NUME_ORDRE=16,),)
@@ -441,4 +439,3 @@ IMPR_RESU(FORMAT='RESULTAT',
 
 FIN()
 #
-

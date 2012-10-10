@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : EXTRACTION DE L'OUVERTURE DE FISSURE, LOI ENDO_SCALAIRE
 # zzzz264b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,56 +151,64 @@ TAB_FIS2 = CALC_TABLE(reuse = TAB_FIS2,
                       )
 
 # Tests analytiques sur les coordonnees du chemin de fissuration
-TEST_TABLE(TABLE     = TAB_FISS,
-           NOM_PARA  = 'DIST',
-           TYPE_TEST = 'MAX',
-           VALE      = 0.,
-           CRITERE   = 'ABSOLU',
-           PRECISION = 1.5*delta,
-           REFERENCE = 'ANALYTIQUE')                       
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=0.012770095,
+           VALE_REFE=0.0,
+           NOM_PARA='DIST',
+           TYPE_TEST='MAX',
+           TABLE=TAB_FISS,)
 
-TEST_TABLE(TABLE     = TAB_FIS2,
-           NOM_PARA  = 'DIST',
-           TYPE_TEST = 'MAX',
-           VALE      = 0.,
-           CRITERE   = 'ABSOLU',
-           PRECISION = 1.5*delta,
-           REFERENCE = 'ANALYTIQUE')
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=0.012869001,
+           VALE_REFE=0.0,
+           NOM_PARA='DIST',
+           TYPE_TEST='MAX',
+           TABLE=TAB_FIS2,)
 
 # Tests analytiques sur l'ouverture de fissure
-TEST_TABLE(TABLE     = TAB_FISS,
-           NOM_PARA  = 'OUVERTURE',
-           TYPE_TEST = 'MIN',
-           VALE      = 6.00342E-04,
-           CRITERE   = 'RELATIF',
-           PRECISION = 10.E-2,
-           REFERENCE = 'ANALYTIQUE')
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC= 5.70497260E-04,
+           VALE_REFE=6.0034200000000002E-4,
+           NOM_PARA='OUVERTURE',
+           TYPE_TEST='MIN',
+           TABLE=TAB_FISS,)
 
-TEST_TABLE(TABLE     = TAB_FIS2,
-           NOM_PARA  = 'OUVERTURE',
-           TYPE_TEST = 'MIN',
-           VALE      = 6.00342E-04,
-           CRITERE   = 'RELATIF',
-           PRECISION = 10.E-2,
-           REFERENCE = 'ANALYTIQUE')
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC= 5.72160639E-04,
+           VALE_REFE=6.0034200000000002E-4,
+           NOM_PARA='OUVERTURE',
+           TYPE_TEST='MIN',
+           TABLE=TAB_FIS2,)
 
 # Tests de non-regression sur l'ouverture de fissure
-TEST_TABLE(TABLE     = TAB_FISS,
-           NOM_PARA  = 'OUVERTURE',
-           TYPE_TEST = 'MIN',
-           VALE      = 6.00342E-04,
-           CRITERE   = 'RELATIF',
-           PRECISION = 5.E-2,
-           REFERENCE = 'NON_REGRESSION')
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 5.70497260E-04,
+           VALE_REFE=6.0034200000000002E-4,
+           NOM_PARA='OUVERTURE',
+           TYPE_TEST='MIN',
+           TABLE=TAB_FISS,
+           )
 
-TEST_TABLE(TABLE     = TAB_FIS2,
-           NOM_PARA  = 'OUVERTURE',
-           TYPE_TEST = 'MIN',
-           VALE      = 6.00342E-04,
-           CRITERE   = 'RELATIF',
-           PRECISION = 5.E-2,
-           REFERENCE = 'NON_REGRESSION')
- 
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 5.72160639E-04,
+           VALE_REFE=6.0034200000000002E-4,
+           NOM_PARA='OUVERTURE',
+           TYPE_TEST='MIN',
+           TABLE=TAB_FIS2,
+           )
+
 #--------------------------------------
 # IMPRESSION RESULTATS
 #         

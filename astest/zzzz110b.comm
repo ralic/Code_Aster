@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM EN 3D
 #
 # zzzz110b.para = tps_job 60 mem_job 256Mo memjeveux_stat 128 ncpus 1 liste_test R
@@ -94,20 +94,46 @@ MEST22=CALC_CHAMP(MODELE=MO2,   CHAM_MATER=CM2,
 # LE CHAMP SIEF_ELGA DOIT ETRE HOMOGENE :
 # SIXX=SIXY=0.  SIYY=2.
 
-TEST_RESU(RESU=(
-        _F( RESULTAT = MEST1, NOM_CHAM = 'SIEF_ELGA', REFERENCE='ANALYTIQUE',
-         MAILLE = 'M3',  POINT = 1, INST = 3.2,
-         NOM_CMP = 'SIXX', VALE = 0.0, CRITERE = 'ABSOLU'),
-        _F( RESULTAT = MEST1, NOM_CHAM = 'SIEF_ELGA', REFERENCE='ANALYTIQUE',
-         MAILLE = 'M3',  POINT = 1, INST = 3.2,
-         NOM_CMP = 'SIZZ', VALE = 2.0),
-        _F( RESULTAT = MEST22, NOM_CHAM = 'SIEF_ELGA', REFERENCE='ANALYTIQUE',
-         MAILLE = 'M7',  POINT = 1, INST = 3.2,
-         NOM_CMP = 'SIXX', VALE = 0.0, CRITERE = 'ABSOLU'),
-        _F( RESULTAT = MEST22, NOM_CHAM = 'SIEF_ELGA',  REFERENCE='ANALYTIQUE',
-         MAILLE = 'M7',  POINT = 1, INST = 3.2,
-         NOM_CMP = 'SIZZ', VALE = 2.0)))
-
+TEST_RESU(RESU=(_F(INST=3.2000000000000002,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=MEST1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-1.17480752E-12,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   MAILLE='M3',),
+                _F(INST=3.2000000000000002,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=MEST1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   MAILLE='M3',),
+                _F(INST=3.2000000000000002,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=MEST22,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-1.06753940E-12,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   MAILLE='M7',),
+                _F(INST=3.2000000000000002,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=MEST22,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   MAILLE='M7',),
+                ),
+          )
 
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ROTATION D'UNE INCLUSION RIGIDE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -204,35 +204,22 @@ for i in [1,2,3,4]: #Boucle sur les increments
 
   IMPR_TABLE(TABLE=LAG[i]);
 
-  TEST_TABLE(TABLE=LAG[i],
-                 NOM_PARA='LAGS_C',
-                 TYPE_TEST='MAX',
-                 VALE=LAGS_A,
-                 REFERENCE ='ANALYTIQUE',
-                 CRITERE='RELATIF',
-                 PRECISION=5.5E-2);
+  TEST_TABLE(CRITERE='RELATIF',
+             REFERENCE='ANALYTIQUE',
+             PRECISION=0.055, 
+             VALE_CALC=valref[2*(i-1)],
+             VALE_REFE=LAGS_A,
+             NOM_PARA='LAGS_C',
+             TYPE_TEST='MAX',
+             TABLE=LAG[i],)
 
-  TEST_TABLE(TABLE=LAG[i],
-                 NOM_PARA='LAGS_C',
-                 TYPE_TEST='MIN',
-                 VALE=LAGS_A,
-                 REFERENCE ='ANALYTIQUE',
-                 CRITERE='RELATIF',
-                 PRECISION=5.5E-2);
+  TEST_TABLE(CRITERE='RELATIF',
+             REFERENCE='ANALYTIQUE',
+             PRECISION=0.055, 
+             VALE_CALC=valref[2*(i-1)+1],
+             VALE_REFE=LAGS_A,
+             NOM_PARA='LAGS_C',
+             TYPE_TEST='MIN',
+             TABLE=LAG[i],)
 
-  TEST_TABLE(TABLE=LAG[i],
-                 NOM_PARA='LAGS_C',
-                 TYPE_TEST='MAX',
-                 VALE=valref[2*(i-1)],
-                 REFERENCE ='NON_REGRESSION',
-                 CRITERE='RELATIF',
-                 PRECISION=1.E-6);
-
-  TEST_TABLE(TABLE=LAG[i],
-                 NOM_PARA='LAGS_C',
-                 TYPE_TEST='MIN',
-                 VALE=valref[2*(i-1)+1],
-                 REFERENCE ='NON_REGRESSION',
-                 CRITERE='RELATIF',
-                 PRECISION=1.E-6);
 FIN();

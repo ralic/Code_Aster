@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE EN ROTATION EN 2D
 # sslv104d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,20 +95,25 @@ DEP1=RESOUDRE(MATR=ELAS,
 
 #
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP1,
-                      GROUP_NO='P',
+TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='DX',
-                      VALE=0.010341446,
-                      PRECISION=0.001,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(CHAM_GD=DEP1,
                       GROUP_NO='P',
+                      PRECISION=1.E-3,
+                      
+                      CHAM_GD=DEP1,
+                      VALE_CALC=0.010341436,
+                      VALE_REFE=0.010341446000000001,),
+                   _F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='DY',
-                      VALE=0.010341446,
-                      PRECISION=0.001,
-                      REFERENCE='ANALYTIQUE',),),);
+                      GROUP_NO='P',
+                      PRECISION=1.E-3,
+                      
+                      CHAM_GD=DEP1,
+                      VALE_CALC=0.010341436,
+                      VALE_REFE=0.010341446000000001,),
+                   ),
+          )
 
 FIN();
 
 #
-

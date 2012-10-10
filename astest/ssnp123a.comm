@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 # ssnp123a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,108 +123,110 @@ IMPR_TABLE(TABLE=S_T,);
 
 # ON TESTE PAR RAPPORT A LA MODELISATION B : ELEMENTS QUASI-INCOMPRESSIBLES
 
-TEST_TABLE(TABLE=S_T,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=4.0000000000000001E-3,
+           VALE_CALC=234.930241421,
+           VALE_REFE=234.17400000000001,
+           NOM_PARA='SIYY',
+           TABLE=S_T,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0.0,),
-           NOM_PARA='SIYY',
-           VALE=234.174,
-           PRECISION=0.004,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=S_T,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=257.208041915,
+           VALE_REFE=257.41699999999997,
+           NOM_PARA='SIYY',
+           TABLE=S_T,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=1.54051,),
-           NOM_PARA='SIYY',
-           VALE=257.417,
-           PRECISION=0.001,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.26795,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=6.0000000000000001E-3,
+           VALE_CALC=298.685095897,
+           VALE_REFE=300.33300000000003,
            NOM_PARA='SIYY',
-           VALE=300.333,
-           PRECISION=0.006,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=S_T,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=3.2679499999999999,),
+           )
 
-TEST_TABLE(TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.83403,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=6.0000000000000001E-3,
+           VALE_CALC=261.745956584,
+           VALE_REFE=263.21199999999999,
            NOM_PARA='SIYY',
-           VALE=263.212,
-           PRECISION=0.006,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=S_T,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=3.8340299999999998,),
+           )
 
-TEST_TABLE(TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.37942,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=173.439683169,
+           VALE_REFE=175.82900000000001,
            NOM_PARA='SIYY',
-           VALE=175.829,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=S_T,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=4.3794199999999996,),
+           )
 
 #--------------------------------------------------------------------------------
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               INST = 1.,
-               NOM_CHAM = 'ERME_ELEM',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.0001,
-               POINT = 1,
-               MAILLE='M20',
-               NOM_CMP = 'NUEST',
-               VALE = 1.7025E-03,
-               REFERENCE = 'NON_REGRESSION',VERSION = '9.3.15'),
-             ),
-            );
+TEST_RESU(RESU=_F(INST=1.0,
+                  POINT=1,
+                  RESULTAT=RESU,
+                  NOM_CHAM='ERME_ELEM',
+                  NOM_CMP='NUEST',
+                  VALE_CALC=1.7025E-3,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  MAILLE='M20',
+                  ),
+          )
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               INST = 1.,
-               NOM_CHAM = 'ERME_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.0001,
-               NOEUD= 'N6',
-               MAILLE='M20',
-               NOM_CMP = 'ERREST',
-               VALE = 4.2158E-04,
-               REFERENCE = 'NON_REGRESSION',VERSION = '9.3.15'),
-             ),
-            );
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='ERME_ELNO',
+                  NOEUD='N6',
+                  NOM_CMP='ERREST',
+                  VALE_CALC=4.2158000000000001E-4,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  MAILLE='M20',
+                  ),
+          )
+
 #--------------------------------------------------------------------------------
 #
 #  TEST SUR LES CONTRAINTES AU POINT B
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               INST = 1.,
-               NOM_CHAM = 'SIGM_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.0001,
-               NOEUD= 'N6',
-               MAILLE='M20',
-               NOM_CMP = 'SIYY',
-               VALE = 4.3683702957631E+02,
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.25'),
-             ),
-            );
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='N6',
+                  NOM_CMP='SIYY',
+                  VALE_CALC=436.83702957630999,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  MAILLE='M20',
+                  ),
+          )
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               INST = 1.,
-               NOM_CHAM = 'SIGM_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.0001,
-               NOEUD= 'N6',
-               MAILLE='M20',
-               NOM_CMP = 'SIXX',
-               VALE = 7.7519646079352E+00,
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.25'),
-             ),
-            );
-
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='N6',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=7.7519646079352,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  MAILLE='M20',
+                  ),
+          )
 
 FIN();

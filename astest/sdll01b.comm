@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE COURTE SUR APPUIS SIMPLES ( POU_D_TG )
 # sdll01b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,26 +129,56 @@ MODE1=MODE_ITER_INV(  MATR_RIGI=MATASSR1,
                           FREQ = ( 430.,     4500.,  ))   )
 
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.2E-2,
-           NUME_ORDRE = 1,       VALE = 431.555),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.2E-2,
-           NUME_ORDRE = 2,       VALE = 1265.924),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.2E-2,
-           NUME_ORDRE = 3,       VALE = 1498.295),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.2E-2,
-           NUME_ORDRE = 4,       VALE = 2870.661),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.2E-2,
-           NUME_ORDRE = 5,       VALE = 3797.773),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.2E-2,
-           NUME_ORDRE = 6,       VALE = 4377.837))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC=431.891559572,
+                   VALE_REFE=431.55500000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC= 1.26600555E+03,
+                   VALE_REFE=1265.924,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC= 1.50076348E+03,
+                   VALE_REFE=1498.2950000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC= 2.87353437E+03,
+                   VALE_REFE=2870.6610000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC= 3.79996925E+03,
+                   VALE_REFE=3797.7730000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-3,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   RESULTAT=MODE1,
+                   VALE_CALC= 4.37082061E+03,
+                   VALE_REFE=4377.8370000000004,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-3,),
+                ),
+          )
 
 MODE2=MODE_ITER_INV(  MATR_RIGI=MATASSR2,
                         MATR_MASS=MATASSM2,
@@ -156,29 +186,47 @@ MODE2=MODE_ITER_INV(  MATR_RIGI=MATASSR2,
                           FREQ = ( 380.,     3300.,  ))   )
 
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.5E-2,
-           NUME_ORDRE = 1,       VALE = 392.8),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 0.1E-2,
-           NUME_ORDRE = 2,       VALE = 922.2),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 3.E-2,
-           NUME_ORDRE = 3,       VALE = 1592.0),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 5.8E-2,
-           NUME_ORDRE = 4,       VALE = 2629.2),
-   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 4.5E-2,
-           NUME_ORDRE = 5,       VALE = 3126.2))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODE2,
+                   VALE_CALC=394.477395604,
+                   VALE_REFE=392.80000000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODE2,
+                   VALE_CALC=922.20000000000005,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MODE2,
+                   VALE_CALC= 1.63823105E+03,
+                   VALE_REFE=1592.0,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   RESULTAT=MODE2,
+                   VALE_CALC= 2.77869999E+03,
+                   VALE_REFE=2629.1999999999998,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.058000000000000003,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   RESULTAT=MODE2,
+                   VALE_CALC= 3.26166994E+03,
+                   VALE_REFE=3126.1999999999998,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.044999999999999998,),
+                ),
+          )
 
 FIN()
 #
-
-
-
-
-
-

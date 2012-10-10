@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE EXTRUSION D'UN LOPIN CONTACT
 # ssnv504h.para = tps_job 220 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -219,24 +219,23 @@ DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
 
 IMPR_TABLE(TABLE=DEPLAC,);
 
-TEST_RESU(RESU=(_F(RESULTAT=U,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='K',
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   GROUP_NO='K',
-                   VALE=10.116987179981,
-                   PRECISION=1.E-3,
-                   VERSION = '11.1.17',
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=U,
-                   INST=155.,
+                   VALE_CALC=10.116987179981001,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(GROUP_NO='K',
+                   INST=155.0,
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   GROUP_NO='K',
-                   VALE=155.07640919255,
-                   PRECISION=1.E-3,
-                   VERSION = '11.1.17',
-                   REFERENCE='NON_REGRESSION',),
-           ),);
+                   VALE_CALC=155.07640919254999,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRANSFERT THERMIQUE DANS UNE BARRE AVEC TEMPERATURE IMPOSEE
 # ttll301a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,11 +99,22 @@ TEMP_32=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,
             INST=32.0 )
 
-TEST_RESU(CHAM_NO=(
-# VALEURS DE REFERENCE:
-_F( CHAM_GD = TEMP_32, NOEUD = 'N17', NOM_CMP = 'TEMP', VALE = 36.60, PRECISION = 3.5E-2),
-_F( CHAM_GD = TEMP_32, NOEUD = 'N18', NOM_CMP = 'TEMP', VALE = 36.60, PRECISION = 2.E-2))
-    )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N17',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.035000000000000003,
+                      CHAM_GD=TEMP_32,
+                      VALE_CALC=37.873832135,
+                      VALE_REFE=36.600000000000001,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N18',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_32,
+                      VALE_CALC=36.979229204,
+                      VALE_REFE=36.600000000000001,
+                      REFERENCE='NON_DEFINI',),
+                   ),
+          )
 
 FIN()
 #

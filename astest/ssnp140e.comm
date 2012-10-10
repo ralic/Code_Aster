@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI DE TRACTION D UNE PLAQUE TROUEE AVEC LA METHODE IMPLEX
 # ssnp140e.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,11 +175,35 @@ DIFF=CALC_FONCTION(COMB=(
                           _F( FONCTION = FXIE, COEF = -1.),
                           ) );
 
-TEST_FONCTION(VALEUR=(
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 1.20000E-01,VALE_REFE=0.,PRECISION=1e-3,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 3.20000E-01,VALE_REFE=0.,PRECISION=1e-3,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 6.00000E-01,VALE_REFE=0.,PRECISION=1e-3,CRITERE='ABSOLU',),
-_F(FONCTION=DIFF,REFERENCE='AUTRE_ASTER', VALE_PARA = 1.00000E+00,VALE_REFE=0.,PRECISION=1e-3,CRITERE='ABSOLU',),
-            ),);
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.000250591666747,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.12,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.E-3,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.00066824444466,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.32000000000000001,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.E-3,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.000177124473746,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.59999999999999998,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.E-3,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=-0.000114953347924,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.0,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.E-3,
+                         FONCTION=DIFF,),
+                      ),
+              )
 
 FIN();

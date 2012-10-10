@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE RIGIDITE AJOUTEE EN ECOULEMENT ANNULAIRE
 # fdlv107a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -417,32 +417,116 @@ ENGENDRE_TEST(FORMAT='OBJET',
 #TESTS DES VALEURS DES MATRICES D'AMORTISSEMENT ET DE MASSE AJOUTES
 #NE COMPRENNENT QU'UN ELEMENT
 
-TEST_RESU(OBJET=(
-_F( NOM = 'MASS               .VALM', S_R = 3.486E+06, PRECISION = 0.2E-2),
-_F( NOM = 'MASS               .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'RIGI               .VALM', S_R = -5.609E+04, PRECISION = 2.1E-2),
-_F( NOM = 'RIGI               .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'MASS1              .VALM', S_R = 3.486E+06, PRECISION = 0.2E-2),
-_F( NOM = 'MASS1              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'RIGI1              .VALM', S_R = -8.7650E+02, PRECISION = 2.1E-2),
-_F( NOM = 'RIGI1              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'MASS2              .VALM', S_R = 3.486E+06, PRECISION = 0.2E-2),
-_F( NOM = 'MASS2              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'RIGI2              .VALM', S_R = -7.8885E+03, PRECISION = 2.1E-2),
-_F( NOM = 'RIGI2              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'MASS3              .VALM', S_R = 3.486E+06, PRECISION = 0.2E-2),
-_F( NOM = 'MASS3              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'RIGI3              .VALM', S_R = -1.402395E+04, PRECISION = 2.1E-2),
-_F( NOM = 'RIGI3              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'MASS4              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'MASS4              .VALM', S_R = 3.486E+06, PRECISION = 0.2E-2),
-_F( NOM = 'RIGI4              .VALM', S_R = -1.696898E+04, PRECISION = 2.1E-2),
-_F( NOM = 'RIGI4              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'MASS5              .VALM', S_R = 3.486E+06, PRECISION = 0.2E-2),
-_F( NOM = 'MASS5              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
-_F( NOM = 'RIGI5              .VALM', S_R = -2.5330E+04, PRECISION = 2.1E-2),
-_F( NOM = 'RIGI5              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5))
-)
+TEST_RESU(OBJET=(_F(VALE_CALC= 3.48128943E+06,
+                    VALE_REFE=3.486000E6,
+                    REFERENCE='NON_DEFINI',
+                    NOM='MASS               .VALM',
+                    PRECISION=2.E-3,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='MASS               .CONL',
+                    ),
+                 _F(VALE_CALC=-5.49675101E+04,
+                    VALE_REFE=-5.6090E4,
+                    REFERENCE='NON_DEFINI',
+                    NOM='RIGI               .VALM',
+                    PRECISION=0.021000000000000001,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='RIGI               .CONL',
+                    ),
+                 _F(VALE_CALC= 3.48128943E+06,
+                    VALE_REFE=3.486000E6,
+                    REFERENCE='NON_DEFINI',
+                    NOM='MASS1              .VALM',
+                    PRECISION=2.E-3,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='MASS1              .CONL',
+                    ),
+                 _F(VALE_CALC=-858.867345455,
+                    VALE_REFE=-876.5,
+                    REFERENCE='NON_DEFINI',
+                    NOM='RIGI1              .VALM',
+                    PRECISION=0.021000000000000001,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='RIGI1              .CONL',
+                    ),
+                 _F(VALE_CALC= 3.48128943E+06,
+                    VALE_REFE=3.486000E6,
+                    REFERENCE='NON_DEFINI',
+                    NOM='MASS2              .VALM',
+                    PRECISION=2.E-3,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='MASS2              .CONL',
+                    ),
+                 _F(VALE_CALC=-7.72980611E+03,
+                    VALE_REFE=-7888.5,
+                    REFERENCE='NON_DEFINI',
+                    NOM='RIGI2              .VALM',
+                    PRECISION=0.021000000000000001,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='RIGI2              .CONL',
+                    ),
+                 _F(VALE_CALC= 3.48128943E+06,
+                    VALE_REFE=3.486000E6,
+                    REFERENCE='NON_DEFINI',
+                    NOM='MASS3              .VALM',
+                    PRECISION=2.E-3,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='MASS3              .CONL',
+                    ),
+                 _F(VALE_CALC=-1.37418775E+04,
+                    VALE_REFE=-1.4023950000000001E4,
+                    REFERENCE='NON_DEFINI',
+                    NOM='RIGI3              .VALM',
+                    PRECISION=0.021000000000000001,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='RIGI3              .CONL',
+                    ),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='MASS4              .CONL',
+                    ),
+                 _F(VALE_CALC= 3.48128943E+06,
+                    VALE_REFE=3.486000E6,
+                    REFERENCE='NON_DEFINI',
+                    NOM='MASS4              .VALM',
+                    PRECISION=2.E-3,),
+                 _F(VALE_CALC=-1.66276718E+04,
+                    VALE_REFE=-1.696898E4,
+                    REFERENCE='NON_DEFINI',
+                    NOM='RIGI4              .VALM',
+                    PRECISION=0.021000000000000001,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='RIGI4              .CONL',
+                    ),
+                 _F(VALE_CALC= 3.48128943E+06,
+                    VALE_REFE=3.486000E6,
+                    REFERENCE='NON_DEFINI',
+                    NOM='MASS5              .VALM',
+                    PRECISION=2.E-3,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='MASS5              .CONL',
+                    ),
+                 _F(VALE_CALC=-2.48224481E+04,
+                    VALE_REFE=-2.5330E4,
+                    REFERENCE='NON_DEFINI',
+                    NOM='RIGI5              .VALM',
+                    PRECISION=0.021000000000000001,),
+                 _F(VALE_CALC=1.0,
+                    TOLE_MACHINE=1.0000000000000001E-05,
+                    NOM='RIGI5              .CONL',
+                    ),
+                 ),
+          )
 
 # SYSTEME A UN DDL EQUIVALENT SUR LEQUEL ON CALCULE L EVOLUTION
 # DES FREQUENCES PROPRES SOUS ECOULEMENT
@@ -490,9 +574,7 @@ MASSA1=ASSE_MATRICE( MATR_ELEM=MAS1, NUME_DDL=NUMER1)
 
 MOD1=MODE_ITER_SIMULT(      MATR_RIGI=RAID1,
                             MATR_MASS=MASSA1,
-###CDURAND###                     CALC_FREQ=_F(  FREQ = (0.001,1.,))
                              )
-
 
 # FREQUENCE 1 : 1.5 M/S
 
@@ -530,9 +612,7 @@ MASSA2=ASSE_MATRICE( MATR_ELEM=MAS2, NUME_DDL=NUMER2)
 
 MOD2=MODE_ITER_SIMULT(      MATR_RIGI=RAID2,
                             MATR_MASS=MASSA2,
-###CDURAND###                  CALC_FREQ=_F(  FREQ = (0.001,1.,))
                       )
-
 
 # FREQUENCE 3 : 2 M/S
 
@@ -567,9 +647,7 @@ MASSA3=ASSE_MATRICE( MATR_ELEM=MAS3, NUME_DDL=NUMER3)
 
 MOD3=MODE_ITER_SIMULT(      MATR_RIGI=RAID3,
                             MATR_MASS=MASSA3,
-###CDURAND###              CALC_FREQ=_F(  FREQ = (0.001,1.,))
                       )
-
 
 # FREQUENCE 4 : 2.2 M/S
 
@@ -607,9 +685,7 @@ MASSA4=ASSE_MATRICE( MATR_ELEM=MAS4, NUME_DDL=NUMER4)
 
 MOD4=MODE_ITER_SIMULT(      MATR_RIGI=RAID4,
                             MATR_MASS=MASSA4,
-####CDURAND          CALC_FREQ=_F(  FREQ = (0.001,1.,))
                      )
-
 
 # FREQUENCE 5 : 2.688 M/S
 
@@ -647,29 +723,42 @@ MASSA5=ASSE_MATRICE( MATR_ELEM=MAS5, NUME_DDL=NUMER5)
 
 MOD5=MODE_ITER_SIMULT(      MATR_RIGI=RAID5,
                             MATR_MASS=MASSA5,
-####CDURAND##              CALC_FREQ=_F(  FREQ = (0.001,1.,))
                      )
 
-
-TEST_RESU(RESU=(_F( RESULTAT = MOD1, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 3.E-2,
-                NUME_ORDRE = 1,  VALE = 1.318E-2),
-          _F( RESULTAT = MOD2, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 3.E-2,
-                NUME_ORDRE = 1,  VALE = 1.112E-2),
-          _F( RESULTAT = MOD3, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 3.E-2,
-                NUME_ORDRE = 1,  VALE = 0.896E-2),
-          _F( RESULTAT = MOD4, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 3.E-2,
-                NUME_ORDRE = 1,  VALE = 0.772E-2))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD1,
+                   VALE_CALC=0.013325118,
+                   VALE_REFE=0.013180000000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                _F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD2,
+                   VALE_CALC=0.011300665,
+                   VALE_REFE=0.01112,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                _F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD3,
+                   VALE_CALC= 9.16958014E-03,
+                   VALE_REFE=8.9599999999999992E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                _F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD4,
+                   VALE_CALC= 7.94611318E-03,
+                   VALE_REFE=7.7200000000000003E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                ),
+          )
 
 FIN()
 #
-
-
-
-
-
-

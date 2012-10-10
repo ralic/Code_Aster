@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE EN FLEXION ET CISAILLEMENT DANS SON PLAN
 # sslp01a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,24 +92,28 @@ DEF=CALC_CHAMP(reuse=DEF,
 #
 # TEST_RESU DU DEPLACEMENT
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = U,
-                        NOEUD = 'N33',
-                        NOM_CMP = 'DY',
-                        VALE = 0.341E-03,
-                        PRECISION = 0.023)
+TEST_RESU(CHAM_NO=_F(NOEUD='N33',
+                     NOM_CMP='DY',
+                     PRECISION=0.023,
+                     CHAM_GD=U,
+                     VALE_CALC= 3.33369791E-04,
+                     VALE_REFE=3.4099999999999999E-4,
+                     REFERENCE='NON_DEFINI',),
           )
 
 #
 # TEST_RESU DE LA CONTRAINTE
 #
-TEST_RESU(   RESU=_F(  RESULTAT = DEF,
-                          MAILLE = 'M1',
-                          NOEUD = 'N1',
-                          NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO',
-                          NOM_CMP = 'SIXX',
-                          VALE = 8.0E+7,
-                          PRECISION = 0.018)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC= 8.13652308E+07,
+                  VALE_REFE=8.E7,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.017999999999999999,
+                  MAILLE='M1',),
           )
 
 #----------------------------------------------------------
@@ -154,27 +158,29 @@ DEF_R=CALC_CHAMP(reuse=DEF_R,
 #
 # TEST_RESU DU DEPLACEMENT
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = U_R,
-                        NOEUD = 'N33',
-                        NOM_CMP = 'DY',
-                        VALE = 0.341E-03,
-                        PRECISION = 0.023,
-                        REFERENCE = 'AUTRE_ASTER')
+TEST_RESU(CHAM_NO=_F(NOEUD='N33',
+                     REFERENCE='AUTRE_ASTER',
+                     NOM_CMP='DY',
+                     PRECISION=0.023,
+                     CHAM_GD=U_R,
+                     VALE_CALC= 3.33370000E-04,
+                     VALE_REFE=3.4099999999999999E-4,),
           )
 
 #
 # TEST_RESU DE LA CONTRAINTE
 #
-TEST_RESU(   RESU=_F(  RESULTAT = DEF_R,
-                          MAILLE = 'M1',
-                          NOEUD = 'N1',
-                          NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO',
-                          NOM_CMP = 'SIXX',
-                          VALE = 8.0E+7,
-                          PRECISION = 0.018,
-                          REFERENCE = 'AUTRE_ASTER'),
-                          )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=DEF_R,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC= 8.13651021E+07,
+                  VALE_REFE=8.E7,
+                  PRECISION=0.017999999999999999,
+                  MAILLE='M1',),
+          )
 
 FIN()
 #

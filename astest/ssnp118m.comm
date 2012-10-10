@@ -1,4 +1,4 @@
-# MODIF  DATE 17/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA LOI JOINT_MECA_RUPT SUR LES ELEMENTS DE JOINT QUAD4
 # ssnp118m.para = tps_job 60 mem_job 1280Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -282,31 +282,34 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 # COMPLETEMENT CASSE
 sigma_endo = (delta_endo-sigma_max*(1.+pena_rupture)/k_n)/(L_cube/young-pena_rupture/k_n)
 sigma_pena = -sigma_max*pena_contact*(young+L_cube*k_n)/(young+L_cube*k_n*pena_contact)
-TEST_FONCTION(VALEUR=(_F(FONCTION=FN,
-                        NOM_PARA='INST',
-                        VALE_PARA=linst[1],
-                        VALE_REFE=sigma_max,
-                        REFERENCE='ANALYTIQUE',),
-                     _F(FONCTION=FN,
-                        NOM_PARA='INST',
-                        VALE_PARA=linst[2],
-                        VALE_REFE=sigma_endo,
-                        REFERENCE='ANALYTIQUE',),
-                     _F(FONCTION=FN,
-                        NOM_PARA='INST',
-                        VALE_PARA=linst[3],
-                        VALE_REFE=sigma_pena,
-                        REFERENCE='ANALYTIQUE',),
-                     _F(FONCTION=FN,
-                        NOM_PARA='INST',
-                        VALE_PARA=linst[4],
-                        VALE_REFE=sigma_max*1e-3,
-                        PRECISION=sigma_max*1e-3,
-                        CRITERE   = 'ABSOLU',
-                        REFERENCE='ANALYTIQUE',),
-                        ),
-                        );
-
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=100000.0,
+                         VALE_REFE=1.E5,
+                         VALE_PARA=15,
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      _F(VALE_CALC=20000.0,
+                         VALE_REFE=2.0000000000000022E4,
+                         VALE_PARA=30,
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      _F(VALE_CALC=-200000.0,
+                         VALE_REFE=-2.E5,
+                         VALE_PARA=45,
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      _F(VALE_CALC=0.00900000001022,
+                         VALE_REFE=100.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=60,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=100.0,
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      ),
+              )
 
 ###################################################################################
 #----------------------------------------------------------------------------------
@@ -394,21 +397,16 @@ T_SITX_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_2))
 IMPR_TABLE(TABLE=T_SITX_2)
 
 # TEST SIGMA_NORMAL
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIGN',
-      VALE      = sigma_max*(1.-beta),
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[2],
-      ),
-    )
-  )
-
+TEST_RESU(RESU=_F(INST=30,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_2,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIGN',
+                  VALE_CALC= 8.00000000E+04,
+                  VALE_REFE=8.E4,
+                  MAILLE='CUBEDEG',),
+          )
 
 # LCT - LONGEUR CRITIQUE TANGENTIELLE
 LCT = delta_max*tan(alpha*pi/4.)
@@ -416,38 +414,30 @@ LCT = delta_max*tan(alpha*pi/4.)
 # TEST SIGMA_TAN ENDOMAGEMENT PARTIEL
 # PENTE TANGENTIEL ENDOMMAGEE POUR DELTA_JOINT
 k_t_endo = k_t*(1-delta_joint/LCT)
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITX',
-      VALE      = k_t_endo*delta_max_tan,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 2,
-      INST      = linst2[2],
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=30,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=2,
+                  RESULTAT=U_2,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITX',
+                  VALE_CALC= 2.08873016E+05,
+                  VALE_REFE=2.0887301627791906E5,
+                  MAILLE='CUBEDEG',),
+          )
 
 # TEST SIGMA_TAN ENDOMAGEMENT PARTIEL (DANS LA ZONE ELASTIQUE)
 # PENTE TANGENTIEL ENDOMMAGEE POUR delta_joint5
 k_t_endo5 = k_t*(1-delta_joint5/LCT)
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITX',
-      VALE      = k_t_endo5*delta_max_tan,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=45,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_2,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITX',
+                  VALE_CALC= 2.81774603E+05,
+                  VALE_REFE=2.8177460325558385E5,
+                  MAILLE='CUBEDEG',),
+          )
 
 # TEST VARIABLES INTERNES
 # V1 : SEUIL, PLUS GRANDE NORME DU SAUT
@@ -458,121 +448,106 @@ TEST_RESU (
 # V6 : POURCENTAGE D'ENDOMMAGEMENT TANGENTIEL
 # V7 A V9 : VALEURS DU SAUT
 # V10: EPAISSEUR DU JOINT CLAVE
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V1',
-      VALE      = delta_joint,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V2',
-      VALE      = 0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V3',
-      VALE      = 1,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V4',
-      VALE      = beta,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V5',
-      VALE      = 1,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V6',
-      VALE      = delta_joint5/LCT,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V7',
-      VALE      = delta_joint5,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V8',
-      VALE      = delta_max_tan,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V9',
-      VALE      = 0.,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_2,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V10',
-      VALE      = 0.,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = linst2[3],
-      ),
-    )
-  )
-
+TEST_RESU(RESU=(_F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC= 1.10000000E-07,
+                   VALE_REFE=1.1000000000000002E-07,
+                   MAILLE='CUBEDEG',),
+                _F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V2',
+                   VALE_CALC= 0.00000000E+00,
+                   VALE_REFE=0,
+                   CRITERE='ABSOLU',
+                   MAILLE='CUBEDEG',),
+                _F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V3',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1,
+                   CRITERE='ABSOLU',
+                   MAILLE='CUBEDEG',),
+                _F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V4',
+                   VALE_CALC=0.200000000,
+                   VALE_REFE=0.20000000000000001,
+                   MAILLE='CUBEDEG',),
+                _F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V5',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1,
+                   CRITERE='ABSOLU',
+                   MAILLE='CUBEDEG',),
+                _F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V6',
+                   VALE_CALC=0.060751322,
+                   VALE_REFE=0.060751322481387295,
+                   MAILLE='CUBEDEG',),
+                _F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V7',
+                   VALE_CALC= 2.20000000E-08,
+                   VALE_REFE=2.2000000000000005E-08,
+                   CRITERE='ABSOLU',
+                   MAILLE='CUBEDEG',),
+                _F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V8',
+                   VALE_CALC= 1.50000000E-07,
+                   VALE_REFE=1.4999999999999999E-07,
+                   MAILLE='CUBEDEG',),
+                _F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V9',
+                   VALE_CALC= 0.00000000E+00,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   MAILLE='CUBEDEG',),
+                _F(INST=45,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V10',
+                   VALE_CALC= 0.00000000E+00,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   MAILLE='CUBEDEG',),
+                ),
+          )
 
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
 #########################################################################################################
 FIN()
-

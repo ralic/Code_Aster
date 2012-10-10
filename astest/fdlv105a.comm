@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PISTON AXISYMETRIQUE VIBRANT DANS UN FLUIDE INCOMPRESSIBLE
 # fdlv105a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,6 @@ MODES=MODE_ITER_SIMULT( MATR_RIGI=MATASKS,  MATR_MASS=MATASMS,
                                         FREQ = (1.,500.,))
                             )
 
-
 NUMGEN=NUME_DDL_GENE(  BASE=MODES,
                             STOCKAGE='PLEIN'
                           )
@@ -170,18 +169,15 @@ MODHUMI=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,  MATR_MASS=MASTOT,
                                         FREQ = (1.,100.,))
                             )
 
-
-TEST_RESU(
-    RESU=_F(   RESULTAT = MODHUMI,        PARA = 'FREQ',
-            CRITERE = 'RELATIF',     PRECISION = 1.5E-2,
-            NUME_ORDRE = 1,         VALE = 27.25)
-     )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODHUMI,
+                  VALE_CALC=27.380409260,
+                  VALE_REFE=27.25,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.014999999999999999,),
+          )
 
 FIN()
 #
-
-
-
-
-
-

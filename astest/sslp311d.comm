@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 # sslp311d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,10 +93,12 @@ G01A=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G01A,
-                       NOM_PARA='G',
-                           VALE=3.224364E1,REFERENCE='ANALYTIQUE', 
-                      PRECISION=0.05        )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=31.182600476,
+           VALE_REFE=32.243639999999999,
+           NOM_PARA='G',
+           TABLE=G01A,)
 
 #
 THETA01B=CALC_THETA(    MODELE=MO,
@@ -114,10 +116,12 @@ G01B=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G01B,
-                       NOM_PARA='G',
-                           VALE=3.224364E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.01       )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=32.532261604,
+           VALE_REFE=32.243639999999999,
+           NOM_PARA='G',
+           TABLE=G01B,)
 
 #
 
@@ -136,10 +140,12 @@ G01C=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G01C,
-                       NOM_PARA='G',
-                           VALE=3.224364E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.01       )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=32.538459486,
+           VALE_REFE=32.243639999999999,
+           NOM_PARA='G',
+           TABLE=G01C,)
 
 #
 THETA01D=CALC_THETA(    MODELE=MO,
@@ -157,10 +163,12 @@ G01D=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G01D,
-                       NOM_PARA='G',
-                           VALE=3.224364E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.01        )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=32.539879150,
+           VALE_REFE=32.243639999999999,
+           NOM_PARA='G',
+           TABLE=G01D,)
 
 #
 # POINT GAUCHE
@@ -185,10 +193,12 @@ G02A=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G02A,
-                       NOM_PARA='G',
-                           VALE=3.280158E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.06       )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC=31.068151497,
+           VALE_REFE=32.801580000000001,
+           NOM_PARA='G',
+           TABLE=G02A,)
 
 #
 THETA02B=CALC_THETA(    MODELE=MO,
@@ -206,10 +216,12 @@ G02B=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G02B,
-                       NOM_PARA='G',
-                           VALE=3.280158E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.015      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=32.403880392,
+           VALE_REFE=32.801580000000001,
+           NOM_PARA='G',
+           TABLE=G02B,)
 
 #
 #
@@ -228,10 +240,12 @@ G02C=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G02C,
-                       NOM_PARA='G',
-                           VALE=3.280158E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.015      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=32.414172316,
+           VALE_REFE=32.801580000000001,
+           NOM_PARA='G',
+           TABLE=G02C,)
 
 #
 #
@@ -250,9 +264,11 @@ G02D=CALC_G(    RESULTAT=CHAMDEPL,
 
 #
 
-TEST_TABLE(       TABLE=G02D,
-                       NOM_PARA='G',
-                           VALE=3.280158E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.015      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=32.415712976,
+           VALE_REFE=32.801580000000001,
+           NOM_PARA='G',
+           TABLE=G02D,)
 
 FIN()

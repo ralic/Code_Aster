@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DES FREQUENCES PROPRES D'UNE POUTRE BI APPUYEE AMORTIE
 # sdlv302c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -235,47 +235,47 @@ MODES=MODE_ITER_SIMULT(       MATR_RIGI=K_ASSE,
                                           NMAX_FREQ = 10)
                              )
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.1E-2,
-           NUME_ORDRE = 1,
-           VALE = 115.6,      
-           REFERENCE = 'SOURCE_EXTERNE'),
-
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.16E-2,
-           NUME_ORDRE = 2,
-           VALE = 441.6,       
-           REFERENCE = 'SOURCE_EXTERNE'),
-
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.1E-2,
-           NUME_ORDRE = 3,
-           VALE = 647.2,     
-           REFERENCE = 'SOURCE_EXTERNE'),
-
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.35E-2,
-           NUME_ORDRE = 4,
-           VALE = 928.0,     
-           REFERENCE = 'SOURCE_EXTERNE'),
-
-   _F(   RESULTAT = MODES,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 0.5E-2,
-           NUME_ORDRE = 5,
-           VALE = 1518.8,      
-           REFERENCE = 'SOURCE_EXTERNE'))
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=115.514264024,
+                   VALE_REFE=115.59999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=440.943421168,
+                   VALE_REFE=441.60000000000002,
+                   CRITERE='RELATIF',
+                   PRECISION=1.6000000000000001E-3,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=647.139152766,
+                   VALE_REFE=647.20000000000005,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=925.238447080,
+                   VALE_REFE=928.0,
+                   CRITERE='RELATIF',
+                   PRECISION=3.5000000000000001E-3,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC= 1.51194612E+03,
+                   VALE_REFE=1518.8,
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                ),
           )
 
 # CALCUL DES MODES AVEC TYPE_RESU='GENERAL'
@@ -307,7 +307,8 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',
            PRECISION = 0.2E-2,
            NUME_ORDRE = 1,
-           VALE = (115.6*2*pi)**2,      
+           VALE_CALC=5.2678204945232E+05,
+           VALE_REFE = (115.6*2*pi)**2,      
            REFERENCE = 'SOURCE_EXTERNE'),
 
    _F(   RESULTAT = MODEG,
@@ -315,7 +316,8 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',
            PRECISION = 0.35E-2,
            NUME_ORDRE = 2,
-           VALE = (441.6*2*pi)**2,       
+           VALE_CALC=7.6758321875935E+06,
+           VALE_REFE = (441.6*2*pi)**2,       
            REFERENCE = 'SOURCE_EXTERNE'),
 
    _F(   RESULTAT = MODEG,
@@ -323,7 +325,8 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',
            PRECISION = 0.1E-2,
            NUME_ORDRE = 3,
-           VALE = (647.2*2*pi)**2,     
+           VALE_CALC=1.6533130308498E+07,
+           VALE_REFE = (647.2*2*pi)**2,     
            REFERENCE = 'SOURCE_EXTERNE'),
 
    _F(   RESULTAT = MODEG,
@@ -331,7 +334,8 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',
            PRECISION = 0.7E-2,
            NUME_ORDRE = 4,
-           VALE = (928.0*2*pi)**2,     
+           VALE_CALC=3.3796138307115E+07,
+           VALE_REFE = (928.0*2*pi)**2,     
            REFERENCE = 'SOURCE_EXTERNE'),
 
    _F(   RESULTAT = MODEG,
@@ -339,7 +343,8 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',
            PRECISION = 1.1E-2,
            NUME_ORDRE = 5,
-           VALE = (1518.8*2*pi)**2,      
+           VALE_CALC=9.024691489459E+07,
+           VALE_REFE = (1518.8*2*pi)**2,      
            REFERENCE = 'SOURCE_EXTERNE'))
 
           )

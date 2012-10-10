@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 3 SHEET METAL FORMING
 # ssnp155a.para = tps_job 1200 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,23 +196,23 @@ IMPR_RESU(FORMAT='MED',
 # ===========================================
 # Tests
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU,
-                   INST       = 0.9*Tmax,
-                   NOM_CHAM   = 'DEPL',
-                   NOEUD      = 'N3216',
-                   NOM_CMP    = 'DY',
-                   VALE       = -28.5,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '11.0.27',
+TEST_RESU(RESU=(_F(INST=0.9*Tmax,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3216',
+                   NOM_CMP='DY',
+                   VALE_CALC=-28.5,
+                   TOLE_MACHINE=(1.E-3, 1.E-6),
                    ),
-                _F(RESULTAT   = RESU,
-                   INST       = 1.0*Tmax,
-                   NOM_CHAM   = 'DEPL',
-                   NOEUD      = 'N3216',
-                   NOM_CMP    = 'DY',
-                   VALE       = -25.65,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '11.0.27',
+                _F(INST=1.0*Tmax,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3216',
+                   NOM_CMP='DY',
+                   VALE_CALC=-25.649999999999999,
+                   TOLE_MACHINE=(1.E-3, 1.E-6),
                    ),
-                ),);
+                ),
+          )
+
 FIN()

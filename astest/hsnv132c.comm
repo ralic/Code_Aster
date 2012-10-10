@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 # hsnv132c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -162,20 +162,26 @@ TABDEP= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
 IMPR_TABLE(TABLE=TABDEP)
 
 # REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES)
-TEST_TABLE(TABLE=TABDEP,
-           NOM_PARA='DX',
-           VALE= -8.740426289951E-04,
-           FILTRE=_F(NOM_PARA='INST',VALE=1.0,),
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER');                        
+           VALE_CALC=-8.87603830E-04,
+           VALE_REFE=-8.7404262899510004E-4,
+           NOM_PARA='DX',
+           TABLE=TABDEP,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
-TEST_TABLE(TABLE=TABDEP,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 3.82801698E-03,
+           VALE_REFE=3.8260958514619E-3,
            NOM_PARA='DY',
-           VALE=  3.8260958514619E-03,
-           FILTRE=_F(NOM_PARA='INST',VALE=1.0,),
-           CRITERE='RELATIF',
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER');                     
+           TABLE=TABDEP,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 FIN();

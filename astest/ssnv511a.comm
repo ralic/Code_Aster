@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BLOC DECOUPE PAR DEUX INTERFACES INTERSECTEES AVEC X-FEM
 # ssnv511a.para = tps_job 50 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -211,30 +211,30 @@ for i in [1,2,3,4]: #Boucle sur les zones
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX',
              TYPE_TEST='MIN',
-             VALE=vale[i],
+             VALE_CALC=vale[i], VALE_REFE=vale[i],    #TODO vale_calc
              CRITERE='RELATIF',
-             PRECISION=preci,
+             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX',
              TYPE_TEST='MAX',
-             VALE=vale[i],
+             VALE_CALC=vale[i], VALE_REFE=vale[i],    #TODO vale_calc
              CRITERE='RELATIF',
-             PRECISION=preci,
+             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY',
              TYPE_TEST='MIN',
-             VALE=0,
+             VALE_CALC=0, VALE_REFE=0,    #TODO vale_calc
              CRITERE='ABSOLU',
-             PRECISION=preci,
+             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY',
              TYPE_TEST='MAX',
-             VALE=0,
+             VALE_CALC=0, VALE_REFE=0,    #TODO vale_calc
              CRITERE='ABSOLU',
-             PRECISION=preci,
+             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
              REFERENCE='ANALYTIQUE',);
 
 FIN();                  

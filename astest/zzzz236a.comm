@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION CREA_MAILLAGE, MAILLAGE RESTREINT
 # zzzz236a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,6 +74,7 @@ for unmail,lesval in ListeMail.iteritems():
    DEFI_FICHIER(ACTION='LIBERER',UNITE=unite)
    DETRUIRE(CONCEPT=(_F(NOM=unite),), INFO=1)
    md5sum,nbvale = lesval
-   TEST_FICHIER(FICHIER=nomfic,VALE_K=md5sum,NB_VALE=nbvale,REFERENCE='SOURCE_EXTERNE')
+   TEST_FICHIER(FICHIER=nomfic,VALE_CALC_K=md5sum,NB_VALE=nbvale)
 
 FIN()
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtna102g.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -278,54 +278,63 @@ U0   = CALC_CHAMP    (  reuse =U0,
                        VARI_INTERNE='VARI_NOEU',
                        RESULTAT     = U0   ,);
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=60,
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE2',
                   NOEUD='N12',
-                  VALE=7.900E+3,
+                  NOM_CMP='PRE2',
+                  VALE_CALC= 7.94462385E+03,
+                  VALE_REFE=7900.0,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-1,
-                  REFERENCE='AUTRE_ASTER',VERSION = '9.2.18'),);
+                  PRECISION=0.10000000000000001,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=100,
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE2',
                   NOEUD='N12',
-                  VALE=9.500E+3,
+                  NOM_CMP='PRE2',
+                  VALE_CALC= 9.55683198E+03,
+                  VALE_REFE=9500.0,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-1,
-                  REFERENCE='AUTRE_ASTER',VERSION = '9.2.18'),);
+                  PRECISION=0.10000000000000001,
+                  ),
+          )
 
-
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=60,
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE2',
                   NOEUD='N12',
-                  VALE=7.944624E+3,
+                  NOM_CMP='PRE2',
+                  VALE_CALC=7944.6239999999998,
+                  TOLE_MACHINE=1.E-4,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-4,
-                  REFERENCE='NON_REGRESSION',VERSION = '9.2.18'),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=100,
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE2',
                   NOEUD='N12',
-                  VALE=9.55683E+3,
+                  NOM_CMP='PRE2',
+                  VALE_CALC=9556.8299999999999,
+                  TOLE_MACHINE=1.E-4,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-4,
-                  REFERENCE='NON_REGRESSION',VERSION = '9.2.18'),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=100,
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  RESULTAT=U0,
                   NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V5',
                   NOEUD='N12',
-                  VALE=0.4,
+                  NOM_CMP='V5',
+                  VALE_CALC=0.40000000000000002,
+                  TOLE_MACHINE=1.E-4,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-4,
-                  REFERENCE='NON_REGRESSION',VERSION = '9.2.18'),);
+                  ),
+          )
+
 FIN();

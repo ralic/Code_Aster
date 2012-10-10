@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE SANS DISQUE
 # sdll141b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,30 +95,32 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
 
 
                                   
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=1,
-                PARA='FREQ',
-                VALE=122.7475,),
-
-                _F(RESULTAT=MODES,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=3,
-                PARA='FREQ',
-                VALE=490.9899,),
-
-                _F(RESULTAT=MODES,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=5,
-                PARA='FREQ',
-                VALE=1104.7273,),
-
-                _F(RESULTAT=MODES,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=7,
-                PARA='FREQ',
-                VALE=1963.9596,),))
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=122.746050904,
+                   VALE_REFE=122.7475,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC=490.988932019,
+                   VALE_REFE=490.98989999999998,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC= 1.10477096E+03,
+                   VALE_REFE=1104.7273,),
+                _F(NUME_ORDRE=7,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODES,
+                   VALE_CALC= 1.96425507E+03,
+                   VALE_REFE=1963.9595999999999,),
+                ),
+          )
 
 OM=10000.
 
@@ -137,53 +139,56 @@ MODEG=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                                     NMAX_FREQ=30),)
 
 
-TEST_RESU(RESU=(_F(RESULTAT=MODEG,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=1,
-                PARA='FREQ',
-                VALE=119.7548),
-
-                _F(RESULTAT=MODEG,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=2,
-                PARA='FREQ',
-                VALE=125.8150,),
-
-                _F(RESULTAT=MODEG,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=3,
-                PARA='FREQ',
-                VALE=479.0191,),
-
-                _F(RESULTAT=MODEG,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=4,
-                PARA='FREQ',
-                VALE=503.2598,),
-
-                _F(RESULTAT=MODEG,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=5,
-                PARA='FREQ',
-                VALE=1077.7931,),
-
-                _F(RESULTAT=MODEG,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=6,
-                PARA='FREQ',
-                VALE=1132.3346,),
-
-                _F(RESULTAT=MODEG,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=7,
-                PARA='FREQ',
-                VALE=1916.0765,),
-
-                _F(RESULTAT=MODEG,
-                REFERENCE='SOURCE_EXTERNE',
-                NUME_ORDRE=9,
-                PARA='FREQ',
-                VALE=2013.0393,),))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEG,
+                   VALE_CALC=119.753395947,
+                   VALE_REFE=119.7548,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEG,
+                   VALE_CALC=125.813492749,
+                   VALE_REFE=125.815,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEG,
+                   VALE_CALC=479.018310063,
+                   VALE_REFE=479.01909999999998,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEG,
+                   VALE_CALC=503.258698679,
+                   VALE_REFE=503.25979999999998,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEG,
+                   VALE_CALC= 1.07783703E+03,
+                   VALE_REFE=1077.7931000000001,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEG,
+                   VALE_CALC= 1.13237794E+03,
+                   VALE_REFE=1132.3345999999999,),
+                _F(NUME_ORDRE=7,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEG,
+                   VALE_CALC= 1.91637232E+03,
+                   VALE_REFE=1916.0764999999999,),
+                _F(NUME_ORDRE=9,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEG,
+                   VALE_CALC= 2.01333422E+03,
+                   VALE_REFE=2013.0392999999999,),
+                ),
+          )
 
 FIN();
 

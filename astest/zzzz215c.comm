@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHAINAGE 3D CODE_SATURNE CODE_ASTER
 # zzzz215c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,24 +105,34 @@ RESU=STAT_NON_LINE(MODELE=MOSOLIDE,
 # ON MET COMME VALEUR DE REFERENCE LA VALEUR OBTENUE SUR MACHINES
 # 64 BITS
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   INST=1.,
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   REFERENCE='NON_REGRESSION',
-                   NOEUD='N134',NOM_CMP='DX',
-                   VALE=    19244.003483488  ,   PRECISION=3.E-2, ),
-                _F(RESULTAT=RESU,
-                   INST=1.,
+                   NOEUD='N134',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.92440035E+04,
+                   VALE_REFE=1.9244003483487999E4,
+                   PRECISION=0.029999999999999999,),
+                _F(INST=1.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   REFERENCE='NON_REGRESSION',
-                   NOEUD='N134',NOM_CMP='DY',
-                   VALE=    -12995.214902305 ,   PRECISION=3.E-2, ),
-                _F(RESULTAT=RESU,
-                   INST=1.,
+                   NOEUD='N134',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.29952149E+04,
+                   VALE_REFE=-1.2995214902305001E4,
+                   PRECISION=0.029999999999999999,),
+                _F(INST=1.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   REFERENCE='NON_REGRESSION',
-                   NOEUD='N134',NOM_CMP='DZ',
-                   VALE=     3911.0523216041 ,   PRECISION=3.E-2, )
-                   ))
+                   NOEUD='N134',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 3.91105232E+03,
+                   VALE_REFE=3911.0523216041001,
+                   PRECISION=0.029999999999999999,),
+                ),
+          )
 
 FIN();

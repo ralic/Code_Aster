@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  COOR_ELGA POUR LES DISCRETS EN 2D ET 3D
 # zzzz266a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,14 +68,36 @@ PourTest = [
    ['M5',  2,  1.00,  3.50,  4.35,  0.2512469],
 ]
 for maille,point,X,Y,Z,W in PourTest:
-   TEST_RESU(
-      CHAM_ELEM=(
-         _F(CHAM_GD = coor3d, MAILLE = maille, POINT = point, NOM_CMP = 'X',VALE=X , REFERENCE='ANALYTIQUE'),
-         _F(CHAM_GD = coor3d, MAILLE = maille, POINT = point, NOM_CMP = 'Y',VALE=Y , REFERENCE='ANALYTIQUE'),
-         _F(CHAM_GD = coor3d, MAILLE = maille, POINT = point, NOM_CMP = 'Z',VALE=Z , REFERENCE='ANALYTIQUE'),
-         _F(CHAM_GD = coor3d, MAILLE = maille, POINT = point, NOM_CMP = 'W',VALE=W , REFERENCE='ANALYTIQUE'),
-      )
-   )
+   TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='X',
+                           MAILLE=maille,
+                           CHAM_GD=coor3d,
+                           VALE_CALC=X,
+                           VALE_REFE=X,),
+                        _F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='Y',
+                           MAILLE=maille,
+                           CHAM_GD=coor3d,
+                           VALE_CALC=Y,
+                           VALE_REFE=Y,),
+                        _F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='Z',
+                           MAILLE=maille,
+                           CHAM_GD=coor3d,
+                           VALE_CALC=Z,
+                           VALE_REFE=Z,),
+                        _F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='W',
+                           MAILLE=maille,
+                           CHAM_GD=coor3d,
+                           VALE_CALC=W,
+                           VALE_REFE=W,),
+                        ),
+             )
 
 PourTest = [
    ['M1',  1,  1.00,  0.00,  0.0],
@@ -86,12 +108,29 @@ PourTest = [
    ['M5',  2,  2.00,  3.50,  0.559017],
 ]
 for maille,point,X,Y,W in PourTest:
-   TEST_RESU(
-      CHAM_ELEM=(
-         _F(CHAM_GD = coor2d, MAILLE = maille, POINT = point, NOM_CMP = 'X',VALE=X , REFERENCE='ANALYTIQUE'),
-         _F(CHAM_GD = coor2d, MAILLE = maille, POINT = point, NOM_CMP = 'Y',VALE=Y , REFERENCE='ANALYTIQUE'),
-         _F(CHAM_GD = coor2d, MAILLE = maille, POINT = point, NOM_CMP = 'W',VALE=W , REFERENCE='ANALYTIQUE'),
-      )
-   )
+   TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='X',
+                           MAILLE=maille,
+                           CHAM_GD=coor2d,
+                           VALE_CALC=X,
+                           VALE_REFE=X,),
+                        _F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='Y',
+                           MAILLE=maille,
+                           CHAM_GD=coor2d,
+                           VALE_CALC=Y,
+                           VALE_REFE=Y,),
+                        _F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='W',
+                           MAILLE=maille,
+                           CHAM_GD=coor2d,
+                           VALE_CALC=W,
+                           VALE_REFE=W,),
+                        ),
+             )
+
 
 FIN()

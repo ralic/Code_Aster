@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 # wtnv121b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -333,30 +333,23 @@ REPONSE=CALC_CHAMP(reuse =REPONSE,
                CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',
                TOUT='OUI');
 
-TEST_RESU(RESU=(
+TEST_RESU(RESU=(_F(GROUP_NO='E',
+                   INST=1.0,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=2531.64454,
+                   TOLE_MACHINE=1.E-05,
+                   ),
+                _F(GROUP_NO='E',
+                   INST=1.0,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='PRE1',
+                   VALE_CALC=3.7144950E7,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   ),
+                ),
+          )
 
-# CONTRAINTE SIZZ
-                _F(  RESULTAT = REPONSE,
-                       GROUP_NO = 'E',
-                       NOM_CHAM = 'SIGM_NOEU',
-                       NOM_CMP = 'SIZZ',
-                       INST = 1.,
-                       REFERENCE='NON_REGRESSION',
-                       PRECISION = 1.E-5,
-                       VALE = 2531.64454,
-                     ),
-
-
-# CAPILLARITE : PRE1
-                 _F(  RESULTAT = REPONSE,
-                       GROUP_NO = 'E',
-                       NOM_CHAM = 'DEPL',
-                       NOM_CMP = 'PRE1',
-                       INST = 1.,
-                       REFERENCE='NON_REGRESSION',
-                       PRECISION = 1.E-5,
-                       VALE = 3.714495E+07,
-                     ),
-                    )
-                    )
 FIN () ;

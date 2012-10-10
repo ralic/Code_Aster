@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : POUTRE DROITE AVEC AMORTISSEMENT DE RAYLEIGH
 # sdls123a.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
@@ -136,18 +136,17 @@ IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_ACC,),),);
 
 # EUROPLEXUS (Q4GS GLRC) t=0.001s, DZ=-1.794973E-5 m
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = DYNA_AMO,
-               NUME_ORDRE = 100,
-               NOM_CHAM = 'DEPL',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.12,
-               NOEUD = 'N9',
-               NOM_CMP = 'DZ',
-               VALE = -1.794973E-5,
-               REFERENCE = 'SOURCE_EXTERNE'),
-             ),
-          );
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=DYNA_AMO,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N9',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-1.98472103E-05,
+                  VALE_REFE=-1.7949730000000001E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=0.12,),
+          )
 
 # --------------------------
 # VERIFICATION DES VITESSES
@@ -155,19 +154,17 @@ TEST_RESU(RESU=(
 
 # EUROPLEXUS (Q4GS GLRC) t=0.001s, DZ=-3.762071E-2 m/s
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = DYNA_AMO,
-               NUME_ORDRE = 100,
-               NOM_CHAM = 'VITE',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.055,
-               NOEUD = 'N9',
-               NOM_CMP = 'DZ',
-               VALE = -3.762071E-2,
-               REFERENCE = 'SOURCE_EXTERNE'),
-             ),
-          );
-
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=DYNA_AMO,
+                  NOM_CHAM='VITE',
+                  NOEUD='N9',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.039470438,
+                  VALE_REFE=-0.037620710000000002,
+                  CRITERE='RELATIF',
+                  PRECISION=0.055,),
+          )
 
 # -------------------------------
 # VERIFICATION DES ACCELERATIONS
@@ -175,18 +172,16 @@ TEST_RESU(RESU=(
 
 # EUROPLEXUS (Q4GS GLRC) t=0.001s, DZ=-39.09299 m/s/s
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = DYNA_AMO,
-               NUME_ORDRE = 100,
-               NOM_CHAM = 'ACCE',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.025,
-               NOEUD = 'N9',
-               NOM_CMP = 'DZ',
-               VALE = -39.09299,
-               REFERENCE = 'SOURCE_EXTERNE'),
-             ),
-          );
-
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=DYNA_AMO,
+                  NOM_CHAM='ACCE',
+                  NOEUD='N9',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-38.615468985,
+                  VALE_REFE=-39.09299,
+                  CRITERE='RELATIF',
+                  PRECISION=0.025000000000000001,),
+          )
 
 FIN()

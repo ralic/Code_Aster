@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE UTILISATION DE LA MARCO_CARA_POUTRE
 # ssll107k.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,75 +37,67 @@ TAB_FIN=MACR_CARA_POUTRE(UNITE=22,
                          GROUP_MA_BORD=('int','ext',),
                          NOEUD='N1',);
 
-TEST_TABLE(TABLE=TAB_PL,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.1999997984162001,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='AY',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=1.E-5,
-           CRITERE='ABSOLU',
-           VERSION='11.01.18',
-           VALE=1.1999997984162,);
+           TABLE=TAB_PL,
+           )
 
-TEST_TABLE(TABLE=TAB_PL,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.199999816644,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='AZ',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=1.E-5,
-           CRITERE='ABSOLU',
-           VERSION='11.01.18',
-           VALE=1.199999816644,);
+           TABLE=TAB_PL,
+           )
 
-TEST_TABLE(TABLE=TAB_PL,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=90.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='ALPHA',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=1.E-5,
-           CRITERE='ABSOLU',
-           VERSION='11.01.18',
-           VALE=90.0,);
+           TABLE=TAB_PL,
+           )
 
-TEST_TABLE(TABLE=TAB_EP,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.9043096987663,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='AY',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=1.E-5,
-           CRITERE='ABSOLU',
-           VERSION='11.01.18',
-           VALE=1.9043096987663,);
+           TABLE=TAB_EP,
+           )
 
-TEST_TABLE(TABLE=TAB_EP,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.8122592590685001,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='AZ',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=1.E-5,
-           CRITERE='ABSOLU',
-           VERSION='11.01.18',
-           VALE=1.8122592590685,);
+           TABLE=TAB_EP,
+           )
 
-TEST_TABLE(TABLE=TAB_EP,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='ALPHA',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=1.E-5,
-           CRITERE='ABSOLU',
-           VERSION='11.01.18',
-           VALE=0.0,);
+           TABLE=TAB_EP,
+           )
 
-TEST_TABLE(TABLE=TAB_FIN,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=3.1784387485691998,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='AY',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=1.E-5,
-           CRITERE='ABSOLU',
-           VERSION='11.01.18',
-           VALE=3.1784387485692,);
+           TABLE=TAB_FIN,
+           )
 
-TEST_TABLE(TABLE=TAB_FIN,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.8898381109169,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='AZ',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=1.E-5,
-           CRITERE='ABSOLU',
-           VERSION='11.01.18',
-           VALE=1.8898381109169,);
+           TABLE=TAB_FIN,
+           )
 
-TEST_TABLE(TABLE=TAB_FIN,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='ALPHA',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=1.E-5,
-           CRITERE='ABSOLU',
-           VERSION='11.01.18',
-           VALE=0.0,);
+           TABLE=TAB_FIN,
+           )
+
 FIN()

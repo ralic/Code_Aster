@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME 2 MASSES 3 RESSORTS
 #       SYSTEME MASSE-RESSORT A 2 DEGRES DE LIBERTE
 #       ANALYSE SPECTRALE MULTI SUPPORTEE
@@ -145,11 +145,19 @@ MODES=CALC_CHAMP(  reuse=MODES,
                   )
 
 #
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MODES, PARA = 'FREQ', NUME_ORDRE = 1, VALE = 1.00,
-            REFERENCE = 'ANALYTIQUE'),
-          _F(  RESULTAT = MODES, PARA = 'FREQ', NUME_ORDRE = 2, VALE = 2.236,
-            REFERENCE = 'ANALYTIQUE'))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=1.000005841,
+                   VALE_REFE=1.0,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=2.236081039,
+                   VALE_REFE=2.2360000000000002,),
+                ),
           )
 
 #
@@ -181,23 +189,39 @@ MODE_STA=CALC_CHAMP(  reuse=MODE_STA,
                      )
 
 #
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MODE_STA, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ( 'P1', 'DX', ),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',       VALE = 0.6),
-          _F(  RESULTAT = MODE_STA, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ( 'P1', 'DX', ),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',       VALE = 0.4),
-          _F(  RESULTAT = MODE_STA, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ( 'P4', 'DX', ),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',       VALE = 0.4),
-          _F(  RESULTAT = MODE_STA, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ( 'P4', 'DX', ),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',       VALE = 0.6))
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_STA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.600000000,
+                   VALE_REFE=0.59999999999999998,
+                   NOEUD_CMP=('P1', 'DX'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_STA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.400000000,
+                   VALE_REFE=0.40000000000000002,
+                   NOEUD_CMP=('P1', 'DX'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_STA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.400000000,
+                   VALE_REFE=0.40000000000000002,
+                   NOEUD_CMP=('P4', 'DX'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_STA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.600000000,
+                   VALE_REFE=0.59999999999999998,
+                   NOEUD_CMP=('P4', 'DX'),),
+                ),
           )
 
 #
@@ -230,23 +254,39 @@ MODE_CO2=CALC_CHAMP(  reuse=MODE_CO2,
                      )
 
 #
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MODE_CO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ( 'P1', 'DX', ),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',       VALE = 1.317E-2),
-          _F(  RESULTAT = MODE_CO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ( 'P1', 'DX', ),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',       VALE = 1.216E-2),
-          _F(  RESULTAT = MODE_CO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ( 'P4', 'DX', ),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',       VALE = 1.216E-2),
-          _F(  RESULTAT = MODE_CO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ( 'P4', 'DX', ),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',       VALE = 1.317E-2))
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_CO2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.013171600,
+                   VALE_REFE=0.013169999999999999,
+                   NOEUD_CMP=('P1', 'DX'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_CO2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.012158400,
+                   VALE_REFE=0.012160000000000001,
+                   NOEUD_CMP=('P1', 'DX'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_CO2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.012158400,
+                   VALE_REFE=0.012160000000000001,
+                   NOEUD_CMP=('P4', 'DX'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_CO2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.013171600,
+                   VALE_REFE=0.013169999999999999,
+                   NOEUD_CMP=('P4', 'DX'),),
+                ),
           )
 
 #
@@ -348,15 +388,23 @@ MUQASRS=COMB_SISM_MODAL( MODE_MECA=MODES,
                                   'REAC_NODA', )
                            )
 #
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MUQASRS, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 5.65E-3),
-          _F(  RESULTAT = MUQASRS, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 5.65E-3))
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQASRS,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.65129788E-03,
+                   VALE_REFE=5.6499999999999996E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQASRS,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.65129788E-03,
+                   VALE_REFE=5.6499999999999996E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
           )
 
 MUQAABS=COMB_SISM_MODAL( MODE_MECA=MODES,
@@ -389,15 +437,23 @@ MUQAABS=COMB_SISM_MODAL( MODE_MECA=MODES,
                            )
 
 #
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MUQAABS, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 6.476E-3),
-          _F(  RESULTAT = MUQAABS, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 6.476E-3))
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQAABS,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 6.47688578E-03,
+                   VALE_REFE=6.476E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQAABS,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC= 6.47688578E-03,
+                   VALE_REFE=6.476E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
           )
 
 #
@@ -431,15 +487,23 @@ MUQADPC=COMB_SISM_MODAL(
                                        'REAC_NODA', )
                       )
 
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MUQADPC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 5.65E-3),
-          _F(  RESULTAT = MUQADPC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 5.65E-3))
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQADPC,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.65129788E-03,
+                   VALE_REFE=5.6499999999999996E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQADPC,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.65129788E-03,
+                   VALE_REFE=5.6499999999999996E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
           )
 
 MUQACQC=COMB_SISM_MODAL( MODE_MECA=MODES,
@@ -470,15 +534,23 @@ MUQACQC=COMB_SISM_MODAL( MODE_MECA=MODES,
                            )
 
 #
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MUQACQC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 5.650E-3),
-     _F(  RESULTAT = MUQACQC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 5.65157E-3))
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQACQC,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.65049549E-03,
+                   VALE_REFE=5.6499999999999996E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQACQC,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.65210016E-03,
+                   VALE_REFE=5.6515699999999999E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
           )
 
 #
@@ -513,15 +585,23 @@ MUQADSC=COMB_SISM_MODAL( MODE_MECA=MODES,
                            )
 
 #
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MUQADSC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 5.649E-3),
-     _F(  RESULTAT = MUQADSC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 5.6521E-3))
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQADSC,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.64969441E-03,
+                   VALE_REFE=5.6490000000000004E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MUQADSC,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.65290090E-03,
+                   VALE_REFE=5.6521000000000002E-3,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
           )
 
 #

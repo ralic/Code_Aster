@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE Validation de AFFE_CHAR_MECA / ARETE_IMPO
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,32 +119,36 @@ RESU0=MECA_STATIQUE(MODELE=MO,
 
 IMPR_RESU(RESU=_F(RESULTAT=RESU0,NOM_CHAM='DEPL',GROUP_NO='A'),)
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU0,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU0,
                    NOM_CHAM='DEPL',
+                   NOEUD='N1',
                    NOM_CMP='DX',
-                   NOEUD='N1',#A
-                   VALE=11.2562,
-                   PRECISION=1.E-5,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU0,
-                   NUME_ORDRE=1,
+                   VALE_CALC=11.256159984,
+                   VALE_REFE=11.2562,
+                   PRECISION=1.0000000000000001E-05,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU0,
                    NOM_CHAM='DEPL',
+                   NOEUD='N1',
                    NOM_CMP='DY',
-                   NOEUD='N1',#A
-                   PRECISION=1.E-5,
-                   VALE=4.9688,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU0,
-                   NUME_ORDRE=1,
+                   VALE_CALC=4.968797593,
+                   VALE_REFE=4.9687999999999999,
+                   PRECISION=1.0000000000000001E-05,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU0,
                    NOM_CHAM='DEPL',
+                   NOEUD='N1',
                    NOM_CMP='DZ',
-                   NOEUD='N1',#A
-                   PRECISION=1.E-5,
-                   VALE=0.0,
+                   VALE_CALC= 0.00000000E+00,
+                   VALE_REFE=0.0,
                    CRITERE='ABSOLU',
-                   REFERENCE='AUTRE_ASTER',),),)
-
+                   PRECISION=1.0000000000000001E-05,),
+                ),
+          )
 
 # 1.2 EQUIVALENCE AVEC ARETE_IMPO
 # -------------------------------
@@ -167,28 +171,36 @@ RESU1=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHARG1,),);
 
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU1,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
+                   NOEUD='N1',
                    NOM_CMP='DX',
-                   NOEUD='N1',#A
-                   VALE=11.2562,PRECISION=1.E-5,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU1,
-                   NUME_ORDRE=1,
+                   VALE_CALC=11.256159984,
+                   VALE_REFE=11.2562,
+                   PRECISION=1.0000000000000001E-05,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
+                   NOEUD='N1',
                    NOM_CMP='DY',
-                   NOEUD='N1',#A
-                   VALE=4.9688,PRECISION=1.E-5,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU1,
-                   NUME_ORDRE=1,
+                   VALE_CALC=4.968797593,
+                   VALE_REFE=4.9687999999999999,
+                   PRECISION=1.0000000000000001E-05,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
+                   NOEUD='N1',
                    NOM_CMP='DZ',
-                   NOEUD='N1',#A
-                   VALE=0.0,PRECISION=1.E-5,
+                   VALE_CALC= 0.00000000E+00,
+                   VALE_REFE=0.0,
                    CRITERE='ABSOLU',
-                   REFERENCE='AUTRE_ASTER',),),)
+                   PRECISION=1.0000000000000001E-05,),
+                ),
+          )
 
 #
 # 2 - VALIDATION DE ARETE_IMPO/DTAN (ARETES OBLIQUES)
@@ -212,31 +224,35 @@ RESU2=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHARG2,),);
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU2,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU2,
                    NOM_CHAM='DEPL',
+                   NOEUD='N4',
                    NOM_CMP='DX',
-                   NOEUD='N4',#D
-                   VALE=0.443218,
-                   PRECISION=1.E-5,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU2,
-                   NUME_ORDRE=1,
+                   VALE_CALC=0.443218112,
+                   VALE_REFE=0.443218,
+                   PRECISION=1.0000000000000001E-05,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU2,
                    NOM_CHAM='DEPL',
+                   NOEUD='N4',
                    NOM_CMP='DY',
-                   NOEUD='N4',#D
-                   VALE=0.182208,
-                   PRECISION=1.E-5,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU2,
-                   NUME_ORDRE=1,
+                   VALE_CALC=0.182208083,
+                   VALE_REFE=0.18220800000000001,
+                   PRECISION=1.0000000000000001E-05,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU2,
                    NOM_CHAM='DEPL',
+                   NOEUD='N4',
                    NOM_CMP='DZ',
-                   NOEUD='N4',#D
-                   VALE=-1.00511,
-                   PRECISION=1.E-5,
-                   REFERENCE='AUTRE_ASTER',),),)
-
+                   VALE_CALC=-1.005107471,
+                   VALE_REFE=-1.0051099999999999,
+                   PRECISION=1.0000000000000001E-05,),
+                ),
+          )
 
 # 1.2 EQUIVALENCE AVEC ARETE_IMPO
 # -------------------------------
@@ -261,30 +277,34 @@ RESU3=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHARG3,),);
 
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU3,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU3,
                    NOM_CHAM='DEPL',
+                   NOEUD='N4',
                    NOM_CMP='DX',
-                   NOEUD='N4',#D
-                   VALE=0.443218,
-                   PRECISION=1.E-5,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU3,
-                   NUME_ORDRE=1,
+                   VALE_CALC=0.443217971,
+                   VALE_REFE=0.443218,
+                   PRECISION=1.0000000000000001E-05,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU3,
                    NOM_CHAM='DEPL',
+                   NOEUD='N4',
                    NOM_CMP='DY',
-                   NOEUD='N4',#D
-                   VALE=0.182208,
-                   PRECISION=2.E-5,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU3,
+                   VALE_CALC=0.182206039,
+                   VALE_REFE=0.18220800000000001,
+                   PRECISION=2.0000000000000002E-05,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU3,
                    NOM_CHAM='DEPL',
-                   NUME_ORDRE=1,
+                   NOEUD='N4',
                    NOM_CMP='DZ',
-                   NOEUD='N4',#D
-                   VALE=-1.00511,
-                   PRECISION=1.E-5,
-                   REFERENCE='AUTRE_ASTER',),),)
-
+                   VALE_CALC=-1.005107364,
+                   VALE_REFE=-1.0051099999999999,
+                   PRECISION=1.0000000000000001E-05,),
+                ),
+          )
 
 FIN()

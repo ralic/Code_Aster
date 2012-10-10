@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134b.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,27 +89,32 @@ TB2=MACR_LIGN_COUPE( RESULTAT= CHAMDEPL,
                                       ),)
 IMPR_TABLE(TABLE=TB2)
 
-TEST_TABLE(  TABLE=TB2,
-             FILTRE=_F( NOM_PARA = 'ANGLE',
-                        VALE = 45.),
-             REFERENCE='NON_REGRESSION',
-             NOM_PARA='SIXX',
-             VALE=-2.4400243795057E+05,
-             PRECISION=0.00001)
-TEST_TABLE(  TABLE=TB2,
-             FILTRE=_F( NOM_PARA = 'ANGLE',
-                        VALE = 45.),
-             REFERENCE='NON_REGRESSION',
-             NOM_PARA='SIYY',
-             VALE= 3.6792169373522E+04,
-             PRECISION=0.00001)
-TEST_TABLE(  TABLE=TB2,
-             FILTRE=_F( NOM_PARA = 'ANGLE',
-                        VALE = 45.),
-             REFERENCE='NON_REGRESSION',
-             NOM_PARA='SIZZ',
-             VALE= 3.5717492414376E+05,
-             PRECISION=0.00001)
+TEST_TABLE(
+           VALE_CALC=-2.4400243795056999E5,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='SIXX',
+           TABLE=TB2,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=45.0,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.6792169373522003E4,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='SIYY',
+           TABLE=TB2,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=45.0,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.5717492414376E5,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='SIZZ',
+           TABLE=TB2,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=45.0,),
+           )
 
 TB2L=MACR_LIGN_COUPE( RESULTAT= CHAMDEPL,
                      NOM_CHAM= 'SIGM_NOEU',
@@ -123,29 +128,32 @@ TB2L=MACR_LIGN_COUPE( RESULTAT= CHAMDEPL,
                                       ),)
 IMPR_TABLE(TABLE=TB2L)
 
-TEST_TABLE(  TABLE=TB2L,
-             FILTRE=_F( NOM_PARA = 'ANGLE',
-                        VALE = 45.),
-             REFERENCE='NON_REGRESSION',
-             NOM_PARA='SIXX',
-             VALE= 6.8464992024073E+05,
-             PRECISION=0.00001)
+TEST_TABLE(
+           VALE_CALC=6.8464992024073005E5,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='SIXX',
+           TABLE=TB2L,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=45.0,),
+           )
 
-TEST_TABLE(  TABLE=TB2L,
-             FILTRE=_F( NOM_PARA = 'ANGLE',
-                        VALE = 45.),
-             REFERENCE='NON_REGRESSION',
-             NOM_PARA='SIYY',
-             VALE=-2.4400243795057E+05,
-             PRECISION=0.00001)
+TEST_TABLE(
+           VALE_CALC=-2.4400243795056999E5,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='SIYY',
+           TABLE=TB2L,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=45.0,),
+           )
 
-TEST_TABLE(  TABLE=TB2L,
-             FILTRE=_F( NOM_PARA = 'ANGLE',
-                        VALE = 45.),
-             REFERENCE='NON_REGRESSION',
-             NOM_PARA='SIZZ',
-             VALE=-2.9068282672345E+05,
-             PRECISION=0.00001)
+TEST_TABLE(
+           VALE_CALC=-2.9068282672344998E5,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='SIZZ',
+           TABLE=TB2L,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=45.0,),
+           )
 
 FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     FOND_FISS=_F(GROUP_MA = 'LFF1',
@@ -169,29 +177,35 @@ GLOC1=CALC_G(           RESULTAT=CHAMDEPL,
                                  R_INF=RINF,),
                     )
 
-TEST_TABLE(TABLE=GLOC1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=11.737106824,
+           VALE_REFE=11.58648,
            NOM_PARA='G',
-           FILTRE=_F(NOM_PARA = 'NOEUD',
-                     VALE_K = 'N49'),
-           VALE=Gref,
-           PRECISION=0.03,
-           REFERENCE='ANALYTIQUE'       )
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N49',),
+           )
 
-TEST_TABLE(TABLE=GLOC1,
-           NOM_PARA='G',
-           FILTRE=_F(NOM_PARA = 'NOEUD',
-                     VALE_K = 'N1710'),
-           VALE=Gref,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE'       )
-
-TEST_TABLE(TABLE=GLOC1,
+           VALE_CALC=11.759838337,
+           VALE_REFE=11.58648,
            NOM_PARA='G',
-           FILTRE=_F(NOM_PARA = 'NOEUD',
-                     VALE_K = 'N77'),
-           VALE=Gref,
-           PRECISION=0.03,
-           REFERENCE='ANALYTIQUE'       )
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1710',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=11.727943329,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N77',),
+           )
 
 RAY_INF1=DEFI_CONSTANTE(VALE=RINF)
 
@@ -216,10 +230,12 @@ G0=CALC_G (  OPTION='CALC_G_GLOB',
 # POUR UN QUART DE FISSURE G=36.4
 
 
-TEST_TABLE(       TABLE=G0,
-                  NOM_PARA='G',
-                      VALE=36.4,
-                 PRECISION=0.012        )
+TEST_TABLE(PRECISION=0.012,
+           VALE_CALC=36.822445397,
+           VALE_REFE=36.399999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G0,)
 
 # POST_K1_K2_K3
 
@@ -244,71 +260,81 @@ IMPR_TABLE(TABLE=TABL_KTO,);
 
 # ---------------
 
-TEST_TABLE(TABLE=TABL_K1,
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.60700908E+06,
+           VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N49'),
-           VALE=K1ref,
-           PRECISION=0.01)
+           TABLE=TABL_K1,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N49',),
+           )
 
-
-TEST_TABLE(TABLE=TABL_K1,
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=11.750275784,
+           VALE_REFE=11.58648,
            NOM_PARA='G',
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N49'),
-           VALE=Gref,
-           PRECISION=0.02)
+           TABLE=TABL_K1,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N49',),
+           )
 
 # ---------------
 
-TEST_TABLE(TABLE=TABL_K1,
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.60693748E+06,
+           VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N1710'),
-           VALE=K1ref,
-           PRECISION=0.01)
+           TABLE=TABL_K1,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N1710',),
+           )
 
-
-TEST_TABLE(TABLE=TABL_K1,
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=11.749228757,
+           VALE_REFE=11.58648,
            NOM_PARA='G',
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N1710'),
-           VALE=Gref,
-           PRECISION=0.02)
-
+           TABLE=TABL_K1,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N1710',),
+           )
 
 # ---------------
 
-TEST_TABLE(TABLE=TABL_K1,
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.60620890E+06,
+           VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N77'),
-           VALE=K1ref,
-           PRECISION=0.01)
+           TABLE=TABL_K1,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N77',),
+           )
 
-
-TEST_TABLE(TABLE=TABL_K1,
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=11.738577035,
+           VALE_REFE=11.58648,
            NOM_PARA='G',
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N77'),
-           VALE=Gref,
-           PRECISION=0.02)
+           TABLE=TABL_K1,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N77',),
+           )
 
 # ---------------
 
-TEST_TABLE(TABLE=TABL_KTO,
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                     VALE_K = 'N49'),
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.60700908E+06,
+           VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           VALE=K1ref,
-           PRECISION=0.01)
+           TABLE=TABL_KTO,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N49',),
+           )
 
 # TEST INFORMATIQUE : VALIDATION DE DEFI_FOND_FISS
 FISSM=DEFI_FOND_FISS(MAILLAGE=MA,
@@ -326,13 +352,15 @@ TABL_KTM=POST_K1_K2_K3(MODELISATION='3D',
 
 IMPR_TABLE(TABLE=TABL_KTM,);
 
-TEST_TABLE(TABLE=TABL_KTM,
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N49'),
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.60700908E+06,
+           VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           VALE=K1ref,
-           PRECISION=0.01)
+           TABLE=TABL_KTM,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N49',),
+           )
 
 MA = DEFI_GROUP (reuse = MA,
                     MAILLAGE = MA,
@@ -355,14 +383,15 @@ TABL_KTN=POST_K1_K2_K3(MODELISATION='3D',
 
 IMPR_TABLE(TABLE=TABL_KTN,);
 
-TEST_TABLE(TABLE=TABL_KTN,
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N49'),
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.60700908E+06,
+           VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           VALE=K1ref,
-           PRECISION=0.01)
-
+           TABLE=TABL_KTN,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N49',),
+           )
 
 # POST_K1_K2_K3 : VALIDATION GROUP_NO
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
@@ -381,13 +410,15 @@ TABL_K4=POST_K1_K2_K3(MODELISATION='3D',
 
 IMPR_TABLE(TABLE=TABL_K4)
 
-TEST_TABLE(TABLE=TABL_K4,
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N49'),
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.60700908E+06,
+           VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           VALE=K1ref,
-           PRECISION=0.01)
+           TABLE=TABL_K4,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N49',),
+           )
 
 # POST_K1_K2_K3 : VALIDATION TYPE_MA = LIBRE
 TABL_K5=POST_K1_K2_K3(MODELISATION='3D',
@@ -401,13 +432,15 @@ TABL_K5=POST_K1_K2_K3(MODELISATION='3D',
 
 IMPR_TABLE(TABLE=TABL_K5,);
 
-TEST_TABLE(TABLE=TABL_K5,
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                     VALE_K = 'N49'),
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.60197354E+06,
+           VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           VALE=K1ref,
-           PRECISION=0.01)
+           TABLE=TABL_K5,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N49',),
+           )
 
 # POST_K1_K2_K3/LIBRE : VALIDATION INFORMATIQUE (SENS PROPA.)
 TABL_K6=POST_K1_K2_K3(MODELISATION='3D',
@@ -422,11 +455,14 @@ TABL_K6=POST_K1_K2_K3(MODELISATION='3D',
 
 IMPR_TABLE(TABLE=TABL_K6)
 
-TEST_TABLE(TABLE=TABL_K6,
-           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
-                      VALE_K = 'N49'),
-           REFERENCE='ANALYTIQUE',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.60197354E+06,
+           VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           VALE=K1ref,
-           PRECISION=0.01)
+           TABLE=TABL_K6,
+           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+                     VALE_K='N49',),
+           )
+
 FIN()

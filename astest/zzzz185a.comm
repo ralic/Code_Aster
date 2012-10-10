@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  COMMANDE MODI_MAILLAGE ET SYMETRIE / PROJ_CHAMP ET DISTANCE_MAX
 # zzzz185a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -342,16 +342,24 @@ rdiffer=CREA_RESU(
    AFFE=(_F(CHAM_GD=chpnodif, INST=1.0,),),
 )
 # D.5
-TEST_RESU(
-  RESU=(_F(RESULTAT=rdiffer, INST=1.0, NOM_CHAM='TEMP',
-           REFERENCE = 'NON_REGRESSION', VERSION='7.02',
-           CRITERE='ABSOLU', TYPE_TEST='MAX',
-           PRECISION= 1.0E-4, VALE=  0.0,),
-        _F(RESULTAT=rdiffer, INST=1.0, NOM_CHAM='TEMP',
-           REFERENCE = 'NON_REGRESSION', VERSION='7.02',
-           CRITERE='ABSOLU', TYPE_TEST='MIN',
-           PRECISION= 1.0E-4, VALE=  0.0,),),
-)
+TEST_RESU(RESU=(_F(INST=1.0,
+                   TYPE_TEST='MAX',
+                   RESULTAT=rdiffer,
+                   NOM_CHAM='TEMP',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(INST=1.0,
+                   TYPE_TEST='MIN',
+                   RESULTAT=rdiffer,
+                   NOM_CHAM='TEMP',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
 
 # ==========================================================
 # Impression au format GMSH

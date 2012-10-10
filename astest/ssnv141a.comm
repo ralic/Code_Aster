@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE HEMISPHERE TROUEEE DOUBLEMENT PINCEE
 # ssnv141a.para = tps_job 310 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,69 +116,81 @@ NONLIN=STAT_NON_LINE(
 ################## DEPLACEMENT X POSITIF
 
 
-TEST_RESU(  RESU=_F(
-                      RESULTAT = NONLIN,
-                                 INST = 20.,
-                      GROUP_NO = 'G_1',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      PRECISION = 0.2E-2,
-                      NOM_CMP = 'DX',
-                      VALE = 1.4846)
-            )
-
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=_F(GROUP_NO='G_1',
+                  INST=20.0,
                   RESULTAT=NONLIN,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.486157037,
+                  VALE_REFE=1.4845999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='G_1',
                   INST=50.0,
-                  VALE=2.5785,
-                  GROUP_NO='G_1',
-                  NOM_CMP='DX',),);
-
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLIN,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=2.571738128,
+                  VALE_REFE=2.5785,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='G_1',
                   INST=100.0,
-                  VALE=3.3903,
-                  GROUP_NO='G_1',
-                  NOM_CMP='DX',),);
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.362266263,
+                  VALE_REFE=3.3902999999999999,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
 ###########################   DEPLACEMENT Y NEGATIF
 
 
-TEST_RESU( RESU=_F(
-                    RESULTAT = NONLIN,
-                     INST = 20.,
-                     NOM_CHAM = 'DEPL',
-                     CRITERE = 'RELATIF',
-                     PRECISION = 1.E-2,
-                     GROUP_NO = 'G_2',
-                     NOM_CMP = 'DY',
-                     VALE = -1.7997)
-            )
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=_F(GROUP_NO='G_2',
+                  INST=20.0,
                   RESULTAT=NONLIN,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.816833270,
+                  VALE_REFE=-1.7997000000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='G_2',
                   INST=50.0,
-                  VALE=-3.7586,
-                  GROUP_NO='G_2',
-                  NOM_CMP='DY',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLIN,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-3.779000244,
+                  VALE_REFE=-3.7585999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='G_2',
                   INST=100.0,
-                  VALE=-5.8021,
-                  GROUP_NO='G_2',
-                  NOM_CMP='DY',),);
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.784680391,
+                  VALE_REFE=-5.8021000000000003,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
 FIN( )

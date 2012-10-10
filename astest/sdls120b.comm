@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE 2D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdls120b.para = tps_job 30 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -192,25 +192,26 @@ IMPR_RESU(FORMAT='GMSH',
                   TYPE_CHAM='VECT_2D',
                   NOM_CMP=('DX','DY',),),);
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
-                  VALE=7.0058116959,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODES,
+                  VALE_CALC=6.902413467,
+                  VALE_REFE=7.0058116959000003,
                   CRITERE='RELATIF',
-                  PRECISION=0.015,
-                  REFERENCE='AUTRE_ASTER',),);
-
+                  PRECISION=0.014999999999999999,),
+          )
 
 #ET LES TEST_RESU DE NON-REGRESSION
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
-                  VALE=6.9024134670582,
+                  RESULTAT=MODES,
+                  VALE_CALC=6.9024134670582002,
+                  
                   CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
-
+                  ),
+          )
 
 FIN();
 

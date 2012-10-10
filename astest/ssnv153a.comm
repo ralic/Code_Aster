@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT/FROTTEMENT POULIE
 # ssnv153a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,47 +145,47 @@ SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                        )
 
 
-TEST_RESU(
-            CHAM_ELEM=_F(
-                       CHAM_GD = SIELNO,
-                       MAILLE = 'M96',
-                       NOEUD = 'N37',
-                       NOM_CMP = 'SIYY',
-                       VALE = -5.97E+05,
-                       PRECISION = 2.0E-02,
-                       REFERENCE = 'ANALYTIQUE',
-                       CRITERE = 'RELATIF'),RESU=(
-            _F(
-                  RESULTAT = RESU,
-                  NUME_ORDRE = 1,
-                  NOM_CHAM = 'DEPL',
-                  NOEUD = 'N450',
-                  NOM_CMP = 'DX',
-                  VALE = 0.0,
-                  PRECISION = 1.0E-7,
-                  REFERENCE = 'ANALYTIQUE',
-                  CRITERE = 'ABSOLU'),
-            _F(
-                  RESULTAT = RESU,
-                  NUME_ORDRE = 1,
-                  NOM_CHAM = 'DEPL',
-                  NOEUD = 'N37',
-                  NOM_CMP = 'DX',
-                  VALE = 0.0,
-                  PRECISION = 1.0E-7,
-                  REFERENCE = 'ANALYTIQUE',
-                  CRITERE = 'ABSOLU'),
-            _F(
-                  RESULTAT = RESU,
-                  NUME_ORDRE = 1,
-                  NOM_CHAM = 'DEPL',
-                  NOEUD = 'N476',
-                  NOM_CMP = 'DX',
-                  VALE = 0.0,
-                  PRECISION = 1.0E-7,
-                  REFERENCE = 'ANALYTIQUE',
-                  CRITERE = 'ABSOLU'))
-           )
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N37',
+                       CRITERE='RELATIF',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='SIYY',
+                       PRECISION=0.02,
+                       MAILLE='M96',
+                       CHAM_GD=SIELNO,
+                       VALE_CALC=-6.02712145E+05,
+                       VALE_REFE=-5.97000E5,),
+          RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N450',
+                   NOM_CMP='DX',
+                   VALE_CALC=-5.64175109E-09,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=9.9999999999999995E-08,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N37',
+                   NOM_CMP='DX',
+                   VALE_CALC= 3.04866205E-09,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=9.9999999999999995E-08,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N476',
+                   NOM_CMP='DX',
+                   VALE_CALC= 7.22223729E-35,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=9.9999999999999995E-08,),
+                ),
+          )
 
 #
 FIN( )

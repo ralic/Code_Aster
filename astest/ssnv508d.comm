@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # CAS TEST SSNV508D 
 # TITRE BLOC AVEC INTERFACE EN TRACTION ET PRESSION LATERALE SANS CONTACT
 # ssnv508d.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
@@ -250,73 +250,91 @@ DEP2 = CALC_TABLE(TABLE = DEP1,
 DXMIN= -10*1.E-6
 DXMAX=10*1.E-6
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC= 1.0000000002E-05,
+           VALE_REFE=9.9999999999999991E-06,
+           TOLE_MACHINE=1.E-10,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           VALE=DXMAX,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE');
+           TABLE=DEP2,)
 
-
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC=-9.9999999976E-06,
+           VALE_REFE=-9.9999999999999991E-06,
+           TOLE_MACHINE=1.E-10,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
-           VALE=DXMIN,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE');
+           TABLE=DEP2,)
+
 #DY=8.02*1.E-6 - 2.5*1.E-6*x*x*1.E-6-1/3 *z*z*1.E-6
 
 DYMIN=8.02*1.E-6 - 2.5*1.E-6-(1/3)*0.01*0.01*1.E-6
 DYMAX=8.02*1.E-6
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC= 5.5199833288E-06,
+           VALE_REFE=5.5199999999999997E-06,
+           TOLE_MACHINE=1.E-10,
            NOM_PARA='DY',
            TYPE_TEST='MIN',
-           VALE=DYMIN,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE');
+           TABLE=DEP2,)
 
-
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC= 8.0200333329E-06,
+           VALE_REFE=8.0199999999999994E-06,
+           TOLE_MACHINE=1.E-10,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
-           VALE=DYMAX,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE');
+           TABLE=DEP2,)
+
 DZMIN=-2*1.E-8
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC=-2.0000000009E-08,
+           VALE_REFE=-2.E-08,
+           TOLE_MACHINE=1.E-10,
            NOM_PARA='DZ',
            TYPE_TEST='MIN',
-           VALE=DZMIN,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE');
+           TABLE=DEP2,)
 
-TEST_RESU(RESU=(_F(  RESULTAT=RES_X1,NUME_ORDRE=1,
-                     NOM_CHAM='DEPL',NOM_CMP='DX',
-                     TYPE_TEST='SOMM_ABS',
-                     CRITERE = 'RELATIF',
-                     VALE =0.01059 ,PRECISION=1.E-6,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.12'),
-                _F(  RESULTAT=RES_X1,NUME_ORDRE=1,
-                     NOM_CHAM='DEPL',NOM_CMP='DY',
-                     TYPE_TEST='SOMM_ABS',
-                     CRITERE = 'RELATIF',
-                     VALE =0.03014571 ,PRECISION=1.E-6,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.12'),
-                 _F(  RESULTAT=RES_X1,NUME_ORDRE=1,
-                     NOM_CHAM='DEPL',NOM_CMP='DZ',
-                     TYPE_TEST='SOMM_ABS',
-                     CRITERE = 'RELATIF',
-                     VALE =1.94703257E-05 ,PRECISION=1.E-6,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.12')));
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_X1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.01059,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_X1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.030145709999999999,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_X1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=1.9470325699999999E-05,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 IMPR_TABLE(TABLE=DEP2,
            FORMAT='AGRAF',

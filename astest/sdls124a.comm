@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE EXCENTREE EN FLEXION SOUS CHARGEMENT DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -183,7 +183,8 @@ TEST_RESU(RESU=(
                   NOM_CHAM = 'DEPL',
                   NOM_CMP  = 'DX',
                   NUME_ORDRE=5204,
-                  VALE = 8.93912E-4,
+                  VALE_CALC=8.9002744860422E-04,
+                  VALE_REFE = 8.93912E-4,
                   REFERENCE='SOURCE_EXTERNE',
                   PRECISION = 5.0E-3),
                 _F(  RESULTAT=U,
@@ -192,7 +193,8 @@ TEST_RESU(RESU=(
                   NOM_CMP  = 'DZ',
                   #INST = 0.042,
                   NUME_ORDRE=5250,
-                  VALE = 1.3327E-2,
+                  VALE_CALC=0.013258722389151,
+                  VALE_REFE = 1.3327E-2,
                   REFERENCE='SOURCE_EXTERNE',
                   PRECISION = 6.0E-3),
                 _F(  RESULTAT=U,
@@ -201,7 +203,8 @@ TEST_RESU(RESU=(
                   NOM_CMP  = 'DRY',
                   #INST = 0.042,
                   NUME_ORDRE=5210,
-                  VALE = -1.99599E-2,
+                  VALE_CALC=-0.019861072254794,
+                  VALE_REFE = -1.99599E-2,
                   REFERENCE='SOURCE_EXTERNE',
                   PRECISION = 6.0E-3),
                 _F(  RESULTAT=U,
@@ -212,7 +215,8 @@ TEST_RESU(RESU=(
                   SOUS_POINT=1,
                   #INST = 0.042,
                   NUME_ORDRE=5312,
-                  VALE = 1.8317556E+8,
+                  VALE_CALC=1.8288670070491E+08,
+                  VALE_REFE = 1.8317556E+8,
                   REFERENCE='SOURCE_EXTERNE',
                   PRECISION = 2.0E-3),
                )

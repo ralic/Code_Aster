@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COUDE EN FLEXION PLANE
 # ssnv144a.para = tps_job 390 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -207,46 +207,73 @@ LINEAI=MECA_STATIQUE(  MODELE=MO,
 ###########
 #
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DX',  VALE = 6.51271E-04,  PRECISION = 6.49E-08))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DX',
+                  VALE_CALC=6.5127100000000003E-4,
+                  TOLE_MACHINE=6.4900000000000005E-08,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DY',  VALE = 1.08154E-03,  PRECISION = 9.44E-07))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DY',
+                  VALE_CALC=1.08154E-3,
+                  TOLE_MACHINE=9.4399999999999998E-07,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DZ',  VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DZ',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DRX', VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DRX',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DRY', VALE = 0.00000E+00,  PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DRY',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DRZ', VALE = 5.84655E-04, PRECISION = 6.51E-07))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=5.8465500000000001E-4,
+                  TOLE_MACHINE=6.5099999999999999E-07,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 #
@@ -254,140 +281,227 @@ NOEUD = 'N1157',  NOM_CMP = 'DRZ', VALE = 5.84655E-04, PRECISION = 6.51E-07))
 #     N1104
 ###########
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DX',  VALE = 1.28830E-04,  PRECISION = 1.88E-06))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.2883E-4,
+                  TOLE_MACHINE=1.88E-06,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DY',  VALE = 1.09424E-03,  PRECISION = 3.15E-06))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DY',
+                  VALE_CALC=1.09424E-3,
+                  TOLE_MACHINE=3.1499999999999999E-06,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DZ',  VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DZ',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DRX', VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DRX',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DRY', VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DRY',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DRZ', VALE = 6.81747E-04, PRECISION = 5.81E-07))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=6.8174700000000002E-4,
+                  TOLE_MACHINE=5.8100000000000003E-07,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 #
 #     N1109
 ###########
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DX',  VALE = 4.01834E-04,  PRECISION = 1.61E-07))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DX',
+                  VALE_CALC=4.01834E-4,
+                  TOLE_MACHINE=1.61E-07,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DY',  VALE = 1.08427E-03,  PRECISION = 2.92E-06))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DY',
+                  VALE_CALC=1.08427E-3,
+                  TOLE_MACHINE=2.92E-06,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DZ',  VALE = 6.34660E-06, PRECISION = 8.7E-08))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DZ',
+                  VALE_CALC=6.3466000000000004E-06,
+                  TOLE_MACHINE=8.6999999999999998E-08,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DRX', VALE = -8.06992E-06, PRECISION = 7.78E-8))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DRX',
+                  VALE_CALC=-8.0699200000000001E-06,
+                  TOLE_MACHINE=7.7799999999999995E-08,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DRY', VALE = -4.85229E-05,  PRECISION = 5.35E-07))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DRY',
+                  VALE_CALC=-4.8522900000000003E-05,
+                  TOLE_MACHINE=5.3499999999999996E-07,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DRZ', VALE = -9.39844E-05,  PRECISION = 6.63E-08))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=-9.3984400000000001E-05,
+                  TOLE_MACHINE=6.6300000000000005E-08,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 #
 ########################################################################
 #
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DX', VALE = 4.01834E-04,  PRECISION = 1.61E-07))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DX',
+                  VALE_CALC=4.01834E-4,
+                  TOLE_MACHINE=1.61E-07,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DY', VALE = 1.08427E-03,  PRECISION = 2.92E-06))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DY',
+                  VALE_CALC=1.08427E-3,
+                  TOLE_MACHINE=2.92E-06,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DZ', VALE = -6.34660E-06, PRECISION = 8.69E-08))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-6.3466000000000004E-06,
+                  TOLE_MACHINE=8.6900000000000004E-08,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DRX', VALE = 8.06992E-06, PRECISION = 7.78E-8))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DRX',
+                  VALE_CALC=8.0699200000000001E-06,
+                  TOLE_MACHINE=7.7799999999999995E-08,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DRY', VALE = 4.85229E-05, PRECISION = 5.35E-07))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DRY',
+                  VALE_CALC=4.8522900000000003E-05,
+                  TOLE_MACHINE=5.3499999999999996E-07,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = LINEAI,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DRZ', VALE = -9.39844E-05, PRECISION = 6.63E-08))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=LINEAI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=-9.3984400000000001E-05,
+                  TOLE_MACHINE=6.6300000000000005E-08,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 #
@@ -457,11 +571,13 @@ COQUE1P=STAT_NON_LINE(
 ######################################################################
 #
 #
-TEST_RESU(
-
-RESU=_F(  RESULTAT = COQUE1P, NUME_ORDRE = 1, PARA = 'ITER_GLOB', VALE_I = 1,
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-CRITERE = 'ABSOLU',        PRECISION = 0.))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='ITER_GLOB',
+                  VALE_CALC_I=1,
+                  RESULTAT=COQUE1P,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
 #
@@ -481,46 +597,79 @@ CRITERE = 'ABSOLU',        PRECISION = 0.))
 ###########
 #
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DX',  VALE = 6.51271E-04,  PRECISION = 0.160E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DX',
+                  VALE_CALC= 6.50238201E-04,
+                  VALE_REFE=6.5127100000000003E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=1.6000000000000001E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DY',  VALE = 1.08154E-03,  PRECISION = 0.209E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.07928814E-03,
+                  VALE_REFE=1.08154E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=2.0899999999999998E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DZ',  VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DZ',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DRX', VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DRX',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DRY', VALE = 0.00000E+00,  PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DRY',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1157',  NOM_CMP = 'DRZ', VALE = 5.84655E-04, PRECISION = 0.173E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DRZ',
+                  VALE_CALC= 5.83648101E-04,
+                  VALE_REFE=5.8465500000000001E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=1.73E-3,
+                  ),
+          )
 
 #
 #
@@ -528,139 +677,250 @@ NOEUD = 'N1157',  NOM_CMP = 'DRZ', VALE = 5.84655E-04, PRECISION = 0.173E-2))
 #     N1104
 ###########
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DX',  VALE = 1.28830E-04,  PRECISION = 0.028E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.2883E-4,
+                  TOLE_MACHINE=2.7999999999999998E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DY',  VALE = 1.09424E-03,  PRECISION = 0.206E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.09199314E-03,
+                  VALE_REFE=1.09424E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=2.0600000000000002E-3,
+                  ),
+          )
 
 #
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DZ',  VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DZ',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DRX', VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DRX',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DRY', VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DRY',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1104',  NOM_CMP = 'DRZ', VALE = 6.81747E-04, PRECISION = 0.224E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DRZ',
+                  VALE_CALC= 6.80223581E-04,
+                  VALE_REFE=6.8174700000000002E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=2.2399999999999998E-3,
+                  ),
+          )
 
 #
 #
 #     N1109
 ###########
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DX',  VALE = 4.01834E-04,  PRECISION = 0.149E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DX',
+                  VALE_CALC= 4.01238552E-04,
+                  VALE_REFE=4.01834E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=1.49E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DY',  VALE = 1.08427E-03,  PRECISION = 0.208E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.08202831E-03,
+                  VALE_REFE=1.08427E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=2.0799999999999998E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DZ',  VALE = 6.34660E-06, PRECISION = 0.022E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DZ',
+                  VALE_CALC=6.3466000000000004E-06,
+                  TOLE_MACHINE=2.2000000000000001E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DRX', VALE = -8.06992E-06, PRECISION = 0.382E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DRX',
+                  VALE_CALC=-8.10069942E-06,
+                  VALE_REFE=-8.0699200000000001E-06,
+                  CRITERE='RELATIF',
+                  PRECISION=3.82E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DRY', VALE = -4.85229E-05, PRECISION = 0.533E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DRY',
+                  VALE_CALC=-4.82645786E-05,
+                  VALE_REFE=-4.8522900000000003E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=5.3299999999999997E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1109',  NOM_CMP = 'DRZ', VALE = -9.39844E-05, PRECISION = 0.553E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=-9.45032425E-05,
+                  VALE_REFE=-9.3984400000000001E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=5.5300000000000002E-3,
+                  ),
+          )
 
 #
 #
 #
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DX', VALE = 4.01834E-04,  PRECISION = 0.149E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DX',
+                  VALE_CALC= 4.01238552E-04,
+                  VALE_REFE=4.01834E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=1.49E-3,
+                  ),
+          )
 
 #
 
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DY', VALE = 1.08427E-03,  PRECISION = 0.208E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.08202831E-03,
+                  VALE_REFE=1.08427E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=2.0799999999999998E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DZ', VALE = -6.34660E-06, PRECISION = 0.022E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-6.3466000000000004E-06,
+                  TOLE_MACHINE=2.2000000000000001E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DRX', VALE = 8.06992E-06, PRECISION = 0.382E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DRX',
+                  VALE_CALC= 8.10069942E-06,
+                  VALE_REFE=8.0699200000000001E-06,
+                  CRITERE='RELATIF',
+                  PRECISION=3.82E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DRY', VALE = 4.85229E-05, PRECISION = 0.533E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DRY',
+                  VALE_CALC= 4.82645786E-05,
+                  VALE_REFE=4.8522900000000003E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=5.3299999999999997E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1P,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 1,
-NOEUD = 'N1099',  NOM_CMP = 'DRZ', VALE = -9.39844E-05, PRECISION = 0.553E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1P,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=-9.45032425E-05,
+                  VALE_REFE=-9.3984400000000001E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=5.5300000000000002E-3,
+                  ),
+          )
 
 #
 #
@@ -700,12 +960,13 @@ COQUE1E=STAT_NON_LINE(
 ######################################################################
 #
 #
-TEST_RESU(
-
-RESU=_F(  RESULTAT = COQUE1E, NUME_ORDRE = 1, PARA = 'ITER_GLOB', VALE_I = 2,
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-CRITERE = 'ABSOLU',        PRECISION = 0.))
-
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='ITER_GLOB',
+                  VALE_CALC_I=2,
+                  RESULTAT=COQUE1E,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
 #
@@ -722,46 +983,79 @@ CRITERE = 'ABSOLU',        PRECISION = 0.))
 ###########
 #
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1157',  NOM_CMP = 'DX',  VALE = 6.51271E-04,  PRECISION = 0.161E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DX',
+                  VALE_CALC= 6.50231609E-04,
+                  VALE_REFE=6.5127100000000003E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=1.6100000000000001E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1157',  NOM_CMP = 'DY',  VALE = 1.08154E-03,  PRECISION = 0.164E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.07977722E-03,
+                  VALE_REFE=1.08154E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=1.64E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1157',  NOM_CMP = 'DZ',  VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DZ',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1157',  NOM_CMP = 'DRX', VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DRX',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1157',  NOM_CMP = 'DRY', VALE = 0.00000E+00,  PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DRY',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1157',  NOM_CMP = 'DRZ', VALE = 5.84655E-04, PRECISION = 0.265E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1157',
+                  NOM_CMP='DRZ',
+                  VALE_CALC= 5.83109240E-04,
+                  VALE_REFE=5.8465500000000001E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=2.65E-3,
+                  ),
+          )
 
 #
 #
@@ -769,140 +1063,255 @@ NOEUD = 'N1157',  NOM_CMP = 'DRZ', VALE = 5.84655E-04, PRECISION = 0.265E-2))
 #     N1104
 ###########
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1104',  NOM_CMP = 'DX',  VALE = 1.28830E-04,  PRECISION = 0.274E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DX',
+                  VALE_CALC= 1.28478815E-04,
+                  VALE_REFE=1.2883E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=2.7399999999999998E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1104',  NOM_CMP = 'DY',  VALE = 1.09424E-03,  PRECISION = 0.115E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.09299173E-03,
+                  VALE_REFE=1.09424E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=1.15E-3,
+                  ),
+          )
 
 #
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1104',  NOM_CMP = 'DZ',  VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DZ',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1104',  NOM_CMP = 'DRX', VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DRX',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'ABSOLU',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1104',  NOM_CMP = 'DRY', VALE = 0.00000E+00, PRECISION = 1.E-10))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DRY',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1104',  NOM_CMP = 'DRZ', VALE = 6.81747E-04, PRECISION = 0.021E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1104',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=6.8174700000000002E-4,
+                  TOLE_MACHINE=2.1000000000000001E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
 #
 #     N1109
 ###########
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1109',  NOM_CMP = 'DX',  VALE = 4.01834E-04,  PRECISION = 0.169E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DX',
+                  VALE_CALC= 4.01159997E-04,
+                  VALE_REFE=4.01834E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=1.6900000000000001E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1109',  NOM_CMP = 'DY',  VALE = 1.08427E-03,  PRECISION = 0.139E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.08276881E-03,
+                  VALE_REFE=1.08427E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=1.39E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1109',  NOM_CMP = 'DZ',  VALE = 6.34660E-06, PRECISION = 4.398E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DZ',
+                  VALE_CALC= 6.62569745E-06,
+                  VALE_REFE=6.3466000000000004E-06,
+                  CRITERE='RELATIF',
+                  PRECISION=0.043979999999999998,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1109',  NOM_CMP = 'DRX', VALE = -8.06992E-06, PRECISION = 0.423E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DRX',
+                  VALE_CALC=-8.03585955E-06,
+                  VALE_REFE=-8.0699200000000001E-06,
+                  CRITERE='RELATIF',
+                  PRECISION=4.2300000000000003E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1109',  NOM_CMP = 'DRY', VALE = -4.85229E-05, PRECISION = 0.565E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DRY',
+                  VALE_CALC=-4.87966370E-05,
+                  VALE_REFE=-4.8522900000000003E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=5.6499999999999996E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1109',  NOM_CMP = 'DRZ', VALE = -9.39844E-05, PRECISION = 1.456E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1109',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=-9.53520895E-05,
+                  VALE_REFE=-9.3984400000000001E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=0.01456,
+                  ),
+          )
 
 #
 #
 #
 #
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1099',  NOM_CMP = 'DX', VALE = 4.01834E-04,  PRECISION = 0.169E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DX',
+                  VALE_CALC= 4.01159997E-04,
+                  VALE_REFE=4.01834E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=1.6900000000000001E-3,
+                  ),
+          )
 
 #
 
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1099',  NOM_CMP = 'DY', VALE = 1.08427E-03,  PRECISION = 0.139E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.08276881E-03,
+                  VALE_REFE=1.08427E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=1.39E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1099',  NOM_CMP = 'DZ', VALE = -6.34660E-06, PRECISION = 4.398E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-6.62569745E-06,
+                  VALE_REFE=-6.3466000000000004E-06,
+                  CRITERE='RELATIF',
+                  PRECISION=0.043979999999999998,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1099',  NOM_CMP = 'DRX', VALE = 8.06992E-06, PRECISION = 0.423E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DRX',
+                  VALE_CALC= 8.03585955E-06,
+                  VALE_REFE=8.0699200000000001E-06,
+                  CRITERE='RELATIF',
+                  PRECISION=4.2300000000000003E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1099',  NOM_CMP = 'DRY', VALE = 4.85229E-05, PRECISION = 0.565E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DRY',
+                  VALE_CALC= 4.87966370E-05,
+                  VALE_REFE=4.8522900000000003E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=5.6499999999999996E-3,
+                  ),
+          )
 
 #
-TEST_RESU(
-  RESU=_F(  RESULTAT = COQUE1E,  NOM_CHAM = 'DEPL', CRITERE = 'RELATIF',
-REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
-NUME_ORDRE = 10,
-NOEUD = 'N1099',  NOM_CMP = 'DRZ', VALE = -9.39844E-05, PRECISION = 1.456E-2))
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=COQUE1E,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1099',
+                  NOM_CMP='DRZ',
+                  VALE_CALC=-9.53520895E-05,
+                  VALE_REFE=-9.3984400000000001E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=0.01456,
+                  ),
+          )
 
 #
 #

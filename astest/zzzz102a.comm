@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LIRE_FONCTION ET SPECTRE D'OSCILLATEUR
 # zzzz102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,32 +34,43 @@ LBEWA=LIRE_FONCTION(     UNITE=19,
              INTERPOL='LIN',
                PROL_DROITE='CONSTANT',    PROL_GAUCHE='EXCLU' )
 
-TEST_FONCTION(
-         VALEUR=_F(  FONCTION = LBEWA,         NOM_PARA = 'INST',
-                  VALE_PARA = 7.93500E+00,   VALE_REFE = -6.38000E-01),ATTRIBUT=(
-       _F(  FONCTION = LBEWA,         ATTR = 'NOM_PARA',
-                                           ATTR_REFE = 'INST'),
-       _F(  FONCTION = LBEWA,         ATTR = 'NOM_RESU',
-                                           ATTR_REFE = 'DX'),
-       _F(  FONCTION = LBEWA,         ATTR = 'PROL_DROITE',
-                                           ATTR_REFE = 'CONSTANT'),
-       _F(  FONCTION = LBEWA,         ATTR = 'PROL_GAUCHE',
-                                           ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = LBEWA,         ATTR = 'INTERPOL',
-                                           ATTR_REFE = 'LIN LIN '))
-                 )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.63800000000000001,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=7.9349999999999996,
+                        NOM_PARA='INST',
+                        FONCTION=LBEWA,),
+              ATTRIBUT=(_F(ATTR_REFE='INST',
+                           FONCTION=LBEWA,
+                           ATTR='NOM_PARA',),
+                        _F(ATTR_REFE='DX',
+                           FONCTION=LBEWA,
+                           ATTR='NOM_RESU',),
+                        _F(ATTR_REFE='CONSTANT',
+                           FONCTION=LBEWA,
+                           ATTR='PROL_DROITE',),
+                        _F(ATTR_REFE='EXCLU',
+                           FONCTION=LBEWA,
+                           ATTR='PROL_GAUCHE',),
+                        _F(ATTR_REFE='LIN LIN ',
+                           FONCTION=LBEWA,
+                           ATTR='INTERPOL',),
+                        ),
+              )
 
 MAXLBEWA=INFO_FONCTION(    MAX=_F(  FONCTION = LBEWA)  )
 
-TEST_TABLE(  TABLE=MAXLBEWA,
-             FILTRE=( _F(  NOM_PARA = 'FONCTION',
-                           VALE_K = 'LBEWA'),
-                      _F(  NOM_PARA = 'INST',
-                           VALE = 7.93500E+00),
-                      _F(  NOM_PARA = 'TYPE',
-                           VALE_K = 'MINI')),
-             NOM_PARA='DX',
-             VALE=-6.38000E-01              )
+TEST_TABLE(VALE_CALC=-0.63800000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=MAXLBEWA,
+           FILTRE=(_F(NOM_PARA='FONCTION',
+                      VALE_K='LBEWA',),
+                   _F(NOM_PARA='INST',
+                      VALE=7.9349999999999996,),
+                   _F(NOM_PARA='TYPE',
+                      VALE_K='MINI',),
+                   ),
+           )
 
 G=9.81
 UNSURG=1/G
@@ -76,38 +87,56 @@ SLBEWA=CALC_FONCTION(
 
 MSLBEWA=INFO_FONCTION(    MAX=_F(  FONCTION = SLBEWA)  )
 
-TEST_TABLE(   TABLE=MSLBEWA,
-              FILTRE=( _F(  NOM_PARA = 'FONCTION',
-                            VALE_K = 'SLBEWA'),
-                       _F(  NOM_PARA = 'AMOR',
-                            VALE = 1.00000E-02),
-                       _F(  NOM_PARA = 'FREQ',
-                            VALE = 3.70000E+00),
-                       _F(  NOM_PARA = 'TYPE',
-                            VALE_K = 'MAXI')),
-              NOM_PARA='ACCE',
-              VALE=3.56676E+01               )
+TEST_TABLE(VALE_CALC=35.6676,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ACCE',
+           TABLE=MSLBEWA,
+           FILTRE=(_F(NOM_PARA='FONCTION',
+                      VALE_K='SLBEWA',),
+                   _F(NOM_PARA='AMOR',
+                      VALE=1.E-2,),
+                   _F(NOM_PARA='FREQ',
+                      VALE=3.7000000000000002,),
+                   _F(NOM_PARA='TYPE',
+                      VALE_K='MAXI',),
+                   ),
+           )
 
 VAL=6.38000E-01 * G
-TEST_FONCTION(
-         VALEUR=_F(  FONCTION = SLBEWA,        NOM_PARA = ('AMOR', 'FREQ',),
-                  VALE_PARA = ( 0.01, FMAX, ),
-                  VALE_REFE = VAL, PRECISION = 1.E-3),ATTRIBUT=(
-       _F(  FONCTION = SLBEWA,         ATTR = 'NOM_PARA',
-                  PARA = 0.01,                ATTR_REFE = 'AMOR'),
-       _F(  FONCTION = SLBEWA,         ATTR = 'NOM_RESU',
-                  PARA = 0.01,                ATTR_REFE = 'ACCE'),
-       _F(  FONCTION = SLBEWA,         ATTR = 'PROL_DROITE',
-                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = SLBEWA,         ATTR = 'PROL_DROITE_FONC',
-                  PARA = 0.01,                ATTR_REFE = 'CONSTANT'),
-       _F(  FONCTION = SLBEWA,         ATTR = 'PROL_GAUCHE',
-                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = SLBEWA,         ATTR = 'PROL_GAUCHE_FONC',
-                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = SLBEWA,         ATTR = 'INTERPOL',
-                                            ATTR_REFE = 'LIN LOG '))
-                 )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.2587800000000007,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=(1.E-2, 100.0),
+                        NOM_PARA=('AMOR', 'FREQ'),
+                        FONCTION=SLBEWA,),
+              ATTRIBUT=(_F(PARA=1.E-2,
+                           ATTR_REFE='AMOR',
+                           FONCTION=SLBEWA,
+                           ATTR='NOM_PARA',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='ACCE',
+                           FONCTION=SLBEWA,
+                           ATTR='NOM_RESU',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='EXCLU',
+                           FONCTION=SLBEWA,
+                           ATTR='PROL_DROITE',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='CONSTANT',
+                           FONCTION=SLBEWA,
+                           ATTR='PROL_DROITE_FONC',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='EXCLU',
+                           FONCTION=SLBEWA,
+                           ATTR='PROL_GAUCHE',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='EXCLU',
+                           FONCTION=SLBEWA,
+                           ATTR='PROL_GAUCHE_FONC',),
+                        _F(ATTR_REFE='LIN LOG ',
+                           FONCTION=SLBEWA,
+                           ATTR='INTERPOL',),
+                        ),
+              )
 
 SLBEWD=CALC_FONCTION(
                SPEC_OSCI=_F(  FONCTION = LBEWA,
@@ -118,14 +147,16 @@ SLBEWD=CALC_FONCTION(
 OMEGA2=4. * pi * pi * FMAX * FMAX
 VAL= 6.38000E-01 / OMEGA2
 
-TEST_FONCTION(
-         VALEUR=_F(  FONCTION = SLBEWD,        NOM_PARA = ('AMOR', 'FREQ',),
-                  VALE_PARA = ( 0.01, FMAX, ),
-                  VALE_REFE = VAL,
-                  PRECISION = 1.E-3),
-       ATTRIBUT=_F(  FONCTION = SLBEWD,         ATTR = 'NOM_RESU',
-                  PARA = 0.01,                ATTR_REFE = 'DEPL')
-                )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.6160728790952875E-06,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=(1.E-2, 100.0),
+                        NOM_PARA=('AMOR', 'FREQ'),
+                        FONCTION=SLBEWD,),
+              ATTRIBUT=_F(PARA=1.E-2,
+                          ATTR_REFE='DEPL',
+                          FONCTION=SLBEWD,
+                          ATTR='NOM_RESU',),
+              )
 
 # --------------------------------------------------------------
 
@@ -136,32 +167,43 @@ LBEWS=LIRE_FONCTION(     UNITE=18,
              INTERPOL='NON',
                PROL_DROITE='EXCLU',    PROL_GAUCHE='EXCLU'  )
 
-TEST_FONCTION(
-         VALEUR=_F(  FONCTION = LBEWS,         NOM_PARA = 'INST',
-                  VALE_PARA = 3.10000E+00,   VALE_REFE = 1.00000E+00),ATTRIBUT=(
-       _F(  FONCTION = LBEWS,         ATTR = 'NOM_PARA',
-                                           ATTR_REFE = 'INST'),
-       _F(  FONCTION = LBEWS,         ATTR = 'NOM_RESU',
-                                           ATTR_REFE = 'ACCE_SOL'),
-       _F(  FONCTION = LBEWS,         ATTR = 'PROL_DROITE',
-                                           ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = LBEWS,         ATTR = 'PROL_GAUCHE',
-                                           ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = LBEWS,         ATTR = 'INTERPOL',
-                                           ATTR_REFE = 'NON NON '))
-                 )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=3.1000000000000001,
+                        NOM_PARA='INST',
+                        FONCTION=LBEWS,),
+              ATTRIBUT=(_F(ATTR_REFE='INST',
+                           FONCTION=LBEWS,
+                           ATTR='NOM_PARA',),
+                        _F(ATTR_REFE='ACCE_SOL',
+                           FONCTION=LBEWS,
+                           ATTR='NOM_RESU',),
+                        _F(ATTR_REFE='EXCLU',
+                           FONCTION=LBEWS,
+                           ATTR='PROL_DROITE',),
+                        _F(ATTR_REFE='EXCLU',
+                           FONCTION=LBEWS,
+                           ATTR='PROL_GAUCHE',),
+                        _F(ATTR_REFE='NON NON ',
+                           FONCTION=LBEWS,
+                           ATTR='INTERPOL',),
+                        ),
+              )
 
 MAXLBEWS=INFO_FONCTION(   MAX=_F(  FONCTION = LBEWS)  )
 
-TEST_TABLE(   TABLE=MAXLBEWS,
-              FILTRE=(  _F(  NOM_PARA = 'FONCTION',
-                             VALE_K = 'LBEWS'),
-                        _F(  NOM_PARA = 'INST',
-                             VALE = 3.10000E+00),
-                        _F(  NOM_PARA = 'TYPE',
-                             VALE_K = 'MAXI')),
-              NOM_PARA='ACCE_SOL',
-              VALE=1.00000E+00               )
+TEST_TABLE(VALE_CALC=1.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ACCE_SOL',
+           TABLE=MAXLBEWS,
+           FILTRE=(_F(NOM_PARA='FONCTION',
+                      VALE_K='LBEWS',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.1000000000000001,),
+                   _F(NOM_PARA='TYPE',
+                      VALE_K='MAXI',),
+                   ),
+           )
 
 SLBEWS=CALC_FONCTION(
               SPEC_OSCI=_F(  FONCTION = LBEWS,
@@ -182,25 +224,40 @@ SLBEWS=CALC_FONCTION(
 #
 # ---------------------------------------------------------------
 
-TEST_FONCTION(
-         VALEUR=_F(  FONCTION = SLBEWS,        NOM_PARA = ('AMOR', 'FREQ',),
-                  VALE_PARA = ( 0.01, FMAX, ),
-                  VALE_REFE = 1.00000E+00,  PRECISION = 1.E-3),ATTRIBUT=(
-       _F(  FONCTION = SLBEWS,         ATTR = 'NOM_PARA',
-                  PARA = 0.01,                ATTR_REFE = 'AMOR'),
-       _F(  FONCTION = SLBEWS,         ATTR = 'NOM_RESU',
-                  PARA = 0.01,                ATTR_REFE = 'ACCE'),
-       _F(  FONCTION = SLBEWS,         ATTR = 'PROL_DROITE',
-                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = SLBEWS,         ATTR = 'PROL_DROITE_FONC',
-                  PARA = 0.01,                ATTR_REFE = 'CONSTANT'),
-       _F(  FONCTION = SLBEWS,         ATTR = 'PROL_GAUCHE',
-                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = SLBEWS,         ATTR = 'PROL_GAUCHE_FONC',
-                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
-       _F(  FONCTION = SLBEWS,         ATTR = 'INTERPOL',
-                                            ATTR_REFE = 'LIN LOG '))
-                 )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=(1.E-2, 100.0),
+                        NOM_PARA=('AMOR', 'FREQ'),
+                        FONCTION=SLBEWS,),
+              ATTRIBUT=(_F(PARA=1.E-2,
+                           ATTR_REFE='AMOR',
+                           FONCTION=SLBEWS,
+                           ATTR='NOM_PARA',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='ACCE',
+                           FONCTION=SLBEWS,
+                           ATTR='NOM_RESU',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='EXCLU',
+                           FONCTION=SLBEWS,
+                           ATTR='PROL_DROITE',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='CONSTANT',
+                           FONCTION=SLBEWS,
+                           ATTR='PROL_DROITE_FONC',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='EXCLU',
+                           FONCTION=SLBEWS,
+                           ATTR='PROL_GAUCHE',),
+                        _F(PARA=1.E-2,
+                           ATTR_REFE='EXCLU',
+                           FONCTION=SLBEWS,
+                           ATTR='PROL_GAUCHE_FONC',),
+                        _F(ATTR_REFE='LIN LOG ',
+                           FONCTION=SLBEWS,
+                           ATTR='INTERPOL',),
+                        ),
+              )
 
 #
 # ---------------------------------------------------------------
@@ -570,51 +627,52 @@ SPECT_X=DEFI_NAPPE(   NOM_PARA='AMOR',
 
 #
 #
-TEST_FONCTION(VALEUR=(  _F( FONCTION = SPECT2,
-                         NOM_PARA = ( 'FREQ',        'AMOR', ),
-                         VALE_PARA = ( 2.00000E-01,   0.03,   ),
-                         VALE_REFE = 8.4280E-2,
-                         PRECISION = 1.E-4),
-                        _F( FONCTION = SPECT2,
-                         NOM_PARA = ( 'FREQ',        'AMOR', ),
-                         VALE_PARA = ( 1.00000E+00,   0.03,   ),
-                         VALE_REFE = 4.4745E-02,
-                         PRECISION = 1.E-4),
-                        _F( FONCTION = SPECT2,
-                         NOM_PARA = ( 'FREQ',        'AMOR', ),
-                         VALE_PARA = ( 5.00000E+00,   0.03,   ),
-                         VALE_REFE = 1.8309E-03,
-                         PRECISION = 1.E-4),
-                        _F( FONCTION = SPECT2,
-                         NOM_PARA = ( 'FREQ',        'AMOR', ),
-                         VALE_PARA = ( 1.00000E+01,   0.03,   ),
-                         VALE_REFE = 2.7425E-04,
-                         PRECISION = 1.E-4),
-                        _F( FONCTION = SPECT2,
-                         NOM_PARA = ( 'FREQ',        'AMOR', ),
-                         VALE_PARA = ( 1.50000E+01,   0.03,   ),
-                         VALE_REFE = 8.6072E-05,
-                         PRECISION = 1.E-4),
-                        _F( FONCTION = SPECT2,
-                         NOM_PARA = ( 'FREQ',        'AMOR', ),
-                         VALE_PARA = ( 2.00000E+01,   0.03,   ),
-                         VALE_REFE = 4.3102E-05,
-                         PRECISION = 1.E-4),
-                        _F( FONCTION = SPECT2,
-                         NOM_PARA = ( 'FREQ',        'AMOR', ),
-                         VALE_PARA = ( 2.50000E+01,   0.03,   ),
-                         VALE_REFE = 2.6867E-05,
-                         PRECISION = 1.E-4),
-                        _F( FONCTION = SPECT2,
-                         NOM_PARA = ( 'FREQ',        'AMOR', ),
-                         VALE_PARA = ( 2.95000E+01,   0.03,   ),
-                         VALE_REFE = 1.9343E-05,
-                         PRECISION = 1.E-4),
-                        _F( FONCTION = SPECT2,
-                         NOM_PARA = ( 'FREQ',        'AMOR', ),
-                         VALE_PARA = ( 3.55000E+01,   0.03,   ),
-                         VALE_REFE = 1.3350E-05,
-                         PRECISION = 1.E-4))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.084279999999999994,
+                         TOLE_MACHINE=1.E-4,
+                         VALE_PARA=(0.20000000000000001, 0.029999999999999999),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPECT2,),
+                      _F(VALE_CALC=0.044745,
+                         TOLE_MACHINE=1.E-4,
+                         VALE_PARA=(1.0, 0.029999999999999999),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPECT2,),
+                      _F(VALE_CALC=1.8309000000000001E-3,
+                         TOLE_MACHINE=1.E-4,
+                         VALE_PARA=(5.0, 0.029999999999999999),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPECT2,),
+                      _F(VALE_CALC=2.7425000000000003E-4,
+                         TOLE_MACHINE=1.E-4,
+                         VALE_PARA=(10.0, 0.029999999999999999),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPECT2,),
+                      _F(VALE_CALC=8.6071999999999999E-05,
+                         TOLE_MACHINE=1.E-4,
+                         VALE_PARA=(15.0, 0.029999999999999999),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPECT2,),
+                      _F(VALE_CALC=4.3102000000000002E-05,
+                         TOLE_MACHINE=1.E-4,
+                         VALE_PARA=(20.0, 0.029999999999999999),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPECT2,),
+                      _F(VALE_CALC=2.6866999999999999E-05,
+                         TOLE_MACHINE=1.E-4,
+                         VALE_PARA=(25.0, 0.029999999999999999),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPECT2,),
+                      _F(VALE_CALC=1.9343000000000001E-05,
+                         TOLE_MACHINE=1.E-4,
+                         VALE_PARA=(29.5, 0.029999999999999999),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPECT2,),
+                      _F(VALE_CALC=1.3349999999999999E-05,
+                         TOLE_MACHINE=1.E-4,
+                         VALE_PARA=(35.5, 0.029999999999999999),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPECT2,),
+                      ),
               )
 
 #
@@ -1284,12 +1342,14 @@ NOM_CHAM='DEPL', RESULTAT=SISM02,
                      )
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX02,
-                       NOEUD = 'P2',
-                       NOM_CMP = 'DX',
-                       VALE = 8.4280E-2,
-                       PRECISION = 0.01)
-         )
+TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+                     NOM_CMP='DX',
+                     PRECISION=1.E-2,
+                     CHAM_GD=DEPLX02,
+                     VALE_CALC=0.084356701,
+                     VALE_REFE=0.084279999999999994,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #
 # 1HZ
@@ -1316,12 +1376,14 @@ NOM_CHAM='DEPL', RESULTAT=SISM1,
                      )
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX1,
-                       NOEUD = 'P2',
-                       NOM_CMP = 'DX',
-                       VALE = 4.4745E-2,
-                       PRECISION = 0.01)
-         )
+TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+                     NOM_CMP='DX',
+                     PRECISION=1.E-2,
+                     CHAM_GD=DEPLX1,
+                     VALE_CALC=0.044727437,
+                     VALE_REFE=0.044745,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #
 # 5HZ
@@ -1348,12 +1410,14 @@ NOM_CHAM='DEPL', RESULTAT=SISM5,
                      )
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX5,
-                       NOEUD = 'P2',
-                       NOM_CMP = 'DX',
-                       VALE = 1.8309E-3,
-                       PRECISION = 0.01)
-         )
+TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+                     NOM_CMP='DX',
+                     PRECISION=1.E-2,
+                     CHAM_GD=DEPLX5,
+                     VALE_CALC= 1.83362175E-03,
+                     VALE_REFE=1.8309000000000001E-3,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #
 # 10HZ
@@ -1380,12 +1444,14 @@ NOM_CHAM='DEPL', RESULTAT=SISM10,
                       )
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX10,
-                       NOEUD = 'P2',
-                       NOM_CMP = 'DX',
-                       VALE = 2.7425E-4,
-                       PRECISION = 0.01)
-         )
+TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+                     NOM_CMP='DX',
+                     PRECISION=1.E-2,
+                     CHAM_GD=DEPLX10,
+                     VALE_CALC= 2.74081952E-04,
+                     VALE_REFE=2.7425000000000003E-4,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #
 # 15HZ
@@ -1412,12 +1478,14 @@ NOM_CHAM='DEPL', RESULTAT=SISM15,
                       )
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX15,
-                       NOEUD = 'P2',
-                       NOM_CMP = 'DX',
-                       VALE = 8.6072E-5,
-                       PRECISION = 0.01)
-         )
+TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+                     NOM_CMP='DX',
+                     PRECISION=1.E-2,
+                     CHAM_GD=DEPLX15,
+                     VALE_CALC= 8.62943079E-05,
+                     VALE_REFE=8.6071999999999999E-05,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #
 # 20HZ
@@ -1444,12 +1512,14 @@ NOM_CHAM='DEPL', RESULTAT=SISM20,
                       )
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX20,
-                       NOEUD = 'P2',
-                       NOM_CMP = 'DX',
-                       VALE = 4.3102E-5,
-                       PRECISION = 0.01)
-         )
+TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+                     NOM_CMP='DX',
+                     PRECISION=1.E-2,
+                     CHAM_GD=DEPLX20,
+                     VALE_CALC= 4.31867090E-05,
+                     VALE_REFE=4.3102000000000002E-05,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #
 # 25HZ
@@ -1476,12 +1546,14 @@ NOM_CHAM='DEPL', RESULTAT=SISM25,
                       )
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX25,
-                       NOEUD = 'P2',
-                       NOM_CMP = 'DX',
-                       VALE = 2.6867E-5,
-                       PRECISION = 0.01)
-         )
+TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+                     NOM_CMP='DX',
+                     PRECISION=1.E-2,
+                     CHAM_GD=DEPLX25,
+                     VALE_CALC= 2.69205117E-05,
+                     VALE_REFE=2.6866999999999999E-05,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #
 # 29.5HZ
@@ -1508,12 +1580,14 @@ NOM_CHAM='DEPL', RESULTAT=SISM29,
                       )
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX29,
-                       NOEUD = 'P2',
-                       NOM_CMP = 'DX',
-                       VALE = 1.9343E-5,
-                       PRECISION = 0.01)
-         )
+TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+                     NOM_CMP='DX',
+                     PRECISION=1.E-2,
+                     CHAM_GD=DEPLX29,
+                     VALE_CALC= 1.93804202E-05,
+                     VALE_REFE=1.9343000000000001E-05,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #
 # 35.5HZ
@@ -1540,12 +1614,14 @@ NOM_CHAM='DEPL', RESULTAT=SISM35,
                       )
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX35,
-                       NOEUD = 'P2',
-                       NOM_CMP = 'DX',
-                       VALE = 1.3350E-5,
-                       PRECISION = 0.01)
-         )
+TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+                     NOM_CMP='DX',
+                     PRECISION=1.E-2,
+                     CHAM_GD=DEPLX35,
+                     VALE_CALC= 1.33691152E-05,
+                     VALE_REFE=1.3349999999999999E-05,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #
 #

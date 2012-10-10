@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRANSFERT THERMIQUE DANS UNE BARRE METALLIQUE ORTHOTROPE
 # ttlp300a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,25 +101,36 @@ TEMP_3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,
             INST=3.0 )
 
-TEST_RESU(CHAM_NO=(
-#
-# ------ POINT A
-#
-_F( CHAM_GD = TEMP_3, NOEUD = 'N26',  NOM_CMP = 'TEMP', VALE = 237.50, PRECISION = 2.E-2),
-#
-# ------ POINT B
-#
-_F( CHAM_GD = TEMP_3, NOEUD = 'N113', NOM_CMP = 'TEMP', VALE = 137.22, PRECISION = 3.E-2),
-#
-# ------ POINT C
-#
-_F( CHAM_GD = TEMP_3, NOEUD = 'N82',  NOM_CMP = 'TEMP', VALE = 65.98, PRECISION = 2.E-2),
-#
-# ------ POINT D
-#
-_F( CHAM_GD = TEMP_3, NOEUD = 'N1',   NOM_CMP = 'TEMP', VALE = 94.44, PRECISION = 2.E-2))
-
-    )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N26',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_3,
+                      VALE_CALC=238.951169183,
+                      VALE_REFE=237.5,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N113',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.029999999999999999,
+                      CHAM_GD=TEMP_3,
+                      VALE_CALC=140.707361188,
+                      VALE_REFE=137.22,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N82',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_3,
+                      VALE_CALC=66.189678601,
+                      VALE_REFE=65.980000000000004,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N1',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_3,
+                      VALE_CALC=93.301326432,
+                      VALE_REFE=94.439999999999998,
+                      REFERENCE='NON_DEFINI',),
+                   ),
+          )
 
 FIN()
 #

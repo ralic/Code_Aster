@@ -131,31 +131,40 @@ IMPR_TABLE(    TABLE=FAT12_BS,)
 # TEST DES RESULTATS
 #
 # FATIGUE - SITUATION 1 + SITUATION 2 + SEISME
-TEST_TABLE(TABLE=FAT12_AS,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 9.20000000E-03,
+           VALE_REFE=9.1999999999999998E-3,
            NOM_PARA='FACT_USAGE_CUMU',
-           VALE=9.2E-3  )
-           
-TEST_TABLE(TABLE=FAT12_AS,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
+           TABLE=FAT12_AS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 6.60000000E-03,
+           VALE_REFE=6.6E-3,
            NOM_PARA='FACT_USAGE_CUMU',
-           VALE=6.6E-3  )
-           
-TEST_TABLE(TABLE=FAT12_BS,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
+           TABLE=FAT12_AS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.019200000,
+           VALE_REFE=0.019199999999999998,
            NOM_PARA='FACT_USAGE_CUMU',
-           VALE=1.92E-2  )
-           
-TEST_TABLE(TABLE=FAT12_BS,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
+           TABLE=FAT12_BS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.012200000,
+           VALE_REFE=0.012200000000000001,
            NOM_PARA='FACT_USAGE_CUMU',
-           VALE=1.22E-2  )
+           TABLE=FAT12_BS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
 FIN();

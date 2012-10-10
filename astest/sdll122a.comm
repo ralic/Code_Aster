@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE LINEAIRE)
 # sdll122a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,54 +110,154 @@ U1=CALC_CHAMP(reuse=U1,RESULTAT=U1,CONTRAINTE=('EFGE_ELNO'))
 
 U1=CALC_CHAMP(reuse =U1, RESULTAT=U1, CONTRAINTE='EFGE_NOEU')
 
-TEST_RESU(RESU=(
-
-# valeurs trouvees par Luc a cachan :
-
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='C',NOM_CMP='DZ',VALE=2.22804E-3,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='A',NOM_CMP='DRY',VALE=-1.33770E-3,
-REFERENCE='NON_REGRESSION',PRECISION=2.E-6),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='EFGE_NOEU',GROUP_NO='A',NOM_CMP='VZ',VALE=5.00000E+3,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='EFGE_NOEU',GROUP_NO='C',NOM_CMP='MFY',VALE=1.25000E+4,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6),
-
-
-
-
-
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',NOEUD='N1',NOM_CMP='DRY',VALE=-1.3377015259747E-03,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',NOEUD='N1',NOM_CMP='DX',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',NOEUD='N1',NOM_CMP='DY',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',NOEUD='N1',NOM_CMP='DZ',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',NOEUD='N1',NOM_CMP='DRX',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',NOEUD='N1',NOM_CMP='DRZ',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',NOEUD='N2',NOM_CMP='DZ',VALE=2.2280411471271E-03,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6),
-
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP='N',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP='VZ',VALE=5.E+03,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP='MFY',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP='VY',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP='MT',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP='MFZ',VALE=0.,
-REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
-
-));
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='C',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=2.2280400000000001E-3,
+                   
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   VALE_CALC=-1.3377E-3,
+                   TOLE_MACHINE=1.9999999999999999E-06,
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='VZ',
+                   VALE_CALC=5000.0,
+                   
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='C',
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='MFY',
+                   VALE_CALC=1.2500E4,
+                   
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DRY',
+                   VALE_CALC=-1.3377015259746999E-3,
+                   
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DRX',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DZ',
+                   VALE_CALC=2.2280411471271E-3,
+                   
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='N',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='VZ',
+                   VALE_CALC=5000.0,
+                   
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='MFY',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='VY',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='MT',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='MFZ',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                ),
+          )
 
 # Test de CREA_TABLE/RESU sur des elements a sous-points
 TU1_1 = CREA_TABLE(RESU=_F(RESULTAT=U1,TOUT='OUI',NOM_CHAM='EFGE_NOEU',TOUT_CMP='OUI'))
@@ -175,7 +275,8 @@ for numordre,noeud,npara,lavale in PourTest:
          _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I= numordre),
          _F(NOM_PARA='NOEUD',      CRIT_COMP='EQ', VALE_K= noeud),
       ),
-      NOM_PARA=npara,VALE=lavale,REFERENCE='NON_REGRESSION',
+      NOM_PARA=npara,
+      VALE_CALC=lavale,
    )
 
 
@@ -208,7 +309,8 @@ for numordre,maille,point,spoint,npara,lavale in PourTest:
          _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  point),
          _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I=  spoint),
       ),
-      NOM_PARA=npara,VALE=lavale,REFERENCE='NON_REGRESSION',
+      NOM_PARA=npara,
+      VALE_CALC=lavale,
    )
 
 IMPR_TABLE(TABLE=TU2_1)
@@ -225,10 +327,11 @@ DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
 
 
 TEST_FICHIER(FICHIER='./fort.82',
-             REFERENCE='NON_REGRESSION',
              NB_VALE=3025,
-             VALE=4.220584199956E+05,
+             VALE_CALC=4.220584199956E+05,
+             TOLE_MACHINE=1.e-3,
              )
 
 
 FIN();
+

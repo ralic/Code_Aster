@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE TROUEE 2D DE LARGEUR FINIE AVEC X-FEM
 # sslp315a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,17 +146,18 @@ TAB = POST_RELEVE_T(ACTION=_F(INTITULE='Table pour coordonnees du fond',
 
 
                                             
-TEST_TABLE(TABLE=TAB,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(
+           VALE_CALC=42.139699999999998,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='COOR_X',
-           PRECISION=1.E-3,
-           VALE= 4.21397E+01   )
+           TABLE=TAB,
+           )
 
-TEST_TABLE(TABLE=TAB,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(
+           VALE_CALC=20.603760000000001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='COOR_Y',
-           PRECISION=1.E-3,
-           VALE= 2.060376E+01     )
+           TABLE=TAB,
+           )
 
 FIN()
-

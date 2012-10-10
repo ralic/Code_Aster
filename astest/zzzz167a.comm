@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  VALIDATION INTE_MAIL_3D SUR MAILLAGES PARTICULIERS
 # zzzz167a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,29 +49,54 @@ IMPR_TABLE( TABLE=TN1,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=2.75490E+02),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=2.94100E+02),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=3.06800E+02),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=3.19500E+02),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=3.32200E+02),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=7.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='DX',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=275.49000000000001,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='DX',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=294.10000000000002,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='DX',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=306.80000000000001,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='DX',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=319.5,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='DX',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=332.19999999999999,),
+           )
+
 FIN( );

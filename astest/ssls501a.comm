@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 26/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -100,28 +100,50 @@ RESUL=CALC_CHAMP(reuse=RESUL,RESULTAT=RESUL,CONTRAINTE=('EFGE_ELNO'))
 #                         VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
 #
-TEST_RESU(RESU=(
-     _F( RESULTAT = RESUL,         NOM_CHAM = 'DEPL',
-           NUME_ORDRE = 1,             GROUP_NO = 'A',
-           NOM_CMP = 'DY',          VALE = -13.455E-03,
-           PRECISION = 0.02,          CRITERE = 'RELATIF'),
-
-     _F( RESULTAT = RESUL,         NOM_CHAM = 'DEPL',
-           NUME_ORDRE = 1,             GROUP_NO = 'B',
-           NOM_CMP = 'DX',          VALE = 12.255E-03,
-           PRECISION = 0.02,          CRITERE = 'RELATIF'),
-
-     _F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO',
-           NUME_ORDRE = 1,             MAILLE = 'M32',
-           GROUP_NO = 'A',
-           NOM_CMP = 'NXX',           VALE = 0.0,
-           PRECISION = 0.2,          CRITERE = 'ABSOLU'),
-_F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO',
-           NUME_ORDRE = 1,             MAILLE = 'M32',
-           GROUP_NO = 'A',
-           NOM_CMP = 'MXX',          VALE = -0.477,
-           PRECISION = 0.02,          CRITERE = 'RELATIF'))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   RESULTAT=RESUL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.013558268,
+                   VALE_REFE=-0.013455,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   RESULTAT=RESUL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.012318995,
+                   VALE_REFE=0.012255,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   RESULTAT=RESUL,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='NXX',
+                   VALE_CALC=-0.026211866,
+                   VALE_REFE=0.0,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='ABSOLU',
+                   PRECISION=0.20000000000000001,
+                   MAILLE='M32',),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   RESULTAT=RESUL,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MXX',
+                   VALE_CALC=-0.477010465,
+                   VALE_REFE=-0.47699999999999998,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,
+                   MAILLE='M32',),
+                ),
+          )
 
 #
 FIN()

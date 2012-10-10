@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE VARIABLE
 # szlz107c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -435,8 +435,8 @@ for i in range(NBPR) :
 
     TEST_TABLE( TABLE=FATN[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE=RESU[i],
-                PRECISION=1.E-4                
+                VALE_CALC=RESU[i],
+                TOLE_MACHINE=1.E-4                
                 )
                 
 for i in range(NBPR) :
@@ -477,8 +477,8 @@ for i in range(NBPR) :
 
     TEST_TABLE( TABLE=FATNW[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE=RESU[i],
-                PRECISION=2.5E-3                )
+                VALE_CALC=RESU[i],
+                TOLE_MACHINE=2.5E-3                )
 
 for i in range(NBPR) :
 
@@ -518,7 +518,7 @@ for i in range(NBPR) :
 
     TEST_TABLE( TABLE=FATNF[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE=RESUF[i],
-                PRECISION=1.E-5                )
+                VALE_CALC=RESUF[i],
+                TOLE_MACHINE=1.E-5                )
 FIN()
 #

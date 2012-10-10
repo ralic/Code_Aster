@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION D'UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
 # sslp315f.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -230,41 +230,49 @@ IMPR_TABLE(TABLE=TABLST,);
 
 DISTMAX=2.0
 
-TEST_TABLE(TABLE=TABLSN,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=2.0,
+           VALE_CALC=1.212516563,
+           VALE_REFE=0.0,
            NOM_PARA='X1',
-           PRECISION=DISTMAX,
            TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE= 0.0,
-           VALE_ABS='OUI',)
+           VALE_ABS='OUI',
+           TABLE=TABLSN,
+           )
 
-TEST_TABLE(TABLE=TABLSN,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=2.0,
+           VALE_CALC=0.756710864,
+           VALE_REFE=0.0,
            NOM_PARA='X1',
-           PRECISION=DISTMAX,
            TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE= 0.0,
-           VALE_ABS='OUI',)
+           VALE_ABS='OUI',
+           TABLE=TABLSN,
+           )
 
-TEST_TABLE(TABLE=TABLST,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=2.0,
+           VALE_CALC=0.321370066,
+           VALE_REFE=0.0,
            NOM_PARA='X1',
-           PRECISION=DISTMAX,
            TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE= 0.0,
-           VALE_ABS='OUI',)
+           VALE_ABS='OUI',
+           TABLE=TABLST,
+           )
 
-TEST_TABLE(TABLE=TABLST,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=2.0,
+           VALE_CALC=1.844387140,
+           VALE_REFE=0.0,
            NOM_PARA='X1',
-           PRECISION=DISTMAX,
            TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE= 0.0,
-           VALE_ABS='OUI',)
+           VALE_ABS='OUI',
+           TABLE=TABLST,
+           )
 
 # *********************************************
 # EDITION DES FICHIERS MED POUR LA CONFIGURATION FISSURE
@@ -295,4 +303,3 @@ for i in range(0,NPS-1) :
 
 
 FIN();
- 

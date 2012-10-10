@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF factor Messages  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -373,7 +373,7 @@ Conseils :
 
 76: _(u"""
 Solveur MUMPS :
-  Pour essayer de passer en mémoire, il a fallut décharger sur disque un maximum d'objets JEVEUX.
+  Pour essayer de passer en mémoire, il a fallu décharger sur disque un maximum d'objets JEVEUX.
   Ce déchargement a pu ralentir le calcul.
   La mémoire disponible est ainsi passée de %(i1)d Mo à %(i2)d Mo. Mais cela n'a pas été suffisant car
   MUMPS a besoin, suivant son mode de gestion mémoire (paramétré par le mot-clé SOLVEUR/GESTION_MEMOIRE),

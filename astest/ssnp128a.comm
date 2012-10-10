@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES ELEMENTS A DISCONTINUITE SUR UNE FISSURE AVEC SAUT NON CONSTANT
 # ssnp128a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -853,38 +853,35 @@ EVOL = STAT_NON_LINE(
   )
 
 
-TEST_RESU(RESU=(
-                _F(    RESULTAT = EVOL,
-                       REFERENCE = 'ANALYTIQUE',
-                       MAILLE = 'MJ15',
-                       POINT = 1,
-                       NOM_CHAM = 'VARI_ELGA',
-                       NOM_CMP = 'V1',
-                       INST=1.0,
-                       VALE = 0.49315
-                     ),
-
-                _F(    RESULTAT = EVOL,
-                       REFERENCE = 'ANALYTIQUE',
-                       MAILLE = 'MJ45',
-                       POINT = 3,
-                       NOM_CHAM = 'VARI_ELGA',
-                       NOM_CMP = 'V1',
-                       INST=1.0,
-                       VALE = 1.075,
-                     ),
-
-                _F(    RESULTAT = EVOL,
-                       REFERENCE = 'ANALYTIQUE',
-                       MAILLE = 'MJ30',
-                       POINT = 2,
-                       NOM_CHAM = 'VARI_ELGA',
-                       NOM_CMP = 'V6',
-                       INST=1.0,
-                       VALE = 0.4489,
-                     ),
-
-                ),)
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOL,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.493631943,
+                   VALE_REFE=0.49314999999999998,
+                   MAILLE='MJ15',),
+                _F(INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=3,
+                   RESULTAT=EVOL,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=1.075740571,
+                   VALE_REFE=1.075,
+                   MAILLE='MJ45',),
+                _F(INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=2,
+                   RESULTAT=EVOL,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V6',
+                   VALE_CALC=0.448500819,
+                   VALE_REFE=0.44890000000000002,
+                   MAILLE='MJ30',),
+                ),
+          )
 
 IMPR_RESU(
   FORMAT  = 'RESULTAT',

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LIAISON DE TYPE RBE3 ENTRE UNE PLAQUE ET UN DISCRET
 # sslp113b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,13 +112,43 @@ IMPR_RESU(
       ),)
 
         
-TEST_RESU(
-     RESU = (
-          _F(RESULTAT=RES_RBE3,NOM_CHAM='DEPL',NOEUD='N000003',NUME_ORDRE=1,REFERENCE='NON_REGRESSION',PRECISION=1e-6,CRITERE='ABSOLU',NOM_CMP='DX',VALE=1.25000E-05),
-          _F(RESULTAT=RES_RBE3,NOM_CHAM='DEPL',NOEUD='N000001',NUME_ORDRE=1,REFERENCE='NON_REGRESSION',PRECISION=1e-6,CRITERE='ABSOLU',NOM_CMP='DY',VALE=0.00000E+00),          
-          _F(RESULTAT=RES_RBE3,NOM_CHAM='DEPL',NOEUD='N000001',NUME_ORDRE=1,REFERENCE='NON_REGRESSION',PRECISION=1e-6,CRITERE='ABSOLU',NOM_CMP='DX',VALE=0.00000E+00),
-          _F(RESULTAT=RES_RBE3,NOM_CHAM='DEPL',NOEUD='N000002',NUME_ORDRE=1,REFERENCE='NON_REGRESSION',PRECISION=1e-6,CRITERE='ABSOLU',NOM_CMP='DY',VALE=-2.11758E-21),          
-            )
-    )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=RES_RBE3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N000003',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.2500000000000001E-05,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=RES_RBE3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N000001',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=RES_RBE3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N000001',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=RES_RBE3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N000002',
+                   NOM_CMP='DY',
+                   VALE_CALC=-2.1175799999999999E-21,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
 
 FIN(FORMAT_HDF='OUI')

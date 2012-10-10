@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ABSORPTION D'UNE ONDE DE PRESSION DANS UNE COLONNE FLUIDE
 # fdlv111b.para = tps_job 510 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,36 +139,35 @@ PN7=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
                         NOM_CMP='PRES'
                       )
 
-TEST_FONCTION(VALEUR=(   _F(
-                   FONCTION = PN10,
-                   VALE_PARA = 3.86000E-01,
-                   VALE_REFE = 4.88962E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = PN10,
-                   VALE_PARA = 6.37000E-01,
-                   VALE_REFE = -4.93961E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = PN10,
-                   VALE_PARA = 1.15600E+00,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E0,
-                   REFERENCE = 'ANALYTIQUE'))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=4889.6199999999999,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.38600000000000001,
+                         FONCTION=PN10,
+                         ),
+                      _F(VALE_CALC=-4939.6099999999997,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.63700000000000001,
+                         FONCTION=PN10,
+                         ),
+                      _F(VALE_CALC=0.434576511383,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.1559999999999999,
+                         REFERENCE='ANALYTIQUE',
+                         TOLE_MACHINE=1.e-4,
+                         PRECISION=1.0,
+                         FONCTION=PN10,),
+                      ),
+              )
 
-TEST_FONCTION(   VALEUR=_F(
-                   FONCTION = PN7,
-                   VALE_PARA = 3.86000E-01,
-                   VALE_REFE = 4.89074E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3)
-                )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4890.7399999999998,
+                        TOLE_MACHINE=1.E-3,
+                        CRITERE='RELATIF',
+                        VALE_PARA=0.38600000000000001,
+                        FONCTION=PN7,),
+              )
 
 TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.1, NOMBRE = 1100))
 
@@ -215,37 +214,39 @@ PNA7=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
                         NOM_CMP='PRES'
                       )
 
-TEST_FONCTION(VALEUR=(   _F(
-                   FONCTION = PNA10,
-                   VALE_PARA = 3.84000E-01,
-                   VALE_REFE = 4.87451E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 3.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = PNA10,
-                   VALE_PARA = 6.44000E-01,
-                   VALE_REFE = -4.88583E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 8.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = PNA10,
-                   VALE_PARA = 1.10000E+00,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 5.E1,
-                   REFERENCE = 'ANALYTIQUE'))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=4872.99968383,
+                         VALE_REFE=4874.5100000000002,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.38400000000000001,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=3.0000000000000001E-3,
+                         FONCTION=PNA10,
+                         ),
+                      _F(VALE_CALC=-4881.46452981,
+                         VALE_REFE=-4885.8299999999999,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.64400000000000002,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=8.0000000000000002E-3,
+                         FONCTION=PNA10,
+                         ),
+                      _F(VALE_CALC=38.7156183002,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.1000000000000001,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=50.0,
+                         FONCTION=PNA10,),
+                      ),
+              )
 
-TEST_FONCTION(   VALEUR=_F(
-                   FONCTION = PN7,
-                   VALE_PARA = 3.84000E-01,
-                   VALE_REFE = 4.88877E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION')
-                )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4888.7700000000004,
+                        TOLE_MACHINE=1.E-3,
+                        CRITERE='RELATIF',
+                        VALE_PARA=0.38400000000000001,
+                        FONCTION=PN7,
+                        ),
+              )
 
 FIN()
 #

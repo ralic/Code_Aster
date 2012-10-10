@@ -26,10 +26,12 @@ VAS2=ASSE_VECTEUR(VECT_ELEM=VEL2, NUME_DDL=NU2,);
 VCIN2=CALC_CHAR_CINE(NUME_DDL=NU2,  CHAR_CINE=CHC2)
 RIGI2=FACTORISER(reuse =RIGI2, MATR_ASSE=RIGI2,)
 SOL2=RESOUDRE(MATR=RIGI2, CHAM_NO=VAS2, CHAM_CINE=VCIN2 )
-TEST_RESU(CHAM_NO=_F(CHAM_GD=SOL2, GROUP_NO='PALIER_B',   NOM_CMP='DY',
-                     VALE=-1.979032593416E-03 , PRECISION=1.E-9, REFERENCE='NON_REGRESSION',))
-
-
+TEST_RESU(CHAM_NO=_F(
+                     NOM_CMP='DY',
+                     GROUP_NO='PALIER_B',
+                     CHAM_GD=SOL2,
+                     VALE_CALC=-1.9790325934159999E-3,),
+          )
 
 # 2.3 : resolution faite avec python :
 #-------------------------------------------------
@@ -49,11 +51,16 @@ TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',  TYPE_K='K8', LISTE_K='DY',),
                        _F(PARA='VALEUR',             LISTE_R=SOL2P[109]),),)
 
 
-TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='DY',),
-           NOM_PARA='VALEUR', VALE=-1.979032593416E-03,  REFERENCE='AUTRE_ASTER', PRECISION=1.E-9)
-
-
-
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.0000000000000001E-09,
+           VALE_CALC=-1.979032593E-03,
+           VALE_REFE=-1.9790325934159999E-3,
+           TOLE_MACHINE=1.0000000000000001E-09,
+           NOM_PARA='VALEUR',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='DY',),
+           )
 
 FIN();
 

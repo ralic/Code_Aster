@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134h.para = tps_job 280 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -177,94 +177,105 @@ IMPR_TABLE(TABLE=SIFK2)
 #----------------------------------------------------------------------
 
 # TEST DU LISSAGE LEGENDRE
-TEST_TABLE(TABLE=SIFTH1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.12,
+           VALE_CALC= 1.76054549E+06,
+           VALE_REFE=1.595000E6,
+           NOM_PARA='K1',
            TYPE_TEST='MAX',
-           NOM_PARA='K1',
-           VALE=1.595E+6,
-           PRECISION=1.2E-1  ,
-           REFERENCE='ANALYTIQUE')
+           TABLE=SIFTH1,)
 
-TEST_TABLE(TABLE=SIFTH1,
-           TYPE_TEST='MIN',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 1.56653507E+06,
+           VALE_REFE=1.595000E6,
            NOM_PARA='K1',
-           VALE=1.595E+6,
-           PRECISION=3.E-2  ,
-           REFERENCE='ANALYTIQUE')
+           TYPE_TEST='MIN',
+           TABLE=SIFTH1,)
 
-TEST_TABLE(TABLE=SIFTH1,
-           TYPE_TEST='MIN',
+TEST_TABLE(
+           VALE_CALC=1.5665350800000001E6,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
-           VALE=1.56653508E+06,
-           PRECISION=1.E-3  ,
-           REFERENCE='NON_REGRESSION')
+           TYPE_TEST='MIN',
+           TABLE=SIFTH1,
+           )
 
 # TEST DU LISSAGE LEGENDRE + REPARTITION UNIFORME DE 24 POINTS
-TEST_TABLE(TABLE=SIFTH2,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.17999999999999999,
+           VALE_CALC= 1.86526986E+06,
+           VALE_REFE=1.595000E6,
+           NOM_PARA='K1',
            TYPE_TEST='MAX',
-           NOM_PARA='K1',
-           VALE=1.595E+6,
-           PRECISION=0.18,
-           REFERENCE='ANALYTIQUE')
+           TABLE=SIFTH2,)
 
-TEST_TABLE(TABLE=SIFTH2,
-           TYPE_TEST='MIN',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC= 1.53451274E+06,
+           VALE_REFE=1.595000E6,
            NOM_PARA='K1',
-           VALE=1.595E+6,
-           PRECISION=0.04 ,
-           REFERENCE='ANALYTIQUE')
+           TYPE_TEST='MIN',
+           TABLE=SIFTH2,)
 
 # TEST DU LISSAGE LAGRANGE : OSCILLATIONS
-TEST_TABLE(      TABLE=SIFTH3,
-                 TYPE_TEST='MAX',
-                 NOM_PARA='K1',
-                 VALE=2.719488E+06 ,
-                 PRECISION=1.E-4  ,
-                 REFERENCE='NON_REGRESSION')
+TEST_TABLE(
+           VALE_CALC=2.719488E6,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='K1',
+           TYPE_TEST='MAX',
+           TABLE=SIFTH3,
+           )
 
 # TEST DU LISSAGE LAGRANGE + REPARTITION UNIFORME DE 24 POINTS : OSCILLATIONS MOINDRES
-TEST_TABLE(      TABLE=SIFTH4,
-                 TYPE_TEST='MAX',
-                 NOM_PARA='K1',
-                 VALE=2.02995E+06,
-                 PRECISION=1.E-4 ,
-                 REFERENCE='NON_REGRESSION')
+TEST_TABLE(
+           VALE_CALC=2.029950E6,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='K1',
+           TYPE_TEST='MAX',
+           TABLE=SIFTH4,
+           )
 
 # TEST DU LISSAGE LAGRANGE + REPARTITION UNIFORME DE 10 POINTS : PLUS D'OSCILLATIONS
-TEST_TABLE(      TABLE=SIFTH5,
-                 FILTRE=(_F(NOM_PARA = 'NUM_PT', VALE_I = 5),),
-                 NOM_PARA='K1',
-                 VALE=1.595E+6,
-                 PRECISION=0.06 ,
-                 REFERENCE='ANALYTIQUE')
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC= 1.69065022E+06,
+           VALE_REFE=1.595000E6,
+           NOM_PARA='K1',
+           TABLE=SIFTH5,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=5,),
+           )
 
 # TEST DE POST_K1_K2_K3
-TEST_TABLE(TABLE=SIFK1,
-           FILTRE=(_F(NOM_PARA = 'PT_FOND',
-                      VALE_I = 1),
-                      ),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC= 1.69735944E+06,
+           VALE_REFE=1.595000E6,
            NOM_PARA='K1',
-           VALE=1.595E+6,
-           PRECISION=0.07,
-           REFERENCE='ANALYTIQUE')
+           TABLE=SIFK1,
+           FILTRE=_F(NOM_PARA='PT_FOND',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=SIFK1,
-           FILTRE=(_F(NOM_PARA = 'PT_FOND',
-                      VALE_I = 23),
-                      ),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC= 1.73041109E+06,
+           VALE_REFE=1.595000E6,
            NOM_PARA='K1',
-           VALE=1.595E+6,
-           PRECISION=10.E-2  ,
-           REFERENCE='ANALYTIQUE')
+           TABLE=SIFK1,
+           FILTRE=_F(NOM_PARA='PT_FOND',
+                     VALE_I=23,),
+           )
 
-
-TEST_TABLE(TABLE=SIFK2,
-           FILTRE=(_F(NOM_PARA = 'PT_FOND',
-                      VALE_I = 5),
-                      ),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 1.63541962E+06,
+           VALE_REFE=1.595000E6,
            NOM_PARA='K1',
-           VALE=1.595E+6,
-           PRECISION=0.03,
-           REFERENCE='ANALYTIQUE')
+           TABLE=SIFK2,
+           FILTRE=_F(NOM_PARA='PT_FOND',
+                     VALE_I=5,),
+           )
 
 FIN()
-

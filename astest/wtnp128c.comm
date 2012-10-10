@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # wtnp128c.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -301,39 +301,42 @@ U_1=CALC_CHAMP(reuse=U_1,
 
 # TEST FX  N17 A 100S, 150S
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=10,
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
-                  NOM_CMP='DY',
                   NOEUD='N17',
-                  VALE=-16.31,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='DY',
+                  VALE_CALC=-16.309999999999999,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=15,
+TEST_RESU(RESU=_F(NUME_ORDRE=15,
+                  RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
-                  NOM_CMP='DY',
                   NOEUD='N17',
-                  VALE=-6.848,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='DY',
+                  VALE_CALC=-6.8479999999999999,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
 # TEST PRE1  NS5768 A 190S ET 240S
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=19,
+TEST_RESU(RESU=_F(NUME_ORDRE=19,
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NS5768',
-                  VALE=0.1473,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='PRE1',
+                  VALE_CALC=0.14729999999999999,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=24,
+TEST_RESU(RESU=_F(NUME_ORDRE=24,
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NS5768',
-                  VALE=0.1884,
-                  REFERENCE='NON_REGRESSION',),);
-
+                  NOM_CMP='PRE1',
+                  VALE_CALC=0.18840000000000001,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
 FIN();

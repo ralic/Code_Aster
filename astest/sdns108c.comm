@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #  TITRE  : REPONSE DYNAMIQUE D UNE DALLE EN BETON ARME (MODELE GLRC_DAMAGE)
 # sdns108c.para = tps_job 800 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,17 +181,16 @@ IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_DEP,),),);
 # INSTANT = 0.00965s
 # EUROPLEXUS (Q4GS GLRC) t=0.0096593, DZ=-0.05870762
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = DYNA_AMO,
-               NUME_ORDRE = 9650,
-               NOM_CHAM = 'DEPL',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.20,
-               GROUP_NO='Point_C',
-               NOM_CMP = 'DZ',
-               VALE = -0.05870762,
-               REFERENCE = 'SOURCE_EXTERNE'),
-             ),
-          );
+TEST_RESU(RESU=_F(NUME_ORDRE=9650,
+                  GROUP_NO='Point_C',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=DYNA_AMO,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.068784202,
+                  VALE_REFE=-0.058707620000000002,
+                  CRITERE='RELATIF',
+                  PRECISION=0.20000000000000001,),
+          )
 
 FIN();

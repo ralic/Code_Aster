@@ -16,20 +16,24 @@ MOSRS=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MOSRS,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MOSRS,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
 
 #-----------------------------------------------------------------------
 
@@ -44,20 +48,24 @@ MOABS=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MOABS,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MOABS,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
 
 #-----------------------------------------------------------------------
 
@@ -73,20 +81,24 @@ MODPC=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MODPC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MODPC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
 
 #-----------------------------------------------------------------------
 
@@ -101,20 +113,24 @@ MOCQC=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MOCQC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MOCQC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
 
 #-----------------------------------------------------------------------
 
@@ -130,20 +146,25 @@ MODSC=COMB_SISM_MODAL(CORR_FREQ='NON',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
-TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MODSC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
                    NOM_CMP='DX',
-                   NOEUD='P2',),
-                _F(NOM_CHAM='DEPL',
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                _F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MODSC,
-                   REFERENCE='ANALYTIQUE',
-                   NOEUD_CMP=('DIR','X'),
-                   VALE=0.01013,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
                    NOM_CMP='DX',
-                   NOEUD='P3',),),);
+                   VALE_CALC=0.010132213,
+                   VALE_REFE=0.01013,
+                   NOEUD_CMP=('DIR', 'X'),),
+                ),
+          )
+
 FIN();
 
 

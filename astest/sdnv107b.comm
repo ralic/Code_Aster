@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE PLASTIQUE EN TRACTION DYNAMIQUE CONDENSEE PAR 
 # sdnv107b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -432,55 +432,75 @@ RESUGLO=REST_COND_TRAN(  RESULTAT=DYTREX,
                        );
                        
              
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION',
-                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 1.13490E-02))
-                                     
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION',
-                  NOM_CHAM = 'VITE',      INST=3.5E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 3.99430E+00))
-                  
-                                    
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION',
-                  NOM_CHAM = 'DEPL',      INST=1.4E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -9.93393E-03))
-                                     
-                  
-                                                      
-TEST_RESU( RESU=_F( RESULTAT = DYTREX0, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
-                  PRECISION = 0.2E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 1.13478E-02))
-                  
-TEST_RESU( RESU=_F( RESULTAT = DYTREX0, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      INST=1.4E-2, 
-                  PRECISION = 0.2E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -9.93393E-03))
-                  
-TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
-                    REFERENCE='NON_REGRESSION', 
-                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
-                  GROUP_NO='PC2',         NOM_CMP = 'DX', 
-                  VALE = 6.97145E-03))  
-                                                          
-                  
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION', 
-                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
-                  GROUP_NO='PC2',         NOM_CMP = 'DX', 
-                  VALE = 6.97145E-03))                  
-                                
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=5.0000000000000001E-3,
+                  RESULTAT=DYTREX,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.011349,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=3.5000000000000001E-3,
+                  RESULTAT=DYTREX,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.9943,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=0.014,
+                  RESULTAT=DYTREX,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.9339300000000005E-3,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=5.0000000000000001E-3,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=DYTREX0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.011349011,
+                  VALE_REFE=0.0113478,
+                  PRECISION=2.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=0.014,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=DYTREX0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.93388520E-03,
+                  VALE_REFE=-9.9339300000000005E-3,
+                  PRECISION=2.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC2',
+                  INST=5.0000000000000001E-3,
+                  RESULTAT=DYTREX,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=6.9714499999999997E-3,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC2',
+                  INST=5.0000000000000001E-3,
+                  RESULTAT=RESUGLO,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=6.9714499999999997E-3,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
 FIN( ); 
                       
-
 
 
 

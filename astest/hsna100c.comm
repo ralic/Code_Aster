@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 # hsna100c.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -396,10 +396,15 @@ RESUMECA=STAT_NON_LINE(
 
 #
 # NON REGRESSION
-TEST_RESU(
- RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
-   GROUP_NO = 'A2',   NOM_CMP = 'DX',REFERENCE= 'NON_REGRESSION',VERSION ='7.3.1',
-  VALE = -8.9645102488E-04,    ))
+TEST_RESU(RESU=_F(NUME_ORDRE=32,
+                  GROUP_NO='A2',
+                  RESULTAT=RESUMECA,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-8.9645102488000001E-4,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 ##########################################################
 # CALCUL MECANIQUE MECA_STATIQUE
@@ -417,11 +422,15 @@ MECA_STATIQUE( reuse=RESUSTAT, MODELE=MOMECA, CHAM_MATER=CM,EXCIT=(  _F(  CHARGE
 
 #
 # NON REGRESSION
-TEST_RESU(
-   RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',   INST = 1.70294E+09,
-  GROUP_NO = 'A2',   NOM_CMP = 'DX', REFERENCE= 'NON_REGRESSION',VERSION ='7.3.1',
-  VALE = -8.9645102488E-04 )
-            )
+TEST_RESU(RESU=_F(GROUP_NO='A2',
+                  INST=1.702940000E9,
+                  RESULTAT=RESUSTAT,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-8.9645102488000001E-4,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #
 FIN()

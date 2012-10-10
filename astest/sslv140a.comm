@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE MODULES EFFECTIFS EN PYTHON
 # sslv140a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,72 +172,89 @@ INT_SIX3=POST_ELEM(MODELE=MO,
 IMPR_TABLE(TABLE=INT_SIX3)
 
 
-TEST_TABLE(TABLE=INT_SIYY,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 1.50000000E+05,
+           VALE_REFE=150000,
            NOM_PARA='MOYE_SIYY',
-           REFERENCE='ANALYTIQUE',
-           VALE=150000);
-
-TEST_TABLE(TABLE=INT_SIXX,
+           TABLE=INT_SIYY,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1),
-           NOM_PARA='MOYE_SIXX',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE=133333);
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=INT_SIXX,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 1.34734399E+05,
+           VALE_REFE=133333,
+           NOM_PARA='MOYE_SIXX',
+           TABLE=INT_SIXX,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1),
-           NOM_PARA='INTE_VMIS',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=0.02,
-           VALE=269681.0);
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=INT_SIXX,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=0.02,
+           VALE_CALC= 2.69680516E+05,
+           VALE_REFE=2.69681E5,
+           NOM_PARA='INTE_VMIS',
+           TABLE=INT_SIXX,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1),
-           NOM_PARA='MOYE_VMIS',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=0.02,
-           VALE=134840.0);
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=INT_SIX1,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=0.02,
+           VALE_CALC= 1.34840258E+05,
+           VALE_REFE=1.34840E5,
+           NOM_PARA='MOYE_VMIS',
+           TABLE=INT_SIXX,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 1.34734399E+05,
+           VALE_REFE=133333,
            NOM_PARA='MOYE_SIXX',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE=133333);
+           TABLE=INT_SIX1,)
 
-TEST_TABLE(TABLE=INT_SIX2,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=0.02,
+           VALE_CALC= 2.69680516E+05,
+           VALE_REFE=2.69681E5,
            NOM_PARA='INTE_VMIS',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=0.02,
-           VALE=269681.0);
+           TABLE=INT_SIX2,
+           )
 
-TEST_TABLE(TABLE=INT_SIX2,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=0.02,
+           VALE_CALC= 1.34840258E+05,
+           VALE_REFE=1.34840E5,
            NOM_PARA='MOYE_VMIS',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=0.02,
-           VALE=134840.0);
+           TABLE=INT_SIX2,
+           )
 
-TEST_TABLE(TABLE=INT_SIX3,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=0.02,
+           VALE_CALC= 2.69680516E+05,
+           VALE_REFE=2.69681E5,
            NOM_PARA='INTE_VMIS',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=0.02,
-           VALE=269681.0);
+           TABLE=INT_SIX3,
+           )
 
-TEST_TABLE(TABLE=INT_SIX3,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=0.02,
+           VALE_CALC= 1.34840258E+05,
+           VALE_REFE=1.34840E5,
            NOM_PARA='MOYE_VMIS',
-           REFERENCE='NON_REGRESSION',
-           PRECISION=0.02,
-           VALE=134840.0);
+           TABLE=INT_SIX3,
+           )
 
-TEST_TABLE(TABLE=INT_SIX1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 1.34734399E+05,
+           VALE_REFE=133333,
            NOM_PARA='MOYE_SIXX',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE=133333);
-
+           TABLE=INT_SIX1,)
 
 FIN();

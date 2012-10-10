@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 # sdnv107c.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -903,42 +903,56 @@ RESUGLO=REST_COND_TRAN(   reuse=RESUGLO,
                           TOUT_CHAM='OUI',
                                         );
 
-TEST_RESU(RESU=_F( RESULTAT = MODE,  PARA = 'FREQ',
-                   REFERENCE = 'AUTRE_ASTER',
-                   CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                   NUME_ORDRE = 1, VALE = 117.11, ),);                                
-                                        
-                                     
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION',
-                  NOM_CHAM = 'VITE',      INST=3.E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 3.95547E+00));
-                  
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION',
-                  NOM_CHAM = 'DEPL',      INST=5.5E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 1.17404E-02));
-                                     
-                  
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
-                    REFERENCE='NON_REGRESSION',
-                  NOM_CHAM = 'DEPL',      INST=1.6E-2, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -1.13248E-02));                                                      
-                                     
-                                                      
-TEST_RESU( RESU=_F( RESULTAT = RESUGLO, REFERENCE = 'AUTRE_ASTER', 
-                  NOM_CHAM = 'DEPL',      INST=5.5E-3, 
-                  PRECISION = 3.0E-3, 
-                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = 1.17615E-02));
-                                        
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODE,
+                  VALE_CALC=117.111304842,
+                  VALE_REFE=117.11,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=3.0000000000000001E-3,
+                  RESULTAT=RESUGLO,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.95547,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=5.4999999999999997E-3,
+                  RESULTAT=RESUGLO,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.0117404,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=0.016,
+                  RESULTAT=RESUGLO,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.011324799999999999,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='PC3',
+                  INST=5.4999999999999997E-3,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESUGLO,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.011740414,
+                  VALE_REFE=0.011761499999999999,
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
 FIN( ) 
                
-
 
 
 

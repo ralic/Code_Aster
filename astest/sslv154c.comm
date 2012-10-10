@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE AVEC 3D_INCO_
 # sslv154c.para = tps_job 200 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,16 +187,20 @@ for i in range(2):
    TEST_TABLE(TABLE=CG[i],
            TYPE_TEST='MAX',
            NOM_PARA='K1',
-           VALE=k1ref,
+           VALE_CALC=k1ref,     #TODO vale_calc
+           VALE_REFE=k1ref,
            CRITERE='RELATIF',
+           TOLE_MACHINE=0.03,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE')
 
    TEST_TABLE(TABLE=CG[i],
            TYPE_TEST='MIN',
            NOM_PARA='K1',
-           VALE=k1ref,
+           VALE_CALC=k1ref,     #TODO vale_calc
+           VALE_REFE=k1ref,
            CRITERE='RELATIF',
+           TOLE_MACHINE=0.01,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE')
 
@@ -207,9 +211,11 @@ for i in range(2):
            FILTRE=_F(NOM_PARA='ANGLE',
                      VALE=0.),
            NOM_PARA='K2',
-           VALE=k2ref_0,
+           VALE_CALC=k2ref_0,     #TODO vale_calc
+           VALE_REFE=k2ref_0,
            CRITERE='RELATIF',
-           PRECISION=0.02,
+           TOLE_MACHINE=0.03,
+           PRECISION=0.03,
            REFERENCE='ANALYTIQUE')
 
 # test de KIII au milieu du fond (angle = 90 avec + ou -0.5 degre)
@@ -221,11 +227,11 @@ for i in range(2):
                      CRITERE='ABSOLU',
                      PRECISION=0.5,),
            NOM_PARA='K3',
-           VALE=k3ref_90,
+           VALE_CALC=k3ref_90,     #TODO vale_calc
+           VALE_REFE=k3ref_90,
            CRITERE='RELATIF',
+           TOLE_MACHINE=0.03,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE')
-
-
 
 FIN()

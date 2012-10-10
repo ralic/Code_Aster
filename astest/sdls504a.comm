@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 7/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -160,33 +160,42 @@ RESULT_G=MODE_ITER_SIMULT(   MATR_A=MAS_RI_M,
 #                        VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
 #
-TEST_RESU(RESU=(
-      _F( RESULTAT = RESULT,                NUME_MODE = 6,  
-            PARA = 'CHAR_CRIT',       
-            VALE = 104797.82,                PRECISION = 0.03,  
-            CRITERE = 'RELATIF',    
-            ),
-      _F( RESULTAT = RESULT,                NUME_MODE = 5,  
-            PARA = 'CHAR_CRIT',       
-            VALE = -104797.82,               PRECISION = 0.03,  
-            CRITERE = 'RELATIF',    
-            ))
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   NUME_MODE=6,
+                   RESULTAT=RESULT,
+                   VALE_CALC= 1.07753483E+05,
+                   VALE_REFE=1.0479782000000001E5,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=5,
+                   RESULTAT=RESULT,
+                   VALE_CALC=-1.07878765E+05,
+                   VALE_REFE=-1.0479782000000001E5,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(RESULTAT = RESULT_G,
+                   NUME_MODE = 6,  
+                   PARA = 'CHAR_CRIT',       
+                   VALE_CALC = 1.0775348330981E+05,
+                   VALE_REFE = 104797.82,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION = 0.03,  
+                   CRITERE = 'RELATIF',),
+                _F(RESULTAT = RESULT_G,
+                   NUME_MODE = 5,  
+                   PARA = 'CHAR_CRIT',       
+                   VALE_CALC = -1.0787876516812E+05,
+                   VALE_REFE = -104797.82,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION = 0.03,  
+                   CRITERE = 'RELATIF',),
+                  ),
            )
 
-TEST_RESU(RESU=(
-      _F( RESULTAT = RESULT_G,                NUME_MODE = 6,  
-            PARA = 'CHAR_CRIT',       
-            VALE = 104797.82,                PRECISION = 0.03,  
-            CRITERE = 'RELATIF',    
-            ),
-      _F( RESULTAT = RESULT_G,                NUME_MODE = 5,  
-            PARA = 'CHAR_CRIT',       
-            VALE = -104797.82,               PRECISION = 0.03,  
-            CRITERE = 'RELATIF',    
-            ))
-           )
-
-#
 FIN()
-#
-# 

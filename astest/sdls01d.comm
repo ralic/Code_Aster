@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE CARREE MINCE ENCASTREE SUR UN BORD (GUYAN)
 # sdls01d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,26 +95,56 @@ MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR1,      MATR_MASS=MATASSM1,
 # --------------------------------------------------------------------
 
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 1,       VALE = 8.7266),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 2,       VALE = 21.3042),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 3,       VALE = 53.5542),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 4,       VALE = 68.2984),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 5,       VALE = 77.7448),
-   _F(   RESULTAT = MODE1,       PARA = 'FREQ', REFERENCE = 'ANALYTIQUE',
-           CRITERE = 'RELATIF',     PRECISION = 1.7E-2,
-           NUME_ORDRE = 6,       VALE = 136.0471))
-    )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=8.672645637,
+                   VALE_REFE=8.7265999999999995,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=21.302513258,
+                   VALE_REFE=21.304200000000002,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=53.269968364,
+                   VALE_REFE=53.554200000000002,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=68.272160075,
+                   VALE_REFE=68.298400000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=77.961335316,
+                   VALE_REFE=77.744799999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=138.327303374,
+                   VALE_REFE=136.0471,
+                   CRITERE='RELATIF',
+                   PRECISION=0.017000000000000001,),
+                ),
+          )
 
 FIN()
 #

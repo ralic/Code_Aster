@@ -9,11 +9,13 @@ tabtest=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE_ARITH',
                                 NOM_CHAM='SIEQ_NOEU',
                                 GROUP_NO='Lsup'),)
 
-TEST_TABLE(TABLE=tabtest,
-           FILTRE=_F(NOM_PARA='CMP',
-                     VALE_K='VMIS'),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 9.99783295E+05,
+           VALE_REFE=1.E6,
            NOM_PARA='MOYENNE',
-           VALE=F_Norm,
-           REFERENCE='ANALYTIQUE',)
+           TABLE=tabtest,
+           FILTRE=_F(NOM_PARA='CMP',
+                     VALE_K='VMIS',),
+           )
 
 FIN()

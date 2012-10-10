@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PILOTAGE DU CHARGEMENT EN NON LINEAIRE
 # ssnx101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,14 +160,17 @@ NORDIF_1=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
                    CHAM_MATER=CHMAT,
                    CHAM_GD=DEPDIF_1,);
 
-TEST_TABLE(TABLE=NORDIF_1,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-10,
+           VALE_CALC= 1.4052813314E-23,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='TOTALE',
+           TABLE=NORDIF_1,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='MA',),
-           NOM_PARA='TOTALE',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-10,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
 COMPR407=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_CONTOUR=_F(GROUP_MA='LIBRE',
@@ -219,14 +222,17 @@ NORDIF_2=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
                    CHAM_MATER=CHMAT,
                    CHAM_GD=DEPDIF_2,);
 
-TEST_TABLE(TABLE=NORDIF_2,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-10,
+           VALE_CALC= 1.1695340590E-15,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='TOTALE',
+           TABLE=NORDIF_2,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='MA',),
-           NOM_PARA='TOTALE',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-10,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
 # VERIFICATION DE LA CONDITION CINEMATIQUE EN PHASE 1
 
@@ -256,12 +262,14 @@ DEP_DELT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                        CUMUL='OUI',
                        COEF_R=-1.,),),);
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=DEP_DELT,
-                     GROUP_NO='A',
+TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
-                     VALE=-1.0,
-                     PRECISION=1e-08,
-                     REFERENCE='ANALYTIQUE',),);
+                     GROUP_NO='A',
+                     PRECISION=1.E-08,
+                     CHAM_GD=DEP_DELT,
+                     VALE_CALC=-1.000000000,
+                     VALE_REFE=-1.0,),
+          )
 
 # VERIFICATION DE LA POSSIBILITE DE COMBINER RECH_LINEAIRE ET PILOTAGE
 # (NE CONVIENT PAS POUR LA PESANTEUR)
@@ -314,16 +322,18 @@ NORDIF2B=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
                    CHAM_MATER=CHMAT,
                    CHAM_GD=DEPDIF2B,);
 
-TEST_TABLE(TABLE=NORDIF2B,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-10,
+           VALE_CALC= 1.8791496167E-15,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='TOTALE',
+           TABLE=NORDIF2B,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='MA',),
-           NOM_PARA='TOTALE',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-10,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
 FIN();
 
 #
-

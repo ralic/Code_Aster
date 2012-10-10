@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE BIAISE SOUS CHARGEMENT CONCENTRE
 # ssnv139b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,33 +127,34 @@ NONLIN=STAT_NON_LINE(       MODELE=MODELE_1,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          INST=250.,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'SOURCE_EXTERNE',
-                      PRECISION = (1.7E-2,1.E-6),
-                      NOM_CMP = 'DX',
-                                VALE = -3.8069E1)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_10',
+                  INST=250.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-37.441202821,
+                  VALE_REFE=-38.069000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=0.017000000000000001, TOLE_MACHINE=(0.017000000000000001, 9.9999999999999995E-07),),
+          )
 
 #
 #   DEPLACEMENT VERTICAL
 #
 #
 
-TEST_RESU(   RESU=_F(
-                      RESULTAT = NONLIN,
-                                          INST=250.,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'SOURCE_EXTERNE',
-                      PRECISION = (3.E-2,1.E-6),
-                      NOM_CMP = 'DZ',
-                                VALE = -7.2409E1)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_10',
+                  INST=250.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-70.449599968,
+                  VALE_REFE=-72.409000000000006,
+                  CRITERE='RELATIF',
+                  PRECISION=0.029999999999999999, TOLE_MACHINE=(0.029999999999999999, 9.9999999999999995E-07),),
+          )
 
 #
 #
@@ -164,34 +165,36 @@ TEST_RESU(   RESU=_F(
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          INST=250.,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '5.02.13',
-                      PRECISION = (0.5E-2,1.E-6),
-                      NOM_CMP = 'DX',
-                                VALE = -3.744E1)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_10',
+                  INST=250.0,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-37.441202821,
+                  VALE_REFE=-37.439999999999998,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 9.9999999999999995E-07),
+                  ),
+          )
 
 #
 #   DEPLACEMENT VERTICAL
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          INST=250.,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '5.02.13',
-                      PRECISION = (0.5E-2,1.E-6),
-                      NOM_CMP = 'DZ',
-                                VALE = -7.045E1)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_10',
+                  INST=250.0,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-70.449599968,
+                  VALE_REFE=-70.450000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 9.9999999999999995E-07),
+                  ),
+          )
 
 #
 #
@@ -205,16 +208,17 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          INST=500.,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'SOURCE_EXTERNE',
-                      PRECISION = (0.6E-2,1.E-6),
-                      NOM_CMP = 'DX',
-                                VALE = -5.2002E1)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_10',
+                  INST=500.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-52.270509040,
+                  VALE_REFE=-52.002000000000002,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3, TOLE_MACHINE=(6.0000000000000001E-3, 9.9999999999999995E-07),),
+          )
 
 #
 #
@@ -222,16 +226,17 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          INST=500.,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'SOURCE_EXTERNE',
-                      PRECISION = (2.0E-2,1.E-6),
-                      NOM_CMP = 'DZ',
-                                VALE = -8.0734E1)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_10',
+                  INST=500.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-79.175447025,
+                  VALE_REFE=-80.733999999999995,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02, TOLE_MACHINE=(0.02, 9.9999999999999995E-07),),
+          )
 
 #
 #
@@ -241,17 +246,18 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          INST=500.,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '5.02.13',
-                      PRECISION = (0.5E-2,1.E-6),
-                      NOM_CMP = 'DX',
-                                VALE = -5.227E1)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_10',
+                  INST=500.0,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-52.270509040,
+                  VALE_REFE=-52.270000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 9.9999999999999995E-07),
+                  ),
+          )
 
 #
 #
@@ -259,17 +265,18 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
 #
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
-                                          INST=500.,
-                      GROUP_NO = 'G_10',
-                      NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '5.02.13',
-                      PRECISION = (0.5E-2,1.E-6),
-                      NOM_CMP = 'DZ',
-                                VALE = -7.917E1)
-            )
+TEST_RESU(RESU=_F(GROUP_NO='G_10',
+                  INST=500.0,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-79.175447025,
+                  VALE_REFE=-79.170000000000002,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 9.9999999999999995E-07),
+                  ),
+          )
 
 #
 FIN( )

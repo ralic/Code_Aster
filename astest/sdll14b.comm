@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 04/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -137,23 +137,40 @@ MODES=LIRE_RESU(FORMAT='MED',
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
-TEST_RESU(RESU=(
-  _F( RESULTAT = MODES,             PARA = 'FREQ',
-        CRITERE = 'RELATIF',    PRECISION = 0.01,
-        NUME_ORDRE = 1,                 VALE = 17.9),
-
-  _F( RESULTAT = MODES,             PARA = 'FREQ',
-        CRITERE = 'RELATIF',    PRECISION = 0.01,
-        NUME_ORDRE = 2,                 VALE = 24.8),
-
-  _F( RESULTAT = MODES,             PARA = 'FREQ',
-        CRITERE = 'RELATIF',    PRECISION = 0.03,
-        NUME_ORDRE = 3,                 VALE = 25.3),
-
-  _F( RESULTAT = MODES,             PARA = 'FREQ',
-        CRITERE = 'RELATIF',    PRECISION = 0.03,
-        NUME_ORDRE = 4,                 VALE = 27.))
-       )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   VALE_CALC=17.736316643,
+                   VALE_REFE=17.899999999999999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   VALE_CALC=24.669814727,
+                   VALE_REFE=24.800000000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   VALE_CALC=25.664003897,
+                   VALE_REFE=25.300000000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   VALE_CALC=27.485949681,
+                   VALE_REFE=27.0,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                ),
+          )
 
 #
 FIN()

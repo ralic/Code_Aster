@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE CYLINDRE CREUX THERMOVISCOPLASTICITE LINEAIRE
 # ssna106a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -105,17 +105,14 @@ RESU = CALC_CHAMP ( reuse= RESU,
                   CONTRAINTE='SIGM_NOEU',
                   )
 
-TEST_RESU(
-          RESU= _F(RESULTAT = RESU,
-                   NUME_ORDRE =38,
-                   NOM_CHAM ='DEPL',
-                   GROUP_NO ='B',
-                   NOM_CMP ='DX',
-                   VALE= 1.110,
-                   REFERENCE='ANALYTIQUE')
-         )
-
-
-
+TEST_RESU(RESU=_F(NUME_ORDRE=38,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.110626591,
+                  VALE_REFE=1.1100000000000001,),
+          )
 
 FIN()

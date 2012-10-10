@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DISCRETS AVEC COMPORTEMENT CINEMATIQUE 2D : T ET TR SUR NOEUD ET SEG2
 # ssnd102b.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -242,7 +242,8 @@ for LeDiscret in ListeDiscrets:
          motclefs['VALEUR'] = []
          for ind in range(len(LesInstants)):
             motclefs['VALEUR'].append(_F(FONCTION=LaF[ii],NOM_PARA='INST',PRECISION=2.00E-8,
-                                         VALE_PARA=LesInstants[ind],VALE_REFE=Lvale[ind],
+                                         VALE_PARA=LesInstants[ind], TOLE_MACHINE=2.e-8,  #TODO vale_calc
+                                         VALE_CALC=Lvale[ind],VALE_REFE=Lvale[ind],
                                          REFERENCE='ANALYTIQUE',CRITERE='RELATIF'))
          TEST_FONCTION(**motclefs)
       ii += 1
@@ -256,9 +257,8 @@ for LeDiscret in ListeDiscrets:
          vale = Energie[jj]
          vari = "V%d" % (jj*3+3)
          motclefs['RESU'].append(_F(RESULTAT=RESU,INST=TempsMaxi,NOM_CHAM='VARI_ELGA',
-                                    REFERENCE='NON_REGRESSION',VERSION='8.3.25',
-                                    CRITERE=('RELATIF','ABSOLU'),PRECISION=(3.00E-06,1.0E-05),
-                                    MAILLE=LaMaille,POINT=1,NOM_CMP=vari,VALE=vale,))
+                                    CRITERE=('RELATIF','ABSOLU'),TOLE_MACHINE=(3.00E-06,1.0E-05),
+                                    MAILLE=LaMaille,POINT=1,NOM_CMP=vari,VALE_CALC=vale,))
       TEST_RESU(**motclefs)
 
    motclefs = {}

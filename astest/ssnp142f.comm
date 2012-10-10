@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 3D A L'AIDE DES ELEMENTS DE JOINT HYME ET DE LA LOI JOINT_MECA_RUPT
 # ssnp142f.para = tps_job 200 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -278,92 +278,139 @@ P_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 # MAILLAGES TRES GROSSIERS AVEC DES RESIDUS DE CALCUL ASSEZ IMPORTANTS
 # C'EST POURQUOI ON AUTORISE DES ECARTS (ET NON DES ERREURS) DE 15%
 
-TEST_TABLE(TABLE=SAUTHM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=0.0)),
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC= 1.43362462E-06,
+           VALE_REFE=1.5200000000000001E-06,
            NOM_PARA='V7',
-           VALE=1.52E-06,
-           PRECISION=0.06,
-           REFERENCE='SOURCE_EXTERNE')
+           TABLE=SAUTHM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0.0,),
+           )
 
-TEST_TABLE(TABLE=SNT_HM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=0.0)),
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=-8.82900000E+04,
+           VALE_REFE=-8.8300E4,
            NOM_PARA='SIGN',
-           VALE=-0.883E+05,
-           PRECISION=0.01,
-           REFERENCE='SOURCE_EXTERNE')
+           TABLE=SNT_HM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0.0,),
+           )
 
-TEST_TABLE(TABLE=SAUTHM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=5.0)),
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.14999999999999999,
+           VALE_CALC=-5.86895395E-07,
+           VALE_REFE=-5.2300000000000001E-07,
            NOM_PARA='V7',
-           VALE=-5.23E-07,
-           PRECISION=0.15,
-           REFERENCE='SOURCE_EXTERNE')
+           TABLE=SAUTHM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=5.0,),
+           )
 
-TEST_TABLE(TABLE=SNT_HM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=5.0)),
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.14999999999999999,
+           VALE_CALC=-5.86895395E+05,
+           VALE_REFE=-5.23000E5,
            NOM_PARA='SIGN',
-           VALE=-5.23E+05,
-           PRECISION=0.15,
-           REFERENCE='SOURCE_EXTERNE')
+           TABLE=SNT_HM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=5.0,),
+           )
 
 ################### TESTS U_HM  NON REGRESSION #######################
 
 # SAUT ET CONTRAINTE NORMALE
-TEST_TABLE(TABLE=SAUTHM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=1.3)),
+TEST_TABLE(
+           VALE_CALC=8.582E-07,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='V7',
-           VALE=8.582E-07,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=SNT_HM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=1.3)),
-           NOM_PARA='SIGN',
-           VALE=-8.828995E+04,
-           REFERENCE='NON_REGRESSION')
+           TABLE=SAUTHM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=1.3,),
+           )
 
-TEST_TABLE(TABLE=SAUTHM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=3.2)),
-           NOM_PARA='V7',
-           VALE=5.7675E-08,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=SNT_HM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=3.2)),
+TEST_TABLE(
+           VALE_CALC=-8.8289949999999997E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIGN',
-           VALE=-8.827611E+04,
-           REFERENCE='NON_REGRESSION')
+           TABLE=SNT_HM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=1.3,),
+           )
 
-TEST_TABLE(TABLE=SAUTHM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=4.6)),
+TEST_TABLE(
+           VALE_CALC=5.7674999999999999E-08,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='V7',
-           VALE=-3.60777E-07,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=SNT_HM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=4.6)),
+           TABLE=SAUTHM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=3.2000000000000002,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-8.8276110000000001E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIGN',
-           VALE=-3.82620E+05,
-           REFERENCE='NON_REGRESSION')
+           TABLE=SNT_HM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=3.2000000000000002,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-3.60777E-07,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V7',
+           TABLE=SAUTHM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=4.5999999999999996,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-3.82620E5,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGN',
+           TABLE=SNT_HM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=4.5999999999999996,),
+           )
 
 # PRESSION
-TEST_TABLE(TABLE=PRE_HM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=1.8)),
+TEST_TABLE(
+           VALE_CALC=8.8289899999999994E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='PRE1',
-           VALE=8.82899E+04,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=P_HM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=1.8)),
-           NOM_PARA='V18',
-           VALE=8.82899E+04 ,
-           REFERENCE='NON_REGRESSION')
+           TABLE=PRE_HM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=1.8,),
+           )
 
-TEST_TABLE(TABLE=PRE_HM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=4.4)),
-           NOM_PARA='PRE1',
-           VALE=3.27642E+04,
-           REFERENCE='NON_REGRESSION')
-TEST_TABLE(TABLE=P_HM,
-           FILTRE=(_F(NOM_PARA='COOR_X',VALE=4.4)),
+TEST_TABLE(
+           VALE_CALC=8.8289899999999994E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='V18',
-           VALE=3.27642E+04 ,
-           REFERENCE='NON_REGRESSION')
+           TABLE=P_HM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=1.8,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.2764200000000001E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='PRE1',
+           TABLE=PRE_HM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=4.4000000000000004,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.2764200000000001E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V18',
+           TABLE=P_HM,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=4.4000000000000004,),
+           )
 
 IMPR_TABLE(TABLE=SAUTHM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V7'));
 IMPR_TABLE(TABLE=SNT_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','SIGN'));

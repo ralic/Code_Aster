@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D ,
 # wtnp113c.para = tps_job 3200 mem_job 512Mo ncpus 1 liste_test L
@@ -450,64 +450,75 @@ TRVV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 #
 #  NO1496 (5.014; -450.) et NO1059 (+7 ; -450)
 #
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=3,  #50 ans
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NO1496',
-                  VALE=2.9E7,
-                  CRITERE='RELATIF',
-                  PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=34,  #10000 ans
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC= 2.87023048E+07,
+                  VALE_REFE=2.9000000E7,
+                  CRITERE='RELATIF',
+                  PRECISION=0.20000000000000001,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=34,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
                   NOEUD='NO1496',
-                  VALE=4.35E6,
-                  CRITERE='RELATIF',
-                  PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=3,  #50 ans
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
-                  NOEUD='NO823',
-                  VALE=3.6E6,
+                  VALE_CALC= 4.17521229E+06,
+                  VALE_REFE=4.350000E6,
                   CRITERE='RELATIF',
-                  PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=0.20000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=34,  #10000 ans
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NO823',
-                  VALE=4.34E6,
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 2.93060830E+06,
+                  VALE_REFE=3.600000E6,
                   CRITERE='RELATIF',
-                  PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=0.20000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=3,  #50 ans
+TEST_RESU(RESU=_F(NUME_ORDRE=34,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO823',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 4.17095013E+06,
+                  VALE_REFE=4.340000E6,
+                  CRITERE='RELATIF',
+                  PRECISION=0.20000000000000001,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU0,
                   NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V3',
                   NOEUD='NO1496',
-                  VALE=0.7,
+                  NOM_CMP='V3',
+                  VALE_CALC=0.709786089,
+                  VALE_REFE=0.69999999999999996,
                   CRITERE='RELATIF',
-                  PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=0.20000000000000001,),
+          )
 
-
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=3,  #50 ans
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NO823',
-                  VALE=2.930608E+06,
+                  NOM_CMP='PRE1',
+                  VALE_CALC=2.930608E6,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
+
 FIN();

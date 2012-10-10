@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  LOIS DE TAHERI
 # szlz108a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,45 +99,56 @@ TAB_1=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                 CUMUL='LINEAIRE',
                                  INFO=2                   )
 
-TEST_TABLE(        TABLE=TAB_1,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.7142857E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.7142856999999999E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(        TABLE=TAB_1,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 2),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.7142857E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.7142856999999999E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(        TABLE=TAB_1,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 3),
-                 NOM_PARA='DOMMAGE',
-                     VALE=8.E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=7.9999999999999996E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(        TABLE=TAB_1,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 4),
-                 NOM_PARA='DOMMAGE',
-                     VALE=6.6666667E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=6.6666667E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(        TABLE=TAB_1,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 5),
-                 NOM_PARA='DOMMAGE',
-                     VALE=4.E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=4.0000000000000003E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(        TABLE=TAB_1,
-                 NOM_PARA='DOMM_CUMU',
-                     VALE=6.6095E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=6.6094999999999997E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMM_CUMU',
+           TABLE=TAB_1,)
 
 #
 #-----------------------------------------------------------------------
@@ -150,45 +161,56 @@ TAB_2=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                 CUMUL='LINEAIRE',
                                  INFO=2                )
 
-TEST_TABLE(        TABLE=TAB_2,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.7142857E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.7142856999999999E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_2,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(        TABLE=TAB_2,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 2),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.7142857E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.7142856999999999E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_2,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(        TABLE=TAB_2,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 3),
-                 NOM_PARA='DOMMAGE',
-                     VALE=8.E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=7.9999999999999996E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_2,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(        TABLE=TAB_2,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 4),
-                 NOM_PARA='DOMMAGE',
-                     VALE=6.6666667E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=6.6666667E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_2,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(        TABLE=TAB_2,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 5),
-                 NOM_PARA='DOMMAGE',
-                     VALE=4.E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=4.0000000000000003E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_2,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(        TABLE=TAB_2,
-                 NOM_PARA='DOMM_CUMU',
-                     VALE=6.6095E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=6.6094999999999997E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMM_CUMU',
+           TABLE=TAB_2,)
 
 #
 #-----------------------------------------------------------------------
@@ -202,45 +224,56 @@ TAB_3=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                 CUMUL='LINEAIRE',
                                  INFO=2                )
 
-TEST_TABLE(        TABLE=TAB_3,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.7142857E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.7142856999999999E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_3,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(        TABLE=TAB_3,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 2),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.7142857E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.7142856999999999E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_3,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(        TABLE=TAB_3,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 3),
-                 NOM_PARA='DOMMAGE',
-                     VALE=8.E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=7.9999999999999996E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_3,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(        TABLE=TAB_3,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 4),
-                 NOM_PARA='DOMMAGE',
-                     VALE=6.6666667E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=6.6666667E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_3,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(        TABLE=TAB_3,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 5),
-                 NOM_PARA='DOMMAGE',
-                     VALE=4.E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=4.0000000000000003E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_3,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(        TABLE=TAB_3,
-                 NOM_PARA='DOMM_CUMU',
-                     VALE=6.6095E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=6.6094999999999997E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMM_CUMU',
+           TABLE=TAB_3,)
 
 #
 #-----------------------------------------------------------------------
@@ -253,46 +286,56 @@ TAB_4=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                                 CUMUL='LINEAIRE',
                                  INFO=2                  )
 
-TEST_TABLE(        TABLE=TAB_4,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.7142857E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.7142856999999999E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_4,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(        TABLE=TAB_4,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 2),
-                 NOM_PARA='DOMMAGE',
-                     VALE=5.7142857E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=5.7142856999999999E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_4,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(        TABLE=TAB_4,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 3),
-                 NOM_PARA='DOMMAGE',
-                     VALE=8.E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=7.9999999999999996E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_4,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(        TABLE=TAB_4,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 4),
-                 NOM_PARA='DOMMAGE',
-                     VALE=6.6666667E-6,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=6.6666667E-06,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_4,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(        TABLE=TAB_4,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 5),
-                 NOM_PARA='DOMMAGE',
-                     VALE=4.E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=4.0000000000000003E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_4,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(        TABLE=TAB_4,
-                 NOM_PARA='DOMM_CUMU',
-                     VALE=6.6095E-5,
-                PRECISION=1.E-5                )
-
+TEST_TABLE(
+           VALE_CALC=6.6094999999999997E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMM_CUMU',
+           TABLE=TAB_4,)
 
 TAB_5=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
                              HISTOIRE=_F(  EPSI = TAUN1),
@@ -306,45 +349,56 @@ TAB_5=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
 
 IMPR_TABLE (TABLE = TAB_5)
 
-TEST_TABLE(        TABLE=TAB_5,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 1),
-                 NOM_PARA='DOMMAGE',
-                     VALE=4.E-05,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=4.0000000000000003E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_5,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(        TABLE=TAB_5,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 2),
-                 NOM_PARA='DOMMAGE',
-                     VALE=1.E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=1.0000000000000001E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_5,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(        TABLE=TAB_5,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 3),
-                 NOM_PARA='DOMMAGE',
-                     VALE=1.E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=1.0000000000000001E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_5,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(        TABLE=TAB_5,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 4),
-                 NOM_PARA='DOMMAGE',
-                     VALE=1.33333E-05,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=1.33333E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_5,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(        TABLE=TAB_5,
-                   FILTRE=_F(  NOM_PARA = 'CYCLE',
-                            VALE_I = 5),
-                 NOM_PARA='DOMMAGE',
-                     VALE=1.E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=1.0000000000000001E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB_5,
+           FILTRE=_F(NOM_PARA='CYCLE',
+                     VALE_I=5,),
+           )
 
-TEST_TABLE(        TABLE=TAB_5,
-                 NOM_PARA='DOMM_CUMU',
-                     VALE=8.33333E-5,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=8.3333300000000004E-05,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='DOMM_CUMU',
+           TABLE=TAB_5,)
 
 #
 #-----------------------------------------------------------------------

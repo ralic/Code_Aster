@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #======================================================================
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'BETON_DOUBLE_DP'
@@ -226,12 +226,18 @@ for i in range(NCAL):
           DETRUIRE ( CONCEPT =  _F (NOM = GT_T ))
 
           TEST_TABLE(TABLE=RESU[i],
-                     NOM_PARA='VMIS',VALE=U['VMIS',i+2],
+                     NOM_PARA='VMIS',
+                     VALE_CALC=U['VMIS',i+2],   #TODO: creer une liste des vale_calc
+                     TOLE_MACHINE=1.e-3,
+                     VALE_REFE=U['VMIS',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 
           TEST_TABLE(TABLE=RESU[i],
-                     NOM_PARA='TRACE',VALE=U['TRACE',i+2],
+                     NOM_PARA='TRACE',
+                     VALE_CALC=U['TRACE',i+2],   #TODO: creer une liste des vale_calc
+                     TOLE_MACHINE=1.e-3,
+                     VALE_REFE=U['TRACE',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 
@@ -239,7 +245,10 @@ for i in range(NCAL):
              nomvari='V'+str(j+1)
              if U[nomvari,i+1] > epsi :
                 TEST_TABLE(TABLE=RESU[i],
-                     NOM_PARA=nomvari,VALE=U[nomvari,i+2],
+                     NOM_PARA=nomvari,
+                     VALE_CALC=U[nomvari,i+2],   #TODO: creer une liste des vale_calc
+                     TOLE_MACHINE=1.e-3,
+                     VALE_REFE=U[nomvari,i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 

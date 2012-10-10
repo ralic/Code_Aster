@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE MINCE VRILLEE OU FLECHIE
 # ssls27b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,61 +118,117 @@ IMPR_TABLE(TABLE=FORC2)
 
 #
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU1, NOM_CHAM='DEPL',  INST=0.0, CRITERE = 'RELATIF',   PRECISION = 5.E-3,
-              NOEUD = 'N13', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = -3.537E-6),
-            _F(  RESULTAT = RESU1, NOM_CHAM='DEPL',  INST=0.0,   CRITERE = 'ABSOLU',   PRECISION = 1.E-12,
-              NOEUD = 'N39', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 0.0),
-            _F(  RESULTAT = RESU1, NOM_CHAM='DEPL',  INST=0.0,  CRITERE = 'RELATIF',   PRECISION = 5.E-3,
-              NOEUD = 'N65', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 3.537E-6),
-#
-            _F(  RESULTAT = RESU2, NOM_CHAM='DEPL',  INST=0.0,  CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-              NOEUD = 'N13', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 1.1059E-3),
-            _F(  RESULTAT = RESU2, NOM_CHAM='DEPL',  INST=0.0,  CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-              NOEUD = 'N39', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 1.1059E-3),
-            _F(  RESULTAT = RESU2, NOM_CHAM='DEPL',  INST=0.0,  CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-             NOEUD = 'N65', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = 1.1059E-3))
-             )
+TEST_RESU(RESU=(_F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N13',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-3.52480262E-06,
+                   VALE_REFE=-3.5370000000000002E-06,
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                _F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N39',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-6.138635845248E-17,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=9.9999999999999998E-13,
+                   CRITERE='ABSOLU',
+                   PRECISION=9.9999999999999998E-13,),
+                _F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N65',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 3.52480262E-06,
+                   VALE_REFE=3.5370000000000002E-06,
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                _F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N13',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.09499326E-03,
+                   VALE_REFE=1.1058999999999999E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N39',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.09500938E-03,
+                   VALE_REFE=1.1058999999999999E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N65',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.09499326E-03,
+                   VALE_REFE=1.1058999999999999E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
-TEST_TABLE(TABLE=FORC2,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=-2.000000000,
+           VALE_REFE=-2,
            NOM_PARA='RESULT_Z',
-           VALE=-2,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-8,
-           REFERENCE = 'ANALYTIQUE',)
-TEST_TABLE(TABLE=FORC2,
+           TABLE=FORC2,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC= 8.71480665E-12,
+           VALE_REFE=0,
            NOM_PARA='MOMENT_X',
-           VALE=0,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-8,
-           REFERENCE = 'ANALYTIQUE',)
-TEST_TABLE(TABLE=FORC2,
+           TABLE=FORC2,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=23.999999996,
+           VALE_REFE=24,
            NOM_PARA='MOMENT_Y',
-           VALE=24,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-8,
-           REFERENCE = 'ANALYTIQUE',)
+           TABLE=FORC2,)
 
-
-TEST_TABLE(TABLE=FORC1,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=-9.39248679E-14,
+           VALE_REFE=0,
            NOM_PARA='RESULT_Z',
-           VALE=0,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-8,
-           REFERENCE = 'ANALYTIQUE',)
-TEST_TABLE(TABLE=FORC1,
-           NOM_PARA='MOMENT_X',
-           VALE=-1,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-8,
-           REFERENCE = 'ANALYTIQUE',)
-TEST_TABLE(TABLE=FORC1,
-           NOM_PARA='MOMENT_Y',
-           VALE=0,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-8,
-           REFERENCE = 'ANALYTIQUE',)
+           TABLE=FORC1,)
 
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=-1.000000000,
+           VALE_REFE=-1,
+           NOM_PARA='MOMENT_X',
+           TABLE=FORC1,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=-9.18820575E-13,
+           VALE_REFE=0,
+           NOM_PARA='MOMENT_Y',
+           TABLE=FORC1,)
 
 FIN()
 #

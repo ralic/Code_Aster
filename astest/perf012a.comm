@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PERFORMANCES DES CALCULS ELEMENTAIRES EN 3D
 # perf012a.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,16 +85,46 @@ RESU1 = DYNA_NON_LINE( MODELE=MOD1, CHAM_MATER= CHMAT, MASS_DIAG='OUI',
                      );
 
 # reference : calcul europlexus :
-TEST_RESU(RESU=_F( RESULTAT = RESU1,NUME_ORDRE = 1,NOM_CHAM='DEPL', GROUP_NO='A2',NOM_CMP='DX',
-                   VALE =   -3.931011E-6  , PRECISION=2.E-3, REFERENCE='AUTRE_ASTER') )
-TEST_RESU(RESU=_F( RESULTAT = RESU1,NUME_ORDRE = 1,NOM_CHAM='DEPL', GROUP_NO='A4',NOM_CMP='DX',
-                   VALE =   -3.931011E-6  , PRECISION=2.E-3, REFERENCE='AUTRE_ASTER') )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A2',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.93730495E-06,
+                  VALE_REFE=-3.9310110000000002E-06,
+                  PRECISION=2.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A4',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.93730495E-06,
+                  VALE_REFE=-3.9310110000000002E-06,
+                  PRECISION=2.E-3,),
+          )
 
 # reference : non-regression :
-TEST_RESU(RESU=_F( RESULTAT = RESU1,NUME_ORDRE = 1,NOM_CHAM='DEPL', GROUP_NO='A2',NOM_CMP='DX',
-                   VALE =   -3.9373049505058E-06  , PRECISION=1.E-9, REFERENCE='NON_REGRESSION') )
-TEST_RESU(RESU=_F( RESULTAT = RESU1,NUME_ORDRE = 1,NOM_CHAM='DEPL', GROUP_NO='A4',NOM_CMP='DX',
-                   VALE =   -3.9373049505058E-06  , PRECISION=1.E-9, REFERENCE='NON_REGRESSION') )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A2',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.9373049505057997E-06,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A4',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.9373049505057997E-06,
+                  ),
+          )
 
 FIN();
 """

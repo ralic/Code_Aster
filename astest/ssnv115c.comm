@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. DKQ)
 # ssnv115c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,30 +126,35 @@ U2=CALC_CHAMP(reuse =U2,
            FORCE='REAC_NODA',
            );
 
-TEST_RESU(RESU=(_F(RESULTAT=U2,
-                   NUME_ORDRE=10,
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   GROUP_NO='X',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='X',
-                   VALE=0.02743,
-                   REFERENCE='AUTRE_ASTER',
+                   VALE_CALC=0.027034997,
+                   VALE_REFE=0.02743,
                    PRECISION=0.02,),
-                _F(RESULTAT=U2,
-                   NUME_ORDRE=10,
+                _F(NUME_ORDRE=10,
+                   GROUP_NO='X',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   GROUP_NO='X',
-                   VALE=-0.2804,
+                   VALE_CALC=-0.288716248,
+                   VALE_REFE=-0.28039999999999998,
+                   PRECISION=0.035000000000000003,),
+                _F(NUME_ORDRE=10,
                    REFERENCE='AUTRE_ASTER',
-                   PRECISION=0.035,),
-                _F(RESULTAT=U2,
-                   NUME_ORDRE=10,
+                   RESULTAT=U2,
                    NOM_CHAM='REAC_NODA',
-                   NOM_CMP='DX',
                    NOEUD='N1',
-                   VALE=-0.25,
-                   REFERENCE='AUTRE_ASTER',
-                   PRECISION=0.001,),),);
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.250000000,
+                   VALE_REFE=-0.25,
+                   PRECISION=1.E-3,),
+                ),
+          )
 
 FIN();
 #

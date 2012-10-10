@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BATIMENT SOUMIS A UNE EXCITATION SISMIQUE : PLAQ_POUT_ORTH
 # sdlx301b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,10 +164,13 @@ MODE1=MODE_ITER_SIMULT(
 LesFreq = [ 1.83439E+00 , 2.73610E+00 , 3.10015E+00 , 5.51120E+00 ,
             8.73582E+00 , 8.94514E+00 , 1.00630E+01 , 1.58920E+01 ]
 for ifreq in range(len(LesFreq)):
-   TEST_RESU(
-      RESU=_F(RESULTAT=MODE1, PARA='FREQ', REFERENCE='NON_REGRESSION', VERSION='10.02',
-              NUME_ORDRE=ifreq+1, VALE=LesFreq[ifreq], ),
-   )
+   TEST_RESU(RESU=_F(NUME_ORDRE=ifreq+1,
+                     PARA='FREQ',
+                     RESULTAT=MODE1,
+                     VALE_CALC=LesFreq[ifreq],
+                     TOLE_MACHINE=1.E-3,
+                     ),
+             )
 
 
 #IMPR_RESU(

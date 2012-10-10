@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 19/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -106,19 +106,32 @@ MOD=MODE_ITER_SIMULT(      MATR_RIGI=MAT_AS_K,
 #                     VERIFICATIONS DES RESULTATS
 #---------------------------------------------------------------------
 #
-TEST_RESU(RESU=(
-       _F( RESULTAT = MOD,               PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.01,
-             NUME_ORDRE = 1,                 VALE = 658.2432),
-
-       _F( RESULTAT = MOD,               PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.01,
-             NUME_ORDRE = 2,                 VALE = 1749.3488),
-
-       _F( RESULTAT = MOD,               PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.01,
-             NUME_ORDRE = 3,                 VALE = 3225.4161))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MOD,
+                   VALE_CALC=661.019891408,
+                   VALE_REFE=658.2432,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MOD,
+                   VALE_CALC= 1.75993866E+03,
+                   VALE_REFE=1749.3488,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MOD,
+                   VALE_CALC= 3.22566890E+03,
+                   VALE_REFE=3225.4160999999999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 #
 FIN()

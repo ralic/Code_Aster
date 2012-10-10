@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ARRACHEMENT D'UNE ARMATURE RIGIDE AVEC DES ELEMENTS A DISCONTINUITE (EN AXIS)
 # ssna115a.para = tps_job 230 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -267,44 +267,42 @@ IMPR_RESU(
 IMPR_TABLE(TABLE=DEP_NO,);
 
 
-TEST_RESU(RESU=(
-                _F(    RESULTAT = EVOL,
-                       REFERENCE = 'ANALYTIQUE',
-                       POINT = 1,
-                       MAILLE ='MJ38',
-                       NOM_CHAM = 'VARI_ELGA',
-                       NOM_CMP = 'V7',
-                       INST = 6.00070E+00,
-                       VALE = 7.69747E-01,
-                     ),
-                _F(    RESULTAT = EVOL,
-                       REFERENCE = 'ANALYTIQUE',
-                       POINT = 1,
-                       MAILLE ='MJ38',
-                       NOM_CHAM = 'VARI_ELGA',
-                       NOM_CMP = 'V7',
-                       INST = 1.20004E+01,
-                       VALE = 4.34935E-01,
-                     ),
-                _F(    RESULTAT = EVOL,
-                       REFERENCE = 'ANALYTIQUE',
-                       POINT = 1,
-                       MAILLE ='MJ38',
-                       NOM_CHAM = 'VARI_ELGA',
-                       NOM_CMP = 'V7',
-                       INST = 1.933337E+01,
-                       VALE = 1.28483E-01,
-                     ),
-                _F(    RESULTAT = EVOL,
-                       REFERENCE = 'ANALYTIQUE',
-                       NOEUD = 'N5',
-                       NOM_CHAM = 'DEPL',
-                       NOM_CMP = 'DY',
-                       INST = 1.20004E+01,
-                       VALE = 1.57674E+00,
-                     ),
-
-
-                ),)
+TEST_RESU(RESU=(_F(INST=6.0007000000000001,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOL,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V7',
+                   VALE_CALC=0.769747263,
+                   VALE_REFE=0.76974699999999996,
+                   MAILLE='MJ38',),
+                _F(INST=12.000400000000001,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOL,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V7',
+                   VALE_CALC=0.434934953,
+                   VALE_REFE=0.43493500000000002,
+                   MAILLE='MJ38',),
+                _F(INST=19.333369999999999,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOL,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V7',
+                   VALE_CALC=0.128483218,
+                   VALE_REFE=0.12848300000000001,
+                   MAILLE='MJ38',),
+                _F(INST=12.000400000000001,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.576741531,
+                   VALE_REFE=1.57674,),
+                ),
+          )
 
 FIN()

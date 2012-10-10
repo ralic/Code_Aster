@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION POST_ITER='CRIT_RUPT' 3D VMIS_ISOT_TRAC
 # ssnv226b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -193,16 +193,20 @@ INT_VI=POST_ELEM(MODELE=TROISD,
 IMPR_TABLE(TABLE=INT_VI)
 
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F_SI,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.80113000E8,
+                        TOLE_MACHINE=1.E-3,
                         VALE_PARA=437.5,
-                        VALE_REFE=7.80113E+08,
-                        REFERENCE='NON_REGRESSION',),);
-
-TEST_FONCTION(VALEUR=_F(FONCTION=F_SI,
                         NOM_PARA='INST',
-                        VALE_PARA=440.,
-                        VALE_REFE=5000.,
-                        REFERENCE='NON_REGRESSION',),);
- 
+                        FONCTION=F_SI,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5000.0,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=440.0,
+                        NOM_PARA='INST',
+                        FONCTION=F_SI,
+                        ),
+              )
+
 FIN()

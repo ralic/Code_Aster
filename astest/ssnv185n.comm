@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185n.para = tps_job 1600 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -205,33 +205,33 @@ for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE=K1REF,
+              VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
               CRITERE='RELATIF',
-              PRECISION=0.01,
-              REFERENCE='ANALYTIQUE',);
+              TOLE_MACHINE=0.01, PRECISION=0.01,    #TODO vale_calc
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE=K1REF,
+              VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
               CRITERE='RELATIF',
-              PRECISION=0.02,
-              REFERENCE='ANALYTIQUE',);
+              TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE=K1REF,
+              VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
               CRITERE='RELATIF',
-              PRECISION=0.01,
+              TOLE_MACHINE=0.01, PRECISION=0.01,    #TODO vale_calc
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE=K1REF,
+              VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
               CRITERE='RELATIF',
-              PRECISION=0.02,
+              TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
               REFERENCE='ANALYTIQUE',);
 
 
@@ -249,13 +249,15 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 
 IMPR_TABLE(TABLE = PK)
 
-TEST_TABLE( TABLE=PK,
-            NOM_PARA='K1',
-            FILTRE=(_F( NOM_PARA = 'PT_FOND',
-                        VALE_I = 1,  ),),
-            VALE=K1REF,
-            PRECISION=0.035,
-            REFERENCE='ANALYTIQUE' )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.035000000000000003,
+           VALE_CALC=1.0981730921854E+07,
+           VALE_REFE=K1REF,
+           NOM_PARA='K1',
+           TABLE=PK,
+           FILTRE=_F(NOM_PARA='PT_FOND',
+                     VALE_I=1,),
+           )
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : MAILLAGE FISSURE
@@ -280,33 +282,26 @@ DYREF=4.99200e+04
 DZREF=1.4976e+05
 PREC=1.e-10
 
-TEST_TABLE(TABLE=TABDEP,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=DXREF,
            NOM_PARA='COOR_X',
            TYPE_TEST='SOMM_ABS',
-           VALE=DXREF,
-           CRITERE='RELATIF',
-           PRECISION=PREC,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION = '10.1.18'),
+           TABLE=TABDEP,
+           )
 
-TEST_TABLE(TABLE=TABDEP,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=DYREF,
            NOM_PARA='COOR_Y',
            TYPE_TEST='SOMM_ABS',
-           VALE=DYREF,
-           CRITERE='RELATIF',
-           PRECISION=PREC,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION = '10.1.18'),
+           TABLE=TABDEP,
+           )
 
-TEST_TABLE(TABLE=TABDEP,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=DZREF,
            NOM_PARA='COOR_Z',
            TYPE_TEST='SOMM_ABS',
-           VALE=DZREF,
-           CRITERE='RELATIF',
-           PRECISION=PREC,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION = '10.1.18'),
-
+           TABLE=TABDEP,
+           )
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : DEPLACEMENTS POUR LE MAILLAGE FISSURE
@@ -324,30 +319,31 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
 
-TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
-                     NOM_CHAM='DEPL',NOM_CMP='DX',
-                     TYPE_TEST='SOMM_ABS',
-                     CRITERE = 'RELATIF',
-                     PRECISION=1.E-6,
-                     VALE = 8.3121220869695E-03  ,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.17'),
-                _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
-                     NOM_CHAM='DEPL',NOM_CMP='DY',
-                     TYPE_TEST='SOMM_ABS',
-                     CRITERE = 'RELATIF',
-                     VALE = 6.5881547728731,
-                     PRECISION=1.E-6,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.17'),
-                _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
-                     NOM_CHAM='DEPL',NOM_CMP='DZ',
-                     TYPE_TEST='SOMM_ABS',
-                     CRITERE = 'RELATIF',
-                     PRECISION=1.E-6,
-                     VALE = 4.6164669736488,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.17'),
-                     ),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_XFEM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=8.3121220869694992E-3,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_XFEM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=6.5881547728731,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_XFEM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=4.6164669736487998,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BIBLIO_18 FISSURE PRESSURISEE DANS UN DOMAINE PLAN ILLIMITE
 # sslp310a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -273,862 +273,1176 @@ G_COS53=CALC_G(              RESULTAT=RESU,
 # -----------------------------------------------
 
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=3.14158E-3,
-                      PRECISION=0.033 ,
-            REFERENCE='ANALYTIQUE'       )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.033000000000000002,
+           VALE_CALC= 3.04076041E-03,
+           VALE_REFE=3.1415800000000002E-3,
+           NOM_PARA='G',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=1.77245,
-                      PRECISION=0.07,
-            REFERENCE='ANALYTIQUE'        )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC=1.655930777,
+           VALE_REFE=1.7724500000000001,
+           NOM_PARA='K1',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.015 ,
-            REFERENCE='ANALYTIQUE'       )
-
-#
-
-TEST_TABLE(       TABLE=G_EXP10,
-                       NOM_PARA='G',
-                           VALE=1.05349E-2,
-                      PRECISION=0.04 ,
-            REFERENCE='ANALYTIQUE'       )
-
-TEST_TABLE(       TABLE=G_EXP10,
-                       NOM_PARA='K1',
-                           VALE=3.24576,
-                      PRECISION=0.07 ,
-            REFERENCE='ANALYTIQUE'       )
-
-TEST_TABLE(       TABLE=G_EXP10,
-                       NOM_PARA='K2',
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01,
-            REFERENCE='ANALYTIQUE'        )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC= 8.77431117E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=8.356742,
-                      PRECISION=0.055 ,
-            REFERENCE='ANALYTIQUE'     )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=0.010141113,
+           VALE_REFE=0.0105349,
+           NOM_PARA='G',
+           TABLE=G_EXP10,)
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=91.41522,
-                      PRECISION=0.07  ,
-            REFERENCE='ANALYTIQUE'    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC=3.031074217,
+           VALE_REFE=3.2457600000000002,
+           NOM_PARA='K1',
+           TABLE=G_EXP10,)
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'    )
-
-#
-
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=1.00344E-3,
-                      PRECISION=0.045 ,
-            REFERENCE='ANALYTIQUE'     )
-
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=1.00172,
-                      PRECISION=0.07 ,
-            REFERENCE='ANALYTIQUE'     )
-
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'    )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.35863377E-14,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_EXP10,)
 
 #
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=1.86052,
-                      PRECISION=0.055 ,
-            REFERENCE='ANALYTIQUE'     )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.055,
+           VALE_CALC=7.906512003,
+           VALE_REFE=8.3567420000000006,
+           NOM_PARA='G',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=43.13380,
-                      PRECISION=0.065  ,
-            REFERENCE='ANALYTIQUE'    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC=85.418903994,
+           VALE_REFE=91.415220000000005,
+           NOM_PARA='K1',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.065  ,
-            REFERENCE='ANALYTIQUE'    )
-
-#
-
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=5.03571E-3,
-                      PRECISION=0.035 ,
-            REFERENCE='ANALYTIQUE'     )
-
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K1',FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=2.24404,
-                      PRECISION=0.07 ,
-            REFERENCE='ANALYTIQUE'     )
-
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K2',FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'    )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 2.96308188E-13,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=2.331095,
-                      PRECISION=0.055 ,
-            REFERENCE='ANALYTIQUE'     )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.044999999999999998,
+           VALE_CALC= 9.60061298E-04,
+           VALE_REFE=1.00344E-3,
+           NOM_PARA='G',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K1',FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=48.28142,
-                      PRECISION=0.07 ,
-            REFERENCE='ANALYTIQUE'     )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC=0.935052558,
+           VALE_REFE=1.0017199999999999,
+           NOM_PARA='K1',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K2',FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.07  ,
-            REFERENCE='ANALYTIQUE'    )
-
-#
-
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=.00183948,
-                      PRECISION=0.03  ,
-            REFERENCE='ANALYTIQUE'    )
-
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=1.356277,
-                      PRECISION=0.07 ,
-            REFERENCE='ANALYTIQUE'     )
-
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.07  ,
-            REFERENCE='ANALYTIQUE'    )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 3.18143526E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.00001 ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.055,
+           VALE_CALC=1.760145680,
+           VALE_REFE=1.86052,
+           NOM_PARA='G',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
 
-TEST_TABLE(       TABLE=G_0,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.003,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.065000000000000002,
+           VALE_CALC=40.338266872,
+           VALE_REFE=43.133800000000001,
+           NOM_PARA='K1',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.065000000000000002,
+           VALE_CALC= 1.09492715E-13,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.035000000000000003,
+           VALE_CALC= 4.86061905E-03,
+           VALE_REFE=5.0357099999999997E-3,
+           NOM_PARA='G',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC=2.096021658,
+           VALE_REFE=2.24404,
+           NOM_PARA='K1',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.09455117E-14,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.055,
+           VALE_CALC=2.205659991,
+           VALE_REFE=2.3310949999999999,
+           NOM_PARA='G',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC=45.080637122,
+           VALE_REFE=48.281419999999997,
+           NOM_PARA='K1',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC= 2.11265924E-13,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 1.78706138E-03,
+           VALE_REFE=1.8394800000000001E-3,
+           NOM_PARA='G',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC=1.267565512,
+           VALE_REFE=1.356277,
+           NOM_PARA='K1',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.070000000000000007,
+           VALE_CALC= 6.34840828E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+#
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 4.17110663E-08,
+           VALE_REFE=0.0,
+           NOM_PARA='G',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=3.0000000000000001E-3,
+           VALE_CALC= 2.03672506E-03,
+           VALE_REFE=0.0,
+           NOM_PARA='K1',
+           TABLE=G_0,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS5',),
+           )
 
 # IMPRESSION DES RESULTATS COURONNE 1 (QUADRANGLES)  ;
 # -------------------------------------------------
 
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                      VALE=3.14158E-3,
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 3.16692290E-03,
+           VALE_REFE=3.1415800000000002E-3,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=1.77245,
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=1.780790202,
+           VALE_REFE=1.7724500000000001,
+           NOM_PARA='K1',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.015 ,
-            REFERENCE='ANALYTIQUE'     )
-
-#
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
-                           VALE=1.05349E-2,
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'    )
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
-                           VALE=3.24576,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'     )
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'     )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC= 2.81150352E-16,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=8.356742,
-                      PRECISION=0.015  ,
-            REFERENCE='ANALYTIQUE' )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=0.010566511,
+           VALE_REFE=0.0105349,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP1',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=91.41522,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=3.256591458,
+           VALE_REFE=3.2457600000000002,
+           NOM_PARA='K1',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP1',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'  )
-
-#
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=1.00344E-3,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=1.00172,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 3.71507343E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP1',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=1.86052,
-                      PRECISION=0.015  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=8.255435265,
+           VALE_REFE=8.3567420000000006,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=43.13380,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=91.527925496,
+           VALE_REFE=91.415220000000005,
+           NOM_PARA='K1',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
-
-#
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=5.03571E-3,
-                      PRECISION=0.01   ,
-            REFERENCE='ANALYTIQUE' )
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=2.24404,
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'  )
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 1.43541293E-13,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=2.331095,
-                      PRECISION=0.015 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 1.00080178E-03,
+           VALE_REFE=1.00344E-3,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=48.28142,
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=1.003474225,
+           VALE_REFE=1.0017199999999999,
+           NOM_PARA='K1',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
-
-#
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=.00183948,
-                      PRECISION=0.015 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=1.356277,
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
-
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 2.56870980E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.00001 ,
-            REFERENCE='ANALYTIQUE')
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=1.838150272,
+           VALE_REFE=1.86052,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE')
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=43.209124513,
+           VALE_REFE=43.133800000000001,
+           NOM_PARA='K1',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
 
-TEST_TABLE(       TABLE=G_1,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.00001 ,
-            REFERENCE='ANALYTIQUE')
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 8.03212405E-14,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 5.06346214E-03,
+           VALE_REFE=5.0357099999999997E-3,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=2.253117233,
+           VALE_REFE=2.24404,
+           NOM_PARA='K1',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.94140534E-16,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=2.302632362,
+           VALE_REFE=2.3310949999999999,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=48.318800983,
+           VALE_REFE=48.281419999999997,
+           NOM_PARA='K1',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 6.94401269E-14,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC= 1.86065496E-03,
+           VALE_REFE=1.8394800000000001E-3,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=1.363910522,
+           VALE_REFE=1.356277,
+           NOM_PARA='K1',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=-3.68329127E-16,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+#
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 3.98112495E-08,
+           VALE_REFE=0.0,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 4.72022546E-03,
+           VALE_REFE=0.0,
+           NOM_PARA='K1',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=-2.08657852E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS5',),
+           )
 
 # IMPRESSION DES RESULTATS COURONNE 2 (QUADRANGLES)  ;
 # -------------------------------------------------
 
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=3.14158E-3,
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 3.16779256E-03,
+           VALE_REFE=3.1415800000000002E-3,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=1.77245,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=1.780746342,
+           VALE_REFE=1.7724500000000001,
+           NOM_PARA='K1',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.015  ,
-            REFERENCE='ANALYTIQUE'  )
-
-#
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
-                           VALE=1.05349E-2,
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'  )
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
-                           VALE=3.24576,
-                      PRECISION=0.005,
-            REFERENCE='ANALYTIQUE'    )
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=-2.59898090E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=8.356742,
-                      PRECISION=0.015  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=0.010569458,
+           VALE_REFE=0.0105349,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP1',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=91.41522,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=3.256523381,
+           VALE_REFE=3.2457600000000002,
+           NOM_PARA='K1',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP1',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
-
-#
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=1.00344E-3,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=1.00172,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.99695323E-16,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP1',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=1.86052,
-                      PRECISION=0.015  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=8.257953370,
+           VALE_REFE=8.3567420000000006,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=43.13380,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=91.527147296,
+           VALE_REFE=91.415220000000005,
+           NOM_PARA='K1',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
-
-#
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=5.03571E-3,
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=2.24404,
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'  )
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01   ,
-            REFERENCE='ANALYTIQUE' )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 8.68387270E-14,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=2.331095,
-                      PRECISION=0.015   ,
-            REFERENCE='ANALYTIQUE' )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 1.00108525E-03,
+           VALE_REFE=1.00344E-3,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=48.28142,
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=1.003457705,
+           VALE_REFE=1.0017199999999999,
+           NOM_PARA='K1',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
-
-#
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=.00183948,
-                      PRECISION=0.015 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=1.356277,
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 2.32408232E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.00001 ,
-            REFERENCE='ANALYTIQUE')
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=1.838714788,
+           VALE_REFE=1.86052,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.005,
-            REFERENCE='ANALYTIQUE' )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=43.208815689,
+           VALE_REFE=43.133800000000001,
+           NOM_PARA='K1',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
 
-TEST_TABLE(       TABLE=G_2,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.00001,
-            REFERENCE='ANALYTIQUE' )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 7.13212752E-14,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 5.06486470E-03,
+           VALE_REFE=5.0357099999999997E-3,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=2.253065676,
+           VALE_REFE=2.24404,
+           NOM_PARA='K1',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=-2.26754098E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=2.303330451,
+           VALE_REFE=2.3310949999999999,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=48.318331607,
+           VALE_REFE=48.281419999999997,
+           NOM_PARA='K1',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.94862262E-14,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC= 1.86116042E-03,
+           VALE_REFE=1.8394800000000001E-3,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=1.363873774,
+           VALE_REFE=1.356277,
+           NOM_PARA='K1',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=-2.31116915E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+#
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 3.99815030E-08,
+           VALE_REFE=0.0,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 4.71015644E-03,
+           VALE_REFE=0.0,
+           NOM_PARA='K1',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=-2.62693833E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS5',),
+           )
 
 # IMPRESSION DES RESULTATS COURONNE 3 (QUADRANGLES)  ;
 # -------------------------------------------------
 
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=3.14158E-3,
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 3.16792586E-03,
+           VALE_REFE=3.1415800000000002E-3,
+           NOM_PARA='G',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=1.77245,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=1.780785500,
+           VALE_REFE=1.7724500000000001,
+           NOM_PARA='K1',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.015 ,
-            REFERENCE='ANALYTIQUE'   )
-
-#
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
-                           VALE=1.05349E-2,
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'  )
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
-                           VALE=3.24576,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=-4.55885329E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_UNI',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=8.356742,
-                      PRECISION=0.015 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=0.010569916,
+           VALE_REFE=0.0105349,
+           NOM_PARA='G',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP1',),
+           )
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=91.41522,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=3.256595516,
+           VALE_REFE=3.2457600000000002,
+           NOM_PARA='K1',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP1',),
+           )
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
-
-#
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=1.00344E-3,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=1.00172,
-                      PRECISION=0.005  ,
-            REFERENCE='ANALYTIQUE'  )
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=-2.78423118E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP1',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=1.86052,
-                      PRECISION=0.015 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=8.258360953,
+           VALE_REFE=8.3567420000000006,
+           NOM_PARA='G',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=43.13380,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=91.529247333,
+           VALE_REFE=91.415220000000005,
+           NOM_PARA='K1',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
-
-#
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=5.03571E-3,
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=2.24404,
-                      PRECISION=0.005 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 6.33382236E-14,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_EXP5',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=2.331095,
-                      PRECISION=0.015  ,
-            REFERENCE='ANALYTIQUE'  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 1.00112994E-03,
+           VALE_REFE=1.00344E-3,
+           NOM_PARA='G',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=48.28142,
-                      PRECISION=0.005    )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=1.003480092,
+           VALE_REFE=1.0017199999999999,
+           NOM_PARA='K1',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
-
-#
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='G',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=.00183948,
-                      PRECISION=0.015  ,
-            REFERENCE='ANALYTIQUE'  )
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K1',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=1.356277,
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
-
-TEST_TABLE(       TABLE=G_3,
-                       NOM_PARA='K2',
-                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.01 ,
-            REFERENCE='ANALYTIQUE'   )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 2.38090797E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH1',),
+           )
 
 #
 
-TEST_TABLE(       TABLE=G_COS53,
-                       NOM_PARA='G',
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.00001,
-            REFERENCE='ANALYTIQUE' )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=1.838806506,
+           VALE_REFE=1.86052,
+           NOM_PARA='G',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
 
-TEST_TABLE(       TABLE=G_COS53,
-                       NOM_PARA='K1',
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.005,
-            REFERENCE='ANALYTIQUE' )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=43.209809751,
+           VALE_REFE=43.133800000000001,
+           NOM_PARA='K1',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
 
-TEST_TABLE(       TABLE=G_COS53,
-                       NOM_PARA='K2',
-                           VALE=0.,
-                        CRITERE='ABSOLU',
-                      PRECISION=0.00001 ,
-            REFERENCE='ANALYTIQUE')
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 7.45237205E-14,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_SINH5',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 5.06508120E-03,
+           VALE_REFE=5.0357099999999997E-3,
+           NOM_PARA='G',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=2.253115424,
+           VALE_REFE=2.24404,
+           NOM_PARA='K1',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=-5.75754722E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH1',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=2.303443061,
+           VALE_REFE=2.3310949999999999,
+           NOM_PARA='G',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC=48.319437581,
+           VALE_REFE=48.281419999999997,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=-5.82867088E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COSH5',),
+           )
+
+#
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC= 1.86123716E-03,
+           VALE_REFE=1.8394800000000001E-3,
+           NOM_PARA='G',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=1.363903608,
+           VALE_REFE=1.356277,
+           NOM_PARA='K1',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=-4.48426019E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_3,
+           FILTRE=_F(NOM_PARA='NOM_CAS',
+                     VALE_K='CH_COS1',),
+           )
+
+#
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 4.00366033E-08,
+           VALE_REFE=0.0,
+           NOM_PARA='G',
+           TABLE=G_COS53,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 4.70984197E-03,
+           VALE_REFE=0.0,
+           NOM_PARA='K1',
+           TABLE=G_COS53,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=-3.22420042E-15,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           TABLE=G_COS53,)
 
 # VALIDATION INFORMATION CALC_G
 # PRISE EN COMPTE DES COMBINAISONS DE CHARGEMENT
@@ -1155,11 +1469,12 @@ G_TMP=CALC_G(              RESULTAT=RE_TMP,
                                      FOND_FISS=FOND),
                            OPTION='CALC_K_G'
                           )
-TEST_TABLE(       TABLE=G_TMP,
-                       NOM_PARA='K1',
-                           VALE=2.92349E+00,
-                        CRITERE='RELATIF',
-                      PRECISION=1.e-5,
-                      REFERENCE='NON_REGRESSION'  )                                              
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=2.9234900000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='K1',
+           TABLE=G_TMP,
+           )
+
 FIN( )
 #

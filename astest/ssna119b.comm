@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION AXIS_GRAD_VARI + LOI ENDO_SCALAIRE
 # ssna119b.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -246,35 +246,40 @@ IMPR_TABLE(TABLE=T_FU,COMM_PARA='#')
 nm_ordre=1
                                          
 # TEST DEPL          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  REFERENCE='NON_REGRESSION',
-                  NUME_ORDRE=nm_ordre,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P_HAUT',
+                  RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='P_HAUT',
-                  VALE=7.5E-04,
-                  PRECISION=1.E-4)); 
-                  
+                  VALE_CALC=7.5000000000000002E-4,
+                  TOLE_MACHINE=1.E-4,
+                  ),
+          )
+
 # TEST SIEF          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  REFERENCE='NON_REGRESSION',
-                  NUME_ORDRE=nm_ordre,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='NON_DEFINI',
+                  POINT=1,
+                  RESULTAT=EVOL,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
-                  MAILLE='M160',
-                  POINT=1,
-                  VALE=-3.538,
-                  PRECISION=1.E-2)); 
+                  VALE_CALC=-3.537996896,
+                  VALE_REFE=-3.5379999999999998,
+                  PRECISION=1.E-2,
+                  MAILLE='M160',),
+          )
 
 # TEST FORC_NODA          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  REFERENCE='NON_REGRESSION',
-                  NUME_ORDRE=nm_ordre,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P_HAUT',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=EVOL,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  GROUP_NO='P_HAUT',
-                  VALE=3435,
-                  PRECISION=1.E-2)); 
+                  VALE_CALC= 3.43540717E+03,
+                  VALE_REFE=3435,
+                  PRECISION=1.E-2,),
+          )
 
 ################## IMPRESSION DANS LE FICHIER (visualisation avec xmgrace)########
 ## visu xmgrace possible avec  DEBUT(PAR_LOT='NON'); seulement

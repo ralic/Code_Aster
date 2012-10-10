@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU MECANISME DE SURCHARGE AFFE_CHAR_CINE
 # zzzz222a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,15 +88,24 @@ U2CI2=STAT_NON_LINE(  MODELE=MO, CHAM_MATER=CM,
     NEWTON=_F(  MATRICE = 'ELASTIQUE'),  )
 
 
-TEST_RESU(RESU=(
-
-  _F( RESULTAT = U2CI1,NOM_CHAM = 'DEPL',NUME_ORDRE = 3,
-        NOEUD = 'N1',   NOM_CMP = 'DX',  VALE = 8.750E+00, REFERENCE='AUTRE_ASTER',),
-
-  _F( RESULTAT = U2CI2,NOM_CHAM = 'DEPL',NUME_ORDRE = 3,
-        NOEUD = 'N1',   NOM_CMP = 'DX',  VALE = 8.750E+00, REFERENCE='AUTRE_ASTER',),
-
-)  )
+TEST_RESU(RESU=(_F(NUME_ORDRE=3,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2CI1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=8.750000000,
+                   VALE_REFE=8.75,),
+                _F(NUME_ORDRE=3,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2CI2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=8.750000000,
+                   VALE_REFE=8.75,),
+                ),
+          )
 
 #=======================================================
 # B) VALIDATION AFFE_CHAR_CINE SURCHARGE (THER_LINEAIRE)
@@ -184,18 +193,41 @@ TEMP2=CALC_CHAMP(  reuse=TEMP2,   NUME_ORDRE=2,
 F2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_FLUX_R',
 NOM_CHAM='FLUX_ELNO', RESULTAT=TEMP2, NUME_ORDRE=2)
 
-TEST_RESU(
-   RESU=(_F( RESULTAT = TEMP1, NOM_CHAM = 'TEMP', NUME_ORDRE = 2,
-                NOEUD = 'N17',  NOM_CMP = 'TEMP', VALE = 66.506,
-                 REFERENCE='AUTRE_ASTER'),
-         _F( RESULTAT = TEMP2, NOM_CHAM = 'TEMP', NUME_ORDRE = 2,
-                NOEUD = 'N17',  NOM_CMP = 'TEMP', VALE = 66.506,
-                 REFERENCE='AUTRE_ASTER'),),
-
-   CHAM_ELEM=(_F( CHAM_GD = F1,    MAILLE = 'M1',   NOEUD = 'N1',    NOM_CMP = 'FLUX',
-                  VALE = 1729.91, PRECISION = 1.E-2, REFERENCE='AUTRE_ASTER'),
-              _F( CHAM_GD = F2,    MAILLE = 'M1',   NOEUD = 'N1',    NOM_CMP = 'FLUX',
-                  VALE = 1729.91, PRECISION = 1.E-2, REFERENCE='AUTRE_ASTER'),),)
+TEST_RESU(CHAM_ELEM=(_F(NOEUD='N1',
+                        REFERENCE='AUTRE_ASTER',
+                        NOM_CMP='FLUX',
+                        PRECISION=1.E-2,
+                        MAILLE='M1',
+                        CHAM_GD=F1,
+                        VALE_CALC= 1.72264499E+03,
+                        VALE_REFE=1729.9100000000001,),
+                     _F(NOEUD='N1',
+                        REFERENCE='AUTRE_ASTER',
+                        NOM_CMP='FLUX',
+                        PRECISION=1.E-2,
+                        MAILLE='M1',
+                        CHAM_GD=F2,
+                        VALE_CALC= 1.72264499E+03,
+                        VALE_REFE=1729.9100000000001,),
+                     ),
+          RESU=(_F(NUME_ORDRE=2,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=TEMP1,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N17',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=66.506373932,
+                   VALE_REFE=66.506,),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=TEMP2,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N17',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=66.506373932,
+                   VALE_REFE=66.506,),
+                ),
+          )
 
 #=======================================================
 # C) VALIDATION AFFE_CHAR_CINE SURCHARGE (MECA_STATIQUE)
@@ -295,25 +327,50 @@ MEST8=MECA_STATIQUE( MODELE=MO2,
                              _F( CHARGE = CHARG75),),)
 
 
-TEST_RESU(RESU=(
-   _F( RESULTAT = MEST7, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,
-                   PRECISION = 1.E-6, CRITERE = 'RELATIF',
-                   REFERENCE='AUTRE_ASTER'),
-   _F( RESULTAT = MEST7, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
-                   PRECISION = 1.E-13, CRITERE = 'ABSOLU',
-                   REFERENCE='AUTRE_ASTER'),
-   _F( RESULTAT = MEST8, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,
-                   PRECISION = 1.E-6, CRITERE = 'RELATIF',
-                   REFERENCE='AUTRE_ASTER'),
-   _F( RESULTAT = MEST8, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
-                   PRECISION = 1.E-13, CRITERE = 'ABSOLU',
-                   REFERENCE='AUTRE_ASTER'),),)
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MEST7,
+                   NOM_CHAM='DEPL',
+                   NOEUD='M3',
+                   NOM_CMP='DY',
+                   VALE_CALC= 9.56437157E-08,
+                   VALE_REFE=9.5643715000000004E-08,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MEST7,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='GRX',
+                   VALE_CALC= 0.0000000000000E+00,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=1.E-13,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-13,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MEST8,
+                   NOM_CHAM='DEPL',
+                   NOEUD='M3',
+                   NOM_CMP='DY',
+                   VALE_CALC= 9.56437157E-08,
+                   VALE_REFE=9.5643715000000004E-08,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MEST8,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='GRX',
+                   VALE_CALC= 0.0000000000000E+00,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=1.E-13,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-13,),
+                ),
+          )
 
 FIN();
-
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA COMMANDE INTE_MAIL_3D ET POST_RELEVE_T
 # zzzz136c.para = tps_job 60 mem_job 256Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,16 +85,25 @@ IMPR_TABLE( TABLE=TS1,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
-TEST_TABLE( TABLE=TS1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=4.75,
-          ) ;
-TEST_TABLE( TABLE=TS1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=3.5,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=4.750000000,
+           VALE_REFE=4.75,
+           NOM_PARA='SIXX',
+           TABLE=TS1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=3.500000000,
+           VALE_REFE=3.5,
+           NOM_PARA='SIXX',
+           TABLE=TS1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 TN1=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN1',
                                 CHEMIN = C1,
@@ -107,16 +116,25 @@ IMPR_TABLE( TABLE=TN1,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=4.75,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=3.5,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=4.750000000,
+           VALE_REFE=4.75,
+           NOM_PARA='DX',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=3.500000000,
+           VALE_REFE=3.5,
+           NOM_PARA='DX',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 #----------------------------------------------------------------------
 C2=INTE_MAIL_3D(  MAILLAGE=MA,
@@ -136,16 +154,25 @@ IMPR_TABLE( TABLE=TS2,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
-TEST_TABLE( TABLE=TS2,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=1.3125,
-          ) ;
-TEST_TABLE( TABLE=TS2,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=6.125,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=1.312500000,
+           VALE_REFE=1.3125,
+           NOM_PARA='SIXX',
+           TABLE=TS2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=6.125000000,
+           VALE_REFE=6.125,
+           NOM_PARA='SIXX',
+           TABLE=TS2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 TN2=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN2',
                                 CHEMIN = C2,
@@ -158,16 +185,25 @@ IMPR_TABLE( TABLE=TN2,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
-TEST_TABLE( TABLE=TN2,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=1.3125,
-          ) ;
-TEST_TABLE( TABLE=TN2,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=6.125,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=1.312500000,
+           VALE_REFE=1.3125,
+           NOM_PARA='DX',
+           TABLE=TN2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=6.125000000,
+           VALE_REFE=6.125,
+           NOM_PARA='DX',
+           TABLE=TN2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 #----------------------------------------------------------------------
 C3=INTE_MAIL_3D(  MAILLAGE=MA,
@@ -187,16 +223,25 @@ IMPR_TABLE( TABLE=TS3,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
-TEST_TABLE( TABLE=TS3,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=3.,
-          ) ;
-TEST_TABLE( TABLE=TS3,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.73205E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=6.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=3.000000000,
+           VALE_REFE=3.0,
+           NOM_PARA='SIXX',
+           TABLE=TS3,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=6.000000000,
+           VALE_REFE=6.0,
+           NOM_PARA='SIXX',
+           TABLE=TS3,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.7320500000000001,),
+           )
 
 TN3=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN3',
                                 CHEMIN = C3,
@@ -209,16 +254,25 @@ IMPR_TABLE( TABLE=TN3,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
-TEST_TABLE( TABLE=TN3,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=3.,
-          ) ;
-TEST_TABLE( TABLE=TN3,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.73205E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=6.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=3.000000000,
+           VALE_REFE=3.0,
+           NOM_PARA='DX',
+           TABLE=TN3,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=6.000000000,
+           VALE_REFE=6.0,
+           NOM_PARA='DX',
+           TABLE=TN3,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.7320500000000001,),
+           )
 
 #----------------------------------------------------------------------
 C4=INTE_MAIL_3D(  MAILLAGE=MA,
@@ -238,16 +292,25 @@ IMPR_TABLE( TABLE=TS4,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
-TEST_TABLE( TABLE=TS4,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=5.,
-          ) ;
-TEST_TABLE( TABLE=TS4,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=4.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=5.000000000,
+           VALE_REFE=5.0,
+           NOM_PARA='SIXX',
+           TABLE=TS4,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=4.000000000,
+           VALE_REFE=4.0,
+           NOM_PARA='SIXX',
+           TABLE=TS4,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 TN4=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN4',
                                 CHEMIN = C4,
@@ -260,16 +323,25 @@ IMPR_TABLE( TABLE=TN4,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
-TEST_TABLE( TABLE=TN4,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=5.,
-          ) ;
-TEST_TABLE( TABLE=TN4,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=4.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=5.000000000,
+           VALE_REFE=5.0,
+           NOM_PARA='DX',
+           TABLE=TN4,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=4.000000000,
+           VALE_REFE=4.0,
+           NOM_PARA='DX',
+           TABLE=TN4,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 #----------------------------------------------------------------------
 C5=INTE_MAIL_3D(  MAILLAGE=MA,
@@ -289,16 +361,25 @@ IMPR_TABLE( TABLE=TS5,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
-TEST_TABLE( TABLE=TS5,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=3.5,
-          ) ;
-TEST_TABLE( TABLE=TS5,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=7.90569E-01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=5.5,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=3.500000000,
+           VALE_REFE=3.5,
+           NOM_PARA='SIXX',
+           TABLE=TS5,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=5.500000000,
+           VALE_REFE=5.5,
+           NOM_PARA='SIXX',
+           TABLE=TS5,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.79056899999999997,),
+           )
 
 TN5=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN5',
                                 CHEMIN = C5,
@@ -311,16 +392,25 @@ IMPR_TABLE( TABLE=TN5,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
-TEST_TABLE( TABLE=TN5,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=3.5,
-          ) ;
-TEST_TABLE( TABLE=TN5,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=7.90569E-01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=5.5,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=3.500000000,
+           VALE_REFE=3.5,
+           NOM_PARA='DX',
+           TABLE=TN5,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=5.500000000,
+           VALE_REFE=5.5,
+           NOM_PARA='DX',
+           TABLE=TN5,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.79056899999999997,),
+           )
 
 #----------------------------------------------------------------------
 C6=INTE_MAIL_3D(  MAILLAGE=MA,
@@ -340,16 +430,25 @@ IMPR_TABLE( TABLE=TS6,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
           ) ;
 
-TEST_TABLE( TABLE=TS6,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=2.,
-          ) ;
-TEST_TABLE( TABLE=TS6,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='SIXX',VALE=9.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=2.000000000,
+           VALE_REFE=2.0,
+           NOM_PARA='SIXX',
+           TABLE=TS6,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=9.000000000,
+           VALE_REFE=9.0,
+           NOM_PARA='SIXX',
+           TABLE=TS6,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 TN6=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN6',
                                 CHEMIN = C6,
@@ -362,16 +461,25 @@ IMPR_TABLE( TABLE=TN6,
             NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
           ) ;
 
-TEST_TABLE( TABLE=TN6,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=2.,
-          ) ;
-TEST_TABLE( TABLE=TN6,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='DX',VALE=9.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=2.000000000,
+           VALE_REFE=2.0,
+           NOM_PARA='DX',
+           TABLE=TN6,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=9.000000000,
+           VALE_REFE=9.0,
+           NOM_PARA='DX',
+           TABLE=TN6,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.0,),
+           )
 
 FIN( )
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER
 # ssnp117a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -198,38 +198,39 @@ RESU_V=STAT_NON_LINE(CHAM_MATER=CHMAT_V,
                        EXCIT=(_F(CHARGE=COND_LIM,),
                               _F(CHARGE=CHAR,),),)
 
-TEST_RESU(  RESU=(
-           _F( RESULTAT = RESU,
-               INST = 10.,
-               NOM_CHAM = 'VARI_ELGA',
-              NOM_CMP = 'V2',
-               MAILLE = 'M1',
-               POINT = 1, VALE = 3.2575727937635E-02,
-               CRITERE = 'ABSOLU',
-               REFERENCE='NON_REGRESSION',
-               PRECISION = 1.E-7) )  )
-TEST_RESU(  RESU=(
-           _F( RESULTAT = RESU_N,
-               INST = 10.,
-               NOM_CHAM = 'VARI_ELGA',
-               NOM_CMP = 'V2',
-              MAILLE = 'M1',
-              POINT = 1, VALE = 3.9058042593906E-01,
-              CRITERE = 'ABSOLU',
-              REFERENCE='NON_REGRESSION',
-              PRECISION = 1.E-10) )  )
-TEST_RESU(  RESU=(
-           _F( RESULTAT = RESU_V,
-               INST = 10.,
-               NOM_CHAM = 'VARI_ELGA',
-               NOM_CMP = 'V2',
-               MAILLE = 'M1',
-               POINT = 1, VALE = 3.3352194512434E-02,
-               CRITERE = 'ABSOLU',
-               REFERENCE='NON_REGRESSION',
-               PRECISION = 1.E-05) )  )
-FIN()
+TEST_RESU(RESU=_F(INST=10.0,
+                  POINT=1,
+                  RESULTAT=RESU,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V2',
+                  VALE_CALC=0.032575727937635003,
+                  TOLE_MACHINE=9.9999999999999995E-08,
+                  CRITERE='ABSOLU',
+                  MAILLE='M1',),
+          )
 
+TEST_RESU(RESU=_F(INST=10.0,
+                  POINT=1,
+                  RESULTAT=RESU_N,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V2',
+                  VALE_CALC=0.39058042593906001,
+                  CRITERE='ABSOLU',
+                  MAILLE='M1',),
+          )
+
+TEST_RESU(RESU=_F(INST=10.0,
+                  POINT=1,
+                  RESULTAT=RESU_V,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V2',
+                  VALE_CALC=0.033352194512434,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='ABSOLU',
+                  MAILLE='M1',),
+          )
+
+FIN()
 
 
 

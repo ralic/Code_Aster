@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - D_PLAN
 # ssnv189b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,22 +112,20 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=_F(FONC_X=DYA,
                         FONC_Y=FYA,),);
 
-TEST_FONCTION(VALEUR=(
-_F(FONCTION=FYA,
-   REFERENCE='SOURCE_EXTERNE',
-   VALE_PARA = 1.0,
-   VALE_REFE=229.336,
-   PRECISION=0.003,
-   CRITERE='RELATIF',),
-            ),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=228.716079441,
+                        VALE_REFE=229.33600000000001,
+                        CRITERE='RELATIF',
+                        VALE_PARA=1.0,
+                        REFERENCE='SOURCE_EXTERNE',
+                        PRECISION=3.0000000000000001E-3,
+                        FONCTION=FYA,),
+              )
 
-TEST_FONCTION(VALEUR=(
-_F(FONCTION  = FYA,
-   REFERENCE = 'NON_REGRESSION',
-   VERSION   = '8.2.9',
-   VALE_PARA = 1.0,
-   VALE_REFE = 228.71607944155,
-   PRECISION = 1E-10,
-   CRITERE   = 'RELATIF',),
-            ),)
+TEST_FONCTION(VALEUR=_F(VALE_CALC=228.71607944154999,
+                        CRITERE='RELATIF',
+                        VALE_PARA=1.0,
+                        FONCTION=FYA,
+                        ),
+              )
+
 FIN();

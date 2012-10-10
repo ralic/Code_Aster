@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -197,14 +197,12 @@ IMPR_RESU(UNITE=88,RESU=_F(RESULTAT=TEMPE1,NUME_ORDRE=5,
 DEFI_FICHIER(UNITE=88, ACTION='LIBERER')
 
 TEST_FICHIER(FICHIER='./fort.88',
-             REFERENCE='NON_REGRESSION',
              # date a ignorer : ...15/09/2005 A 08:48:30
              # version a ignorer: ASTER  8.01.14
              EXPR_IGNORE=('[0-9]{2}/[0-9]{2}/[0-9]{4} A [0-9]{2}:'\
              +'[0-9]{2}:[0-9]{2}','ASTER  [0:9].[0:9]{2}.[0:9]{2}',),
              NB_VALE=24,
-             VALE=8.44e+02,
-             VERSION='9.1.21')
+             VALE_CALC=8.44e+02,)
 
 
 # ----------------------------------------------------------------------------
@@ -233,10 +231,8 @@ IMPR_RESU(UNITE=82, FORMAT='GMSH',
 DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
 
 TEST_FICHIER(FICHIER='./fort.82',
-             REFERENCE='NON_REGRESSION',
              NB_VALE=95,
-             VALE=1.156862e+03,
-             VERSION='9.1.21')
+             VALE_CALC=1.156862e+03,)
 
 # ----------------------------------------------------------------------------
 # VALIDATION DE LIRE_RESU FORMAT 'MED' POUR UNE LISTE D'INSTANTS
@@ -252,30 +248,32 @@ TEMP0=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 NUME_ORDRE=(1,4,2),);
 
 
-TEST_RESU ( RESU=(
-                     _F(  RESULTAT   = TEMP0,
-                         NOM_CHAM   = 'TEMP',
-                         NUME_ORDRE = 1,
-                         REFERENCE  = 'AUTRE_ASTER',
-                         NOEUD     = 'N1',
-                         NOM_CMP    = 'TEMP',
-                         VALE       = 6.66660E+01       ),
-                    _F(  RESULTAT   = TEMP0,
-                         NOM_CHAM   = 'TEMP',
-                         NUME_ORDRE = 4,
-                         REFERENCE  = 'AUTRE_ASTER',
-                         NOEUD     = 'N1',
-                         NOM_CMP    = 'TEMP',
-                         VALE       = 8.50000E+01       ),
-                    _F(  RESULTAT   = TEMP0,
-                         NOM_CHAM   = 'TEMP',
-                         NUME_ORDRE = 2,
-                         REFERENCE  = 'AUTRE_ASTER',
-                         NOEUD     = 'N1',
-                         NOM_CMP    = 'TEMP',
-                         VALE       = 7.33330E+01       ),
-                    ),)
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=TEMP0,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=66.666000000,
+                   VALE_REFE=66.665999999999997,),
+                _F(NUME_ORDRE=4,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=TEMP0,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=85.000000000,
+                   VALE_REFE=85.0,),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=TEMP0,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=73.333000000,
+                   VALE_REFE=73.332999999999998,),
+                ),
+          )
 
 DETRUIRE(CONCEPT=_F(NOM=TEMP0))
 
@@ -289,22 +287,25 @@ TEMP0=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 INST=(85.,73.33,),);
 
 
-TEST_RESU ( RESU=(
-                    _F(  RESULTAT   = TEMP0,
-                         NOM_CHAM   = 'TEMP',
-                         INST       = 8.50000E+01,
-                         REFERENCE  = 'AUTRE_ASTER',
-                         NOEUD     = 'N1',
-                         NOM_CMP    = 'TEMP',
-                         VALE       = 8.50000E+01       ),
-                   _F(  RESULTAT   = TEMP0,
-                         NOM_CHAM   = 'TEMP',
-                         INST       = 7.332999999E+01,
-                         REFERENCE  = 'AUTRE_ASTER',
-                         NOEUD     = 'N1',
-                         NOM_CMP    = 'TEMP',
-                         VALE       = 7.3333333E+01       ),
-                    ),)
+TEST_RESU(RESU=(_F(INST=85.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=TEMP0,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=85.000000000,
+                   VALE_REFE=85.0,),
+                _F(INST=73.329999990000005,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=TEMP0,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=73.333000000,
+                   VALE_REFE=73.333332999999996,),
+                ),
+          )
+
 #-----------------------------------------------
 # VALIDATION DE CREA_TABLE/RESU (1/2) : CHAM_NO
 
@@ -338,7 +339,8 @@ for numordre,noeud,X,Y,VTEMP in PourTest:
          _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
-      NOM_PARA='TEMP', VALE=VTEMP,
+      NOM_PARA='TEMP', VALE_CALC=VTEMP,
+      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB01,
@@ -346,7 +348,8 @@ for numordre,noeud,X,Y,VTEMP in PourTest:
          _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
-      NOM_PARA='COOR_X', VALE=X,
+      NOM_PARA='COOR_X', VALE_CALC=X,
+      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB01,
@@ -354,7 +357,8 @@ for numordre,noeud,X,Y,VTEMP in PourTest:
          _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
-      NOM_PARA='COOR_Y', VALE=Y,
+      NOM_PARA='COOR_Y', VALE_CALC=Y,
+      TOLE_MACHINE=1.e-3,
    )
 
 
@@ -368,11 +372,10 @@ TB02=CREA_TABLE(
    RESU=_F(CHAM_GD=CH01, NOEUD='N1', NOM_CMP='TEMP',),
 )
 
-TEST_TABLE(
-   TABLE=TB02,
-   NOM_PARA='TEMP',
-   VALE=73.33
-)
+TEST_TABLE(VALE_CALC=73.329999999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=TB02,)
 
 DETRUIRE(CONCEPT=_F(NOM=TEMP0))
 
@@ -445,45 +448,42 @@ MONU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
 IMPR_RESU(UNITE=74,RESU=_F(RESULTAT=UUU),);
 
 
-TEST_RESU ( RESU=(
-                    _F(  RESULTAT   = UUU,
-                         NOM_CHAM   = 'SIEF_ELGA',
-                         INST       = 9.00000E+01,
-                         MAILLE     = 'M1',
-                         REFERENCE  = 'NON_REGRESSION',
-                         POINT      =  1,
-                         NOM_CMP    = 'SIYY',
-                         CRITERE    = 'RELATIF',
-                         PRECISION  = 1.E-6,
-                         VALE       = -7.5E+01  ),
-                    _F(  RESULTAT   = UUU,
-                         NOM_CHAM   = 'SIEF_ELGA',
-                         INST       = 9.00000E+01,
-                         MAILLE     = 'M1',
-                         REFERENCE  = 'NON_REGRESSION',
-                         POINT      =  1,
-                         NOM_CMP    = 'SIXX',
-                         CRITERE    = 'ABSOLU',
-                         PRECISION  = 1.E-6,
-                         VALE       = 0.  ),
-                    _F(  RESULTAT   = UUU,
-                         NOM_CHAM   = 'VARI_ELGA',
-                         INST       = 9.00000E+01,
-                         MAILLE     = 'M1',
-                         REFERENCE  = 'NON_REGRESSION',
-                         POINT      =  1,
-                         NOM_CMP    = 'V1',
-                         VALE       =  5.25001E-04 ),
-                    _F(  RESULTAT   = UUU,
-                         NOM_CHAM   = 'VARI_NOEU',
-                         INST       = 9.00000E+01,
-                         MAILLE     = 'M1',
-                         REFERENCE  = 'NON_REGRESSION',
-                         NOEUD      =  'N3',
-                         NOM_CMP    = 'V1',
-                         VALE       =  5.25001E-04 ),
-
-                    ),)
+TEST_RESU(RESU=(_F(INST=90.0,
+                   POINT=1,
+                   RESULTAT=UUU,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-75.0,
+                   
+                   CRITERE='RELATIF',
+                   MAILLE='M1',),
+                _F(INST=90.0,
+                   POINT=1,
+                   RESULTAT=UUU,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=0.0,
+                   
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                _F(INST=90.0,
+                   POINT=1,
+                   RESULTAT=UUU,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=5.2500099999999998E-4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(INST=90.0,
+                   RESULTAT=UUU,
+                   NOM_CHAM='VARI_NOEU',
+                   NOEUD='N3',
+                   NOM_CMP='V1',
+                   VALE_CALC=5.2500099999999998E-4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                ),
+          )
 
 # ----------------------------------------------------------------------------
 # VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR
@@ -521,10 +521,8 @@ IMPR_RESU(UNITE=84, FORMAT='GMSH',
 DEFI_FICHIER(UNITE=84, ACTION='LIBERER')
 
 TEST_FICHIER(FICHIER='./fort.84',
-             REFERENCE='NON_REGRESSION',
              NB_VALE=445,
-             VALE=2.202078e+02,
-             VERSION='9.1.21')
+             VALE_CALC=2.202078e+02,)
 
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
@@ -547,16 +545,16 @@ UUU0=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               NUME_ORDRE=4,);
 
 
-TEST_RESU ( RESU=(
-                    _F(  RESULTAT   = UUU0,
-                         NOM_CHAM   = 'VARI_ELNO',
-                         INST       = 8.50000E+01,
-                         MAILLE     = 'M1',
-                         REFERENCE  = 'AUTRE_ASTER',
-                         NOEUD     =  'N1',
-                         NOM_CMP    = 'V1',
-                         VALE       = 4.12500E-04       ),
-                    ),)
+TEST_RESU(RESU=_F(INST=85.0,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=UUU0,
+                  NOM_CHAM='VARI_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='V1',
+                  VALE_CALC= 4.12500000E-04,
+                  VALE_REFE=4.125E-4,
+                  MAILLE='M1',),
+          )
 
 #------------------------------------------------
 # VALIDATION DE CREA_TABLE/RESU (2/2) : CHAM_ELEM
@@ -577,7 +575,8 @@ for numordre,noeud,X,Y, SIYY in PourTest:
          _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
-      NOM_PARA='COOR_X', VALE=X,
+      NOM_PARA='COOR_X', VALE_CALC=X,
+      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB11,
@@ -585,7 +584,8 @@ for numordre,noeud,X,Y, SIYY in PourTest:
          _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
-      NOM_PARA='COOR_Y', VALE=Y,
+      NOM_PARA='COOR_Y', VALE_CALC=Y,
+      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB11,
@@ -593,7 +593,8 @@ for numordre,noeud,X,Y, SIYY in PourTest:
          _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
          _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
       ),
-      NOM_PARA='SIYY', VALE=SIYY,
+      NOM_PARA='SIYY', VALE_CALC=SIYY,
+      TOLE_MACHINE=1.e-3,
    )
 
 
@@ -616,15 +617,18 @@ PourTest = [
 for point,X,Y,SIYY in PourTest:
    TEST_TABLE(TABLE=TB12,
       FILTRE=_F(NOM_PARA = 'POINT', VALE_I = point),
-      NOM_PARA='SIYY', VALE=SIYY,
+      NOM_PARA='SIYY', VALE_CALC=SIYY,
+      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(TABLE=TB12,
       FILTRE=_F(NOM_PARA = 'POINT', VALE_I = point),
-      NOM_PARA='COOR_X', VALE=X,
+      NOM_PARA='COOR_X', VALE_CALC=X,
+      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(TABLE=TB12,
       FILTRE=_F(NOM_PARA = 'POINT', VALE_I = point),
-      NOM_PARA='COOR_Y', VALE=Y,
+      NOM_PARA='COOR_Y', VALE_CALC=Y,
+      TOLE_MACHINE=1.e-3,
    )
 
 TB13=CREA_TABLE(
@@ -645,7 +649,8 @@ for numordre,maille,point,X,Y,V1 in PourTest:
          _F(NOM_PARA = 'MAILLE', VALE_K = maille),
          _F(NOM_PARA = 'POINT',  VALE_I = point),
       ),
-      NOM_PARA='V1', VALE=V1,
+      NOM_PARA='V1', VALE_CALC=V1,
+      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB13,
@@ -654,7 +659,8 @@ for numordre,maille,point,X,Y,V1 in PourTest:
          _F(NOM_PARA = 'MAILLE', VALE_K = maille),
          _F(NOM_PARA = 'POINT',  VALE_I = point),
       ),
-      NOM_PARA='COOR_X', VALE=X,
+      NOM_PARA='COOR_X', VALE_CALC=X,
+      TOLE_MACHINE=1.e-3,
    )
    TEST_TABLE(
       TABLE=TB13,
@@ -663,7 +669,8 @@ for numordre,maille,point,X,Y,V1 in PourTest:
          _F(NOM_PARA = 'MAILLE', VALE_K = maille),
          _F(NOM_PARA = 'POINT',  VALE_I = point),
       ),
-      NOM_PARA='COOR_Y', VALE=Y,
+      NOM_PARA='COOR_Y', VALE_CALC=Y,
+      TOLE_MACHINE=1.e-3,
    )
 
 
@@ -673,21 +680,25 @@ DETRUIRE(CONCEPT=_F(NOM=UUU0))
 
 
 
-TEST_RESU ( RESU=(  _F(  RESULTAT   = UUU,
-                         NOM_CHAM   = 'SIGM_ELNO',
-                         NUME_ORDRE = 4,
-                         REFERENCE  = 'AUTRE_ASTER',
-                         MAILLE     = 'M1',
-                         POINT      = 1,
-                         NOM_CMP    = 'SIYY',
-                         VALE       = -87.5       ),
-                    _F(  RESULTAT   = UUU,
-                         NOM_CHAM   = 'DEPL',
-                         NUME_ORDRE = 5,
-                         REFERENCE  = 'AUTRE_ASTER',
-                         NOEUD      = 'N1',
-                         NOM_CMP    = 'DX',
-                         VALE       = 1.275E-03  ),),  )
+TEST_RESU(RESU=(_F(NUME_ORDRE=4,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=UUU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-87.500000000,
+                   VALE_REFE=-87.5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=5,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=UUU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.27500000E-03,
+                   VALE_REFE=1.2750000000000001E-3,),
+                ),
+          )
 
 IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=UUU,),);
 
@@ -768,17 +779,40 @@ DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
 
 IMPR_RESU(RESU=_F(RESULTAT=UUU3),)
 
-TEST_RESU(
-   RESU=(
-      _F(RESULTAT=UUU3,NOM_CHAM='SIGM_ELNO',NUME_ORDRE=1,NOM_CMP='SIYY',
-         MAILLE='M1',REFERENCE='NON_REGRESSION',NOEUD='N1',VALE=-133.332),
-      _F(RESULTAT=UUU3,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=2,NOM_CMP='SIYY',
-         MAILLE='M1',REFERENCE='NON_REGRESSION',POINT=1,VALE=-116.668),
-      _F(RESULTAT=UUU3,NOM_CHAM='DEPL',NUME_ORDRE=2,NOM_CMP='DX',
-         REFERENCE='NON_REGRESSION',NOEUD='N3',VALE=1.96665E-03),
-      _F(RESULTAT=UUU3,NOM_CHAM='VARI_ELNO',NUME_ORDRE=2,NOM_CMP='V1',
-         MAILLE='M1',REFERENCE='NON_REGRESSION',NOEUD='N1',VALE=1.49992E-04),
-),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=UUU3,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-133.33199999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=UUU3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-116.66800000000001,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=UUU3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.9666499999999999E-3,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=UUU3,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='V1',
+                   VALE_CALC=1.49992E-4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                ),
+          )
+
 # ##################################################################################################
 # VALIDATION DE IMPR_RESU ET LIRE_RESU AU FORMAT MED POUR UN EVOL_VARC
 
@@ -827,27 +861,81 @@ chirra=LIRE_RESU(
 )
 DETRUIRE(CONCEPT=_F(NOM=unit_m), INFO=1)
 
-TEST_RESU(
-   RESU=(
-      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=0.0,NOM_CMP='IRRA',
-         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N1',VALE=5.0),
-      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=0.0,NOM_CMP='IRRA',
-         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N2',VALE=5.0),
-      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=0.0,NOM_CMP='IRRA',
-         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N3',VALE=5.0),
-      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=0.0,NOM_CMP='IRRA',
-         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N4',VALE=5.0),
+TEST_RESU(RESU=(_F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=chirra,
+                   NOM_CHAM='IRRA',
+                   NOEUD='N1',
+                   NOM_CMP='IRRA',
+                   VALE_CALC=5.000000000,
+                   VALE_REFE=5.0,
+                   MAILLE='M1',),
+                _F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=chirra,
+                   NOM_CHAM='IRRA',
+                   NOEUD='N2',
+                   NOM_CMP='IRRA',
+                   VALE_CALC=5.000000000,
+                   VALE_REFE=5.0,
+                   MAILLE='M1',),
+                _F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=chirra,
+                   NOM_CHAM='IRRA',
+                   NOEUD='N3',
+                   NOM_CMP='IRRA',
+                   VALE_CALC=5.000000000,
+                   VALE_REFE=5.0,
+                   MAILLE='M1',),
+                _F(INST=0.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=chirra,
+                   NOM_CHAM='IRRA',
+                   NOEUD='N4',
+                   NOM_CMP='IRRA',
+                   VALE_CALC=5.000000000,
+                   VALE_REFE=5.0,
+                   MAILLE='M1',),
+                _F(INST=10.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=chirra,
+                   NOM_CHAM='IRRA',
+                   NOEUD='N1',
+                   NOM_CMP='IRRA',
+                   VALE_CALC=15.000000000,
+                   VALE_REFE=15.0,
+                   MAILLE='M1',),
+                _F(INST=10.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=chirra,
+                   NOM_CHAM='IRRA',
+                   NOEUD='N2',
+                   NOM_CMP='IRRA',
+                   VALE_CALC=15.000000000,
+                   VALE_REFE=15.0,
+                   MAILLE='M1',),
+                _F(INST=10.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=chirra,
+                   NOM_CHAM='IRRA',
+                   NOEUD='N3',
+                   NOM_CMP='IRRA',
+                   VALE_CALC=15.000000000,
+                   VALE_REFE=15.0,
+                   MAILLE='M1',),
+                _F(INST=10.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=chirra,
+                   NOM_CHAM='IRRA',
+                   NOEUD='N4',
+                   NOM_CMP='IRRA',
+                   VALE_CALC=15.000000000,
+                   VALE_REFE=15.0,
+                   MAILLE='M1',),
+                ),
+          )
 
-      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=10.0,NOM_CMP='IRRA',
-         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N1',VALE=15.0),
-      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=10.0,NOM_CMP='IRRA',
-         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N2',VALE=15.0),
-      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=10.0,NOM_CMP='IRRA',
-         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N3',VALE=15.0),
-      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=10.0,NOM_CMP='IRRA',
-         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N4',VALE=15.0),
-   ),
-)
 HELNO0=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                   OPERATION='AFFE',
                   MODELE=MOTHER,
@@ -892,33 +980,40 @@ LUHYD=LIRE_RESU(TYPE_RESU='EVOL_THER',
                    NOM_RESU='RESHYD',),),
                 TOUT_ORDRE='OUI',);
 
-TEST_RESU(RESU=(_F(RESULTAT=LUHYD,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_ELNO',
-                   NOM_CMP='HYDR',
-                   MAILLE='M1',
                    NOEUD='N1',
-                   VALE=0,),
-                _F(RESULTAT=LUHYD,
-                   NUME_ORDRE=1,
+                   NOM_CMP='HYDR',
+                   VALE_CALC=0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_NOEU',
-                   NOM_CMP='HYDR',
                    NOEUD='N1',
-                   VALE=0,),
-                _F(RESULTAT=LUHYD,
-                   INST=90,
+                   NOM_CMP='HYDR',
+                   VALE_CALC=0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(INST=90,
+                   RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_ELNO',
-                   NOM_CMP='HYDR',
-                   MAILLE='M1',
                    NOEUD='N1',
-                   VALE=1.0,),
-                _F(RESULTAT=LUHYD,
-                   INST=90,
+                   NOM_CMP='HYDR',
+                   VALE_CALC=1.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(INST=90,
+                   RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_NOEU',
-                   NOM_CMP='HYDR',
                    NOEUD='N1',
-                   VALE=1.0,),),);
+                   NOM_CMP='HYDR',
+                   VALE_CALC=1.0,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 FIN();
+
 
 

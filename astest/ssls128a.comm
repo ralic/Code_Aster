@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  : CALCUL STATIQUE D'UNE PLAQUE COMPOSEE DE COUCHES
 # ssls128a.para = tps_job 200 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,55 +146,59 @@ RESU1=POST_CHAMP(RESULTAT=RESU,
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU1,
                   NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP = 'SIXX' ,
-                  MAILLE='M49',
                   NOEUD='N1',
-                  VALE = -242 ,
-                  PRECISION = 0.005 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-              )
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-241.622880344,
+                  VALE_REFE=-242,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,
+                  MAILLE='M49',),
+          )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU1,
                   NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP = 'SIYY' ,
-                  MAILLE='M49',
                   NOEUD='N1',
-                  VALE = 67 ,
-                  PRECISION = 0.006 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-               )
+                  NOM_CMP='SIYY',
+                  VALE_CALC=66.622880344,
+                  VALE_REFE=67,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,
+                  MAILLE='M49',),
+          )
 
 RESU2=POST_CHAMP(RESULTAT=RESU,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=2,
                                NIVE_COUCHE='INF',),);
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU2,
                   NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP = 'SIXX' ,
-                  MAILLE='M49',
                   NOEUD='N1',
-                  VALE = -108 ,
-                  PRECISION = 0.005 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-                 )
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-108.377119656,
+                  VALE_REFE=-108,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,
+                  MAILLE='M49',),
+          )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU2,
                   NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP = 'SIYY' ,
-                  MAILLE='M49',
                   NOEUD='N1',
-                  VALE = -67 ,
-                  PRECISION = 0.006 ,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='AUTRE_ASTER')
-                  )
+                  NOM_CMP='SIYY',
+                  VALE_CALC=-66.622880344,
+                  VALE_REFE=-67,
+                  CRITERE='RELATIF',
+                  PRECISION=6.0000000000000001E-3,
+                  MAILLE='M49',),
+          )
 
 FIN();

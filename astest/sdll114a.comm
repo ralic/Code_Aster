@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (POSEE-POSEE)
 # sdll114a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,129 +164,169 @@ MASSY=POST_ELEM(    MODELE=MOPOU,
                       TITRE=( 'POUTRE AFFINE ROTATION 90',)
                   )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='MASSE',
-                     VALE=35.1                )
+TEST_TABLE(VALE_CALC=35.100000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MASSE',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='CDG_X',
-                  CRITERE='ABSOLU',
-                     VALE=0.                  )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_X',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='CDG_Y',
-                  CRITERE='ABSOLU',
-                     VALE=0.                  )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Y',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='CDG_Z',
-                     VALE=0.88888             )
+TEST_TABLE(VALE_CALC=0.88888,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Z',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IX_G',
-                     VALE=11.273979            )
+TEST_TABLE(VALE_CALC=11.273979000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IX_G',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IY_G',
-                     VALE=11.27325479          )
+TEST_TABLE(VALE_CALC=11.273254789999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_G',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IZ_G',
-                     VALE=1.389375E-02         )
+TEST_TABLE(VALE_CALC=0.01389375,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_G',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IX_PRIN_G',
-                     VALE=1.389375E-02         )
+TEST_TABLE(VALE_CALC=0.01389375,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IX_PRIN_G',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IY_PRIN_G',
-                     VALE=11.2732479           )
+TEST_TABLE(VALE_CALC=11.273247899999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_PRIN_G',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSX,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IZ_PRIN_G',
-                     VALE=11.273979           )
+TEST_TABLE(VALE_CALC=11.273979000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_PRIN_G',
+           TABLE=MASSX,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='MASSE',
-                VALE=35.1                     )
+TEST_TABLE(VALE_CALC=35.100000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MASSE',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='CDG_X',
-                  CRITERE='ABSOLU',
-                     VALE=0.                  )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_X',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='CDG_Y',
-                  CRITERE='ABSOLU',
-                     VALE=0.                  )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Y',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='CDG_Z',
-                     VALE=0.88888             )
+TEST_TABLE(VALE_CALC=0.88888,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='CDG_Z',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IX_G',
-                     VALE=11.2732479          )
+TEST_TABLE(VALE_CALC=11.273247899999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IX_G',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IY_G',
-                     VALE=11.273979           )
+TEST_TABLE(VALE_CALC=11.273979000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_G',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IZ_G',
-                     VALE=1.3893755E-02       )
+TEST_TABLE(VALE_CALC=0.013893755000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_G',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IX_PRIN_G',
-                     VALE=1.389375E-02        )
+TEST_TABLE(VALE_CALC=0.01389375,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IX_PRIN_G',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IY_PRIN_G',
-                     VALE=11.2732479          )
+TEST_TABLE(VALE_CALC=11.273247899999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_PRIN_G',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
-TEST_TABLE(      TABLE=MASSY,
-                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                            VALE_K = 'POU'),
-                 NOM_PARA='IZ_PRIN_G',
-                     VALE=11.2732479          )
+TEST_TABLE(VALE_CALC=11.273247899999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_PRIN_G',
+           TABLE=MASSY,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='POU',),
+           )
 
 # --------------------------------------------------------------------
 # ====================================
@@ -378,29 +418,56 @@ MODPOUY=MODE_ITER_INV(
 
 #72.01
 
-TEST_RESU(RESU=(
-#A2X
-             _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
-                     CRITERE = 'RELATIF',  PRECISION = 0.043,
-                     NUME_MODE = 1,       VALE = 2.4883719438590E+01),
-# EN ATTENTE DES VALEURS A TESTER  DANS LE SENS X
-                  _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
-                     CRITERE = 'RELATIF',  PRECISION = 0.011,
-                     NUME_MODE = 3,       VALE = 1.0117166656029E+02),
-                  _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
-                     CRITERE = 'RELATIF',  PRECISION = 0.016,
-                     NUME_MODE = 5,       VALE = 2.2717436461294E+02),
-#A2Y
-                  _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
-                     CRITERE = 'RELATIF',  PRECISION = 0.043,
-                     NUME_MODE = 1,       VALE = 2.4883721494878E+01),
-                  _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
-                     CRITERE = 'RELATIF',  PRECISION = 0.011,
-                     NUME_MODE = 3,       VALE = 1.0117166656029E+02),
-                  _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
-                     CRITERE = 'RELATIF',  PRECISION = 0.016,
-                     NUME_MODE = 5,       VALE = 2.2717436461294E+02))
-         )
+TEST_RESU(RESU=(_F(PARA='FREQ',
+                   NUME_MODE=1,
+                   RESULTAT=MODPOUX,
+                   VALE_CALC=24.883719439,
+                   VALE_REFE=24.883719438589999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.042999999999999997,),
+                _F(PARA='FREQ',
+                   NUME_MODE=3,
+                   RESULTAT=MODPOUX,
+                   VALE_CALC=101.171666560,
+                   VALE_REFE=101.17166656029001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.010999999999999999,),
+                _F(PARA='FREQ',
+                   NUME_MODE=5,
+                   RESULTAT=MODPOUX,
+                   VALE_CALC=227.174364613,
+                   VALE_REFE=227.17436461294,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.016,),
+                _F(PARA='FREQ',
+                   NUME_MODE=1,
+                   RESULTAT=MODPOUY,
+                   VALE_CALC=24.883721495,
+                   VALE_REFE=24.883721494877999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.042999999999999997,),
+                _F(PARA='FREQ',
+                   NUME_MODE=3,
+                   RESULTAT=MODPOUY,
+                   VALE_CALC=101.171666560,
+                   VALE_REFE=101.17166656029001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.010999999999999999,),
+                _F(PARA='FREQ',
+                   NUME_MODE=5,
+                   RESULTAT=MODPOUY,
+                   VALE_CALC=227.174364613,
+                   VALE_REFE=227.17436461294,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.016,),
+                ),
+          )
 
 #
 FIN( )

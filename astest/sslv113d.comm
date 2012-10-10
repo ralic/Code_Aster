@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
 # sslv113d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,45 +133,46 @@ RESUPRIM=CALC_ERREUR(reuse =RESUPRIM,
 #
 #-----------------------------------------------------------------------
 
-TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  POINT=1,
+                  RESULTAT=RESUPRIM,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='ERREST',
-                  MAILLE='M1',
-                  POINT=1,
-                  VALE=0.01585434,
+                  VALE_CALC=0.015854340000000001,
+                  
                   CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  POINT=1,
+                  RESULTAT=RESUPRIM,
                   NOM_CHAM='QIRE_ELEM',
                   NOM_CMP='ERREST',
-                  MAILLE='M1',
-                  POINT=1,
-                  VALE=3.18399928E-03,
+                  VALE_CALC=3.18399928E-3,
+                  
                   CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESUPRIM,
                   NOM_CHAM='QIRE_ELNO',
-                  NOM_CMP='ERREST',
-                  MAILLE='M4',
                   NOEUD='N1',
-                  VALE=6.37039227E-05,
+                  NOM_CMP='ERREST',
+                  VALE_CALC=6.3703922700000007E-05,
+                  
                   CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
+                  MAILLE='M4',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_QIRE',
-                  VALE=3.52852108E-03,
+                  RESULTAT=RESUPRIM,
+                  VALE_CALC=3.5285210799999999E-3,
+                  
                   CRITERE='RELATIF',
-                  PRECISION=1e-06,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
 FIN();

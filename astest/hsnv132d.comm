@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 # hsnv132d.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,24 +165,33 @@ IMPR_TABLE(TABLE=SIF,);
 # on ne peut pas les obtenir avec la modelisation a (2d), ni c (3d avec DZ=0)
 
 
-TEST_TABLE(TABLE=SIF,
-           FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=1),
-           _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC= 6.65779388E+06,
+           VALE_REFE=6.894100E6,
            NOM_PARA='K1',
-           VALE= 6.89410E+06,
-           CRITERE='RELATIF',
-           PRECISION=0.04,
-           REFERENCE='AUTRE_ASTER');                        
+           TABLE=SIF,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=SIF,
-           FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=1),
-           _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
-           ),
-           NOM_PARA='K2',
-           VALE=  3.07670E+06,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER');                 
+           VALE_CALC= 3.03433598E+06,
+           VALE_REFE=3.076700E6,
+           NOM_PARA='K2',
+           TABLE=SIF,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
 
 # on peut s'etonner de trouver 4% d'erreur sur K1 alors que le maillage x-fem est fin (51*51)
 # en fait, si on regarde les contributions de la thermique pour K, et la contribution non-thermique pour K, on a les resultats suivants:

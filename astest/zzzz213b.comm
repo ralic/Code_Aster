@@ -1,4 +1,4 @@
-# MODIF  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE AFFE_CHAR_CINE (REEL/NON-SYMETRIQUE)
 # zzzz213b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,9 +73,15 @@ NONLIN1=STAT_NON_LINE( MODELE=MODELE_1, CHAM_MATER=CH_MAT_1, CARA_ELEM=CARAC_1,
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=NONLIN1,NOM_CHAM='DEPL',),)
 
-TEST_RESU(  RESU=_F(  RESULTAT = NONLIN1, INST = 0.1, NOM_CHAM = 'DEPL', CRITERE = 'RELATIF', GROUP_NO = 'G_11', NOM_CMP = 'DZ',
-                      REFERENCE='NON_REGRESSION', VALE = -5.0335779463535E+00) )
-
+TEST_RESU(RESU=_F(GROUP_NO='G_11',
+                  INST=0.10000000000000001,
+                  RESULTAT=NONLIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-5.0335779463534998,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',),
+          )
 
 # LE 2EME CALCUL (AVEC AFFE_CHAR_CINE) SERT A VALIDER LES CHARGES CINEMATIQUES AVEC UNE MATRICE NON-SYMETRIQUE:
 #--------------------------------------------------------------------------------------------------------------
@@ -88,9 +94,16 @@ NONLIN2=STAT_NON_LINE( MODELE=MODELE_1, CHAM_MATER=CH_MAT_1, CARA_ELEM=CARAC_1,
        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-8, ITER_GLOB_MAXI = 20,  ARRET = 'OUI'),
        NEWTON=_F( REAC_ITER = 1) )
 
-TEST_RESU(  RESU=_F(  RESULTAT = NONLIN2, INST = 0.1, NOM_CHAM = 'DEPL', CRITERE = 'RELATIF', GROUP_NO = 'G_11', NOM_CMP = 'DZ',
-                      REFERENCE='AUTRE_ASTER', VALE = -5.0335779463535E+00) )
-
+TEST_RESU(RESU=_F(GROUP_NO='G_11',
+                  INST=0.10000000000000001,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=NONLIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-5.033577946,
+                  VALE_REFE=-5.0335779463534998,
+                  CRITERE='RELATIF',),
+          )
 
 # LE 3EME CALCUL SERT A VALIDER L'ASSEMBLAGE D'UNE MATRICE NON-SYMERIQUE DANS UNE MATRICE SYMETRIQUE (ROUTINE MASYNS)
 #---------------------------------------------------------------------------------------------------------------------
@@ -103,8 +116,15 @@ NONLIN3=STAT_NON_LINE( MODELE=MODELE_1, CHAM_MATER=CH_MAT_1, CARA_ELEM=CARAC_1,
        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-8, ITER_GLOB_MAXI = 20,  ARRET = 'OUI'),
        NEWTON=_F( REAC_ITER = 1) )
 
-TEST_RESU(  RESU=_F(  RESULTAT = NONLIN3, INST = 0.1, NOM_CHAM = 'DEPL', CRITERE = 'RELATIF', GROUP_NO = 'G_11', NOM_CMP = 'DZ',
-                      REFERENCE='NON_REGRESSION', VALE = -5.0283711767339E+00) )
+TEST_RESU(RESU=_F(GROUP_NO='G_11',
+                  INST=0.10000000000000001,
+                  RESULTAT=NONLIN3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-5.0283711767339003,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',),
+          )
 
 #
 FIN( )

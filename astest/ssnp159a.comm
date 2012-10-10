@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION PLASTIQUE GRANDES DEFORMATIONS 3D CALCUL DES ENERGIES ELASTIQUES
 # ssnp159a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,30 +120,48 @@ ENERPT=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
                  INST=2.,
                  );
             
-TEST_RESU(RESU=(
-              _F(
-               RESULTAT = PT,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO8',   NOM_CMP = 'DX',
-               PRECISION = 1.E-2,
-               VALE = 290.),
-              _F(
-               RESULTAT = PT,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIXX',
-               PRECISION = 1.E-2,
-               VALE = 1570.),
-              _F(
-               RESULTAT = PT,     NOM_CHAM = 'VARI_ELGA',  INST = 2.,
-               MAILLE = 'MA1',    POINT = 1,   NOM_CMP = 'V1',
-               PRECISION = 1.5E-2,
-               VALE = 0.28215))
-             )
-TEST_TABLE(TABLE=ENERPT,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=2.0,),),
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=PT,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=290.000000000,
+                   VALE_REFE=290.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=PT,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.57000000E+03,
+                   VALE_REFE=1570.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=PT,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.282150000,
+                   VALE_REFE=0.28215000000000001,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.014999999999999999,
+                   MAILLE='MA1',),
+                ),
+          )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 6.16225000E+09,
+           VALE_REFE=6.160000000E9,
            NOM_PARA='TOTALE',
-           VALE=6.16E9,
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=ENERPT,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
+
 ###################################################            
 #CALCUL ET TEST AVEC LES DEFORMATIONS LOGARITHMIQUE
 LOG=STAT_NON_LINE( MODELE=MO,
@@ -169,30 +187,48 @@ ENERLO=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
                  INST=2.,
                  );
             
-TEST_RESU(RESU=(
-              _F(
-               RESULTAT = LOG,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO8',   NOM_CMP = 'DX',
-               PRECISION = 1.E-2,
-               VALE = 290.),
-              _F(
-               RESULTAT = LOG,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIXX',
-               PRECISION = 1.E-2,
-               VALE = 1495.),
-              _F(
-               RESULTAT = LOG,     NOM_CHAM = 'VARI_ELGA',  INST = 2.,
-               MAILLE = 'MA1',    POINT = 1,   NOM_CMP = 'V1',
-               PRECISION = 1.5E-2,
-               VALE = 0.2475))
-             )
-TEST_TABLE(TABLE=ENERLO,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=2.0,),),
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=LOG,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=290.000000000,
+                   VALE_REFE=290.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=LOG,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.49479541E+03,
+                   VALE_REFE=1495.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=LOG,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.247145796,
+                   VALE_REFE=0.2475,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.014999999999999999,
+                   MAILLE='MA1',),
+                ),
+          )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 5.61963456E+09,
+           VALE_REFE=5.625000000E9,
            NOM_PARA='TOTALE',
-           VALE=5.625E9,
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE',);                         
+           TABLE=ENERLO,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
+
 ###################################################           
 #CALCUL ET TEST AVEC LES DEFORMATIONS DE SIMO_MIEHE
 SM=STAT_NON_LINE( MODELE=MO,
@@ -218,31 +254,47 @@ ENERSM=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
                  INST=2.,
                  );
             
-TEST_RESU(RESU=(
-              _F(
-               RESULTAT = SM,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO8',   NOM_CMP = 'DX',
-               PRECISION = 1.E-2,
-               VALE = 290.),
-              _F(
-               RESULTAT = SM,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIXX',
-               PRECISION = 1.E-2,
-               VALE = 1495.),
-              _F(
-               RESULTAT = SM,     NOM_CHAM = 'VARI_ELGA',  INST = 2.,
-               MAILLE = 'MA1',    POINT = 1,   NOM_CMP = 'V1',
-               PRECISION = 1.5E-2,
-               VALE = 0.2475))
-             )
-TEST_TABLE(TABLE=ENERSM,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=2.0,),),
-           NOM_PARA='TOTALE',
-           VALE=6.20E9,
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE',);
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=SM,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=290.000000000,
+                   VALE_REFE=290.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=SM,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.50055349E+03,
+                   VALE_REFE=1495.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=SM,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.250006467,
+                   VALE_REFE=0.2475,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.014999999999999999,
+                   MAILLE='MA1',),
+                ),
+          )
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 6.39074049E+09,
+           VALE_REFE=6.200000000E9,
+           NOM_PARA='TOTALE',
+           TABLE=ENERSM,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
 
 FIN()
 #

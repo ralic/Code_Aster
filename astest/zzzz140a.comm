@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST IMPR_FONCTION
 # zzzz140a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,11 +95,9 @@ IMPR_FONCTION(
 
 TEST_FICHIER(
    FICHIER='fort.51',
-   VALE_K='38a090c2ef30c6c759c863ea64ad5df4',
-   VALE=3.06506E+03,
+   VALE_CALC_K='38a090c2ef30c6c759c863ea64ad5df4',
+   VALE_CALC=3.065006E+03,
    NB_VALE=22,
-   REFERENCE='NON_REGRESSION',
-   VERSION='9.1.21',
 )
 # ------------------------------------------------------------------------------
 IMPR_FONCTION(
@@ -111,11 +109,9 @@ IMPR_FONCTION(
 
 TEST_FICHIER(
    FICHIER='fort.52',
-   VALE_K='dc6b6f265a8ad492634f50da4fe167d3',
-   VALE=1.502E+03,
+   VALE_CALC_K='dc6b6f265a8ad492634f50da4fe167d3',
+   VALE_CALC=1.502E+03,
    NB_VALE=8,
-   REFERENCE='NON_REGRESSION',
-   VERSION='9.1.21',
 )
 
 # ------------------------------------------------------------------------------
@@ -136,11 +132,9 @@ IMPR_FONCTION(
 )
 TEST_FICHIER(
    FICHIER='fort.53',
-   VALE_K='49c8e63ede6638d28a72aa42c3b6fdd4',
-   VALE=6.47129982e+04,
+   VALE_CALC_K='49c8e63ede6638d28a72aa42c3b6fdd4',
+   VALE_CALC=6.47129982e+04,
    NB_VALE=381,
-   REFERENCE='NON_REGRESSION',
-   VERSION='9.1.21',
 )
 
 # ------------------------------------------------------------------------------
@@ -157,11 +151,10 @@ IMPR_FONCTION(
 DEFI_FICHIER(UNITE=54, ACTION='LIBERER')
 TEST_FICHIER(
    FICHIER='./REPE_OUT/unite.54',
-   VALE_K='e7f764d48ba4bec78e56e2c41ff86617',
-   VALE=6.258603563e+04,
+   VALE_CALC_K='e7f764d48ba4bec78e56e2c41ff86617',
+   VALE_CALC=6.258603563e+04,
    NB_VALE=463,
-   REFERENCE='NON_REGRESSION',
-   VERSION='9.1.21',
 )
 
 FIN()
+

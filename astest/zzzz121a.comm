@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 # zzzz121a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -231,8 +231,11 @@ for k in range(1,10):
 
   IMPR_TABLE(TABLE=TUL);
 
-  TEST_TABLE( TABLE=TUL,REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01',
-          NOM_PARA='UNITE_LIBRE', VALE_I=99  )
+  TEST_TABLE(VALE_CALC_I=99,
+             TOLE_MACHINE=1.E-3,
+             NOM_PARA='UNITE_LIBRE',
+             TABLE=TUL,
+             )
 
   DETRUIRE(CONCEPT=(_F(NOM=TUL),))
 
@@ -242,31 +245,49 @@ for k in range(1,10):
 #
 # 6. fin de la boucle sur k
 #
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RESU[4],   NUME_ORDRE = 1,
-            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-            NOM_CMP = 'DX',       VALE = 5.093375E-03,
-            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ),
-       _F(  RESULTAT = RESU[4],   NUME_ORDRE = 1,
-            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-            NOM_CMP = 'DY',       VALE = -2.7634976E-02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=RESU[4],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=5.0933749999999998E-3,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=RESU[4],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.027634975999999999,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
           )
+
 #
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RESU[5],   NUME_ORDRE = 1,
-            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-            NOM_CMP = 'DX',       VALE = 5.0939774E-03,
-            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ),
-       _F(  RESULTAT = RESU[5],   NUME_ORDRE = 1,
-            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
-            CRITERE = 'RELATIF',  PRECISION = 1.E-6,
-            NOM_CMP = 'DY',       VALE = -3.158715E-02,
-            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.01' ))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=RESU[5],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=5.0939773999999997E-3,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='OPPOSE',
+                   RESULTAT=RESU[5],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.031587150000000001,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
           )
+
 #
 
 FIN( )

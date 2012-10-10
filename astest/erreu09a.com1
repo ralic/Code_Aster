@@ -10,11 +10,13 @@ TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                        _F(PARA='BOOLEEN',LISTE_I=is_ok,),
                        ),
                 )
-TEST_TABLE(TABLE=TAB1,
-           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
            NOM_PARA='BOOLEEN',
-           VALE_I=1,
-           REFERENCE='ANALYTIQUE',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
            )
 
 FIN()

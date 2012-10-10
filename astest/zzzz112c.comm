@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 # zzzz112c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,46 +123,73 @@ RESU2=CALC_CHAMP( reuse= RESU2, RESULTAT= RESU2, CONTRAINTE=('SIGM_ELGA',), )
 #   DE SIGNE MAIS LE TE
 #
 
-TEST_RESU(
-   RESU=(_F( RESULTAT = RESU2, NOM_CHAM = 'SIEF_ELGA', INST = 1.,
-             MAILLE = 'M1', POINT = 1, NOM_CMP = 'SIYY', VALE = 100.,
-             PRECISION = 0.07, SOUS_POINT = 1,
-             REFERENCE = 'AUTRE_ASTER'),
-         _F( RESULTAT = RESU2, NOM_CHAM = 'DEPL', INST = 1.,
-             NOEUD = 'N1', NOM_CMP = 'DY',            VALE = -5.E-11,
-             PRECISION = 0.04,
-             REFERENCE = 'AUTRE_ASTER')))
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=93.146758216,
+                   VALE_REFE=100.0,
+                   PRECISION=0.070000000000000007,
+                   MAILLE='M1',),
+                _F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.84837523E-11,
+                   VALE_REFE=-5.0000000000000002E-11,
+                   PRECISION=0.040000000000000001,),
+                ),
+          )
 
-TEST_RESU(
-  OBJET=(_F( NOM='MAINI   .COORDO    .VALE',
-              S_R=9.0250001545811E+01,
-              REFERENCE='NON_REGRESSION',
-              VERSION='7.02.8'),
-         _F( NOM='MAIN2   .COORDO    .VALE',
-              S_R=9.0250001545811E+01,
-              REFERENCE='NON_REGRESSION',
-              VERSION='7.02.8'),
-         _F( NOM='MAILPLE .COORDO    .VALE',
-              S_R=1.0500000141561E+01,
-              REFERENCE='NON_REGRESSION',
-              VERSION='7.02.8'),
-         _F( NOM='MAILPLEX.COORDO    .VALE',
-              S_R=1.0500000141561E+01,
-              REFERENCE='NON_REGRESSION',
-              VERSION='7.02.8')))
+TEST_RESU(OBJET=(_F(
+                    VALE_CALC=90.250001545811003,
+                    TOLE_MACHINE=1.E-3,
+                    NOM='MAINI   .COORDO    .VALE',),
+                 _F(
+                    VALE_CALC=90.250001545811003,
+                    TOLE_MACHINE=1.E-3,
+                    NOM='MAIN2   .COORDO    .VALE',),
+                 _F(
+                    VALE_CALC=10.500000141560999,
+                    TOLE_MACHINE=1.E-3,
+                    NOM='MAILPLE .COORDO    .VALE',),
+                 _F(
+                    VALE_CALC=10.500000141560999,
+                    TOLE_MACHINE=1.E-3,
+                    NOM='MAILPLEX.COORDO    .VALE',),
+                 ),
+          )
 
 #----------------------------------------------------------------------------
 # Validation EFGE_ELGA pour les elements de tuyau apres MECA_STATIQUE:
 #----------------------------------------------------------------------
 RESU2=CALC_CHAMP( reuse= RESU2, RESULTAT= RESU2, CONTRAINTE=('EFGE_ELGA',), )
 
-TEST_RESU( RESU= _F( RESULTAT = RESU2, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
-             MAILLE = 'M102', POINT = 2, NOM_CMP = 'N', VALE =  2.4522370015433E-03 , REFERENCE = 'NON_REGRESSION'))
+TEST_RESU(RESU=_F(INST=1.0,
+                  POINT=2,
+                  RESULTAT=RESU2,
+                  NOM_CHAM='EFGE_ELGA',
+                  NOM_CMP='N',
+                  VALE_CALC=2.4522370015433001E-3,
+                  MAILLE='M102',),
+          )
 
 RESU2B=CALC_CHAMP(RESULTAT= RESU2, CONTRAINTE=('EFGE_ELGA',), )
 
-TEST_RESU( RESU= _F( RESULTAT = RESU2B, NOM_CHAM = 'EFGE_ELGA', INST = 1., PRECISION=1.E-9,
-             MAILLE = 'M102', POINT = 2, NOM_CMP = 'N', VALE =  2.4522370015433E-03 , REFERENCE = 'NON_REGRESSION'))
+TEST_RESU(RESU=_F(INST=1.0,
+                  POINT=2,
+                  RESULTAT=RESU2B,
+                  NOM_CHAM='EFGE_ELGA',
+                  NOM_CMP='N',
+                  VALE_CALC=2.4522370015433001E-3,
+                  MAILLE='M102',),
+          )
+
 #----------------------------------------------------------------------------
 FIN()
 #

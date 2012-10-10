@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES POUR UNE MODE PROPRE
 # sdls114d.para = tps_job 480 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -218,41 +218,44 @@ IMPR_TABLE(TABLE=KT1, TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 # la reference est obtenue par fissure maillee (SDLS114B)
 # on test uniquement sur le point au milieu du fond de fissure
 
-TEST_TABLE(TABLE=KT1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.025000000000000001,
+           VALE_CALC= 9.04311309E+05,
+           VALE_REFE=9.23749E5,
            NOM_PARA='K1',
-           FILTRE=(_F(NOM_PARA = 'INST',
-                      VALE = 4.00000E-03),
-                   _F(NOM_PARA = 'NUM_PT',
-                      VALE_I = 2),
+           TABLE=KT1,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=4.0000000000000001E-3,),
+                   _F(NOM_PARA='NUM_PT',
+                      VALE_I=2,),
                    ),
-           VALE=9.23749E+05,
-           PRECISION=0.025,
-           REFERENCE = 'AUTRE_ASTER',
-          );
+           )
 
-TEST_TABLE(TABLE=KT1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.089999999999999997,
+           VALE_CALC= 6.01010944E+04,
+           VALE_REFE=6.5914699999999997E4,
            NOM_PARA='K2',
-           FILTRE=(_F(NOM_PARA = 'INST',
-                      VALE = 4.00000E-03),
-                   _F(NOM_PARA = 'NUM_PT',
-                      VALE_I = 2),
+           TABLE=KT1,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=4.0000000000000001E-3,),
+                   _F(NOM_PARA='NUM_PT',
+                      VALE_I=2,),
                    ),
-           VALE=6.59147E+04,
-           PRECISION=0.09,
-           REFERENCE = 'AUTRE_ASTER',
-          );
+           )
 
-TEST_TABLE(TABLE=KT1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=-4.16641367E+05,
+           VALE_REFE=-4.21525E5,
            NOM_PARA='K3',
-           FILTRE=(_F(NOM_PARA = 'INST',
-                      VALE = 4.00000E-03),
-                   _F(NOM_PARA = 'NUM_PT',
-                      VALE_I = 2),
+           TABLE=KT1,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=4.0000000000000001E-3,),
+                   _F(NOM_PARA='NUM_PT',
+                      VALE_I=2,),
                    ),
-           VALE=-4.21525E+05,
-           PRECISION=0.015,
-           REFERENCE = 'AUTRE_ASTER',
-          );
+           )
 
 # ##############################################
 # # CALCUL TRANSITOIRE EN COORDONNEES PHYSIQUES

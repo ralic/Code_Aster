@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 # sdnl105d.para = tps_job 80 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -484,85 +484,78 @@ IMPR_TABLE(TABLE=RMS)
 # CES RESULTATS NE SONT DONC VALABLES QUE POUR LA SUITE DE NOMBRES PSEUDO-ALEATOIRES
 # UTILISEE (I.E. CELLE DE PYTHON v2.3).
 
-TEST_TABLE(      TABLE=RMS,
-                   FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'ACCE',),
-                           ),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='8.1.07',
-                   NOM_PARA='SUP',
-                   VALE=4.1245671733566E+00,
-#                   PRECISION=1.E-7,)
-)
+TEST_TABLE(
+           VALE_CALC=4.1245671733566001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SUP',
+           TABLE=RMS,
+           FILTRE=_F(NOM_PARA='NOM_CHAM',
+                     VALE_K='ACCE',),
+           )
 
-TEST_TABLE(      TABLE=RMS,
-                   FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'ACCE',),
-                           ),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='8.1.07',
-                   NOM_PARA='INF',
-                   VALE=3.4852445451528E+00,
-#                   PRECISION=1.E-7,)
-)
+TEST_TABLE(
+           VALE_CALC=3.4852445451528,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INF',
+           TABLE=RMS,
+           FILTRE=_F(NOM_PARA='NOM_CHAM',
+                     VALE_K='ACCE',),
+           )
 
-TEST_TABLE(      TABLE=RMS,
-                   FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'ACCE',),
-                           ),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='8.1.07',
-                   NOM_PARA='MOY',
-                   VALE= 3.7318143788391E+00,
-#                   PRECISION=1.E-7,)
-)
+TEST_TABLE(
+           VALE_CALC=3.7318143788391001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOY',
+           TABLE=RMS,
+           FILTRE=_F(NOM_PARA='NOM_CHAM',
+                     VALE_K='ACCE',),
+           )
 
-TEST_TABLE(      TABLE=RMS,
-                   FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'ACCE',),
-                           ),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='8.1.07',
-                   NOM_PARA='VAR',
-                   VALE=4.3744293902475E-02,
-#                   PRECISION=1.E-7,)
-)
+TEST_TABLE(
+           VALE_CALC=0.043744293902475001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VAR',
+           TABLE=RMS,
+           FILTRE=_F(NOM_PARA='NOM_CHAM',
+                     VALE_K='ACCE',),
+           )
 
-TEST_TABLE(      TABLE=RMS,
-                   FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'VITE',),
-                           ),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='8.1.07',
-                   NOM_PARA='SUP',
-                   VALE= 1.1881667275227E-02,
-#                   PRECISION=1.E-7,)
-)
+TEST_TABLE(
+           VALE_CALC=0.011881667275226999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SUP',
+           TABLE=RMS,
+           FILTRE=_F(NOM_PARA='NOM_CHAM',
+                     VALE_K='VITE',),
+           )
 
-TEST_TABLE(      TABLE=RMS,
-                   FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'VITE',),
-                           ),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='8.1.07',
-                   NOM_PARA='MOY',
-                   VALE=1.1469763652458E-02 ,
-#                   PRECISION=1.E-7,)
-)
+TEST_TABLE(
+           VALE_CALC=0.011469763652458,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOY',
+           TABLE=RMS,
+           FILTRE=_F(NOM_PARA='NOM_CHAM',
+                     VALE_K='VITE',),
+           )
 
-TEST_TABLE(      TABLE=RMS,
-                   FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'DEPL',),
-                           ),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='8.1.07',
-                   NOM_PARA='INF',
-                   VALE= 8.8058769141797E-02,
-#                   PRECISION=1.E-7,)
-)
+TEST_TABLE(
+           VALE_CALC=0.088058769141797,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INF',
+           TABLE=RMS,
+           FILTRE=_F(NOM_PARA='NOM_CHAM',
+                     VALE_K='DEPL',),
+           )
 
-TEST_TABLE(      TABLE=RMS,
-                   FILTRE=(_F(  NOM_PARA = 'NOM_CHAM', VALE_K = 'DEPL',),
-                           ),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='8.1.07',
-                   NOM_PARA='MOY',
-                   VALE= 9.2781999953829E-02,
-#                   PRECISION=1.E-7,),
-)
+TEST_TABLE(
+           VALE_CALC=0.092781999953829006,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOY',
+           TABLE=RMS,
+           FILTRE=_F(NOM_PARA='NOM_CHAM',
+                     VALE_K='DEPL',),
+           )
+
 FIN();
 
 

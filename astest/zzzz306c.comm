@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE PROJ_CHAMP / METHODE='ECLA_PG' (ROUTINES ECLA2D ET ECLA3D)
 # zzzz306c.para = tps_job 80 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,35 +74,154 @@ if 1 : # pour visualiser le champ eclate :
 
 # 1.1 TEST_RESU POUR TETRAEDRE / FPG4 :
 #---------------------------------------
-TEST_RESU(CHAM_ELEM=(
-       _F(  CHAM_GD = CH1, MAILLE ='M1', POINT=1,  NOM_CMP='SIXX', VALE= 3.11286762415246E+01 , REFERENCE='NON_REGRESSION', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH1, MAILLE ='M1', POINT=2,  NOM_CMP='SIXX', VALE= 2.50385062977752E+01 , REFERENCE='NON_REGRESSION', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH1, MAILLE ='M1', POINT=3,  NOM_CMP='SIXX', VALE= 2.41440791067752E+01 , REFERENCE='NON_REGRESSION', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH1, MAILLE ='M1', POINT=4,  NOM_CMP='SIXX', VALE= 2.74087383539249E+01 , REFERENCE='NON_REGRESSION', PRECISION = 1.E-9),
- ))
-TEST_RESU(CHAM_ELEM=(
-       _F(  CHAM_GD = CH2, MAILLE ='M1', POINT=1,  NOM_CMP='SIXX', VALE= 3.11286762415246E+01 , REFERENCE='AUTRE_ASTER', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH2, MAILLE ='M1', POINT=2,  NOM_CMP='SIXX', VALE= 2.50385062977752E+01 , REFERENCE='AUTRE_ASTER', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH2, MAILLE ='M1', POINT=3,  NOM_CMP='SIXX', VALE= 2.41440791067752E+01 , REFERENCE='AUTRE_ASTER', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH2, MAILLE ='M1', POINT=4,  NOM_CMP='SIXX', VALE= 2.74087383539249E+01 , REFERENCE='AUTRE_ASTER', PRECISION = 1.E-9),
- ))
+TEST_RESU(CHAM_ELEM=(_F(
+                        POINT=1,
+                        NOM_CMP='SIXX',
+                        MAILLE='M1',
+                        CHAM_GD=CH1,
+                        VALE_CALC=31.128676241524602,),
+                     _F(
+                        POINT=2,
+                        NOM_CMP='SIXX',
+                        MAILLE='M1',
+                        CHAM_GD=CH1,
+                        VALE_CALC=25.0385062977752,),
+                     _F(
+                        POINT=3,
+                        NOM_CMP='SIXX',
+                        MAILLE='M1',
+                        CHAM_GD=CH1,
+                        VALE_CALC=24.144079106775202,),
+                     _F(
+                        POINT=4,
+                        NOM_CMP='SIXX',
+                        MAILLE='M1',
+                        CHAM_GD=CH1,
+                        VALE_CALC=27.4087383539249,),
+                     ),
+          )
+
+TEST_RESU(CHAM_ELEM=(_F(REFERENCE='AUTRE_ASTER',
+                        POINT=1,
+                        NOM_CMP='SIXX',
+                        PRECISION=1.0000000000000001E-09,
+                        MAILLE='M1',
+                        CHAM_GD=CH2,
+                        VALE_CALC=31.1286762415,
+                        VALE_REFE=31.128676241524602,
+                        TOLE_MACHINE=1.0000000000000001E-09,),
+                     _F(REFERENCE='AUTRE_ASTER',
+                        POINT=2,
+                        NOM_CMP='SIXX',
+                        PRECISION=1.0000000000000001E-09,
+                        MAILLE='M1',
+                        CHAM_GD=CH2,
+                        VALE_CALC=25.0385062978,
+                        VALE_REFE=25.0385062977752,
+                        TOLE_MACHINE=1.0000000000000001E-09,),
+                     _F(REFERENCE='AUTRE_ASTER',
+                        POINT=3,
+                        NOM_CMP='SIXX',
+                        PRECISION=1.0000000000000001E-09,
+                        MAILLE='M1',
+                        CHAM_GD=CH2,
+                        VALE_CALC=24.1440791068,
+                        VALE_REFE=24.144079106775202,
+                        TOLE_MACHINE=1.0000000000000001E-09,),
+                     _F(REFERENCE='AUTRE_ASTER',
+                        POINT=4,
+                        NOM_CMP='SIXX',
+                        PRECISION=1.0000000000000001E-09,
+                        MAILLE='M1',
+                        CHAM_GD=CH2,
+                        VALE_CALC=27.4087383539,
+                        VALE_REFE=27.4087383539249,
+                        TOLE_MACHINE=1.0000000000000001E-09,),
+                     ),
+          )
 
 # 1.2 TEST_RESU POUR TETRAEDRE / FPG5 :
 #---------------------------------------
-TEST_RESU(CHAM_ELEM=(
-       _F(  CHAM_GD = CH1, MAILLE ='M2', POINT=1,  NOM_CMP='SIXX', VALE= 3.07425000000000E+01 , REFERENCE='NON_REGRESSION', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH1, MAILLE ='M2', POINT=2,  NOM_CMP='SIXX', VALE= 3.39050000000000E+01 , REFERENCE='NON_REGRESSION', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH1, MAILLE ='M2', POINT=3,  NOM_CMP='SIXX', VALE= 2.94605555555556E+01 , REFERENCE='NON_REGRESSION', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH1, MAILLE ='M2', POINT=4,  NOM_CMP='SIXX', VALE= 2.87938888888889E+01 , REFERENCE='NON_REGRESSION', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH1, MAILLE ='M2', POINT=5,  NOM_CMP='SIXX', VALE= 3.12272222222222E+01 , REFERENCE='NON_REGRESSION', PRECISION = 1.E-9),
- ))
-TEST_RESU(CHAM_ELEM=(
-       _F(  CHAM_GD = CH2, MAILLE ='M2', POINT=1,  NOM_CMP='SIXX', VALE= 3.07425000000000E+01 , REFERENCE='AUTRE_ASTER', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH2, MAILLE ='M2', POINT=2,  NOM_CMP='SIXX', VALE= 3.39050000000000E+01 , REFERENCE='AUTRE_ASTER', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH2, MAILLE ='M2', POINT=3,  NOM_CMP='SIXX', VALE= 2.94605555555556E+01 , REFERENCE='AUTRE_ASTER', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH2, MAILLE ='M2', POINT=4,  NOM_CMP='SIXX', VALE= 2.87938888888889E+01 , REFERENCE='AUTRE_ASTER', PRECISION = 1.E-9),
-       _F(  CHAM_GD = CH2, MAILLE ='M2', POINT=5,  NOM_CMP='SIXX', VALE= 3.12272222222222E+01 , REFERENCE='AUTRE_ASTER', PRECISION = 1.E-9),
- ))
-FIN()
+TEST_RESU(CHAM_ELEM=(_F(
+                        POINT=1,
+                        NOM_CMP='SIXX',
+                        MAILLE='M2',
+                        CHAM_GD=CH1,
+                        VALE_CALC=30.7425,),
+                     _F(
+                        POINT=2,
+                        NOM_CMP='SIXX',
+                        MAILLE='M2',
+                        CHAM_GD=CH1,
+                        VALE_CALC=33.905000000000001,),
+                     _F(
+                        POINT=3,
+                        NOM_CMP='SIXX',
+                        MAILLE='M2',
+                        CHAM_GD=CH1,
+                        VALE_CALC=29.460555555555601,),
+                     _F(
+                        POINT=4,
+                        NOM_CMP='SIXX',
+                        MAILLE='M2',
+                        CHAM_GD=CH1,
+                        VALE_CALC=28.793888888888901,),
+                     _F(
+                        POINT=5,
+                        NOM_CMP='SIXX',
+                        MAILLE='M2',
+                        CHAM_GD=CH1,
+                        VALE_CALC=31.227222222222199,),
+                     ),
+          )
 
+TEST_RESU(CHAM_ELEM=(_F(REFERENCE='AUTRE_ASTER',
+                        POINT=1,
+                        NOM_CMP='SIXX',
+                        PRECISION=1.0000000000000001E-09,
+                        MAILLE='M2',
+                        CHAM_GD=CH2,
+                        VALE_CALC=30.7425000000,
+                        VALE_REFE=30.7425,
+                        TOLE_MACHINE=1.0000000000000001E-09,),
+                     _F(REFERENCE='AUTRE_ASTER',
+                        POINT=2,
+                        NOM_CMP='SIXX',
+                        PRECISION=1.0000000000000001E-09,
+                        MAILLE='M2',
+                        CHAM_GD=CH2,
+                        VALE_CALC=33.9050000000,
+                        VALE_REFE=33.905000000000001,
+                        TOLE_MACHINE=1.0000000000000001E-09,),
+                     _F(REFERENCE='AUTRE_ASTER',
+                        POINT=3,
+                        NOM_CMP='SIXX',
+                        PRECISION=1.0000000000000001E-09,
+                        MAILLE='M2',
+                        CHAM_GD=CH2,
+                        VALE_CALC=29.4605555556,
+                        VALE_REFE=29.460555555555601,
+                        TOLE_MACHINE=1.0000000000000001E-09,),
+                     _F(REFERENCE='AUTRE_ASTER',
+                        POINT=4,
+                        NOM_CMP='SIXX',
+                        PRECISION=1.0000000000000001E-09,
+                        MAILLE='M2',
+                        CHAM_GD=CH2,
+                        VALE_CALC=28.7938888889,
+                        VALE_REFE=28.793888888888901,
+                        TOLE_MACHINE=1.0000000000000001E-09,),
+                     _F(REFERENCE='AUTRE_ASTER',
+                        POINT=5,
+                        NOM_CMP='SIXX',
+                        PRECISION=1.0000000000000001E-09,
+                        MAILLE='M2',
+                        CHAM_GD=CH2,
+                        VALE_CALC=31.2272222222,
+                        VALE_REFE=31.227222222222199,
+                        TOLE_MACHINE=1.0000000000000001E-09,),
+                     ),
+          )
+
+FIN()
 

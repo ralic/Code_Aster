@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LACHER D'UNE MASSE AVEC FORCE LAME FLUIDE
 # sdnd110a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,47 +191,47 @@ DYNATRAN=REST_GENE_PHYS(
                             )
 
 #
-TEST_RESU( RESU=_F(
-                     RESULTAT = DYNATRAN,
-                     NUME_ORDRE = 1,
-                     NOEUD = 'NO1',
-                     PRECISION = 0.001,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DX',
-                     VALE = -1.98593E-3)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.9859299999999999E-3,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #
-TEST_RESU( RESU=_F(
-                     RESULTAT = DYNATRAN,
-                     NUME_ORDRE = 2,
-                     NOEUD = 'NO1',
-                     PRECISION = 0.001,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DX',
-                     VALE = -3.91819E-3)
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.9181900000000002E-3,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #
-TEST_RESU( RESU=_F(
-                     RESULTAT = DYNATRAN,
-                     NUME_ORDRE = 3,
-                     NOEUD = 'NO1',
-                     PRECISION = 0.001,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DX',
-                     VALE = -5.61048E-3)
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-5.6104800000000002E-3,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #
-TEST_RESU( RESU=_F(
-                     RESULTAT = DYNATRAN,
-                     NUME_ORDRE = 9,
-                     NOEUD = 'NO1',
-                     PRECISION = 0.001,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DX',
-                     VALE = -5.90398E-3)
+TEST_RESU(RESU=_F(NUME_ORDRE=9,
+                  RESULTAT=DYNATRAN,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-5.9039799999999996E-3,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #
@@ -277,47 +277,47 @@ DYNATRA2=REST_GENE_PHYS(
                             )
 
 #
-TEST_RESU( RESU=_F(
-                     RESULTAT = DYNATRA2,
-                     NUME_ORDRE = 1,
-                     NOEUD = 'NO1',
-                     PRECISION = 0.001,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DX',
-                     VALE = -1.98828E-3)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DYNATRA2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.9882799999999998E-3,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #
-TEST_RESU( RESU=_F(
-                     RESULTAT = DYNATRA2,
-                     NUME_ORDRE = 2,
-                     NOEUD = 'NO1',
-                     PRECISION = 0.001,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DX',
-                     VALE = -3.93216E-3)
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=DYNATRA2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.9321599999999996E-3,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #
-TEST_RESU( RESU=_F(
-                     RESULTAT = DYNATRA2,
-                     NUME_ORDRE = 3,
-                     NOEUD = 'NO1',
-                     PRECISION = 0.001,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DX',
-                     VALE = -5.66658E-3)
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=DYNATRA2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-5.6665800000000001E-3,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #
-TEST_RESU( RESU=_F(
-                     RESULTAT = DYNATRA2,
-                     NUME_ORDRE = 9,
-                     NOEUD = 'NO1',
-                     PRECISION = 0.001,
-                     NOM_CHAM = 'DEPL',
-                     NOM_CMP = 'DX',
-                     VALE = -5.99946E-3)
+TEST_RESU(RESU=_F(NUME_ORDRE=9,
+                  RESULTAT=DYNATRA2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-5.9994599999999999E-3,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #

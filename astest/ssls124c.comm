@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB6 MAILLAGE REGULIER
 # ssls124c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,36 +94,67 @@ Sig3=moment1*z3/Iy
 Sig4=moment1*z4/Iy
 Sig5=moment1*z5/Iy
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F( RESULTAT = RESU31, NOM_CHAM='DEPL',  PRECISION = 1.5E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P7',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 2.01703196E-09,
+                   VALE_REFE=1.9999999999999997E-09,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P8',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 2.02461068E-09,
+                   VALE_REFE=1.9999999999999997E-09,
+                   PRECISION=0.014999999999999999,),
+                ),
+          )
 
 ENGENDRE_TEST(CO=RESU31,TYPE_TEST='SOMM_ABS')
 
-TEST_RESU(RESU=( 
-          _F( RESULTAT= RESU31  , NOM_CHAM= 'DEPL', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  2.1436974877004E+01 ),
-          _F( RESULTAT= RESU31  , NOM_CHAM= 'SIEF_ELGA', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  2.8398561513253E+01 ),
-          _F( RESULTAT= RESU31  , NOM_CHAM= 'SIEF_ELNO', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  5.0821069048130E+01 ),
-          _F( RESULTAT= RESU31  , NOM_CHAM= 'SIGM_ELNO', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  5.0821069048130E+01 ),
-          _F( RESULTAT= RESU31  , NOM_CHAM= 'SIEQ_ELGA', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  5.8814372769075E+02 ),
-          _F( RESULTAT= RESU31  , NOM_CHAM= 'SIEQ_ELNO', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  7.6729992690910E+02 ),
-          ),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=21.436974877004001,
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='SIEF_ELGA',
+                   VALE_CALC=28.398561513253,
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='SIEF_ELNO',
+                   VALE_CALC=50.821069048129999,
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='SIGM_ELNO',
+                   VALE_CALC=50.821069048129999,
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='SIEQ_ELGA',
+                   VALE_CALC=588.14372769074998,
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='SIEQ_ELNO',
+                   VALE_CALC=7.6729992690910E+02,
+                   ),
+                ),
+          )
 
 # CAS 2 :
 
@@ -170,15 +201,26 @@ Iy=b*h*h*h/12
 Uz=F*L*L*L/3/YG/Iy
 
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU32, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU32, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P7',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU32,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.58966161E-08,
+                   VALE_REFE=Uz,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P8',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU32,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.59171844E-08,
+                   VALE_REFE=Uz,
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 # CAS 3 :
 
@@ -226,15 +268,26 @@ Iy=b*h*h*h/12
 Uz=F*L*L*L/3/YG/Iy
 
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU33, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU33, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P7',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU33,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 2.47507784E-07,
+                   VALE_REFE=Uz,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P8',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU33,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 2.47531582E-07,
+                   VALE_REFE=Uz,
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 # CAS 4 :
 
@@ -282,15 +335,25 @@ Iy=b*h*h*h/12
 Uz=F*L*L*L/3/YG/Iy
 
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU34, NOM_CHAM='DEPL', PRECISION = 4.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
-
-            _F(   RESULTAT = RESU34, NOM_CHAM='DEPL',  PRECISION = 4.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
-
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P7',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU34,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.93338111E-06,
+                   VALE_REFE=Uz,
+                   PRECISION=0.040000000000000001,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P8',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU34,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.93338703E-06,
+                   VALE_REFE=Uz,
+                   PRECISION=0.040000000000000001,),
+                ),
+          )
 
 FIN()

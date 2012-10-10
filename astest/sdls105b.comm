@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE SOUMISE A UNE TURBULENCE HOMOGENE
 # sdls105b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -221,20 +221,36 @@ IALPHA1=.22212E8,
 
 IALPHA2=.15083E7,
 
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = AUTOSPEC, VALE_PARA = 1.59155E-3, REFERENCE='NON_REGRESSION',
-             VALE_REFE = I1,  PRECISION = 2.0E-3),
-    _F(  FONCTION = AUTOSPEC, VALE_PARA = 1.59155E-1, REFERENCE='NON_REGRESSION',
-             VALE_REFE = I2, PRECISION = 8.1E-3),
-    _F(  FONCTION = AUTOSPEC, VALE_PARA = 8.275E-2, REFERENCE='NON_REGRESSION',
-             VALE_REFE = IALPHA1, PRECISION = 2.5E-3),
-
-#LE POURCENTAGE D ERREUR EST PLUS ELEVE CAR ON ATTEINT
-# UNE OSCILLATION PLUS FORTE DE LA FONCTION DE CORRELATION
-#DE CORCOS SUR LES MAILLES REPRESENTANT LA PLANCHE
-
-    _F(  FONCTION = AUTOSPEC, VALE_PARA = 4.53257E-1, REFERENCE='NON_REGRESSION',
-             VALE_REFE = IALPHA2, PRECISION = 6.5E-2)) )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=727432735.934,
+                         VALE_REFE=7.28848000E8,
+                         VALE_PARA=1.59155E-3,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=2.E-3,
+                         FONCTION=AUTOSPEC,
+                         ),
+                      _F(VALE_CALC=7591579.84052,
+                         VALE_REFE=7.532370E6,
+                         VALE_PARA=0.15915499999999999,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=8.0999999999999996E-3,
+                         FONCTION=AUTOSPEC,
+                         ),
+                      _F(VALE_CALC=22263406.3099,
+                         VALE_REFE=2.2212000E7,
+                         VALE_PARA=0.082750000000000004,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=2.5000000000000001E-3,
+                         FONCTION=AUTOSPEC,
+                         ),
+                      _F(VALE_CALC=1601385.85954,
+                         VALE_REFE=1.508300E6,
+                         VALE_PARA=0.45325700000000002,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=0.065000000000000002,
+                         FONCTION=AUTOSPEC,
+                         ),
+                      ),
+              )
 
 # REPONSE SPECTRALE DU SYSTEME A L EXCITATION TURBULENTE
 
@@ -270,14 +286,25 @@ I4=.6091E-5,
 
 I5=1.0985E-5,
 
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = REPONSE,  VALE_PARA = 0.08275, REFERENCE='NON_REGRESSION',
-             VALE_REFE = I3,     PRECISION = 2.5E-3),
-    _F(  FONCTION = REPONSE,  VALE_PARA = 0.05, REFERENCE='NON_REGRESSION',
-             VALE_REFE = I4,     PRECISION = 3.E-4),
-    _F(  FONCTION = REPONSE,  VALE_PARA = 0.025, REFERENCE='NON_REGRESSION',
-             VALE_REFE = I5,     PRECISION = 5.E-4))
-           )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.00118018019165,
+                         VALE_REFE=1.1777000000000001E-3,
+                         VALE_PARA=0.082750000000000004,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=2.5000000000000001E-3,
+                         FONCTION=REPONSE,
+                         ),
+                      _F(VALE_CALC=6.0909999999999998E-06,
+                         TOLE_MACHINE=2.9999999999999997E-4,
+                         VALE_PARA=0.050000000000000003,
+                         FONCTION=REPONSE,
+                         ),
+                      _F(VALE_CALC=1.0985000000000001E-05,
+                         TOLE_MACHINE=5.0000000000000001E-4,
+                         VALE_PARA=0.025000000000000001,
+                         FONCTION=REPONSE,
+                         ),
+                      ),
+              )
 
 FIN( )
 #

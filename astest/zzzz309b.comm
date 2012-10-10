@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DES OPTIONS TOPOLOGIQUES ZONE_MAJ ET TORE DANS DEFI_GROUP 
 # zzzz309b.para = tps_job 300 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,20 +128,24 @@ tab = CREA_TABLE(RESU=_F(CHAM_GD=chcomb,
                          TOUT='OUI',
                          TOUT_CMP='OUI',),)
 
-TEST_TABLE(TABLE=tab,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC= 0.0000000000E+00,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-10,
            NOM_PARA='X1',
            TYPE_TEST='MIN',
-           PRECISION=1E-10,
-           CRITERE='ABSOLU',
-           VALE=0.,
-           REFERENCE='ANALYTIQUE',)
+           TABLE=tab,)
 
-TEST_TABLE(TABLE=tab,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC= 0.0000000000E+00,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-10,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
-           PRECISION=1E-10,
-           CRITERE='ABSOLU',
-           VALE=0.,
-           REFERENCE='ANALYTIQUE',)
+           TABLE=tab,)
 
 FIN()

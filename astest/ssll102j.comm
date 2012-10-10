@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 # ssll102j.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,39 +86,73 @@ MEST4=MECA_STATIQUE(MODELE=MO,
                     CARA_ELEM=CAREL,
                     EXCIT=_F(CHARGE=CHARG4,),);
 
-TEST_RESU(RESU=(
-
-# SECTION RECTANGLE
-
-   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-       NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,
-       PRECISION = 1.E-13, CRITERE = 'ABSOLU',
-       REFERENCE = 'ANALYTIQUE'),
-
-   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-       NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,
-       PRECISION = 1.E-13, CRITERE = 'ABSOLU',
-       REFERENCE = 'ANALYTIQUE'),
-
-   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-       NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,
-       PRECISION = 1.E-13, CRITERE = 'ABSOLU',
-       REFERENCE = 'ANALYTIQUE'),
-
-   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-       NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 3.2792525E-07,
-       PRECISION = 1.E-6, CRITERE = 'RELATIF',
-       REFERENCE = 'ANALYTIQUE'),
-
-   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-       NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 3.2792525E-07,
-       PRECISION = 1.E-13, CRITERE = 'ABSOLU',
-       REFERENCE = 'ANALYTIQUE'),
-
-   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-       NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 3.2792525E-07,
-       PRECISION = 1.E-13, CRITERE = 'ABSOLU',
-       REFERENCE = 'ANALYTIQUE'),),);
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MEST4,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DX',
+                   VALE_CALC=-6.4348889159599E-22,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=1.E-13,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-13,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MEST4,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DY',
+                   VALE_CALC= 8.8498743803991E-22,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=1.E-13,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-13,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MEST4,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-2.3822801641527E-22,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=1.E-13,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-13,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MEST4,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DRX',
+                   VALE_CALC= 3.27925266E-07,
+                   VALE_REFE=3.2792524999999997E-07,
+                   CRITERE='RELATIF',
+                   PRECISION=9.9999999999999995E-07,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MEST4,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DRY',
+                   VALE_CALC= 3.2792526649794E-07,
+                   VALE_REFE=3.2792524999999997E-07,
+                   TOLE_MACHINE=1.E-13,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-13,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MEST4,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DRZ',
+                   VALE_CALC= 3.2792526649794E-07,
+                   VALE_REFE=3.2792524999999997E-07,
+                   TOLE_MACHINE=1.E-13,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-13,),
+                ),
+          )
 
 FIN();
 #

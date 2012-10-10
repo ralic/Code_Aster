@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE LINEAIRE)
 # ssll111a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,18 +111,35 @@ DEP1=CALC_CHAMP(reuse=DEP1,RESULTAT=DEP1,CONTRAINTE=('EFGE_ELNO'))
 
 DEP1=CALC_CHAMP(reuse =DEP1, RESULTAT=DEP1, CONTRAINTE='EFGE_NOEU')
 
-TEST_RESU(RESU=(
-# Fleche
-_F( RESULTAT=DEP1,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='C',NOM_CMP='DY',VALE=2.2735E-3,
-REFERENCE='ANALYTIQUE',PRECISION=1.E-3),
-
-# Autre rappel : EFGE_NOEU sort les efforts dans le repere local a l'element
-_F( RESULTAT=DEP1,NUME_ORDRE=1,NOM_CHAM='EFGE_NOEU',GROUP_NO='A',NOM_CMP='VZ',VALE=5.00000E+3,
-REFERENCE='ANALYTIQUE',PRECISION=1.E-6),
-_F(RESULTAT=DEP1,NUME_ORDRE=1,NOM_CHAM='EFGE_NOEU',GROUP_NO='C',NOM_CMP='MFY',VALE=1.25000E+4,
-REFERENCE='ANALYTIQUE',PRECISION=1.E-6),
-
-))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='C',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC= 2.27401159E-03,
+                   VALE_REFE=2.2734999999999999E-3,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP1,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='VZ',
+                   VALE_CALC= 5.00000000E+03,
+                   VALE_REFE=5000.0,
+                   PRECISION=9.9999999999999995E-07,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='C',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP1,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='MFY',
+                   VALE_CALC= 1.25000000E+04,
+                   VALE_REFE=1.2500E4,
+                   PRECISION=9.9999999999999995E-07,),
+                ),
+          )
 
 DEP1=CALC_CHAMP(reuse =DEP1, RESULTAT=DEP1, FORCE='REAC_NODA')
 IMPR_RESU(RESU=_F(RESULTAT=DEP1,NOM_CHAM='EFGE_ELNO'))
@@ -138,10 +155,16 @@ DEP2=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
              #    SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',STOP_SINGULIER='OUI',),
                   EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHAR2,),),)
 # Fleche
-TEST_RESU(RESU=(
-_F( RESULTAT=DEP2,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='C',NOM_CMP='DY',VALE=-7.9E-4,
-REFERENCE='ANALYTIQUE',PRECISION=1.E-3),
-))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DEP2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-7.90153651E-04,
+                  VALE_REFE=-7.9000000000000001E-4,
+                  PRECISION=1.E-3,),
+          )
 
 DEP2=CALC_CHAMP(reuse=DEP2,RESULTAT=DEP2,CONTRAINTE=('EFGE_ELNO'))
 
@@ -165,19 +188,47 @@ DEP3=CALC_CHAMP(reuse=DEP3,RESULTAT=DEP3,CONTRAINTE=('EFGE_ELNO'))
 
 DEP3=CALC_CHAMP(reuse =DEP3, RESULTAT=DEP3, CONTRAINTE='EFGE_NOEU')
 
-TEST_RESU(RESU=(
-# allongement
-  _F( RESULTAT=DEP3,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='B',NOM_CMP='DX',VALE=5.0000E-3,
-  REFERENCE='ANALYTIQUE',PRECISION=1.E-6),
-# Quelques efforts generalises nuls
-  _F( RESULTAT=DEP3,NUME_ORDRE=1,NOM_CHAM='EFGE_NOEU',GROUP_NO='A',NOM_CMP='N',VALE=0.00,
-  REFERENCE='ANALYTIQUE',PRECISION=1.E-6,CRITERE='ABSOLU'),
-  _F( RESULTAT=DEP3,NUME_ORDRE=1,NOM_CHAM='EFGE_NOEU',GROUP_NO='C',NOM_CMP='MFY',VALE=0.00,
-  REFERENCE='ANALYTIQUE',PRECISION=1.E-6,CRITERE='ABSOLU'),
-  _F( RESULTAT=DEP3,NUME_ORDRE=1,NOM_CHAM='EFGE_NOEU',GROUP_NO='C',NOM_CMP='VZ',VALE=0.00,
-  REFERENCE='ANALYTIQUE',PRECISION=1.E-6,CRITERE='ABSOLU'),
-
-  ))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.00000000E-03,
+                   VALE_REFE=5.0000000000000001E-3,
+                   PRECISION=9.9999999999999995E-07,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP3,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='N',
+                   VALE_CALC= 0.00000000E+00,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=9.9999999999999995E-07,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='C',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP3,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='MFY',
+                   VALE_CALC=-2.11758237E-22,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=9.9999999999999995E-07,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='C',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP3,
+                   NOM_CHAM='EFGE_NOEU',
+                   NOM_CMP='VZ',
+                   VALE_CALC= 2.58040822E-24,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=9.9999999999999995E-07,),
+                ),
+          )
 
 # cas de charge 1 bis
 # on repasse le cas de charge 1 avec un maillage plus grossier
@@ -220,10 +271,15 @@ DEP1G=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMATG, CARA_ELEM=POUCAG,
              #    SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',STOP_SINGULIER='OUI',),
                   EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHAR1,),),)
 #
-TEST_RESU(RESU=(
-# Fleche
-_F( RESULTAT=DEP1G,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='C',NOM_CMP='DY',VALE=2.2735E-3,
-REFERENCE='ANALYTIQUE',PRECISION=1.E-2),
-))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DEP1G,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC= 2.29556029E-03,
+                  VALE_REFE=2.2734999999999999E-3,
+                  PRECISION=1.E-2,),
+          )
 
 FIN()

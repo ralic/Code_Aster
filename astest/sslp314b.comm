@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MURAKAMI 8.20 FISSURE DEVIEE A L'INTERFACE ENTRE DEUX DEMI-PLANS
 # sslp314b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,61 +179,76 @@ GK04=CALC_G(       RESULTAT=CHAMDEPL,
 #
 
 
-TEST_TABLE(       TABLE=G01,
-                        NOM_PARA='G',
-                            VALE=117.07,
-                       PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=114.497338659,
+           VALE_REFE=117.06999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G01,)
 
 #
 
-TEST_TABLE(       TABLE=G02,
-                         NOM_PARA='G',
-                             VALE=117.07,
-                        PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=113.183096698,
+           VALE_REFE=117.06999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G02,)
 
 #
 
-TEST_TABLE(       TABLE=G03,
-                         NOM_PARA='G',
-                             VALE=117.07,
-                        PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=113.124104354,
+           VALE_REFE=117.06999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G03,)
 
 #
 
-TEST_TABLE(       TABLE=G04,
-                         NOM_PARA='G',
-                             VALE=117.07,
-                        PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=113.199484704,
+           VALE_REFE=117.06999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G04,)
 
 #
 
-TEST_TABLE(       TABLE=GK01,
-                        NOM_PARA='G_IRWIN',
-                            VALE=117.07,
-                       PRECISION=0.04    )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=116.545789152,
+           VALE_REFE=117.06999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK01,)
 
 #
 
-TEST_TABLE(       TABLE=GK02,
-                         NOM_PARA='G_IRWIN',
-                             VALE=117.07,
-                        PRECISION=0.04     )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=113.315330484,
+           VALE_REFE=117.06999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK02,)
 
 #
 
-TEST_TABLE(       TABLE=GK03,
-                         NOM_PARA='G_IRWIN',
-                             VALE=117.07,
-                        PRECISION=0.04     )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=113.260521321,
+           VALE_REFE=117.06999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK03,)
 
 #
 
-TEST_TABLE(       TABLE=GK04,
-                         NOM_PARA='G_IRWIN',
-                             VALE=117.07,
-                        PRECISION=0.04     )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=113.435145750,
+           VALE_REFE=117.06999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK04,)
 
 #
 FIN()
 #
-

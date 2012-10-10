@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128g.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -134,27 +134,29 @@ U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 #                INFO=2,
                )
 #
-TEST_RESU(RESU=(_F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPA',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.86E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
+TEST_RESU(RESU=(_F(GROUP_NO='PPA',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.85057286E-05,
+                   VALE_REFE=2.8600000000000001E-05,
+                   PRECISION=0.050000000000000003,
                    ),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPC',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.28E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                ))
-       )
+                _F(GROUP_NO='PPC',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.27515229E-05,
+                   VALE_REFE=2.2799999999999999E-05,
+                   PRECISION=0.050000000000000003,
+                   ),
+                ),
+          )
+
 #-----------------------------------------------------------
 #
 U2L=STAT_NON_LINE(MODELE    = MO,
@@ -174,27 +176,29 @@ U2L=STAT_NON_LINE(MODELE    = MO,
 #                INFO=2,
                )
 #
-TEST_RESU(RESU=(_F(RESULTAT   = U2L,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPA',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.86E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
+TEST_RESU(RESU=(_F(GROUP_NO='PPA',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2L,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.85057286E-05,
+                   VALE_REFE=2.8600000000000001E-05,
+                   PRECISION=0.050000000000000003,
                    ),
-                _F(RESULTAT   = U2L,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPC',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.28E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                ))
-       )
+                _F(GROUP_NO='PPC',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2L,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.27515229E-05,
+                   VALE_REFE=2.2799999999999999E-05,
+                   PRECISION=0.050000000000000003,
+                   ),
+                ),
+          )
+
 #
 #-----------------------------------------------------------
 #
@@ -214,27 +218,29 @@ U3M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 #                 INFO=2,
                )
 #
-TEST_RESU(RESU=(_F(RESULTAT   = U3M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPA',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.86E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
+TEST_RESU(RESU=(_F(GROUP_NO='PPA',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U3M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.85051478E-05,
+                   VALE_REFE=2.8600000000000001E-05,
+                   PRECISION=0.050000000000000003,
                    ),
-                _F(RESULTAT   = U3M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPC',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.28E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                ))
-       )
+                _F(GROUP_NO='PPC',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U3M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.27508858E-05,
+                   VALE_REFE=2.2799999999999999E-05,
+                   PRECISION=0.050000000000000003,
+                   ),
+                ),
+          )
+
 #
 #-----------------------------------------------------------
 #
@@ -255,27 +261,29 @@ U3L=STAT_NON_LINE(MODELE      = MO,
 #                 INFO=2,
                )
 #
-TEST_RESU(RESU=(_F(RESULTAT   = U3L,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPA',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.86E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
+TEST_RESU(RESU=(_F(GROUP_NO='PPA',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U3L,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.85051478E-05,
+                   VALE_REFE=2.8600000000000001E-05,
+                   PRECISION=0.050000000000000003,
                    ),
-                _F(RESULTAT   = U3L,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPC',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.28E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                ))
-       )
+                _F(GROUP_NO='PPC',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U3L,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.27508858E-05,
+                   VALE_REFE=2.2799999999999999E-05,
+                   PRECISION=0.050000000000000003,
+                   ),
+                ),
+          )
+
 #
 #
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182h.para = tps_job 100 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -213,53 +213,59 @@ LA2REF=-0.5
 prec = 5.e-5
 
 # TESTS
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000002E-05,
+           VALE_CALC=-3.999998093,
+           VALE_REFE=-4.0,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MAX',
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=prec,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000002E-05,
+           VALE_CALC=-3.999999717,
+           VALE_REFE=-4.0,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=prec,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000002E-05,
+           VALE_CALC= 2.29385803E-11,
+           VALE_REFE=0.0,
            NOM_PARA='LAGS_F1',
            TYPE_TEST='MAX',
-           VALE=LA1REF,
-           CRITERE='ABSOLU',
-           PRECISION=prec,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000002E-05,
+           VALE_CALC=-2.51072559E-11,
+           VALE_REFE=0.0,
            NOM_PARA='LAGS_F1',
            TYPE_TEST='MIN',
-           VALE=LA1REF,
-           CRITERE='ABSOLU',
-           PRECISION=prec,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000002E-05,
+           VALE_CALC=-0.499999673,
+           VALE_REFE=-0.5,
            NOM_PARA='LAGS_F2',
            TYPE_TEST='MAX',
-           VALE=LA2REF,
-           CRITERE='RELATIF',
-           PRECISION=prec,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000002E-05,
+           VALE_CALC=-0.499999818,
+           VALE_REFE=-0.5,
            NOM_PARA='LAGS_F2',
            TYPE_TEST='MIN',
-           VALE=LA2REF,
-           CRITERE='RELATIF',
-           PRECISION=prec,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,)
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM

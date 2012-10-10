@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE PLANE SEMI-INFINIE
 # sslp114c.para = tps_job 120 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -372,75 +372,69 @@ for K in range(len(alphaREF)):
 
    tab_u[K]=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_'+str(test),CHAM_GD=Uana[K], MODELE=MODELEIN),),INFO=1);
 
-   TEST_TABLE(TABLE=CH_G[K],
-           NOM_PARA='K1',
-           VALE=KI,
-           CRITERE='RELATIF',
-           LEGENDE='alpha='+str(alphaREF[K]),
-           PRECISION=1.E-3,
-           REFERENCE='ANALYTIQUE',);
+   TEST_TABLE(CRITERE='RELATIF',
+              REFERENCE='ANALYTIQUE',
+              TOLE_MACHINE=1.E-3,
+              PRECISION=1.E-3,
+              VALE_CALC=KI,
+              VALE_REFE=KI,
+              NOM_PARA='K1',
+              LEGENDE='alpha='+str(alphaREF[K]),
+              TABLE=CH_G[K],)
 
-   TEST_TABLE(TABLE=CH_G[K],
-           NOM_PARA='K1',
-           VALE=KI_nr[K],
-           CRITERE='RELATIF',
-           LEGENDE='alpha='+str(alphaREF[K]),
-           PRECISION=1.E-8,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.2.5',);
-   
-   TEST_TABLE(TABLE=CH_G[K],
-           NOM_PARA='K2',
-           VALE=KII,
-           CRITERE='ABSOLU',
-           LEGENDE='alpha='+str(alphaREF[K]),
-           PRECISION=1.E-3,
-           REFERENCE='ANALYTIQUE',);
+   TEST_TABLE(CRITERE='RELATIF',
+              VALE_CALC=KI_nr[K],
+              NOM_PARA='K1',
+              LEGENDE='alpha='+str(alphaREF[K]),
+              TABLE=CH_G[K],
+              )
 
-   TEST_TABLE(TABLE=CH_G[K],
-           NOM_PARA='K2',
-           VALE=KII_nr[K],
-           CRITERE='ABSOLU',
-           LEGENDE='alpha='+str(alphaREF[K]),
-           PRECISION=1.E-8,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.2.5',);
+   TEST_TABLE(CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE',
+              TOLE_MACHINE=1.E-3,
+              PRECISION=1.E-3,
+              VALE_CALC=KII,
+              VALE_REFE=KII,
+              NOM_PARA='K2',
+              LEGENDE='alpha='+str(alphaREF[K]),
+              TABLE=CH_G[K],)
 
-   TEST_TABLE(TABLE=CH_G[K],
-           NOM_PARA='G',
-           VALE=(1-nu**2.)/E*(KI**2.+KII**2.),
-           CRITERE='RELATIF',
-           PRECISION=1.E-3,
-           LEGENDE='alpha='+str(alphaREF[K]),
-           REFERENCE='ANALYTIQUE',);
+   TEST_TABLE(CRITERE='ABSOLU',
+              TOLE_MACHINE=1.E-3,
+              VALE_CALC=KII_nr[K],
+              NOM_PARA='K2',
+              LEGENDE='alpha='+str(alphaREF[K]),
+              TABLE=CH_G[K],
+              )
 
-   TEST_TABLE(TABLE=CH_G[K],
-           NOM_PARA='G',
-           VALE=G_nr[K],
-           CRITERE='RELATIF',
-           PRECISION=1.E-8,
-           LEGENDE='alpha='+str(alphaREF[K]),
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.2.5',);
+   TEST_TABLE(CRITERE='RELATIF',
+              REFERENCE='ANALYTIQUE',
+              TOLE_MACHINE=1.E-3,
+              PRECISION=1.E-3,
+              VALE_CALC=(1-nu**2.)/E*(KI**2.+KII**2.),
+              VALE_REFE=(1-nu**2.)/E*(KI**2.+KII**2.),
+              NOM_PARA='G',
+              LEGENDE='alpha='+str(alphaREF[K]),
+              TABLE=CH_G[K],)
+
+   TEST_TABLE(CRITERE='RELATIF',
+              VALE_CALC=G_nr[K],
+              NOM_PARA='G',
+              LEGENDE='alpha='+str(alphaREF[K]),
+              TABLE=CH_G[K],
+              )
 
 #TOLERANCE RELATIVE A LA NORME DU CHAMP DE DEPLACEMENT!
    NormeL2_U=7.72403392144e-06
-   TEST_TABLE(TABLE=tab_du[K],
-           NOM_PARA='VALE_NORM',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.E-3*NormeL2_U,
-           LEGENDE='ERREUR DEPL NORME_L2',
-           REFERENCE='ANALYTIQUE',);
-          
-   TEST_TABLE(TABLE=tab_du[K],
-           NOM_PARA='VALE_NORM',
-           VALE=NormeL2_U_nr[K],
-           CRITERE='ABSOLU',
-           PRECISION=1.E-8*NormeL2_U,
-           LEGENDE='ERREUR DEPL NORME_L2',
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.2.5',);               
+   TEST_TABLE(CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE',
+              TOLE_MACHINE=1.E-3*NormeL2_U,
+              PRECISION=1.E-3*NormeL2_U,
+              VALE_CALC=NormeL2_U_nr[K],
+              VALE_REFE=NormeL2_U_nr[K],
+              NOM_PARA='VALE_NORM',
+              LEGENDE='ERREUR DEPL NORME_L2',
+              TABLE=tab_du[K],)
 
 #Visualisation
 K=len(alphaREF)-1

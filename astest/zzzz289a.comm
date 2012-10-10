@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES OPTIONS RIGI_MECA ET MASS_MECA DES ELEMENTS INCO ET INCO_UP EN 3D
 # zzzz289a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,27 +120,34 @@ MARASUPL=ASSE_MATRICE(MATR_ELEM=MATRUPL,
 
 #Test de non regression sur la matrice de masse
 
-TEST_RESU(OBJET=_F(NOM='MATMUPG        .M01.RESL',
-                   S_R=6278.2285714286,
-                   REFERENCE='NON_REGRESSION',),);
+TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
+                   TOLE_MACHINE=1.E-3,
+                   NOM='MATMUPG        .M01.RESL',),
+          )
 
-TEST_RESU(OBJET=_F(NOM='MATMUPQ        .M01.RESL',
-                   S_R=6278.2285714286,
-                   REFERENCE='NON_REGRESSION',),);
+TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
+                   TOLE_MACHINE=1.E-3,
+                   NOM='MATMUPQ        .M01.RESL',),
+          )
 
-TEST_RESU(OBJET=_F(NOM='MATMUPL        .M01.RESL',
-                   S_R=5804.4,
-                   REFERENCE='NON_REGRESSION',),);
+TEST_RESU(OBJET=_F(VALE_CALC=5804.3999999999996,
+                   TOLE_MACHINE=1.E-3,
+                   NOM='MATMUPL        .M01.RESL',),
+          )
 
-TEST_RESU(OBJET=_F(NOM='MATRUPG .ME001     .RESL',
-                   S_R=9.7E+05,
-                   REFERENCE='NON_REGRESSION',),);
+TEST_RESU(OBJET=_F(VALE_CALC=9.70000E5,
+                   TOLE_MACHINE=1.E-3,
+                   NOM='MATRUPG .ME001     .RESL',),
+          )
 
-TEST_RESU(OBJET=_F(NOM='MATRUPQ .ME001     .RESL',
-                   S_R=1.533E+06,
-                   REFERENCE='NON_REGRESSION',),);
+TEST_RESU(OBJET=_F(VALE_CALC=1.533000E6,
+                   TOLE_MACHINE=1.E-3,
+                   NOM='MATRUPQ .ME001     .RESL',),
+          )
 
-TEST_RESU(OBJET=_F(NOM='MATRUPL .ME001     .RESL',
-                   S_R=3.333E+05,
-                   REFERENCE='NON_REGRESSION',),);
+TEST_RESU(OBJET=_F(VALE_CALC=3.33300E5,
+                   TOLE_MACHINE=1.E-3,
+                   NOM='MATRUPL .ME001     .RESL',),
+          )
+
 FIN();

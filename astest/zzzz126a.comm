@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA COMMANDE  CREA_CHAMP/ASSE ET CREA_CHAMP/EXTR/TABLE
 # zzzz126a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,16 +109,20 @@ ACH05=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_C',
              VALE_C = (('RI',1.0,0.5,),('RI',0.0,1.0,)))
     )
 
-TEST_RESU(CHAM_NO=(
-  _F( CHAM_GD = ACH01,  NOEUD = 'A2',  NOM_CMP = 'DY',
-      PRECISION = 1.E-12, VALE = 8.E0, REFERENCE = 'NON_REGRESSION'),
-  _F( CHAM_GD = ACH02,  NOEUD = 'A2',  NOM_CMP = 'DY',
-      PRECISION = 1.E-12, VALE = 3.E0, REFERENCE = 'NON_REGRESSION'),
-  _F( CHAM_GD = ACH05,  NOEUD = 'A2',  NOM_CMP = 'DY',
-      PRECISION = 1.E-12, VALE_C = ('RI',1.0,0.5,),
-      REFERENCE = 'NON_REGRESSION'))
-)
-
+TEST_RESU(CHAM_NO=(_F(NOEUD='A2',
+                      NOM_CMP='DY',
+                      CHAM_GD=ACH01,
+                      VALE_CALC=8.0,),
+                   _F(NOEUD='A2',
+                      NOM_CMP='DY',
+                      CHAM_GD=ACH02,
+                      VALE_CALC=3.0,),
+                   _F(NOEUD='A2',
+                      VALE_CALC_C=('RI', 1.0, 0.5),
+                      NOM_CMP='DY',
+                      CHAM_GD=ACH05,),
+                   ),
+          )
 
 #================================================================
 #  VALIDATION :CREA_CHAMP/AFFE, TYPE_CHAM='ELEM_XXXX_X'
@@ -186,18 +190,48 @@ ACH4=CREA_CHAMP(reuse=ACH4,OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
      NOM_CMP = ('DX',),  NOM_CMP_RESU = ('DX',)))
      )
 
-TEST_RESU(CHAM_NO=(
-  _F( CHAM_GD = ACH3,  NOEUD = 'A2',  NOM_CMP = 'DX',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = ACH3,  NOEUD = 'A3',  NOM_CMP = 'DX',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = ACH3,  NOEUD = 'A3',  NOM_CMP = 'DY',
-   PRECISION = 1.E-12, VALE = 12.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = ACH3,  NOEUD = 'A3',  NOM_CMP = 'DZ',
-   PRECISION = 1.E-12, VALE = 9.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = ACH4,  NOEUD = 'A3',  NOM_CMP = 'DX',
-   PRECISION = 1.E-12, VALE = 18.E0, REFERENCE = 'ANALYTIQUE'))
-)
+TEST_RESU(CHAM_NO=(_F(NOEUD='A2',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999998E-13,
+                      CHAM_GD=ACH3,
+                      VALE_CALC=1.0000000000000,
+                      VALE_REFE=1.0,
+                      TOLE_MACHINE=9.9999999999999998E-13,),
+                   _F(NOEUD='A3',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999998E-13,
+                      CHAM_GD=ACH3,
+                      VALE_CALC=1.0000000000000,
+                      VALE_REFE=1.0,
+                      TOLE_MACHINE=9.9999999999999998E-13,),
+                   _F(NOEUD='A3',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=9.9999999999999998E-13,
+                      CHAM_GD=ACH3,
+                      VALE_CALC=12.0000000000000,
+                      VALE_REFE=12.0,
+                      TOLE_MACHINE=9.9999999999999998E-13,),
+                   _F(NOEUD='A3',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999998E-13,
+                      CHAM_GD=ACH3,
+                      VALE_CALC=9.0000000000000,
+                      VALE_REFE=9.0,
+                      TOLE_MACHINE=9.9999999999999998E-13,),
+                   _F(NOEUD='A3',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=9.9999999999999998E-13,
+                      CHAM_GD=ACH4,
+                      VALE_CALC=18.0000000000000,
+                      VALE_REFE=18.0,
+                      TOLE_MACHINE=9.9999999999999998E-13,),
+                   ),
+          )
 
 # B : CHAM_ELEM_SIEF_R (ELNO):
 # ---------------------------------------
@@ -231,18 +265,53 @@ BCH4=CREA_CHAMP(reuse=BCH4,OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R',
      NOM_CMP = ('SIXX',),  NOM_CMP_RESU = ('SIXX',)))
      )
 
-TEST_RESU(CHAM_ELEM=(
-  _F( CHAM_GD = BCH3,  MAILLE = 'M2',  NOEUD = 'A2',  NOM_CMP = 'SIXX',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = BCH3,  MAILLE = 'M3',  NOEUD = 'A3',  NOM_CMP = 'SIXX',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = BCH3,  MAILLE = 'M3',  NOEUD = 'A3',  NOM_CMP = 'SIYY',
-   PRECISION = 1.E-12, VALE = 12.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = BCH3,  MAILLE = 'M3',  NOEUD = 'A3',  NOM_CMP = 'SIZZ',
-   PRECISION = 1.E-12, VALE = 9.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = BCH4,  MAILLE = 'M3',  NOEUD = 'A3',  NOM_CMP = 'SIXX',
-   PRECISION = 1.E-12, VALE = 18.E0, REFERENCE = 'ANALYTIQUE'))
-)
+TEST_RESU(CHAM_ELEM=(_F(NOEUD='A2',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='SIXX',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M2',
+                        CHAM_GD=BCH3,
+                        VALE_CALC=1.0000000000000,
+                        VALE_REFE=1.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(NOEUD='A3',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='SIXX',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=BCH3,
+                        VALE_CALC=1.0000000000000,
+                        VALE_REFE=1.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(NOEUD='A3',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='SIYY',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=BCH3,
+                        VALE_CALC=12.0000000000000,
+                        VALE_REFE=12.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(NOEUD='A3',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='SIZZ',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=BCH3,
+                        VALE_CALC=9.0000000000000,
+                        VALE_REFE=9.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(NOEUD='A3',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='SIXX',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=BCH4,
+                        VALE_CALC=18.0000000000000,
+                        VALE_REFE=18.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     ),
+          )
 
 # C : CHAM_ELEM_SIEF_R (ELGA):
 # ---------------------------------------
@@ -277,18 +346,53 @@ CCH4=CREA_CHAMP(reuse=CCH4, OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
      ))
 
 
-TEST_RESU(CHAM_ELEM=(
-  _F( CHAM_GD = CCH3,  MAILLE = 'M2',  POINT = 1,  NOM_CMP = 'SIXX',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = CCH3,  MAILLE = 'M3',  POINT = 1,  NOM_CMP = 'SIXX',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = CCH3,  MAILLE = 'M3',  POINT = 1,  NOM_CMP = 'SIYY',
-   PRECISION = 1.E-12, VALE = 12.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = CCH3,  MAILLE = 'M3',  POINT = 1,  NOM_CMP = 'SIZZ',
-   PRECISION = 1.E-12, VALE = 9.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = CCH4,  MAILLE = 'M3',  POINT = 1,  NOM_CMP = 'SIXX',
-   PRECISION = 1.E-12, VALE = 18.E0, REFERENCE = 'ANALYTIQUE'))
-)
+TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='SIXX',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M2',
+                        CHAM_GD=CCH3,
+                        VALE_CALC=1.0000000000000,
+                        VALE_REFE=1.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='SIXX',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=CCH3,
+                        VALE_CALC=1.0000000000000,
+                        VALE_REFE=1.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='SIYY',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=CCH3,
+                        VALE_CALC=12.0000000000000,
+                        VALE_REFE=12.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='SIZZ',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=CCH3,
+                        VALE_CALC=9.0000000000000,
+                        VALE_REFE=9.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='SIXX',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=CCH4,
+                        VALE_CALC=18.0000000000000,
+                        VALE_REFE=18.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     ),
+          )
 
 # D : CHAM_ELEM_VARI_R (ELNO):
 # ---------------------------------------
@@ -317,18 +421,53 @@ DCH4=CREA_CHAMP( OPERATION='ASSE', TYPE_CHAM='ELNO_VARI_R',
      NOM_CMP = ('V3',),  NOM_CMP_RESU = ('V1',))
      )
 
-TEST_RESU(CHAM_ELEM=(
-  _F( CHAM_GD = DCH3,  MAILLE = 'M2',  NOEUD = 'A2',  NOM_CMP = 'V1',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = DCH3,  MAILLE = 'M3',  NOEUD = 'A3',  NOM_CMP = 'V1',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = DCH3,  MAILLE = 'M3',  NOEUD = 'A3',  NOM_CMP = 'V2',
-   PRECISION = 1.E-12, VALE = 12.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = DCH3,  MAILLE = 'M3',  NOEUD = 'A3',  NOM_CMP = 'V3',
-   PRECISION = 1.E-12, VALE = 9.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = DCH4,  MAILLE = 'M3',  NOEUD = 'A3',  NOM_CMP = 'V1',
-   PRECISION = 1.E-12, VALE = 18.E0, REFERENCE = 'ANALYTIQUE'))
-)
+TEST_RESU(CHAM_ELEM=(_F(NOEUD='A2',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='V1',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M2',
+                        CHAM_GD=DCH3,
+                        VALE_CALC=1.0000000000000,
+                        VALE_REFE=1.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(NOEUD='A3',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='V1',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=DCH3,
+                        VALE_CALC=1.0000000000000,
+                        VALE_REFE=1.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(NOEUD='A3',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='V2',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=DCH3,
+                        VALE_CALC=12.0000000000000,
+                        VALE_REFE=12.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(NOEUD='A3',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='V3',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=DCH3,
+                        VALE_CALC=9.0000000000000,
+                        VALE_REFE=9.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(NOEUD='A3',
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CMP='V1',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=DCH4,
+                        VALE_CALC=18.0000000000000,
+                        VALE_REFE=18.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     ),
+          )
 
 # E : CHAM_ELEM_VARI_R (ELGA):
 # ---------------------------------------
@@ -357,19 +496,53 @@ ECH4=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
      NOM_CMP = ('V3',),  NOM_CMP_RESU = ('V1',))
      )
 
-TEST_RESU(CHAM_ELEM=(
-  _F( CHAM_GD = ECH3,  MAILLE = 'M2',  POINT = 1,  NOM_CMP = 'V1',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = ECH3,  MAILLE = 'M3',  POINT = 1,  NOM_CMP = 'V1',
-   PRECISION = 1.E-12, VALE = 1.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = ECH3,  MAILLE = 'M3',  POINT = 1,  NOM_CMP = 'V2',
-   PRECISION = 1.E-12, VALE = 12.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = ECH3,  MAILLE = 'M3',  POINT = 1,  NOM_CMP = 'V3',
-   PRECISION = 1.E-12, VALE = 9.E0, REFERENCE = 'ANALYTIQUE'),
-  _F( CHAM_GD = ECH4,  MAILLE = 'M3',  POINT = 1,  NOM_CMP = 'V1',
-   PRECISION = 1.E-12, VALE = 18.E0, REFERENCE = 'ANALYTIQUE'))
-)
-
+TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='V1',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M2',
+                        CHAM_GD=ECH3,
+                        VALE_CALC=1.0000000000000,
+                        VALE_REFE=1.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='V1',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=ECH3,
+                        VALE_CALC=1.0000000000000,
+                        VALE_REFE=1.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='V2',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=ECH3,
+                        VALE_CALC=12.0000000000000,
+                        VALE_REFE=12.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='V3',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=ECH3,
+                        VALE_CALC=9.0000000000000,
+                        VALE_REFE=9.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=1,
+                        NOM_CMP='V1',
+                        PRECISION=9.9999999999999998E-13,
+                        MAILLE='M3',
+                        CHAM_GD=ECH4,
+                        VALE_CALC=18.0000000000000,
+                        VALE_REFE=18.0,
+                        TOLE_MACHINE=9.9999999999999998E-13,),
+                     ),
+          )
 
 #================================================================
 #  VALIDATION :CREA_CHAMP/EXTR/TABLE
@@ -385,10 +558,15 @@ IMPR_CO(CONCEPT=_F(NOM=T1))
 CH1=CREA_CHAMP(OPERATION='EXTR', INFO=2,
               TYPE_CHAM='NOEU_DEPL_R',TABLE=T1,MAILLAGE=MA)
 
-TEST_RESU(
-  CHAM_NO=_F( CHAM_GD = CH1,  NOEUD = 'A2',  NOM_CMP = 'DX',
-   PRECISION = 1.E-12, VALE = -2.14143E-08,
-   REFERENCE = 'ANALYTIQUE',),)
+TEST_RESU(CHAM_NO=_F(NOEUD='A2',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='DX',
+                     PRECISION=9.9999999999999998E-13,
+                     CHAM_GD=CH1,
+                     VALE_CALC=-2.141430000000E-08,
+                     VALE_REFE=-2.1414299999999999E-08,
+                     TOLE_MACHINE=9.9999999999999998E-13,),
+          )
 
 # G : CHAM_ELEM_SIEF_R (ELNO)
 # ---------------------------
@@ -399,10 +577,26 @@ CH2=CREA_CHAMP(OPERATION='EXTR', PROL_ZERO='OUI', INFO=2,
               TYPE_CHAM='ELNO_SIEF_R',TABLE=T2,
               MODELE=MO,OPTION='SIGM_ELNO')
 
-TEST_RESU( CHAM_ELEM=_F( CHAM_GD = CH2,  MAILLE = 'M1',  POINT=2, NOM_CMP = 'SIXX',
-   PRECISION = 1.E-6, VALE = 777., REFERENCE = 'ANALYTIQUE'),)
-TEST_RESU( CHAM_ELEM=_F( CHAM_GD = CH2,  MAILLE = 'M4',  POINT=2, NOM_CMP = 'SIXX',
-   CRITERE='ABSOLU', PRECISION = 1.E-3, VALE = 0., REFERENCE = 'ANALYTIQUE'),)
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=2,
+                       NOM_CMP='SIXX',
+                       PRECISION=9.9999999999999995E-07,
+                       MAILLE='M1',
+                       CHAM_GD=CH2,
+                       VALE_CALC=777.000000000,
+                       VALE_REFE=777.0,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(CRITERE='ABSOLU',
+                       REFERENCE='ANALYTIQUE',
+                       POINT=2,
+                       NOM_CMP='SIXX',
+                       PRECISION=1.E-3,
+                       MAILLE='M4',
+                       CHAM_GD=CH2,
+                       VALE_CALC= 0.00000000E+00,
+                       VALE_REFE=0.0,),
+          )
 
 # H : CHAM_ELEM_SIEF_R (ELGA)
 # ---------------------------
@@ -413,10 +607,27 @@ CH3=CREA_CHAMP(OPERATION='EXTR', PROL_ZERO='OUI', INFO=2,
               TYPE_CHAM='ELGA_SIEF_R',TABLE=T3,
               MODELE=MO,OPTION='SIEF_ELGA')
 
-TEST_RESU( CHAM_ELEM=_F(CHAM_GD = CH3, MAILLE = 'M1', POINT=1, SOUS_POINT=2,
-               NOM_CMP = 'SIYY', PRECISION = 1.E-6, VALE = 30., REFERENCE = 'ANALYTIQUE',),)
-TEST_RESU( CHAM_ELEM=_F(CHAM_GD = CH3, MAILLE = 'M4', POINT=1, SOUS_POINT=4,
-               NOM_CMP = 'SIXX', PRECISION = 1.E-6, VALE = 3.99E2, REFERENCE = 'ANALYTIQUE',),)
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=1,
+                       NOM_CMP='SIYY',
+                       PRECISION=9.9999999999999995E-07,
+                       SOUS_POINT=2,
+                       MAILLE='M1',
+                       CHAM_GD=CH3,
+                       VALE_CALC=30.000000000,
+                       VALE_REFE=30.0,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=1,
+                       NOM_CMP='SIXX',
+                       PRECISION=9.9999999999999995E-07,
+                       SOUS_POINT=4,
+                       MAILLE='M4',
+                       CHAM_GD=CH3,
+                       VALE_CALC=399.000000000,
+                       VALE_REFE=399.0,),
+          )
 
 # I : CHAM_ELEM_ENER_R (ELEM)
 # ---------------------------
@@ -427,10 +638,12 @@ CH4=CREA_CHAMP(OPERATION='EXTR',INFO=2,
               TYPE_CHAM='ELEM_ENER_R',TABLE=T4,
               MODELE=MO,OPTION='EPOT_ELEM')
 
-TEST_RESU(
-  CHAM_ELEM=_F( CHAM_GD = CH4,  TYPE_TEST='MIN', VALE=1125., REFERENCE = 'ANALYTIQUE',),)
-
-
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       TYPE_TEST='MIN',
+                       CHAM_GD=CH4,
+                       VALE_CALC= 1.12500000E+03,
+                       VALE_REFE=1125.0,),
+          )
 
 # J : CART_ENER_R
 # ---------------------------
@@ -469,15 +682,32 @@ IRRA_2=CREA_CHAMP(
    INST= 5.0, INTERPOL='LIN',
 )
 
-TEST_RESU(
-   CHAM_NO=(
-      _F(CHAM_GD=IRRA_2,NOM_CMP='IRRA',REFERENCE='ANALYTIQUE',NOEUD='A1',VALE=10.0),
-      _F(CHAM_GD=IRRA_2,NOM_CMP='IRRA',REFERENCE='ANALYTIQUE',NOEUD='A2',VALE=10.0),
-      _F(CHAM_GD=IRRA_2,NOM_CMP='IRRA',REFERENCE='ANALYTIQUE',NOEUD='B1',VALE=10.0),
-      _F(CHAM_GD=IRRA_2,NOM_CMP='IRRA',REFERENCE='ANALYTIQUE',NOEUD='B2',VALE=10.0),
-   ),
-)
-
+TEST_RESU(CHAM_NO=(_F(NOEUD='A1',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='IRRA',
+                      CHAM_GD=IRRA_2,
+                      VALE_CALC=10.000000000,
+                      VALE_REFE=10.0,),
+                   _F(NOEUD='A2',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='IRRA',
+                      CHAM_GD=IRRA_2,
+                      VALE_CALC=10.000000000,
+                      VALE_REFE=10.0,),
+                   _F(NOEUD='B1',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='IRRA',
+                      CHAM_GD=IRRA_2,
+                      VALE_CALC=10.000000000,
+                      VALE_REFE=10.0,),
+                   _F(NOEUD='B2',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='IRRA',
+                      CHAM_GD=IRRA_2,
+                      VALE_CALC=10.000000000,
+                      VALE_REFE=10.0,),
+                   ),
+          )
 
 FIN()
 #

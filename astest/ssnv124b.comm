@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE CHARGE LIMITE EN 3D - METHODE DE NORTON-HOFF
 # ssnv124b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,57 +104,60 @@ RESU=CALC_ERREUR(reuse =RESU,
 #      TEST DE LA CHARGE LIMITE
 #--------------------------------------------------------------
 
-TEST_TABLE(TABLE=ECHL,
+TEST_TABLE(
+           VALE_CALC=13.867505,
+           
            NOM_PARA='CHAR_LIMI_SUP',
-           VALE=13.867505,
-           PRECISION=1e-06,);
+           TABLE=ECHL,)
 
-TEST_TABLE(TABLE=ECHL,
+TEST_TABLE(
+           VALE_CALC=11.556253999999999,
+           
            NOM_PARA='CHAR_LIMI_ESTIM',
-           VALE=11.556254,
-           PRECISION=1e-06,);
+           TABLE=ECHL,)
 
 #--------------------------------------------------------------
 #      TEST DES DEFORMATIONS
 #--------------------------------------------------------------
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESU,
                   NOM_CHAM='EPSI_ELNO',
-                  NOM_CMP='EPXX',
-                  MAILLE='MA1',
                   NOEUD='N1',
-                  VALE=0.04807692,
+                  NOM_CMP='EPXX',
+                  VALE_CALC=0.048076920000000002,
+                  TOLE_MACHINE=1.E-4,
                   CRITERE='RELATIF',
-                  PRECISION=0.0001,),);
+                  MAILLE='MA1',),
+          )
 
 #---------------------------------------------------------------
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 #---------------------------------------------------------------
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  POINT=1,
+                  RESULTAT=RESU,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='NUEST',
-                  MAILLE='MA1',
-                  POINT=1,
-                  VALE=16.0160850208,
+                  VALE_CALC=16.016085020799999,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.05.04',),);
+                  MAILLE='MA1',
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESU,
                   NOM_CHAM='ERME_ELNO',
-                  NOM_CMP='ERREST',
-                  MAILLE='MA1',
                   NOEUD='N1',
-                  VALE=3.69639734318,
+                  NOM_CMP='ERREST',
+                  VALE_CALC=3.6963973431800001,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.05.04',),);
+                  MAILLE='MA1',
+                  ),
+          )
 
 FIN();

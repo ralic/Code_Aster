@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COMPORTEMENT NON-LINEAIRE D'UN ELEMENT D'ARMEMENT DE LIGNE
 # ssnl101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test RI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,26 +85,52 @@ STATNL=CALC_CHAMP(reuse=STATNL,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO
 
 
 #
-TEST_RESU(RESU=(
-              _F(
-                    RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-              NUME_ORDRE = 2, NOEUD = 'N3', VALE = 0.116414),
-              _F(
-                    RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-              NUME_ORDRE = 8, NOEUD = 'N3', VALE = 0.461241),
-              _F(
-                    RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-              NUME_ORDRE = 10, NOEUD = 'N3', VALE = 0.700308),
-              _F(
-        RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO', NOM_CMP = 'V1',
-        NUME_ORDRE = 2, MAILLE = 'D1', NOEUD = 'N3', VALE = 6.84138E-2),
-              _F(
-        RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO', NOM_CMP = 'V1',
-        NUME_ORDRE = 8, MAILLE = 'D1', NOEUD = 'N3', VALE = 4.13241E-1),
-              _F(
-        RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO', NOM_CMP = 'V1',
-        NUME_ORDRE = 10, MAILLE = 'D1', NOEUD = 'N3', VALE = 6.52E-1))
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   RESULTAT=STATNL,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.116414,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=8,
+                   RESULTAT=STATNL,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.46124100000000001,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=10,
+                   RESULTAT=STATNL,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.70030800000000004,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=STATNL,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.068413799999999997,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='D1',),
+                _F(NUME_ORDRE=8,
+                   RESULTAT=STATNL,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.41324100000000002,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='D1',),
+                _F(NUME_ORDRE=10,
+                   RESULTAT=STATNL,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.65200000000000002,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='D1',),
+                ),
           )
 
 FIN()

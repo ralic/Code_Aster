@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP ANALYSE MODALE TPAM4
 # forma11d.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,13 +147,13 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE1,
 
 
 # TEST_RESU UNIQUEMENT POUR FAIRE CAS TEST
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   VALE=46.7756,
-                   PRECISION=1e-05,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='7.3.11',)))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=46.775599999999997,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
 IMPR_RESU(RESU=_F(RESULTAT=MODES,
                   TOUT_CHAM='NON',

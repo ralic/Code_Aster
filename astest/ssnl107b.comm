@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 # ssnl107b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,43 +138,48 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU)
 
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=2,
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
                    NOEUD='N45',
-                   VALE=-0.19005,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=0.001,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=2,
-                   NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
+                   VALE_CALC=-0.189991974,
+                   VALE_REFE=-0.19005,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
                    NOEUD='N46',
-                   VALE=-0.19005,
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.189991974,
+                   VALE_REFE=-0.19005,
+                   PRECISION=1.E-3,),
+                _F(NUME_ORDRE=2,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.001,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=2,
+                   RESULTAT=RESU,
                    NOM_CHAM='EFGE_ELNO',
-                   NOM_CMP='N',
-                   MAILLE='M21',
                    NOEUD='N3',
-                   VALE=-0.00475126,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=0.01,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=2,
-                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
-                   MAILLE='M22',
-                   NOEUD='N1',
-                   VALE=-0.00475126,
+                   VALE_CALC=-4.77905361E-03,
+                   VALE_REFE=-4.7512600000000002E-3,
+                   PRECISION=1.E-2,
+                   MAILLE='M21',),
+                _F(NUME_ORDRE=2,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.01,),),);
+                   RESULTAT=RESU,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='N',
+                   VALE_CALC=-4.77905361E-03,
+                   VALE_REFE=-4.7512600000000002E-3,
+                   PRECISION=1.E-2,
+                   MAILLE='M22',),
+                ),
+          )
 
 FIN();
 #
 #
 #
-

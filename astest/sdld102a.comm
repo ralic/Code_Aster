@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -257,9 +257,7 @@ DEFI_FICHIER(ACTION='LIBERER',
 
 TEST_FICHIER(FICHIER='./REPE_OUT/FGEN.gene',
              NB_VALE=24,
-             VALE=27.175237,
-             REFERENCE='NON_REGRESSION',
-             VERSION='9.1.21',
+             VALE_CALC=27.175237,
              INFO=1,);
 
 #---------------------------------------------------------------------
@@ -303,9 +301,7 @@ DEFI_FICHIER(ACTION='LIBERER',
 
 TEST_FICHIER(FICHIER='./REPE_OUT/RESU.gene',
              NB_VALE=105,
-             VALE=417.980381,
-             REFERENCE='NON_REGRESSION',
-             VERSION='9.1.21',
+             VALE_CALC=417.980381,
              INFO=1,);
 
 #---------------------------------------------------------------------
@@ -487,168 +483,213 @@ TRAN_SS=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
 
 
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.417,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.414799297,
+                  VALE_REFE=0.41699999999999998,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN1,
                   NOM_CHAM='VITE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=-0.43011,
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.429722374,
+                  VALE_REFE=-0.43010999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN1,
                   NOM_CHAM='ACCE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.33749,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.338227921,
+                  VALE_REFE=0.33749000000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN2,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.417,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.417001882,
+                  VALE_REFE=0.41699999999999998,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN2,
                   NOM_CHAM='VITE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=-0.43011,
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.430114977,
+                  VALE_REFE=-0.43010999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN2,
                   NOM_CHAM='ACCE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.33749,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.337492435,
+                  VALE_REFE=0.33749000000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN3,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.417,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.417111186,
+                  VALE_REFE=0.41699999999999998,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN3,
                   NOM_CHAM='VITE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=-0.43011,
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.430904499,
+                  VALE_REFE=-0.43010999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN3,
                   NOM_CHAM='ACCE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.33749,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.337629228,
+                  VALE_REFE=0.33749000000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN4,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN4,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.417,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.417796517,
+                  VALE_REFE=0.41699999999999998,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN4,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN4,
                   NOM_CHAM='VITE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=-0.43011,
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.429371977,
+                  VALE_REFE=-0.43010999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN4,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN4,
                   NOM_CHAM='ACCE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.33749,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.334477094,
+                  VALE_REFE=0.33749000000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN5,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN5,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.417,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.417047395,
+                  VALE_REFE=0.41699999999999998,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN5,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN5,
                   NOM_CHAM='VITE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=-0.43011,
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.429843930,
+                  VALE_REFE=-0.43010999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=TRAN5,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN5,
                   NOM_CHAM='ACCE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.33749,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.337032496,
+                  VALE_REFE=0.33749000000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 ########################################################################
@@ -871,46 +912,50 @@ RESULT4=REST_GENE_PHYS(RESU_GENE=TRANG4,
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=RESULT4,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=RESULT4,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.417,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.417796517,
+                  VALE_REFE=0.41699999999999998,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=RESULT4,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=RESULT4,
                   NOM_CHAM='VITE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=-0.43011,
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.429371977,
+                  VALE_REFE=-0.43010999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=RESULT4,
-                  INST = 8.00000E+01,
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=RESULT4,
                   NOM_CHAM='ACCE',
-                  NOM_CMP='DX',
                   NOEUD='NO3',
-                  VALE=0.33749,
+                  NOM_CMP='DX',
+                  VALE_CALC=0.334477094,
+                  VALE_REFE=0.33749000000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  PRECISION=0.01,),);
+                  PRECISION=1.E-2,),
+          )
 
 #
 
 FIN();
 
 #
-
-
-
-
-
 
 

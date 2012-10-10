@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE HARMONIQUE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -199,25 +199,33 @@ PHA_X_D2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DX_DIS2,
 PHA_Y_D2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DY_DIS2,
                                      PARTIE='PHASE',),);
 
-TEST_FONCTION(VALEUR=_F(FONCTION=MOD_Y_D2,
-                        VALE_PARA=FREQ,
-                        VALE_REFE=0.5721E-3,
-                        REFERENCE='AUTRE_ASTER',),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.000571541171524,
+                        VALE_REFE=5.7209999999999997E-4,
+                        VALE_PARA=250.0,
+                        REFERENCE='AUTRE_ASTER',
+                        FONCTION=MOD_Y_D2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=MOD_X_D2,
-                        VALE_PARA=FREQ,
-                        VALE_REFE=0.7023E-3,
-                        REFERENCE='AUTRE_ASTER',),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.000701725744103,
+                        VALE_REFE=7.0229999999999999E-4,
+                        VALE_PARA=250.0,
+                        REFERENCE='AUTRE_ASTER',
+                        FONCTION=MOD_X_D2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=PHA_Y_D2,
-                        VALE_PARA=FREQ,
-                        VALE_REFE=97.92,
-                        REFERENCE='AUTRE_ASTER',),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=97.9227125372,
+                        VALE_REFE=97.920000000000002,
+                        VALE_PARA=250.0,
+                        REFERENCE='AUTRE_ASTER',
+                        FONCTION=PHA_Y_D2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=PHA_X_D2,
-                        VALE_PARA=FREQ,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-173.921320614,
                         VALE_REFE=-173.91,
-                        REFERENCE='AUTRE_ASTER',),);
+                        VALE_PARA=250.0,
+                        REFERENCE='AUTRE_ASTER',
+                        FONCTION=PHA_X_D2,),
+              )
 
 FIN();
 

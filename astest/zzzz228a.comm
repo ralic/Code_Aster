@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DES OPTIONS PREP_VERC1 ET PREP_VRC2
 # zzzz228a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,13 +65,28 @@ CHTEMF1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_F',MAILLAGE=M,
 TEMPER1=CREA_RESU(  OPERATION='PREP_VRC1', TYPE_RESU='EVOL_THER',
                     PREP_VRC1= _F(  MODELE=MO, CARA_ELEM=CARAC, INST=(5.), CHAM_GD = CHTEMF1, ),)
 
-TEST_RESU(RESU=(
-   _F(RESULTAT=TEMPER1, NUME_ORDRE=1, NOM_CHAM='TEMP', NOM_CMP='TEMP',
-                   MAILLE='M2',POINT=1, SOUS_POINT=10, VALE= 10., REFERENCE='ANALYTIQUE'),
-   _F(RESULTAT=TEMPER1, NUME_ORDRE=1, NOM_CHAM='TEMP', NOM_CMP='TEMP',
-                   MAILLE='M5',POINT=1, SOUS_POINT=10, VALE= 10., REFERENCE='ANALYTIQUE'),
-))
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=10,
+                   RESULTAT=TEMPER1,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=10.000000000,
+                   VALE_REFE=10.0,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=10,
+                   RESULTAT=TEMPER1,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=10.000000000,
+                   VALE_REFE=10.0,
+                   MAILLE='M5',),
+                ),
+          )
 
 # Validation de PREP_VRC2 :
 #--------------------------
@@ -85,11 +100,27 @@ TEMPLI2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
 TEMPER2=CREA_RESU( OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
                   PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARAC, EVOL_THER = TEMPLI2))
 
-TEST_RESU(RESU=(
-   _F(RESULTAT=TEMPER2, NUME_ORDRE=1, NOM_CHAM='TEMP', NOM_CMP='TEMP',
-                   MAILLE='M2',POINT=1, SOUS_POINT=10, VALE= 10., REFERENCE='ANALYTIQUE'),
-   _F(RESULTAT=TEMPER2, NUME_ORDRE=1, NOM_CHAM='TEMP', NOM_CMP='TEMP',
-                   MAILLE='M5',POINT=1, SOUS_POINT=10, VALE= 10., REFERENCE='ANALYTIQUE'),
-))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=10,
+                   RESULTAT=TEMPER2,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=10.000000000,
+                   VALE_REFE=10.0,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=10,
+                   RESULTAT=TEMPER2,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=10.000000000,
+                   VALE_REFE=10.0,
+                   MAILLE='M5',),
+                ),
+          )
 
 FIN()

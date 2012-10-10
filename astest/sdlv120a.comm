@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ABSORPTION D UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
 # sdlv120a.para = tps_job 420 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,39 +146,40 @@ DXN43=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
                       )
 
 
-TEST_FONCTION(VALEUR=(   
-                  _F( 
-                   FONCTION = DXN16,
-                   VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.92620E-04,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3, 
-                   REFERENCE = 'AUTRE_ASTER'),                   
-                  _F( 
-                   FONCTION = DXN16,
-                   VALE_PARA = 1.20000E+00,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-7,
-                   REFERENCE = 'ANALYTIQUE'))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.000992605340065,
+                         VALE_REFE=9.9262000000000005E-4,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.54000000000000004,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.E-3,
+                         FONCTION=DXN16,),
+                      _F(VALE_CALC=1.5184389889e-08,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.2,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=9.9999999999999995E-08,
+                         FONCTION=DXN16,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(   _F( 
-                   FONCTION = DXN18,
-                   VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.92161E-04,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'AUTRE_ASTER'),
-                  _F( 
-                   FONCTION = DXN43,
-                   VALE_PARA = 5.00000E-01,
-                   VALE_REFE = 1.00000E-03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'ANALYTIQUE'))
-                )
-                
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.000992133709422,
+                         VALE_REFE=9.9216100000000008E-4,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.54000000000000004,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.E-3,
+                         FONCTION=DXN18,),
+                      _F(VALE_CALC=0.001,
+                         VALE_REFE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.5,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
+                         FONCTION=DXN43,),
+                      ),
+              )
+
 TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.2, NOMBRE = 600))
 
 TEMLI2=DEFI_LIST_REEL(DEBUT=0.002, 
@@ -221,37 +222,41 @@ DXNA43=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
                         NOM_CMP='DX'
                       )
 
-TEST_FONCTION(VALEUR=(   _F( 
-                   FONCTION = DXNA16,
-                   VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.92620E-04,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 3.E-3, 
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F( 
-                   FONCTION = DXNA16,
-                   VALE_PARA = 1.20000E+00,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-7, 
-                   REFERENCE = 'ANALYTIQUE'))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.000992620144772,
+                         VALE_REFE=9.9262000000000005E-4,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.54000000000000004,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=3.0000000000000001E-3,
+                         FONCTION=DXNA16,
+                         ),
+                      _F(VALE_CALC=9.89599981665e-09,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.2,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=9.9999999999999995E-08,
+                         FONCTION=DXNA16,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(   _F( 
-                   FONCTION = DXNA18,
-                   VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.92161E-04,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 3.E-3, 
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F( 
-                   FONCTION = DXNA43,
-                   VALE_PARA = 5.00000E-01,
-                   VALE_REFE = 1.00000E-03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3, 
-                   REFERENCE = 'ANALYTIQUE'))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.000992160945589,
+                         VALE_REFE=9.9216100000000008E-4,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.54000000000000004,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=3.0000000000000001E-3,
+                         FONCTION=DXNA18,
+                         ),
+                      _F(VALE_CALC=0.001,
+                         VALE_REFE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.5,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
+                         FONCTION=DXNA43,),
+                      ),
+              )
 
 FIN()
 #

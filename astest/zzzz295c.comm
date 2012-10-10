@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU CALCUL DES COORDONNEES DES SOUS POINTS D'INTEGRATION POUR LA MODELISATION COQUE_AXIS
 # zzzz295c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,376 +89,604 @@ TB2=CREA_TABLE(RESU=_F(RESULTAT=U2,GROUP_MA='COQUE',NOM_CHAM='SIEF_ELGA',TOUT_CM
 IMPR_TABLE(TABLE=TB2)
 
 
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.529962087)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=2 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.567462087)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=3 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.604962087)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=4 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.604962087)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=5 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.642462087)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=6 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.679962087)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=7 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.679962087)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=8 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.717462087)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=9 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.754962087)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=10 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.754962087)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=11 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.792462087)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=12 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 2.829962087)
-
-
-
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 2.209971565)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=2 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 2.159971565)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=3 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 2.109971565)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=4 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 2.109971565)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=5 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 2.059971565)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=6 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 2.009971565)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=7 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 2.009971565)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=8 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.959971565)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=9 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.909971565)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=10 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.909971565)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=11 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.859971565)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=12 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.809971565)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.170037913)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=2 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.207537913)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=3 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.245037913)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=4 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.245037913)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=5 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.282537913)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=6 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.320037913)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=7 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.320037913)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=8 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.357537913)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=9 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.395037913)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=10 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.395037913)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=11 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.432537913)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=12 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 1.470037913)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.190028435)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=2 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.140028435)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=3 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.090028435)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=4 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.090028435)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=5 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 1.040028435)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=6 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 0.990028435)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=7 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 0.990028435)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=8 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 0.940028435)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=9 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 0.890028435)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=10 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 0.890028435)
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=11 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 0.840028435)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=2 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=12 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 0.790028435)
-
-
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=12 ),),
-            REFERENCE='NON_REGRESSION',
-            NOM_PARA='SIXX',
-            VALE= -1.04320E+01)
-
-
-TEST_TABLE( TABLE=TB2,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=12 ),),
-            REFERENCE='NON_REGRESSION',
-            NOM_PARA='SIXX',
-            VALE= -1.04320E+01)
-
-
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.529962087,
+           VALE_REFE=2.5299620869999999,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.567462087,
+           VALE_REFE=2.567462087,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.604962087,
+           VALE_REFE=2.6049620870000001,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=3,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.604962087,
+           VALE_REFE=2.6049620870000001,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=4,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.642462087,
+           VALE_REFE=2.6424620870000002,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.679962087,
+           VALE_REFE=2.6799620869999998,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=6,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.679962087,
+           VALE_REFE=2.6799620869999998,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=7,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.717462087,
+           VALE_REFE=2.7174620869999999,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=8,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.754962087,
+           VALE_REFE=2.754962087,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=9,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.754962087,
+           VALE_REFE=2.754962087,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=10,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.792462087,
+           VALE_REFE=2.7924620870000001,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=11,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.829962087,
+           VALE_REFE=2.8299620870000002,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=12,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.209971565,
+           VALE_REFE=2.209971565,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.159971565,
+           VALE_REFE=2.1599715650000002,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.109971565,
+           VALE_REFE=2.1099715649999999,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=3,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.109971565,
+           VALE_REFE=2.1099715649999999,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=4,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.059971565,
+           VALE_REFE=2.0599715650000001,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.009971565,
+           VALE_REFE=2.0099715649999998,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=6,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.009971565,
+           VALE_REFE=2.0099715649999998,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=7,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.959971565,
+           VALE_REFE=1.959971565,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=8,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.909971565,
+           VALE_REFE=1.909971565,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=9,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.909971565,
+           VALE_REFE=1.909971565,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=10,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.859971565,
+           VALE_REFE=1.8599715649999999,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=11,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.809971565,
+           VALE_REFE=1.8099715649999999,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=12,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.170037913,
+           VALE_REFE=1.170037913,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.207537913,
+           VALE_REFE=1.2075379129999999,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.245037913,
+           VALE_REFE=1.245037913,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=3,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.245037913,
+           VALE_REFE=1.245037913,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=4,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.282537913,
+           VALE_REFE=1.2825379130000001,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.320037913,
+           VALE_REFE=1.320037913,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=6,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.320037913,
+           VALE_REFE=1.320037913,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=7,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.357537913,
+           VALE_REFE=1.357537913,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=8,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.395037913,
+           VALE_REFE=1.3950379129999999,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=9,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.395037913,
+           VALE_REFE=1.3950379129999999,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=10,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.432537913,
+           VALE_REFE=1.432537913,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=11,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.470037913,
+           VALE_REFE=1.4700379130000001,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=12,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.190028435,
+           VALE_REFE=1.1900284350000001,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.140028435,
+           VALE_REFE=1.1400284350000001,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.090028435,
+           VALE_REFE=1.090028435,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=3,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.090028435,
+           VALE_REFE=1.090028435,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=4,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.040028435,
+           VALE_REFE=1.040028435,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.990028435,
+           VALE_REFE=0.99002843500000004,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=6,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.990028435,
+           VALE_REFE=0.99002843500000004,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=7,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.940028435,
+           VALE_REFE=0.940028435,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=8,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.890028435,
+           VALE_REFE=0.89002843499999995,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=9,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.890028435,
+           VALE_REFE=0.89002843499999995,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=10,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.840028435,
+           VALE_REFE=0.84002843500000002,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=11,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.790028435,
+           VALE_REFE=0.79002843499999997,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=2,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=12,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-10.432,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXX',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=12,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-10.432,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXX',
+           TABLE=TB2,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=12,),
+                   ),
+           )
 
 FIN()

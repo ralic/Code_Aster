@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DESROCHE X.DESROCHES
 # TITRE CYLINDRE SOUS CHARGEMENT THERMIQUE (AXIS_FOURIER)
 # hslv304a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -152,37 +152,39 @@ SIG=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
 #
 # TEST_RESU DES DEPLACEMENTS
 #
-TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = U1,
-                        NOEUD = 'N371',
-                        NOM_CMP = 'DX',
-                        VALE = 9.63057E-06,
-                        PRECISION = 0.001),
-              _F(  CHAM_GD = U1,
-                        NOEUD = 'N371',
-                        NOM_CMP = 'DZ',
-                        VALE = 1.52412E-06,
-                        PRECISION = 0.001))
+TEST_RESU(CHAM_NO=(_F(NOEUD='N371',
+                      NOM_CMP='DX',
+                      CHAM_GD=U1,
+                      VALE_CALC=9.6305700000000002E-06,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N371',
+                      NOM_CMP='DZ',
+                      CHAM_GD=U1,
+                      VALE_CALC=1.5241200000000001E-06,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
           )
 
 # U2
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = U2,
-                        NOEUD = 'N371',
-                        NOM_CMP = 'DX',
-                        VALE = 5.44426E-06,
-                        PRECISION = 0.001)
+TEST_RESU(CHAM_NO=_F(NOEUD='N371',
+                     NOM_CMP='DX',
+                     CHAM_GD=U2,
+                     VALE_CALC=5.4442600000000003E-06,
+                     TOLE_MACHINE=1.E-3,),
           )
 
 # U
-TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = U,
-                        NOEUD = 'N371',
-                        NOM_CMP = 'DX',
-                        VALE = 1.50748E-05,
-                        PRECISION = 0.001),
-              _F(  CHAM_GD = U,
-                        NOEUD = 'N371',
-                        NOM_CMP = 'DZ',
-                        VALE = 1.52412E-06,
-                        PRECISION = 0.001))
+TEST_RESU(CHAM_NO=(_F(NOEUD='N371',
+                      NOM_CMP='DX',
+                      CHAM_GD=U,
+                      VALE_CALC=1.50748E-05,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N371',
+                      NOM_CMP='DZ',
+                      CHAM_GD=U,
+                      VALE_CALC=1.5241200000000001E-06,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
           )
 
 #
@@ -196,61 +198,77 @@ T1=POST_RELEVE_T(    ACTION=_F(
 
 #
 # E1
-TEST_TABLE(        TABLE=T1,
-                   REFERENCE='NON_REGRESSION',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N1'),
-                 NOM_PARA='SIXX',
-                     VALE=-4.998131662E+06    )
+TEST_TABLE(
+           VALE_CALC=-4.9981316619999995E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXX',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
-TEST_TABLE(        TABLE=T1,
-                   REFERENCE='NON_REGRESSION',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N1'),
-                 NOM_PARA='SIYY',
-                     VALE=5.7570926620307E+05    )
+TEST_TABLE(
+           VALE_CALC=5.7570926620306994E5,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIYY',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
-TEST_TABLE(        TABLE=T1,
-                   REFERENCE='NON_REGRESSION',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N1'),
-                 NOM_PARA='SIZZ',
-                     VALE=-5.694654234E+06 )
+TEST_TABLE(
+           VALE_CALC=-5.6946542340000002E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIZZ',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
-TEST_TABLE(        TABLE=T1,
-                   REFERENCE='NON_REGRESSION',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N1'),
-                 NOM_PARA='SIXY',
-                     VALE=-3.753988751E+06    )
+TEST_TABLE(
+           VALE_CALC=-3.7539887510000002E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXY',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
-TEST_TABLE(        TABLE=T1,
-                   REFERENCE='NON_REGRESSION',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N172'),
-                 NOM_PARA='SIXX',
-                     VALE=-5.464903118E+06    )
+TEST_TABLE(
+           VALE_CALC=-5.4649031179999998E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXX',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N172',),
+           )
 
-TEST_TABLE(        TABLE=T1,
-                   REFERENCE='NON_REGRESSION',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N172'),
-                 NOM_PARA='SIYY',
-                     VALE=-5.302359307E+05    )
+TEST_TABLE(
+           VALE_CALC=-5.3023593070000003E5,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIYY',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N172',),
+           )
 
-TEST_TABLE(        TABLE=T1,
-                   REFERENCE='NON_REGRESSION',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N172'),
-                 NOM_PARA='SIZZ',
-                     VALE=-6.144603336E+06 )
+TEST_TABLE(
+           VALE_CALC=-6.1446033360000001E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIZZ',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N172',),
+           )
 
-TEST_TABLE(        TABLE=T1,
-                   REFERENCE='NON_REGRESSION',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N172'),
-                 NOM_PARA='SIXY',
-                     VALE=1.510076007E+06    )
+TEST_TABLE(
+           VALE_CALC=1.510076007E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXY',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N172',),
+           )
 
 FIN()
 #

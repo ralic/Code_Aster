@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM (EN 2D ET EN FILAIRE)
 #                   + CAS_FIGURE='2D'
 #                   + CAS_FIGURE='1.5D'
@@ -83,14 +83,46 @@ DETRUIRE(CONCEPT=_F(NOM=XX))
 # 2.1) projection d'un maillage 2D sur un maillage 2D  (CARRE1 -> CARRE2)
 #=================================================================================
 XX=PROJ_CHAMP(RESULTAT=T_CARRE1,METHODE='COLLOCATION',  MODELE_1=CARRE1,MODELE_2=CARRE2, CAS_FIGURE='2D')
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='A', VALE=3.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='B', VALE=4.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='C', VALE=5.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   NOEUD='N31', VALE=4.66666, REFERENCE='ANALYTIQUE'),) #   N31: X=1. Y=0.666666
+TEST_RESU(RESU=_F(GROUP_NO='A',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=3.000000000,
+                  VALE_REFE=3.0,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=4.000000000,
+                  VALE_REFE=4.0,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='C',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=5.000000000,
+                  VALE_REFE=5.0,),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOEUD='N31',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=4.666666667,
+                  VALE_REFE=4.6666600000000003,),
+          )
+
 DETRUIRE(CONCEPT=_F(NOM=XX))
 
 
@@ -103,14 +135,46 @@ XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='COLLOCATION',  MODELE_1=CARRE2,MODELE_2
               VIS_A_VIS=(
                 _F(TOUT_1='OUI',       GROUP_MA_2='CARRE1', CAS_FIGURE='2D'),
                 _F(GROUP_MA_1='CARRE2',GROUP_MA_2='CARRE1', CAS_FIGURE='2D')))
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='A', VALE=3.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='B', VALE=4.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='C', VALE=5.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   NOEUD='N11', VALE=3.75, REFERENCE='ANALYTIQUE'),) # N11: X=0.5 Y=0.25
+TEST_RESU(RESU=_F(GROUP_NO='A',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=3.000000000,
+                  VALE_REFE=3.0,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=4.000000000,
+                  VALE_REFE=4.0,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='C',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=5.000000000,
+                  VALE_REFE=5.0,),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOEUD='N11',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=3.750000000,
+                  VALE_REFE=3.75,),
+          )
+
 DETRUIRE(CONCEPT=_F(NOM=XX))
 
 
@@ -123,12 +187,36 @@ FY = FORMULE(NOM_PARA=('X','Y'),VALE='-3.*X + 2.*Y + 7.')
 XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='COLLOCATION',  MODELE_1=CARRE2,MODELE_2=AC, CAS_FIGURE='2D',
               # On en profite pour tester TRANSF_GEOM_1 qui doit annuler TRANSF_GEOM_2 :
               TRANSF_GEOM_1=(FX,FY,),  TRANSF_GEOM_2=(FX,FY,),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='A', VALE=3.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='C', VALE=5.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   NOEUD='N4', VALE=4.0, REFERENCE='ANALYTIQUE'),) # N4: X=0.5 Y=0.5
+TEST_RESU(RESU=_F(GROUP_NO='A',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=3.000000000,
+                  VALE_REFE=3.0,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='C',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=5.000000000,
+                  VALE_REFE=5.0,),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOEUD='N4',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=4.000000000,
+                  VALE_REFE=4.0,),
+          )
+
 DETRUIRE(CONCEPT=_F(NOM=(XX,FX,FY)))
 
 
@@ -137,14 +225,46 @@ DETRUIRE(CONCEPT=_F(NOM=(XX,FX,FY)))
 # 2.4) projection d'un maillage filaire sur un maillage 2D  (AC -> CARRE2)
 #=================================================================================
 XX=PROJ_CHAMP(RESULTAT=T_AC,METHODE='COLLOCATION',  MODELE_1=AC,MODELE_2=CARRE2, CAS_FIGURE='1.5D',ALARME='NON' )
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='A', VALE=3.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='B', VALE=4.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   GROUP_NO='C', VALE=5.0, REFERENCE='ANALYTIQUE'),)
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   NOEUD='N22', VALE=3.333333, REFERENCE='ANALYTIQUE'),)  # N22: X=0.33333 Y=0.
+TEST_RESU(RESU=_F(GROUP_NO='A',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=3.000000000,
+                  VALE_REFE=3.0,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=4.000000000,
+                  VALE_REFE=4.0,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='C',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=5.000000000,
+                  VALE_REFE=5.0,),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOEUD='N22',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=3.333333333,
+                  VALE_REFE=3.3333330000000001,),
+          )
+
 DETRUIRE(CONCEPT=_F(NOM=XX))
 
 
@@ -161,16 +281,32 @@ FY = FORMULE(NOM_PARA=('Z'),VALE='Z')
 #--------------------------------------------
 XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='COLLOCATION',  MODELE_1=CARRE2,MODELE_2=CUBE1, CAS_FIGURE='2D',
               TRANSF_GEOM_2=(FX,FY,),      )
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   NOEUD='N110', VALE=3.69371, REFERENCE='ANALYTIQUE'),) # N110: X=1/2  Y=-1/6   Z=1/6
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOEUD='N110',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=3.693712943,
+                  VALE_REFE=3.6937099999999998,),
+          )
+
 DETRUIRE(CONCEPT=_F(NOM=XX))
 
 # 3.2) la meme chose avec VIS_A_VIS :
 #-------------------------------------
 XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='COLLOCATION',  MODELE_1=CARRE2,MODELE_2=CUBE1,
               VIS_A_VIS=_F(GROUP_MA_1='CARRE2',GROUP_MA_2='CUBE1', CAS_FIGURE='2D',TRANSF_GEOM_2=(FX,FY,),))
-TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
-                   NOEUD='N110', VALE=3.69371, REFERENCE='ANALYTIQUE'),) # N110: X=1/2  Y=-1/6   Z=1/6
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=XX,
+                  NOM_CHAM='TEMP',
+                  NOEUD='N110',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=3.693712943,
+                  VALE_REFE=3.6937099999999998,),
+          )
+
 DETRUIRE(CONCEPT=_F(NOM=XX))
 
 
@@ -286,17 +422,84 @@ XX7=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELNO_NEUT_R', INFO=1,  CHAM_F=XX6,  
 XX8=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R', MODELE=CUBE1,  PROL_ZERO='OUI', INFO=1, OPTION='SIGM_ELNO',
       ASSE=_F(TOUT='OUI', CHAM_GD= XX7, NOM_CMP=('X1','X2','X3','X4','X5','X6'), NOM_CMP_RESU=('SIXX','SIYY','SIZZ','SIXY','SIYZ','SIXZ')))
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIXX', MAILLE='M1', NOEUD='N92', VALE=1.5,    REFERENCE='NON_REGRESSION'),) # N92: X=-1/3  Y=-1/3   Z=1/6
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIYY', MAILLE='M1', NOEUD='N92', VALE=1.5,    REFERENCE='NON_REGRESSION'),) # N92: X=-1/3  Y=-1/3   Z=1/6
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIZZ', MAILLE='M1', NOEUD='N92', VALE=1./6.,  REFERENCE='ANALYTIQUE'),)     # N92: X=-1/3  Y=-1/3   Z=1/6
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N92',
+                       NOM_CMP='SIXX',
+                       MAILLE='M1',
+                       CHAM_GD=XX8,
+                       VALE_CALC=1.5,
+                       TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIXX', MAILLE='M200', NOEUD='N353', VALE=2.,     REFERENCE='ANALYTIQUE'),) # N353: X=-1/3  Y=0   Z=1
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIYY', MAILLE='M200', NOEUD='N353', VALE=1.,     REFERENCE='ANALYTIQUE'),) # N353: X=-1/3  Y=0   Z=1
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIZZ', MAILLE='M200', NOEUD='N353', VALE=1.,     REFERENCE='ANALYTIQUE'),) # N353: X=-1/3  Y=0   Z=1
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N92',
+                       NOM_CMP='SIYY',
+                       MAILLE='M1',
+                       CHAM_GD=XX8,
+                       VALE_CALC=1.5,
+                       TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIXX', MAILLE='M178', NOEUD='N282', VALE=1.,    REFERENCE='ANALYTIQUE'),)    # N282: X=0  Y=1/2   Z=2/3
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIYY', MAILLE='M178', NOEUD='N282', VALE=2.,    REFERENCE='ANALYTIQUE'),)    # N282: X=0  Y=1/2   Z=2/3
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIZZ', MAILLE='M178', NOEUD='N282', VALE=2./3., REFERENCE='ANALYTIQUE'),)    # N282: X=0  Y=1/2   Z=2/3
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N92',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='SIZZ',
+                       MAILLE='M1',
+                       CHAM_GD=XX8,
+                       VALE_CALC=0.166666667,
+                       VALE_REFE=0.16666666666666666,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N353',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='SIXX',
+                       MAILLE='M200',
+                       CHAM_GD=XX8,
+                       VALE_CALC=2.000000000,
+                       VALE_REFE=2.0,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N353',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='SIYY',
+                       MAILLE='M200',
+                       CHAM_GD=XX8,
+                       VALE_CALC=1.000000000,
+                       VALE_REFE=1.0,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N353',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='SIZZ',
+                       MAILLE='M200',
+                       CHAM_GD=XX8,
+                       VALE_CALC=1.000000000,
+                       VALE_REFE=1.0,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N282',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='SIXX',
+                       MAILLE='M178',
+                       CHAM_GD=XX8,
+                       VALE_CALC=1.000000000,
+                       VALE_REFE=1.0,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N282',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='SIYY',
+                       MAILLE='M178',
+                       CHAM_GD=XX8,
+                       VALE_CALC=2.000000000,
+                       VALE_REFE=2.0,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N282',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='SIZZ',
+                       MAILLE='M178',
+                       CHAM_GD=XX8,
+                       VALE_CALC=0.666666667,
+                       VALE_REFE=0.66666666666666663,),
+          )
 
 DETRUIRE(CONCEPT=_F(NOM=(XX1,XX2,XX2a,XX3,XX4,XX5,XX6,XX7,XX8,XXG2,XXG3,XXGN,XXGN2)))
 

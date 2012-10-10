@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 # zzzz159e.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,11 +97,13 @@ OPTIM=DEFI_FONCTION(NOM_PARA='INST',
                     VALE_PARA=BIDON,
                     VALE_FONC=RESU);
 
-TEST_FONCTION ( VALEUR =(_F(FONCTION = OPTIM,
-                           PRECISION = 1.E-4,
-                           VALE_PARA = 1.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = 200.,),)) ;
+TEST_FONCTION(VALEUR=_F(VALE_CALC=199.999998723,
+                        VALE_REFE=200.0,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-4,
+                        FONCTION=OPTIM,),
+              )
 
 exper1=DEFI_FONCTION(NOM_PARA='INST',
                         NOM_RESU='SIYY',
@@ -168,10 +170,12 @@ OPTIM2=DEFI_FONCTION(NOM_PARA='INST',
                     VALE_PARA=BIDON2,
                     VALE_FONC=RESU2);
 
-TEST_FONCTION ( VALEUR =(_F(FONCTION = OPTIM2,
-                           PRECISION = 1.E-4,
-                           VALE_PARA = 1.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = 200.,),)) ;
+TEST_FONCTION(VALEUR=_F(VALE_CALC=200.0,
+                        VALE_REFE=200.0,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-4,
+                        FONCTION=OPTIM2,),
+              )
 
 FIN()

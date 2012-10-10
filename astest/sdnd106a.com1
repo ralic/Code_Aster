@@ -46,13 +46,15 @@ tio_fonc= DEFI_FONCTION(NOM_PARA='INST',
                         VALE_FONC=tio_inst,);
 
 for i in range(0,len(instants_transition)):
-   TEST_FONCTION ( VALEUR =(_F(FONCTION = tio_fonc,
-                               PRECISION = 1.E-4,
-                               VALE_PARA = instants_transition[i],
-                               REFERENCE = 'ANALYTIQUE',
-                               VALE_REFE = instants_transition_analytique[i],
-                               CRITERE='ABSOLU',
-                               ),),);
+   TEST_FONCTION(VALEUR=_F(VALE_CALC=instants_transition_analytique[i],
+                           VALE_REFE=instants_transition_analytique[i],
+                           CRITERE='ABSOLU',
+                           VALE_PARA=instants_transition[i],
+                           REFERENCE='ANALYTIQUE',
+                           TOLE_MACHINE=1.E-4,  #TODO: creer une liste des vale_calc
+                           PRECISION=1.E-4,
+                           FONCTION=tio_fonc,),
+                 )
 
 FIN();
 

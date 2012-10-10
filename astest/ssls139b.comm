@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FLEXION D UNE PLAQUE AVEC REPRESENTATION SIMPLIFIEE DES ARMATURES
 # ssls139b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,40 +126,45 @@ RESU = CALC_CHAMP(RESULTAT    = RESU,
 # Deplacement vertical en bout de plaque
 # (comparaison a la solution 3D de reference et test de non-regression)
 
-TEST_RESU(RESU=(_F(RESULTAT = RESU,
-                   NUME_ORDRE = 1,
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DZ',
-                   GROUP_NO = 'POINT_1',
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='POINT_1',
                    REFERENCE='AUTRE_ASTER',
-                   VALE = -87.1E-6,
-                   PRECISION = 4.E-2,),
-                _F(RESULTAT = RESU,
-                   NUME_ORDRE = 1,
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DZ',
-                   GROUP_NO = 'POINT_1',
-                   REFERENCE='NON_REGRESSION',
-                   VALE = -83.962898E-6,
-                   PRECISION = 1.E-6,),))
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-8.39628980E-05,
+                   VALE_REFE=-8.7100000000000003E-05,
+                   PRECISION=0.040000000000000001,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='POINT_1',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-8.3962897999999997E-05,
+                   
+                   ),
+                ),
+          )
 
 # Contrainte et deformation dans la grille (non-regression)
 
-TEST_RESU(RESU=(_F(RESULTAT = RESU,
-                   NUME_ORDRE = 1,
-                   NOM_CHAM = 'EPSI_NOEU',
-                   NOM_CMP = 'EPXX',
-                   GROUP_NO = 'POINT_2',
-                   REFERENCE='NON_REGRESSION',
-                   VALE = 6.2297586E-6,
-                   PRECISION = 1.E-6,),
-                _F(RESULTAT = RESU,
-                   NUME_ORDRE = 1,
-                   NOM_CHAM = 'SIEF_NOEU',
-                   NOM_CMP = 'SIXX',
-                   GROUP_NO = 'POINT_2',
-                   REFERENCE='NON_REGRESSION',
-                   VALE = 1.2459517E+6,
-                   PRECISION = 1.E-6,),))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='POINT_2',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=6.2297585999999998E-06,
+                   
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='POINT_2',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=1.2459517E6,
+                   
+                   ),
+                ),
+          )
 
 FIN();

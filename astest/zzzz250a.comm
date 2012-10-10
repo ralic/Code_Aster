@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE : MODI_MAILLAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,22 +92,26 @@ resu2D=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=resu2D,reuse=resu2D)
 #  - le deplacement est positif et egal = 0.00142857 aux noeuds C et D.
 #  - la contrainte SIXX dans la maille MA1 est positive et egale a 1.E8.
 
-TEST_RESU(RESU=_F(RESULTAT=resu2D,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=resu2D,
                   NOM_CHAM='DEPL',
+                  NOEUD='C',
                   NOM_CMP='DX',
-                  NOEUD='C',
-                  VALE=1.42857E-03,
-                  REFERENCE='ANALYTIQUE',),)
+                  VALE_CALC= 1.42857143E-03,
+                  VALE_REFE=1.4285700000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=resu2D,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=resu2D,
                   NOM_CHAM='SIGM_ELNO',
-                  MAILLE ='MA1',
-                  NOM_CMP='SIXX',
                   NOEUD='C',
-                  VALE=1.E8,
-                  REFERENCE='ANALYTIQUE',),)
+                  NOM_CMP='SIXX',
+                  VALE_CALC= 1.00000000E+08,
+                  VALE_REFE=1.E8,
+                  MAILLE='MA1',),
+          )
 
 IMPR_RESU(RESU=_F(RESULTAT=resu2D))
 
@@ -180,22 +184,26 @@ resu3D=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=resu3D,reuse=resu3D)
 #  - le deplacement est positif et egal = 0.00142857 aux noeuds C,D
 #  - la contrainte SIXX, dans la maille MA1, est positive et egale a 1.E8
 
-TEST_RESU(RESU=_F(RESULTAT=resu3D,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=resu3D,
                   NOM_CHAM='DEPL',
+                  NOEUD='C',
                   NOM_CMP='DX',
-                  NOEUD='C',
-                  VALE=1.42857E-03,
-                  REFERENCE='ANALYTIQUE',),)
+                  VALE_CALC= 1.42857143E-03,
+                  VALE_REFE=1.4285700000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=resu3D,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=resu3D,
                   NOM_CHAM='SIGM_ELNO',
-                  MAILLE ='MA1',
-                  NOM_CMP='SIXX',
                   NOEUD='C',
-                  VALE=1.E8,
-                  REFERENCE='ANALYTIQUE',),)
+                  NOM_CMP='SIXX',
+                  VALE_CALC= 1.00000000E+08,
+                  VALE_REFE=1.E8,
+                  MAILLE='MA1',),
+          )
 
 IMPR_RESU(RESU=_F(RESULTAT=resu3D))
 

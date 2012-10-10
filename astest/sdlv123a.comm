@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
@@ -194,56 +194,64 @@ IMPR_RESU( FORMAT='CASTEM', UNITE = 37,
                  _F(RESULTAT=evol,),
                   ),);
 
-TEST_TABLE(TABLE=G1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014,
+           VALE_CALC= 5.64807008E+05,
+           VALE_REFE=5.67700E5,
+           NOM_PARA='G',
+           TABLE=G1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
-           NOM_PARA='G',
-           VALE=5.677E5,
-           PRECISION=1.4E-2,
-           REFERENCE='ANALYTIQUE',
-          );
+           )
 
-TEST_TABLE(TABLE=G1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014,
+           VALE_CALC= 1.12973435E+06,
+           VALE_REFE=1.135000E6,
+           NOM_PARA='G',
+           TABLE=G1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=2,),
-           NOM_PARA='G',
-           VALE=1.135E6,
-           PRECISION=1.4E-2,
-           REFERENCE='ANALYTIQUE',
-          );
+           )
 
-TEST_TABLE(TABLE=G1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014,
+           VALE_CALC= 1.68312143E+06,
+           VALE_REFE=1.703000E6,
+           NOM_PARA='G',
+           TABLE=G1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=3,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014,
+           VALE_CALC= 5.69165277E+05,
+           VALE_REFE=5.67700E5,
            NOM_PARA='G',
-           VALE=1.703E6,
-           PRECISION=1.4E-2,
-           REFERENCE='ANALYTIQUE',
-          );
-TEST_TABLE(TABLE=G2,
+           TABLE=G2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
-           NOM_PARA='G',
-           VALE=5.677E5,
-           PRECISION=1.4E-2,
-           REFERENCE='ANALYTIQUE',
-          );
+           )
 
-TEST_TABLE(TABLE=G2,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014,
+           VALE_CALC= 1.13176716E+06,
+           VALE_REFE=1.135000E6,
+           NOM_PARA='G',
+           TABLE=G2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=2,),
-           NOM_PARA='G',
-           VALE=1.135E6,
-           PRECISION=1.4E-2,
-           REFERENCE='ANALYTIQUE',
-          );
+           )
 
-TEST_TABLE(TABLE=G2,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014,
+           VALE_CALC= 1.68567971E+06,
+           VALE_REFE=1.703000E6,
+           NOM_PARA='G',
+           TABLE=G2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=3,),
-           NOM_PARA='G',
-           VALE=1.703E6,
-           PRECISION=1.4E-2,
-           REFERENCE='ANALYTIQUE',
-          );
+           )
+
 FIN();

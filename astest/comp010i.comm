@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #====================================================================== 
 #
 # TITRE : VALIDATION DE LA TEMPERATURE DANS LA RELATION = 'VISCOCHAB' 
@@ -223,3 +223,4 @@ IMPR_TABLE(TABLE=tabresu)
 
                      
 FIN()
+

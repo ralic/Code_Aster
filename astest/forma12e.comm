@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE 'TP DYNAMIQUE NON LINEAIRE'
 # forma12e.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,14 +158,18 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=(_F(FONCTION=DEPMOM,),
                       _F(FONCTION=DEPMODNL,),),);
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=DEPMOM,
-                         VALE_PARA=.0025,
-                         VALE_REFE=-0.0001231497,
-                         REFERENCE='NON_REGRESSION',),
-                      _F(FONCTION=DEPMODNL,
-                         VALE_PARA=.0025,
-                         VALE_REFE= -0.00012315529,
-                         REFERENCE='NON_REGRESSION',),))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-1.2314969999999999E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.5000000000000001E-3,
+                         FONCTION=DEPMOM,
+                         ),
+                      _F(VALE_CALC=-1.2315528999999999E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.5000000000000001E-3,
+                         FONCTION=DEPMODNL,
+                         ),
+                      ),
+              )
 
 ACCMODNL=RECU_FONCTION(RESULTAT=DYNADNL,
                        NOM_CHAM='ACCE',
@@ -237,23 +241,27 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                       _F(FONCTION=ACCMODNH,),
                       _F(FONCTION=ACCMODN2,),),);
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=ACCMOM,
-                         VALE_PARA=.0025,
-                         VALE_REFE= -53.830201,
-                         REFERENCE='NON_REGRESSION',),
-                      _F(FONCTION=ACCMODNL,
-                         VALE_PARA=.0025,
-                         VALE_REFE=-54.113083,
-                         REFERENCE='NON_REGRESSION',),
-                      _F(FONCTION=ACCMODNH,
-                         VALE_PARA=.0025,
-                         VALE_REFE= 2.033744,
-                         REFERENCE='NON_REGRESSION',),
-                      _F(FONCTION=ACCMODN2,
-                         VALE_PARA=.0025,
-                         VALE_REFE= 1.5009012,
-                         REFERENCE='NON_REGRESSION',),
-                     ))
-
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-53.830201000000002,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.5000000000000001E-3,
+                         FONCTION=ACCMOM,
+                         ),
+                      _F(VALE_CALC=-54.113083000000003,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.5000000000000001E-3,
+                         FONCTION=ACCMODNL,
+                         ),
+                      _F(VALE_CALC=2.033744,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.5000000000000001E-3,
+                         FONCTION=ACCMODNH,
+                         ),
+                      _F(VALE_CALC=1.5009011999999999,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.5000000000000001E-3,
+                         FONCTION=ACCMODN2,
+                         ),
+                      ),
+              )
 
 FIN();

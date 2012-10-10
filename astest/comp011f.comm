@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST BETON_BURGER_FP POUR LA PRISE EN COMPTE DE LA TEMPERATURE
 # comp011f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -358,7 +358,9 @@ for i in range(NCAL):
           IMPR_TABLE(TABLE=SVMIS[i])
 
           TEST_TABLE(TABLE=SVMIS[i],
-                     NOM_PARA='PRIN_1',VALE=Vmis['PRIN_1',i+2],
+                     NOM_PARA='PRIN_1',
+                     VALE_CALC=Vmis['PRIN_1',i+2],   #TODO: creer une liste des vale_calc
+                     VALE_REFE=Vmis['PRIN_1',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 

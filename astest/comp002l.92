@@ -1,24 +1,24 @@
 def PROD_ROT(X1,X2):
-	"calcul Produit de 2 vecteurs pour les coef de rotations"
-	"dimension de X1 et X2 liste de 3 scalaire resultat liste de 6 scalaire"
-	if (len(X1)==len(X2)==3) : 
-		Y=[None]*6
-		V_ind=[[0,0,0.5],[1,1,0.5],[2,2,0.5],[0,1,1.0],[0,2,1.0],[1,2,1.0]]
-		for ind in V_ind:
-			i=V_ind.index(ind)
-			ind1,ind2,coef=ind[0],ind[1],ind[2]
-			Y[i]=coef*(X1[ind1]*X2[ind2]+X1[ind2]*X2[ind1])
-		return Y
-	else :
-		print "CALCUL PROD_ROT IMPOSSIBLE, dimensions innatendues"
-		return None
+    "calcul Produit de 2 vecteurs pour les coef de rotations"
+    "dimension de X1 et X2 liste de 3 scalaire resultat liste de 6 scalaire"
+    if (len(X1)==len(X2)==3) : 
+        Y=[None]*6
+        V_ind=[[0,0,0.5],[1,1,0.5],[2,2,0.5],[0,1,1.0],[0,2,1.0],[1,2,1.0]]
+        for ind in V_ind:
+            i=V_ind.index(ind)
+            ind1,ind2,coef=ind[0],ind[1],ind[2]
+            Y[i]=coef*(X1[ind1]*X2[ind2]+X1[ind2]*X2[ind1])
+        return Y
+    else :
+        print "CALCUL PROD_ROT IMPOSSIBLE, dimensions innatendues"
+        return None
 #######################################################################
 def ERREUR(X,Xref,coef=1.,prec_zero=0.):
-	"calcul erreur relative entre deux nombres"
-	if (Xref<prec_zero) : return 0.
-	else :
-		err= abs((X*coef-Xref)/Xref)
-		return err
+    "calcul erreur relative entre deux nombres"
+    if (Xref<prec_zero) : return 0.
+    else :
+        err= abs((X*coef-Xref)/Xref)
+        return err
 #######################################################################
 def RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI):
 # On renomme les composantes en fonction de  l'ordre de discrétisation
@@ -91,7 +91,13 @@ def TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero
            ch_cal = ch + label_cal[j] + str(N_pas[j]) 
            ch_err = 'ER_' + ch_cal
            TEST_TABLE(TABLE=R_SI[i],NOM_PARA=ch_err,
-                 TYPE_TEST='MAX',VALE=0.,CRITERE='ABSOLU',PRECISION=prec_ecart[j],REFERENCE='ANALYTIQUE',);
+                 TYPE_TEST='MAX',
+                 VALE_CALC=0.,
+                 VALE_REFE=0.,
+                 CRITERE='ABSOLU',
+                 TOLE_MACHINE=prec_ecart[j],
+                 PRECISION=prec_ecart[j],
+                 REFERENCE='ANALYTIQUE',);
                  
    return
         
@@ -111,42 +117,42 @@ Ctrac = (calibrage * (1 / YOUNG));
 Y_trace=DEFI_LIST_REEL( VALE = (0., 150., 150., -50, 0., 50., -150., -150., 0.),)
 Trace=DEFI_FONCTION(NOM_PARA='INST',
                     VALE_PARA= temps_ar,
-	                 VALE_FONC= Y_trace,		 
+                     VALE_FONC= Y_trace,         
                     PROL_DROITE='EXCLU',
                     PROL_GAUCHE='EXCLU',);
 
 Y_Devi_1=DEFI_LIST_REEL( VALE = (0., 75., 150., 150, 0., -150., -150., -75., 0.),)
 Devi_1=DEFI_FONCTION(NOM_PARA='INST',
                      VALE_PARA= temps_ar,
-	                  VALE_FONC= Y_Devi_1,		 
+                      VALE_FONC= Y_Devi_1,       
                      PROL_DROITE='EXCLU',
                      PROL_GAUCHE='EXCLU',);
 
 Y_Devi_2=DEFI_LIST_REEL( VALE = (0., 75., -50., 100, 0., -100., 50., -75., 0.),)
 Devi_2=DEFI_FONCTION(NOM_PARA='INST',
                      VALE_PARA= temps_ar,
-	                  VALE_FONC= Y_Devi_2,		 
+                      VALE_FONC= Y_Devi_2,       
                      PROL_DROITE='EXCLU',
                      PROL_GAUCHE='EXCLU',);
 
 Y_tauxy=DEFI_LIST_REEL( VALE = (0., 200., 100., 300, 0., -300., -100., -200., 0.),)
 TAU_xy=DEFI_FONCTION(NOM_PARA='INST',
                      VALE_PARA= temps_ar,
-	                  VALE_FONC= Y_tauxy,		 
+                      VALE_FONC= Y_tauxy,        
                      PROL_DROITE='EXCLU',
                      PROL_GAUCHE='EXCLU',);
 
 Y_tauxz=DEFI_LIST_REEL( VALE = (0., -100., 100., 200, 0., -200., -100., 100., 0.),)
 TAU_xz=DEFI_FONCTION(NOM_PARA='INST',
                      VALE_PARA= temps_ar,
-	                  VALE_FONC= Y_tauxz,		 
+                      VALE_FONC= Y_tauxz,        
                      PROL_DROITE='EXCLU',
                      PROL_GAUCHE='EXCLU',);
 
 Y_tauyz=DEFI_LIST_REEL( VALE = (0., 0., 200., -100, 0., 100., -200., 0., 0.),)
 TAU_yz=DEFI_FONCTION(NOM_PARA='INST',
                      VALE_PARA= temps_ar,
-	                  VALE_FONC= Y_tauyz,		 
+                      VALE_FONC= Y_tauyz,        
                      PROL_DROITE='EXCLU',
                      PROL_GAUCHE='EXCLU',);
 
@@ -192,16 +198,16 @@ V3= [p13, p23, p33]
 VI = [[V1,V1],[V2,V2],[V3,V3],[V1,V2],[V1,V3],[V2,V3]]
 eps_rot = [None]*6
 for vect_i in VI:
-	i = VI.index(vect_i)
-	V_COEF = PROD_ROT(vect_i[0],vect_i[1])
-	eps_rot [i] =CALC_FONCTION(COMB=(
-			_F(FONCTION=eps_xx,COEF=V_COEF[0],),
-			_F(FONCTION=eps_yy,COEF=V_COEF[1],),
-			_F(FONCTION=eps_zz,COEF=V_COEF[2],),
-			_F(FONCTION=eps_xy,COEF=V_COEF[3],),
-			_F(FONCTION=eps_xz,COEF=V_COEF[4],),
-			_F(FONCTION=eps_yz,COEF=V_COEF[5],),
-				),);
+    i = VI.index(vect_i)
+    V_COEF = PROD_ROT(vect_i[0],vect_i[1])
+    eps_rot [i] =CALC_FONCTION(COMB=(
+            _F(FONCTION=eps_xx,COEF=V_COEF[0],),
+            _F(FONCTION=eps_yy,COEF=V_COEF[1],),
+            _F(FONCTION=eps_zz,COEF=V_COEF[2],),
+            _F(FONCTION=eps_xy,COEF=V_COEF[3],),
+            _F(FONCTION=eps_xz,COEF=V_COEF[4],),
+            _F(FONCTION=eps_yz,COEF=V_COEF[5],),
+                ),);
 #eps apres symetrie
 eps_sym = [eps_zz,eps_xx,eps_yy,eps_xz,eps_yz,eps_xy]
 

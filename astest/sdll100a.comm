@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE REPONSE TRANSITOIRE PAR INTEGRATION DIRECTE
 # sdll100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,15 +133,43 @@ WILAMOR=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                            MATR_AMOR=MATRAMOR,
                             EXCIT=_F( VECT_ASSE = VECAS, FONC_MULT = FONC))
 
-TEST_RESU(RESU=(
-          _F(  RESULTAT = NEWNONA,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
-            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.58E-3, PRECISION = 1.E-2),
-          _F(  RESULTAT = WILNONA,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
-            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.58E-3, PRECISION = 1.E-2),
-          _F(  RESULTAT = NEWAMOR,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
-            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2),
-          _F(  RESULTAT = WILAMOR,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
-            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2))
+TEST_RESU(RESU=(_F(NUME_ORDRE=5,
+                   RESULTAT=NEWNONA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.58011957E-03,
+                   VALE_REFE=2.5799999999999998E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=5,
+                   RESULTAT=WILNONA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.58012061E-03,
+                   VALE_REFE=2.5799999999999998E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=5,
+                   RESULTAT=NEWAMOR,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.27206219E-03,
+                   VALE_REFE=2.2699999999999999E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=5,
+                   RESULTAT=WILAMOR,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.27206394E-03,
+                   VALE_REFE=2.2699999999999999E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                ),
           )
 
 #
@@ -178,10 +206,15 @@ WILAMOR2=LIRE_RESU(       MAILLAGE=POUTRE,
                                NOM_CMP = ('DX',))
                       )
 
-TEST_RESU(
-          RESU=_F(  RESULTAT = WILAMOR2,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 5,
-            REFERENCE = 'AUTRE_ASTER',
-            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2)
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=WILAMOR2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
+                  NOM_CMP='DX',
+                  VALE_CALC= 2.27206000E-03,
+                  VALE_REFE=2.2699999999999999E-3,
+                  PRECISION=1.E-2,),
           )
 
 # ON AFFECTE A UN CHAMP DE VITESSE LA COMPOSANTE 'DX' DU CHAMP
@@ -202,10 +235,15 @@ WILAMOR3=LIRE_RESU(       MAILLAGE=POUTRE,
                                NOM_CMP = ('DX',))
                       )
 
-TEST_RESU(
-          RESU=_F(  RESULTAT = WILAMOR3,  NOM_CHAM = 'VITE',  NUME_ORDRE = 5,
-            REFERENCE = 'AUTRE_ASTER',
-            NOEUD = 'N2', NOM_CMP = 'DX', VALE = 2.27E-3, PRECISION = 1.E-2)
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=WILAMOR3,
+                  NOM_CHAM='VITE',
+                  NOEUD='N2',
+                  NOM_CMP='DX',
+                  VALE_CALC= 2.27206000E-03,
+                  VALE_REFE=2.2699999999999999E-3,
+                  PRECISION=1.E-2,),
           )
 
 FIN( )

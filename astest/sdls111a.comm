@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : TRIANGLE
 # sdls111a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -387,35 +387,71 @@ MODPHY=REST_SOUS_STRUC(RESU_GENE=RESGEN,
 #
 #//////////////////////////////////////////////////////////////////////
 
-TEST_RESU(RESU=(_F( RESULTAT = MODPHY, NOM_CHAM = 'DEPL',
-                CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_MODE = 1, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
-                NOEUD = 'NO1',     VALE = 4.54388E-1),
-          _F( RESULTAT = MODPHY, NOM_CHAM = 'DEPL',
-                CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_MODE = 1, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
-                NOEUD = 'NO43',   VALE = 6.0375E-01)) )
-
+TEST_RESU(RESU=(_F(NUME_MODE=1,
+                   RESULTAT=MODPHY,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO1',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.45438800000000001,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_MODE=1,
+                   RESULTAT=MODPHY,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO43',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.60375000000000001,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 #
 
-TEST_RESU(RESU=(_F( RESULTAT = MODPHY, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_MODE = 1,  VALE = 5.50, REFERENCE = 'NON_REGRESSION'),
-          _F( RESULTAT = MODPHY, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_MODE = 2,  VALE = 21.66, REFERENCE = 'NON_REGRESSION'),
-          _F( RESULTAT = MODPHY, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_MODE = 3,  VALE = 23.64, REFERENCE = 'NON_REGRESSION'),
-          _F( RESULTAT = MODPHY, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_MODE = 4,  VALE = 55.63, REFERENCE = 'NON_REGRESSION'),
-          _F( RESULTAT = MODPHY, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_MODE = 5,  VALE = 56.97, REFERENCE = 'NON_REGRESSION')) )
-
-
+TEST_RESU(RESU=(_F(PARA='FREQ',
+                   NUME_MODE=1,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODPHY,
+                   VALE_CALC=5.500146317,
+                   VALE_REFE=5.5,
+                   CRITERE='RELATIF',
+                   PRECISION=0.012500000000000001,),
+                _F(PARA='FREQ',
+                   NUME_MODE=2,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODPHY,
+                   VALE_CALC=21.662064028,
+                   VALE_REFE=21.66,
+                   CRITERE='RELATIF',
+                   PRECISION=0.012500000000000001,),
+                _F(PARA='FREQ',
+                   NUME_MODE=3,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODPHY,
+                   VALE_CALC=23.641443198,
+                   VALE_REFE=23.640000000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=0.012500000000000001,),
+                _F(PARA='FREQ',
+                   NUME_MODE=4,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODPHY,
+                   VALE_CALC=55.637397725,
+                   VALE_REFE=55.630000000000003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.012500000000000001,),
+                _F(PARA='FREQ',
+                   NUME_MODE=5,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODPHY,
+                   VALE_CALC=56.970275486,
+                   VALE_REFE=56.969999999999999,
+                   CRITERE='RELATIF',
+                   PRECISION=0.012500000000000001,),
+                ),
+          )
 
 FIN();
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE 3D EN FLEXION( HEXA20 STANDARD)
 # ssnv196c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,17 +76,26 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=ch,
                              ),)
 
-TEST_RESU(RESU=(
-   # DEPLACEMENTS
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-         RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
-         GROUP_NO = 'P3',     NOM_CMP = 'DX',            VALE =-0.439,
-            REFERENCE = 'NON_REGRESSION', VERSION = '9.0.6'),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-         RESULTAT = RESU, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
-         GROUP_NO = 'P3',     NOM_CMP = 'DY',            VALE = 3.720,
-            REFERENCE = 'NON_REGRESSION', VERSION = '9.0.6'),
-         ))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.439,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=3.7200000000000002,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,
@@ -110,16 +119,27 @@ CONVERGENCE=_F(ITER_GLOB_MAXI=30, RESI_GLOB_RELA=1.E-6),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
 
-TEST_RESU(RESU=(
-   # DEPLACEMENTS
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
-         RESULTAT = RESU2, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
-         GROUP_NO = 'P3',     NOM_CMP = 'DX',            VALE =-0.5127,
-            REFERENCE = 'NON_REGRESSION', VERSION = '9.0.6'),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.1E-3,
-         RESULTAT = RESU2, NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
-         GROUP_NO = 'P3',     NOM_CMP = 'DY',            VALE = 4.547,
-            REFERENCE = 'NON_REGRESSION', VERSION = '9.0.6'),
-          ))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.51270000000000004,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=4.547628691,
+                   VALE_REFE=4.5469999999999997,
+                   CRITERE='RELATIF',
+                   PRECISION=1.1000000000000001E-3,
+                   ),
+                ),
+          )
 
 FIN();

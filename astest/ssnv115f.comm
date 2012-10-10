@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TOLE ONDULEE ENCASTREE SUR UN BORD EN DEFORMATION PLANE
 # ssnv115f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,12 +141,26 @@ U=STAT_NON_LINE( reuse=U,
 
 #
 
-TEST_RESU(RESU=(
-     _F( RESULTAT = U, NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
-      PRECISION = 1.5E-2, NOEUD = 'NO000002', NOM_CMP = 'DX', VALE = 0.02743),
-     _F(  RESULTAT = U, NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
-      PRECISION = 1.8E-2, NOEUD = 'NO000002', NOM_CMP = 'DY', VALE = -0.2804))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO000002',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.027535065,
+                   VALE_REFE=0.02743,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.014999999999999999,),
+                _F(NUME_ORDRE=10,
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO000002',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.284769948,
+                   VALE_REFE=-0.28039999999999998,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.017999999999999999,),
+                ),
+          )
 
 #
 # INTEGRATION PAR COUCHES DANS L'EPAISSEUR DE LA COQUE
@@ -203,12 +217,26 @@ V=STAT_NON_LINE( reuse=V,
 
 #
 
-TEST_RESU(RESU=(
-     _F( RESULTAT = V, NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
-      PRECISION = 1.5E-2, NOEUD = 'NO000002', NOM_CMP = 'DX', VALE = 0.02743),
-     _F(  RESULTAT = V, NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
-      PRECISION = 1.8E-2, NOEUD = 'NO000002', NOM_CMP = 'DY', VALE = -0.2804))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   RESULTAT=V,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO000002',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.027534961,
+                   VALE_REFE=0.02743,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.014999999999999999,),
+                _F(NUME_ORDRE=10,
+                   RESULTAT=V,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO000002',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.284768843,
+                   VALE_REFE=-0.28039999999999998,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.017999999999999999,),
+                ),
+          )
 
 #
 

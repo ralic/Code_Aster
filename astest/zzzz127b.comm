@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU MOT CLE LIAISON_MAIL EN MECA. ET THERM. (3D)
 # zzzz127b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,14 +75,25 @@ CH12=AFFE_CHAR_MECA(  MODELE=MO,  INFO=2,
 MEST12=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH12)) )
 
-TEST_RESU(RESU=(
-_F( RESULTAT = MEST11, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-      NOEUD = 'F', NOM_CMP = 'DY', PRECISION = 1.E-12, VALE = 1.4153582447720E+00,
-      REFERENCE = 'NON_REGRESSION'),
-_F( RESULTAT = MEST12, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-      NOEUD = 'F', NOM_CMP = 'DY', PRECISION = 1.E-12, VALE = 1.4153582447720E+00,
-      REFERENCE = 'AUTRE_ASTER'))
-            )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=MEST11,
+                   NOM_CHAM='DEPL',
+                   NOEUD='F',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.4153582447719999,
+                   ),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MEST12,
+                   NOM_CHAM='DEPL',
+                   NOEUD='F',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.4153582447720,
+                   VALE_REFE=1.4153582447719999,
+                   TOLE_MACHINE=9.9999999999999998E-13,
+                   PRECISION=9.9999999999999998E-13,),
+                ),
+          )
 
 #=============================================================
 # 2- CAS DE CHARGE 2 :  ON NE RELIE QUE LE DEPLACEMENT NORMAL
@@ -117,14 +128,25 @@ CH22=AFFE_CHAR_MECA(  MODELE=MO,
 MEST22=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH22)) )
 
-TEST_RESU(RESU=(
-_F( RESULTAT = MEST21, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-      NOEUD = 'F', NOM_CMP = 'DY', PRECISION = 1.E-12, VALE = 1.0561898652983E+00,
-      REFERENCE = 'NON_REGRESSION'),
-_F( RESULTAT = MEST22, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-      NOEUD = 'F', NOM_CMP = 'DY', PRECISION = 1.E-12, VALE = 1.0561898652983E+00,
-      REFERENCE = 'AUTRE_ASTER'))
-            )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=MEST21,
+                   NOM_CHAM='DEPL',
+                   NOEUD='F',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.0561898652982999,
+                   ),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MEST22,
+                   NOM_CHAM='DEPL',
+                   NOEUD='F',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.0561898652983,
+                   VALE_REFE=1.0561898652982999,
+                   TOLE_MACHINE=9.9999999999999998E-13,
+                   PRECISION=9.9999999999999998E-13,),
+                ),
+          )
 
 #======================================================
 # 3- CAS DE CHARGE 3 :  ON RELIE LA TEMPERATURE
@@ -187,14 +209,25 @@ CH12=AFFE_CHAR_THER(  MODELE=MO,   INFO=2,
 MEST12=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH12)) )
 
-TEST_RESU(RESU=(
-_F( RESULTAT = MEST11, NOM_CHAM = 'TEMP', NUME_ORDRE = 0,
-      NOEUD = 'F', NOM_CMP = 'TEMP', PRECISION = 1.E-12, VALE = 2.5000000000000E+00,
-      REFERENCE = 'NON_REGRESSION'),
-_F( RESULTAT = MEST12, NOM_CHAM = 'TEMP', NUME_ORDRE = 0,
-      NOEUD = 'F', NOM_CMP = 'TEMP', PRECISION = 1.E-12, VALE = 2.5000000000000E+00,
-      REFERENCE = 'AUTRE_ASTER'))
-            )
+TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+                   RESULTAT=MEST11,
+                   NOM_CHAM='TEMP',
+                   NOEUD='F',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=2.5,
+                   ),
+                _F(NUME_ORDRE=0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MEST12,
+                   NOM_CHAM='TEMP',
+                   NOEUD='F',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=2.5000000000000,
+                   VALE_REFE=2.5,
+                   TOLE_MACHINE=9.9999999999999998E-13,
+                   PRECISION=9.9999999999999998E-13,),
+                ),
+          )
 
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : VALIDATION DE VISC_ISOT_LINE SUR ESSAI DE TRACTION
 # ssnl129d.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -265,69 +265,96 @@ IMPR_TABLE(TABLE=PLAS_L, NOM_PARA = 'SIYY')
 IMPR_TABLE(TABLE=PLAS_M, NOM_PARA = 'SIYY')
 IMPR_TABLE(TABLE=PLAS_R, NOM_PARA = 'SIYY')
 
-TEST_TABLE( TABLE=FORCE_L,
-            NOM_PARA='DY',
-            FILTRE=_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
-            VALE = 498.936,
-            PRECISION=1.0E-3,
-               REFERENCE='AUTRE_ASTER'
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=499.023331268,
+           VALE_REFE=498.93599999999998,
+           NOM_PARA='DY',
+           TABLE=FORCE_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
            )
-TEST_TABLE( TABLE=FORCE_M,
-            NOM_PARA='DY',
-            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
-            VALE = 556.844,
-            PRECISION=1.0E-3,
-               REFERENCE='AUTRE_ASTER'
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=556.942766260,
+           VALE_REFE=556.84400000000005,
+           NOM_PARA='DY',
+           TABLE=FORCE_M,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
            )
-TEST_TABLE( TABLE=FORCE_R,
-            NOM_PARA='DY',
-            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
-            VALE = 632.832,
-            PRECISION=1.0E-3,
-               REFERENCE='AUTRE_ASTER'
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=632.945008170,
+           VALE_REFE=632.83199999999999,
+           NOM_PARA='DY',
+           TABLE=FORCE_R,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
            )
+
 #
-TEST_TABLE( TABLE=FORCE_L,
-            NOM_PARA='DY',
-            FILTRE=_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 10),
-            VALE = 433.411,
-            PRECISION=1.0E-3,
-               REFERENCE='AUTRE_ASTER'
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=433.422037774,
+           VALE_REFE=433.411,
+           NOM_PARA='DY',
+           TABLE=FORCE_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
            )
-TEST_TABLE( TABLE=FORCE_M,
-            NOM_PARA='DY',
-            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 10),
-            VALE = 462.578,
-            PRECISION=1.0E-3,
-               REFERENCE='AUTRE_ASTER'
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=462.591174926,
+           VALE_REFE=462.57799999999997,
+           NOM_PARA='DY',
+           TABLE=FORCE_M,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
            )
-TEST_TABLE( TABLE=FORCE_R,
-            NOM_PARA='DY',
-            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 10),
-            VALE = 500.853,
-            PRECISION=1.0E-3,
-               REFERENCE='AUTRE_ASTER'
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=500.867905073,
+           VALE_REFE=500.85300000000001,
+           NOM_PARA='DY',
+           TABLE=FORCE_R,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
            )
+
 #
-TEST_TABLE( TABLE=FORCE_L,
-            NOM_PARA='DY',
-            FILTRE=_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 20),
-            VALE = 360.757,
-            PRECISION=1.0E-3,
-               REFERENCE='AUTRE_ASTER'
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=360.740178616,
+           VALE_REFE=360.75700000000001,
+           NOM_PARA='DY',
+           TABLE=FORCE_L,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=20,),
            )
-TEST_TABLE( TABLE=FORCE_M,
-            NOM_PARA='DY',
-            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 20),
-            VALE = 379.083,
-            PRECISION=1.0E-3,
-               REFERENCE='AUTRE_ASTER'
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=379.065570319,
+           VALE_REFE=379.08300000000003,
+           NOM_PARA='DY',
+           TABLE=FORCE_M,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=20,),
            )
-TEST_TABLE( TABLE=FORCE_R,
-            NOM_PARA='DY',
-            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 20),
-            VALE = 403.131,
-            PRECISION=1.0E-3,
-               REFERENCE='AUTRE_ASTER'
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=403.113050734,
+           VALE_REFE=403.13099999999997,
+           NOM_PARA='DY',
+           TABLE=FORCE_R,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=20,),
            )
+
 FIN();

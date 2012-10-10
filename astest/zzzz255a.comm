@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE L'OPTION TEST_MAIL DANS PROPA_FISS
 # zzzz255b.para = tps_job 250 mem_job 512Mo liste_test S
 # zzzz255a.para = tps_job 300 mem_job 768Mo liste_test S
@@ -98,20 +98,24 @@ IMPR_TABLE(TABLE=TABLST,);
 
 dist = 500.*sqrt(2.) - (rayon+nbcalc*avance)
 
-TEST_TABLE(TABLE=TABLST,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=386.562156747,
+           VALE_REFE=dist,
            NOM_PARA='X1',
-           PRECISION=0.05,
            TYPE_TEST='MAX',
-           CRITERE='RELATIF',
-           VALE= dist  )
+           TABLE=TABLST,
+           )
 
-TEST_TABLE(TABLE=TABLST,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=386.562156592,
+           VALE_REFE=dist,
            NOM_PARA='X1',
-           PRECISION=0.05,
            TYPE_TEST='MIN',
-           CRITERE='RELATIF',
-           VALE= dist  )
+           TABLE=TABLST,
+           )
 
 FIN();

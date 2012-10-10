@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE - D_PLAN
 # ssnv187b.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,27 +109,27 @@ IMPR_RESU(FORMAT='GMSH',
                   ),);
 
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  NUME_ORDRE=20,
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   GROUP_NO='GM5',
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE = -3.40091E-2,
-                  PRECISION  = 0.002,),)
-
-
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  NUME_ORDRE=20,
-                  GROUP_NO='GM5',
+                  RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
+                  VALE_CALC=-0.034072488,
+                  VALE_REFE=-0.0340091,
                   CRITERE='RELATIF',
-                  REFERENCE='NON_REGRESSION',
-                  VERSION = '8.2.6',
-                  VALE = -3.4072487756090E-02,
-                  PRECISION  = 1E-8,),)
+                  PRECISION=2.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  GROUP_NO='GM5',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.034072487756090002,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 # MATERIAU HYPERELASTIQUE: NEO-HOOKEEN
 C01 = 0.0;
@@ -169,25 +169,27 @@ RESU2=STAT_NON_LINE(MODELE=MODELE,
 
 
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
-                  NUME_ORDRE=20,
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   GROUP_NO='GM5',
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE = -7.8175E-2,
-                  PRECISION  = 0.002,),)
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
-                  NUME_ORDRE=20,
-                  GROUP_NO='GM5',
+                  RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
+                  VALE_CALC=-0.078330878,
+                  VALE_REFE=-0.078174999999999994,
                   CRITERE='RELATIF',
-                  REFERENCE='NON_REGRESSION',
-                  VERSION = '10.2.6',
-                  VALE = -0.0783308779,
-                  PRECISION  = 1E-8,),)
+                  PRECISION=2.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  GROUP_NO='GM5',
+                  RESULTAT=RESU2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.078330877899999998,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 TAB2 = POST_RELEVE_T(ACTION=_F(INTITULE='RET2',
                               GROUP_NO='GM5',
@@ -237,25 +239,27 @@ RESU3=STAT_NON_LINE(MODELE=MODELE,
 
 
 
-TEST_RESU(RESU=_F(RESULTAT=RESU3,
-                  NUME_ORDRE=20,
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   GROUP_NO='GM5',
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE = -6.62E-2,
-                  PRECISION  = 0.075,),)
-TEST_RESU(RESU=_F(RESULTAT=RESU3,
-                  NUME_ORDRE=20,
-                  GROUP_NO='GM5',
+                  RESULTAT=RESU3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
+                  VALE_CALC=-0.071058426,
+                  VALE_REFE=-0.066199999999999995,
                   CRITERE='RELATIF',
-                  REFERENCE='NON_REGRESSION',
-                  VERSION = '8.2.6',
-                  VALE = -7.1058425921552E-02,
-                  PRECISION  = 1E-8,),)
+                  PRECISION=0.074999999999999997,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  GROUP_NO='GM5',
+                  RESULTAT=RESU3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.071058425921551996,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 TAB3 = POST_RELEVE_T(ACTION=_F(INTITULE='RET3',
                               GROUP_NO='GM5',
@@ -266,5 +270,4 @@ TAB3 = POST_RELEVE_T(ACTION=_F(INTITULE='RET3',
 
 IMPR_TABLE(TABLE=TAB3,)
 FIN();
-
 

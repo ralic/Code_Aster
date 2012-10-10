@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION INFORMATIQUE DE MACR_ADAP_MAIL
 # sdld106a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,20 +97,23 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=MATRRIGI,
                                     FREQ=(f1e,),),);
 
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=1, 
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=f1, 
-                   CRITERE='RELATIF', 
-                   PRECISION=1.E-4,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODES,
-                   NUME_ORDRE=1, 
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=0.100000000,
+                   VALE_REFE=0.10000000000000001,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-4,),
+                _F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=0.1, 
-                   CRITERE='RELATIF', 
-                   PRECISION=1.E-6,
-                   REFERENCE='NON_REGRESSION',),),);
+                   RESULTAT=MODES,
+                   VALE_CALC=0.10000000000000001,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 I_DEBUT = 0.
 I_FIN = 1.
@@ -181,50 +184,48 @@ x_fr1 = fext/(k1-omega2_fin*m1+(1.j)*c1)
 dx_fr1_dk = -x_fr1/(k1-omega2_fin*m1+(1.j)*c1)
 dx_fr1_dm = x_fr1*omega2_fin/(k1-omega2_fin*m1+(1.j)*c1)
 
-TEST_RESU(RESU=(_F(RESULTAT=DYTRN,
-                   INST=I_FIN,
+TEST_RESU(RESU=(_F(GROUP_NO='MOBILE',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DYTRN,
                    NOM_CHAM='DEPL',
-                   GROUP_NO='MOBILE',
-                   CRITERE='RELATIF',
-                   PRECISION=5.E-4,
                    NOM_CMP='DX',
-                   VALE=(x_fin,),
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=DYTRN,
-                   INST=I_FIN,
+                   VALE_CALC= 1.55350935E-03,
+                   VALE_REFE=1.5534672964451714E-3,
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-4,),
+                _F(GROUP_NO='MOBILE',
+                   INST=1.0,
+                   RESULTAT=DYTRN,
                    NOM_CHAM='DEPL',
-                   GROUP_NO='MOBILE',
-                   CRITERE='RELATIF',
-                   PRECISION=1.E-6,
                    NOM_CMP='DX',
-                   VALE=(1.5535093481451E-03,),
-                   REFERENCE='NON_REGRESSION',),),);
+                   VALE_CALC=1.5535093481451E-3,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=DYHAN,
-                   FREQ = F_FIN,
+TEST_RESU(RESU=(_F(GROUP_NO='MOBILE',
+                   VALE_CALC_C=-0.020252571+-4.86061710E-04j,
+                   VALE_REFE_C=(-0.020251104786662432-0.00051569014877908288j),
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DYHAN,
                    NOM_CHAM='DEPL',
-                   GROUP_NO='MOBILE',
-                   CRITERE='RELATIF',
-                   PRECISION=5.E-3,
                    NOM_CMP='DX',
-                   VALE_C=(x_fr1,),
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT=DYHAN,
-                   FREQ = F_FIN,
+                   FREQ=0.15000000000000002,
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                _F(GROUP_NO='MOBILE',
+                   VALE_CALC_C=(-0.020252571247429001-0.00048606170993830002j),
+                   
+                   RESULTAT=DYHAN,
                    NOM_CHAM='DEPL',
-                   GROUP_NO='MOBILE',
-                   CRITERE='RELATIF',
-                   PRECISION=1.E-6,
                    NOM_CMP='DX',
-                   VALE_C=(-0.020252571247429-4.860617099383E-04j,),
-                   REFERENCE='NON_REGRESSION'),),);
-
+                   FREQ=0.15000000000000002,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 FIN()
-
-
-
-
-
-
-

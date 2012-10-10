@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102d.para = tps_job 110 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,30 +154,33 @@ NOA_DXAR = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
                      RESULTAT=  TRAN_DY  );
 
 
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = NOA_DXDR,  VALE_PARA = 0.10,
-                               VALE_REFE = -1.56520E-04 ,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-    _F(  FONCTION = NOA_DXDR,  VALE_PARA = 0.20,
-                               VALE_REFE = -5.14832E-04 ,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-    _F(  FONCTION = NOA_DXDR,  VALE_PARA = 0.30,
-                               VALE_REFE =  2.81291E-04 ,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-    _F(  FONCTION = NOA_DXDR,  VALE_PARA = 0.40,
-                               VALE_REFE = -4.49343E-04 ,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-    _F(  FONCTION = NOA_DXDR,  VALE_PARA = 0.50,
-                               VALE_REFE = -3.75708E-04 ,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-                      ))
-
-
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-1.5652E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=NOA_DXDR,
+                         ),
+                      _F(VALE_CALC=-5.1483200000000001E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.20000000000000001,
+                         FONCTION=NOA_DXDR,
+                         ),
+                      _F(VALE_CALC=2.8129099999999997E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.29999999999999999,
+                         FONCTION=NOA_DXDR,
+                         ),
+                      _F(VALE_CALC=-4.49343E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.40000000000000002,
+                         FONCTION=NOA_DXDR,
+                         ),
+                      _F(VALE_CALC=-3.7570799999999999E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.5,
+                         FONCTION=NOA_DXDR,
+                         ),
+                      ),
+              )
 
 # CALCUL DIRECT AVEC DISSIPATION NUMERIQUE
 # ----------------------------------------
@@ -222,27 +225,32 @@ NOADXART = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
                      RESULTAT=  TRAN_DYT  );
 
 
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.10,
-                               VALE_REFE = -1.56911E-04,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.20,
-                               VALE_REFE = -4.94505E-04,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.30,
-                               VALE_REFE = 3.02638E-04,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.40,
-                               VALE_REFE = -3.80509E-04,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-    _F(  FONCTION = NOADXDRT,  VALE_PARA = 0.50,
-                               VALE_REFE = -3.92295E-04,
-         REFERENCE= 'NON_REGRESSION',
-         VERSION  = '7.1.10' ),
-                      ))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-1.56911E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=NOADXDRT,
+                         ),
+                      _F(VALE_CALC=-4.9450500000000001E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.20000000000000001,
+                         FONCTION=NOADXDRT,
+                         ),
+                      _F(VALE_CALC=3.0263799999999998E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.29999999999999999,
+                         FONCTION=NOADXDRT,
+                         ),
+                      _F(VALE_CALC=-3.8050900000000001E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.40000000000000002,
+                         FONCTION=NOADXDRT,
+                         ),
+                      _F(VALE_CALC=-3.9229500000000002E-4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.5,
+                         FONCTION=NOADXDRT,
+                         ),
+                      ),
+              )
 
 FIN( )

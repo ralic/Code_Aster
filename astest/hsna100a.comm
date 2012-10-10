@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 # hsna100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -262,33 +262,81 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
 # VALIDATION
 # VALEURS DE REFENCE DU CAS TEST: C.F. DOC DU CAS TEST HSNA100A
 
-TEST_RESU(RESU=(
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',
-               NUME_ORDRE = 44,
-            GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 104.,  PRECISION = 1.E-2, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',
-               NUME_ORDRE = 61,
-            GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 95.,   PRECISION = 2.E-2, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',
-               NUME_ORDRE = 72,
-            GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 78.,   PRECISION = 1.E-2, ))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=44,
+                   GROUP_NO='A2',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=104.818055062,
+                   VALE_REFE=104.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=61,
+                   GROUP_NO='A2',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=96.161717907,
+                   VALE_REFE=95.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.02,),
+                _F(NUME_ORDRE=72,
+                   GROUP_NO='A2',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=78.276655192,
+                   VALE_REFE=78.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 # NON REGRESSION
 # VALEURS DE REFERENCE ASTER DE LA VERSION 5.1.2
 
-TEST_RESU(RESU=(
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 60,
-            GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 100.1,  PRECISION = 1.E-3, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 62,
-            GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 92.8,   PRECISION = 1.E-3, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 64,
-            GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 87.2,   PRECISION = 1.E-3, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 66,
-            GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 82.9,   PRECISION = 1.E-3, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 68,
-            GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 79.5,   PRECISION = 1.E-3, ))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=60,
+                   GROUP_NO='A2',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=100.09999999999999,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=62,
+                   GROUP_NO='A2',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=92.799999999999997,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=64,
+                   GROUP_NO='A2',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=87.200000000000003,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=66,
+                   GROUP_NO='A2',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=82.900000000000006,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(NUME_ORDRE=68,
+                   GROUP_NO='A2',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=79.5,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
 
 ###################
 # CALCUL MECANIQUE
@@ -440,11 +488,15 @@ RESUMECA=STAT_NON_LINE(
 #
 # VALEURS DE REFERENCE ASTER DE LA VERSION 7.3.1
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',  INST     = 1.70294E+09,
-             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -1.8582096E-01,
-              REFERENCE = 'NON_REGRESSION', VERSION = '7.3.1'   )
-            )
+TEST_RESU(RESU=_F(GROUP_NO='A2',
+                  INST=1.702940000E9,
+                  RESULTAT=RESUMECA,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.18582096000000001,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #
 
@@ -459,11 +511,15 @@ RESUSTAT=MECA_STATIQUE( MODELE=MOMECA,
 
 #
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',  INST     = 1.70294E+09,
-             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -2.780327E-01,
-             REFERENCE = 'NON_REGRESSION', VERSION = '7.3.21' )
-            )
+TEST_RESU(RESU=_F(GROUP_NO='A2',
+                  INST=1.702940000E9,
+                  RESULTAT=RESUSTAT,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.27803270000000002,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #
 FIN()

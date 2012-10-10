@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRANSFERT DE CHALEUR UNIDIMENSIONNEL AVEC RAYONNEMENT
 # tpnl300b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -292,18 +292,53 @@ NOM_CHAM='TEMP', RESULTAT=TEMPE, INST=0. )
 # ANALYSE DES RESULTATS -------------------------------------------
 #
 
-TEST_RESU(CHAM_NO=(
-
-_F( CHAM_GD = TEMP, NOEUD = 'N91', NOM_CMP = 'TEMP', VALE = 653.85,  PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N92', NOM_CMP = 'TEMP', VALE = 653.85,  PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N93', NOM_CMP = 'TEMP', VALE = 653.85,  PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N94', NOM_CMP = 'TEMP', VALE = 653.85,  PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N95', NOM_CMP = 'TEMP', VALE = 653.85,  PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N96', NOM_CMP = 'TEMP', VALE = 653.85,  PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N97', NOM_CMP = 'TEMP', VALE = 653.85,  PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N98', NOM_CMP = 'TEMP', VALE = 653.85,  PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N99', NOM_CMP = 'TEMP', VALE = 653.85,  PRECISION = 1.E-4))
-    )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N91',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N92',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N93',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N94',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N95',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N96',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N97',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N98',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N99',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   ),
+          )
 
 FIN()
 #

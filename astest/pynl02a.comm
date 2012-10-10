@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE STAT_NON_LINE EN COMMANDES ECLATEES POUR UN CALCUL ELASTO-PLASTIQUE
 # pynl02a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -556,36 +556,40 @@ DIF_VAR=CREA_CHAMP(OPERATION='ASSE',
                             COEF_R=-1.),
                         ))
 
-TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=DIF_SIG,
-                        TYPE_TEST = 'MIN',
-                        CRITERE='ABSOLU',
-                        VALE_ABS='OUI',
-                        VALE=0.,
+TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-8,),
-                     _F(CHAM_GD=DIF_SIG,
-                        TYPE_TEST = 'MAX',
-                        CRITERE='ABSOLU',
-                        VALE_ABS='OUI',
-                        VALE=0.,
+                        PRECISION=1.E-08,
+                        TYPE_TEST='MIN',
+                        CHAM_GD=DIF_SIG,
+                        VALE_CALC= 6.25277607E-13,
+                        VALE_REFE=0.0,
+                        VALE_ABS='OUI',),
+                     _F(CRITERE='ABSOLU',
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-8,),
-                     _F(CHAM_GD=DIF_VAR,
-                        TYPE_TEST = 'MIN',
-                        CRITERE='ABSOLU',
-                        VALE_ABS='OUI',
-                        VALE=0.,
+                        PRECISION=1.E-08,
+                        TYPE_TEST='MAX',
+                        CHAM_GD=DIF_SIG,
+                        VALE_CALC= 6.82121026E-13,
+                        VALE_REFE=0.0,
+                        VALE_ABS='OUI',),
+                     _F(CRITERE='ABSOLU',
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-8,),
-                    _F(CHAM_GD=DIF_VAR,
-                        TYPE_TEST = 'MAX',
-                        CRITERE='ABSOLU',
-                        VALE_ABS='OUI',
-                        VALE=0.,
+                        PRECISION=1.E-08,
+                        TYPE_TEST='MIN',
+                        CHAM_GD=DIF_VAR,
+                        VALE_CALC= 5.32907052E-15,
+                        VALE_REFE=0.0,
+                        VALE_ABS='OUI',),
+                     _F(CRITERE='ABSOLU',
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-8,),
-                        ))
-
+                        PRECISION=1.E-08,
+                        TYPE_TEST='MAX',
+                        CHAM_GD=DIF_VAR,
+                        VALE_CALC= 1.06581410E-14,
+                        VALE_REFE=0.0,
+                        VALE_ABS='OUI',),
+                     ),
+          )
 
 IMPR_RESU(FORMAT='GMSH',UNITE=37,
           RESU=_F(RESULTAT=SOLUT,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')),);
@@ -594,4 +598,3 @@ IMPR_RESU(FORMAT='GMSH',UNITE=37,
 
 
 FIN();
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TUYAUTERIE COUDEE EN FLEXION
 # sslx102b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,15 +68,16 @@ RESU1=MECA_STATIQUE(  MODELE=MO,
                          EXCIT=_F(  CHARGE = CHAR1)
                     )
 
-TEST_RESU(
-           RESU=_F( RESULTAT = RESU1,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D',
-                 NOM_CMP = 'DY',
-                 VALE = 2.E-2,
-                 PRECISION = 7.E-2)
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.018651870,
+                  VALE_REFE=0.02,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.070000000000000007,),
+          )
 
 # FLEXION HORS PLAN
 
@@ -90,15 +91,16 @@ RESU2=MECA_STATIQUE(  MODELE=MO,
                          EXCIT=_F(  CHARGE = CHAR2)
                     )
 
-TEST_RESU(
-           RESU=_F( RESULTAT = RESU2,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D',
-                 NOM_CMP = 'DZ',
-                 VALE = -1.5657E-2,
-                 PRECISION = 2.E-2)
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  RESULTAT=RESU2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.015367311,
+                  VALE_REFE=-0.015657000000000001,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.02,),
+          )
 
 MASSEAB=POST_ELEM(   MODELE=MO,
        CHAM_MATER=CHMAT,
@@ -114,27 +116,36 @@ MASSEBC=POST_ELEM(   MODELE=MO,
      GROUP_MA = 'BC')
      )
 
-TEST_TABLE( TABLE=MASSEAB,
-                NOM_PARA='MASSE',
-               REFERENCE='ANALYTIQUE',
-                VALE=51.40365,   PRECISION=1.E-5)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=51.403651317,
+           VALE_REFE=51.403649999999999,
+           NOM_PARA='MASSE',
+           TABLE=MASSEAB,)
 
-TEST_TABLE( TABLE=MASSEBC,
-                NOM_PARA='MASSE',
-                VALE=20.5226,   PRECISION=1.E-5)
+TEST_TABLE(
+           VALE_CALC=20.522600000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='MASSE',
+           TABLE=MASSEBC,)
 
-TEST_TABLE( TABLE=MASSEAB,
-                NOM_PARA='CDG_Y',
-                VALE=0.905,   PRECISION=1.E-7)
+TEST_TABLE(
+           VALE_CALC=0.90500000000000003,
+           TOLE_MACHINE=9.9999999999999995E-08,
+           NOM_PARA='CDG_Y',
+           TABLE=MASSEAB,)
 
-TEST_TABLE( TABLE=MASSEBC,
-                NOM_PARA='CDG_X',
-                VALE=0.099197,   PRECISION=1.E-5)
+TEST_TABLE(
+           VALE_CALC=0.099196999999999994,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='CDG_X',
+           TABLE=MASSEBC,)
 
-TEST_TABLE( TABLE=MASSEBC,
-                NOM_PARA='CDG_Y',
-                VALE=0.099197,   PRECISION=1.E-5)
-
+TEST_TABLE(
+           VALE_CALC=0.099196999999999994,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='CDG_Y',
+           TABLE=MASSEBC,)
 
 MASS2AB=POST_ELEM(   MODELE=MO,RESULTAT = RESU2,GEOMETRIE='DEFORMEE',
                  NUME_ORDRE = 1,
@@ -152,26 +163,40 @@ MASS2BC=POST_ELEM(   MODELE=MO,RESULTAT = RESU2,GEOMETRIE='DEFORMEE',
      GROUP_MA = 'BC')
      )
 
-TEST_TABLE( TABLE=MASS2AB,
-                NOM_PARA='MASSE', REFERENCE='NON_REGRESSION',
-                VALE=51.4037,   PRECISION=1.E-5)
+TEST_TABLE(
+           VALE_CALC=51.403700000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='MASSE',
+           TABLE=MASS2AB,
+           )
 
-TEST_TABLE( TABLE=MASS2BC,
-                NOM_PARA='MASSE', REFERENCE='NON_REGRESSION',
-                VALE=20.5226,   PRECISION=1.E-5)
+TEST_TABLE(
+           VALE_CALC=20.522600000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='MASSE',
+           TABLE=MASS2BC,
+           )
 
-TEST_TABLE( TABLE=MASS2AB,
-                NOM_PARA='CDG_Y', REFERENCE='NON_REGRESSION',
-                VALE=0.905,   PRECISION=1.E-7)
+TEST_TABLE(
+           VALE_CALC=0.90500000000000003,
+           TOLE_MACHINE=9.9999999999999995E-08,
+           NOM_PARA='CDG_Y',
+           TABLE=MASS2AB,
+           )
 
-TEST_TABLE( TABLE=MASS2BC,
-                NOM_PARA='CDG_X', REFERENCE='NON_REGRESSION',
-                VALE=0.099197,   PRECISION=1.E-5)
+TEST_TABLE(
+           VALE_CALC=0.099196999999999994,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='CDG_X',
+           TABLE=MASS2BC,
+           )
 
-TEST_TABLE( TABLE=MASS2BC,
-                NOM_PARA='CDG_Y', REFERENCE='NON_REGRESSION',
-                VALE=0.099197,   PRECISION=1.E-5)
-
+TEST_TABLE(
+           VALE_CALC=0.099196999999999994,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='CDG_Y',
+           TABLE=MASS2BC,
+           )
 
 # TEST DES NOEUDS ORDONNES PAR DEFI_GROUP
 
@@ -179,11 +204,13 @@ EVOL=POST_RELEVE_T(    ACTION=_F( INTITULE = 'DEPL',
   GROUP_NO = 'AD',  RESULTAT = RESU1, NOM_CHAM = 'DEPL',
   TOUT_CMP = 'OUI',  OPERATION = 'EXTRACTION'))
 
-TEST_TABLE( TABLE=EVOL,
-                NOM_PARA='ABSC_CURV',
-       FILTRE=_F( NOM_PARA = 'COOR_X',
-               VALE = 1.505),
-               REFERENCE='ANALYTIQUE',
-                VALE=2.87909288E+00  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.879062096,
+           VALE_REFE=2.87909288,
+           NOM_PARA='ABSC_CURV',
+           TABLE=EVOL,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=1.5049999999999999,),
+           )
 
 FIN()

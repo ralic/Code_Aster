@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 # shll100b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,14 +164,17 @@ HARMDIR=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                                    COEF_MULT = 1.))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = HARMDIR,
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N11',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=HARMDIR,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N11',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
 
 #CALCUL HARMONIQUE A UN NIVEAU DE PROJECTION
 # BASE MODALE DIRECTE CALCULEE SANS SOUS STRUCTURATION
@@ -196,14 +199,17 @@ DYNHARD=REST_GENE_PHYS(   RESU_GENE=DYNPROD,
                            MODE_MECA=MODESD,
                            TOUT_CHAM='OUI')
 
-TEST_RESU( RESU=_F( RESULTAT = DYNHARD,
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N11',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHARD,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N11',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
 
 #----------------------------------------------
 #SOUS STRUCTURATION
@@ -559,55 +565,70 @@ DYNHAR2=REST_SOUS_STRUC( RESU_GENE=DYNGEN,
 #RESTITUTION SUR BASE PHYSIQUE
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N5',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHAR2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
 
 #
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHARC,
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N5',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHARC,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
-                  NOM_CHAM = 'VITE',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N5',
-                  NOM_CMP = 'DX',
-                  VALE_C = -3.18E-6-4.40E-8j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-3.18248712E-06+-4.39853761E-08j,
+                  VALE_REFE_C=(-3.18e-06-4.3999999999999997e-08j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHAR2,
+                  NOM_CHAM='VITE',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
-                  NOM_CHAM = 'ACCE',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N5',
-                  NOM_CMP = 'DX',
-                  VALE_C = 2.76E-5-2.00E-3j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C= 2.76368269E-05+-1.99961563E-03j,
+                  VALE_REFE_C=(2.76e-05-0.002j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHAR2,
+                  NOM_CHAM='ACCE',
+                  NOEUD='N5',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHARM2,
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'NO12',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  VALE_CALC_C=-7.00049003E-11+ 5.06508556E-09j,
+                  VALE_REFE_C=(-7.0000000000000004e-11+5.0700000000000001e-09j),
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=DYNHARM2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO12',
+                  NOM_CMP='DX',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
+          )
 
 #
 #----------------------------------------------------------

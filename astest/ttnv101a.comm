@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SECHAGE DU BETON - CALCUL DE LA PERTE DE MASSE
 # ttnv101a.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,11 +117,9 @@ Val_Ref = [0.9,1.2,1.3,1.5,1.7];
 # Valeurs de non-regression
 Val_reg = [9.72148E-01,1.32039E+00,1.41454E+00,1.62195E+00,1.74863E+00];
 for i,valr in enumerate(Val_Ref) :
-        TEST_TABLE(TABLE=TPERTE0, NOM_PARA='DP_P', VALE=valr,
+        TEST_TABLE(TABLE=TPERTE0, NOM_PARA='DP_P',
                 FILTRE=( _F(  NOM_PARA = 'INST', VALE = listtmp[i],),),
-                PRECISION=0.11,
+                VALE_REFE=valr, PRECISION=0.11,
+                VALE_CALC=Val_reg[i], TOLE_MACHINE=1.e-3,
                 REFERENCE='SOURCE_EXTERNE',)
-        TEST_TABLE(TABLE=TPERTE0, NOM_PARA='DP_P', VALE=Val_reg[i],
-                FILTRE=( _F(  NOM_PARA = 'INST', VALE = listtmp[i],),),
-                REFERENCE='NON_REGRESSION',)
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN PLASTICITE
 # forma03b.para = tps_job 110 mem_job 512Mo ncpus 1 liste_test S
@@ -245,25 +245,30 @@ IMPR_RESU(FORMAT='MED',
 ########################################################################
 
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='B',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESUNL,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='B',
-                  VALE=29.809234113416,
+                  VALE_CALC=29.809234113,
+                  VALE_REFE=29.809234113416,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=1.E-08,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESUNL,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIXX',
-                  GROUP_NO='A',
-                  VALE=-9.8213909205095,
+                  VALE_CALC=-9.821390921,
+                  VALE_REFE=-9.8213909205095007,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=1.E-08,),
+          )
+
                       ########################################################################
 #
 # TESTS - CALCUL CHARGEMENT PLASTIQUE
@@ -271,66 +276,66 @@ TEST_RESU(RESU=_F(RESULTAT=RESUNL,
 #
 ########################################################################
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  NUME_ORDRE=31,
+TEST_RESU(RESU=_F(NUME_ORDRE=31,
+                  GROUP_NO='B',
+                  RESULTAT=RESUNL,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='B',
-                  VALE=211.38016437512,
+                  VALE_CALC=211.38016437511999,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  NUME_ORDRE=31,
+TEST_RESU(RESU=_F(NUME_ORDRE=31,
+                  GROUP_NO='A',
+                  RESULTAT=RESUNL,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIXX',
-                  GROUP_NO='A',
-                  VALE=-147.30118914221,
+                  VALE_CALC=-147.30118914221001,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  NUME_ORDRE=31,
+TEST_RESU(RESU=_F(NUME_ORDRE=31,
+                  GROUP_NO='B',
+                  RESULTAT=RESUNL,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V1',
-                  GROUP_NO='B',
-                  VALE=3.1650583711677E-03,
+                  VALE_CALC=3.1650583711677E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  NUME_ORDRE=31,
+TEST_RESU(RESU=_F(NUME_ORDRE=31,
+                  GROUP_NO='B',
+                  RESULTAT=RESUNL,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V2',
-                  GROUP_NO='B',
-                  VALE=1.0,
+                  VALE_CALC=1.0,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  NUME_ORDRE=31,
+TEST_RESU(RESU=_F(NUME_ORDRE=31,
+                  GROUP_NO='A',
+                  RESULTAT=RESUNL,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V1',
-                  GROUP_NO='A',
-                  VALE=0.0,
+                  VALE_CALC=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  NUME_ORDRE=31,
+TEST_RESU(RESU=_F(NUME_ORDRE=31,
+                  GROUP_NO='A',
+                  RESULTAT=RESUNL,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V2',
-                  GROUP_NO='A',
-                  VALE=0.0,
+                  VALE_CALC=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
+
  ########################################################################
 #
 # TESTS - CALCUL CHARGEMENT PLASTIQUE PUIS DECHARGE
@@ -338,64 +343,68 @@ TEST_RESU(RESU=_F(RESULTAT=RESUNL,
 #
 ########################################################################
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
-                  NUME_ORDRE=41,
+TEST_RESU(RESU=_F(NUME_ORDRE=41,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESUNL2,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='B',
-                  VALE=-298.10110050242,
+                  VALE_CALC=-298.101100502,
+                  VALE_REFE=-298.10110050242002,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-08,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
-                  NUME_ORDRE=41,
+TEST_RESU(RESU=_F(NUME_ORDRE=41,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESUNL2,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIXX',
-                  GROUP_NO='A',
-                  VALE=16.841677073602,
+                  VALE_CALC=16.841677074,
+                  VALE_REFE=16.841677073602,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-08,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
-                  NUME_ORDRE=41,
+TEST_RESU(RESU=_F(NUME_ORDRE=41,
+                  GROUP_NO='B',
+                  RESULTAT=RESUNL2,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V1',
-                  GROUP_NO='B',
-                  VALE=0.36437022323172,
+                  VALE_CALC=0.36437022323172003,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
-                  NUME_ORDRE=41,
+TEST_RESU(RESU=_F(NUME_ORDRE=41,
+                  GROUP_NO='B',
+                  RESULTAT=RESUNL2,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V2',
-                  GROUP_NO='B',
-                  VALE=1.5,
+                  VALE_CALC=1.5,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
-                  NUME_ORDRE=41,
+TEST_RESU(RESU=_F(NUME_ORDRE=41,
+                  GROUP_NO='A',
+                  RESULTAT=RESUNL2,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V1',
-                  GROUP_NO='A',
-                  VALE=3.5534604597225E-03,
+                  VALE_CALC=3.5534604597225001E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
-                  NUME_ORDRE=41,
+TEST_RESU(RESU=_F(NUME_ORDRE=41,
+                  GROUP_NO='A',
+                  RESULTAT=RESUNL2,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V2',
-                  GROUP_NO='A',
-                  VALE=-0.,
+                  VALE_CALC=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE 3D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdlv130b.para = tps_job 120 mem_job 768Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -207,70 +207,85 @@ IMPR_RESU(FORMAT='GMSH',
 #               VALIDATION DES RESULTATS
 #----------------------------------------------
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
-                  VALE=1.36384279542,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODES,
+                  VALE_CALC=1.363040751,
+                  VALE_REFE=1.3638427954200001,
                   CRITERE='RELATIF',
-                  PRECISION=0.005,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PARA='FREQ',
-                  VALE=3.22092785153,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODES,
+                  VALE_CALC=3.179009588,
+                  VALE_REFE=3.2209278515299999,
                   CRITERE='RELATIF',
-                  PRECISION=0.015,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=0.014999999999999999,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=3,
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   PARA='FREQ',
-                  VALE=4.81490742935,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODES,
+                  VALE_CALC=4.811667837,
+                  VALE_REFE=4.8149074293499998,
                   CRITERE='RELATIF',
-                  PRECISION=0.005,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=4,
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   PARA='FREQ',
-                  VALE=7.19503041712,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODES,
+                  VALE_CALC=7.203461614,
+                  VALE_REFE=7.1950304171199999,
                   CRITERE='RELATIF',
-                  PRECISION=0.005,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=5,
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   PARA='FREQ',
-                  VALE=10.0980751404,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODES,
+                  VALE_CALC=9.956748901,
+                  VALE_REFE=10.098075140400001,
                   CRITERE='RELATIF',
-                  PRECISION=0.015,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=0.014999999999999999,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=6,
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
                   PARA='FREQ',
-                  VALE=11.7898433642,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODES,
+                  VALE_CALC=11.629286265,
+                  VALE_REFE=11.789843364199999,
                   CRITERE='RELATIF',
-                  PRECISION=0.015,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=0.014999999999999999,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=7,
+TEST_RESU(RESU=_F(NUME_ORDRE=7,
                   PARA='FREQ',
-                  VALE=17.4844516078,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODES,
+                  VALE_CALC=17.413783499,
+                  VALE_REFE=17.484451607800001,
                   CRITERE='RELATIF',
-                  PRECISION=0.005,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=8,
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
                   PARA='FREQ',
-                  VALE=18.2814957496,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODES,
+                  VALE_CALC=18.252605999,
+                  VALE_REFE=18.281495749600001,
                   CRITERE='RELATIF',
-                  PRECISION=0.005,
-                  REFERENCE='AUTRE_ASTER',),);
-
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
 FIN();
 

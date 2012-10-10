@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2012   AUTEUR BERRO H.BERRO 
+C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,8 @@ C ----------------------------------------------------------------------
      &             N1,N2,N3,NBORDR,NUMORD,NCMP,NBINST,IM,
      &             JINST,JCHAM,NBMODE,JVECG,JNUME,JDEEQ,ISTRU,I,
      &             IREFR,IREFI,IREFC,NREF,LXLGUT,NL1,NL2,JFREQ,NBFREQ
-      REAL*8       VALR,EPSI,PREC,TEMPS,R8B,FREQ
+      INTEGER      N1R,N2R,N3R,IREFRR, IREFIR,IREFCR
+      REAL*8       VALR,EPSI,EPSIR,PREC,TEMPS,R8B,FREQ
       COMPLEX*16   VALC,C16B
       CHARACTER*1  TYPRES
       CHARACTER*3  SSIGNE
@@ -39,17 +40,21 @@ C ----------------------------------------------------------------------
       CHARACTER*8  CRIT, CRIT2, INTERP, MODE
       CHARACTER*11 MOTCLE
       CHARACTER*14 NUGENE
-      CHARACTER*16 NOPARA, NSYM, K16B, TYSD, CH16,TBTXT(2)
+      CHARACTER*16 NOPARA, NSYM, K16B, TYSD, CH16,TBTXT(2),TBREF(2)
       CHARACTER*19 CHAM19, KNUM, RESU19
-      CHARACTER*24 TRAVR,TRAVI,TRAVC
+      CHARACTER*24 TRAVR,TRAVI,TRAVC,TRAVRR,TRAVIR,TRAVCR
       CHARACTER*200 LIGN1,LIGN2
       INTEGER      IARG
+      LOGICAL      LREF
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       MOTCLE = 'RESU_GENE'
       TRAVR  = '&&'//NOMPRO//'_TRAVR          '
       TRAVI  = '&&'//NOMPRO//'_TRAVI          '
       TRAVC  = '&&'//NOMPRO//'_TRAVC          '
+      TRAVRR = '&&'//NOMPRO//'_TRAVR_R        '
+      TRAVIR = '&&'//NOMPRO//'_TRAVI_R        '
+      TRAVCR = '&&'//NOMPRO//'_TRAVC_R        '
 
       DO 100 IOCC = 1,NOCC
         LIGN1  = ' '
@@ -59,28 +64,62 @@ C     ------------------------------------------------------------------
 
         CALL GETVTX('GENE','VALE_ABS', IOCC,IARG,1,SSIGNE,N1)
 
-        CALL GETVR8('GENE','VALE'    , IOCC,IARG,0,R8B   ,N1)
-        CALL GETVIS('GENE','VALE_I'  , IOCC,IARG,0,IBID  ,N2)
-        CALL GETVC8('GENE','VALE_C'  , IOCC,IARG,0,C16B  ,N3)
+        CALL GETVR8('GENE','VALE_CALC'    , IOCC,IARG,0,R8B   ,N1)
+        CALL GETVIS('GENE','VALE_CALC_I'  , IOCC,IARG,0,IBID  ,N2)
+        CALL GETVC8('GENE','VALE_CALC_C'  , IOCC,IARG,0,C16B  ,N3)
         IF( N1 .NE. 0) THEN
           NREF=-N1
           TYPRES = 'R'
           CALL JEDETR(TRAVR)
           CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
-          CALL GETVR8('GENE','VALE', IOCC,IARG,NREF,ZR(IREFR),IRET)
+          CALL GETVR8('GENE','VALE_CALC', IOCC,IARG,NREF,ZR(IREFR),IRET)
         ELSEIF( N2 .NE. 0) THEN
           NREF=-N2
           TYPRES = 'I'
           CALL JEDETR(TRAVI)
           CALL WKVECT(TRAVI,'V V I',NREF,IREFI)
-          CALL GETVIS('GENE','VALE_I', IOCC,IARG,NREF,ZI(IREFI),IRET)
+          CALL GETVIS('GENE','VALE_CALC_I', IOCC,IARG,
+     &                NREF,ZI(IREFI),IRET)
         ELSEIF( N3 .NE. 0) THEN
           NREF=-N3
           TYPRES = 'C'
           CALL JEDETR(TRAVC)
           CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
-          CALL GETVC8('GENE','VALE_C', IOCC,IARG,NREF,ZC(IREFC),IRET)
+          CALL GETVC8('GENE','VALE_CALC_C', IOCC,IARG,
+     &                NREF,ZC(IREFC),IRET)
         ENDIF
+C ----------------------------------------------------------------------
+        LREF=.FALSE.
+        CALL GETVR8('GENE','PRECISION',IOCC,IARG,1,EPSIR,IRET)
+        IF (IRET.NE.0) THEN
+           LREF=.TRUE.
+           CALL GETVR8('GENE','VALE_REFE'     ,IOCC,IARG,0,R8B ,N1R)
+           CALL GETVIS('GENE','VALE_REFE_I'   ,IOCC,IARG,0,IBID,N2R)
+           CALL GETVC8('GENE','VALE_REFE_C'   ,IOCC,IARG,0,C16B,N3R)
+           IF (N1R.NE.0) THEN
+             CALL ASSERT((N1R.EQ.N1))
+             NREF=-N1R
+             CALL JEDETR(TRAVRR)
+             CALL WKVECT(TRAVRR,'V V R',NREF,IREFRR)
+             CALL GETVR8('GENE','VALE_REFE', IOCC,IARG,NREF,
+     &                   ZR(IREFRR),IRET)
+           ELSEIF (N2R.NE.0) THEN
+             CALL ASSERT((N2R.EQ.N2))
+             NREF=-N2R
+             CALL JEDETR(TRAVIR)
+             CALL WKVECT(TRAVIR,'V V I',NREF,IREFIR)
+             CALL GETVIS('GENE','VALE_REFE_I', IOCC,IARG,NREF,
+     &                   ZI(IREFIR),IRET)
+           ELSEIF (N3R.NE.0) THEN
+             CALL ASSERT((N3R.EQ.N3))
+             NREF=-N3R
+             CALL JEDETR(TRAVCR)
+             CALL WKVECT(TRAVCR,'V V C',NREF,IREFCR)
+             CALL GETVC8('GENE','VALE_REFE_C', IOCC,IARG,NREF,
+     &                  ZC(IREFCR),IRET)
+           ENDIF
+        ENDIF
+C ----------------------------------------------------------------------
 
         CALL GETVID('GENE','RESU_GENE',IOCC,IARG,1,RESU19,N1)
         CALL GETTCO(RESU19,TYSD)
@@ -165,9 +204,19 @@ C
 
           CALL UTEST3('GENE',IOCC,TBTXT)
 
+          IF (LREF) THEN 
+            TBREF(1)=TBTXT(1)
+            TBREF(2)=TBTXT(2)
+            TBTXT(1)='NON_REGRESSION'
+          ENDIF
           CALL UTITES(TBTXT(1),TBTXT(2),TYPRES,NREF,ZI(IREFI),ZR(IREFR),
-     &                ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
-C ----------------------------------------------------------------------
+     &            ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,.TRUE.,SSIGNE)
+          IF (LREF) THEN
+            CALL UTITES(TBREF(1),TBREF(2),TYPRES,NREF,ZI(IREFIR),
+     &                  ZR(IREFRR),ZC(IREFCR),VALI,VALR,VALC,
+     &                  EPSIR,CRIT,IFIC,.FALSE.,SSIGNE)
+          ENDIF
+
         ELSEIF ( TYSD .EQ. 'MODE_GENE') THEN
 
           KNUM = '&&TRGENE.NUME_ORDRE'
@@ -232,9 +281,18 @@ C ----------------------------------------------------------------------
 
             CALL UTEST3('GENE',IOCC,TBTXT)
 
+            IF (LREF) THEN 
+              TBREF(1)=TBTXT(1)
+              TBREF(2)=TBTXT(2)
+              TBTXT(1)='NON_REGRESSION'
+            ENDIF
             CALL UTITES(TBTXT(1),TBTXT(2),TYPRES,NREF,ZI(IREFI),
      &                  ZR(IREFR),ZC(IREFC),VALI,VALR,VALC,EPSI,
-     &                  CRIT,IFIC,SSIGNE)
+     &                  CRIT,IFIC,.TRUE.,SSIGNE)
+            IF (LREF)  
+     &      CALL UTITES(TBREF(1),TBREF(2),TYPRES,NREF,ZI(IREFIR),
+     &                  ZR(IREFRR),ZC(IREFCR),VALI,VALR,VALC,EPSIR,
+     &                  CRIT,IFIC,.FALSE.,SSIGNE)
             CALL JEDETR ( KNUM )
             GOTO 100
           END IF
@@ -242,8 +300,8 @@ C ----------------------------------------------------------------------
           CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,IARG,1,NSYM,N1)
           CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
           CALL RSEXCH('F',RESU19,NSYM,NUMORD,CHAM19,IRET)
-          CALL JEVEUO(CHAM19//'.VALE','L',JLUE)
-          CALL JELIRA(CHAM19//'.VALE','TYPE',IBID,K16B)
+          CALL JEVEUO(CHAM19//'.VALE_CALC','L',JLUE)
+          CALL JELIRA(CHAM19//'.VALE_CALC','TYPE',IBID,K16B)
 C
           CALL JEVEUO(CHAM19//'.REFE','L',JREFE)
           MODE = ZK24(JREFE)(1:8)
@@ -327,10 +385,19 @@ C
 
           CALL UTEST3('GENE',IOCC,TBTXT)
 
+          IF (LREF) THEN 
+            TBREF(1)=TBTXT(1)
+            TBREF(2)=TBTXT(2)
+            TBTXT(1)='NON_REGRESSION'
+          ENDIF
           CALL UTITES(TBTXT(1),TBTXT(2),TYPRES,NREF,ZI(IREFI),ZR(IREFR),
-     &                ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+     &            ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,.TRUE.,SSIGNE)
+          IF (LREF)  
+     &    CALL UTITES(TBREF(1),TBREF(2),TYPRES,NREF,
+     &            ZI(IREFIR),ZR(IREFRR),ZC(IREFCR),
+     &            VALI,VALR,VALC,EPSIR,CRIT,IFIC,.FALSE.,SSIGNE)
           CALL JEDETR ( KNUM )
-C ----------------------------------------------------------------------
+
         ELSEIF ( TYSD .EQ. 'HARM_GENE' ) THEN
           CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,IARG,1,NSYM,N1)
           CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
@@ -405,11 +472,21 @@ C
           ENDIF
 
           CALL UTEST3('GENE',IOCC,TBTXT)
-          CALL UTITES(TBTXT(1),TBTXT(2),'C',NREF,ZI(IREFI),ZR(IREFR),
-     &               ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
-
+          IF (LREF) THEN 
+            TBREF(1)=TBTXT(1)
+            TBREF(2)=TBTXT(2)
+            TBTXT(1)='NON_REGRESSION'
+          ENDIF
+          CALL UTITES(TBTXT(1), TBTXT(2), 'C', NREF, ZI(IREFI),
+     &                ZR(IREFR), ZC(IREFC), VALI, VALR, VALC,
+     &                EPSI, CRIT, IFIC, .TRUE., SSIGNE)
+          IF (LREF) THEN
+            CALL UTITES(TBREF(1), TBREF(2), 'C', NREF, ZI(IREFIR),
+     &                  ZR(IREFRR), ZC(IREFCR), VALI, VALR, VALC,
+     &                  EPSIR, CRIT, IFIC, .FALSE., SSIGNE)
+          ENDIF
           CALL JEDETR ('&&TRGENE.CHAMP')
-C ----------------------------------------------------------------------
+
         ELSEIF ( TYSD .EQ. 'TRAN_GENE' ) THEN
           CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,IARG,1,NSYM,N1)
           CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
@@ -484,9 +561,19 @@ C
           ENDIF
 
           CALL UTEST3('GENE',IOCC,TBTXT)
-          CALL UTITES(TBTXT(1),TBTXT(2),'R',NREF,ZI(IREFI),ZR(IREFR),
-     &               ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
-
+          IF (LREF) THEN 
+            TBREF(1)=TBTXT(1)
+            TBREF(2)=TBTXT(2)
+            TBTXT(1)='NON_REGRESSION'
+          ENDIF
+          CALL UTITES(TBTXT(1), TBTXT(2), 'R', NREF, ZI(IREFI),
+     &                ZR(IREFR), ZC(IREFC), VALI, VALR, VALC,
+     &                EPSI, CRIT, IFIC, .TRUE., SSIGNE)
+          IF (LREF) THEN
+            CALL UTITES(TBREF(1), TBREF(2), 'R', NREF, ZI(IREFIR),
+     &                  ZR(IREFRR), ZC(IREFCR), VALI, VALR, VALC,
+     &                  EPSIR, CRIT, IFIC, .FALSE., SSIGNE)
+          ENDIF
           CALL JEDETR ('&&TRGENE.CHAMP')
         ENDIF
         WRITE (IFIC,*)' '

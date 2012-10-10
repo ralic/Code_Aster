@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS HEX20 INCO)
 # ssnp123d.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,108 +132,105 @@ IMPR_TABLE(TABLE=S_T,);
 #=======
 # NOn REGRESSION
 
-TEST_TABLE(TABLE=S_T,
+TEST_TABLE(
+           VALE_CALC=234.12162678999999,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='SIYY',
+           TABLE=S_T,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=0.0,),
-           NOM_PARA='SIYY',
-           VALE=234.12162679,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+           )
 
-TEST_TABLE(TABLE=S_T,
+TEST_TABLE(
+           VALE_CALC=256.98783319,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='SIYY',
+           TABLE=S_T,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=1.53224,),
-           NOM_PARA='SIYY',
-           VALE=256.98783319,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+           )
 
-TEST_TABLE(TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.26890,),
+TEST_TABLE(
+           VALE_CALC=300.28717383999998,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='SIYY',
-           VALE=300.28717384,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=S_T,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=3.2688999999999999,),
+           )
 
-TEST_TABLE(TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.80797,),
+TEST_TABLE(
+           VALE_CALC=267.55482696000001,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='SIYY',
-           VALE=267.55482696,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=S_T,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=3.8079700000000001,),
+           )
 
-TEST_TABLE(TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.40378,),
+TEST_TABLE(
+           VALE_CALC=183.49849877,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='SIYY',
-           VALE=183.49849877,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=S_T,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=4.4037800000000002,),
+           )
 
 #--------------------------------------------------------------------------------
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               INST = 1.,
-               NOM_CHAM = 'ERME_ELEM',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.0001,
-               POINT = 1,
-               MAILLE='M1294',
-               NOM_CMP = 'NUEST',
-               VALE = 1.49802122E-01,
-               REFERENCE = 'NON_REGRESSION',VERSION = '11.0.30'),
-             ),
-            );
+TEST_RESU(RESU=_F(INST=1.0,
+                  POINT=1,
+                  RESULTAT=RESU,
+                  NOM_CHAM='ERME_ELEM',
+                  NOM_CMP='NUEST',
+                  VALE_CALC=0.14980212200000001,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  MAILLE='M1294',
+                  ),
+          )
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               INST = 1.,
-               NOM_CHAM = 'ERME_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.0001,
-               NOEUD= 'N5',
-               MAILLE='M1294',
-               NOM_CMP = 'ERREST',
-               VALE = 1.06039820E-02,
-               REFERENCE = 'NON_REGRESSION',VERSION = '11.0.30'),
-             ),
-            );
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='ERME_ELNO',
+                  NOEUD='N5',
+                  NOM_CMP='ERREST',
+                  VALE_CALC=0.010603982,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  MAILLE='M1294',
+                  ),
+          )
+
 #--------------------------------------------------------------------------------
 #
 #  TEST SUR LES CONTRAINTES AU POINT B
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               INST = 1.,
-               NOM_CHAM = 'SIGM_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.0001,
-               NOEUD= 'N5',
-               MAILLE='M1294',
-               NOM_CMP = 'SIYY',
-               VALE = 4.4020187087E+02,
-               REFERENCE = 'NON_REGRESSION',VERSION = '11.0.30'),
-             ),
-            );
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='N5',
+                  NOM_CMP='SIYY',
+                  VALE_CALC=440.20187086999999,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  MAILLE='M1294',
+                  ),
+          )
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               INST = 1.,
-               NOM_CHAM = 'SIGM_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.0001,
-               NOEUD= 'N5',
-               MAILLE='M1294',
-               NOM_CMP = 'SIXX',
-               VALE = -2.41927537E-01,
-               REFERENCE = 'NON_REGRESSION',VERSION = '11.0.30'),
-             ),
-            );
-
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='N5',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-0.241927537,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  MAILLE='M1294',
+                  ),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
 # ssnp131b.para = tps_job 500 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -250,33 +250,36 @@ tab=POST_GP(RESULTAT=RESU,
                            DEGRE=1),
             INFO=2);
            
-TEST_TABLE(TABLE=tabgpmax,
-           FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
-                      VALE_I=1),
-                   _F(NOM_PARA='INST',
-                      VALE=8.0,
-                      PRECISION=1e-6),
-                   ),
-           NOM_PARA='PREDICTION',
-           VALE_I=0,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,
+           TOLE_MACHINE=1.E-10,
            PRECISION=1.E-10,
-           REFERENCE='AUTRE_ASTER');
-
-TEST_TABLE(TABLE=tabgpmax,
+           NOM_PARA='PREDICTION',
+           TABLE=tabgpmax,
            FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
-                     VALE_I=1),
-                   _F(NOM_PARA='INST',
-                     VALE=8.,
-           PRECISION=1e-6)),
+                      VALE_I=1,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=8.0,),
+                   ),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-4,
+           VALE_CALC=0.235656741,
+           VALE_REFE=0.23565700000000001,
            NOM_PARA='GPMAX',
-           VALE=0.235657,
-           CRITERE='RELATIF',
-           PRECISION=0.0001,
-           REFERENCE='AUTRE_ASTER');
+           TABLE=tabgpmax,
+           FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
+                      VALE_I=1,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=8.0,),
+                   ),
+           )
 
-
-                              
 FIN();
 
 #
-

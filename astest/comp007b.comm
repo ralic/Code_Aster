@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'ELAS_VMIS_LINE' sous COMP_ELAS
 # comp007b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -178,7 +178,9 @@ for i in range(1,NCAL+1):
                                 _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
                                    ),)
           TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
-              TYPE_TEST = 'MAX',VALE      = 0.,CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
+              TYPE_TEST = 'MAX',
+              VALE_CALC = 0., VALE_REFE=0.,
+              CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
           DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),INFO=1);
 
@@ -194,7 +196,9 @@ for i in range(1,NCAL+1):
                                    ),)
 
           TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
-              TYPE_TEST = 'MAX',VALE      = 0.,CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
+              TYPE_TEST = 'MAX',
+              VALE_CALC = 0., VALE_REFE=0.,
+              CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
           DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),INFO=1);
 
@@ -210,7 +214,9 @@ for i in range(1,NCAL+1):
                                    ),)
 
           TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
-              TYPE_TEST = 'MAX',VALE      = 0.,CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
+              TYPE_TEST = 'MAX',
+              VALE_CALC = 0., VALE_REFE=0.,
+              CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
           DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),INFO=1);
 

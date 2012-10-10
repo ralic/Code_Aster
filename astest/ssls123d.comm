@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SPHERE SOUS PRESSION EXTERNE MODELISATION 3D
 # ssls123d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,14 +70,34 @@ RESUT=CALC_CHAMP(reuse =RESUT,
                 RESULTAT=RESUT,);
 
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESUT, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -1.28279E-5),
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='PAE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.29055359E-05,
+                   VALE_REFE=-1.28279E-05,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='PBE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.28611028E-05,
+                   VALE_REFE=-1.28279E-05,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='PCE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-1.28453551E-05,
+                   VALE_REFE=-1.28279E-05,
+                   PRECISION=1.E-2,),
+                ),
+          )
 
-            _F(  RESULTAT = RESUT, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'PBE',      NOM_CMP = 'DY',           VALE = -1.28279E-5),
-
-            _F(   RESULTAT = RESUT, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'PCE',      NOM_CMP = 'DZ',           VALE = -1.28279E-5),
-              ),)
 FIN()

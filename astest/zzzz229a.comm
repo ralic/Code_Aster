@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE validation de la commande AFFE_CHAR_MECA / LIAISON_SOLIDE + TRAN + ANGL_NAUT
 # zzzz229a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,13 +58,27 @@ CHAR1=AFFE_CHAR_MECA( MODELE=MO, LIAISON_SOLIDE= _F(GROUP_MA = 'ABCD',
 RESU0=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CHAM_MAT, EXCIT=( _F(CHARGE = CHAR1),), OPTION='SANS')
 #CALC_CHAMP(reuse=RESU0, RESULTAT=RESU0, OPTION='SIGM_ELNO')
 
-TEST_RESU( RESU=_F(  RESULTAT = RESU0,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL', REFERENCE='ANALYTIQUE',
-                  GROUP_NO='C',NOM_CMP = 'DX', VALE =-2. ))
-TEST_RESU( RESU=_F(  RESULTAT = RESU0,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL', REFERENCE='ANALYTIQUE',
-                  GROUP_NO='C',NOM_CMP = 'DY', VALE =2. ))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-2.000000000,
+                  VALE_REFE=-2.0,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=2.000000000,
+                  VALE_REFE=2.0,),
+          )
 
 #IMPR_RESU(RESU=_F(RESULTAT=RESU0))
 #IMPR_RESU(FORMAT='CASTEM',RESU=_F(RESULTAT=RESU0, MAILLAGE=MA)) # pour visualisation
 
 FIN();
-

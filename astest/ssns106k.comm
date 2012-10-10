@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106k.para = tps_job 140 mem_job 512Mo ncpus 1 liste_test S
@@ -344,121 +344,140 @@ IMPR_TABLE(TABLE=TDISS_G1,);
 #----- TRACTION - PHASE ELASTIQUE -----
 
 
-TEST_TABLE(TABLE=TDISS_G1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.05,),
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC= 0.00000000E+00,
+           VALE_REFE=0.0,
            NOM_PARA='TOTALE',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=TFX_G1,
+           TABLE=TDISS_G1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.25,),
+                     VALE=0.050000000000000003,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=4.0463375509777002E5,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='FXG',
-           VALE=4.0463375509777E+05,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_DY_1,
+           TABLE=TFX_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),
-           NOM_PARA='DYG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.1,
-           REFERENCE='ANALYTIQUE',);
+           )
 
-TEST_TABLE(TABLE=TDISS_G1,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC=-2.79099026E-05,
+           VALE_REFE=0.0,
+           NOM_PARA='DYG',
+           TABLE=D_DY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.25,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=254.97562079354,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TOTALE',
+           TABLE=TDISS_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.75,),
-           NOM_PARA='TOTALE',
-           VALE=254.97562079354,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',);
+           )
 
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
-TEST_TABLE(TABLE=TDISS_G1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=346.57215692717,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOTALE',
-           VALE=346.57215692717,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=TFX_G1,
+           TABLE=TDISS_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=5.2046600330232998E5,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='FXG',
-           VALE=5.2046600330233E+05,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_DY_1,
+           TABLE=TFX_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC=-4.36166029E-05,
+           VALE_REFE=0.0,
            NOM_PARA='DYG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.1,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=D_DY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 #----- TRACTION - PHASE DECHARGEMENT -----
 
-TEST_TABLE(TABLE=TFX_G1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.5,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-2.6878204520247001E6,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='FXG',
-           VALE=-2.6878204520247E+06,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_DY_1,
+           TABLE=TFX_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC= 7.37947249E-04,
+           VALE_REFE=0.0,
            NOM_PARA='DYG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.1,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=D_DY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.5,),
+           )
 
 #----- COMPRESSION - PHASE CHARGEMENT(TOUJOURS ELASTIQUE) -----
 
-TEST_TABLE(TABLE=TFX_G1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-4.1751434275306002E6,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='FXG',
-           VALE=-4.1751434275306E+06,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_DY_1,
+           TABLE=TFX_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.0,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC= 6.16397887E-03,
+           VALE_REFE=0.0,
            NOM_PARA='DYG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.1,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=D_DY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
 #----- COMPRESSION - PHASE DECHARGEMENT -----
 
-TEST_TABLE(TABLE=TFX_G1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.5,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-2.0875717137653001E6,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='FXG',
-           VALE=-2.0875717137653E+06,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_DY_1,
+           TABLE=TFX_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC= 3.08198943E-03,
+           VALE_REFE=0.0,
            NOM_PARA='DYG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.1,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=D_DY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
+           )
 
 FIN()

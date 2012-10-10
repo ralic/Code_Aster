@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION (AXISYMETRIQUE)
 # ssna302c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,34 +123,36 @@ CALCNL=CALC_CHAMP(
                    CONTRAINTE='SIGM_NOEU'
               )
 
-TEST_RESU(RESU=(
-
-            _F(
-            RESULTAT = CALCNL,
-            NOM_CHAM = 'DEPL',
-            NOEUD = 'N1',
-            PRECISION = 5.E-2,
-            NUME_ORDRE = 6,
-            NOM_CMP = 'DY',
-            VALE = -1.43041E-3),
-            _F(
-            RESULTAT = CALCNL,
-            NOM_CHAM = 'SIGM_NOEU',
-            NUME_ORDRE = 6,
-            NOEUD = 'N1',
-            NOM_CMP = 'SIXX',
-            CRITERE = 'RELATIF',
-            PRECISION = 5.E-2,
-            VALE = 3.89988E9),
-            _F(
-            RESULTAT = CALCNL,
-            NOM_CHAM = 'SIGM_NOEU',
-            NUME_ORDRE = 6,
-            NOEUD = 'N1',
-            NOM_CMP = 'SIZZ',
-            CRITERE = 'RELATIF',
-            PRECISION = 5.E-2,
-            VALE = 3.89953E9))
+TEST_RESU(RESU=(_F(NUME_ORDRE=6,
+                   RESULTAT=CALCNL,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.43814518E-03,
+                   VALE_REFE=-1.43041E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=6,
+                   RESULTAT=CALCNL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 3.90893659E+09,
+                   VALE_REFE=3.899880000E9,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=6,
+                   RESULTAT=CALCNL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC= 3.89589173E+09,
+                   VALE_REFE=3.899530000E9,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                ),
           )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TEST PHI2AS NUMERO 1 MODELISATION BARRE ECROUISSAGE CINEMATIQUE LINEAIRE
 # hsnv124e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -206,28 +206,33 @@ EPSP1=CALC_FONCTION(COMB=(_F(FONCTION=FU1,
                              ),);
 
 TEST_FONCTION(TEST_NOOK='NON',
-              VALEUR=(_F(FONCTION=EPSP1,
-                         NOM_PARA='INST',
+              VALEUR=(_F(VALE_CALC=0.01,
+                         VALE_REFE=1.E-2,
                          VALE_PARA=1.0,
-                         VALE_REFE=10.E-3,
+                         REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-3,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=EPSP1,
                          NOM_PARA='INST',
+                         FONCTION=EPSP1,),
+                      _F(VALE_CALC=0.0008,
+                         VALE_REFE=8.0000000000000004E-4,
                          VALE_PARA=2.0,
-                         VALE_REFE=8.E-4,
+                         REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-3,
-                         REFERENCE='ANALYTIQUE',),),);
+                         NOM_PARA='INST',
+                         FONCTION=EPSP1,),
+                      ),
+              )
 
-
-TEST_RESU(RESU=(_F(RESULTAT=U,
-                   INST=1.0,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='N',
-                   MAILLE='M1',
-                   POINT=1,
-                   VALE=210.0,
-                   REFERENCE='ANALYTIQUE',),),);
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='N',
+                  VALE_CALC=210.000000000,
+                  VALE_REFE=210.0,
+                  MAILLE='M1',),
+          )
 
 CHMATH2=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
@@ -254,14 +259,16 @@ U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,CONTRAINTE=('SIEF_ELNO'))
 
 
 
-TEST_RESU(RESU=(_F(RESULTAT=U2,
-                   INST=1.0,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='N',
-                   MAILLE='M1',
-                   POINT=1,
-                   VALE=210.0,
-                   REFERENCE='ANALYTIQUE',),),);
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U2,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='N',
+                  VALE_CALC=210.000000000,
+                  VALE_REFE=210.0,
+                  MAILLE='M1',),
+          )
 
 FU2=RECU_FONCTION(RESULTAT=U2,
                   NOM_CHAM='DEPL',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
@@ -283,18 +290,22 @@ EPSP2=CALC_FONCTION(COMB=(_F(FONCTION=FU2,
                              COEF=-5.0000000000000004E-06,),),);
 
 TEST_FONCTION(TEST_NOOK='NON',
-              VALEUR=(_F(FONCTION=EPSP2,
-                         NOM_PARA='INST',
+              VALEUR=(_F(VALE_CALC=0.01,
+                         VALE_REFE=1.E-2,
                          VALE_PARA=1.0,
-                         VALE_REFE=10.E-3,
+                         REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-3,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=EPSP2,
                          NOM_PARA='INST',
+                         FONCTION=EPSP2,),
+                      _F(VALE_CALC=0.0008,
+                         VALE_REFE=8.0000000000000004E-4,
                          VALE_PARA=2.0,
-                         VALE_REFE=8.E-4,
+                         REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-3,
-                         REFERENCE='ANALYTIQUE',),),);
+                         NOM_PARA='INST',
+                         FONCTION=EPSP2,),
+                      ),
+              )
 
 IMPR_FONCTION(UNITE=8,
               FORMAT='TABLEAU',
@@ -333,15 +344,16 @@ U3=STAT_NON_LINE(MODELE=MOMECA,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,
                                 ARRET='OUI',),);
-TEST_RESU(RESU=(_F(RESULTAT=U3,
-                   INST=1.0,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='N',
-                   MAILLE='M1',
-                   POINT=1,
-                   VALE=210.0,
-                   REFERENCE='ANALYTIQUE',),),);
-
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U3,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='N',
+                  VALE_CALC=210.000000000,
+                  VALE_REFE=210.0,
+                  MAILLE='M1',),
+          )
 
 FU3=RECU_FONCTION(RESULTAT=U3,
                   NOM_CHAM='DEPL',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
@@ -362,18 +374,21 @@ EPSP3=CALC_FONCTION(COMB=(_F(FONCTION=FU3,
                              COEF=-5.0000000000000004E-06,),),);
 
 TEST_FONCTION(TEST_NOOK='NON',
-              VALEUR=(_F(FONCTION=EPSP3,
-                         NOM_PARA='INST',
+              VALEUR=(_F(VALE_CALC=0.01,
+                         VALE_REFE=1.E-2,
                          VALE_PARA=1.0,
-                         VALE_REFE=10.E-3,
+                         REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-3,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=EPSP3,
                          NOM_PARA='INST',
+                         FONCTION=EPSP3,),
+                      _F(VALE_CALC=0.0008,
+                         VALE_REFE=8.0000000000000004E-4,
                          VALE_PARA=2.0,
-                         VALE_REFE=8.E-4,
+                         REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-3,
-                         REFERENCE='ANALYTIQUE',),),);
+                         NOM_PARA='INST',
+                         FONCTION=EPSP3,),
+                      ),
+              )
 
 FIN()
-

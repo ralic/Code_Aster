@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 # ahlv100s.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,19 +103,42 @@ HARMO=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                PUIS_PULS = 1)
          )
 
-TEST_RESU(RESU=(
-          _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'N1', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
-           PRECISION = 1.E-02),
-          _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'N237', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
-           PRECISION = 1.E-03),
-          _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'N2', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
-           PRECISION = 7.E-02),
-          _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
-           NOEUD = 'N205', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
-           PRECISION = 6.E-02))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   VALE_CALC_C=-6.195008451+-0.015674841j,
+                   VALE_REFE_C=('RI', -6.2426000000000004, 0.0),
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=HARMO,
+                   NOM_CHAM='PRES',
+                   NOEUD='N1',
+                   NOM_CMP='PRES',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=('RI', -6.2426000000000004, 0.0),
+                   TOLE_MACHINE=1.E-3,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='PRES',
+                   NOEUD='N237',
+                   NOM_CMP='PRES',
+                   ),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C= 5.9654562396841+2.0109538478286j,
+                   VALE_REFE_C=('RI', 6.0236999999999998, 1.6387),
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=HARMO,
+                   NOM_CHAM='PRES',
+                   NOEUD='N2',
+                   NOM_CMP='PRES',
+                   PRECISION=0.07,),
+                _F(NUME_ORDRE=1,
+                   VALE_CALC_C=5.919857621113+1.9838491756394j,
+                   VALE_REFE_C=('RI', 6.0236999999999998, 1.6387),
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=HARMO,
+                   NOM_CHAM='PRES',
+                   NOEUD='N205',
+                   NOM_CMP='PRES',
+                   PRECISION=0.06,),
+                ),
           )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU CONTACT EN GEOMETRIE INITIALE AVEC ETAT INITIAL
 # zzzz231c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,23 +117,29 @@ TAB_RESU=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
 
 IMPR_TABLE(TABLE=TAB_RESU);
 
-TEST_TABLE(TABLE=TAB_RESU,
-           FILTRE=(_F(NOM_PARA='QUANTITE',
-                      VALE_K='MINIMUM'),
-                   _F(NOM_PARA='INST',
-                      VALE=3.0)),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-2.000000000,
+           VALE_REFE=-2.0,
            NOM_PARA='DZ',
-           VALE=-2.0,
-           REFERENCE='ANALYTIQUE');
+           TABLE=TAB_RESU,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                      VALE_K='MINIMUM',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TAB_RESU,
-           FILTRE=(_F(NOM_PARA='QUANTITE',
-                      VALE_K='MAXIMUM'),
-                   _F(NOM_PARA='INST',
-                      VALE=3.0)),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-2.000000000,
+           VALE_REFE=-2.0,
            NOM_PARA='DZ',
-           VALE=-2.0,
-           REFERENCE='ANALYTIQUE');
+           TABLE=TAB_RESU,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                      VALE_K='MAXIMUM',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,),
+                   ),
+           )
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,

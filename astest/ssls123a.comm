@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE SPHERE SOUS PRESSION EXTERNE MODELISATION 3D
 # ssls123a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -73,14 +73,34 @@ RESUT=CALC_CHAMP(reuse =RESUT,
                 RESULTAT=RESUT,);
 
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESUT, NOM_CHAM='DEPL', PRECISION = 1.3E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'PAE',      NOM_CMP = 'DX',           VALE = -1.28279E-5),
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='PAE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.28618782E-05,
+                   VALE_REFE=-1.28279E-05,
+                   PRECISION=0.012999999999999999,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='PBE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.28618785E-05,
+                   VALE_REFE=-1.28279E-05,
+                   PRECISION=0.012999999999999999,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='PCE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESUT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-1.28901944E-05,
+                   VALE_REFE=-1.28279E-05,
+                   PRECISION=0.017000000000000001,),
+                ),
+          )
 
-            _F(  RESULTAT = RESUT, NOM_CHAM='DEPL', PRECISION = 1.3E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'PBE',      NOM_CMP = 'DY',           VALE = -1.28279E-5),
-
-            _F(   RESULTAT = RESUT, NOM_CHAM='DEPL',  PRECISION = 1.7E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'PCE',      NOM_CMP = 'DZ',           VALE = -1.28279E-5),
-              ),)
 FIN()

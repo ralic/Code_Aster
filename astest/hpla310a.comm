@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 # hpla310a.para = tps_job 220 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,84 +84,85 @@ TEMP=THER_LINEAIRE(        MODELE=MOTH,
 #
 # RAYON = 2
 #
-TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
-                   NOM_CHAM = 'TEMP',
-                   NUME_ORDRE = 60,
-                   GROUP_NO = 'P8',
-                   NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                   VALE = .28001E+02,
-                   PRECISION = 1.E-3)
-         )
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
+                  GROUP_NO='P8',
+                  RESULTAT=TEMP,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=28.001000000000001,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #
-TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
-                   NOM_CHAM = 'TEMP',
-                   NUME_ORDRE = 100,
-                   GROUP_NO = 'P8',
-                   NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                   VALE = .77332E+02,
-                   PRECISION = 1.E-3)
-         )
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  GROUP_NO='P8',
+                  RESULTAT=TEMP,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=77.331999999999994,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #
-TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
-                   NOM_CHAM = 'TEMP',
-                   NUME_ORDRE = 412,
-                   GROUP_NO = 'P8',
-                   NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                   VALE = .99834E+02,
-                   PRECISION = 1.E-3)
+TEST_RESU(RESU=_F(NUME_ORDRE=412,
+                  GROUP_NO='P8',
+                  RESULTAT=TEMP,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=99.834000000000003,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #
 # RAYON = 1
 #
-TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
-                   NOM_CHAM = 'TEMP',    NUME_ORDRE = 100,
-                   GROUP_NO = 'P0',       NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                   VALE = .62555E+01,
-                   PRECISION = 1.E-3)
-         )
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  GROUP_NO='P0',
+                  RESULTAT=TEMP,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=6.2554999999999996,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #
-TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
-                   NOM_CHAM = 'TEMP',    NUME_ORDRE = 412,
-                   GROUP_NO = 'P0',       NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                   VALE = .99013E+02,
-                   PRECISION = 1.E-3)
-         )
+TEST_RESU(RESU=_F(NUME_ORDRE=412,
+                  GROUP_NO='P0',
+                  RESULTAT=TEMP,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=99.013000000000005,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #
 # RAYON = 0
 #
-TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
-                   NOM_CHAM = 'TEMP',    NUME_ORDRE = 100,
-                   GROUP_NO = 'P11',       NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                   VALE = .17859E+00,
-                   PRECISION = 1.E-3)
-         )
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  GROUP_NO='P11',
+                  RESULTAT=TEMP,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.17859,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #
-TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
-                   NOM_CHAM = 'TEMP',    NUME_ORDRE = 412,
-                   GROUP_NO = 'P11',       NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                   VALE = .98638E+02,
-                   PRECISION = 1.E-3)
-         )
+TEST_RESU(RESU=_F(NUME_ORDRE=412,
+                  GROUP_NO='P11',
+                  RESULTAT=TEMP,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=98.638000000000005,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #
 # -------------------------------------------------------------------
@@ -342,14 +343,12 @@ DEP1B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #                    FIN DU THERMO-MECANIQUE A  T = 0.312 S
 # -------------------------------------------------------------------
 #
-TEST_RESU(    CHAM_ELEM=_F(  CHAM_GD = SIGM1A,
-                             MAILLE = 'M2787',
-                             NOEUD = 'N4526',
-                             NOM_CMP = 'SIYY',
-                             REFERENCE='NON_REGRESSION',
-                             VERSION  ='7.2.24',
-                             VALE = .45851E+07,
-                             PRECISION = 1.E-3)
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
+                       NOM_CMP='SIYY',
+                       MAILLE='M2787',
+                       CHAM_GD=SIGM1A,
+                       VALE_CALC=4.585100E6,
+                       TOLE_MACHINE=1.E-3,),
           )
 
 #
@@ -495,15 +494,13 @@ DEP2B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #                    FIN DU THERMO-MECANIQUE A  T = 12.48 S
 # -------------------------------------------------------------------
 #
-TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIGM2A,
-                          MAILLE = 'M2787',
-                          NOEUD = 'N4526',
-                          NOM_CMP = 'SIYY',
-                          REFERENCE='NON_REGRESSION',
-                          VERSION  ='7.2.24',
-                          VALE = .63875E+08,
-                          PRECISION = 1.E-3)
-         )
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
+                       NOM_CMP='SIYY',
+                       MAILLE='M2787',
+                       CHAM_GD=SIGM2A,
+                       VALE_CALC=6.3875000E7,
+                       TOLE_MACHINE=1.E-3,),
+          )
 
 #
 # -------------------------------------------------------------------
@@ -650,15 +647,13 @@ DEP3B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #
 #
 #
-TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIGM3A,
-                          MAILLE = 'M2787',
-                          NOEUD = 'N4526',
-                          NOM_CMP = 'SIYY',
-                          REFERENCE='NON_REGRESSION',
-                          VERSION  ='7.2.24',
-                          VALE = .82397E+06,
-                          PRECISION = 1.E-3)
-         )
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
+                       NOM_CMP='SIYY',
+                       MAILLE='M2787',
+                       CHAM_GD=SIGM3A,
+                       VALE_CALC=8.23970E5,
+                       TOLE_MACHINE=1.E-3,),
+          )
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
@@ -731,35 +726,39 @@ G01B3=CALC_G(              RESULTAT=CHDEP1B,
 
 #
 
-TEST_TABLE(       TABLE=G01B,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=2.274999E+2,
-                       PRECISION=0.3   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.29999999999999999,
+           VALE_CALC=294.523150071,
+           VALE_REFE=227.4999,
+           NOM_PARA='G',
+           TABLE=G01B,)
 
 #
 
-TEST_TABLE(       TABLE=G01B1,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=2.274999E+2,
-                       PRECISION=0.3   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.29999999999999999,
+           VALE_CALC=295.599311716,
+           VALE_REFE=227.4999,
+           NOM_PARA='G',
+           TABLE=G01B1,)
 
 #
 
-TEST_TABLE(       TABLE=G01B2,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=2.274999E+2,
-                       PRECISION=0.3   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.29999999999999999,
+           VALE_CALC=295.745336085,
+           VALE_REFE=227.4999,
+           NOM_PARA='G',
+           TABLE=G01B2,)
 
 #
 
-TEST_TABLE(       TABLE=G01B3,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=2.274999E+2,
-                       PRECISION=0.31   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.31,
+           VALE_CALC=296.039005039,
+           VALE_REFE=227.4999,
+           NOM_PARA='G',
+           TABLE=G01B3,)
 
 #
 # POUR FO = 0.004
@@ -789,35 +788,39 @@ G02B3=CALC_G(        RESULTAT=CHDEP2B,
 
 #
 
-TEST_TABLE(       TABLE=G02B,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=1.051959E+4,
-                       PRECISION=0.2   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.20000000000000001,
+           VALE_CALC= 1.25031256E+04,
+           VALE_REFE=1.051959E4,
+           NOM_PARA='G',
+           TABLE=G02B,)
 
 #
 
-TEST_TABLE(       TABLE=G02B1,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=1.051959E+4,
-                       PRECISION=0.2   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.20000000000000001,
+           VALE_CALC= 1.25487866E+04,
+           VALE_REFE=1.051959E4,
+           NOM_PARA='G',
+           TABLE=G02B1,)
 
 #
 
-TEST_TABLE(       TABLE=G02B2,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=1.051959E+4,
-                       PRECISION=0.2   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.20000000000000001,
+           VALE_CALC= 1.25552906E+04,
+           VALE_REFE=1.051959E4,
+           NOM_PARA='G',
+           TABLE=G02B2,)
 
 #
 
-TEST_TABLE(       TABLE=G02B3,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=1.051959E+4,
-                       PRECISION=0.2   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.20000000000000001,
+           VALE_CALC= 1.25785482E+04,
+           VALE_REFE=1.051959E4,
+           NOM_PARA='G',
+           TABLE=G02B3,)
 
 #
 # POUR FO = 1
@@ -847,35 +850,39 @@ G03B3=CALC_G(        RESULTAT=CHDEP3B,
 
 #
 
-TEST_TABLE(       TABLE=G03B,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=1.051959,
-                       PRECISION=0.20   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.20000000000000001,
+           VALE_CALC=1.231266956,
+           VALE_REFE=1.0519590000000001,
+           NOM_PARA='G',
+           TABLE=G03B,)
 
 #
 
-TEST_TABLE(       TABLE=G03B1,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=1.051959,
-                       PRECISION=0.20   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.20000000000000001,
+           VALE_CALC=1.235784755,
+           VALE_REFE=1.0519590000000001,
+           NOM_PARA='G',
+           TABLE=G03B1,)
 
 #
 
-TEST_TABLE(       TABLE=G03B2,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=1.051959,
-                       PRECISION=0.20   )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.20000000000000001,
+           VALE_CALC=1.235621972,
+           VALE_REFE=1.0519590000000001,
+           NOM_PARA='G',
+           TABLE=G03B2,)
 
 #
 
-TEST_TABLE(       TABLE=G03B3,
-                        NOM_PARA='G',
-                            REFERENCE='ANALYTIQUE',
-                            VALE=1.051959,
-                       PRECISION=0.20  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.20000000000000001,
+           VALE_CALC=1.235235065,
+           VALE_REFE=1.0519590000000001,
+           NOM_PARA='G',
+           TABLE=G03B3,)
 
 #
 #------------------------------------------------------------
@@ -886,117 +893,115 @@ TEST_TABLE(       TABLE=G03B3,
 # POUR FO = 0.001
 #
 
-TEST_TABLE(       TABLE=G01B,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=2.94472E+2,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=294.47199999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G01B,
+           )
 
 #
 
-TEST_TABLE(       TABLE=G01B1,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=2.95548E+2,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=295.548,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G01B1,
+           )
 
 #
 
-TEST_TABLE(       TABLE=G01B2,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=2.956938E+2,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=295.69380000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G01B2,
+           )
 
 #
 
-TEST_TABLE(       TABLE=G01B3,
-                        NOM_PARA='G',
-                            VALE=2.959875E+2,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=295.98750000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G01B3,
+           )
 
 #
 # POUR FO = 0.004
 #
 
-TEST_TABLE(       TABLE=G02B,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=1.24996E+04,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=1.24996E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G02B,
+           )
 
 #
 
-TEST_TABLE(       TABLE=G02B1,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=1.254525E+04,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=1.254525E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G02B1,
+           )
 
 #
 
-TEST_TABLE(       TABLE=G02B2,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=1.255175E+04,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=1.255175E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G02B2,
+           )
 
 #
 
-TEST_TABLE(       TABLE=G02B3,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=1.25750E+04,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=1.2575E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G02B3,
+           )
 
 #
 # POUR FO = 1
 #
 
-TEST_TABLE(       TABLE=G03B,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=1.231265,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=1.2312650000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G03B,
+           )
 
 #
 
-TEST_TABLE(       TABLE=G03B1,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=1.235783,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=1.2357830000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G03B1,
+           )
 
 #
 
-TEST_TABLE(       TABLE=G03B2,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=1.23562,
-                       PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=1.2356199999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G03B2,
+           )
 
 #
 
-TEST_TABLE(       TABLE=G03B3,
-                        NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION  ='7.2.24',
-                            VALE=1.23523,
-                       PRECISION=1.E-3   )
-
+TEST_TABLE(
+           VALE_CALC=1.2352300000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G03B3,
+           )
 
 FIN( )
 #
-

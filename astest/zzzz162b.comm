@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -190,21 +190,25 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
 
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=UUU,
-                   NUME_ORDRE=4,
+TEST_RESU(RESU=(_F(NUME_ORDRE=4,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=UUU,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
-                   MAILLE='M1',
-                   POINT=1,
-                   VALE=-87.5,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=UUU,
-                   NUME_ORDRE=5,
+                   VALE_CALC=-87.500000000,
+                   VALE_REFE=-87.5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=5,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=UUU,
                    NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
                    NOEUD='N2',
-                   VALE=0.001275,
-                   REFERENCE='AUTRE_ASTER',),),);
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.27500000E-03,
+                   VALE_REFE=1.2750000000000001E-3,),
+                ),
+          )
 
 IMPR_RESU(FORMAT='RESULTAT',
           RESU=_F(RESULTAT=UUU,),);
@@ -306,31 +310,37 @@ LUHYD=LIRE_RESU(TYPE_RESU='EVOL_THER',
                    NOM_RESU='RESHYD',),),
                 TOUT_ORDRE='OUI',);
 
-TEST_RESU(RESU=(_F(RESULTAT=LUHYD,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_ELNO',
-                   NOM_CMP='HYDR',
-                   MAILLE='M1',
                    NOEUD='N1',
-                   VALE=0,),
-                _F(RESULTAT=LUHYD,
-                   NUME_ORDRE=1,
+                   NOM_CMP='HYDR',
+                   VALE_CALC=0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_NOEU',
-                   NOM_CMP='HYDR',
                    NOEUD='N1',
-                   VALE=0,),
-                _F(RESULTAT=LUHYD,
-                   INST=90,
+                   NOM_CMP='HYDR',
+                   VALE_CALC=0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(INST=90,
+                   RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_ELNO',
-                   NOM_CMP='HYDR',
-                   MAILLE='M1',
                    NOEUD='N1',
-                   VALE=1.0,),
-                _F(RESULTAT=LUHYD,
-                   INST=90,
+                   NOM_CMP='HYDR',
+                   VALE_CALC=1.0,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(INST=90,
+                   RESULTAT=LUHYD,
                    NOM_CHAM='HYDR_NOEU',
-                   NOM_CMP='HYDR',
                    NOEUD='N1',
-                   VALE=1.0,),),);
+                   NOM_CMP='HYDR',
+                   VALE_CALC=1.0,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 FIN();

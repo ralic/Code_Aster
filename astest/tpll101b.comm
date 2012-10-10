@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL ELECTRIQUE ET THERMIQUE D'UN CYLINDRE
 # tpll101b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,18 +62,15 @@ POT_ELRE=CALC_CHAMP(reuse =POT_ELRE,
                    INST=0.0,
                     THERMIQUE=('SOUR_ELGA'),);
 
-TEST_RESU(RESU=(
-      _F( RESULTAT = POT_ELRE,
-          NOM_CHAM = 'SOUR_ELGA',
-          MAILLE = 'M834',
-          POINT=1,
-          NUME_ORDRE=0,
-          NOM_CMP = 'SOUR',
-          VALE = 41.7093,
-          PRECISION = 0.001,
-          REFERENCE = 'NON_REGRESSION'),
-        ),
-)
+TEST_RESU(RESU=_F(NUME_ORDRE=0,
+                  POINT=1,
+                  RESULTAT=POT_ELRE,
+                  NOM_CHAM='SOUR_ELGA',
+                  NOM_CMP='SOUR',
+                  VALE_CALC=41.709299999999999,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M834',),
+          )
 
 SOURCE=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
                   OPERATION='EXTR',
@@ -124,14 +121,16 @@ LIGN=MACR_LIGN_COUPE(RESULTAT=TEMPRESU,
                                    COOR_ORIG=(x,0.,y,),
                                    COOR_EXTR=(x,0.1,y,),),);
 
-TEST_TABLE(TABLE=LIGN,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.025,),
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=585.902714547,
+           VALE_REFE=588.93129999999996,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='TEMP',
-           VALE=588.9313,
-           PRECISION=0.01,);
+           TABLE=LIGN,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.025000000000000001,),
+           )
 
 FIN();
 
 #
-

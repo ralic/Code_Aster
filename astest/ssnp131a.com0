@@ -47,36 +47,28 @@ tab = POST_GP(RESULTAT=RESU,
 IMPR_TABLE(TABLE=tabident)
 # IMPR_TABLE(TABLE=tabgp)
 
-TEST_TABLE(TABLE=tabident,
-           FILTRE=_F(NOM_PARA='KJ_CRIT',
-                     VALE=kjc1),
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.64998705424086001,
            NOM_PARA='GP_CRIT',
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 1.0E-10,
-           CRITERE = 'RELATIF',
-	   VERSION='10.3.21', 
-           VALE=0.64998705424086)
+           TABLE=tabident,
+           FILTRE=_F(NOM_PARA='KJ_CRIT',
+                     VALE=812.19939423764652,),
+           )
 
-TEST_TABLE(TABLE=tabident,
-           FILTRE=_F(NOM_PARA='KJ_CRIT',
-                     VALE=kjc2),
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.81698768976298997,
            NOM_PARA='GP_CRIT',
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 1.0E-10,
-           CRITERE = 'RELATIF', 
-	   VERSION='10.3.21', 
-           VALE=0.81698768976299)
-              
-TEST_TABLE(TABLE=tabident,
+           TABLE=tabident,
            FILTRE=_F(NOM_PARA='KJ_CRIT',
-                     VALE=kjc3),
-           NOM_PARA='GP_CRIT',
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 1.0E-10,
-           CRITERE = 'RELATIF', 
-	   VERSION='10.3.21', 
-           VALE= 0.90087666322162)
+                     VALE=1082.3843975224329,),
+           )
 
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.90087666322161997,
+           NOM_PARA='GP_CRIT',
+           TABLE=tabident,
+           FILTRE=_F(NOM_PARA='KJ_CRIT',
+                     VALE=1217.4136536116225,),
+           )
 
 FIN()
-

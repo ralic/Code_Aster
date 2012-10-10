@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE)
 # ssnl119b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,149 +166,184 @@ Betot = [  2.92412E+06 ,   8.52817E+02 ,   5.02952E+03 ]
 
 U1MAZAR=CALC_CHAMP(reuse=U1MAZAR, RESULTAT=U1MAZAR, DEFORMATION=('EPSI_ELGA'), )
 
-TEST_RESU(RESU=(
-   # Reactions
-   _F(RESULTAT=U1MAZAR, INST=Temps[0], NOM_CHAM='REAC_NODA',         GROUP_NO = 'A', NOM_CMP='DY', VALE=React[0],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[1], NOM_CHAM='REAC_NODA',         GROUP_NO = 'A', NOM_CMP='DY', VALE=React[1],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[2], NOM_CHAM='REAC_NODA',         GROUP_NO = 'A', NOM_CMP='DY', VALE=React[2],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   # Contraintes acier tendu
-   _F(RESULTAT=U1MAZAR, INST=Temps[0], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX', VALE=Aciet[0],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[1], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX', VALE=Aciet[1],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[2], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX', VALE=Aciet[2],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   # Contraintes acier comprime
-   _F(RESULTAT=U1MAZAR, INST=Temps[0], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX', VALE=Aciec[0],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[1], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX', VALE=Aciec[1],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[2], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX', VALE=Aciec[2],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   # Deformations acier tendu
-   _F(RESULTAT=U1MAZAR, INST=Temps[0], NOM_CHAM='EPSI_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=Eacit[0],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[1], NOM_CHAM='EPSI_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=Eacit[1],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[2], NOM_CHAM='EPSI_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=Eacit[2],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   # Contraintes beton comprime
-   _F(RESULTAT=U1MAZAR, INST=Temps[0], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=Betoc[0],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[1], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=Betoc[1],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[2], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=Betoc[2],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   # Contraintes beton tendu
-   _F(RESULTAT=U1MAZAR, INST=Temps[0], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=Betot[0],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[1], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=Betot[1],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   _F(RESULTAT=U1MAZAR, INST=Temps[2], NOM_CHAM='SIEF_ELGA',         MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=Betot[2],
-      REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(3.0E-04,3.0E-04), ),
-   )
-)
+TEST_RESU(RESU=(_F(GROUP_NO='A',
+                   INST=0.10000000000000001,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.7562299999999999E4,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(GROUP_NO='A',
+                   INST=1.3999999999999999,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.10527E5,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(GROUP_NO='A',
+                   INST=2.6800000000000002,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.21222E5,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(INST=0.10000000000000001,
+                   POINT=1,
+                   SOUS_POINT=41,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=1.9932600E7,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=1.3999999999999999,
+                   POINT=1,
+                   SOUS_POINT=41,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=4.00499000E8,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=2.6800000000000002,
+                   POINT=1,
+                   SOUS_POINT=41,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=4.35444000E8,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=0.10000000000000001,
+                   POINT=1,
+                   SOUS_POINT=44,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-2.2139400E7,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=1.3999999999999999,
+                   POINT=1,
+                   SOUS_POINT=44,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-1.77301000E8,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=2.6800000000000002,
+                   POINT=1,
+                   SOUS_POINT=44,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-4.01893000E8,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=0.10000000000000001,
+                   POINT=1,
+                   SOUS_POINT=41,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=9.9391599999999999E-05,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=1.3999999999999999,
+                   POINT=1,
+                   SOUS_POINT=41,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=2.0991199999999999E-3,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=2.6800000000000002,
+                   POINT=1,
+                   SOUS_POINT=41,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.0107467,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=0.10000000000000001,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-4.476570E6,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=1.3999999999999999,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-3.5310500E7,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=2.6800000000000002,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-3.0641300E7,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=0.10000000000000001,
+                   POINT=1,
+                   SOUS_POINT=40,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=2.924120E6,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=1.3999999999999999,
+                   POINT=1,
+                   SOUS_POINT=40,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=852.81700000000001,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                _F(INST=2.6800000000000002,
+                   POINT=1,
+                   SOUS_POINT=40,
+                   RESULTAT=U1MAZAR,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=5029.5200000000004,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   MAILLE='M9',),
+                ),
+          )
 
-"""
-# ===========================================================================
-# COURBES DES FIGURES DE LA DOCUMENTATION : EN COMMENTAIRE CI-DESSOUS
-# ===========================================================================
-# Table contenant les resultats en contrainte aux sous-points
-S1MAZAR = CREA_TABLE( RESU=_F(RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',TOUT='OUI',TOUT_CMP='OUI'), )
-
-# Table contenant les resultats en variables aux sous-points
-V1MAZAR = CREA_TABLE( RESU=_F(RESULTAT=U1MAZAR, NOM_CHAM='VARI_ELGA',TOUT='OUI',TOUT_CMP='OUI'), )
-
-fic = './REPE_OUT/contraintes_sous_points.table'
-unit = DEFI_FICHIER(FICHIER = fic, ACTION='ASSOCIER', TYPE='ASCII',ACCES='NEW')
-IMPR_TABLE(UNITE=unit,TABLE=S1MAZAR,FORMAT='ASTER')
-IMPR_TABLE(UNITE=unit,TABLE=V1MAZAR,FORMAT='ASTER')
-DEFI_FICHIER(UNITE = unit, ACTION='LIBERER',)
-DETRUIRE(INFO=1,ALARME='NON',CONCEPT=(_F(NOM=unit,),),)
-
-
-fic = './REPE_OUT/courbes.post'
-unit = DEFI_FICHIER(FICHIER = fic, ACTION='ASSOCIER', TYPE='ASCII',ACCES='NEW')
-
-# Deplacement milieu de poutre suivant Y
-DEPCY = RECU_FONCTION(  RESULTAT=U1MAZAR, NOM_CHAM='DEPL',      NOM_CMP='DY',   GROUP_NO='C',)
-# Deplacement noeud B suivant X
-DEPBX = RECU_FONCTION(  RESULTAT=U1MAZAR, NOM_CHAM='DEPL',      NOM_CMP='DX',   GROUP_NO='B', )
-# Reaction d'appui en A
-REACA = RECU_FONCTION(  RESULTAT=U1MAZAR, NOM_CHAM='REAC_NODA', NOM_CMP='DY',   GROUP_NO='A',)
-# Acier tendu : Deformation, Contrainte
-DEFAT = RECU_FONCTION(  TABLE  =V1MAZAR, PARA_X='INST', PARA_Y='V3',
-                        FILTRE =(
-                           _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K='M9'),
-                           _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  1),
-                           _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I= 41),
-                        ),
-)
-CONAT = RECU_FONCTION(  TABLE  =V1MAZAR, PARA_X='INST', PARA_Y='V4',
-                        FILTRE =(
-                           _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K='M9'),
-                           _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  1),
-                           _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I= 41),
-                        ),
-)
-# Acier comprime : Deformation, Contrainte
-DEFAC = RECU_FONCTION(  TABLE  =V1MAZAR, PARA_X='INST', PARA_Y='V3',
-                        FILTRE =(
-                           _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K='M9'),
-                           _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  1),
-                           _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I= 44),
-                        ),
-)
-CONAC = RECU_FONCTION(  TABLE  =V1MAZAR, PARA_X='INST', PARA_Y='V4',
-                        FILTRE =(
-                           _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K='M9'),
-                           _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  1),
-                           _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I= 44),
-                        ),
-)
-# Beton tendu : Deformation, Contrainte
-DEFBT = RECU_FONCTION(  TABLE  =V1MAZAR, PARA_X='INST', PARA_Y='V3',
-                        FILTRE =(
-                           _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K='M9'),
-                           _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  1),
-                           _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I= 40),
-                        ),
-)
-CONBT = RECU_FONCTION(  TABLE  =V1MAZAR, PARA_X='INST', PARA_Y='V5',
-                        FILTRE =(
-                           _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K='M9'),
-                           _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  1),
-                           _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I= 40),
-                        ),
-)
-# Beton comprime : Deformation, Contrainte
-DEFBC = RECU_FONCTION(  TABLE  =V1MAZAR, PARA_X='INST', PARA_Y='V3',
-                        FILTRE =(
-                           _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K='M9'),
-                           _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  1),
-                           _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I=  1),
-                        ),
-)
-CONBC = RECU_FONCTION(  TABLE  =V1MAZAR, PARA_X='INST', PARA_Y='V5',
-                        FILTRE =(
-                           _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K='M9'),
-                           _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  1),
-                           _F(NOM_PARA='SOUS_POINT', CRIT_COMP='EQ', VALE_I=  1),
-                        ),
-)
-IMPR_FONCTION(UNITE=unit,FORMAT='TABLEAU',
-   COURBE=(
-      _F(FONCTION=DEPCY), _F(FONCTION=DEPBX),
-      _F(FONCTION=REACA),
-      _F(FONCTION=DEFAT), _F(FONCTION=DEFAC), _F(FONCTION=DEFBT), _F(FONCTION=DEFBC),
-      _F(FONCTION=CONAT), _F(FONCTION=CONAC), _F(FONCTION=CONBT), _F(FONCTION=CONBC),
-   )
-)
-DEFI_FICHIER(UNITE = unit, ACTION='LIBERER',)
-DETRUIRE(INFO=1,ALARME='NON',CONCEPT=(_F(NOM=unit,),),)
-"""
 FIN()
-

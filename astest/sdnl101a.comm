@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PORTEE DE CABLES SOUMISE A DES EFFORTS ELECTRODYNAMIQUES
 # sdnl101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -244,16 +244,19 @@ RESU=STAT_NON_LINE(MODELE=MO,
                               NMAX_ITER=80,),);
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='INST',
-                   VALE=-0.05,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   RESULTAT=RESU,
+                   VALE_CALC=-0.050000000000000003,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=1,
                    PARA='ITER_GLOB',
-                   VALE_I=18,
-                   CRITERE = 'ABSOLU',        PRECISION = 0.),
-                ),);
+                   VALE_CALC_I=18,
+                   RESULTAT=RESU,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
 
 RESU=STAT_NON_LINE(reuse =RESU,
                    MODELE=MO,
@@ -280,19 +283,21 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=(
 
 #--------------------------------------------------------------------
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=2,
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    PARA='INST',
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 0.,
-                   VALE=0.0,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=2,
-                   PARA='ITER_GLOB',
-                   VALE_I=1,
+                   RESULTAT=RESU,
+                   VALE_CALC=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
-                ),);
+                   ),
+                _F(NUME_ORDRE=2,
+                   PARA='ITER_GLOB',
+                   VALE_CALC_I=1,
+                   RESULTAT=RESU,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
+
 #--------------------------------------------------------------------
 
 RESU=DYNA_NON_LINE(reuse =RESU,
@@ -317,18 +322,19 @@ RESU=DYNA_NON_LINE(reuse =RESU,
                                   ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=7,
+TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    PARA='INST',
-                   VALE=0.5,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=7,
+                   RESULTAT=RESU,
+                   VALE_CALC=0.5,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=7,
                    PARA='ITER_GLOB',
-                   VALE_I=3,
+                   VALE_CALC_I=3,
+                   RESULTAT=RESU,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
-                ),);
-
+                   ),
+                ),
+          )
 
 CHACCE=CREA_CHAMP(OPERATION='EXTR',
                   RESULTAT=RESU,
@@ -387,17 +393,19 @@ RESU=DYNA_NON_LINE(reuse =RESU,
                                   ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=12,
+TEST_RESU(RESU=(_F(NUME_ORDRE=12,
                    PARA='INST',
-                   VALE=1.0,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=12,
+                   RESULTAT=RESU,
+                   VALE_CALC=1.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=12,
                    PARA='ITER_GLOB',
-                   VALE_I=3,
+                   VALE_CALC_I=3,
+                   RESULTAT=RESU,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
-                ),);
+                   ),
+                ),
+          )
 
 RESU=DYNA_NON_LINE(reuse =RESU,
                    MODELE=MO,
@@ -424,17 +432,19 @@ RESU=DYNA_NON_LINE(reuse =RESU,
                                   ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=17,
+TEST_RESU(RESU=(_F(NUME_ORDRE=17,
                    PARA='INST',
-                   VALE=1.5,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=17,
+                   RESULTAT=RESU,
+                   VALE_CALC=1.5,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=17,
                    PARA='ITER_GLOB',
-                   VALE_I=3,
+                   VALE_CALC_I=3,
+                   RESULTAT=RESU,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
-                ),);
+                   ),
+                ),
+          )
 
 RESU=DYNA_NON_LINE(reuse =RESU,
                    MODELE=MO,
@@ -461,17 +471,19 @@ RESU=DYNA_NON_LINE(reuse =RESU,
                                   ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=22,
+TEST_RESU(RESU=(_F(NUME_ORDRE=22,
                    PARA='INST',
-                   VALE=2.0,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=22,
+                   RESULTAT=RESU,
+                   VALE_CALC=2.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=22,
                    PARA='ITER_GLOB',
-                   VALE_I=3,
+                   VALE_CALC_I=3,
+                   RESULTAT=RESU,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
-                ),);
+                   ),
+                ),
+          )
 
 RESU=DYNA_NON_LINE(reuse =RESU,
                    MODELE=MO,
@@ -498,17 +510,19 @@ RESU=DYNA_NON_LINE(reuse =RESU,
                                   ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=27,
+TEST_RESU(RESU=(_F(NUME_ORDRE=27,
                    PARA='INST',
-                   VALE=2.5,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=27,
+                   RESULTAT=RESU,
+                   VALE_CALC=2.5,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=27,
                    PARA='ITER_GLOB',
-                   VALE_I=3,
+                   VALE_CALC_I=3,
+                   RESULTAT=RESU,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
-                ),);
+                   ),
+                ),
+          )
 
 RESU=DYNA_NON_LINE(reuse =RESU,
                    MODELE=MO,
@@ -532,17 +546,19 @@ RESU=DYNA_NON_LINE(reuse =RESU,
                                   ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=32,
+TEST_RESU(RESU=(_F(NUME_ORDRE=32,
                    PARA='INST',
-                   VALE=3.0,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=32,
+                   RESULTAT=RESU,
+                   VALE_CALC=3.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=32,
                    PARA='ITER_GLOB',
-                   VALE_I=3,
+                   VALE_CALC_I=3,
+                   RESULTAT=RESU,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
-                ),);
+                   ),
+                ),
+          )
 
 RESU=DYNA_NON_LINE(reuse =RESU,
                    MODELE=MO,
@@ -569,17 +585,20 @@ RESU=DYNA_NON_LINE(reuse =RESU,
                                   ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=37,
+TEST_RESU(RESU=(_F(NUME_ORDRE=37,
                    PARA='INST',
-                   VALE=3.5,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=37,
+                   RESULTAT=RESU,
+                   VALE_CALC=3.5,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=37,
                    PARA='ITER_GLOB',
-                   VALE_I=4,
+                   VALE_CALC_I=4,
+                   RESULTAT=RESU,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
-                ),);
+                   ),
+                ),
+          )
+
 #
 
 RESU=DYNA_NON_LINE(reuse =RESU,
@@ -607,71 +626,81 @@ RESU=DYNA_NON_LINE(reuse =RESU,
                                   ITER_GLOB_MAXI=100,),);
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=42,
+TEST_RESU(RESU=(_F(NUME_ORDRE=42,
                    PARA='INST',
-                   VALE=4.0,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=42,
+                   RESULTAT=RESU,
+                   VALE_CALC=4.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=42,
                    PARA='ITER_GLOB',
-                   VALE_I=4,
+                   VALE_CALC_I=4,
+                   RESULTAT=RESU,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
-                ),);
+                   ),
+                ),
+          )
+
 #
 
 # VERIFICATION   DEPLACEMENTS
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=42,
+TEST_RESU(RESU=(_F(NUME_ORDRE=42,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
                    NOEUD='N5',
-                   VALE=-1.981,
-                   PRECISION=0.0002,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=42,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   NOEUD='N5',
-                   VALE=-1.846,
-                   PRECISION=0.0003,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=42,
-                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   NOEUD='N14',
-                   VALE=-4.108,
-                   PRECISION=0.0002,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=42,
+                   VALE_CALC=-1.9810000000000001,
+                   TOLE_MACHINE=2.0000000000000001E-4,
+                   ),
+                _F(NUME_ORDRE=42,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
+                   NOEUD='N5',
                    NOM_CMP='DZ',
+                   VALE_CALC=-1.8460000000000001,
+                   TOLE_MACHINE=2.9999999999999997E-4,
+                   ),
+                _F(NUME_ORDRE=42,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
                    NOEUD='N14',
-                   VALE=3.229,
-                   PRECISION=0.0002,),),);
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.1079999999999997,
+                   TOLE_MACHINE=2.0000000000000001E-4,
+                   ),
+                _F(NUME_ORDRE=42,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N14',
+                   NOM_CMP='DZ',
+                   VALE_CALC=3.2290000000000001,
+                   TOLE_MACHINE=2.0000000000000001E-4,
+                   ),
+                ),
+          )
+
 # VERIFICATION   EFFORTS
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=22,
+TEST_RESU(RESU=(_F(NUME_ORDRE=22,
+                   POINT=1,
+                   RESULTAT=RESU,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='N',
+                   VALE_CALC=7.5500E4,
+                   TOLE_MACHINE=2.0000000000000001E-4,
                    MAILLE='M1',
+                   ),
+                _F(NUME_ORDRE=42,
                    POINT=1,
-                   VALE=75500.0,
-                   PRECISION=0.0002,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.02.02',),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=42,
+                   RESULTAT=RESU,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='N',
+                   VALE_CALC=2.2560E4,
+                   TOLE_MACHINE=2.0000000000000001E-4,
                    MAILLE='M9',
-                   POINT=1,
-                   VALE=22560.0,
-                   PRECISION=0.0002,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.02.02',),),);
+                   ),
+                ),
+          )
 
 FIN();
 #

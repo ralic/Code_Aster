@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PRETENSION DUN GOUJON : METHODE MANUELLE
 # ssnv228a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,12 +175,15 @@ REACF=POST_RELEVE_T(
 # =====================================================================
 # Test par rapport a la valeur cible : F_result
 # Test sur une surface d'application de DEPL_R
-TEST_TABLE(
-   TABLE=REACF,
-   FILTRE=_F(NOM_PARA='INTITULE', VALE_K='FZ_CEG',),
-   NOM_PARA='DZ', PRECISION=1.E-2, VALE=F_RESULT,
-   REFERENCE = 'ANALYTIQUE',
-)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=-1.70423547E+03,
+           VALE_REFE=-1695.6000000000001,
+           NOM_PARA='DZ',
+           TABLE=REACF,
+           FILTRE=_F(NOM_PARA='INTITULE',
+                     VALE_K='FZ_CEG',),
+           )
 
 # Test de non-regression sur differentes surfaces
 ForceS    = 1704.23549149
@@ -190,10 +193,12 @@ SurfForce = [-ForceS,  ForceS, -ForceS,  ForceS, -ForceS ]
 
 for ii in range(len(SurfNom)):
    TEST_TABLE(
-      TABLE=REACF,
-      FILTRE=_F(NOM_PARA='INTITULE', VALE_K= SurfNom[ii],),
-      NOM_PARA='DZ', VALE= SurfForce[ii], PRECISION=1.E-6,
-      REFERENCE = 'NON_REGRESSION',
-   )
+              VALE_CALC=SurfForce[ii],
+              
+              NOM_PARA='DZ',
+              TABLE=REACF,
+              FILTRE=_F(NOM_PARA='INTITULE',
+                        VALE_K=SurfNom[ii],),
+              )
 
 FIN()

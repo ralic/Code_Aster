@@ -1,7 +1,7 @@
       SUBROUTINE OP0177()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,10 +36,11 @@ C
 C
       INTEGER IBID, N1, N2, N3, IRET, IUNIFI, IFIC, NPARFI
       INTEGER VALI,IREFR,IREFI,IREFC,NREF
+      INTEGER N1R,N2R,N3R,IREFRR, IREFIR,IREFCR
       INTEGER LXLGUT,NL1,NL2,NL11,NL22
       LOGICAL       ULEXIS
 C
-      REAL*8       R8B, VALR, PREC
+      REAL*8       R8B, VALR, EPSI,EPSIR
 C
       COMPLEX*16   CBID, VALC, C16B
 C
@@ -47,13 +48,14 @@ C
       CHARACTER*3  SSIGNE
       CHARACTER*8  K8B, CRIT, CTYPE, TYPTES, LATABL
       CHARACTER*8  MOTCLE
-      CHARACTER*16 NOMFI,TBTXT(2)
+      CHARACTER*16 NOMFI,TBTXT(2),TBREF(2)
       CHARACTER*19 NEWTAB, NEWTA1
       CHARACTER*24 PARA
-      CHARACTER*24 TRAVR,TRAVI,TRAVC
+      CHARACTER*24 TRAVR,TRAVI,TRAVC,TRAVRR,TRAVIR,TRAVCR
       CHARACTER*80 VALK
       CHARACTER*200 LIGN1,LIGN2
       INTEGER      IARG
+      LOGICAL      LREF
 C     ------------------------------------------------------------------
 C
 C====
@@ -66,6 +68,9 @@ C
       TRAVR  = '&&'//NOMPRO//'_TRAVR          '
       TRAVI  = '&&'//NOMPRO//'_TRAVI          '
       TRAVC  = '&&'//NOMPRO//'_TRAVC          '
+      TRAVRR = '&&'//NOMPRO//'_TRAVR_R        '
+      TRAVIR = '&&'//NOMPRO//'_TRAVI_R        '
+      TRAVCR = '&&'//NOMPRO//'_TRAVC_R        '
       MOTCLE = 'TABLE'
 C
       NOMFI = ' '
@@ -80,31 +85,63 @@ C
       CALL GETFAC ( 'FILTRE' , NPARFI )
 C
       CALL GETVTX ( ' ', 'VALE_ABS' , 1,IARG,1, SSIGNE, N1 )
-      CALL GETVR8 ( ' ', 'PRECISION', 1,IARG,1, PREC  , N1 )
+      CALL GETVR8 ( ' ', 'TOLE_MACHINE', 1,IARG,1, EPSI  , N1 )
       CALL GETVTX ( ' ', 'CRITERE'  , 1,IARG,1, CRIT  , N1 )
 C
-      CALL GETVR8(' ','VALE'    , 1,IARG,0,R8B   ,N1)
-      CALL GETVIS(' ','VALE_I'  , 1,IARG,0,IBID  ,N2)
-      CALL GETVC8(' ','VALE_C'  , 1,IARG,0,C16B  ,N3)
+      CALL GETVR8(' ','VALE_CALC'    , 1,IARG,0,R8B   ,N1)
+      CALL GETVIS(' ','VALE_CALC_I'  , 1,IARG,0,IBID  ,N2)
+      CALL GETVC8(' ','VALE_CALC_C'  , 1,IARG,0,C16B  ,N3)
       IF( N1 .NE. 0) THEN
         NREF=-N1
         TYPR = 'R'
         CALL JEDETR(TRAVR)
         CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
-        CALL GETVR8(' ','VALE', 1,IARG,NREF,ZR(IREFR),IRET)
+        CALL GETVR8(' ','VALE_CALC', 1,IARG,NREF,ZR(IREFR),IRET)
       ELSEIF( N2 .NE. 0) THEN
         NREF=-N2
         TYPR = 'I'
         CALL JEDETR(TRAVI)
         CALL WKVECT(TRAVI,'V V I',NREF,IREFI)
-        CALL GETVIS(' ','VALE_I', 1,IARG,NREF,ZI(IREFI),IRET)
+        CALL GETVIS(' ','VALE_CALC_I', 1,IARG,NREF,ZI(IREFI),IRET)
       ELSEIF( N3 .NE. 0) THEN
         NREF=-N3
         TYPR = 'C'
         CALL JEDETR(TRAVC)
         CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
-        CALL GETVC8(' ','VALE_C', 1,IARG,NREF,ZC(IREFC),IRET)
+        CALL GETVC8(' ','VALE_CALC_C', 1,IARG,NREF,ZC(IREFC),IRET)
       ENDIF
+C ----------------------------------------------------------------------
+      LREF=.FALSE.
+      CALL GETVR8(' ','PRECISION',1,IARG,1,EPSIR,IRET)
+      IF (IRET.NE.0) THEN
+         LREF=.TRUE.
+         CALL GETVR8(' ','VALE_REFE'     ,1,IARG,0,R8B ,N1R)
+         CALL GETVIS(' ','VALE_REFE_I'   ,1,IARG,0,IBID,N2R)
+         CALL GETVC8(' ','VALE_REFE_C'   ,1,IARG,0,C16B,N3R)
+         IF (N1R.NE.0) THEN
+           CALL ASSERT((N1R.EQ.N1))
+           NREF=-N1R
+           CALL JEDETR(TRAVRR)
+           CALL WKVECT(TRAVRR,'V V R',NREF,IREFRR)
+           CALL GETVR8(' ','VALE_REFE', 1,IARG,NREF,
+     &                 ZR(IREFRR),IRET)
+         ELSEIF (N2R.NE.0) THEN
+           CALL ASSERT((N2R.EQ.N2))
+           NREF=-N2R
+           CALL JEDETR(TRAVIR)
+           CALL WKVECT(TRAVIR,'V V I',NREF,IREFIR)
+           CALL GETVIS(' ','VALE_REFE_I', 1,IARG,NREF,
+     &                 ZI(IREFIR),IRET)
+         ELSEIF (N3R.NE.0) THEN
+           CALL ASSERT((N3R.EQ.N3))
+           NREF=-N3R
+           CALL JEDETR(TRAVCR)
+           CALL WKVECT(TRAVCR,'V V C',NREF,IREFCR)
+           CALL GETVC8(' ','VALE_REFE_C', 1,IARG,NREF,
+     &                 ZC(IREFCR),IRET)
+         ENDIF
+      ENDIF
+C ----------------------------------------------------------------------
 
 
       CALL GETVTX ( ' ', 'NOM_PARA', 1,IARG,1, PARA, N1 )
@@ -178,13 +215,24 @@ C
      &                        LIGN2(161:NL22)
          ENDIF
 
-         CALL UTEST0 ( NEWTAB, PARA, TYPTES, TYPR, TBTXT,ZI(IREFI),
-     +                ZR(IREFR), ZC(IREFC), PREC, CRIT, IFIC, SSIGNE )
+         IF (LREF) THEN 
+           TBREF(1)=TBTXT(1)
+           TBREF(2)=TBTXT(2)
+           TBTXT(1)='NON_REGRESSION'
+         END IF
+         CALL UTEST0 (NEWTAB, PARA, TYPTES, TYPR, TBTXT ,
+     +                ZI(IREFI), ZR(IREFR), ZC(IREFC),
+     +                EPSI, CRIT, IFIC, .TRUE., SSIGNE )
+         IF (LREF) THEN
+           CALL UTEST0 (NEWTAB, PARA, TYPTES, TYPR, TBREF ,
+     +                  ZI(IREFIR), ZR(IREFRR), ZC(IREFCR),
+     +                  EPSIR, CRIT, IFIC, .FALSE., SSIGNE )
+         ENDIF
          GOTO 9999
       ENDIF
 C
       CALL TBLIVA ( NEWTAB, 0, K8B, IBID, R8B, CBID, K8B, K8B, R8B,
-     +                      PARA, CTYPE, VALI, VALR, VALC, VALK, IRET )
+     +              PARA, CTYPE, VALI, VALR, VALC, VALK, IRET )
 
 
       NL1 = LXLGUT(LIGN1)
@@ -225,8 +273,19 @@ C
       ENDIF
       IF ( CTYPE(1:1) .NE. TYPR ) CALL U2MESS('F','CALCULEL6_8')
 
-      CALL UTITES ( TBTXT(1),TBTXT(2), TYPR, NREF, ZI(IREFI), ZR(IREFR),
-     +        ZC(IREFC), VALI, VALR, VALC, PREC, CRIT, IFIC, SSIGNE )
+      IF (LREF) THEN 
+        TBREF(1)=TBTXT(1)
+        TBREF(2)=TBTXT(2)
+        TBTXT(1)='NON_REGRESSION'
+      END IF
+      CALL UTITES(TBTXT(1), TBTXT(2), TYPR, NREF, ZI(IREFI),
+     &            ZR(IREFR), ZC(IREFC), VALI, VALR, VALC, 
+     &            EPSI, CRIT, IFIC, .TRUE., SSIGNE)
+      IF (LREF) THEN
+        CALL UTITES(TBREF(1), TBREF(2), TYPR, NREF, ZI(IREFIR),
+     &              ZR(IREFRR), ZC(IREFCR), VALI, VALR, VALC,
+     &              EPSIR, CRIT, IFIC, .FALSE., SSIGNE)
+      ENDIF
 C
  9999 CONTINUE
       IF ( NPARFI .NE. 0 )  CALL DETRSD ( 'TABLE' , NEWTA1 )

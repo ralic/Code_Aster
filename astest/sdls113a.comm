@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdls113a.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,15 +187,26 @@ DYNHASS=CALC_CHAMP(reuse=DYNHASS,MAILLE=('M194','M461','M87'),RESULTAT=DYNHASS,C
 
 IMPR_RESU(RESU=_F(RESULTAT=DYNHASS, NOM_CHAM=('ECIN_ELEM'),),)
 
-TEST_RESU(RESU=(
-   _F(RESULTAT = DYNATRAN, NOM_CHAM='ECIN_ELEM', NOM_CMP='TOTALE',
-       MAILLE = 'M194',  CRITERE = 'RELATIF',  PRECISION = 0.1E-2,
-       NUME_ORDRE = 1, POINT=1,VALE = 1.78915E-06 , REFERENCE='NON_REGRESSION'),
-   _F(RESULTAT = DYNHASS, NOM_CHAM='ECIN_ELEM', NOM_CMP='TOTALE',
-       MAILLE = 'M194',  CRITERE = 'RELATIF',  PRECISION = 0.1E-2,
-       NUME_ORDRE = 1, POINT=1,VALE = 1.91599E-06 , REFERENCE='NON_REGRESSION'),
-    ),)
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   POINT=1,
+                   RESULTAT=DYNATRAN,
+                   NOM_CHAM='ECIN_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=1.7891500000000001E-06,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   MAILLE='M194',),
+                _F(NUME_ORDRE=1,
+                   POINT=1,
+                   RESULTAT=DYNHASS,
+                   NOM_CHAM='ECIN_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=1.9159900000000001E-06,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   MAILLE='M194',),
+                ),
+          )
 
 #########################################################
 # RECUPERATION DES DEPLACEMENTS EN UN POINT DES RESULTATS
@@ -231,13 +242,14 @@ valtmp1=DTX111.EXTR_TABLE();
 test1=valtmp1.Array('INST','DX')[1][1]
 
 # TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
-TEST_FONCTION(VALEUR=_F(FONCTION=DHX11,
-                        NOM_PARA='FREQ',
-                        VALE_PARA=freq,
-                        VALE_REFE=test1,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.99011179996e-08,
+                        VALE_REFE=3.9896006104767729E-08,
+                        VALE_PARA=1500.0,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.01)
-              );
+                        PRECISION=1.E-2,
+                        NOM_PARA='FREQ',
+                        FONCTION=DHX11,),
+              )
 
 #########################################################
 # RECUPERATION DES CONTRAINTES AUX POINTS DE GAUSS
@@ -271,13 +283,14 @@ valtmp3=SIT111.EXTR_TABLE();
 test3=valtmp3.Array('INST','SIXX')[1][1]
 
 # TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
-TEST_FONCTION(VALEUR=_F(FONCTION=SIH11,
-                        NOM_PARA='FREQ',
-                        VALE_PARA=freq,
-                        VALE_REFE=test3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=98510.5400395,
+                        VALE_REFE=9.846101039463609E4,
+                        VALE_PARA=1500.0,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.01)
-              );
+                        PRECISION=1.E-2,
+                        NOM_PARA='FREQ',
+                        FONCTION=SIH11,),
+              )
 
 #########################################################
 # RECUPERATION DES CONTRAINTES AUX NOEUD
@@ -311,13 +324,14 @@ valtmp4=SET111.EXTR_TABLE();
 test4=valtmp4.Array('INST','SIXX')[1][1]
 
 # TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
-TEST_FONCTION(VALEUR=_F(FONCTION=SEH11,
-                        NOM_PARA='FREQ',
-                        VALE_PARA=freq,
-                        VALE_REFE=test4,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=98149.5819288,
+                        VALE_REFE=9.8100346819097744E4,
+                        VALE_PARA=1500.0,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.01)
-              );
+                        PRECISION=1.E-2,
+                        NOM_PARA='FREQ',
+                        FONCTION=SEH11,),
+              )
 
 #########################################################
 # RECUPERATION DES DEFORMATIONS AUX NOEUD
@@ -351,13 +365,15 @@ valtmp5=EPT111.EXTR_TABLE();
 test5=valtmp5.Array('INST','EPXX')[1][1]
 
 # TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
-TEST_FONCTION(VALEUR=_F(FONCTION=EPH11,
-                        NOM_PARA='FREQ',
-                        VALE_PARA=freq,
-                        VALE_REFE=test5,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.27795672536e-07,
+                        VALE_REFE=5.2772382898626799E-07,
+                        VALE_PARA=1500.0,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.01)
-              );
+                        PRECISION=1.E-2,
+                        NOM_PARA='FREQ',
+                        FONCTION=EPH11,),
+              )
+
 #########################################################
 # RECUPERATION DES DEFORMATIONS AUX POINTS DE GAUSS
 # EN UNE MAILLE DES RESULTATS PHYSIQUES
@@ -390,13 +406,15 @@ valtmp6=EGT111.EXTR_TABLE();
 test6=valtmp6.Array('INST','EPXX')[1][1]
 
 # TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
-TEST_FONCTION(VALEUR=_F(FONCTION=EGH11,
-                        NOM_PARA='FREQ',
-                        VALE_PARA=freq,
-                        VALE_REFE=test6,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.27546476125e-07,
+                        VALE_REFE=5.2747349405019879E-07,
+                        VALE_PARA=1500.0,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.01)
-              );
+                        PRECISION=1.E-2,
+                        NOM_PARA='FREQ',
+                        FONCTION=EGH11,),
+              )
+
 FIN();
 
 

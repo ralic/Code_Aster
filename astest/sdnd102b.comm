@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102b.para = tps_job 430 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -410,38 +410,32 @@ TRAN_DY=DYNA_NON_LINE(reuse=TRAN_DY,ETAT_INIT=_F(EVOL_NOLI = TRAN_DY),
                       ARCHIVAGE=_F(LIST_INST=L_INST2,),
 );
 
-TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
-                   INST       = 0.01,
-                   NOM_CHAM   = 'DEPL_ABSOLU',
-                   NOM_CMP    = 'DX',
-                   NOEUD      = 'NO1',
-                   VALE       = -1.4888774372446E-04,
-                   PRECISION  = 1.E-10,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '11.0.11',
-             ),)
+TEST_RESU(RESU=_F(INST=1.E-2,
+                  RESULTAT=TRAN_DY,
+                  NOM_CHAM='DEPL_ABSOLU',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.4888774372446E-4,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
-                   INST       = 0.01,
-                   NOM_CHAM   = 'VITE_ABSOLU',
-                   NOM_CMP    = 'DX',
-                   NOEUD      = 'NO1',
-                   VALE       = -0.012875905370012,
-                   PRECISION  = 1.E-10,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '11.0.11',
-             ),)
+TEST_RESU(RESU=_F(INST=1.E-2,
+                  RESULTAT=TRAN_DY,
+                  NOM_CHAM='VITE_ABSOLU',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.012875905370012,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
-                   INST       = 0.01,
-                   NOM_CHAM   = 'ACCE_ABSOLU',
-                   NOM_CMP    = 'DX',
-                   NOEUD      = 'NO1',
-                   VALE       = 0.58778525229247,
-                   PRECISION  = 1.E-10,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '11.0.11',
-             ),)
+TEST_RESU(RESU=_F(INST=1.E-2,
+                  RESULTAT=TRAN_DY,
+                  NOM_CHAM='ACCE_ABSOLU',
+                  NOEUD='NO1',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.58778525229247003,
+                  ),
+          )
 
 TAB_OBS=RECU_TABLE(CO=TRAN_DY,
                    NOM_TABLE='OBSERVATION',);
@@ -451,44 +445,53 @@ IMPR_TABLE(TABLE=TAB_OBS,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.1,),);
 
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(_F(NOM_PARA='NOM_CHAM',
-                      CRIT_COMP='EQ',
+TEST_TABLE(
+           VALE_CALC=-1.4888774372446E-4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CHAM',
                       VALE_K='DEPL_ABSOLU',),
                    _F(NOM_PARA='NOM_OBSERVATION',
-                     VALE_K='DEPL_ABS_DX_NO1',),
-                   _F(NOM_PARA='INST',
-                      CRIT_COMP='EQ',
-                      VALE=0.01,),),
-           NOM_PARA='VALE',
-           VALE=-1.4888774372446E-04,
-           REFERENCE='NON_REGRESSION',);
+                      VALE_K='DEPL_ABS_DX_NO1',),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='INST',
+                      VALE=1.E-2,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(_F(NOM_PARA='NOM_CHAM',
-                      CRIT_COMP='EQ',
+TEST_TABLE(
+           VALE_CALC=-0.012875905370012,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CHAM',
                       VALE_K='VITE_ABSOLU',),
                    _F(NOM_PARA='NOM_OBSERVATION',
-                     VALE_K='VITE_ABS_DX_NO1',),
-                   _F(NOM_PARA='INST',
-                      CRIT_COMP='EQ',
-                      VALE=0.01,),),
-           NOM_PARA='VALE',
-           VALE=-0.012875905370012,
-           REFERENCE='NON_REGRESSION',);
+                      VALE_K='VITE_ABS_DX_NO1',),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='INST',
+                      VALE=1.E-2,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=(_F(NOM_PARA='NOM_CHAM',
-                      CRIT_COMP='EQ',
+TEST_TABLE(
+           VALE_CALC=0.58778525229247003,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=TAB_OBS,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CHAM',
                       VALE_K='ACCE_ABSOLU',),
                    _F(NOM_PARA='NOM_OBSERVATION',
-                     VALE_K='ACCE_ABS_DX_NO1',),
-                   _F(NOM_PARA='INST',
-                      CRIT_COMP='EQ',
-                      VALE=0.01,),),
-           NOM_PARA='VALE',
-           VALE=0.58778525229247,
-           REFERENCE='NON_REGRESSION',);
+                      VALE_K='ACCE_ABS_DX_NO1',),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='INST',
+                      VALE=1.E-2,),
+                   ),
+           )
 
 #
 #=======================================================================
@@ -782,63 +785,72 @@ MAXF_CHO=INFO_FONCTION(MAX=_F(FONCTION=EFF_CHOC,),);
 
 MAXFCHOC=INFO_FONCTION(MAX=_F(FONCTION=EFFOCHOC,),);
 
-TEST_TABLE(TABLE=MAXF_CHO,
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=629.304205396,
+           VALE_REFE=629.28700000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='N',
+           TABLE=MAXF_CHO,
            FILTRE=(_F(NOM_PARA='FONCTION',
                       VALE_K='EFF_CHOC',),
                    _F(NOM_PARA='INST',
                       VALE=0.376,),
                    _F(NOM_PARA='TYPE',
-                      VALE_K='MAXI',),),
-           NOM_PARA='N',
-           VALE=629.287,
-           PRECISION=0.01,);
+                      VALE_K='MAXI',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=MAXFCHOC,
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=-629.304205365,
+           VALE_REFE=-629.28700000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='N',
+           TABLE=MAXFCHOC,
            FILTRE=(_F(NOM_PARA='FONCTION',
                       VALE_K='EFFOCHOC',),
                    _F(NOM_PARA='INST',
                       VALE=0.376,),
                    _F(NOM_PARA='TYPE',
-                      VALE_K='MINI',),),
-           NOM_PARA='N',
-           VALE=-629.287,
-           PRECISION=0.01,);
+                      VALE_K='MINI',),
+                   ),
+           )
 
 DIFF=CALC_FONCTION(COMB=(_F(FONCTION=NO2_DX_A,
                             COEF=1.,),
                          _F(FONCTION=NO2_DXA,
                             COEF=-1.,),),);
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=DIFF,
-                         VALE_PARA=0.1,
-                         VALE_REFE=0.0,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
+                         TOLE_MACHINE=3.0000000000000001E-05,
                          CRITERE='ABSOLU',
-                         PRECISION=3e-05,),
-                      _F(FONCTION=DIFF,
-                         VALE_PARA=0.2,
-                         VALE_REFE=0.0,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=0.0,
+                         TOLE_MACHINE=3.0000000000000001E-05,
                          CRITERE='ABSOLU',
-                         PRECISION=3e-05,),
-                      _F(FONCTION=DIFF,
-                         VALE_PARA=0.3,
-                         VALE_REFE=0.0,
+                         VALE_PARA=0.20000000000000001,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=0.0,
+                         TOLE_MACHINE=3.0000000000000001E-05,
                          CRITERE='ABSOLU',
-                         PRECISION=3e-05,),
-                      _F(FONCTION=DIFF,
-                         VALE_PARA=0.4,
-                         VALE_REFE=0.0,
+                         VALE_PARA=0.29999999999999999,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=0.0,
+                         TOLE_MACHINE=3.0000000000000001E-05,
                          CRITERE='ABSOLU',
-                         PRECISION=3e-05,),
-                      _F(FONCTION=DIFF,
-                         VALE_PARA=0.05,
-                         VALE_REFE=0.0,
+                         VALE_PARA=0.40000000000000002,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=0.0,
+                         TOLE_MACHINE=3.0000000000000001E-05,
                          CRITERE='ABSOLU',
-                         PRECISION=3e-05,),),);
+                         VALE_PARA=0.050000000000000003,
+                         FONCTION=DIFF,),
+                      ),
+              )
 
 FIN();
 
 #
-
 
 
 

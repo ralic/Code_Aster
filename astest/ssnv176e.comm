@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAIS BIAXIAUX EN 3D - COMPORTEMENT ENDO_ORTH_BETON
 # ssnv176e.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -336,39 +336,31 @@ IMPR_TABLE(TABLE=tab_si3,
 
 
 
-TEST_RESU(RESU=(
-              _F(
-              RESULTAT = U_1,
-              REFERENCE = 'NON_REGRESSION',
-              INST = 4.1,
-              MAILLE = 'VOLUME',
-              POINT = 1,
-              NOM_CHAM = 'SIEF_ELGA',
-              NOM_CMP = 'SIXX',
-              VALE = 3.20684E+00),
-              _F(
-              RESULTAT = U_2,
-              REFERENCE = 'NON_REGRESSION',
-              INST = 7.5,
-              MAILLE = 'VOLUME',
-              POINT = 1,
-              NOM_CHAM = 'SIEF_ELGA',
-              NOM_CMP = 'SIXX',
-              VALE = -3.18000E+01),
-              _F(
-              RESULTAT = U_3,
-              REFERENCE = 'NON_REGRESSION',
-              INST = 7.3,
-              MAILLE = 'VOLUME',
-              POINT = 1,
-              NOM_CHAM = 'SIEF_ELGA',
-              NOM_CMP = 'SIXX',
-              VALE = -1.42038E+01),
-              ),
-            );
-
-
-
-
+TEST_RESU(RESU=(_F(INST=4.0999999999999996,
+                   POINT=1,
+                   RESULTAT=U_1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=3.2068400000000001,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='VOLUME',),
+                _F(INST=7.5,
+                   POINT=1,
+                   RESULTAT=U_2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-31.800000000000001,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='VOLUME',),
+                _F(INST=7.2999999999999998,
+                   POINT=1,
+                   RESULTAT=U_3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-14.203799999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='VOLUME',),
+                ),
+          )
 
 FIN();

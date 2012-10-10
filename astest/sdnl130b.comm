@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE EULER_BERNOULLI MULTIFIBRES (DYNA NON-LINEAIRE)
 # sdnl130b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,34 +148,85 @@ RERE = DYNA_NON_LINE(
 #
 RERE=CALC_CHAMP(reuse =RERE, RESULTAT=RERE, FORCE='FORC_NODA', TOUT_ORDRE='OUI', TOUT='OUI',)
 # QUELQUES TEST DE RESULTATS
-TEST_RESU(
-   RESU=(
-      _F(RESULTAT=RERE,INST=1.76,NOM_CHAM='FORC_NODA',GROUP_NO='A',NOM_CMP='DY',VALE=-38515.766763984,
-         REFERENCE='NON_REGRESSION',CRITERE=('RELATIF','ABSOLU'),PRECISION=(1.0E-06,1.0E-06),),
-      _F(RESULTAT=RERE,INST=1.76,NOM_CHAM='DEPL',     GROUP_NO='C',NOM_CMP='DY',VALE=1.417013907495E-03,
-         REFERENCE='NON_REGRESSION',CRITERE=('RELATIF','ABSOLU'),PRECISION=(1.0E-06,1.0E-06),),
+TEST_RESU(RESU=(_F(GROUP_NO='A',
+                   INST=1.76,
+                   RESULTAT=RERE,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=-3.8515766763984E4,
+                   
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(GROUP_NO='C',
+                   INST=1.76,
+                   RESULTAT=RERE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.4170139074950001E-3,
+                   
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(GROUP_NO='A',
+                   INST=2.0499999999999998,
+                   RESULTAT=RERE,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.8814150604268001E4,
+                   
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(GROUP_NO='C',
+                   INST=2.0499999999999998,
+                   RESULTAT=RERE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-9.3311630121311999E-4,
+                   
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(GROUP_NO='A',
+                   INST=2.6800000000000002,
+                   RESULTAT=RERE,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=-7.5182532664141996E4,
+                   
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(GROUP_NO='C',
+                   INST=2.6800000000000002,
+                   RESULTAT=RERE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=4.8174375448133003E-3,
+                   
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(GROUP_NO='A',
+                   INST=2.8700000000000001,
+                   RESULTAT=RERE,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=4.4564360755135996E4,
+                   
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                _F(GROUP_NO='C',
+                   INST=2.8700000000000001,
+                   RESULTAT=RERE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.8912620053437E-3,
+                   
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   ),
+                ),
+          )
 
-      _F(RESULTAT=RERE,INST=2.05,NOM_CHAM='FORC_NODA',GROUP_NO='A',NOM_CMP='DY',VALE=28814.150604268,
-         REFERENCE='NON_REGRESSION',CRITERE=('RELATIF','ABSOLU'),PRECISION=(1.0E-06,1.0E-06),),
-      _F(RESULTAT=RERE,INST=2.05,NOM_CHAM='DEPL',     GROUP_NO='C',NOM_CMP='DY',VALE=-9.3311630121312E-04,
-         REFERENCE='NON_REGRESSION',CRITERE=('RELATIF','ABSOLU'),PRECISION=(1.0E-06,1.0E-06),),
-
-      _F(RESULTAT=RERE,INST=2.68,NOM_CHAM='FORC_NODA',GROUP_NO='A',NOM_CMP='DY',VALE=-75182.532664142,
-         REFERENCE='NON_REGRESSION',CRITERE=('RELATIF','ABSOLU'),PRECISION=(1.0E-06,1.0E-06),),
-      _F(RESULTAT=RERE,INST=2.68,NOM_CHAM='DEPL',     GROUP_NO='C',NOM_CMP='DY',VALE=4.8174375448133E-03,
-         REFERENCE='NON_REGRESSION',CRITERE=('RELATIF','ABSOLU'),PRECISION=(1.0E-06,1.0E-06),),
-
-      _F(RESULTAT=RERE,INST=2.87,NOM_CHAM='FORC_NODA',GROUP_NO='A',NOM_CMP='DY',VALE=44564.360755136,
-         REFERENCE='NON_REGRESSION',CRITERE=('RELATIF','ABSOLU'),PRECISION=(1.0E-06,1.0E-06),),
-      _F(RESULTAT=RERE,INST=2.87,NOM_CHAM='DEPL',    GROUP_NO='C',NOM_CMP='DY',VALE=-1.8912620053437E-03,
-         REFERENCE='NON_REGRESSION',CRITERE=('RELATIF','ABSOLU'),PRECISION=(1.0E-06,1.0E-06),),
-   )
-)
-
-"""
 # ===========================================================================
 # COURBES DES FIGURES DE LA DOCUMENTATION : EN COMMENTAIRE CI-DESSOUS
 # ===========================================================================
+"""
 fic = './REPE_OUT/courbes.post'
 unit = DEFI_FICHIER(FICHIER = fic, ACTION='ASSOCIER', TYPE='ASCII',ACCES='NEW')
 

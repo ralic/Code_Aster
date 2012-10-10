@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE CONSOLE EN FLEXION TRIA3 GRILLE_MEMBRANE POIDS_PROPRE
 # ssls132d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,18 +187,14 @@ TAB = POST_RELEVE_T(
 
 
 #IMPR_TABLE(TABLE = TAB)
-TEST_TABLE(
-     TABLE = TAB,
-     NOM_PARA = 'DZ',
-     FILTRE = _F(
-         NOM_PARA = 'NUME_ORDRE',
-         VALE_I   = 1,
-         ),
-     VALE = 1.7756E7,
-     REFERENCE = 'ANALYTIQUE'
-  )
-
-
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 1.77561000E+07,
+           VALE_REFE=1.7756000E7,
+           NOM_PARA='DZ',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
 FIN()
 #

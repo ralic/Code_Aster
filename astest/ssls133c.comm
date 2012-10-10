@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE EN FLEXION A EPAISSEUR VARIABLE. MODELISATION SHB8 VARIATION QUADRATIQUE
 # ssls133c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,20 +82,42 @@ RESU31=CALC_CHAMP(reuse=RESU31,RESULTAT=RESU31,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'
 Uz=.4712388984e-9;
 
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='DEPL', PRECISION = 9.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P7',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 5.12122261E-10,
+                   VALE_REFE=4.7123889840000003E-10,
+                   PRECISION=0.089999999999999997,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P8',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 5.12122261E-10,
+                   VALE_REFE=4.7123889840000003E-10,
+                   PRECISION=0.089999999999999997,),
+                ),
+          )
 
-            _F(   RESULTAT = RESU31, NOM_CHAM='DEPL',  PRECISION = 9.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
-              ),)
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = RESU31, NOM_CHAM='DEPL', REFERENCE='NON_REGRESSION',NUME_ORDRE=1,
-              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = 5.1212226115707e-10),
-
-            _F(   RESULTAT = RESU31, NOM_CHAM='DEPL', REFERENCE='NON_REGRESSION',NUME_ORDRE=1,
-              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = 5.1212226115597e-10),
-              ),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P7',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=5.1212226115706998E-10,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P8',
+                   RESULTAT=RESU31,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=5.1212226115597004E-10,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE RECALAGE MODAL PAR DIAGONALISATION DES MATRICES GENERALISEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -331,26 +331,22 @@ OPTIM=DEFI_FONCTION(NOM_PARA='INST',
                     VALE_FONC=RESU);
 
 
-TEST_FONCTION ( VALEUR =(_F( FONCTION = OPTIM,
-                           PRECISION = 0.1E-1,
-                           VALE_PARA = 1.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = EP,
-                         ),
-                       _F( FONCTION = OPTIM,
-                           PRECISION = 0.4E-1,
-                           VALE_PARA = 2.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = MP,
-                         ),
-
-                   ),
-
-              ) ;
-
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.503058789631,
+                         VALE_REFE=0.5,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-2,
+                         FONCTION=OPTIM,),
+                      _F(VALE_CALC=48223.4026415,
+                         VALE_REFE=5.E4,
+                         VALE_PARA=2.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.040000000000000001,
+                         FONCTION=OPTIM,),
+                      ),
+              )
 
 FIN();
-
 
 
 

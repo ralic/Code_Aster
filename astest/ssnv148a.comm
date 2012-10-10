@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE WEIBULL ET RICE-TRACEY EN 3D
 # ssnv148a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,61 +139,77 @@ RET=POST_ELEM(
 
 IMPR_TABLE(TABLE=RET)
 
-TEST_TABLE(TABLE=WEIB,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.014809636,
+           VALE_REFE=0.014809636445635,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
-           NOM_PARA='PROBA_WEIBULL',
-           REFERENCE='ANALYTIQUE',
-           VALE=0.014809636445635,);
+           )
 
-TEST_TABLE(TABLE=WEIB,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.014809636,
+           VALE_REFE=0.014809636445635,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=2,),
-           NOM_PARA='PROBA_WEIBULL',
-           REFERENCE='ANALYTIQUE',
-           VALE=0.014809636445635,);
+           )
 
-TEST_TABLE(TABLE=WEIB,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.014809636,
+           VALE_REFE=0.014809636445635,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=3,),
-           NOM_PARA='PROBA_WEIBULL',
-           REFERENCE='ANALYTIQUE',
-           VALE=0.014809636445635,);
+           )
 
-TEST_TABLE(TABLE=WEIB,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.999999383,
+           VALE_REFE=0.99999938317435999,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=WEIB,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=4,),
-           NOM_PARA='PROBA_WEIBULL',
-           REFERENCE='ANALYTIQUE',
-           VALE=0.99999938317435999,);
+           )
 
-TEST_TABLE(TABLE=RET,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.045823643,
+           VALE_REFE=1.0458000000000001,
            NOM_PARA='TX_CROIS_CAVITES',
-           REFERENCE='ANALYTIQUE',
-           VALE=1.0458000000000001,);
+           TABLE=RET,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=RET,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=2,),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.045823643,
+           VALE_REFE=1.0458000000000001,
            NOM_PARA='TX_CROIS_CAVITES',
-           REFERENCE='ANALYTIQUE',
-           VALE=1.0458000000000001,);
+           TABLE=RET,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(TABLE=RET,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=3,),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.045823643,
+           VALE_REFE=1.0458000000000001,
            NOM_PARA='TX_CROIS_CAVITES',
-           REFERENCE='ANALYTIQUE',
-           VALE=1.0458000000000001,);
+           TABLE=RET,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(TABLE=RET,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=4,),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.070072912,
+           VALE_REFE=1.0701000000000001,
            NOM_PARA='TX_CROIS_CAVITES',
-           REFERENCE='ANALYTIQUE',
-           VALE=1.0701000000000001,);
+           TABLE=RET,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
 
 #--------------------------------------------------
 # POST_ELEM
@@ -212,13 +228,15 @@ AOUI_MOY=POST_ELEM(
 
 IMPR_TABLE(TABLE=AOUI_MOY)
 
-TEST_TABLE(TABLE=AOUI_MOY,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=2,),),
+TEST_TABLE(
+           VALE_CALC=1.0458000000000001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='TX_CROIS_CAVITES',
-           REFERENCE='NON_REGRESSION',
-           VERSION= '9.3.21',
-           VALE=1.0458,);
+           TABLE=AOUI_MOY,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
+
 #----------------------
 BOUI_MOY=POST_ELEM(
               RICE_TRACEY=_F(LOCAL='OUI',
@@ -229,13 +247,15 @@ BOUI_MOY=POST_ELEM(
 
 IMPR_TABLE(TABLE=BOUI_MOY)
 
-TEST_TABLE(TABLE=BOUI_MOY,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=2,),),
+TEST_TABLE(
+           VALE_CALC=1.0458000000000001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='TX_CROIS_CAVITES',
-           REFERENCE='NON_REGRESSION',
-           VERSION= '9.3.21',
-           VALE=1.0458,);
+           TABLE=BOUI_MOY,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
+
 #----------------------
 COUI_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',
@@ -246,14 +266,17 @@ COUI_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 
 IMPR_TABLE(TABLE=COUI_MOY)
 
-TEST_TABLE(TABLE=COUI_MOY,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=4,),
-                   _F(NOM_PARA='LIEU',VALE_K='M14',),
-                     ),
+TEST_TABLE(
+           VALE_CALC=1.4387799999999999E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='VOLUME_CONCERNE',
-           REFERENCE='NON_REGRESSION',
-           VERSION= '9.3.21',
-           VALE=1.43878E4,);
+           TABLE=COUI_MOY,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=4,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M14',),
+                   ),
+           )
 
 #--------------------------------------------------
 # POST_ELEM
@@ -270,13 +293,15 @@ DOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 
 IMPR_TABLE(TABLE=DOUI_ELG)
 
-TEST_TABLE(TABLE=DOUI_ELG,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=2,),),
+TEST_TABLE(
+           VALE_CALC=1.0458000000000001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='TX_CROIS_CAVITES',
-           REFERENCE='NON_REGRESSION',
-           VERSION= '9.3.21',
-           VALE=1.0458,);
+           TABLE=DOUI_ELG,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
+
 #----------------------
 EOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',

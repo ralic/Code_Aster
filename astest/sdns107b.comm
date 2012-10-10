@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME EN GRILLE_EXCENTRE QUAD4
 # sdns107b.para = tps_job 220 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -174,28 +174,34 @@ INER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
 
 # TEST_RESU UNIQUEMENT POUR FAIRE CAS TEST
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=54.67,
-                   PRECISION=0.02,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODES,
-                   NUME_ORDRE=3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=54.579497591,
+                   VALE_REFE=54.670000000000002,
+                   PRECISION=0.02,),
+                _F(NUME_ORDRE=3,
                    PARA='FREQ',
-                   VALE=342.64,
-                   PRECISION=0.02,
-                   REFERENCE='ANALYTIQUE',),),);
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=338.511188271,
+                   VALE_REFE=342.63999999999999,
+                   PRECISION=0.02,),
+                ),
+          )
 
-TEST_TABLE(TABLE=INER,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.050000000,
+           VALE_REFE=0.050000000000000003,
            NOM_PARA='CDG_Y',
-           VALE=0.05,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=INER,)
 
-TEST_TABLE(TABLE=INER,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=8.603516667,
+           VALE_REFE=8.6110000000000007,
            NOM_PARA='IY_G',
-           VALE=8.611,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=INER,)
 
 #=============================================================================================
 # CALCUL TRANSITOIRE
@@ -301,33 +307,38 @@ RZ=RECU_FONCTION(TABLE=REAC,
                  PARA_X='INST',
                  PARA_Y='DZ',);
 
-TEST_TABLE(TABLE=DEPL,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=n,),
-                   _F(NOM_PARA='QUANTITE',
-                      VALE_K='MOMENT_0',),),
-           NOM_PARA='DZ',
-           VALE=-0.000779,
+TEST_TABLE(REFERENCE='NON_DEFINI',
            PRECISION=0.02,
-           REFERENCE='NON_REGRESSION',);
+           VALE_CALC=-7.81121340E-04,
+           VALE_REFE=-7.7899999999999996E-4,
+           NOM_PARA='DZ',
+           TABLE=DEPL,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=100,),
+                   _F(NOM_PARA='QUANTITE',
+                      VALE_K='MOMENT_0',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=FORC,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=0.02,
+           VALE_CALC=-9.48135656E+03,
+           VALE_REFE=-9480.0,
+           NOM_PARA='DZ',
+           TABLE=FORC,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=90,),
-           NOM_PARA='DZ',
-           VALE=-9480.0,
-           PRECISION=0.02,
-           REFERENCE='NON_REGRESSION',);
+           )
 
-TEST_TABLE(TABLE=REAC,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=0.02,
+           VALE_CALC= 3.74135040E+03,
+           VALE_REFE=3720.0,
+           NOM_PARA='DZ',
+           TABLE=REAC,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=n,),
-           NOM_PARA='DZ',
-           VALE=3720.0,
-           PRECISION=0.02,
-           REFERENCE='NON_REGRESSION',);
-
-
+                     VALE_I=100,),
+           )
 
 #=============================================================================================
 # pour obtenir ECIN de reference, passer en PAR_LOT='NON'
@@ -363,12 +374,14 @@ TEST_TABLE(TABLE=REAC,
 # EPYTB = EPYTB/1536/2
 # EPYT = (EPYTA+EPYTB)
 
-TEST_TABLE(TABLE=ECIN,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=n,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=9.893566759,
+           VALE_REFE=9.8958890000000004,
            NOM_PARA='TOTALE',
-           VALE=9.895889,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=ECIN,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=100,),
+           )
 
 #=============================================================================================
 # impressions
@@ -424,10 +437,3 @@ IMPR_TABLE(TABLE=ECIN,);
 FIN();
 
 #
-
-
-
-
-
-
-

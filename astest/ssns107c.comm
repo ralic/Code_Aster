@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE AVEC ARMATURES SOUS PRESSION.  GRILLE_MEMBRANE TRIA6
 # ssns107c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,26 +164,25 @@ RESU=STAT_NON_LINE(MODELE=MO,
 #
 #
 #IMPR_RESU(RESU=_F(RESULTAT=RESU,),);
-TEST_RESU(RESU=(
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N6',
+                   NOM_CMP='DX',
+                   VALE_CALC= 6.76915958E-04,
+                   VALE_REFE=6.7692299999999996E-4,
+                   PRECISION=1.E-3,),
+                _F(INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N17',
+                   NOM_CMP='DX',
+                   VALE_CALC= 3.84612751E-04,
+                   VALE_REFE=3.8462000000000001E-4,
+                   PRECISION=1.E-3,),
+                ),
+          )
 
-            _F( RESULTAT = RESU,
-             INST = 1.,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'DX',
-             NOEUD = 'N6',
-             REFERENCE = 'ANALYTIQUE',
-             VALE = 6.76923e-4,
-             PRECISION = 0.001,
-            ),
-            _F( RESULTAT = RESU,
-             INST = 1.,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'DX',
-             NOEUD = 'N17',
-             REFERENCE = 'ANALYTIQUE',
-             VALE = 3.8462e-4,
-             PRECISION = 0.001,
-            ),
-        )
-    )
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FLEXION D UNE POUTRE EN BETON ARME
 # sslx103a.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,27 +49,73 @@ RES =  MECA_STATIQUE(MODELE=MO,
                      EXCIT=(_F(CHARGE=CLIM,), _F(CHARGE=CHARGE),),);
 RES=CALC_CHAMP(reuse =RES, RESULTAT=RES, GROUP_MA='ACIER', CONTRAINTE=('EFGE_ELNO',),); 
 # " deplacement milieu de poutre
-TEST_RESU(RESU=_F(RESULTAT=RES,NOM_CHAM='DEPL',NUME_ORDRE=1, 
-                  GROUP_NO='MID',PRECISION=0.01, 
-                  VALE=3.31642E-04,NOM_CMP='DZ', REFERENCE='SOURCE_EXTERNE',),); # CASTEM
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='MID',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RES,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC= 3.31671619E-04,
+                  VALE_REFE=3.3164199999999999E-4,
+                  PRECISION=1.E-2,),
+          )
+
 # contraintes beton milieu poutre 
-TEST_RESU(RESU=_F(RESULTAT=RES,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1, 
-                  MAILLE='M755',POINT =19,PRECISION=0.12, 
-                  VALE=7.65317E+05,NOM_CMP='SIXX', REFERENCE='SOURCE_EXTERNE',),); # CASTEM 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  POINT=19,
+                  RESULTAT=RES,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC= 8.49446495E+05,
+                  VALE_REFE=7.65317E5,
+                  PRECISION=0.12,
+                  MAILLE='M755',),
+          )
+
 # effort acier milieu poutre 
-TEST_RESU(RESU=_F(RESULTAT=RES,NOM_CHAM='EFGE_ELNO',NUME_ORDRE=1, 
-                  MAILLE='M11',POINT =1,PRECISION=0.05, 
-                  VALE=16260.,NOM_CMP='N', REFERENCE='SOURCE_EXTERNE',),); # CASTEM 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  POINT=1,
+                  RESULTAT=RES,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='N',
+                  VALE_CALC= 1.56207171E+04,
+                  VALE_REFE=1.6260E4,
+                  PRECISION=0.050000000000000003,
+                  MAILLE='M11',),
+          )
+
 # " deplacement milieu de poutre 
-TEST_RESU(RESU=_F(RESULTAT=RES,NOM_CHAM='DEPL',NUME_ORDRE=1, 
-                  GROUP_NO='MID', VALE=3.3164387632833E-04,NOM_CMP='DZ', 
-                  REFERENCE='NON_REGRESSION',),); # CASTEM 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='MID',
+                  RESULTAT=RES,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=3.3164387632833001E-4,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
 # contraintes beton milieu poutre 
-TEST_RESU(RESU=_F(RESULTAT=RES,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1, 
-                  MAILLE='M755',POINT =19, VALE=8.4944649489882E+05,NOM_CMP='SIXX', 
-                  REFERENCE='NON_REGRESSION',),); # CASTEM 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  POINT=19,
+                  RESULTAT=RES,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=8.4944649489881995E5,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M755',),
+          )
+
 # effort acier milieu poutre 
-TEST_RESU(RESU=_F(RESULTAT=RES,NOM_CHAM='EFGE_ELNO',NUME_ORDRE=1, 
-                  MAILLE='M11',POINT =1, 
-                  VALE=15620.717115628,NOM_CMP='N', REFERENCE='NON_REGRESSION',),); # CASTEM 
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  POINT=1,
+                  RESULTAT=RES,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='N',
+                  VALE_CALC=1.5620717115628E4,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M11',),
+          )
+
 FIN()

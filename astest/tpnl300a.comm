@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRANSFERT DE CHALEUR UNIDIMENSIONNEL AVEC RAYONNEMENT
 # tpnl300a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -292,13 +292,33 @@ NOM_CHAM='TEMP', RESULTAT=TEMPE, INST=0. )
 # ANALYSE DES RESULTATS -------------------------------------------
 #
 
-TEST_RESU(CHAM_NO=(
-_F( CHAM_GD = TEMP, NOEUD = 'N51', NOM_CMP = 'TEMP', VALE = 653.85, PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N52', NOM_CMP = 'TEMP', VALE = 653.85, PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N53', NOM_CMP = 'TEMP', VALE = 653.85, PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N54', NOM_CMP = 'TEMP', VALE = 653.85, PRECISION = 1.E-4),
-_F( CHAM_GD = TEMP, NOEUD = 'N55', NOM_CMP = 'TEMP', VALE = 653.85, PRECISION = 1.E-4))
-   )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N51',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N52',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N53',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N54',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   _F(NOEUD='N55',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TEMP,
+                      VALE_CALC=653.85000000000002,
+                      TOLE_MACHINE=1.E-4,),
+                   ),
+          )
 
 FIN()
 #

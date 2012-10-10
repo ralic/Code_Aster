@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA COMMANDE EXEC_LOGICIEL STANDARD ET GENERATION DE MAILLAGE
 # zzzz141a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,14 +86,13 @@ tab1 = CREA_TABLE(LISTE=(_F(PARA='TEST',
                          _F(PARA='BOOLEEN',
                             LISTE_I=1,),),)
 
-TEST_TABLE(TABLE=tab1,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC_I=1,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='BOOLEEN',
+           TABLE=tab1,
            FILTRE=_F(NOM_PARA='TEST',
                      VALE_K='VALEUR  ',),
-           NOM_PARA='BOOLEEN',
-           VALE_I=1,
-           PRECISION=1.e-3,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.3.10',)
+           )
 
 FIN()

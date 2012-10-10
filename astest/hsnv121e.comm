@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION ELASTIQUE COQUES 3D CALCUL DES CONTRAINTES DE CAUCHY
 # hsnv121e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -177,28 +177,40 @@ VTPOS=POST_CHAMP(RESULTAT=VT,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='MOY',),);
-TEST_RESU(RESU=(
-              _F(
-               RESULTAT = VT,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 21,
-               NOEUD = 'N4',   NOM_CMP = 'DX',
-#               PRECISION = ( 1.E-2, 1.E-4, ),
-               VALE = 86.6025),
-              _F(
-               RESULTAT = VT,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 21,
-               NOEUD = 'N4',   NOM_CMP = 'DY',
-#               PRECISION = ( 1.5E-2, 1.E-4, ),
-               VALE = 50.),
-              _F(
-               RESULTAT = VT,  NOM_CHAM = 'SIEF_ELGA',  NUME_ORDRE = 21,
-               MAILLE = 'M1',  POINT = 1,  SOUS_POINT = 1,  NOM_CMP = 'SIXX',
-#               PRECISION = ( 3.1E-2, 1.E-4, ),
-               VALE = 2.1E4),
-              _F(
-               RESULTAT = VTPOS,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 21,
-               MAILLE = 'M1',   POINT = 1,  SOUS_POINT = 1,  NOM_CMP = 'SIXX',
-#               PRECISION = ( 1.5E-2, 1.E-4, ),
-               VALE = 2.31E4))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=21,
+                   RESULTAT=VT,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N4',
+                   NOM_CMP='DX',
+                   VALE_CALC=86.602500000000006,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=21,
+                   RESULTAT=VT,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N4',
+                   NOM_CMP='DY',
+                   VALE_CALC=50.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=21,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=VT,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=2.1000E4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=21,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=VTPOS,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=2.3100E4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                ),
+          )
 
 FIN()
 #

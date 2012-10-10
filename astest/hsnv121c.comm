@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS COQUES DKT
 # hsnv121c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -202,38 +202,70 @@ VT=STAT_NON_LINE( reuse=VT,
                 ITER_LINE_MAXI = 3)
               )
 
-TEST_RESU(RESU=(
-              _F(
-               RESULTAT = VT,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO4',   NOM_CMP = 'DX', REFERENCE = 'ANALYTIQUE',
-               PRECISION = ( 1.E-2, 1.E-4, ),
-               VALE = 303.),
-              _F(
-               RESULTAT = VT,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO4',   NOM_CMP = 'DY', REFERENCE = 'ANALYTIQUE',
-               PRECISION = ( 1.5E-2, 1.E-4, ),
-               VALE = -110.),
-              _F(
-               RESULTAT = VT,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1, SOUS_POINT=1, NOM_CMP = 'SIXX',
-               PRECISION = ( 1.E-2, 1.E-4, ), REFERENCE = 'ANALYTIQUE',
-               VALE = 7.99193E-01 ),
-              _F(
-               RESULTAT = VT,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1, SOUS_POINT=1, NOM_CMP = 'SIYY',
-               PRECISION = ( 1.E-2, 1.E-4, ), REFERENCE = 'ANALYTIQUE',
-               VALE = 1.49744E+03 ),
-              _F(
-               RESULTAT = VT,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1, SOUS_POINT=1, NOM_CMP = 'SIXY',
-               PRECISION = ( 1.E-2, 1.E-4, ), REFERENCE = 'ANALYTIQUE',
-               VALE = 6.108087E-01 ),
-              _F(
-               RESULTAT = VT,   NOM_CHAM = 'VARI_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1, SOUS_POINT=1, NOM_CMP = 'V1',
-               PRECISION = ( 1.5E-2, 1.E-4, ), REFERENCE = 'ANALYTIQUE',
-               VALE = 0.2475))
-             )
+TEST_RESU(RESU=(_F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=VT,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO4',
+                   NOM_CMP='DX',
+                   VALE_CALC=303.401010101,
+                   VALE_REFE=303.0,
+                   PRECISION=1.E-2, TOLE_MACHINE=(1.E-2, 1.E-4),),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=VT,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO4',
+                   NOM_CMP='DY',
+                   VALE_CALC=-108.816222701,
+                   VALE_REFE=-110.0,
+                   PRECISION=0.014999999999999999, TOLE_MACHINE=(0.014999999999999999, 1.E-4),),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=VT,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=0.799097384,
+                   VALE_REFE=0.79919300000000004,
+                   PRECISION=1.E-2, TOLE_MACHINE=(1.E-2, 1.E-4),
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=VT,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC= 1.49744528E+03,
+                   VALE_REFE=1497.4400000000001,
+                   PRECISION=1.E-2, TOLE_MACHINE=(1.E-2, 1.E-4),
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=VT,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=0.610753608,
+                   VALE_REFE=0.61080869999999998,
+                   PRECISION=1.E-2, TOLE_MACHINE=(1.E-2, 1.E-4),
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=VT,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.246037901,
+                   VALE_REFE=0.2475,
+                   PRECISION=0.014999999999999999, TOLE_MACHINE=(0.014999999999999999, 1.E-4),
+                   MAILLE='MA1',),
+                ),
+          )
 
 FIN()
 #

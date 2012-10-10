@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103j.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -192,26 +192,27 @@ DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
 
 # TESTS DE DEPLACEMENTS, VITESSES ET ACCELERATIONS
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   INST=2.5e-07,
+TEST_RESU(RESU=(_F(GROUP_NO='A2',
+                   INST=2.4999999999999999E-07,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='A2',
-                   VALE=-2.3267499999985,
+                   VALE_CALC=-2.3267499999985,
+                   TOLE_MACHINE=6.9999999999999999E-06,
                    CRITERE='RELATIF',
-                   PRECISION=(7e-06,1e-10,),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.20',),
-                _F(RESULTAT=RESU,
-                   INST=2.5e-07,
+                   ),
+                _F(GROUP_NO='A2',
+                   INST=2.4999999999999999E-07,
+                   RESULTAT=RESU,
                    NOM_CHAM='VITE',
                    NOM_CMP='DZ',
-                   GROUP_NO='A2',
-                   VALE=-2.2699999997981E+05,
+                   VALE_CALC=-2.2699999997981E5,
+                   TOLE_MACHINE=3.6500000000000002E-06,
                    CRITERE='RELATIF',
-                   PRECISION=(3.65e-06,1e-10,),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='6.3.20',),),);
+                   ),
+                ),
+          )
+
 # TESTS SUR LA VALEUR DU JEU ET DU FROTTEMENT
 
 TABJEU=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
@@ -222,15 +223,14 @@ TABJEU=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                OPERATION='EXTRACTION',),);
 # JEU
 
-TEST_TABLE(TABLE=TABJEU,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.5e-07,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.010529710650703,
+           
            NOM_PARA='JEU',
-           VALE=1.0529710650703E-2,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.20',);
+           TABLE=TABJEU,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.4999999999999999E-07,),
+           )
 
 IMPR_TABLE(TABLE=TABJEU,);
 

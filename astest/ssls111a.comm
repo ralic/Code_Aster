@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION
 # ssls111a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -176,60 +176,94 @@ RESU2A=CALC_CHAMP(reuse=RESU2A,
 
 # Test
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='DEPL',NUME_ORDRE=1,
-                     GROUP_NO='A3',PRECISION=0.005,
-                     VALE=u_l,NOM_CMP='DZ',
-                     REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A3',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU2A,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-3.92125000E-05,
+                  VALE_REFE=-3.9062499999999994E-05,
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
-                     MAILLE='M1',POINT=1,SOUS_POINT=1,PRECISION=1.0E-8,
-                     VALE=0.,NOM_CMP='SIXX',CRITERE='ABSOLU',
-                     REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  SOUS_POINT=1,
+                  RESULTAT=RESU2A,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC= 1.58356815E-12,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-08,
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
-                     MAILLE='M1',POINT=1,SOUS_POINT=2,PRECISION=0.001,
-                     VALE=990.5853065868145311,NOM_CMP='SIXX',
-                     REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  SOUS_POINT=2,
+                  RESULTAT=RESU2A,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=990.585306587,
+                  VALE_REFE=990.58530658681457,
+                  PRECISION=1.E-3,
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,
-                     GROUP_NO='A1',
-                     VALE=-500.0,NOM_CMP='QX',
-                     REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU2A,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='QX',
+                  VALE_CALC=-500.000000001,
+                  VALE_REFE=-500.0,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,
-                     GROUP_NO='A1',
-                     VALE=5000.0,NOM_CMP='MXX',
-                     REFERENCE='ANALYTIQUE',),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU2A,
+                  NOM_CHAM='EFGE_NOEU',
+                  NOM_CMP='MXX',
+                  VALE_CALC= 5.00000000E+03,
+                  VALE_REFE=5000.0,),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE2,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=1.82E+01,
+                   RESULTAT=MODE2,
+                   VALE_CALC=18.199999999999999,
+                   TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='7.3.19',),
-                _F(RESULTAT=MODE2,
-                   NUME_ORDRE=2,
+                   ),
+                _F(NUME_ORDRE=2,
                    PARA='FREQ',
-                   VALE=8.46E+01,
+                   RESULTAT=MODE2,
+                   VALE_CALC=84.599999999999994,
+                   TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='7.3.19',),
-                _F(RESULTAT=MODE2,
-                   NUME_ORDRE=3,
+                   ),
+                _F(NUME_ORDRE=3,
                    PARA='FREQ',
-                   VALE=1.0121E+02,
+                   RESULTAT=MODE2,
+                   VALE_CALC=101.20999999999999,
+                   TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='7.3.19',),
-                _F(RESULTAT=MODE2,
-                   NUME_ORDRE=4,
+                   ),
+                _F(NUME_ORDRE=4,
                    PARA='FREQ',
-                   VALE=1.1128E+02,
+                   RESULTAT=MODE2,
+                   VALE_CALC=111.28,
+                   TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='7.3.19',),),);
-
+                   ),
+                ),
+          )
 
 # Sensibilite des resultats le long des aretes
 

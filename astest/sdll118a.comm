@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE SOUMISE A UNE EXCITATION FLUIDELASTIQUE AXIALE
 # sdll118a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -294,26 +294,21 @@ FREQ_1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = FREQ_1,
-                   VALE_PARA = 0.000000E+00,
-                   VALE_REFE = 7.E+00,
-                   PRECISION = 1.E-03,
-                   REFERENCE = 'SOURCE_EXTERNE')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.00087083067,
+                        VALE_REFE=7.0,
+                        VALE_PARA=0.0,
+                        REFERENCE='SOURCE_EXTERNE',
+                        PRECISION=1.E-3,
+                        FONCTION=FREQ_1,),
+              )
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = FREQ_1,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 6.812005488E+00,
-                   PRECISION = 1.E-08,
-                   REFERENCE = 'NON_REGRESSION',
-                   VERSION = '11.01.18')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.8120054879999996,
+                        VALE_PARA=4.0,
+                        FONCTION=FREQ_1,
+                        ),
+              )
 
 #
 
@@ -327,26 +322,22 @@ AMOR_1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = AMOR_1,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 17.E-02,
-                   PRECISION = 1.E-02,
-                   REFERENCE = 'SOURCE_EXTERNE')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.169730035691,
+                        VALE_REFE=0.17000000000000001,
+                        VALE_PARA=4.0,
+                        REFERENCE='SOURCE_EXTERNE',
+                        PRECISION=1.E-2,
+                        FONCTION=AMOR_1,),
+              )
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = AMOR_1,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 1.69730036E-01,
-                   PRECISION = 1.E-06,
-                   REFERENCE = 'NON_REGRESSION',
-                   VERSION = '11.01.18')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.169730036,
+                        
+                        VALE_PARA=4.0,
+                        FONCTION=AMOR_1,
+                        ),
+              )
 
 #
 #-----------------------------
@@ -364,26 +355,21 @@ FREQ_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = FREQ_2,
-                   VALE_PARA = 0.000000E+00,
-                   VALE_REFE = 7.E+00,
-                   PRECISION = 1.E-03,
-                   REFERENCE = 'SOURCE_EXTERNE')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.00087083069,
+                        VALE_REFE=7.0,
+                        VALE_PARA=0.0,
+                        REFERENCE='SOURCE_EXTERNE',
+                        PRECISION=1.E-3,
+                        FONCTION=FREQ_2,),
+              )
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = FREQ_2,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 6.812005488E+00,
-                   PRECISION = 1.E-08,
-                   REFERENCE = 'NON_REGRESSION',
-                   VERSION = '11.01.18')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.8120054879999996,
+                        VALE_PARA=4.0,
+                        FONCTION=FREQ_2,
+                        ),
+              )
 
 #
 
@@ -397,26 +383,22 @@ AMOR_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = AMOR_2,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 17.E-02,
-                   PRECISION = 1.E-02,
-                   REFERENCE = 'SOURCE_EXTERNE')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.169730035691,
+                        VALE_REFE=0.17000000000000001,
+                        VALE_PARA=4.0,
+                        REFERENCE='SOURCE_EXTERNE',
+                        PRECISION=1.E-2,
+                        FONCTION=AMOR_2,),
+              )
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = AMOR_2,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 1.69730036E-01,
-                   PRECISION = 1.E-06,
-                   REFERENCE = 'NON_REGRESSION',
-                   VERSION = '11.01.18')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.169730036,
+                        
+                        VALE_PARA=4.0,
+                        FONCTION=AMOR_2,
+                        ),
+              )
 
 #
 

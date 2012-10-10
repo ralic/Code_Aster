@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -190,20 +190,16 @@ for i in range(0,5) :
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_MODE',
                          VALE_I = imode),
-              VALE=Kg_ref[i],
-              PRECISION=0.001,
-              REFERENCE = 'NON_REGRESSION',
-              VERSION='11.00.04'
+              VALE_CALC=Kg_ref[i],
+              TOLE_MACHINE=0.001,
              )
 
    TEST_TABLE(TABLE=T1_K,
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                          VALE_I = iord),
-              VALE=Ku_ref[i],
-              PRECISION=0.001,
-              REFERENCE = 'NON_REGRESSION',
-              VERSION='11.00.04'
+              VALE_CALC=Ku_ref[i],
+              TOLE_MACHINE=0.001,
              )
 
 
@@ -262,14 +258,15 @@ KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
 
 IMPR_TABLE(TABLE=KT1)
 
-TEST_TABLE(TABLE=KT1,
+TEST_TABLE(
+           VALE_CALC=4.49990E5,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA = 'INST',
-                      VALE = 1.285E-2),
-           VALE=4.49990E+05,
-           PRECISION=0.001,
-           REFERENCE = 'NON_REGRESSION',
-          );
+           TABLE=KT1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.01285,),
+           )
+
 ###TESTS INFORMATIQUES
 GLMO2=CALC_G(NUME_MODE = 1,
              OPTION='K_G_MODA',
@@ -280,14 +277,14 @@ GLMO2=CALC_G(NUME_MODE = 1,
                       DIRECTION = (-1.0, 0.0, 0.0),),
                     );
 
-TEST_TABLE(TABLE=GLMO2,
-              NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA = 'NUME_MODE',
-                         VALE_I = 1),
-              VALE=-1.92107E+10,
-              PRECISION=0.001,
-              REFERENCE = 'NON_REGRESSION',
-             );
+TEST_TABLE(
+           VALE_CALC=-1.9210700000E10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='K1',
+           TABLE=GLMO2,
+           FILTRE=_F(NOM_PARA='NUME_MODE',
+                     VALE_I=1,),
+           )
 
 GLMO3=CALC_G(OPTION='K_G_MODA',
              RESULTAT=MODE,
@@ -296,14 +293,14 @@ GLMO3=CALC_G(OPTION='K_G_MODA',
              THETA=_F(THETA=THET1,
                       FOND_FISS = FF1),);
 
-TEST_TABLE(TABLE=GLMO3,
-              NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA = 'NUME_MODE',
-                         VALE_I = 1),
-              VALE=-1.92107E+10,
-              PRECISION=0.001,
-              REFERENCE = 'NON_REGRESSION',
-             );
+TEST_TABLE(
+           VALE_CALC=-1.9210700000E10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='K1',
+           TABLE=GLMO3,
+           FILTRE=_F(NOM_PARA='NUME_MODE',
+                     VALE_I=1,),
+           )
 
 FIN();
 

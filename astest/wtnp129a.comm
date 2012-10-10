@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION HM D'UN BARREAU SATURE EN LIQUIDE COMPRESSIBLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,38 +149,37 @@ IMPR_TABLE(TABLE=EXDEP1,
            UNITE=8,
            NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','PRE1','DY',),);
 
-TEST_TABLE(TABLE     = EXDEP1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
-           NOM_PARA  = 'PRE1',
-           VALE      =  1.4477057505633E+06,
-           PRECISION =  1.E-10,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
-           NOM_PARA  = 'PRE1',
-           VALE      = 9.8618261792096E+05,
-           PRECISION =  1.E-10,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
-           NOM_PARA  = 'PRE1',
-           PRECISION =  1.E-10,
-           VALE      = 6.8416253970115E+05,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N1',),
-           NOM_PARA  = 'PRE1',
-           VALE      = 5.7968660741362E+05,
-           PRECISION =  1.E-10,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
+TEST_TABLE(
+           VALE_CALC=1.4477057505633E6,
+           NOM_PARA='PRE1',
+           TABLE=EXDEP1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=9.8618261792095995E5,
+           NOM_PARA='PRE1',
+           TABLE=EXDEP1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N27',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=6.8416253970115003E5,
+           NOM_PARA='PRE1',
+           TABLE=EXDEP1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N31',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.7968660741361999E5,
+           NOM_PARA='PRE1',
+           TABLE=EXDEP1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
 #########
 # Tests sur la pression a l'ordre 149 (t=10 s)
@@ -199,112 +198,109 @@ IMPR_TABLE(TABLE=EXDEP2,
            UNITE=8,
            NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','PRE1','DY',),);
 
-TEST_TABLE(TABLE     = EXDEP2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
-           NOM_PARA  = 'PRE1',
-           PRECISION =  1.E-10,
-           VALE      =  1.9965914222579E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'PRE1',
-           VALE      = 1.9937017653319E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
-           NOM_PARA  = 'PRE1',
-           PRECISION =  1.E-10,
-           VALE      = 1.9917709562082E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N1',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'PRE1',
-           VALE      = 1.991092945817E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
+TEST_TABLE(
+           VALE_CALC=1.9965914222579E6,
+           NOM_PARA='PRE1',
+           TABLE=EXDEP2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.9937017653319E6,
+           NOM_PARA='PRE1',
+           TABLE=EXDEP2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N27',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.9917709562082E6,
+           NOM_PARA='PRE1',
+           TABLE=EXDEP2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N31',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.991092945817E6,
+           NOM_PARA='PRE1',
+           TABLE=EXDEP2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
 #########
 # Tests sur DY a l'ordre 74 (t=1 s)
 #########
 
-TEST_TABLE(TABLE     = EXDEP1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N4',),
-           NOM_PARA  = 'DY',
-           PRECISION =  1.E-10,
-           VALE      =  1.8807606329922E-03,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'DY',
-           VALE      =  1.139326750168E-03,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'DY',
-           VALE      = 6.19182033214E-04,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
-           NOM_PARA  = 'DY',
-           PRECISION =  1.E-10,
-           VALE      = 2.6539252530741E-04,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
+TEST_TABLE(
+           VALE_CALC=1.8807606329922001E-3,
+           NOM_PARA='DY',
+           TABLE=EXDEP1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N4',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.139326750168E-3,
+           NOM_PARA='DY',
+           TABLE=EXDEP1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=6.1918203321400004E-4,
+           NOM_PARA='DY',
+           TABLE=EXDEP1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N27',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2.6539252530741002E-4,
+           NOM_PARA='DY',
+           TABLE=EXDEP1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N31',),
+           )
 
 #########
 # Tests sur DY  a l'ordre 149 (t=10 s)
 #########
 
-TEST_TABLE(TABLE     = EXDEP2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N4',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'DY',
-           VALE      = 3.4385071565836E-03,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'DY',
-           VALE      =  2.5771817886894E-03,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'DY',
-           VALE      = 1.7172304114012E-03,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXDEP2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'DY',
-           VALE      = 8.5833064233171E-04,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
+TEST_TABLE(
+           VALE_CALC=3.4385071565836002E-3,
+           NOM_PARA='DY',
+           TABLE=EXDEP2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N4',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2.5771817886893998E-3,
+           NOM_PARA='DY',
+           TABLE=EXDEP2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.7172304114011999E-3,
+           NOM_PARA='DY',
+           TABLE=EXDEP2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N27',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=8.5833064233170999E-4,
+           NOM_PARA='DY',
+           TABLE=EXDEP2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N31',),
+           )
 
 EXSIG1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='MAIL',
@@ -335,90 +331,88 @@ IMPR_TABLE(TABLE=EXSIG2,
 # Tests sur SIYY  a l'ordre 74 (t=1 s)
 #########
 
-TEST_TABLE(TABLE     = EXSIG1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N4',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      = 2.00000E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXSIG1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      =  1.4477057505633E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXSIG1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      = 9.8618261792096E+05,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXSIG1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      = 6.8416253970115E+05,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXSIG1,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N1',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      = 5.7968660741362E+05,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
+TEST_TABLE(
+           VALE_CALC=2.E6,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N4',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.4477057505633E6,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=9.8618261792095995E5,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N27',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=6.8416253970115003E5,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N31',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.7968660741361999E5,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
 #########
 # Tests sur SIYY  a l'ordre 149 (t=10 s)
 #########
 
-TEST_TABLE(TABLE     = EXSIG2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N4',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      = 2.00000E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXSIG2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      =  1.9965914222579E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXSIG2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      = 1.9937017653319E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXSIG2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      = 1.9917709562082E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
-TEST_TABLE(TABLE     = EXSIG2,
-           FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N1',),
-           PRECISION =  1.E-10,
-           NOM_PARA  = 'SIYY',
-           VALE      = 1.991092945817E+06,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION   = '11.0.25');
+TEST_TABLE(
+           VALE_CALC=2.E6,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N4',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.9965914222579E6,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.9937017653319E6,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N27',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.9917709562082E6,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N31',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.991092945817E6,
+           NOM_PARA='SIYY',
+           TABLE=EXSIG2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N1',),
+           )
 
 FIN();

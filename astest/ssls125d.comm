@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FLAMBAGE D UN CYLINDRE SOUS PRESSION EXTERNE
 # ssls125d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,23 +117,29 @@ MOD_1=MODE_ITER_SIMULT( MATR_RIGI=MATASS_1,
 
 
 
-TEST_RESU(RESU=(
-                 _F(RESULTAT=MOD_1, NUME_MODE=1,
-                   PARA='CHAR_CRIT',
-                   VALE=-659340,
-                   PRECISION=0.03,
-                   REFERENCE='ANALYTIQUE',),
-                 _F(RESULTAT=MOD_1, NUME_MODE=2,
-                   PARA='CHAR_CRIT',
-                   VALE=-293040,
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                 _F(RESULTAT=MOD_1, NUME_MODE=3,
-                   PARA='CHAR_CRIT',
-                   VALE=-73260,
-                   PRECISION=0.02,
-                   REFERENCE='ANALYTIQUE',),
-                   ),)
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   NUME_MODE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD_1,
+                   VALE_CALC=-6.59801865E+05,
+                   VALE_REFE=-659340,
+                   PRECISION=0.029999999999999999,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD_1,
+                   VALE_CALC=-2.93108248E+05,
+                   VALE_REFE=-293040,
+                   PRECISION=1.E-2,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD_1,
+                   VALE_CALC=-7.32346550E+04,
+                   VALE_REFE=-73260,
+                   PRECISION=0.02,),
+                ),
+          )
 
 FIN()
 

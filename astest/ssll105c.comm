@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FLAMBEMENT D'UNE STRUCTURE EN L
 # ssll105c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,9 +77,14 @@ MODE1=MODE_ITER_SIMULT(  MATR_RIGI=RIGI,  MATR_RIGI_GEOM=RGEO1,
                    )  )
 
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MODE1, NUME_MODE = 1,  PARA = 'CHAR_CRIT', VALE = 1.088,
-    PRECISION = 1.E-2,))
+TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
+                  NUME_MODE=1,
+                  RESULTAT=MODE1,
+                  VALE_CALC=1.091845839,
+                  VALE_REFE=1.0880000000000001,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=1.E-2,),
+          )
 
 # CAS DE CHARGE 2 : FX = +1
 
@@ -107,9 +112,14 @@ MODE2=MODE_ITER_SIMULT(  MATR_RIGI=RIGI,  MATR_RIGI_GEOM=RGEO2,
                   )  )
 
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MODE2, NUME_MODE = 1,  PARA = 'CHAR_CRIT', VALE = 0.68,
-    PRECISION = 2.E-2,))
+TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
+                  NUME_MODE=1,
+                  RESULTAT=MODE2,
+                  VALE_CALC=0.688264675,
+                  VALE_REFE=0.68000000000000005,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.02,),
+          )
 
 FIN( )
 #

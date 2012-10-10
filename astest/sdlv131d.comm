@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -247,43 +247,64 @@ else:
 
 modes = 1
 if modes:
-  TEST_RESU(RESU=(
-       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU',
-             NOM_CMP = 'EPXX',    GROUP_NO = 'P3',
-             REFERENCE = 'NON_REGRESSION',
-             CRITERE = 'RELATIF',    PRECISION = 1.E-3,
-             NUME_MODE = 1,                 VALE = 1.012),
-       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU',
-             NOM_CMP = 'EPZZ',    GROUP_NO = 'P3',
-             REFERENCE = 'NON_REGRESSION',
-             CRITERE = 'RELATIF',    PRECISION = 1.E-3,
-             NUME_MODE = 1,                 VALE = -3.063E-1),
-
+  TEST_RESU(RESU=(_F(GROUP_NO='P3',
+                     NUME_MODE=1,
+                     RESULTAT=OBSJAU,
+                     NOM_CHAM='EPSI_NOEU',
+                     NOM_CMP='EPXX',
+                     VALE_CALC=1.012,
+                     TOLE_MACHINE=1.E-3,
+                     CRITERE='RELATIF',
+                     ),
+                  _F(GROUP_NO='P3',
+                     NUME_MODE=1,
+                     RESULTAT=OBSJAU,
+                     NOM_CHAM='EPSI_NOEU',
+                     NOM_CMP='EPZZ',
+                     VALE_CALC=-0.30630000000000002,
+                     TOLE_MACHINE=1.E-3,
+                     CRITERE='RELATIF',
+                     ),
 # rotation 90 degres : EPXX <-> EPYY
-       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU',
-             NOM_CMP = 'EPYY',    GROUP_NO = 'P4',
-             REFERENCE = 'NON_REGRESSION',
-             CRITERE = 'RELATIF',    PRECISION = 1.E-3,
-             NUME_MODE = 1,                 VALE = 1.017),
-       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU',
-             NOM_CMP = 'EPXX',    GROUP_NO = 'P4',
-             REFERENCE = 'NON_REGRESSION',
-             CRITERE = 'RELATIF',    PRECISION = 1.E-3,
-             NUME_MODE = 1,                 VALE = -3.118E-1),
-
+                  _F(GROUP_NO='P4',
+                     NUME_MODE=1,
+                     RESULTAT=OBSJAU,
+                     NOM_CHAM='EPSI_NOEU',
+                     NOM_CMP='EPYY',
+                     VALE_CALC=1.0169999999999999,
+                     TOLE_MACHINE=1.E-3,
+                     CRITERE='RELATIF',
+                     ),
+                  _F(GROUP_NO='P4',
+                     NUME_MODE=1,
+                     RESULTAT=OBSJAU,
+                     NOM_CHAM='EPSI_NOEU',
+                     NOM_CMP='EPXX',
+                     VALE_CALC=-0.31180000000000002,
+                     TOLE_MACHINE=1.E-3,
+                     CRITERE='RELATIF',
+                     ),
 # observation mixte
-       _F( RESULTAT = OBSMXT,        NOM_CHAM = 'EPSI_NOEU',
-             NOM_CMP = 'EPXX',    GROUP_NO = 'P3',
-             REFERENCE = 'NON_REGRESSION',
-             CRITERE = 'RELATIF',    PRECISION = 1.E-3,
-             NUME_MODE = 1,                 VALE = 1.014),
-       _F( RESULTAT = OBSMXT,        NOM_CHAM = 'DEPL',
-             NOM_CMP = 'DX',    GROUP_NO = 'P3',
-             REFERENCE = 'NON_REGRESSION',
-             CRITERE = 'RELATIF',    PRECISION = 1.E-3,
-             NUME_MODE = 1,                 VALE = 7.57E-1),
-  ),);
-
+                  _F(GROUP_NO='P3',
+                     NUME_MODE=1,
+                     RESULTAT=OBSMXT,
+                     NOM_CHAM='EPSI_NOEU',
+                     NOM_CMP='EPXX',
+                     VALE_CALC=1.014,
+                     TOLE_MACHINE=1.E-3,
+                     CRITERE='RELATIF',
+                     ),
+                  _F(GROUP_NO='P3',
+                     NUME_MODE=1,
+                     RESULTAT=OBSMXT,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DX',
+                     VALE_CALC=0.75700000000000001,
+                     TOLE_MACHINE=1.E-3,
+                     CRITERE='RELATIF',
+                     ),
+                  ),
+            )
 
 FIN();
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DES ESTIMATEURS D'ERREUR BASES SUR LES RESIDUS
 # sslp107a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -356,34 +356,40 @@ RESU=CALC_ERREUR(reuse =RESU,
 #                                            #
 ##############################################
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  POINT=1,
+                  RESULTAT=RESU,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='ERREST',
-                  MAILLE='M1',
-                  POINT=1,
-                  VALE=terme[0],
+                  VALE_CALC=0.109796407,
+                  VALE_REFE=0.10979589457044671,
                   CRITERE='RELATIF',
-                  PRECISION=1e-05,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=1.0000000000000001E-05,
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  POINT=1,
+                  RESULTAT=RESU,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='ERREST',
-                  MAILLE='M2',
-                  POINT=1,
-                  VALE=terme[1],
+                  VALE_CALC=0.109795388,
+                  VALE_REFE=0.10979487496136653,
                   CRITERE='RELATIF',
-                  PRECISION=1e-05,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=1.0000000000000001E-05,
+                  MAILLE='M2',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERRE',
-                  VALE=erreur,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU,
+                  VALE_CALC=0.155274847,
+                  VALE_REFE=0.15527412222359127,
                   CRITERE='RELATIF',
-                  PRECISION=1e-05,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=1.0000000000000001E-05,),
+          )
 
 FIN();

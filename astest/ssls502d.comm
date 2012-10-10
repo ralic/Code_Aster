@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MASSIN P.MASSIN
 # TITRE  : CYLINDRE ORTHOTROPE LONG SOUMIS A UNE LIGNE DE CHARGE
 # ssls502d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -155,102 +155,122 @@ IMPR_TABLE(TABLE=SIGMA,
 #          TEST REFERENCE EXPERIMENTALE
 #---------------------------------------------------------------------
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='F',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='F',
-                   VALE=0.00135,
-                   REFERENCE='SOURCE_EXTERNE',
-                   PRECISION=0.05,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
+                   VALE_CALC= 1.32983654E-03,
+                   VALE_REFE=1.3500000000000001E-3,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='C',
-                   VALE=-0.00246,
                    REFERENCE='SOURCE_EXTERNE',
-                   PRECISION=0.05,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
+                   VALE_CALC=-2.36977986E-03,
+                   VALE_REFE=-2.4599999999999999E-3,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='D',
-                   VALE=0.00035,
                    REFERENCE='SOURCE_EXTERNE',
-                   PRECISION=0.52,),),);
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 5.28532977E-04,
+                   VALE_REFE=3.5E-4,
+                   PRECISION=0.52000000000000002,),
+                ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='F',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU2,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIXX',
-                  MAILLE='M184',
-                  GROUP_NO='F',
-                  VALE=1900000.0,
-                  REFERENCE='SOURCE_EXTERNE',
-                  PRECISION=0.15,),);
+                  VALE_CALC= 1.79115065E+06,
+                  VALE_REFE=1.900000E6,
+                  PRECISION=0.14999999999999999,
+                  MAILLE='M184',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='F',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU2,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIYY',
-                  MAILLE='M184',
-                  GROUP_NO='F',
-                  VALE=1550000.0,
-                  REFERENCE='SOURCE_EXTERNE',
-                  PRECISION=0.2,),);
+                  VALE_CALC= 1.84436484E+06,
+                  VALE_REFE=1.550000E6,
+                  PRECISION=0.20000000000000001,
+                  MAILLE='M184',),
+          )
+
 #
 #---------------------------------------------------------------------
 #          TEST REFERENCE BATOZ
 #---------------------------------------------------------------------
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='F',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='F',
-                   VALE=0.001325,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=0.1,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
+                   VALE_CALC= 1.32983654E-03,
+                   VALE_REFE=1.325E-3,
+                   PRECISION=0.10000000000000001,),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='C',
-                   VALE=-0.00245,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.05,),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
+                   VALE_CALC=-2.36977986E-03,
+                   VALE_REFE=-2.4499999999999999E-3,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='D',
-                   VALE=0.00051,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.5,),),);
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 5.28532977E-04,
+                   VALE_REFE=5.1000000000000004E-4,
+                   PRECISION=0.5,),
+                ),
+          )
+
 #
 #---------------------------------------------------------------------
 #              TEST SIGMA
 #---------------------------------------------------------------------
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU2,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='F',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU2,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
-                   MAILLE='M184',
+                   VALE_CALC= 1.79115065E+06,
+                   VALE_REFE=1.680000E6,
+                   PRECISION=0.10000000000000001,
+                   MAILLE='M184',),
+                _F(NUME_ORDRE=1,
                    GROUP_NO='F',
-                   VALE=1680000.0,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.1,),
-                _F(RESULTAT=RESU2,
-                   NUME_ORDRE=1,
+                   RESULTAT=RESU2,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
-                   MAILLE='M184',
-                   GROUP_NO='F',
-                   VALE=1800000.0,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=0.1,),),);
+                   VALE_CALC= 1.84436484E+06,
+                   VALE_REFE=1.800000E6,
+                   PRECISION=0.10000000000000001,
+                   MAILLE='M184',),
+                ),
+          )
 
 #------------------------------------------------------------------------------------------
 # validation de POST_CHAMP / EXTR_COQUE :
@@ -259,12 +279,28 @@ RESU=CALC_CHAMP(reuse =RESU, RESULTAT=RESU,  CONTRAINTE='SIGM_ELGA')
 
 RESU3=POST_CHAMP(RESULTAT=RESU,
                EXTR_COQUE =_F(NOM_CHAM='SIGM_ELGA', NUME_COUCHE=1, NIVE_COUCHE='SUP',),);
-TEST_RESU(RESU=_F(RESULTAT=RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELGA', REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   NOM_CMP='SIXX', MAILLE='M184', POINT=2, SOUS_POINT= 3, VALE=1.8199294623516E+06
-                   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  POINT=2,
+                  SOUS_POINT=3,
+                  RESULTAT=RESU,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=1.8199294623515999E6,
+                  MAILLE='M184',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU3, NUME_ORDRE=1, NOM_CHAM='SIGM_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
-                   NOM_CMP='SIXX', MAILLE='M184', POINT=2,                VALE=1.8199294623516E+06
-                   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
+                  POINT=2,
+                  RESULTAT=RESU3,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC= 1.8199294624E+06,
+                  VALE_REFE=1.8199294623515999E6,
+                  TOLE_MACHINE=1.E-10,
+                  PRECISION=1.E-10,
+                  MAILLE='M184',),
+          )
+
 #-----------------------------------------------------------------------------------------
 FIN();

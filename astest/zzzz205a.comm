@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 
 # TITRE CALCUL DE L'ENERGIE CINETIQUE EN 2D D'UNE PLAQUE RECTANGULAIRE
 # zzzz205a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
@@ -76,12 +76,15 @@ MASSE=POST_ELEM(  MODELE=MO,
 
 IMPR_TABLE(TABLE=MASSE)
 
-TEST_TABLE(      TABLE=MASSE,
-                   FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'MA',),
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA='MASSE',
-                   VALE=2.0475E+03,
-                   PRECISION=0.0001)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC= 2.04750000E+03,
+           VALE_REFE=2047.5,
+           NOM_PARA='MASSE',
+           TABLE=MASSE,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
 #
 # CALCUL DE L'ENERGIE CINETIQUE -----------------------
@@ -91,49 +94,83 @@ ENER=POST_ELEM(   MODELE=MO,   CHAM_MATER=CHMAT,
                                            GROUP_MA=('GM100','GM200'),),
                                          _F(TOUT='OUI') ))
 IMPR_TABLE(TABLE=ENER)
-TEST_TABLE(      TABLE=ENER,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MA',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA='TOTALE',
-                   VALE=2.30344E+03,
-                   PRECISION=0.0001)
-TEST_TABLE(      TABLE=ENER,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'GM100',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA='TOTALE',
-                   VALE=9.21375E+02,
-                   PRECISION=0.0001)
-TEST_TABLE(      TABLE=ENER,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'GM200',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA='TOTALE',
-                   VALE=1.38206E+03,
-                   PRECISION=0.0001)
-TEST_TABLE(      TABLE=ENER,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MA',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 2,),),
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA='TOTALE',
-                   VALE=8.70187E+03,
-                   PRECISION=0.0001)
-TEST_TABLE(      TABLE=ENER,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'GM100',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 2,),),
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA='TOTALE',
-                   VALE=3.48075E+03,
-                   PRECISION=0.0001)
-TEST_TABLE(      TABLE=ENER,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'GM200',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 2,),),
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA='TOTALE',
-                   VALE=5.221125E+03,
-                   PRECISION=0.0001)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC= 2.30343750E+03,
+           VALE_REFE=2303.4400000000001,
+           NOM_PARA='TOTALE',
+           TABLE=ENER,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC=921.375000000,
+           VALE_REFE=921.375,
+           NOM_PARA='TOTALE',
+           TABLE=ENER,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='GM100',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC= 1.38206250E+03,
+           VALE_REFE=1382.0599999999999,
+           NOM_PARA='TOTALE',
+           TABLE=ENER,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='GM200',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC= 8.70187500E+03,
+           VALE_REFE=8701.8700000000008,
+           NOM_PARA='TOTALE',
+           TABLE=ENER,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MA',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC= 3.48075000E+03,
+           VALE_REFE=3480.75,
+           NOM_PARA='TOTALE',
+           TABLE=ENER,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='GM100',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC= 5.22112500E+03,
+           VALE_REFE=5221.125,
+           NOM_PARA='TOTALE',
+           TABLE=ENER,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='GM200',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),
+                   ),
+           )
 
 FIN( )
 #

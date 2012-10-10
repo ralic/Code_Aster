@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fonction_ops Macro  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,8 @@ import os
 
 from Noyau.N_types import is_complex, is_str, is_enum
 
+from Cata.cata import formule, formule_c, fonction_sdaster, fonction_c, nappe_sdaster
+
 epsi = 1e-15
 
 # Format
@@ -31,7 +33,7 @@ ligne_fct_11= """ ---- FONCTION         %(nom_para)s TITRE """
 ligne_fct_2 = """      %(nom_fct)s %(val_para)s """
 ligne_fct_22= """      %(nom_fct)s %(val_para)s %(titre)s """
 ligne_fct_3 = """      %(refe)s %(legende)s %(valref)s %(valcal)s %(erreur)s %(tole)s """
-ligne_fct_4 = """ %(testOk)s %(refe)s %(legende)s %(valref)s %(valcal)s %(erreur)s %(tole)s """
+ligne_fct_4 = """%(testOk)s  %(refe)s %(legende)s %(valref)s %(valcal)s %(erreur)s %(tole)s """
 
 ligne_nap_1 = """ ---- NAPPE            %(nom_para_0)s %(nom_para)s """
 ligne_nap_2 = """      %(nom_nap)s %(val_para_0)s %(val_para)s"""
@@ -47,7 +49,7 @@ ligne_separatrice = 80*'-'
 ligne_intspc   = """ ---- INTERSPECTRE        %(nom_para)s"""
 ligne_intspc_1 = """      %(nom)s %(val_para)s"""
 
-list_fct  = ['REFERENCE','LEGENDE','VALE_REF','VALE_CAL','ERREUR','TOLE']
+list_fct  = ['REFERENCE','LEGENDE','VALE_REFE','VALE_CALC','ERREUR','TOLE']
 list_attr = ['ATTR','PARA','VALE']
 
 
@@ -247,7 +249,7 @@ def RoundValues(type,res,vtc,err,curEps):
    return (resr,vtcr,errr,curEpsr)
 
 
-def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt):
+def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt, label=True):
    """
       Gestion de l'affichage par ajout de texte au tableau txt
       passe en parametre
@@ -290,9 +292,9 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt):
        val_ref=vtc2.upper()
 
    espace = (len(val_ref)-8)*' '
-   chvalref='VALE_REF'+espace
+   chvalref='VALE_REFE'+espace
    espace = (len(val_cal)-8)*' '
-   chvalcal='VALE_CAL'+espace
+   chvalcal='VALE_CALC'+espace
 
    if(len(val_ref)<=16):nvref=16
    elif(len(val_ref)<=24):nvref=24
@@ -312,7 +314,8 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt):
                'erreur'  : list_fct[4]+(16 - len(list_fct[4]))*' ',
                'tole'    : list_fct[5]+(16 - len(list_fct[5]))*' ',
              }
-   txt.append(ligne_fct_3 % current)
+   if label:
+      txt.append(ligne_fct_3 % current)
 
    # Ajout du texte en fonction du resultat : ligne 4
    current = {  'testOk'  : testOk,
@@ -324,7 +327,16 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt):
                 'tole'    : str(curEpsr)+pourcent+(16 - len(str(curEpsr)+pourcent))*' ',
             }
    txt.append(ligne_fct_4 % current)
-   txt.append(' ')
+
+def get_valref(lafonc, kw, typ):
+     valref  = None
+     if (type(lafonc) == formule_c) or (type(lafonc) == fonction_c):
+        valref = kw['VALE_' + typ + '_C']
+     else:
+        valref = kw['VALE_' + typ]
+     if is_str(valref[0]):
+        valref = [valref,]
+     return valref
 
 # -----------------------------------------------------------------------------
 def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
@@ -334,7 +346,6 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
    macro='TEST_FONCTION'
    import aster
    from Accas import _F
-   from Cata.cata import formule, formule_c, fonction_sdaster, fonction_c, nappe_sdaster
    from Utilitai.Utmess import UTMESS
    from SD.sd_fonction import sd_fonction
    from Cata_Utils.t_fonction import t_fonction_c
@@ -357,16 +368,15 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
 
          # Recherche des mots-cles simples
          ssigne = dres['VALE_ABS']
-         epsi = dres['PRECISION']
+         epsi = dres['TOLE_MACHINE']
          crit = dres['CRITERE']
          fct = dres['FONCTION']
          nompara = dres['NOM_PARA']
          if nompara == None:
             nompara = ''
-         ref = dres['REFERENCE']
+         ref = dres['REFERENCE'] or 'NON_REGRESSION'
+         other_ref = ref != 'NON_REGRESSION' and dres['REFERENCE'] or None
          ver = None
-         if ref == 'NON_REGRESSION':
-            ver = dres['VERSION']
          legende = dres['LEGENDE']
          if legende == None:
             legende='XXXX'
@@ -376,256 +386,256 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
          if (not is_enum(nompara)) and nompara != None:
             nompara = [nompara,]
 
-         bcle = []
-         # On boucle uniquement sur la fonction a tester
-         bcle = [fct,]
+         # La fonction est directement de dres['FONCTION']
+         lafonc = None
+         titre = ''
+         lafonc = fct
+         res = 0.
+         typeFct = ''
+         valpu = dres['VALE_PARA']
+         if not is_enum(valpu): valpu = [valpu,]
 
-         for ps in bcle:
-            # La fonction est directement de dres['FONCTION']
-            lafonc = None
-            titre = ''
-            lafonc = ps
+         valref = get_valref(lafonc, dres, 'CALC')
+         if other_ref:
+             valoth = get_valref(lafonc, dres, 'REFE')
+             epsoth = dres['PRECISION']
 
-            res = 0.
-            typeFct = ''
-            valpu = dres['VALE_PARA']
-            if not is_enum(valpu): valpu = [valpu,]
+         intervalle = dres['INTERVALLE']
 
-            valref  = None
-            if (type(lafonc) == formule_c) or (type(lafonc) == fonction_c):
-               valref = dres['VALE_REFE_C']
-            else:
-               valref = dres['VALE_REFE']
-            if is_str(valref[0]):
-               valref = [valref,]
+         ier = 0
+         # Distinction des cas
+         # - "fonction" sur un intervalle
+         # - "formule",
+         # - "fonction" ou "nappe"
+         if (type(lafonc) == fonction_sdaster) and intervalle != None:
+            #XXX il faut utiliser lafonc.Parametres() !
+            fctProl = lafonc.sdj.PROL.get()
+            prolG = 'rien'
+            if fctProl[4][0:1] == 'C':
+               prolG = 'CONSTANT'
+            elif fctProl[4][0:1] == 'E':
+               prolG = 'EXCLU'
+            elif fctProl[4][0:1] == 'L':
+               prolG = 'LINEAIRE'
+            prolD = 'rien'
+            if fctProl[4][1:2] == 'C':
+               prolD = 'CONSTANT'
+            elif fctProl[4][1:2] == 'E':
+               prolD = 'EXCLU'
+            elif fctProl[4][1:2] == 'L':
+               prolD = 'LINEAIRE'
+            curInterpol = [fctProl[1][0:3], fctProl[1][4:7]]
 
-            intervalle = dres['INTERVALLE']
+            __fInt = CALC_FONCTION(INTEGRE = _F(FONCTION=lafonc,),
+                                   PROL_DROITE = prolD,
+                                   PROL_GAUCHE = prolG,
+                                   INTERPOL = curInterpol)
 
-            ier = 0
-            # Distinction des cas
-            # - "fonction" sur un intervalle
-            # - "formule",
-            # - "fonction" ou "nappe"
-            if (type(lafonc) == fonction_sdaster) and intervalle != None:
-               #XXX il faut utiliser lafonc.Parametres() !
-               fctProl = lafonc.sdj.PROL.get()
-               prolG = 'rien'
-               if fctProl[4][0:1] == 'C':
-                  prolG = 'CONSTANT'
-               elif fctProl[4][0:1] == 'E':
-                  prolG = 'EXCLU'
-               elif fctProl[4][0:1] == 'L':
-                  prolG = 'LINEAIRE'
-               prolD = 'rien'
-               if fctProl[4][1:2] == 'C':
-                  prolD = 'CONSTANT'
-               elif fctProl[4][1:2] == 'E':
-                  prolD = 'EXCLU'
-               elif fctProl[4][1:2] == 'L':
-                  prolD = 'LINEAIRE'
-               curInterpol = [fctProl[1][0:3], fctProl[1][4:7]]
+            res1 = __fInt(intervalle[0])
+            res2 = __fInt(intervalle[1])
 
-               __fInt = CALC_FONCTION(INTEGRE = _F(FONCTION=lafonc,),
-                                      PROL_DROITE = prolD,
-                                      PROL_GAUCHE = prolG,
-                                      INTERPOL = curInterpol)
+            DETRUIRE(CONCEPT = _F(NOM = __fInt),INFO = 1)
 
-               res1 = __fInt(intervalle[0])
-               res2 = __fInt(intervalle[1])
+            res = (res2-res1)/(intervalle[1]-intervalle[0])
+            valpu[0] = intervalle[0]
 
-               DETRUIRE(CONCEPT = _F(NOM = __fInt),INFO = 1)
+         elif type(lafonc) in (formule, formule_c):
+            # Lecture des valeurs de reference dans les mots-cles simples
+            if type(lafonc) == formule_c: typeFct = 'formule_c'
+            else: typeFct = 'formule'
 
-               res = (res2-res1)/(intervalle[1]-intervalle[0])
-               valpu[0] = intervalle[0]
+            # On cherche les valeurs de reference passees a TEST_FONCTION et
+            # on les trie grace a ceux de la formule
+            paramFormule = lafonc.Parametres()['NOM_PARA']
+            if not is_enum(paramFormule):
+               paramFormule = [paramFormule,]
+            if nompara[0] == '':
+               nompara = paramFormule
 
-            elif type(lafonc) in (formule, formule_c):
-               # Lecture des valeurs de reference dans les mots-cles simples
-               if type(lafonc) == formule_c: typeFct = 'formule_c'
-               else: typeFct = 'formule'
+            # On verifie que la formule a bien le meme nombre de parametres
+            # que ceux passes a la fonction TEST_FONCTION
+            if len(nompara) != len(paramFormule):
+               ier = 160
+               UTMESS('A+','FONCT0_9',valk=(lafonc.get_name()))
+               UTMESS('A','FONCT0_14',vali=(len(nompara),len(paramFormule)))
+               return 0.
 
-               # On cherche les valeurs de reference passees a TEST_FONCTION et
-               # on les trie grace a ceux de la formule
-               paramFormule = lafonc.Parametres()['NOM_PARA']
-               if not is_enum(paramFormule):
-                  paramFormule = [paramFormule,]
-               if nompara[0] == '':
-                  nompara = paramFormule
+            # Trie des parametres passes a la fonction TEST_FONCTION pour
+            # correspondre a l'ordre de ceux de la formule
+            nParamOrdo = []
+            vParamOrdo = []
+            for iPN in range(len(paramFormule)):
+               nParamOrdo.append('')
+               #vParamOrdo.append('')
 
-               # On verifie que la formule a bien le meme nombre de parametres
-               # que ceux passes a la fonction TEST_FONCTION
-               if len(nompara) != len(paramFormule):
-                  ier = 160
+            compteur = 0
+            for iPN in range(len(paramFormule)):
+               i = 0
+               for iPU in range(len(nompara)):
+                  if paramFormule[iPN] == nompara[iPU]:
+                     if nParamOrdo[iPN] == '':
+                        vParamOrdo.append(valpu[iPU])
+                        nParamOrdo[iPN] = paramFormule[iPN]
+                        compteur = compteur + 1
+                     else:
+                        ier = 120
+                        UTMESS('A+','FONCT0_9',valk=(lafonc.get_name()))
+                        UTMESS('A','FONCT0_15',valk=nompara)
+                        res = 0.
+                  i = i + 1
+               if nParamOrdo[iPN] == '':
+                  ier = 130
                   UTMESS('A+','FONCT0_9',valk=(lafonc.get_name()))
-                  UTMESS('A','FONCT0_14',vali=(len(nompara),len(paramFormule)))
+                  UTMESS('A','FONCT0_16',valk=paramFormule)
+                  UTMESS('A','FONCT0_17',valk=nompara)
                   return 0.
 
-               # Trie des parametres passes a la fonction TEST_FONCTION pour
-               # correspondre a l'ordre de ceux de la formule
-               nParamOrdo = []
-               vParamOrdo = []
-               for iPN in range(len(paramFormule)):
-                  nParamOrdo.append('')
-                  #vParamOrdo.append('')
+            # Si tout est Ok, on calcul la valeur de la formule
+            if ier == 0:
+               res = lafonc(*vParamOrdo)
 
-               compteur = 0
-               for iPN in range(len(paramFormule)):
+         # Cas fonction et nappe
+         elif type(lafonc) in (fonction_sdaster, fonction_c, nappe_sdaster):
+            #XXX il faut utiliser lafonc.Parametres() !
+            # Recuperation du .PROL de la fonction
+            fct_prol = lafonc.sdj.PROL.get_stripped()
+            if fct_prol == None: UTMESS('F','PREPOST3_93')
+
+            nompu = ''
+            if nompara[0] != '':
+               nompu = nompara[0]
+            else:
+               nompu = fct_prol[2]
+               nompara = [nompu,]
+
+            # Une nappe a forcement 2 parametres
+            if (fct_prol[0] == 'NAPPE') & (len(nompara) == 1):
+               UTMESS('A','PREPOST3_94')
+               break
+
+            # Lecture de la valeur de reference
+            if fct_prol[0] == 'FONCT_C':
+               typeFct = 'fonction_c'
+            else:
+               if fct_prol[0] == 'NAPPE': typeFct = 'nappe'
+               else: typeFct = 'fonction'
+
+            # Calcul de la fonction
+            res = 0
+            if type(lafonc) in (fonction_sdaster, fonction_c):
+               res = lafonc(valpu[0])
+            else:
+               # Remise dans l'ordre des param
+               paramNappe = [fct_prol[2], fct_prol[6]]
+               vParamOrdo = ['','']
+               for iPN in range(len(paramNappe)):
                   i = 0
                   for iPU in range(len(nompara)):
-                     if paramFormule[iPN] == nompara[iPU]:
-                        if nParamOrdo[iPN] == '':
-                           vParamOrdo.append(valpu[iPU])
-                           nParamOrdo[iPN] = paramFormule[iPN]
-                           compteur = compteur + 1
-                        else:
+                     if paramNappe[iPN] == nompara[iPU]:
+                        if vParamOrdo[iPN] != '':
                            ier = 120
                            UTMESS('A+','FONCT0_9',valk=(lafonc.get_name()))
                            UTMESS('A','FONCT0_15',valk=nompara)
-                           res = 0.
+                        else:
+                           vParamOrdo[iPN] = valpu[iPU]
                      i = i + 1
-                  if nParamOrdo[iPN] == '':
+                  if vParamOrdo[iPN] == '':
                      ier = 130
                      UTMESS('A+','FONCT0_9',valk=(lafonc.get_name()))
-                     UTMESS('A','FONCT0_16',valk=paramFormule)
+                     UTMESS('A','FONCT0_16',valk=paramNappe)
                      UTMESS('A','FONCT0_17',valk=nompara)
-                     return 0.
+               res = lafonc(vParamOrdo[0],vParamOrdo[1])
+         else: ier = 150
 
-               # Si tout est Ok, on calcul la valeur de la formule
-               if ier == 0:
-                  res = lafonc(*vParamOrdo)
+         # Construction de l'affiche du resultat
+         current = {}
 
-            # Cas fonction et nappe
-            elif type(lafonc) in (fonction_sdaster, fonction_c, nappe_sdaster):
-               #XXX il faut utiliser lafonc.Parametres() !
-               # Recuperation du .PROL de la fonction
-               fct_prol = lafonc.sdj.PROL.get_stripped()
-               if fct_prol == None: UTMESS('F','PREPOST3_93')
+         nomLastPara = nompara[len(nompara)-1]
+         valLastPara = valpu[len(valpu)-1]
+         if (typeFct == 'nappe'):
 
-               nompu = ''
-               if nompara[0] != '':
-                  nompu = nompara[0]
-               else:
-                  nompu = fct_prol[2]
-                  nompara = [nompu,]
+            #ligne 1
+            nb_espace = 16-len(str(nompu))
+            espace = nb_espace*' '
+            current['nom_para_0'] = str(nompu)+espace
+            nb_espace = 16-len(str(nomLastPara))
+            espace = nb_espace*' '
+            current['nom_para'] = str(nomLastPara)+espace
+            txt.append(ligne_nap_1 % current)
 
-               # Une nappe a forcement 2 parametres
-               if (fct_prol[0] == 'NAPPE') & (len(nompara) == 1):
-                  UTMESS('A','PREPOST3_94')
-                  break
-
-               # Lecture de la valeur de reference
-               if fct_prol[0] == 'FONCT_C':
-                  typeFct = 'fonction_c'
-               else:
-                  if fct_prol[0] == 'NAPPE': typeFct = 'nappe'
-                  else: typeFct = 'fonction'
-
-               # Calcul de la fonction
-               res = 0
-               if type(lafonc) in (fonction_sdaster, fonction_c):
-                  res = lafonc(valpu[0])
-               else:
-                  # Remise dans l'ordre des param
-                  paramNappe = [fct_prol[2], fct_prol[6]]
-                  vParamOrdo = ['','']
-                  for iPN in range(len(paramNappe)):
-                     i = 0
-                     for iPU in range(len(nompara)):
-                        if paramNappe[iPN] == nompara[iPU]:
-                           if vParamOrdo[iPN] != '':
-                              ier = 120
-                              UTMESS('A+','FONCT0_9',valk=(lafonc.get_name()))
-                              UTMESS('A','FONCT0_15',valk=nompara)
-                           else:
-                              vParamOrdo[iPN] = valpu[iPU]
-                        i = i + 1
-                     if vParamOrdo[iPN] == '':
-                        ier = 130
-                        UTMESS('A+','FONCT0_9',valk=(lafonc.get_name()))
-                        UTMESS('A','FONCT0_16',valk=paramNappe)
-                        UTMESS('A','FONCT0_17',valk=nompara)
-                  res = lafonc(vParamOrdo[0],vParamOrdo[1])
-            else: ier = 150
-
-            # Construction de l'affiche du resultat
+            #ligne 2
             current = {}
-
-            nomLastPara = nompara[len(nompara)-1]
-            valLastPara = valpu[len(valpu)-1]
-            if (typeFct == 'nappe'):
-
-               #ligne 1
-               nb_espace = 16-len(str(nompu))
-               espace = nb_espace*' '
-               current['nom_para_0'] = str(nompu)+espace
-               nb_espace = 16-len(str(nomLastPara))
-               espace = nb_espace*' '
-               current['nom_para'] = str(nomLastPara)+espace
-               txt.append(ligne_nap_1 % current)
-
-               #ligne 2
-               current = {}
-               nb_espace = 16-len(nomfct)
-               espace = nb_espace*' '
-               current['nom_nap'] = nomfct+espace
-               nb_espace = 16-len(str(valpu[0]))
-               espace = nb_espace*' '
-               current['val_para_0'] = str(valpu[0])+espace
-               nb_espace = 16-len(str(valLastPara))
-               espace = nb_espace*' '
-               current['val_para'] = str(valLastPara)+espace
-               txt.append(ligne_nap_2 % current)
+            nb_espace = 16-len(nomfct)
+            espace = nb_espace*' '
+            current['nom_nap'] = nomfct+espace
+            nb_espace = 16-len(str(valpu[0]))
+            espace = nb_espace*' '
+            current['val_para_0'] = str(valpu[0])+espace
+            nb_espace = 16-len(str(valLastPara))
+            espace = nb_espace*' '
+            current['val_para'] = str(valLastPara)+espace
+            txt.append(ligne_nap_2 % current)
 
 
+         else:
+
+            #ligne 1
+            nb_espace = 16-len(str(nomLastPara))
+            espace = nb_espace*' '
+            current['nom_para'] = str(nomLastPara)+espace
+            if(len(titre)>1):txt.append(ligne_fct_11% current)
+            else:txt.append(ligne_fct_1% current)
+
+            #ligne 2
+            current = {}
+            nb_espace = 16-len(nomfct)
+            espace = nb_espace*' '
+            current['nom_fct'] = nomfct+espace
+            nb_espace = 16-len(str(valLastPara))
+            espace = nb_espace*' '
+            current['val_para'] = str(valLastPara)+espace
+            if(len(titre)>1):
+               nb_espace = 33-len(titre)
+               espace = nb_espace*' '
+               current['titre'] = titre
+               txt.append(ligne_fct_22 % current)
             else:
+               txt.append(ligne_fct_2 % current)
 
-               #ligne 1
-               nb_espace = 16-len(str(nomLastPara))
-               espace = nb_espace*' '
-               current['nom_para'] = str(nomLastPara)+espace
-               if(len(titre)>1):txt.append(ligne_fct_11% current)
-               else:txt.append(ligne_fct_1% current)
+         # Test des valeurs calculees
+         curDict=TesterValeur(nomLastPara,valLastPara,valref,res,epsi,crit,ssigne)
+         if other_ref:
+             DictRef = TesterValeur(nomLastPara,valLastPara,valoth,res,epsoth,crit,ssigne)
 
-               #ligne 2
-               current = {}
-               nb_espace = 16-len(nomfct)
-               espace = nb_espace*' '
-               current['nom_fct'] = nomfct+espace
-               nb_espace = 16-len(str(valLastPara))
-               espace = nb_espace*' '
-               current['val_para'] = str(valLastPara)+espace
-               if(len(titre)>1):
-                  nb_espace = 33-len(titre)
-                  espace = nb_espace*' '
-                  current['titre'] = titre
-                  txt.append(ligne_fct_22 % current)
+         if TEST_NOOK == 'OUI':
+            if ier == 0:
+               testOk = curDict['testOk']
+               if testOk == ' OK ':
+                  txt.append('NOOK PAS DE CHANCE LE TEST EST CORRECT !!!')
                else:
-                  txt.append(ligne_fct_2 % current)
-
-            if ref == None: ref = 'NON_DEFINI'
-
-            # Test des valeurs calculees
-            curDict=TesterValeur(nomLastPara,valLastPara,valref,res,epsi,crit,ssigne)
-
-            if TEST_NOOK == 'OUI':
-               if ier == 0:
-                  testOk = curDict['testOk']
-                  if testOk == ' OK ':
-                     txt.append('NOOK PAS DE CHANCE LE TEST EST CORRECT !!!')
-                  else:
-                     AfficherResultat(curDict, nomLastPara, ref, legende, crit, res, valLastPara, txt)
-               elif ier == 120:
-                  txt.append(' OK  PARAMETRE EN DOUBLE')
-               elif ier == 130:
-                  txt.append(' OK  PARAMETRE NON CORRECT')
-               elif ier == 150:
-                  txt.append(' OK  TYPE DE FONCTION NON TRAITE')
-               elif ier == 160:
-                  txt.append(' OK  PAS ASSEZ DE PARAMETRES')
+                  AfficherResultat(curDict, nomLastPara, 'NON_REGRESSION', legende,
+                                   crit, res, valLastPara, txt)
+                  if other_ref:
+                    AfficherResultat(DictRef, nomLastPara, ref, legende,
+                                     crit, res, valLastPara, txt, label=False)
+            elif ier == 120:
+               txt.append(' OK  PARAMETRE EN DOUBLE')
+            elif ier == 130:
+               txt.append(' OK  PARAMETRE NON CORRECT')
+            elif ier == 150:
+               txt.append(' OK  TYPE DE FONCTION NON TRAITE')
+            elif ier == 160:
+               txt.append(' OK  PAS ASSEZ DE PARAMETRES')
+         else:
+            if ier != 0:
+               txt.append('NOOK PB INTERPOLATION. VOIR MESSAGE CI-DESSUS')
             else:
-               if ier != 0:
-                  txt.append('NOOK PB INTERPOLATION. VOIR MESSAGE CI-DESSUS')
-               else:
-                  AfficherResultat(curDict,nomLastPara,ref,legende,crit,res,valLastPara,txt)
+               AfficherResultat(curDict,nomLastPara,'NON_REGRESSION',legende,
+                                crit,res,valLastPara,txt)
+               if other_ref:
+                    AfficherResultat(DictRef, nomLastPara, ref, legende,
+                                     crit, res, valLastPara, txt, label=False)
+         txt.append(' ')
 
    if ATTRIBUT != None:
       first_affiche_ligne1=True;
@@ -636,8 +646,6 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
          # Lecture des mots-cles simples
          ref = dres['REFERENCE']
          ver = None
-         if ref == 'NON_REGRESSION':
-            ver = dres['VERSION']
          fonction = dres['FONCTION']
          fctProl = fonction.sdj.PROL.get_stripped()
          typeFct = fctProl[0]

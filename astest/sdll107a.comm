@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 # sdll107a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1702,14 +1702,20 @@ REP2=RECU_FONCTION(    INTE_SPEC=INTERS,
                     NUME_ORDRE_I = 2,
                       )
 
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = REP1,
-                    VALE_PARA = 2.,       VALE_REFE = 0.1,
-                    PRECISION = 10.E-2),
-    _F(  FONCTION = REP2,
-                    VALE_PARA = 2.,       VALE_REFE = 0.025,
-                    PRECISION = 10.E-2),
-           ),)
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.102003700434,
+                         VALE_REFE=0.10000000000000001,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=2.0,
+                         PRECISION=0.10000000000000001,
+                         FONCTION=REP1,),
+                      _F(VALE_CALC=0.0234342701622,
+                         VALE_REFE=0.025000000000000001,
+                         REFERENCE='NON_DEFINI',
+                         VALE_PARA=2.0,
+                         PRECISION=0.10000000000000001,
+                         FONCTION=REP2,),
+                      ),
+              )
 
 ##
 PROJ_BASE(  BASE=MODES,
@@ -1867,125 +1873,111 @@ IMPR_TABLE(  TABLE=TT,
              NOM_PARA=( 'NOEUD', 'PUIS_USURE', )
           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'DEPL_X'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='MOYEN',
-                     VALE=5.00000E-01
-             )
+TEST_TABLE(VALE_CALC=0.5,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOYEN',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='DEPL_X',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N76',),
+                   ),
+           )
 
 # attention : le comportement du generateur de nombres aleatoires
 # (module random) a change entre la version 2.2 de python et la
 # version 2.3. Les resultats s en trouvent un peu affectes.
-# On teste donc avec des valeurs de reference differentes suivant
-# les versions de python
+TEST_TABLE(VALE_CALC=2.4559999999999999E-05,
+         TOLE_MACHINE=1.E-3,
+         NOM_PARA='ECART_TYPE',
+         TABLE=TT,
+         FILTRE=(_F(NOM_PARA='CALCUL',
+                    VALE_K='DEPL_Y',),
+                 _F(NOM_PARA='NOEUD',
+                    VALE_K='N76',),
+                 ),
+         )
 
-import sys
-version=sys.version_info[:2]
-if version<(2,3) :
-  TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'DEPL_Y'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='ECART_TYPE',
-                     VALE=2.57E-05
-             )
+TEST_TABLE(VALE_CALC=2.4559999999999999E-05,
+         TOLE_MACHINE=1.E-3,
+         NOM_PARA='RMS',
+         TABLE=TT,
+         FILTRE=(_F(NOM_PARA='CALCUL',
+                    VALE_K='DEPL_RADIAL',),
+                 _F(NOM_PARA='NOEUD',
+                    VALE_K='N76',),
+                 ),
+         )
 
-  TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'DEPL_RADIAL'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='RMS',
-                     VALE=2.573E-05
-             )
-  TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'FORCE_NORMALE'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='RMS_T_TOTAL',
-                     VALE=2.573E+01
-             )
-else:
-  TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'DEPL_Y'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='ECART_TYPE',
-                     VALE=2.456E-05
-             )
+TEST_TABLE(VALE_CALC=24.559999999999999,
+         TOLE_MACHINE=1.E-3,
+         NOM_PARA='RMS_T_TOTAL',
+         TABLE=TT,
+         FILTRE=(_F(NOM_PARA='CALCUL',
+                    VALE_K='FORCE_NORMALE',),
+                 _F(NOM_PARA='NOEUD',
+                    VALE_K='N76',),
+                 ),
+         )
 
-  TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'DEPL_RADIAL'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='RMS',
-                     VALE=2.456E-05
-             )
-  TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'FORCE_NORMALE'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='RMS_T_TOTAL',
-                     VALE=2.456E+01
-             )
+TEST_TABLE(VALE_CALC=180.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MAXI',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='DEPL_ANGULAIRE',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N70',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'DEPL_ANGULAIRE'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N70')),
-                 NOM_PARA='MAXI',
-                     VALE=1.80000E+02
-             )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOYEN',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='FORCE_TANG_1',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N76',),
+                   ),
+           )
 
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ECART_TYPE',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='FORCE_TANG_2',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N76',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'FORCE_TANG_1'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='MOYEN',
-                     VALE=0.,
-                  CRITERE='ABSOLU'
-             )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='T_CHOC_MOYEN',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='STAT_CHOC',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N70',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'FORCE_TANG_2'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N76')),
-                 NOM_PARA='ECART_TYPE',
-                     VALE=0.,
-                  CRITERE='ABSOLU'
-             )
-
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'STAT_CHOC'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N70')),
-                 NOM_PARA='T_CHOC_MOYEN',
-                     VALE=0.,
-                  CRITERE='ABSOLU'
-             )
-
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'PUIS_USURE'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N70')),
-                 NOM_PARA='PUIS_USURE',
-                     VALE=0.,
-                  CRITERE='ABSOLU'
-             )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='PUIS_USURE',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='PUIS_USURE',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N70',),
+                   ),
+           )
 
 #
 
@@ -2003,30 +1995,17 @@ INT2=CALC_INTE_SPEC(   INST_INIT=0.,
                              FONCTION=DEPLY
                          )
 
-# attention : le comportement du generateur de nombres aleatoires
-# (module random) a change entre la version 2.2 de python et la
-# version 2.3. Les resultats s en trouvent un peu affectes.
-# On teste donc avec des valeurs de reference differentes suivant
-# les versions de python
-
-version=sys.version_info[:2]
 REP3=RECU_FONCTION(    INTE_SPEC=INT2,
                     NUME_ORDRE_I = 1,
                       )
 
-if version<(2,3) :
-  TEST_FONCTION(VALEUR=(
-      _F(  FONCTION = REP3,
-                   VALE_PARA = 4.2,      VALE_REFE = 6.1E-8,
-                   PRECISION = 1.E-2)
-           ),)
-else :
-  TEST_FONCTION(VALEUR=(
-      _F(  FONCTION = REP3,
-                   VALE_PARA = 4.2,      VALE_REFE = 7.4E-8,
-                   PRECISION = 1.E-2)
-           ),)
-
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.3907284361e-08,
+                        VALE_REFE=7.4000000000000001E-08,
+                        REFERENCE='NON_DEFINI',
+                        VALE_PARA=4.2000000000000002,
+                        PRECISION=1.E-2,
+                        FONCTION=REP3,),
+                )
 
 FIN( )
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DE G, K1 ET K2)
 # sslp101b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -155,190 +155,246 @@ GK6=CALC_G(              RESULTAT=CHAMDEPL,
                                 FOND_FISS=FOND),
                          OPTION='CALC_K_G')
 
-TEST_TABLE(       TABLE=G1,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29940675E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G1,)
 
-TEST_TABLE(       TABLE=GK1,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29940675E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GK1,)
 
-TEST_TABLE(       TABLE=GK1,
-                       NOM_PARA='G_IRWIN',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29900782E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK1,)
 
-TEST_TABLE(       TABLE=GK1,
-                       NOM_PARA='K1',
-                           VALE=2.1491E+1,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC=21.442984015,
+           VALE_REFE=21.491,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1,)
 
-TEST_TABLE(       TABLE=GK1,
-                       NOM_PARA='K2',
-                           VALE=0.0,
-                        CRITERE='ABSOLU',
-                      PRECISION=1.E-4     )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='K2',
+           TABLE=GK1,)
 
-TEST_TABLE(       TABLE=G2,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29934596E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G2,)
 
-TEST_TABLE(       TABLE=GK2,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29934596E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GK2,)
 
-TEST_TABLE(       TABLE=GK2,
-                       NOM_PARA='G_IRWIN',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29893717E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK2,)
 
-TEST_TABLE(       TABLE=GK2,
-                       NOM_PARA='K1',
-                           VALE=2.1491E+1,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC=21.442654545,
+           VALE_REFE=21.491,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2,)
 
-TEST_TABLE(       TABLE=GK2,
-                       NOM_PARA='K2',
-                           VALE=0.0,
-                        CRITERE='ABSOLU',
-                      PRECISION=1.E-4     )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='K2',
+           TABLE=GK2,)
 
-TEST_TABLE(       TABLE=G3,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29929002E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G3,)
 
-TEST_TABLE(       TABLE=GK3,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29929002E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GK3,)
 
-TEST_TABLE(       TABLE=GK3,
-                       NOM_PARA='G_IRWIN',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29887852E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK3,)
 
-TEST_TABLE(       TABLE=GK3,
-                       NOM_PARA='K1',
-                           VALE=2.1491E+1,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC=21.442381047,
+           VALE_REFE=21.491,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3,)
 
-TEST_TABLE(       TABLE=GK3,
-                       NOM_PARA='K2',
-                           VALE=0.0,
-                        CRITERE='ABSOLU',
-                      PRECISION=1.E-4     )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='K2',
+           TABLE=GK3,)
 
-TEST_TABLE(       TABLE=G4,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29906871E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G4,)
 
-TEST_TABLE(       TABLE=GK4,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29906871E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GK4,)
 
-TEST_TABLE(       TABLE=GK4,
-                       NOM_PARA='G_IRWIN',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29864152E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK4,)
 
-TEST_TABLE(       TABLE=GK4,
-                       NOM_PARA='K1',
-                           VALE=2.1491E+1,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC=21.441275703,
+           VALE_REFE=21.491,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4,)
 
-TEST_TABLE(       TABLE=GK4,
-                       NOM_PARA='K2',
-                           VALE=0.0,
-                        CRITERE='ABSOLU',
-                      PRECISION=1.E-4     )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='K2',
+           TABLE=GK4,)
 
-TEST_TABLE(       TABLE=G5,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29813107E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G5,)
 
-TEST_TABLE(       TABLE=GK5,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=5.E-3     )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 2.29813107E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GK5,)
 
-TEST_TABLE(       TABLE=GK5,
-                       NOM_PARA='G_IRWIN',
-                           VALE=2.3093E-3,
-                      PRECISION=5.1E-3     )
+TEST_TABLE(PRECISION=5.1000000000000004E-3,
+           VALE_CALC= 2.29759986E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK5,)
 
-TEST_TABLE(       TABLE=GK5,
-                       NOM_PARA='K1',
-                           VALE=2.1491E+1,
-                      PRECISION=5.E-3      )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC=21.436416937,
+           VALE_REFE=21.491,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK5,)
 
-TEST_TABLE(       TABLE=GK5,
-                       NOM_PARA='K2',
-                           VALE=0.0,
-                        CRITERE='ABSOLU',
-                      PRECISION=1.E-4      )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='K2',
+           TABLE=GK5,)
 
-TEST_TABLE(       TABLE=G6,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=1.E-2      )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.29062456E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G6,)
 
-TEST_TABLE(       TABLE=GK6,
-                       NOM_PARA='G',
-                           VALE=2.3093E-3,
-                      PRECISION=1.E-2      )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.29062456E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GK6,)
 
-TEST_TABLE(       TABLE=GK6,
-                       NOM_PARA='G_IRWIN',
-                           VALE=2.3093E-3,
-                      PRECISION=1.E-2      )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.28905955E-03,
+           VALE_REFE=2.3092999999999998E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK6,)
 
-TEST_TABLE(       TABLE=GK6,
-                       NOM_PARA='K1',
-                           VALE=2.1491E+1,
-                      PRECISION=5.E-3    )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC=21.396539677,
+           VALE_REFE=21.491,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK6,)
 
-TEST_TABLE(       TABLE=GK6,
-                       NOM_PARA='K2',
-                           VALE=0.0,
-                        CRITERE='ABSOLU',
-                      PRECISION=1.E-4      )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='K2',
+           TABLE=GK6,)
 
 MASSES=POST_ELEM(        MODELE=MO,
                          CHAM_MATER=CHMAT,
                           MASS_INER=_F(  TOUT = 'OUI')
                      )
 
-TEST_TABLE(  TABLE=MASSES,
-                 NOM_PARA='MASSE',
-                  FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'MA'),
-                  VALE=25000.0
-              )
+TEST_TABLE(VALE_CALC=2.5000E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MASSE',
+           TABLE=MASSES,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(  TABLE=MASSES,
-                 NOM_PARA='IX_G',
-                  FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'MA'),
-                  VALE=130208333.333
-              )
+TEST_TABLE(VALE_CALC=1.30208333333E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IX_G',
+           TABLE=MASSES,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(  TABLE=MASSES,
-                 NOM_PARA='IY_G',
-                  FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'MA'),
-                  VALE=20833333.333
-              )
+TEST_TABLE(VALE_CALC=2.0833333333000001E7,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_G',
+           TABLE=MASSES,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
-TEST_TABLE(  TABLE=MASSES,
-                 NOM_PARA='IZ_G',
-                  FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'MA'),
-                  VALE=151041666.666
-              )
+TEST_TABLE(VALE_CALC=1.5104166666600001E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_G',
+           TABLE=MASSES,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MA',),
+           )
 
 FIN(  )
 # ;

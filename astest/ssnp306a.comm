@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU CRITERE DE FLAMBEMENT PAR RECHERCHE SELECTIVE DES VALEURS PROPRES
 # ssnp306a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,62 +112,76 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,INFO=2,
 #***********************************************************************
 
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='CHAR_CRIT',
-                  VALE=1641.67786584879,
-                  PRECISION=2.0E-3),
-          );
-
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=40,
-                  PARA='CHAR_CRIT',
-                  VALE=1641.67786584879,
-                  PRECISION=2.0E-3),
+                  RESULTAT=EVOL,
+                  VALE_CALC= 1.64167787E+03,
+                  VALE_REFE=1641.6778658487899,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=50,
+TEST_RESU(RESU=_F(NUME_ORDRE=40,
                   PARA='CHAR_CRIT',
-                  VALE=1553.500265,
-                  PRECISION=2.0E-3),
+                  RESULTAT=EVOL,
+                  VALE_CALC= 1.64167787E+03,
+                  VALE_REFE=1641.6778658487899,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=60,
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   PARA='CHAR_CRIT',
-                  VALE=1380.694904,
-                  PRECISION=2.0E-3),
+                  RESULTAT=EVOL,
+                  VALE_CALC= 1.55452334E+03,
+                  VALE_REFE=1553.5002649999999,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=70,
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   PARA='CHAR_CRIT',
-                  VALE=1248.744197,
-                  PRECISION=2.0E-3),
+                  RESULTAT=EVOL,
+                  VALE_CALC= 1.38174422E+03,
+                  VALE_REFE=1380.694904,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=80,
+TEST_RESU(RESU=_F(NUME_ORDRE=70,
                   PARA='CHAR_CRIT',
-                  VALE=1142.931769,
-                  PRECISION=2.0E-3),
+                  RESULTAT=EVOL,
+                  VALE_CALC= 1.24978973E+03,
+                  VALE_REFE=1248.744197,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=90,
+TEST_RESU(RESU=_F(NUME_ORDRE=80,
                   PARA='CHAR_CRIT',
-                  VALE=1055.044717,
-                  PRECISION=2.0E-3),
+                  RESULTAT=EVOL,
+                  VALE_CALC= 1.14395221E+03,
+                  VALE_REFE=1142.931769,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=100,
+TEST_RESU(RESU=_F(NUME_ORDRE=90,
                   PARA='CHAR_CRIT',
-                  VALE=980.1202150,
-                  PRECISION=2.0E-3),
+                  RESULTAT=EVOL,
+                  VALE_CALC= 1.05602642E+03,
+                  VALE_REFE=1055.044717,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  PARA='CHAR_CRIT',
+                  RESULTAT=EVOL,
+                  VALE_CALC=981.054848906,
+                  VALE_REFE=980.12021500000003,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 FIN();
-

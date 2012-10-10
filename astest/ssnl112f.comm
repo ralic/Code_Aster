@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI DE PLASTICITE (MISES ECR. ISOT. ASYM BARRE)
 # ssnl112f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,20 +89,43 @@ U5=CALC_CHAMP( reuse=U5,      CONTRAINTE=('SIEF_ELNO'),
                           RESULTAT=U5,
               )
 
-TEST_RESU(RESU=(
-
-    _F( RESULTAT = U5, NUME_ORDRE = 1, NOM_CHAM = 'SIEF_ELNO', NOM_CMP = 'N',
-     MAILLE = 'M1', NOEUD = 'N1', VALE = 5.00000E+07,  REFERENCE = 'ANALYTIQUE'),
-
-    _F( RESULTAT = U5, NUME_ORDRE = 10, NOM_CHAM = 'SIEF_ELNO', NOM_CMP = 'N',
-     MAILLE = 'M1', NOEUD = 'N1', VALE = 5.00000E+07,  REFERENCE = 'ANALYTIQUE'),
-
-    _F( RESULTAT = U5, NUME_ORDRE = 12, NOM_CHAM = 'SIEF_ELNO', NOM_CMP = 'N',
-     MAILLE = 'M1', NOEUD = 'N1', VALE = -2.00000E+08, REFERENCE = 'ANALYTIQUE'),
-
-    _F( RESULTAT = U5, NUME_ORDRE = 20, NOM_CHAM = 'SIEF_ELNO', NOM_CMP = 'N',
-     MAILLE = 'M1', NOEUD = 'N1', VALE = -2.00000E+08, REFERENCE = 'ANALYTIQUE'))
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U5,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='N',
+                   VALE_CALC= 5.00000000E+07,
+                   VALE_REFE=5.E7,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=10,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U5,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='N',
+                   VALE_CALC= 5.00000000E+07,
+                   VALE_REFE=5.E7,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=12,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U5,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='N',
+                   VALE_CALC=-2.00000000E+08,
+                   VALE_REFE=-2.E8,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=20,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U5,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='N',
+                   VALE_CALC=-2.00000000E+08,
+                   VALE_REFE=-2.E8,
+                   MAILLE='M1',),
+                ),
           )
 
 FIN()

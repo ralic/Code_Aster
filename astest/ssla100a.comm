@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE INFINI SOUMIS A UN CHAMP DE FORCES SURFACIQUES
 # ssla100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,24 +98,45 @@ EVOC2=PROJ_CHAMP(RESULTAT=EVOCH,     METHODE='COLLOCATION',
                  MODELE_1=MOD_CYLI,   MODELE_2=MOD_CYLI  )
 
 
-TEST_RESU(RESU=(
- _F( RESULTAT= EVOCH,  NOM_CHAM= 'FVOL_3D', INST= 2.0,
-     NOEUD= 'N2', NOM_CMP= 'FX',
-     CRITERE= 'RELATIF',  PRECISION= 1.E-5,  VALE= 7.07107E-01 ,
-     REFERENCE='NON_REGRESSION', VERSION='6.00.30'),
- _F( RESULTAT= EVOC2,  NOM_CHAM= 'FVOL_3D', INST= 2.0,
-     NOEUD= 'N2', NOM_CMP= 'FX',
-     CRITERE= 'RELATIF',  PRECISION= 1.E-5,  VALE= 7.07107E-01 ,
-     REFERENCE='AUTRE_ASTER',),
- _F( RESULTAT= EVOCH,  NOM_CHAM= 'FSUR_3D', INST= 2.0,
-     NOEUD= 'N2', NOM_CMP= 'FY',
-     CRITERE= 'RELATIF',  PRECISION= 1.E-5,  VALE= 7.07107E-01 ,
-     REFERENCE='NON_REGRESSION', VERSION='6.00.30'),
- _F( RESULTAT= EVOC2,  NOM_CHAM= 'FSUR_3D', INST= 2.0,
-     NOEUD= 'N2', NOM_CMP= 'FY',
-     CRITERE= 'RELATIF',  PRECISION= 1.E-5,  VALE= 7.07107E-01 ,
-     REFERENCE='AUTRE_ASTER',),
-                )
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=EVOCH,
+                   NOM_CHAM='FVOL_3D',
+                   NOEUD='N2',
+                   NOM_CMP='FX',
+                   VALE_CALC=0.70710700000000004,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   CRITERE='RELATIF',
+                   ),
+                _F(INST=2.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=EVOC2,
+                   NOM_CHAM='FVOL_3D',
+                   NOEUD='N2',
+                   NOM_CMP='FX',
+                   VALE_CALC=0.707107000,
+                   VALE_REFE=0.70710700000000004,
+                   CRITERE='RELATIF',
+                   PRECISION=1.0000000000000001E-05,),
+                _F(INST=2.0,
+                   RESULTAT=EVOCH,
+                   NOM_CHAM='FSUR_3D',
+                   NOEUD='N2',
+                   NOM_CMP='FY',
+                   VALE_CALC=0.70710700000000004,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   CRITERE='RELATIF',
+                   ),
+                _F(INST=2.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=EVOC2,
+                   NOM_CHAM='FSUR_3D',
+                   NOEUD='N2',
+                   NOM_CMP='FY',
+                   VALE_CALC=0.707107000,
+                   VALE_REFE=0.70710700000000004,
+                   CRITERE='RELATIF',
+                   PRECISION=1.0000000000000001E-05,),
+                ),
           )
 
 # ----------------------------------------------------------------------
@@ -152,13 +173,25 @@ RESU=STAT_NON_LINE(
                       )
 
 # ----------------------------------------------------------------------
-TEST_RESU(RESU=(
-           _F(  RESULTAT = RESU, INST = 1., NOM_CHAM = 'DEPL',
-             GROUP_NO = 'P1', NOM_CMP = 'DX',
-             VALE = 0.52130982, PRECISION = 1.E-3, CRITERE = 'RELATIF'),
-           _F(  RESULTAT = RESU, INST = 1., NOM_CHAM = 'DEPL',
-             GROUP_NO = 'P2', NOM_CMP = 'DX',
-             VALE = 0.44203108,  PRECISION = 1.E-3, CRITERE = 'RELATIF'))
-           )
+TEST_RESU(RESU=(_F(GROUP_NO='P1',
+                   INST=1.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.52130982000000003,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                _F(GROUP_NO='P2',
+                   INST=1.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.44203108000000002,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 FIN()

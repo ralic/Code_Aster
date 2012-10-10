@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE HEMISPHERE TROUEEE DOUBLEMENT PINCEE
 # ssnv141b.para = tps_job 1070 mem_job 512Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,34 +99,41 @@ IMPR_TABLE(TABLE=DEPX,);
 
 IMPR_TABLE(TABLE=DEPY,),
 
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
-                  RESULTAT=NONLIN,
-                  PRECISION=1.E-2,
-                  CRITERE='RELATIF',
+TEST_RESU(RESU=_F(GROUP_NO='P1',
                   INST=20.0,
-                  VALE=1.4846,
-                  GROUP_NO='P1',
-                  NOM_CMP='DX',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLIN,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.479483065,
+                  VALE_REFE=1.4845999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='P1',
                   INST=50.0,
-                  VALE=2.5785,
-                  GROUP_NO='P1',
-                  NOM_CMP='DX',),);
-
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLIN,
-                  PRECISION=1.5E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=2.559205453,
+                  VALE_REFE=2.5785,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
-                  INST=100.0,
-                  VALE=3.3903,
-                  GROUP_NO='P1',
-                  NOM_CMP='DX',),);
+                  PRECISION=1.E-2,),
+          )
 
+TEST_RESU(RESU=_F(GROUP_NO='P1',
+                  INST=100.0,
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=3.347931123,
+                  VALE_REFE=3.3902999999999999,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.014999999999999999,),
+          )
 
 IMPR_TABLE(TABLE=DEPX,
            FILTRE=_F(NOM_PARA='INST',
@@ -144,31 +151,40 @@ IMPR_TABLE(TABLE=DEPY,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=100.0,),);
 
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
-                  RESULTAT=NONLIN,
-                  PRECISION=1.E-2,
-                  CRITERE='RELATIF',
+TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=20.0,
-                  VALE=-1.7997,
-                  GROUP_NO='P2',
-                  NOM_CMP='DY',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLIN,
-                  PRECISION=1.E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.801319794,
+                  VALE_REFE=-1.7997000000000001,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=50.0,
-                  VALE=-3.7586,
-                  GROUP_NO='P2',
-                  NOM_CMP='DY',),);
-
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLIN,
-                  PRECISION=1.5E-2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-3.738768802,
+                  VALE_REFE=-3.7585999999999999,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=100.0,
-                  VALE=-5.8021,
-                  GROUP_NO='P2',
-                  NOM_CMP='DY',),);
+                  RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.731184180,
+                  VALE_REFE=-5.8021000000000003,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=0.014999999999999999,),
+          )
 
 FIN();

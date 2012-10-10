@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,36 +150,38 @@ Gloc3=CALC_G(RESULTAT=CHAMDEPL,
 
 Gglob_ref = 5.76e-3 / 4
 
-TEST_TABLE(TABLE=Gglob1,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.44905123E-03,
+           VALE_REFE=1.4400000000000001E-3,
            NOM_PARA='G',
-           VALE=Gglob_ref,
-           PRECISION=0.01,
-           REFERENCE='ANALYTIQUE')
+           TABLE=Gglob1,)
 
 Gglob_cal = 1.449052E-03
 # deuxieme test pour verif que la valeur que l'on cherche a reproduire n'a pas bouge
-TEST_TABLE(TABLE=Gglob1,
+TEST_TABLE(
+           VALE_CALC=1.4490519999999999E-3,
+           
            NOM_PARA='G',
-           VALE=Gglob_cal,
-           PRECISION=1e-6,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.01.17')
+           TABLE=Gglob1,
+           )
 
 # dans la suite, on ne cherche pas a se comparer a la valeur analytique
 # on fait juste une comparaison avec les resultats de la charge du calcul
 
-TEST_TABLE(TABLE=Gglob2,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 1.44905116E-03,
+           VALE_REFE=1.4490519999999999E-3,
            NOM_PARA='G',
-           VALE=Gglob_cal,
-           PRECISION=1e-6,
-           REFERENCE='AUTRE_ASTER')
+           TABLE=Gglob2,)
 
-TEST_TABLE(TABLE=Gglob3,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 1.44905116E-03,
+           VALE_REFE=1.4490519999999999E-3,
            NOM_PARA='G',
-           VALE=Gglob_cal,
-           PRECISION=1e-6,
-           REFERENCE='AUTRE_ASTER')
-
+           TABLE=Gglob3,)
 
 #----------------------------------------------------------------------
 #              TEST DE G(A)
@@ -188,43 +190,49 @@ TEST_TABLE(TABLE=Gglob3,
 Ga_ref = 7.16e-5
 
 # premier test pour verif que l'on ne calcule pas n'importe quoi
-TEST_TABLE(TABLE=Gloc1,
-           FILTRE=_F(NOM_PARA = 'NOEUD',
-                     VALE_K = 'NO1099',),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 6.98286999E-05,
+           VALE_REFE=7.1600000000000006E-05,
            NOM_PARA='G',
-           VALE=Ga_ref,
-           PRECISION=0.03,
-           REFERENCE='ANALYTIQUE')
+           TABLE=Gloc1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1099',),
+           )
 
 Ga_cal = 6.9828699868854E-05 
 # deuxieme test pour verif que la valeur que l'on cherche a reproduire n'a pas bouge
-TEST_TABLE(TABLE=Gloc1,
-           FILTRE=_F(NOM_PARA = 'NOEUD',
-                     VALE_K = 'NO1099',),
+TEST_TABLE(
+           VALE_CALC=6.9828699868854002E-05,
+           
            NOM_PARA='G',
-           VALE=Ga_cal,
-           PRECISION=1e-6,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.01.17')
+           TABLE=Gloc1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1099',),
+           )
 
 # dans la suite, on ne cherche pas a se comparer a la valeur analytique
 # on fait juste une comparaison avec les resultats de la charge du calcul
 
-TEST_TABLE(TABLE=Gloc2,
-           FILTRE=_F(NOM_PARA = 'NOEUD',
-                     VALE_K = 'NO1099',),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 6.98286832E-05,
+           VALE_REFE=6.9828699868854002E-05,
            NOM_PARA='G',
-           VALE=Ga_cal,
-           PRECISION=1e-6,
-           REFERENCE='AUTRE_ASTER')
+           TABLE=Gloc2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1099',),
+           )
 
-TEST_TABLE(TABLE=Gloc3,
-           FILTRE=_F(NOM_PARA = 'NOEUD',
-                     VALE_K = 'NO1099',),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 6.98286832E-05,
+           VALE_REFE=6.9828699868854002E-05,
            NOM_PARA='G',
-           VALE=Ga_cal,
-           PRECISION=1e-6,
-           REFERENCE='AUTRE_ASTER')
+           TABLE=Gloc3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1099',),
+           )
 
 FIN()
 #

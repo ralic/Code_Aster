@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE VALIDATION IMPR_FONCTION
 # zzzz100c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
@@ -69,13 +69,26 @@ FF1=LIRE_FONCTION(        UNITE=50,
                           NOM_RESU='AMOR',
                        )
 
-TEST_FONCTION(VALEUR=(
-  _F(   FONCTION = FF1, VALE_PARA = 1.,  VALE_REFE = 2.),
-  _F(   FONCTION = FF1, VALE_PARA = 2.,  VALE_REFE = 3.),
-  _F(   FONCTION = FF1, VALE_PARA = 4.,  VALE_REFE = 5.)),ATTRIBUT=(
-
-  _F(   FONCTION = FF1,   ATTR = 'NOM_PARA',   ATTR_REFE = 'FREQ'),
-  _F(   FONCTION = FF1,   ATTR = 'NOM_RESU',   ATTR_REFE = 'AMOR'))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.0,
+                         FONCTION=FF1,),
+                      _F(VALE_CALC=3.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.0,
+                         FONCTION=FF1,),
+                      _F(VALE_CALC=5.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=4.0,
+                         FONCTION=FF1,),
+                      ),
+              ATTRIBUT=(_F(ATTR_REFE='FREQ',
+                           FONCTION=FF1,
+                           ATTR='NOM_PARA',),
+                        _F(ATTR_REFE='AMOR',
+                           FONCTION=FF1,
+                           ATTR='NOM_RESU',),
+                        ),
               )
 
 #-----------------------------------------------------------------------
@@ -97,14 +110,30 @@ FF2=LIRE_FONCTION(     UNITE=51,
                        INDIC_RESU=(1,1),
                        )
 
-TEST_FONCTION(VALEUR=(
-  _F(   FONCTION = FF2, VALE_PARA = 1.,  VALE_REFE = 2.),
-  _F(   FONCTION = FF2, VALE_PARA = 2.,  VALE_REFE = 3.),
-  _F(   FONCTION = FF2, VALE_PARA = 3.,  VALE_REFE = 4.),
-  _F(   FONCTION = FF2, VALE_PARA = 4.,  VALE_REFE = 5.)),ATTRIBUT=(
-
-  _F(   FONCTION = FF2,   ATTR = 'NOM_PARA',   ATTR_REFE = 'FREQ'),
-  _F(   FONCTION = FF2,   ATTR = 'NOM_RESU',   ATTR_REFE = 'AMOR'))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.0,
+                         FONCTION=FF2,),
+                      _F(VALE_CALC=3.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.0,
+                         FONCTION=FF2,),
+                      _F(VALE_CALC=4.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=3.0,
+                         FONCTION=FF2,),
+                      _F(VALE_CALC=5.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=4.0,
+                         FONCTION=FF2,),
+                      ),
+              ATTRIBUT=(_F(ATTR_REFE='FREQ',
+                           FONCTION=FF2,
+                           ATTR='NOM_PARA',),
+                        _F(ATTR_REFE='AMOR',
+                           FONCTION=FF2,
+                           ATTR='NOM_RESU',),
+                        ),
               )
 
 #-----------------------------------------------------------------------
@@ -131,19 +160,50 @@ FF3=LIRE_FONCTION(        UNITE=52,
                           INDIC_RESU=(1,3),
                        )
 
-TEST_FONCTION(VALEUR=(
-  _F(   FONCTION = FF3, VALE_PARA = 1.,    VALE_REFE = 2.),
-  _F(   FONCTION = FF3, VALE_PARA = 1.25,  VALE_REFE = 2.25),
-  _F(   FONCTION = FF3, VALE_PARA = 1.5,   VALE_REFE = 2.5),
-  _F(   FONCTION = FF3, VALE_PARA = 1.75,  VALE_REFE = 2.75),
-  _F(   FONCTION = FF3, VALE_PARA = 2.,    VALE_REFE = 3.),
-  _F(   FONCTION = FF3, VALE_PARA = 2.5,   VALE_REFE = 3.5),
-  _F(   FONCTION = FF3, VALE_PARA = 3.,    VALE_REFE = 4.),
-  _F(   FONCTION = FF3, VALE_PARA = 3.5,   VALE_REFE = 4.5),
-  _F(   FONCTION = FF3, VALE_PARA = 4.,    VALE_REFE = 5.)),ATTRIBUT=(
-
-  _F(   FONCTION = FF3,   ATTR = 'NOM_PARA',   ATTR_REFE = 'FREQ'),
-  _F(   FONCTION = FF3,   ATTR = 'NOM_RESU',   ATTR_REFE = 'AMOR'))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.0,
+                         FONCTION=FF3,),
+                      _F(VALE_CALC=2.25,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.25,
+                         FONCTION=FF3,),
+                      _F(VALE_CALC=2.5,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.5,
+                         FONCTION=FF3,),
+                      _F(VALE_CALC=2.75,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.75,
+                         FONCTION=FF3,),
+                      _F(VALE_CALC=3.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.0,
+                         FONCTION=FF3,),
+                      _F(VALE_CALC=3.5,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.5,
+                         FONCTION=FF3,),
+                      _F(VALE_CALC=4.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=3.0,
+                         FONCTION=FF3,),
+                      _F(VALE_CALC=4.5,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=3.5,
+                         FONCTION=FF3,),
+                      _F(VALE_CALC=5.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=4.0,
+                         FONCTION=FF3,),
+                      ),
+              ATTRIBUT=(_F(ATTR_REFE='FREQ',
+                           FONCTION=FF3,
+                           ATTR='NOM_PARA',),
+                        _F(ATTR_REFE='AMOR',
+                           FONCTION=FF3,
+                           ATTR='NOM_RESU',),
+                        ),
               )
 
 #-----------------------------------------------------------------------
@@ -164,14 +224,30 @@ FF4=LIRE_FONCTION(        UNITE=53,
                           NOM_RESU='FREQ',
                        )
 
-TEST_FONCTION(VALEUR=(
-  _F(   FONCTION = FF4, VALE_PARA = 2.,  VALE_REFE = 1.),
-  _F(   FONCTION = FF4, VALE_PARA = 3.,  VALE_REFE = 2.),
-  _F(   FONCTION = FF4, VALE_PARA = 4.,  VALE_REFE = 3.),
-  _F(   FONCTION = FF4, VALE_PARA = 5.,  VALE_REFE = 4.)),ATTRIBUT=(
-
-  _F(   FONCTION = FF4,   ATTR = 'NOM_PARA',   ATTR_REFE = 'AMOR'),
-  _F(   FONCTION = FF4,   ATTR = 'NOM_RESU',   ATTR_REFE = 'FREQ'))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=2.0,
+                         FONCTION=FF4,),
+                      _F(VALE_CALC=2.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=3.0,
+                         FONCTION=FF4,),
+                      _F(VALE_CALC=3.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=4.0,
+                         FONCTION=FF4,),
+                      _F(VALE_CALC=4.0,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=5.0,
+                         FONCTION=FF4,),
+                      ),
+              ATTRIBUT=(_F(ATTR_REFE='AMOR',
+                           FONCTION=FF4,
+                           ATTR='NOM_PARA',),
+                        _F(ATTR_REFE='FREQ',
+                           FONCTION=FF4,
+                           ATTR='NOM_RESU',),
+                        ),
               )
 
 #-----------------------------------------------------------------------

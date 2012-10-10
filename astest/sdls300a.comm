@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE AEROREFRIGERANT SOUMIS A UNE EXCITATION SOL
 # sdls300a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,43 +114,36 @@ MODE1=MACRO_MODE_MECA(    MATR_RIGI=K_ASSE,
                        )
 
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE1,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 1.E-7,
-           NUME_MODE = 47,
-           VALE = 2.800653445E+00,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION = '5.4.4'),
-
-   _F(   RESULTAT = MODE1,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 1.E-7,
-           NUME_MODE = 48,
-           VALE = 2.800653445E+00,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION = '5.4.4'),
-
-   _F(   RESULTAT = MODE1,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 1.E-7,
-           NUME_MODE = 158,
-           VALE = 5.924906673E+00,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION = '5.4.4'),
-
-   _F(   RESULTAT = MODE1,
-           PARA = 'FREQ',
-           CRITERE = 'RELATIF',
-           PRECISION = 1.E-7,
-           NUME_MODE = 159,
-           VALE = 5.924906673E+00,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION = '5.4.4'))
-        )
+TEST_RESU(RESU=(_F(PARA='FREQ',
+                   NUME_MODE=47,
+                   RESULTAT=MODE1,
+                   VALE_CALC=2.800653445,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='RELATIF',
+                   ),
+                _F(PARA='FREQ',
+                   NUME_MODE=48,
+                   RESULTAT=MODE1,
+                   VALE_CALC=2.800653445,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='RELATIF',
+                   ),
+                _F(PARA='FREQ',
+                   NUME_MODE=158,
+                   RESULTAT=MODE1,
+                   VALE_CALC=5.9249066729999997,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='RELATIF',
+                   ),
+                _F(PARA='FREQ',
+                   NUME_MODE=159,
+                   RESULTAT=MODE1,
+                   VALE_CALC=5.9249066729999997,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 FIN()
 #

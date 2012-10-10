@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CRITERES GEOMETRIQUES DANS DEFI_GROUP EN 2D
 # zzzz106b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,9 +99,8 @@ DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
 
 TEST_FICHIER(FICHIER='fort.38',
              NB_VALE=851,EXPR_IGNORE=('ASTER'),
-             VALE=1.0936050000000e+04,
-             VALE_K='0fef0c70b98832a70a85dd0844ed22d0',
-             REFERENCE='NON_REGRESSION')
+             VALE_CALC=1.0936050000000e+04,
+             VALE_CALC_K='0fef0c70b98832a70a85dd0844ed22d0',)
 
 # fin de la validation 2
 # ----------------------------------------------------------------------
@@ -314,29 +313,47 @@ RESU5=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
 #   ON TESTE LA NULLITE DES CHAMPS DE DEPLACEMENTS
 #
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = RESU1,        NOM_CHAM = 'DEPL',
-           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
-           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.),
-#------------------------------------------------------------
-   _F(   RESULTAT = RESU2,        NOM_CHAM = 'DEPL',
-           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
-           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.),
-#------------------------------------------------------------
-   _F(   RESULTAT = RESU3,        NOM_CHAM = 'DEPL',
-           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
-           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.),
-#------------------------------------------------------------
-   _F(   RESULTAT = RESU4,        NOM_CHAM = 'DEPL',
-           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
-           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.),
-#------------------------------------------------------------
-   _F(   RESULTAT = RESU5,        NOM_CHAM = 'DEPL',
-           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
-           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.))
-#------------------------------------------------------------
-                                                   )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N18',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N18',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=RESU3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N18',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=RESU4,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N18',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=RESU5,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N18',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
 
-#------------------------------------------------------------
 FIN()
-#

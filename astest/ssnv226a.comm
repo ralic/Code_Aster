@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION POST_ITER='CRIT_RUPT' 3D VISCOCHAB
 # ssnv226a.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -220,16 +220,20 @@ UNITE=38,
 COURBE=_F(FONC_X=F_EP, FONC_Y=F_SI))
 
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F_SI,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.81319000E8,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=245.0,
                         NOM_PARA='INST',
-                        VALE_PARA=245.,
-                        VALE_REFE=7.81319E8,
-                        REFERENCE='NON_REGRESSION',),);
+                        FONCTION=F_SI,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=F_SI,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.E4,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=250.0,
                         NOM_PARA='INST',
-                        VALE_PARA=250.,
-                        VALE_REFE=10000.,
-                        REFERENCE='NON_REGRESSION',),);
- 
+                        FONCTION=F_SI,
+                        ),
+              )
+
 FIN()

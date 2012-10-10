@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC CALC_ESSAI (ES)
 # sdll137b.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -376,12 +376,14 @@ MACINT=MAC_MODES(BASE_1=DEPLINT,
                INFO  =2,
               );
 
-TEST_TABLE(TABLE=MACINT, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'MAC',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=1.999936555,
+           VALE_REFE=2.0,
+           NOM_PARA='MAC',
            TYPE_TEST='SOMM',
-           CRITERE='ABSOLU',
-           VALE = 2., # 2 modes projetes
-           PRECISION = 0.01)
+           TABLE=MACINT,)
 
 nmodes=2
 
@@ -490,27 +492,56 @@ MODEDIR=MODE_ITER_SIMULT(MATR_RIGI=KASDIR,
 tmodes0=7.78074
 tmodes1=32.8520
 
-TEST_RESU(RESU=(
-                _F(RESULTAT=MODERETR, NUME_ORDRE=1, PARA='FREQ',
-                   VALE=tmodes0, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODERETR, NUME_ORDRE=2, PARA='FREQ',
-                   VALE=tmodes1, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODECPL2, NUME_ORDRE=1, PARA='FREQ',
-                   VALE=tmodes0, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODECPL2, NUME_ORDRE=2, PARA='FREQ',
-                   VALE=tmodes1, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODECPL3, NUME_ORDRE=1, PARA='FREQ',
-                   VALE=tmodes0, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODECPL3, NUME_ORDRE=2, PARA='FREQ',
-                   VALE=tmodes1, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                ),);
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODERETR,
+                   VALE_CALC=7.785208445,
+                   VALE_REFE=7.7807399999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODERETR,
+                   VALE_CALC=32.844857779,
+                   VALE_REFE=32.851999999999997,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODECPL2,
+                   VALE_CALC=7.785208445,
+                   VALE_REFE=7.7807399999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODECPL2,
+                   VALE_CALC=32.844857779,
+                   VALE_REFE=32.851999999999997,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODECPL3,
+                   VALE_CALC=7.785208445,
+                   VALE_REFE=7.7807399999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODECPL3,
+                   VALE_CALC=32.844857779,
+                   VALE_REFE=32.851999999999997,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 DY_PB=RECU_FONCTION(RESULTAT=DYHRETRO,
                      NOM_CHAM='DEPL',
@@ -588,18 +619,16 @@ T1=CALC_TABLE(TABLE=T_DIR,
               TITRE='Comparaison calcul direct / calcul retro')
 
 
-TEST_TABLE(
-     TABLE     = T1,
-     NOM_PARA  = 'DIFF',
-     TYPE_TEST = 'SOMM',
-     VALE      = 0.,
-     CRITERE   = 'ABSOLU',
-     PRECISION = 1.E-6,
-     REFERENCE = 'AUTRE_ASTER',)
-
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 4.50753488E-07,
+           VALE_REFE=0.0,
+           NOM_PARA='DIFF',
+           TYPE_TEST='SOMM',
+           TABLE=T1,)
 
 FIN();
-
 
 
 

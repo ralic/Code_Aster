@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ROTATION D'UNE INCLUSION RIGIDE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -201,93 +201,103 @@ for i in [1,2,3,4]: #Boucle sur les increments
 
   IMPR_TABLE(TABLE=LAG[i]);
 
-  TEST_TABLE(TABLE=LAG[i],
-                 NOM_PARA='LAGS_C',
-                 TYPE_TEST='MAX',
-                 VALE=LAGS_A,
-                 REFERENCE ='ANALYTIQUE',
-                 CRITERE='RELATIF',
-                 PRECISION=0.22);
+  TEST_TABLE(CRITERE='RELATIF',
+             REFERENCE='ANALYTIQUE',
+             PRECISION=0.22, TOLE_MACHINE=0.22,   #TODO vale_calc
+             VALE_CALC=LAGS_A,
+             VALE_REFE=LAGS_A,
+             NOM_PARA='LAGS_C',
+             TYPE_TEST='MAX',
+             TABLE=LAG[i],)
 
-  TEST_TABLE(TABLE=LAG[i],
-                 NOM_PARA='LAGS_C',
-                 TYPE_TEST='MIN',
-                 VALE=LAGS_A,
-                 REFERENCE ='ANALYTIQUE',
-                 CRITERE='RELATIF',
-                 PRECISION=0.22);
-
-TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
-                   NOEUD = 'NM121',
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DX',
-                   INST = 1.,
-                   REFERENCE='NON_REGRESSION',
-                   PRECISION = 1.E-5,
-                   VALE = 9.99126E-04))); 
-
-TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
-                   NOEUD = 'NM121',
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DY',
-                   INST = 1.,
-                   REFERENCE='NON_REGRESSION',
-                   PRECISION = 1.E-5,
-                   VALE = 6.85279E-02)));
+  TEST_TABLE(CRITERE='RELATIF',
+             REFERENCE='ANALYTIQUE',
+             PRECISION=0.22, TOLE_MACHINE=0.22,   #TODO vale_calc
+             VALE_CALC=LAGS_A,
+             VALE_REFE=LAGS_A,
+             NOM_PARA='LAGS_C',
+             TYPE_TEST='MIN',
+             TABLE=LAG[i],)
 
 
-TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
-                   NOEUD = 'NM1385',
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DX',
-                   INST = 1.,
-                   REFERENCE='NON_REGRESSION',
-                   PRECISION = 1.E-5,
-                   VALE = 6.85040E-02)));
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RES_XFEM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NM121',
+                  NOM_CMP='DX',
+                  VALE_CALC=9.9912599999999992E-4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
-                   NOEUD = 'NM1385',
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DY',
-                   INST = 1.,
-                   REFERENCE='NON_REGRESSION',
-                   PRECISION = 1.E-5,
-                   VALE = -2.29075E-03)));
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RES_XFEM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NM121',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.068527900000000003,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
-                   NOEUD = 'NM1400',
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DX',
-                   INST = 1.,
-                   REFERENCE='NON_REGRESSION',
-                   PRECISION = 1.E-5,
-                   VALE = -6.85040E-02)));
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RES_XFEM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NM1385',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.068503999999999995,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
-                   NOEUD = 'NM1400',
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DY',
-                   INST = 1.,
-                   REFERENCE='NON_REGRESSION',
-                   PRECISION = 1.E-5,
-                   VALE = 2.29075E-03)));
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RES_XFEM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NM1385',
+                  NOM_CMP='DY',
+                  VALE_CALC=-2.2907499999999998E-3,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
-                   NOEUD = 'NM2663',
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DX',
-                   INST = 1.,
-                   REFERENCE='NON_REGRESSION',
-                   PRECISION = 1.E-5,
-                   VALE = -9.99126E-04)));
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RES_XFEM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NM1400',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.068503999999999995,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=RES_XFEM,
-                   NOEUD = 'NM2663',
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP = 'DY',
-                   INST = 1.,
-                   REFERENCE='NON_REGRESSION',
-                   PRECISION = 1.E-5,
-                   VALE = -6.85279E-02)));
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RES_XFEM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NM1400',
+                  NOM_CMP='DY',
+                  VALE_CALC=2.2907499999999998E-3,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RES_XFEM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NM2663',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.9912599999999992E-4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=RES_XFEM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NM2663',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.068527900000000003,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
 FIN();

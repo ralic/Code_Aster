@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURATION INTERFACE 3D (HEXA20) SUR DCB AVEC FISSURE INITIALE MAILLEE, LOI CZM_OUV_MIX
 # ssnv199g.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -310,68 +310,59 @@ FRES = POST_RELEVE_T(
 # (FISSURE INITIALE NON MAILLEE)
 # ON REALISE EXACTEMENT LES MEMES TEST_RESU AVEC LES MEMES VALEURS TESTS
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = U,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 5.01006,
-      GROUP_NO  = 'NO7',
-      INST      = 2.0
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(GROUP_NO='NO7',
+                  INST=2.0,
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=5.0100600000000002,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_TABLE(TABLE=FRES,
-           FILTRE=(_F(NOM_PARA='INST',VALE=2.0)),
+TEST_TABLE(
+           VALE_CALC=6.7836299999999996,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
-           VALE=6.78363,
-           REFERENCE='NON_REGRESSION')
+           TABLE=FRES,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
 
+TEST_RESU(RESU=_F(GROUP_NO='NO7',
+                  INST=3.0,
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=6.9751799999999999,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = U,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 6.97518,
-      GROUP_NO  = 'NO7',
-      INST      = 3.0
-      ),
-    )
-  )
+TEST_TABLE(
+           VALE_CALC=5.7548500000000002,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=FRES,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
-TEST_TABLE(TABLE=FRES,
-           FILTRE=(_F(NOM_PARA='INST',VALE=3.0)),
-           NOM_PARA  = 'DY',
-           VALE      = 5.75485,
-           REFERENCE = 'NON_REGRESSION')
+TEST_RESU(RESU=_F(GROUP_NO='NO7',
+                  INST=4.0,
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=9.1320999999999994,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = U,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 9.13210,
-      GROUP_NO  = 'NO7',
-      INST      = 4.0
-      ),
-    )
-  )
-
-TEST_TABLE(TABLE=FRES,
-           FILTRE=(_F(NOM_PARA='INST',VALE=4.0,),),
-           NOM_PARA  = 'DY',
-           VALE      = 4.93322,
-           REFERENCE = 'NON_REGRESSION')
-
+TEST_TABLE(
+           VALE_CALC=4.9332200000000004,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=FRES,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=4.0,),
+           )
 
 IMPR_TABLE(TABLE = UPILO)
 IMPR_TABLE(TABLE = FRES)
@@ -380,6 +371,5 @@ IMPR_TABLE(TABLE = FRES)
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ',),GROUP_MA = ('DCB_1','DCB_2')))),
 
 FIN(FORMAT_HDF='OUI')
-
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DESROCHE X.DESROCHES
 # TITRE : COQUE MINCE CYLINDRIQUE SOUS PRESSION HYDROSTATIQUE
 # ssls120d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -114,55 +114,69 @@ DZMAX = (-Nu*P*R*L)/E/h/2.
 DXMAX = P*R*R/E/h
 DXMIN = -P*R*R/E/h
 SIG = P*R/h
-TEST_RESU(RESU=_F(RESULTAT=ELAS1,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A3',
-                  VALE=DZMAX,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=ELAS1,
-                  NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='A4',
-                  VALE=DZMAX,
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC=-2.44202004E-05,
+                  VALE_REFE=-2.4428571428571427E-05,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=ELAS1,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A4',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-2.44202004E-05,
+                  VALE_REFE=-2.4428571428571427E-05,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='PM',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='PM',
-                  VALE=DXMAX,PRECISION=0.002,
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC= 5.79158662E-05,
+                  VALE_REFE=5.8017857142857143E-05,
+                  PRECISION=2.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=ELAS1,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A1',
-                  VALE=DXMAX,PRECISION=0.002,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=ELAS1,
-                  NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='A2',
-                  VALE=DXMIN,PRECISION=0.002,
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC= 5.79158662E-05,
+                  VALE_REFE=5.8017857142857143E-05,
+                  PRECISION=2.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=ELAS1C1M,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A2',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-5.79158662E-05,
+                  VALE_REFE=-5.8017857142857143E-05,
+                  PRECISION=2.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS1C1M,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIYY',
-                  GROUP_NO='A1',
-                  MAILLE='M1',
-                  VALE=SIG,
-                  REFERENCE='ANALYTIQUE',),);
-
+                  VALE_CALC= 2.13711825E+06,
+                  VALE_REFE=2.137500E6,
+                  MAILLE='M1',),
+          )
 
 # CAS ORTHOTROPE : SOLUTION ANALYTIQUE AUSSI
 
@@ -184,54 +198,67 @@ ELAS2C1M=POST_CHAMP(RESULTAT=ELAS2,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-TEST_RESU(RESU=_F(RESULTAT=ELAS2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A3',
-                  VALE=DZMAX2,PRECISION=0.001,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=ELAS2,
-                  NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  GROUP_NO='A4',
-                  VALE=DZMAX2,PRECISION=0.001,
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC=-6.10504997E-06,
+                  VALE_REFE=-6.1071428571428566E-06,
+                  PRECISION=1.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=ELAS2,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A4',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-6.10504997E-06,
+                  VALE_REFE=-6.1071428571428566E-06,
+                  PRECISION=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='PM',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='PM',
-                  VALE=DXMAX,
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC= 5.79941564E-05,
+                  VALE_REFE=5.8017857142857143E-05,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=ELAS2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A1',
-                  VALE=DXMAX,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=ELAS2,
-                  NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='A2',
-                  VALE=DXMIN,
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC= 5.79941564E-05,
+                  VALE_REFE=5.8017857142857143E-05,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=ELAS2C1M,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A2',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-5.79941564E-05,
+                  VALE_REFE=-5.8017857142857143E-05,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=ELAS2C1M,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIYY',
-                  GROUP_NO='A1',
-                  MAILLE='M1',
-                  VALE=SIG,
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC= 2.13666493E+06,
+                  VALE_REFE=2.137500E6,
+                  MAILLE='M1',),
+          )
 
 FIN();
-

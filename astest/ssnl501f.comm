@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  : POUTRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,14 +160,21 @@ DEPL=CREA_CHAMP(NOM_CHAM='DEPL',
                 NUME_ORDRE=1,
                 RESULTAT=RESULTAT,);
 
-TEST_RESU(RESU=(_F(PARA='ETA_PILOTAGE',
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   PARA='ETA_PILOTAGE',
                    RESULTAT=RESULTAT,
-                   PRECISION=0.14,
-                   VALE=1.0,
-                   NUME_ORDRE=10,),
-                _F(PARA='ETA_PILOTAGE',
+                   VALE_CALC=1.084214434,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.14000000000000001,),
+                _F(NUME_ORDRE=12,
+                   PARA='ETA_PILOTAGE',
                    RESULTAT=RESULTAT,
-                   PRECISION=0.14,
-                   VALE=1.0,
-                   NUME_ORDRE=12,),),);
+                   VALE_CALC=1.089092178,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.14000000000000001,),
+                ),
+          )
+
 FIN();

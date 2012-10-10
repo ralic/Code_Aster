@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI DE TRACTION AVEC MEMOIRE MAXI D'ECROUISSAGE
 # ssnd105a.para = tps_job 60 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -193,8 +193,15 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 
 p=3.70925E-02
 
-TEST_RESU(RESU=_F(RESULTAT = VISCMEMO,  NOM_CHAM = 'VARI_ELGA',  INST=T1, REFERENCE='NON_REGRESSION',
-                 MAILLE = 'MA1',  POINT=1,  NOM_CMP = 'V1',  VALE = p),)
+TEST_RESU(RESU=_F(INST=8.0,
+                  POINT=1,
+                  RESULTAT=VISCMEMO,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.0370925,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='MA1',),
+          )
 
 # p=FP(T1)
 Rp=b*(Q_0-Q_M)/(b-2.*MU*ETA)*exp(-2*MU*ETA*p)
@@ -202,8 +209,16 @@ Rp=Rp+(2*MU*ETA*Q_M-b*Q_0)/(b-2.*MU*ETA)*exp(-b*p)
 Rp=Q_M+Rp
 Sig=R_0+Rp
 #
-TEST_RESU(RESU=
-  _F(  RESULTAT = VISCMEMO,  NOM_CHAM = 'SIEF_ELGA',  INST=T1, REFERENCE='ANALYTIQUE',
-    PRECISION=0.002, MAILLE = 'MA1',  POINT=1,  NOM_CMP = 'SIXX',  VALE = Sig),)
+TEST_RESU(RESU=_F(INST=8.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=VISCMEMO,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=119.999978319,
+                  VALE_REFE=119.87362040218926,
+                  PRECISION=2.E-3,
+                  MAILLE='MA1',),
+          )
 
 FIN();

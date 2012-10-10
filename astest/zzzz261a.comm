@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  VALIDATION DE PROJ_CHAMP EN 2D  (DIVERSES METHODES)
 # zzzz261a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,31 +63,60 @@ CHAREF=CREA_CHAMP(MAILLAGE=MA2, OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', INFO=
 # Validation de METHODE='COLLOCATION' :
 #--------------------------------
 TEMP2=PROJ_CHAMP(RESULTAT=TEMP1,METHODE='COLLOCATION',  MAILLAGE_1=MA1, MAILLAGE_2=MA2, NOM_CHAM='TEMP')
-TEST_RESU( RESU=_F(RESULTAT = TEMP2,  NUME_ORDRE = 4, NOM_CHAM = 'TEMP', REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
-
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  GROUP_NO='O1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=TEMP2,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=12.029320988,
+                  VALE_REFE=11.875,
+                  PRECISION=0.014999999999999999,),
+          )
 
 # Validation de METHODE='COLLOCATION' en 2 temps :
 #-------------------------------------------------
 MATPROJ=PROJ_CHAMP(METHODE='COLLOCATION',  MAILLAGE_1=MA1, MAILLAGE_2=MA2, PROJECTION='NON')
 TEMP2B=PROJ_CHAMP(RESULTAT=TEMP1, MATR_PROJECTION=MATPROJ, NOM_CHAM='TEMP')
 
-TEST_RESU( RESU=_F(RESULTAT = TEMP2B,  NUME_ORDRE = 4, NOM_CHAM = 'TEMP', REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
-
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  GROUP_NO='O1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=TEMP2B,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=12.029320988,
+                  VALE_REFE=11.875,
+                  PRECISION=0.014999999999999999,),
+          )
 
 # Validation de METHODE='NUAGE_DEG_0' :
 #---------------------------------------
 TEMP3=PROJ_CHAMP(RESULTAT=TEMP1,METHODE='NUAGE_DEG_0',  MAILLAGE_1=MA1, MAILLAGE_2=MA2, NOM_CHAM='TEMP',  CHAM_NO_REFE=CHAREF)
-TEST_RESU( RESU=_F(RESULTAT = TEMP3,  NUME_ORDRE = 4, NOM_CHAM = 'TEMP', REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  GROUP_NO='O1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=TEMP3,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=12.029809257,
+                  VALE_REFE=11.875,
+                  PRECISION=0.014999999999999999,),
+          )
 
 # Validation de METHODE='NUAGE_DEG_1' :
 #---------------------------------------
 TEMP4=PROJ_CHAMP(RESULTAT=TEMP1,METHODE='NUAGE_DEG_1',  MAILLAGE_1=MA1, MAILLAGE_2=MA2, NOM_CHAM='TEMP',  CHAM_NO_REFE=CHAREF)
-TEST_RESU( RESU=_F(RESULTAT = TEMP4,  NUME_ORDRE = 4, NOM_CHAM = 'TEMP', REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
-
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  GROUP_NO='O1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=TEMP4,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=12.029809257,
+                  VALE_REFE=11.875,
+                  PRECISION=0.014999999999999999,),
+          )
 
 #-------------------------------------------------------------------------------------------------------------------------------
 # Validation de differents mots cles :
@@ -97,43 +126,90 @@ TEST_RESU( RESU=_F(RESULTAT = TEMP4,  NUME_ORDRE = 4, NOM_CHAM = 'TEMP', REFEREN
 #----------------------
 TEMP5=PROJ_CHAMP(RESULTAT=TEMP1,METHODE='COLLOCATION',  MAILLAGE_1=MA1,MAILLAGE_2=MA2, NOM_CHAM='TEMP',
                  VIS_A_VIS=_F(TOUT_1='OUI',TOUT_2='OUI', CAS_FIGURE='2D'))
-TEST_RESU( RESU=_F(RESULTAT = TEMP5,  NUME_ORDRE = 4, NOM_CHAM = 'TEMP', REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  GROUP_NO='O1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=TEMP5,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=12.029320988,
+                  VALE_REFE=11.875,
+                  PRECISION=0.014999999999999999,),
+          )
 
 TEMP6=PROJ_CHAMP(RESULTAT=TEMP1,METHODE='NUAGE_DEG_0',  MAILLAGE_1=MA1,MAILLAGE_2=MA2, NOM_CHAM='TEMP', CHAM_NO_REFE=CHAREF,
                  VIS_A_VIS=_F(TOUT_1='OUI',TOUT_2='OUI', CAS_FIGURE='2D'))
-TEST_RESU( RESU=_F(RESULTAT = TEMP6,  NUME_ORDRE = 4, NOM_CHAM = 'TEMP', REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
-
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  GROUP_NO='O1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=TEMP6,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=12.029809257,
+                  VALE_REFE=11.875,
+                  PRECISION=0.014999999999999999,),
+          )
 
 # VIS_A_VIS/ GROUP_MA_1/2 :
 #--------------------------
 TEMP7=PROJ_CHAMP(RESULTAT=TEMP1,METHODE='COLLOCATION',  MAILLAGE_1=MA1,MAILLAGE_2=MA2, NOM_CHAM='TEMP',
                  VIS_A_VIS=_F(GROUP_MA_1='ABCD',GROUP_MA_2='EFGH', CAS_FIGURE='2D'))
-TEST_RESU( RESU=_F(RESULTAT = TEMP7,  NUME_ORDRE = 4, NOM_CHAM = 'TEMP', REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  GROUP_NO='O1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=TEMP7,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=12.029320988,
+                  VALE_REFE=11.875,
+                  PRECISION=0.014999999999999999,),
+          )
 
 TEMP8=PROJ_CHAMP(RESULTAT=TEMP1,METHODE='NUAGE_DEG_0',  MAILLAGE_1=MA1,MAILLAGE_2=MA2, NOM_CHAM='TEMP', CHAM_NO_REFE=CHAREF,
                  VIS_A_VIS=_F(GROUP_MA_1='ABCD',GROUP_MA_2='EFGH', CAS_FIGURE='2D'))
-TEST_RESU( RESU=_F(RESULTAT = TEMP8,  NUME_ORDRE = 4, NOM_CHAM = 'TEMP', REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
-
-
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  GROUP_NO='O1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=TEMP8,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=11.943310870,
+                  VALE_REFE=11.875,
+                  PRECISION=0.014999999999999999,),
+          )
 
 # CHAM_NO isole + METHODE= 'COLLOCATION' / 'NUAGE_DEG_0/1':
 #-----------------------------------------------------
 CHT1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R', RESULTAT=TEMP1, NOM_CHAM = 'TEMP', NUME_ORDRE=4,)
 
 CHT2=PROJ_CHAMP(CHAM_GD=CHT1,METHODE='COLLOCATION',  MAILLAGE_1=MA1, MAILLAGE_2=MA2)
-TEST_RESU(CHAM_NO=_F( CHAM_GD = CHT2, REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
+TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
+                     NOM_CMP='TEMP',
+                     GROUP_NO='O1',
+                     PRECISION=0.014999999999999999,
+                     CHAM_GD=CHT2,
+                     VALE_CALC=12.029320988,
+                     VALE_REFE=11.875,),
+          )
 
 CHT3=PROJ_CHAMP(CHAM_GD=CHT1,METHODE='NUAGE_DEG_0',  MAILLAGE_1=MA1, MAILLAGE_2=MA2, CHAM_NO_REFE=CHAREF)
-TEST_RESU(CHAM_NO=_F( CHAM_GD = CHT3, REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
+TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
+                     NOM_CMP='TEMP',
+                     GROUP_NO='O1',
+                     PRECISION=0.014999999999999999,
+                     CHAM_GD=CHT3,
+                     VALE_CALC=12.029809257,
+                     VALE_REFE=11.875,),
+          )
 
 CHT4=PROJ_CHAMP(CHAM_GD=CHT1,METHODE='NUAGE_DEG_1',  MAILLAGE_1=MA1, MAILLAGE_2=MA2, CHAM_NO_REFE=CHAREF)
-TEST_RESU(CHAM_NO=_F( CHAM_GD = CHT4, REFERENCE='ANALYTIQUE',
-                   GROUP_NO='O1',NOM_CMP = 'TEMP', VALE = 11.87500 , PRECISION=1.5E-2 ))
+TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
+                     NOM_CMP='TEMP',
+                     GROUP_NO='O1',
+                     PRECISION=0.014999999999999999,
+                     CHAM_GD=CHT4,
+                     VALE_CALC=12.029809257,
+                     VALE_REFE=11.875,),
+          )
 
 FIN();

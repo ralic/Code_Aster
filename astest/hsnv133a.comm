@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION THERMOPLASTIQUE GRANDES DEFORMATIONS 3D VMIS_SOT_PUIS
 # hsnv133a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -280,33 +280,55 @@ VT=STAT_NON_LINE( reuse=VT,
                 ITER_LINE_MAXI = 3)
               )
 
-TEST_RESU(RESU=(
-              _F(
-               RESULTAT = VT,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO8',   NOM_CMP = 'DX',
-               PRECISION = 1.E-2, REFERENCE='NON_REGRESSION',
-               VALE = 303.06),
-              _F(
-               RESULTAT = VT,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO8',   NOM_CMP = 'DY',
-               PRECISION = 1.E-2, REFERENCE='NON_REGRESSION',
-               VALE = -108.82),
-              _F(
-               RESULTAT = VT,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO8',   NOM_CMP = 'DZ',
-               PRECISION = 1.E-2, REFERENCE='NON_REGRESSION',
-               VALE = -108.82),
-              _F(
-               RESULTAT = VT,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIXX',
-               PRECISION = 1.E-2, REFERENCE='NON_REGRESSION',
-               VALE = 2.651633E+3),
-              _F(
-               RESULTAT = VT,     NOM_CHAM = 'VARI_ELGA',  INST = 2.,
-               MAILLE = 'MA1',    POINT = 1,   NOM_CMP = 'V1',
-               PRECISION = 1.5E-2,REFERENCE='NON_REGRESSION',
-               VALE = 0.24556))
-             )
+TEST_RESU(RESU=(_F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=VT,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=303.062840686,
+                   VALE_REFE=303.06,
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=VT,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DY',
+                   VALE_CALC=-108.819035357,
+                   VALE_REFE=-108.81999999999999,
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=VT,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-108.819035357,
+                   VALE_REFE=-108.81999999999999,
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   POINT=1,
+                   RESULTAT=VT,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 2.65163306E+03,
+                   VALE_REFE=2651.6329999999998,
+                   PRECISION=1.E-2,
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   POINT=1,
+                   RESULTAT=VT,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.245562348,
+                   VALE_REFE=0.24556,
+                   PRECISION=0.014999999999999999,
+                   MAILLE='MA1',),
+                ),
+          )
 
 #
 #  ISOT_PUIS
@@ -359,36 +381,55 @@ VP=STAT_NON_LINE( reuse=VP,
                 ITER_LINE_MAXI = 3)
               )
 
-TEST_RESU(RESU=(
-              _F(
-               RESULTAT = VP,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO8',   NOM_CMP = 'DX',
-               PRECISION = 1.E-2, REFERENCE='NON_REGRESSION',
-               VALE = 303.06),
-              _F(
-               RESULTAT = VP,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO8',   NOM_CMP = 'DY',
-               PRECISION = 1.E-2, REFERENCE='NON_REGRESSION',
-               VALE = -108.82),
-              _F(
-               RESULTAT = VP,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO8',   NOM_CMP = 'DZ',
-               PRECISION = 1.E-2, REFERENCE='NON_REGRESSION',
-               VALE = -108.82),
-              _F(
-               RESULTAT = VP,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1,               NOM_CMP = 'SIXX',
-               PRECISION = 1.E-2, REFERENCE='NON_REGRESSION',
-               VALE = 2.651633E+3),
-              _F(
-               RESULTAT = VP,     NOM_CHAM = 'VARI_ELGA',  INST = 2.,
-               MAILLE = 'MA1',    POINT = 1,   NOM_CMP = 'V1',
-               PRECISION = 1.5E-2,REFERENCE='NON_REGRESSION',
-               VALE = 0.24556))
-             )
-
-
-
+TEST_RESU(RESU=(_F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=VP,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DX',
+                   VALE_CALC=303.062840686,
+                   VALE_REFE=303.06,
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=VP,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DY',
+                   VALE_CALC=-108.818982369,
+                   VALE_REFE=-108.81999999999999,
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=VP,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-108.818982369,
+                   VALE_REFE=-108.81999999999999,
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   POINT=1,
+                   RESULTAT=VP,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 2.65169422E+03,
+                   VALE_REFE=2651.6329999999998,
+                   PRECISION=1.E-2,
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   REFERENCE='NON_DEFINI',
+                   POINT=1,
+                   RESULTAT=VP,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.245582394,
+                   VALE_REFE=0.24556,
+                   PRECISION=0.014999999999999999,
+                   MAILLE='MA1',),
+                ),
+          )
 
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR ZENTNER I.ZENTNER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE GENERATION DE SIGNAUX SISMIQUES
 # zzzz317b.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -66,14 +66,26 @@ RMS4=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT4))
 IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
                      _F(FONCTION=FONCT4 ,)))
 
-TEST_TABLE( TABLE=N4,
-                NOM_PARA='INTE_ARIAS', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
-                    VALE= 0.047017906405588    )
-TEST_TABLE( TABLE=N4, NOM_PARA='DUREE_PHAS_FORT',
-             REFERENCE='NON_REGRESSION', PRECISION=1.E-4, VALE=6.33)
-TEST_TABLE( TABLE=RMS4,
-                NOM_PARA='ECART_TYPE', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
-                    VALE= 0.11965290779866  )
+TEST_TABLE(
+           VALE_CALC=0.047017906405587999,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='INTE_ARIAS',
+           TABLE=N4,
+           )
+
+TEST_TABLE(
+           VALE_CALC=6.3300000000000001,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='DUREE_PHAS_FORT',
+           TABLE=N4,
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.11965290779866,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='ECART_TYPE',
+           TABLE=RMS4,
+           )
 
 #################################################################
 #"GAMMA"
@@ -95,15 +107,27 @@ N5=INFO_FONCTION(  NOCI_SEISME=_F(
                              PESANTEUR = 9.81,AMOR_REDUIT=0.05, OPTION = ('TOUT') ))
 
 RMS5=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT5))
-TEST_TABLE( TABLE=N5,
-                NOM_PARA='INTE_ARIAS', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
-                    VALE=0.047152842646925 )
-TEST_TABLE( TABLE=N5,
-                NOM_PARA='DUREE_PHAS_FORT',REFERENCE='NON_REGRESSION', PRECISION=1.E-3,
-                VALE=4.86,)
-TEST_TABLE( TABLE=RMS5,
-                NOM_PARA='ECART_TYPE', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
-                    VALE= 0.11982350812708 )
+TEST_TABLE(
+           VALE_CALC=0.047152842646925,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='INTE_ARIAS',
+           TABLE=N5,
+           )
+
+TEST_TABLE(
+           VALE_CALC=4.8600000000000003,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DUREE_PHAS_FORT',
+           TABLE=N5,
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.11982350812707999,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='ECART_TYPE',
+           TABLE=RMS5,
+           )
+
 IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
                      _F(FONCTION=FONCT5 ,)))
 ################################################################

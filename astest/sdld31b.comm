@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_VIBRA
 # sdld31b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,17 +176,19 @@ MOSOREN=MODE_ITER_SIMULT(MATR_RIGI=RIGHYST,
 FRESOR=RECU_TABLE(CO=MOSOREN,
                   NOM_PARA=('FREQ','AMOR_REDUIT',),);
 
-TEST_TABLE(TABLE=FRESOR,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=3.000000000,
+           VALE_REFE=3.0,
            NOM_PARA='FREQ',
-           VALE=3.0,
-           PRECISION=1E-6,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=FRESOR,)
 
-TEST_TABLE(TABLE=FRESOR,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 9.99999500E-04,
+           VALE_REFE=1.E-3,
            NOM_PARA='AMOR_REDUIT',
-           VALE=1E-3,
-           PRECISION=1E-6,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=FRESOR,)
 
 # CALCUL DES MODES AVEC AMORTISSEMENT VISQUEUX (LANCZOS, APPROCHE COMPLEXE)
 
@@ -203,17 +205,19 @@ MOLANCZ=MODE_ITER_SIMULT(MATR_RIGI=RIGI,
 FRELAN=RECU_TABLE(CO=MOSOREN,
                   NOM_PARA=('FREQ','AMOR_REDUIT',),);
 
-TEST_TABLE(TABLE=FRELAN,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=3.000000000,
+           VALE_REFE=3.0,
            NOM_PARA='FREQ',
-           VALE=3.0,
-           PRECISION=1E-6,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=FRELAN,)
 
-TEST_TABLE(TABLE=FRELAN,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 9.99999500E-04,
+           VALE_REFE=1.E-3,
            NOM_PARA='AMOR_REDUIT',
-           VALE=1E-3,
-           PRECISION=1E-6,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=FRELAN,)
 
 # CALCUL DES MODES NORMAUX (NON AMORTIS)
 
@@ -254,24 +258,29 @@ BTRANGE=RECU_FONCTION(RESU_GENE=TRANGE,
                       NOM_CMP='DZ',
                       GROUP_NO='B',);
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=BTRANGE,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0107850405792,
+                         VALE_REFE=0.010784991910322289,
+                         VALE_PARA=0.5,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-4,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst1,
-                         VALE_REFE=solex(tpst1,),
-                         PRECISION=1E-4,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=BTRANGE,
+                         FONCTION=BTRANGE,),
+                      _F(VALE_CALC=-0.00374279206524,
+                         VALE_REFE=-3.7450736163948881E-3,
+                         VALE_PARA=0.69999999999999996,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst2,
-                         VALE_REFE=solex(tpst2,),
-                         PRECISION=1E-3,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=BTRANGE,
+                         FONCTION=BTRANGE,),
+                      _F(VALE_CALC=-0.0125612117915,
+                         VALE_REFE=-0.012563906053984213,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst3,
-                         VALE_REFE=solex(tpst3,),
-                         PRECISION=1E-3,
-                         REFERENCE='ANALYTIQUE',),),);
+                         FONCTION=BTRANGE,),
+                      ),
+              )
 
 # TEST DE REST_GENE_PHYS
 
@@ -283,25 +292,29 @@ BTRANSI=RECU_FONCTION(RESULTAT=TRANSI,
                       NOM_CMP='DZ',
                       GROUP_NO='B',);
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=BTRANSI,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0107850405792,
+                         VALE_REFE=0.010784991910322289,
+                         VALE_PARA=0.5,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-4,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst1,
-                         VALE_REFE=solex(tpst1,),
-                         PRECISION=1E-4,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=BTRANSI,
+                         FONCTION=BTRANSI,),
+                      _F(VALE_CALC=-0.00374279206524,
+                         VALE_REFE=-3.7450736163948881E-3,
+                         VALE_PARA=0.69999999999999996,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst2,
-                         VALE_REFE=solex(tpst2,),
-                         PRECISION=1E-3,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=BTRANSI,
+                         FONCTION=BTRANSI,),
+                      _F(VALE_CALC=-0.0125612117915,
+                         VALE_REFE=-0.012563906053984213,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst3,
-                         VALE_REFE=solex(tpst3,),
-                         PRECISION=1E-3,
-                         REFERENCE='ANALYTIQUE',),),);
-
+                         FONCTION=BTRANSI,),
+                      ),
+              )
 
 # TRANSITOIRE - METHODE DE NEWMARK
 
@@ -320,26 +333,29 @@ BNEWTRAN=RECU_FONCTION(RESU_GENE=NEWTRANG,
                        NOM_CMP='DZ',
                        GROUP_NO='B',);
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=BNEWTRAN,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0107846361037,
+                         VALE_REFE=0.010784991910322289,
+                         VALE_PARA=0.5,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-4,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst1,
-                         VALE_REFE=solex(tpst1,),
-                         PRECISION=1E-4,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=BNEWTRAN,
+                         FONCTION=BNEWTRAN,),
+                      _F(VALE_CALC=-0.00374783859549,
+                         VALE_REFE=-3.7450736163948881E-3,
+                         VALE_PARA=0.69999999999999996,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst2,
-                         VALE_REFE=solex(tpst2,),
-                         PRECISION=1E-3,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=BNEWTRAN,
+                         FONCTION=BNEWTRAN,),
+                      _F(VALE_CALC=-0.0125668598711,
+                         VALE_REFE=-0.012563906053984213,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst3,
-                         VALE_REFE=solex(tpst3,),
-                         PRECISION=1E-3,
-                         REFERENCE='ANALYTIQUE',),),);
-
-
+                         FONCTION=BNEWTRAN,),
+                      ),
+              )
 
 # TRANSITOIRE - METHODE DE DEVOLEGAERE
 
@@ -358,24 +374,29 @@ BDEVTRAN=RECU_FONCTION(RESU_GENE=DEVTRANG,
                        NOM_CMP='DZ',
                        GROUP_NO='B',);
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=BDEVTRAN,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0107846055055,
+                         VALE_REFE=0.010784991910322289,
+                         VALE_PARA=0.5,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-4,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst1,
-                         VALE_REFE=solex(tpst1,),
-                         PRECISION=1E-4,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=BDEVTRAN,
+                         FONCTION=BDEVTRAN,),
+                      _F(VALE_CALC=-0.00374493946999,
+                         VALE_REFE=-3.7450736163948881E-3,
+                         VALE_PARA=0.69999999999999996,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-4,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst2,
-                         VALE_REFE=solex(tpst2,),
-                         PRECISION=1E-4,
-                         REFERENCE='ANALYTIQUE',),
-                      _F(FONCTION=BDEVTRAN,
+                         FONCTION=BDEVTRAN,),
+                      _F(VALE_CALC=-0.012563455953,
+                         VALE_REFE=-0.012563906053984213,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-4,
                          NOM_PARA='INST',
-                         VALE_PARA=tpst3,
-                         VALE_REFE=solex(tpst3,),
-                         PRECISION=1E-4,
-                         REFERENCE='ANALYTIQUE',),),);
+                         FONCTION=BDEVTRAN,),
+                      ),
+              )
 
 FIN();
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COQUE CYLINDRIQUE PINCEE AVEC DIAPHRAGMES
 # ssls104c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,10 +79,15 @@ MATASS=FACTORISER( reuse=MATASS,  MATR_ASSE=MATASS )
 
 VECASS=RESOUDRE(reuse=VECASS, MATR=MATASS,     CHAM_NO=VECASS)
 
-TEST_RESU(
-            CHAM_NO=_F(  CHAM_GD = VECASS,  CRITERE = 'RELATIF',  PRECISION = 5.E-2,
-              GROUP_NO = 'C',       NOM_CMP = 'DY',           VALE = -1.8248E-5)
-            )
+TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
+                     NOM_CMP='DY',
+                     GROUP_NO='C',
+                     PRECISION=0.050000000000000003,
+                     CHAM_GD=VECASS,
+                     VALE_CALC=-1.74244673E-05,
+                     VALE_REFE=-1.8247999999999999E-05,
+                     REFERENCE='NON_DEFINI',),
+          )
 
 #---------------------------------------------------------------------
 FIN()

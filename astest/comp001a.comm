@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST COMPORTEMENT VMIS_ISOT_LINE 3D 
 #......................................................................
 # comp001a.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
@@ -68,6 +68,3 @@ tabresu=TEST_COMPOR(OPTION='MECA',
 
 
 FIN();
-
-
-

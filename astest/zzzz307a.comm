@@ -1,6 +1,6 @@
-# MODIF  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION INFORMATIQUE DU PARALLELISME DES CALCULS ELEMENTAIRES ET ASSEMBLAGES
-# zzzz307a.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test SI
+# zzzz307a.para = tps_job 80 mem_job 256Mo ncpus 1 liste_test SI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,17 +75,18 @@ for partit in ('CENTRALISE','MAIL_DISPERSE','MAIL_CONTIGU','GROUP_ELEM') :
               #IMPR_RESU(RESU=_F(RESULTAT=RESU1))
 
               TEST_RESU(RESU=( _F( RESULTAT = RESU1, NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
-                       CRITERE = 'ABSOLU',PRECISION = 1.E-10, NUME_ORDRE = 1, GROUP_NO = 'C', NOM_CMP='DX',VALE = 2.0)))
+                       CRITERE = 'ABSOLU',PRECISION = 1.E-10, NUME_ORDRE = 1, GROUP_NO = 'C', NOM_CMP='DX',
+                       VALE_CALC = 2.0, VALE_REFE=2.0, TOLE_MACHINE = 1.E-10)))
 
               if typ_CL=="dualise" :
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             S_R=47.492727537032, REFERENCE='NON_REGRESSION',PRECISION = 1.E-10))
+                             VALE_CALC=47.492727537032, TOLE_MACHINE = 1.E-10))
               elif typ_CL=="elimine":
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             S_R=43.992727537032, REFERENCE='NON_REGRESSION',PRECISION = 1.E-10))
+                             VALE_CALC=43.992727537032, TOLE_MACHINE = 1.E-10))
               elif typ_CL=="transverse":
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             S_R=194.49272753703, REFERENCE='NON_REGRESSION',PRECISION = 1.E-10))
+                             VALE_CALC=194.49272753703, TOLE_MACHINE = 1.E-10))
 
               DETRUIRE(CONCEPT=_F(NOM=(RESU1)))
         DETRUIRE(CONCEPT=_F(NOM=(CL1)))

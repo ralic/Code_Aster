@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CUBE EN TRACTION SIMPLE ET COMPRESSION AVEC LA LOI ENDO_ORTH_BETON
 # ssnv217b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,76 +156,84 @@ U=STAT_NON_LINE(reuse =U,
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
 
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  POINT=1,
+                  RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
-                  MAILLE='M19',
-                  POINT=1,
-                  VALE=0.9887038,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=0.98870380000000002,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M19',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=10,
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  POINT=1,
+                  RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
-                  MAILLE='M19',
-                  POINT=1,
-                  VALE=7999.991,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=7999.991,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M19',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=11,
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  POINT=1,
+                  RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
-                  MAILLE='M19',
-                  POINT=1,
-                  VALE=0.99,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=0.98999999999999999,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M19',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=20,
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  POINT=1,
+                  RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
-                  MAILLE='M19',
-                  POINT=1,
-                  VALE=8333.193,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=8333.1929999999993,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M19',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=22,
+TEST_RESU(RESU=_F(NUME_ORDRE=22,
+                  POINT=1,
+                  RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V3',
-                  MAILLE='M19',
-                  POINT=1,
-                  VALE=0.86689832,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=0.86689832,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M19',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=25,
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  POINT=1,
+                  RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIZZ',
-                  MAILLE='M19',
-                  POINT=1,
-                  VALE=24072.934,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=2.4072934000000001E4,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M19',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=34,
+TEST_RESU(RESU=_F(NUME_ORDRE=34,
+                  POINT=1,
+                  RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
-                  MAILLE='M19',
-                  POINT=1,
-                  VALE=0.97567,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=0.97567000000000004,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M19',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=40,
+TEST_RESU(RESU=_F(NUME_ORDRE=40,
+                  POINT=1,
+                  RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIZZ',
-                  MAILLE='M19',
-                  POINT=1,
-                  VALE=-533333.33,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=-5.3333332999999996E5,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M19',),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE AFFE_CHAR_MECA/EVOL_CHAR (DE TYPE PRESSION)
 #                   + AFFE_CHAR_MECA/PRES_REP
 #                   + AFFE_CHAR_MECA/FORCE_CONTOUR
@@ -82,9 +82,17 @@ PRESLU=LIRE_RESU(      MODELE=MO,     UNITE=37,
                       )
 
 
-TEST_RESU(RESU=_F(RESULTAT=PRESLU,NUME_ORDRE=2,NOM_CHAM='PRES',NOM_CMP='PRES',
-                  MAILLE='M15',NOEUD='N3',VALE=4.,PRECISION = 1.0E-6, REFERENCE='ANALYTIQUE',))
-
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=PRESLU,
+                  NOM_CHAM='PRES',
+                  NOEUD='N3',
+                  NOM_CMP='PRES',
+                  VALE_CALC=4.000000000,
+                  VALE_REFE=4.0,
+                  PRECISION=9.9999999999999995E-07,
+                  MAILLE='M15',),
+          )
 
 CH0=AFFE_CHAR_MECA(  MODELE=MO,
            DDL_IMPO=_F(  GROUP_MA = 'AB',   DY = 0.) )
@@ -108,8 +116,16 @@ U1=MECA_STATIQUE(       MODELE=MO,   CHAM_MATER=CHMAT,
               _F( CHARGE = CH2, FONC_MULT = F2))
                         )
 
-TEST_RESU(  RESU=_F(  RESULTAT = U1,   NOM_CHAM = 'DEPL',   INST = 1.E0,
-            NOEUD = 'N1', NOM_CMP = 'DY',  VALE = -37.00000,  PRECISION = 1.0E-6, REFERENCE = 'ANALYTIQUE'))
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='DY',
+                  VALE_CALC=-37.000000000,
+                  VALE_REFE=-37.0,
+                  PRECISION=9.9999999999999995E-07,),
+          )
 
 # 2) VALIDATION DE EVOL_CHAR (DE TYPE PRESSION) AVEC STAT_NON_LINE :
 # ----------------------------------------------------------------
@@ -121,8 +137,16 @@ U2=STAT_NON_LINE(       MODELE=MO,   CHAM_MATER=CHMAT,
            COMP_INCR=_F( TOUT = 'OUI', RELATION = 'ELAS')
                         )
 
-TEST_RESU(  RESU=_F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   INST = 1.E0,
-            NOEUD = 'N1', NOM_CMP = 'DY',  VALE = -37.00000,  PRECISION = 1.0E-6, REFERENCE = 'ANALYTIQUE'))
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='DY',
+                  VALE_CALC=-37.000000000,
+                  VALE_REFE=-37.0,
+                  PRECISION=9.9999999999999995E-07,),
+          )
 
 # 3) VALIDATION DE EVOL_CHAR (DE TYPE PRESSION) AVEC DYNA_NON_LINE :
 # ------------------------------------------------------------------
@@ -135,8 +159,16 @@ U3=DYNA_NON_LINE(       MODELE=MO,   CHAM_MATER=CHMAT,
            SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                         )
 
-TEST_RESU(  RESU=_F(  RESULTAT = U3,   NOM_CHAM = 'DEPL',   INST = 1.E0,
-            NOEUD = 'N1', NOM_CMP = 'DY',  VALE = -37.00000,  PRECISION = 1.0E-6, REFERENCE = 'ANALYTIQUE'))
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='DY',
+                  VALE_CALC=-36.999995067,
+                  VALE_REFE=-37.0,
+                  PRECISION=9.9999999999999995E-07,),
+          )
 
 # 4) VALIDATION DE EVOL_CHAR (DE TYPE PRESSION) AVEC DYNA_VIBRA :
 # -----------------------------------------------------------------
@@ -161,8 +193,16 @@ U4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
              MATR_RIGI=MATRRIGI,
              )
 
-TEST_RESU(  RESU=_F(  RESULTAT = U4,   NOM_CHAM = 'DEPL',   INST = 1.E0,
-            NOEUD = 'N1', NOM_CMP = 'DY',  VALE = -37.00000,  PRECISION = 1.0E-6, REFERENCE = 'ANALYTIQUE'))
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U4,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='DY',
+                  VALE_CALC=-36.999995067,
+                  VALE_REFE=-37.0,
+                  PRECISION=9.9999999999999995E-07,),
+          )
 
 FIN()
 #

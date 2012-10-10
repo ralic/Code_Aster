@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PELLET J.PELLET
 # TITRE Validation de CREA_RESU/ASSE et AFFE_MATERIAU/AFFE_VARC/FONC_INST
 # zzzz223a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -125,15 +125,56 @@ U=MECA_STATIQUE( MODELE=MOME,  LIST_INST = LR8M,  OPTION='SANS',
                  CHAM_MATER=CHMATM,  EXCIT=_F( CHARGE = CHME), )
 
 
-TEST_RESU(RESU=(
-  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=1.0, VALE=15, REFERENCE='ANALYTIQUE',),
-  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=1.3, VALE=16, REFERENCE='ANALYTIQUE',),
-  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=2.0, VALE=15, REFERENCE='ANALYTIQUE',),
-  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=2.3, VALE=16, REFERENCE='ANALYTIQUE',),
-  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=4.0, VALE=15, REFERENCE='ANALYTIQUE',),
-  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=4.3, VALE=16, REFERENCE='ANALYTIQUE',),
-))
-
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DY',
+                   VALE_CALC=15.000000000,
+                   VALE_REFE=15,),
+                _F(INST=1.3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DY',
+                   VALE_CALC=16.000000000,
+                   VALE_REFE=16,),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DY',
+                   VALE_CALC=15.000000000,
+                   VALE_REFE=15,),
+                _F(INST=2.2999999999999998,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DY',
+                   VALE_CALC=16.000000000,
+                   VALE_REFE=16,),
+                _F(INST=4.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DY',
+                   VALE_CALC=15.000000000,
+                   VALE_REFE=15,),
+                _F(INST=4.2999999999999998,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N2',
+                   NOM_CMP='DY',
+                   VALE_CALC=16.000000000,
+                   VALE_REFE=16,),
+                ),
+          )
 
 # visualisation du resultat :
 #----------------------------
@@ -163,12 +204,13 @@ U2=EXTR_RESU(reuse=U2, RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE = (5,9), CHAM_EXCLU 
 IMPR_CO(UNITE=17,NIVEAU=0, CONCEPT=_F(NOM=U3),)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=17)
 TEST_FICHIER(
-   FICHIER='./fort.17', VALE_K='1568164337da04ac8de2f59c5f5f6465',
-   NB_VALE=67, VALE=3.7800000900000e+02,   REFERENCE='NON_REGRESSION', PRECISION=1.E-9 )
+   FICHIER='./fort.17', VALE_CALC_K='1568164337da04ac8de2f59c5f5f6465',
+   NB_VALE=67, VALE_CALC=3.7800000900000e+02, TOLE_MACHINE=1.E-9 )
 
 IMPR_CO(UNITE=18,NIVEAU=0, CONCEPT=_F(NOM=U2),)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=18)
 TEST_FICHIER(
-   FICHIER='./fort.18', VALE_K='f66c92058617175afe95c38af443e743',
-   NB_VALE=87, VALE=4.1000000900000e+02,   REFERENCE='NON_REGRESSION', PRECISION=1.E-9 )
+   FICHIER='./fort.18', VALE_CALC_K='f66c92058617175afe95c38af443e743',
+   NB_VALE=87, VALE_CALC=4.1000000900000e+02,  TOLE_MACHINE=1.E-9 )
 FIN()
+

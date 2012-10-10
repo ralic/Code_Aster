@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION SIMPLE GRANDES DEF LOI DE NORTON
 # hsnv136b.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,27 +126,37 @@ VL=STAT_NON_LINE( reuse=VL,
 #                ITER_LINE_MAXI = 0)
               )
 
-TEST_RESU(RESU=( 
-              _F(
-               RESULTAT = VL,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 501 ,
-               NOEUD = 'NO3',   NOM_CMP = 'DX',
-               PRECISION = 1.E-2,
-               REFERENCE = 'AUTRE_ASTER',
-               VALE = -527.42346),
-              _F(
-               RESULTAT = VL,   NOM_CHAM = 'SIEF_ELGA',  NUME_ORDRE = 501 ,
-               MAILLE = 'MA1',  POINT = 1,   NOM_CMP = 'SIYY',
-               PRECISION = 1.E-2,
-               REFERENCE = 'AUTRE_ASTER',
-               VALE = 239.45302),
-              _F(
-               RESULTAT = VL,     NOM_CHAM = 'VARI_ELGA',  NUME_ORDRE = 501 ,
-               MAILLE = 'MA1',  POINT = 1,   NOM_CMP = 'V1',
-               PRECISION = 1.5E-2,
-               REFERENCE = 'AUTRE_ASTER',
-               VALE = 1.4983659),
-                    )
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=501,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=VL,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO3',
+                   NOM_CMP='DX',
+                   VALE_CALC=-527.423439250,
+                   VALE_REFE=-527.42345999999998,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=501,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=VL,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=239.479615305,
+                   VALE_REFE=239.45302000000001,
+                   PRECISION=1.E-2,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=501,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=VL,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=1.498365561,
+                   VALE_REFE=1.4983659,
+                   PRECISION=0.014999999999999999,
+                   MAILLE='MA1',),
+                ),
+          )
 
 FIN(  )
 #

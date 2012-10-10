@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE PRE_IDEAS POUR DATASET 82
 # zzzz176a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -66,28 +66,32 @@ IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=MODEXP,PARTIE='REEL',NUME_ORDRE=2),)
 # TEST DES FREQUENCES PROPRES LUES
 # ------------------------------------
 
-TEST_RESU(RESU=(_F(RESULTAT=MODEXP,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=1.66258E+02,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODEXP,
+                   VALE_CALC=166.258000000,
+                   VALE_REFE=166.25800000000001,
                    CRITERE='RELATIF',
-                   PRECISION=0.05,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MODEXP,
-                   NUME_ORDRE=2,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=2,
                    PARA='FREQ',
-                   VALE=2.25885E+02,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODEXP,
+                   VALE_CALC=225.885000000,
+                   VALE_REFE=225.88499999999999,
                    CRITERE='RELATIF',
-                   PRECISION=0.05,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MODEXP,
-                   NUME_ORDRE=3,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=3,
                    PARA='FREQ',
-                   VALE=3.49164E+02,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=MODEXP,
+                   VALE_CALC=349.164000000,
+                   VALE_REFE=349.16399999999999,
                    CRITERE='RELATIF',
-                   PRECISION=0.05,
-                   REFERENCE='NON_REGRESSION',),
-                   ),);
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
 
 # ------------------------------------
 # TEST ECRITURE ET LECTURE DU MAILLAGE
@@ -126,11 +130,9 @@ DEFI_FICHIER (ACTION='LIBERER',UNITE=uniideas)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/fic_ideas',
              NB_VALE=859,
-             VALE=14327.25,
-             VALE_K='3b89c286ed816e625b97227f8d41344a',
+             VALE_CALC=14327.25,
+             VALE_CALC_K='3b89c286ed816e625b97227f8d41344a',
              EXPR_IGNORE=('[0-9]{2}/[0-9]{2}/[0-9]{4}',),
-             REFERENCE='NON_REGRESSION',
-             VERSION='9.3.10',
              INFO=1)
 
 # FORMAT CASTEM
@@ -145,24 +147,21 @@ PRE_GIBI(UNITE_GIBI=64,UNITE_MAILLAGE=24)
 MA24=LIRE_MAILLAGE(UNITE=24)
 
 
-TEST_RESU(OBJET=(
-  #GMSH
-        _F( NOM='MA22    .COORDO    .VALE',
-             S_R=3.5325000000000E+02,  # LES NOEUDS ORPHELINS SONT SUPPRIMES
-             REFERENCE='NON_REGRESSION',
-             VERSION='7.02.8'),
-  #IDEAS
-         _F( NOM='MA23    .COORDO    .VALE',
-             S_R=5.5425000000000E+02,
-             REFERENCE='NON_REGRESSION',
-             VERSION='7.02.8'),
-  #CASTEM
-         _F( NOM='MA24    .COORDO    .VALE',
-             S_R=5.5425000000000E+02,
-             REFERENCE='NON_REGRESSION',
-             VERSION='7.02.8')))
-
-
+TEST_RESU(OBJET=(_F(
+                    VALE_CALC=353.25,
+                    TOLE_MACHINE=1.E-3,
+                    NOM='MA22    .COORDO    .VALE',),
+                 _F(
+                    VALE_CALC=554.25,
+                    TOLE_MACHINE=1.E-3,
+                    NOM='MA23    .COORDO    .VALE',),
+                 _F(
+                    VALE_CALC=554.25,
+                    TOLE_MACHINE=1.E-3,
+                    NOM='MA24    .COORDO    .VALE',),
+                 ),
+          )
 
 FIN();
+
 

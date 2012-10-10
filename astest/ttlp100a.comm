@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ECHANGE_PAROI EN THERMIQUE LINEAIRE TRANSITOIRE
 # ttlp100a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,31 +167,32 @@ TINTD = FORMULE(NOM_PARA='X',VALE='''
 TEMPD - COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*(LONMAX-X)''')
 #
 
-TEST_RESU(CHAM_NO=(  _F(  CHAM_GD = TSTAT,
-                         NOEUD = 'N3',
-                         NOM_CMP = 'TEMP',
-                         VALE = TINTG(0.25),
-                         CRITERE = 'RELATIF',
-                         PRECISION = 1.E-6),
-                       _F(  CHAM_GD = TSTAT,
-                         NOEUD = 'N5',
-                         NOM_CMP = 'TEMP',
-                         VALE = TINTG(0.495),
-                         CRITERE = 'RELATIF',
-                         PRECISION = 1.E-6),
-                       _F(  CHAM_GD = TSTAT,
-                         NOEUD = 'N101',
-                         NOM_CMP = 'TEMP',
-                         VALE = TINTD(0.505),
-                         CRITERE = 'RELATIF',
-                         PRECISION = 1.E-6),
-                       _F(  CHAM_GD = TSTAT,
-                         NOEUD = 'N103',
-                         NOM_CMP = 'TEMP',
-                         VALE = TINTD(0.75),
-                         CRITERE = 'RELATIF',
-                         PRECISION = 1.E-6))
-            )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N3',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=133.55704697986579,
+                      ),
+                   _F(NOEUD='N5',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=166.44295302013421,
+                      ),
+                   _F(NOEUD='N101',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=233.55704697986579,
+                      ),
+                   _F(NOEUD='N103',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=266.44295302013421,
+                      ),
+                   ),
+          )
 
 #
 

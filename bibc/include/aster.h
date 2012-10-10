@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 02/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF aster include  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,7 +20,7 @@
 #ifndef ASTER_H
 #define ASTER_H
 
-#include <Python.h>
+#include "Python.h"
 
 #include "aster_depend.h"
 #include "definition.h"

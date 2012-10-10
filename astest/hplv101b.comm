@@ -1,4 +1,4 @@
-# MODIF  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - 3D - HEXA20
 # hplv101b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -245,46 +245,77 @@ PF=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMAT,
 
 #
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = TEMPGR, NUME_ORDRE=0,          PRECISION = 1.E-7,
-              MAILLE = 'M1',      POINT=1,           NOM_CHAM='ETHE_ELEM',
-              NOM_CMP = 'TOTALE', VALE = -8.2050))
-            )
+TEST_RESU(RESU=(_F(RESULTAT=TEMPGR,
+                   NUME_ORDRE=0,
+                   MAILLE='M1',
+                   POINT=1,NOM_CHAM='ETHE_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=-8.2050),
+                ),
+          )
 
-TEST_RESU(CHAM_NO=(
-     # TEMPERATURES
-            _F(  CHAM_GD = T_DZET,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'TEMP',  VALE = -1.000000000),
-            _F(  CHAM_GD = T_DZET,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N3',       NOM_CMP = 'TEMP',  VALE = -0.500000000),
-     # DEPLACEMENTS
-            _F(  CHAM_GD = DEM_KI, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = -7.032857143),
-            _F(  CHAM_GD = DEM_KI, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = -7.032857143),
-            _F(  CHAM_GD = DEF_KS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = 57.70459285),
-            _F(  CHAM_GD = DEF_KS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = 57.70459285))
-            )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N8',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=T_DZET,
+                      VALE_CALC=-1.0,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N3',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=T_DZET,
+                      VALE_CALC=-0.5,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N4',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      CHAM_GD=DEM_KI,
+                      VALE_CALC=-7.0328571430000002,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N8',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      CHAM_GD=DEM_KI,
+                      VALE_CALC=-7.0328571430000002,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N4',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      CHAM_GD=DEF_KS,
+                      VALE_CALC=57.704592849999997,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N8',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      CHAM_GD=DEF_KS,
+                      VALE_CALC=57.704592849999997,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   ),
+          )
 
-TEST_TABLE(      TABLE=TT,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=8.205,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=8.205000000,
+           VALE_REFE=8.2050000000000001,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TT,)
 
-TEST_TABLE(      TABLE=PM,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=2.0287088,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=2.028708791,
+           VALE_REFE=2.0287088,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=PM,)
 
-TEST_TABLE(      TABLE=PF,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=182.10238,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=182.102378548,
+           VALE_REFE=182.10238000000001,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=PF,)
 
 #
 # ------------------------------------------------------------------
@@ -311,40 +342,68 @@ PFO=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMATO,
 
 #
 
-TEST_RESU(CHAM_NO=(
-     # TEMPERATURES
-            _F(  CHAM_GD = T_DZETO,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'TEMP',  VALE = -1.000000000),
-            _F(  CHAM_GD = T_DZETO,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N3',       NOM_CMP = 'TEMP',  VALE = -0.500000000),
-     # DEPLACEMENTS
-            _F(  CHAM_GD = DEM_KIO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = -7.032857143),
-            _F(  CHAM_GD = DEM_KIO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = -7.032857143),
-            _F(  CHAM_GD = DEF_KSO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = 57.70459285),
-            _F(  CHAM_GD = DEF_KSO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = 57.70459285))
-            )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N8',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=T_DZETO,
+                      VALE_CALC=-1.0,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N3',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=T_DZETO,
+                      VALE_CALC=-0.5,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N4',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      CHAM_GD=DEM_KIO,
+                      VALE_CALC=-7.0328571430000002,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N8',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      CHAM_GD=DEM_KIO,
+                      VALE_CALC=-7.0328571430000002,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N4',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      CHAM_GD=DEF_KSO,
+                      VALE_CALC=57.704592849999997,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N8',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      CHAM_GD=DEF_KSO,
+                      VALE_CALC=57.704592849999997,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   ),
+          )
 
-TEST_TABLE(      TABLE=TTO,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=8.205,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=8.205000000,
+           VALE_REFE=8.2050000000000001,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TTO,)
 
-TEST_TABLE(      TABLE=PMO,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=2.0287088,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=2.028708790,
+           VALE_REFE=2.0287088,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=PMO,)
 
-TEST_TABLE(      TABLE=PFO,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=182.10238,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=182.102378411,
+           VALE_REFE=182.10238000000001,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=PFO,)
 
 #
 # ------------------------------------------------------------------
@@ -372,28 +431,60 @@ PFOO=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMATOO,
 
 #
 
-TEST_RESU(CHAM_NO=(
-#      TEMPERATURES
-             _F(  CHAM_GD = T_DZETOO,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-               NOEUD = 'N8',       NOM_CMP = 'TEMP',  VALE = -1.000000000),
-             _F(  CHAM_GD = T_DZETOO,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-               NOEUD = 'N3',       NOM_CMP = 'TEMP',  VALE = -0.500000000),
-     # DEPLACEMENTS
-            _F(  CHAM_GD = DEM_KIOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N4',       NOM_CMP = 'DZ',REFERENCE='ANALYTIQUE',VALE = -6.63044894366),
-            _F(  CHAM_GD = DEM_KIOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'DZ',REFERENCE='ANALYTIQUE',VALE = -6.63044894366),
-             _F(  CHAM_GD = DEF_KSOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N4',       NOM_CMP = 'DZ',REFERENCE='ANALYTIQUE',VALE = 54.4028335827),
-            _F(  CHAM_GD = DEF_KSOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'DZ',REFERENCE='ANALYTIQUE',VALE = 54.4028335827))
-            )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N8',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=T_DZETOO,
+                      VALE_CALC=-1.0,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N3',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=T_DZETOO,
+                      VALE_CALC=-0.5,
+                      TOLE_MACHINE=9.9999999999999995E-08,),
+                   _F(NOEUD='N4',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEM_KIOO,
+                      VALE_CALC=-6.630448944,
+                      VALE_REFE=-6.6304489436600003,),
+                   _F(NOEUD='N8',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEM_KIOO,
+                      VALE_CALC=-6.630448944,
+                      VALE_REFE=-6.6304489436600003,),
+                   _F(NOEUD='N4',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEF_KSOO,
+                      VALE_CALC=54.402833583,
+                      VALE_REFE=54.402833582699998,),
+                   _F(NOEUD='N8',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=DEF_KSOO,
+                      VALE_CALC=54.402833583,
+                      VALE_REFE=54.402833582699998,),
+                   ),
+          )
 
-TEST_TABLE(      TABLE=TTOO,       NOM_PARA='TOTALE',
-                TYPE_TEST='SOMM_ABS',
-                REFERENCE='ANALYTIQUE',
-                VALE=8.205,
-                 PRECISION=1.E-6 )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=8.205000000,
+           VALE_REFE=8.2050000000000001,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TTOO,)
 
 FIN( )
 #

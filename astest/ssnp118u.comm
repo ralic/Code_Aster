@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA LOI JOINT_MECA_RUPT SUR LES ELEMENTS DE JOINT HYME PENTA15
 # ssnp118u.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -302,85 +302,70 @@ DN=RECU_FONCTION(TABLE=TDELTA_N,
 forc_endo =  A_tri*(U_endo - U_max + press*pena_rupture/k_n)/(L_prism/young-pena_rupture/k_n)
 forc_pena = -A_tri*(U_elas + press/(k_n*pena_contact))/ (L_prism/young +1./(k_n*pena_contact))
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=FN,
-                        NOM_PARA='INST',
-                        VALE_PARA=linst[1],
-                        VALE_REFE=forc_max,
-                        REFERENCE='ANALYTIQUE'),
-                     _F(FONCTION=FN,
-                        NOM_PARA='INST',
-                        VALE_PARA=linst[2],
-                        VALE_REFE=forc_endo,
-                        REFERENCE='ANALYTIQUE'),
-                     _F(FONCTION=FN,
-                        NOM_PARA='INST',
-                        VALE_PARA=linst[3],
-                        VALE_REFE=forc_pena,
-                        REFERENCE='ANALYTIQUE'),
-                        ));
-
-
-# TEST DE LA PRESSION
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_HM,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'PRE1',
-      VALE      = press,
-      NOEUD     = 'NS14',
-      INST      = insfin,
-      ),
-    )
-  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=49750.0,
+                         VALE_REFE=4.9750E4,
+                         VALE_PARA=15,
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      _F(VALE_CALC=9350.0,
+                         VALE_REFE=9349.9999999999909,
+                         VALE_PARA=30,
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      _F(VALE_CALC=-100000.0,
+                         VALE_REFE=-9.9999999999999985E4,
+                         VALE_PARA=45,
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      ),
+              )
 
 # TEST DE LA PRESSION
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_HM,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'PRE1',
-      VALE      = press,
-      NOEUD     = 'NS15',
-      INST      = insfin,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=60,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_HM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NS14',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=500.000000000,
+                  VALE_REFE=500.0,),
+          )
 
-
-# TEST DE LA PRESSION VIA VIP18 ET L'INTERPOLATION GAUSS -> NOEUD
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_HM,
-      NOM_CHAM  = 'VARI_NOEU',
-      NOM_CMP   = 'V18',
-      VALE      = press,
-      NOEUD     = 'NS15',
-      INST      = insfin,
-      ),
-    )
-  )
+# TEST DE LA PRESSION
+TEST_RESU(RESU=_F(INST=60,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_HM,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NS15',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=500.000000000,
+                  VALE_REFE=500.0,),
+          )
 
 # TEST DE LA PRESSION VIA VIP18 ET L'INTERPOLATION GAUSS -> NOEUD
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_HM,
-      NOM_CHAM  = 'VARI_NOEU',
-      NOM_CMP   = 'V18',
-      VALE      = press,
-      NOEUD     = 'NO6',
-      INST      = insfin,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=60,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_HM,
+                  NOM_CHAM='VARI_NOEU',
+                  NOEUD='NS15',
+                  NOM_CMP='V18',
+                  VALE_CALC=500.000000000,
+                  VALE_REFE=500.0,),
+          )
 
+# TEST DE LA PRESSION VIA VIP18 ET L'INTERPOLATION GAUSS -> NOEUD
+TEST_RESU(RESU=_F(INST=60,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_HM,
+                  NOM_CHAM='VARI_NOEU',
+                  NOEUD='NO6',
+                  NOM_CMP='V18',
+                  VALE_CALC=500.000000000,
+                  VALE_REFE=500.0,),
+          )
 
 # IMPRESSION LA FORCE NODALE NORMALE
 IMPR_TABLE(TABLE=TFORCE);
@@ -410,4 +395,3 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 
 #########################################################################################################
 FIN()
-

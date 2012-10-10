@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE CONSOLE EN FLEXION QUAD4 GRILLE_EXCENTREE
 # ssls132b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -189,17 +189,14 @@ TAB = POST_RELEVE_T(
                RESULTANTE = 'DZ'))
 
 #IMPR_TABLE(TABLE = TAB)
-TEST_TABLE(
-     TABLE = TAB,
-     NOM_PARA = 'DZ',
-     FILTRE = _F(
-         NOM_PARA = 'NUME_ORDRE',
-         VALE_I   = 1,
-         ),
-     VALE = -3.3E3,
-     REFERENCE = 'ANALYTIQUE'
-  )
-
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-3.29917521E+03,
+           VALE_REFE=-3300.0,
+           NOM_PARA='DZ',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
 FIN()
 #

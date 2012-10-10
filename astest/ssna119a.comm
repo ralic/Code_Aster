@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA MODELISATION GVNO + LOI ENDO_CARRE EN AXIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,21 +104,24 @@ EVOL      = STAT_NON_LINE(MODELE = MO,
 #*********************************************************************** 
 
                                          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='No_test',
+                  RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DAMG',
+                  VALE_CALC=0.048250000000000001,
+                  TOLE_MACHINE=1.E-4,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   GROUP_NO='No_test',
-                  VALE=0.04825,
-                  PRECISION=1.E-4,),);                
-          
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=2,
+                  RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DAMG',
-                  GROUP_NO='No_test',
-                  VALE=0.23794,
-                  PRECISION=1.E-4,),);                             
-                           
-                                                                                                   
+                  VALE_CALC=0.23794000000000001,
+                  TOLE_MACHINE=1.E-4,
+                  ),
+          )
+
 FIN();

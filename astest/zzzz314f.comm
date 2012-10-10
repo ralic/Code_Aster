@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION INFORMATIQUE DE DEFI_FOND_FISS
 # zzzz314f.para = tps_job 30 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,9 +116,11 @@ for i in range(0,len(ndfon)):
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VNORX',
-              VALE=0.,
+              VALE_CALC=0.,
+              VALE_REFE=0.,
               CRITERE='ABSOLU',
               PRECISION=prec,
+              TOLE_MACHINE=prec,
               REFERENCE='ANALYTIQUE' )
 
    if abs(vnorY[i])>=1.e-3:
@@ -130,16 +132,20 @@ for i in range(0,len(ndfon)):
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VNORY',
-              VALE=0.,
+              VALE_CALC=0.,
+              VALE_REFE=0.,
               CRITERE='ABSOLU',
               PRECISION=prec,
+              TOLE_MACHINE=prec,
               REFERENCE='ANALYTIQUE' )
 
    TEST_TABLE(TABLE=TABL0,
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VNORZ',
-              VALE=-1.,
+              TOLE_MACHINE=prec,
+              VALE_CALC=-1.,
+              VALE_REFE=-1.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
 
@@ -147,7 +153,9 @@ for i in range(0,len(ndfon)):
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VDIRX',
-              VALE=vdirX_ana[i],
+              TOLE_MACHINE=prec,
+              VALE_CALC=vdirX_ana[i],
+              VALE_REFE=vdirX_ana[i],
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
 
@@ -155,7 +163,9 @@ for i in range(0,len(ndfon)):
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VDIRY',
-              VALE=vdirY_ana[i],
+              TOLE_MACHINE=prec,
+              VALE_CALC=vdirY_ana[i],
+              VALE_REFE=vdirY_ana[i],
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
 
@@ -163,7 +173,9 @@ for i in range(0,len(ndfon)):
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VDIRZ',
-              VALE=vdirZ_ana[i],
+              TOLE_MACHINE=1.8e-3,  #TODO vale_calc
+              VALE_CALC=vdirZ_ana[i],
+              VALE_REFE=vdirZ_ana[i],
               CRITERE='ABSOLU',
               PRECISION=1.8e-3,
               REFERENCE='ANALYTIQUE' )

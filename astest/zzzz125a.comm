@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA COMMANDE INTE_MAIL_2D
 # zzzz125a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,12 +70,14 @@ C3=INTE_MAIL_2D(   MAILLAGE=MA,
                         INFO=2
                     )
 
-TEST_TABLE(       TABLE=T2,
-                    FILTRE=_F(  NOM_PARA = 'QUANTITE',
-                             VALE_K = 'MOMENT_0'),
-                  NOM_PARA='TEMP',
-                 PRECISION=0.001,
-                      VALE=100.            )
+TEST_TABLE(
+           VALE_CALC=100.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='QUANTITE',
+                     VALE_K='MOMENT_0',),
+           )
 
 FIN( )
 #

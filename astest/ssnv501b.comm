@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 # ssnv501b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -334,41 +334,50 @@ DEFOR=STAT_NON_LINE(MODELE=MODEL,
                                    ITER_GLOB_MAXI=50),
                     INFO=1,);
 
-TEST_RESU(RESU=_F(RESULTAT=DEFOR,
-                  NUME_ORDRE=3,
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  GROUP_NO='A2',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=DEFOR,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='A2',
-                  VALE=5.0,
-                  PRECISION=0.1,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  VALE_CALC=4.843346597,
+                  VALE_REFE=5.0,
+                  PRECISION=0.10000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DEFOR,
-                  NUME_ORDRE=6,
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
+                  GROUP_NO='A2',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=DEFOR,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='A2',
-                  VALE=7.0,
-                  PRECISION=0.1,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  VALE_CALC=7.391796463,
+                  VALE_REFE=7.0,
+                  PRECISION=0.10000000000000001,),
+          )
 
 # TESTS DE NON REGRESSION
 
-TEST_RESU(RESU=_F(RESULTAT=DEFOR,
-                  NUME_ORDRE=3,
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  GROUP_NO='A2',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=DEFOR,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='A2',
-                  VALE=4.8433465966113,
-                  REFERENCE='SOURCE_EXTERNE',
-                  VERSION='10.3.0',),);
+                  VALE_CALC=4.843346597,
+                  VALE_REFE=4.8433465966113003,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DEFOR,
-                  NUME_ORDRE=6,
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
+                  GROUP_NO='A2',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=DEFOR,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='A2',
-                  VALE=7.3917964600581,
-                  REFERENCE='SOURCE_EXTERNE',
-                  VERSION='10.3.0',),);
+                  VALE_CALC=7.391796463,
+                  VALE_REFE=7.3917964600581003,
+                  ),
+          )
+
 FIN();

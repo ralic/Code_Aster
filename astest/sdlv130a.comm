@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE 3D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdlv130a.para = tps_job 60 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,79 +184,77 @@ IMPR_RESU(FORMAT='GMSH',
                   TYPE_CHAM='VECT_3D',
                   NOM_CMP=('DX','DY','DZ'),),);
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   VALE=1.3638427954242,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=1.3638427954242001,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=2,
-                   PARA='FREQ',
-                   VALE=3.2209278515285,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=3.2209278515284998,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=3,
-                   PARA='FREQ',
-                   VALE=4.8149074293549,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=4.8149074293548999,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=4,
-                   PARA='FREQ',
-                   VALE=7.1950304171199,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=7.1950304171199004,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=5,
-                   PARA='FREQ',
-                   VALE=1.0098075140375E+01,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=10.098075140375,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=6,
-                   PARA='FREQ',
-                   VALE=1.1789843364219E+01,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=11.789843364218999,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=7,
-                   PARA='FREQ',
-                   VALE=1.7484451607818E+01,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=7,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=17.484451607817999,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=8,
-                   PARA='FREQ',
-                   VALE=1.8281495749577E+01,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
-
-
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=18.281495749577001,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 FIN();
 

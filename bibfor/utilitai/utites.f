@@ -1,15 +1,16 @@
       SUBROUTINE UTITES (LABEL1,LABEL2,TYPE,NBREF,REFI,REFR,REFC,
-     +                          VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
-      IMPLICIT   NONE
-      INTEGER                          VALI,NBREF,REFI(NBREF),     IFIC
-      CHARACTER*(*)      LABEL1,LABEL2,TYPE,        CRIT,     SSIGNE
-      REAL*8                          VALR,REFR(NBREF),EPSI
-      COMPLEX*16                          VALC,REFC(NBREF)
+     +                   VALI,VALR,VALC,EPSI,CRIT,IFIC,LLAB,SSIGNE)
+      IMPLICIT       NONE
+      INTEGER        VALI,NBREF,REFI(NBREF),IFIC
+      CHARACTER*(*)  LABEL1,LABEL2,TYPE,CRIT,SSIGNE
+      REAL*8         VALR,REFR(NBREF),EPSI
+      COMPLEX*16     VALC,REFC(NBREF)
+      LOGICAL        LLAB
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF UTILITAI  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -33,6 +34,7 @@ C  IN  : C16 : VALC   : VALEUR COMPLEXE A TESTER ( ASTER )
 C  IN  : K8  : CRIT   : PRECISION 'RELATIVE' OU 'ABSOLUE'
 C  IN  : R8  : EPSI   : PRECISION ESPEREE
 C  IN  : I   : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
+C  IN  : L   : LLAB   : FLAG IMPRESSION LABELS
 C  OUT :                IMPRESSION SUR LISTING
 C ----------------------------------------------------------------------
       INTEGER I, IMIN, MINVI, TMPI, NL, LXLGUT, TVALI(2),NL1,NL2
@@ -45,7 +47,7 @@ C ----------------------------------------------------------------------
       REAL*8       TVALR(2),TERRR(2)
       COMPLEX*16   ZEROC, VTC
       LOGICAL      LOK
-      DATA LIGN2/'REFERENCE','LEGENDE','VALE_REF','VALE_CAL','ERREUR',
+      DATA LIGN2/'REFERENCE','LEGENDE','VALE_REFE','VALE_CALC','ERREUR',
      &           'TOLE'/
 C     ------------------------------------------------------------------
 C
@@ -118,23 +120,23 @@ C
        
          IF(NL1.LT.17)THEN
            IF(NL2.LT.17)THEN
-              WRITE(IFIC,1616)(LIGN2(I), I=1,NL)
+              IF (LLAB) WRITE(IFIC,1616)(LIGN2(I), I=1,NL)
               WRITE(IFIC,5616)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
 
            ELSE
-              WRITE(IFIC,1624)(LIGN2(I), I=1,NL)
+              IF (LLAB) WRITE(IFIC,1624)(LIGN2(I), I=1,NL)
               WRITE(IFIC,5624)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
            ENDIF
          ELSE
            IF(NL2.LT.17)THEN
-              WRITE(IFIC,2416)(LIGN2(I), I=1,NL)
+              IF (LLAB) WRITE(IFIC,2416)(LIGN2(I), I=1,NL)
               WRITE(IFIC,6416)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
 
            ELSE
-              WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
+              IF (LLAB) WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
               WRITE(IFIC,6424)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
            ENDIF
@@ -195,23 +197,23 @@ C
        
          IF(NL1.LT.17)THEN
            IF(NL2.LT.17)THEN
-              WRITE(IFIC,1616)(LIGN2(I), I=1,NL)
+              IF (LLAB) WRITE(IFIC,1616)(LIGN2(I), I=1,NL)
               WRITE(IFIC,5616)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
 
            ELSE
-              WRITE(IFIC,1624)(LIGN2(I), I=1,NL)
+              IF (LLAB) WRITE(IFIC,1624)(LIGN2(I), I=1,NL)
               WRITE(IFIC,5624)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
            ENDIF
          ELSE
            IF(NL2.LT.17)THEN
-              WRITE(IFIC,2416)(LIGN2(I), I=1,NL)
+              IF (LLAB) WRITE(IFIC,2416)(LIGN2(I), I=1,NL)
               WRITE(IFIC,6416)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
 
            ELSE
-              WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
+              IF (LLAB) WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
               WRITE(IFIC,6424)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
            ENDIF
@@ -300,43 +302,43 @@ C    --- NBREF > 1 N'EST PAS GERE PAR LE SUPERVISEUR...
          IF(NL1.GE.48 .OR. NL2.GE.48 )CALL ASSERT(.FALSE.)
          IF(NL1.LT.24)THEN
             IF(NL2.LT.24)THEN
-               WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
+               IF (LLAB) WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
                WRITE(IFIC,6424)TESTOK,K120,K170,TCHVA2(1),TCHVA2(2),
      &                   TCHERR(1),TCHERR(2)
             ELSEIF(NL2.LT.36)THEN
-               WRITE(IFIC,2436)(LIGN2(I), I=1,NL)
+               IF (LLAB) WRITE(IFIC,2436)(LIGN2(I), I=1,NL)
                WRITE(IFIC,6436)TESTOK,K120,K170,TCHVA2(1),TCHVA2(2),
      &                   TCHERR(1),TCHERR(2)
             ELSE
-               WRITE(IFIC,2448)(LIGN2(I), I=1,NL)
+               IF (LLAB) WRITE(IFIC,2448)(LIGN2(I), I=1,NL)
                WRITE(IFIC,6448)TESTOK,K120,K170,TCHVA2(1),TCHVA2(2),
      &                      TCHERR(1),TCHERR(2)
             ENDIF
          ELSEIF(NL1.LT.36)THEN
             IF(NL2.LT.24)THEN
-               WRITE(IFIC,3624)(LIGN2(I), I=1,NL)
+               IF (LLAB) WRITE(IFIC,3624)(LIGN2(I), I=1,NL)
                WRITE(IFIC,7624)TESTOK,K120,K170,TCHVA2(1),TCHVA2(2),
      &                   TCHERR(1),TCHERR(2)
             ELSEIF(NL2.LT.36)THEN
-               WRITE(IFIC,3636)(LIGN2(I), I=1,NL)
+               IF (LLAB) WRITE(IFIC,3636)(LIGN2(I), I=1,NL)
                WRITE(IFIC,7636)TESTOK,K120,K170,TCHVA2(1),TCHVA2(2),
      &                   TCHERR(1),TCHERR(2)
             ELSE
-               WRITE(IFIC,3648)(LIGN2(I), I=1,NL)
+               IF (LLAB) WRITE(IFIC,3648)(LIGN2(I), I=1,NL)
                WRITE(IFIC,7648)TESTOK,K120,K170,TCHVA2(1),TCHVA2(2),
      &                   TCHERR(1),TCHERR(2)   
             ENDIF
          ELSE
             IF(NL2.LT.24)THEN
-               WRITE(IFIC,4824)(LIGN2(I), I=1,NL)
+               IF (LLAB) WRITE(IFIC,4824)(LIGN2(I), I=1,NL)
                WRITE(IFIC,8824)TESTOK,K120,K170,TCHVA2(1),TCHVA2(2),
      &                   TCHERR(1),TCHERR(2)
             ELSEIF(NL2.LT.36)THEN
-               WRITE(IFIC,4836)(LIGN2(I), I=1,NL)
+               IF (LLAB) WRITE(IFIC,4836)(LIGN2(I), I=1,NL)
                WRITE(IFIC,8836)TESTOK,K120,K170,TCHVA2(1),TCHVA2(2),
      &                   TCHERR(1),TCHERR(2)          
             ELSE
-               WRITE(IFIC,4848)(LIGN2(I), I=1,NL)
+               IF (LLAB) WRITE(IFIC,4848)(LIGN2(I), I=1,NL)
                WRITE(IFIC,8848)TESTOK,K120,K170,TCHVA2(1),TCHVA2(2),
      &                   TCHERR(1),TCHERR(2)                           
             ENDIF

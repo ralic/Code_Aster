@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION EFFET DE MEMOIRE VISC_CIN2_MEMO
 # ssnd111a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -237,65 +237,65 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=42,
 
 
 # test de VISCOCHAB explicite = SIDOLO : non regression
-TEST_FONCTION(VALEUR=_F(FONCTION=f03yE,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=224.30987999999999,
+                        TOLE_MACHINE=1.E-3,
                         VALE_PARA=39.75,
-                        VALE_REFE=224.30988,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-
+                        NOM_PARA='INST',
+                        FONCTION=f03yE,
+                        ),
+              )
 
 # reference= VISCOCHAB explicite = SIDOLO
-TEST_FONCTION(VALEUR=_F(FONCTION=qve,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.8111399999999999E-3,
+                        TOLE_MACHINE=1.E-3,
                         VALE_PARA=40.5,
-                        VALE_REFE=1.81114E-03,
-                        REFERENCE='NON_REGRESSION',),
-                        );
-
+                        NOM_PARA='INST',
+                        FONCTION=qve,
+                        ),
+              )
 
 # test de VISC_CIN2_MEMO
 
 # reference= VISCOCHAB explicite = SIDOLO
-TEST_FONCTION(VALEUR=_F(FONCTION=qvm,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.00179820874103,
+                        VALE_REFE=1.8111399999999999E-3,
                         VALE_PARA=40.5,
-                        VALE_REFE=1.81114E-03,
-                        PRECISION=0.009,
-                        REFERENCE='AUTRE_ASTER',),
-                        );
-
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=8.9999999999999993E-3,
+                        NOM_PARA='INST',
+                        FONCTION=qvm,),
+              )
 
 # reference= VISCOCHAB explicite = SIDOLO
-TEST_FONCTION(VALEUR=_F(FONCTION=f03yM,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=224.034341177,
+                        VALE_REFE=224.30987999999999,
                         VALE_PARA=39.75,
-                        VALE_REFE=224.30988,
-                        PRECISION=0.002,
-                        REFERENCE='AUTRE_ASTER',),
-                        );
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=2.E-3,
+                        NOM_PARA='INST',
+                        FONCTION=f03yM,),
+              )
 
 # test de VISCOCHAB IMPLICITE
 
 # reference= VISCOCHAB explicite = SIDOLO
-TEST_FONCTION(VALEUR=_F(FONCTION=qvi,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.00179539158538,
+                        VALE_REFE=1.8111399999999999E-3,
                         VALE_PARA=40.5,
-                        VALE_REFE=1.81114E-03,
-                        PRECISION=0.01,
-                        REFERENCE='AUTRE_ASTER',),
-                        );
-
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=qvi,),
+              )
 
 # reference= VISCOCHAB explicite = SIDOLO
-TEST_FONCTION(VALEUR=_F(FONCTION=f03yV,
-                        NOM_PARA='INST',
+TEST_FONCTION(VALEUR=_F(VALE_CALC=224.102943242,
+                        VALE_REFE=224.30987999999999,
                         VALE_PARA=39.75,
-                        VALE_REFE=224.30988,
-                        PRECISION=0.002,
-                        REFERENCE='AUTRE_ASTER',),
-                        );
-
-
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=2.E-3,
+                        NOM_PARA='INST',
+                        FONCTION=f03yV,),
+              )
 
 FIN();

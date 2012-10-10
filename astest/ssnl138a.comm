@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE L'ALGORITHME D'OPTIMISATION DE DDL_STAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,19 +123,20 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
 #    TEST DU CRITERE DE STABILITE
 #***********************************************************************
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='CHAR_STAB',
-                  VALE=3.430938E-8,
-                  PRECISION=5.0E-7),
-          );
+                  RESULTAT=EVOL,
+                  VALE_CALC=3.4309380000000002E-08,
+                  TOLE_MACHINE=4.9999999999999998E-07,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PARA='CHAR_STAB',
-                  VALE=-5.598244E-9,
-                  PRECISION=5.0E-7),
+                  RESULTAT=EVOL,
+                  VALE_CALC=-5.5982439999999999E-09,
+                  TOLE_MACHINE=4.9999999999999998E-07,
+                  ),
           )
 
 FIN();
-

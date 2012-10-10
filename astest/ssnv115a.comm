@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 # ssnv115a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,18 +104,26 @@ MACR_ECLA_PG(RESULTAT = CO('U2B'),
 
 #
 
-TEST_RESU(RESU=(
-       _F(  RESULTAT = U2B,    NUME_ORDRE = 1,
-         NOM_CHAM = 'SIEF_ELGA', TYPE_TEST = 'SOMM_ABS',
-         VALE = 4.8662129934030E+04),
-       _F(  RESULTAT = U2B,    NUME_ORDRE = 5,
-         NOM_CHAM = 'SIEF_ELGA', TYPE_TEST = 'SOMM_ABS',
-         VALE = 2.6564696943360E+05),
-       _F(  RESULTAT = U2B,    NUME_ORDRE = 5,
-         NOM_CHAM = 'VARI_ELGA', TYPE_TEST = 'SOMM_ABS',
-         VALE = 5.7249254143005E+02))
-         )
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=U2B,
+                   NOM_CHAM='SIEF_ELGA',
+                   VALE_CALC=4.8662129934030003E4,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=5,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=U2B,
+                   NOM_CHAM='SIEF_ELGA',
+                   VALE_CALC=2.6564696943360002E5,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=5,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=U2B,
+                   NOM_CHAM='VARI_ELGA',
+                   VALE_CALC=572.49254143004998,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
 
 #==============================================================
 # IMPRESSION DU RESULTAT SUR UN BOUT DU MAILLAGE
@@ -140,19 +148,27 @@ U3B=CREA_RESU( OPERATION='ECLA_PG', TYPE_RESU='EVOL_NOLI',
                  )
 #
 
-TEST_RESU(RESU=(
-       _F(  RESULTAT = U3B,    NUME_ORDRE = 1,
-         NOM_CHAM = 'SIEF_ELGA', TYPE_TEST = 'SOMM_ABS',
-         VALE = 4.6550E+02),
-       _F(  RESULTAT = U3B,    NUME_ORDRE = 5,
-         NOM_CHAM = 'SIEF_ELGA', TYPE_TEST = 'SOMM_ABS',
-         VALE = 2.3275E+03),
-       _F(  RESULTAT = U3B,    NUME_ORDRE = 5,
-         NOM_CHAM = 'VARI_ELGA', TYPE_TEST = 'SOMM_ABS',
-         VALE = 0.0000E+00, PRECISION = 0., CRITERE = 'ABSOLU'))
-         )
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=U3B,
+                   NOM_CHAM='SIEF_ELGA',
+                   VALE_CALC=465.5,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=5,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=U3B,
+                   NOM_CHAM='SIEF_ELGA',
+                   VALE_CALC=2327.5,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=5,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=U3B,
+                   NOM_CHAM='VARI_ELGA',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
 
 #==============================================================
 
@@ -181,15 +197,24 @@ U2=STAT_NON_LINE( reuse=U2,
 U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2,NUME_ORDRE=(6,7,8,9,10))
 
 
-TEST_RESU(RESU=(
-
-    _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'SIGM_ELNO',
-    MAILLE = 'M1', NOEUD = 'N249',    NOM_CMP = 'SIXX',   VALE = 98.453),
-    _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'VARI_ELNO',
-    MAILLE = 'M13', NOEUD = 'N226',    NOM_CMP = 'V1',    VALE = 0.17870))
-    )
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N249',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=98.453000000000003,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=10,
+                   RESULTAT=U2,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N226',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.1787,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M13',),
+                ),
+          )
 
 FIN()
 #

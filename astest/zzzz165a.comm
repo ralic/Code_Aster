@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LIRE_RESU / FORMAT='IDEAS'
 # zzzz165a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,18 +37,36 @@ RESU=LIRE_RESU(  MODELE=MO,  FORMAT='IDEAS',  TYPE_RESU='EVOL_NOLI',  NB_VARI=1,
                      NOM_CMP=('V1',),  POSI_INST=(8,1), RECORD_6=(1,1,3,0,2,6) ,),
                   ))
 
-TEST_RESU(RESU=_F( RESULTAT = RESU,NUME_ORDRE = 1,NOM_CHAM='DEPL',
-                   NOEUD='N12',NOM_CMP='DX',VALE = 7.5E-1,
-                   REFERENCE='ANALYTIQUE') )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N12',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.750000000,
+                  VALE_REFE=0.75,),
+          )
 
-TEST_RESU(RESU=_F( RESULTAT = RESU,NUME_ORDRE = 1,NOM_CHAM='VARI_ELNO',
-                   MAILLE='M1',NOEUD='N3',NOM_CMP='V1',VALE = 5.0E-1,
-                   REFERENCE='ANALYTIQUE') )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='VARI_ELNO',
+                  NOEUD='N3',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.500000000,
+                  VALE_REFE=0.5,
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F( RESULTAT = RESU,NUME_ORDRE = 1,NOM_CHAM='VARI_ELNO',
-                   MAILLE='M1',NOEUD='N4',NOM_CMP='V1',VALE = 1.0E0,
-                   REFERENCE='ANALYTIQUE') )
-
-
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='VARI_ELNO',
+                  NOEUD='N4',
+                  NOM_CMP='V1',
+                  VALE_CALC=1.000000000,
+                  VALE_REFE=1.0,
+                  MAILLE='M1',),
+          )
 
 FIN()

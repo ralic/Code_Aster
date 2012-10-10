@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
 # sdll135d.para = tps_job 2770 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,75 +118,87 @@ DYNATRAF=CALC_CHAMP(reuse =DYNATRAF,
 
 # TEST SUR LES DEPLACEMENTS
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
-                 NUME_ORDRE=10,
-                 NOM_CHAM='DEPL',
-                 NOM_CMP='DX',
-                 GROUP_NO='B',
-                 PRECISION=0.002,
-                 REFERENCE='ANALYTIQUE',
-                 VALE=2.59473227925e-10,),);
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAF,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC= 2.59863208E-10,
+                  VALE_REFE=2.5947322792500001E-10,
+                  PRECISION=2.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
-                 NUME_ORDRE=15,
-                 NOM_CHAM='DEPL',
-                 NOM_CMP='DX',
-                 GROUP_NO='B',
-                 PRECISION=0.01,
-                 REFERENCE='ANALYTIQUE',
-                 VALE=3.89209841887e-10,),);
+TEST_RESU(RESU=_F(NUME_ORDRE=15,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAF,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC= 3.92364792E-10,
+                  VALE_REFE=3.8920984188699999E-10,
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
-                 NUME_ORDRE=20,
-                 NOM_CHAM='DEPL',
-                 NOM_CMP='DX',
-                 PRECISION=0.003,
-                 GROUP_NO='B',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=5.18946455848e-10,),);
-
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAF,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC= 5.17791127E-10,
+                  VALE_REFE=5.18946455848E-10,
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
 # TEST SUR LES REACTIONS NODALES
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
-                 NUME_ORDRE=10,
-                 NOM_CHAM='REAC_NODA',
-                 NOM_CMP='DX',
-                 GROUP_NO='A',
-                 CRITERE='ABSOLU',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=0.,),);
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAF,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  VALE_CALC= 2.30477855E-75,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
-                 NUME_ORDRE=15,
-                 NOM_CHAM='REAC_NODA',
-                 NOM_CMP='DX',
-                 GROUP_NO='A',
-                 CRITERE='ABSOLU',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=0.,),);
+TEST_RESU(RESU=_F(NUME_ORDRE=15,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAF,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  VALE_CALC= 4.26026589E-13,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
-                 NUME_ORDRE=20,
-                 NOM_CHAM='REAC_NODA',
-                 NOM_CMP='DX',
-                 GROUP_NO='A',
-                 PRECISION=0.07,
-                 REFERENCE='ANALYTIQUE',
-                 VALE=-1.99999819062,),);
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  GROUP_NO='A',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAF,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.876031799,
+                  VALE_REFE=-1.9999981906199999,
+                  PRECISION=0.070000000000000007,),
+          )
 
 # CE TEST VALIDE LA CONTRIBUTION DE M_GAMMA DANS LES REACTIONS NODALES
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAF,
-                 NUME_ORDRE=20,
-                 NOM_CHAM='REAC_NODA',
-                 NOM_CMP='DX',
-                 GROUP_NO='B',
-                 PRECISION=1E-3,
-                 CRITERE='ABSOLU',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=0.,),);
-
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAF,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.08456038E-12,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-3,),
+          )
 
 MODE_TRA=MODE_ITER_INV(MATR_RIGI=RIGID,
                   MATR_MASS=MASSE,
@@ -195,38 +207,46 @@ MODE_TRA=MODE_ITER_INV(MATR_RIGI=RIGID,
                   FREQ=(1263.497,3790.49,6317.484,8844.4477),),);
 
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_TRA,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
-                  NUME_ORDRE=1,
-                  PRECISION=0.003,
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE=1263.497),);
+                  RESULTAT=MODE_TRA,
+                  VALE_CALC= 1.26018053E+03,
+                  VALE_REFE=1263.4970000000001,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
 # FREQUENCES DES MODES DE TRACTIONS-COMPRESSIONS ( COMPARAISON AVEC DES POUTRES )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_TRA,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PARA='FREQ',
-                  NUME_ORDRE=2,
-                  PRECISION=0.003,
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE=3790.49,),);
+                  RESULTAT=MODE_TRA,
+                  VALE_CALC= 3.79540025E+03,
+                  VALE_REFE=3790.4899999999998,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_TRA,
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   PARA='FREQ',
-                  NUME_ORDRE=3,
-                  PRECISION=0.003,
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE=6317.484),);
+                  RESULTAT=MODE_TRA,
+                  VALE_CALC= 6.31132525E+03,
+                  VALE_REFE=6317.4840000000004,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_TRA,
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   PARA='FREQ',
-                  NUME_ORDRE=4,
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE=8844.4477),);
+                  RESULTAT=MODE_TRA,
+                  VALE_CALC= 8.84055810E+03,
+                  VALE_REFE=8844.4477000000006,
+                  CRITERE='RELATIF',),
+          )
 
 # FREQUENCES DES MODES DE FLEXIONS ( COMPARAISON AVEC POU_D_T )
 
@@ -237,47 +257,55 @@ MODE_FLE=MODE_ITER_INV(MATR_RIGI=RIGID,
                   FREQ=(269.932,1077.199,2270.705,3249.207,4649.212),),);
 
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_FLE,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
-                  NUME_ORDRE=1,
-                  PRECISION=0.03,
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE=269.932),);
+                  RESULTAT=MODE_FLE,
+                  VALE_CALC=275.856621949,
+                  VALE_REFE=269.93200000000002,
+                  CRITERE='RELATIF',
+                  PRECISION=0.029999999999999999,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_FLE,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PARA='FREQ',
-                  NUME_ORDRE=2,
-                  PRECISION=0.05,
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE=1077.199,),);
+                  RESULTAT=MODE_FLE,
+                  VALE_CALC= 1.12914198E+03,
+                  VALE_REFE=1077.1990000000001,
+                  CRITERE='RELATIF',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_FLE,
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   PARA='FREQ',
-                  NUME_ORDRE=3,
-                  PRECISION=0.04,
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE=2270.705),);
+                  RESULTAT=MODE_FLE,
+                  VALE_CALC= 2.27323262E+03,
+                  VALE_REFE=2270.7049999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=0.040000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_FLE,
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   PARA='FREQ',
-                  NUME_ORDRE=4,
-                  PRECISION=0.02,
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE=3249.207),);
+                  RESULTAT=MODE_FLE,
+                  VALE_CALC= 3.27668248E+03,
+                  VALE_REFE=3249.2069999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_FLE,
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   PARA='FREQ',
-                  NUME_ORDRE=5,
-                  PRECISION=0.005,
-                  CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE=4649.212),);
-
-
+                  RESULTAT=MODE_FLE,
+                  VALE_CALC= 4.66658046E+03,
+                  VALE_REFE=4649.2120000000004,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
 MODE_TOR=MODE_ITER_INV(MATR_RIGI=RIGID,
                   MATR_MASS=MASSE,
@@ -288,33 +316,41 @@ MODE_TOR=MODE_ITER_INV(MATR_RIGI=RIGID,
 
 # FREQUENCES DES MODES DE TORSION ( COMPARAISON AVEC DES POUTRES )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_TOR,
-                 PARA='FREQ',
-                 NUME_ORDRE=1,
-                 CRITERE='RELATIF',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=786.619),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODE_TOR,
+                  VALE_CALC=786.618709954,
+                  VALE_REFE=786.61900000000003,
+                  CRITERE='RELATIF',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_TOR,
-                 PARA='FREQ',
-                 NUME_ORDRE=2,
-                 CRITERE='RELATIF',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=2359.856,),);
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODE_TOR,
+                  VALE_CALC= 2.35985613E+03,
+                  VALE_REFE=2359.8560000000002,
+                  CRITERE='RELATIF',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_TOR,
-                 PARA='FREQ',
-                 NUME_ORDRE=3,
-                 CRITERE='RELATIF',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=3933.094,),);
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODE_TOR,
+                  VALE_CALC= 3.93309355E+03,
+                  VALE_REFE=3933.0940000000001,
+                  CRITERE='RELATIF',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=MODE_TOR,
-                 PARA='FREQ',
-                 NUME_ORDRE=4,
-                 CRITERE='RELATIF',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=5506.331),);
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MODE_TOR,
+                  VALE_CALC= 5.50633098E+03,
+                  VALE_REFE=5506.3310000000001,
+                  CRITERE='RELATIF',),
+          )
 
 # CALCUL DYNAMIQUE AVEC APPLICATION D UNE TORSION
 
@@ -347,80 +383,96 @@ DYNATRAM=CALC_CHAMP(reuse =DYNATRAM,
 
 # TEST SUR LES DEPLACEMENTS
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAM,
-                  NUME_ORDRE=5,
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  GROUP_NO='B',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAM,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRX',
-                  GROUP_NO='B',
-                  VALE=8.66477582461e-09,
-                  REFERENCE='ANALYTIQUE',
-                  PRECISION=0.002,),);
+                  VALE_CALC= 8.65593653E-09,
+                  VALE_REFE=8.6647758246099995E-09,
+                  PRECISION=2.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAM,
-                  NUME_ORDRE=10,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DRX',
-                  PRECISION=0.0015,
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   GROUP_NO='B',
                   REFERENCE='ANALYTIQUE',
-                  VALE=1.73295916526e-08,),);
+                  RESULTAT=DYNATRAM,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DRX',
+                  VALE_CALC= 1.73310015E-08,
+                  VALE_REFE=1.7329591652600001E-08,
+                  PRECISION=1.5E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAM,
-                  NUME_ORDRE=20,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DRX',
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   GROUP_NO='B',
                   REFERENCE='ANALYTIQUE',
-                  VALE=3.46591033075e-08,),);
+                  RESULTAT=DYNATRAM,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DRX',
+                  VALE_CALC= 3.46772902E-08,
+                  VALE_REFE=3.4659103307500001E-08,),
+          )
 
 # TEST SUR LES REACTIONS NODALES
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAM,
-                  NUME_ORDRE=10,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DRX',
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   GROUP_NO='A',
-                  VALE=0.0,
                   REFERENCE='ANALYTIQUE',
-                  CRITERE='ABSOLU',),);
-
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAM,
-                  NUME_ORDRE=15,
+                  RESULTAT=DYNATRAM,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRX',
+                  VALE_CALC=-1.15256924E-179,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=15,
                   GROUP_NO='A',
-                  VALE=0.0,
                   REFERENCE='ANALYTIQUE',
-                  CRITERE='ABSOLU',),);
-
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAM,
-                  NUME_ORDRE=20,
+                  RESULTAT=DYNATRAM,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRX',
+                  VALE_CALC= 1.27512764E-87,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   GROUP_NO='A',
-                  VALE=0.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAM,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DRX',
+                  VALE_CALC=-2.94565529E-30,
+                  VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=0.05,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAM,
-                  NUME_ORDRE=32,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DRX',
+TEST_RESU(RESU=_F(NUME_ORDRE=32,
                   GROUP_NO='A',
-                  VALE=-2.00000001424,
-                  PRECISION=0.05,
-                  REFERENCE='ANALYTIQUE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAM,
-                  NUME_ORDRE=32,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAM,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRX',
+                  VALE_CALC=-2.074219748,
+                  VALE_REFE=-2.0000000142399998,
+                  PRECISION=0.050000000000000003,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=32,
                   GROUP_NO='B',
-                  VALE=0.,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=DYNATRAM,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DRX',
+                  VALE_CALC= 5.83721006E-12,
+                  VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=1E-5,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.0000000000000001E-05,),
+          )
 
 FIN();
 

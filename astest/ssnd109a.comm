@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION MONOCRISTAL CHARGEMENT CYCLIQUE
 # ssnd109a.para = tps_job 150 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,80 +170,106 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 INST = 0.5;
 
 
-TEST_FONCTION(VALEUR=_F(FONCTION=EPS2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.002,
+                        VALE_REFE=2.E-3,
+                        VALE_PARA=0.5,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=INST,
-                        VALE_REFE=0.002,
-                        REFERENCE='ANALYTIQUE',),);
+                        FONCTION=EPS2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=SIG1,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=156.114553295,
+                        VALE_REFE=156.11500000000001,
+                        VALE_PARA=0.5,
+                        REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',
-                        VALE_PARA=INST,
-                        VALE_REFE=156.115,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        FONCTION=SIG1,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=SIG2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=156.210724634,
+                        VALE_REFE=156.11500000000001,
+                        VALE_PARA=0.5,
+                        REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',
-                        VALE_PARA=INST,
-                        VALE_REFE=156.115,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        FONCTION=SIG2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=SIG3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=156.210724634,
+                        VALE_REFE=156.11500000000001,
+                        VALE_PARA=0.5,
+                        REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',
-                        VALE_PARA=INST,
-                        VALE_REFE=156.115,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        FONCTION=SIG3,),
+              )
+
 INST = 1.5;
 
 
-TEST_FONCTION(VALEUR=_F(FONCTION=EPS2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.002,
+                        VALE_REFE=-2.E-3,
+                        VALE_PARA=1.5,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=INST,
-                        VALE_REFE=-0.002,
-                        REFERENCE='ANALYTIQUE',),);
+                        FONCTION=EPS2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=SIG1,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-163.886054826,
                         VALE_REFE=-163.886,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        VALE_PARA=1.5,
+                        REFERENCE='SOURCE_EXTERNE',
+                        NOM_PARA='INST',
+                        FONCTION=SIG1,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=SIG2,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-163.973873214,
                         VALE_REFE=-163.886,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        VALE_PARA=1.5,
+                        REFERENCE='SOURCE_EXTERNE',
+                        NOM_PARA='INST',
+                        FONCTION=SIG2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=SIG3,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-163.973873214,
                         VALE_REFE=-163.886,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        VALE_PARA=1.5,
+                        REFERENCE='SOURCE_EXTERNE',
+                        NOM_PARA='INST',
+                        FONCTION=SIG3,),
+              )
+
 INST = 2.5;
 
 
-TEST_FONCTION(VALEUR=_F(FONCTION=EPS2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.002,
+                        VALE_REFE=2.E-3,
+                        VALE_PARA=2.5,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=INST,
-                        VALE_REFE=0.002,
-                        REFERENCE='ANALYTIQUE',),);
+                        FONCTION=EPS2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=SIG1,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=163.181774631,
+                        VALE_REFE=163.18199999999999,
+                        VALE_PARA=2.5,
+                        REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',
-                        VALE_PARA=INST,
-                        VALE_REFE=163.182,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        FONCTION=SIG1,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=SIG2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=163.280596719,
+                        VALE_REFE=163.18199999999999,
+                        VALE_PARA=2.5,
+                        REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',
-                        VALE_PARA=INST,
-                        VALE_REFE=163.182,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        FONCTION=SIG2,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=SIG3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=163.280596719,
+                        VALE_REFE=163.18199999999999,
+                        VALE_PARA=2.5,
+                        REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',
-                        VALE_PARA=INST,
-                        VALE_REFE=163.182,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        FONCTION=SIG3,),
+              )
 
 FIN();

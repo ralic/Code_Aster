@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHAUFFAGE D UN MILIEU POREUX DESATURE AVEC AIR DISSOUS
 # wtnv130a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -216,57 +216,64 @@ U0=CALC_CHAMP(reuse=U0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESUL
 
 
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
+                  NOEUD='N1',
                   NOM_CMP='TEMP',
-                  NOEUD='N1',
-                  VALE=0.216,
+                  VALE_CALC=0.215832098,
+                  VALE_REFE=0.216,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
+                  NOEUD='N1',
                   NOM_CMP='PRE1',
-                  NOEUD='N1',
-                  VALE=14.9E4,
+                  VALE_CALC= 1.49927748E+05,
+                  VALE_REFE=1.49000E5,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE2',
                   NOEUD='N1',
-                  VALE=113.,
+                  NOM_CMP='PRE2',
+                  VALE_CALC=110.207135421,
+                  VALE_REFE=113.0,
                   CRITERE='RELATIF',
-                  PRECISION=0.05,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE2',
                   NOEUD='N1',
-                  VALE=110.21,
+                  NOM_CMP='PRE2',
+                  VALE_CALC=110.20999999999999,
+                  TOLE_MACHINE=1.E-4,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-4,
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
                   NOM_CHAM='VARI_ELNO',
-                  NOM_CMP='V3',
                   NOEUD='N1',
-                  MAILLE='M1',
-                  VALE=44.,
+                  NOM_CMP='V3',
+                  VALE_CALC=44.245668923,
+                  VALE_REFE=44.0,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  REFERENCE='ANALYTIQUE',),);
-
-
+                  MAILLE='M1',),
+          )
 
 FIN();
-

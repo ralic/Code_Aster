@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FORMATION AVANCEE CONTACT DE HERTZ
 # forma04a.para = tps_job 60 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -136,25 +136,28 @@ PRES_sol=CALC_FONC_INTERP(FONCTION=PRES,
 
 # -- Validation des resultats
 
-TEST_RESU(RESU=_F(RESULTAT=STNL,
+TEST_RESU(RESU=_F(GROUP_NO='C1',
                   INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=STNL,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='C1',
-                  VALE=p0,
+                  VALE_CALC=-2.77354741E+03,
+                  VALE_REFE=-2798.3286697476105,
                   CRITERE='RELATIF',
-                  PRECISION=0.01,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=STNL,
+TEST_RESU(RESU=_F(GROUP_NO='C1',
                   INST=1.0,
+                  RESULTAT=STNL,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='C1',
-                  VALE=-2773.5474109439,
+                  VALE_CALC=-2773.5474109439001,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  VERSION='11.0.25',
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
 # -- Impressions des resultats
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE REPONSE TEMPORELLE D'UNE POUTRE
 # sdll302b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -343,263 +343,308 @@ P1_DY1=RECU_FONCTION(      RESULTAT=REP_LIN1,
 #
 # TEST_RESU : MODES PROPRES
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.01,
-                   NUME_ORDRE = 1,
-                   VALE = 4.60)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=4.635170405,
+                  VALE_REFE=4.5999999999999996,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.005,
-                   NUME_ORDRE = 2,
-                   VALE = 12.78)
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=12.772078634,
+                  VALE_REFE=12.779999999999999,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.001,
-                   NUME_ORDRE = 3,
-                   VALE = 25.05)
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=25.050000000000001,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='RELATIF',
+                  ),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.002,
-                   NUME_ORDRE = 4,
-                   VALE = 41.42)
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=41.346406106,
+                  VALE_REFE=41.420000000000002,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.003,
-                   NUME_ORDRE = 5,
-                   VALE = 61.87)
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=61.728538887,
+                  VALE_REFE=61.869999999999997,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
           )
 
 #
-TEST_RESU(  RESU=_F( RESULTAT = MODE1,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   PRECISION = 0.003,
-                   NUME_ORDRE = 6,
-                   VALE = 86.42)
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
+                  PARA='FREQ',
+                  RESULTAT=MODE1,
+                  VALE_CALC=86.169083945,
+                  VALE_REFE=86.420000000000002,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
           )
 
 #
 # DEPLACEMENTS ABSOLUS SUIVANT Y
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 11,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.264312399999999973E-03,
-                    PRECISION = 0.004)
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-2.63454721E-04,
+                  VALE_REFE=-2.6431239999999997E-4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=4.0000000000000001E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 21,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.118539259999999994E-02,
-                    PRECISION = 0.005)
+TEST_RESU(RESU=_F(NUME_ORDRE=21,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.19063422E-03,
+                  VALE_REFE=-1.1853925999999999E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=5.0000000000000001E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 31,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.523875000000000035E-03,
-                    PRECISION = 0.008)
+TEST_RESU(RESU=_F(NUME_ORDRE=31,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.19922136E-04,
+                  VALE_REFE=-5.2387500000000004E-4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=8.0000000000000002E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 41,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.219242640000000006E-02,
-                    PRECISION = 0.002)
+TEST_RESU(RESU=_F(NUME_ORDRE=41,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-2.19669098E-03,
+                  VALE_REFE=-2.1924264000000001E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 51,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    CRITERE = 'ABSOLU',
-                    VALE = 0.252394720000000019E-03,
-                    PRECISION = 1.E-06)
+TEST_RESU(RESU=_F(NUME_ORDRE=51,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=2.5239472000000002E-4,
+                  
+                  CRITERE='ABSOLU',
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 61,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.146029679999999987E-02,
-                    PRECISION = 0.004)
+TEST_RESU(RESU=_F(NUME_ORDRE=61,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.46593029E-03,
+                  VALE_REFE=-1.4602967999999999E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=4.0000000000000001E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 71,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    CRITERE = 'ABSOLU',
-                    VALE = 0.238285020000000001E-03,
-                    PRECISION = 1.E-05)
+TEST_RESU(RESU=_F(NUME_ORDRE=71,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=2.3828502E-4,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='ABSOLU',
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 81,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.259079999999999987E-02,
-                    PRECISION = 0.002)
+TEST_RESU(RESU=_F(NUME_ORDRE=81,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-2.58669333E-03,
+                  VALE_REFE=-2.5907999999999999E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 91,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.360679999999999942E-02,
-                    PRECISION = 0.004)
+TEST_RESU(RESU=_F(NUME_ORDRE=91,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-3.59380771E-03,
+                  VALE_REFE=-3.6067999999999994E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=4.0000000000000001E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 101,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.111683799999999986E-01,
-                    PRECISION = 0.0001)
+TEST_RESU(RESU=_F(NUME_ORDRE=101,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.011168379999999999,
+                  TOLE_MACHINE=1.E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 111,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.477773999999999994E-02,
-                    PRECISION = 0.002)
+TEST_RESU(RESU=_F(NUME_ORDRE=111,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-4.76902254E-03,
+                  VALE_REFE=-4.7777399999999999E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 121,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.151688799999999974E-01,
-                    PRECISION = 0.0002)
+TEST_RESU(RESU=_F(NUME_ORDRE=121,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.015168879999999997,
+                  TOLE_MACHINE=2.0000000000000001E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 131,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.358139999999999934E-02,
-                    PRECISION = 0.002)
+TEST_RESU(RESU=_F(NUME_ORDRE=131,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-3.57731106E-03,
+                  VALE_REFE=-3.5813999999999993E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 141,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.120675399999999999E-01,
-                    PRECISION = 0.0006)
+TEST_RESU(RESU=_F(NUME_ORDRE=141,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-0.01206754,
+                  TOLE_MACHINE=5.9999999999999995E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 151,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    CRITERE = 'ABSOLU',
-                    VALE = 0.432511200000000021E-03,
-                    PRECISION = 3.E-05)
+TEST_RESU(RESU=_F(NUME_ORDRE=151,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=4.3251120000000002E-4,
+                  TOLE_MACHINE=3.0000000000000001E-05,
+                  CRITERE='ABSOLU',
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 161,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.917193999999999822E-02,
-                    PRECISION = 0.003)
+TEST_RESU(RESU=_F(NUME_ORDRE=161,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-9.14581268E-03,
+                  VALE_REFE=-9.1719399999999982E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=3.0000000000000001E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 171,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.143304259999999981E-02,
-                    PRECISION = 0.025)
+TEST_RESU(RESU=_F(NUME_ORDRE=171,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.46814042E-03,
+                  VALE_REFE=-1.4330425999999998E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.025000000000000001,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 181,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.735584000000000064E-02,
-                    PRECISION = 0.009)
+TEST_RESU(RESU=_F(NUME_ORDRE=181,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-7.29583883E-03,
+                  VALE_REFE=-7.3558400000000006E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=8.9999999999999993E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 191,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -0.662686000000000004E-02,
-                    PRECISION = 0.009)
+TEST_RESU(RESU=_F(NUME_ORDRE=191,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-6.68201609E-03,
+                  VALE_REFE=-6.62686E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=8.9999999999999993E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN1,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 200,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    CRITERE = 'ABSOLU',
-                    VALE = -0.350774000000000008E-02,
-                    PRECISION = 3.E-03)
+TEST_RESU(RESU=_F(NUME_ORDRE=200,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.78159783E-03,
+                  VALE_REFE=-3.5077400000000001E-3,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='ABSOLU',
+                  PRECISION=3.0000000000000001E-3,),
           )
 
 #
@@ -640,203 +685,234 @@ P1_DY2=RECU_FONCTION(    RESULTAT=REP_LIN2,
                           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 5,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 2.910E-4,
-                    PRECISION = 0.0004)
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=2.9100000000000003E-4,
+                  TOLE_MACHINE=4.0000000000000002E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 10,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -6.6806E-4,
-                    PRECISION = 0.002)
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-6.69205972E-04,
+                  VALE_REFE=-6.6806000000000005E-4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 15,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 7.237E-4,
-                    PRECISION = 0.0003)
+TEST_RESU(RESU=_F(NUME_ORDRE=15,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=7.2369999999999997E-4,
+                  TOLE_MACHINE=2.9999999999999997E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 20,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -1.143E-3,
-                    PRECISION = 0.001)
+TEST_RESU(RESU=_F(NUME_ORDRE=20,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.1429999999999999E-3,
+                  TOLE_MACHINE=1.E-3,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 25,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 9.096E-4,
-                    PRECISION = 0.0015)
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC= 9.10622139E-04,
+                  VALE_REFE=9.0959999999999999E-4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=1.5E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 30,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -1.292E-3,
-                    PRECISION = 0.0005)
+TEST_RESU(RESU=_F(NUME_ORDRE=30,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.292E-3,
+                  TOLE_MACHINE=5.0000000000000001E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 35,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 1.630E-3,
-                    PRECISION = 0.0007)
+TEST_RESU(RESU=_F(NUME_ORDRE=35,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=1.6299999999999999E-3,
+                  TOLE_MACHINE=6.9999999999999999E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 40,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -4.848E-4,
-                    PRECISION = 0.006)
+TEST_RESU(RESU=_F(NUME_ORDRE=40,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-4.87366834E-04,
+                  VALE_REFE=-4.8480000000000002E-4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=6.0000000000000001E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 45,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 2.199E-3,
-                    PRECISION = 0.0006)
+TEST_RESU(RESU=_F(NUME_ORDRE=45,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=2.199E-3,
+                  TOLE_MACHINE=5.9999999999999995E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 50,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -3.332E-3,
-                    PRECISION = 0.0006)
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-3.3319999999999999E-3,
+                  TOLE_MACHINE=5.9999999999999995E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 55,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 4.609E-3,
-                    PRECISION = 0.0015)
+TEST_RESU(RESU=_F(NUME_ORDRE=55,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC= 4.61502046E-03,
+                  VALE_REFE=4.6090000000000002E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=1.5E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 60,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -5.077E-3,
-                    PRECISION = 0.0006)
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.0769999999999999E-3,
+                  TOLE_MACHINE=5.9999999999999995E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 65,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 5.341E-3,
-                    PRECISION = 0.0018)
+TEST_RESU(RESU=_F(NUME_ORDRE=65,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC= 5.34933713E-03,
+                  VALE_REFE=5.3410000000000003E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=1.8E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 70,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -5.752E-3,
-                    PRECISION = 0.0015)
+TEST_RESU(RESU=_F(NUME_ORDRE=70,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-5.76042954E-03,
+                  VALE_REFE=-5.7520000000000002E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=1.5E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 75,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 4.971E-3,
-                    PRECISION = 0.0008)
+TEST_RESU(RESU=_F(NUME_ORDRE=75,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=4.9709999999999997E-3,
+                  TOLE_MACHINE=8.0000000000000004E-4,
+                  ),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 80,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -4.571E-3,
-                    PRECISION = 0.0025)
+TEST_RESU(RESU=_F(NUME_ORDRE=80,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-4.58185446E-03,
+                  VALE_REFE=-4.5710000000000004E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.5000000000000001E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 85,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 3.426E-3,
-                    PRECISION = 0.0027)
+TEST_RESU(RESU=_F(NUME_ORDRE=85,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC= 3.43473115E-03,
+                  VALE_REFE=3.4259999999999998E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.7000000000000001E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 90,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -1.044E-3,
-                    PRECISION = 0.0065)
+TEST_RESU(RESU=_F(NUME_ORDRE=90,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.05061867E-03,
+                  VALE_REFE=-1.044E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=6.4999999999999997E-3,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 95,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = -4.349E-4,
-                    PRECISION = 0.03)
+TEST_RESU(RESU=_F(NUME_ORDRE=95,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-4.22677168E-04,
+                  VALE_REFE=-4.349E-4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.029999999999999999,),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = REP_LIN2,
-                    NOM_CHAM = 'DEPL',
-                    NUME_ORDRE = 100,
-                    GROUP_NO = 'P1',
-                    NOM_CMP = 'DY',
-                    VALE = 1.955E-3,
-                    PRECISION = 0.006)
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  GROUP_NO='P1',
+                  RESULTAT=REP_LIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC= 1.94466972E-03,
+                  VALE_REFE=1.9550000000000001E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=6.0000000000000001E-3,),
           )
 
 #

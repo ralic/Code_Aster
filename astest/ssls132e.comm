@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE CONSOLE EN FLEXION TRIA3 GRILLE_EXCENTREE PRE_EPSI
 # ssls132e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -190,18 +190,17 @@ TAB = POST_RELEVE_T(
                NOM_CMP = 'DX'))
 
 #IMPR_TABLE(TABLE = TAB)
-TEST_TABLE(
-     TABLE = TAB,
-     NOM_PARA = 'DX',
-     FILTRE = (_F(
-         NOM_PARA = 'QUANTITE',
-         VALE_K   = 'MOMENT_0' ,
-         ),
-         _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
-     VALE = .1,
-     REFERENCE = 'ANALYTIQUE'
-  )
-
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.100000000,
+           VALE_REFE=0.10000000000000001,
+           NOM_PARA='DX',
+           TABLE=TAB,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                      VALE_K='MOMENT_0',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
 
 FIN()
 #

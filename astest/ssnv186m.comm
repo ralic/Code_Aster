@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 # ssnv186m.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,39 +141,41 @@ LAREF=-9.52844E6
 # LA2REF EST LA SOLUTION ANALYTIQUE (PAS DE FROTTEMENT AU POINT MILIEU)
 LA2REF=0.
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=-9.528440E6,
+           TOLE_MACHINE=5.0000000000000001E-4,
            NOM_PARA='LAGS_C',
-           FILTRE=(_F(NOM_PARA='COOR_X',
-                      CRIT_COMP='EQ',
-                      VALE=0.),
-                   _F(NOM_PARA='COOR_Y',
-                      CRIT_COMP='EQ',
-                      VALE=10.),
-                   _F(NOM_PARA='COOR_Z',
-                     CRIT_COMP='EQ',
-                     VALE=17.5),
-                  ),
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=0.0005,
-           REFERENCE='NON_REGRESSION');
+           TABLE=LAG,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_X',
+                      VALE=0.0,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_Y',
+                      VALE=10.0,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_Z',
+                      VALE=17.5,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=-2.77088851E-03,
+           VALE_REFE=0.0,
            NOM_PARA='LAGS_F2',
-           FILTRE=(_F(NOM_PARA='COOR_X',
-                      CRIT_COMP='EQ',
-                      VALE=0.),
-                   _F(NOM_PARA='COOR_Y',
-                      CRIT_COMP='EQ',
-                      VALE=10.),
-                   _F(NOM_PARA='COOR_Z',
-                     CRIT_COMP='EQ',
-                     VALE=17.5),
-                  ),
-           VALE=LA2REF,
-           CRITERE='ABSOLU',
-           PRECISION=5.E-3,
-           REFERENCE='ANALYTIQUE');
+           TABLE=LAG,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_X',
+                      VALE=0.0,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_Y',
+                      VALE=10.0,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_Z',
+                      VALE=17.5,),
+                   ),
+           )
 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
@@ -198,4 +200,3 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MA00,
 
 
 FIN();
-

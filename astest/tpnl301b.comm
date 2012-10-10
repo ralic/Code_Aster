@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE THERMO-HYDRATATION D'UN CYLINDRE DE BETON 3D HEXA20 PENTA15 TETRA10
 # tpnl301b.para = tps_job 1000 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -189,19 +189,20 @@ TT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                            GROUP_NO='X205',
                            TOUT_CMP='OUI',),);
 
-TEST_TABLE(TABLE=TT,
-           TYPE_TEST='MAX',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.089999999999999997,
+           VALE_CALC=52.841997664,
+           VALE_REFE=48.8675,
            NOM_PARA='TEMP',
-           VALE=48.8675,
-           PRECISION=0.09,
-           REFERENCE='ANALYTIQUE',);
+           TYPE_TEST='MAX',
+           TABLE=TT,)
 
-TEST_TABLE(TABLE=TT,
-           TYPE_TEST='MAX',
+TEST_TABLE(
+           VALE_CALC=52.841997664284179,
            NOM_PARA='TEMP',
-           VALE=52.84199766428418,
-           PRECISION=1e-9,REFERENCE='NON_REGRESSION',
-           );
+           TYPE_TEST='MAX',
+           TABLE=TT,
+           )
 
 TM1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='EXTR',
@@ -221,45 +222,49 @@ T1m=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                NOM_CHAM='TEMP',
                INST=t730h,);
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=TM1,
-                      GROUP_NO='X205',
+TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='TEMP',
-                      VALE=27.3475,
-                      PRECISION=0.01,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(CHAM_GD=T5j,
                       GROUP_NO='X205',
+                      PRECISION=1.E-2,
+                      CHAM_GD=TM1,
+                      VALE_CALC=27.549462837,
+                      VALE_REFE=27.3475,),
+                   _F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='TEMP',
-                      VALE=48.7091,
-                      PRECISION=0.07,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(CHAM_GD=T1m,
                       GROUP_NO='X205',
+                      PRECISION=0.070000000000000007,
+                      CHAM_GD=T5j,
+                      VALE_CALC=52.007430137,
+                      VALE_REFE=48.709099999999999,),
+                   _F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='TEMP',
-                      VALE=27.7116,
-                      PRECISION=0.01,
-                      REFERENCE='ANALYTIQUE',),),);
+                      GROUP_NO='X205',
+                      PRECISION=1.E-2,
+                      CHAM_GD=T1m,
+                      VALE_CALC=27.962424044,
+                      VALE_REFE=27.711600000000001,),
+                   ),
+          )
 
 #Tests de non-regression (version 10.1)
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=TM1,
-                      GROUP_NO='X205',
+TEST_RESU(CHAM_NO=(_F(
                       NOM_CMP='TEMP',
-                      VALE=27.54946283652023,PRECISION=1e-9,
-                      REFERENCE='NON_REGRESSION',
-                      ),
-                   _F(CHAM_GD=T5j,
                       GROUP_NO='X205',
+                      CHAM_GD=TM1,
+                      VALE_CALC=27.549462836520231,),
+                   _F(
                       NOM_CMP='TEMP',
-                      VALE=52.00743013728701,PRECISION=1e-9,
-                      REFERENCE='NON_REGRESSION',
-                      ),
-                   _F(CHAM_GD=T1m,
                       GROUP_NO='X205',
+                      CHAM_GD=T5j,
+                      VALE_CALC=52.00743013728701,),
+                   _F(
                       NOM_CMP='TEMP',
-                      VALE=27.96242404402024,PRECISION=1e-9,
-                      REFERENCE='NON_REGRESSION',
-                      ),),);
+                      GROUP_NO='X205',
+                      CHAM_GD=T1m,
+                      VALE_CALC=27.962424044020239,),
+                   ),
+          )
 
 RESUTHER=CALC_CHAMP(reuse =RESUTHER,
                     RESULTAT=RESUTHER,
@@ -277,33 +282,36 @@ H730h=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                  NOM_CHAM='HYDR_NOEU',
                  INST=t730h,);
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=H49h,
-                      GROUP_NO='X205',
+TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='HYDR',
-                      VALE=0.4778,
+                      GROUP_NO='X205',
                       PRECISION=0.02,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(CHAM_GD=H730h,
-                      GROUP_NO='X205',
+                      CHAM_GD=H49h,
+                      VALE_CALC=0.486826706,
+                      VALE_REFE=0.4778,),
+                   _F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='HYDR',
-                      VALE=0.9558,
-                      PRECISION=0.01,
-                      REFERENCE='ANALYTIQUE',),),);
+                      GROUP_NO='X205',
+                      PRECISION=1.E-2,
+                      CHAM_GD=H730h,
+                      VALE_CALC=0.960933074,
+                      VALE_REFE=0.95579999999999998,),
+                   ),
+          )
 
 #Tests de non-regression (version 10.1)
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=H49h,
-                      GROUP_NO='X205',
+TEST_RESU(CHAM_NO=(_F(
                       NOM_CMP='HYDR',
-                      VALE=0.4868267064736512,PRECISION=1e-9,
-                      REFERENCE='NON_REGRESSION',
-                      ),
-                   _F(CHAM_GD=H730h,
                       GROUP_NO='X205',
+                      CHAM_GD=H49h,
+                      VALE_CALC=0.48682670647365123,),
+                   _F(
                       NOM_CMP='HYDR',
-                      VALE=0.9609330736350078,
-                      PRECISION=1e-9,
-                      REFERENCE='NON_REGRESSION',
-                      ),),);
+                      GROUP_NO='X205',
+                      CHAM_GD=H730h,
+                      VALE_CALC=0.9609330736350078,),
+                   ),
+          )
 
 FIN();

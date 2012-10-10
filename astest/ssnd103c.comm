@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LOI DE COMPORTEMENT BILINEAIRE SUR UN ELEMENT DISCRET (SOLLICITATION TRIAXIALE)
 # ssnd103c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,21 +138,61 @@ CALCULG = CALC_CHAMP(
 )
 
 #IMPR_RESU(RESU=_F(RESULTAT=CALCULG))
-TEST_RESU(
-   RESU=(
-      _F(RESULTAT=CALCULG, NOM_CHAM='REAC_NODA', NOEUD = 'N2', NOM_CMP='DX', INST= 2.,
-         REFERENCE='ANALYTIQUE', VALE= 4.E+4,PRECISION=1.0E-08,),
-      _F(RESULTAT=CALCULG, NOM_CHAM='REAC_NODA', NOEUD = 'N2', NOM_CMP='DY', INST= 2.,
-         REFERENCE='ANALYTIQUE', VALE= 4.E+4,PRECISION=1.0E-08,),
-      _F(RESULTAT=CALCULG, NOM_CHAM='REAC_NODA', NOEUD = 'N2', NOM_CMP='DZ', INST= 2.,
-         REFERENCE='ANALYTIQUE', VALE=2.E+4,PRECISION=1.0E-08,),
-      _F(RESULTAT=CALCULG, NOM_CHAM='REAC_NODA', NOEUD = 'N2', NOM_CMP='DX', INST= 8.,
-         REFERENCE='ANALYTIQUE', VALE=1.05E+5,PRECISION=1.0E-08,),
-      _F(RESULTAT=CALCULG, NOM_CHAM='REAC_NODA', NOEUD = 'N2', NOM_CMP='DY', INST= 8.,
-         REFERENCE='ANALYTIQUE', VALE=1.05E+5,PRECISION=1.0E-08,),
-      _F(RESULTAT=CALCULG, NOM_CHAM='REAC_NODA', NOEUD = 'N2', NOM_CMP='DZ', INST= 8.,
-         REFERENCE='ANALYTIQUE', VALE=6.5E+4,PRECISION=1.0E-08,),
-   ),
-)
+TEST_RESU(RESU=(_F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=CALCULG,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 4.00000000E+04,
+                   VALE_REFE=4.E4,
+                   PRECISION=1.E-08,),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=CALCULG,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N2',
+                   NOM_CMP='DY',
+                   VALE_CALC= 4.00000000E+04,
+                   VALE_REFE=4.E4,
+                   PRECISION=1.E-08,),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=CALCULG,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N2',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 2.00000000E+04,
+                   VALE_REFE=2.E4,
+                   PRECISION=1.E-08,),
+                _F(INST=8.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=CALCULG,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N2',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.05000000E+05,
+                   VALE_REFE=1.05000E5,
+                   PRECISION=1.E-08,),
+                _F(INST=8.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=CALCULG,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N2',
+                   NOM_CMP='DY',
+                   VALE_CALC= 1.05000000E+05,
+                   VALE_REFE=1.05000E5,
+                   PRECISION=1.E-08,),
+                _F(INST=8.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=CALCULG,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N2',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 6.50000000E+04,
+                   VALE_REFE=6.5000E4,
+                   PRECISION=1.E-08,),
+                ),
+          )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE   TEST HM, AXIS , MODELISATION THMC=LIQU_SATU
 # wtna111a.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -286,71 +286,78 @@ U_1=STAT_NON_LINE(
 
 # TEST PRE1 NS749 ET NS761 A 1000 SEC ET 3000 SEC
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NS749',
-                  VALE=9.48E+05,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=9.48000E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
                   NOEUD='NS749',
-                  VALE=9.68E+05,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
-                  NOEUD='NS761',
-                  VALE=8.22E+05,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=9.68000E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NS761',
-                  VALE=8.89E+05,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='PRE1',
+                  VALE_CALC=8.22000E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NS761',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=8.89000E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
 # TEST DX N25 ET N66 A 1000 SEC ET 3000 SEC
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
                   NOEUD='N25',
-                  VALE=2.925058E-04,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='DX',
+                  VALE_CALC=2.9250579999999998E-4,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
                   NOEUD='N25',
-                  VALE=4.786191E-04,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  NOEUD='N66',
-                  VALE=2.925197E-04,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=4.7861909999999999E-4,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
                   NOEUD='N66',
-                  VALE=4.786331E-04,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='DX',
+                  VALE_CALC=2.925197E-4,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N66',
+                  NOM_CMP='DX',
+                  VALE_CALC=4.7863309999999999E-4,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
 FIN();

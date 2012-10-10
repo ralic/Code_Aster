@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MASSIN P.MASSIN
 # TITRE  : TEST DU RAASCH HOOK
 # ssls119f.para = tps_job 70 mem_job 512Mo ncpus 1 liste_test S
@@ -86,12 +86,15 @@ SIGMA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               RESULTAT=RESUPOS,
                               NOM_CHAM='SIGM_ELNO',),);
 
-TEST_RESU(RESU=(
-     _F( RESULTAT = RESU,         NOM_CHAM = 'DEPL',
-           NUME_ORDRE = 1,             GROUP_NO = 'C',
-           NOM_CMP = 'DZ',          VALE = 1.31536E-01,
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 0.00001,          CRITERE = 'RELATIF'),),)
-
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=0.13153599999999999,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 FIN();

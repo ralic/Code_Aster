@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROJECTION DE CONTRAINTES ET DE VARIABLES INTERNES EN 2D ET 3D
 # zzzz271a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,21 +79,24 @@ PJSIEF=PROJ_CHAMP(CHAM_GD=CHSIEFR,MODELE_1=MO1, MODELE_2=MO2,METHODE='ECLA_PG')
 # 3.3. Validation de la projection du champ de contraintes
 #---------------------------------------------------------
 
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJSIEF,
-                         MAILLE = 'M69',
-                         POINT = 2,
-                         NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE',
-                         VALE = 2.83094,
-                         PRECISION=2.5E-2),
-                     _F( CHAM_GD = PJSIEF,
-                         MAILLE = 'M77',
-                         POINT = 4,
-                         NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE',
-                         VALE = 1.16906,
-                         PRECISION=2.0E-2),))
-
+TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
+                        POINT=2,
+                        NOM_CMP='SIXX',
+                        PRECISION=0.025000000000000001,
+                        MAILLE='M69',
+                        CHAM_GD=PJSIEF,
+                        VALE_CALC=2.888888889,
+                        VALE_REFE=2.83094,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=4,
+                        NOM_CMP='SIXX',
+                        PRECISION=0.02,
+                        MAILLE='M77',
+                        CHAM_GD=PJSIEF,
+                        VALE_CALC=1.148032306,
+                        VALE_REFE=1.16906,),
+                     ),
+          )
 
 # 4.1. Creation du champ de variables internes
 #----------------------------------------
@@ -136,20 +139,24 @@ PJVARI=PROJ_CHAMP(CHAM_GD=CHVARIR,MODELE_1=MO1, MODELE_2=MO2,METHODE='ECLA_PG')
 # 4.3. Validation de la projection du champ de variables internes
 #----------------------------------------------------------------
 
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJVARI,
-                         MAILLE = 'M69',
-                         POINT = 2,
-                         NOM_CMP = 'V1' ,
-                         REFERENCE = 'ANALYTIQUE',
-                         VALE = 2.83094,
-                         PRECISION=2.5E-2),
-                     _F( CHAM_GD = PJVARI,
-                         MAILLE = 'M77',
-                         POINT = 4,
-                         NOM_CMP = 'V1' ,
-                         REFERENCE = 'ANALYTIQUE',
-                         VALE = 1.16906,
-                         PRECISION=2.0E-2),))
+TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
+                        POINT=2,
+                        NOM_CMP='V1',
+                        PRECISION=0.025000000000000001,
+                        MAILLE='M69',
+                        CHAM_GD=PJVARI,
+                        VALE_CALC=2.888888889,
+                        VALE_REFE=2.83094,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=4,
+                        NOM_CMP='V1',
+                        PRECISION=0.02,
+                        MAILLE='M77',
+                        CHAM_GD=PJVARI,
+                        VALE_CALC=1.148032306,
+                        VALE_REFE=1.16906,),
+                     ),
+          )
 
 DETRUIRE(CONCEPT=(_F(NOM=PJSIEF),
                   _F(NOM=PJVARI),
@@ -233,24 +240,85 @@ PJSIEF=PROJ_CHAMP(CHAM_GD=CHSIEFR,MODELE_1=MO3, MODELE_2=MO4,METHODE='ECLA_PG')
 
 
 
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJSIEF, MAILLE = 'M272', POINT = 3, NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE', VALE = 1.197169,  PRECISION=2.3E-2),))
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJSIEF, MAILLE = 'M272', POINT = 4, NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE', VALE = 1.197169,  PRECISION=2.3E-2),))
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJSIEF, MAILLE = 'M272', POINT = 7, NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE', VALE = 1.197169,  PRECISION=2.3E-2),))
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJSIEF, MAILLE = 'M272', POINT = 8, NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE', VALE = 1.197169,  PRECISION=2.3E-2),))
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=3,
+                       NOM_CMP='SIXX',
+                       PRECISION=0.023,
+                       MAILLE='M272',
+                       CHAM_GD=PJSIEF,
+                       VALE_CALC=1.212625000,
+                       VALE_REFE=1.1971689999999999,),
+          )
 
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJSIEF, MAILLE = 'M272', POINT = 1, NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE', VALE = 1.0528312,  PRECISION=2.3E-2),))
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJSIEF, MAILLE = 'M272', POINT = 2, NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE', VALE = 1.0528312,  PRECISION=2.3E-2),))
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJSIEF, MAILLE = 'M272', POINT = 5, NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE', VALE = 1.0528312,  PRECISION=2.3E-2),))
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJSIEF, MAILLE = 'M272', POINT = 6, NOM_CMP = 'SIXX' ,
-                         REFERENCE = 'ANALYTIQUE', VALE = 1.0528312,  PRECISION=2.3E-2),))
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=4,
+                       NOM_CMP='SIXX',
+                       PRECISION=0.023,
+                       MAILLE='M272',
+                       CHAM_GD=PJSIEF,
+                       VALE_CALC=1.212625000,
+                       VALE_REFE=1.1971689999999999,),
+          )
 
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=7,
+                       NOM_CMP='SIXX',
+                       PRECISION=0.023,
+                       MAILLE='M272',
+                       CHAM_GD=PJSIEF,
+                       VALE_CALC=1.197437500,
+                       VALE_REFE=1.1971689999999999,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=8,
+                       NOM_CMP='SIXX',
+                       PRECISION=0.023,
+                       MAILLE='M272',
+                       CHAM_GD=PJSIEF,
+                       VALE_CALC=1.200057452,
+                       VALE_REFE=1.1971689999999999,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=1,
+                       NOM_CMP='SIXX',
+                       PRECISION=0.023,
+                       MAILLE='M272',
+                       CHAM_GD=PJSIEF,
+                       VALE_CALC=1.045562500,
+                       VALE_REFE=1.0528312,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=2,
+                       NOM_CMP='SIXX',
+                       PRECISION=0.023,
+                       MAILLE='M272',
+                       CHAM_GD=PJSIEF,
+                       VALE_CALC=1.030375000,
+                       VALE_REFE=1.0528312,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=5,
+                       NOM_CMP='SIXX',
+                       PRECISION=0.023,
+                       MAILLE='M272',
+                       CHAM_GD=PJSIEF,
+                       VALE_CALC=1.045562500,
+                       VALE_REFE=1.0528312,),
+          )
+
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=6,
+                       NOM_CMP='SIXX',
+                       PRECISION=0.023,
+                       MAILLE='M272',
+                       CHAM_GD=PJSIEF,
+                       VALE_CALC=1.045562500,
+                       VALE_REFE=1.0528312,),
+          )
 
 # 4.1. Creation du champ de variables internes
 #----------------------------------------
@@ -293,13 +361,14 @@ PJVARI=PROJ_CHAMP(CHAM_GD=CHVARIR,MODELE_1=MO3, MODELE_2=MO4,METHODE='ECLA_PG')
 # 4.3. Validation de la projection du champ de variables internes
 #----------------------------------------------------------------
 
-TEST_RESU(CHAM_ELEM=(_F( CHAM_GD = PJVARI,
-                         MAILLE = 'M272',
-                         POINT = 8,
-                         NOM_CMP = 'V1' ,
-                         REFERENCE = 'ANALYTIQUE',
-                         VALE = 1.197169,
-                         PRECISION=2.3E-2),))
-
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=8,
+                       NOM_CMP='V1',
+                       PRECISION=0.023,
+                       MAILLE='M272',
+                       CHAM_GD=PJVARI,
+                       VALE_CALC=1.200057452,
+                       VALE_REFE=1.1971689999999999,),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE K1, K2 EN DP ET CP SUR UNE PLAQUE CIRCULAIRE
 # sslp103a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,60 +179,78 @@ K1K2DP=CALC_G(            RESULTAT=ELASDP,
 #--------------------------------------------------------------------
 
 
-TEST_TABLE(       TABLE=GCP,
-                       NOM_PARA='G',
-                           VALE=2.5E-5,
-                      PRECISION=1.E-2   )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.52132274E-05,
+           VALE_REFE=2.5000000000000001E-05,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GCP,)
 
-TEST_TABLE(       TABLE=K1K2CP,
-                       NOM_PARA='K1',
-                           VALE=2.E0,
-                      PRECISION=1.E-2   )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=2.006703826,
+           VALE_REFE=2.0,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=K1K2CP,)
 
-TEST_TABLE(       TABLE=K1K2CP,
-                       NOM_PARA='K2',
-                           VALE=1.E0,
-                      PRECISION=1.23E-2   )
+TEST_TABLE(PRECISION=0.0123,
+           VALE_CALC=0.987774030,
+           VALE_REFE=1.0,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K2',
+           TABLE=K1K2CP,)
 
-TEST_TABLE(       TABLE=K1K2CP,
-                       NOM_PARA='G',
-                           VALE=2.5E-5,
-                      PRECISION=1.E-2   )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.52132274E-05,
+           VALE_REFE=2.5000000000000001E-05,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=K1K2CP,)
 
-TEST_TABLE(       TABLE=K1K2CP,
-                       NOM_PARA='G_IRWIN',
-                           VALE=2.5E-5,
-                      PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=2.5000000000000001E-05,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G_IRWIN',
+           TABLE=K1K2CP,)
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G, K1 ET K2   EN DP
 #--------------------------------------------------------------------
 
 
-TEST_TABLE(       TABLE=GDP,
-                       NOM_PARA='G',
-                           VALE=2.275E-5,
-                      PRECISION=1.E-2   )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.29684381E-05,
+           VALE_REFE=2.2750000000000001E-05,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GDP,)
 
-TEST_TABLE(       TABLE=K1K2DP,
-                       NOM_PARA='K1',
-                           VALE=2.E0,
-                      PRECISION=1.E-2   )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=2.003018256,
+           VALE_REFE=2.0,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=K1K2DP,)
 
-TEST_TABLE(       TABLE=K1K2DP,
-                       NOM_PARA='K2',
-                           VALE=1.E0,
-                      PRECISION=1.E-2   )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.996040814,
+           VALE_REFE=1.0,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K2',
+           TABLE=K1K2DP,)
 
-TEST_TABLE(       TABLE=K1K2DP,
-                       NOM_PARA='G',
-                           VALE=2.275E-5,
-                      PRECISION=1.E-2   )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.29684381E-05,
+           VALE_REFE=2.2750000000000001E-05,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=K1K2DP,)
 
-TEST_TABLE(       TABLE=K1K2DP,
-                       NOM_PARA='G_IRWIN',
-                           VALE=2.275E-5,
-                      PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=2.2750000000000001E-05,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G_IRWIN',
+           TABLE=K1K2DP,)
 
 FIN()
 #

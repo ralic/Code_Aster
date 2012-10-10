@@ -1,5 +1,6 @@
       SUBROUTINE UTEST1 ( CHAMGD, TYPTES, TYPRES, NBREF, TBTXT,
-     &                    REFI, REFR, REFC, EPSI, CRIT, IFIC, SSIGNE )
+     &                    REFI, REFR, REFC,
+     &                    EPSI, CRIT, IFIC, LLAB, SSIGNE )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
       INTEGER              NBREF,REFI(NBREF), IFIC
@@ -8,9 +9,10 @@
       CHARACTER*16         TBTXT(2)
       CHARACTER*(*)        CHAMGD, TYPRES, CRIT, SSIGNE
       COMPLEX*16           REFC(NBREF)
+      LOGICAL              LLAB
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +40,7 @@ C IN  : REFC   : VALEUR COMPLEXE ATTENDUE
 C IN  : CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 C IN  : EPSI   : PRECISION ESPEREE
 C IN  : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
+C IN  : LLAB   : FLAG D IMPRESSION DES LABELS
 C OUT : IMPRESSION SUR LISTING
 C ----------------------------------------------------------------------
       INTEGER       VALI, JVALE, IBID, NEQ, I,IRET1,IRET2
@@ -161,7 +164,7 @@ C
       ENDIF
 C
       CALL UTITES ( TBTXT(1),TBTXT(2), TYPRES, NBREF, REFI, REFR, REFC,
-     +                      VALI, VALR, VALC, EPSI, CRIT, IFIC, SSIGNE )
+     +              VALI, VALR, VALC, EPSI, CRIT, IFIC,LLAB,SSIGNE)
 C
  9999 CONTINUE
 C

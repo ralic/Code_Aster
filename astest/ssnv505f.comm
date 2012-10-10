@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 # ssnv505f.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -251,49 +251,51 @@ T_DEP_CO=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 
 
 # ---- VALIDATION ----
-TEST_TABLE(TABLE=T_REA_CO,
+TEST_TABLE(
+           VALE_CALC=307.48396428348002,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.2),
-           VALE=3.0748396428348E+02,
-           PRECISION=0.1E-2,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+                     VALE=0.20000000000000001,),
+           )
 
-TEST_TABLE(TABLE=T_REA_CO,
+TEST_TABLE(
+           VALE_CALC=1251.4883178276,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.4),
-           VALE=1.2514883178276E+03,
-           PRECISION=0.1E-2,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+                     VALE=0.40000000000000002,),
+           )
 
-TEST_TABLE(TABLE=T_REA_CO,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=1.5E-3,
+           VALE_CALC= 3.02385367E+03,
+           VALE_REFE=3023.9182463544998,
            NOM_PARA='DY',
+           TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6),
-           VALE=3.0239182463545E+03,
-           PRECISION=0.15E-2,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=T_REA_CO,
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=2.E-3,
+           VALE_CALC= 4.82942985E+03,
+           VALE_REFE=4829.5740249542996,
            NOM_PARA='DY',
+           TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8),
-           VALE=4.8295740249543E+03,
-           PRECISION=0.2E-2,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+                     VALE=0.80000000000000004,),
+           )
 
-TEST_TABLE(TABLE=T_REA_CO,
+TEST_TABLE(
+           VALE_CALC=6656.1413705692003,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.),
-           VALE=6.6561413705692E+03,
-           PRECISION=0.1E-2,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+                     VALE=1.0,),
+           )
 
 FIN();

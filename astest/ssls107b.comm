@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PANNEAU CYLINDRIQUE SOUMIS A SON PROPRE POIDS
 # ssls107b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,24 +92,40 @@ DEFX=RESOUDRE( MATR=MATASS,     CHAM_NO=VEFXAS)
 
 DEPE=RESOUDRE( MATR=MATASS,     CHAM_NO=VEPEAS)
 
-TEST_RESU(CHAM_NO=(
-     # DEPLACEMENT FX
-
-            _F(  CHAM_GD = DEFX,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              NOEUD = 'NO000002', NOM_CMP = 'DX',           VALE = -3.61E-2),
-
-            _F(  CHAM_GD = DEFX,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'C',       NOM_CMP = 'DX',           VALE = 5.41E-3),
-
-     # DEPLACEMENT PESANTEUR
-
-            _F(  CHAM_GD = DEPE,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              NOEUD = 'NO000002', NOM_CMP = 'DX',           VALE = -3.61E-2),
-
-            _F(  CHAM_GD = DEPE,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'C',       NOM_CMP = 'DX',           VALE = 5.41E-3))
-             )
-
+TEST_RESU(CHAM_NO=(_F(NOEUD='NO000002',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DX',
+                      PRECISION=1.E-2,
+                      CHAM_GD=DEFX,
+                      VALE_CALC=-0.036036929,
+                      VALE_REFE=-0.0361,
+                      REFERENCE='NON_DEFINI',),
+                   _F(CRITERE='RELATIF',
+                      NOM_CMP='DX',
+                      GROUP_NO='C',
+                      PRECISION=1.E-2,
+                      CHAM_GD=DEFX,
+                      VALE_CALC= 5.39626956E-03,
+                      VALE_REFE=5.4099999999999999E-3,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='NO000002',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DX',
+                      PRECISION=1.E-2,
+                      CHAM_GD=DEPE,
+                      VALE_CALC=-0.036036871,
+                      VALE_REFE=-0.0361,
+                      REFERENCE='NON_DEFINI',),
+                   _F(CRITERE='RELATIF',
+                      NOM_CMP='DX',
+                      GROUP_NO='C',
+                      PRECISION=1.E-2,
+                      CHAM_GD=DEPE,
+                      VALE_CALC= 5.39626092E-03,
+                      VALE_REFE=5.4099999999999999E-3,
+                      REFERENCE='NON_DEFINI',),
+                   ),
+          )
 
 #---------------------------------------------------------------------
 FIN()

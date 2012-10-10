@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOUS-STRUCT. TRANSITOIRE : SYSTEME MASSES-RESSORTS AMORTI
 # sdld102c.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,7 +40,6 @@
 # LINEAIRE MULT_FRONT POUR FORCER LE CHANGEMENT EN INTERNE OPERATEUR
 # POUR MUMPS.
 # ON TESTE AUSSI DS CETTE CONFIGURATION L'OPERATEUR INFO_MODE
-
 #
 DEBUT(CODE=_F( NOM = 'SDLD102C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -81,8 +80,6 @@ CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
 
 #
 CHARTRAN=AFFE_CHAR_MECA(        MODELE=MODELE,
-
-
                            FORCE_NODALE=_F( NOEUD = 'NO2',  FX = 1.))
 
 #  MATRICES ET VECTEURS ELEMENTS FINIS
@@ -129,7 +126,6 @@ MODES=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE,
                                  MATR_MASS=M_ASSE, INFO=2,
                           SOLVEUR=_F(METHODE='MUMPS',),
                              CALC_FREQ=_F( NMAX_FREQ = 1))
-
 
 #  DEFINITION DES INTERFACES
 #------------------------------------------------------------------
@@ -220,8 +216,11 @@ NB_MODES=INFO_MODE(MATR_RIGI=RIGGEN,MATR_MASS=MASGEN,FREQ_MAX=3.E-1,
            SOLVEUR=_F(METHODE='MULT_FRONT'))
 
 
-TEST_TABLE(TABLE=NB_MODES,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', VALE_I=3)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=3,
+           VALE_REFE_I=3,
+           NOM_PARA='NB_MODE',
+           TABLE=NB_MODES,)
 
 # CAS 1
 RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN, MATR_MASS=MASGEN,INFO=2,
@@ -378,30 +377,42 @@ TRAN3=REST_GENE_PHYS(   RESU_GENE=TRANGEN3,
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
-TEST_RESU(RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'DEPL',
-                  INST = 8.00000E+01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 1.E-2,
-                  NOEUD = 'NO3',
-                  NOM_CMP = 'DX',
-                  VALE = 0.49867E+00))
-TEST_RESU(RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'DEPL',
-                  INST = 8.00000E+01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 1.E-2,
-                  NOEUD = 'NO3',
-                  NOM_CMP = 'DX',
-                  VALE = 0.49867E+00))
-TEST_RESU(RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'DEPL',
-                  INST = 8.00000E+01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 1.E-2,
-                  NOEUD = 'NO3',
-                  NOM_CMP = 'DX',
-                  VALE = 0.49867E+00))
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.496371220,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.499329924,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.498697649,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
 # CAS 2
 TRAN4=REST_GENE_PHYS(   RESU_GENE=TRANGEN4,
                         TOUT_CHAM='OUI',
@@ -418,36 +429,42 @@ TRAN6=REST_GENE_PHYS(   RESU_GENE=TRANGEN6,
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO2 )
-TEST_RESU(RESU=_F( RESULTAT = TRAN4,
-                  NOM_CHAM = 'DEPL',
-                  INST = 8.00000E+01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 1.E-2,
-                  NOEUD = 'NO3',
-                  NOM_CMP = 'DX',
-                  VALE = 0.49867E+00))
-TEST_RESU(RESU=_F( RESULTAT = TRAN5,
-                  NOM_CHAM = 'DEPL',
-                  INST = 8.00000E+01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 1.E-2,
-                  NOEUD = 'NO3',
-                  NOM_CMP = 'DX',
-                  VALE = 0.49867E+00))
-TEST_RESU(RESU=_F( RESULTAT = TRAN6,
-                  NOM_CHAM = 'DEPL',
-                  INST = 8.00000E+01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 1.E-2,
-                  NOEUD = 'NO3',
-                  NOM_CMP = 'DX',
-                  VALE = 0.49867E+00))
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN4,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.496371220,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN5,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.498828772,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN6,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.498697649,
+                  VALE_REFE=0.49867,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
 #
 FIN()
 #
-
-
-
-
-
-

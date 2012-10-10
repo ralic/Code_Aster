@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU CALCUL DES COORDONNEES DES SOUS POINTS D'INTEGRATION POUR LA MODELISATION GRILLE_EXCENTRE
 # zzzz294d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,25 +64,40 @@ U=MECA_STATIQUE(MODELE=MO,
 TB=CREA_TABLE(RESU=_F(RESULTAT=U,GROUP_MA='GRI',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',NUME_ORDRE = 1))
 IMPR_TABLE(TABLE=TB)
 
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_X',
-            VALE= 0.762676039)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.762676039,
+           VALE_REFE=0.76267603900000003,
+           NOM_PARA='COOR_X',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Y',
-            VALE= 0.679006351)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.679006351,
+           VALE_REFE=0.67900635099999995,
+           NOM_PARA='COOR_Y',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE( TABLE=TB,
-            FILTRE=(_F(NOM_PARA='POINT', VALE_I=1 ),
-                    _F(NOM_PARA='SOUS_POINT', VALE_I=1 ),),
-            REFERENCE='ANALYTIQUE',
-            NOM_PARA='COOR_Z',
-            VALE= 0.458012702)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.458012702,
+           VALE_REFE=0.45801270199999999,
+           NOM_PARA='COOR_Z',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='POINT',
+                      VALE_I=1,),
+                   _F(NOM_PARA='SOUS_POINT',
+                      VALE_I=1,),
+                   ),
+           )
 
 FIN()

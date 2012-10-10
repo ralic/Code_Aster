@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE VARIABLE
 # szlz107d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -231,8 +231,8 @@ for i in range(NBPR-1) :
 
     TEST_TABLE( TABLE=FATN[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE=RESU[i],
-                PRECISION=1.E-4                
+                VALE_CALC=RESU[i],
+                TOLE_MACHINE=1.E-4                
                 )
                 
 for i in range(NBPR-2) :
@@ -266,8 +266,8 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATNW[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE=RESU[i],
-                PRECISION=2.5E-3                )
+                VALE_CALC=RESU[i],
+                TOLE_MACHINE=2.5E-3                )
 
 for i in range(NBPR-2) :
 
@@ -299,8 +299,8 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATNF[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE=RESUF[i],
-                PRECISION=1.E-5                )
+                VALE_CALC=RESUF[i],
+                TOLE_MACHINE=1.E-5                )
                 
 
                 
@@ -621,8 +621,8 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATN2[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE=RESU2[i],
-                PRECISION=1.E-4                
+                VALE_CALC=RESU2[i],
+                TOLE_MACHINE=1.E-4                
                 )
                 
 for i in range(NBPR-2) :
@@ -655,8 +655,8 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATNW2[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE=RESU2[i],
-                PRECISION=2.5E-3                )
+                VALE_CALC=RESU2[i],
+                TOLE_MACHINE=2.5E-3                )
 
 for i in range(NBPR-2) :
 
@@ -696,8 +696,8 @@ for i in range(NBPR-2) :
 
     TEST_TABLE( TABLE=FATNF2[i],
                 NOM_PARA = 'DOMMAGE',
-                VALE=RESUF2[i],
-                PRECISION=1.E-5                )
+                VALE_CALC=RESUF2[i],
+                TOLE_MACHINE=1.E-5                )
                 
 #######################################################
 # ASSOCIE AVEC LA SOLUTION SOL_NL3 de SSLV135f
@@ -1107,8 +1107,8 @@ IMPR_TABLE(TABLE = FATN3)
 
 TEST_TABLE( TABLE=FATN3,
             NOM_PARA = 'DOMMAGE',
-            VALE=2.1858445E-3,
-            PRECISION=1.E-4                
+            VALE_CALC=2.1858445E-3,
+            TOLE_MACHINE=1.E-4                
             )
 
 FATNW3=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
@@ -1147,8 +1147,8 @@ IMPR_TABLE(TABLE = FATNW3)
 
 TEST_TABLE( TABLE=FATNW3,
             NOM_PARA = 'DOMMAGE',
-            VALE=2.1858445E-3,
-            PRECISION=2.5E-3                )
+            VALE_CALC=2.1858445E-3,
+            TOLE_MACHINE=2.5E-3                )
 
 
 FATNF3=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
@@ -1187,7 +1187,7 @@ IMPR_TABLE(TABLE = FATNF3)
 
 TEST_TABLE( TABLE=FATNF3,
             NOM_PARA = 'DOMMAGE',
-            VALE=1.37785513E-2,
-            PRECISION=1.E-5                )                           
+            VALE_CALC=1.37785513E-2,
+            TOLE_MACHINE=1.E-5                )                           
 FIN()
 #

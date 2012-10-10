@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR SUR CELLULE UNIAIRE
 # wtnp115a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -230,39 +230,41 @@ U0=CALC_CHAMP(reuse=U0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESUL
 
 
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
+                  NOEUD='N1',
                   NOM_CMP='TEMP',
-                  NOEUD='N1',
-                  VALE=14,
+                  VALE_CALC=14.387786002,
+                  VALE_REFE=14,
                   CRITERE='RELATIF',
-                  PRECISION=0.1,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=0.10000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
+                  NOEUD='N1',
                   NOM_CMP='PRE1',
-                  NOEUD='N1',
-                  VALE=-1.E7,
+                  VALE_CALC=-1.29792886E+07,
+                  VALE_REFE=-1.E7,
                   CRITERE='RELATIF',
-                  PRECISION=0.3,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=0.29999999999999999,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
                   NOM_CHAM='VARI_ELNO',
-                  NOM_CMP='V3',
                   NOEUD='N1',
-                  MAILLE='M1',
-                  VALE=3.E3,
+                  NOM_CMP='V3',
+                  VALE_CALC= 3.97922070E+03,
+                  VALE_REFE=3000.0,
                   CRITERE='RELATIF',
                   PRECISION=0.5,
-                  REFERENCE='ANALYTIQUE',),);
-
-
-
+                  MAILLE='M1',),
+          )
 
 FIN();
-

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF python supervis  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF python supervis  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS */
 /* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
@@ -33,6 +33,14 @@
 /* ================================================================== */
 /* Minimal main program -- everything is loaded from the library */
 
+/* NOTE: 
+ *  Since Python may define some pre-processor definitions which affect the
+ *  standard headers on some systems, you must include "Python.h" before any
+ *  standard headers are included.
+ *  The warning on _POSIX_C_SOURCE redefinition must not occur.
+ * 
+ *  source: http://docs.python.org/c-api/intro.html
+ */
 #include "Python.h"
 
 #ifdef _USE_MPI

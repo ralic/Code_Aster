@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE BARRAGE AVEC RETENUE SOUS SOLLICITATION SISMIQUE
 # fdlv112a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -296,16 +296,19 @@ SPXR=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=DXR,
                                 LIST_FREQ=FREQSPEC,
                                 NORME=1.0,),);
 
-TEST_FONCTION(VALEUR=(
-_F( FONCTION = DXR, PRECISION = 1E-3,
-         VALE_PARA = 4.3E-1,  VALE_REFE =1.19015E+00,
-         REFERENCE = 'NON_REGRESSION', VERSION='6.1.16'),
-_F( FONCTION = SPXR, PRECISION = 1E-3,
-         NOM_PARA = ('FREQ','AMOR'),
-         VALE_PARA =(1.E+01,0.05) , VALE_REFE = 1.68363E+01 ,
-         REFERENCE = 'NON_REGRESSION', VERSION='6.1.16')
-))
-
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.19015,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.42999999999999999,
+                         FONCTION=DXR,
+                         ),
+                      _F(VALE_CALC=16.836300000000001,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=(10.0, 0.050000000000000003),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPXR,
+                         ),
+                      ),
+              )
 
 FIN()
 

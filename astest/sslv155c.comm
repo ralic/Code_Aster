@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE LENTILLE EN TRACTION
 # sslv155c.para = tps_job 300 mem_job 1536Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,66 +195,71 @@ K2ref = 0.235*(2/pi)*sig*sqrt(pi*a)
 # test de la commande CALC_G
 #---------------------------
 
-TEST_TABLE(TABLE=CGX,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 1.23125666E+06,
+           VALE_REFE=1.176825720257336E6,
+           NOM_PARA='K1',
            TYPE_TEST='MAX',
-           NOM_PARA='K1',
-           VALE=K1ref,
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE')
+           TABLE=CGX,)
 
-TEST_TABLE(TABLE=CGX,
-           TYPE_TEST='MIN',
-           NOM_PARA='K1',
-           VALE=K1ref,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE')
-
-TEST_TABLE(TABLE=CGX,
-           TYPE_TEST='MAX',
-           NOM_PARA='K2',
-           VALE=K2ref,
-           PRECISION=0.15,
-           REFERENCE='ANALYTIQUE')
-
-TEST_TABLE(TABLE=CGX,
+           VALE_CALC= 1.15852872E+06,
+           VALE_REFE=1.176825720257336E6,
+           NOM_PARA='K1',
            TYPE_TEST='MIN',
-           NOM_PARA='K2',
-           VALE=K2ref,
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE')
+           TABLE=CGX,)
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.14999999999999999,
+           VALE_CALC= 3.61171891E+05,
+           VALE_REFE=3.1534098547374451E5,
+           NOM_PARA='K2',
+           TYPE_TEST='MAX',
+           TABLE=CGX,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 3.28386707E+05,
+           VALE_REFE=3.1534098547374451E5,
+           NOM_PARA='K2',
+           TYPE_TEST='MIN',
+           TABLE=CGX,)
 
 # test de la commande POST_K1_K2_K3
 #-----------------------------------
 
-TEST_TABLE(TABLE=PK,
-           TYPE_TEST='MAX',
-           NOM_PARA='K1',
-           VALE=K1ref,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE')
-
-TEST_TABLE(TABLE=PK,
-           TYPE_TEST='MIN',
+           VALE_CALC= 1.16016782E+06,
+           VALE_REFE=1.176825720257336E6,
            NOM_PARA='K1',
-           VALE=K1ref,
-           PRECISION=0.09,
-           REFERENCE='ANALYTIQUE')
-
-TEST_TABLE(TABLE=PK,
            TYPE_TEST='MAX',
-           NOM_PARA='K2',
-           VALE=K2ref,
-           PRECISION=0.14,
-           REFERENCE='ANALYTIQUE')
+           TABLE=PK,)
 
-TEST_TABLE(TABLE=PK,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.089999999999999997,
+           VALE_CALC= 1.08948408E+06,
+           VALE_REFE=1.176825720257336E6,
+           NOM_PARA='K1',
            TYPE_TEST='MIN',
+           TABLE=PK,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.14000000000000001,
+           VALE_CALC= 3.53688000E+05,
+           VALE_REFE=3.1534098547374451E5,
            NOM_PARA='K2',
-           VALE=K2ref,
+           TYPE_TEST='MAX',
+           TABLE=PK,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE')
+           VALE_CALC= 3.09607367E+05,
+           VALE_REFE=3.1534098547374451E5,
+           NOM_PARA='K2',
+           TYPE_TEST='MIN',
+           TABLE=PK,)
 
-
-                              
 FIN()

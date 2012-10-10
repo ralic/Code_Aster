@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE MULTI-FISSUREE EN BITACTION-CISAILLEMENT AVEC XFEM
 # ssnp505b.para = tps_job 180 mem_job 768Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -269,19 +269,17 @@ for i in range(14):
     critere = 'RELATIF'
   TEST_TABLE(TABLE=PK[i],
              NOM_PARA='K1',
-             VALE=Vale_I[i],
+             VALE_CALC=Vale_I[i],
              CRITERE=critere,
-             PRECISION=1.1E-2,
-             REFERENCE='NON_REGRESSION',);
+             TOLE_MACHINE=1.1E-2,)  #TODO vale_calc
   if (abs(Vale_II[i]) < 1):
     critere = 'ABSOLU'
   else:
     critere = 'RELATIF'
   TEST_TABLE(TABLE=PK[i],
              NOM_PARA='K2',
-             VALE=Vale_II[i],
+             VALE_CALC=Vale_II[i],
              CRITERE=critere,
-             PRECISION=1.1E-2,
-             REFERENCE='NON_REGRESSION',);
+             TOLE_MACHINE=1.1E-2,)  #TODO vale_calc
 
 FIN();

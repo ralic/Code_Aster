@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FAISCEAU DE POUTRES SOUS EXCITATION FLUIDELASTIQUE AXIALE
 # sdll119a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -393,26 +393,22 @@ FREQ_1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = FREQ_1,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 4.47E+00,
-                   PRECISION = 10.E-02,
-                   REFERENCE = 'SOURCE_EXTERNE')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.73495559866,
+                        VALE_REFE=4.4699999999999998,
+                        VALE_PARA=4.0,
+                        REFERENCE='SOURCE_EXTERNE',
+                        PRECISION=0.10000000000000001,
+                        FONCTION=FREQ_1,),
+              )
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = FREQ_1,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 4.7349556E+00,
-                   PRECISION = 1.E-07,
-                   REFERENCE = 'NON_REGRESSION',
-                   VERSION = '11.01.18')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.7349556000000002,
+                        TOLE_MACHINE=9.9999999999999995E-08,
+                        VALE_PARA=4.0,
+                        FONCTION=FREQ_1,
+                        ),
+              )
 
 #
 
@@ -426,26 +422,22 @@ AMOR_1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = AMOR_1,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 19.E-02,
-                   PRECISION = 20.E-02,
-                   REFERENCE = 'SOURCE_EXTERNE')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.226474024564,
+                        VALE_REFE=0.19,
+                        VALE_PARA=4.0,
+                        REFERENCE='SOURCE_EXTERNE',
+                        PRECISION=0.20000000000000001,
+                        FONCTION=AMOR_1,),
+              )
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = AMOR_1,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 2.264758E-01,
-                   PRECISION = 1.5E-05,
-                   REFERENCE = 'NON_REGRESSION',
-                   VERSION = '5.02.26')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.2264758,
+                        TOLE_MACHINE=1.5E-05,
+                        VALE_PARA=4.0,
+                        FONCTION=AMOR_1,
+                        ),
+              )
 
 #
 #-----------------------------
@@ -463,15 +455,12 @@ FREQ_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = FREQ_2,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 5.003853E+00,
-                   PRECISION = 1.E-07,
-                   REFERENCE = 'NON_REGRESSION',
-                   VERSION = '11.01.18')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.0038530000000003,
+                        TOLE_MACHINE=9.9999999999999995E-08,
+                        VALE_PARA=4.0,
+                        FONCTION=FREQ_2,
+                        ),
+              )
 
 #
 
@@ -485,15 +474,12 @@ AMOR_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(
-                   VALEUR=_F(
-                   FONCTION = AMOR_2,
-                   VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 2.14153E-01,
-                   PRECISION = 1.5E-05,
-                   REFERENCE = 'NON_REGRESSION',
-                   VERSION = '11.01.18')
-               )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21415300000000001,
+                        TOLE_MACHINE=1.5E-05,
+                        VALE_PARA=4.0,
+                        FONCTION=AMOR_2,
+                        ),
+              )
 
 #
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BIBLIO_73 FISSURE RADIALE INTERNE A L'INTERFACE D'UN BIMATERIAU
 # ssla310a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -295,171 +295,231 @@ G6_C4=CALC_G(    RESULTAT=RES6,
 # -----------------------------------
 
 
-TEST_TABLE(       TABLE=G1_C0,
-                       NOM_PARA='G',
-                           VALE=1.46438E-3,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 1.37464071E-03,
+           VALE_REFE=1.4643799999999999E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G1_C0,)
 
-TEST_TABLE(       TABLE=G2_C0,
-                       NOM_PARA='G',
-                           VALE=6.73168E-4,
-                      PRECISION=0.05    )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 6.46090230E-04,
+           VALE_REFE=6.7316800000000003E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G2_C0,)
 
-TEST_TABLE(       TABLE=G3_C0,
-                       NOM_PARA='G',
-                           VALE=7.06637E-4,
-                      PRECISION=0.11    )
+TEST_TABLE(PRECISION=0.11,
+           VALE_CALC= 6.34748418E-04,
+           VALE_REFE=7.0663699999999998E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G3_C0,)
 
-TEST_TABLE(       TABLE=G4_C0,
-                       NOM_PARA='G',
-                           VALE=5.52152E-9,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 5.17669623E-09,
+           VALE_REFE=5.5215199999999998E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G4_C0,)
 
-TEST_TABLE(       TABLE=G5_C0,
-                       NOM_PARA='G',
-                           VALE=2.5974E-9,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 2.64382016E-09,
+           VALE_REFE=2.5974000000000002E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G5_C0,)
 
-TEST_TABLE(       TABLE=G6_C0,
-                       NOM_PARA='G',
-                           VALE=2.53699E-9,
-                      PRECISION=0.05    )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.43042802E-09,
+           VALE_REFE=2.5369899999999999E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G6_C0,)
 
 # IMPRESSION DES RESULTATS COURONNE 1
 # -----------------------------------
 
 
-TEST_TABLE(       TABLE=G1_C1,
-                       NOM_PARA='G',
-                           VALE=1.46438E-3,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 1.43109529E-03,
+           VALE_REFE=1.4643799999999999E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G1_C1,)
 
-TEST_TABLE(       TABLE=G2_C1,
-                       NOM_PARA='G',
-                           VALE=6.73168E-4,
-                      PRECISION=0.005    )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 6.74210233E-04,
+           VALE_REFE=6.7316800000000003E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G2_C1,)
 
-TEST_TABLE(       TABLE=G3_C1,
-                       NOM_PARA='G',
-                           VALE=7.06637E-4,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 6.61622194E-04,
+           VALE_REFE=7.0663699999999998E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G3_C1,)
 
-TEST_TABLE(       TABLE=G4_C1,
-                       NOM_PARA='G',
-                           VALE=5.52152E-9,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 5.38443452E-09,
+           VALE_REFE=5.5215199999999998E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G4_C1,)
 
-TEST_TABLE(       TABLE=G5_C1,
-                       NOM_PARA='G',
-                           VALE=2.5974E-9,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 2.75589421E-09,
+           VALE_REFE=2.5974000000000002E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G5_C1,)
 
-TEST_TABLE(       TABLE=G6_C1,
-                       NOM_PARA='G',
-                           VALE=2.53699E-9,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.53091906E-09,
+           VALE_REFE=2.5369899999999999E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G6_C1,)
 
 # IMPRESSION DES RESULTATS COURONNE 2
 # -----------------------------------
 
 
-TEST_TABLE(       TABLE=G1_C2,
-                       NOM_PARA='G',
-                           VALE=1.46438E-3,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 1.43158243E-03,
+           VALE_REFE=1.4643799999999999E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G1_C2,)
 
-TEST_TABLE(       TABLE=G2_C2,
-                       NOM_PARA='G',
-                           VALE=6.73168E-4,
-                      PRECISION=0.005   )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 6.74339992E-04,
+           VALE_REFE=6.7316800000000003E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G2_C2,)
 
-TEST_TABLE(       TABLE=G3_C2,
-                       NOM_PARA='G',
-                           VALE=7.06637E-4,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 6.61813620E-04,
+           VALE_REFE=7.0663699999999998E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G3_C2,)
 
-TEST_TABLE(       TABLE=G4_C2,
-                       NOM_PARA='G',
-                           VALE=5.52152E-9,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 5.38623251E-09,
+           VALE_REFE=5.5215199999999998E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G4_C2,)
 
-TEST_TABLE(       TABLE=G5_C2,
-                       NOM_PARA='G',
-                           VALE=2.5974E-9,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 2.75634101E-09,
+           VALE_REFE=2.5974000000000002E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G5_C2,)
 
-TEST_TABLE(       TABLE=G6_C2,
-                       NOM_PARA='G',
-                           VALE=2.53699E-9,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.53151916E-09,
+           VALE_REFE=2.5369899999999999E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G6_C2,)
 
 # IMPRESSION DES RESULTATS COURONNE 3
 # -----------------------------------
 
 
-TEST_TABLE(       TABLE=G1_C3,
-                       NOM_PARA='G',
-                           VALE=1.46438E-3,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 1.43164660E-03,
+           VALE_REFE=1.4643799999999999E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G1_C3,)
 
-TEST_TABLE(       TABLE=G2_C3,
-                       NOM_PARA='G',
-                           VALE=6.73168E-4,
-                      PRECISION=0.005    )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 6.74367270E-04,
+           VALE_REFE=6.7316800000000003E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G2_C3,)
 
-TEST_TABLE(       TABLE=G3_C3,
-                       NOM_PARA='G',
-                           VALE=7.06637E-4,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 6.61843191E-04,
+           VALE_REFE=7.0663699999999998E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G3_C3,)
 
-TEST_TABLE(       TABLE=G4_C3,
-                       NOM_PARA='G',
-                           VALE=5.52152E-9,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 5.38646070E-09,
+           VALE_REFE=5.5215199999999998E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G4_C3,)
 
-TEST_TABLE(       TABLE=G5_C3,
-                       NOM_PARA='G',
-                           VALE=2.5974E-9,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 2.75644577E-09,
+           VALE_REFE=2.5974000000000002E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G5_C3,)
 
-TEST_TABLE(       TABLE=G6_C3,
-                       NOM_PARA='G',
-                           VALE=2.53699E-9,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.53162534E-09,
+           VALE_REFE=2.5369899999999999E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G6_C3,)
 
 # IMPRESSION DES RESULTATS COURONNE 4
 # -----------------------------------
 
 
-TEST_TABLE(       TABLE=G1_C4,
-                       NOM_PARA='G',
-                           VALE=1.46438E-3,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 1.43161731E-03,
+           VALE_REFE=1.4643799999999999E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G1_C4,)
 
-TEST_TABLE(       TABLE=G2_C4,
-                       NOM_PARA='G',
-                           VALE=6.73168E-4,
-                      PRECISION=0.005    )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 6.74329725E-04,
+           VALE_REFE=6.7316800000000003E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G2_C4,)
 
-TEST_TABLE(       TABLE=G3_C4,
-                       NOM_PARA='G',
-                           VALE=7.06637E-4,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 6.61801779E-04,
+           VALE_REFE=7.0663699999999998E-4,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G3_C4,)
 
-TEST_TABLE(       TABLE=G4_C4,
-                       NOM_PARA='G',
-                           VALE=5.52152E-9,
-                      PRECISION=0.03    )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 5.38679637E-09,
+           VALE_REFE=5.5215199999999998E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G4_C4,)
 
-TEST_TABLE(       TABLE=G5_C4,
-                       NOM_PARA='G',
-                           VALE=2.5974E-9,
-                      PRECISION=0.07    )
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC= 2.75646520E-09,
+           VALE_REFE=2.5974000000000002E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G5_C4,)
 
-TEST_TABLE(       TABLE=G6_C4,
-                       NOM_PARA='G',
-                           VALE=2.53699E-9,
-                      PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 2.53162818E-09,
+           VALE_REFE=2.5369899999999999E-09,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G6_C4,)
 
 FIN( )
 #

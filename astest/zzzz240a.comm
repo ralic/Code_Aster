@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION IMPR_RESU / RESTREINT
 # zzzz240a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,9 +150,18 @@ POST2=POST_ELEM(MODELE=MO2, INST=3., RESULTAT=U2,
                 INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                              NOM_CMP=('SIYY'), GROUP_MA='CARRE1'),)
 
-TEST_TABLE( TABLE=POST1, NOM_PARA='INTE_SIYY', VALE= 9.3124996685922E-01 ,REFERENCE='NON_REGRESSION',)
-TEST_TABLE( TABLE=POST2, NOM_PARA='INTE_SIYY', VALE= 9.3124996685922E-01 ,REFERENCE='AUTRE_ASTER',)
+TEST_TABLE(
+           VALE_CALC=0.93124996685922001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_SIYY',
+           TABLE=POST1,
+           )
 
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=0.931249967,
+           VALE_REFE=0.93124996685922001,
+           NOM_PARA='INTE_SIYY',
+           TABLE=POST2,)
 
 # 3.3 : VALIDATION (AUTRE_ASTER) AVEC CALC_CHAMP :
 #------------------------------------------------
@@ -161,12 +170,27 @@ CALC_CHAMP(reuse=U2, RESULTAT=U2, ENERGIE='ENEL_ELGA',)
 IMPR_RESU(RESU=_F(RESULTAT=U1,NOM_CHAM='ENEL_ELGA', INST=5.))
 IMPR_RESU(RESU=_F(RESULTAT=U2,NOM_CHAM='ENEL_ELGA', INST=5.))
 
-TEST_RESU(RESU=(
-   _F(RESULTAT= U1, INST= 5, NOM_CHAM= 'ENEL_ELGA',CRITERE= 'RELATIF', PRECISION= 1.E-4,
-      MAILLE= 'M16',POINT= 4, NOM_CMP='TOTALE', VALE= 1.43270E+01, REFERENCE='NON_REGRESSION'),
-   _F(RESULTAT= U2, INST= 5, NOM_CHAM= 'ENEL_ELGA',CRITERE= 'RELATIF', PRECISION= 1.E-4,
-      MAILLE= 'M16',POINT= 4, NOM_CMP='TOTALE', VALE= 1.43270E+01, REFERENCE='AUTRE_ASTER'),
-))
-
+TEST_RESU(RESU=(_F(INST=5,
+                   POINT=4,
+                   RESULTAT=U1,
+                   NOM_CHAM='ENEL_ELGA',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=14.327,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   MAILLE='M16',),
+                _F(INST=5,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=4,
+                   RESULTAT=U2,
+                   NOM_CHAM='ENEL_ELGA',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=14.326993982,
+                   VALE_REFE=14.327,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-4,
+                   MAILLE='M16',),
+                ),
+          )
 
 FIN()

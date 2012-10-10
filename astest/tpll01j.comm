@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 # tpll01j.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,21 +102,29 @@ for k in range(nbcalc):
 # Tests de non-regression de ERTH_ELEM/ERTH_ELNO_TEMP et de la
 # connection ASTER/HOMARD
 # La maille MA1 est le tetraedre du groupe TEST_V dans MA[0]
-TEST_RESU(RESU=(
-            _F( RESULTAT = RESU[0],          NUME_ORDRE = 0,
-                NOM_CHAM = 'ERTH_ELEM',      MAILLE = 'MA1',
-                POINT =1,                    PRECISION = 1.E-5,
-                NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 3.1952033260814E-05,
-                VERSION = '11.0.23',              CRITERE='RELATIF')))
-TEST_RESU(RESU=(
-            _F( RESULTAT = RESU[0],          NUME_ORDRE = 0,
-                NOM_CHAM = 'ERTH_ELNO',      MAILLE = 'MA1',
-                GROUP_NO = 'G',              PRECISION = 1.E-5,
-                NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 3.1952033260814E-05,
-                VERSION = '11.0.23',              CRITERE='RELATIF')))
+TEST_RESU(RESU=_F(NUME_ORDRE=0,
+                  POINT=1,
+                  RESULTAT=RESU_0,
+                  NOM_CHAM='ERTH_ELEM',
+                  NOM_CMP='ERTREL',
+                  VALE_CALC=3.1952033260813999E-05,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='MA1',
+                  ),
+          )
 
+TEST_RESU(RESU=_F(NUME_ORDRE=0,
+                  GROUP_NO='G',
+                  RESULTAT=RESU_0,
+                  NOM_CHAM='ERTH_ELNO',
+                  NOM_CMP='ERTREL',
+                  VALE_CALC=3.1952033260813999E-05,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='MA1',
+                  ),
+          )
 
 # Pour trouver le numero de la maille a tester :
 # ----------------------------------------------
@@ -125,12 +133,16 @@ TEST_RESU(RESU=(
 #print 'la maille de TEST_V est : '+M[1].sdj.NOMMAI.get()[num[0]-1]
 
 # La maille MA65 est le tetraedre du groupe TEST_V dans MA[1]
-TEST_RESU(RESU=(
-            _F( RESULTAT = RESU[1],          NUME_ORDRE = 0,
-                NOM_CHAM = 'ERTH_ELEM',      MAILLE = 'M97',
-                POINT =1,
-                NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 2.9540823381852E-05,  PRECISION = 1.E-5,
-                VERSION = '11.0.23', CRITERE='RELATIF')))
+TEST_RESU(RESU=_F(NUME_ORDRE=0,
+                  POINT=1,
+                  RESULTAT=RESU_1,
+                  NOM_CHAM='ERTH_ELEM',
+                  NOM_CMP='ERTREL',
+                  VALE_CALC=2.9540823381852E-05,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='M97',
+                  ),
+          )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALAGE DES PARAMETRES DU MODELE DE WEIBULL
 # ssna103a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -263,62 +263,78 @@ T1=RECA_WEIBULL(
                    )
 
 #
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'PROBA_THE',
-                          VALE = 3.23729E-04),
-               REFERENCE='NON_REGRESSION',
-               NOM_PARA='SIGMA_WEIBULL',
-                    VALE=1.87749E+03)
+TEST_TABLE(
+           VALE_CALC=1877.49,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='PROBA_THE',
+                     VALE=3.2372899999999998E-4,),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'PROBA_THE',
-                          VALE = 9.96997E-01),
-               REFERENCE='NON_REGRESSION',
-               NOM_PARA='SIGMA_WEIBULL',
-               VALE=2.70856E+03)
+TEST_TABLE(
+           VALE_CALC=2708.5599999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='PROBA_THE',
+                     VALE=0.99699700000000002,),
+           )
 
 #
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'TEMP',
-                          VALE = -5.00000E+01),
-               REFERENCE='NON_REGRESSION',
-               NOM_PARA='SIGMA_U',
-                   VALE=2.53596E+03)
+TEST_TABLE(
+           VALE_CALC=2535.96,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_U',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='TEMP',
+                     VALE=-50.0,),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'TEMP',
-                          VALE = -1.00000E+02),
-               REFERENCE='NON_REGRESSION',
-               NOM_PARA='SIGMA_U',
-                   VALE=2.42851E+03)
+TEST_TABLE(
+           VALE_CALC=2428.5100000000002,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_U',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='TEMP',
+                     VALE=-100.0,),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'TEMP',
-                          VALE = -1.50000E+02),
-               REFERENCE='NON_REGRESSION',
-               NOM_PARA='SIGMA_U',
-                   VALE=2.37247E+03)
+TEST_TABLE(
+           VALE_CALC=2372.4699999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIGMA_U',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='TEMP',
+                     VALE=-150.0,),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'TEMP',
-                          VALE = -5.00000E+01),
-               REFERENCE='NON_REGRESSION',
-               NOM_PARA='M',
-                   VALE=2.67267E+01)
+TEST_TABLE(
+           VALE_CALC=26.726700000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='M',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='TEMP',
+                     VALE=-50.0,),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'TEMP',
-                          VALE = -1.00000E+02),
-               REFERENCE='NON_REGRESSION',
-               NOM_PARA='M',
-                   VALE=2.67267E+01)
+TEST_TABLE(
+           VALE_CALC=26.726700000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='M',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='TEMP',
+                     VALE=-100.0,),
+           )
 
-TEST_TABLE(      TABLE=T1,
-                 FILTRE=_F(  NOM_PARA = 'TEMP',
-                          VALE = -1.50000E+02),
-               REFERENCE='NON_REGRESSION',
-               NOM_PARA='M',
-                   VALE=2.67267E+01)
+TEST_TABLE(
+           VALE_CALC=26.726700000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='M',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='TEMP',
+                     VALE=-150.0,),
+           )
 
 FIN()
 #

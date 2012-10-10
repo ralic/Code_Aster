@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION PROJ_CHAMP / COLLOCATION (TRIA, QUAD)  LIN/QUAD
 # zzzz285b.para = tps_job 80 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,11 +175,10 @@ for bord in ('BDRO', 'BCOU',) :
           #----------------------------------
           TERR=POST_ELEM( MINMAX=_F(NOM_CHAM='PRES', NOM_CMP=('X1',), TOUT='OUI',CHAM_GD=ERELA, MODELE=MO1))
           legende=bord+"_"+typmail+"_"+typch
-          TEST_TABLE(TABLE=TERR, NOM_PARA='MAX_X1', VALE=0.0, LEGENDE=legende,
+          TEST_TABLE(TABLE=TERR, NOM_PARA='MAX_X1', VALE_CALC=0.0, VALE_REFE=0.0, LEGENDE=legende,
                      REFERENCE='ANALYTIQUE', CRITERE='ABSOLU', PRECISION=toler[legende]);
 
           DETRUIRE(CONCEPT=_F(NOM=(U1,U2,U1B,EABSO,ERELA,TERR,F1,CHF1)))
        DETRUIRE(CONCEPT=_F(NOM=(MA1,MA2,MO1,CHF2,CHXN,)))
 
 FIN( )
-

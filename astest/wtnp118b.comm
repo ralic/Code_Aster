@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE - REEEQUILIBRAGE GRAVITAIRE D UNE COLONNE - MODELISATION HH2D
 # wtnp118b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -227,36 +227,38 @@ RESU0=STAT_NON_LINE(
 RESU0=CALC_CHAMP(reuse=RESU0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU0)
 
 
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='N1',
-                  VALE=13.94,
+                  NOM_CMP='PRE1',
+                  VALE_CALC=13.94,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=5,
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='N1',
-                  VALE=21.92,
+                  NOM_CMP='PRE1',
+                  VALE_CALC=21.920000000000002,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-
-TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=14,
+TEST_RESU(RESU=_F(NUME_ORDRE=14,
+                  RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='N1',
-                  VALE=22.79,
+                  NOM_CMP='PRE1',
+                  VALE_CALC=22.789999999999999,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
 PR1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             GROUP_NO=('BAS'),

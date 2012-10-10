@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 # ssnv505j.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,45 +180,50 @@ T_REACD=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 GROUP_NO=('B','SA',),
                                 RESULTANTE='DY',),);
 
-TEST_TABLE(TABLE=T_REACD,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.2,),
+TEST_TABLE(
+           VALE_CALC=311.88,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
-           VALE=311.88,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
-
-TEST_TABLE(TABLE=T_REACD,
+           TABLE=T_REACD,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.4,),
-           NOM_PARA='DY',
-           VALE=1498.48,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
+                     VALE=0.20000000000000001,),
+           )
 
-TEST_TABLE(TABLE=T_REACD,
+TEST_TABLE(
+           VALE_CALC=1498.48,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=T_REACD,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           NOM_PARA='DY',
-           VALE=3042.17,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
+                     VALE=0.40000000000000002,),
+           )
 
-TEST_TABLE(TABLE=T_REACD,
+TEST_TABLE(
+           VALE_CALC=3042.1700000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=T_REACD,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8,),
-           NOM_PARA='DY',
-           VALE=2172,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=T_REACD,
+TEST_TABLE(
+           VALE_CALC=2172,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=T_REACD,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.80000000000000004,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2159.73,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=T_REACD,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
-           NOM_PARA='DY',
-           VALE=2159.73,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
+           )
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESUD,
@@ -258,84 +263,99 @@ T_REACC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 # Comparaison formulation discrete
 
-TEST_TABLE(TABLE=T_REACC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.2,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=311.885482359,
+           VALE_REFE=311.88,
            NOM_PARA='DY',
-           VALE=311.88,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=T_REACC,
+           TABLE=T_REACC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.4,),
-           NOM_PARA='DY',
-           VALE=1498.48,
-           REFERENCE='AUTRE_ASTER',);
+                     VALE=0.20000000000000001,),
+           )
 
-TEST_TABLE(TABLE=T_REACC,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 1.49849333E+03,
+           VALE_REFE=1498.48,
+           NOM_PARA='DY',
+           TABLE=T_REACC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           NOM_PARA='DY',
-           VALE=3042.17,
-           REFERENCE='AUTRE_ASTER',);
+                     VALE=0.40000000000000002,),
+           )
 
-TEST_TABLE(TABLE=T_REACC,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 3.04227132E+03,
+           VALE_REFE=3042.1700000000001,
+           NOM_PARA='DY',
+           TABLE=T_REACC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8,),
-           NOM_PARA='DY',
-           VALE=2172,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=T_REACC,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 2.19146649E+03,
+           VALE_REFE=2172,
+           NOM_PARA='DY',
+           TABLE=T_REACC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.80000000000000004,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC= 2.18323879E+03,
+           VALE_REFE=2159.73,
+           NOM_PARA='DY',
+           TABLE=T_REACC,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
-           NOM_PARA='DY',
-           VALE=2159.73,
-           PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
 # Non-regression
 
-TEST_TABLE(TABLE=T_REACC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.2,),
+TEST_TABLE(
+           VALE_CALC=311.88,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
-           VALE=311.88,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
-
-TEST_TABLE(TABLE=T_REACC,
+           TABLE=T_REACC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.4,),
-           NOM_PARA='DY',
-           VALE=1498.49,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
+                     VALE=0.20000000000000001,),
+           )
 
-TEST_TABLE(TABLE=T_REACC,
+TEST_TABLE(
+           VALE_CALC=1498.49,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=T_REACC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           NOM_PARA='DY',
-           VALE=3042.27,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
+                     VALE=0.40000000000000002,),
+           )
 
-TEST_TABLE(TABLE=T_REACC,
+TEST_TABLE(
+           VALE_CALC=3042.27,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=T_REACC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8,),
-           NOM_PARA='DY',
-           VALE=2191.47,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=T_REACC,
+TEST_TABLE(
+           VALE_CALC=2191.4699999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=T_REACC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.80000000000000004,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2183.2399999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=T_REACC,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
-           NOM_PARA='DY',
-           VALE=2183.24,
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.14',);
+           )
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESUC,

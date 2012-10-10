@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 # ssnv186g.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,37 +152,40 @@ IMPR_TABLE(TABLE=LAG);
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
 LAREF=-9.52844E6
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=7.0000000000000001E-3,
+           VALE_CALC=-9.58945362E+06,
+           VALE_REFE=-9.528440E6,
            NOM_PARA='LAGS_C',
-           FILTRE=(_F(NOM_PARA='COOR_X',
-                      CRIT_COMP='EQ',
-                      VALE=10.),
-                   _F(NOM_PARA='COOR_Y',
-                      CRIT_COMP='EQ',
-                      VALE=17.5),
-                  ),
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=0.007,
-           REFERENCE='AUTRE_ASTER');
+           TABLE=LAG,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_X',
+                      VALE=10.0,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_Y',
+                      VALE=17.5,),
+                   ),
+           )
 
 # LA2REF EST LA SOLUTION ANALYTIQUE (PAS DE FROTTEMENT AU POINT MILIEU)
 LA1REF=0.
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 9.52908382E-06,
+           VALE_REFE=0.0,
            NOM_PARA='LAGS_F1',
-           FILTRE=(_F(NOM_PARA='COOR_X',
-                      CRIT_COMP='EQ',
-                      VALE=10.),
-                   _F(NOM_PARA='COOR_Y',
-                      CRIT_COMP='EQ',
-                      VALE=17.5),
-                  ),
-           VALE=LA1REF,
-           CRITERE='ABSOLU',
-           PRECISION=5.E-3,
-           REFERENCE='ANALYTIQUE');
-
+           TABLE=LAG,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_X',
+                      VALE=10.0,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='COOR_Y',
+                      VALE=17.5,),
+                   ),
+           )
 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   

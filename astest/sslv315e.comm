@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv315e.para = tps_job 300 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -212,40 +212,48 @@ IMPR_TABLE(TABLE=TABLST,);
 
 DISTMAX=2./3.
 
-TEST_TABLE(TABLE=TABLSN,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.66666666666666663,
+           VALE_CALC=0.236249711,
+           VALE_REFE=0.0,
            NOM_PARA='X1',
-           PRECISION=DISTMAX,
            TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE= 0.0,
-           VALE_ABS='OUI',)
+           VALE_ABS='OUI',
+           TABLE=TABLSN,
+           )
 
-TEST_TABLE(TABLE=TABLSN,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.66666666666666663,
+           VALE_CALC=0.395039449,
+           VALE_REFE=0.0,
            NOM_PARA='X1',
-           PRECISION=DISTMAX,
            TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE= 0.0,
-           VALE_ABS='OUI',)
+           VALE_ABS='OUI',
+           TABLE=TABLSN,
+           )
 
-TEST_TABLE(TABLE=TABLST,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.66666666666666663,
+           VALE_CALC=0.333846661,
+           VALE_REFE=0.0,
            NOM_PARA='X1',
-           PRECISION=DISTMAX,
            TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE= 0.0,
-           VALE_ABS='OUI',)
+           VALE_ABS='OUI',
+           TABLE=TABLST,
+           )
 
-TEST_TABLE(TABLE=TABLST,
-           REFERENCE='NON_REGRESSION',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.66666666666666663,
+           VALE_CALC=0.270904855,
+           VALE_REFE=0.0,
            NOM_PARA='X1',
-           PRECISION=DISTMAX,
            TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE= 0.0,
-           VALE_ABS='OUI',)
+           VALE_ABS='OUI',
+           TABLE=TABLST,
+           )
 
 FIN();

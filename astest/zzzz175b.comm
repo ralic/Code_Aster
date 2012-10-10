@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER_HOMARD - CAS THM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -297,12 +297,15 @@ for n_adap in range(n_adap_max ) :
     DETRUIRE(INFO=1,CONCEPT = _F(NOM = (DEPLI,DEPLIR,),),);
 # C. Test de non-regression
 # -------------------------
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RESU,   NUME_ORDRE = NOMBRE_DT,
-            NOM_CHAM = 'DEPL',      GROUP_NO = 'A',
-            CRITERE = 'RELATIF',    PRECISION = 1.E-6,
-            NOM_CMP = 'DZ',       VALE = -0.060386667168703,
-            REFERENCE = 'NON_REGRESSION', VERSION = '11.1.19'  ))
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  GROUP_NO='A',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.060386667168703001,
+                  
+                  CRITERE='RELATIF',
+                  ),
           )
 
 FIN();

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS 2D
 # ssnv172b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,16 +106,15 @@ SOLCHAB=STAT_NON_LINE(MODELE=MODEL2D,
                       ARCHIVAGE=_F(LIST_INST=LINST,),);
 
 
-TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=95.999316,
-                   REFERENCE='NON_REGRESSION',),
-                  ),);
-
+TEST_RESU(RESU=_F(INST=3.0,
+                  POINT=1,
+                  RESULTAT=SOLCHAB,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=95.999315999999993,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='MA1',),
+          )
 
 COMPOR1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='MONO_VISC1',
@@ -148,17 +147,16 @@ IMPL1=STAT_NON_LINE(MODELE=MODEL2D,INFO=1,
                      ARCHIVAGE=_F(LIST_INST=LINST,),
                                      );
 
-TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=95.999316,
-                   REFERENCE='AUTRE_ASTER',),
-                 ),);
-
-
+TEST_RESU(RESU=_F(INST=3.0,
+                  REFERENCE='AUTRE_ASTER',
+                  POINT=1,
+                  RESULTAT=IMPL1,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=95.999316284,
+                  VALE_REFE=95.999315999999993,
+                  MAILLE='MA1',),
+          )
 
 # EXPLICITE RUNGE_KUTTA : TEST DE MONO_VISC1, MONO_LINE1, MONO_CINE1
 
@@ -181,17 +179,15 @@ EXPL1=STAT_NON_LINE(MODELE=MODEL2D,
                     );
 
 
-TEST_RESU(RESU=(_F(RESULTAT=EXPL1,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=95.999316,
-                   REFERENCE='AUTRE_ASTER',),
-                 ),);
-
-
+TEST_RESU(RESU=_F(INST=3.0,
+                  REFERENCE='AUTRE_ASTER',
+                  POINT=1,
+                  RESULTAT=EXPL1,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=95.999367039,
+                  VALE_REFE=95.999315999999993,
+                  MAILLE='MA1',),
+          )
 
 FIN();
-

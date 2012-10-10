@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF RMFILE UTILITAI  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF RMFILE UTILITAI  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,12 +20,12 @@
 /* rm ou del suivant les plates-formes                    */
 /* si info  = 1 mode bavard                               */
 /* si info != 1 mode silencieux                           */
+#include "aster.h"
+#include "aster_utils.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "aster.h"
-#include "aster_utils.h"
 
 void DEFSP(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, INTEGER *info)
 {

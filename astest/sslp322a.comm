@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS AVEC 3 TROUS
 # sslp322a.para = tps_job 800 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -193,22 +193,21 @@ for i in range(NPAS+1) :
 
 # TEST DE KI ET KII AU DERNIER PAS
 # les valeurs de reference ont ete obtenues sur aster4 en NEW11.1.17
-TEST_TABLE(TABLE=SIF[NPAS],
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=1.1420451212627001,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='K1',
            TYPE_TEST='MAX',
-           VALE=1.1420451212627,
-           CRITERE='RELATIF',
-           PRECISION=1e-4,
-           REFERENCE='NON_REGRESSION')
-                          
+           TABLE=SIF_35,
+           )
+
 # TEST DE KII PAR RAPPORT A KII MAILLAGE
-TEST_TABLE(TABLE=SIF[NPAS],
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=-0.057066778149686997,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='K2',
            TYPE_TEST='MAX',
-           VALE=-0.057066778149687,
-           CRITERE='RELATIF',
-           PRECISION=1e-4,
-           REFERENCE='NON_REGRESSION')
-
+           TABLE=SIF_35,
+           )
 
 FIN();

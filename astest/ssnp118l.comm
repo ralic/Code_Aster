@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURATION INTERFACE 3D PLAN (PENTA15), LOI CZM_FAT_MIX
 # ssnp118l.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,100 +172,71 @@ U_FAT=STAT_NON_LINE(
 
 
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_FAT,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIXX',
-      VALE      = 6.05826,
-      MAILLE    = 'PRISM',
-      POINT     = 1,
-      INST      = 3.0000E+00,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=3.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_FAT,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=6.058264463,
+                  VALE_REFE=6.0582599999999998,
+                  MAILLE='PRISM',),
+          )
 
+TEST_RESU(RESU=_F(INST=9.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_FAT,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=1.452207065,
+                  VALE_REFE=1.45221,
+                  MAILLE='PRISMDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_FAT,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIGN',
-      VALE      = 1.45221,
-      MAILLE    = 'PRISMDEG',
-      POINT     = 1,
-      INST      = 9.0,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=9.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_FAT,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NS13',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=1.452207065,
+                  VALE_REFE=1.45221,),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_FAT,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'SIGN',
-      VALE      = 1.45221,
-      NOEUD    = 'NS13',
-      INST      = 9.0,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=7.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_FAT,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITX',
+                  VALE_CALC= 2.64470622E-15,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='PRISMDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_FAT,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITX',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'PRISMDEG',
-      POINT     = 1,
-      INST      = 7.0,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=3.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_FAT,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.020495868,
+                  VALE_REFE=0.020495900000000001,
+                  MAILLE='PRISMDEG',),
+          )
 
-
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_FAT,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V1',
-      VALE      = 2.04959E-02,
-      MAILLE    = 'PRISMDEG',
-      POINT     = 1,
-      INST      = 3.0,
-      ),
-    )
-  )
-
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_FAT,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V4',
-      VALE      = 1.94457E-01,
-      MAILLE    = 'PRISMDEG',
-      POINT     = 2,
-      INST      = 3.0,
-      ),
-    )
-  )
-
-
+TEST_RESU(RESU=_F(INST=3.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=2,
+                  RESULTAT=U_FAT,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V4',
+                  VALE_CALC=0.194456663,
+                  VALE_REFE=0.19445699999999999,
+                  MAILLE='PRISMDEG',),
+          )
 
 FIN(FORMAT_HDF='OUI')
-
 

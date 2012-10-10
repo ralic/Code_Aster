@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,14 +180,15 @@ for k in range(1,nbadap+1):
                       OPTION='ERME_NOEU',);
 
   if ( k == 1 ) :
-    TEST_RESU( RESU = (
-            _F(  RESULTAT = RESU[k],  INST=T1_FIN,
-                 NOM_CHAM = 'ERME_NOEU',   NOM_CMP = 'ESTERG1',
-                 CRITERE = 'RELATIF',  PRECISION = 1.E-10,
-                 GROUP_NO = 'NO_TEST',      VALE = 5.1838946544447E-03,
-                 REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
-            ),)
-
+    TEST_RESU(RESU=_F(GROUP_NO='NO_TEST',
+                      INST=250.0,
+                      RESULTAT=RESU_1,
+                      NOM_CHAM='ERME_NOEU',
+                      NOM_CMP='ESTERG1',
+                      VALE_CALC=5.1838946544447003E-3,
+                      CRITERE='RELATIF',
+                      ),
+              )
 
   if ( k < nbadap ) :
 

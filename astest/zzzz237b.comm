@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU MOT-CLE LIAISON_UNILATER PAR UNE CONDITION PORTANT SUR DES DEPLACEMENTS
 # zzzz237b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,107 +152,113 @@ IMPR_TABLE(TABLE=T_FN_HAU,);
 # TESTS ANALTIQUES
 # ----------------
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='A',
                   INST=20.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='A',
-                  VALE=0.0,
-                  CRITERE='ABSOLU',
-                  REFERENCE='ANALYTIQUE',)
-                  );
+                  VALE_CALC=-1.55431223E-15,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='B',
                   INST=20.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='B',
-                  VALE=0.0,
-                  CRITERE='ABSOLU',
-                  REFERENCE='ANALYTIQUE',)
-                  );
+                  VALE_CALC=-3.33066907E-15,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',),
+          )
 
 # PAR RAPPORT A MODELISATION A
 # ----------------------------
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='A',
                   INST=20.0,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='A',
-                  VALE=-4.28571E+00,
-                  REFERENCE='AUTRE_ASTER',)
-                  );
+                  VALE_CALC=-4.285714318,
+                  VALE_REFE=-4.2857099999999999,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='B',
                   INST=20.0,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='B',
-                  VALE=+4.28571E+00,
-                  REFERENCE='AUTRE_ASTER',)
-                  );
+                  VALE_CALC=4.285714274,
+                  VALE_REFE=4.2857099999999999,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='A',
                   INST=20.0,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  GROUP_NO='A',
-                  VALE=+2.19780E+10,
-                  REFERENCE='AUTRE_ASTER',)
-                  );
+                  VALE_CALC= 2.19780220E+10,
+                  VALE_REFE=2.1978000000E10,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='B',
                   INST=20.0,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  GROUP_NO='B',
-                  VALE=+2.19780E+10,
-                  REFERENCE='AUTRE_ASTER',)
-                  );
+                  VALE_CALC= 2.19780220E+10,
+                  VALE_REFE=2.1978000000E10,),
+          )
 
 # NON REGRESSION
 # --------------
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='A',
                   INST=20.0,
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='A',
-                  VALE=-4.28571E+00,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.2.18',)
-                  );
+                  VALE_CALC=-4.2857099999999999,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='B',
                   INST=20.0,
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='B',
-                  VALE=+4.28571E+00,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.2.18',)
-                  );
+                  VALE_CALC=4.2857099999999999,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='A',
                   INST=20.0,
+                  RESULTAT=RESU,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  GROUP_NO='A',
-                  VALE=+2.19780E+10,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.2.18',)
-                  );
+                  VALE_CALC=2.1978000000E10,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
+TEST_RESU(RESU=_F(GROUP_NO='B',
                   INST=20.0,
+                  RESULTAT=RESU,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  GROUP_NO='B',
-                  VALE=+2.19780E+10,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.2.18',)
-                  );
+                  VALE_CALC=2.1978000000E10,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 #--------------------------
 

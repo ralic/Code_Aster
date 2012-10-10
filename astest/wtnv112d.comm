@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE TEST HHM 2D, CALCUL DECOUPLE (S=0.5, DSDP=0)
 # wtnv112d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -197,293 +197,281 @@ RESU0=STAT_NON_LINE(
                          ARCHIVAGE=_F(
                 LIST_INST = ARCHI)
               )
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N1',
-             VALE = -2.8549E-3,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-2.8549000000000001E-3,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N1',
-             VALE = 2.2656E-6,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=2.2656E-06,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N3',
-             VALE = 2.8549E-3,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=2.8549000000000001E-3,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N3',
-             VALE = -2.2656E-6,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=-2.2656E-06,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 2,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N1',
-             VALE = -1.427E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-0.01427,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 2,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N1',
-             VALE = 1.1328E-5,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=1.1328000000000001E-05,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 2,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N3',
-             VALE = 1.427E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=0.01427,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 2,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N3',
-             VALE = -1.1328E-5,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=-1.1328000000000001E-05,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N1',
-             VALE = -2.8549E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-0.028549000000000001,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N1',
-             VALE = 2.2656E-5,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=2.2656000000000001E-05,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N3',
-             VALE = 2.8549E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=0.028549000000000001,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N3',
-             VALE = -2.2656E-5,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=-2.2656000000000001E-05,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 4,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N1',
-             VALE = -1.427E-1,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-0.142740485,
+                  VALE_REFE=-0.14269999999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 4,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N1',
-             VALE = 1.133E-4,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=1.133E-4,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 4,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N3',
-             VALE = 1.427E-1,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=0.142740486,
+                  VALE_REFE=0.14269999999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 4,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N3',
-             VALE = -1.133E-4,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=-1.133E-4,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 8,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N1',
-             VALE = -1.424E+1,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-14.240679676,
+                  VALE_REFE=-14.24,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 8,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N1',
-             VALE = 1.130E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=0.011299999999999999,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 8,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N3',
-             VALE = 1.424E+1,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=14.240686663,
+                  VALE_REFE=14.24,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 8,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N3',
-             VALE = -1.130E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-4)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=8,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=-0.011299999999999999,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 16,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N1',
-             VALE = -4.995E3,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=16,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-4.99506289E+03,
+                  VALE_REFE=-4995.0,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 16,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N1',
-             VALE = 3.9647,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-3)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=16,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=3.9647000000000001,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 16,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'N3',
-             VALE = 4.997E3,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=16,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 4.99692527E+03,
+                  VALE_REFE=4997.0,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  ),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 16,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE2',
-             NOEUD = 'N3',
-             VALE = -3.9647,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-3)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=16,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE2',
+                  VALE_CALC=-3.9647000000000001,
+                  TOLE_MACHINE=1.E-3,
+                  CRITERE='ABSOLU',
+                  ),
+          )
 
 FIN()
 #

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MONOCRISTAL OCTAEDRIQUE MERIC-CAILLETAUD EXPLICITE ET IMPLICITE AVEC SIMU_POINT_MAT
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv171b.para = tps_job 600 mem_job 256Mo ncpus 1 liste_test R
@@ -87,42 +87,58 @@ MONOIMPL=SIMU_POINT_MAT(INFO=2,
 #IMPR_TABLE(TABLE=MONOIMPL)
 
 
-TEST_TABLE(TABLE=MONOIMPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-210.000000250,
+           VALE_REFE=-210.0,
            NOM_PARA='SIXX',
-           VALE=-210.0,
-           REFERENCE='ANALYTIQUE',)
-           
-TEST_TABLE(TABLE=MONOIMPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='EPXX',
-                   VALE=-0.0018908,
-                   PRECISION=0.001,
-                   REFERENCE='NON_REGRESSION',)
-                   
-TEST_TABLE(TABLE=MONOIMPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='EPYY',
-                   VALE=0.00050265,
-                   PRECISION=0.001,
-                   REFERENCE='NON_REGRESSION',)
-                   
-TEST_TABLE(TABLE=MONOIMPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='V2',
-                   VALE=6.88473E-5,
-                   PRECISION=0.002,
-                   REFERENCE='NON_REGRESSION',)
+           TABLE=MONOIMPL,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-1.8908E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='EPXX',
+           TABLE=MONOIMPL,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.0264999999999999E-4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='EPYY',
+           TABLE=MONOIMPL,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=2.E-3,
+           VALE_CALC= 6.88473258E-05,
+           VALE_REFE=6.8847299999999994E-05,
+           NOM_PARA='V2',
+           TABLE=MONOIMPL,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
 
 # rotation de reseau
-TEST_TABLE(TABLE=MONOIMPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='V58',
-                   VALE=1.88E-4, # rotation de reseau
-                   PRECISION=0.002,
-                   REFERENCE='NON_REGRESSION',)
-                   
-
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=2.E-3,
+           VALE_CALC= 1.88094391E-04,
+           VALE_REFE=1.8799999999999999E-4,
+           NOM_PARA='V58',
+           TABLE=MONOIMPL,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
 
 # explicite
 
@@ -152,34 +168,49 @@ MONOEXPL=SIMU_POINT_MAT(INFO=2,
                                               
 #IMPR_TABLE(TABLE=MONOEXPL)
 
-TEST_TABLE(TABLE=MONOEXPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-            NOM_PARA='SIXX',
-            VALE=-210.0,
-            PRECISION=1.E-6,
-            REFERENCE='ANALYTIQUE',)
-                   
-TEST_TABLE(TABLE=MONOEXPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-           NOM_PARA='EPXX',
-           VALE=-0.0018908,
-           PRECISION=0.007,
-           REFERENCE='AUTRE_ASTER',)
-           
-TEST_TABLE(TABLE=MONOEXPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-           NOM_PARA='EPYY',
-           VALE=0.00050265,
-           PRECISION=0.007,                       
-           REFERENCE='AUTRE_ASTER',)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC=-209.999999076,
+           VALE_REFE=-210.0,
+           NOM_PARA='SIXX',
+           TABLE=MONOEXPL,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
 
-                   
-TEST_TABLE(TABLE=MONOIMPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='V2',
-                   VALE=6.88473E-5,
-                   PRECISION=0.002,
-                   REFERENCE='NON_REGRESSION',)
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=7.0000000000000001E-3,
+           VALE_CALC=-1.87872099E-03,
+           VALE_REFE=-1.8908E-3,
+           NOM_PARA='EPXX',
+           TABLE=MONOEXPL,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=7.0000000000000001E-3,
+           VALE_CALC= 5.00782998E-04,
+           VALE_REFE=5.0264999999999999E-4,
+           NOM_PARA='EPYY',
+           TABLE=MONOEXPL,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=2.E-3,
+           VALE_CALC= 6.88473258E-05,
+           VALE_REFE=6.8847299999999994E-05,
+           NOM_PARA='V2',
+           TABLE=MONOIMPL,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
 
 # implicite avec NEWTON_PERT
 MONOIMPP=SIMU_POINT_MAT(INFO=2,
@@ -201,43 +232,59 @@ MONOIMPP=SIMU_POINT_MAT(INFO=2,
 #IMPR_TABLE(TABLE=MONOIMPP)
 
 
-TEST_TABLE(TABLE=MONOIMPP,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-209.999999824,
+           VALE_REFE=-210.0,
            NOM_PARA='SIXX',
-           VALE=-210.0,
-           REFERENCE='ANALYTIQUE',)
-           
-TEST_TABLE(TABLE=MONOIMPP,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='EPXX',
-                   VALE=-0.0018908,
-                   PRECISION=0.001,
-                   REFERENCE='NON_REGRESSION',)
-                   
-TEST_TABLE(TABLE=MONOIMPP,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='EPYY',
-                   VALE=0.00050265,
-                   PRECISION=0.001,
-                   REFERENCE='NON_REGRESSION',)
-                   
-TEST_TABLE(TABLE=MONOIMPP,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='V2',
-                   VALE=6.88473E-5,
-                   PRECISION=0.002,
-                   REFERENCE='NON_REGRESSION',)
+           TABLE=MONOIMPP,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-1.8908E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='EPXX',
+           TABLE=MONOIMPP,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.0264999999999999E-4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='EPYY',
+           TABLE=MONOIMPP,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=2.E-3,
+           VALE_CALC= 6.88472983E-05,
+           VALE_REFE=6.8847299999999994E-05,
+           NOM_PARA='V2',
+           TABLE=MONOIMPP,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
 
 # rotation de reseau
-TEST_TABLE(TABLE=MONOIMPP,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='V58',
-                   VALE=1.88E-4, # rotation de reseau
-                   PRECISION=0.002,
-                   REFERENCE='NON_REGRESSION',)
-                   
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=2.E-3,
+           VALE_CALC= 1.88094316E-04,
+           VALE_REFE=1.8799999999999999E-4,
+           NOM_PARA='V58',
+           TABLE=MONOIMPP,
+           FILTRE=_F(PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=1.5,),
+           )
 
 FIN()
-
 
 

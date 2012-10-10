@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION D'UN BARREAU FRAGILE - PRED_ELAS - BETON_DOUBLE_DP
 # ssnv147f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,23 +158,23 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
              )
 
 
-TEST_RESU(RESU=(  _F(
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 41,
-               GROUP_NO = 'E',
-               REFERENCE = 'NON_REGRESSION',
-               NOM_CHAM = 'DEPL',
-               NOM_CMP = 'DZ',
-               VALE = 1.08163518E-04), _F(
-               RESULTAT = REPONSE,
-               NUME_ORDRE = 41,
-               MAILLE = 'M1',
-               POINT = 1,
-               REFERENCE = 'NON_REGRESSION',
-               NOM_CHAM = 'SIEF_ELGA',
-               NOM_CMP = 'SIZZ',
-               VALE = 2.94149327E0))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=41,
+                   GROUP_NO='E',
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=1.08163518E-4,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=41,
+                   POINT=1,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=2.94149327,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                ),
+          )
 
 FIN()
 #

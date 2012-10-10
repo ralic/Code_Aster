@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #  DATE   : 27/10/03
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : FLEXION D'UNE DALLE EN BETON ARME (MODELE GLRC) APPUYEE SUR 2 COTES:
@@ -176,44 +176,43 @@ RESU=STAT_NON_LINE( MODELE=MOD,
 RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=RESU)
 
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 2,
-               NOM_CHAM = 'DEPL',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.015,
-               GROUP_NO = 'A1',
-               NOM_CMP = 'DZ',
-               VALE = 2.433E-4,
-               REFERENCE = 'ANALYTIQUE'),
-             ),
-           );
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 2,
-               NOM_CHAM = 'EFGE_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.025,
-               GROUP_NO = 'A1',
-               MAILLE='M133',
-               NOM_CMP = 'MXX',
-               VALE = 4050.,
-               REFERENCE = 'ANALYTIQUE'),
-             ),
-           );
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 2,
-               NOM_CHAM = 'DEGE_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.01,
-               GROUP_NO = 'A1',
-               MAILLE='M133',
-               NOM_CMP = 'KXX',
-               VALE = 7.21E-4,
-               REFERENCE = 'ANALYTIQUE'),
-             ),
-            );
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC= 2.46266521E-04,
+                  VALE_REFE=2.433E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=0.014999999999999999,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='MXX',
+                  VALE_CALC= 3.96607481E+03,
+                  VALE_REFE=4050.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.025000000000000001,
+                  MAILLE='M133',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEGE_ELNO',
+                  NOM_CMP='KXX',
+                  VALE_CALC= 7.22666138E-04,
+                  VALE_REFE=7.2099999999999996E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,
+                  MAILLE='M133',),
+          )
 
 tab2=POST_COQUE(RESULTAT=RESU,CHAM='EFFORT',
                 INST=0.5,
@@ -224,12 +223,23 @@ tab2=POST_COQUE(RESULTAT=RESU,CHAM='EFFORT',
                             _F(COOR=(.1 ,.1,0.,),),
                             ))
 
-TEST_TABLE(TABLE=tab2,NOM_PARA='MXX',REFERENCE='NON_REGRESSION',
-           FILTRE=_F(NOM_PARA='COOR_X',CRIT_COMP='MAXI',),
-           VALE=1.38572E+03);
-TEST_TABLE(TABLE=tab2,NOM_PARA='MXY',REFERENCE='NON_REGRESSION',
-           FILTRE=_F(NOM_PARA='COOR_X',CRIT_COMP='MINI',),
-           VALE=2.9076E+00);
+TEST_TABLE(
+           VALE_CALC=1385.72,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MXX',
+           TABLE=tab2,
+           FILTRE=_F(CRIT_COMP='MAXI',
+                     NOM_PARA='COOR_X',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2.9076,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MXY',
+           TABLE=tab2,
+           FILTRE=_F(CRIT_COMP='MINI',
+                     NOM_PARA='COOR_X',),
+           )
 
 tab3=POST_COQUE(RESULTAT=RESU,CHAM='DEFORMATION',
                 INST=1.,
@@ -240,11 +250,22 @@ tab3=POST_COQUE(RESULTAT=RESU,CHAM='DEFORMATION',
                             _F(COOR=(.1 ,.1,0.,1.,),),
                             ))
 
-TEST_TABLE(TABLE=tab3,NOM_PARA='EPXX',REFERENCE='NON_REGRESSION',
-           FILTRE=_F(NOM_PARA='COOR_X',CRIT_COMP='MAXI',),
-           VALE=5.0983E-04);
-TEST_TABLE(TABLE=tab3,NOM_PARA='EPXY',REFERENCE='NON_REGRESSION',
-           FILTRE=_F(NOM_PARA='COOR_X',CRIT_COMP='MINI',),
-           VALE=1.3297E-06);
+TEST_TABLE(
+           VALE_CALC=5.0982999999999996E-4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='EPXX',
+           TABLE=tab3,
+           FILTRE=_F(CRIT_COMP='MAXI',
+                     NOM_PARA='COOR_X',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.3296999999999999E-06,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='EPXY',
+           TABLE=tab3,
+           FILTRE=_F(CRIT_COMP='MINI',
+                     NOM_PARA='COOR_X',),
+           )
 
 FIN();

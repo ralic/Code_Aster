@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM, CHARGEMENTS VOLUMIQUES
 # ssnp138b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -251,38 +251,42 @@ for i in range(nbcalc) :
 
   TEST_TABLE(TABLE=SI1CH1[i],
              NOM_PARA='K1',
-             VALE=K1_1[i],
+             VALE_CALC=K1_1[i],
              CRITERE='RELATIF',
-             REFERENCE='NON_REGRESSION',);
+             TOLE_MACHINE=1.e-3,);
 
   TEST_TABLE(TABLE=SI2CH1[i],
              NOM_PARA='K1',
-             VALE=K1_2[i],
+             VALE_CALC=K1_2[i],
              CRITERE='RELATIF',
-             REFERENCE='NON_REGRESSION',);
+             TOLE_MACHINE=1.e-3,);
 
 
   TEST_TABLE(TABLE=SI1CH2[i],
               NOM_PARA='K1',
-              VALE=K1_1[i],
+              VALE_CALC=K1_1[i],
               CRITERE='RELATIF',
-              REFERENCE='NON_REGRESSION',);
+              TOLE_MACHINE=1.e-3,);
 
   TEST_TABLE(TABLE=SI2CH2[i],
              NOM_PARA='K1',
-             VALE=K1_2[i],
+             VALE_CALC=K1_2[i],
              CRITERE='RELATIF',
-             REFERENCE='NON_REGRESSION',);
+             TOLE_MACHINE=1.e-3,);
 
   TEST_TABLE(TABLE=TG1CH1[i],
              NOM_PARA='G',
-             VALE=GR[i],
+             VALE_CALC=GR[i],  #TODO vale_calc
+             TOLE_MACHINE=1.e-3,
+             VALE_REFE=GR[i],
              CRITERE='RELATIF',
              REFERENCE='AUTRE_ASTER',);
 
   TEST_TABLE(TABLE=TG1CH2[i],
              NOM_PARA='G',
-             VALE=GR[i],
+             VALE_CALC=GR[i],  #TODO vale_calc
+             TOLE_MACHINE=1.e-3,
+             VALE_REFE=GR[i],
              CRITERE='RELATIF',
              REFERENCE='AUTRE_ASTER',);
 
@@ -313,17 +317,17 @@ for i in range(nbcalc) :
 
   TEST_TABLE(TABLE=PK1[i],
               NOM_PARA='K1',
-              VALE=PK[i],
+              VALE_CALC=PK[i],
               CRITERE='RELATIF',
-              REFERENCE='NON_REGRESSION',
+              TOLE_MACHINE=1.E-3,
               );
 
-  TEST_TABLE(TABLE=PK2[i],
-              NOM_PARA='K1',
-              VALE=PK[i],
-              CRITERE='RELATIF',
-              REFERENCE='NON_REGRESSION',
-              );
 
+  TEST_TABLE(CRITERE='RELATIF',
+             VALE_CALC=PK[i],
+             TOLE_MACHINE=1.E-3,
+             NOM_PARA='K1',
+             TABLE=PK2[i],
+             )
 
 FIN();

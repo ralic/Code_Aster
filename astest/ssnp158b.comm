@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ADAPTATION DE MAILLAGE EN NON-LINEAIRE
 # ssnp158b.para = tps_job 200 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,27 +138,25 @@ RESUNL=CALC_CHAMP(reuse=RESUNL,
                   CONTRAINTE='SIGM_NOEU',
                   VARI_INTERNE='VARI_NOEU',);
 
-TEST_RESU(RESU=(_F(RESULTAT=RESUNL,
-                   INST=10.,
+TEST_RESU(RESU=(_F(GROUP_NO='B',
+                   INST=10.0,
+                   RESULTAT=RESUNL,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   GROUP_NO='B',
-                   VALE=250.41027791083,
-                   PRECISION=1.E-6,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=RESUNL,
-                   INST=10.,
+                   VALE_CALC=250.41027791082999,
+                   
+                   ),
+                _F(GROUP_NO='A',
+                   INST=10.0,
+                   RESULTAT=RESUNL,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   GROUP_NO='A',
-                   VALE=-214.5870608019,
-                   PRECISION=1.E-6,
-                   REFERENCE='NON_REGRESSION',),))
+                   VALE_CALC=-214.58706080190001,
+                   
+                   ),
+                ),
+          )
 
-
-
-
-      
 SIGBAS2=MACR_LIGN_COUPE(RESULTAT=RESUNL,
                         INST=10.,
                         NOM_CHAM='VARI_NOEU',

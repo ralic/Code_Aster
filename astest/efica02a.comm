@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DURAND C.DURAND
 # TITRE  SUPERVISEUR : POURSUITE, espace de noms, acces python-jeveux
 # efica02a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -61,13 +61,16 @@ FO4=DEFI_FONCTION(  NOM_PARA='X',
                     NOM_RESU='Y',
                     VALE=lv )
 
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION  = FO4,  PRECISION = 1.E-08,
-                    VALE_PARA = 10.,  VALE_REFE = 11.,
-                    REFERENCE = 'NON_REGRESSION'      ),
-               _F(  FONCTION  = FO4,  PRECISION = 1.E-08,
-                    VALE_PARA = 12.,  VALE_REFE = 13.,
-                    REFERENCE = 'NON_REGRESSION'      ), ) )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=11.0,
+                         VALE_PARA=10.0,
+                         FONCTION=FO4,
+                         ),
+                      _F(VALE_CALC=13.0,
+                         VALE_PARA=12.0,
+                         FONCTION=FO4,
+                         ),
+                      ),
+              )
 
 # on passe dans la programmation de la methode Parametres de la SD fonction
 # on ne teste pas les valeurs retournees

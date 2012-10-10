@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  TEST LOI DE COMPORTEMENT HAYHURST
 # comp002l.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -200,26 +200,41 @@ IMPR_TABLE(TABLE=RESU[0])
 
                 
 # TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
-TEST_TABLE(TABLE=RESU[0],
-           NOM_PARA='V7',VALE=7.32522901424E-03,
-           FILTRE=_F(NOM_PARA='INST',VALE=t_0),
-           REFERENCE='NON_REGRESSION',);     
+TEST_TABLE(
+           VALE_CALC=7.3252290142399997E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V7',
+           TABLE=RESU_0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=625.0,),
+           )
 
-TEST_TABLE(TABLE=RESU[0],
-           NOM_PARA='V11',VALE=0.88559611039819,
-           FILTRE=_F(NOM_PARA='INST',VALE=t_0),
-           REFERENCE='NON_REGRESSION',);     
+TEST_TABLE(
+           VALE_CALC=0.88559611039818997,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V11',
+           TABLE=RESU_0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=625.0,),
+           )
 
-TEST_TABLE(TABLE=RESU[0],
-           NOM_PARA='VMIS',VALE=1.99483908727E+07,
-           FILTRE=_F(NOM_PARA='INST',VALE=t_0),
-           REFERENCE='NON_REGRESSION',);     
-           
-TEST_TABLE(TABLE=RESU[0],
-           NOM_PARA='SIXX',VALE=1.5303240987744E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=t_0),
-           REFERENCE='NON_REGRESSION',);     
+TEST_TABLE(
+           VALE_CALC=1.9948390872699998E7,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VMIS',
+           TABLE=RESU_0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=625.0,),
+           )
 
+TEST_TABLE(
+           VALE_CALC=1.5303240987744001E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXX',
+           TABLE=RESU_0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=625.0,),
+           )
 
 FIN()
 

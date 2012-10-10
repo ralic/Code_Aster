@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  VALIDATION INTE_MAIL_3D SUR MAILLAGES PARTICULIERS
 # zzzz167b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,37 +73,66 @@ TN1=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'ch1',
                                 OPERATION = 'EXTRACTION'),
                   ) ;
 
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00,
-                      CRITERE='ABSOLU'),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.94060E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=3.88109E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=5.82177E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=7.76235E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN1,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=9.70280E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN1,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=19.405999999999999,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=38.810899999999997,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=58.217700000000001,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=77.623500000000007,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=97.028000000000006,),
+           )
 
 TN2=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'ch2',
                                 CHEMIN = ch2,
@@ -112,32 +141,56 @@ TN2=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'ch2',
                                 OPERATION = 'EXTRACTION'),
                   ) ;
 
-TEST_TABLE( TABLE=TN2,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00,
-                      CRITERE='ABSOLU'),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN2,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.94049E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN2,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=3.88117E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN2,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=5.82176E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN2,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=7.76220E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN2,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=19.404900000000001,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=38.811700000000002,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=58.217599999999997,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=77.622,),
+           )
 
 TN3=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'ch3',
                                 CHEMIN = ch3,
@@ -146,27 +199,46 @@ TN3=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'ch3',
                                 OPERATION = 'EXTRACTION'),
                   ) ;
 
-TEST_TABLE( TABLE=TN3,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00,
-                      CRITERE='ABSOLU'),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN3,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.94049E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN3,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=3.88117E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN3,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=5.82176E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN3,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN3,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=19.404900000000001,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN3,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=38.811700000000002,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN3,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=58.217599999999997,),
+           )
 
 TN4=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'ch4',
                                 CHEMIN = ch4,
@@ -175,22 +247,36 @@ TN4=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'ch4',
                                 OPERATION = 'EXTRACTION'),
                   ) ;
 
-TEST_TABLE( TABLE=TN4,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00,
-                      CRITERE='ABSOLU'),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN4,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.94049E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN4,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=3.88117E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN4,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN4,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=19.404900000000001,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN4,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=38.811700000000002,),
+           )
 
 TN5=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'ch5',
                                 CHEMIN = ch5,
@@ -199,16 +285,25 @@ TN5=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'ch5',
                                 OPERATION = 'EXTRACTION'),
                   ) ;
 
-TEST_TABLE( TABLE=TN5,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00,
-                      CRITERE='ABSOLU'),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
-TEST_TABLE( TABLE=TN5,
-            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.94049E+01),
-            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
-            NOM_PARA ='TEMP',VALE=7.,
-          ) ;
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN5,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-08,
+           VALE_CALC=7.000000000,
+           VALE_REFE=7.0,
+           NOM_PARA='TEMP',
+           TABLE=TN5,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=19.404900000000001,),
+           )
 
 FIN( ) ;

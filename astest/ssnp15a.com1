@@ -29,4 +29,3 @@ dt = val_inst[1:len(val_inst)] - val_inst[0:-1]
 assert min(dt) > 0., dt                   # croissance des pas de temps
 
 FIN()
-

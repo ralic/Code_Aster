@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2012   AUTEUR NICOLAS G.NICOLAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COUPLAGE ASTER_HOMARD - PENTAEDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -257,19 +257,19 @@ for num_mail in range(nb_mail_max) :
                       #MAILLE='M43',
                       #NOM_CMP = 'X1',
                       #VALE = 1.5,
-                      #REFERENCE = 'NON_REGRESSION',
+                      #REFERENCE = 'NON_DEFINI',
                       #VERSION='11.1.8',) ),
                    #),
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='P',
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO='P',
-                  VALE=0.063394275254981,
+                  VALE_CALC=0.063394275254980995,
+                  
                   CRITERE='RELATIF',
-                  PRECISION=1E-06,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='11.2.2',),);
+                  ),
+          )
 
 FIN( )

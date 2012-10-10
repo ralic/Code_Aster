@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA REACTUALISATION DE L'ANGLE DE VRILLE DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,23 +124,24 @@ U1=STAT_NON_LINE(MODELE=MOPOU,
                  );
 
 
-TEST_RESU(RESU=(_F(RESULTAT=U1,
-                   INST=1.0,
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
                    NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
                    NOEUD='N006',
-                   VALE=1.50847E-01,
+                   NOM_CMP='DY',
+                   VALE_CALC=0.150846761,
+                   VALE_REFE=0.15084700000000001,
                    CRITERE='RELATIF',
-                   PRECISION=1.0E-5,
-                   VERSION='11.1.20',
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=U1,
-                   INST=1.1,
-                   PARA='ITER_GLOB',
-                   VALE_I=1,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 0.,
-                   REFERENCE='NON_REGRESSION',),
-                ),);
+                   PRECISION=1.0000000000000001E-05,
+                   ),
+                _F(PARA='ITER_GLOB',
+                   VALE_CALC_I=1,
+                   INST=1.1000000000000001,
+                   RESULTAT=U1,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 # MODELISATION A: MAILLAGE HEXAEDRIQUE
 # sslv115a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -178,32 +178,49 @@ FORC2_DX=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='REAC_NODA',),);
 
 
-TEST_TABLE(TABLE=FORC_DZ,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC=132.00000000000,
+           VALE_REFE=132.0,
+           TOLE_MACHINE=1.E-10,
            NOM_PARA='DZ',
-           CRITERE = 'RELATIF',
-           PRECISION = 1.E-10,
-           REFERENCE='ANALYTIQUE',
-           VALE=132.0,);
+           TABLE=FORC_DZ,)
 
-TEST_TABLE(TABLE=FORC2_DX,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC=132.00000000000,
+           VALE_REFE=132.0,
+           TOLE_MACHINE=1.E-10,
            NOM_PARA='DX',
-           CRITERE = 'RELATIF',
-           PRECISION = 1.E-10,
-           REFERENCE='ANALYTIQUE',
-           VALE=132.0,);
-
-
+           TABLE=FORC2_DX,)
 
 # CONTRAINTES
-TEST_RESU(RESU=(
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='ANALYTIQUE',
-         RESULTAT = EVOLNOLI,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 2,
-         MAILLE='toto1',POINT=1,   NOM_CMP = 'SIXX',      VALE = -1.66666666667E+05     ),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='ANALYTIQUE',
-         RESULTAT = EVOLNOLI,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 2,
-         MAILLE='SG001001',POINT=1,   NOM_CMP = 'N',      VALE = 2.E+05     ),
-         ),)
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOLNOLI,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-1.66666667E+05,
+                   VALE_REFE=-1.6666666666700001E5,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='toto1',),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOLNOLI,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC= 2.00000000E+05,
+                   VALE_REFE=2.E5,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='SG001001',),
+                ),
+          )
 
 # DEFORMATION DANS LE BETON
 
@@ -211,11 +228,19 @@ EVOLNOLI=CALC_CHAMP(reuse=EVOLNOLI,
                    RESULTAT=EVOLNOLI,
                     DEFORMATION=('EPSI_ELNO'))
 
-TEST_RESU(RESU=(
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-5, REFERENCE='ANALYTIQUE',
-         RESULTAT = EVOLNOLI,   NOM_CHAM = 'EPSI_ELNO',     NUME_ORDRE = 2,
-         MAILLE='toto1',NOEUD='NB001001',   NOM_CMP = 'EPXX',      VALE = -5.5555555556E-6    ),
-         ),)
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='NB001001',
+                  NOM_CMP='EPXX',
+                  VALE_CALC=-5.55555556E-06,
+                  VALE_REFE=-5.5555555555999996E-06,
+                  CRITERE='RELATIF',
+                  PRECISION=1.0000000000000001E-05,
+                  MAILLE='toto1',),
+          )
+
 # -----------------------------------------------------------------------------------------------
 
 FIN();

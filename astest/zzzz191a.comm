@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE STAT_NON_LINE + AFFE_CHAR_CINE
 # zzzz191a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,19 +97,40 @@ STAT_NON_LINE(  reuse=U2CI, MODELE=MO, CHAM_MATER=CM,
 
 # validation sur un noeud :
 #---------------------------
-TEST_RESU(RESU=(
-  _F( RESULTAT = U2LA,NOM_CHAM = 'DEPL',NUME_ORDRE = 3,
-        NOEUD = 'N1',   NOM_CMP = 'DX',  VALE = 8.750E+00, REFERENCE='ANALYTIQUE',),
-  _F( RESULTAT = U2LA,NOM_CHAM = 'SIEF_ELGA',NUME_ORDRE = 4,MAILLE = 'M6',
-      POINT=1,  NOM_CMP = 'SIXX',  VALE = 1.97978E+01, REFERENCE='NON_REGRESSION',),
-
-  _F( RESULTAT = U2CI,NOM_CHAM = 'DEPL',NUME_ORDRE = 3,
-        NOEUD = 'N1',   NOM_CMP = 'DX',  VALE = 8.750E+00, REFERENCE='AUTRE_ASTER',),
-  _F( RESULTAT = U2LA,NOM_CHAM = 'SIEF_ELGA',NUME_ORDRE = 4,MAILLE = 'M6',
-      POINT=1,  NOM_CMP = 'SIXX',  VALE = 1.97978E+01, REFERENCE='AUTRE_ASTER',),
-
-)  )
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2LA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=8.750000000,
+                   VALE_REFE=8.75,),
+                _F(NUME_ORDRE=4,
+                   POINT=1,
+                   RESULTAT=U2LA,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=19.797799999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M6',),
+                _F(NUME_ORDRE=3,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2CI,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=8.750000000,
+                   VALE_REFE=8.75,),
+                _F(NUME_ORDRE=4,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=U2LA,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=19.797824676,
+                   VALE_REFE=19.797799999999999,
+                   MAILLE='M6',),
+                ),
+          )
 
 FIN();
-

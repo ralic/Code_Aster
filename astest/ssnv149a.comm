@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION BIAXIALE EN 3D - COMPORTEMENT ENDO_ISOT_BETON
 # ssnv149a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,28 +120,31 @@ SOLNL2=STAT_NON_LINE(TITRE='TEST LOI ENDO_ISOT_BETON',
                 CONVERGENCE=_F(ITER_GLOB_MAXI = 100)
                )
 
-TEST_RESU(RESU=(  _F(
-               RESULTAT = SOLNL2,
-               NUME_ORDRE = 17,
-               NOEUD = 'n2',
-               NOM_CHAM = 'DEPL',
-               NOM_CMP = 'DX',
-               VALE = -8.006E-06), _F(
-               RESULTAT = SOLNL2,
-               NUME_ORDRE = 17,
-               MAILLE = 'ma1',
-               POINT = 1,
-               NOM_CHAM = 'SIEF_ELGA',
-               NOM_CMP = 'SIXX',
-               VALE = -2.03628E+07), _F(
-               RESULTAT = SOLNL2,
-               NUME_ORDRE = 17,
-               MAILLE = 'ma1',
-               POINT = 1,
-               NOM_CHAM = 'VARI_ELGA',
-               NOM_CMP = 'V1',
-               VALE = 8.14067E-01))
-             )
+TEST_RESU(RESU=(_F(NUME_ORDRE=17,
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='n2',
+                   NOM_CMP='DX',
+                   VALE_CALC=-8.0059999999999992E-06,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=17,
+                   POINT=1,
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-2.0362800E7,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='ma1',),
+                _F(NUME_ORDRE=17,
+                   POINT=1,
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.81406699999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='ma1',),
+                ),
+          )
 
 FIN()
 #

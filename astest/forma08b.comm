@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP RUPTURE : POUTRE DCB 3D ELASTIQUE
 # forma08b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -271,15 +271,16 @@ IMPR_RESU(  FORMAT  = 'MED',
 # TEST
 ##########################################################################
 #
-TEST_TABLE(TABLE=FRES,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=4.852245498,
+           VALE_REFE=4.71,
            NOM_PARA='DY',
+           TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=4.5,),
-           VALE=4.71,
-           PRECISION=0.05,
-           CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE' )
+           )
 
 FIN(FORMAT_HDF='OUI')
-
 

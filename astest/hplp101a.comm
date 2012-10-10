@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 # hplp101a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -323,77 +323,101 @@ GK05=CALC_G(        RESULTAT=RESU,
 #
 #
 
-TEST_TABLE(       TABLE=G00,
-                       NOM_PARA='G',
-                           VALE=2.4969E+3,
-                      PRECISION=0.05    )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.59860846E+03,
+           VALE_REFE=2496.9000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G00,)
 
-TEST_TABLE(       TABLE=GK00,
-                       NOM_PARA='K2',
-                           VALE=2.234704E7,
-                      PRECISION=0.05    )
-
-#
-
-TEST_TABLE(       TABLE=G01,
-                       NOM_PARA='G',
-                           VALE=2.4969E+3,
-                      PRECISION=0.05    )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.28140293E+07,
+           VALE_REFE=2.2347040E7,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K2',
+           TABLE=GK00,)
 
 #
 
-TEST_TABLE(       TABLE=GK01,
-                       NOM_PARA='K2',
-                           VALE=2.234704E7,
-                      PRECISION=0.05     )
-
-TEST_TABLE(       TABLE=G02,
-                       NOM_PARA='G',
-                           VALE=2.4969E+3,
-                      PRECISION=0.05    )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.59914039E+03,
+           VALE_REFE=2496.9000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G01,)
 
 #
 
-TEST_TABLE(       TABLE=GK02,
-                       NOM_PARA='K2',
-                           VALE=2.234704E7,
-                      PRECISION=0.05     )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.28134799E+07,
+           VALE_REFE=2.2347040E7,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K2',
+           TABLE=GK01,)
 
-TEST_TABLE(       TABLE=G03,
-                       NOM_PARA='G',
-                           VALE=2.4969E+3,
-                      PRECISION=0.05    )
-
-#
-
-TEST_TABLE(       TABLE=GK03,
-                       NOM_PARA='K2',
-                           VALE=2.234704E7,
-                      PRECISION=0.05     )
-
-TEST_TABLE(       TABLE=G04,
-                       NOM_PARA='G',
-                           VALE=2.4969E+3,
-                      PRECISION=0.05    )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.59925386E+03,
+           VALE_REFE=2496.9000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G02,)
 
 #
 
-TEST_TABLE(       TABLE=GK04,
-                       NOM_PARA='K2',
-                           VALE=2.234704E7,
-                      PRECISION=0.05     )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.28140534E+07,
+           VALE_REFE=2.2347040E7,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K2',
+           TABLE=GK02,)
 
-TEST_TABLE(       TABLE=G05,
-                       NOM_PARA='G',
-                           VALE=2.4969E+3,
-                      PRECISION=0.05   )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.59938307E+03,
+           VALE_REFE=2496.9000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G03,)
 
 #
 
-TEST_TABLE(       TABLE=GK05,
-                       NOM_PARA='K2',
-                           VALE=2.234704E7,
-                      PRECISION=0.05    )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.28142794E+07,
+           VALE_REFE=2.2347040E7,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K2',
+           TABLE=GK03,)
+
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.60130341E+03,
+           VALE_REFE=2496.9000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G04,)
+
+#
+
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.28174905E+07,
+           VALE_REFE=2.2347040E7,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K2',
+           TABLE=GK04,)
+
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.59859476E+03,
+           VALE_REFE=2496.9000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G05,)
+
+#
+
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 2.28175605E+07,
+           VALE_REFE=2.2347040E7,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K2',
+           TABLE=GK05,)
 
 FIN()
 #

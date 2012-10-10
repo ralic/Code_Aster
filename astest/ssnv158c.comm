@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 # ssnv158c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -276,66 +276,51 @@ ROSIGY=RECU_FONCTION(RESULTAT=U2,
                      NOEUD='N4',
                      TITRE='SIG Y',);
 
-TEST_RESU(RESU=(
+TEST_RESU(RESU=(_F(INST=4.5,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N4',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-2.0,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=4.5,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N4',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=-2.0,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=4.5,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='N4',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-6.6600000000000001,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
 
-# CONTRAINTE SIXX
-                _F(   RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIGM_NOEU',
-                      NOM_CMP    = 'SIXX',
-                      INST       = 4.5,
-                      PRECISION  = 1.E-3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '8.3.21',
-                      VALE       = -2.00),
-
-# CONTRAINTE SIZZ
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIGM_NOEU',
-                      NOM_CMP    = 'SIZZ',
-                      INST       = 4.5,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '8.3.21',
-                      PRECISION  = 1.E-3,
-                      VALE       = -2.00),
-
-# CONTRAINTE SIYY
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIGM_NOEU',
-                      NOM_CMP    = 'SIYY',
-                      INST       = 4.5,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '8.3.21',
-                      PRECISION  = 1.E-3,
-                      VALE       = -6.66),)
-           )
-
-TEST_RESU(RESU=(
-
-# DEPLACEMENT DX
-                _F(   RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DX',
-                      INST       = 4.5,
-                      PRECISION  = 1.E-3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '8.3.21',
-                      VALE       = 5.65000E-02),
-
-# DEPLACEMENT DY
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DY',
-                      INST       = 4.5,
-                      PRECISION  = 1.E-3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '8.3.21',
-                      VALE       = -1.00000E-01),)
-)
+TEST_RESU(RESU=(_F(INST=4.5,
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N4',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.056500000000000002,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=4.5,
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N4',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.10000000000000001,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                ),
+          )
 
 FIN()
 #

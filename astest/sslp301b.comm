@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE TRAPEZOIDALE SOUS POIDS PROPRE (FORCE_INTERNE)
 # sslp301b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,24 +77,26 @@ DEF=CALC_CHAMP(reuse=DEF,RESULTAT=DEF,CONTRAINTE=('SIGM_ELNO'))
 #
 # TEST_RESU DU DEPLACEMENT
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = U,
-                        NOEUD = 'N1249',
-                        NOM_CMP = 'DY',
-                        VALE = -12.E-06,
-                        PRECISION = 0.021)
+TEST_RESU(CHAM_NO=_F(NOEUD='N1249',
+                     NOM_CMP='DY',
+                     PRECISION=0.021000000000000001,
+                     CHAM_GD=U,
+                     VALE_CALC=-1.22465868E-05,
+                     VALE_REFE=-1.2E-05,
+                     REFERENCE='NON_DEFINI',),
           )
 
 #
 # TEST_RESU DE LA CONTRAINTE
 #
-TEST_RESU(   RESU=_F(  RESULTAT = DEF,
-                          MAILLE = 'M19',
-                          NOEUD = 'N11',
-                          NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO',
-                          NOM_CMP = 'SIXY',
-                          VALE = -19.9E4,
-                          PRECISION = 0.001)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='N11',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=-1.99000E5,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M19',),
           )
 
 FIN()

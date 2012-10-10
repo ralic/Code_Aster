@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURATION INTERFACE 2D PLAN (QUAD8), LOI CZM_TRA_MIX
 # ssnp118v.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -421,223 +421,182 @@ TRESU = CALC_TABLE(reuse = TRESU,
 
 # TEST REPONSE GLOBALE
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'FORC_NODA',
-      NOM_CMP   = 'DX',
-      VALE      = 1.03932,
-      MAILLE    = 'CUBE',
-      NOEUD    = 'NO4',
-      INST      = 9.6,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=9.5999999999999996,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='NO4',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.039315519,
+                  VALE_REFE=1.03932,
+                  MAILLE='CUBE',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DX',
-      VALE      = 0.06235,
-      MAILLE    = 'CUBE',
-      NOEUD    = 'NO4',
-      INST      = 9.6,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=9.5999999999999996,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO4',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.062353829,
+                  VALE_REFE=0.062350000000000003,
+                  MAILLE='CUBE',),
+          )
 
 # TEST CONTRAINTE NORMALE LDC (INSTANT SUR LE PLATEAU)
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SIGN',
-      VALE      = sigc,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 9.0,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=9.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=9.000000000,
+                  VALE_REFE=9.0,
+                  MAILLE='CUBEDEG',),
+          )
 
 # TEST MULTIPLICATEUR DE LAGRANGE (DOIT ETRE EGAL A LA SIGN PRECEDENTE)
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'SIGN',
-      VALE      = sigc,
-      NOEUD    = 'NS6',
-      INST      = 9.0,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=9.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NS6',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=9.000000000,
+                  VALE_REFE=9.0,),
+          )
 
 # VERIF MODE II NUL
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'SIEF_ELGA',
-      NOM_CMP   = 'SITX',
-      VALE      = 0.0,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 9.6,
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=9.5999999999999996,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SITX',
+                  VALE_CALC=-8.82707627E-15,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
 # TEST DES VI1 ET VI4 (SAUT_N ET POURCENTAGE D'ENERGIE DISSIPEE)
 # DANS LES DIFFERENTS REGIMES DE LA LOI
 
 # CONTACT (VI2 = -1)
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V1',
-      VALE      = 1.00000E-02,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 2.5,
-      )))
+TEST_RESU(RESU=_F(INST=2.5,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.010000000,
+                  VALE_REFE=1.E-2,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V4',
-      VALE      = 0.00000E+00,
-      CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
-      POINT     = 2,
-      INST      = 2.5,
-      )))
+TEST_RESU(RESU=_F(INST=2.5,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=2,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V4',
+                  VALE_CALC= 0.00000000E+00,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='CUBEDEG',),
+          )
 
 # PLATEAU (VI2 = 3)
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V1',
-      VALE      = 1.79910E-02,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 5.4,
-      )))
+TEST_RESU(RESU=_F(INST=5.4000000000000004,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.017991000,
+                  VALE_REFE=0.017991,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V4',
-      VALE      = 3.99100E-02,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 2,
-      INST      = 5.4,
-      )))
+TEST_RESU(RESU=_F(INST=5.4000000000000004,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=2,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V4',
+                  VALE_CALC=0.039910000,
+                  VALE_REFE=0.039910000000000001,
+                  MAILLE='CUBEDEG',),
+          )
 
 # ADHERENCE OU DECHARGE (VI2 = 0)
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V1',
-      VALE      = 2.99910E-02,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 7.4,
-      )))
+TEST_RESU(RESU=_F(INST=7.4000000000000004,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.029991000,
+                  VALE_REFE=0.029991,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V4',
-      VALE      = 1.99910E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 2,
-      INST      = 7.4,
-      )))
+TEST_RESU(RESU=_F(INST=7.4000000000000004,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=2,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V4',
+                  VALE_CALC=0.199910000,
+                  VALE_REFE=0.19991,
+                  MAILLE='CUBEDEG',),
+          )
 
 # ENDOMMAGEMENT (VI2 = 1)
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V1',
-      VALE      = 1.08662E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 12.6,
-      )))
+TEST_RESU(RESU=_F(INST=12.6,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.108662466,
+                  VALE_REFE=0.10866199999999999,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V4',
-      VALE      = 8.29305E-01,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 2,
-      INST      = 12.6,
-      )))
+TEST_RESU(RESU=_F(INST=12.6,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=2,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V4',
+                  VALE_CALC=0.829305403,
+                  VALE_REFE=0.82930499999999996,
+                  MAILLE='CUBEDEG',),
+          )
 
 # RUPTURE TOTALE (VI2 = 2)
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V1',
-      VALE      = delc,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 1,
-      INST      = 23.0,
-      )))
+TEST_RESU(RESU=_F(INST=23.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  VALE_CALC=0.160000000,
+                  VALE_REFE=0.16,
+                  MAILLE='CUBEDEG',),
+          )
 
-TEST_RESU(
-  RESU = (
-    _F(
-      REFERENCE = 'ANALYTIQUE',
-      RESULTAT  = U_TRA,
-      NOM_CHAM  = 'VARI_ELGA',
-      NOM_CMP   = 'V4',
-      VALE      = 1.0,
-      MAILLE    = 'CUBEDEG',
-      POINT     = 2,
-      INST      = 23.0,
-      )))
-
+TEST_RESU(RESU=_F(INST=23.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=2,
+                  RESULTAT=U_TRA,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V4',
+                  VALE_CALC=1.000000000,
+                  VALE_REFE=1.0,
+                  MAILLE='CUBEDEG',),
+          )
 
 # IMPRESSION DES RESULTATS DANS LE FICHIER RESU
 IMPR_FONCTION(FORMAT='TABLEAU',
@@ -650,4 +609,3 @@ IMPR_TABLE(TABLE = TRESU);
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_TRA,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
 
 FIN(FORMAT_HDF='OUI')
-

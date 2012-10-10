@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA METHODE D'INTERROGATION DES OPTIONS get_option_dependency
 # supv003a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,12 +41,14 @@ assert lopt == ('SING_ELNO', 'SING_NOEU'), lopt
 
 tab = CREA_TABLE(LISTE=(_F(PARA='NBVAL',
                            LISTE_I=len(lopt),),),)
-TEST_TABLE(TABLE=tab,
-           NOM_PARA='NBVAL',
-           VALE_I=2,
-           CRITERE='ABSOLU',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=2,
+           VALE_REFE_I=2,
+           TOLE_MACHINE=0.0,
            PRECISION=0,
-           REFERENCE='ANALYTIQUE',)
+           NOM_PARA='NBVAL',
+           TABLE=tab,)
 
 help(aster.get_option_dependency)
 
@@ -57,11 +59,13 @@ test = translation == "A concept object is expected."
 
 tab2 = CREA_TABLE(LISTE=(_F(PARA='BOOL',
                             LISTE_I=int(test),),),)
-TEST_TABLE(TABLE=tab2,
-           NOM_PARA='BOOL',
-           VALE_I=1,
-           CRITERE='ABSOLU',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           TOLE_MACHINE=0.0,
            PRECISION=0,
-           REFERENCE='ANALYTIQUE',)
+           NOM_PARA='BOOL',
+           TABLE=tab2,)
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE OSCILLATEUR SIMPLE SOUMIS A UNE EXCITATION ALEATOIRE
 # sdld101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,7 +94,6 @@ FREQ1=MODE_ITER_INV(   MATR_RIGI=MATASSR1,      MATR_MASS=MATASSM1,
                        NMAX_FREQ = 1),
             CALC_MODE=_F( NMAX_ITER = 30)
                        )
-
 
 #*********************************************************************#
 # *****CALCUL DE MODES STATIQUES; IMPRESSION FORMAT IDEAS*************#
@@ -226,52 +225,97 @@ REP3=RECU_FONCTION(    INTE_SPEC=INTER3,
                             NOM_CMP_I = 'DX',
                       )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
-               VALE_PARA = 5., VALE_REFE = 1.2307))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.2306999999999999,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=5.0,
+                        FONCTION=REP1,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
-               VALE_PARA = 10., VALE_REFE = 2.7116))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.7115999999999998,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=10.0,
+                        FONCTION=REP1,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
-               VALE_PARA = 15., VALE_REFE = 47.2154))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=47.215400000000002,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=15.0,
+                        FONCTION=REP1,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
-               VALE_PARA = 20., VALE_REFE = 2.8924))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.8923999999999999,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=20.0,
+                        FONCTION=REP1,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
-               VALE_PARA = 25., VALE_REFE = 0.47047,))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.47047,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=25.0,
+                        FONCTION=REP1,),
+              )
 
 #*********************************************************************#
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 5., VALE_REFE = 0.011976))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.011976000000000001,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=5.0,
+                        FONCTION=REP2,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 10., VALE_REFE = 0.42096))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.42096,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=10.0,
+                        FONCTION=REP2,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 15., VALE_REFE = 36.9225))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=36.922499999999999,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=15.0,
+                        FONCTION=REP2,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 20., VALE_REFE = 7.1006))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.1006,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=20.0,
+                        FONCTION=REP2,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
-               VALE_PARA = 25., VALE_REFE = 2.7953))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.7953000000000001,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=25.0,
+                        FONCTION=REP2,),
+              )
 
 #*********************************************************************#
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 5., VALE_REFE = 1.))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=5.0,
+                        FONCTION=REP3,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 10., VALE_REFE = 1.))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=10.0,
+                        FONCTION=REP3,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 15., VALE_REFE = 1.))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=15.0,
+                        FONCTION=REP3,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 20., VALE_REFE = 1.))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=20.0,
+                        FONCTION=REP3,),
+              )
 
-TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
-               VALE_PARA = 25., VALE_REFE = 1.))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.0,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=25.0,
+                        FONCTION=REP3,),
+              )
 
 #
 #*****************************************************#
@@ -294,119 +338,163 @@ STADEF=POST_DYNA_ALEA(  INTE_SPEC=INTERRE1,
                       )
                       
 fact=2.0
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='LAMBDA_00',
-                   VALE=505.70832 , PRECISION=1.E-3 )
+TEST_TABLE(
+           VALE_CALC=505.70832000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_00',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='LAMBDA_01',
-                   VALE= 49047.8, PRECISION=1.E-3  )
+TEST_TABLE(
+           VALE_CALC=4.9047800000000003E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_01',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='LAMBDA_02',
-                   VALE=5.025066E+06   , PRECISION=1.E-3  )
+TEST_TABLE(
+           VALE_CALC=5.025066E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_02',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='LAMBDA_03',
-                   VALE=5.52943E+08  , PRECISION=1.E-3  )
+TEST_TABLE(
+           VALE_CALC=5.52943000E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_03',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='LAMBDA_04',
-                   VALE=7.2046E+10, PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=7.2046000000E10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_04',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='ECART',
-                   VALE=22.4879595 , PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=22.487959499999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ECART',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='NB_EXTREMA_P_S',
-                   VALE=3.811766E+01   , PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=38.117660000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='NB_EXTREMA_P_S',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='NB_PASS_ZERO_P_S',
-                   VALE=3.173006E+01   , PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=31.730060000000002,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='NB_PASS_ZERO_P_S',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='FREQ_APPAR',
-                   VALE=1.5865031E+01  , PRECISION=1.E-3    )
+TEST_TABLE(
+           VALE_CALC=15.865031,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='FREQ_APPAR',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='FACT_IRRE',
-                   VALE=8.3242414E-01   , PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=0.83242413999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='FACT_IRRE',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='LAMBDA_06',
-                   VALE=fact*2.093496E+15    , PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=4.186992000000000E15,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_06',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='LAMBDA_07',
-                   VALE=1.7826555E+18   , PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=1.7826555E+18,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_07',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=STADEF,FILTRE=(
-                 _F(  NOM_PARA = 'NOEUD_I',
-                          VALE_K = 'P2'),
-                        _F(  NOM_PARA = 'NOEUD_J',
-                          VALE_K = 'P2')),
-               NOM_PARA='LAMBDA_10',
-                   VALE=2.468734E+26     , PRECISION=1.E-3   )
-
+TEST_TABLE(
+           VALE_CALC=2.4687339999999999E+26,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_10',
+           TABLE=STADEF,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='P2',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='P2',),
+                   ),
+           )
 
 # PAS DE TEST SUR LES FONCTIONS QUI SONT EXPLICITEMENT CALCULEES A
 # PARTIR DES VALEURS (MOMENT SPECTRAUX) CALCULEES ET VERIFIEES
 FIN( )
 #
-
-
-
-
-
-
-

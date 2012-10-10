@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,8 +145,9 @@ FISS=DEFI_FOND_FISS(MAILLAGE=M,
 
 # VALEURS DE REF DE K1 SUR 5 PREMIERS MODES
 # (VOIR SDLS114A)
-K1_ref =[-1.90387E+10, -1.15558E+11, 7.96724E+10, -1.17741E+11, 1.70753E+11]
-
+K1_ref = [-1.90387E+10, -1.15558E+11, 7.96724E+10, -1.17741E+11, 1.70753E+11]
+K1_reg = [-1.9038714866638E+10, -1.1555795319447E+11, 7.9672432337416E+10,
+          -1.177406508046E+11, 1.7075333962439E+11 ]
 
 # validation du mot-cle NUME_ORDRE
 #-----------------------------------------
@@ -164,7 +165,8 @@ for i in range(5) :
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                         VALE_I = i+1),
-              VALE=K1_ref[i],
+              VALE_CALC=K1_reg[i],
+              VALE_REFE=K1_ref[i],
               PRECISION=0.001,
               REFERENCE = 'AUTRE_ASTER')
 
@@ -185,7 +187,8 @@ for i in range(5) :
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                         VALE_I = i+1),
-              VALE=K1_ref[i],
+              VALE_CALC=K1_reg[i],
+              VALE_REFE=K1_ref[i],
               PRECISION=0.001,
               REFERENCE = 'AUTRE_ASTER')
 
@@ -206,7 +209,8 @@ for i in range(1) :
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                         VALE_I = i+1),
-              VALE=K1_ref[i],
+              VALE_CALC=K1_reg[i],
+              VALE_REFE=K1_ref[i],
               PRECISION=0.001,
               REFERENCE = 'AUTRE_ASTER')
 
@@ -229,7 +233,8 @@ for i in range(3) :
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                         VALE_I = i+1),
-              VALE=K1_ref[i],
+              VALE_CALC=K1_reg[i],
+              VALE_REFE=K1_ref[i],
               PRECISION=0.001,
               REFERENCE = 'AUTRE_ASTER')
 
@@ -252,7 +257,8 @@ for i in range(1) :
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                         VALE_I = i+1),
-              VALE=K1_ref[i],
+              VALE_CALC=K1_reg[i],
+              VALE_REFE=K1_ref[i],
               PRECISION=0.001,
               REFERENCE = 'AUTRE_ASTER')
 
@@ -278,7 +284,8 @@ for i in range(3) :
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                         VALE_I = i+1),
-              VALE=K1_ref[i],
+              VALE_CALC=K1_reg[i],
+              VALE_REFE=K1_ref[i],
               PRECISION=0.001,
               REFERENCE = 'AUTRE_ASTER')
 
@@ -300,12 +307,10 @@ for i in range(1) :
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                         VALE_I = i+1),
-              VALE=K1_ref[i],
+              VALE_CALC=K1_reg[i],
+              VALE_REFE=K1_ref[i],
               PRECISION=0.001,
               REFERENCE = 'AUTRE_ASTER')
-
-
-
 
 FIN();
 

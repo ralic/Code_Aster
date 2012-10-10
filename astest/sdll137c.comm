@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC CALC_ESSAI (LMME)
 # sdll137c.para = tps_job 70 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -395,12 +395,14 @@ MACINT=MAC_MODES(BASE_1=DEPLINT,
                INFO  =2,
               );
 
-TEST_TABLE(TABLE=MACINT, REFERENCE='ANALYTIQUE',
-           NOM_PARA = 'MAC',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=1.999935289,
+           VALE_REFE=2.0,
+           NOM_PARA='MAC',
            TYPE_TEST='SOMM',
-           CRITERE='ABSOLU',
-           VALE = 2., # 2 modes projetes
-           PRECISION = 0.01)
+           TABLE=MACINT,)
 
 # TEST IERI : CRITERE ENERGETIQUE (ON FAIT INTERVENIR K OU M)
 IERIK=MAC_MODES(BASE_1=DEPLINT,
@@ -417,25 +419,33 @@ IERIM=MAC_MODES(BASE_1=DEPLINT,
                INFO  =2,
               );
 
-TEST_TABLE(      TABLE=IERIK,
-       FILTRE=(
-               _F(NOM_PARA='NUME_MODE_1',VALE_I=1),
-               _F(NOM_PARA='NUME_MODE_2',VALE_I=1),),
-           NOM_PARA='IERI',
-           CRITERE='ABSOLU',
+TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           VALE=0. ,
-           PRECISION=5.E-4)
+           PRECISION=5.0000000000000001E-4,
+           VALE_CALC= 4.60906210E-07,
+           VALE_REFE=0.0,
+           NOM_PARA='IERI',
+           TABLE=IERIK,
+           FILTRE=(_F(NOM_PARA='NUME_MODE_1',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_MODE_2',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=IERIM,
-       FILTRE=(
-               _F(NOM_PARA='NUME_MODE_1',VALE_I=2),
-               _F(NOM_PARA='NUME_MODE_2',VALE_I=2),),
-           NOM_PARA='IERI',
-           CRITERE='ABSOLU',
+TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           VALE=0. ,
-           PRECISION=1.E-5)
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 3.16931077E-12,
+           VALE_REFE=0.0,
+           NOM_PARA='IERI',
+           TABLE=IERIM,
+           FILTRE=(_F(NOM_PARA='NUME_MODE_1',
+                      VALE_I=2,),
+                   _F(NOM_PARA='NUME_MODE_2',
+                      VALE_I=2,),
+                   ),
+           )
 
 nmodes=2
 
@@ -557,27 +567,56 @@ MODEDIR=MODE_ITER_SIMULT(MATR_RIGI=KASDIR,
 tmodes0=7.78074
 tmodes1=32.8520
 
-TEST_RESU(RESU=(
-                _F(RESULTAT=MODERETR, NUME_ORDRE=1, PARA='FREQ',
-                   VALE=tmodes0, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODERETR, NUME_ORDRE=2, PARA='FREQ',
-                   VALE=tmodes1, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODECPL2, NUME_ORDRE=1, PARA='FREQ',
-                   VALE=tmodes0, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODECPL2, NUME_ORDRE=2, PARA='FREQ',
-                   VALE=tmodes1, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODECPL3, NUME_ORDRE=1, PARA='FREQ',
-                   VALE=tmodes0, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODECPL3, NUME_ORDRE=2, PARA='FREQ',
-                   VALE=tmodes1, CRITERE='RELATIF', PRECISION=1.E-2,
-                   REFERENCE='AUTRE_ASTER',),
-                ),);
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODERETR,
+                   VALE_CALC=7.784160709,
+                   VALE_REFE=7.7807399999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODERETR,
+                   VALE_CALC=32.848918290,
+                   VALE_REFE=32.851999999999997,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODECPL2,
+                   VALE_CALC=7.784160709,
+                   VALE_REFE=7.7807399999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODECPL2,
+                   VALE_CALC=32.848918290,
+                   VALE_REFE=32.851999999999997,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODECPL3,
+                   VALE_CALC=7.784122885,
+                   VALE_REFE=7.7807399999999998,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODECPL3,
+                   VALE_CALC=32.848935148,
+                   VALE_REFE=32.851999999999997,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 DY_PB=RECU_FONCTION(RESULTAT=DYHRETRO,
                      NOM_CHAM='DEPL',
@@ -655,18 +694,16 @@ T1=CALC_TABLE(TABLE=T_DIR,
               TITRE='Comparaison calcul direct / calcul retro')
 
 
-TEST_TABLE(
-     TABLE     = T1,
-     NOM_PARA  = 'DIFF',
-     TYPE_TEST = 'SOMM',
-     VALE      = 0.,
-     CRITERE   = 'ABSOLU',
-     PRECISION = 1.E-6,
-     REFERENCE = 'AUTRE_ASTER',)
-
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=9.9999999999999995E-07,
+           VALE_CALC= 4.99642241E-07,
+           VALE_REFE=0.0,
+           NOM_PARA='DIFF',
+           TYPE_TEST='SOMM',
+           TABLE=T1,)
 
 FIN();
-
 
 
 

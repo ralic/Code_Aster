@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106i.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
@@ -840,131 +840,131 @@ IMPR_TABLE(TABLE=TD_G1,);
 
 #----- FLEXION POSITIVE - PHASE ELASTIQUE -----
 
-TEST_TABLE(TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.25,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.13103676925800001,
+           
            NOM_PARA='MYG_MY',
-           VALE=-0.131036769258,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_MY_1,
+           TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.263298794743,
+           
            NOM_PARA='MYG_MYL',
-           VALE=0.263298794743,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_RX_1,
+           TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.056250531356100003,
+           
            NOM_PARA='RXG_RX',
-           VALE=0.0562505313561,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_RX_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.25,),
+           )
 
 #----- FLEXION POSITIVE - PHASE ENDOMMAGEMENT -----
 
-TEST_TABLE(TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-9.3348505521800001E-3,
+           
            NOM_PARA='MYG_MY',
-           VALE=-0.00933485055218,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_MY_1,
+           TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.012607353814876,
+           
            NOM_PARA='MYG_MYL',
-           VALE=-0.012607353814876,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_MY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 #----- FLEXION POSITIVE - PHASE DECHARGEMENT -----
 
-TEST_TABLE(TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.5,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-9.3348567721599999E-3,
+           
            NOM_PARA='MYG_MY',
-           VALE=-0.00933485677216,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_MY_1,
+           TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.41462862022188002,
+           
            NOM_PARA='MYG_MYL',
-           VALE=0.41462862022188,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_MY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.5,),
+           )
 
 #----- FLEXION NEGATIVE - PHASE ELASTIQUE -----
 
-TEST_TABLE(TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.25,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.116693873612,
+           
            NOM_PARA='MYG_MY',
-           VALE=0.116693873612,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_MY_1,
+           TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.25,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.35250253834054002,
+           
            NOM_PARA='MYG_MYL',
-           VALE=0.35250253834054,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_MY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.25,),
+           )
 
 #----- FLEXION NEGATIVE - PHASE ENDOMMAGEMENT -----
 
-TEST_TABLE(TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.15577096091E-3,
+           
            NOM_PARA='MYG_MY',
-           VALE=0.00115577096091,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_MY_1,
+           TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.0,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.011570744992754,
+           
            NOM_PARA='MYG_MYL',
-           VALE=-0.011570744992754,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_MY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
 #----- FLEXION NEGATIVE - PHASE DECHARGEMENT -----
 
-TEST_TABLE(TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.5,),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.15587703383E-3,
+           
            NOM_PARA='MYG_MY',
-           VALE=0.00115587703383,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_MY_1,
+           TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.29064531266061,
+           
            NOM_PARA='MYG_MYL',
-           VALE=0.29064531266061,
-           CRITERE='ABSOLU',
-           PRECISION=1e-06,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_MY_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
+           )
 
 FIN();

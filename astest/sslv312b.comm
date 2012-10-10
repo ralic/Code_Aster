@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  MURAKAMI 9.70 FISSURE CIRCULAIRE PERPENDICULAIRE A L'INTERFACE
 # sslv312b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,85 +140,119 @@ GLO2_LE5=CALC_G(  RESULTAT=CHAMDEPL,
 # IMPRESSION DES RESULTATS
 # ------------------------
 
-TEST_TABLE(       TABLE=G0_C1,
-                       NOM_PARA='G',
-                           VALE=6.62069E-6,
-                      PRECISION=0.01        )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 6.61888646E-06,
+           VALE_REFE=6.6206900000000001E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G0_C1,)
 
-TEST_TABLE(       TABLE=G0_C2,
-                       NOM_PARA='G',
-                           VALE=6.62069E-6,
-                      PRECISION=0.01        )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 6.62250522E-06,
+           VALE_REFE=6.6206900000000001E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G0_C2,)
 
-TEST_TABLE(       TABLE=GLO1_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N71'),
-                       VALE=0.52055E-5,
-                  PRECISION=0.12       )
+TEST_TABLE(PRECISION=0.12,
+           VALE_CALC= 4.67186967E-06,
+           VALE_REFE=5.2055000000000004E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO1_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N71',),
+           )
 
-TEST_TABLE(       TABLE=GLO1_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N68'),
-                       VALE=0.53992E-5,
-                  PRECISION=0.13       )
+TEST_TABLE(PRECISION=0.13,
+           VALE_CALC= 4.71393350E-06,
+           VALE_REFE=5.3991999999999999E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO1_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N68',),
+           )
 
-TEST_TABLE(       TABLE=GLO1_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N112'),
-                       VALE=0.69762E-5,
-                  PRECISION=0.08       )
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC= 6.49808630E-06,
+           VALE_REFE=6.9762000000000002E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO1_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N112',),
+           )
 
-TEST_TABLE(       TABLE=GLO1_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N106'),
-                       VALE=0.64492E-5,
-                  PRECISION=0.08      )
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC= 6.87303268E-06,
+           VALE_REFE=6.4492E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO1_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N106',),
+           )
 
-TEST_TABLE(       TABLE=GLO1_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N357'),
-                       VALE=0.62104E-5,
-                  PRECISION=0.12       )
+TEST_TABLE(PRECISION=0.12,
+           VALE_CALC= 6.87137753E-06,
+           VALE_REFE=6.2103999999999999E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO1_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N357',),
+           )
 
-TEST_TABLE(       TABLE=GLO2_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N71'),
-                       VALE=0.52055E-5,
-                  PRECISION=0.12      )
+TEST_TABLE(PRECISION=0.12,
+           VALE_CALC= 4.63657708E-06,
+           VALE_REFE=5.2055000000000004E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO2_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N71',),
+           )
 
-TEST_TABLE(       TABLE=GLO2_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N68'),
-                       VALE=0.53992E-5,
-                  PRECISION=0.13       )
+TEST_TABLE(PRECISION=0.13,
+           VALE_CALC= 4.70391830E-06,
+           VALE_REFE=5.3991999999999999E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO2_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N68',),
+           )
 
-TEST_TABLE(       TABLE=GLO2_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N112'),
-                       VALE=0.69762E-5,
-                  PRECISION=0.08       )
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC= 6.49838031E-06,
+           VALE_REFE=6.9762000000000002E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO2_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N112',),
+           )
 
-TEST_TABLE(       TABLE=GLO2_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N106'),
-                       VALE=0.64492E-5,
-                  PRECISION=0.08       )
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC= 6.88184737E-06,
+           VALE_REFE=6.4492E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO2_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N106',),
+           )
 
-TEST_TABLE(       TABLE=GLO2_LE5,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N357'),
-                       VALE=0.62104E-5,
-                  PRECISION=0.12      )
+TEST_TABLE(PRECISION=0.12,
+           VALE_CALC= 6.88533259E-06,
+           VALE_REFE=6.2103999999999999E-06,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLO2_LE5,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N357',),
+           )
 
 FIN()
 #

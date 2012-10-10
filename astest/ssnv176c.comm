@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION SIMPLE EN 3D AVEC PILOTAGE- COMPORTEMENT ENDO_ORTH_BETON
 # ssnv176c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -134,54 +134,46 @@ U=STAT_NON_LINE(reuse=U,
 U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSI_ELGA'))
 
 
-TEST_RESU(RESU=(  _F(
-               RESULTAT = U,
-               REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = 51,
-              NOEUD = 'N1',
-              NOM_CHAM = 'DEPL',
-              NOM_CMP = 'DX',
-              VALE = 1.44744E-04),
-              _F(
-              RESULTAT = U,
-              REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = 51,
-              NOM_CHAM='EPSI_ELGA',
-              NOM_CMP='EPXX',
-              MAILLE='VOLUME',
-              POINT = 1,
-              VALE = 1.44744E-04),
-              _F(
-              RESULTAT = U,
-              REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = 51,
-              MAILLE = 'VOLUME',
-              POINT = 1,
-              NOM_CHAM = 'SIEF_ELGA',
-              NOM_CMP = 'SIXX',
-              VALE = 2.89945E+00),
-              _F(
-              RESULTAT = U,
-              REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = 51,
-              MAILLE = 'VOLUME',
-              POINT = 1,
-              NOM_CHAM = 'VARI_ELGA',
-              NOM_CMP = 'V1',
-              VALE = 2.08793E-01),
-              _F(
-              RESULTAT = U,
-              REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = 51,
-              MAILLE = 'VOLUME',
-              POINT = 1,
-              NOM_CHAM = 'VARI_ELGA',
-              NOM_CMP = 'V7',
-              VALE = 2.30235E-04),
-              ),
-            );
-
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=51,
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.4474400000000001E-4,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=51,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=1.4474400000000001E-4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='VOLUME',),
+                _F(NUME_ORDRE=51,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=2.8994499999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='VOLUME',),
+                _F(NUME_ORDRE=51,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.20879300000000001,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='VOLUME',),
+                _F(NUME_ORDRE=51,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V7',
+                   VALE_CALC=2.3023499999999999E-4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='VOLUME',),
+                ),
+          )
 
 FIN();

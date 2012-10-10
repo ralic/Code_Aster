@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ADAPTATION DE MAILLAGE EN NON-LINEAIRE
 # ssnp158a.para = tps_job 200 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -289,39 +289,45 @@ EQUILIB=CALC_CHAMP(reuse=EQUILIB,
                   VARI_INTERNE='VARI_NOEU',);
 
      
-TEST_RESU(RESU=(_F(RESULTAT=EQUILIB,
-                   INST=10.,
+TEST_RESU(RESU=(_F(GROUP_NO='B',
+                   INST=10.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=EQUILIB,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   GROUP_NO='B',
-                   VALE=250.41027791083,
-                   PRECISION=(0.4E-2,1.E-6),
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=EQUILIB,
-                   INST=10.,
+                   VALE_CALC=250.477583001,
+                   VALE_REFE=250.41027791082999,
+                   PRECISION=4.0000000000000001E-3, TOLE_MACHINE=(4.0000000000000001E-3, 9.9999999999999995E-07),),
+                _F(GROUP_NO='A',
+                   INST=10.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=EQUILIB,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   GROUP_NO='A',
-                   VALE=-214.5870608019,
-                   PRECISION=(6.E-2,1.E-6),
-                   REFERENCE='AUTRE_ASTER',),))
+                   VALE_CALC=-208.793308391,
+                   VALE_REFE=-214.58706080190001,
+                   PRECISION=0.059999999999999998, TOLE_MACHINE=(0.059999999999999998, 9.9999999999999995E-07),),
+                ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=EQUILIB,
-                   INST=10.,
+TEST_RESU(RESU=(_F(GROUP_NO='B',
+                   INST=10.0,
+                   RESULTAT=EQUILIB,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   GROUP_NO='B',
-                   VALE=250.47758289794,
-                   PRECISION=1.E-6,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=EQUILIB,
-                   INST=10.,
+                   VALE_CALC=250.47758289794001,
+                   
+                   ),
+                _F(GROUP_NO='A',
+                   INST=10.0,
+                   RESULTAT=EQUILIB,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   GROUP_NO='A',
-                   VALE=-208.79330767704,
-                   PRECISION=1.E-6,
-                   REFERENCE='NON_REGRESSION',),))
+                   VALE_CALC=-208.79330767703999,
+                   
+                   ),
+                ),
+          )
 
 SIGBAS2=MACR_LIGN_COUPE(RESULTAT=EQUILIB,
                         INST=10.,

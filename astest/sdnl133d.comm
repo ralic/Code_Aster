@@ -1,4 +1,4 @@
-# MODIF  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BOUT DE ROTOR 3D FISSURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -536,45 +536,90 @@ TAB_RESU=CREA_TABLE(LISTE=(_F(PARA='PHI',LISTE_R = phi,),
 
 IMPR_TABLE(TABLE=TAB_RESU,);
 
-TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='KPHI', VALE=1.88325E+01,
-           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 0.00000E+00,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=18.8325,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='KPHI',
+           TABLE=TAB_RESU,
+           FILTRE=_F(NOM_PARA='PHI',
+                     VALE=0.0,),
+           )
 
-TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='DKPHI', VALE=5.84080E+01,
-           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 0.00000E+00,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=58.408000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DKPHI',
+           TABLE=TAB_RESU,
+           FILTRE=_F(NOM_PARA='PHI',
+                     VALE=0.0,),
+           )
 
-TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='KPHI', VALE=1.88325E+01,
-           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 3.14159E+00,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=18.8325,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='KPHI',
+           TABLE=TAB_RESU,
+           FILTRE=_F(NOM_PARA='PHI',
+                     VALE=3.1415899999999999,),
+           )
 
-TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='DKPHI', VALE=-5.84080E+01,
-           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 3.14159E+00,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=-58.408000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DKPHI',
+           TABLE=TAB_RESU,
+           FILTRE=_F(NOM_PARA='PHI',
+                     VALE=3.1415899999999999,),
+           )
 
-TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='KPHI', VALE=1.78360E+01,
-           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 6.26573E+00,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=17.835999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='KPHI',
+           TABLE=TAB_RESU,
+           FILTRE=_F(NOM_PARA='PHI',
+                     VALE=6.2657299999999996,),
+           )
 
-TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='DKPHI', VALE=5.57160E+01,
-           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 6.26573E+00,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=55.716000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DKPHI',
+           TABLE=TAB_RESU,
+           FILTRE=_F(NOM_PARA='PHI',
+                     VALE=6.2657299999999996,),
+           )
 
 TAB_SOUP=CREA_TABLE(LISTE=(_F(PARA='ANGLE',LISTE_R = anglef,),
                        _F(PARA='SOUPLESSE',LISTE_R =souplf ,),),);
 
 IMPR_TABLE(TABLE=TAB_SOUP,);
 
-TEST_TABLE(TABLE=TAB_SOUP, NOM_PARA='SOUPLESSE', VALE=2.41380E-01,
-           FILTRE=( _F(  NOM_PARA = 'ANGLE', VALE = 0.00000E+00,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=0.24138000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SOUPLESSE',
+           TABLE=TAB_SOUP,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=0.0,),
+           )
 
-TEST_TABLE(TABLE=TAB_SOUP, NOM_PARA='SOUPLESSE', VALE=2.41380E-01,
-           FILTRE=( _F(  NOM_PARA = 'ANGLE', VALE = 3.14159E+00,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=0.24138000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SOUPLESSE',
+           TABLE=TAB_SOUP,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=3.1415899999999999,),
+           )
 
-TEST_TABLE(TABLE=TAB_SOUP, NOM_PARA='SOUPLESSE', VALE=2.53195E-01,
-           FILTRE=( _F(  NOM_PARA = 'ANGLE', VALE = 6.26573E+00,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=0.253195,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SOUPLESSE',
+           TABLE=TAB_SOUP,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=6.2657299999999996,),
+           )
 
 FIN();

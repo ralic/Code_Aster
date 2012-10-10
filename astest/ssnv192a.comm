@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -347,9 +347,8 @@ for i in range(n) :
          TEST_TABLE(TABLE=SIF[k],
                     NOM_PARA='K1',
                     TYPE_TEST=itest,
-                    VALE=K1REF,
-                    CRITERE='RELATIF',
-                    PRECISION=0.03,
+                    VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
+                    TOLE_MACHINE=0.03 , PRECISION=0.03 ,
                     REFERENCE='ANALYTIQUE')
 
 #------------------------------------------------------------------------
@@ -375,8 +374,8 @@ for j in range(nb_fond) :
       TEST_TABLE(TABLE=PK[j],
                  NOM_PARA='K1',
                  TYPE_TEST=itest,
-                 VALE=K1REF,
-                 PRECISION=0.12 ,
+                 VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
+                 TOLE_MACHINE=0.12 , PRECISION=0.12 ,
                  REFERENCE='ANALYTIQUE')
         
 # -------------------------------------------------------------   

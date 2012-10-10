@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST HM, 3D , MODELISATION THMC=LIQU_GAZ_ATM
 # wtnv114d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,86 +191,115 @@ RESU0=STAT_NON_LINE(
                 LIST_INST = ARCHI)
               )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',
-             VALE = -6.62496E3,
-             PRECISION = 5.E-2)           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO20',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-6.63129966E+03,
+                  VALE_REFE=-6624.96,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',
-             VALE = 1.325E4,
-             PRECISION = 5.E-2)           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 1.32625994E+04,
+                  VALE_REFE=1.3250E4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 2,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',
-             VALE = -3.3097E4,
-             PRECISION = 5.E-2)           )
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO20',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-3.31568286E+04,
+                  VALE_REFE=-3.3097E4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 2,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',
-             VALE = 6.61826E4,
-             PRECISION = 5.E-2)           )
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 6.63146535E+04,
+                  VALE_REFE=6.6182600000000006E4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',
-             VALE = -6.61119E4,
-             PRECISION = 5.E-2)           )
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO20',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-6.63153957E+04,
+                  VALE_REFE=-6.6111899999999994E4,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',
-             VALE = 1.3223E5,
-             PRECISION = 5.E-2)           )
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 1.32638009E+05,
+                  VALE_REFE=1.32230E5,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 4,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',
-             VALE = -3.30087E5,
-             PRECISION = 5.E-2)           )
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO20',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-3.31600389E+05,
+                  VALE_REFE=-3.30087E5,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 4,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',
-             VALE = 6.60346E5,
-             PRECISION = 5.E-2)           )
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 6.63307651E+05,
+                  VALE_REFE=6.60346E5,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 7,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',
-             VALE = -6.52033E6,
-             PRECISION = 5.E-2)           )
+TEST_RESU(RESU=_F(NUME_ORDRE=7,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO20',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=-6.65564627E+06,
+                  VALE_REFE=-6.520330E6,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 7,
-             NOM_CHAM = 'DEPL',
-             NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',
-             VALE = 1.31189E7,
-             PRECISION = 5.E-2)
-           )
+TEST_RESU(RESU=_F(NUME_ORDRE=7,
+                  RESULTAT=RESU0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO1',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 1.33849803E+07,
+                  VALE_REFE=1.3118900E7,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.050000000000000003,),
+          )
 
 FIN()
 #

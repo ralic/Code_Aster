@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PORTIQUE PLAN ARTICULE EN PIED
 # ssll14a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,8 +167,17 @@ STATIQUE=CALC_CHAMP(reuse= STATIQUE,
                     NOM_CAS = 'CHARGE NUMERO 5',
                     FORCE='REAC_NODA',);
 
-TEST_RESU(RESU=_F( RESULTAT = STATIQUE,  NOM_CAS = 'CHARGE NUMERO 1', NOM_CHAM = 'REAC_NODA',   NOEUD = 'N21',
-           NOM_CMP = 'DY', VALE = 0.0, CRITERE='ABSOLU', PRECISION = 1.E-5, REFERENCE = 'ANALYTIQUE'))
+TEST_RESU(RESU=_F(REFERENCE='ANALYTIQUE',
+                  RESULTAT=STATIQUE,
+                  NOM_CHAM='REAC_NODA',
+                  NOEUD='N21',
+                  NOM_CMP='DY',
+                  VALE_CALC=-3.35098775E-08,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.0000000000000001E-05,
+                  NOM_CAS='CHARGE NUMERO 1',),
+          )
 
 TAB_REAC=POST_RELEVE_T(
        ACTION=_F(  RESULTAT = STATIQUE,      INTITULE = 'REACTION',
@@ -179,113 +188,204 @@ TAB_REAC=POST_RELEVE_T(
             )
 IMPR_TABLE ( TABLE = TAB_REAC)
 
-TEST_TABLE(        TABLE=TAB_REAC,
-                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 1),
-                 NOM_PARA='RESULT_X',
-                  CRITERE='ABSOLU',
-                     VALE=0.          )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='RESULT_X',
+           TABLE=TAB_REAC,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(        TABLE=TAB_REAC,
-                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 2),
-                 NOM_PARA='RESULT_Y',
-                     VALE=1.999999996E+04          )
+TEST_TABLE(VALE_CALC=1.9999999960000001E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='RESULT_Y',
+           TABLE=TAB_REAC,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(        TABLE=TAB_REAC,
-                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 3),
-                 NOM_PARA='RESULT_X',
-                     VALE=9.999999768E+03          )
+TEST_TABLE(VALE_CALC=9999.9997679999997,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='RESULT_X',
+           TABLE=TAB_REAC,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(        TABLE=TAB_REAC,
-                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 4),
-                 NOM_PARA='MOMENT_Z',
-                     VALE=1.000000003E+05          )
+TEST_TABLE(VALE_CALC=1.000000003E5,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOMENT_Z',
+           TABLE=TAB_REAC,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
 
-TEST_TABLE(        TABLE=TAB_REAC,
-                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                            VALE_I = 5),
-                 NOM_PARA='MOMENT_Y',
-                     VALE=5.231098875E+04          )
+TEST_TABLE(VALE_CALC=5.2310988749999997E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOMENT_Y',
+           TABLE=TAB_REAC,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
 # TEST_RESU, VALEUR DE REFERENCE: NOTE V3.90.01 (F. VOLDOIRE)
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 1',
-             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 1.10476E-02),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 1',
-             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -1.24228E-02),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 1',
-             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 5.17537E+03),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 1',
-             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = 2.42332E+04))
-           )
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.011047599999999999,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 1',),
+                _F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.012422799999999999,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 1',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   VALE_CALC=5175.3699999999999,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 1',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.4233200000000001E4,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 1',),
+                ),
+          )
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 2', CRITERE = 'ABSOLU',
-             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 0.),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 2',
-             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -1.49733E-02),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 2',
-             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 4.88148E+03),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 2',
-             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = 1.00000E+04))
-           )
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-3,
+                   CRITERE='ABSOLU',
+                   NOM_CAS='CHARGE NUMERO 2',),
+                _F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.0149733,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 2',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   VALE_CALC=4881.4799999999996,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 2',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.E4,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 2',),
+                ),
+          )
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 3',
-             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = -3.00095E-02),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 3',
-             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -2.99466E-03),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 3',
-             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 5.97630E+03),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 3',
-             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = 4.00000E+03))
-           )
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.030009500000000001,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 3',),
+                _F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-2.9946600000000001E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 3',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   VALE_CALC=5976.3000000000002,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 3',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=4000.0,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 3',),
+                ),
+          )
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 4',
-             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 2.73532E-02),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 4',
-             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -1.21564E-03),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 4',
-             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 4.57640E+03),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 4',
-             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = -5.00000E+03))
-           )
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.027353200000000001,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 4',),
+                _F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.21564E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 4',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   VALE_CALC=4576.3999999999996,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 4',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=-5000.0,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 4',),
+                ),
+          )
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 5',
-             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 0.00839124),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
-             NOM_CAS = 'CHARGE NUMERO 5',
-             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -0.03160598),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 5',
-             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 20609.548),
-           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
-             NOM_CAS = 'CHARGE NUMERO 5',
-             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = 33233.24))
-           )
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=8.3912399999999995E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 5',),
+                _F(GROUP_NO='C',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.031605979999999999,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 5',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   VALE_CALC=2.0609547999999999E4,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 5',),
+                _F(GROUP_NO='A',
+                   RESULTAT=STATIQUE,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=3.3233239999999998E4,
+                   TOLE_MACHINE=1.E-3,
+                   NOM_CAS='CHARGE NUMERO 5',),
+                ),
+          )
 
 DEPL1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 NOM_CHAM='DEPL', RESULTAT=STATIQUE,
@@ -312,24 +412,36 @@ NOM_CHAM='DEPL', RESULTAT=STATIQUE,
                        NOM_CAS='CHARGE NUMERO 5'
                                             )
 
-TEST_RESU(CHAM_NO=(
-           _F(  CHAM_GD = DEPL1,
-             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 1.10476E-02),
-           _F(  CHAM_GD = DEPL1,
-             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -1.24228E-02))
-           )
+TEST_RESU(CHAM_NO=(_F(NOM_CMP='DX',
+                      GROUP_NO='C',
+                      CHAM_GD=DEPL1,
+                      VALE_CALC=0.011047599999999999,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOM_CMP='DY',
+                      GROUP_NO='C',
+                      CHAM_GD=DEPL1,
+                      VALE_CALC=-0.012422799999999999,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
+          )
 
 DEPL_T = CREA_CHAMP(OPERATION='ASSE',MODELE=MODELE,TYPE_CHAM='NOEU_DEPL_R',
                    ASSE=(_F( CHAM_GD=DEPL1,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
                          _F( CHAM_GD=DEPL2,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
                          _F( CHAM_GD=DEPL3,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
                          _F( CHAM_GD=DEPL4,TOUT='OUI',CUMUL='OUI',COEF_R=1.),),)
-TEST_RESU(CHAM_NO=(
-           _F(  CHAM_GD = DEPL_T,
-             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 0.00839124),
-           _F(  CHAM_GD = DEPL_T,
-             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -0.03160598))
-           )
+TEST_RESU(CHAM_NO=(_F(NOM_CMP='DX',
+                      GROUP_NO='C',
+                      CHAM_GD=DEPL_T,
+                      VALE_CALC=8.3912399999999995E-3,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOM_CMP='DY',
+                      GROUP_NO='C',
+                      CHAM_GD=DEPL_T,
+                      VALE_CALC=-0.031605979999999999,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
+          )
 
 # ---------------------------------------------------------------------
 # DEUX FOIS LE MEME CAS DE CHARGE (CAS NUMERO 2) F1 EN C
@@ -356,12 +468,19 @@ DEPL_T2 = CREA_CHAMP(OPERATION='ASSE',MODELE=MODELE,TYPE_CHAM='NOEU_DEPL_R',
                    ASSE=(_F( CHAM_GD=DEPL2,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
                          _F( CHAM_GD=DEPL7,TOUT='OUI',CUMUL='OUI',COEF_R=1.),),)
 
-TEST_RESU(CHAM_NO=(
-           _F(  CHAM_GD = DEPL_T2,  GROUP_NO = 'C',
-             CRITERE = 'ABSOLU',  NOM_CMP = 'DX',   VALE = 0.),
-           _F(  CHAM_GD = DEPL_T2,  GROUP_NO = 'C',
-             NOM_CMP = 'DY',   VALE = -0.02994660))
-             )
+TEST_RESU(CHAM_NO=(_F(CRITERE='ABSOLU',
+                      NOM_CMP='DX',
+                      GROUP_NO='C',
+                      CHAM_GD=DEPL_T2,
+                      VALE_CALC=0.0,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOM_CMP='DY',
+                      GROUP_NO='C',
+                      CHAM_GD=DEPL_T2,
+                      VALE_CALC=-0.0299466,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
+          )
 
 # ---------------------------------------------------------------------
 #          VALIDATION POST_RELEVE_T SUR RESULTANTE ET MOMENT
@@ -378,30 +497,36 @@ TR1=POST_RELEVE_T(
          MOMENT = ( 'DX',  'DY',  'DZ', ),  POINT = ( 10., 12., 0., ))
             )
 
-TEST_TABLE(        TABLE=TR1,
-                 NOM_PARA='RESULT_X',
-                     VALE=1.00000E+04          )
+TEST_TABLE(VALE_CALC=1.E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='RESULT_X',
+           TABLE=TR1,)
 
-TEST_TABLE(        TABLE=TR1,
-                 NOM_PARA='RESULT_Y',
-                     VALE=5.23110E+04          )
+TEST_TABLE(VALE_CALC=5.2311E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='RESULT_Y',
+           TABLE=TR1,)
 
-TEST_TABLE(        TABLE=TR1,
-                 NOM_PARA='RESULT_Z',
-                  CRITERE='ABSOLU',
-                     VALE=0.00000E+00          )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='RESULT_Z',
+           TABLE=TR1,)
 
-TEST_TABLE(        TABLE=TR1,
-                 NOM_PARA='MOMENT_X',
-                     VALE=1.00000E+04          )
+TEST_TABLE(VALE_CALC=1.E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOMENT_X',
+           TABLE=TR1,)
 
-TEST_TABLE(        TABLE=TR1,
-                 NOM_PARA='MOMENT_Y',
-                     VALE=5.23110E+04          )
+TEST_TABLE(VALE_CALC=5.2311E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOMENT_Y',
+           TABLE=TR1,)
 
-TEST_TABLE(        TABLE=TR1,
-                 NOM_PARA='MOMENT_Z',
-                     VALE=-2.15549E+04         )
+TEST_TABLE(VALE_CALC=-2.1554900000000001E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOMENT_Z',
+           TABLE=TR1,)
 
 TR2=POST_RELEVE_T(
        ACTION=_F(  CHAM_GD = REAC5,     INTITULE = 'REA2',
@@ -410,155 +535,197 @@ TR2=POST_RELEVE_T(
          MOMENT = ( 'DRX',  'DRY',  'DRZ', ),  POINT = ( 10., 12., 0., ))
             )
 
-TEST_TABLE(        TABLE=TR2,
-                 NOM_PARA='RESULT_X',
-                     VALE=1.00000E+04          )
+TEST_TABLE(VALE_CALC=1.E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='RESULT_X',
+           TABLE=TR2,)
 
-TEST_TABLE(        TABLE=TR2,
-                 NOM_PARA='RESULT_Y',
-                     VALE=5.23110E+04          )
+TEST_TABLE(VALE_CALC=5.2311E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='RESULT_Y',
+           TABLE=TR2,)
 
-TEST_TABLE(        TABLE=TR2,
-                 NOM_PARA='RESULT_Z',
-                  CRITERE='ABSOLU',
-                     VALE=0.00000E+00          )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='RESULT_Z',
+           TABLE=TR2,)
 
-TEST_TABLE(        TABLE=TR2,
-                 NOM_PARA='MOMENT_X',
-                  CRITERE='ABSOLU',
-                     VALE=0.00000E+00          )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOMENT_X',
+           TABLE=TR2,)
 
-TEST_TABLE(        TABLE=TR2,
-                 NOM_PARA='MOMENT_Y',
-                  CRITERE='ABSOLU',
-                     VALE=0.00000E+00          )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOMENT_Y',
+           TABLE=TR2,)
 
-TEST_TABLE(        TABLE=TR2,
-                 NOM_PARA='MOMENT_Z',
-                     VALE=-2.15549E+04         )
+TEST_TABLE(VALE_CALC=-2.1554900000000001E4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOMENT_Z',
+           TABLE=TR2,)
 
 TDG=POST_RELEVE_T(
          ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEG',
            REPERE = 'GLOBAL',   OPERATION = 'EXTRACTION',
            GROUP_NO = 'PORTIQ',     NOM_CMP = ('DX', 'DY',))  )
 
-TEST_TABLE(        TABLE=TDG,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N3'),
-                 NOM_PARA='DX',
-                     VALE=5.86205E-03         )
+TEST_TABLE(VALE_CALC=5.8620499999999997E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDG,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
-TEST_TABLE(        TABLE=TDG,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N3'),
-                 NOM_PARA='DY',
-                     VALE=-1.45354E-07         )
+TEST_TABLE(VALE_CALC=-1.4535399999999999E-07,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDG,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
-TEST_TABLE(        TABLE=TDG,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N13'),
-                 NOM_PARA='DX',
-                     VALE=2.01811E-02         )
+TEST_TABLE(VALE_CALC=0.0201811,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDG,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N13',),
+           )
 
-TEST_TABLE(        TABLE=TDG,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N13'),
-                 NOM_PARA='DY',
-                     VALE=-2.13045E-03         )
+TEST_TABLE(VALE_CALC=-2.1304499999999999E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDG,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N13',),
+           )
 
-TEST_TABLE(        TABLE=TDG,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N23'),
-                 NOM_PARA='DX',
-                     VALE=8.70918E-03         )
+TEST_TABLE(VALE_CALC=8.7091800000000004E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDG,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
-TEST_TABLE(        TABLE=TDG,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N23'),
-                 NOM_PARA='DY',
-                     VALE=-3.24029E-02         )
+TEST_TABLE(VALE_CALC=-0.032402899999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDG,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
-TEST_TABLE(        TABLE=TDG,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N33'),
-                 NOM_PARA='DX',
-                     VALE=-8.22436E-03         )
+TEST_TABLE(VALE_CALC=-8.22436E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDG,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N33',),
+           )
 
-TEST_TABLE(        TABLE=TDG,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N33'),
-                 NOM_PARA='DY',
-                     VALE=-1.01282E-06         )
+TEST_TABLE(VALE_CALC=-1.01282E-06,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDG,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N33',),
+           )
 
 TDL=POST_RELEVE_T(
          ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEL',
            REPERE = 'LOCAL',    OPERATION = 'EXTRACTION',
            GROUP_NO = 'PORTIQ',     NOM_CMP = ('DX', 'DY',))  )
 
-TEST_TABLE(        TABLE=TDL,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N3'),
-                 NOM_PARA='DX',
-                     VALE=-1.45354E-07         )
+TEST_TABLE(VALE_CALC=-1.4535399999999999E-07,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDL,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
-TEST_TABLE(        TABLE=TDL,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N3'),
-                 NOM_PARA='DY',
-                     VALE=-5.86205E-03         )
+TEST_TABLE(VALE_CALC=-5.8620499999999997E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDL,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
-TEST_TABLE(        TABLE=TDL,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N13'),
-                 NOM_PARA='DX',
-                     VALE=-1.95289E-02         )
+TEST_TABLE(VALE_CALC=-0.019528899999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDL,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N13',),
+           )
 
-TEST_TABLE(        TABLE=TDL,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N13'),
-                 NOM_PARA='DY',
-                     VALE=-5.51700E-03         )
+TEST_TABLE(VALE_CALC=-5.5170000000000002E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDL,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N13',),
+           )
 
-TEST_TABLE(        TABLE=TDL,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N23'),
-                 NOM_PARA='DX',
-                     VALE=3.94786E-03         )
+TEST_TABLE(VALE_CALC=3.9478600000000001E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDL,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
-TEST_TABLE(        TABLE=TDL,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N23'),
-                 NOM_PARA='DY',
-                     VALE=3.33198E-02         )
+TEST_TABLE(VALE_CALC=0.033319799999999997,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDL,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
-TEST_TABLE(        TABLE=TDL,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N33'),
-                 NOM_PARA='DX',
-                     VALE=1.01282E-06         )
+TEST_TABLE(VALE_CALC=1.01282E-06,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDL,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N33',),
+           )
 
-TEST_TABLE(        TABLE=TDL,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N33'),
-                 NOM_PARA='DY',
-                     VALE=-8.22436E-03         )
+TEST_TABLE(VALE_CALC=-8.22436E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDL,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N33',),
+           )
 
 TDG1=POST_RELEVE_T(
          ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEG1',
            REPERE = 'GLOBAL',   OPERATION = 'EXTRACTION',
            GROUP_NO = 'PORTI1',     NOM_CMP = ('DX', 'DY',))  )
 
-TEST_TABLE(        TABLE=TDG1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N3'),
-                 NOM_PARA='DX',
-                     VALE=5.86205E-03         )
+TEST_TABLE(VALE_CALC=5.8620499999999997E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDG1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
-TEST_TABLE(        TABLE=TDG1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N3'),
-                 NOM_PARA='DY',
-                     VALE=-1.45354E-07         )
+TEST_TABLE(VALE_CALC=-1.4535399999999999E-07,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDG1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
 TDL1=POST_RELEVE_T(INFO=2,
          ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEL1',
@@ -566,34 +733,42 @@ TDL1=POST_RELEVE_T(INFO=2,
            GROUP_NO = 'PORTI1',     NOM_CMP = ('DX', 'DY',))  )
 
 IMPR_TABLE(        TABLE=TDL1)
-TEST_TABLE(        TABLE=TDL1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N3'),
-                 NOM_PARA='DX',
-                     VALE=1.45354E-07         )
+TEST_TABLE(VALE_CALC=1.4535399999999999E-07,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDL1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
-TEST_TABLE(        TABLE=TDL1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N3'),
-                 NOM_PARA='DY',
-                     VALE=5.86205E-03         )
+TEST_TABLE(VALE_CALC=5.8620499999999997E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDL1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3',),
+           )
 
 TDG3=POST_RELEVE_T(
          ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEG3',
            REPERE = 'GLOBAL',   OPERATION = 'EXTRACTION',
            GROUP_NO = 'PORTI3',     NOM_CMP = ('DX', 'DY',))  )
 
-TEST_TABLE(        TABLE=TDG3,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N23'),
-                 NOM_PARA='DX',
-                     VALE=8.70918E-03         )
+TEST_TABLE(VALE_CALC=8.7091800000000004E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDG3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
-TEST_TABLE(        TABLE=TDG3,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N23'),
-                 NOM_PARA='DY',
-                     VALE=-3.24029E-02         )
+TEST_TABLE(VALE_CALC=-0.032402899999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDG3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
 TDL3=POST_RELEVE_T(INFO=2,
          ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEL3',
@@ -602,17 +777,21 @@ TDL3=POST_RELEVE_T(INFO=2,
 
 IMPR_TABLE(        TABLE=TDL3)
 
-TEST_TABLE(        TABLE=TDL3,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N23'),
-                 NOM_PARA='DX',
-                     VALE=-3.94786E-03         )
+TEST_TABLE(VALE_CALC=-3.9478600000000001E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TDL3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
-TEST_TABLE(        TABLE=TDL3,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N23'),
-                 NOM_PARA='DY',
-                     VALE=-3.33198E-02         )
+TEST_TABLE(VALE_CALC=-0.033319799999999997,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TDL3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N23',),
+           )
 
 FIN( )
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 # forma20a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -319,15 +319,36 @@ ERREFL0=FORMULE(VALE='erfl0*1.',NOM_PARA='BIDON')
 ERREEN0=FORMULE(VALE='eren0*1.',NOM_PARA='BIDON')
 ERREFL4=FORMULE(VALE='erfl4*1.',NOM_PARA='BIDON')
 ERREEN4=FORMULE(VALE='eren4*1.',NOM_PARA='BIDON')
-TEST_FONCTION(VALEUR=(
-    _F(FONCTION=ERREFL0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-4,CRITERE='RELATIF',
-       VALE_REFE=39.24471532,REFERENCE='NON_REGRESSION',VERSION = '7.2.24'),
-    _F(FONCTION=ERREEN0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-4,CRITERE='RELATIF',
-       VALE_REFE=39.40685181,REFERENCE='NON_REGRESSION',VERSION = '7.2.24'),
-    _F(FONCTION=ERREFL4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-3,CRITERE='RELATIF',
-       VALE_REFE=2.7089656E-1,REFERENCE='NON_REGRESSION',VERSION = '7.2.24'),
-    _F(FONCTION=ERREEN4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-3,CRITERE='RELATIF',
-       VALE_REFE=2.7411654E-1,REFERENCE='NON_REGRESSION',VERSION = '7.2.24')))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=39.244715319999997,
+                         TOLE_MACHINE=1.E-4,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERREFL0,
+                         ),
+                      _F(VALE_CALC=39.406851809999999,
+                         TOLE_MACHINE=1.E-4,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERREEN0,
+                         ),
+                      _F(VALE_CALC=0.27089656000000001,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERREFL4,
+                         ),
+                      _F(VALE_CALC=0.27411654000000002,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERREEN4,
+                         ),
+                      ),
+              )
 
 #-------------------------------------------------------------------
 #                       POST-TRAITEMENTS PYTHON

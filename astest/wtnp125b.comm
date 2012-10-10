@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # wtnp125b.para = tps_job 350 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -260,90 +260,104 @@ U_1=STAT_NON_LINE(
 
 # TEST PRE1 NS1028 ET NS1674 A 7,5 ANS ET 20 ANS
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NS1028',
-                  VALE=3.995E7,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC= 3.99261639E+07,
+                  VALE_REFE=3.9950000E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
                   NOEUD='NS1028',
-                  VALE=3.845E7,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
-                  NOEUD='NS1674',
-                  VALE=4.268E7,
+                  VALE_CALC= 3.83466238E+07,
+                  VALE_REFE=3.8450000E7,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=1.E-2,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NS1674',
-                  VALE=4.098E7,
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 4.26712850E+07,
+                  VALE_REFE=4.2680000E7,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NS1674',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 4.08799064E+07,
+                  VALE_REFE=4.0980000E7,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 # TEST V1 NS2117 A 7,5 ANS ET 20 ANS
 U_1=CALC_CHAMP(reuse=U_1,GROUP_MA='FISSURE',RESULTAT=U_1,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=U_1,
                   NOM_CHAM='VARI_ELNO',
-                  NOM_CMP='V3',
-                  MAILLE='M853',
                   NOEUD='NS1674',
-                  VALE=2.20E-4,
+                  NOM_CMP='V3',
+                  VALE_CALC= 2.20052195E-04,
+                  VALE_REFE=2.2000000000000001E-4,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  MAILLE='M853',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=U_1,
                   NOM_CHAM='VARI_ELNO',
-                  NOM_CMP='V3',
-                  MAILLE='M853',
                   NOEUD='NS1674',
-                  VALE=2.04E-4,
+                  NOM_CMP='V3',
+                  VALE_CALC= 2.03353327E-04,
+                  VALE_REFE=2.04E-4,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  MAILLE='M853',),
+          )
 
 # TEST FH11X NS2117 A 7,5 ANS ET 20 ANS
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,
+TEST_RESU(RESU=_F(NUME_ORDRE=25,
+                  RESULTAT=U_1,
                   NOM_CHAM='SIEF_ELNO',
-                  NOM_CMP='FH11X',
-                  MAILLE='M853',
                   NOEUD='NS1674',
-                  VALE=-7.018934725E-03,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='FH11X',
+                  VALE_CALC=-7.0189347250000002E-3,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M853',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,
+TEST_RESU(RESU=_F(NUME_ORDRE=50,
+                  RESULTAT=U_1,
                   NOM_CHAM='SIEF_ELNO',
-                  NOM_CMP='FH11X',
-                  MAILLE='M853',
                   NOEUD='NS1674',
-                  VALE=-5.38471296E-03,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='FH11X',
+                  VALE_CALC=-5.3847129600000003E-3,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M853',),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128x.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -136,45 +136,47 @@ U2M=STAT_NON_LINE(
                )
 #
 # SOURCE EXTERNE (MOYENNE DE CODES)
-TEST_RESU(RESU=(_F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPA',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.86E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'SOURCE_EXTERNE',
-                   ),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPC',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.28E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'SOURCE_EXTERNE',
-                ))
-       )
+TEST_RESU(RESU=(_F(GROUP_NO='PPA',
+                   INST=1.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.92316574E-05,
+                   VALE_REFE=2.8600000000000001E-05,
+                   PRECISION=0.050000000000000003,),
+                _F(GROUP_NO='PPC',
+                   INST=1.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.32093284E-05,
+                   VALE_REFE=2.2799999999999999E-05,
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
+
 # NON-REGRESSION
-TEST_RESU(RESU=(_F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPA',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.923E-05,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.1.19',
+TEST_RESU(RESU=(_F(GROUP_NO='PPA',
+                   INST=1.0,
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=2.923E-05,
+                   TOLE_MACHINE=1.E-3,
                    ),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPC',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.321E-05,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '10.1.19',
-                ))
-       )
+                _F(GROUP_NO='PPC',
+                   INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.32093284E-05,
+                   VALE_REFE=2.321E-05,
+                   ),
+                ),
+          )
 
 #
 FIN()

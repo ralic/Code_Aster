@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE 3 BARRES EN U SOUMISES A LA PESANTEUR
 # ssll110a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,56 +71,69 @@ STATIQU1=MECA_STATIQUE(CHAM_MATER=CH_MATER,
 STATIQU1=CALC_CHAMP(reuse=STATIQU1,RESULTAT=STATIQU1,CONTRAINTE=('EFGE_ELNO'),DEFORMATION=('EPSI_ELNO'))
 
 
-TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO',
-                  RESULTAT=STATIQU1,
-                  MAILLE='M1',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
-                  VALE=4.E5,
+                  RESULTAT=STATIQU1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
                   NOM_CMP='N',
-                  NUME_ORDRE=1,
-                  NOEUD='N1',),);
+                  VALE_CALC= 4.00008800E+05,
+                  VALE_REFE=4.E5,
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO',
-                  RESULTAT=STATIQU1,
-                  MAILLE='M3',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
-                  VALE=4.E5,
+                  RESULTAT=STATIQU1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N4',
                   NOM_CMP='N',
-                  NUME_ORDRE=1,
-                  NOEUD='N4',),);
+                  VALE_CALC= 4.00008800E+05,
+                  VALE_REFE=4.E5,
+                  MAILLE='M3',),
+          )
 
-TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO',
-                  RESULTAT=STATIQU1,
-                  MAILLE='M1',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
-                  VALE=2.E-6,
+                  RESULTAT=STATIQU1,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N1',
                   NOM_CMP='EPXX',
-                  NUME_ORDRE=1,
-                  NOEUD='N1',),);
+                  VALE_CALC= 2.00004400E-06,
+                  VALE_REFE=1.9999999999999999E-06,
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO',
-                  RESULTAT=STATIQU1,
-                  MAILLE='M3',
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
-                  VALE=2.E-6,
+                  RESULTAT=STATIQU1,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N4',
                   NOM_CMP='EPXX',
-                  NUME_ORDRE=1,
-                  NOEUD='N4',),);
+                  VALE_CALC= 2.00004400E-06,
+                  VALE_REFE=1.9999999999999999E-06,
+                  MAILLE='M3',),
+          )
 
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
-                  RESULTAT=STATIQU1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
-                  VALE=-2.E-5,
-                  NOM_CMP='DY',
-                  NUME_ORDRE=1,
-                  NOEUD='N2',),);
-TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=STATIQU1,
-                  REFERENCE='ANALYTIQUE',
-                  VALE=-2.E-5,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2',
                   NOM_CMP='DY',
-                  NUME_ORDRE=1,
-                  NOEUD='N3',),);
+                  VALE_CALC=-2.00004400E-05,
+                  VALE_REFE=-2.0000000000000002E-05,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=STATIQU1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='DY',
+                  VALE_CALC=-2.00004400E-05,
+                  VALE_REFE=-2.0000000000000002E-05,),
+          )
 
 # Validation de CREA_CHAMP / DISC : ELGA -> NOEU :
 #---------------------------------------------------
@@ -130,10 +143,15 @@ XX1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
 XX2=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='NOEU_SIEF_R',  INFO=2,
                      MODELE=MODELE,   CHAM_GD=XX1)
 
-TEST_RESU(CHAM_NO=(
-  _F( CHAM_GD = XX2, NOEUD = 'N3',  NOM_CMP = 'N', VALE = 2.0000440014521E+05 , PRECISION = 1.E-8 ,REFERENCE='NON_REGRESSION',),
-  _F( CHAM_GD = XX2, NOEUD = 'N4',  NOM_CMP = 'N', VALE = 4.0000880029041E+05 , PRECISION = 1.E-8 ,REFERENCE='NON_REGRESSION',),
-))
+TEST_RESU(CHAM_NO=(_F(NOEUD='N3',
+                      NOM_CMP='N',
+                      CHAM_GD=XX2,
+                      VALE_CALC=2.0000440014521001E5,),
+                   _F(NOEUD='N4',
+                      NOM_CMP='N',
+                      CHAM_GD=XX2,
+                      VALE_CALC=4.0000880029041E5,),
+                   ),
+          )
 
 FIN();
-

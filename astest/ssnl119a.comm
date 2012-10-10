@@ -1,4 +1,4 @@
-# MODIF  DATE 10/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE)
 # ssnl119a.para = tps_job 480 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,37 +173,55 @@ NRBetot = [ ( 2.8013E+03,8.0e-02) ]
 for indx in range(len(Temps)):
    TEST_RESU(RESU=(
       # Reactions
-      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='REAC_NODA', GROUP_NO = 'A', NOM_CMP='DY', VALE=React[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(React[indx][1],1.0E-05), ),
+      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='REAC_NODA', GROUP_NO = 'A', NOM_CMP='DY',
+         VALE_CALC=React[indx][0], VALE_REFE=React[indx][0],
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'),
+         PRECISION=React[indx][1], TOLE_MACHINE=(React[indx][1],1.0E-05), ),
       # Contraintes acier tendu
-      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX', VALE=Aciet[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Aciet[indx][1],1.0E-05), ),
+      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX',
+         VALE_CALC=Aciet[indx][0], VALE_REFE=Aciet[indx][0],
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Aciet[indx][1], TOLE_MACHINE=(Aciet[indx][1],1.0E-05), ),
       # Contraintes acier comprime
-      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX', VALE=Aciec[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Aciec[indx][1],1.0E-05), ),
+      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX',
+         VALE_CALC=Aciec[indx][0], VALE_REFE=Aciec[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Aciec[indx][1], TOLE_MACHINE=(Aciec[indx][1],1.0E-05), ),
       # Deformations acier tendu
-      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='EPSI_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=Eacit[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Eacit[indx][1],1.0E-05), ),
+      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='EPSI_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX',
+         VALE_CALC=Eacit[indx][0], VALE_REFE=Eacit[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Eacit[indx][1], TOLE_MACHINE=(Eacit[indx][1],1.0E-05), ),
       # Contraintes beton comprime
-      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=Betoc[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Betoc[indx][1],1.0E-05), ),
+      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX',
+         VALE_CALC=Betoc[indx][0], VALE_REFE=Betoc[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Betoc[indx][1], TOLE_MACHINE=(Betoc[indx][1],1.0E-05), ),
       # Contraintes beton tendu
-      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=Betot[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Betot[indx][1],1.0E-05), ),
+      _F(RESULTAT=U1, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX',
+         VALE_CALC=Betot[indx][0], VALE_REFE=Betot[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Betot[indx][1], TOLE_MACHINE=(Betot[indx][1],1.0E-05), ),
       )
    )
 
 for indx in range(len(NRTemps)):
    TEST_RESU(RESU=(
       # Deformations acier tendu
-      _F(RESULTAT=U1, INST=NRTemps[indx], NOM_CHAM='EPSI_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=NREacit[indx][0],
-         REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(NREacit[indx][1],1.0E-05), ),
+      _F(RESULTAT=U1, INST=NRTemps[indx], NOM_CHAM='EPSI_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX',
+         VALE_CALC=NREacit[indx][0],
+         CRITERE=('RELATIF','ABSOLU'), 
+         TOLE_MACHINE=(NREacit[indx][1], 1.0E-05), ),
       # Contraintes beton comprime
-      _F(RESULTAT=U1, INST=NRTemps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=NRBetoc[indx][0],
-         REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(NRBetoc[indx][1],1.0E-05), ),
+      _F(RESULTAT=U1, INST=NRTemps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX',
+         VALE_CALC=NRBetoc[indx][0],
+         CRITERE=('RELATIF','ABSOLU'), 
+         TOLE_MACHINE=(NRBetoc[indx][1], 1.0E-05), ),
       # Contraintes beton tendu
-      _F(RESULTAT=U1, INST=NRTemps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=NRBetot[indx][0],
-         REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(NRBetot[indx][1],1.0E-05), ),
+      _F(RESULTAT=U1, INST=NRTemps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX',
+         VALE_CALC=NRBetot[indx][0],
+         CRITERE=('RELATIF','ABSOLU'), 
+         TOLE_MACHINE=(NRBetot[indx][1], 1.0E-05), ),
       )
    )
 
@@ -258,37 +276,55 @@ U3=CALC_CHAMP(reuse= U3, RESULTAT= U3, DEFORMATION=('EPSI_ELGA'),)
 for indx in range(len(Temps)):
    TEST_RESU(RESU=(
       # Reactions
-      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='REAC_NODA', GROUP_NO = 'A', NOM_CMP='DY', VALE=React[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(React[indx][1],1.0E-05), ),
+      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='REAC_NODA', GROUP_NO = 'A', NOM_CMP='DY',
+         VALE_CALC=React[indx][0], VALE_REFE=React[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=React[indx][1], TOLE_MACHINE=(React[indx][1],1.0E-05), ),
       # Contraintes acier tendu
-      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX', VALE=Aciet[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Aciet[indx][1],1.0E-05), ),
+      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='SIXX',
+         VALE_CALC=Aciet[indx][0], VALE_REFE=Aciet[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Aciet[indx][1], TOLE_MACHINE=(Aciet[indx][1],1.0E-05), ),
       # Contraintes acier comprime
-      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX', VALE=Aciec[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Aciec[indx][1],1.0E-05), ),
+      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=44, NOM_CMP='SIXX',
+         VALE_CALC=Aciec[indx][0], VALE_REFE=Aciec[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Aciec[indx][1], TOLE_MACHINE=(Aciec[indx][1],1.0E-05), ),
       # Deformations acier tendu
-      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='EPSI_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=Eacit[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Eacit[indx][1],1.0E-05), ),
+      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='EPSI_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX',
+         VALE_CALC=Eacit[indx][0], VALE_REFE=Eacit[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Eacit[indx][1], TOLE_MACHINE=(Eacit[indx][1],1.0E-05), ),
       # Contraintes beton comprime
-      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=Betoc[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Betoc[indx][1],1.0E-05), ),
+      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX',
+         VALE_CALC=Betoc[indx][0], VALE_REFE=Betoc[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Betoc[indx][1], TOLE_MACHINE=(Betoc[indx][1],1.0E-05), ),
       # Contraintes beton tendu
-      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=Betot[indx][0],
-         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), PRECISION=(Betot[indx][1],1.0E-05), ),
+      _F(RESULTAT=U3, INST=Temps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX',
+         VALE_CALC=Betot[indx][0], VALE_REFE=Betot[indx][0],    #TODO vale_calc
+         REFERENCE='SOURCE_EXTERNE', CRITERE=('RELATIF','ABSOLU'), 
+         PRECISION=Betot[indx][1], TOLE_MACHINE=(Betot[indx][1],1.0E-05), ),
       )
    )
 
 for indx in range(len(NRTemps)):
    TEST_RESU(RESU=(
       # Deformations acier tendu
-      _F(RESULTAT=U3, INST=NRTemps[indx], NOM_CHAM='EPSI_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX', VALE=NREacit[indx][0],
-         REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(NREacit[indx][1],1.0E-05), ),
+      _F(RESULTAT=U3, INST=NRTemps[indx], NOM_CHAM='EPSI_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=41, NOM_CMP='EPXX',
+         VALE_CALC=NREacit[indx][0],
+         CRITERE=('RELATIF','ABSOLU'), 
+         TOLE_MACHINE=(NREacit[indx][1],1.0E-05), ),
       # Contraintes beton comprime
-      _F(RESULTAT=U3, INST=NRTemps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX', VALE=NRBetoc[indx][0],
-         REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(NRBetoc[indx][1],1.0E-05), ),
+      _F(RESULTAT=U3, INST=NRTemps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=1,  NOM_CMP='SIXX',
+         VALE_CALC=NRBetoc[indx][0],
+         CRITERE=('RELATIF','ABSOLU'), 
+         TOLE_MACHINE=(NRBetoc[indx][1],1.0E-05), ),
       # Contraintes beton tendu
-      _F(RESULTAT=U3, INST=NRTemps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX', VALE=NRBetot[indx][0],
-         REFERENCE='NON_REGRESSION', CRITERE=('RELATIF','ABSOLU'), PRECISION=(NRBetot[indx][1],1.0E-05), ),
+      _F(RESULTAT=U3, INST=NRTemps[indx], NOM_CHAM='SIEF_ELGA', MAILLE='M9', POINT=1, SOUS_POINT=40, NOM_CMP='SIXX',
+         VALE_CALC=NRBetot[indx][0],
+         CRITERE=('RELATIF','ABSOLU'), 
+         TOLE_MACHINE=(NRBetot[indx][1],1.0E-05), ),
       )
    )
 

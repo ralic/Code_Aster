@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CANTILEVER EN GRANDE ROTATION SOUMISE A UNE PRESSION SUIVEUSE
 # ssnv145c.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,54 +144,90 @@ NONLI=STAT_NON_LINE(
 #   PAS DE CHARGE NUMERO 11
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLI,       INST = 11.,
-                      NOEUD = 'NO000083',   NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',   PRECISION = 6.E-2,
-                      NOM_CMP = 'DX',        REFERENCE='SOURCE_EXTERNE', VALE= -7.366)
-            )
+TEST_RESU(RESU=_F(INST=11.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO000083',
+                  NOM_CMP='DX',
+                  VALE_CALC=-6.963970161,
+                  VALE_REFE=-7.3659999999999997,
+                  CRITERE='RELATIF',
+                  PRECISION=0.059999999999999998,),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLI,       INST = 11.,
-                      NOEUD = 'NO000083',   NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',   PRECISION = 1.1E-2,
-                      NOM_CMP = 'DZ',        REFERENCE='SOURCE_EXTERNE', VALE= -8.449)
-            )
+TEST_RESU(RESU=_F(INST=11.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO000083',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-8.370182996,
+                  VALE_REFE=-8.4489999999999998,
+                  CRITERE='RELATIF',
+                  PRECISION=0.010999999999999999,),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLI,       INST = 11.,
-                      NOEUD = 'NO000083',   NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',   PRECISION = 3.1E-2,
-                      NOM_CMP = 'DRY',       REFERENCE='SOURCE_EXTERNE', VALE= 1.692)
-            )
+TEST_RESU(RESU=_F(INST=11.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO000083',
+                  NOM_CMP='DRY',
+                  VALE_CALC=1.639638254,
+                  VALE_REFE=1.6919999999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=0.031,),
+          )
 
 #
 #
 #   DERNIER PAS DE CHARGE
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLI,       INST = 22.,
-                      NOEUD = 'NO000083',   NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',   PRECISION = 3.0E-2,
-                      NOM_CMP = 'DX',        REFERENCE='SOURCE_EXTERNE', VALE= -13.51)
-            )
+TEST_RESU(RESU=_F(INST=22.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO000083',
+                  NOM_CMP='DX',
+                  VALE_CALC=-13.129894070,
+                  VALE_REFE=-13.51,
+                  CRITERE='RELATIF',
+                  PRECISION=0.029999999999999999,),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLI,       INST = 22.,
-                      NOEUD = 'NO000083',   NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',   PRECISION = 7.E-2,
-                      NOM_CMP = 'DZ',        REFERENCE='SOURCE_EXTERNE', VALE= -5.788)
-            )
+TEST_RESU(RESU=_F(INST=22.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO000083',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-6.175611765,
+                  VALE_REFE=-5.7880000000000003,
+                  CRITERE='RELATIF',
+                  PRECISION=0.070000000000000007,),
+          )
 
 #
 
-TEST_RESU(   RESU=_F(  RESULTAT = NONLI,       INST = 22.,
-                      NOEUD = 'NO000083',   NOM_CHAM = 'DEPL',
-                      CRITERE = 'RELATIF',   PRECISION = 3.2E-2,
-                      NOM_CMP = 'DRY',       REFERENCE='SOURCE_EXTERNE', VALE= 2.822)
-            )
+TEST_RESU(RESU=_F(INST=22.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO000083',
+                  NOM_CMP='DRY',
+                  VALE_CALC=2.734027512,
+                  VALE_REFE=2.8220000000000001,
+                  CRITERE='RELATIF',
+                  PRECISION=0.032000000000000001,),
+          )
 
 #
 FIN( )

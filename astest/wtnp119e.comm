@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (SINI = 0.0099)
 # wtnp119e.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -408,35 +408,39 @@ IMPR_TABLE(TABLE=SAT,
                   ORDRE='CROISSANT',),
            NOM_PARA=('INST','V4',),);
 
-TEST_RESU(RESU=_F(RESULTAT=U2,
-                  INST=2.E-3,
+TEST_RESU(RESU=_F(INST=2.E-3,
+                  RESULTAT=U2,
                   NOM_CHAM='DEPL',
+                  NOEUD='N3',
                   NOM_CMP='PRE1',
-                  NOEUD='N3',
-                  VALE=3.0838E+10,
+                  VALE_CALC=3.0838000000E10,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
 
-
-TEST_RESU(RESU=_F(RESULTAT=U2,
-                  INST=0.8,
+TEST_RESU(RESU=_F(INST=0.80000000000000004,
+                  RESULTAT=U2,
                   NOM_CHAM='SIEF_NOEU',
-                  NOM_CMP='SIXX',
                   NOEUD='N3',
-                  VALE=0.,
+                  NOM_CMP='SIXX',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='ABSOLU',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U2,
-                  INST=1.,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=U2,
                   NOM_CHAM='SIEF_NOEU',
-                  NOM_CMP='SIXX',
                   NOEUD='N3',
-                  VALE=-1.7E7,
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-1.7000000E7,
+                  TOLE_MACHINE=1.E-3,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
+                  ),
+          )
+
 FIN()
 #
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # CAS TEST : SSNP152G
 # TITRE INCLUSION DE DEUX COURONNES
 # ssnp152g.para = tps_job 200 mem_job 768Mo ncpus 1 liste_test R
@@ -171,14 +171,16 @@ RESU1=STAT_NON_LINE(MODELE=MO,
 #+----------------------------------------+
 #|          tests de validation           |
 #+----------------------------------------+
-TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
-         NOM_CHAM   = 'DEPL',
-         NOM_CMP    = 'LAGS_C',
-         NUME_ORDRE = pas_tmp,
-         REFERENCE  = 'ANALYTIQUE',
-         NOEUD      = 'N10',
-         VALE_ABS   = 'OUI',
-         VALE       = pres_cont,
-         PRECISION  = 0.04,),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  VALE_ABS='OUI',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N10',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC= 9.13589268E+06,
+                  VALE_REFE=9.2592592592592593E6,
+                  PRECISION=0.040000000000000001,),
+          )
 
 FIN();

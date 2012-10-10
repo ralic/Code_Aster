@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 # zzzz159a.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,26 +88,25 @@ OPTIM2=DEFI_FONCTION(NOM_PARA='INST',
                     VALE_PARA=BIDON2,
                     VALE_FONC=RESU2);
 
-TEST_FONCTION (VALEUR =(_F(FONCTION = OPTIM2,
-                           PRECISION = 1.E-5,
-                           VALE_PARA = 1.,
-                           REFERENCE = 'AUTRE_ASTER',
-                           VALE_REFE = 200000.,
-                          ),
-                       _F(FONCTION = OPTIM2,
-                          PRECISION = 1.E-5,
-                          VALE_PARA = 2.,
-                          REFERENCE = 'AUTRE_ASTER',
-                          VALE_REFE = 1999.955707,
-                         ),
-                       _F(FONCTION = OPTIM2,
-                          PRECISION = 1.E-5,
-                          VALE_PARA = 3.,
-                          REFERENCE = 'AUTRE_ASTER',
-                          VALE_REFE = 200.00027887,
-                         ),
-                      )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=199999.887792,
+                         VALE_REFE=2.E5,
+                         VALE_PARA=1.0,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=OPTIM2,),
+                      _F(VALE_CALC=1999.95570656,
+                         VALE_REFE=1999.9557070000001,
+                         VALE_PARA=2.0,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=OPTIM2,),
+                      _F(VALE_CALC=200.000278867,
+                         VALE_REFE=200.00027886999999,
+                         VALE_PARA=3.0,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=OPTIM2,),
+                      ),
               )
-
 
 FIN()

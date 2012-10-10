@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 # wtnv123f.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -312,54 +312,39 @@ INDHYD=CALC_CHAMP(RESULTAT=U1,
 #    TEST_RESU
 #-------------------------
 
-TEST_RESU(RESU=(
-
-# PRESSION CRITIQUE
-
-                _F(    RESULTAT=PCR,
-                       NUME_ORDRE=1,
-                       NOM_CHAM='VAEX_ELNO',
-                       NOM_CMP='X1',
-                       MAILLE='MA1',
-                       NOEUD='NO1',
-                       VALE=3.21424E+05,
-                       PRECISION=(1.E-4,1.E-5),
-                       REFERENCE='NON_REGRESSION',
-                     ),
-
-
-                _F(    RESULTAT = PCR,
-                       REFERENCE = 'NON_REGRESSION',
-                       NOEUD = 'NO8',
-                       NOM_CHAM = 'VAEX_NOEU',
-                       NOM_CMP = 'X1',
-                       INST=3.,
-                       PRECISION = (1.E-4,1.E-5),
-                       VALE = 3.2142E+05,
-                     ),
-
-# SEUIL HYDRIQUE
-                _F(    RESULTAT=SEUIL,
-                       NUME_ORDRE=1,
-                       NOM_CHAM='VAEX_ELNO',
-                       NOM_CMP='X1',
-                       MAILLE='MA1',
-                       NOEUD='NO1',
-                       VALE=3.0E+05,
-                       PRECISION=(1.E-4,1.E-5),
-                       REFERENCE='NON_REGRESSION',
-                     ),
-
-
-                _F(    RESULTAT = SEUIL,
-                       REFERENCE = 'NON_REGRESSION',
-                       NOEUD = 'NO8',
-                       NOM_CHAM = 'VAEX_NOEU',
-                       NOM_CMP = 'X1',
-                       INST=3.,
-                       PRECISION = (1.E-4,1.E-5),
-                       VALE = 3.000E5,
-                     ),),);
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=PCR,
+                   NOM_CHAM='VAEX_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='X1',
+                   VALE_CALC=3.21424E5,
+                   TOLE_MACHINE=1.E-4,
+                   MAILLE='MA1',),
+                _F(INST=3.0,
+                   RESULTAT=PCR,
+                   NOM_CHAM='VAEX_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='X1',
+                   VALE_CALC=3.21420E5,
+                   TOLE_MACHINE=1.E-4,
+                   ),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=SEUIL,
+                   NOM_CHAM='VAEX_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='X1',
+                   VALE_CALC=3.E5,
+                   TOLE_MACHINE=1.E-4,
+                   MAILLE='MA1',),
+                _F(INST=3.0,
+                   RESULTAT=SEUIL,
+                   NOM_CHAM='VAEX_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='X1',
+                   VALE_CALC=3.E5,
+                   TOLE_MACHINE=1.E-4,
+                   ),
+                ),
+          )
 
 FIN () ;

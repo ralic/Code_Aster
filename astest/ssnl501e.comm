@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 13/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -163,14 +163,21 @@ DEPL=CREA_CHAMP(NOM_CHAM='DEPL',
 #                        VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
 #
-TEST_RESU(RESU=(_F(PARA='ETA_PILOTAGE',
+TEST_RESU(RESU=(_F(NUME_ORDRE=53,
+                   PARA='ETA_PILOTAGE',
                    RESULTAT=RESULT_E,
-                   PRECISION=0.16,
-                   VALE=1.0,
-                   NUME_ORDRE=53,),
-                _F(PARA='ETA_PILOTAGE',
+                   VALE_CALC=1.108221921,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.16,),
+                _F(NUME_ORDRE=63,
+                   PARA='ETA_PILOTAGE',
                    RESULTAT=RESULT_E,
-                   PRECISION=0.16,
-                   VALE=1.0,
-                   NUME_ORDRE=63,),),);
+                   VALE_CALC=1.108446309,
+                   VALE_REFE=1.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.16,),
+                ),
+          )
+
 FIN();

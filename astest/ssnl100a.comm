@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROBLEME A DEUX PORTEES AVEC CABLE POULIE
 # ssnl100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,16 +128,28 @@ RESU=STAT_NON_LINE( reuse=RESU,
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
 
-TEST_RESU(RESU=(
-          # DEPLACEMENTS
-
-            _F(  RESULTAT = RESU,       NUME_ORDRE = 2,       NOM_CHAM = 'DEPL',
-              CRITERE = 'RELATIF',  PRECISION = 0.5E-2,
-              NOEUD = 'N6',         NOM_CMP = 'DZ',        VALE = -13.93),
-            _F(  RESULTAT = RESU,       NUME_ORDRE = 2,       NOM_CHAM = 'DEPL',
-              CRITERE = 'RELATIF',  PRECISION = 0.5E-2,
-              NOEUD = 'N19',        NOM_CMP = 'DZ',        VALE = -13.93))
-            )
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N6',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-13.962397569,
+                   VALE_REFE=-13.93,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N19',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-13.895279337,
+                   VALE_REFE=-13.93,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                ),
+          )
 
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  : TEST DU RAASCH HOOK
 # ssls119b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,17 +71,25 @@ DEP_Z=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               RESULTAT=RESU,
                               NOM_CHAM='DEPL',),);
 
-TEST_RESU(RESU=(
-     _F( RESULTAT = RESU,         NOM_CHAM = 'DEPL',
-           NUME_ORDRE = 1,             GROUP_NO = 'C',
-           NOM_CMP = 'DZ',          VALE = 1.06726E-01,
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 0.00001,          CRITERE = 'RELATIF'),
-     _F( RESULTAT = RESU,         NOM_CHAM = 'DEPL',
-           NUME_ORDRE = 1,             GROUP_NO = 'D',
-           NOM_CMP = 'DZ',          VALE = 1.06726E-01,
-           REFERENCE='NON_REGRESSION',
-           PRECISION = 0.00001,          CRITERE = 'RELATIF'),),)
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='C',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.106726,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='D',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.106726,
+                   TOLE_MACHINE=1.0000000000000001E-05,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
 
 FIN();

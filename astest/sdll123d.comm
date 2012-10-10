@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL MODAL POUTRE MULTIFIBRE AVEC GYROSCOPIE
 # sdll123d.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,73 +180,142 @@ FREQROT=CREA_TABLE(
 
 IMPR_TABLE(TABLE=FREQROT)
 
-TEST_TABLE(TABLE=FREQROT, NOM_PARA='FREQ', VALE=123.429,
-           FILTRE=( _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=123.429,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='FREQ',
+           TABLE=FREQROT,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=FREQROT, NOM_PARA='FREQ', VALE=124.055,
-           FILTRE=( _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 2,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=124.05500000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='FREQ',
+           TABLE=FREQROT,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
 
-TEST_TABLE(TABLE=FREQROT, NOM_PARA='FREQ', VALE=493.691,
-           FILTRE=( _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 3,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=493.69099999999997,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='FREQ',
+           TABLE=FREQROT,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
 
-TEST_TABLE(TABLE=FREQROT, NOM_PARA='FREQ', VALE=496.199,
-           FILTRE=( _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 4,),),
-           REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=496.19900000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='FREQ',
+           TABLE=FREQROT,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
 
 # POUR QZ
-TEST_RESU(RESU=(
-          _F( RESULTAT = MODEQ, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.E-6,
-                NUME_ORDRE = 1,  VALE = 1.23429341E+02, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
-                NUME_ORDRE = 1,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.E-6,
-                NUME_ORDRE = 20,  VALE = 7.5073125E+03, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
-                NUME_ORDRE = 20,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 1.E-6,
-                NUME_ORDRE = 40,  VALE = 1.8555348176E+04, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
-                NUME_ORDRE = 40,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 5.E-6,
-                NUME_ORDRE = 60,  VALE = 3.5125262390E+04, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
-                NUME_ORDRE = 60,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 5.E-6,
-                NUME_ORDRE = 80,  VALE = 5.5643094315E+04, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
-                NUME_ORDRE = 80,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 5.E-6,
-                NUME_ORDRE = 100,  VALE = 1.017381078E+05, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
-                NUME_ORDRE = 100,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'FREQ',
-                CRITERE = 'RELATIF', PRECISION = 5.E-6,
-                NUME_ORDRE = 106,  VALE = 1.077183033E+05, REFERENCE='NON_REGRESSION',),
-          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
-                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
-                NUME_ORDRE = 106,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
-           ),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=123.42934099999999,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=1,
+                   PARA='AMOR_REDUIT',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=20,
+                   PARA='FREQ',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=7507.3125,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=20,
+                   PARA='AMOR_REDUIT',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=40,
+                   PARA='FREQ',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=1.8555348176E4,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=40,
+                   PARA='AMOR_REDUIT',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=60,
+                   PARA='FREQ',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=3.5125262390000004E4,
+                   TOLE_MACHINE=5.0000000000000004E-06,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=60,
+                   PARA='AMOR_REDUIT',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=80,
+                   PARA='FREQ',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=5.5643094315000002E4,
+                   TOLE_MACHINE=5.0000000000000004E-06,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=80,
+                   PARA='AMOR_REDUIT',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=100,
+                   PARA='FREQ',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=1.017381078E5,
+                   TOLE_MACHINE=5.0000000000000004E-06,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=100,
+                   PARA='AMOR_REDUIT',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=106,
+                   PARA='FREQ',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=1.077183033E5,
+                   TOLE_MACHINE=5.0000000000000004E-06,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=106,
+                   PARA='AMOR_REDUIT',
+                   RESULTAT=MODEQ,
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
 
 FIN()
-
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DURAND C.DURAND
 # TITRE VALIDATION DE NON REGRESSION DE LA LECTURE DE DONNEES MED
 # zzzz132a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -139,27 +139,30 @@ MECATER=MECA_STATIQUE(        MODELE=MODEMECA,
 CALC_CHAMP(reuse=MECATER,RESULTAT=MECATER,LIST_INST=L_INST,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'))
 
 
-TEST_RESU(RESU=(
-    _F( RESULTAT = MECATER,
-          NUME_ORDRE = 1,
-          NOM_CHAM = 'DEPL',
-          NOEUD   = 'N96',
-          NOM_CMP = 'DX',
-          VALE    = -1.24897E-04),
-    _F( RESULTAT = MECATER,
-          NUME_ORDRE = 1,
-          NOM_CHAM = 'DEPL',
-          NOEUD    = 'N96',
-          NOM_CMP  = 'DY',
-          VALE     = 4.26518E-05),
-    _F( RESULTAT = MECATER,
-          NUME_ORDRE = 21,
-          NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M16',
-          NOEUD = 'N377',
-          NOM_CMP = 'SIYY',
-          VALE = 2.562277E+05))
-   )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=MECATER,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N96',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.2489700000000001E-4,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=MECATER,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N96',
+                   NOM_CMP='DY',
+                   VALE_CALC=4.2651799999999997E-05,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=21,
+                   RESULTAT=MECATER,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N377',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=2.5622770000000001E5,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M16',),
+                ),
+          )
 
 #----------------------------------------------------------
 # TEST DE IMPR_RESU
@@ -182,19 +185,23 @@ THER_1=LIRE_CHAMP( MAILLAGE=MA,
                    )
 
 
-TEST_RESU(CHAM_NO=(
-    _F( CHAM_GD = THER_1,
-          NOEUD = 'N1240',
-          NOM_CMP = 'TEMP',
-          VALE = 1.00000E+00),
-    _F( CHAM_GD = THER_1,
-          NOEUD = 'N685',
-          NOM_CMP = 'TEMP',
-          VALE = 1.00000E+00),
-    _F( CHAM_GD = THER_1,
-          NOEUD = 'N16',
-          NOM_CMP = 'TEMP',
-          VALE = 1.00000E+00))
-   )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N1240',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=THER_1,
+                      VALE_CALC=1.0,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N685',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=THER_1,
+                      VALE_CALC=1.0,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N16',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=THER_1,
+                      VALE_CALC=1.0,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
+          )
+
 #
 FIN()

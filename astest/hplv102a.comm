@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 # hplv102a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,60 +184,61 @@ G4=CALC_G(        THETA=_F(THETA=THETA4),
 #            TEST DES RESULTATS DE G                                #
 #--------------------------------------------------------------------
 
-TEST_TABLE(TABLE=G1,
-           NOM_PARA='G',
-           VALE=1.4778e-06,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE',);
+           VALE_CALC= 1.45874203E-06,
+           VALE_REFE=1.4778000000000001E-06,
+           NOM_PARA='G',
+           TABLE=G1,)
 
-TEST_TABLE(TABLE=G2,
-           NOM_PARA='G',
-           VALE=1.4778e-06,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE',);
+           VALE_CALC= 1.45907876E-06,
+           VALE_REFE=1.4778000000000001E-06,
+           NOM_PARA='G',
+           TABLE=G2,)
 
-TEST_TABLE(TABLE=G3,
-           NOM_PARA='G',
-           VALE=1.4778e-06,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE',);
+           VALE_CALC= 1.45870999E-06,
+           VALE_REFE=1.4778000000000001E-06,
+           NOM_PARA='G',
+           TABLE=G3,)
 
-TEST_TABLE(TABLE=G4,
-           NOM_PARA='G',
-           VALE=1.4778e-06,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE',);
+           VALE_CALC= 1.45913011E-06,
+           VALE_REFE=1.4778000000000001E-06,
+           NOM_PARA='G',
+           TABLE=G4,)
+
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G NON REGRESSION                 #
 #--------------------------------------------------------------------
 
-TEST_TABLE(TABLE=G1,
+TEST_TABLE(
+           VALE_CALC=1.4587420274999999E-06,
            NOM_PARA='G',
-           VALE=1.4587420275E-06,
-           PRECISION=1e-09,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.10',);
+           TABLE=G1,
+           )
 
-TEST_TABLE(TABLE=G2,
+TEST_TABLE(
+           VALE_CALC=1.4590787635E-06,
            NOM_PARA='G',
-           VALE=1.4590787635E-06,
-           PRECISION=1e-09,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.10',);
+           TABLE=G2,
+           )
 
-TEST_TABLE(TABLE=G3,
+TEST_TABLE(
+           VALE_CALC=1.45870999368E-06,
            NOM_PARA='G',
-           VALE=1.45870999368E-06,
-           PRECISION=1e-09,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.10',);
+           TABLE=G3,
+           )
 
-TEST_TABLE(TABLE=G4,
+TEST_TABLE(
+           VALE_CALC=1.4591301104E-06,
            NOM_PARA='G',
-           VALE=1.4591301104E-06,
-           PRECISION=1e-09,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.10',);
+           TABLE=G4,
+           )
 
 FIN();
 #

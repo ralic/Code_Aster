@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DES FREQUENCES PROPRES D''UNE POUTRE BI APPUYEE AMORTIE
 # sdlv302d.para = tps_job 70 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -364,34 +364,40 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
                        INFO=1,);
 
 
-TEST_RESU(RESU=(_F(RESULTAT=MODES,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=113.45,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=113.321222093,
+                   VALE_REFE=113.45,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODES,
-                   NUME_ORDRE=2,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
                    PARA='FREQ',
-                   VALE=433.61,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=432.591409580,
+                   VALE_REFE=433.61000000000001,
                    CRITERE='RELATIF',
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODES,
-                   NUME_ORDRE=3,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=3,
                    PARA='FREQ',
-                   VALE=627.70,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=626.081074222,
+                   VALE_REFE=627.70000000000005,
                    CRITERE='RELATIF',
-                   PRECISION=0.02,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODES,
-                   NUME_ORDRE=4,
+                   PRECISION=0.02,),
+                _F(NUME_ORDRE=4,
                    PARA='FREQ',
-                   VALE=878.74,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODES,
+                   VALE_CALC=869.155070408,
+                   VALE_REFE=878.74000000000001,
                    CRITERE='RELATIF',
-                   PRECISION=0.05,
-                   REFERENCE='ANALYTIQUE',),),);
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
 
 FIN();
 

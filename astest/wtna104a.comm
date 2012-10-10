@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtna104a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -248,24 +248,28 @@ U0=CALC_CHAMP(reuse=U0,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESUL
 
 
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=60,
+TEST_RESU(RESU=_F(NUME_ORDRE=60,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE2',
                   NOEUD='N12',
-                  VALE=7900.,
+                  NOM_CMP='PRE2',
+                  VALE_CALC= 7.94444824E+03,
+                  VALE_REFE=7900.0,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-1,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=0.10000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=100,
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE2',
                   NOEUD='N12',
-                  VALE=9500.,
+                  NOM_CMP='PRE2',
+                  VALE_CALC= 9.55669688E+03,
+                  VALE_REFE=9500.0,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-1,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=0.10000000000000001,),
+          )
 
 FIN();

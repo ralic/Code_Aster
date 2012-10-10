@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRANSFERT THERMIQUE DANS UN DOMAINE PLAN AVEC SINGULARITE
 # ttlp302a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,15 +173,50 @@ TEMP_01=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 RESULTAT=TEMPE, NOM_CHAM='TEMP',
              INST=0.1 )
 
-TEST_RESU(CHAM_NO=(
-#
-_F( CHAM_GD = TEMP_01, NOEUD = 'N37', NOM_CMP = 'TEMP', VALE = 787., PRECISION = 2.E-2),
-_F( CHAM_GD = TEMP_01, NOEUD = 'N39', NOM_CMP = 'TEMP', VALE = 634., PRECISION = 2.E-2),
-_F( CHAM_GD = TEMP_01, NOEUD = 'N61', NOM_CMP = 'TEMP', VALE = 86., PRECISION = 2.E-2),
-_F( CHAM_GD = TEMP_01, NOEUD = 'N59', NOM_CMP = 'TEMP', VALE = 28., PRECISION = 2.E-2),
-_F( CHAM_GD = TEMP_01, NOEUD = 'N64', NOM_CMP = 'TEMP', VALE = 119., PRECISION = 2.E-2),
-_F( CHAM_GD = TEMP_01, NOEUD = 'N42', NOM_CMP = 'TEMP', VALE = 538., PRECISION = 2.E-2))
-    )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N37',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_01,
+                      VALE_CALC=785.351058575,
+                      VALE_REFE=787.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N39',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_01,
+                      VALE_CALC=631.735442177,
+                      VALE_REFE=634.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N61',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_01,
+                      VALE_CALC=85.401114197,
+                      VALE_REFE=86.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N59',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_01,
+                      VALE_CALC=27.795615795,
+                      VALE_REFE=28.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N64',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_01,
+                      VALE_CALC=118.838584320,
+                      VALE_REFE=119.0,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N42',
+                      NOM_CMP='TEMP',
+                      PRECISION=0.02,
+                      CHAM_GD=TEMP_01,
+                      VALE_CALC=536.967230382,
+                      VALE_REFE=538.0,
+                      REFERENCE='NON_DEFINI',),
+                   ),
+          )
 
 FIN()
 #

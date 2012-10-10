@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 # zzzz112b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -122,23 +122,26 @@ RESUPOS=POST_CHAMP(RESULTAT=RESU2,
 #   C'EST L'OP0150 (LIRE_PLEXUS) QUI NE FAIT PLUS DE CHANGEMENT
 #   DE SIGNE MAIS LE TE
 #
-TEST_RESU(RESU=( _F(  RESULTAT = RESU2,
-                   INST = 1.,
-                   NOM_CHAM = 'DEPL',
-                   NOEUD = 'N1',
-                   NOM_CMP = 'DY',
-                   REFERENCE = 'AUTRE_ASTER',
-                   VALE = -5.E-11,
-                   PRECISION = 0.04),
-            _F(  RESULTAT = RESUPOS,
-                   INST = 1.,
-                   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'M1',
-                   NOEUD = 'N1',
-                   NOM_CMP = 'SIYY',
-                   REFERENCE = 'AUTRE_ASTER',
-                   VALE = 100.,
-                   PRECISION = 0.03))
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.81134276E-11,
+                   VALE_REFE=-5.0000000000000002E-11,
+                   PRECISION=0.040000000000000001,),
+                _F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUPOS,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=98.632967432,
+                   VALE_REFE=100.0,
+                   PRECISION=0.029999999999999999,
+                   MAILLE='M1',),
+                ),
           )
 
 # -------------------------------------------------------------------
@@ -178,23 +181,26 @@ IMPR_RESU(FORMAT='RESULTAT',
 #   C'EST L'OP0150 (LIRE_PLEXUS) QUI NE FAIT PLUS DE CHANGEMENT
 #   DE SIGNE MAIS LE TE
 #
-TEST_RESU(RESU=( _F(  RESULTAT = RESU_NL,
-                   INST = 1.,
-                   NOM_CHAM = 'DEPL',
-                   NOEUD = 'N1',
-                   NOM_CMP = 'DY',
-                   REFERENCE = 'AUTRE_ASTER',
-                   VALE = -5.E-11,
-                   PRECISION = 0.04),
-            _F(  RESULTAT = RESNLPOS,
-                   INST = 1.,
-                   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'M1',
-                   NOEUD = 'N1',
-                   NOM_CMP = 'SIYY',
-                   REFERENCE = 'AUTRE_ASTER',
-                   VALE = 100.,
-                   PRECISION = 0.03),)
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU_NL,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.81133603E-11,
+                   VALE_REFE=-5.0000000000000002E-11,
+                   PRECISION=0.040000000000000001,),
+                _F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESNLPOS,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=98.632830236,
+                   VALE_REFE=100.0,
+                   PRECISION=0.029999999999999999,
+                   MAILLE='M1',),
+                ),
           )
 
 FIN()

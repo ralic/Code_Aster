@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE VRILLEE SHB15 MAILLAGE 12 MAILLES
 # ssls108h.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,24 +88,43 @@ RESU2=CALC_CHAMP(reuse =RESU2,
                  CONTRAINTE=('SIGM_ELNO'),
                 RESULTAT=RESU2,);
 
-TEST_RESU(RESU=(
-     # DEPLACEMENT FZ
-
-            _F(  RESULTAT = RESU1, NOM_CHAM='DEPL', PRECISION = 3.E-2, REFERENCE='AUTRE_ASTER',NUME_ORDRE=1,
-              GROUP_NO = 'A1',      NOM_CMP = 'DY',           VALE = -1.72E-3),
-
-            _F(   RESULTAT = RESU1, NOM_CHAM='DEPL',  PRECISION = 4.E-2, REFERENCE='AUTRE_ASTER',NUME_ORDRE=1,
-              GROUP_NO = 'A2',      NOM_CMP = 'DZ',           VALE = 5.42E-3),
-
-     # DEPLACEMENT FY
-
-            _F(  RESULTAT = RESU2, NOM_CHAM='DEPL', PRECISION = 2.E-2, REFERENCE='AUTRE_ASTER',NUME_ORDRE=1,
-              GROUP_NO = 'A1',      NOM_CMP = 'DY',           VALE = 1.75E-3),
-
-            _F(  RESULTAT = RESU2, NOM_CHAM='DEPL', PRECISION = 3.E-2, REFERENCE='AUTRE_ASTER',NUME_ORDRE=1,
-              GROUP_NO = 'A2',      NOM_CMP = 'DZ',           VALE = -1.72E-3))
-             )
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='A1',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.66871605E-03,
+                   VALE_REFE=-1.72E-3,
+                   PRECISION=0.029999999999999999,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A2',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 5.22281979E-03,
+                   VALE_REFE=5.4200000000000003E-3,
+                   PRECISION=0.040000000000000001,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A1',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC= 1.73171390E-03,
+                   VALE_REFE=1.75E-3,
+                   PRECISION=0.02,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A2',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-1.67216457E-03,
+                   VALE_REFE=-1.72E-3,
+                   PRECISION=0.029999999999999999,),
+                ),
+          )
 
 FIN()
-

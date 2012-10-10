@@ -67,13 +67,15 @@ MA_MACRO(MOTH=MOTH,
          CHTH=CHTH,
          TEMPER=CO('RTEMP'),)
 
-TEST_RESU(RESU=_F(RESULTAT=RTEMP,
+TEST_RESU(RESU=_F(INST=0.1,
+                  RESULTAT=RTEMP,
                   NOM_CHAM='TEMP',
-                  NOM_CMP='TEMP',
-                  INST=0.1,
                   NOEUD='N9',
-                  VALE=65.48,
-                  PRECISION=1.E-2),)
+                  NOM_CMP='TEMP',
+                  VALE_CALC=65.368652069,
+                  VALE_REFE=65.480000000000004,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=1.E-2,),
+          )
 
 FIN()
-

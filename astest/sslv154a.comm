@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE
 # sslv154a.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,94 +176,104 @@ k3ref_90 = K3REF(90)
 #---------------
 
 # test de KI sur tout le fond de fissure
-TEST_TABLE(TABLE=CG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 8.36111958E+05,
+           VALE_REFE=7.9788456080286519E5,
+           NOM_PARA='K1',
            TYPE_TEST='MAX',
-           NOM_PARA='K1',
-           VALE=k1ref,
-           CRITERE='RELATIF',
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE')
+           TABLE=CG,)
 
-TEST_TABLE(TABLE=CG,
-           TYPE_TEST='MIN',
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC= 8.24834435E+05,
+           VALE_REFE=7.9788456080286519E5,
            NOM_PARA='K1',
-           VALE=k1ref,
-           CRITERE='RELATIF',
-           PRECISION=0.04,
-           REFERENCE='ANALYTIQUE')
+           TYPE_TEST='MIN',
+           TABLE=CG,)
 
 # test de KII au premier point du fond (angle = 0)
 # le signe n'est pas important, mais on ne peut pas tester |K2|
 # il se trouve que le K2 de CALC_G est de signe oppose a celui de POST_K
-TEST_TABLE(TABLE=CG,
-           FILTRE=_F(NOM_PARA='ANGLE',
-                     VALE=0.),
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.080000000000000002,
+           VALE_CALC= 8.64354694E+05,
+           VALE_REFE=9.3868771859160636E5,
            NOM_PARA='K2',
-           VALE=k2ref_0,
-           CRITERE='RELATIF',
-           PRECISION=0.08,
-           REFERENCE='ANALYTIQUE')
+           TABLE=CG,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=0.0,),
+           )
 
 # test de KIII au milieu du fond (angle = 90 avec + ou -0.5 degre)
 # le signe n'est pas important, mais on ne peut pas tester |K3|
 # il se trouve que le K3 de CALC_G est de signe oppose a celui de POST_K
-TEST_TABLE(TABLE=CG,
-           FILTRE=_F(NOM_PARA='ANGLE',
-                     VALE=90.,
-                     CRITERE='ABSOLU',
-                     PRECISION=0.5,),
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 6.74697864E+05,
+           VALE_REFE=6.5708140301412437E5,
            NOM_PARA='K3',
-           VALE=k3ref_90,
-           CRITERE='RELATIF',
-           PRECISION=0.03,
-           REFERENCE='ANALYTIQUE')
-
+           TABLE=CG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=0.5,
+                     NOM_PARA='ANGLE',
+                     VALE=90.0,),
+           )
 
 # TEST DE POST_K
 #---------------
 
 # test de KI sur tout le fond de fissure
-TEST_TABLE(TABLE=PK,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 8.14169892E+05,
+           VALE_REFE=7.9788456080286519E5,
+           NOM_PARA='K1',
            TYPE_TEST='MAX',
-           NOM_PARA='K1',
-           VALE=k1ref,
-           CRITERE='RELATIF',
-           PRECISION=0.03,
-           REFERENCE='ANALYTIQUE')
+           TABLE=PK,)
 
-TEST_TABLE(TABLE=PK,
-           TYPE_TEST='MIN',
-           NOM_PARA='K1',
-           VALE=k1ref,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE')
+           VALE_CALC= 7.87418520E+05,
+           VALE_REFE=7.9788456080286519E5,
+           NOM_PARA='K1',
+           TYPE_TEST='MIN',
+           TABLE=PK,)
 
 # test de KII au premier point du fond (angle = 0)
-TEST_TABLE(TABLE=PK,
-           FILTRE=_F(NOM_PARA='ANGLE',
-                     VALE=0.),
-           NOM_PARA='K2',
-           VALE=k2ref_0,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE')
+           VALE_CALC= 9.27160421E+05,
+           VALE_REFE=9.3868771859160636E5,
+           NOM_PARA='K2',
+           TABLE=PK,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=0.0,),
+           )
 
 # test de KIII au milieu du fond (angle = 90 avec + ou -0.5 degre)
 # le signe n'est pas important, mais on ne peut pas tester |K3|
 # il se trouve que le K3 de CALC_G est de signe oppose a celui de POST_K
-TEST_TABLE(TABLE=PK,
-           FILTRE=_F(NOM_PARA='ANGLE',
-                     VALE=90.,
-                     CRITERE='ABSOLU',
-                     PRECISION=0.5,),
-           NOM_PARA='K3',
-           VALE=-k3ref_90,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE')
-            
-            
+           VALE_CALC=-6.47639020E+05,
+           VALE_REFE=-6.5708140301412437E5,
+           NOM_PARA='K3',
+           TABLE=PK,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=0.5,
+                     NOM_PARA='ANGLE',
+                     VALE=90.0,),
+           )
+
 #-----------------------------------------------------------------------------------------------------------------------------
 #                                 TRACE DES COURBES
 #-----------------------------------------------------------------------------------------------------------------------------

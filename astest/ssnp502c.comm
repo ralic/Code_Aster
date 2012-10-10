@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 # ssnp502c.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,77 +175,85 @@ TAB_PRES=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
 #------- TEST DES RESULTATS --------------
 # TEST REFERENCE
 
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.14999999999999999,
+           VALE_CALC=-8.659716973,
+           VALE_REFE=-8.0083311249999998,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.),
-           VALE=-8.008331125,
-           PRECISION=0.15,
-           REFERENCE='SOURCE_EXTERNE',);
+                     VALE=1.0,),
+           )
 
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.14999999999999999,
+           VALE_CALC=-16.460266150,
+           VALE_REFE=-16.016662499999999,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.),
-           VALE=-16.0166625,
-           PRECISION=0.15,
-           REFERENCE='SOURCE_EXTERNE',);
+                     VALE=2.0,),
+           )
 
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.14999999999999999,
+           VALE_CALC=-23.981506301,
+           VALE_REFE=-24.02499375,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.),
-           VALE=-24.02499375,
-           PRECISION=0.15,
-           REFERENCE='SOURCE_EXTERNE',);
+                     VALE=3.0,),
+           )
 
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.14999999999999999,
+           VALE_CALC=-32.315058462,
+           VALE_REFE=-32.033324999999998,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=4.),
-           VALE=-32.033325,
-           PRECISION=0.15,
-           REFERENCE='SOURCE_EXTERNE',);
+                     VALE=4.0,),
+           )
 
 # TEST NON REGRESSION
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  GROUP_NO='D',
-                  INST=2.,
+TEST_RESU(RESU=_F(GROUP_NO='D',
+                  INST=2.0,
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE=7.3820658027766E-01,
-                  PRECISION=1.E-5,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='6.3.04',),);
+                  VALE_CALC=0.73820658027765995,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  GROUP_NO='D',
-                  INST=4.,
+TEST_RESU(RESU=_F(GROUP_NO='D',
+                  INST=4.0,
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE=1.3018341152903E+00,
-                  PRECISION=1.E-5,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='6.3.04',),);
+                  VALE_CALC=1.3018341152902999,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  GROUP_NO='A',
-                  INST=2.,
+TEST_RESU(RESU=_F(GROUP_NO='A',
+                  INST=2.0,
+                  RESULTAT=RESU,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  VALE=-1.5321643718937E+01,
-                  PRECISION=1.E-5,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='6.3.04',),);
+                  VALE_CALC=-15.321643718937001,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  GROUP_NO='A',
-                  INST=4.,
+TEST_RESU(RESU=_F(GROUP_NO='A',
+                  INST=4.0,
+                  RESULTAT=RESU,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  VALE=-1.2002526606057E+01,
-                  PRECISION=3.E-5,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='6.3.04',),);
+                  VALE_CALC=-12.002526606057,
+                  TOLE_MACHINE=3.0000000000000001E-05,
+                  ),
+          )
 
 FIN();

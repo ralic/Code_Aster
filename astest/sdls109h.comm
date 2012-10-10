@@ -1,5 +1,5 @@
 
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FREQUENCES PROPRES D'UN ANNEAU CYLINDRIQUE EPAIS MODELISATION SHB
 # sdls109h.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,65 +86,78 @@ MODE_SHB=MODE_ITER_SIMULT(MATR_RIGI=MASK_SHB,
                                        FREQ=(200.0,800.0,),),);
 
 # modes hors plan
-TEST_RESU(RESU=(_F(RESULTAT=MODE_SHB,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
-                   VALE=205.89,
-                   PRECISION=0.012,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODE_SHB,
-                   NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=208.049060799,
+                   VALE_REFE=205.88999999999999,
+                   PRECISION=0.012,),
+                _F(NUME_ORDRE=2,
                    PARA='FREQ',
-                   VALE=205.89,
-                   PRECISION=0.012,
-                   REFERENCE='ANALYTIQUE',),
-                   ),);
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=208.049060826,
+                   VALE_REFE=205.88999999999999,
+                   PRECISION=0.012,),
+                ),
+          )
+
 # modes d ovalidation
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_SHB,
-                   NUME_ORDRE=3,
+TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    PARA='FREQ',
-                   VALE=210.55,
-                   PRECISION=0.009,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODE_SHB,
-                   NUME_ORDRE=4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=210.709364037,
+                   VALE_REFE=210.55000000000001,
+                   PRECISION=8.9999999999999993E-3,),
+                _F(NUME_ORDRE=4,
                    PARA='FREQ',
-                   VALE=210.55,
-                   PRECISION=0.009,
-                   REFERENCE='ANALYTIQUE',),
-                   ),);
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=210.709364056,
+                   VALE_REFE=210.55000000000001,
+                   PRECISION=8.9999999999999993E-3,),
+                ),
+          )
 
 # modes trifolies
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_SHB,
-                   NUME_ORDRE=5,
+TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    PARA='FREQ',
-                   VALE=587.92,
-                   PRECISION=0.005,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODE_SHB,
-                   NUME_ORDRE=6,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=590.847700930,
+                   VALE_REFE=587.91999999999996,
+                   PRECISION=5.0000000000000001E-3,),
+                _F(NUME_ORDRE=6,
                    PARA='FREQ',
-                   VALE=587.92,
-                   PRECISION=0.005,
-                   REFERENCE='ANALYTIQUE',),
-                   ),);
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=590.847700989,
+                   VALE_REFE=587.91999999999996,
+                   PRECISION=5.0000000000000001E-3,),
+                ),
+          )
 
 # modes hors plan
-TEST_RESU(RESU=(_F(RESULTAT=MODE_SHB,
-                   NUME_ORDRE=7,
+TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    PARA='FREQ',
-                   VALE=588.88,
-                   PRECISION=0.011,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MODE_SHB,
-                   NUME_ORDRE=8,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=595.294815752,
+                   VALE_REFE=588.88,
+                   PRECISION=0.010999999999999999,),
+                _F(NUME_ORDRE=8,
                    PARA='FREQ',
-                   VALE=588.88,
-                   PRECISION=0.011,
-                   REFERENCE='ANALYTIQUE',),
-                   ),);
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_SHB,
+                   VALE_CALC=595.294815838,
+                   VALE_REFE=588.88,
+                   PRECISION=0.010999999999999999,),
+                ),
+          )
 
 MASSIN=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                  MODELE=MOD_SHB,
@@ -172,11 +185,12 @@ MASS = VOL*RHO
 
 
 
-TEST_TABLE(TABLE=MASSIN,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=43.373681594,
+           VALE_REFE=43.402233481457792,
            NOM_PARA='MASSE',
-           VALE=MASS,
-           PRECISION=0.01,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=MASSIN,)
 
 FIN();
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA COMMANDE CREA_CHAMP/OPERATION='EVAL'
 #                                 CREA_CHAMP/OPERATION='DISC'
 # zzzz130a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -100,13 +100,22 @@ DETRUIRE(CONCEPT=_F( NOM = (SIG1,SIG2,)))
 # => SIZZ= 1000.*10.A    =  5773.5
 # => SIYY= 3.*1000.*10.A = 17320.5
 
-TEST_RESU(CHAM_ELEM=(
- _F( CHAM_GD = SIGINI, MAILLE = 'CUBE', POINT = 2, NOM_CMP = 'SIZZ',
-  REFERENCE = 'ANALYTIQUE',  VALE = 5773.5),
- _F( CHAM_GD = SIGINI, MAILLE = 'CUBE', POINT = 2, NOM_CMP = 'SIYY',
-  REFERENCE = 'ANALYTIQUE',  VALE = 17320.5))
- )
-
+TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
+                        POINT=2,
+                        NOM_CMP='SIZZ',
+                        MAILLE='CUBE',
+                        CHAM_GD=SIGINI,
+                        VALE_CALC= 5.77350269E+03,
+                        VALE_REFE=5773.5,),
+                     _F(REFERENCE='ANALYTIQUE',
+                        POINT=2,
+                        NOM_CMP='SIYY',
+                        MAILLE='CUBE',
+                        CHAM_GD=SIGINI,
+                        VALE_CALC= 1.73205081E+04,
+                        VALE_REFE=1.73205E4,),
+                     ),
+          )
 
 # ============================
 # 2) FABRICATION DE  TEMP0 :
@@ -130,11 +139,13 @@ TEMP0=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_TEMP_R',
             NOM_CMP = ('X1',),
             NOM_CMP_RESU = ('TEMP',))  )
 
-TEST_RESU(
- CHAM_NO=_F( CHAM_GD = TEMP0, NOEUD = 'N7',  NOM_CMP = 'TEMP',
-  REFERENCE = 'ANALYTIQUE',  VALE = 14.)
- )
-
+TEST_RESU(CHAM_NO=_F(NOEUD='N7',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='TEMP',
+                     CHAM_GD=TEMP0,
+                     VALE_CALC=14.000000000,
+                     VALE_REFE=14.0,),
+          )
 
 #===============================================================================================
 # 3) Creation d'un champ de variables internes initiales non nulles  :
@@ -217,14 +228,33 @@ VAIN22=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',MODELE=MO,  INFO=1,
 
 # 3.1.5 test des valeurs obtenues :
 #-------------------------------------------------------------------------------------------
-TEST_RESU( CHAM_ELEM=_F( CHAM_GD = VAIN22, MAILLE = 'CUBE', POINT = 8,
-           NOM_CMP = 'V2',  VALE = 2., REFERENCE = 'ANALYTIQUE'))
-TEST_RESU( CHAM_ELEM=_F( CHAM_GD = VAIN22, MAILLE = 'MASSIF', POINT = 3,
-           NOM_CMP = 'V9',  VALE = 9., REFERENCE = 'ANALYTIQUE'))
-TEST_RESU( CHAM_ELEM=_F( CHAM_GD = VAIN22, MAILLE = 'MASSIF', POINT = 3,
-           NOM_CMP = 'V2',  VALE = 0., CRITERE='ABSOLU', REFERENCE = 'ANALYTIQUE'))
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=8,
+                       NOM_CMP='V2',
+                       MAILLE='CUBE',
+                       CHAM_GD=VAIN22,
+                       VALE_CALC=2.000000000,
+                       VALE_REFE=2.0,),
+          )
 
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=3,
+                       NOM_CMP='V9',
+                       MAILLE='MASSIF',
+                       CHAM_GD=VAIN22,
+                       VALE_CALC=9.000000000,
+                       VALE_REFE=9.0,),
+          )
 
+TEST_RESU(CHAM_ELEM=_F(CRITERE='ABSOLU',
+                       REFERENCE='ANALYTIQUE',
+                       POINT=3,
+                       NOM_CMP='V2',
+                       MAILLE='MASSIF',
+                       CHAM_GD=VAIN22,
+                       VALE_CALC= 0.00000000E+00,
+                       VALE_REFE=0.0,),
+          )
 
 # 3.2 : 2eme methode (il faut connaitre TOUS les comportements de son modele)
 #===============================================================================
@@ -241,16 +271,33 @@ VAIN11=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO, INFO=2, 
 
 # 3.2.2 test des valeurs obtenues :
 #-------------------------------------------------------------------------------------------
-TEST_RESU( CHAM_ELEM=_F( CHAM_GD = VAIN11, MAILLE = 'CUBE', POINT = 8,
-           NOM_CMP = 'V2',  VALE = 2., REFERENCE = 'ANALYTIQUE'))
-TEST_RESU( CHAM_ELEM=_F( CHAM_GD = VAIN11, MAILLE = 'MASSIF', POINT = 3,
-           NOM_CMP = 'V9',  VALE = 9., REFERENCE = 'ANALYTIQUE'))
-TEST_RESU( CHAM_ELEM=_F( CHAM_GD = VAIN11, MAILLE = 'MASSIF', POINT = 3,
-           NOM_CMP = 'V2',  VALE = 0., CRITERE='ABSOLU', REFERENCE = 'ANALYTIQUE'))
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=8,
+                       NOM_CMP='V2',
+                       MAILLE='CUBE',
+                       CHAM_GD=VAIN11,
+                       VALE_CALC=2.000000000,
+                       VALE_REFE=2.0,),
+          )
 
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=3,
+                       NOM_CMP='V9',
+                       MAILLE='MASSIF',
+                       CHAM_GD=VAIN11,
+                       VALE_CALC=9.000000000,
+                       VALE_REFE=9.0,),
+          )
 
-
-
+TEST_RESU(CHAM_ELEM=_F(CRITERE='ABSOLU',
+                       REFERENCE='ANALYTIQUE',
+                       POINT=3,
+                       NOM_CMP='V2',
+                       MAILLE='MASSIF',
+                       CHAM_GD=VAIN11,
+                       VALE_CALC= 0.00000000E+00,
+                       VALE_REFE=0.0,),
+          )
 
 # =================================
 # 4) VALIDATION DE OPERATION:'DISC'
@@ -265,30 +312,40 @@ CHY1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_GEOM_R',
 CHY2=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='NOEU_GEOM_R',
                 CHAM_GD=CHY1,  INFO=1 )
 
-TEST_RESU(
- CHAM_NO=_F( CHAM_GD = CHY2,  NOEUD = 'N1', NOM_CMP = 'Y',
-  REFERENCE = 'ANALYTIQUE',  VALE = 3.))
-
+TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='Y',
+                     CHAM_GD=CHY2,
+                     VALE_CALC=3.000000000,
+                     VALE_REFE=3.0,),
+          )
 
 # 4.2  VALIDATION DE OPERATION:'DISC' NOEU -> ELNO
 # -------------------------------------------------------
 CHX2=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='ELNO_GEOM_R',
       MODELE=MO,   CHAM_GD=CHXN,  INFO=1 )
 
-TEST_RESU(
- CHAM_ELEM=_F( CHAM_GD = CHX2, MAILLE = 'CUBE', NOEUD = 'N1', NOM_CMP = 'Y',
-  REFERENCE = 'ANALYTIQUE',  VALE = -1.))
-
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CMP='Y',
+                       MAILLE='CUBE',
+                       CHAM_GD=CHX2,
+                       VALE_CALC=-1.000000000,
+                       VALE_REFE=-1.0,),
+          )
 
 # 4.3  VALIDATION DE OPERATION:'DISC' ELNO -> NOEU
 # -------------------------------------------------------
 CHX3=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='NOEU_GEOM_R',
       MODELE=MO,   CHAM_GD=CHX2,  INFO=1 )
 
-TEST_RESU(
- CHAM_NO=_F( CHAM_GD = CHX3,  NOEUD = 'N1', NOM_CMP = 'Y',
-  REFERENCE = 'ANALYTIQUE',  VALE = -1.))
-
+TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='Y',
+                     CHAM_GD=CHX3,
+                     VALE_CALC=-1.000000000,
+                     VALE_REFE=-1.0,),
+          )
 
 # 4.4  VALIDATION DE OPERATION:'DISC' CART -> ELEM
 # -------------------------------------------------------
@@ -297,10 +354,14 @@ CHX4_1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_ENER_R', MODELE=MO,
 CHX4_2=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='ELEM_ENER_R',OPTION='ETOT_ELEM',PROL_ZERO='OUI',
       MODELE=MO,   CHAM_GD=CHX4_1,  INFO=1 )
 
-TEST_RESU(
- CHAM_ELEM=_F( CHAM_GD = CHX4_2,  MAILLE = 'CUBE', POINT=1, NOM_CMP = 'TOTALE',
-  REFERENCE = 'ANALYTIQUE',  VALE = 7.))
-
+TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
+                       POINT=1,
+                       NOM_CMP='TOTALE',
+                       MAILLE='CUBE',
+                       CHAM_GD=CHX4_2,
+                       VALE_CALC=7.000000000,
+                       VALE_REFE=7.0,),
+          )
 
 # 4.5  VALIDATION DE OPERATION:'DISC' ELGA -> ELNO
 # -------------------------------------------------------
@@ -311,9 +372,22 @@ CHX5_2=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R', RESULTAT=UBID, NOM_
 
 CHX5_3=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='ELNO_VARI_R',OPTION='VARI_ELNO',MODELE=MO,CHAM_GD=CHX5_1)
 
-TEST_RESU( CHAM_ELEM=_F(CHAM_GD=CHX5_2, MAILLE='MASSIF', NOEUD='N1', NOM_CMP='V1', REFERENCE='NON_REGRESSION', VALE=-1./30.))
-TEST_RESU( CHAM_ELEM=_F(CHAM_GD=CHX5_3, MAILLE='MASSIF', NOEUD='N1', NOM_CMP='V1', REFERENCE='AUTRE_ASTER',    VALE=-1./30.))
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
+                       NOM_CMP='V1',
+                       MAILLE='MASSIF',
+                       CHAM_GD=CHX5_2,
+                       VALE_CALC=-0.033333333333333333,
+                       TOLE_MACHINE=1.E-3,),
+          )
 
+TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
+                       REFERENCE='AUTRE_ASTER',
+                       NOM_CMP='V1',
+                       MAILLE='MASSIF',
+                       CHAM_GD=CHX5_3,
+                       VALE_CALC=-0.033333333,
+                       VALE_REFE=-0.033333333333333333,),
+          )
 
 # 4.6  VALIDATION DE OPERATION:'DISC' ELGA -> NOEU
 # -------------------------------------------------------
@@ -325,8 +399,21 @@ CHX6_2=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R', RESULTAT=UBID, NOM_
 
 CHX6_3=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='NOEU_SIEF_R', CHAM_GD=CHX6_1)
 
-TEST_RESU( CHAM_NO=_F(CHAM_GD=CHX6_2, NOEUD='N1', NOM_CMP='SIXX', REFERENCE='NON_REGRESSION', VALE=0., CRITERE='ABSOLU'))
-TEST_RESU( CHAM_NO=_F(CHAM_GD=CHX6_3, NOEUD='N1', NOM_CMP='SIXX', REFERENCE='AUTRE_ASTER',    VALE=0., CRITERE='ABSOLU'))
+TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+                     CRITERE='ABSOLU',
+                     NOM_CMP='SIXX',
+                     CHAM_GD=CHX6_2,
+                     VALE_CALC=0.0,
+                     TOLE_MACHINE=1.E-3,),
+          )
 
+TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+                     CRITERE='ABSOLU',
+                     REFERENCE='AUTRE_ASTER',
+                     NOM_CMP='SIXX',
+                     CHAM_GD=CHX6_3,
+                     VALE_CALC= 0.00000000E+00,
+                     VALE_REFE=0.0,),
+          )
 
 FIN()

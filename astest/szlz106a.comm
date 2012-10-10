@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FATIGUE EN FREQUENTIEL
 # szlz106a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,10 +80,11 @@ TAB1=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                 DOMMAGE='WOHLER',
                                   MATER=MAT0          )
 
-TEST_TABLE(       TABLE=TAB1,
-                NOM_PARA='DOMMAGE',
-                    VALE=3.851827E-7,
-               PRECISION=1.5E-5        )
+TEST_TABLE(
+           VALE_CALC=3.8518270000000001E-07,
+           TOLE_MACHINE=1.5E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB1,)
 
 #----------------------------------------------------------------------
 TAB2=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
@@ -94,10 +95,11 @@ TAB2=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                 DOMMAGE='WOHLER',
                                   MATER=MAT0            )
 
-TEST_TABLE(       TABLE=TAB2,
-                NOM_PARA='DOMMAGE',
-                    VALE=3.853037E-7,
-               PRECISION=1.5E-5        )
+TEST_TABLE(
+           VALE_CALC=3.8530370000000002E-07,
+           TOLE_MACHINE=1.5E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB2,)
 
 #----------------------------------------------------------------------
 MAT1=DEFI_MATERIAU(    FATIGUE=_F(  A_BASQUIN = 32.E-13,
@@ -110,10 +112,11 @@ TAB3=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                 DOMMAGE='WOHLER',
                                   MATER=MAT1            )
 
-TEST_TABLE(       TABLE=TAB3,
-                NOM_PARA='DOMMAGE',
-                    VALE=3.129531E-3,
-               PRECISION=1.E-4        )
+TEST_TABLE(
+           VALE_CALC=3.1295310000000001E-3,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB3,)
 
 #----------------------------------------------------------------------
 TAB4=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
@@ -124,10 +127,11 @@ TAB4=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                 DOMMAGE='WOHLER',
                                   MATER=MAT1            )
 
-TEST_TABLE(       TABLE=TAB4,
-                NOM_PARA='DOMMAGE',
-                    VALE=3.129903E-3,
-               PRECISION=1.5E-5       )
+TEST_TABLE(
+           VALE_CALC=3.1299029999999999E-3,
+           TOLE_MACHINE=1.5E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB4,)
 
 #----------------------------------------------------------------------
 MAT2=DEFI_MATERIAU(       ELAS=_F(  E = 200000.,
@@ -149,10 +153,11 @@ TAB5=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                 DOMMAGE='WOHLER',
                                   MATER=MAT2            )
 
-TEST_TABLE(       TABLE=TAB5,
-                NOM_PARA='DOMMAGE',
-                    VALE=2.298920E-3,
-               PRECISION=2.5E-5       )
+TEST_TABLE(
+           VALE_CALC=2.2989199999999999E-3,
+           TOLE_MACHINE=2.5000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB5,)
 
 #----------------------------------------------------------------------
 TAB6=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
@@ -163,10 +168,11 @@ TAB6=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                 DOMMAGE='WOHLER',
                                   MATER=MAT2           )
 
-TEST_TABLE(       TABLE=TAB6,
-                NOM_PARA='DOMMAGE',
-                    VALE=2.299282E-3,
-               PRECISION=2.5E-5       )
+TEST_TABLE(
+           VALE_CALC=2.2992820000000001E-3,
+           TOLE_MACHINE=2.5000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB6,)
 
 #----------------------------------------------------------------------
 TAB7=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
@@ -177,10 +183,11 @@ TAB7=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                 CORR_KE='RCCM',
                                   MATER=MAT2           )
 
-TEST_TABLE(       TABLE=TAB7,
-                NOM_PARA='DOMMAGE',
-                    VALE=2.298920E-3,
-               PRECISION=2.5E-5       )
+TEST_TABLE(
+           VALE_CALC=2.2989199999999999E-3,
+           TOLE_MACHINE=2.5000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB7,)
 
 #----------------------------------------------------------------------
 TAB8=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
@@ -192,10 +199,11 @@ TAB8=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                 CORR_KE='RCCM',
                                   MATER=MAT2             )
 
-TEST_TABLE(       TABLE=TAB8,
-                NOM_PARA='DOMMAGE',
-                    VALE=2.299282E-3,
-               PRECISION=2.5E-5       )
+TEST_TABLE(
+           VALE_CALC=2.2992820000000001E-3,
+           TOLE_MACHINE=2.5000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB8,)
 
 #----------------------------------------------------------------------
 MAT3=DEFI_MATERIAU(    FATIGUE=_F(  WOHLER = LOIDOM1)  )
@@ -207,10 +215,11 @@ TAB9=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                 DOMMAGE='WOHLER',
                                   MATER=MAT3             )
 
-TEST_TABLE(       TABLE=TAB9,
-                NOM_PARA='DOMMAGE',
-                    VALE=3.129531E-3,
-               PRECISION=2.5E-5       )
+TEST_TABLE(
+           VALE_CALC=3.1295310000000001E-3,
+           TOLE_MACHINE=2.5000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB9,)
 
 #----------------------------------------------------------------------
 TAB10=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
@@ -221,10 +230,11 @@ TAB10=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
                                  DOMMAGE='WOHLER',
                                    MATER=MAT3             )
 
-TEST_TABLE(       TABLE=TAB10,
-                NOM_PARA='DOMMAGE',
-                    VALE=3.129903E-3,
-               PRECISION=2.5E-5        )
+TEST_TABLE(
+           VALE_CALC=3.1299029999999999E-3,
+           TOLE_MACHINE=2.5000000000000001E-05,
+           NOM_PARA='DOMMAGE',
+           TABLE=TAB10,)
 
 #----------------------------------------------------------------------
 FIN( )

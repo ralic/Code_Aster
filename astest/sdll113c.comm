@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONDENSATION DYNAMIQUE TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 # sdll113c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,39 +143,41 @@ EVOL=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                     );
                     
 
-TEST_RESU( RESU=_F( RESULTAT = EVOL,
-                  NOM_CHAM = 'DEPL',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = -9.56403E-07));
+TEST_RESU(RESU=_F(INST=0.0195,
+                  RESULTAT=EVOL,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.5640299999999994E-07,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = EVOL,
-                  NOM_CHAM = 'VITE',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = 1.22331E-03));
+TEST_RESU(RESU=_F(INST=0.0195,
+                  RESULTAT=EVOL,
+                  NOM_CHAM='VITE',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.22331E-3,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = EVOL,
-                  NOM_CHAM = 'ACCE',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = -1.90788E+00));
-                  
-                  
+TEST_RESU(RESU=_F(INST=0.0195,
+                  RESULTAT=EVOL,
+                  NOM_CHAM='ACCE',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.90788,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
 #
 ########################################################################
 #                   CALCUL PAR CONDENSATION DYNAMIQUE                  #
@@ -385,70 +387,79 @@ RESUGLOB=REST_COND_TRAN( RESULTAT=EVOLB,
                        );
                   
                   
-TEST_RESU( RESU=_F( RESULTAT = RESUGLOB,
-                  NOM_CHAM = 'DEPL',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
+TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION = 1.E-2,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = -9.54882E-07));
+                  RESULTAT=RESUGLOB,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.56403169E-07,
+                  VALE_REFE=-9.5488200000000009E-07,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = RESUGLOB,
-                  NOM_CHAM = 'VITE',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
+TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION = 1.E-2,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = 1.22190E-03));
+                  RESULTAT=RESUGLOB,
+                  NOM_CHAM='VITE',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC= 1.22330633E-03,
+                  VALE_REFE=1.2218999999999999E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = RESUGLOB,
-                  NOM_CHAM = 'ACCE',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
+TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
-                  PRECISION = 1.E-2,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = -1.91712E+00)); 
-                  
-TEST_RESU( RESU=_F( RESULTAT = RESUGLOB,
-                  NOM_CHAM = 'DEPL',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = -9.56403E-07));
+                  RESULTAT=RESUGLOB,
+                  NOM_CHAM='ACCE',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.907884329,
+                  VALE_REFE=-1.9171199999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=0.0195,
+                  RESULTAT=RESUGLOB,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-9.5640299999999994E-07,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = RESUGLOB,
-                  NOM_CHAM = 'VITE',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = 1.22331E-03));
+TEST_RESU(RESU=_F(INST=0.0195,
+                  RESULTAT=RESUGLOB,
+                  NOM_CHAM='VITE',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.22331E-3,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = RESUGLOB,
-                  NOM_CHAM = 'ACCE',
-                  INST = 1.95E-2,
-                  CRITERE = 'RELATIF',
-                  REFERENCE='NON_REGRESSION',
-                  PRECISION = 1.E-4,
-                  NOEUD = 'N10',
-                  NOM_CMP = 'DX',
-                  VALE = -1.90788E+00));
-                                                                                                   
+TEST_RESU(RESU=_F(INST=0.0195,
+                  RESULTAT=RESUGLOB,
+                  NOM_CHAM='ACCE',
+                  NOEUD='N10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.90788,
+                  TOLE_MACHINE=1.E-4,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
 #
 FIN()
 #

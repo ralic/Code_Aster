@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE REPONSE TRANSITOIRE D UNE PLAQUE A UNE PRESSION ISSUE DE ENSIGHT
 # sdlx100a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,23 +157,33 @@ N1_DEP_N=RECU_FONCTION(  NOEUD='NO1',   NOM_CMP='DX',  NOM_CHAM='DEPL',
 #   LES SIGNES DES VALEURS DE REFERENCE SONT CHANGEES
 #   ET MARQUEES NON_REGRESSION
 #
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
-                 VALE_PARA = 5.E-03,    VALE_REFE = -3.906E-06,
-                 REFERENCE = 'NON_REGRESSION'),
-               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
-                 VALE_PARA = 1.5E-02,   VALE_REFE = -1.13607E-05,
-                 REFERENCE = 'NON_REGRESSION'),
-               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
-                 VALE_PARA = 2.5E-02,   VALE_REFE = -1.83613E-05,
-                 REFERENCE = 'NON_REGRESSION'),
-               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
-                 VALE_PARA = 3.5E-02,   VALE_REFE = -2.4935E-05,
-                 REFERENCE = 'NON_REGRESSION'),
-               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
-                 VALE_PARA = 4.5E-02,   VALE_REFE = -3.11102E-05,
-                 REFERENCE = 'NON_REGRESSION'))
-             )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-3.9060000000000004E-06,
+                         TOLE_MACHINE=2.9999999999999997E-4,
+                         VALE_PARA=5.0000000000000001E-3,
+                         FONCTION=N1_DEP_N,
+                         ),
+                      _F(VALE_CALC=-1.1360699999999999E-05,
+                         TOLE_MACHINE=2.9999999999999997E-4,
+                         VALE_PARA=0.014999999999999999,
+                         FONCTION=N1_DEP_N,
+                         ),
+                      _F(VALE_CALC=-1.83613E-05,
+                         TOLE_MACHINE=2.9999999999999997E-4,
+                         VALE_PARA=0.025000000000000001,
+                         FONCTION=N1_DEP_N,
+                         ),
+                      _F(VALE_CALC=-2.4935000000000001E-05,
+                         TOLE_MACHINE=2.9999999999999997E-4,
+                         VALE_PARA=0.035000000000000003,
+                         FONCTION=N1_DEP_N,
+                         ),
+                      _F(VALE_CALC=-3.1110199999999999E-05,
+                         TOLE_MACHINE=2.9999999999999997E-4,
+                         VALE_PARA=0.044999999999999998,
+                         FONCTION=N1_DEP_N,
+                         ),
+                      ),
+              )
 
 #
 #--------------------------------------------------------------------
@@ -226,24 +236,40 @@ N1_DEP_R=RECU_FONCTION(  NOEUD='NO1',   NOM_CMP='DX',  NOM_CHAM='DEPL',
 # SUITE AUX CORRECTIONS POUR LE SIGNE DE LA PRESSION EN 5.3.25
 #   LES SIGNES DES VALEURS DE REFERENCE SONT CHANGEES
 #   ELLES SONT MARQUEES AUTRE_ASTER CAR RELUES PAR LIRE_RESU
-#   MAIS ELLES FONT REFERENCE AUX VALEURS DE NON_REGRESSION ASTER
+#   MAIS ELLES FONT REFERENCE AUX VALEURS DE NON_DEFINI ASTER
 #
-TEST_FONCTION(VALEUR=(
-               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
-                 VALE_PARA = 5.E-03,    VALE_REFE = -3.906E-06,
-                 REFERENCE = 'AUTRE_ASTER'),
-               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
-                 VALE_PARA = 1.5E-02,   VALE_REFE = -1.13607E-05,
-                 REFERENCE = 'AUTRE_ASTER'),
-               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
-                 VALE_PARA = 2.5E-02,   VALE_REFE = -1.83613E-05,
-                 REFERENCE = 'AUTRE_ASTER'),
-               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
-                 VALE_PARA = 3.5E-02,   VALE_REFE = -2.4935E-05,
-                 REFERENCE = 'AUTRE_ASTER'),
-               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
-                 VALE_PARA = 4.5E-02,   VALE_REFE = -3.11102E-05,
-                 REFERENCE = 'AUTRE_ASTER'))  )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-3.90637791931e-06,
+                         VALE_REFE=-3.9060000000000004E-06,
+                         VALE_PARA=5.0000000000000001E-3,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=2.9999999999999997E-4,
+                         FONCTION=N1_DEP_R,),
+                      _F(VALE_CALC=-1.13606728531e-05,
+                         VALE_REFE=-1.1360699999999999E-05,
+                         VALE_PARA=0.014999999999999999,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=2.9999999999999997E-4,
+                         FONCTION=N1_DEP_R,),
+                      _F(VALE_CALC=-1.83612944662e-05,
+                         VALE_REFE=-1.83613E-05,
+                         VALE_PARA=0.025000000000000001,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=2.9999999999999997E-4,
+                         FONCTION=N1_DEP_R,),
+                      _F(VALE_CALC=-2.49358206413e-05,
+                         VALE_REFE=-2.4935000000000001E-05,
+                         VALE_PARA=0.035000000000000003,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=2.9999999999999997E-4,
+                         FONCTION=N1_DEP_R,),
+                      _F(VALE_CALC=-3.11101577314e-05,
+                         VALE_REFE=-3.1110199999999999E-05,
+                         VALE_PARA=0.044999999999999998,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=2.9999999999999997E-4,
+                         FONCTION=N1_DEP_R,),
+                      ),
+              )
 
 #
 FIN( )

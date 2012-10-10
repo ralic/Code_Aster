@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 # sdnl301a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -224,14 +224,19 @@ POST=POST_DYNA_MODA_T(RESU_GENE=TRANGENE,
 
 IMPR_TABLE(TABLE=POST);
 
-TEST_TABLE(TABLE=POST,
-           FILTRE=(_F(NOM_PARA= 'CALCUL',
-                      VALE_K  = 'FORCE_NORMALE'),
-                   _F(NOM_PARA= 'NOEUD',
-                      VALE_K  = 'N2')),
-           NOM_PARA ='RMS_T_TOTAL',
-           VALE     =23.4,
-           PRECISION=0.05);
+TEST_TABLE(PRECISION=0.050000000000000003,
+           TOLE_MACHINE=1.e-2,
+           VALE_CALC=22.798460970,
+           VALE_REFE=23.399999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='RMS_T_TOTAL',
+           TABLE=POST,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='FORCE_NORMALE',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+                   ),
+           )
 
 # ON PASSE EN SDVERI=NON LE TEMPS DE LA REST_GENE_PHYS
 # A CAUSE DU TEMPS CPU TROP IMPORTANT (FACTEUR +40)
@@ -347,15 +352,19 @@ POST2=POST_DYNA_MODA_T(RESU_GENE=TRANGEN2,
                               INST_FIN = TFIN));
 IMPR_TABLE(TABLE=POST2);
 
-TEST_TABLE(TABLE=POST2,
-           FILTRE=(_F(NOM_PARA= 'CALCUL',
-                      VALE_K  = 'FORCE_NORMALE'),
-                   _F(NOM_PARA= 'NOEUD',
-                      VALE_K  = 'N2')),
-           NOM_PARA ='RMS_T_TOTAL',
-           VALE     =23.4,
-           PRECISION=0.05);
-
+TEST_TABLE(PRECISION=0.050000000000000003,
+           TOLE_MACHINE=1.e-2,
+           VALE_CALC=22.893076703,
+           VALE_REFE=23.399999999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='RMS_T_TOTAL',
+           TABLE=POST2,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='FORCE_NORMALE',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N2',),
+                   ),
+           )
 
 # RESTITUTION SUR BASE PHYSIQUE ET POST-TRAITEMENT
 

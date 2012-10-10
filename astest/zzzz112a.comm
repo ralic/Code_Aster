@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 # zzzz112a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,16 +148,28 @@ RESU2=CALC_CHAMP(reuse=RESU2,
 #   C'EST L'OP0150 (LIRE_PLEXUS) QUI NE FAIT PLUS DE CHANGEMENT
 #   DE SIGNE MAIS LE TE
 #
-TEST_RESU(RESU=(
-    _F(  RESULTAT = RESU2,  NOM_CHAM = 'SIGM_ELNO',  INST = 1.,
-      MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'SIYY',  VALE = 100.,
-      PRECISION = 0.03, SOUS_POINT = 1,
-      REFERENCE = 'AUTRE_ASTER'),
-    _F(  RESULTAT = RESU2,   NOM_CHAM = 'DEPL',   INST = 1.,
-      NOEUD = 'N1',  NOM_CMP = 'DY',                VALE = -5.E-11,
-      PRECISION = 0.04,
-      REFERENCE = 'AUTRE_ASTER'))
-      )
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   SOUS_POINT=1,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=97.130133947,
+                   VALE_REFE=100.0,
+                   PRECISION=0.029999999999999999,
+                   MAILLE='M1',),
+                _F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.84421000E-11,
+                   VALE_REFE=-5.0000000000000002E-11,
+                   PRECISION=0.040000000000000001,),
+                ),
+          )
 
 #TEST MATERIAU MULT DATASET 56
 # MAILLAGE PLEXUS ;
@@ -221,16 +233,28 @@ RESU3=CALC_CHAMP(reuse=RESU3,
 #   DE SIGNE MAIS LE TE
 #
 
-TEST_RESU(RESU=(
-    _F(  RESULTAT = RESU3,  NOM_CHAM = 'SIGM_ELNO',  INST = 1.,
-      MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'SIYY',  VALE = 100.,
-      PRECISION = 0.03, SOUS_POINT = 1,
-      REFERENCE = 'AUTRE_ASTER'),
-    _F(  RESULTAT = RESU3,   NOM_CHAM = 'DEPL',   INST = 1.,
-      NOEUD = 'N1',  NOM_CMP = 'DY',                VALE = -5.E-11,
-      PRECISION = 0.04,
-      REFERENCE = 'AUTRE_ASTER'))
-         )
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   SOUS_POINT=1,
+                   RESULTAT=RESU3,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=97.130133947,
+                   VALE_REFE=100.0,
+                   PRECISION=0.029999999999999999,
+                   MAILLE='M1',),
+                _F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.84421000E-11,
+                   VALE_REFE=-5.0000000000000002E-11,
+                   PRECISION=0.040000000000000001,),
+                ),
+          )
 
 FIN( )
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE TROUEE ASYMETRIQUE, INTERFACE XFEM CONFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,38 +247,59 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 # TESTS SUR LA REPONSE GLOBALE
 #-------------------------------------------------------------
 
-TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
-              NOM_PARA='DY',
-              VALE=3.31660E-03,
-              REFERENCE='AUTRE_ASTER')
-TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
-              NOM_PARA='DY',
-              VALE=4.26153E+07,
-              REFERENCE='AUTRE_ASTER')
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 3.31659853E-03,
+           VALE_REFE=3.3165999999999998E-3,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50,),
+           )
 
-TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
-              NOM_PARA='DY',
-              VALE=1.29488E-03,
-              REFERENCE='AUTRE_ASTER')
-TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
-              NOM_PARA='DY',
-              VALE=2.73873E+06,
-              REFERENCE='AUTRE_ASTER')
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 4.26153251E+07,
+           VALE_REFE=4.2615300E7,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50,),
+           )
 
-TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=150)),
-              NOM_PARA='DY',
-              VALE=6.45752E-03,
-              REFERENCE='AUTRE_ASTER')
-TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=150)),
-              NOM_PARA='DY',
-              VALE=7.87206E+06,
-              REFERENCE='AUTRE_ASTER')
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 1.29475336E-03,
+           VALE_REFE=1.29488E-3,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=100,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 2.73845346E+06,
+           VALE_REFE=2.738730E6,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=100,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 6.45751544E-03,
+           VALE_REFE=6.4575199999999996E-3,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=150,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 7.87206404E+06,
+           VALE_REFE=7.872060E6,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=150,),
+           )
 
 #--------------------------------------------------------------
 IMPR_FONCTION(

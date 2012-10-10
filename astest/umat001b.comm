@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE CYLINDRE THERMOELASTICITE LINEAIRE - TEST UMAT AXIS GDEF_LOG
 # umat001b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -126,9 +126,11 @@ TEST_RESU(
                    NOM_CHAM ='DEPL',
                    GROUP_NO ='B',
                    NOM_CMP ='DX',
-                   VALE= 0.102954,
-                   PRECISION=(1.E-4,1.E-6),
-                   REFERENCE='NON_REGRESSION')
+                   VALE_CALC=0.10295396313384,
+                   VALE_REFE=0.102954,
+                   TOLE_MACHINE=(1.E-6,1.E-6),
+                   PRECISION=1.E-4,
+                   REFERENCE='NON_DEFINI')
          )
 
 TEST_RESU(
@@ -137,9 +139,11 @@ TEST_RESU(
                    NOM_CHAM ='SIGM_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIZZ',
-                   VALE= -0.028952,
-                   PRECISION=(1.E-4,1.E-6),
-                   REFERENCE='NON_REGRESSION')
+                   VALE_CALC=-0.028952070277992,
+                   VALE_REFE=-0.028952,
+                   TOLE_MACHINE=(1.E-6,1.E-6),
+                   PRECISION=1.E-4,
+                   REFERENCE='NON_DEFINI')
          )
 
 
@@ -196,8 +200,10 @@ TEST_RESU(
                    NOM_CHAM ='DEPL',
                    GROUP_NO ='B',
                    NOM_CMP ='DX',
-                   PRECISION=(0.1,1.E-6),
-                   VALE= 0.102954 ,
+                   VALE_CALC=0.11245447527981,
+                   VALE_REFE= 0.102954 ,
+                   TOLE_MACHINE=(1E-6,1.E-6),
+                   PRECISION=0.1,
                    REFERENCE='AUTRE_ASTER')
          )
 
@@ -207,8 +213,10 @@ TEST_RESU(
                    NOM_CHAM ='SIGM_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIZZ',
-                   PRECISION=(0.1,1.E-6),
-                   VALE= -0.028952,
+                   VALE_CALC=-0.031225207274718,
+                   VALE_REFE= -0.028952,
+                   TOLE_MACHINE=(1E-6,1.E-6),
+                   PRECISION=0.1,
                    REFERENCE='AUTRE_ASTER')
          )
 
@@ -218,9 +226,11 @@ TEST_RESU(
                    NOM_CHAM ='DEPL',
                    GROUP_NO ='B',
                    NOM_CMP ='DX',
-                   VALE= 0.112454 ,
-                   PRECISION=(1.E-4,1.E-6),
-                   REFERENCE='NON_REGRESSION')
+                   VALE_CALC=0.11245447527981,
+                   VALE_REFE= 0.112454 ,
+                   TOLE_MACHINE=(1E-6,1.E-6),
+                   PRECISION=1.E-4,
+                   REFERENCE='NON_DEFINI')
          )
 
 TEST_RESU(
@@ -229,9 +239,11 @@ TEST_RESU(
                    NOM_CHAM ='SIGM_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIZZ',
-                   VALE= -0.031225,
-                   PRECISION=(1.E-4,1.E-6),
-                   REFERENCE='NON_REGRESSION')
+                   VALE_CALC=-0.031225207274718,
+                   VALE_REFE= -0.031225,
+                   TOLE_MACHINE=(1E-6,1.E-6),
+                   PRECISION=1.E-4,
+                   REFERENCE='NON_DEFINI')
          )
 
 

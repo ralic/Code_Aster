@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FORMATION THERMO-PLASTICITE TRAJET DE CHARGEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,60 +81,72 @@ IMPR_TABLE(TABLE=U,);
 
 # A
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,
-                     PRECISION=1e-05,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.014829714,
+           VALE_REFE=0.014829999999999999,
            NOM_PARA='EPXX',
-           VALE=0.014830,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=U,
+           FILTRE=_F(PRECISION=1.0000000000000001E-05,
+                     NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,
-                     PRECISION=1e-05,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.013601401,
+           VALE_REFE=0.0136014,
            NOM_PARA='EPXY',
-           VALE=0.0136014,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=U,
+           FILTRE=_F(PRECISION=1.0000000000000001E-05,
+                     NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 # B
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.0,
-                     PRECISION=1e-05,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.035686360,
+           VALE_REFE=0.035264999999999998,
            NOM_PARA='EPXX',
-           VALE=0.035265,
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=U,
+           FILTRE=_F(PRECISION=1.0000000000000001E-05,
+                     NOM_PARA='INST',
+                     VALE=2.0,),
+           )
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.0,
-                     PRECISION=1e-05,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.019576627,
+           VALE_REFE=0.020471,
            NOM_PARA='EPXY',
-           VALE=0.020471,
-           PRECISION=0.05,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=U,
+           FILTRE=_F(PRECISION=1.0000000000000001E-05,
+                     NOM_PARA='INST',
+                     VALE=2.0,),
+           )
 
 # C
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,
-                     PRECISION=1e-05,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.035697129,
+           VALE_REFE=0.035277700000000002,
            NOM_PARA='EPXX',
-           VALE=0.0352777,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=U,
+           FILTRE=_F(PRECISION=1.0000000000000001E-05,
+                     NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
-TEST_TABLE(TABLE=U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,
-                     PRECISION=1e-05,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.019355960,
+           VALE_REFE=0.020246199999999999,
            NOM_PARA='EPXY',
-           VALE=0.0202462,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=U,
+           FILTRE=_F(PRECISION=1.0000000000000001E-05,
+                     NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
 FIN();

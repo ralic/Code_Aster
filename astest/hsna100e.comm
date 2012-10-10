@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SECHAGE EN 3D
 # hsna100e.para = tps_job 110 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -285,68 +285,161 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
 ##############################
 
 
-TEST_RESU(RESU=(
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 44,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 104.81805,  PRECISION = 5.E-2,
-            REFERENCE = 'AUTRE_ASTER'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 61,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 96.16171,   PRECISION = 5.E-2,
-            REFERENCE = 'AUTRE_ASTER'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 72,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 78.27665,   PRECISION = 5.E-2,
-            REFERENCE = 'AUTRE_ASTER' ))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=44,
+                   GROUP_NO='GM66',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=104.804093312,
+                   VALE_REFE=104.81805,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=61,
+                   GROUP_NO='GM66',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=96.111101039,
+                   VALE_REFE=96.161709999999999,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=72,
+                   GROUP_NO='GM66',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=78.122729939,
+                   VALE_REFE=78.276650000000004,
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
 
+TEST_RESU(RESU=(_F(NUME_ORDRE=60,
+                   GROUP_NO='GM66',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=100.056124124,
+                   VALE_REFE=100.071213,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=62,
+                   GROUP_NO='GM66',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=92.711668231,
+                   VALE_REFE=92.787963000000005,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=64,
+                   GROUP_NO='GM66',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=87.111716865,
+                   VALE_REFE=87.224813999999995,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=66,
+                   GROUP_NO='GM66',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=82.757431637,
+                   VALE_REFE=82.893484000000001,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=68,
+                   GROUP_NO='GM66',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=79.310076671,
+                   VALE_REFE=79.460121999999998,
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
 
-TEST_RESU(RESU=(
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 60,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 100.071213,  PRECISION = 5.E-2,
-            REFERENCE = 'AUTRE_ASTER' ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 62,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 92.787963,   PRECISION = 5.E-2,
-            REFERENCE = 'AUTRE_ASTER'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 64,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 87.224814,   PRECISION = 5.E-2,
-            REFERENCE = 'AUTRE_ASTER'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 66,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 82.893484,   PRECISION = 5.E-2,
-            REFERENCE = 'AUTRE_ASTER'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 68,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 79.460122,   PRECISION = 5.E-2,
-            REFERENCE = 'AUTRE_ASTER' ))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=44,
+                   GROUP_NO='GM68',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=104.804093312,
+                   VALE_REFE=104.81805,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=61,
+                   GROUP_NO='GM68',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=96.111101039,
+                   VALE_REFE=96.161709999999999,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=72,
+                   GROUP_NO='GM68',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=78.122729939,
+                   VALE_REFE=78.276650000000004,
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
 
-
-TEST_RESU(RESU=(
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 44,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 104.81805,  PRECISION = 5.E-2,
-            REFERENCE = 'NON_REGRESSION'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 61,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 96.16171,   PRECISION = 5.E-2,
-            REFERENCE = 'NON_REGRESSION'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 72,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 78.27665,   PRECISION = 5.E-2,
-            REFERENCE = 'NON_REGRESSION' ))
-           )
-
-
-TEST_RESU(RESU=(
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 60,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 100.071213,  PRECISION = 5.E-2,
-            REFERENCE = 'NON_REGRESSION' ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 62,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 92.787963,   PRECISION = 5.E-2,
-            REFERENCE = 'NON_REGRESSION'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 64,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 87.224814,   PRECISION = 5.E-2,
-            REFERENCE = 'NON_REGRESSION'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 66,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 82.893484,   PRECISION = 5.E-2,
-            REFERENCE = 'NON_REGRESSION'  ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 68,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 79.460122,   PRECISION = 5.E-2,
-            REFERENCE = 'NON_REGRESSION' ))
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=60,
+                   GROUP_NO='GM68',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=100.056124124,
+                   VALE_REFE=100.071213,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=62,
+                   GROUP_NO='GM68',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=92.711668231,
+                   VALE_REFE=92.787963000000005,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=64,
+                   GROUP_NO='GM68',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=87.111716865,
+                   VALE_REFE=87.224813999999995,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=66,
+                   GROUP_NO='GM68',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=82.757431637,
+                   VALE_REFE=82.893484000000001,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=68,
+                   GROUP_NO='GM68',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUSECH,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=79.310076671,
+                   VALE_REFE=79.460121999999998,
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
 
 ###################
 # CALCUL MACANIQUE
@@ -523,16 +616,29 @@ RESUMECA=STAT_NON_LINE(
               )
 
 #
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
-             GROUP_NO = 'GM66',   NOM_CMP = 'DX',    VALE = -1.840E-01, PRECISION = 2.E-2,
-             REFERENCE = 'AUTRE_ASTER'    )
-            )
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
-             GROUP_NO = 'GM68',   NOM_CMP = 'DX',    VALE = -1.8284E-01, PRECISION = 2.E-2,
-             REFERENCE = 'NON_REGRESSION', VERSION = '7.2.25'    )
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=32,
+                  GROUP_NO='GM66',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESUMECA,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.182331488,
+                  VALE_REFE=-0.184,
+                  PRECISION=0.02,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=32,
+                  GROUP_NO='GM68',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESUMECA,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.179561463,
+                  VALE_REFE=-0.18284,
+                  PRECISION=0.02,
+                  ),
+          )
+
 #
 
 RESUSTAT=MECA_STATIQUE(
@@ -547,15 +653,26 @@ RESUSTAT=MECA_STATIQUE(
 
 #
 
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
-             GROUP_NO = 'GM66',   NOM_CMP = 'DX',    VALE = -2.745902E-01, PRECISION = 2.E-2,
-             REFERENCE = 'AUTRE_ASTER'   )
-            )
-TEST_RESU(
-           RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
-             GROUP_NO = 'GM68',   NOM_CMP = 'DX',    VALE = -2.702404E-01, PRECISION = 1.E-3,
-             REFERENCE = 'NON_REGRESSION' , VERSION = '7.3.1' )
-            )
+TEST_RESU(RESU=_F(NUME_ORDRE=32,
+                  GROUP_NO='GM66',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESUSTAT,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.274546227,
+                  VALE_REFE=-0.27459020000000001,
+                  PRECISION=0.02,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=32,
+                  GROUP_NO='GM68',
+                  RESULTAT=RESUSTAT,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.27024039999999999,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
+
 #
 FIN () ;

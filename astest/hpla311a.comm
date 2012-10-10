@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 # hpla311a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -228,29 +228,33 @@ G03=CALC_G(
 # LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :
 # LA VALEUR A TESTER POUR L OPTION CALC_G VAUT 102.31*1.E-3=1.0231E-1
 #
-TEST_TABLE(       TABLE=G00,
-                       NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=1.0231E-1,
-                      PRECISION=0.06      )
-                      
-TEST_TABLE(       TABLE=G01,
-                       NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=1.0231E-1,
-                      PRECISION=0.02      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC=0.097013001,
+           VALE_REFE=0.10231,
+           NOM_PARA='G',
+           TABLE=G00,)
 
-TEST_TABLE(       TABLE=G02,
-                       NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=1.0231E-1,
-                      PRECISION=0.02      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=0.100520996,
+           VALE_REFE=0.10231,
+           NOM_PARA='G',
+           TABLE=G01,)
 
-TEST_TABLE(       TABLE=G03,
-                       NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=1.0231E-1,
-                      PRECISION=0.02      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=0.100554709,
+           VALE_REFE=0.10231,
+           NOM_PARA='G',
+           TABLE=G02,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=0.100559196,
+           VALE_REFE=0.10231,
+           NOM_PARA='G',
+           TABLE=G03,)
 
 # CALCUL DE K ET G AVEC CALC_G / OPTION CALC_K_G
 KG00=CALC_G(   
@@ -291,35 +295,40 @@ IMPR_TABLE(       TABLE=KG03,)
 #
 # LA VALEUR A TESTER POUR L OPTION CALC_K_G EST DIRECTEMENT LA VALEUR DE REFERENCE
 #
-TEST_TABLE(       TABLE=KG01,
-                       NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=1.0231E2,
-                      PRECISION=0.02      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=100.518026647,
+           VALE_REFE=102.31,
+           NOM_PARA='G',
+           TABLE=KG01,)
 
-TEST_TABLE(       TABLE=KG00,
-                       NOM_PARA='K1',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=4.7419E6,
-                      PRECISION=0.08      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.080000000000000002,
+           VALE_CALC= 4.41473844E+06,
+           VALE_REFE=4.741900E6,
+           NOM_PARA='K1',
+           TABLE=KG00,)
 
-TEST_TABLE(       TABLE=KG01,
-                       NOM_PARA='K1',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=4.7419E6,
-                      PRECISION=0.02      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 4.75714363E+06,
+           VALE_REFE=4.741900E6,
+           NOM_PARA='K1',
+           TABLE=KG01,)
 
-TEST_TABLE(       TABLE=KG02,
-                       NOM_PARA='K1',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=4.7419E6,
-                      PRECISION=0.02      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 4.79137451E+06,
+           VALE_REFE=4.741900E6,
+           NOM_PARA='K1',
+           TABLE=KG02,)
 
-TEST_TABLE(       TABLE=KG03,
-                       NOM_PARA='K1',
-                   REFERENCE='ANALYTIQUE',
-                           VALE=4.7419E6,
-                      PRECISION=0.02      )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 4.82444452E+06,
+           VALE_REFE=4.741900E6,
+           NOM_PARA='K1',
+           TABLE=KG03,)
 
 FIN()
 #

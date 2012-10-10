@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134f.para = tps_job 160 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -208,31 +208,41 @@ IMPR_TABLE(TABLE=GLMAX2,);
 
 IMPR_TABLE(TABLE=KLMAX1,);
 
-TEST_TABLE(TABLE=GL1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=8.0000000000000002E-3,
+           VALE_CALC=11.504738152,
+           VALE_REFE=11.58,
+           NOM_PARA='G',
+           TABLE=GL1,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=1,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N2667',),),
-           NOM_PARA='G',
-           VALE=11.58,
-           PRECISION=0.008,
-           REFERENCE='AUTRE_ASTER',);
+                      VALE_K='N2667',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=GLBIL1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=8.0000000000000002E-3,
+           VALE_CALC=11.504738152,
+           VALE_REFE=11.58,
+           NOM_PARA='G_BILI_LOCAL',
+           TABLE=GLBIL1,
            FILTRE=(_F(NOM_PARA='NUME_CMP_I',
                       VALE_I=1,),
                    _F(NOM_PARA='NUME_CMP_J',
                       VALE_I=1,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N2667',),),
-           NOM_PARA='G_BILI_LOCAL',
-           VALE=11.58,
-           PRECISION=0.008,
-           REFERENCE='AUTRE_ASTER',);
+                      VALE_K='N2667',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=GLMAX1,
-           FILTRE=(
-                   _F(NOM_PARA='Q_1',
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=6.0000000000000001E-3,
+           VALE_CALC=29.918097334,
+           VALE_REFE=29.890999999999998,
+           NOM_PARA='G',
+           TABLE=GLMAX1,
+           FILTRE=(_F(NOM_PARA='Q_1',
                       VALE=1.0,),
                    _F(NOM_PARA='Q_2',
                       VALE=-1.0,),
@@ -241,40 +251,45 @@ TEST_TABLE(TABLE=GLMAX1,
                    _F(NOM_PARA='Q_4',
                       VALE=-1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N2667',),),
-           NOM_PARA='G',
-           VALE=29.891,
-           PRECISION=0.006,
-           REFERENCE='NON_REGRESSION',);
+                      VALE_K='N2667',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=GL2,
-           FILTRE=(
-                   _F(NOM_PARA='NUME_ORDRE',
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=4.344719728,
+           VALE_REFE=4.3472,
+           NOM_PARA='G',
+           TABLE=GL2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=2,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N2667',),),
-           NOM_PARA='G',
-           VALE=4.3472,
-           PRECISION=0.005,
-           REFERENCE='NON_REGRESSION',
-           VERSION='7.0.17',);
+                      VALE_K='N2667',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=GLBIL2,
-           FILTRE=(
-                   _F(NOM_PARA='NUME_CMP_I',
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=4.344719728,
+           VALE_REFE=4.3472,
+           NOM_PARA='G_BILI_LOCAL',
+           TABLE=GLBIL2,
+           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
                       VALE_I=2,),
                    _F(NOM_PARA='NUME_CMP_J',
                       VALE_I=2,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N2667',),),
-           NOM_PARA='G_BILI_LOCAL',
-           VALE=4.3472,
-           PRECISION=0.005,
-           REFERENCE='NON_REGRESSION',);
+                      VALE_K='N2667',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=GLMAX2,
-           FILTRE=(
-                   _F(NOM_PARA='Q_1',
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=30.197348915,
+           VALE_REFE=30.164999999999999,
+           NOM_PARA='G',
+           TABLE=GLMAX2,
+           FILTRE=(_F(NOM_PARA='Q_1',
                       VALE=1.0,),
                    _F(NOM_PARA='Q_2',
                       VALE=-1.0,),
@@ -283,15 +298,17 @@ TEST_TABLE(TABLE=GLMAX2,
                    _F(NOM_PARA='Q_4',
                       VALE=-1.0,),
                    _F(NOM_PARA='NOEUD',
-                      VALE_K='N2773',),),
-           NOM_PARA='G',
-           VALE=30.165,
-           PRECISION=0.005,
-           REFERENCE='NON_REGRESSION',);
+                      VALE_K='N2773',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=KLMAX1,
-           FILTRE=(
-                   _F(NOM_PARA='Q_1',
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=152.662132721,
+           VALE_REFE=152.66095200000001,
+           NOM_PARA='G',
+           TABLE=KLMAX1,
+           FILTRE=(_F(NOM_PARA='Q_1',
                       VALE_I=1,),
                    _F(NOM_PARA='Q_2',
                       VALE_I=1,),
@@ -300,11 +317,9 @@ TEST_TABLE(TABLE=KLMAX1,
                    _F(NOM_PARA='Q_4',
                       VALE_I=1,),
                    _F(NOM_PARA='NUM_PT',
-                      VALE_I=5,),),
-           NOM_PARA='G',
-           VALE=152.660952,
-           PRECISION=0.005,
-           REFERENCE='NON_REGRESSION',);
+                      VALE_I=5,),
+                   ),
+           )
 
 FIN();
 #

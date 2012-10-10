@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION D'UN BARREAU AVEC LOI DE COMPORTEMENT ROUSSELIER
 # ssnv147d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -435,15 +435,24 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 ITER_GLOB_MAXI = 10)
              )
 
-TEST_RESU(RESU=(  _F(
-               RESULTAT = REPONSE,  INST=11.08375, PRECISION=(1.E-3,1.E-6),
-               GROUP_NO = 'E',   NOM_CHAM = 'DEPL',
-               NOM_CMP = 'DZ',    VALE = 2.723E-3),
-               _F(
-               RESULTAT = REPONSE,  INST=11.08375, PRECISION=(1.E-3,1.E-6),
-               MAILLE = 'M1',   POINT = 1,
-               NOM_CHAM = 'SIEF_ELGA',   NOM_CMP = 'SIZZ',  VALE = 5.858E+02))
-             )
+TEST_RESU(RESU=(_F(GROUP_NO='E',
+                   INST=11.08375,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=2.7230000000000002E-3,
+                   TOLE_MACHINE=1.E-3,
+                   ),
+                _F(INST=11.08375,
+                   POINT=1,
+                   RESULTAT=REPONSE,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=585.79999999999995,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',),
+                ),
+          )
 
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185g.para = tps_job 310 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -198,37 +198,41 @@ TABLAG1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 
 LAGREF=-PRES
 
-TEST_TABLE(TABLE=TABLAG0,
-              NOM_PARA='LAGS_C',
-              TYPE_TEST='MAX',
-              VALE=LAGREF,
-              CRITERE='RELATIF',
-              PRECISION=0.04,
-              REFERENCE='ANALYTIQUE');
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=-9.63048107E+05,
+           VALE_REFE=-1.E6,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           TABLE=TABLAG0,)
 
-TEST_TABLE(TABLE=TABLAG0,
-              NOM_PARA='LAGS_C',
-              TYPE_TEST='MIN',
-              VALE=LAGREF,
-              CRITERE='RELATIF',
-              PRECISION=0.04,
-              REFERENCE='ANALYTIQUE');
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=-1.02337037E+06,
+           VALE_REFE=-1.E6,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           TABLE=TABLAG0,)
 
-TEST_TABLE(TABLE=TABLAG1,
-              NOM_PARA='LAGS_C',
-              TYPE_TEST='MAX',
-              VALE=LAGREF,
-              CRITERE='RELATIF',
-              PRECISION=0.04,
-              REFERENCE='ANALYTIQUE');
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=-9.86686349E+05,
+           VALE_REFE=-1.E6,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           TABLE=TABLAG1,)
 
-TEST_TABLE(TABLE=TABLAG1,
-              NOM_PARA='LAGS_C',
-              TYPE_TEST='MIN',
-              VALE=LAGREF,
-              CRITERE='RELATIF',
-              PRECISION=0.04,
-              REFERENCE='ANALYTIQUE');
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=-1.00270881E+06,
+           VALE_REFE=-1.E6,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           TABLE=TABLAG1,)
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
@@ -271,17 +275,17 @@ for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='G',
               TYPE_TEST='MAX',
-              VALE=GREF,
+              VALE_CALC=GREF, VALE_REFE=GREF,
               CRITERE='ABSOLU',
-              PRECISION=0.0005,
+              TOLE_MACHINE=0.0005, PRECISION=0.0005,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='G',
               TYPE_TEST='MIN',
-              VALE=GREF,
+              VALE_CALC=GREF, VALE_REFE=GREF,
               CRITERE='ABSOLU',
-              PRECISION=0.0005,
+              TOLE_MACHINE=0.0005, PRECISION=0.0005,
               REFERENCE='ANALYTIQUE');
 
 
@@ -295,12 +299,14 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
                     )
 
 IMPR_TABLE(TABLE = PK)
-TEST_TABLE(TABLE=PK,
-           FILTRE=(_F(NOM_PARA='PT_FOND',VALE_I=1)),
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           
            NOM_PARA='G',
-           VALE= 0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.e-6);
+           TABLE=PK,
+           FILTRE=_F(NOM_PARA='PT_FOND',
+                     VALE_I=1,),
+           )
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,20 +130,22 @@ DEP = CALC_TABLE(reuse = DEP,
                                CRIT_COMP = 'REGEXP',
                                VALE_K    = 'N[^M]',),),);
 
-TEST_TABLE(TABLE=DEP,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 9.99993494E-07,
+           VALE_REFE=9.9999999999999995E-07,
            NOM_PARA='DZ',
            TYPE_TEST='MIN',
-           VALE=DEPZ,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP,)
 
-TEST_TABLE(TABLE=DEP,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 1.00000397E-06,
+           VALE_REFE=9.9999999999999995E-07,
            NOM_PARA='DZ',
            TYPE_TEST='MAX',
-           VALE=DEPZ,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=DEP,)
 
 FIN();

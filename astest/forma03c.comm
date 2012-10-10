@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN PLASTICITE - CHARGE LIMITE
 # forma03c.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -262,64 +262,70 @@ IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESUPI,),);
 
 # TESTS - CALCUL SANS PILOTAGE
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  INST=TFIN,
+TEST_RESU(RESU=_F(GROUP_NO='G',
+                  INST=243.0,
+                  RESULTAT=RESUNL,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='G',
-                  VALE=243.04100195057,
-                  PRECISION=1E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=243.04100195057001,
+                  ),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  INST=TFIN,
+TEST_RESU(RESU=_F(GROUP_NO='G',
+                  INST=243.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESUNL,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='G',
-                  VALE=243.,
-                  PRECISION=0.0003,
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC=243.041001951,
+                  VALE_REFE=243.0,
+                  PRECISION=2.9999999999999997E-4,),
+          )
 
 # TESTS - CALCUL AVEC PILOTAGE
-TEST_RESU(RESU=_F(RESULTAT=RESUPI,
-                  INST=TFINPI,
+TEST_RESU(RESU=_F(GROUP_NO='G',
+                  INST=6.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESUPI,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='G',
-                  VALE=243.,
-                  PRECISION=0.003,
-                  REFERENCE='ANALYTIQUE',),);
+                  VALE_CALC=243.550235619,
+                  VALE_REFE=243.0,
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUPI,
-                  INST=TFINPI,
+TEST_RESU(RESU=_F(GROUP_NO='G',
+                  INST=6.0,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESUPI,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='G',
-                  VALE=243.04100195057,
-                  PRECISION=0.003,
-                  REFERENCE='AUTRE_ASTER',),);
+                  VALE_CALC=243.550235619,
+                  VALE_REFE=243.04100195057001,
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=RESUPI,
-                  INST=TFINPI,
+TEST_RESU(RESU=_F(GROUP_NO='G',
+                  INST=6.0,
+                  RESULTAT=RESUPI,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='G',
-                  VALE=243.55023561961,
-                  PRECISION=1E-8,
-                  REFERENCE='NON_REGRESSION',),);
+                  VALE_CALC=243.55023561960999,
+                  ),
+          )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=ETA_PILO,
-                        VALE_PARA=TFINPI,
-                        VALE_REFE=243.,
-                        PRECISION=0.003,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=243.516211248,
+                        VALE_REFE=243.0,
+                        VALE_PARA=6.0,
                         REFERENCE='ANALYTIQUE',
-                        ),);
+                        PRECISION=3.0000000000000001E-3,
+                        FONCTION=ETA_PILO,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=ETA_PILO,
-                        VALE_PARA=TFINPI,
-                        VALE_REFE=243.51621,
-                        PRECISION=1E-8,
-                        REFERENCE='NON_REGRESSION',
-                        ),);
+TEST_FONCTION(VALEUR=_F(VALE_CALC=243.51621,
+                        VALE_PARA=6.0,
+                        FONCTION=ETA_PILO,
+                        ),
+              )
 
 FIN();

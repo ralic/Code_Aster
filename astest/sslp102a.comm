@@ -1,4 +1,4 @@
-# MODIF  DATE 10/09/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TAUX DE RESTITUTION D ENERGIE AVEC PREDEFORMATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,33 +178,41 @@ G4=CALC_G(        RESULTAT=RESU,
 #--------------------------------------------------------------------
 
  
-TEST_TABLE(       TABLE=G1,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=1.8E-1,
-                      PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=0.17999999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(       TABLE=G2,
-                        FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=1.8E-1,
-                     PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=0.17999999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(       TABLE=G3,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=1.8E-1,
-                      PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=0.17999999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(       TABLE=G4,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                          VALE=1.8E-1,
-                      PRECISION=1.E-3   )
+TEST_TABLE(
+           VALE_CALC=0.17999999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G4,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 
 FIN( )
 #

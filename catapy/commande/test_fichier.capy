@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,6 @@
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
-
 TEST_FICHIER=MACRO(nom="TEST_FICHIER",
                    op=OPS('Macro.test_fichier_ops.test_fichier_ops'),
                    UIinfo={"groupes":("Utilitaires",)},
@@ -26,21 +25,8 @@ TEST_FICHIER=MACRO(nom="TEST_FICHIER",
    FICHIER          =SIMP(statut='o',typ='TXM',validators=LongStr(1,255)),
    EXPR_IGNORE      =SIMP(statut='f',typ='TXM',max='**',
                           fr="Liste d'expressions régulières permettant d'ignorer certaines lignes"),
-
-   TYPE_TEST       =SIMP(statut='f',typ='TXM',defaut='SOMM',into=("SOMM_ABS","SOMM","MAXI","MINI","MAXI_ABS","MINI_ABS")),
    NB_VALE         =SIMP(statut='o',typ='I',),
-   VALE            =SIMP(statut='f',typ='R',),
-   VALE_K          =SIMP(statut='f',typ='TXM'),
-
-   CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
-   PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3),
-
-   REFERENCE       =SIMP(statut='f',typ='TXM',
-                         into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
-
-   b_version       =BLOC(condition = "REFERENCE == 'NON_REGRESSION'",
-      VERSION         =SIMP(statut='f',typ='TXM' ),
-   ),
 
    INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+   **C_TEST_REFERENCE('FICHIER', max=1)
 )

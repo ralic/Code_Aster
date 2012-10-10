@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 # sdnl111e.para = tps_job 1140 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,62 +118,58 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
 # TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
 ##############################################
 
-TEST_RESU(
-      RESU=(
-            _F(
-                  RESULTAT = RESU,
-                  INST = 2.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = -1.05E-4,
-                  PRECISION = (0.0001, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),
-            _F(
-                  RESULTAT = RESU,
-                  INST = 4.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = -1.55E-4,
-                  PRECISION = (0.003, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),
-            _F(
-                  RESULTAT = RESU,
-                  INST = 6.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = -5.54E-5,
-                  PRECISION = (0.002, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),
-            _F(
-                  RESULTAT = RESU,
-                  INST = 8.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = 9.92E-5,
-                  PRECISION = (0.06, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),
-            _F(
-                  RESULTAT = RESU,
-                  INST = 10.0E-4,
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'N1',
-                  NOM_CMP = 'DZ',
-                  VALE = 2.99E-4,
-                  PRECISION = (0.02, 1.E-7),
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE = 'RELATIF'),
-                  ),)
-
-
-
+TEST_RESU(RESU=(_F(GROUP_NO='N1',
+                   INST=2.0000000000000001E-4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-1.05000000E-04,
+                   VALE_REFE=-1.05E-4,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-08),),
+                _F(GROUP_NO='N1',
+                   INST=4.0000000000000002E-4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-1.55408222E-04,
+                   VALE_REFE=-1.55E-4,
+                   CRITERE='RELATIF',
+                   PRECISION=3.0000000000000001E-3, TOLE_MACHINE=(3.0000000000000001E-3, 9.9999999999999995E-08),),
+                _F(GROUP_NO='N1',
+                   INST=5.9999999999999995E-4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-5.54085599E-05,
+                   VALE_REFE=-5.5399999999999998E-05,
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-3, TOLE_MACHINE=(2.E-3, 9.9999999999999995E-08),),
+                _F(GROUP_NO='N1',
+                   INST=8.0000000000000004E-4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 9.34105137E-05,
+                   VALE_REFE=9.9199999999999999E-05,
+                   CRITERE='RELATIF',
+                   PRECISION=0.059999999999999998, TOLE_MACHINE=(0.059999999999999998, 9.9999999999999995E-08),),
+                _F(GROUP_NO='N1',
+                   INST=1.E-3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 2.93385124E-04,
+                   VALE_REFE=2.99E-4,
+                   CRITERE='RELATIF',
+                   PRECISION=0.02, TOLE_MACHINE=(0.02, 9.9999999999999995E-08),),
+                ),
+          )
 
 FIN();
 #

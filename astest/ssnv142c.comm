@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.1D)
 # ssnv142c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,20 +180,24 @@ U=CALC_CHAMP(reuse =U,
 
 # S=0.02
 
-TEST_RESU(RESU=(_F(RESULTAT=U,
-                   NUME_ORDRE=74,
+TEST_RESU(RESU=(_F(NUME_ORDRE=74,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
+                   VALE_CALC=-2.57988958E-03,
+                   VALE_REFE=-2.5797699999999999E-3,),
+                _F(NUME_ORDRE=74,
                    GROUP_NO='B',
-                   VALE=-0.00257977,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=U,
-                   NUME_ORDRE=74,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
                    NOM_CHAM='EFGE_NOEU',
                    NOM_CMP='N',
-                   GROUP_NO='B',
-                   VALE=-0.4,
-                   REFERENCE='ANALYTIQUE',),),);
+                   VALE_CALC=-0.400000000,
+                   VALE_REFE=-0.40000000000000002,),
+                ),
+          )
 
 FIN();
 #

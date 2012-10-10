@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE CONSOLE EN FLEXION QUAD4 MEMBRANE PRE_EPSI
 # ssls132h.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,23 +183,19 @@ TAB = POST_RELEVE_T(
                TOUT_ORDRE = 'OUI',
                NOM_CMP = 'DX'))
 
-TEST_TABLE(
-     TABLE = TAB,
-     NOM_PARA = 'DX',
-     FILTRE = (_F(
-         NOM_PARA = 'QUANTITE',
-         VALE_K   = 'MOMENT_0' ,
-         ),
-         _F(NOM_PARA ='INST',
-                     VALE     =0.,
-                     PRECISION=0.,
-                     CRIT_COMP = 'GT',
-                     CRITERE  ='ABSOLU'),
-
-         ),
-
-     VALE = .1,
-     REFERENCE = 'ANALYTIQUE'
-  )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.099999997,
+           VALE_REFE=0.10000000000000001,
+           NOM_PARA='DX',
+           TABLE=TAB,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                      VALE_K='MOMENT_0',),
+                   _F(CRITERE='ABSOLU',
+                      CRIT_COMP='GT',
+                      PRECISION=0.0,
+                      NOM_PARA='INST',
+                      VALE=0.0,),
+                   ),
+           )
 
 FIN()

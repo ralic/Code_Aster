@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 # ssll11a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,15 +76,40 @@ VECASS=RESOUDRE( reuse=VECASS,  MATR=MATASS,       CHAM_NO=VECASS )
 
 #---------------------------------------------------------------------
 
-TEST_RESU(CHAM_NO=(
-            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-              NOEUD = 'C',        NOM_CMP = 'DX',            VALE = 2.6517E-4, REFERENCE= 'ANALYTIQUE'),
-            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-              NOEUD = 'C',        NOM_CMP = 'DY',            VALE = 0.8839E-4,REFERENCE= 'ANALYTIQUE'),
-            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-              NOEUD = 'D',        NOM_CMP = 'DX',            VALE = 3.47902E-3,REFERENCE= 'ANALYTIQUE'),
-            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-        NOEUD = 'D',        NOM_CMP = 'DY',            VALE = -5.60084E-3, REFERENCE= 'ANALYTIQUE')) )
+TEST_RESU(CHAM_NO=(_F(NOEUD='C',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=2.9999999999999997E-4,
+                      CHAM_GD=VECASS,
+                      VALE_CALC= 2.65151861E-04,
+                      VALE_REFE=2.6517000000000001E-4,),
+                   _F(NOEUD='C',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=2.9999999999999997E-4,
+                      CHAM_GD=VECASS,
+                      VALE_CALC= 8.83858550E-05,
+                      VALE_REFE=8.8389999999999999E-05,),
+                   _F(NOEUD='D',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=2.9999999999999997E-4,
+                      CHAM_GD=VECASS,
+                      VALE_CALC= 3.47837942E-03,
+                      VALE_REFE=3.4790200000000002E-3,),
+                   _F(NOEUD='D',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=2.9999999999999997E-4,
+                      CHAM_GD=VECASS,
+                      VALE_CALC=-5.59934992E-03,
+                      VALE_REFE=-5.6008400000000002E-3,),
+                   ),
+          )
 
 # =====================================================================
 #               C H A M _ E L E M   --->   C H A M _ N O
@@ -152,16 +177,44 @@ RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('SIPO_ELNO','SIPM_ELNO'),RESULTAT=RESU1
 
 #---------------------------------------------------------------------
 
-TEST_RESU(RESU=(
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO',  NUME_ORDRE = 1,
-MAILLE = 'AC', NOEUD = 'A',    NOM_CMP = 'SN',    VALE = 6.93641E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO',  NUME_ORDRE = 1,
-MAILLE = 'BC', NOEUD = 'B',    NOM_CMP = 'SN',    VALE = -3.46815E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO',  NUME_ORDRE = 1,
-MAILLE = 'CD', NOEUD = 'C',    NOM_CMP = 'SN',    VALE = 1.55074E+08, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIPO_ELNO',  NUME_ORDRE = 1,
-MAILLE = 'BD', NOEUD = 'D',    NOM_CMP = 'SN',    VALE = -2.08067E+08, REFERENCE= 'ANALYTIQUE'))
-            )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIPO_ELNO',
+                   NOEUD='A',
+                   NOM_CMP='SN',
+                   VALE_CALC= 6.93640998E+07,
+                   VALE_REFE=6.9364100E7,
+                   MAILLE='AC',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIPO_ELNO',
+                   NOEUD='B',
+                   NOM_CMP='SN',
+                   VALE_CALC=-3.46814903E+07,
+                   VALE_REFE=-3.4681500E7,
+                   MAILLE='BC',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIPO_ELNO',
+                   NOEUD='C',
+                   NOM_CMP='SN',
+                   VALE_CALC= 1.55074396E+08,
+                   VALE_REFE=1.55074000E8,
+                   MAILLE='CD',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIPO_ELNO',
+                   NOEUD='D',
+                   NOM_CMP='SN',
+                   VALE_CALC=-2.08067206E+08,
+                   VALE_REFE=-2.08067000E8,
+                   MAILLE='BD',),
+                ),
+          )
 
 #---------------------------------------------------------------------
 
@@ -186,59 +239,86 @@ IMPR_TABLE( TABLE = T2 )  ;
 
 #---------------------------------------------------------------------
 
-TEST_TABLE( TABLE=T0,
-            FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MAX'    ),
-            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
-            VALE=  6.93641E+07   )
+TEST_TABLE(
+           VALE_CALC=6.9364100E7,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=T0,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MAX',),
+           )
 
-TEST_TABLE( TABLE=T0,
-            FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MIN'    ),
-            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
-            VALE= -1.21374E+08   )
+TEST_TABLE(
+           VALE_CALC=-1.21374000E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=T0,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MIN',),
+           )
 
-TEST_TABLE( TABLE=T0,
-            FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MAXI_ABS'    ),
-            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
-            VALE=  1.21374E+08   )
+TEST_TABLE(
+           VALE_CALC=1.21374000E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=T0,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MAXI_ABS',),
+           )
 
-TEST_TABLE( TABLE=T1,
-            FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MAX'    ),
-            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
-            VALE=  3.47838E-03   )
+TEST_TABLE(
+           VALE_CALC=3.4783800000000001E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MAX',),
+           )
 
-TEST_TABLE( TABLE=T1,
-            FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MIN'    ),
-            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
-            VALE= -6.18920E-03   )
+TEST_TABLE(
+           VALE_CALC=-6.1891999999999997E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MIN',),
+           )
 
-TEST_TABLE( TABLE=T1,
-            FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MAXI_ABS'    ),
-            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
-            VALE= 6.18920E-03   )
+TEST_TABLE(
+           VALE_CALC=6.1891999999999997E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MAXI_ABS',),
+           )
 
-TEST_TABLE( TABLE=T2,
-            FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MAX'    ),
-            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
-            VALE=  1.62542E+08   )
+TEST_TABLE(
+           VALE_CALC=1.62542000E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MAX',),
+           )
 
-TEST_TABLE( TABLE=T2,
-            FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MIN'    ),
-            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
-            VALE= -2.17437E+08   )
+TEST_TABLE(
+           VALE_CALC=-2.17437000E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MIN',),
+           )
 
-TEST_TABLE( TABLE=T2,
-            FILTRE=_F( NOM_PARA = 'EXTREMA',
-                       VALE_K   = 'MAXI_ABS'    ),
-            NOM_PARA='VALE', REFERENCE='NON_REGRESSION', VERSION='8.2.7',
-            VALE= 2.17437E+08   )
+TEST_TABLE(
+           VALE_CALC=2.17437000E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE',
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='EXTREMA',
+                     VALE_K='MAXI_ABS',),
+           )
 
 #---------------------------------------------------------------------
 
@@ -266,23 +346,32 @@ T5 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'DEPL',
 IMPR_TABLE( TABLE = T5 )  ;
 
 
-TEST_TABLE( TABLE=T3,
-            FILTRE=_F( NOM_PARA = 'CMP',
-                       VALE_K   = 'DX'    ),
-   NOM_PARA='MOYENNE', REFERENCE='NON_REGRESSION', VERSION='9.04.02',
-            VALE=  -3.81350E+06   )
+TEST_TABLE(
+           VALE_CALC=-3.813500E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOYENNE',
+           TABLE=T3,
+           FILTRE=_F(NOM_PARA='CMP',
+                     VALE_K='DX',),
+           )
 
-TEST_TABLE( TABLE=T4,
-            FILTRE=_F( NOM_PARA = 'CMP',
-                       VALE_K   = 'DY'    ),
-   NOM_PARA='MOYENNE', REFERENCE='NON_REGRESSION', VERSION='9.04.02',
-            VALE=  -1.52234E+03   )
+TEST_TABLE(
+           VALE_CALC=-1522.3399999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOYENNE',
+           TABLE=T4,
+           FILTRE=_F(NOM_PARA='CMP',
+                     VALE_K='DY',),
+           )
 
-TEST_TABLE( TABLE=T5,
-            FILTRE=_F( NOM_PARA = 'CMP',
-                       VALE_K   = 'DX'    ),
-   NOM_PARA='MOYENNE', REFERENCE='NON_REGRESSION', VERSION='9.04.02',
-            VALE=  9.35883E-04   )
+TEST_TABLE(
+           VALE_CALC=9.3588299999999998E-4,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOYENNE',
+           TABLE=T5,
+           FILTRE=_F(NOM_PARA='CMP',
+                     VALE_K='DX',),
+           )
 
 FIN( )
 

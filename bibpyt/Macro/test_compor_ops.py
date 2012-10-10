@@ -1,4 +1,4 @@
-#@ MODIF test_compor_ops Macro  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF test_compor_ops Macro  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -570,12 +570,18 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
 
 
           TEST_TABLE(TABLE=__RES[i],
-                     NOM_PARA='VMIS',VALE=__U['VMIS',i+1],
+                     NOM_PARA='VMIS',
+                     VALE_CALC=__U['VMIS',i+1],
+                     VALE_REFE=__U['VMIS',i+1],
+                     TOLE_MACHINE=1.e-3,
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 
           TEST_TABLE(TABLE=__RES[i],
-                     NOM_PARA='TRACE',VALE=__U['TRACE',i+1],
+                     NOM_PARA='TRACE',
+                     VALE_CALC=__U['TRACE',i+1],
+                     VALE_REFE=__U['TRACE',i+1],
+                     TOLE_MACHINE=1.e-3,
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
           if (NB_VARI > 0):
@@ -584,7 +590,10 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                    nomvari=VARI_TEST[j]
                    if abs(__U[nomvari,i+1]) > epsi :
                       TEST_TABLE(TABLE=__RES[i],
-                         NOM_PARA=nomvari,VALE=__U[nomvari,i+1],
+                         NOM_PARA=nomvari,
+                         VALE_CALC=__U[nomvari,i+1],
+                         VALE_REFE=__U[nomvari,i+1],
+                         TOLE_MACHINE=1.e-3,
                          FILTRE=_F(NOM_PARA='INST',VALE=time),
                          REFERENCE='AUTRE_ASTER',);
              else  :
@@ -592,7 +601,10 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                    nomvari='V'+str(j+1)
                    if abs(__U[nomvari,i+1]) > epsi :
                       TEST_TABLE(TABLE=__RES[i],
-                         NOM_PARA=nomvari,VALE=__U[nomvari,i+1],
+                         NOM_PARA=nomvari,
+                         VALE_CALC=__U[nomvari,i+1],
+                         VALE_REFE=__U[nomvari,i+1],
+                         TOLE_MACHINE=1.e-3,
                          FILTRE=_F(NOM_PARA='INST',VALE=time),
                          REFERENCE='AUTRE_ASTER',);
       for i in range(NCAL):
@@ -739,8 +751,15 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
         for j in range(Ncal) :
           ch_cal = ch + label_cal[j] + str(LIST_NPAS[j])
           ch_err = 'ER_' + ch_cal
-          TEST_TABLE(TABLE=__RSI[i],NOM_PARA=ch_err,
-            TYPE_TEST='MAX',VALE=0.,CRITERE='ABSOLU',PRECISION=LIST_TOLE[j],REFERENCE='ANALYTIQUE',);
+          TEST_TABLE(TABLE=__RSI[i],
+                     NOM_PARA=ch_err,
+                     TYPE_TEST='MAX',
+                     VALE_CALC=0.,
+                     VALE_REFE=0.,
+                     CRITERE='ABSOLU',
+                     TOLE_MACHINE=LIST_TOLE[j],
+                     PRECISION=LIST_TOLE[j],
+                     REFERENCE='ANALYTIQUE',);
 
       ###############################################################################
       # Test de la matrice tangente sur le calcul le plus fin
@@ -784,8 +803,10 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
           TEST_TABLE(TABLE=__DIFFMAT,
                      NOM_PARA='MAT_DIFF',
                      TYPE_TEST='MAX',
-                     VALE=0.,
+                     VALE_CALC=0.,
+                     VALE_REFE=0.,
                      CRITERE='ABSOLU',
+                     TOLE_MACHINE=prec_tgt,
                      PRECISION=prec_tgt,
                      REFERENCE='ANALYTIQUE',);
 

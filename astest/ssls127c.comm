@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #  DATE   : 27/10/03
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : FLEXION D'UNE DALLE EN BETON ARME (MODELE GLRC) APPUYEE SUR 4 COTES:
@@ -179,69 +179,68 @@ RESU=STAT_NON_LINE( MODELE=MOD,
 RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=RESU)
 
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 2,
-               NOM_CHAM = 'DEPL',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.2,
-               GROUP_NO = 'A1',
-               NOM_CMP = 'DZ',
-               VALE = 6.926E-5,
-               REFERENCE = 'ANALYTIQUE'),
-             ),
-          );
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 2,
-               NOM_CHAM = 'EFGE_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.08,
-               GROUP_NO = 'A1',
-               MAILLE='M266',
-               NOM_CMP = 'MXX',
-               VALE = 1550.,
-               REFERENCE = 'ANALYTIQUE'),
-             ),
-           );
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 2,
-               NOM_CHAM = 'EFGE_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.08,
-               GROUP_NO = 'A1',
-               MAILLE='M266',
-               NOM_CMP = 'MYY',
-               VALE = 1550.,
-               REFERENCE = 'ANALYTIQUE'),
-             ),
-        );
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 2,
-               NOM_CHAM = 'DEGE_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.08,
-               GROUP_NO = 'A1',
-               MAILLE='M266',
-               NOM_CMP = 'KXX',
-               VALE = 2.193E-4,
-               REFERENCE = 'ANALYTIQUE'),
-             ),
-          );
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 2,
-               NOM_CHAM = 'DEGE_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.08,
-               GROUP_NO = 'A1',
-               MAILLE='M266',
-               NOM_CMP = 'KYY',
-               VALE = 2.193E-4,
-               REFERENCE = 'ANALYTIQUE'),
-             ),
-         );
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC= 8.17438404E-05,
+                  VALE_REFE=6.9259999999999998E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=0.20000000000000001,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='MXX',
+                  VALE_CALC= 1.49922114E+03,
+                  VALE_REFE=1550.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.080000000000000002,
+                  MAILLE='M266',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='MYY',
+                  VALE_CALC= 1.49946114E+03,
+                  VALE_REFE=1550.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.080000000000000002,
+                  MAILLE='M266',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEGE_ELNO',
+                  NOM_CMP='KXX',
+                  VALE_CALC= 2.22083178E-04,
+                  VALE_REFE=2.1929999999999999E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=0.080000000000000002,
+                  MAILLE='M266',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEGE_ELNO',
+                  NOM_CMP='KYY',
+                  VALE_CALC= 2.22138055E-04,
+                  VALE_REFE=2.1929999999999999E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=0.080000000000000002,
+                  MAILLE='M266',),
+          )
 
 FIN();

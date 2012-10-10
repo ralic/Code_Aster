@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE EPROUVETTE CT 3D AVEC ELEMENTS D'INTERFACE (HEXA20) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssnp151b.para = tps_job 900 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -229,34 +229,41 @@ FORCE=CALC_TABLE(TABLE=TFORCE,
 #-----------------------------------------------------------
 # TEST SUR LA REPONSE GLOBALE
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=FORCE,
+TEST_TABLE(
+           VALE_CALC=4.4713199999999997E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
-                     VALE=0.4),
-           VALE=4.47132E+04,
-           REFERENCE='NON_REGRESSION');
+                     VALE=0.40000000000000002,),
+           )
 
-TEST_TABLE(TABLE=FORCE,
+TEST_TABLE(
+           VALE_CALC=5.0959099999999999E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
-                     VALE=0.8),
-           VALE=5.09591E+04,
-           REFERENCE='NON_REGRESSION');
+                     VALE=0.80000000000000004,),
+           )
 
-TEST_TABLE(TABLE=FORCE,
+TEST_TABLE(
+           VALE_CALC=5.22155E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
-                     VALE=1.0),
-           VALE=5.22155E+04,
-           REFERENCE='NON_REGRESSION');
+                     VALE=1.0,),
+           )
 
-TEST_TABLE(TABLE=FORCE,
+TEST_TABLE(
+           VALE_CALC=5.3212599999999999E4,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
-                     VALE=1.2),
-           VALE=5.32126E+04,
-           REFERENCE='NON_REGRESSION');
-
+                     VALE=1.2,),
+           )
 
 #-----------------------------------------------------------
 # IMPRESSION DE LA FORCE EN FONCTION DU DEPLACEMENT

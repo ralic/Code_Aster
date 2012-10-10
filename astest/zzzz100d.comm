@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ZENTNER I.ZENTNER
 # TITRE CALCUL DES INDICES DE NOCIVITE D'UN SEISME
 # zzzz100d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -145,204 +145,175 @@ INH1=INFO_FONCTION(
 #
 #--------------------------------------------------------
 #
-TEST_TABLE(
-                   TABLE=INLBNS,
-                NOM_PARA='ACCE_MAX',
-                    VALE=1.000
-            )
+TEST_TABLE(VALE_CALC=1.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ACCE_MAX',
+           TABLE=INLBNS,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS,
-                NOM_PARA='VITE_MAX',
-                    VALE=0.229056
-            )
+TEST_TABLE(VALE_CALC=0.22905600000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VITE_MAX',
+           TABLE=INLBNS,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS,
-                NOM_PARA='DEPL_MAX',
-                    VALE=1.342452
-            )
+TEST_TABLE(VALE_CALC=1.342452,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DEPL_MAX',
+           TABLE=INLBNS,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS,
-                NOM_PARA='INTE_ARIAS',
-                    VALE=2.582E-01
-            )
+TEST_TABLE(VALE_CALC=0.25819999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_ARIAS',
+           TABLE=INLBNS,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS,
-                NOM_PARA='POUV_DEST',
-                    VALE=2.09825E-01
-            )
+TEST_TABLE(VALE_CALC=0.20982500000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='POUV_DEST',
+           TABLE=INLBNS,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS,
-                NOM_PARA='ACCE_SUR_VITE',
-                    VALE=4.36573
-            )
+TEST_TABLE(VALE_CALC=4.3657300000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ACCE_SUR_VITE',
+           TABLE=INLBNS,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS,
-                NOM_PARA='VITE_ABSO_CUMU',
-                    VALE=4.4337
-            )
+TEST_TABLE(VALE_CALC=4.4337,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VITE_ABSO_CUMU',
+           TABLE=INLBNS,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS,
-                NOM_PARA='DUREE_PHAS_FORT',
-                    VALE=14.83
-            )
+TEST_TABLE(VALE_CALC=14.83,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DUREE_PHAS_FORT',
+           TABLE=INLBNS,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS,
-                NOM_PARA='INTE_SPECT',
-                    VALE=5.86E-01
-            )
+TEST_TABLE(VALE_CALC=0.58599999999999997,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_SPECT',
+           TABLE=INLBNS,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS11,
-                NOM_PARA='INTE_ARIAS',
-                    VALE=2.582E-01
-            )
+TEST_TABLE(VALE_CALC=0.25819999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_ARIAS',
+           TABLE=INLBNS11,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS12,
-                NOM_PARA='ACCE_MAX',
-                    VALE=1.000
-            )
+TEST_TABLE(VALE_CALC=1.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ACCE_MAX',
+           TABLE=INLBNS12,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS12,
-                NOM_PARA='VITE_MAX',
-                    VALE=0.229056
-            )
+TEST_TABLE(VALE_CALC=0.22905600000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VITE_MAX',
+           TABLE=INLBNS12,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS12,
-                NOM_PARA='DEPL_MAX',
-                    VALE=1.342452
-            )
+TEST_TABLE(VALE_CALC=1.342452,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DEPL_MAX',
+           TABLE=INLBNS12,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS13,
-                NOM_PARA='ACCE_SUR_VITE',
-                    VALE=4.36573
-            )
+TEST_TABLE(VALE_CALC=4.3657300000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ACCE_SUR_VITE',
+           TABLE=INLBNS13,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS14,
-                NOM_PARA='VITE_ABSO_CUMU',
-                    VALE=4.4337
-            )
+TEST_TABLE(VALE_CALC=4.4337,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VITE_ABSO_CUMU',
+           TABLE=INLBNS14,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS15,
-                NOM_PARA='POUV_DEST',
-                    VALE=2.09825E-01
-            )
+TEST_TABLE(VALE_CALC=0.20982500000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='POUV_DEST',
+           TABLE=INLBNS15,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS16,
-                NOM_PARA='DUREE_PHAS_FORT',
-                    VALE=14.83
-            )
+TEST_TABLE(VALE_CALC=14.83,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DUREE_PHAS_FORT',
+           TABLE=INLBNS16,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS17,
-                NOM_PARA='INTE_SPECT',
-                    VALE=5.86E-01
-            )
+TEST_TABLE(VALE_CALC=0.58599999999999997,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_SPECT',
+           TABLE=INLBNS17,)
 
-TEST_TABLE(
-                   TABLE=INLBNS18,
-                NOM_PARA='ACCE_MAX',
-                    VALE=4.4113E-1
-            )
+TEST_TABLE(VALE_CALC=0.44113000000000002,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ACCE_MAX',
+           TABLE=INLBNS18,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS18,
-                NOM_PARA='VITE_MAX',
-                    VALE=0.393261
-            )
+TEST_TABLE(VALE_CALC=0.39326100000000003,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VITE_MAX',
+           TABLE=INLBNS18,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS18,
-                NOM_PARA='DEPL_MAX',
-                    VALE=4.95142
-            )
+TEST_TABLE(VALE_CALC=4.9514199999999997,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DEPL_MAX',
+           TABLE=INLBNS18,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS18,
-                NOM_PARA='INTE_ARIAS',
-                     VALE=1.06158E-02
-            )
+TEST_TABLE(VALE_CALC=0.0106158,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_ARIAS',
+           TABLE=INLBNS18,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS18,
-                NOM_PARA='POUV_DEST',
-                    VALE=3.28339E-01
-            )
+TEST_TABLE(VALE_CALC=0.32833899999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='POUV_DEST',
+           TABLE=INLBNS18,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS18,
-                NOM_PARA='ACCE_SUR_VITE',
-                    VALE=1.12172
-            )
+TEST_TABLE(VALE_CALC=1.1217200000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='ACCE_SUR_VITE',
+           TABLE=INLBNS18,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS18,
-                NOM_PARA='VITE_ABSO_CUMU',
-                    VALE=2.85872E-01
-            )
+TEST_TABLE(VALE_CALC=0.28587200000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VITE_ABSO_CUMU',
+           TABLE=INLBNS18,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS18,
-                NOM_PARA='DUREE_PHAS_FORT',
-                    VALE=4.E-02
-            )
+TEST_TABLE(VALE_CALC=0.040000000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DUREE_PHAS_FORT',
+           TABLE=INLBNS18,)
 
 #
-TEST_TABLE(
-                   TABLE=INLBNS18,
-                NOM_PARA='INTE_SPECT',
-                    VALE=1.32035
-            )
+TEST_TABLE(VALE_CALC=1.3203499999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_SPECT',
+           TABLE=INLBNS18,)
 
-TEST_TABLE(
-                   TABLE=INH,
-                NOM_PARA='INTE_SPECT',
-                    VALE=1.49014
-            )
+TEST_TABLE(VALE_CALC=1.49014,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_SPECT',
+           TABLE=INH,)
 
-TEST_TABLE(
-                   TABLE=INH1,
-                NOM_PARA='INTE_SPECT',
-                    VALE=1.85376
-            )
+TEST_TABLE(VALE_CALC=1.8537600000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_SPECT',
+           TABLE=INH1,)
 
 #
 #--------------------------------------------------------
@@ -380,10 +351,14 @@ ACCE1=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = ACCE),
 RMS1=INFO_FONCTION( RMS=_F(  FONCTION = ACCE1)
                          )
 
-TEST_TABLE(      TABLE=RMS1,
-                 NOM_PARA='RMS',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=0.E+00  , CRITERE='ABSOLU' , PRECISION=1.E-10 )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC= 5.6843418861E-14,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='RMS',
+           TABLE=RMS1,)
 
 ACCE2=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = LBNS, CORR_DEPL = 'NON'),
                        )
@@ -391,11 +366,12 @@ ACCE2=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = LBNS, CORR_DEPL = 'NON'),
 RMS2=INFO_FONCTION( RMS=_F(  FONCTION = ACCE2)
                          )
 
-TEST_TABLE(      TABLE=RMS2,
-                 NOM_PARA='RMS',
-                 REFERENCE='NON_REGRESSION',
-                 VALE=2.278E-01  , CRITERE='ABSOLU' , PRECISION=1.E-4 )
-
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.2278,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='RMS',
+           TABLE=RMS2,
+           )
 
 # ------------------ TEST CORR_DEPL = 'OUI' ----------------------------
 
@@ -405,10 +381,14 @@ ACCE3=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = ACCE, CORR_DEPL = 'OUI'),
 RMS3=INFO_FONCTION( RMS=_F(  FONCTION = ACCE3)
                          )
 
-TEST_TABLE(      TABLE=RMS3,
-                 NOM_PARA='RMS',
-                 REFERENCE='ANALYTIQUE',
-                 VALE=0.E+00  , CRITERE='ABSOLU' , PRECISION=1.E-10 )
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC= 2.4062967996E-11,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-10,
+           NOM_PARA='RMS',
+           TABLE=RMS3,)
 
 ACCE4=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = LBNS, CORR_DEPL = 'OUI'),
                        )
@@ -416,10 +396,12 @@ ACCE4=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = LBNS, CORR_DEPL = 'OUI'),
 RMS4=INFO_FONCTION( RMS=_F(  FONCTION = ACCE4)
                          )
 
-TEST_TABLE(      TABLE=RMS4,
-                 NOM_PARA='RMS',
-                 REFERENCE='NON_REGRESSION',
-                 VALE=2.243E-01  , CRITERE='ABSOLU' , PRECISION=1.E-4 )
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.2243,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='RMS',
+           TABLE=RMS4,
+           )
 
 #
 # FIN VALIDATION CORR_ACCE
@@ -487,47 +469,81 @@ m1=34.19
 m2=2841.8
 frapp=10.61
 
-TEST_TABLE(TABLE=POST_DSP,
-                       FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
-                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
-                   NOM_PARA='ECART', VALE=sigma ,
-                   CRITERE = 'RELATIF', REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-03,);
-TEST_TABLE(TABLE=POST_DSP,
-                       FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
-                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
-                   NOM_PARA='FREQ_APPAR', VALE=frapp ,
-                   CRITERE = 'RELATIF', PRECISION=1.E-03,);
-TEST_TABLE(TABLE=POST_DSP,
-                       FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
-                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
-                   NOM_PARA='LAMBDA_00', VALE=m0 ,
-                   CRITERE = 'RELATIF', PRECISION=1.E-03,);
-TEST_TABLE(TABLE=POST_DSP,
-                       FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
-                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
-                   NOM_PARA='LAMBDA_01', VALE=m1 ,
-                   CRITERE = 'RELATIF', PRECISION=1.E-03,);
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.799339773,
+           VALE_REFE=0.79900000000000004,
+           NOM_PARA='ECART',
+           TABLE=POST_DSP,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_ORDRE_J',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=POST_DSP,
-                       FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
-                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
-                   NOM_PARA='LAMBDA_02', VALE=m2 ,
-                   CRITERE = 'RELATIF', PRECISION=1.E-03,);
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=10.609999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='FREQ_APPAR',
+           TABLE=POST_DSP,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_ORDRE_J',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=ECT,
-                 NOM_PARA='ECART_TYPE',
-                 REFERENCE='SOURCE_EXTERNE',
-                 VALE=sigma  , PRECISION=1.E-3)
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.63939999999999997,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_00',
+           TABLE=POST_DSP,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_ORDRE_J',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=RMS,
-                 NOM_PARA='RMS',
-                 REFERENCE='SOURCE_EXTERNE',
-                 VALE=sigma  , PRECISION=1.E-3)
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=34.189999999999998,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_01',
+           TABLE=POST_DSP,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_ORDRE_J',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=2841.8000000000002,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='LAMBDA_02',
+           TABLE=POST_DSP,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_ORDRE_J',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.799266509,
+           VALE_REFE=0.79900000000000004,
+           NOM_PARA='ECART_TYPE',
+           TABLE=ECT,)
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.799266513,
+           VALE_REFE=0.79900000000000004,
+           NOM_PARA='RMS',
+           TABLE=RMS,)
 
 #
 # FIN VALIDATION DSP

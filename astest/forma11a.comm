@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP ANALYSE MODALE TPAM1
 # forma11a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,7 +89,6 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
 # QUESTION 1: CALCUL SUR LES 10 OU 11 PLUS PETITES FREQUENCES
 
 # ON LANCE LE CALCUL MODAL AVEC UNE SEULE COMMANDE, CALC_MODAL.
-
 FREQ_0=CALC_MODAL(MODELE=MO,
                   CHAM_MATER=CHMAT,
                   CARA_ELEM=CARELEM,
@@ -100,7 +99,6 @@ FREQ_0=CALC_MODAL(MODELE=MO,
 #                              NMAX_FREQ=10,
                                NMAX_FREQ=11,
          ),);
-
  
 
 #------- ON TESTE LA METHODE QZ ------------------------------------
@@ -145,31 +143,30 @@ FREQ_03=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
                         MATR_MASS=MATASSM1,
                         METHODE='QZ',
                         CALC_FREQ=_F(OPTION='TOUT',),);
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
+                  PARA='FREQ',
+                  RESULTAT=FREQ_01,
+                  VALE_CALC=2597.040657041,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=FREQ_01,
-                   NUME_ORDRE=6,
-                   PARA='FREQ',
-                   VALE=2.5970406570410E+03,
-                   PRECISION=1E-08,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   VERSION='9.2.28',)))
-TEST_RESU(RESU=(_F(RESULTAT=FREQ_02,
-                   NUME_ORDRE=11,
-                   PARA='FREQ',
-                   VALE=5.7699054933879E+03,
-                   PRECISION=1E-08,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   VERSION='9.2.28',)))
-TEST_RESU(RESU=(_F(RESULTAT=FREQ_03,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   VALE=1.6763819422542E+02,
-                   PRECISION=1E-08,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   VERSION='9.2.28',)))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  PARA='FREQ',
+                  RESULTAT=FREQ_02,
+                  VALE_CALC=5769.9054933878997,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=FREQ_03,
+                  VALE_CALC=167.63819422541999,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
 # FIN DE LA QUESTION 1
 #FIN();
 
@@ -217,38 +214,38 @@ FREQ_QZ=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
 FREQ_QZ=NORM_MODE(reuse=FREQ_QZ,MODE=FREQ_QZ,NORME='EUCL',);
 IMPR_RESU(RESU=_F(RESULTAT=FREQ_QZ,TOUT_PARA= 'OUI',TOUT_CHAM= 'NON'),);
 
-TEST_RESU(RESU=(_F(RESULTAT=FREQ_SOR,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   VALE=1.6763819422439E+02,
-                   PRECISION=1E-08,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   VERSION='9.2.28',)))
-TEST_RESU(RESU=(_F(RESULTAT=FREQ_LAN,
-                   NUME_ORDRE=4,
-                   PARA='FREQ',
-                   VALE=1.0506045040198E+03,
-                   PRECISION=1E-08,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   VERSION='9.2.28',)))
-TEST_RESU(RESU=(_F(RESULTAT=FREQ_JAC,
-                   NUME_ORDRE=7,
-                   PARA='FREQ',
-                   VALE=2.9423746290629E+03,
-                   PRECISION=1E-08,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   VERSION='9.2.28',)))
-TEST_RESU(RESU=(_F(RESULTAT=FREQ_QZ,
-                   NUME_ORDRE=11,
-                   PARA='FREQ',
-                   VALE=5.7699054933879E+03,
-                   PRECISION=1E-08,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   VERSION='9.2.28',)))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=FREQ_SOR,
+                  VALE_CALC=167.63819422438999,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  PARA='FREQ',
+                  RESULTAT=FREQ_LAN,
+                  VALE_CALC=1050.6045040198001,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=7,
+                  PARA='FREQ',
+                  RESULTAT=FREQ_JAC,
+                  VALE_CALC=2942.3746290629001,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  PARA='FREQ',
+                  RESULTAT=FREQ_QZ,
+                  VALE_CALC=5769.9054933878997,
+                  CRITERE='RELATIF',
+                  ),
+          )
+
 FREQ_INV=MODE_ITER_INV(MATR_RIGI=MATASSR1,
                        MATR_MASS=MATASSM1,
                        CALC_FREQ=_F(OPTION='AJUSTE',
@@ -304,9 +301,3 @@ IMPR_RESU(FORMAT='CASTEM',UNITE=55,
 #os.system('agraf mode.digr')
 
 FIN();
-
-
-
-
-
-

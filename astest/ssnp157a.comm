@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 5 STEEL ROLLER ON RUBBER
 # ssnp157a.para = tps_job 1500 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -240,27 +240,25 @@ IMPR_RESU(FORMAT='MED',
 
 # On utilise un couple pour PRECISION pour bien selectionner l'instant
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU,
-                   INST       = Tfin,
-                   NOM_CHAM   = 'DEPL',
-                   NOEUD      = 'N281',
-                   NOM_CMP    = 'DX',
-                   VALE       = -175.0,
-                   PRECISION  = (0.02,0.001),
-                   REFERENCE  = 'SOURCE_EXTERNE',
-                   ),
-                ),);
+TEST_RESU(RESU=_F(INST=2.0,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N281',
+                  NOM_CMP='DX',
+                  VALE_CALC=-176.935953452,
+                  VALE_REFE=-175.0,
+                  PRECISION=0.02, TOLE_MACHINE=(0.02, 1.E-3),),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU,
-                   INST       = Tfin,
-                   NOM_CHAM   = 'DEPL',
-                   NOEUD      = 'N281',
-                   NOM_CMP    = 'DX',
-                   VALE       = -176.93727596068,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '11.1.5',
-                   ),
-                ),);
-
+TEST_RESU(RESU=_F(INST=2.0,
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N281',
+                  NOM_CMP='DX',
+                  VALE_CALC=-176.93727596068001,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 FIN();

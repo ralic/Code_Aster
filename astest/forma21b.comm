@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -352,12 +352,17 @@ for num_calc in range(0,nb_calc1) :
 
 ERREEN0=FORMULE(VALE='eren0*1.',NOM_PARA='BIDON')
 ERREEN2=FORMULE(VALE='eren2*1.',NOM_PARA='BIDON')
-TEST_FONCTION(VALEUR=(
-    _F(FONCTION=ERREEN0,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=1.00777613410E+01,REFERENCE='NON_REGRESSION',
-       VERSION = '9.00.13'),
-    _F(FONCTION=ERREEN2,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-8,
-       VALE_REFE=4.59010836E-01,REFERENCE='NON_REGRESSION',
-       VERSION = '9.03.15')))
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=10.077761341,
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERREEN0,
+                         ),
+                      _F(VALE_CALC=0.45901083599999998,
+                         VALE_PARA=0.0,
+                         NOM_PARA='BIDON',
+                         FONCTION=ERREEN2,
+                         ),
+                      ),
+              )
 
 FIN();

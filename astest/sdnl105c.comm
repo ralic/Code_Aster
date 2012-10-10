@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 # sdnl105c.para = tps_job 140 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -540,88 +540,160 @@ TRAN2=REST_GENE_PHYS(   RESU_GENE=TRANGE2,
 
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'N8',             NOM_CMP = 'DY',
-                  VALE = 1.64295E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.016429483,
+                  VALE_REFE=0.0164295,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'N8',             NOM_CMP = 'DY',
-                  VALE = 2.54158E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='VITE',
+                  NOEUD='N8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.025415833,
+                  VALE_REFE=0.025415799999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'M8',             NOM_CMP = 'DY',
-                  VALE = 1.11677E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='M8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.011167696,
+                  VALE_REFE=0.011167699999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'M8',             NOM_CMP = 'DY',
-                  VALE = 4.42640E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='VITE',
+                  NOEUD='M8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.044264054,
+                  VALE_REFE=0.044263999999999998,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'O8',             NOM_CMP = 'DY',
-                  VALE = 5.89757E-03))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='O8',
+                  NOM_CMP='DY',
+                  VALE_CALC= 5.89756731E-03,
+                  VALE_REFE=5.8975700000000004E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'O8',             NOM_CMP = 'DY',
-                  VALE = 1.04583E-01))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN1,
+                  NOM_CHAM='VITE',
+                  NOEUD='O8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.104582604,
+                  VALE_REFE=0.104583,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'N8',             NOM_CMP = 'DY',
-                  VALE = 1.64264E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.016426424,
+                  VALE_REFE=0.016426400000000001,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'N8',             NOM_CMP = 'DY',
-                  VALE = 2.54155E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='VITE',
+                  NOEUD='N8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.025413049,
+                  VALE_REFE=0.025415500000000001,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'M8',             NOM_CMP = 'DY',
-                  VALE = 1.11627E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='M8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.011162691,
+                  VALE_REFE=0.011162699999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'M8',             NOM_CMP = 'DY',
-                  VALE = 4.41197E-02))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='VITE',
+                  NOEUD='M8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.044116986,
+                  VALE_REFE=0.044119699999999998,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'O8',             NOM_CMP = 'DY',
-                  VALE = 5.88736E-03))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='O8',
+                  NOM_CMP='DY',
+                  VALE_CALC= 5.88738242E-03,
+                  VALE_REFE=5.8873600000000003E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, REFERENCE = 'AUTRE_ASTER',
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-                  NOEUD = 'O8',             NOM_CMP = 'DY',
-                  VALE = 1.04550E-01))
+TEST_RESU(RESU=_F(NUME_ORDRE=11,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=TRAN2,
+                  NOM_CHAM='VITE',
+                  NOEUD='O8',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.104549863,
+                  VALE_REFE=0.10455,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-4,),
+          )
 
 #
 FIN()

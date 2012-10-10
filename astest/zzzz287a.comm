@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION ELEMENTAIRE DE L'OPERATEUR POST_RUPTURE
 # zzzz287a.para = tps_job 20 mem_job 256Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,24 +49,29 @@ TAB=POST_RUPTURE(TABLE=TAB,
 
 IMPR_TABLE(TABLE=TAB)
 
-TEST_TABLE(TABLE=TAB,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-14,
+           VALE_CALC= 0.00000000000000E+00,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-14,
            NOM_PARA='K1',
            TYPE_TEST='MIN',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1e-14,
-           REFERENCE='ANALYTIQUE')
+           TABLE=TAB,)
 
 Gref3D = (1-nu**2)/e * (2e6*2e6) +  (1+nu)/e * 3e6*3e6
 
-TEST_TABLE(TABLE=TAB,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-14,
+           VALE_CALC=Gref3D,
+           VALE_REFE=Gref3D,
+           TOLE_MACHINE=1.E-14,
            NOM_PARA='G',
-           FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1),
-           VALE=Gref3D,
-           CRITERE='ABSOLU',
-           PRECISION=1e-14,
-           REFERENCE='ANALYTIQUE')
-
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
 DETRUIRE(CONCEPT=_F(NOM=TAB),INFO=1)
 
@@ -82,13 +87,15 @@ TAB=POST_RUPTURE(TABLE=TAB,
 
 IMPR_TABLE(TABLE=TAB)
 
-TEST_TABLE(TABLE=TAB,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-14,
+           VALE_CALC= 0.00000000000000E+00,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-14,
            NOM_PARA='K1',
            TYPE_TEST='MIN',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1e-14,
-           REFERENCE='ANALYTIQUE')
+           TABLE=TAB,)
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'ABSC_CURV_NORM'
@@ -100,13 +107,15 @@ TAB=POST_RUPTURE(TABLE=TAB,
 
 IMPR_TABLE(TABLE=TAB)
 
-TEST_TABLE(TABLE=TAB,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-14,
+           VALE_CALC=1.000000000000000,
+           VALE_REFE=1.0,
+           TOLE_MACHINE=1.E-14,
            NOM_PARA='ABSC_CURV_NORM',
            TYPE_TEST='MAX',
-           VALE=1.,
-           CRITERE='ABSOLU',
-           PRECISION=1e-14,
-           REFERENCE='ANALYTIQUE')
+           TABLE=TAB,)
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'ANGLE_BIFURCATION'
@@ -126,38 +135,62 @@ IMPR_TABLE(TABLE=TAB)
 
 # TEST EN K1 PUR POUR TOUS LES CRITERES
 for crit in l_crit_bifurcation :
-   TEST_TABLE(TABLE=TAB,
-              NOM_PARA='BETA_'+crit,
-              FILTRE=(_F(NOM_PARA='INST',  CRIT_COMP='EQ',VALE=1.),
-                      _F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),),
-              VALE=0.,
-              CRITERE='ABSOLU',
-              PRECISION=1e-14,
-              REFERENCE='ANALYTIQUE')
+   TEST_TABLE(CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE',
+              PRECISION=1.E-14,
+              VALE_CALC= 0.00000000000000E+00,
+              VALE_REFE=0.0,
+              TOLE_MACHINE=1.E-14,
+              NOM_PARA='BETA_SITT_MAX',
+              TABLE=TAB,
+              FILTRE=(_F(CRIT_COMP='EQ',
+                         NOM_PARA='INST',
+                         VALE=1.0,),
+                      _F(CRIT_COMP='EQ',
+                         NOM_PARA='NUM_PT',
+                         VALE_I=1,),
+                      ),
+              )
 
 # TEST EN K1=-K2 POUR TOUS LES CRITERES
 beta_ref = [11.202877689339, 10, 10]
 for i,crit in enumerate(l_crit_bifurcation):
-   TEST_TABLE(TABLE=TAB,
+   TEST_TABLE(CRITERE='RELATIF',
+              REFERENCE='ANALYTIQUE',
+              PRECISION=9.9999999999999998E-13,
+              VALE_CALC=beta_ref[i],
+              VALE_REFE=beta_ref[i],
+              TOLE_MACHINE=9.9999999999999998E-13,
               NOM_PARA='BETA_'+crit,
-              FILTRE=(_F(NOM_PARA='INST',  CRIT_COMP='EQ',VALE=1.),
-                      _F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=5),),
-              VALE=beta_ref[i],
-              CRITERE='RELATIF',
-              PRECISION=1e-12,
-              REFERENCE='ANALYTIQUE')
+              TABLE=TAB,
+              FILTRE=(_F(CRIT_COMP='EQ',
+                         NOM_PARA='INST',
+                         VALE=1.0,),
+                      _F(CRIT_COMP='EQ',
+                         NOM_PARA='NUM_PT',
+                         VALE_I=5,),
+                      ),
+              )
 
 # TEST EN K2 PUR POUR TOUS LES CRITERES SAUF K2_NUL
 beta_ref = [-atan(sqrt(8))*180/pi, -80]
 for i,crit in enumerate(l_crit_bifurcation[0:2] ):
-   TEST_TABLE(TABLE=TAB,
+   TEST_TABLE(CRITERE='RELATIF',
+              REFERENCE='ANALYTIQUE',
+              PRECISION=9.9999999999999998E-13,
+              VALE_CALC=beta_ref[i],
+              VALE_REFE=beta_ref[i],
+              TOLE_MACHINE=9.9999999999999998E-13,
               NOM_PARA='BETA_'+crit,
-              FILTRE=(_F(NOM_PARA='INST',  CRIT_COMP='EQ',VALE=2.),
-                      _F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=6),),
-              VALE=beta_ref[i],
-              CRITERE='RELATIF',
-              PRECISION=1e-12,
-              REFERENCE='ANALYTIQUE')
+              TABLE=TAB,
+              FILTRE=(_F(CRIT_COMP='EQ',
+                         NOM_PARA='INST',
+                         VALE=2.0,),
+                      _F(CRIT_COMP='EQ',
+                         NOM_PARA='NUM_PT',
+                         VALE_I=6,),
+                      ),
+              )
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'K_EQ'
@@ -185,42 +218,61 @@ for crit in l_crit_cumul_2:
 
 IMPR_TABLE(TABLE=TAB)
 
-TEST_TABLE(TABLE=TAB,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=4.9754859999999998E5,
+           
            NOM_PARA='K_EQ_CUMUL_G',
-           FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-                   _F(NOM_PARA='NUME_ORDRE',CRIT_COMP='EQ',VALE_I=1),),
-           VALE=4.975486E+05,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='NON_REGRESSION',)
+           TABLE=TAB,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TAB,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=1.0,
+           
            NOM_PARA='K_EQ_QUADRATIQUE',
-           FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-                   _F(NOM_PARA='NUME_ORDRE',CRIT_COMP='EQ',VALE_I=1),),
-           VALE=1.,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='NON_REGRESSION',)
+           TABLE=TAB,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TAB,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=1.0,
+           
            NOM_PARA='K_EQ_LINEAIRE',
-           FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-                   _F(NOM_PARA='NUME_ORDRE',CRIT_COMP='EQ',VALE_I=1),),
-           VALE=1.,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='NON_REGRESSION',)
+           TABLE=TAB,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(TABLE=TAB,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=1.0,
+           
            NOM_PARA='K_EQ_MODE_I',
-           FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-                   _F(NOM_PARA='NUME_ORDRE',CRIT_COMP='EQ',VALE_I=1),),
-           VALE=1.,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='NON_REGRESSION',)
-
+           TABLE=TAB,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'COMPTAGE_CYCLES'
@@ -237,21 +289,29 @@ TAB3=POST_RUPTURE(TABLE=TAB2,
 
 IMPR_TABLE(TABLE=TAB3)
 
-TEST_TABLE(TABLE=TAB3,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=12,
+           VALE_REFE_I=12,
            NOM_PARA='CYCLE',
-           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
            TYPE_TEST='MAX',
-           VALE_I=12,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',)
+           TABLE=TAB3,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=TAB3,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
            NOM_PARA='CYCLE',
-           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=2),
            TYPE_TEST='MAX',
-           VALE_I=1,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',)
+           TABLE=TAB3,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='NUM_PT',
+                     VALE_I=2,),
+           )
 
 # test du comptage unitaire
 TAB4=LIRE_TABLE(UNITE=47, FORMAT='ASTER')
@@ -265,12 +325,16 @@ TAB5=POST_RUPTURE(TABLE=TAB4,
 
 IMPR_TABLE(TABLE=TAB5)
 
-TEST_TABLE(TABLE=TAB5,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=40.000000000,
+           VALE_REFE=40.0,
            NOM_PARA='DELTA_K1',
-           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-           VALE=40.,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',)
+           TABLE=TAB5,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'DELTA_K_EQ'
@@ -301,29 +365,35 @@ for crit in l_crit_cumul_2:
 
 IMPR_TABLE(TABLE=TAB51)
 
-TEST_TABLE(TABLE=TAB51,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=4.9754859999999998E5,
+           
            NOM_PARA='D_K_EQ_CUMUL_G',
-           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-           VALE=4.975486E+05,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='NON_REGRESSION',)
+           TABLE=TAB51,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=TAB51,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=56.5685,
+           
            NOM_PARA='D_K_EQ_QUADRATIQ',
-           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-           VALE=56.5685,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='NON_REGRESSION',)
+           TABLE=TAB51,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
-TEST_TABLE(TABLE=TAB51,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=40.0,
+           
            NOM_PARA='D_K_EQ_MODE_I',
-           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-           VALE=40.,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='NON_REGRESSION',)
+           TABLE=TAB51,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'LOI_PROPA'
@@ -338,13 +408,20 @@ TAB3=POST_RUPTURE(TABLE=TAB3,
 
 IMPR_TABLE(TABLE=TAB3)
 
-TEST_TABLE(TABLE=TAB3,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=36.000000000,
+           VALE_REFE=36.0,
            NOM_PARA='DELTA_A',
-           FILTRE=(_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-                   _F(NOM_PARA='CYCLE', CRIT_COMP='EQ',VALE_I=1)),
-           VALE=36.,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE')
+           TABLE=TAB3,
+           FILTRE=(_F(CRIT_COMP='EQ',
+                      NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='CYCLE',
+                      VALE_I=1,),
+                   ),
+           )
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'CUMUL_CYCLES'
@@ -356,12 +433,16 @@ TAB6=POST_RUPTURE(TABLE=TAB3,
 IMPR_TABLE(TABLE=TAB6)
 
 da_ref = 227./6.
-TEST_TABLE(TABLE=TAB6,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=37.833333333333333,
+           VALE_REFE=37.833333333333336,
            NOM_PARA='DELTA_A',
-           FILTRE=_F(NOM_PARA='NUM_PT',CRIT_COMP='EQ',VALE_I=1),
-           VALE=da_ref,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE')
+           TABLE=TAB6,
+           FILTRE=_F(CRIT_COMP='EQ',
+                     NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'PILO_PROPA'
@@ -393,30 +474,36 @@ TAB9=POST_RUPTURE(OPERATION='PILO_PROPA',
 
 IMPR_TABLE(TABLE=TAB9)
 
-TEST_TABLE(TABLE=TAB9,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC= 3.7833333333333E+03,
+           VALE_REFE=3783.3333333333335,
            NOM_PARA='DELTA_A',
-           FILTRE=(
-                   _F(NOM_PARA='FISSURE',VALE_K='FISS1'),
-                   _F(NOM_PARA='NUME_FOND',VALE_I=1),
-                   _F(NOM_PARA='NUM_PT',VALE_I=1),
+           TABLE=TAB9,
+           FILTRE=(_F(NOM_PARA='FISSURE',
+                      VALE_K='FISS1',),
+                   _F(NOM_PARA='NUME_FOND',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUM_PT',
+                      VALE_I=1,),
                    ),
-           VALE=da_ref * dn,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE')
+           )
 
-TEST_TABLE(TABLE=TAB9,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
            NOM_PARA='DELTA_CYCLE',
            TYPE_TEST='MAX',
-           VALE=dn,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE')
+           TABLE=TAB9,)
 
-TEST_TABLE(TABLE=TAB9,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
            NOM_PARA='DELTA_CYCLE',
            TYPE_TEST='MIN',
-           VALE=dn,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE')
+           TABLE=TAB9,)
 
 # test du pilotage en increment d'avancee max
 da_max = 1.
@@ -426,30 +513,36 @@ TAB10=POST_RUPTURE(OPERATION='PILO_PROPA',
 
 IMPR_TABLE(TABLE=TAB10)
 
-TEST_TABLE(TABLE=TAB10,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.000000000,
+           VALE_REFE=1.0,
            NOM_PARA='DELTA_A',
-           FILTRE=(
-                   _F(NOM_PARA='FISSURE',VALE_K='FISS1'),
-                   _F(NOM_PARA='NUME_FOND',VALE_I=1),
-                   _F(NOM_PARA='NUM_PT',VALE_I=1),
+           TABLE=TAB10,
+           FILTRE=(_F(NOM_PARA='FISSURE',
+                      VALE_K='FISS1',),
+                   _F(NOM_PARA='NUME_FOND',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUM_PT',
+                      VALE_I=1,),
                    ),
-           VALE=da_max,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE')
+           )
 
-TEST_TABLE(TABLE=TAB10,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.026431718,
+           VALE_REFE=0.026431718061674006,
            NOM_PARA='DELTA_CYCLE',
            TYPE_TEST='MAX',
-           VALE=da_max/da_ref,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE')
+           TABLE=TAB10,)
 
-TEST_TABLE(TABLE=TAB10,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.026431718,
+           VALE_REFE=0.026431718061674006,
            NOM_PARA='DELTA_CYCLE',
            TYPE_TEST='MIN',
-           VALE=da_max/da_ref,
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE')
+           TABLE=TAB10,)
 
 #---------------------------------------------------------------------------------------
 

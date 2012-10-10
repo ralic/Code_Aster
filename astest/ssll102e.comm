@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE EN HEXA20 SOUMISE A UN EFFORT TRANCHANT (FORCE_ARETE)
 # ssll102e.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,9 +64,14 @@ NOM_CHAM='DEPL', RESULTAT=RESU1,
 
 #
 
-TEST_RESU(
-CHAM_NO=_F( CHAM_GD = DEP1,NOEUD = 'N62',PRECISION = 6.E-3,NOM_CMP = 'DZ',VALE = -8.E-7, REFERENCE = 'ANALYTIQUE')
-                         )
+TEST_RESU(CHAM_NO=_F(NOEUD='N62',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP='DZ',
+                     PRECISION=6.0000000000000001E-3,
+                     CHAM_GD=DEP1,
+                     VALE_CALC=-7.95230729E-07,
+                     VALE_REFE=-7.9999999999999996E-07,),
+          )
 
 #-----------------------------------------------------------------
 

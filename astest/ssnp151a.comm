@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE EPROUVETTE CT 2D AVEC ELEMENTS D'INTERFACE (QUAD8) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssnp151a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -231,34 +231,41 @@ FORCE=CALC_TABLE(TABLE=TFORCE,
 #-----------------------------------------------------------
 # TEST SUR LA REPONSE GLOBALE
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=FORCE,
+TEST_TABLE(
+           VALE_CALC=4269.54,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
-                     VALE=0.5),
-           VALE=4.26954E+03,
-           REFERENCE='NON_REGRESSION');
+                     VALE=0.5,),
+           )
 
-TEST_TABLE(TABLE=FORCE,
+TEST_TABLE(
+           VALE_CALC=4767.5900000000001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
-                     VALE=1.0),
-           VALE=4.76759E+03,
-           REFERENCE='NON_REGRESSION');
+                     VALE=1.0,),
+           )
 
-TEST_TABLE(TABLE=FORCE,
+TEST_TABLE(
+           VALE_CALC=5109.7700000000004,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
-                     VALE=1.5),
-           VALE=5.10977E+03,
-           REFERENCE='NON_REGRESSION');
+                     VALE=1.5,),
+           )
 
-TEST_TABLE(TABLE=FORCE,
+TEST_TABLE(
+           VALE_CALC=5383.7600000000002,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
-                     VALE=2.0),
-           VALE=5.38376E+03,
-           REFERENCE='NON_REGRESSION');
-
+                     VALE=2.0,),
+           )
 
 #-----------------------------------------------------------
 # IMPRESSION DE LA FORCE EN FONCTION DU DEPLACEMENT

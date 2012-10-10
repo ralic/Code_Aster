@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PISTON COUPLE A UNE COLONNE DE FLUIDE
 # adlv100a.para = tps_job 80 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,30 +86,45 @@ MASSES=POST_ELEM(
                                       TOUT = 'OUI')
                      )
 
-TEST_TABLE( TABLE=MASSES,
-                NOM_PARA='MASSE',
-                VALE=0.612725,   PRECISION=1.E-6)
+TEST_TABLE(
+           VALE_CALC=0.61272499999999996,
+           
+           NOM_PARA='MASSE',
+           TABLE=MASSES,)
 
-TEST_TABLE( TABLE=MASSES,
-                NOM_PARA='CDG_X',
-                VALE=5.486811E-2,   PRECISION=1.E-7)
+TEST_TABLE(
+           VALE_CALC=0.054868109999999998,
+           TOLE_MACHINE=9.9999999999999995E-08,
+           NOM_PARA='CDG_X',
+           TABLE=MASSES,)
 
-TEST_TABLE( TABLE=MASSES,
-                NOM_PARA='IX_G',
-                VALE=2.55302083E-4,   PRECISION=1.E-6)
+TEST_TABLE(
+           VALE_CALC=2.55302083E-4,
+           
+           NOM_PARA='IX_G',
+           TABLE=MASSES,)
 
-TEST_TABLE( TABLE=MASSES,
-                NOM_PARA='IY_G',
-                VALE=3.1984386E-4,   PRECISION=1.E-7)
+TEST_TABLE(
+           VALE_CALC=3.1984386000000003E-4,
+           TOLE_MACHINE=9.9999999999999995E-08,
+           NOM_PARA='IY_G',
+           TABLE=MASSES,)
 
-TEST_TABLE( TABLE=MASSES,
-                NOM_PARA='IZ_G',
-                VALE=3.1984386E-4,   PRECISION=1.E-7)
+TEST_TABLE(
+           VALE_CALC=3.1984386000000003E-4,
+           TOLE_MACHINE=9.9999999999999995E-08,
+           NOM_PARA='IZ_G',
+           TABLE=MASSES,)
 
-TEST_RESU(RESU=_F( RESULTAT = MODES,  PARA = 'FREQ',
-                    CRITERE = 'RELATIF',  PRECISION = 5.E-3,
-                    NUME_ORDRE = 1,  VALE = 13.82)
-             )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODES,
+                  VALE_CALC=13.827697948,
+                  VALE_REFE=13.82,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
 FIN()
 #

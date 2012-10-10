@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TOLE ONDULEE ENCASTREE SUR UN BORD EN DEFORMATION PLANE
 # ssnv115d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,21 +181,47 @@ V=STAT_NON_LINE( reuse=V,
                 RESI_LINE_RELA = 1.E-5)
               )
 
-TEST_RESU(RESU=(
-     _F( RESULTAT = U, NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
-        PRECISION = 1.E-2, GROUP_NO = 'X', NOM_CMP = 'DX',   VALE = 0.02743),
-    _F(  RESULTAT = U, NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
-        PRECISION = 1.E-2, GROUP_NO = 'X', NOM_CMP = 'DY',   VALE = -0.2804))
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   GROUP_NO='X',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.027622357,
+                   VALE_REFE=0.02743,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=10,
+                   GROUP_NO='X',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.280655786,
+                   VALE_REFE=-0.28039999999999998,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
-           )
-
-TEST_RESU(RESU=(
-     _F( RESULTAT = V, NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
-        PRECISION = 1.E-2, GROUP_NO = 'X', NOM_CMP = 'DX',   VALE = 0.02743),
-    _F(  RESULTAT = V, NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
-        PRECISION = 1.E-2, GROUP_NO = 'X', NOM_CMP = 'DY',   VALE = -0.2804))
-
-           )
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   GROUP_NO='X',
+                   RESULTAT=V,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.027622357,
+                   VALE_REFE=0.02743,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=10,
+                   GROUP_NO='X',
+                   RESULTAT=V,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.280655793,
+                   VALE_REFE=-0.28039999999999998,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 #
 

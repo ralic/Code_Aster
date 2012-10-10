@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  CRITERES DE FATIGUE CROSSLAND ET DANG VAN PAPADOPOULOS
 # ET CRITERE EN FORMULE
 # szlz107a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
@@ -92,20 +92,23 @@ TAB_1=POST_FATIGUE(      CHARGEMENT='MULTIAXIAL',
                           DOMMAGE='WOHLER',
                             MATER=MAT0                 )
 
-TEST_TABLE(        TABLE=TAB_1,
-                 NOM_PARA='PRES_HYDRO_MAX',
-                     VALE=137.,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=137.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='PRES_HYDRO_MAX',
+           TABLE=TAB_1,)
 
-TEST_TABLE(        TABLE=TAB_1,
-                 NOM_PARA='AMPLI_CISSION',
-                     VALE=313.579,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=313.57900000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='AMPLI_CISSION',
+           TABLE=TAB_1,)
 
-TEST_TABLE(        TABLE=TAB_1,
-                 NOM_PARA='VALE_CRITERE',
-                     VALE=-8.281,
-                PRECISION=1.E-3                )
+TEST_TABLE(
+           VALE_CALC=-8.2810000000000006,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE_CRITERE',
+           TABLE=TAB_1,)
 
 #
 #-----------------------------------------------------------------------
@@ -122,20 +125,23 @@ TAB_2=POST_FATIGUE(      CHARGEMENT='MULTIAXIAL',
                           CRITERE='PAPADOPOULOS',
                             MATER=MAT0                 )
 
-TEST_TABLE(        TABLE=TAB_2,
-                 NOM_PARA='PRES_HYDRO_MAX',
-                     VALE=137.,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=137.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='PRES_HYDRO_MAX',
+           TABLE=TAB_2,)
 
-TEST_TABLE(        TABLE=TAB_2,
-                 NOM_PARA='RAYON_SPHERE',
-                     VALE=313.579,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=313.57900000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='RAYON_SPHERE',
+           TABLE=TAB_2,)
 
-TEST_TABLE(        TABLE=TAB_2,
-                 NOM_PARA='VALE_CRITERE',
-                     VALE=-8.281,
-                PRECISION=1.E-3                )
+TEST_TABLE(
+           VALE_CALC=-8.2810000000000006,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE_CRITERE',
+           TABLE=TAB_2,)
 
 #
 #-----------------------------------------------------------------------
@@ -152,20 +158,24 @@ TAB_3=POST_FATIGUE(      CHARGEMENT='MULTIAXIAL',
                           DOMMAGE='WOHLER',
                             MATER=MAT0                 )
 
-TEST_TABLE(        TABLE=TAB_3,
-                 NOM_PARA='PRES_HYDRO_MAX',
-                     VALE=137.,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=137.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='PRES_HYDRO_MAX',
+           TABLE=TAB_3,)
 
-TEST_TABLE(        TABLE=TAB_3,
-                 NOM_PARA='RAYON_SPHERE',
-                     VALE=313.579,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=313.57900000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='RAYON_SPHERE',
+           TABLE=TAB_3,)
 
-TEST_TABLE(        TABLE=TAB_3,
-                 NOM_PARA='VALE_CRITERE',
-                     VALE=-8.281,
-                PRECISION=1.E-3                )
+TEST_TABLE(
+           VALE_CALC=-8.2810000000000006,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE_CRITERE',
+           TABLE=TAB_3,)
+
 ############################################################
 
 # POUR RETROUVER LE CRITERE DANG VAN - PAPADOPOULOUS
@@ -232,20 +242,23 @@ TAB_1a=POST_FATIGUE(   CHARGEMENT='MULTIAXIAL',
                        
 IMPR_TABLE(TABLE = TAB_1a) 
 
-TEST_TABLE(     TABLE=TAB_1a,
-                NOM_PARA='PHYDRM',
-                VALE=137.,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=137.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='PHYDRM',
+           TABLE=TAB_1a,)
 
-TEST_TABLE(     TABLE=TAB_1a,
-                NOM_PARA='RAYSPH',
-                VALE=313.579,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=313.57900000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='RAYSPH',
+           TABLE=TAB_1a,)
 
-TEST_TABLE(     TABLE=TAB_1a,
-                NOM_PARA='VALE_CRITERE',
-                VALE=-8.281,
-                PRECISION=1.E-3                )
+TEST_TABLE(
+           VALE_CALC=-8.2810000000000006,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE_CRITERE',
+           TABLE=TAB_1a,)
 
 TAB_1b=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  SIGM_XX = TAUN1,
@@ -264,20 +277,23 @@ TAB_1b=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        
 IMPR_TABLE(TABLE = TAB_1b) 
 
-TEST_TABLE(     TABLE=TAB_1b,
-                NOM_PARA='PHYDRM',
-                VALE=137.,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=137.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='PHYDRM',
+           TABLE=TAB_1b,)
 
-TEST_TABLE(     TABLE=TAB_1b,
-                NOM_PARA='RAYSPH',
-                VALE=313.579,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=313.57900000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='RAYSPH',
+           TABLE=TAB_1b,)
 
-TEST_TABLE(     TABLE=TAB_1b,
-                NOM_PARA='VALE_CRITERE',
-                VALE=-8.281,
-                PRECISION=1.E-3                )
+TEST_TABLE(
+           VALE_CALC=-8.2810000000000006,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE_CRITERE',
+           TABLE=TAB_1b,)
 
 TAB_1c=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  SIGM_XX = TAUN1,
@@ -296,20 +312,24 @@ TAB_1c=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        
 IMPR_TABLE(TABLE = TAB_1c) 
 
-TEST_TABLE(     TABLE=TAB_1c,
-                NOM_PARA='PHYDRM',
-                VALE=137.,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=137.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='PHYDRM',
+           TABLE=TAB_1c,)
 
-TEST_TABLE(     TABLE=TAB_1c,
-                NOM_PARA='RAYSPH',
-                VALE=313.579,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=313.57900000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='RAYSPH',
+           TABLE=TAB_1c,)
 
-TEST_TABLE(     TABLE=TAB_1c,
-                NOM_PARA='VALE_CRITERE',
-                VALE=-8.281,
-                PRECISION=1.E-3                )
+TEST_TABLE(
+           VALE_CALC=-8.2810000000000006,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALE_CRITERE',
+           TABLE=TAB_1c,)
+
 #
 # #-----------------------------------------------------------------------
 TAB_2a=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
@@ -328,21 +348,25 @@ TAB_2a=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        
 IMPR_TABLE(TABLE = TAB_2a) 
 
-TEST_TABLE(     TABLE=TAB_2a,
-                NOM_PARA='PHYDRM',
-                VALE=137.,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=137.0,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='PHYDRM',
+           TABLE=TAB_2a,)
 
 # VALE=313.579*SQRT(3)=
-TEST_TABLE(     TABLE=TAB_2a,
-                NOM_PARA='AMPCIS',
-                VALE=313.579,
-                PRECISION=1.E-5                )
+TEST_TABLE(
+           VALE_CALC=313.57900000000001,
+           TOLE_MACHINE=1.0000000000000001E-05,
+           NOM_PARA='AMPCIS',
+           TABLE=TAB_2a,)
 
-TEST_TABLE(     TABLE=TAB_2a,
-                NOM_PARA='VALE_CRITERE',
-                VALE=-8.281,
-                PRECISION=2.E-3                )
+TEST_TABLE(PRECISION=2.E-3,
+           VALE_CALC=-8.280698785,
+           VALE_REFE=-8.2810000000000006,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='VALE_CRITERE',
+           TABLE=TAB_2a,)
 
 #
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP MECANIQUE
 # forma02c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -91,13 +91,14 @@ IMPR_RESU(FORMAT='MED',
 
 #TEST DE NON REGRESSION
 
-TEST_RESU(RESU=_F(RESULTAT=RESU,
-                  NUME_ORDRE=1,
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='N_TEST',
+                  RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE=4.67223E-04,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='10.5.5',),);
+                  VALE_CALC=4.6722300000000001E-4,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES
 # ssnv138b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,53 +178,70 @@ IMPR_TABLE(TABLE=TAB_EFFO,
 
 
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DRY_CALC,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.30000018135,
+                        VALE_REFE=-0.29999999999999999,
+                        VALE_PARA=0.29999999999999999,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=0.3,
-                        VALE_REFE=-0.3,
-                        REFERENCE='ANALYTIQUE',),);
+                        FONCTION=DRY_CALC,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DRY_CALC,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.599999999998,
+                        VALE_REFE=-0.59999999999999998,
+                        VALE_PARA=0.59999999999999998,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=0.6,
-                        VALE_REFE=-0.6,
-                        REFERENCE='ANALYTIQUE',),);
+                        FONCTION=DRY_CALC,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DRY_CALC,
-                        NOM_PARA='INST',
-                        VALE_PARA=1.0,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.999994223252,
                         VALE_REFE=-1.0,
-                        REFERENCE='ANALYTIQUE',),);
-
-TEST_FONCTION(VALEUR=_F(FONCTION=DRY_CALC,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=3.0,
+                        FONCTION=DRY_CALC,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-2.99999999196,
                         VALE_REFE=-3.0,
-                        REFERENCE='ANALYTIQUE',),);
-
-TEST_FONCTION(VALEUR=_F(FONCTION=DRY_CALC,
+                        VALE_PARA=3.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=6.0,
+                        FONCTION=DRY_CALC,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-5.99992624508,
                         VALE_REFE=-6.0,
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=6.0,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=DRY_CALC,),
+              )
 
-
-
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=0.3,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',PRECISION=0.003,
-                  NOM_CMP='DRY',
+TEST_RESU(RESU=_F(INST=0.29999999999999999,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
                   NOEUD='NO11',
-                  VALE=-0.3,
-                  CRITERE='RELATIF',),);
-
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=0.6,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',PRECISION=0.003,
                   NOM_CMP='DRY',
+                  VALE_CALC=-0.300000181,
+                  VALE_REFE=-0.29999999999999999,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
+
+TEST_RESU(RESU=_F(INST=0.59999999999999998,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
                   NOEUD='NO11',
-                  VALE=-0.6,
-                  CRITERE='RELATIF',),);
+                  NOM_CMP='DRY',
+                  VALE_CALC=-0.600000000,
+                  VALE_REFE=-0.59999999999999998,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
+
 #
 #
 # REFERENCE ANALYTIQUE
@@ -247,76 +264,99 @@ INST4=6.0
 U4=10*(sin(INST4)/INST4-1)
 V4=10*(1-cos(INST4))/INST4
 
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=INST1,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',PRECISION=0.003,
+TEST_RESU(RESU=_F(INST=0.29999999999999999,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO11',
                   NOM_CMP='DX',
+                  VALE_CALC=-0.148957244,
+                  VALE_REFE=-0.14932644462201439,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
+
+TEST_RESU(RESU=_F(INST=0.59999999999999998,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
                   NOEUD='NO11',
-               #   VALE=-0.149326445,
-                  VALE=U1,
-                  CRITERE='RELATIF',),);
-
-
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=INST2,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',PRECISION=0.003,
                   NOM_CMP='DX',
-                  NOEUD='NO11',
-              #    VALE=-0.58929211,
-                  VALE=U2,
-                  CRITERE='RELATIF',),);
+                  VALE_CALC=-0.587880356,
+                  VALE_REFE=-0.58929211008274307,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=INST3,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',PRECISION=0.003,
+TEST_RESU(RESU=_F(INST=3.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO11',
                   NOM_CMP='DX',
-                  NOEUD='NO11',
-                  VALE=U3,
-                  CRITERE='RELATIF',),);
+                  VALE_CALC=-9.527831298,
+                  VALE_REFE=-9.5295999731337755,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=INST4,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',PRECISION=0.003,
+TEST_RESU(RESU=_F(INST=6.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO11',
                   NOM_CMP='DX',
+                  VALE_CALC=-10.472887485,
+                  VALE_REFE=-10.465692496998209,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
+
+TEST_RESU(RESU=_F(INST=0.29999999999999999,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
                   NOEUD='NO11',
-                  VALE=U4,
-                  CRITERE='RELATIF',),);
-
-
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=INST1,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',
                   NOM_CMP='DZ',
-                  NOEUD='NO11',
-              #    VALE=1.48878,
-                  VALE=V1,
-                  CRITERE='RELATIF',),);
+                  VALE_CALC=1.488840594,
+                  VALE_REFE=1.488783695813134,
+                  CRITERE='RELATIF',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=INST2,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',
+TEST_RESU(RESU=_F(INST=0.59999999999999998,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO11',
                   NOM_CMP='DZ',
-                  NOEUD='NO11',
-               #   VALE=2.91107,
-                  VALE=V2,
-                  CRITERE='RELATIF',),);
+                  VALE_CALC=2.911509792,
+                  VALE_REFE=2.9110730848386948,
+                  CRITERE='RELATIF',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=INST3,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',PRECISION=0.005,
+TEST_RESU(RESU=_F(INST=3.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO11',
                   NOM_CMP='DZ',
-                  NOEUD='NO11',
-                  VALE=V3,
-                  CRITERE='RELATIF',),);
+                  VALE_CALC=6.658248695,
+                  VALE_REFE=6.6333083220014855,
+                  CRITERE='RELATIF',
+                  PRECISION=5.0000000000000001E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=NONLI,
-                  INST=INST4,
-                  NOM_CHAM='DEPL',REFERENCE='ANALYTIQUE',PRECISION=(0.02,0.0001),
+TEST_RESU(RESU=_F(INST=6.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=NONLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO11',
                   NOM_CMP='DZ',
-                  NOEUD='NO11',
-                  VALE=V4,
-                  CRITERE='RELATIF',),);
-
+                  VALE_CALC=0.067437709,
+                  VALE_REFE=0.066382855582723388,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02, TOLE_MACHINE=(0.02, 1.E-4),),
+          )
 
 #
 FIN( )

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE FOUCAULT A.FOUCAULT
 # ======================================================================
 # TITRE ETUDE ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH :
@@ -325,32 +325,24 @@ TFIN1 = 7000.
 TFIN2 = 13000.
 
 
-TEST_RESU(RESU=(
+TEST_RESU(RESU=_F(INST=1.3000E4,
+                  RESULTAT=U2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO8',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.030259999999999999,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
-# DX
-                 _F(  RESULTAT   = U2,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '9.02.04',
-                      NOEUD      = 'NO8',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DX',
-                      INST       = TFIN2,
-                      PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 3.026E-2),),)
-
-TEST_RESU(RESU=(
-
-# CONTRAINTE SIZZ
-                 _F(  RESULTAT   = U2,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '9.02.04',
-                      NOEUD      = 'NO8',
-                      NOM_CHAM   = 'SIGM_NOEU',
-                      NOM_CMP    = 'SIZZ',
-                      INST       = TFIN2,
-                      PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -1.194E7),),)
-
+TEST_RESU(RESU=_F(INST=1.3000E4,
+                  RESULTAT=U2,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOEUD='NO8',
+                  NOM_CMP='SIZZ',
+                  VALE_CALC=-1.1940000E7,
+                  TOLE_MACHINE=1.E-3,
+                  ),
+          )
 
 FIN () ;
-

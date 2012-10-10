@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503f.para = tps_job 120 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -209,9 +209,9 @@ for i in [1,2,3,4]: #Boucle sur les increments
       if ((i >= 3) and (j == 4)):precision = 6.5E-2
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
-                 VALE=vale[i-1] [j],
+                 VALE_CALC=vale[i-1][j], VALE_REFE=vale[i-1][j],
                  CRITERE=critere,
-                 PRECISION=precision,
+                 TOLE_MACHINE=precision, PRECISION=precision,   #TODO vale_calc
                  REFERENCE='AUTRE_ASTER',
                  FILTRE=_F(NOM_PARA='COOR_X',
                            CRIT_COMP='EQ',

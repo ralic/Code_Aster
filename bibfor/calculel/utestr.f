@@ -1,21 +1,21 @@
-      SUBROUTINE UTESTR(CHAM19,NONOEU,NOCMP,NBREF,TBTXT,REFI,REFR,REFC,
-     +                                     TYPRES,EPSI,CRIT,IFIC,SSIGNE)
+      SUBROUTINE UTESTR(CHAM19, NONOEU, NOCMP, NBREF, TBTXT,
+     &                  REFI, REFR, REFC, TYPRES, EPSI,
+     +                  CRIT, IFIC, LLAB, SSIGNE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*19      CHAM19
-      CHARACTER*17             NONOEU
-      CHARACTER*8                     NOCMP
-      INTEGER                               NBREF
-      REAL*8                                     REFR(NBREF)
-      COMPLEX*16                                      REFC(NBREF)
-      CHARACTER*1                                          TYPRES
-      REAL*8                                          EPSI
-      CHARACTER*16                                 TBTXT(2)
-      CHARACTER*(*)                                        CRIT, SSIGNE
-      INTEGER                               REFI(NBREF),           IFIC
+      CHARACTER*19  CHAM19
+      CHARACTER*17  NONOEU
+      CHARACTER*8   NOCMP
+      INTEGER       NBREF, REFI(NBREF), IFIC
+      REAL*8        REFR(NBREF), EPSI
+      COMPLEX*16    REFC(NBREF)
+      CHARACTER*16  TBTXT(2)
+      CHARACTER*1   TYPRES
+      CHARACTER*(*) CRIT, SSIGNE
+      LOGICAL       LLAB
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,7 @@ C        REFC   : VALEUR COMPLEXE ATTENDUE SUR LE DDL DU NOEUD
 C        CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 C        EPSI   : PRECISION ESPEREE
 C        IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
+C        LLAB   : AFFICHAGE DES LABELS
 C     SORTIES:
 C      LISTING ...
 C ----------------------------------------------------------------------
@@ -129,8 +130,9 @@ C
               ELSEIF (TYPE .EQ. 'C' ) THEN
                   VALC = ZC(IAVALE-1+(INO-1)*NCMP+IDECAL)
               ENDIF
-              CALL UTITES(TBTXT(1),TBTXT(2),TYPE,NBREF,
-     +             REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+              CALL UTITES(TBTXT(1), TBTXT(2), TYPE, NBREF, REFI,
+     +                    REFR, REFC, VALI, VALR, VALC,
+     +                    EPSI, CRIT, IFIC, LLAB, SSIGNE)
           ELSE
               CALL U2MESS('F','CALCULEL6_93')
           END IF
@@ -172,8 +174,9 @@ C
               ELSEIF (TYPE .EQ. 'C' ) THEN
                   VALC = ZC(IAVALE-1+ZI(IANUEQ-1+IVAL-1+IDECAL))
               ENDIF
-              CALL UTITES(TBTXT(1),TBTXT(2),TYPE,NBREF,
-     +             REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+              CALL UTITES(TBTXT(1), TBTXT(2), TYPE, NBREF, REFI,
+     +                    REFR, REFC, VALI, VALR, VALC,
+     +                    EPSI, CRIT, IFIC, LLAB, SSIGNE)
           ELSE
               CALL U2MESS('F','CALCULEL6_93')
           END IF

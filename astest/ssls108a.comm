@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
 # ssls108a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,27 +83,40 @@ DEFZ=RESOUDRE( MATR=MATASS,     CHAM_NO=VEFZAS)
 
 DEFY=RESOUDRE( MATR=MATASS,     CHAM_NO=VEFYAS)
 
-TEST_RESU(CHAM_NO=(
-     # DEPLACEMENT FZ
-
-            _F(  CHAM_GD = DEFZ,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'A',      NOM_CMP = 'DY',           VALE = -1.72E-3,
-              REFERENCE='ANALYTIQUE',),
-
-            _F(  CHAM_GD = DEFZ,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'A',      NOM_CMP = 'DZ',           VALE = 5.42E-3,
-              REFERENCE='ANALYTIQUE',),
-
-     # DEPLACEMENT FY
-
-            _F(  CHAM_GD = DEFY,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'A',      NOM_CMP = 'DY',           VALE = 1.75E-3,
-              REFERENCE='ANALYTIQUE',),
-
-            _F(  CHAM_GD = DEFY,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'A',      NOM_CMP = 'DZ',           VALE = -1.72E-3,
-              REFERENCE='ANALYTIQUE',))
-             )
+TEST_RESU(CHAM_NO=(_F(CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=DEFZ,
+                      VALE_CALC=-1.71740416E-03,
+                      VALE_REFE=-1.72E-3,),
+                   _F(CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=DEFZ,
+                      VALE_CALC= 5.41149502E-03,
+                      VALE_REFE=5.4200000000000003E-3,),
+                   _F(CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=DEFY,
+                      VALE_CALC= 1.75026560E-03,
+                      VALE_REFE=1.75E-3,),
+                   _F(CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      GROUP_NO='A',
+                      PRECISION=1.E-2,
+                      CHAM_GD=DEFY,
+                      VALE_CALC=-1.71740416E-03,
+                      VALE_REFE=-1.72E-3,),
+                   ),
+          )
 
 #---------------------------------------------------------------------
 # TEST IMPR_RESU/GMSH MAILLAGE
@@ -119,10 +132,8 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=35)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/MA10.pos',
              NB_VALE=1654,
-             VALE=2.92826E+06,
-             VALE_K='4d37dac458a3fb580fa52823e645370a',
-             REFERENCE='NON_REGRESSION',
-             VERSION='9.1.21',
+             VALE_CALC=2.92826E+06,
+             VALE_CALC_K='4d37dac458a3fb580fa52823e645370a',
              INFO=1)
 
 #---------------------------------------------------------------------
@@ -139,9 +150,7 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=36)
 
 TEST_FICHIER(FICHIER= './REPE_OUT/DEP10.pos',
              NB_VALE=13061,
-             VALE=1.91692E+04,
-             REFERENCE='NON_REGRESSION',
-             VERSION='9.1.21',
+             VALE_CALC=19169.172250717,
              INFO=1)
 
 #---------------------------------------------------------------------
@@ -158,9 +167,7 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/MA12.pos',
              NB_VALE=1654,
-             VALE=2.92826E+06,
-             REFERENCE='NON_REGRESSION',
-             VERSION='9.1.21',
+             VALE_CALC=2.92826E+06,
              INFO=1)
 
 #---------------------------------------------------------------------
@@ -177,11 +184,10 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/DEP12.pos',
              NB_VALE=10551,
-             VALE=1.64317E+04,
-             REFERENCE='NON_REGRESSION',
-             VERSION='9.1.21',
+             VALE_CALC=16431.68383723,
              INFO=1)
 
 #---------------------------------------------------------------------
 FIN()
 #
+

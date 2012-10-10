@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE GRILLAGE PLAN DE POUTRES ( PROFILES METALLIQUES )
 # sdll08a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,23 +123,49 @@ REPHARM=RESOUDRE(  MATR=CMAT,     CHAM_NO=VECTASS )
 # --------------------------------------------------------------------
 
 
-TEST_RESU(RESU=(
-   _F(   RESULTAT = MD,          PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 5.E-3,
-           NUME_ORDRE = 1,       VALE = 16.456),
-   _F(   RESULTAT = MD,          PARA = 'FREQ',
-           CRITERE = 'RELATIF',     PRECISION = 5.E-3,
-           NUME_ORDRE = 3,       VALE = 38.165)),CHAM_NO=(
-           #------------------------------------------
-   _F(  CHAM_GD = REPHARM,      NOM_CMP = 'DZ',
-             CRITERE = 'RELATIF',   PRECISION = 3.E-2,
-             NOEUD = 'N6',           VALE = -0.098),
-   _F(  CHAM_GD = REPHARM,      NOM_CMP = 'DZ',
-             CRITERE = 'RELATIF',   PRECISION = 3.E-2,
-             NOEUD = 'N26',          VALE = -0.098),
-   _F(  CHAM_GD = REPHARM,      NOM_CMP = 'DZ',
-             CRITERE = 'RELATIF',   PRECISION = 3.E-2,
-             NOEUD = 'N46',          VALE = -0.227)) )
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MD,
+                   VALE_CALC=16.419020194,
+                   VALE_REFE=16.456,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MD,
+                   VALE_CALC=38.046795004,
+                   VALE_REFE=38.164999999999999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=5.0000000000000001E-3,),
+                ),
+          CHAM_NO=(_F(NOEUD='N6',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      PRECISION=0.029999999999999999,
+                      CHAM_GD=REPHARM,
+                      VALE_CALC=-0.100377195,
+                      VALE_REFE=-0.098000000000000004,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N26',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      PRECISION=0.029999999999999999,
+                      CHAM_GD=REPHARM,
+                      VALE_CALC=-0.100377195,
+                      VALE_REFE=-0.098000000000000004,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N46',
+                      CRITERE='RELATIF',
+                      NOM_CMP='DZ',
+                      PRECISION=0.029999999999999999,
+                      CHAM_GD=REPHARM,
+                      VALE_CALC=-0.227396528,
+                      VALE_REFE=-0.22700000000000001,
+                      REFERENCE='NON_DEFINI',),
+                   ),
+          )
 
 FIN()
 #

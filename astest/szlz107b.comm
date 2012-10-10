@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE CONSTANTE
 # szlz107b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -370,10 +370,10 @@ for i in range(NBPR) :
                        
     IMPR_TABLE(TABLE = FATN[i]) 
 
-    TEST_TABLE(     TABLE=FATN[i],
-                NOM_PARA = NPAR[i],
-                VALE=RESU[i],
-                PRECISION=1.E-5                )
+    TEST_TABLE(VALE_CALC=RESU[i],
+               TOLE_MACHINE=1.0000000000000001E-05,
+               NOM_PARA=NPAR[i],
+               TABLE=FATN[i],)
 
 ###################################################
 # POUR RETROUVER LES CRITERES DE DANG_VAN ET MATAKE
@@ -529,19 +529,16 @@ for i in range(2) :
     IMPR_TABLE(TABLE = FATN2[i])
     
     for j in range(11) :     
-
-        TEST_TABLE( TABLE=FATN2[i],
-            NOM_PARA = NPAR[j],
-            VALE=RESU[j+ 11*i],
-            CRITERE = CTEST[j],
-            PRECISION=1.0E-10                
-            )
+        crit = 'RELATIF' if RESU[j + 11*i] != 0. else 'ABSOLU'
+        TEST_TABLE(CRITERE=crit,
+                   VALE_CALC=RESU[j+ 11*i],
+                   NOM_PARA=NPAR[j],
+                   TABLE=FATN2[i],)
 
 FATNW2 = [None]*2
 
 ### FORMULE_VIE = WHOL,
 for i in range(2) :
-
     FATNW2[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  
                                      SIGM_XX = SIGMXX2,
@@ -571,14 +568,12 @@ for i in range(2) :
     IMPR_TABLE(TABLE = FATNW2[i])
     
     for j in range(11) :     
+        crit = 'RELATIF' if RESU[j + 11*i] != 0. else 'ABSOLU'
+        TEST_TABLE(CRITERE=crit,
+                   VALE_CALC=RESU[j + 11*i],
+                   NOM_PARA=NPAR[j],
+                   TABLE=FATNW2[i],)
 
-        TEST_TABLE( TABLE=FATNW2[i],
-            NOM_PARA = NPAR[j],
-            VALE=RESU[j + 11*i],
-            CRITERE = CTEST[j],
-            PRECISION=1.0E-10                
-            ) 
-                             
 ### POUR RETROUVER CRIERES EN NOMS
 ACIER = [None]*2                                
 ACIER[0]   = DEFI_MATERIAU   ( ELAS           =_F( E        = 200000.,
@@ -600,7 +595,6 @@ ACIER[1]   = DEFI_MATERIAU   ( ELAS           =_F( E        = 200000.,
                                                 COEF_CISA_TRAC = 1.5 )
                           )
 for i in range(2) :
-
     FATN2[i+2]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  
                                      SIGM_XX = SIGMXX2,
@@ -626,13 +620,11 @@ for i in range(2) :
     IMPR_TABLE(TABLE = FATN2[i+2])
     
     for j in range(11) :     
-
-        TEST_TABLE( TABLE=FATN2[i+2],
-            NOM_PARA = NPAR[j],
-            VALE=RESU[j+ 11*i],
-            CRITERE = CTEST[j],
-            PRECISION=1.0E-10                
-            )
+        crit = 'RELATIF' if RESU[j + 11*i] != 0. else 'ABSOLU'
+        TEST_TABLE(CRITERE=crit,
+                   VALE_CALC=RESU[j+ 11*i],
+                   NOM_PARA=NPAR[j],
+                   TABLE=FATN2[i],)
 
 FIN()
 #

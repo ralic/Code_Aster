@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DEFINITION D'UN INTER-SPECTRE D'EXCITATION ANALYTIQUE
 # sdll148a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,22 +144,29 @@ for ind in range(3):
         REP0=RECU_FONCTION(    INTE_SPEC=SPPROJ,
                                 NUME_ORDRE_I=vale_i[ind],
                       )
-        TEST_FONCTION( VALEUR=_F(  FONCTION = REP0,
-                                PRECISION=1.0E-2,
-                                VALE_PARA=1.0,
+        TEST_FONCTION(VALEUR=_F(VALE_CALC=vale_refe[ind],
+                                TOLE_MACHINE=1.E-3,  #TODO creer une liste vale_calc
                                 VALE_REFE=vale_refe[ind],
-                                REFERENCE='ANALYTIQUE'));
+                                VALE_PARA=1.0,
+                                REFERENCE='ANALYTIQUE',
+                                PRECISION=1.E-2,
+                                FONCTION=REP0,),
+                      )
+
     else:
         REP0=RECU_FONCTION(    INTE_SPEC=SPPROJ,
                                 NUME_ORDRE_I=vale_i[ind],
                                 NUME_ORDRE_J=vale_j[ind],
-                      )
-        TEST_FONCTION( VALEUR=_F(  FONCTION = REP0,
-                                PRECISION=1.0E-2,
-                                VALE_PARA=1.0,
+                           )
+        TEST_FONCTION(VALEUR=_F(VALE_CALC_C=vale_refe[ind],
+                                TOLE_MACHINE=1.E-3,  #TODO creer une liste vale_calc
                                 VALE_REFE_C=vale_refe[ind],
+                                VALE_PARA=1.0,
+                                REFERENCE='ANALYTIQUE',
+                                PRECISION=1.E-2,
                                 VALE_ABS='OUI',
-                                REFERENCE='ANALYTIQUE'));
+                                FONCTION=REP0,),
+                      )
 
     DETRUIRE( CONCEPT = _F(NOM = (REP0,)))
 

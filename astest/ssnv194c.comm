@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
 # ssnv194c.para = tps_job 150 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,19 +126,44 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
 IMPR_TABLE(TABLE=SOLNL)
 
 # comparaison a la modelisation A - agregat 10 grains
-TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),PRECISION=0.09,
-           NOM_PARA='SIZZ', VALE=2.79777E+02, REFERENCE='AUTRE_ASTER',)
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.089999999999999997,
+           VALE_CALC=301.139724363,
+           VALE_REFE=279.77699999999999,
+           NOM_PARA='SIZZ',
+           TABLE=SOLNL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.0000000000000001E-3,),
+           )
 
-TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),PRECISION=0.06,
-           NOM_PARA='V3', VALE=3.07316E-03, REFERENCE='AUTRE_ASTER',)
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.059999999999999998,
+           VALE_CALC= 2.92603509E-03,
+           VALE_REFE=3.0731600000000001E-3,
+           NOM_PARA='V3',
+           TABLE=SOLNL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.0000000000000001E-3,),
+           )
 
 # non regression
-TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),
-           NOM_PARA='SIZZ', VALE=3.011351E+02, REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=301.13510000000002,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIZZ',
+           TABLE=SOLNL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.0000000000000001E-3,),
+           )
 
-TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),
-           NOM_PARA='V3', VALE=2.926067E-03 , REFERENCE='NON_REGRESSION',)
-
+TEST_TABLE(
+           VALE_CALC=2.9260670000000001E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V3',
+           TABLE=SOLNL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.0000000000000001E-3,),
+           )
 
 # test de FORMAT_TABLE='CMP_LIGNE'
 
@@ -171,31 +196,57 @@ SOLNL2=SIMU_POINT_MAT(INFO=1,
 IMPR_TABLE(TABLE=SOLNL2)
 
 # comparaison a la modelisation A - agregat 10 grains
-TEST_TABLE(TABLE=SOLNL2, FILTRE=(
-                                _F(NOM_PARA='INST',VALE=TFIN),
-                                _F(NOM_PARA='CMP',VALE_K='SIZZ'),
-                                ),
-           NOM_PARA='VALEUR', PRECISION=0.09,VALE=2.79777E+02, REFERENCE='AUTRE_ASTER',)
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.089999999999999997,
+           VALE_CALC=301.139724363,
+           VALE_REFE=279.77699999999999,
+           NOM_PARA='VALEUR',
+           TABLE=SOLNL2,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=5.0000000000000001E-3,),
+                   _F(NOM_PARA='CMP',
+                      VALE_K='SIZZ',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=SOLNL2, FILTRE=(
-                                _F(NOM_PARA='INST',VALE=TFIN),
-                                _F(NOM_PARA='CMP',VALE_K='V3'),
-                                ),
-           NOM_PARA='VALEUR', PRECISION=0.06,VALE=3.07316E-03, REFERENCE='AUTRE_ASTER',)
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.059999999999999998,
+           VALE_CALC= 2.92603509E-03,
+           VALE_REFE=3.0731600000000001E-3,
+           NOM_PARA='VALEUR',
+           TABLE=SOLNL2,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=5.0000000000000001E-3,),
+                   _F(NOM_PARA='CMP',
+                      VALE_K='V3',),
+                   ),
+           )
 
 # non regression
 
-TEST_TABLE(TABLE=SOLNL2, FILTRE=(
-                                _F(NOM_PARA='INST',VALE=TFIN),
-                                _F(NOM_PARA='CMP',VALE_K='SIZZ'),
-                                ),
-          NOM_PARA='VALEUR', VALE=3.011351E+02, REFERENCE='NON_REGRESSION')
+TEST_TABLE(
+           VALE_CALC=301.13510000000002,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALEUR',
+           TABLE=SOLNL2,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=5.0000000000000001E-3,),
+                   _F(NOM_PARA='CMP',
+                      VALE_K='SIZZ',),
+                   ),
+           )
 
-TEST_TABLE(TABLE=SOLNL2, FILTRE=(
-                                _F(NOM_PARA='INST',VALE=TFIN),
-                                _F(NOM_PARA='CMP',VALE_K='V3'),
-                                ),
-           NOM_PARA='VALEUR', VALE=2.926067E-03 , REFERENCE='NON_REGRESSION',)
+TEST_TABLE(
+           VALE_CALC=2.9260670000000001E-3,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='VALEUR',
+           TABLE=SOLNL2,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=5.0000000000000001E-3,),
+                   _F(NOM_PARA='CMP',
+                      VALE_K='V3',),
+                   ),
+           )
 
 TBEPZZ=CALC_TABLE(TABLE = SOLNL2,
                ACTION =_F(OPERATION='FILTRE',
@@ -228,6 +279,5 @@ IMPR_FONCTION(
             );
 
 FIN()
-
 
 

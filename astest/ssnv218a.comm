@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DU PARAMETRE GP DANS LE CAS D'UNE ENTAILLE ELLIPTIQUE EN 3D
 # ssnv218a.para = tps_job 600 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -269,127 +269,148 @@ IMPR_TABLE(TABLE=tab2max);
 
 #Test du calcul des GP
 
-TEST_TABLE(TABLE=tabgp,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=2.0000000000000002E-05,
+           VALE_CALC=0.221402376,
+           VALE_REFE=0.22140199999999999,
+           NOM_PARA='GP',
+           TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='GROUP_MA',
                       VALE_K='CO_1_1',),
-                   _F(NOM_PARA='INST',
-                      VALE=1.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=1.0,),
                    ),
-           NOM_PARA='GP',
-           VALE=0.221402,
-           PRECISION=2.E-5,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=tabgp,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=2.0000000000000002E-05,
+           VALE_CALC=0.241954943,
+           VALE_REFE=0.241955,
+           NOM_PARA='GP',
+           TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='GROUP_MA',
                       VALE_K='CO_1_2',),
-                   _F(NOM_PARA='INST',
-                      VALE=1.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=1.0,),
                    ),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=2.0000000000000002E-05,
+           VALE_CALC=0.224918408,
+           VALE_REFE=0.22491800000000001,
            NOM_PARA='GP',
-           VALE=0.241955,
-           PRECISION=2.E-5,
-           REFERENCE='AUTRE_ASTER',);
-           
-           
-TEST_TABLE(TABLE=tabgp,
+           TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='GROUP_MA',
                       VALE_K='CO_4_1',),
-                   _F(NOM_PARA='INST',
-                      VALE=1.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=1.0,),
                    ),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=2.0000000000000002E-05,
+           VALE_CALC=0.249164332,
+           VALE_REFE=0.249164,
            NOM_PARA='GP',
-           VALE=0.224918,
-           PRECISION=2.E-5,
-           REFERENCE='AUTRE_ASTER',);
-           
-TEST_TABLE(TABLE=tabgp,
+           TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='GROUP_MA',
                       VALE_K='CO_4_2',),
-                   _F(NOM_PARA='INST',
-                      VALE=1.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=1.0,),
                    ),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=2.0000000000000002E-05,
+           VALE_CALC=0.360683024,
+           VALE_REFE=0.36068299999999998,
            NOM_PARA='GP',
-           VALE=0.249164,
-           PRECISION=2.E-5,
-           REFERENCE='AUTRE_ASTER',);
-           
-TEST_TABLE(TABLE=tabgp,
+           TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='GROUP_MA',
                       VALE_K='CO_1_1',),
-                   _F(NOM_PARA='INST',
-                      VALE=3.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=3.0,),
                    ),
-           NOM_PARA='GP',
-           VALE=0.360683,
-           PRECISION=2.E-5,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=tabgp,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=2.0000000000000002E-05,
+           VALE_CALC=0.383965552,
+           VALE_REFE=0.38396599999999997,
+           NOM_PARA='GP',
+           TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='GROUP_MA',
                       VALE_K='CO_1_2',),
-                   _F(NOM_PARA='INST',
-                      VALE=3.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=3.0,),
                    ),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=2.0000000000000002E-05,
+           VALE_CALC=0.393612541,
+           VALE_REFE=0.39361299999999999,
            NOM_PARA='GP',
-           VALE=0.383966,
-           PRECISION=2.E-5,
-           REFERENCE='AUTRE_ASTER',);
-                      
-TEST_TABLE(TABLE=tabgp,
+           TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='GROUP_MA',
                       VALE_K='CO_4_1',),
-                   _F(NOM_PARA='INST',
-                      VALE=3.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=3.0,),
                    ),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=2.0000000000000002E-05,
+           VALE_CALC=0.433800029,
+           VALE_REFE=0.43380000000000002,
            NOM_PARA='GP',
-           VALE=0.393613,
-           PRECISION=2.E-5,
-           REFERENCE='AUTRE_ASTER',);
-           
-TEST_TABLE(TABLE=tabgp,
+           TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='GROUP_MA',
                       VALE_K='CO_4_2',),
-                   _F(NOM_PARA='INST',
-                      VALE=3.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=3.0,),
                    ),
-           NOM_PARA='GP',
-           VALE=0.433800,
-           PRECISION=2.E-5,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
 #Test du mot cle PREDICTION
 
-TEST_TABLE(TABLE=tab2max,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,
+           TOLE_MACHINE=1.E-10,
+           PRECISION=1.E-10,
+           NOM_PARA='PREDICTION',
+           TABLE=tab2max,
            FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
                       VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=1.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=1.0,),
                    ),
-           NOM_PARA='PREDICTION',
-           VALE_I=0,
-           PRECISION=1.E-10,
-           REFERENCE='AUTRE_ASTER',);
+           )
 
-TEST_TABLE(TABLE=tab2max,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           TOLE_MACHINE=1.E-10,
+           PRECISION=1.E-10,
+           NOM_PARA='PREDICTION',
+           TABLE=tab2max,
            FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
                       VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=3.0,
-                      PRECISION=1e-6,),
+                   _F(PRECISION=9.9999999999999995E-07,
+                      NOM_PARA='INST',
+                      VALE=3.0,),
                    ),
-           NOM_PARA='PREDICTION',
-           VALE_I=1,
-           PRECISION=1.E-10,
-           REFERENCE='AUTRE_ASTER',);
+           )
+
 FIN();
-

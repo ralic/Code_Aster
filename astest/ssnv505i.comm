@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 # ssnv505i.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -162,46 +162,50 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  RESULTANTE='DY',
                                  OPERATION='EXTRACTION',),);
 
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(
+           VALE_CALC=345.91080450711002,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.2),
-           VALE=345.91080450711,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.2.11',);
+                     VALE=0.20000000000000001,),
+           )
 
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(
+           VALE_CALC=1407.8768333508999,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.4),
-           VALE=1407.8768333509,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.2.11',);
+                     VALE=0.40000000000000002,),
+           )
 
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(
+           VALE_CALC=3401.7749540056002,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6),
-           VALE=3401.7749540056,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.2.11',);
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(
+           VALE_CALC=5432.9851518568003,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8),
-           VALE=5432.9851518568,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.2.11',);
+                     VALE=0.80000000000000004,),
+           )
 
-
-TEST_TABLE(TABLE=TAB_REAC,
+TEST_TABLE(
+           VALE_CALC=7487.5203886242998,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0),
-           VALE=7487.5203886243,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.2.11',);
+                     VALE=1.0,),
+           )
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=U,),);

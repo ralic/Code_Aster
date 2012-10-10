@@ -17,25 +17,31 @@ FOA3=DEFI_FONCTION( NOM_PARA='X',
                     NOM_RESU='Y',
                     VALE=TUP )
 
-TEST_FONCTION(VALEUR=( 
-               _F(  FONCTION  = FOA3, PRECISION = 1.E-08,
-                    VALE_PARA = 10.,  VALE_REFE = 11.,
-                    REFERENCE = 'NON_REGRESSION'          ),
-               _F(  FONCTION  = FOA3, PRECISION = 1.E-08,
-                    VALE_PARA = 12.,  VALE_REFE = 13.,
-                    REFERENCE = 'NON_REGRESSION'           ), ) )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=11.0,
+                         VALE_PARA=10.0,
+                         FONCTION=FOA3,
+                         ),
+                      _F(VALE_CALC=13.0,
+                         VALE_PARA=12.0,
+                         FONCTION=FOA3,
+                         ),
+                      ),
+              )
 
 FOL =DEFI_FONCTION( NOM_PARA='X',
                     NOM_RESU='Y',
                     VALE=TUPB )
 
-TEST_FONCTION(VALEUR=( 
-               _F(  FONCTION  = FOL,  PRECISION = 1.E-08,
-                    VALE_PARA = 1.,   VALE_REFE = 2.,
-                    REFERENCE = 'NON_REGRESSION'          ),
-               _F(  FONCTION  = FOL,  PRECISION = 1.E-08,
-                    VALE_PARA = 3.,   VALE_REFE = 4.,
-                    REFERENCE = 'NON_REGRESSION'           ), ) )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.0,
+                         VALE_PARA=1.0,
+                         FONCTION=FOL,
+                         ),
+                      _F(VALE_CALC=4.0,
+                         VALE_PARA=3.0,
+                         FONCTION=FOL,
+                         ),
+                      ),
+              )
 
 yyy = xxx*2
 
@@ -43,10 +49,10 @@ Fyyy =DEFI_FONCTION( NOM_PARA='X',
                      NOM_RESU='Y',
                      VALE=[1.,yyy] )
 
-TEST_FONCTION(VALEUR=
-               _F(  FONCTION  = Fyyy,  PRECISION = 1.E-08,
-                    VALE_PARA = 1.,   VALE_REFE = 69.,
-                    REFERENCE = 'NON_REGRESSION'          ),  )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=69.0,
+                        VALE_PARA=1.0,
+                        FONCTION=Fyyy,
+                        ),
+              )
 
 FIN()
-

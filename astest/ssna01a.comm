@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (VISCOELASTICITE)
 # ssna01a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -314,14 +314,19 @@ U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTA
 
 #
 
-TEST_RESU(RESU=(
-           _F(  RESULTAT = U,              INST = 60.,
-             PARA = 'INST',             VALE = 6.00000E+01),
-           _F(  RESULTAT = U,              INST = 60.,
-             CRITERE = 'ABSOLU',        PRECISION = 0.,
-             PARA = 'ITER_GLOB',        VALE_I = 3),
-           )
-           )
+TEST_RESU(RESU=(_F(PARA='INST',
+                   INST=60.0,
+                   RESULTAT=U,
+                   VALE_CALC=60.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(PARA='ITER_GLOB',
+                   VALE_CALC_I=3,
+                   INST=60.0,
+                   RESULTAT=U,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSI_ELNO'))
 
@@ -329,49 +334,65 @@ U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSI_ELNO'))
 U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSP_ELNO'))
 
 
-TEST_RESU(RESU=(
-   _F(  RESULTAT = U,    NOM_CHAM = 'EPSP_ELNO',
-     MAILLE = 'M1',   NOEUD = 'N376',
-     INST = 60.,   NOM_CMP = 'EPXX',
-     VALE = -1.08E-04,     PRECISION = 0.005),
-   _F(  RESULTAT = U,    NOM_CHAM = 'EPSP_ELNO',
-     MAILLE = 'M1',   NOEUD = 'N376',
-     INST = 60.,   NOM_CMP = 'EPYY',
-     VALE = -1.84E-05,     PRECISION = 0.005))
-         )
+TEST_RESU(RESU=(_F(INST=60.0,
+                   RESULTAT=U,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='N376',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-1.07717334E-04,
+                   VALE_REFE=-1.08E-4,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M1',),
+                _F(INST=60.0,
+                   RESULTAT=U,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOEUD='N376',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-1.83422840E-05,
+                   VALE_REFE=-1.84E-05,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M1',),
+                ),
+          )
 
 MASSES=POST_ELEM(        MODELE=MO,
                          CHAM_MATER=CM,
                           MASS_INER=_F(  TOUT = 'OUI')
                      )
 
-TEST_TABLE(  TABLE=MASSES,
-                 NOM_PARA='MASSE',
-                  FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'M'),
-                  VALE=3.76991E+03
-#                      PI*1200
-              )
+TEST_TABLE(VALE_CALC=3769.9099999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MASSE',
+           TABLE=MASSES,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='M',),
+           )
 
-TEST_TABLE(  TABLE=MASSES,
-                 NOM_PARA='IX_G',
-                  FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'M'),
-                  VALE=1.88527E+06
-#                      PI*600100
-              )
+TEST_TABLE(VALE_CALC=1.885270E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IX_G',
+           TABLE=MASSES,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='M',),
+           )
 
-TEST_TABLE(  TABLE=MASSES,
-                 NOM_PARA='IY_G',
-                  FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'M'),
-                  VALE=1.88527E+06
-#                      PI*600100
-              )
+TEST_TABLE(VALE_CALC=1.885270E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IY_G',
+           TABLE=MASSES,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='M',),
+           )
 
-TEST_TABLE(  TABLE=MASSES,
-                 NOM_PARA='IZ_G',
-                  FILTRE=_F(  NOM_PARA = 'LIEU', VALE_K = 'M'),
-                  VALE=3.76991E+06
-#                      PI*1200000
-              )
+TEST_TABLE(VALE_CALC=3.769910E6,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IZ_G',
+           TABLE=MASSES,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='M',),
+           )
 
 FIN( )
 #

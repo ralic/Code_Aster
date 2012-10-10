@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE RAIDISSEMENT CENTRIFUGE D'UNE POUTRE EN ROTATION
 # sslv105a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,11 +103,23 @@ DEP1=RESOUDRE(   MATR=RAID,
 
 #
 #
-TEST_RESU(CHAM_NO=(
- _F( CHAM_GD = DEP1,GROUP_NO = 'TEST',PRECISION = 1.E-3,NOM_CMP = 'DX',VALE = 0.00875),
- _F( CHAM_GD = DEP1,GROUP_NO = 'TEST',PRECISION = 1.E-3,NOM_CMP = 'DY',VALE = 0.00875),
- _F( CHAM_GD = DEP1,GROUP_NO = 'TEST',PRECISION = 1.E-3,NOM_CMP = 'DZ',VALE = 0.00875))
-                        )
+TEST_RESU(CHAM_NO=(_F(NOM_CMP='DX',
+                      GROUP_NO='TEST',
+                      CHAM_GD=DEP1,
+                      VALE_CALC=8.7500000000000008E-3,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOM_CMP='DY',
+                      GROUP_NO='TEST',
+                      CHAM_GD=DEP1,
+                      VALE_CALC=8.7500000000000008E-3,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOM_CMP='DZ',
+                      GROUP_NO='TEST',
+                      CHAM_GD=DEP1,
+                      VALE_CALC=8.7500000000000008E-3,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
+          )
 
 #
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 
 # TITRE : VISC_ISOT_TRAC SIMU_POINT_MAT AVEC GRAD IMPOSE
 # ssnd113b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
@@ -128,16 +128,22 @@ TABLRESU=SIMU_POINT_MAT(INFO=1,
 
 IMPR_TABLE(TABLE=TABLRESU)
 
-TEST_TABLE( TABLE=TABLRESU,
-            NOM_PARA='VMIS',
-            FILTRE=_F(NOM_PARA = 'INST', VALE=IFIN),
-            VALE = 5.98289E+02,
-               REFERENCE='AUTRE_ASTER'
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=598.289074831,
+           VALE_REFE=598.28899999999999,
+           NOM_PARA='VMIS',
+           TABLE=TABLRESU,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2000.0,),
            )
-TEST_TABLE( TABLE=TABLRESU,
-            NOM_PARA='V1',
-            FILTRE=_F(NOM_PARA = 'INST', VALE=IFIN),
-            VALE = 1.18814E-01,
-               REFERENCE='AUTRE_ASTER'
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=0.118814015,
+           VALE_REFE=0.118814,
+           NOM_PARA='V1',
+           TABLE=TABLRESU,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2000.0,),
            )
+
 FIN();

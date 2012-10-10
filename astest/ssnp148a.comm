@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  CALCUL DU FACTEUR D'INTENSITE DE CONTRAINTES PAR LA REGULARISATION DES
 # ssnp148a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -294,14 +294,15 @@ SIGOFC=CALC_TABLE(TABLE=SIGC,
                         ),
                        );
 
-TEST_TABLE(TABLE=SIGOFC,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,
-                     PRECISION=1e-02,),
+           VALE_CALC=0.990211668,
+           VALE_REFE=1.0,
            NOM_PARA='F_FIC',
-           VALE=1.,
-           REFERENCE='ANALYTIQUE',);
-
+           TABLE=SIGOFC,
+           FILTRE=_F(PRECISION=1.E-2,
+                     NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 FIN();

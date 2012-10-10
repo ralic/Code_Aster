@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 # hsls01b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,27 +149,75 @@ MESTAT=CALC_CHAMP(reuse=MESTAT,RESULTAT=MESTAT,CONTRAINTE=('SIGM_ELNO','EFGE_ELN
 
 # ------------------------------------------------------------------
 
-TEST_RESU(RESU=(
-            _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
-                  NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
-                  NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-          _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
-                  NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
-                  NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-             ),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   TYPE_TEST='MAX',
+                   RESULTAT=MESTAT,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MXX',
+                   VALE_CALC=-2.38095238E+03,
+                   VALE_REFE=-2380.9523809523812,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   TYPE_TEST='MAX',
+                   RESULTAT=MESTAT,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MYY',
+                   VALE_CALC=-2.38095238E+03,
+                   VALE_REFE=-2380.9523809523812,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   TYPE_TEST='MIN',
+                   RESULTAT=MESTAT,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MXX',
+                   VALE_CALC=-2.38095238E+03,
+                   VALE_REFE=-2380.9523809523812,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   TYPE_TEST='MIN',
+                   RESULTAT=MESTAT,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MYY',
+                   VALE_CALC=-2.38095238E+03,
+                   VALE_REFE=-2380.9523809523812,),
+                ),
+          )
 
-TEST_RESU(RESU=(
-          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
-                  NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
-                  NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
-                  NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
-                  NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-          ),)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   TYPE_TEST='MAX',
+                   RESULTAT=MESTA2,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MXX',
+                   VALE_CALC=-2.38095238E+03,
+                   VALE_REFE=-2380.9523809523812,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   TYPE_TEST='MAX',
+                   RESULTAT=MESTA2,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MYY',
+                   VALE_CALC=-2.38095238E+03,
+                   VALE_REFE=-2380.9523809523812,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   TYPE_TEST='MIN',
+                   RESULTAT=MESTA2,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MXX',
+                   VALE_CALC=-2.38095238E+03,
+                   VALE_REFE=-2380.9523809523812,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   TYPE_TEST='MIN',
+                   RESULTAT=MESTA2,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MYY',
+                   VALE_CALC=-2.38095238E+03,
+                   VALE_REFE=-2380.9523809523812,),
+                ),
+          )
 
 FIN()
 #

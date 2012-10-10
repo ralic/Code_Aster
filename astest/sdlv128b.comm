@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
 # sdlv128b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -260,11 +260,14 @@ RESET = DEFI_BASE_MODALE( NUME_REF = NUMENUM,
 TABLAMOR = RECU_TABLE( CO = RESET, NOM_PARA = 'AMOR_REDUIT')
 
 for ind in range(6):
-    TEST_TABLE( TABLE = TABLAMOR,
-                FILTRE = _F( NOM_PARA = 'NUME_ORDRE', VALE_I = ind+1 ),
-                NOM_PARA = 'AMOR_REDUIT',
-                REFERENCE = 'NON_REGRESSION',
-                VALE =  vale_amor[ind] )
+    TEST_TABLE(
+               VALE_CALC=vale_amor[ind],
+               TOLE_MACHINE=1.E-3,
+               NOM_PARA='AMOR_REDUIT',
+               TABLE=TABLAMOR,
+               FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                         VALE_I=ind+1,),
+               )
 
 
 # On etend une base de modes dynamique experimentaux simules, et la base
@@ -276,12 +279,19 @@ MAC = MAC_MODES( BASE_1 = RESET, BASE_2 = MODEAIR, INFO = 2 );
 vale_mac = (0.999, 0.999, 0.999, 0.999, 0.997, 0.997)# Test du resultat : on verifie (non regression) que l'auto-mac est superieur
 # a 90%
 for ind in range(6):
-    TEST_TABLE( TABLE = MAC,
-                FILTRE = ( _F( NOM_PARA = 'NUME_MODE_1', VALE_I = ind+1 ),
-                           _F( NOM_PARA = 'NUME_MODE_2', VALE_I = ind+1 )),
-                NOM_PARA = 'MAC',
-                REFERENCE = 'NON_REGRESSION',
-                VALE = vale_mac[ind], PRECISION = 0.1 );
+    TEST_TABLE(REFERENCE='NON_DEFINI',
+               TOLE_MACHINE=0.10,
+               PRECISION=0.10,
+               VALE_CALC=vale_mac[ind],
+               VALE_REFE=vale_mac[ind],
+               NOM_PARA='MAC',
+               TABLE=MAC,
+               FILTRE=(_F(NOM_PARA='NUME_MODE_1',
+                          VALE_I=ind+1,),
+                       _F(NOM_PARA='NUME_MODE_2',
+                          VALE_I=ind+1,),
+                       ),
+               )
 
 
 FIN();

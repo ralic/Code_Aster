@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL ELASTO-PLASTIQUE D'UN ANNEAU CREUX SOUMIS A UNE PRESSION INTERIEURE
 # perf004b.para = tps_job 1500 mem_job 768Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -66,9 +66,17 @@ RESU=STAT_NON_LINE( MODELE=MO, CHAM_MATER=CHMAT, INFO=1,
                             ITER_GLOB_ELAS=25),
              )
 
-TEST_RESU(RESU=(_F( RESULTAT = RESU,  NOM_CHAM='DEPL', GROUP_NO='X2', NOM_CMP='DZ',
-                    CRITERE = 'RELATIF',  NUME_ORDRE = 3,
-                    REFERENCE='NON_REGRESSION', VALE = 5.5E-3,  PRECISION = 2.E-2,)))
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  GROUP_NO='X2',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC= 5.52247761E-03,
+                  VALE_REFE=5.4999999999999997E-3,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02,),
+          )
 
 if 0 :
     # pour faire une belle image :

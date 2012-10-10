@@ -1,10 +1,10 @@
 #######################################################################
 def ERREUR(X,Xref,coef=1.,prec_zero=0.):
-	"calcul erreur relative entre deux nombres"
-	if (Xref<prec_zero) : return 0.
-	else :
-		err= abs((X*coef-Xref)/Xref)
-		return err
+    "calcul erreur relative entre deux nombres"
+    if (Xref<prec_zero) : return 0.
+    else :
+        err= abs((X*coef-Xref)/Xref)
+        return err
 
 #######################################################################
 def RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI):
@@ -70,8 +70,14 @@ def TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,c
         for j in range(Ncal) :
            ch_cal = ch + label_cal[j] + str(N_pas[j]) 
            ch_err = 'ER_' + ch_cal
-           TEST_TABLE(TABLE=R_SI[i],NOM_PARA=ch_err,REFERENCE='ANALYTIQUE',
-                      TYPE_TEST='MAX',VALE=0.,CRITERE='ABSOLU',PRECISION=prec_ecart[j],);
+           TEST_TABLE(TABLE=R_SI[i],
+                      NOM_PARA=ch_err,REFERENCE='ANALYTIQUE',
+                      TYPE_TEST='MAX',
+                      VALE_CALC=0,
+                      VALE_REFE=0,
+                      CRITERE='ABSOLU',
+                      TOLE_MACHINE=prec_ecart[j],
+                      PRECISION=prec_ecart[j],);
    return
         
 #######################################################################

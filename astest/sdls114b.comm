@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114b.para = tps_job 210 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,9 +186,8 @@ for i in range(0,5) :
                          VALE_I = imode),
                       _F(NOM_PARA = 'NUM_PT',
                          VALE_I = 3),),  
-              VALE=Kg_ref[i],
-              PRECISION=1E-5,
-              REFERENCE = 'NON_REGRESSION',
+              VALE_CALC=Kg_ref[i],
+              TOLE_MACHINE=1E-5,
              );
              
    TEST_TABLE(TABLE=T1_K,
@@ -197,9 +196,8 @@ for i in range(0,5) :
                          VALE = 2.00000E-03),
                       _F(NOM_PARA = 'NUME_ORDRE',
                          VALE_I = imode),  ),
-              VALE=Ku_ref[i],
-              PRECISION=1.E-5,
-              REFERENCE = 'NON_REGRESSION',
+              VALE_CALC=Ku_ref[i],
+              TOLE_MACHINE=1.E-5,
              );
 
 ##############################################
@@ -240,17 +238,17 @@ KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                               FOND_FISS=FF1,),);
                               
 IMPR_TABLE(TABLE=KT2,TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
-TEST_TABLE(TABLE=KT2,
+TEST_TABLE(
+           VALE_CALC=2.008970E6,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
-           FILTRE=(_F(NOM_PARA = 'INST',
-                      VALE = 1.25000E-03),
-                    _F(NOM_PARA = 'NUM_PT',
-                      VALE_I = 3),   ),
-           VALE=2.00897E+06,
-           PRECISION=0.001,
-           REFERENCE = 'NON_REGRESSION',
-          );
-
+           TABLE=KT2,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.25E-3,),
+                   _F(NOM_PARA='NUM_PT',
+                      VALE_I=3,),
+                   ),
+           )
 
 FIN();         
 

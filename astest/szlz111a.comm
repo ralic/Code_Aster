@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (POST_FATIGUE)
 # szlz111a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -121,77 +121,95 @@ IMPR_TABLE(TABLE=TAB_1,
 # --------------------------------------------------------------------
 # 1./ ... AVEC EXP_S=1.0 ET LA SOLUTION DE REFERENCE (HI-75/96/068/A)
 # ----------------------------------------------------------------
-TEST_TABLE(TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 43.11,),
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 0.00000000E+00,
+           VALE_REFE=0.0,
            NOM_PARA='DOMMAGE',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=43.109999999999999,),
+           )
 
-TEST_TABLE(TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 100.,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC= 8.48906152E-04,
+           VALE_REFE=8.4890699999999998E-4,
            NOM_PARA='DOMMAGE',
-           VALE=0.000848907,
-           PRECISION=1.E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=100.0,),
+           )
 
-TEST_TABLE(TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 1000.,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=0.014474927,
+           VALE_REFE=0.014474925,
            NOM_PARA='DOMMAGE',
-           VALE=0.014474925,
-           PRECISION=1.E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1000.0,),
+           )
 
-TEST_TABLE(TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 10000.,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=0.178374284,
+           VALE_REFE=0.17837423799999999,
            NOM_PARA='DOMMAGE',
-           VALE=0.178374238,
-           PRECISION=1.E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.E4,),
+           )
 
-TEST_TABLE(TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 20000.,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=0.524693289,
+           VALE_REFE=0.52469300500000005,
            NOM_PARA='DOMMAGE',
-           VALE=0.524693005,
-           PRECISION=1.E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.E4,),
+           )
 
-TEST_TABLE(TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 21000.,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=0.602827892,
+           VALE_REFE=0.60282746899999995,
            NOM_PARA='DOMMAGE',
-           VALE=0.602827469,
-           PRECISION=1.E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.1000E4,),
+           )
 
-TEST_TABLE(TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 22000.,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=0.738291541,
+           VALE_REFE=0.73829051999999995,
            NOM_PARA='DOMMAGE',
-           VALE=0.73829052,
-           PRECISION=1.E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.2000E4,),
+           )
 
-TEST_TABLE(TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 22200.,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=0.792151434,
+           VALE_REFE=0.79214980700000004,
            NOM_PARA='DOMMAGE',
-           VALE=0.792149807,
-           PRECISION=1.E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.2200E4,),
+           )
 
-TEST_TABLE(TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 22400.,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=8.0000000000000007E-05,
+           VALE_CALC=0.967672085,
+           VALE_REFE=0.96760435099999997,
            NOM_PARA='DOMMAGE',
-           VALE=0.967604351,
-           PRECISION=8.E-5,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.2400E4,),
+           )
 
 FIN();

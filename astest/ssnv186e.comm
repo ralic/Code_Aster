@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 # ssnv186e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,21 +149,23 @@ IMPR_TABLE(TABLE=LAG);
 # TESTS
 LAREF=-1.*pres
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=-9.99928939E+06,
+           VALE_REFE=-1.E7,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MAX',
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=3.E-2,
-           REFERENCE='ANALYTIQUE');     
+           TABLE=LAG,)
 
-TEST_TABLE(TABLE=LAG,
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=-1.00004021E+07,
+           VALE_REFE=-1.E7,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=2.E-2,
-           REFERENCE='ANALYTIQUE');      
+           TABLE=LAG,)
 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
@@ -184,4 +186,3 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
 FIN();                  
-

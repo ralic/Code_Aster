@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106f.para = tps_job 140 mem_job 512Mo ncpus 1 liste_test S
@@ -188,34 +188,37 @@ IMPR_FONCTION(COURBE=_F(FONC_Y=RDXB,FONC_X=DXB,),)
 #
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=REST,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE',
-                   NOM_CMP='SIXX',
-                   MAILLE='M2',
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
                    POINT=1,
                    SOUS_POINT=1,
-                   VALE=1.50000000E8,
-                   PRECISION=1.E-3,),
-                _F(RESULTAT=REST,
-                   NUME_ORDRE=6,
-                   NOM_CHAM='REAC_NODA', REFERENCE='ANALYTIQUE',
-                   NOM_CMP='DX',
+                   RESULTAT=REST,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.49983289E+08,
+                   VALE_REFE=1.50000000E8,
+                   PRECISION=1.E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=6,
                    GROUP_NO='B',
-                   VALE=9.47152E4,
-                   PRECISION=1.1E-2,),
-                _F(RESULTAT=REST,
-                   NUME_ORDRE=11,
-                   NOM_CHAM='REAC_NODA', REFERENCE='ANALYTIQUE',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
+                   VALE_CALC= 9.47325827E+04,
+                   VALE_REFE=9.4715199999999997E4,
+                   PRECISION=0.010999999999999999,),
+                _F(NUME_ORDRE=11,
                    GROUP_NO='B',
-                   VALE=9.565E4,
-                   PRECISION=1.1E-2,),
-                   ),
-                   );
-
-
-
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=REST,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   VALE_CALC= 9.56913424E+04,
+                   VALE_REFE=9.5650E4,
+                   PRECISION=0.010999999999999999,),
+                ),
+          )
 
 # FLEXION
 # PLASTICITE PARFAITE
@@ -314,22 +317,25 @@ RESM=CALC_CHAMP(reuse =RESM,
 
 ME = 4642.17;
 
-TEST_RESU(RESU=(_F(RESULTAT=RESM,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESM,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DRZ',
-                   GROUP_NO='B',
-                   VALE=ME,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESM,
+                   VALE_CALC= 4.64149062E+03,
+                   VALE_REFE=4642.1700000000001,),
+                _F(GROUP_NO='B',
                    INST=2.7999999999999998,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESM,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DRZ',
-                   GROUP_NO='B',
-                #   VALE=5802.6199999999999,
-                   VALE=5782.42,
-                   PRECISION=5.0000000000000001E-3,
-                   REFERENCE='AUTRE_ASTER',),),);
+                   VALE_CALC= 5.78362039E+03,
+                   VALE_REFE=5782.4200000000001,
+                   PRECISION=5.0000000000000001E-3,),
+                ),
+          )
 
 DRZB=RECU_FONCTION(RESULTAT=RESM,
                    NOM_CHAM='DEPL',

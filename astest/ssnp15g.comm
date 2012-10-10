@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 # ssnp15g.para = tps_job 100 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,50 +124,47 @@ tole_xy = 0.6e-2
 
 # TEST SUR LES DEFORMATIONS A L'INSTANT 2 :
 # LA TOLERANCE EST DOUBLEE PAR RAPPORT A LA DEUXIEME LISTE D'INSTANTS
-TEST_RESU(RESU=(_F(RESULTAT=U1,
-                   INST=2.0,
+TEST_RESU(RESU=(_F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
                    NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO2',
                    NOM_CMP='EPXX',
-                   MAILLE='CUBE',
-                   NOEUD='NO2',
-                   VALE=0.035265,
-                   PRECISION=2*tole_xx,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=U1,
-                   INST=2.0,
+                   VALE_CALC=0.035382410,
+                   VALE_REFE=0.035264999999999998,
+                   PRECISION=4.0000000000000001E-3,
+                   MAILLE='CUBE',),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
                    NOM_CHAM='EPSI_ELNO',
-                   NOM_CMP='EPXY',
-                   MAILLE='CUBE',
                    NOEUD='NO2',
-                   VALE=0.020471,
-                   PRECISION=2*tole_xy,
-                   REFERENCE='ANALYTIQUE',),
-               )
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.020234125,
+                   VALE_REFE=0.020471,
+                   PRECISION=0.012,
+                   MAILLE='CUBE',),
+                ),
           )
 
-
 # ON MONTRE QUE L'ON EST ASSEZ LOIN DE LA SOLUTION DE REF -> TEST DE NON_REGRESSION
-TEST_RESU(RESU=(_F(RESULTAT=U1,
-                   INST=2.0,
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=U1,
                    NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO2',
                    NOM_CMP='EPXX',
+                   VALE_CALC=0.035382409884634002,
                    MAILLE='CUBE',
-                   NOEUD='NO2',
-                   VALE=0.035382409884634,
-                   PRECISION=1.E-10,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='11.0.26'),
-                _F(RESULTAT=U1,
-                   INST=2.0,
+                   ),
+                _F(INST=2.0,
+                   RESULTAT=U1,
                    NOM_CHAM='EPSI_ELNO',
-                   NOM_CMP='EPXY',
-                   MAILLE='CUBE',
                    NOEUD='NO2',
-                   VALE=0.020234125161266 ,
-                   PRECISION=1.E-10,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='11.0.26'),
-               )
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.020234125161265999,
+                   MAILLE='CUBE',
+                   ),
+                ),
           )
 
 #------------------------------------------------------------------
@@ -206,25 +203,27 @@ U2=CALC_CHAMP(reuse=U2,
               RESULTAT=U2,
               DEFORMATION='EPSI_ELNO')
 
-TEST_RESU(RESU=(_F(RESULTAT=U2,
-                   INST=2.0,
+TEST_RESU(RESU=(_F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
                    NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO2',
                    NOM_CMP='EPXX',
-                   MAILLE='CUBE',
-                   NOEUD='NO2',
-                   VALE=0.035265,
-                   PRECISION=tole_xx,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=U2,
-                   INST=2.0,
+                   VALE_CALC=0.035324712,
+                   VALE_REFE=0.035264999999999998,
+                   PRECISION=2.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=2.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
                    NOM_CHAM='EPSI_ELNO',
-                   NOM_CMP='EPXY',
-                   MAILLE='CUBE',
                    NOEUD='NO2',
-                   VALE=0.020471,
-                   PRECISION=tole_xy,
-                   REFERENCE='ANALYTIQUE',),
-               )
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.020351416,
+                   VALE_REFE=0.020471,
+                   PRECISION=6.0000000000000001E-3,
+                   MAILLE='CUBE',),
+                ),
           )
 
 # LISTE D'INSTANTS REELLEMENT CALCULES DANS LE DEUXIEME STAT_NON_LINE (POUR INFO)
@@ -233,7 +232,5 @@ INST_C2=RECU_TABLE(CO=U2, NOM_TABLE='PARA_CALC')
 # IMPRESSION DE LA LISTE D'INSTANTS REELLEMENT CALCULES DANS LE DEUXIEME STAT_NON_LINE (POUR INFO)
 IMPR_TABLE(TABLE=INST_C2,
            NOM_PARA='INST')
-
-
 
 FIN();

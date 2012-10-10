@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE DCB 2D PLASTIQUE AVEC ELEMENTS D'INTERFACE EN FATIGUE : LOI CZM_FAT_MIX
 # ssnp139b.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -280,41 +280,42 @@ DEPLA = POST_RELEVE_T(
 
 # TESTS RESU
 
-TEST_TABLE(TABLE=FORC,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=3.0)),
+TEST_TABLE(
+           VALE_CALC=3.1612800000000001,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
-           VALE=3.16128,
-           REFERENCE='NON_REGRESSION')
+           TABLE=FORC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
-TEST_TABLE(TABLE=FORC,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=5.0)),
+TEST_TABLE(
+           VALE_CALC=3.1586500000000002,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
-           VALE=3.15865,
-           REFERENCE='NON_REGRESSION')
+           TABLE=FORC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.0,),
+           )
 
-TEST_TABLE(TABLE=DEPLA,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=5.0)),
+TEST_TABLE(
+           VALE_CALC=0.40000000000000002,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
-           VALE=val_sup,
-           REFERENCE='NON_REGRESSION')
+           TABLE=DEPLA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.0,),
+           )
 
-TEST_RESU (
-  RESU = (
-          _F(
-             RESULTAT  = U,
-             REFERENCE = 'NON_REGRESSION',
-             NOM_CHAM  = 'VARI_ELGA',
-             NOM_CMP   = 'V7',
-             VALE      = 6.20331E-05,
-             MAILLE    = 'M9788',
-             POINT     = 2,
-             INST      = tfin
-      ),
-    )
-  )
+TEST_RESU(RESU=_F(INST=5,
+                  POINT=2,
+                  RESULTAT=U,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V7',
+                  VALE_CALC=6.2033100000000001E-05,
+                  TOLE_MACHINE=1.E-3,
+                  MAILLE='M9788',),
+          )
 
 IMPR_TABLE(TABLE = DEPLA);
 IMPR_TABLE(TABLE = FORC);
@@ -326,4 +327,3 @@ IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U,
 
 
 FIN(FORMAT_HDF='OUI')
-

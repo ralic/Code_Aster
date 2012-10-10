@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / option = 'AMORCAGE'
 # rccm09a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,12 +53,14 @@ AMOR_1=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
 
 IMPR_TABLE ( TABLE = AMOR_1 )
 
-TEST_TABLE(  TABLE=AMOR_1,
-             FILTRE=_F(  NOM_PARA = 'THETA',
-                           VALE   = 10.   ),
-             REFERENCE='ANALYTIQUE',
-             NOM_PARA='FACT_AMORCAGE',
-             VALE= 1.7482441E-10     )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 1.74824406E-10,
+           VALE_REFE=1.7482441E-10,
+           NOM_PARA='FACT_AMORCAGE',
+           TABLE=AMOR_1,
+           FILTRE=_F(NOM_PARA='THETA',
+                     VALE=10.0,),
+           )
 
 AMOR_2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                         OPTION='AMORCAGE',
@@ -73,13 +75,15 @@ AMOR_2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
 
 IMPR_TABLE ( TABLE = AMOR_2 )
 
-TEST_TABLE(  TABLE=AMOR_2,
-             FILTRE=_F(  NOM_PARA = 'THETA',
-                           VALE   = 10.   ),
-             REFERENCE='ANALYTIQUE',
-             NOM_PARA='FACT_AMORCAGE',
-             VALE= 2.452956E-10    )
-             
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 2.45295595E-10,
+           VALE_REFE=2.4529560000000001E-10,
+           NOM_PARA='FACT_AMORCAGE',
+           TABLE=AMOR_2,
+           FILTRE=_F(NOM_PARA='THETA',
+                     VALE=10.0,),
+           )
+
 AMOR_3=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                         OPTION='AMORCAGE',
                      TYPE_RESU='VALE_MAX',
@@ -94,10 +98,13 @@ AMOR_3=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
 
 IMPR_TABLE ( TABLE = AMOR_3 )
 
-TEST_TABLE(  TABLE=AMOR_3,
-             FILTRE=_F(  NOM_PARA = 'THETA',
-                           VALE   = 10.   ),
-             REFERENCE='ANALYTIQUE',
-             NOM_PARA='FACT_AMORCAGE',
-             VALE= 3.6791345E-10    )             
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 3.67913445E-10,
+           VALE_REFE=3.6791344999999999E-10,
+           NOM_PARA='FACT_AMORCAGE',
+           TABLE=AMOR_3,
+           FILTRE=_F(NOM_PARA='THETA',
+                     VALE=10.0,),
+           )
+
 FIN( )

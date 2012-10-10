@@ -201,89 +201,111 @@ IMPR_TABLE(    TABLE=FAT12_MS,)
 #   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
 #--------------------------------------------------------------------------------
 # PM_PB - SITUATION 1
-TEST_TABLE(TABLE=PMPB1,
-           REFERENCE='ANALYTIQUE',
-           TYPE_TEST = 'MAX',
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
            NOM_PARA='PM_MAX',
-           VALE=200.  )
-           
-TEST_TABLE(TABLE=PMPB1,
-           REFERENCE='ANALYTIQUE',
-           TYPE_TEST = 'MAX',
-           NOM_PARA='PB_MAX',
-           VALE=100.  )
-           
-TEST_TABLE(TABLE=PMPB1,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
-           NOM_PARA='PMPB_MAX',
-           VALE=100.  )
+           TYPE_TEST='MAX',
+           TABLE=PMPB1,)
 
-TEST_TABLE(TABLE=PMPB1,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
+           NOM_PARA='PB_MAX',
+           TYPE_TEST='MAX',
+           TABLE=PMPB1,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
            NOM_PARA='PMPB_MAX',
-           VALE=300.  )
+           TABLE=PMPB1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=300.000000000,
+           VALE_REFE=300.0,
+           NOM_PARA='PMPB_MAX',
+           TABLE=PMPB1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # SN - SITUATION 3
-TEST_TABLE(TABLE=SN3,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=250.000000000,
+           VALE_REFE=250.0,
            NOM_PARA='SN_MAX',
-           VALE=250.  )
+           TABLE=SN3,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
 
-TEST_TABLE(TABLE=SN3,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=150.000000000,
+           VALE_REFE=150.0,
            NOM_PARA='SN_MAX',
-           VALE=150.  )
-           
-TEST_TABLE(TABLE=SN3,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
+           TABLE=SN3,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
            NOM_PARA='SN*_MAX',
-           VALE=200.  )
-           
-TEST_TABLE(TABLE=SN3,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
+           TABLE=SN3,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
            NOM_PARA='SN*_MAX',
-           VALE=100.  )         
+           TABLE=SN3,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
 
 # FATIGUE - SITUATION 1 + SITUATION 3
-TEST_TABLE(TABLE=FAT13_B,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 2.70000000E-03,
+           VALE_REFE=2.7000000000000001E-3,
            NOM_PARA='FACT_USAGE_CUMU',
-           VALE=2.7E-3  )
-           
-TEST_TABLE(TABLE=FAT13_B,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
+           TABLE=FAT13_B,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 2.20000000E-03,
+           VALE_REFE=2.2000000000000001E-3,
            NOM_PARA='FACT_USAGE_CUMU',
-           VALE=2.2E-3  )
-             
+           TABLE=FAT13_B,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
 # FATIGUE - SITUATION 1 + SITUATION 2 + SEISME / KE_MIXTE
-TEST_TABLE(TABLE=FAT12_MS,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'ORIG'),),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 9.20000000E-03,
+           VALE_REFE=9.1999999999999998E-3,
            NOM_PARA='FACT_USAGE_CUMU',
-           VALE=9.2E-3  )
-           
-TEST_TABLE(TABLE=FAT12_MS,
-           REFERENCE='ANALYTIQUE',
-            FILTRE=( _F(  NOM_PARA = 'LIEU',
-                         VALE_K   = 'EXTR'),),
+           TABLE=FAT12_MS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 6.40924091E-03,
+           VALE_REFE=6.4089999999999998E-3,
            NOM_PARA='FACT_USAGE_CUMU',
-           VALE=6.409E-3  )
-           
+           TABLE=FAT12_MS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  MURAKAMI 9.35 FISSURE SEMI-ELLIPTIQUE DEBOUCHANT A LA PEAU
 # sslv310a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -213,78 +213,99 @@ GLOC3=CALC_G(                 RESULTAT=CHAMDEPL,
 # ANGLE POLAIRE = 0
 #
 
-TEST_TABLE(       TABLE=GLOC1,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N2613'),
-                       VALE=7686.42,
-                  PRECISION=0.2       )
+TEST_TABLE(PRECISION=0.20000000000000001,
+           VALE_CALC= 9.02067642E+03,
+           VALE_REFE=7686.4200000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N2613',),
+           )
 
 #
 # ANGLE POLAIRE = 14.1
 #
 
-TEST_TABLE(       TABLE=GLOC1,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N3203'),
-                       VALE=6676.26,
-                  PRECISION=0.04       )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC= 6.89946117E+03,
+           VALE_REFE=6676.2600000000002,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3203',),
+           )
 
 #
 # ANGLE POLAIRE = 30.9
 #
 
-TEST_TABLE(       TABLE=GLOC1,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N4066'),
-                       VALE=5777.98,
-                  PRECISION=0.1       )
+TEST_TABLE(PRECISION=0.10000000000000001,
+           VALE_CALC= 6.25370246E+03,
+           VALE_REFE=5777.9799999999996,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N4066',),
+           )
 
 #
 # ANGLE POLAIRE = 45.0
 #
 
-TEST_TABLE(       TABLE=GLOC1,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N5548'),
-                       VALE=5598.92,
-                  PRECISION=0.1       )
+TEST_TABLE(PRECISION=0.10000000000000001,
+           VALE_CALC= 6.08425193E+03,
+           VALE_REFE=5598.9200000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N5548',),
+           )
 
 #
 # ANGLE POLAIRE = 59.1
 #
 
-TEST_TABLE(       TABLE=GLOC1,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6180'),
-                       VALE=5700.86,
-                  PRECISION=0.1       )
+TEST_TABLE(PRECISION=0.10000000000000001,
+           VALE_CALC= 6.06764899E+03,
+           VALE_REFE=5700.8599999999997,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6180',),
+           )
 
 #
 # ANGLE POLAIRE = 75.9
 #
 
-TEST_TABLE(       TABLE=GLOC1,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6835'),
-                       VALE=5782.64,
-                  PRECISION=0.05       )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 6.06960196E+03,
+           VALE_REFE=5782.6400000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6835',),
+           )
 
 #
 # ANGLE POLAIRE = 90.0
 #
 
-TEST_TABLE(       TABLE=GLOC1,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6962'),
-                       VALE=5889.04,
-                  PRECISION=0.06       )
+TEST_TABLE(PRECISION=0.059999999999999998,
+           VALE_CALC= 6.18356323E+03,
+           VALE_REFE=5889.04,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6962',),
+           )
 
 #
 # 2IEME COURONNE
@@ -292,78 +313,99 @@ TEST_TABLE(       TABLE=GLOC1,
 # ANGLE POLAIRE = 0
 #
 
-TEST_TABLE(       TABLE=GLOC2,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N2613'),
-                       VALE=7686.42,
-                  PRECISION=0.15       )
+TEST_TABLE(PRECISION=0.14999999999999999,
+           VALE_CALC= 8.78729250E+03,
+           VALE_REFE=7686.4200000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N2613',),
+           )
 
 #
 # ANGLE POLAIRE = 14.1
 #
 
-TEST_TABLE(       TABLE=GLOC2,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N3203'),
-                       VALE=6676.26,
-                  PRECISION=0.005       )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 6.69063488E+03,
+           VALE_REFE=6676.2600000000002,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3203',),
+           )
 
 #
 # ANGLE POLAIRE = 30.9
 #
 
-TEST_TABLE(       TABLE=GLOC2,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N4066'),
-                       VALE=5777.98,
-                  PRECISION=0.05       )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 6.03668592E+03,
+           VALE_REFE=5777.9799999999996,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N4066',),
+           )
 
 #
 # ANGLE POLAIRE = 45.0
 #
 
-TEST_TABLE(       TABLE=GLOC2,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N5548'),
-                       VALE=5598.92,
-                  PRECISION=0.05       )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 5.83962101E+03,
+           VALE_REFE=5598.9200000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N5548',),
+           )
 
 #
 # ANGLE POLAIRE = 59.1
 #
 
-TEST_TABLE(       TABLE=GLOC2,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6180'),
-                       VALE=5700.86,
-                  PRECISION=0.03       )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 5.81370781E+03,
+           VALE_REFE=5700.8599999999997,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6180',),
+           )
 
 #
 # ANGLE POLAIRE = 75.9
 #
 
-TEST_TABLE(       TABLE=GLOC2,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6835'),
-                       VALE=5782.64,
-                  PRECISION=0.1       )
+TEST_TABLE(PRECISION=0.10000000000000001,
+           VALE_CALC= 5.84140331E+03,
+           VALE_REFE=5782.6400000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6835',),
+           )
 
 #
 # ANGLE POLAIRE = 90.0
 #
 
-TEST_TABLE(       TABLE=GLOC2,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6962'),
-                       VALE=5889.04,
-                  PRECISION=0.01    )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 5.85768003E+03,
+           VALE_REFE=5889.04,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6962',),
+           )
 
 #
 # 3IEME COURONNE
@@ -371,97 +413,122 @@ TEST_TABLE(       TABLE=GLOC2,
 # ANGLE POLAIRE = 0
 #
 
-TEST_TABLE(       TABLE=GLOC3,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N2613'),
-                       VALE=7686.42,
-                  PRECISION=0.15       )
+TEST_TABLE(PRECISION=0.14999999999999999,
+           VALE_CALC= 8.72943997E+03,
+           VALE_REFE=7686.4200000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N2613',),
+           )
 
 #
 # ANGLE POLAIRE = 14.1
 #
 
-TEST_TABLE(       TABLE=GLOC3,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N3203'),
-                       VALE=6676.26,
-                  PRECISION=0.005       )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 6.69382743E+03,
+           VALE_REFE=6676.2600000000002,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N3203',),
+           )
 
 #
 # ANGLE POLAIRE = 30.9
 #
 
-TEST_TABLE(       TABLE=GLOC3,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N4066'),
-                       VALE=5777.98,
-                  PRECISION=0.05       )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 6.01464856E+03,
+           VALE_REFE=5777.9799999999996,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N4066',),
+           )
 
 #
 # ANGLE POLAIRE = 45.0
 #
 
-TEST_TABLE(       TABLE=GLOC3,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N5548'),
-                       VALE=5598.92,
-                  PRECISION=0.05       )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC= 5.83166529E+03,
+           VALE_REFE=5598.9200000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N5548',),
+           )
 
 #
 # ANGLE POLAIRE = 59.1
 #
 
-TEST_TABLE(       TABLE=GLOC3,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6180'),
-                       VALE=5700.86,
-                  PRECISION=0.03       )
+TEST_TABLE(PRECISION=0.029999999999999999,
+           VALE_CALC= 5.83291164E+03,
+           VALE_REFE=5700.8599999999997,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6180',),
+           )
 
 #
 # ANGLE POLAIRE = 75.9
 #
 
-TEST_TABLE(       TABLE=GLOC3,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6835'),
-                       VALE=5782.64,
-                  PRECISION=0.01       )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 5.83194827E+03,
+           VALE_REFE=5782.6400000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6835',),
+           )
 
 #
 # ANGLE POLAIRE = 90.0
 #
 
-TEST_TABLE(       TABLE=GLOC3,
-                   NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6962'),
-                       VALE=5889.04,
-                  PRECISION=0.005       )
+TEST_TABLE(PRECISION=5.0000000000000001E-3,
+           VALE_CALC= 5.91289624E+03,
+           VALE_REFE=5889.04,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N6962',),
+           )
 
 #
 # TEST DE NON REGRESSION DE LA VALEUR DE G
 #
 
-TEST_TABLE(       TABLE=G0_C1,
-                         NOM_PARA='G',
-                             VALE=1.65E+02,
-                        PRECISION=0.05       )
+TEST_TABLE(PRECISION=0.050000000000000003,
+           VALE_CALC=171.232969149,
+           VALE_REFE=165.0,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G',
+           TABLE=G0_C1,)
 
-TEST_TABLE(       TABLE=G0_C2,
-                         NOM_PARA='G',
-                             VALE=1.65E+02,
-                        PRECISION=0.001      )
+TEST_TABLE(
+           VALE_CALC=165.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G0_C2,)
 
-TEST_TABLE(       TABLE=G0_C3,
-                         NOM_PARA='G',
-                             VALE=1.65E+02,
-                        PRECISION=0.001      )
+TEST_TABLE(
+           VALE_CALC=165.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='G',
+           TABLE=G0_C3,)
 
 FIN( )
 #

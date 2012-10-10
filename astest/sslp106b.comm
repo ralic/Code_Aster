@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MASSIF RECTANGULAIRE EN FLEXION PURE
 # sslp106b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,24 +84,25 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
 
-TEST_RESU(RESU=(_F(RESULTAT   = RESU,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',
-                   NOM_CMP    = 'DX',
-                   VALE       = -1.5,
-                   PRECISION  = 1.4E-4,
-                   REFERENCE  = 'ANALYTIQUE',),
-                _F(RESULTAT   = RESU,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'C',
-                   NOM_CMP    = 'DY',
-                   VALE       = 4.25,
-                   PRECISION  = 7.E-5,
-                   REFERENCE  = 'ANALYTIQUE',)
-                   ));
-
-
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.500199980,
+                   VALE_REFE=-1.5,
+                   PRECISION=1.3999999999999999E-4,),
+                _F(GROUP_NO='C',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=4.249730338,
+                   VALE_REFE=4.25,
+                   PRECISION=6.9999999999999994E-05,),
+                ),
+          )
 
 FIN();

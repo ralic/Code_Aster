@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 # sdll112a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,30 +160,35 @@ N11_DX=1.09032E-03
 
 #N11_DX=(1.09032E-03 + 1.08972E-03)/ 2
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N3',  VALE = N3_DX,  PRECISION = 0.003,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-#                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'
-                     REFERENCE = 'SOURCE_EXTERNE'
-                                                                ),
-                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N7',  VALE = N7_DX,  PRECISION = 0.003,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-#                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'
-                     REFERENCE = 'SOURCE_EXTERNE'
-
-                                                                          ),
-                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N11', VALE = N11_DX, PRECISION = 0.003,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-#                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'
-                     REFERENCE = 'SOURCE_EXTERNE'
-
-                                                                       ))
-           )
+TEST_RESU(RESU=(_F(REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=SISM_MO1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.78493287E-04,
+                   VALE_REFE=1.7895199999999999E-4,
+                   NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=3.0000000000000001E-3,),
+                _F(REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=SISM_MO1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DX',
+                   VALE_CALC= 3.29270871E-04,
+                   VALE_REFE=3.2949900000000002E-4,
+                   NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=3.0000000000000001E-3,),
+                _F(REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=SISM_MO1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N11',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.08971744E-03,
+                   VALE_REFE=1.0903200000000001E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=3.0000000000000001E-3,),
+                ),
+          )
 
 #-----------------------------------------
 # TEST DES VALEURS DE ACCE_ABSOLU
@@ -195,22 +200,35 @@ N5_AX=1.96200E+00
 
 N9_AX=1.96200E+00
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'ACCE_ABSOLU',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N1',  VALE = N1_AX,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'ACCE_ABSOLU',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N5',  VALE = N5_AX,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'ACCE_ABSOLU',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N9',  VALE = N9_AX,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
-           )
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MO1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.962,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MO1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.962,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MO1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOEUD='N9',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.962,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                ),
+          )
 
 #
 #-----------------------------------------
@@ -223,22 +241,35 @@ N5_RX=1.164223E+03
 
 N9_RX=9.281995E+02
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N1',  VALE = N1_RX,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N5',  VALE = N5_RX,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N9',  VALE = N9_RX,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
-           )
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MO1,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=669.60360000000003,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MO1,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=1164.223,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MO1,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N9',
+                   NOM_CMP='DX',
+                   VALE_CALC=928.19949999999994,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                ),
+          )
 
 #=======================================================================
 # 2/ ON ETUDIE LA STRUCTURE EN MONO-APPUI
@@ -293,30 +324,35 @@ N11_DX_2=1.09032E-03
 
 #N11_DX_2=(1.09032E-03 + 1.08972E-03)/ 2.
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N3',  VALE = N3_DX_2,  PRECISION = 0.003,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-#                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'
-                     REFERENCE = 'SOURCE_EXTERNE'
-                                                                     ),
-                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N7',  VALE = N7_DX_2,  PRECISION = 0.003,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-#                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'
-                     REFERENCE = 'SOURCE_EXTERNE'
-
-                                                                      ),
-                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N11', VALE = N11_DX_2, PRECISION = 0.003,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-#                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'
-                     REFERENCE = 'SOURCE_EXTERNE'
-
-                                                                    ))
-           )
+TEST_RESU(RESU=(_F(REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=SISM_MO2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.78493682E-04,
+                   VALE_REFE=1.7895199999999999E-4,
+                   NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=3.0000000000000001E-3,),
+                _F(REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=SISM_MO2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DX',
+                   VALE_CALC= 3.29270911E-04,
+                   VALE_REFE=3.2949900000000002E-4,
+                   NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=3.0000000000000001E-3,),
+                _F(REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=SISM_MO2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N11',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.08971828E-03,
+                   VALE_REFE=1.0903200000000001E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=3.0000000000000001E-3,),
+                ),
+          )
 
 #-----------------------------------------
 # TEST DES VALEURS DE ACCE_ABSOLU
@@ -328,22 +364,35 @@ N5_AX_2=1.96200E+00
 
 N9_AX_2=1.96200E+00
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'ACCE_ABSOLU',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N1',  VALE = N1_AX_2,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'ACCE_ABSOLU',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N5',  VALE = N5_AX_2,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'ACCE_ABSOLU',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N9',  VALE = N9_AX_2,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
-           )
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MO2,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.962,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MO2,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.962,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MO2,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOEUD='N9',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.962,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                ),
+          )
 
 #-----------------------------------------
 # TEST DES VALEURS DE REACTIONS
@@ -357,23 +406,35 @@ N9_RX_2=9.373269E+02
 
 #
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N1',  VALE = N1_RX_2,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N5',  VALE = N5_RX_2,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N9',  VALE = N9_RX_2,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
-           )
-
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MO2,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=671.66830000000004,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MO2,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=1169.7270000000001,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MO2,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N9',
+                   NOM_CMP='DX',
+                   VALE_CALC=937.32690000000002,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                ),
+          )
 
 #=======================================================================
 # 4/ ON ETUDIE LA STRUCTURE EN MULTI-APPUI
@@ -456,33 +517,35 @@ N11_DX_4=1.09032E-03
 
 #N11_DX_3=5.967E-3
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N3',  VALE = N3_DX_4, PRECISION = 0.003,
-
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-#                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'
-                     REFERENCE = 'SOURCE_EXTERNE'
-                                                                           ),
-                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N7',  VALE = N7_DX_4, PRECISION = 0.003,
-
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-#                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'
-                     REFERENCE = 'SOURCE_EXTERNE'
-
-                                                                   ),
-                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N11', VALE = N11_DX_4, PRECISION = 0.003,
-
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-#                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'
-                     REFERENCE = 'SOURCE_EXTERNE'
-
-                                                                   ))
-           )
+TEST_RESU(RESU=(_F(REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=SISM_MU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.78493287E-04,
+                   VALE_REFE=1.7895199999999999E-4,
+                   NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=3.0000000000000001E-3,),
+                _F(REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=SISM_MU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DX',
+                   VALE_CALC= 3.29270871E-04,
+                   VALE_REFE=3.2949900000000002E-4,
+                   NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=3.0000000000000001E-3,),
+                _F(REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=SISM_MU1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N11',
+                   NOM_CMP='DX',
+                   VALE_CALC= 1.08971744E-03,
+                   VALE_REFE=1.0903200000000001E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=3.0000000000000001E-3,),
+                ),
+          )
 
 #-----------------------------------------
 # TEST DES VALEURS DE ACCE_ABSOLU
@@ -493,22 +556,35 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
 ## N9_AX  = 1.96200E+00 ;
 
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'ACCE_ABSOLU',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N1',  VALE = N1_AX,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'ACCE_ABSOLU',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N5',  VALE = N5_AX,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
-                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'ACCE_ABSOLU',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N9',  VALE = N9_AX,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
-           )
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MU1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.962,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.962,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOEUD='N9',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.962,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                ),
+          )
 
 #
 #-----------------------------------------
@@ -523,22 +599,35 @@ N5_RX_3=1.164223E+03
 N9_RX_3= 9.281995E+02
 
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N1',  VALE = N1_RX_3,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N5',  VALE = N5_RX_3,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-                    NOEUD = 'N9',  VALE = N9_RX_3,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-                    REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'))
-           )
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MU1,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=669.60360000000003,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU1,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=1164.223,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU1,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N9',
+                   NOM_CMP='DX',
+                   VALE_CALC=928.19949999999994,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                ),
+          )
 
 #
 #=======================================================================
@@ -612,143 +701,239 @@ SISM_MU2=COMB_SISM_MODAL(  MODE_MECA=MODE,
 
 
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-        NOEUD = 'N3',  VALE = 5.8865524E-04,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-        NOEUD = 'N5',  VALE = 1.0000000E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-        NOEUD = 'N7',  VALE = 1.1592562E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-        NOEUD = 'N9',  VALE = 1.0000000E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('DIR', 'X',),
-        NOEUD = 'N11', VALE = 3.1715622E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'))
-           )
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DX',
+                   VALE_CALC=5.8865524000000001E-4,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.1592562000000001E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N9',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N11',
+                   NOM_CMP='DX',
+                   VALE_CALC=3.1715621999999998E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                ),
+          )
 
 #-----------------------------------------
 # VALEUR DE REFERENCE DEPL          ASTER (9.02.11 )
 #   COMPOSANTES DY
 
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('DIR', 'Y',),
-        NOEUD = 'N3',  VALE = 5.8865524E-04,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('DIR', 'Y',),
-        NOEUD = 'N5',  VALE = 1.0000000E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('DIR', 'Y',),
-        NOEUD = 'N7',  VALE = 1.1592562E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('DIR', 'Y',),
-        NOEUD = 'N9',  VALE = 1.0000000E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('DIR', 'Y',),
-        NOEUD = 'N11', VALE = 3.1715622E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'))
-           )
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DY',
+                   VALE_CALC=5.8865524000000001E-4,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'Y'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'Y'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.1592562000000001E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'Y'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N9',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'Y'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N11',
+                   NOM_CMP='DY',
+                   VALE_CALC=3.1715621999999998E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'Y'),
+                   ),
+                ),
+          )
 
 #-----------------------------------------
 # VALEUR DE REFERENCE DEPL          ASTER (9.02.11)
 #   COMBINAISON QUADRATIQUE
 
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N3',  VALE = 5.8865524E-04,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N5',  VALE = 1.0000000E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N7',  VALE = 1.1592562E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N9',  VALE = 1.0000000E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N11', VALE = 3.1715622E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N3',  VALE = 5.8865524E-04,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N5',  VALE = 1.0000000E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N7',  VALE = 1.1592562E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N9',  VALE = 1.0000000E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
-                    NOEUD_CMP = ('COMBI', 'QUAD',),
-        NOEUD = 'N11', VALE = 3.1715622E-03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'))
-           )
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DX',
+                   VALE_CALC=5.8865524000000001E-4,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.1592562000000001E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N9',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N11',
+                   NOM_CMP='DX',
+                   VALE_CALC=3.1715621999999998E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N3',
+                   NOM_CMP='DY',
+                   VALE_CALC=5.8865524000000001E-4,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.1592562000000001E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N9',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N11',
+                   NOM_CMP='DY',
+                   VALE_CALC=3.1715621999999998E-3,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('COMBI', 'QUAD'),
+                   ),
+                ),
+          )
 
 #-----------------------------------------
 # TEST DES VALEURS DE REACTIONS
 # VALEUR DE REFERENCE REAC         ASTER (9.02.11)
 
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-        NOEUD = 'N1',  VALE = 1.2923446E+03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-        NOEUD = 'N5',  VALE = 1.9925394E+03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'),
-                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'REAC_NODA',
-                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
-        NOEUD = 'N9',  VALE = 2.0643776E+03,
-                    # CALCUL AVEC LA METHODE DE LANCZOS
-        REFERENCE = 'NON_REGRESSION', VERSION = '9.02.11'))
-           )
+TEST_RESU(RESU=(_F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N1',
+                   NOM_CMP='DX',
+                   VALE_CALC=1292.3445999999999,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=1992.5393999999999,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                _F(
+                   RESULTAT=SISM_MU2,
+                   NOM_CHAM='REAC_NODA',
+                   NOEUD='N9',
+                   NOM_CMP='DX',
+                   VALE_CALC=2064.3775999999998,
+                   TOLE_MACHINE=1.E-3,
+                   NOEUD_CMP=('DIR', 'X'),
+                   ),
+                ),
+          )
 
 #
 FIN( )

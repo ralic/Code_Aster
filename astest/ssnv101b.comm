@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (CHABOCHE)
 # ssnv101b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,26 +128,64 @@ SOLNL=STAT_NON_LINE(
 SOLNL=CALC_CHAMP(reuse=SOLNL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=SOLNL,INST=1.435)
 
 
-TEST_RESU(RESU=(
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  INST=1.435,
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  INST=1.435,
-                 MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  INST=1.435,PRECISION=0.02,
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 9.709E-2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  INST=1.435,PRECISION=0.02,
-                 MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXX',  VALE = 9.709E-2),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  INST=1.435,PRECISION=0.02,
-                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 1.454E-1),
-
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  INST=1.435,PRECISION=0.02,
-                 MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXY',  VALE = 1.454E-1))
-
-                                                                     )
+TEST_RESU(RESU=(_F(INST=1.4350000000000001,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=143.5,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO5',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=143.5,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='MA2',),
+                _F(INST=1.4350000000000001,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.096065007,
+                   VALE_REFE=0.097089999999999996,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.02,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO5',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.096065006,
+                   VALE_REFE=0.097089999999999996,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.02,
+                   MAILLE='MA2',),
+                _F(INST=1.4350000000000001,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.143899960,
+                   VALE_REFE=0.1454,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.02,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO5',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.143899958,
+                   VALE_REFE=0.1454,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.02,
+                   MAILLE='MA2',),
+                ),
+          )
 
 FIN()
 #

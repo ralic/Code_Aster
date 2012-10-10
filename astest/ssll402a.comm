@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ANNEAU DYNAMOMETRIQUE
 # ssll402a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,111 +101,111 @@ MEST1=CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO')
 
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'N',
-                    MAILLE = 'S11',
-                    NOEUD = 'N1',
-                    VALE = 0.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='N',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='ABSOLU',
+                  MAILLE='S11',),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'N',
-                    MAILLE = 'S11',
-                    NOEUD = 'N2',
-                    VALE = 0.5E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='N',
+                  VALE_CALC=0.5,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S11',),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'VY',
-                    MAILLE = 'S11',
-                    NOEUD = 'N1',
-                    VALE = -0.5E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='VY',
+                  VALE_CALC=-0.5,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S11',),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'VY',
-                    MAILLE = 'S11',
-                    NOEUD = 'N2',
-                    VALE = 0.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='VY',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='ABSOLU',
+                  MAILLE='S11',),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'MFZ',
-                    MAILLE = 'S11',
-                    NOEUD = 'N1',
-                    VALE = -0.636620E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=-0.63661999999999996,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S11',),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'MFZ',
-                    MAILLE = 'S11',
-                    NOEUD = 'N2',
-                    VALE = 0.363380E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=0.36337999999999998,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S11',),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'SIXX',
-                    MAILLE = 'S11',
-                    NOEUD = 'N2',
-                    VALE = 464261.6E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
-           )
-
-#
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'SIXY',
-                    MAILLE = 'S11',
-                    NOEUD = 'N1',
-                    VALE = -1856.8E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'RELATIF')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=4.6426159999999998E5,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S11',),
           )
 
 #
-TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'SIPM_ELNO',
-                    NUME_ORDRE = 1,
-                    NOM_CMP = 'SIXY',
-                    MAILLE = 'S11',
-                    NOEUD = 'N2',
-                    VALE = 0.E0,
-                    PRECISION = 1.E-5,
-                    CRITERE = 'ABSOLU')
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=-1856.8,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S11',),
+          )
+
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MEST1,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXY',
+                  VALE_CALC=0.0,
+                  TOLE_MACHINE=1.0000000000000001E-05,
+                  CRITERE='ABSOLU',
+                  MAILLE='S11',),
           )
 
 #

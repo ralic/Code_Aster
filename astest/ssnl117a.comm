@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 # ssnl117a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,48 +158,80 @@ U1=CALC_CHAMP(reuse=U1,FORCE='FORC_NODA', RESULTAT=U1, )
 # REFERENCE : CALCUL 3D-POUTRES
 
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = U1, NOM_CHAM = 'FORC_NODA',
-                 GROUP_NO = 'D', NOM_CMP = 'DRZ',
-                 NUME_ORDRE = 1, VALE = 3.08670E+06,
-                 REFERENCE = 'AUTRE_ASTER'),
-           _F( RESULTAT = U1, NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D', NOM_CMP = 'DY', PRECISION = 0.03,
-                 NUME_ORDRE = 1, VALE = 1.09349E-02,
-                 REFERENCE = 'AUTRE_ASTER'),
-           _F( RESULTAT = U1, NOM_CHAM = 'FORC_NODA',
-                 GROUP_NO = 'D', NOM_CMP = 'DRZ',
-                 NUME_ORDRE = 8, VALE = 5.88981E+06,
-                 REFERENCE = 'AUTRE_ASTER'),
-           _F( RESULTAT = U1, NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D', NOM_CMP = 'DY', PRECISION = 0.03,
-                 NUME_ORDRE = 8, VALE = 2.20836E-02,
-                 REFERENCE = 'AUTRE_ASTER'))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='D',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DRZ',
+                   VALE_CALC= 3.08670215E+06,
+                   VALE_REFE=3.086700E6,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='D',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.011198591,
+                   VALE_REFE=0.010934899999999999,
+                   PRECISION=0.029999999999999999,),
+                _F(NUME_ORDRE=8,
+                   GROUP_NO='D',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DRZ',
+                   VALE_CALC= 5.88981326E+06,
+                   VALE_REFE=5.889810E6,),
+                _F(NUME_ORDRE=8,
+                   GROUP_NO='D',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.022715198,
+                   VALE_REFE=0.022083599999999998,
+                   PRECISION=0.029999999999999999,),
+                ),
           )
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = U1, NOM_CHAM = 'FORC_NODA',
-                 GROUP_NO = 'A', NOM_CMP = 'DRZ',
-                 NUME_ORDRE = 1, VALE = -3.08670E+06,
-                 REFERENCE = 'AUTRE_ASTER'),
-           _F( RESULTAT = U1, NOM_CHAM = 'FORC_NODA',
-                 GROUP_NO = 'A', NOM_CMP = 'DRZ',
-                 NUME_ORDRE = 8, VALE = -5.88981E+06,
-                 REFERENCE = 'AUTRE_ASTER'))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=-3.08661769E+06,
+                   VALE_REFE=-3.086700E6,),
+                _F(NUME_ORDRE=8,
+                   GROUP_NO='A',
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=-5.88964685E+06,
+                   VALE_REFE=-5.889810E6,),
+                ),
           )
 
 # NON REGRESSION :
 
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = U1, NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D', NOM_CMP = 'DY',
-                 NUME_ORDRE = 1, VALE = 1.1190311916921E-02,
-                 REFERENCE = 'NON_REGRESSION'),
-          _F( RESULTAT = U1, NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D', NOM_CMP = 'DY',
-                 NUME_ORDRE = 8, VALE = 2.2698008851707E-02,
-                 REFERENCE = 'NON_REGRESSION'))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='D',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.011190311916921001,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=8,
+                   GROUP_NO='D',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.022698008851706999,
+                   TOLE_MACHINE=1.E-3,),
+                ),
           )
 
 FIN( )

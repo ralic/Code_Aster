@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LACHER D'UN PATIN FROTTANT
 # sdnd101a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -199,127 +199,152 @@ IMPR_TABLE(    TABLE=TT,
                         'PROBA', )
           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'GLOBAL'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1')),
-                 NOM_PARA='F_MAX_ABS',
-                     VALE=9950.
-             )
+TEST_TABLE(VALE_CALC=9950.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='F_MAX_ABS',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='GLOBAL',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 1)),
-                 NOM_PARA='INSTANT',
-                     VALE=1.563E-2,
-                PRECISION=1.E-2
-             )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.015500000,
+           VALE_REFE=0.015630000000000002,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='INSTANT',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 2)),
-                 NOM_PARA='INSTANT',
-                     VALE=0.361
-             )
+TEST_TABLE(VALE_CALC=0.36099999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INSTANT',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=2,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 1)),
-                 NOM_PARA='F_MAX',
-                     VALE=9950.
-             )
+TEST_TABLE(VALE_CALC=9950.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='F_MAX',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=1,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 2)),
-                 NOM_PARA='F_MAX',
-                     VALE=9950.
-             )
+TEST_TABLE(VALE_CALC=9950.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='F_MAX',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=2,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 2)),
-                 NOM_PARA='IMPULSION',
-                     VALE=198.05
-             )
+TEST_TABLE(VALE_CALC=198.05000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IMPULSION',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=2,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 2)),
-                 NOM_PARA='IMPULSION',
-                     VALE=198.05
-             )
+TEST_TABLE(VALE_CALC=198.05000000000001,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='IMPULSION',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=2,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 2)),
-                 NOM_PARA='T_CHOC',
-                     VALE=0.03126,
-                PRECISION=1.E-2
-             )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.031500000,
+           VALE_REFE=0.031260000000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='T_CHOC',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=2,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 2)),
-                 NOM_PARA='T_CHOC',
-                     VALE=0.03126,
-                PRECISION=1.E-2
-             )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.031500000,
+           VALE_REFE=0.031260000000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='T_CHOC',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=2,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 2)),
-                 NOM_PARA='V_IMPACT',
-                     VALE=-1.
-             )
+TEST_TABLE(VALE_CALC=-1.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V_IMPACT',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=2,),
+                   ),
+           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'IMPACT'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1'),
-                   _F(  NOM_PARA = 'CHOC',
-                            VALE_I = 2)),
-                 NOM_PARA='V_IMPACT',
-                     VALE=-1.
-             )
+TEST_TABLE(VALE_CALC=-1.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V_IMPACT',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='IMPACT',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='NO1',),
+                   _F(NOM_PARA='CHOC',
+                      VALE_I=2,),
+                   ),
+           )
 
 FIN( )
 #

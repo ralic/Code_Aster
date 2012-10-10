@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL ELASTIQUE D'UN ANNEAU CREUX SOUMIS A UNE PRESSION INTERIEURE
 # perf001e.para = tps_job 450 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,9 +52,17 @@ RESU=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CHMAT, INFO=1,
              OPTION='SANS',
              )
 
-TEST_RESU(RESU=(_F( RESULTAT = RESU,  NOM_CHAM='DEPL', GROUP_NO='X2', NOM_CMP='DZ',
-                    CRITERE = 'RELATIF',  NUME_ORDRE = 1,
-                    REFERENCE='NON_REGRESSION', VALE = 5.87E-4,  PRECISION = 3.E-3,)))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='X2',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC= 5.87363490E-04,
+                  VALE_REFE=5.8699999999999996E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
 if 0 :   # pour faire une belle image :
     RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'))

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ABSORPTION D'UNE ONDE DE PRESSION DANS UNE COLONNE FLUIDE
 # fdlv111a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,107 +144,131 @@ PRECREL2 = 2.E-5
 PRECABS1 = 3.E-3
 PRECABS2 = 3.5E-1 
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=1.6174217088701E4,
+           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECREL1,
-           VALE=16174.217088701,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=8708.2334180757007,
+           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='ENER_CIN',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECREL1,
-           VALE=8708.2334180757,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=1643.1998931989999,
+           TOLE_MACHINE=1.9999999999999999E-07,
            NOM_PARA='ENER_TOT',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=2.E-7,
-           VALE=1643.199893199,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=0.0,
+           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='TRAV_AMOR',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECREL1,
-           VALE=0.0,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=5822.7834393976,
+           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='TRAV_LIAI',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECREL1,
-           VALE=5822.7834393976,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           TOLE_MACHINE=1.e-3,
+           PRECISION=3.0000000000000001E-3,
+           VALE_CALC=3.38028377E-04,
+           VALE_REFE=3.3802828030925002E-4,
            NOM_PARA='DISS_SCH',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                      VALE=0.6,),
-           PRECISION=PRECABS1,
-           CRITERE='ABSOLU',
-           VALE=3.3802828030925E-04,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=2.5960433417724998E4,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=25960.433417725,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.2,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=2.1890298685734999,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='ENER_CIN',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=2.1890298685735,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.2,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=0.13511580972602,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='ENER_TOT',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                      VALE=1.2,),
-           VALE=0.13511580972602,
-           PRECISION=PRECREL2,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.2,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=0.0,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='TRAV_AMOR',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=0.0,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.2,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(
+           VALE_CALC=2.5958109544434999E4,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='TRAV_LIAI',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=25958.109544435,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.2,),
+           )
 
-TEST_TABLE(TABLE=ENER1,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           TOLE_MACHINE=1.e-3,
+           PRECISION=3.0000000000000001E-3,
+           VALE_CALC=-2.72388701E-04,
+           VALE_REFE=-2.7238871660871999E-4,
            NOM_PARA='DISS_SCH',
+           TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
-                      VALE=1.2,),
-           PRECISION=PRECABS1,
-           CRITERE='ABSOLU',
-           VALE=-2.7238871660872E-04,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.2,),
+           )
 
 # TESTS DE NON REGRESSION SUPPLEMENTAIRES 
 
-TEST_RESU(RESU=_F(RESULTAT=DYN,NUME_ORDRE=960,NOM_CHAM='VITE',REFERENCE='NON_REGRESSION',NOEUD='N46',NOM_CMP='DY',VALE=-1.4148495367254e-05,PRECISION=1e-7),)
+TEST_RESU(RESU=_F(NUME_ORDRE=960,
+                  RESULTAT=DYN,
+                  NOM_CHAM='VITE',
+                  NOEUD='N46',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.4148495367254001E-05,
+                  TOLE_MACHINE=9.9999999999999995E-08,
+                  ),
+          )
 
 DYN = CALC_CHAMP (reuse = DYN,
   RESULTAT = DYN,
@@ -256,13 +280,14 @@ TRAVAIL = POST_ELEM(
   TRAV_EXT = _F()
   )
 
-TEST_TABLE(TABLE=TRAVAIL,
+TEST_TABLE(
+           VALE_CALC=0.13511580957683,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='TRAV_REEL',
+           TABLE=TRAVAIL,
            FILTRE=_F(NOM_PARA='INST',
-                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=1.3511580957683e-1,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=1.2,),
+           )
 
 # --- FIN TEST SUR LES ENERGIES -----------------------------------------------
 
@@ -284,44 +309,43 @@ PN47=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
                         NOM_CMP='PRES'
                       )
 
-TEST_FONCTION(VALEUR=(   _F(
-                   FONCTION = PN16,
-                   VALE_PARA = 4.71250E-01,
-                   VALE_REFE = 7.13737E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = PN16,
-                   VALE_PARA = 7.27500E-01,
-                   VALE_REFE = -7.08305E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = PN16,
-                   VALE_PARA = 1.27375E+00,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E0,
-                   REFERENCE = 'ANALYTIQUE'))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=7137.3699999999999,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.47125,
+                         FONCTION=PN16,
+                         ),
+                      _F(VALE_CALC=-7083.0500000000002,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.72750000000000004,
+                         FONCTION=PN16,
+                         ),
+                      _F(VALE_CALC=0.182417154312,
+                         VALE_REFE=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.2737499999999999,
+                         REFERENCE='ANALYTIQUE',
+                         TOLE_MACHINE=1.e-1,
+                         PRECISION=1.0,
+                         FONCTION=PN16,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(   _F(
-                   FONCTION = PN18,
-                   VALE_PARA = 4.71250E-01,
-                   VALE_REFE = 7.13737E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F(
-                   FONCTION = PN47,
-                   VALE_PARA = 3.72500E-01,
-                   VALE_REFE = 7.09321E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=7137.3699999999999,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.47125,
+                         FONCTION=PN18,
+                         ),
+                      _F(VALE_CALC=7093.21,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.3725,
+                         FONCTION=PN47,
+                         ),
+                      ),
+              )
 
 TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.2, NOMBRE = 400))
 
@@ -365,104 +389,118 @@ ENER=RECU_TABLE(CO=DYNA,NOM_TABLE='PARA_CALC',);
 
 IMPR_TABLE(TABLE=ENER);
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=1.6182454098009999E4,
+           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECREL1,
-           VALE=16182.45409801,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=8544.6318426999005,
+           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='ENER_CIN',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECREL1,
-           VALE=8544.6318426999,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=1659.4161904773,
+           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='ENER_TOT',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECREL1,
-           VALE=1659.4161904773,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=0.0,
+           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='TRAV_AMOR',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECREL1,
-           VALE=0.0,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=5978.7388102876002,
+           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='TRAV_LIAI',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECREL1,
-           VALE=5978.7388102876,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.34999999999999998,
+           VALE_CALC=-0.332745455,
+           VALE_REFE=-0.33274545480380002,
            NOM_PARA='DISS_SCH',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           PRECISION=PRECABS2,
-           CRITERE='ABSOLU',
-           VALE=-0.33274545480380,
-           REFERENCE = 'NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=2.58780513871E4,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='TRAV_EXT',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=25878.0513871,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=0.40519354754296,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='ENER_CIN',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=0.40519354754296,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=0.031421263947149003,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='ENER_TOT',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=0.031421263947149,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=0.0,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='TRAV_AMOR',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=0.0,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(
+           VALE_CALC=2.5877467642006999E4,
+           TOLE_MACHINE=2.0000000000000002E-05,
            NOM_PARA='TRAV_LIAI',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=PRECREL2,
-           VALE=25877.467642007,
-           REFERENCE = 'NON_REGRESSION');
+           )
 
-TEST_TABLE(TABLE=ENER,
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.34999999999999998,
+           VALE_CALC=0.147130282,
+           VALE_REFE=0.14713028172852999,
            NOM_PARA='DISS_SCH',
+           TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=PRECABS2,
-           CRITERE='ABSOLU',
-           VALE=0.14713028172853,
-           REFERENCE = 'NON_REGRESSION');
-                      
+           )
+
 # --- FIN TEST SUR LES ENERGIES -----------------------------------------------
 
 PNA16=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
@@ -483,39 +521,46 @@ PNA47=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
                         NOM_CMP='PRES'
                       )
 
-TEST_FONCTION(VALEUR=(   _F(
-                   FONCTION = PNA16,
-                   VALE_PARA = 4.71000E-01,
-                   VALE_REFE = 7.11473E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 9.E-3),
-                  _F(
-                   FONCTION = PNA16,
-                   VALE_PARA = 7.26000E-01,
-                   VALE_REFE = -7.00022E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 2.E-2),
-                  _F(
-                   FONCTION = PNA16,
-                   VALE_PARA = 1.20000E+00,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 50.E0))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=7108.75020871,
+                         VALE_REFE=7114.7299999999996,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.47099999999999997,
+                         PRECISION=8.9999999999999993E-3,
+                         FONCTION=PNA16,),
+                      _F(VALE_CALC=-7049.03637707,
+                         VALE_REFE=-7000.2200000000003,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.72599999999999998,
+                         PRECISION=0.02,
+                         FONCTION=PNA16,),
+                      _F(VALE_CALC=-6.41877447595,
+                         VALE_REFE=0.0,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.2,
+                         PRECISION=50.0,
+                         FONCTION=PNA16,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(   _F(
-                   FONCTION = PNA18,
-                   VALE_PARA = 4.71000E-01,
-                   VALE_REFE = 7.11473E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 9.E-3),
-                  _F(
-                   FONCTION = PNA47,
-                   VALE_PARA = 3.72000E-01,
-                   VALE_REFE = 7.08110E+03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 3.E-3))
-                )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=7108.75020871,
+                         VALE_REFE=7114.7299999999996,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.47099999999999997,
+                         PRECISION=8.9999999999999993E-3,
+                         FONCTION=PNA18,),
+                      _F(VALE_CALC=7081.74638851,
+                         VALE_REFE=7081.1000000000004,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.372,
+                         PRECISION=3.0000000000000001E-3,
+                         FONCTION=PNA47,),
+                      ),
+              )
 
 FIN()
 #

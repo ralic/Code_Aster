@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE L'IMPRESSION DES REPERES LOCAUX PAR IMPR_RESU/CONCEPT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,7 +128,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='DKT4',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -137,7 +138,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='DKT3',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -146,7 +148,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='DST4',
                         POINT= 1,
                         NOM_CMP = 'Z',
-                        VALE    = 0.707106781186E0,
+                        VALE_CALC=0.707106781186E0,
+                        VALE_REFE=0.707106781186E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -155,7 +158,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='DST3',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -164,7 +168,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='Q4G4',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -173,7 +178,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='DKTG4',
                         POINT= 1,
                         NOM_CMP = 'Z',
-                        VALE    = 0.707106781186E0,
+                        VALE_CALC=0.707106781186E0,
+                        VALE_REFE=0.707106781186E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -182,7 +188,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='GRME3',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -191,7 +198,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='Q4GG3',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = 0.5E0,
+                        VALE_CALC=0.5E0,
+                        VALE_REFE=0.5E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -200,7 +208,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='GREX4',
                         POINT= 1,
                         NOM_CMP = 'Z',
-                        VALE    = -0.707106781186E0,
+                        VALE_CALC=-0.707106781186E0,
+                        VALE_REFE=-0.707106781186E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -213,7 +222,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='DKT4',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = 0.707106781186E0,
+                        VALE_CALC=0.707106781186E0,
+                        VALE_REFE=0.707106781186E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -222,7 +232,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='DKT3',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = -0.707106781186E0,
+                        VALE_CALC=-0.707106781186E0,
+                        VALE_REFE=-0.707106781186E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -231,7 +242,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='DST3',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = 0.707106781186E0,
+                        VALE_CALC=0.707106781186E0,
+                        VALE_REFE=0.707106781186E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -240,7 +252,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='Q4G4',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = -0.707106781186E0,
+                        VALE_CALC=-0.707106781186E0,
+                        VALE_REFE=-0.707106781186E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -249,7 +262,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='GRME3',
                         POINT= 1,
                         NOM_CMP = 'X',
-                        VALE    = 0.707106781186E0,
+                        VALE_CALC=0.707106781186E0,
+                        VALE_REFE=0.707106781186E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),
@@ -258,7 +272,8 @@ TEST_RESU(CHAM_ELEM=(_F(
                         MAILLE='Q4GG3',
                         POINT= 1,
                         NOM_CMP = 'Y',
-                        VALE    = -0.707106781186E0,
+                        VALE_CALC=-0.707106781186E0,
+                        VALE_REFE=-0.707106781186E0,
                         REFERENCE = 'ANALYTIQUE',
                         PRECISION = 1.E-8
                        ),

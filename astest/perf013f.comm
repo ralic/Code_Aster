@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODES PROPRES D'UNE PLAQUE CARRE ENCASTREE SUR 2 BORDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,14 +73,14 @@ MODES=MODE_ITER_SIMULT(INFO=2,
                       MATR_RIGI=RIGI,
                       VERI_MODE=_F( SEUIL=1.E-05),);
 
-TEST_RESU(RESU=
-       _F( RESULTAT = MODES, PARA = 'FREQ', CRITERE = 'RELATIF',
-           PRECISION = 3.E-3, NUME_ORDRE = 3, VALE = 993.5, REFERENCE = 'NON_REGRESSION'),)
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  PARA='FREQ',
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=MODES,
+                  VALE_CALC=993.671961370,
+                  VALE_REFE=993.5,
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
 
 FIN()
-
-
-
-
-
-

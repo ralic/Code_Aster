@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE POST_ELEM MOT CLE FACTEUR CARA_GEOM
 # ssll107i.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,19 +28,24 @@ TCARA=MACR_CARA_POUTRE(   GROUP_MA_BORD='LEXT',
                                NOEUD='N1' )
 IMPR_TABLE(TABLE=TCARA)
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000002'),
-                 NOM_PARA='JX',
-                PRECISION=0.003,
-                     VALE=5401.97       )
+TEST_TABLE(PRECISION=3.0000000000000001E-3,
+           VALE_CALC= 5.39148150E+03,
+           VALE_REFE=5401.9700000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='JX',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000002'),
-                 NOM_PARA='RT',
-                 REFERENCE='ANALYTIQUE',
-                     VALE=10.000       )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=10.002854962,
+           VALE_REFE=10.0,
+           NOM_PARA='RT',
+           TABLE=TCARA,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000002',),
+           )
 
 FIN( )
 #

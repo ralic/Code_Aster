@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE CREUX ORTHOTROPE
 # tpla07a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -208,45 +208,57 @@ IMPR_TABLE(TABLE=FLUYAB,);
 
 IMPR_TABLE(TABLE=TEMP_CD,);
 
-TEST_TABLE(TABLE=FLUYAB,
-           TYPE_TEST='MAX',
+TEST_TABLE(PRECISION=0.014999999999999999,
+           VALE_CALC=-494.756765481,
+           VALE_REFE=-500.0,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='FLUY',
-           VALE=-500.0,
-           PRECISION=0.015,);
+           TYPE_TEST='MAX',
+           TABLE=FLUYAB,)
 
-TEST_TABLE(TABLE=FLUYAB,
-           TYPE_TEST='MIN',
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=-500.136952564,
+           VALE_REFE=-500.0,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='FLUY',
-           VALE=-500.0,
-           PRECISION=0.01,);
-
-TEST_TABLE(TABLE=FLUYAB,
-           TYPE_TEST='MAX',
-           NOM_PARA='Diff',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.01,);
-
-TEST_TABLE(TABLE=FLUYAB,
            TYPE_TEST='MIN',
-           NOM_PARA='Diff',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.01,);
+           TABLE=FLUYAB,)
 
-TEST_TABLE(TABLE=TEMP_CD,
+TEST_TABLE(CRITERE='ABSOLU',
+           PRECISION=1.E-2,
+           VALE_CALC=-1.03409185E-03,
+           VALE_REFE=0.0,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='Diff',
            TYPE_TEST='MAX',
-           NOM_PARA='Diff',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.01,);
+           TABLE=FLUYAB,)
 
-TEST_TABLE(TABLE=TEMP_CD,
-           TYPE_TEST='MIN',
+TEST_TABLE(CRITERE='ABSOLU',
+           PRECISION=1.E-2,
+           VALE_CALC=-3.33221511E-03,
+           VALE_REFE=0.0,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='Diff',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.01,);
+           TYPE_TEST='MIN',
+           TABLE=FLUYAB,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           PRECISION=1.E-2,
+           VALE_CALC=-8.18010291E-05,
+           VALE_REFE=0.0,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='Diff',
+           TYPE_TEST='MAX',
+           TABLE=TEMP_CD,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           PRECISION=1.E-2,
+           VALE_CALC=-1.86961952E-04,
+           VALE_REFE=0.0,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='Diff',
+           TYPE_TEST='MIN',
+           TABLE=TEMP_CD,)
 
 #
 # FIN ------------------------------------------------------------------
@@ -254,4 +266,3 @@ TEST_TABLE(TABLE=TEMP_CD,
 FIN();
 
 #
-

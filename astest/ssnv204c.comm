@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION CYCLIQUE DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 # ssnv204c.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -262,42 +262,48 @@ IMPR_TABLE(TABLE=TAB_VAR);
 
 # VALEUR DU RAYON ISOTROPE CYCLIQUE
 
-TEST_TABLE(TABLE=TAB_VAR,
-           NOM_PARA='V8',
-           VALE=3.99985E-02,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0000,
-                     PRECISION=1E-6,
-                     CRITERE='ABSOLU'));
+           PRECISION=1.E-2,
+           VALE_CALC=0.039997694,
+           VALE_REFE=0.039998499999999999,
+           NOM_PARA='V8',
+           TABLE=TAB_VAR,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
 # VALEUR DE LA DEFORMATION VOLUMIQUE PLASTIQUE
 
-TEST_TABLE(TABLE=TAB_VAR,
-           NOM_PARA='V23',
-           VALE=7.42953E-03,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0000,
-                     PRECISION=1E-6,
-                     CRITERE='ABSOLU'));
+           PRECISION=1.E-2,
+           VALE_CALC= 7.42844389E-03,
+           VALE_REFE=7.4295300000000002E-3,
+           NOM_PARA='V23',
+           TABLE=TAB_VAR,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
 # VALEUR DES CONTRAINTES PRINCIPALES
 
-TEST_TABLE(TABLE=TAB_SIG,
-           NOM_PARA='SIXX',
-           VALE=-2.00000,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0000,
-                     PRECISION=1E-6,
-                     CRITERE='ABSOLU'));
+           PRECISION=1.E-2,
+           VALE_CALC=-2.000000000,
+           VALE_REFE=-2.0,
+           NOM_PARA='SIXX',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=3.0,),
+           )
 
 ###################################################
 #
@@ -307,42 +313,47 @@ TEST_TABLE(TABLE=TAB_SIG,
 
 # VALEUR DU RAYON ISOTROPE MONOTONE
 
-TEST_TABLE(TABLE=TAB_VAR,
-           NOM_PARA='V4',
-           VALE=1.0943E-01,
-           PRECISION=0.01,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=10.00,
-                     PRECISION=1E-6,
-                     CRITERE='ABSOLU'));
+           PRECISION=1.E-2,
+           VALE_CALC=0.109472292,
+           VALE_REFE=0.10943,
+           NOM_PARA='V4',
+           TABLE=TAB_VAR,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=10.0,),
+           )
 
 # VALEUR DE LA DEFORMATION VOLUMIQUE PLASTIQUE
 
-TEST_TABLE(TABLE=TAB_VAR,
-           NOM_PARA='V23',
-           VALE=-2.0572E-02,
-           PRECISION=0.03,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=10.00,
-                     PRECISION=1E-6,
-                     CRITERE='ABSOLU'));
+           PRECISION=0.029999999999999999,
+           VALE_CALC=-0.020612719,
+           VALE_REFE=-0.020572,
+           NOM_PARA='V23',
+           TABLE=TAB_VAR,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=10.0,),
+           )
 
 # VALEUR DES CONTRAINTES PRINCIPALES
 
-TEST_TABLE(TABLE=TAB_SIG,
-           NOM_PARA='SIXX',
-           VALE=-4.482E+05,
-           PRECISION=0.02,
-           CRITERE='RELATIF',
+TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=10.00,
-                     PRECISION=1E-6,
-                     CRITERE='ABSOLU'));
-
+           PRECISION=0.02,
+           VALE_CALC=-4.48840450E+05,
+           VALE_REFE=-4.48200E5,
+           NOM_PARA='SIXX',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.9999999999999995E-07,
+                     NOM_PARA='INST',
+                     VALE=10.0,),
+           )
 
 FIN();

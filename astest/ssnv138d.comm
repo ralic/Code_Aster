@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES ROTATIONS SSNV138A
 # ssnv138d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,36 +127,47 @@ DRZ_CALC=CALC_FONCTION(COMB=_F(FONCTION=DRZ_CAL,
                                COEF=-1.0,),);
 #Test sur la rotation autour de Z de l'extremite libre
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.300152024531,
+                        VALE_REFE=-0.29999999999999999,
+                        VALE_PARA=0.29999999999999999,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=0.3,
-                        VALE_REFE=-0.3,
-                        REFERENCE='ANALYTIQUE',),);
+                        FONCTION=DRZ_CALC,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.60022915342,
+                        VALE_REFE=-0.59999999999999998,
+                        VALE_PARA=0.59999999999999998,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=0.6,
-                        VALE_REFE=-0.6,
-                        REFERENCE='ANALYTIQUE',),);
+                        FONCTION=DRZ_CALC,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
-                        NOM_PARA='INST',
-                        VALE_PARA=1.0,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.00021558445,
                         VALE_REFE=-1.0,
-                        REFERENCE='ANALYTIQUE',),);
-
-TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
+                        VALE_PARA=1.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=3.0,
+                        FONCTION=DRZ_CALC,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-2.99815665108,
                         VALE_REFE=-3.0,
-                        REFERENCE='ANALYTIQUE',),);
-
-TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
+                        VALE_PARA=3.0,
+                        REFERENCE='ANALYTIQUE',
                         NOM_PARA='INST',
-                        VALE_PARA=6.0,
+                        FONCTION=DRZ_CALC,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-5.9888738428,
                         VALE_REFE=-6.0,
-                        PRECISION=0.005,
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=6.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=5.0000000000000001E-3,
+                        NOM_PARA='INST',
+                        FONCTION=DRZ_CALC,),
+              )
+
 # REFERENCE ANALYTIQUE
 
 TPS_CALC=DEFI_LIST_REEL(DEBUT=0.005,
@@ -203,80 +214,97 @@ V4 = 10*(1-cos(INST4))/INST4;
 
 #Test sur le deplacement l'extremite libre
 
-TEST_FONCTION(VALEUR=_F(FONCTION=U_CALC,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST1,
-                        VALE_REFE=U1,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.151553464085,
+                        VALE_REFE=-0.14932644462201439,
                         CRITERE='RELATIF',
+                        VALE_PARA=0.29999999999999999,
+                        REFERENCE='ANALYTIQUE',
                         PRECISION=0.02,
-                        REFERENCE='ANALYTIQUE',),);
-
-TEST_FONCTION(VALEUR=_F(FONCTION=U_CALC,
                         NOM_PARA='INST',
-                        VALE_PARA=INST2,
-                        VALE_REFE=U2,
-                        CRITERE='RELATIF',
-                        PRECISION=0.01,
-                        REFERENCE='ANALYTIQUE',),);
+                        FONCTION=U_CALC,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=U_CALC,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST3,
-                        VALE_REFE=U3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.592910574881,
+                        VALE_REFE=-0.58929211008274307,
                         CRITERE='RELATIF',
-                        PRECISION=0.003,
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=0.59999999999999998,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=1.E-2,
+                        NOM_PARA='INST',
+                        FONCTION=U_CALC,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=U_CALC,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST4,
-                        VALE_REFE=U4,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-9.51521041833,
+                        VALE_REFE=-9.5295999731337755,
                         CRITERE='RELATIF',
-                        PRECISION=0.003,
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=3.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=3.0000000000000001E-3,
+                        NOM_PARA='INST',
+                        FONCTION=U_CALC,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST1,
-                        VALE_REFE=V1,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-10.4907941934,
+                        VALE_REFE=-10.465692496998209,
                         CRITERE='RELATIF',
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=6.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=3.0000000000000001E-3,
+                        NOM_PARA='INST',
+                        FONCTION=U_CALC,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST2,
-                        VALE_REFE=V2,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.4891268867,
+                        VALE_REFE=1.488783695813134,
                         CRITERE='RELATIF',
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=0.29999999999999999,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=V_CALC,),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST3,
-                        VALE_REFE=V3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.91076513029,
+                        VALE_REFE=2.9110730848386948,
                         CRITERE='RELATIF',
-                        PRECISION=0.005,
-                        REFERENCE='ANALYTIQUE',),);
+                        VALE_PARA=0.59999999999999998,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_PARA='INST',
+                        FONCTION=V_CALC,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.64501293937,
+                        VALE_REFE=6.6333083220014855,
+                        CRITERE='RELATIF',
+                        VALE_PARA=3.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=5.0000000000000001E-3,
+                        NOM_PARA='INST',
+                        FONCTION=V_CALC,),
+              )
 
 # a cet instant, la ref est proche de 0, un test en relatif n'a pas de sens
 # il faudrait un test en relatif par rapport au depl max : (vcal - vref)/vmax < 1%
 # on feinte en faisant un test en absolu avec une tolerance qui depend du depl max :
 # (vcal - vref) < vmax * 1%
 vmax = 7.
-TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
-                        NOM_PARA='INST',
-                        VALE_PARA=INST4,
-                        VALE_REFE=V4,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0864381276794,
+                        VALE_REFE=0.066382855582723388,
                         CRITERE='ABSOLU',
-                        PRECISION=0.01*vmax,
-                        REFERENCE='ANALYTIQUE',),);
-
-TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
+                        VALE_PARA=6.0,
+                        REFERENCE='ANALYTIQUE',
+                        PRECISION=0.070000000000000007,
                         NOM_PARA='INST',
-                        VALE_PARA=INST4,
-                        VALE_REFE=8.6438127677132E-02,
+                        FONCTION=V_CALC,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.086438127677132007,
+                        TOLE_MACHINE=1.E-3,
                         CRITERE='RELATIF',
-                        REFERENCE='NON_REGRESSION',
-                        VERSION='8.3.2',),);
+                        VALE_PARA=6.0,
+                        NOM_PARA='INST',
+                        FONCTION=V_CALC,
+                        ),
+              )
 
 #Impression des valeurs et des graphes
 

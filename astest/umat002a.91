@@ -1,24 +1,24 @@
 def PROD_ROT(X1,X2):
-	"calcul Produit de 2 vecteurs pour les coef de rotations"
-	"dimension de X1 et X2 liste de 3 scalaire resultat liste de 6 scalaire"
-	if (len(X1)==len(X2)==3) : 
-		Y=[None]*6
-		V_ind=[[0,0,0.5],[1,1,0.5],[2,2,0.5],[0,1,1.0],[0,2,1.0],[1,2,1.0]]
-		for ind in V_ind:
-			i=V_ind.index(ind)
-			ind1,ind2,coef=ind[0],ind[1],ind[2]
-			Y[i]=coef*(X1[ind1]*X2[ind2]+X1[ind2]*X2[ind1])
-		return Y
-	else :
-		print "CALCUL PROD_ROT IMPOSSIBLE, dimensions innatendues"
-		return None
+    "calcul Produit de 2 vecteurs pour les coef de rotations"
+    "dimension de X1 et X2 liste de 3 scalaire resultat liste de 6 scalaire"
+    if (len(X1)==len(X2)==3) : 
+        Y=[None]*6
+        V_ind=[[0,0,0.5],[1,1,0.5],[2,2,0.5],[0,1,1.0],[0,2,1.0],[1,2,1.0]]
+        for ind in V_ind:
+            i=V_ind.index(ind)
+            ind1,ind2,coef=ind[0],ind[1],ind[2]
+            Y[i]=coef*(X1[ind1]*X2[ind2]+X1[ind2]*X2[ind1])
+        return Y
+    else :
+        print "CALCUL PROD_ROT IMPOSSIBLE, dimensions innatendues"
+        return None
 #######################################################################
 def ERREUR(X,Xref,coef=1.,prec_zero=0.):
-	"calcul erreur relative entre deux nombres"
-	if (Xref<prec_zero) : return 0.
-	else :
-		err= abs((X*coef-Xref)/Xref)
-		return err
+    "calcul erreur relative entre deux nombres"
+    if (Xref<prec_zero) : return 0.
+    else :
+        err= abs((X*coef-Xref)/Xref)
+        return err
 #######################################################################
 def RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI):
 # On renomme les composantes en fonction de  l'ordre de discrétisation
@@ -91,7 +91,13 @@ def TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero
            ch_cal = ch + label_cal[j] + str(N_pas[j]) 
            ch_err = 'ER_' + ch_cal
            TEST_TABLE(TABLE=R_SI[i],NOM_PARA=ch_err,
-                 TYPE_TEST='MAX',VALE=0.,CRITERE='ABSOLU',PRECISION=prec_ecart[j],REFERENCE='ANALYTIQUE',);
+                      TYPE_TEST='MAX',
+                      VALE_CALC=0.,
+                      TOLE_MACHINE=prec_ecart[j],
+                      VALE_REFE=0.,
+                      CRITERE='ABSOLU',
+                      PRECISION=prec_ecart[j],
+                      REFERENCE='ANALYTIQUE',)
                  
    return
         
@@ -133,7 +139,13 @@ def TEST_ECAR2(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI2,prec_ecart,prec_zer
            ch_cal = ch + label_cal[j] + str(N_pas[j]) 
            ch_err = 'ER_' + ch_cal
            TEST_TABLE(TABLE=R_SI2[i],NOM_PARA=ch_err,
-                 TYPE_TEST='MAX',VALE=0.,CRITERE='ABSOLU',PRECISION=prec_ecart[j],REFERENCE='ANALYTIQUE',);
+                      TYPE_TEST='MAX',
+                      VALE_CALC=0.,
+                      TOLE_MACHINE=prec_ecart[j],
+                      VALE_REFE=0.,
+                      CRITERE='ABSOLU',
+                      PRECISION=prec_ecart[j],
+                      REFERENCE='ANALYTIQUE',);
                  
    return
         

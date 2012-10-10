@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #======================================================================
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'MAZARS'
@@ -123,3 +123,4 @@ IMPR_TABLE(TABLE=tabresu)
 
 
 FIN()
+

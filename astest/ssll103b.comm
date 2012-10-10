@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE 'FLAMBEMENT' D'UNE CORNIERE ELASTIQUE
 # ssll103b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,13 +120,29 @@ MOD_1=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
 
 #
 
-TEST_RESU(RESU=(
-   _F( RESULTAT = MOD_1, NUME_MODE = 10,  PARA = 'CHAR_CRIT', VALE = -6.7960E5,
-    PRECISION = 1.E-2,),
-   _F( RESULTAT = MOD_1, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = -1.5050E6,
-    PRECISION = 1.E-2,),
-   _F( RESULTAT = MOD_1, NUME_MODE = 1,  PARA = 'CHAR_CRIT', VALE = -1.0050E7,
-    PRECISION = 5.E-2,)))
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   NUME_MODE=10,
+                   RESULTAT=MOD_1,
+                   VALE_CALC=-6.78672582E+05,
+                   VALE_REFE=-6.79600E5,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=3,
+                   RESULTAT=MOD_1,
+                   VALE_CALC=-1.49004790E+06,
+                   VALE_REFE=-1.505000E6,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=1,
+                   RESULTAT=MOD_1,
+                   VALE_CALC=-9.60587544E+06,
+                   VALE_REFE=-1.0050000E7,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
 
 # 'FLAMBEMENT' CAS 2  (FORCE EN C)
 # ------------------------------
@@ -162,11 +178,13 @@ NB_MODES = INFO_MODE( MATR_RIGI=RIGAS,
                       CHAR_CRIT_MAX=-1.E6
                             )
                             
-TEST_TABLE(     TABLE=NB_MODES,
-                REFERENCE='NON_REGRESSION',
-                NOM_PARA='NB_MODE', VALE_I=10
-                )
-           
+TEST_TABLE(
+           VALE_CALC_I=10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='NB_MODE',
+           TABLE=NB_MODES,
+           )
+
            
 MOD_2=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
                               MATR_RIGI_GEOM=RIGASG_2,
@@ -178,11 +196,22 @@ MOD_2=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
 
 #
 
-TEST_RESU(RESU=(
-   _F( RESULTAT = MOD_2, NUME_MODE = 10,  PARA = 'CHAR_CRIT', VALE = -1.5050E6,
-    PRECISION = 1.E-2,),
-   _F( RESULTAT = MOD_2, NUME_MODE = 2,  PARA = 'CHAR_CRIT', VALE = -5.9980E6,
-    PRECISION = 4.E-2,)))
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   NUME_MODE=10,
+                   RESULTAT=MOD_2,
+                   VALE_CALC=-1.49004790E+06,
+                   VALE_REFE=-1.505000E6,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=2,
+                   RESULTAT=MOD_2,
+                   VALE_CALC=-5.76745490E+06,
+                   VALE_REFE=-5.998000E6,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.040000000000000001,),
+                ),
+          )
 
 # 'FLAMBEMENT' CAS 3  (FORCE EN A)
 # ------------------------------
@@ -221,11 +250,22 @@ MOD_3=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
 
 #
 
-TEST_RESU(RESU=(
-   _F( RESULTAT = MOD_3, NUME_MODE = 10,  PARA = 'CHAR_CRIT', VALE = -5.6380E5,
-    PRECISION = 20.E-2,),
-   _F( RESULTAT = MOD_3, NUME_MODE = 1,  PARA = 'CHAR_CRIT', VALE = -1.8525E7,
-    PRECISION = 7.E-2,)))
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   NUME_MODE=10,
+                   RESULTAT=MOD_3,
+                   VALE_CALC=-6.72524846E+05,
+                   VALE_REFE=-5.63800E5,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.20000000000000001,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=1,
+                   RESULTAT=MOD_3,
+                   VALE_CALC=-1.73417797E+07,
+                   VALE_REFE=-1.8525000E7,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.070000000000000007,),
+                ),
+          )
 
 # 'FLAMBEMENT' CAS 4  (MOMENT SUIVANT OY)
 # -------------------------------------
@@ -263,9 +303,14 @@ MOD_4=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
 
 #
 
-TEST_RESU(
-   RESU=_F( RESULTAT = MOD_4, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = +6.9376E7,
-    PRECISION = 2.E-3,))
+TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
+                  NUME_MODE=3,
+                  RESULTAT=MOD_4,
+                  VALE_CALC= 6.94677211E+07,
+                  VALE_REFE=6.9376000E7,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=2.E-3,),
+          )
 
 # --------------------------------------------------------------------
 # TEST DE INFO_MODE POUR TYPE_MODE='GENERAL'
@@ -277,10 +322,10 @@ NB_MODE = INFO_MODE( MATR_A=RIGAS,
                       CHAR_CRIT_MAX=-1.E6
                             )
                             
-TEST_TABLE(     TABLE=NB_MODE,
-                REFERENCE='NON_REGRESSION',
-                NOM_PARA='NB_MODE', VALE_I=10
-                )
+TEST_TABLE(TABLE=NB_MODE,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=10,
+           )
 
 FIN()
 #

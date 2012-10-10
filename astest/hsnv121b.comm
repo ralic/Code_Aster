@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS AXI
 # hsnv121b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,27 +154,46 @@ VL=STAT_NON_LINE( reuse=VL,
                 ITER_LINE_MAXI = 0)
               )
 
-TEST_RESU(RESU=(  _F(
-               RESULTAT = VL,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO3',   NOM_CMP = 'DY',
-               PRECISION = 1.E-2,
-               VALE = 303.),
-              _F(
-               RESULTAT = VL,  NOM_CHAM = 'DEPL',  INST = 2.,
-               NOEUD = 'NO3',   NOM_CMP = 'DX',
-               PRECISION = 1.E-2,
-               VALE = -110.),
-              _F(
-               RESULTAT = VL,   NOM_CHAM = 'SIEF_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1,   NOM_CMP = 'SIYY',
-               PRECISION = 1.E-2,
-               VALE = 1453.),
-              _F(
-               RESULTAT = VL,     NOM_CHAM = 'VARI_ELGA',  INST = 2.,
-               MAILLE = 'MA1',  POINT = 1,   NOM_CMP = 'V1',
-               PRECISION = 1.5E-2,
-               VALE = 0.2475))
-             )
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=VL,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO3',
+                   NOM_CMP='DY',
+                   VALE_CALC=303.062840686,
+                   VALE_REFE=303.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   RESULTAT=VL,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO3',
+                   NOM_CMP='DX',
+                   VALE_CALC=-109.852134530,
+                   VALE_REFE=-110.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=VL,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC= 1.45851004E+03,
+                   VALE_REFE=1453.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='MA1',),
+                _F(INST=2.0,
+                   POINT=1,
+                   RESULTAT=VL,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.250425387,
+                   VALE_REFE=0.2475,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.014999999999999999,
+                   MAILLE='MA1',),
+                ),
+          )
 
 FIN(  )
 #

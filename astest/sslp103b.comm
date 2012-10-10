@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE K1, K2 EN D_PLAN_INCO_ SUR UNE PLAQUE CIRCULAIRE
 # sslp103b.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,30 +148,45 @@ for i in range(2):
 #--------------------------------------------------------------------
 
 
-   TEST_TABLE(       TABLE=GDP[i],
-                       NOM_PARA='G',
-                           VALE=2.275E-5,
-                      PRECISION=2.E-2   )
+   TEST_TABLE(TABLE=GDP[i],
+              NOM_PARA='G',
+              VALE_CALC=2.3048695705621E-05,    #TODO vale_calc
+              VALE_REFE=2.275E-5,
+              REFERENCE='NON_DEFINI',
+              TOLE_MACHINE=2.E-2,
+              PRECISION=2.E-2)
 
-   TEST_TABLE(       TABLE=K1K2[i],
-                       NOM_PARA='K1',
-                           VALE=2.E0,
-                      PRECISION=2.E-2   )
+   TEST_TABLE(TABLE=K1K2[i],
+              NOM_PARA='K1',
+              VALE_CALC=2.0343525448787,    #TODO vale_calc
+              VALE_REFE=2.E0,
+              REFERENCE='NON_DEFINI',
+              TOLE_MACHINE=2.E-2,
+              PRECISION=2.E-2)
 
-   TEST_TABLE(       TABLE=K1K2[i],
-                       NOM_PARA='K2',
-                           VALE=1.E0,
-                      PRECISION=7.E-2   )
+   TEST_TABLE(TABLE=K1K2[i],
+              NOM_PARA='K2',
+              VALE_CALC=0.93364105730086,    #TODO vale_calc
+              VALE_REFE=1.E0,
+              REFERENCE='NON_DEFINI',
+              TOLE_MACHINE=2.E-2,
+              PRECISION=0.07)
 
-   TEST_TABLE(       TABLE=K1K2[i],
-                       NOM_PARA='G',
-                           VALE=2.275E-5,
-                      PRECISION=2.E-2   )
+   TEST_TABLE(TABLE=K1K2[i],
+              NOM_PARA='G',
+              VALE_CALC=2.2796755348333E-05,    #TODO vale_calc
+              VALE_REFE=2.275E-5,
+              REFERENCE='NON_DEFINI',
+              TOLE_MACHINE=2.E-2,
+              PRECISION=2.E-2)
 
-   TEST_TABLE(       TABLE=K1K2[i],
-                       NOM_PARA='G_IRWIN',
-                           VALE=2.275E-5,
-                      PRECISION=3.E-3   )
+   TEST_TABLE(TABLE=K1K2[i],
+              NOM_PARA='G_IRWIN',
+              VALE_CALC=2.2796755348333E-05,    #TODO vale_calc
+              VALE_REFE=2.275E-5,
+              REFERENCE='NON_DEFINI',
+              TOLE_MACHINE=2.E-2,
+              PRECISION=2.E-2)
 
 FIN()
 #

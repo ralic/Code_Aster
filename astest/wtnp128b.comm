@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # wtnp128b.para = tps_job 350 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -306,53 +306,61 @@ U_1=CALC_CHAMP(reuse=U_1,
 
 # TEST FY EN 'AD' A 1.0S, 2.S ET 3.8S
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=5,
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  GROUP_NO='AD',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  GROUP_NO='AD',
-                  VALE=-15.06,
+                  VALE_CALC=-14.156030677,
+                  VALE_REFE=-15.06,
                   CRITERE='RELATIF',
-                  PRECISION=10.E-2,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=0.10000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=10,
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
+                  GROUP_NO='AD',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  GROUP_NO='AD',
-                  VALE=-5.41,
+                  VALE_CALC=-4.716934896,
+                  VALE_REFE=-5.4100000000000001,
                   CRITERE='RELATIF',
-                  PRECISION=14.E-2,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=0.14000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=19,
+TEST_RESU(RESU=_F(NUME_ORDRE=19,
+                  GROUP_NO='AD',
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  GROUP_NO='AD',
-                  VALE=-0.882,
+                  VALE_CALC=-0.824362418,
+                  VALE_REFE=-0.88200000000000001,
                   CRITERE='RELATIF',
-                  PRECISION=10.E-2,
-                  REFERENCE='SOURCE_EXTERNE',),);
+                  PRECISION=0.10000000000000001,),
+          )
 
 # TEST PRE1  NS5787 A 2.7S, 3.2S ET 4.2S
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=16,
+TEST_RESU(RESU=_F(NUME_ORDRE=16,
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NS5787',
-                  VALE=17.58E-3,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='PRE1',
+                  VALE_CALC=0.017579999999999998,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=21,
+TEST_RESU(RESU=_F(NUME_ORDRE=21,
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='NS5787',
-                  VALE=81.18E-3,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='PRE1',
+                  VALE_CALC=0.081180000000000002,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
 ####################################
 ## DONNEES POUR COURBES DOC V

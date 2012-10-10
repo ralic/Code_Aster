@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 19/05/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD )
@@ -119,68 +119,64 @@ MODES=MODE_ITER_SIMULT(      MATR_RIGI=M_AS_RIG,
 #                     VERIFICATION DES RESULTATS 
 #---------------------------------------------------------------------
 #
-TEST_RESU(RESU=(
-       _F( RESULTAT = MODES,             PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.021,
-             NUME_MODE = 4,                 VALE = 44.762),
-
-       _F( RESULTAT = MODES,             PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.041,
-             NUME_MODE = 5,                 VALE = 110.52),
-
-       _F( RESULTAT = MODES,             PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.041,
-             NUME_MODE = 6,                 VALE = 110.52),
-
-       _F( RESULTAT = MODES,             PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.055,
-             NUME_MODE = 7,                 VALE = 169.08),
-
-       _F( RESULTAT = MODES,             PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.02,
-             NUME_MODE = 8,                 VALE = 193.93),
-
-       _F( RESULTAT = MODES,             PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.03,
-             NUME_MODE = 11,                 VALE = 206.64),
-
-       _F( RESULTAT = MODES,             PARA = 'FREQ',
-             CRITERE = 'RELATIF',    PRECISION = 0.03,
-             NUME_MODE = 12,                 VALE = 206.64)
-#======================================================================
-#= LES VALEURS DE REFERENCE AU DELA DU MODE 10 NE SONT PAS CONNUES   ==
-#= LES VALEURS DE REFERENCE IMPOSEES (=1) SONT FAUSSES. L'OBJET ICI  ==
-#= EST D'IMPRIMER LES VALEURS TROUVEES DANS LE FICHIER RESU          ==
-#======================================================================
-#_F( RESULTAT = MODES,PARA = 'FREQ',
-#CRITERE = 'RELATIF',
-#REFERENCE = 'NON_REGRESSION',
-#NUME_MODE = 11,  VALE = 2.2621054540426E+02),
-#_F( RESULTAT = MODES,PARA = 'FREQ',
-#CRITERE = 'RELATIF',
-#REFERENCE = 'NON_REGRESSION',
-#NUME_MODE = 12,  VALE = 2.2840781260250E+02),
-#_F( RESULTAT = MODES,PARA = 'FREQ',
-#CRITERE = 'RELATIF',
-#REFERENCE = 'NON_REGRESSION',
-#NUME_MODE = 13,  VALE = 2.4499028459396E+02),
-#_F( RESULTAT = MODES,PARA = 'FREQ',
-#CRITERE = 'RELATIF',
-#REFERENCE = 'NON_REGRESSION',
-#NUME_MODE = 14,  VALE = 2.4731383844313E+02),
-#_F( RESULTAT = MODES,PARA = 'FREQ',
-#CRITERE = 'RELATIF',
-#REFERENCE = 'NON_REGRESSION',
-#NUME_MODE = 15,  VALE = 2.5400040471272E+02),
-#_F( RESULTAT = MODES, PARA = 'FREQ',
-# CRITERE = 'RELATIF',
-#REFERENCE = 'NON_REGRESSION',
-# NUME_MODE = 16,  VALE = 2.9810874999352E+02),
-#_F( RESULTAT = MODES,PARA = 'FREQ',
-#CRITERE = 'RELATIF',
-# REFERENCE = 'NON_REGRESSION',
-# NUME_MODE = 17,  VALE = 3.2223070515790E+02),
-),);
+TEST_RESU(RESU=(_F(PARA='FREQ',
+                   NUME_MODE=4,
+                   RESULTAT=MODES,
+                   VALE_CALC=43.866729613,
+                   VALE_REFE=44.762,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.021000000000000001,),
+                _F(PARA='FREQ',
+                   NUME_MODE=5,
+                   RESULTAT=MODES,
+                   VALE_CALC=106.058308666,
+                   VALE_REFE=110.52,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.041000000000000002,),
+                _F(PARA='FREQ',
+                   NUME_MODE=6,
+                   RESULTAT=MODES,
+                   VALE_CALC=106.066661395,
+                   VALE_REFE=110.52,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.041000000000000002,),
+                _F(PARA='FREQ',
+                   NUME_MODE=7,
+                   RESULTAT=MODES,
+                   VALE_CALC=160.109646306,
+                   VALE_REFE=169.08000000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.055,),
+                _F(PARA='FREQ',
+                   NUME_MODE=8,
+                   RESULTAT=MODES,
+                   VALE_CALC=193.600964057,
+                   VALE_REFE=193.93000000000001,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.02,),
+                _F(PARA='FREQ',
+                   NUME_MODE=11,
+                   RESULTAT=MODES,
+                   VALE_CALC=206.209316568,
+                   VALE_REFE=206.63999999999999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                _F(PARA='FREQ',
+                   NUME_MODE=12,
+                   RESULTAT=MODES,
+                   VALE_CALC=206.211619713,
+                   VALE_REFE=206.63999999999999,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='RELATIF',
+                   PRECISION=0.029999999999999999,),
+                ),
+          )
 
 FIN();
 

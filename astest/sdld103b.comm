@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (ROTATION)
 # sdld103b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -343,42 +343,102 @@ NO4DXA_E=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
 # COMPARAISON DES RESULTATS NUMERIQUES/ RESULTATS ANALYTIQUES
 # -----------------------------------------------------------
 
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.10, VALE_REFE = XRNO2a(0.10)),
-    _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.30, VALE_REFE = XRNO2a(0.30)),
-    _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.50, VALE_REFE = XRNO2a(0.50)),
-    _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.70, VALE_REFE = XRNO2a(0.70)),
-    _F(  FONCTION = NO2DXR_E, VALE_PARA = 1.,   VALE_REFE = XRNO2a(1.)))
-             )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.847734188451155,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=NO2DXR_E,),
+                      _F(VALE_CALC=-15.520174047069474,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.29999999999999999,
+                         FONCTION=NO2DXR_E,),
+                      _F(VALE_CALC=-43.644904940792784,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.5,
+                         FONCTION=NO2DXR_E,),
+                      _F(VALE_CALC=-85.083008616994576,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.69999999999999996,
+                         FONCTION=NO2DXR_E,),
+                      _F(VALE_CALC=-174.79023485219679,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.0,
+                         FONCTION=NO2DXR_E,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = NO3DXR_E, VALE_PARA = 0.10, VALE_REFE = XRNO3a(0.10)),
-    _F(  FONCTION = NO3DXR_E, VALE_PARA = 0.30, VALE_REFE = XRNO3a(0.30)),
-    _F(  FONCTION = NO3DXR_E, VALE_PARA = 0.50, VALE_REFE = XRNO3a(0.50)),
-    _F(  FONCTION = NO3DXR_E, VALE_PARA = 0.70, VALE_REFE = XRNO3a(0.70)),
-    _F(  FONCTION = NO3DXR_E, VALE_PARA = 1.,   VALE_REFE = XRNO3a(1.)))
-             )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.76844862253261714,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=NO3DXR_E,),
+                      _F(VALE_CALC=-17.692343673430333,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.29999999999999999,
+                         FONCTION=NO3DXR_E,),
+                      _F(VALE_CALC=-49.930988019089476,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.5,
+                         FONCTION=NO3DXR_E,),
+                      _F(VALE_CALC=-97.071149488313708,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.69999999999999996,
+                         FONCTION=NO3DXR_E,),
+                      _F(VALE_CALC=-199.72185847468216,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.0,
+                         FONCTION=NO3DXR_E,),
+                      ),
+              )
 
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = NO4DXR_E, VALE_PARA = 0.10, VALE_REFE = XRNO4a(0.10)),
-    _F(  FONCTION = NO4DXR_E, VALE_PARA = 0.30, VALE_REFE = XRNO4a(0.30)),
-    _F(  FONCTION = NO4DXR_E, VALE_PARA = 0.50, VALE_REFE = XRNO4a(0.50)),
-    _F(  FONCTION = NO4DXR_E, VALE_PARA = 0.70, VALE_REFE = XRNO4a(0.70)),
-    _F(  FONCTION = NO4DXR_E, VALE_PARA = 1.,   VALE_REFE = XRNO4a(1.)))
-             )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.40963160805018456,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=NO4DXR_E,),
+                      _F(VALE_CALC=-11.037176289081899,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.29999999999999999,
+                         FONCTION=NO4DXR_E,),
+                      _F(VALE_CALC=-31.24152977921834,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.5,
+                         FONCTION=NO4DXR_E,),
+                      _F(VALE_CALC=-60.583316186584426,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.69999999999999996,
+                         FONCTION=NO4DXR_E,),
+                      _F(VALE_CALC=-124.8032798298684,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.0,
+                         FONCTION=NO4DXR_E,),
+                      ),
+              )
 
 val01=XRNO2a(0.10)+XRNOE2a(0.10)
 val02=XRNO2a(0.30)+XRNOE2a(0.30)
 val03=XRNO2a(0.50)+XRNOE2a(0.50)
 val04=XRNO2a(0.70)+XRNOE2a(0.70)
 val05=XRNO2a(1.)+XRNOE2a(1.)
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = NO2DXA_E, VALE_PARA = 0.10, VALE_REFE = val01),
-    _F(  FONCTION = NO2DXA_E, VALE_PARA = 0.30, VALE_REFE = val02),
-    _F(  FONCTION = NO2DXA_E, VALE_PARA = 0.50, VALE_REFE = val03),
-    _F(  FONCTION = NO2DXA_E, VALE_PARA = 0.70, VALE_REFE = val04),
-    _F(  FONCTION = NO2DXA_E, VALE_PARA = 1.,   VALE_REFE = val05))
-             )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.40226581154884522,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=NO2DXA_E,),
+                      _F(VALE_CALC=85.729825952930526,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.29999999999999999,
+                         FONCTION=NO2DXA_E,),
+                      _F(VALE_CALC=737.6050950592072,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.5,
+                         FONCTION=NO2DXA_E,),
+                      _F(VALE_CALC=2916.1669913830051,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.69999999999999996,
+                         FONCTION=NO2DXA_E,),
+                      _F(VALE_CALC=1.2325209765147803E4,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.0,
+                         FONCTION=NO2DXA_E,),
+                      ),
+              )
 
 val06=XRNO3a(0.01)+XRNOE3a(0.01)
 val07=XRNO3a(0.02)+XRNOE3a(0.02)
@@ -394,35 +454,110 @@ val16=XRNO3a(0.30)+XRNOE3a(0.30)
 val17=XRNO3a(0.50)+XRNOE3a(0.50)
 val18=XRNO3a(0.70)+XRNOE3a(0.70)
 val19=XRNO3a(1.)+XRNOE3a(1.)
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.01, VALE_REFE = val06,CRITERE = 'ABSOLU'),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.02, VALE_REFE = val07,CRITERE = 'ABSOLU'),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.03, VALE_REFE = val08,CRITERE = 'ABSOLU'),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.04, VALE_REFE = val09,CRITERE = 'ABSOLU'),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.05, VALE_REFE = val10,CRITERE = 'ABSOLU'),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.06, VALE_REFE = val11,CRITERE = 'ABSOLU', PRECISION = 2.E-02),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.07, VALE_REFE = val12,CRITERE = 'ABSOLU', PRECISION = 3.E-02),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.08, VALE_REFE = val13,CRITERE = 'ABSOLU', PRECISION = 3.E-02),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.09, VALE_REFE = val14,CRITERE = 'ABSOLU', PRECISION = 3.E-02),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.10, VALE_REFE = val15),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.30, VALE_REFE = val16),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.50, VALE_REFE = val17),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.70, VALE_REFE = val18),
-    _F(  FONCTION = NO3DXA_E, VALE_PARA = 1.,   VALE_REFE = val19))
-             )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=9.876660025449251E-10,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=1.E-2,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=2.4950079027916301E-07,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.02,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=6.2546804936430139E-06,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.029999999999999999,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=6.0582884522510788E-05,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.040000000000000001,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=3.4719096524261917E-4,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.050000000000000003,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=0.0132757318529,
+                         VALE_REFE=1.4234878580921262E-3,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.059999999999999998,
+                         PRECISION=0.02,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=0.0261851503467,
+                         VALE_REFE=4.6214355201234236E-3,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.070000000000000007,
+                         PRECISION=0.029999999999999999,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=0.0390945688405,
+                         VALE_REFE=0.012624518073957758,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.080000000000000002,
+                         PRECISION=0.029999999999999999,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=0.0520039873344,
+                         VALE_REFE=0.030182503444716735,
+                         REFERENCE='NON_DEFINI',
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.089999999999999997,
+                         PRECISION=0.029999999999999999,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=0.064884710800716339,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=49.807656326569671,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.29999999999999999,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=470.90234531424392,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.5,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=1903.7621838450193,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.69999999999999996,
+                         FONCTION=NO3DXA_E,),
+                      _F(VALE_CALC=8133.6114748586515,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.0,
+                         FONCTION=NO3DXA_E,),
+                      ),
+              )
 
 val20=XRNO4a(0.10)+XRNOE4a(0.10)
 val21=XRNO4a(0.30)+XRNOE4a(0.30)
 val22=XRNO4a(0.50)+XRNOE4a(0.50)
 val23=XRNO4a(0.70)+XRNOE4a(0.70)
 val24=XRNO4a(1.)+XRNOE4a(1.)
-TEST_FONCTION(VALEUR=(
-    _F(  FONCTION = NO4DXA_E, VALE_PARA = 0.10, VALE_REFE = val20,CRITERE = 'ABSOLU'),
-    _F(  FONCTION = NO4DXA_E, VALE_PARA = 0.30, VALE_REFE = val21),
-    _F(  FONCTION = NO4DXA_E, VALE_PARA = 0.50, VALE_REFE = val22),
-    _F(  FONCTION = NO4DXA_E, VALE_PARA = 0.70, VALE_REFE = val23),
-    _F(  FONCTION = NO4DXA_E, VALE_PARA = 1.,   VALE_REFE = val24))
-             )
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=7.0350586164821816E-3,
+                         TOLE_MACHINE=1.E-3,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.10000000000000001,
+                         FONCTION=NO4DXA_E,),
+                      _F(VALE_CALC=22.712823710918101,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.29999999999999999,
+                         FONCTION=NO4DXA_E,),
+                      _F(VALE_CALC=229.17513688744833,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.5,
+                         FONCTION=NO4DXA_E,),
+                      _F(VALE_CALC=939.83335048008212,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=0.69999999999999996,
+                         FONCTION=NO4DXA_E,),
+                      _F(VALE_CALC=4041.8633868367988,
+                         TOLE_MACHINE=1.E-3,
+                         VALE_PARA=1.0,
+                         FONCTION=NO4DXA_E,),
+                      ),
+              )
 
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE EPROUVETTE AE 2D AXIS AVEC ELEMENTS D'INTERFACE (QUAD8) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssna120a.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -229,120 +229,140 @@ force1=CALC_TABLE(TABLE=force,
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=contra1,
+TEST_TABLE(
+           VALE_CALC=0.60567599999999999,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='NDX',
+           TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6),
-           VALE=6.05676E-01,
-           REFERENCE='NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=force1,
+TEST_TABLE(
+           VALE_CALC=28.869599999999998,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='FR',
+           TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6),
-           VALE=2.88696E+01,
-           REFERENCE='NON_REGRESSION');
+                     VALE=0.59999999999999998,),
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=contra1,
+TEST_TABLE(
+           VALE_CALC=0.93162900000000004,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='NDX',
+           TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8),
-           VALE=9.31629E-01,
-           REFERENCE='NON_REGRESSION');
+                     VALE=0.80000000000000004,),
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=force1,
+TEST_TABLE(
+           VALE_CALC=23.6023,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='FR',
+           TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8),
-           VALE=2.36023E+01,
-           REFERENCE='NON_REGRESSION');
-
-#-----------------------------------------------------------
-# TEST SUR LE CONTRACTION DU DIAMETRE
-# EN COMPARANT AVEC LES RESULTATS ISSUS
-# D'UN CALCUL DE COMPORTEMENT ROUSSELIER
-# ----------------------------------------------------------
-TEST_TABLE(TABLE=contra1,
-           NOM_PARA='NDX',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.4),
-           VALE=3.49885E-01,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER');
-
-#-----------------------------------------------------------
-# TEST SUR LA FORCE
-# EN COMPARANT AVEC LES RESULTATS ISSUS
-# D'UN CALCUL DE COMPORTEMENT ROUSSELIER
-# ----------------------------------------------------------
-TEST_TABLE(TABLE=force1,
-           NOM_PARA='FR',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.4),
-           VALE=2.93597E+01,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER');
+                     VALE=0.80000000000000004,),
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
 # EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=contra1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.333261511,
+           VALE_REFE=0.349885,
            NOM_PARA='NDX',
+           TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6),
-           VALE=6.20591E-01,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER');
+                     VALE=0.40000000000000002,),
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
 # EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=force1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=29.385097860,
+           VALE_REFE=29.3597,
            NOM_PARA='FR',
+           TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6),
-           VALE=2.86069E+01,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER');
+                     VALE=0.40000000000000002,),
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
 # EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=contra1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.605776458,
+           VALE_REFE=0.620591,
            NOM_PARA='NDX',
+           TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8),
-           VALE=9.54683E-01,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER');
+                     VALE=0.59999999999999998,),
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
 # EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
-TEST_TABLE(TABLE=force1,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=28.869329960,
+           VALE_REFE=28.6069,
            NOM_PARA='FR',
+           TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8),
-           VALE=2.26731E+01,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER');
+                     VALE=0.59999999999999998,),
+           )
+
+#-----------------------------------------------------------
+# TEST SUR LE CONTRACTION DU DIAMETRE
+# EN COMPARANT AVEC LES RESULTATS ISSUS
+# D'UN CALCUL DE COMPORTEMENT ROUSSELIER
+# ----------------------------------------------------------
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=0.931632767,
+           VALE_REFE=0.95468299999999995,
+           NOM_PARA='NDX',
+           TABLE=contra1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.80000000000000004,),
+           )
+
+#-----------------------------------------------------------
+# TEST SUR LA FORCE
+# EN COMPARANT AVEC LES RESULTATS ISSUS
+# D'UN CALCUL DE COMPORTEMENT ROUSSELIER
+# ----------------------------------------------------------
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=23.602269800,
+           VALE_REFE=22.673100000000002,
+           NOM_PARA='FR',
+           TABLE=force1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.80000000000000004,),
+           )
 
 #-----------------------------------------------------------
 # RELATION ENTRE LE CONTRACTION DU DIAMETRE

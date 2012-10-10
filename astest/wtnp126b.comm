@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE   TEST HM, 2D , MODELISATION THMC=GAZ
 # wtnp126b.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -328,53 +328,60 @@ U_1=STAT_NON_LINE(
 
 # TEST PRE1 N1037, N1331 ET NS5193 A 200 ANS ET 1000 ANS
 
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=9,
+TEST_RESU(RESU=_F(NUME_ORDRE=9,
+                  RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
                   NOEUD='N1037',
-                  VALE=1.073E5,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=9,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=1.07300E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=9,
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
                   NOEUD='N1331',
-                  VALE=1.0041E5,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=9,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=1.00410E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=9,
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
                   NOEUD='NS5193',
-                  VALE=1.1473E5,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=24,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=1.14730E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=24,
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
                   NOEUD='N1037',
-                  VALE=1.13E5,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=24,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=1.13000E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=24,
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
                   NOEUD='N1331',
-                  VALE=1.0539E5,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=24,
-                  NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
+                  VALE_CALC=1.05390E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=24,
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
                   NOEUD='NS5193',
-                  VALE=1.1477E5,
-                  REFERENCE='NON_REGRESSION',),);
+                  NOM_CMP='PRE1',
+                  VALE_CALC=1.14770E5,
+                  TOLE_MACHINE=1.E-3,),
+          )
+
 #-----------------------------------------------------------------------------------
 # DONNEES POUR COURBES DOC V
 #-----------------------------------------------------------------------------------
@@ -402,4 +409,3 @@ IMPR_TABLE(TABLE=V_X_01,
           );
 
 FIN();
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE CHARGE LIMITE EN 2D - METHODE DE NORTON-HOFF
 # ssnv124a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -115,33 +115,42 @@ ECHL2=POST_ELEM(CHAR_LIMITE=_F(),
 #      TEST DE LA CHARGE LIMITE
 #--------------------------------------------------------------
 
-TEST_TABLE(TABLE=ECHL1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.69897,),
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=14.683756730,
+           VALE_REFE=14.6837,
            NOM_PARA='CHAR_LIMI_SUP',
-           VALE=14.6837,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=ECHL2,
+           TABLE=ECHL1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.69897,),
+                     VALE=1.6989700000000001,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=11.547005384,
+           VALE_REFE=11.547000000000001,
            NOM_PARA='CHAR_LIMI_SUP',
-           VALE=11.547,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=ECHL2,
+           TABLE=ECHL2,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.69897,),
+                     VALE=1.6989700000000001,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=9.622504470,
+           VALE_REFE=9.6225000000000005,
            NOM_PARA='CHAR_LIMI_ESTIM',
-           VALE=9.6225,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=ECHL1,
+           TABLE=ECHL2,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.69897,),
+                     VALE=1.6989700000000001,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-0.250000000,
+           VALE_REFE=-0.25,
            NOM_PARA='PUIS_CHAR_CSTE',
-           VALE=-0.25,
-           REFERENCE='ANALYTIQUE',);
+           TABLE=ECHL1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.6989700000000001,),
+           )
+
 #--------------------------------------------------------------
 #      TEST DES DEFORMATIONS (CAS 1)
 #--------------------------------------------------------------
@@ -149,25 +158,29 @@ TEST_TABLE(TABLE=ECHL1,
 RESU1=CALC_CHAMP(reuse=RESU1,RESULTAT=RESU1,CRITERES=('EPEQ_ELNO'),DEFORMATION=('EPSI_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU1,
-                   INST=1.69897,
+TEST_RESU(RESU=(_F(INST=1.6989700000000001,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
                    NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N3',
                    NOM_CMP='EPXX',
-                   MAILLE='M1',
-                   NOEUD='N3',
-                   VALE=-0.3125,
+                   VALE_CALC=-0.312500000,
+                   VALE_REFE=-0.3125,
                    CRITERE='RELATIF',
-                   PRECISION=0.0001,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU1,
-                   INST=1.69897,
+                   PRECISION=1.E-4,
+                   MAILLE='M1',),
+                _F(INST=1.6989700000000001,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU1,
                    NOM_CHAM='EPEQ_ELNO',
-                   NOM_CMP='INVA_2',
-                   MAILLE='M1',
                    NOEUD='N3',
-                   VALE=0.3608439,
+                   NOM_CMP='INVA_2',
+                   VALE_CALC=0.360843918,
+                   VALE_REFE=0.3608439,
                    CRITERE='RELATIF',
-                   PRECISION=0.0001,
-                   REFERENCE='ANALYTIQUE',),),);
+                   PRECISION=1.E-4,
+                   MAILLE='M1',),
+                ),
+          )
 
 FIN();

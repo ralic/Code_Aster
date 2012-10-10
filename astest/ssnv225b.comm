@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION LOI HAYHURST IMPLICITE SUR ESSAI DE FLUAGE
 # ssnv225b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,31 +145,39 @@ IMPR_FONCTION(
 
 #fluage secondaire
 tsec=2000
-TEST_FONCTION(VALEUR=_F(FONCTION=epsYY,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.021249000000000001,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=2000,
                         NOM_PARA='INST',
-                        VALE_PARA=tsec,
-                        VALE_REFE=2.12490E-02,
-                        REFERENCE='NON_REGRESSION',),);
+                        FONCTION=epsYY,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=endo,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.032345199999999998,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=2000,
                         NOM_PARA='INST',
-                        VALE_PARA=tsec,
-                        VALE_REFE=3.23452E-02,
-                        REFERENCE='NON_REGRESSION',),);
+                        FONCTION=endo,
+                        ),
+              )
 
 # fluage tertiaire
 tter=4000
-TEST_FONCTION(VALEUR=_F(FONCTION=epsYY,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.052401499999999997,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=4000,
                         NOM_PARA='INST',
-                        VALE_PARA=tter,
-                        VALE_REFE=5.24015E-02,
-                        REFERENCE='NON_REGRESSION',),);
+                        FONCTION=epsYY,
+                        ),
+              )
 
-TEST_FONCTION(VALEUR=_F(FONCTION=endo,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.068255899999999994,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=4000,
                         NOM_PARA='INST',
-                        VALE_PARA=tter,
-                        VALE_REFE=6.82559E-02,
-                        REFERENCE='NON_REGRESSION',),);
+                        FONCTION=endo,
+                        ),
+              )
 
 IMPR_TABLE(TABLE=soluce)
 
@@ -186,11 +194,12 @@ IMPR_FONCTION(
 tvit = 1520.
 
 
-TEST_FONCTION(VALEUR=_F(FONCTION=depsdt,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.737E-06,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=1520.0,
                         NOM_PARA='INST',
-                        VALE_PARA=tvit,
-                        VALE_REFE=6.737E-6,
-                        REFERENCE='NON_REGRESSION',),);
-                        
-FIN();
+                        FONCTION=depsdt,
+                        ),
+              )
 
+FIN();

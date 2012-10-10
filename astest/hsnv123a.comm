@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE THERMO_METALLO_MECANIQUE EDGAR
 # hsnv123a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -322,16 +322,26 @@ CHEPS120=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
 
 #------------------------------------------------------------------
 
-TEST_RESU(CHAM_ELEM=(
-
-       _F( CHAM_GD = CHEPS120, CRITERE = 'RELATIF', PRECISION = 1.E-1,
-        MAILLE = 'M3', NOEUD = 'N5', NOM_CMP = 'EPYY',   VALE = -3.1E-2),
-
-       _F( CHAM_GD = CHSIG120, CRITERE = 'RELATIF', PRECISION = 1.E-1,
-        MAILLE = 'M3', NOEUD = 'N5', NOM_CMP = 'SIYY',   VALE = -25.))
-
-
-        )
+TEST_RESU(CHAM_ELEM=(_F(NOEUD='N5',
+                        CRITERE='RELATIF',
+                        NOM_CMP='EPYY',
+                        PRECISION=0.10000000000000001,
+                        MAILLE='M3',
+                        CHAM_GD=CHEPS120,
+                        VALE_CALC=-0.028883482,
+                        VALE_REFE=-0.031,
+                        REFERENCE='NON_DEFINI',),
+                     _F(NOEUD='N5',
+                        CRITERE='RELATIF',
+                        NOM_CMP='SIYY',
+                        PRECISION=0.10000000000000001,
+                        MAILLE='M3',
+                        CHAM_GD=CHSIG120,
+                        VALE_CALC=-24.999977738,
+                        VALE_REFE=-25.0,
+                        REFERENCE='NON_DEFINI',),
+                     ),
+          )
 
 FIN()
 #

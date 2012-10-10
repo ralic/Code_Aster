@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE SOUS PRESSION ET DILATATION THERMIQUE (AXIS)
 # hsla303a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,195 +119,204 @@ DEF_PR=CALC_CHAMP(reuse=DEF_PR,RESULTAT=DEF_PR,DEFORMATION=('EPSI_ELNO'))
 #
 # TEST_RESU DES DEPLACEMENTS
 #
-TEST_RESU(CHAM_NO=(
-# U(A)
-              _F(  CHAM_GD = U_TH,
-                        NOEUD = 'N1',
-                        NOM_CMP = 'DX',
-                        VALE = 5.70000E-05,
-                        PRECISION = 0.001),
-# UR(B)
-              _F(  CHAM_GD = U_TH,
-                        NOEUD = 'N2',
-                        NOM_CMP = 'DX',
-                        VALE = 6.00000E-05,
-                        PRECISION = 0.001),
-# UR(C)
-              _F(  CHAM_GD = U_TH,
-                        NOEUD = 'N3',
-                        NOM_CMP = 'DX',
-                        VALE = 6.00000E-05,
-                        PRECISION = 0.001),
-# UZ(C)
-              _F(  CHAM_GD = U_TH,
-                        NOEUD = 'N3',
-                        NOM_CMP = 'DY',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.001),
-# UR(D)
-              _F(  CHAM_GD = U_TH,
-                        NOEUD = 'N4',
-                        NOM_CMP = 'DX',
-                        VALE = 5.70000E-05,
-                        PRECISION = 0.001),
-# UZ(D)
-              _F(  CHAM_GD = U_TH,
-                        NOEUD = 'N4',
-                        NOM_CMP = 'DY',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.001))
+TEST_RESU(CHAM_NO=(_F(NOEUD='N1',
+                      NOM_CMP='DX',
+                      CHAM_GD=U_TH,
+                      VALE_CALC=5.7000000000000003E-05,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N2',
+                      NOM_CMP='DX',
+                      CHAM_GD=U_TH,
+                      VALE_CALC=6.0000000000000002E-05,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N3',
+                      NOM_CMP='DX',
+                      CHAM_GD=U_TH,
+                      VALE_CALC=6.0000000000000002E-05,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N3',
+                      NOM_CMP='DY',
+                      CHAM_GD=U_TH,
+                      VALE_CALC=1.1999999999999999E-3,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N4',
+                      NOM_CMP='DX',
+                      CHAM_GD=U_TH,
+                      VALE_CALC=5.7000000000000003E-05,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(NOEUD='N4',
+                      NOM_CMP='DY',
+                      CHAM_GD=U_TH,
+                      VALE_CALC=1.1999999999999999E-3,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
           )
 
 #
-TEST_RESU(CHAM_NO=(
-              _F(  CHAM_GD = U_PR,
-                        NOEUD = 'N3',
-                        NOM_CMP = 'DY',
-                        VALE = 3.714E-03,
-                        PRECISION = 0.077),
-              _F(  CHAM_GD = U_PR,
-                        NOEUD = 'N4',
-                        NOM_CMP = 'DY',
-                        VALE = 3.714E-03,
-                        PRECISION = 0.077))
+TEST_RESU(CHAM_NO=(_F(NOEUD='N3',
+                      NOM_CMP='DY',
+                      PRECISION=0.076999999999999999,
+                      CHAM_GD=U_PR,
+                      VALE_CALC= 3.99677260E-03,
+                      VALE_REFE=3.7139999999999999E-3,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N4',
+                      NOM_CMP='DY',
+                      PRECISION=0.076999999999999999,
+                      CHAM_GD=U_PR,
+                      VALE_CALC= 3.99677256E-03,
+                      VALE_REFE=3.7139999999999999E-3,
+                      REFERENCE='NON_DEFINI',),
+                   ),
           )
 
 #
 # TEST_RESU DE DEFORMATIONS
 #
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-#A
-                        NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M1',
-                        NOEUD = 'N1',
-                        NOM_CMP = 'EPXX',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-        )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='EPXX',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M1',
-                        NOEUD = 'N1',
-                        NOM_CMP = 'EPYY',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M1',
-                        NOEUD = 'N1',
-                        NOM_CMP = 'EPZZ',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-#B
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M1',
-                        NOEUD = 'N2',
-                        NOM_CMP = 'EPXX',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M1',
-                        NOEUD = 'N2',
-                        NOM_CMP = 'EPYY',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M1',
-                        NOEUD = 'N2',
-                        NOM_CMP = 'EPZZ',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-#C
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N3',
-                        NOM_CMP = 'EPXX',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N3',
-                        NOM_CMP = 'EPYY',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N3',
-                        NOM_CMP = 'EPZZ',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-#D
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N4',
-                        NOM_CMP = 'EPXX',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N4',
-                        NOM_CMP = 'EPYY',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N4',
-                        NOM_CMP = 'EPZZ',
-                        VALE = 1.20000E-03,
-                        PRECISION = 0.0001),
-                )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_PR,
-#C
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N3',
-                        NOM_CMP = 'EPYY',
-                        VALE = 3.714E-3,
-                        PRECISION = 0.077),
-        )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_PR,
-# D
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N4',
-                        NOM_CMP = 'EPYY',
-                        VALE = 3.714E-3,
-                        PRECISION = 0.077),
-        )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='EPYY',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M1',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='EPZZ',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M1',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='EPXX',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M1',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='EPYY',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M1',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='EPZZ',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M1',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N3',
+                  NOM_CMP='EPXX',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M10',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N3',
+                  NOM_CMP='EPYY',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M10',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N3',
+                  NOM_CMP='EPZZ',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M10',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N4',
+                  NOM_CMP='EPXX',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M10',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N4',
+                  NOM_CMP='EPYY',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M10',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_TH,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N4',
+                  NOM_CMP='EPZZ',
+                  VALE_CALC=1.1999999999999999E-3,
+                  TOLE_MACHINE=1.E-4,
+                  MAILLE='M10',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_PR,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N3',
+                  NOM_CMP='EPYY',
+                  VALE_CALC= 3.99633732E-03,
+                  VALE_REFE=3.7139999999999999E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.076999999999999999,
+                  MAILLE='M10',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_PR,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N4',
+                  NOM_CMP='EPYY',
+                  VALE_CALC= 3.99633645E-03,
+                  VALE_REFE=3.7139999999999999E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.076999999999999999,
+                  MAILLE='M10',),
+          )
+
 #
 # DEUXIEME CALCUL AVEC DEFORMATIONS INITIALES
 #
@@ -342,39 +351,46 @@ DEF_PR2=CALC_CHAMP(reuse=DEF_PR2,RESULTAT=DEF_PR2,DEFORMATION=('EPSI_ELNO'))
 #
 # TEST_RESU DES DEPLACEMENTS
 #
-TEST_RESU(CHAM_NO=(
-# U2(C)
-              _F(  CHAM_GD = U_PR2,
-                        NOEUD = 'N3',
-                        NOM_CMP = 'DY',
-                        VALE = 4.914E-3,
-                        PRECISION = 0.058),
-# U2(D)
-              _F(  CHAM_GD = U_PR2,
-                        NOEUD = 'N4',
-                        NOM_CMP = 'DY',
-                        VALE = 4.914E-3,
-                        PRECISION = 0.058))
-           )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_PR2,
-# C
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N3',
-                        NOM_CMP = 'EPYY',
-                        VALE = 4.914E-3,
-                        PRECISION = 0.058),
-        )
-TEST_RESU(RESU=_F(  RESULTAT = DEF_PR2,
-# D
-                              NOM_CHAM='EPSI_ELNO',
-                        NUME_ORDRE=1,
-                        MAILLE = 'M10',
-                        NOEUD = 'N4',
-                        NOM_CMP = 'EPYY',
-                        VALE = 4.914E-3,
-                        PRECISION = 0.058),
-        )
+TEST_RESU(CHAM_NO=(_F(NOEUD='N3',
+                      NOM_CMP='DY',
+                      PRECISION=0.058000000000000003,
+                      CHAM_GD=U_PR2,
+                      VALE_CALC= 5.19677260E-03,
+                      VALE_REFE=4.914E-3,
+                      REFERENCE='NON_DEFINI',),
+                   _F(NOEUD='N4',
+                      NOM_CMP='DY',
+                      PRECISION=0.058000000000000003,
+                      CHAM_GD=U_PR2,
+                      VALE_CALC= 5.19677256E-03,
+                      VALE_REFE=4.914E-3,
+                      REFERENCE='NON_DEFINI',),
+                   ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_PR2,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N3',
+                  NOM_CMP='EPYY',
+                  VALE_CALC= 5.19633732E-03,
+                  VALE_REFE=4.914E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.058000000000000003,
+                  MAILLE='M10',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=DEF_PR2,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='N4',
+                  NOM_CMP='EPYY',
+                  VALE_CALC= 5.19633645E-03,
+                  VALE_REFE=4.914E-3,
+                  REFERENCE='NON_DEFINI',
+                  PRECISION=0.058000000000000003,
+                  MAILLE='M10',),
+          )
+
 FIN()
 #

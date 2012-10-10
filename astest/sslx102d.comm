@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TUYAUTERIE COUDEE EN FLEXION MODELISATION COQUE_3D
 # sslx102d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,15 +76,14 @@ RESU1=MECA_STATIQUE(  MODELE=MO,   INFO=2,
                          EXCIT=_F(  CHARGE = CHAR1)
                         )
 
-TEST_RESU(
-           RESU=_F( RESULTAT = RESU1,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D',
-                 NOM_CMP = 'DY',
-                 VALE = 1.925E-2,
-                 REFERENCE = 'NON_REGRESSION')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=0.01925,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
 # FLEXION HORS PLAN
 
@@ -110,15 +109,14 @@ RESU2=MECA_STATIQUE(  MODELE=MO,   INFO=1,
                          EXCIT=_F(  CHARGE = CHAR2)
                         )
 
-TEST_RESU(
-           RESU=_F( RESULTAT = RESU2,
-                 NUME_ORDRE = 1,
-                 NOM_CHAM = 'DEPL',
-                 GROUP_NO = 'D',
-                 NOM_CMP = 'DZ',
-                 VALE = -1.56E-2,
-                 REFERENCE = 'NON_REGRESSION')
-                    )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='D',
+                  RESULTAT=RESU2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.015599999999999999,
+                  TOLE_MACHINE=1.E-3,),
+          )
 
 FIN()
 #

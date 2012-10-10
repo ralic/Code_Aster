@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209i.para = tps_job 40 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,36 +157,31 @@ IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U2M,
 #----------------------------------------------
 
 
-TEST_RESU(RESU=(_F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPA',
-                   NOM_CMP    = 'DX',
-                   VALE       = -2.3712819136401E-05,
-                   PRECISION  = 1.E-3,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.0.27',
+TEST_RESU(RESU=(_F(GROUP_NO='PPA',
+                   INST=1.0,
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-2.3712819136401002E-05,
+                   TOLE_MACHINE=1.E-3,
                    ),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPC',
-                   NOM_CMP    = 'DX',
-                   VALE       = -1.8444609394619E-05,
-                   PRECISION  = 1.E-3,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.0.27',
+                _F(GROUP_NO='PPC',
+                   INST=1.0,
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.8444609394619E-05,
+                   TOLE_MACHINE=1.E-3,
                    ),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPD',
-                   NOM_CMP    = 'DX',
-                   VALE       = -1.5684504791382E-05,
-                   PRECISION  = 1.E-3,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.0.27',
+                _F(GROUP_NO='PPD',
+                   INST=1.0,
+                   RESULTAT=U2M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-1.5684504791382001E-05,
+                   TOLE_MACHINE=1.E-3,
                    ),
-                ),);
+                ),
+          )
 
 FIN()

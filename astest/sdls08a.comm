@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 # sdls08a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,60 +147,59 @@ MODE_T=DEFI_BASE_MODALE(RITZ=(
 
 #VERIFICATION DES FREQUENCES PRESENTES DANS MODE_T
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   VALE=2.90604E+01,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  RESULTAT=MODE_T,
+                  VALE_CALC=29.060400000000001,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
-                   NUME_ORDRE=2,
-                   PARA='FREQ',
-                   VALE=7.62281E+01,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  PARA='FREQ',
+                  RESULTAT=MODE_T,
+                  VALE_CALC=76.228099999999998,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
-                   NUME_ORDRE=3,
-                   PARA='FREQ',
-                   VALE=7.62281E+01,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  PARA='FREQ',
+                  RESULTAT=MODE_T,
+                  VALE_CALC=76.228099999999998,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
-                   NUME_ORDRE=4,
-                   PARA='FREQ',
-                   VALE=7.62281E+01,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  PARA='FREQ',
+                  RESULTAT=MODE_T,
+                  VALE_CALC=76.228099999999998,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
-                   NUME_ORDRE=5,
-                   PARA='FREQ',
-                   VALE=5.05851E+03,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
+TEST_RESU(RESU=_F(NUME_ORDRE=5,
+                  PARA='FREQ',
+                  RESULTAT=MODE_T,
+                  VALE_CALC=5058.5100000000002,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
-                   NUME_ORDRE=6,
-                   PARA='FREQ',
-                   VALE=5.05851E+03,
-                   PRECISION=1E-06,
-                   REFERENCE='NON_REGRESSION',
-                   CRITERE='RELATIF',
-                   ),),);
-
+TEST_RESU(RESU=_F(NUME_ORDRE=6,
+                  PARA='FREQ',
+                  RESULTAT=MODE_T,
+                  VALE_CALC=5058.5100000000002,
+                  
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 #CALCUL DE LA BASE DE MODES STATIQUES
 #
@@ -324,23 +323,28 @@ VHZ2=RECU_FONCTION (   RESU_GENE = DYNGEN,
                        NOM_CHAM = 'VITE',
                        TOUT_ORDRE = 'OUI',);
 
-TEST_RESU(RESU=_F(RESULTAT=MODEEXP,
+TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=1,
-                  PARA='FREQ',
-                  VALE=4.9762,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=MODEEXP,
+                  VALE_CALC=4.993871154,
+                  VALE_REFE=4.9762000000000004,
                   CRITERE='RELATIF',
-                  PRECISION=0.1,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=0.10000000000000001,),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=DYNEXP,
-                  NUME_ORDRE=2,
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  VALE_CALC_C= 2.02776702E-06+-5.38826861E-05j,
+                  VALE_REFE_C=('RI', 2.0277670162400001E-06, -5.3882686138999997E-05),
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=DYNEXP,
                   NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
                   NOEUD='NO21',
-                  VALE_C=('RI',2.02776701624e-06,-5.3882686139e-05,),
+                  NOM_CMP='DZ',
                   CRITERE='RELATIF',
-                  PRECISION=0.1,
-                  REFERENCE='AUTRE_ASTER',),);
+                  PRECISION=0.10000000000000001,),
+          )
+
 #
 #######################################################
 # TEST SUR IMPR_GENE
@@ -364,17 +368,10 @@ DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
 
 TEST_FICHIER(FICHIER='fort.38',
              NB_VALE=4590,
-             VALE=7.46868879e+04,
-             VALE_K='cfe7353c21c2df62cc82abeea68669f8',
+             VALE_CALC=7.46868879e+04,
+             VALE_CALC_K='cfe7353c21c2df62cc82abeea68669f8',
              EXPR_IGNORE = ('ASTER','INSTANT','ORDRE','FREQ'),
-             REFERENCE='NON_REGRESSION',
-             VERSION='9.1.21',
              INFO=1);
 
 FIN();
-
-
-
-
-
 

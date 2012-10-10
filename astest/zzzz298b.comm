@@ -1,4 +1,4 @@
-# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,38 +127,40 @@ IMPR_TABLE(TABLE=TABK)
 k1_deb = 9.35585e5
 k1_fin = 1.45592e6
 
-TEST_TABLE(TABLE=TABK,
-           FILTRE=(_F(NOM_PARA='NUM_PT', 
-                      VALE_I=24 ),),
+TEST_TABLE(
+           VALE_CALC=9.35585E5,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.28',
-           VALE=k1_deb)
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=24,),
+           )
 
-TEST_TABLE(TABLE=TABK,
-           FILTRE=(_F(NOM_PARA='NUM_PT', 
-                      VALE_I=23 ),),
+TEST_TABLE(
+           VALE_CALC=9.35585E5,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.28',
-           VALE=k1_deb)
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=23,),
+           )
 
-TEST_TABLE(TABLE=TABK,
-           FILTRE=(_F(NOM_PARA='NUM_PT', 
-                      VALE_I=22 ),),
+TEST_TABLE(
+           VALE_CALC=9.35585E5,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.28',
-           VALE=k1_deb)
-           
-TEST_TABLE(TABLE=TABK,
-           FILTRE=(_F(NOM_PARA='NUM_PT', 
-                      VALE_I=2 ),),
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=22,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.455920E6,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='K1',
-           REFERENCE='NON_REGRESSION',
-           VERSION='11.0.28',
-           VALE=k1_fin)
-           
-             
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=2,),
+           )
+
 FIN();
-

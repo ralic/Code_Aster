@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE INFINI EN THERMIQUE STATIONNAIRE ANISOTROPE (QUAD4)
 # tplv103b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,16 +84,34 @@ T2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'))
 
 
-TEST_RESU(RESU=(
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP', NOEUD = 'N66',
-   NOM_CMP = 'TEMP', VALE = 100.0,   REFERENCE = 'ANALYTIQUE'),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP', GROUP_NO = 'TEMPMIL',
-   NOM_CMP = 'TEMP', VALE = 50.0,   REFERENCE = 'ANALYTIQUE'),
-
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO',MAILLE = 'M50',
-   NOEUD = 'N66', NOM_CMP = 'FLUX', VALE = 15.9155, PRECISION = 5.E-3,
-   REFERENCE = 'ANALYTIQUE'),),
-       );
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N66',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=100.000000000,
+                   VALE_REFE=100.0,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='TEMPMIL',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=50.000000000,
+                   VALE_REFE=50.0,),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='FLUX_ELNO',
+                   NOEUD='N66',
+                   NOM_CMP='FLUX',
+                   VALE_CALC=15.951249140,
+                   VALE_REFE=15.9155,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M50',),
+                ),
+          )
 
 FIN()
 #

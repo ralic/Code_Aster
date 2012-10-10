@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DELMAS J.DELMAS
 # TITRE PLAQUE TROUEE EN TRACTION EN ELASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,42 +67,48 @@ IMPR_RESU(FORMAT='MED',
                   RESULTAT=RESU,
                   NOM_CHAM=('DEPL','SIGM_NOEU','SIEQ_NOEU','SIEQ_ELGA',),),);
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   GROUP_NO='B',
-                   VALE=303.0,
+                   VALE_CALC=289.521225522,
+                   VALE_REFE=303.0,
                    CRITERE='RELATIF',
-                   PRECISION=0.05,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='B',
+                   RESULTAT=RESU,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
-                   GROUP_NO='B',
-                   VALE=289.521225,
+                   VALE_CALC=289.52122500000002,
+                   TOLE_MACHINE=9.9999999999999995E-08,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-7,
-                   REFERENCE='NON_REGRESSION',),),);
+                   ),
+                ),
+          )
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   GROUP_NO='A',
-                   VALE=-100.0,
+                   VALE_CALC=-85.881414506,
+                   VALE_REFE=-100.0,
                    CRITERE='RELATIF',
-                   PRECISION=0.15,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU,
-                   NUME_ORDRE=1,
+                   PRECISION=0.14999999999999999,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   RESULTAT=RESU,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   GROUP_NO='A',
-                   VALE=-85.8814145,
+                   VALE_CALC=-85.881414500000005,
+                   TOLE_MACHINE=9.9999999999999995E-08,
                    CRITERE='RELATIF',
-                   PRECISION=1.E-7,
-                   REFERENCE='NON_REGRESSION',),),);
+                   ),
+                ),
+          )
 
 FIN();

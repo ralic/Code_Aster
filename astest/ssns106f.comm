@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106f.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -405,79 +405,89 @@ tten = (10 * dt);
 
 # TRACTION - PHASE ELASTIQUE
 
-TEST_TABLE(TABLE=D_DYA4,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=ttel,),
-           NOM_PARA='DY_DYG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=D_DYA4,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=ttel,),
+           VALE_CALC=0.014423672,
+           VALE_REFE=0.0,
            NOM_PARA='DY_DYG',
-           VALE=0.0144237,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_FXA4,
+           TABLE=D_DYA4,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=ttel,),
+                     VALE=0.017000000000000001,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.014423699999999999,
+           TOLE_MACHINE=1.E-4,
+           NOM_PARA='DY_DYG',
+           TABLE=D_DYA4,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.017000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=5.0000000000000001E-3,
+           VALE_CALC=-2.10847204E-03,
+           VALE_REFE=0.0,
            NOM_PARA='DX_DXG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=D_FXA4,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.017000000000000001,),
+           )
 
 # TRACTION - PHASE ENDOMMAGEMENT
 
-TEST_TABLE(TABLE=D_DYA4,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=tten,),
+TEST_TABLE(
+           VALE_CALC=-0.48471576700000002,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='DY_DYG',
-           VALE=-0.484715767,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
-
-TEST_TABLE(TABLE=D_FXA4,
+           TABLE=D_DYA4,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=tten,),
+                     VALE=0.085000000000000006,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-0.34601409,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='DX_DXG',
-           VALE=-0.346014090,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_FXA4,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.085000000000000006,),
+           )
 
 # TRACTION - PHASE PLASTICITE + ENDOMMAGEMENT
 
-TEST_TABLE(TABLE=D_FXA4,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=t1,),
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.10000000000000001,
+           VALE_CALC=-0.069405040,
+           VALE_REFE=0.0,
            NOM_PARA='DX_DXG',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=0.1,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=D_FXA4,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
-TEST_TABLE(TABLE=D_FXA4,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=t1,),
+TEST_TABLE(
+           VALE_CALC=-0.069405040100461002,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='DX_DXG',
-           VALE=-0.069405040100461,
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=D_FXA4,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 # DECHARGE
 
-TEST_TABLE(TABLE=TFXA4_G0,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=tmax,),
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=-1.11050E5,
+           TOLE_MACHINE=1.E-4,
            NOM_PARA='DX',
-           VALE=-111050.0,
-           CRITERE='RELATIF',
-           PRECISION=0.0001,
-           REFERENCE='NON_REGRESSION',);
+           TABLE=TFXA4_G0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.04,),
+           )
 
 #--------------------------------------------------------------------
 
@@ -502,120 +512,143 @@ ENEL_G2 = 55.69427;
 ENEL_G3 = 815.1048;
 
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU_G,
-                   INST=ttel,
+TEST_RESU(RESU=(_F(INST=0.017000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU_G,
                    NOM_CHAM='ENEL_ELNO',
-                   NOM_CMP='TOTALE',
-                   MAILLE='GM1',
                    NOEUD='N2',
-                   VALE=ENEL_G,
-                   PRECISION=1e-05,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU_G,
-                   INST=ttel,
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=4.642785000,
+                   VALE_REFE=4.6427849999999999,
+                   PRECISION=1.0000000000000001E-05,
+                   MAILLE='GM1',),
+                _F(INST=0.017000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU_G,
                    NOM_CHAM='ENEL_ELNO',
+                   NOEUD='N2',
                    NOM_CMP='MEMBRANE',
-                   MAILLE='GM1',
-                   NOEUD='N2',
-                   VALE=ENEL_G,
-                   PRECISION=1e-05,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU_G,
-                   INST=ttel,
+                   VALE_CALC=4.642785000,
+                   VALE_REFE=4.6427849999999999,
+                   PRECISION=1.0000000000000001E-05,
+                   MAILLE='GM1',),
+                _F(INST=0.017000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=2,
+                   RESULTAT=RESU_G,
                    NOM_CHAM='ENEL_ELGA',
                    NOM_CMP='TOTALE',
-                   MAILLE='GM1',
+                   VALE_CALC=4.642785000,
+                   VALE_REFE=4.6427849999999999,
+                   PRECISION=1.0000000000000001E-05,
+                   MAILLE='GM1',),
+                _F(INST=0.017000000000000001,
+                   REFERENCE='ANALYTIQUE',
                    POINT=2,
-                   VALE=ENEL_G,
-                   PRECISION=1e-05,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU_G,
-                   INST=ttel,
+                   RESULTAT=RESU_G,
                    NOM_CHAM='ENEL_ELGA',
                    NOM_CMP='FLEXION',
-                   MAILLE='GM1',
-                   POINT=2,
-                   VALE=0.0,
+                   VALE_CALC= 0.0000000000000E+00,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=1.E-13,
                    CRITERE='ABSOLU',
-                   PRECISION=1e-13,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU_G,
-                   INST=tten,
+                   PRECISION=1.E-13,
+                   MAILLE='GM1',),
+                _F(INST=0.085000000000000006,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU_G,
                    NOM_CHAM='ENEL_ELNO',
-                   NOM_CMP='TOTALE',
-                   MAILLE='GM1',
                    NOEUD='N2',
-                   VALE=ENEL_G2,
-                   PRECISION=0.15,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU_G,
-                   INST=tten,
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=54.880813316745,
+                   VALE_REFE=55.694270000000003,
+                   PRECISION=0.14999999999999999,
+                   MAILLE='GM1',),
+                _F(INST=0.085000000000000006,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=2,
+                   RESULTAT=RESU_G,
                    NOM_CHAM='ENEL_ELGA',
                    NOM_CMP='TOTALE',
-                   MAILLE='GM1',
+                   VALE_CALC=54.880813316745,
+                   VALE_REFE=55.694270000000003,
+                   PRECISION=0.14999999999999999,
+                   MAILLE='GM1',),
+                _F(INST=0.085000000000000006,
+                   REFERENCE='ANALYTIQUE',
                    POINT=2,
-                   VALE=ENEL_G2,
-                   PRECISION=0.15,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=RESU_G,
-                   INST=tten,
+                   RESULTAT=RESU_G,
                    NOM_CHAM='ENEL_ELGA',
                    NOM_CMP='FLEXION',
-                   MAILLE='GM1',
-                   POINT=2,
-                   VALE=0.0,
+                   VALE_CALC= 0.0000000000000E+00,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=1.E-13,
                    CRITERE='ABSOLU',
-                   PRECISION=1e-13,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESU_G,
-                   INST=t1,
+                   PRECISION=1.E-13,
+                   MAILLE='GM1',),
+                _F(INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=2,
+                   RESULTAT=RESU_G,
                    NOM_CHAM='ENEL_ELGA',
                    NOM_CMP='FLEXION',
-                   MAILLE='GM1',
-                   POINT=2,
-                   VALE=0.0,
+                   VALE_CALC= 0.0000000000000E+00,
+                   VALE_REFE=0.0,
+                   TOLE_MACHINE=1.E-13,
                    CRITERE='ABSOLU',
-                   PRECISION=1e-13,
-                   REFERENCE='ANALYTIQUE',),),);
+                   PRECISION=1.E-13,
+                   MAILLE='GM1',),
+                ),
+          )
 
-TEST_TABLE(TABLE=ENER_G,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=ttel,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=4.642785000,
+           VALE_REFE=4.6427849999999999,
            NOM_PARA='TOTALE',
-           VALE=ENEL_G,
-           PRECISION=1e-05,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TRAV_G,
+           TABLE=ENER_G,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=ttel,),
+                     VALE=0.017000000000000001,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=4.642785000,
+           VALE_REFE=4.6427849999999999,
            NOM_PARA='TRAV_ELAS',
-           VALE=ENEL_G,
-           PRECISION=1e-05,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=ENER_G,
+           TABLE=TRAV_G,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=tten,),
+                     VALE=0.017000000000000001,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.10000000000000001,
+           VALE_CALC=54.880813317,
+           VALE_REFE=55.694270000000003,
            NOM_PARA='TOTALE',
-           VALE=ENEL_G2,
-           PRECISION=0.1,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TRAV_G,
+           TABLE=ENER_G,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=tten,),
+                     VALE=0.085000000000000006,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.10000000000000001,
+           VALE_CALC=54.880813317,
+           VALE_REFE=55.694270000000003,
            NOM_PARA='TRAV_ELAS',
-           VALE=ENEL_G2,
-           PRECISION=0.1,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=ENER_G,
+           TABLE=TRAV_G,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=t1,),
+                     VALE=0.085000000000000006,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.10000000000000001,
+           VALE_CALC=817.126439133,
+           VALE_REFE=815.10479999999995,
            NOM_PARA='TOTALE',
-           VALE=ENEL_G3,
-           PRECISION=0.1,
-           REFERENCE='AUTRE_ASTER',);
+           TABLE=ENER_G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,),
+           )
 
 FIN();

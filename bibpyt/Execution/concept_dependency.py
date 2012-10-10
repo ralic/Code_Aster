@@ -1,4 +1,4 @@
-#@ MODIF concept_dependency Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF concept_dependency Execution  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,6 +30,8 @@ import re
 from Noyau.N_ASSD import ASSD
 from Noyau.N_types import force_list
 from Noyau.N_utils import Enum
+
+from E_Visitor import JDCVisitor
 
 STAT = Enum('NBCMD', 'NBRES', 'NBDEP', 'NBUNUSED', 'NBNODE',
             'UNUSED', 'CMD', 'RESULT', 'DEPEND')
@@ -291,7 +293,7 @@ class ConceptTree(object):
         return os.linesep.join(lines)
 
 
-class ConceptDependenciesVisitor(object):
+class ConceptDependenciesVisitor(JDCVisitor):
     """This class walks the tree of JDC object and build
        the graph of dependencies of the results."""
     def __init__(self, with_default=True):
@@ -300,7 +302,7 @@ class ConceptDependenciesVisitor(object):
         tree : the ConceptTree to build.
         _num : internal counter for unamed target (command without result)
         """
-        self.with_default = with_default
+        JDCVisitor.__init__(self, with_default)
         self.tree = ConceptTree()
         self._num = 0
 
@@ -339,41 +341,12 @@ class ConceptDependenciesVisitor(object):
         """Print statistics on output."""
         return self.tree.get_stats(level)
 
-    def _visit_default_keywords(self, node, seen):
-        """Visit the default values of 'node' not already seen."""
-        if not self.with_default:
-            return
-        for key, obj in node.definition.entites.items():
-            if not key in seen and getattr(obj, 'defaut', None) is not None:
-                mc = obj(obj.defaut, key, parent=node)
-                mc.accept(self)
-
-    def _visitMCCOMPO(self, compo):
-        """Visit generic MCCOMPO objects (ETAPE, MCFACT, MCBLOC)
-        (*private*, no 'accept' method in MCCOMPO class)."""
-        seen = set()
-        for obj in compo.mc_liste:
-            obj.accept(self)
-            seen.add(obj.nom)
-        self._visit_default_keywords(compo, seen)
-
-    def _visit_etape(self, step, reuse):
-        """Visit generic ETAPE objects."""
-        if reuse is not None:
-            reuse.accept(self)
-        self._visitMCCOMPO(step)
-
-    def visitJDC(self, jdc):
-        """Visit the JDC object"""
-        for etape in jdc.etapes:
-            etape.accept(self)
-
     def visitPROC_ETAPE(self, step):
         """Visit the PROC_ETAPE object."""
         #print "visit PROC_ETAPE", step.definition.nom
         store = DependStore(step.nom)
         self.tree.start_dependency(store)
-        self._visit_etape(step, reuse=None)
+        JDCVisitor.visitPROC_ETAPE(self, step, reuse=None)
         self.tree.add_result()
 
     def visitMACRO_ETAPE(self, step):
@@ -381,7 +354,7 @@ class ConceptDependenciesVisitor(object):
         #print "visit MACRO_ETAPE", step.definition.nom
         store = DependStore(step.nom)
         self.tree.start_dependency(store)
-        self._visit_etape(step, reuse=step.reuse)
+        JDCVisitor.visitMACRO_ETAPE(self, step, reuse=step.reuse)
         l_res = []
         if step.sd is not None:
             l_res.append(NodeSD(step.sd.nom))
@@ -394,32 +367,11 @@ class ConceptDependenciesVisitor(object):
         #print "visit ETAPE", step.definition.nom
         store = DependStore(step.nom)
         self.tree.start_dependency(store)
-        self._visit_etape(step, reuse=step.reuse)
+        JDCVisitor.visitETAPE(self, step, reuse=step.reuse)
         l_res = []
         if step.sd is not None:
             l_res.append(NodeSD(step.sd.nom))
         self.tree.add_result(*l_res)
-
-    def visitASSD(self, sd):
-        """Visit the ASSD object."""
-        #print "visit ASSD", sd.nom
-        self.tree.add_dependency(NodeSD(sd.nom))
-
-    def visitMCBLOC(self, bloc):
-        """Visit the MCBLOC object."""
-        #print "visit BLOC", bloc.nom
-        self._visitMCCOMPO(bloc)
-
-    def visitMCFACT(self, fact):
-        """Visit the MCFACT object."""
-        #print "visit MCFACT", fact.nom
-        self._visitMCCOMPO(fact)
-
-    def visitMCList(self, mclist):
-        """Visit the MCList object."""
-        #print "visit MCList", mclist
-        for data in mclist.data:
-            data.accept(self)
 
     def visitMCSIMP(self, mcsimp):
         """Visit the MCSIMP object."""
@@ -431,6 +383,11 @@ class ConceptDependenciesVisitor(object):
                 self.tree.add_dependency(NodeKeywordUL(mcsimp.nom, value))
             #else:
                 #print "<DBG> Value ignored: (type %s), %s = %s" % (type(value), mcsimp.nom, value)
+
+    def visitASSD(self, sd):
+        """Visit the ASSD object."""
+        #print "visit ASSD", sd.nom
+        self.tree.add_dependency(NodeSD(sd.nom))
 
 
 if __name__ == '__main__':

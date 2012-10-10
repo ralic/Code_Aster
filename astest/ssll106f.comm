@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 4 NOEUDS STAT_NON_LINE)
 # ssll106f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test RI
@@ -139,26 +139,47 @@ U1=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
 U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U1)
 
 
-TEST_RESU(RESU=(
-
-_F( RESULTAT = U1, NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DX', VALE = 5.52621E-6, PRECISION = 0.01),
-
-_F( RESULTAT = U1, NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DY', VALE = 4.14466E-6, PRECISION = 0.01),
-
-_F( RESULTAT = U1, NUME_ORDRE = 2,
-      NOM_CHAM = 'EFGE_ELNO', MAILLE = 'M1', POINT = 1,
-      NOM_CMP = 'N', VALE = 500., PRECISION = 0.01),
-
-_F( RESULTAT = U1, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M1', POINT = 1, SOUS_POINT=1,
-      NOM_CMP = 'SIXX', VALE = 2.76311E5, PRECISION = 0.02))
-
-      )
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 5.52395746E-06,
+                   VALE_REFE=5.5262100000000004E-06,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC= 4.14296809E-06,
+                   VALE_REFE=4.1446600000000001E-06,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='N',
+                   VALE_CALC=500.000000000,
+                   VALE_REFE=500.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 2.72910294E+05,
+                   VALE_REFE=2.76311E5,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.02,
+                   MAILLE='M1',),
+                ),
+          )
 
 U1POS1=POST_CHAMP(RESULTAT=U1,
 
@@ -197,21 +218,35 @@ U2=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
 U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U2)
 
 
-TEST_RESU(RESU=(
-
-_F( RESULTAT = U2,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DX', VALE = -5.26507E-2, PRECISION = 0.01),
-
-_F( RESULTAT = U2,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DY', VALE = 7.02009E-2, PRECISION = 0.01),
-
-_F( RESULTAT = U2,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DRZ', VALE = 2.63253E-2, PRECISION = 0.01))
-
-      )
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.052641284,
+                   VALE_REFE=-0.052650700000000002,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.070188378,
+                   VALE_REFE=0.070200899999999997,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=0.026314794,
+                   VALE_REFE=0.026325299999999999,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 U3=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
@@ -240,21 +275,35 @@ U3=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
 U3=CALC_CHAMP(reuse=U3,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U3)
 
 
-TEST_RESU(RESU=(
-
-_F( RESULTAT = U3,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DZ', VALE = 8.77511E-2, PRECISION = 0.01),
-
-_F( RESULTAT = U3,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DRX', VALE = 1.57952E-2,  PRECISION = 0.01),
-
-_F( RESULTAT = U3,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DRY', VALE = -2.10602E-2, PRECISION = 0.01))
-
-            )
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.087735473,
+                   VALE_REFE=0.087751099999999999,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   VALE_CALC=0.015788876,
+                   VALE_REFE=0.015795199999999999,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   VALE_CALC=-0.021051835,
+                   VALE_REFE=-0.021060200000000001,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                ),
+          )
 
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 U4=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
@@ -283,29 +332,58 @@ U4=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
 U4=CALC_CHAMP(reuse=U4,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U4)
 
 
-TEST_RESU(RESU=(
-
-_F( RESULTAT = U4,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DRX', VALE = 10.95134E-3,  PRECISION = 0.01),
-
-_F( RESULTAT = U4,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DRY', VALE = 8.21350E-3, PRECISION = 0.01),
-
-_F( RESULTAT = U4, NUME_ORDRE = 2,
-      NOM_CHAM = 'EFGE_ELNO', MAILLE = 'M1', GROUP_NO = 'B',
-      NOM_CMP = 'MT', VALE = 500., PRECISION = 0.01),
-
-_F( RESULTAT = U4, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M1', POINT = 1, SOUS_POINT=1,
-      NOM_CMP = 'SIXY', VALE = -6.75E6, PRECISION = 0.01),
-
-_F( RESULTAT = U4, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M1', POINT = 1, SOUS_POINT=204,
-      NOM_CMP = 'SIXY', VALE = -8.42E6, PRECISION = 0.01))
-
-      )
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U4,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   VALE_CALC=0.010951337,
+                   VALE_REFE=0.01095134,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U4,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   VALE_CALC= 8.21350300E-03,
+                   VALE_REFE=8.2135000000000003E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U4,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MT',
+                   VALE_CALC=500.000000000,
+                   VALE_REFE=500.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U4,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=-6.73928451E+06,
+                   VALE_REFE=-6.750000E6,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   SOUS_POINT=204,
+                   RESULTAT=U4,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=-8.42410564E+06,
+                   VALE_REFE=-8.420000E6,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                ),
+          )
 
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 U5=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
@@ -334,29 +412,56 @@ U5=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
 U5=CALC_CHAMP(reuse=U5,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U5)
 
 
-TEST_RESU(RESU=(
-
-_F( RESULTAT = U5,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DZ', VALE = -2.63253E-2,  PRECISION = 0.01),
-
-_F( RESULTAT = U5,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DRX', VALE = -6.31808E-3,  PRECISION = 0.01),
-
-_F( RESULTAT = U5,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DRY', VALE = 8.42411E-3, PRECISION = 0.01),
-
-_F( RESULTAT = U5,  NUME_ORDRE = 2,
-      NOM_CHAM = 'EFGE_ELNO', MAILLE = 'M1', POINT = 1,
-      NOM_CMP = 'MFY', VALE = 500., PRECISION = 0.01),
-
-_F( RESULTAT = U5, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M1', POINT = 3, SOUS_POINT=17,
-      NOM_CMP = 'SIXX', VALE = 1.34824E7, PRECISION = 0.02))
-
-            )
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U5,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.026314794,
+                   VALE_REFE=-0.026325299999999999,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U5,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   VALE_CALC=-6.31555060E-03,
+                   VALE_REFE=-6.3180800000000002E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U5,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   VALE_CALC= 8.42073413E-03,
+                   VALE_REFE=8.4241100000000003E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=U5,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MFY',
+                   VALE_CALC=500.000000005,
+                   VALE_REFE=500.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=3,
+                   SOUS_POINT=17,
+                   RESULTAT=U5,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.33004448E+07,
+                   VALE_REFE=1.3482400E7,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.02,
+                   MAILLE='M1',),
+                ),
+          )
 
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 U6=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
@@ -385,30 +490,56 @@ U6=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
 U6=CALC_CHAMP(reuse=U6,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U6)
 
 
-TEST_RESU(RESU=(
-
-_F( RESULTAT = U6,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DX', VALE = -1.57952E-2,  PRECISION = 0.01),
-
-_F( RESULTAT = U6,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DY', VALE = 2.10602E-2,  PRECISION = 0.01),
-
-_F( RESULTAT = U6,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'DRZ', VALE = 1.05301E-2, PRECISION = 0.01),
-
-_F( RESULTAT = U6,  NUME_ORDRE = 2,
-      NOM_CHAM = 'EFGE_ELNO',
-      MAILLE = 'M1', POINT = 1,
-      NOM_CMP = 'MFZ', VALE = 500., PRECISION = 0.01),
-
-_F( RESULTAT = U6, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M1', POINT = 3, SOUS_POINT=9,
-      NOM_CMP = 'SIXX', VALE = 1.34824E7, PRECISION = 0.02))
-
-        )
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U6,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.015788876,
+                   VALE_REFE=-0.015795199999999999,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U6,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.021051835,
+                   VALE_REFE=0.021060200000000001,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U6,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=0.010525918,
+                   VALE_REFE=0.010530100000000001,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   RESULTAT=U6,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='MFZ',
+                   VALE_CALC=500.000000007,
+                   VALE_REFE=500.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=3,
+                   SOUS_POINT=9,
+                   RESULTAT=U6,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 1.33004448E+07,
+                   VALE_REFE=1.3482400E7,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.02,
+                   MAILLE='M1',),
+                ),
+          )
 
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 U7=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
@@ -440,23 +571,39 @@ U7=CALC_CHAMP(reuse=U7,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESUL
 # WO DOIT ETRE COMPRIS ENTRE 7.11111D-6 ET 7.76896D-6
 # MOYENNE 7.44  TOLE 4.42#
 
-TEST_RESU(RESU=(
-
-_F( RESULTAT = U7,  NUME_ORDRE = 2,
-      NOM_CHAM = 'DEPL', GROUP_NO = 'B',
-      NOM_CMP = 'WO', VALE = 0.744E-5, PRECISION = 0.045),
-
-_F( RESULTAT = U7, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELGA',  MAILLE = 'M1', POINT = 1, SOUS_POINT=1,
-      NOM_CMP = 'SIYY', VALE = 4.55556E7, PRECISION = 0.01),
-
-_F( RESULTAT = U7, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M1', POINT = 3, SOUS_POINT=231,
-      NOM_CMP = 'SIYY', VALE = 3.55556E7, PRECISION = 0.01))
-
-            )
-
-
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   GROUP_NO='B',
+                   RESULTAT=U7,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='WO',
+                   VALE_CALC= 7.16731313E-06,
+                   VALE_REFE=7.4399999999999999E-06,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.044999999999999998,),
+                _F(NUME_ORDRE=2,
+                   POINT=1,
+                   SOUS_POINT=1,
+                   RESULTAT=U7,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC= 4.52880823E+07,
+                   VALE_REFE=4.5555600E7,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   POINT=3,
+                   SOUS_POINT=231,
+                   RESULTAT=U7,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC= 3.54428470E+07,
+                   VALE_REFE=3.5555600E7,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                ),
+          )
 
 # Solutions analytiques pour les deformations generalisees de poutre DEGE_ELNO
 L=5.0
@@ -487,70 +634,88 @@ KYM=500/E/IF
 # Solution analytique chargement 3 Mz local = 500
 KZM=500/E/IF
 
-TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U1,
                    NOM_CHAM='DEGE_ELNO',
-                   NOM_CMP='EPXX',
-                   MAILLE='M1',
                    NOEUD='N1',
-                   VALE=EPXX,
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 1.38098878E-06,
+                   VALE_REFE=1.3815533254504801E-06,
                    PRECISION=1.E-2,
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT=U2,NUME_ORDRE = 2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
                    NOM_CHAM='DEGE_ELNO',
-                   MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='GAXY',
-                   VALE=GAXY,
-                   PRECISION=23.E-2,
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT=U3,NUME_ORDRE = 2,
+                   VALE_CALC= 4.34458253E-06,
+                   VALE_REFE=3.5920386461712483E-06,
+                   PRECISION=0.23000000000000001,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U3,
                    NOM_CHAM='DEGE_ELNO',
-                   MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='GAXZ',
-                   VALE=GAXZ,
-                   PRECISION=23.E-2,
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT=U2,NUME_ORDRE = 2,
+                   VALE_CALC= 4.34458253E-06,
+                   VALE_REFE=3.5920386461712483E-06,
+                   PRECISION=0.23000000000000001,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
                    NOM_CHAM='DEGE_ELNO',
-                   MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='KZ',
-                   VALE=KZF,
+                   VALE_CALC=0.010525764,
+                   VALE_REFE=0.010530132053738418,
                    PRECISION=1.E-2,
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT=U3,NUME_ORDRE = 2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U3,
                    NOM_CHAM='DEGE_ELNO',
-                   MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='KY',
-                   VALE=KYF,
+                   VALE_CALC=-0.010525764,
+                   VALE_REFE=-0.010530132053738418,
                    PRECISION=1.E-2,
-                   REFERENCE='ANALYTIQUE'),
-               _F(RESULTAT=U4,NUME_ORDRE = 2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U4,
                    NOM_CHAM='DEGE_ELNO',
+                   NOEUD='N1',
                    NOM_CMP='GAT',
-                   MAILLE='M1',
-                   NOEUD='N1',
-                   VALE=GAT,
+                   VALE_CALC= 2.73783433E-03,
+                   VALE_REFE=2.7378343339719891E-3,
                    PRECISION=1.E-2,
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT=U5,NUME_ORDRE = 2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U5,
                    NOM_CHAM='DEGE_ELNO',
-                   MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='KY',
-                   VALE=KYM,
+                   VALE_CALC= 2.10518269E-03,
+                   VALE_REFE=2.1060264107476837E-3,
                    PRECISION=1.E-2,
-                   REFERENCE='ANALYTIQUE'),
-                _F(RESULTAT=U6,NUME_ORDRE = 2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U6,
                    NOM_CHAM='DEGE_ELNO',
-                   MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='KZ',
-                   VALE=KZM,
+                   VALE_CALC= 2.10518269E-03,
+                   VALE_REFE=2.1060264107476837E-3,
                    PRECISION=1.E-2,
-                   REFERENCE='ANALYTIQUE')));
+                   MAILLE='M1',),
+                ),
+          )
 
 #------------------------------------------------------------------------------------------
 # validation de POST_CHAMP / EXTR_TUYAU :
@@ -563,17 +728,42 @@ U2B=POST_CHAMP(RESULTAT=U2, NUME_ORDRE=2,
                EXTR_TUYAU =_F(NOM_CHAM='SIGM_ELGA', NUME_COUCHE=2, NIVE_COUCHE='INF', ANGLE=90 ));
 U2C=POST_CHAMP(RESULTAT=U2, NUME_ORDRE=2, MAILLE='M1',
                EXTR_TUYAU =_F(NOM_CHAM='SIGM_ELGA', NUME_COUCHE=1, NIVE_COUCHE='SUP', ANGLE=90 ));
-TEST_RESU(RESU=_F(RESULTAT=U2, NUME_ORDRE=2, NOM_CHAM='SIGM_ELGA', REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   NOM_CMP='SIXX', MAILLE='M1', POINT=2, SOUS_POINT= 75, VALE=3.6335618235912E+07
-                   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  POINT=2,
+                  SOUS_POINT=75,
+                  RESULTAT=U2,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=3.6335618235912003E7,
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U2B, NUME_ORDRE=2, NOM_CHAM='SIGM_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
-                   NOM_CMP='SIXX', MAILLE='M1', POINT=2,                 VALE=3.6335618235912E+07
-                   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  REFERENCE='AUTRE_ASTER',
+                  POINT=2,
+                  RESULTAT=U2B,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC= 3.6335618236E+07,
+                  VALE_REFE=3.6335618235912003E7,
+                  TOLE_MACHINE=1.E-10,
+                  PRECISION=1.E-10,
+                  MAILLE='M1',),
+          )
 
-TEST_RESU(RESU=_F(RESULTAT=U2C, NUME_ORDRE=2, NOM_CHAM='SIGM_ELGA', REFERENCE='AUTRE_ASTER', PRECISION=1.E-10,
-                   NOM_CMP='SIXX', MAILLE='M1', POINT=2,                 VALE=3.6335618235912E+07
-                   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  REFERENCE='AUTRE_ASTER',
+                  POINT=2,
+                  RESULTAT=U2C,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC= 3.6335618236E+07,
+                  VALE_REFE=3.6335618235912003E7,
+                  TOLE_MACHINE=1.E-10,
+                  PRECISION=1.E-10,
+                  MAILLE='M1',),
+          )
+
 #-----------------------------------------------------------------------------------------
 
 FIN()

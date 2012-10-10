@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321a.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,23 +150,27 @@ for i in range(NPAS+1) :
                 INFO=1,);
 
 # TEST DE KI PAR RAPPORT A KI RERERENCE (MAILLAGE) 
-    TEST_TABLE(TABLE=SIF[i],
+    TEST_TABLE(CRITERE='RELATIF',
+               REFERENCE='ANALYTIQUE',  #TODO vale_calc
+               TOLE_MACHINE=0.002,
+               PRECISION=0.002,
+               VALE_CALC=K1REF[i],
+               VALE_REFE=K1REF[i],
                NOM_PARA='K1',
                TYPE_TEST='MAX',
-               VALE=K1REF[i],
-               CRITERE='RELATIF',
-               PRECISION=0.002,
-               REFERENCE='NON_REGRESSION',);    
+               TABLE=SIF[i],)
 
 # TEST DE KII PAR RAPPORT A KII REFERENCE (MAILLAGE)  
-    TEST_TABLE(TABLE=SIF[i],
+    TEST_TABLE(CRITERE='ABSOLU',
+               REFERENCE='AUTRE_ASTER',
+               TOLE_MACHINE=1.e-2,   #TODO vale_calc
+               PRECISION=1.e-2,
+               VALE_CALC=K2REF[i],
+               VALE_REFE=K2REF[i],
                NOM_PARA='K2',
                TYPE_TEST='MAX',
-               VALE=K2REF[i],
-               CRITERE='ABSOLU',
-               PRECISION=10**(-2),
-               REFERENCE='AUTRE_ASTER',);    
- 
+               TABLE=SIF[i],)
+
     if ( i != NPAS+1 ) :
         MAX[i+1]=CO('MAX_%d' %(i+1));
         MAT[i+1]=CO('MAT_%d'%(i+1));

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ROTOR FISSURE TOURNANT SOUMIS A UN MOMENT DE FLEXION
 # sdnl133a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -258,32 +258,33 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               ))
 
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=DEPN4Z,
-                         VALE_PARA=0.9*tfin,
-                         VALE_REFE=4.8308805E-09,
-                         REFERENCE='NON_REGRESSION',
-                         PRECISION=1E-6,
-                         VERSION='11.00'),
-                      _F(FONCTION=DEPN4Z,
-                         VALE_PARA=tfin,
-                         VALE_REFE=1.8442027E-09,
-                         PRECISION=1E-6,
-                         REFERENCE='NON_REGRESSION',
-                         VERSION='11.00')));
-
-TEST_FONCTION(VALEUR=(_F(FONCTION=DEPN4Z,
-                         VALE_PARA=0.9*tfin,
-                         VALE_REFE=4.52765E-09,
-                         PRECISION=.1,
-                         REFERENCE='AUTRE_ASTER',
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.8308805000000003E-09,
+                         
+                         VALE_PARA=0.90000000000000002,
+                         FONCTION=DEPN4Z,
                          ),
-                      _F(FONCTION=DEPN4Z,
-                         VALE_PARA=tfin,
-                         VALE_REFE=1.77757E-09,
-                         PRECISION=.1,
-                         REFERENCE='AUTRE_ASTER',
-                         )));
+                      _F(VALE_CALC=1.8442026999999999E-09,
+                         
+                         VALE_PARA=1.0,
+                         FONCTION=DEPN4Z,
+                         ),
+                      ),
+              )
 
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.83088061479e-09,
+                         VALE_REFE=4.5276500000000002E-09,
+                         VALE_PARA=0.90000000000000002,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.10000000000000001,
+                         FONCTION=DEPN4Z,),
+                      _F(VALE_CALC=1.84420269199e-09,
+                         VALE_REFE=1.7775700000000001E-09,
+                         VALE_PARA=1.0,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.10000000000000001,
+                         FONCTION=DEPN4Z,),
+                      ),
+              )
 
 FIN();
 

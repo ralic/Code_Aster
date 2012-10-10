@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 # ssnv505g.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -272,51 +272,61 @@ T_REA_C =POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
 IMPR_TABLE(TABLE=T_REA_C,);
 
 # ------------------------------------------------------------------------
-TEST_TABLE(TABLE=T_REA_LA,
+TEST_TABLE(
+           VALE_CALC=245.98699999999999,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.60000E-01),
-           VALE= 2.45987E+02,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.2.4',);
+                     VALE=0.16,),
+           )
 
-TEST_TABLE(TABLE=T_REA_LA,
+TEST_TABLE(
+           VALE_CALC=1251.49,
+           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
+           TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=4.00000E-01),
-           VALE= 1.25149E+03,
-           REFERENCE='NON_REGRESSION',
-           VERSION='8.2.4',);
-
-# ------------------------------------------------------------------------
-TEST_TABLE(TABLE=T_REA_L2,
-           NOM_PARA='DY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.60000E-01),
-           VALE= 2.45987E+02,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=T_REA_L2,
-           NOM_PARA='DY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=4.00000E-01),
-           VALE= 1.25149E+03,
-           REFERENCE='AUTRE_ASTER',);
+                     VALE=0.40000000000000002,),
+           )
 
 # ------------------------------------------------------------------------
-TEST_TABLE(TABLE=T_REA_C,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=245.987171427,
+           VALE_REFE=245.98699999999999,
            NOM_PARA='DY',
+           TABLE=T_REA_L2,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.60000E-01),
-           VALE= 2.45987E+02,
-           REFERENCE='AUTRE_ASTER',);
+                     VALE=0.16,),
+           )
 
-TEST_TABLE(TABLE=T_REA_C,
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 1.25148832E+03,
+           VALE_REFE=1251.49,
            NOM_PARA='DY',
+           TABLE=T_REA_L2,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=4.00000E-01),
-           VALE= 1.25149E+03,
-           REFERENCE='AUTRE_ASTER',);
+                     VALE=0.40000000000000002,),
+           )
+
+# ------------------------------------------------------------------------
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC=245.987171427,
+           VALE_REFE=245.98699999999999,
+           NOM_PARA='DY',
+           TABLE=T_REA_C,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.16,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 1.25148832E+03,
+           VALE_REFE=1251.49,
+           NOM_PARA='DY',
+           TABLE=T_REA_C,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.40000000000000002,),
+           )
 
 # ------------------------------------------------------------------------
 FIN();

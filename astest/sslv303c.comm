@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
 # sslv303c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,36 +111,47 @@ DEF=CALC_CHAMP(reuse=DEF,RESULTAT=DEF,CONTRAINTE=('SIGM_ELNO'))
 
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=DEF,
-                      NOEUD='N865',
-                      NUME_ORDRE=1,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DX',
-                      VALE=-7.82e-06,
-                      PRECISION=0.01,),
-                   _F(RESULTAT=DEF,
-                      NOEUD='N865',
-                      NUME_ORDRE=1,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DY',
-                      VALE=0.0,
-                      CRITERE='ABSOLU',
-                      PRECISION=0.01,),
-                   _F(RESULTAT=DEF,
-                      NOEUD='N995',
-                      NUME_ORDRE=1,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DX',
-                      VALE=-7.82e-06,
-                      PRECISION=0.01,),
-                   _F(RESULTAT=DEF,
-                      NOEUD='N995',
-                      NUME_ORDRE=1,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DY',
-                      VALE=0.0,
-                      CRITERE='ABSOLU',
-                      PRECISION=0.01,),),);
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=DEF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N865',
+                   NOM_CMP='DX',
+                   VALE_CALC=-7.82845828E-06,
+                   VALE_REFE=-7.8199999999999997E-06,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=DEF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N865',
+                   NOM_CMP='DY',
+                   VALE_CALC=-8.62532890E-22,
+                   VALE_REFE=0.0,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=DEF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N995',
+                   NOM_CMP='DX',
+                   VALE_CALC=-7.81688045E-06,
+                   VALE_REFE=-7.8199999999999997E-06,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=DEF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N995',
+                   NOM_CMP='DY',
+                   VALE_CALC= 1.44756607E-22,
+                   VALE_REFE=0.0,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-2,),
+                ),
+          )
+
 #
 
 T1=POST_RELEVE_T(ACTION=_F(INTITULE='SIG',
@@ -152,58 +163,79 @@ T1=POST_RELEVE_T(ACTION=_F(INTITULE='SIG',
                            OPERATION='EXTRACTION',),);
 #
 
-TEST_TABLE(TABLE=T1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N965',),
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 1.73027121E+06,
+           VALE_REFE=1.730000E6,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='SIXX',
-           VALE=1730000.0,
-           PRECISION=0.01,);
-
-TEST_TABLE(TABLE=T1,
+           TABLE=T1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
+           )
+
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 1.74329646E+06,
+           VALE_REFE=1.740000E6,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='SIYY',
-           VALE=1740000.0,
-           PRECISION=0.01,);
-
-TEST_TABLE(TABLE=T1,
+           TABLE=T1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
+           )
+
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 5.56148719E+06,
+           VALE_REFE=5.560000E6,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='SIZZ',
-           VALE=5560000.0,
-           PRECISION=0.01,);
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N965',),
+           )
+
 #
 
-TEST_RESU(RESU=(_F(RESULTAT=DEF,
-                      NOEUD='N865',
-                      NUME_ORDRE=2,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DX',
-                      VALE=-7.46e-06,
-                      PRECISION=0.01,),
-                   _F(RESULTAT=DEF,
-                      NOEUD='N865',
-                      NUME_ORDRE=2,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DY',
-                      VALE=0.0,
-                      CRITERE='ABSOLU',
-                      PRECISION=0.01,),
-                   _F(RESULTAT=DEF,
-                      NOEUD='N995',
-                      NUME_ORDRE=2,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DX',
-                      VALE=-7.44e-06,
-                      PRECISION=0.01,),
-                   _F(RESULTAT=DEF,
-                      NOEUD='N995',
-                      NUME_ORDRE=2,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DY',
-                      VALE=0.0,
-                      CRITERE='ABSOLU',
-                      PRECISION=0.01,),),);
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   RESULTAT=DEF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N865',
+                   NOM_CMP='DX',
+                   VALE_CALC=-7.45964973E-06,
+                   VALE_REFE=-7.4599999999999997E-06,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=DEF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N865',
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.35297335E-22,
+                   VALE_REFE=0.0,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=DEF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N995',
+                   NOM_CMP='DX',
+                   VALE_CALC=-7.44862090E-06,
+                   VALE_REFE=-7.4399999999999999E-06,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=DEF,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N995',
+                   NOM_CMP='DY',
+                   VALE_CALC=-6.85008945E-25,
+                   VALE_REFE=0.0,
+                   REFERENCE='NON_DEFINI',
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-2,),
+                ),
+          )
+
 #
 
 T2=POST_RELEVE_T(ACTION=_F(INTITULE='SIG',
@@ -215,26 +247,35 @@ T2=POST_RELEVE_T(ACTION=_F(INTITULE='SIG',
                            OPERATION='EXTRACTION',),);
 #
 
-TEST_TABLE(TABLE=T2,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N965',),
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 1.64856153E+06,
+           VALE_REFE=1.640000E6,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='SIXX',
-           VALE=1640000.0,
-           PRECISION=0.01,);
-
-TEST_TABLE(TABLE=T2,
+           TABLE=T2,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
+           )
+
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 1.66097555E+06,
+           VALE_REFE=1.660000E6,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='SIYY',
-           VALE=1660000.0,
-           PRECISION=0.01,);
-
-TEST_TABLE(TABLE=T2,
+           TABLE=T2,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N965',),
+           )
+
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC= 5.29926546E+06,
+           VALE_REFE=5.300000E6,
+           REFERENCE='NON_DEFINI',
            NOM_PARA='SIZZ',
-           VALE=5300000.0,
-           PRECISION=0.01,);
+           TABLE=T2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N965',),
+           )
 
 FIN();
 #

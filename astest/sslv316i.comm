@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316i.para = tps_job 300 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -243,32 +243,40 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
+               TOLE_MACHINE=tol,    #TODO vale_calc
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               VALE= 0.0  )
+               VALE_CALC=0.0,
+               VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLSN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
+               TOLE_MACHINE=tol,    #TODO vale_calc
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               VALE= 0.0  )
+               VALE_CALC=0.0,
+               VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLST[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
+               TOLE_MACHINE=tol,    #TODO vale_calc
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               VALE= 0.0  )
+               VALE_CALC=0.0,
+               VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLST[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
+               TOLE_MACHINE=tol,    #TODO vale_calc
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               VALE= 0.0  )
+               VALE_CALC=0.0,
+               VALE_REFE=0.0  )
 
 FIN();

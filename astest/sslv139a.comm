@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE
 # sslv139a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,43 +139,53 @@ MODE_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    NOM_CHAM='DEPL',
                    NUME_ORDRE=1,);
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=MODE_1,
-                     NOM_CMP='DY',
+TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
+                  NUME_MODE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RES_NORM,
+                  VALE_CALC=8.48470541E+05,
+                  VALE_REFE=8.4935093960000004E5,
+                  PRECISION=2.E-3,),
+          CHAM_NO=_F(NOEUD='N4',
                      REFERENCE='ANALYTIQUE',
-                     NOEUD='N4',
-                     VALE=1.0),
-             RESU=_F(RESULTAT=RES_NORM,
-                     NUME_MODE=1,
-                     PARA='CHAR_CRIT',
-                     VALE=849350.9396,
-                     PRECISION=2.E-3,
-                     REFERENCE='ANALYTIQUE',));
+                     NOM_CMP='DY',
+                     CHAM_GD=MODE_1,
+                     VALE_CALC=0.999985449,
+                     VALE_REFE=1.0,),
+          )
 
-
-TEST_RESU(RESU=(_F(RESULTAT=MODE,
-                   NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=MODE,
                    NOM_CHAM='ETOT_ELEM',
                    NOM_CMP='TOTALE',
+                   VALE_CALC=0.11414830611588,
+                   VALE_REFE=0.1141482126501,
+                   TOLE_MACHINE=1.e-5,
+                   MAILLE='M10',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
                    POINT=1,
-                   MAILLE='M10',
-                   VALE= 1.1414821265010E-01,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODE,
-                   NUME_ORDRE=1,
+                   RESULTAT=MODE,
                    NOM_CHAM='ETOT_ELGA',
                    NOM_CMP='TOTALE',
-                   MAILLE='M10',
-                   POINT=1,
-                   VALE= 1.1612386752963E+09,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MODE,
-                   NUME_ORDRE=1,
+                   VALE_CALC=1.1613059633084E+09,
+                   VALE_REFE=1.1612386752962999E9,
+                   TOLE_MACHINE=1.e-5,
+                   MAILLE='M10',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MODE,
                    NOM_CHAM='ETOT_ELNO',
-                   NOM_CMP='TOTALE',
-                   MAILLE='M6',
                    NOEUD='N15',
-                   VALE= 1.8163004696786E+09,
-                   REFERENCE='AUTRE_ASTER',),),);
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=1.8163113000625E+09,
+                   VALE_REFE=1.8163004696786001E9,
+                   TOLE_MACHINE=1.e-5,
+                   MAILLE='M6',),
+                ),
+          )
 
 FIN();
 
