@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 # sdll126b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,30 +80,6 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                   _F(GROUP_MA='ROTOR',
                                      DRX=0.0,),),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARELEM,
-                CHARGE=BLOQUAGE,
-                NUME_DDL=CO('NUMEDDL'),
-                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),
-                           _F(MATRICE=CO('MASDIAG'),
-                              OPTION='MASS_MECA_DIAG',),
-                           _F(MATRICE=CO('GYRO'),
-                              OPTION='MECA_GYRO',),
-                           _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
-
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(0.,3500.,),),);
-
-
-MODEXTR=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES,
-                                 NUME_MODE=(1,2,3,4,5,6,),),);
 balou = 0.05;
 
 
@@ -118,11 +94,6 @@ tfin = 5.0;
 pdtf = 3e-05;
 
 
-AMOGYRO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYRO,
-                                  COEF_R=OM,),
-                               _F(MATR_ASSE=AMOR,
-                                  COEF_R=1.0,),),);
-
 bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='N_DIS2',
                                       FY=(balou * (OM ** 2)),),);
@@ -130,18 +101,43 @@ bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
 bal_FZ=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='N_DIS2',
                                       FZ=(balou * (OM ** 2)),),);
+ASSEMBLAGE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                CHARGE=BLOQUAGE,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('MASDIAG'),
+                              OPTION='MASS_MECA_DIAG',),
+                           _F(MATRICE=CO('GYRO'),
+                              OPTION='MECA_GYRO',),
+                           _F(MATRICE=CO('AMOR'),
+                              OPTION='AMOR_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("bal_Yass"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=bal_FY),
+                           _F(VECTEUR=CO("bal_Zass"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=bal_FZ),
+                           ),
+            );
 
-bal_FYe=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                       CHARGE=bal_FY,);
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(0.,3500.,),),);
 
-bal_FZe=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                       CHARGE=bal_FZ,);
+MODEXTR=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES,
+                                 NUME_MODE=(1,2,3,4,5,6,),),);
 
-bal_Yass=ASSE_VECTEUR(VECT_ELEM=bal_FYe,
-                      NUME_DDL=NUMEDDL,);
+AMOGYRO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYRO,
+                                  COEF_R=OM,),
+                               _F(MATR_ASSE=AMOR,
+                                  COEF_R=1.0,),),);
 
-bal_Zass=ASSE_VECTEUR(VECT_ELEM=bal_FZe,
-                      NUME_DDL=NUMEDDL,);
 
 fory = FORMULE(VALE='cos(OM*INST)',
                NOM_PARA='INST',);
@@ -220,9 +216,3 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=7.0169999999999998E-4,
               )
 
 FIN();
-
-
-
-
-
-

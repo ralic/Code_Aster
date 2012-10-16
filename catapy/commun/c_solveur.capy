@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMUN  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,8 +26,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   assert COMMAND in ('CALC_ELEM',
-                      'CALC_ERREUR',
+   assert COMMAND in ('CALC_ERREUR',
                       'CALC_FORC_AJOU',
                       'CALC_IFS_DNL',
                       'CALC_MATR_AJOU',
@@ -38,7 +37,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                       'DYNA_LINE_TRAN',
                       'DYNA_NON_LINE',
                       'DYNA_TRAN_MODAL',
-                      'IMPR_STURM',
+                      'INFO_MODE',
                       'MACR_ASCOUF_CALC',
                       'MACR_ASPIC_CALC',
                       'MACRO_BASCULE_SCHEMA',
@@ -75,13 +74,12 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                   'DEFI_BASE_MODALE',
                   'DYNA_LINE_HARM',
                   'DYNA_TRAN_MODAL',
-                  'IMPR_STURM',
+                  'INFO_MODE',
                   'MODE_ITER_SIMULT',
                   'MODE_ITER_INV',
                   ):
       _type = 'SD'
-   elif COMMAND in ('CALC_ELEM',
-                    'CALC_ERREUR',
+   elif COMMAND in ('CALC_ERREUR',
                     'CALC_FORC_AJOU',
                     'CALC_MATR_AJOU',
                     'DYNA_LINE_TRAN',
@@ -154,11 +152,11 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _resol  = True
 
 #  Avec les solveurs modaux STOP_SINGULIER n'existe pas, de plus RCMK n'est pas disponible
-   if COMMAND in ('IMPR_STURM','MODE_ITER_INV','MODE_ITER_SIMULT'):
+   if COMMAND in ('INFO_MODE','MODE_ITER_INV','MODE_ITER_SIMULT'):
       _singu = False
       _rcmk  = False
-#     Dans IMPR_STURM on ne fait que factoriser
-      if COMMAND == 'IMPR_STURM':
+#     Dans INFO_MODE on ne fait que factoriser
+      if COMMAND == 'INFO_MODE':
          _resol = False
 
 # ----------------------------------------------------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
 # sdll135b.para = tps_job 200 mem_job 256Mo ncpus 1 liste_test S
@@ -73,7 +73,7 @@ CHARMX=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='B',
                                       MX=1.0,),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARAC,
                 CHARGE=CL,
@@ -207,7 +207,6 @@ MODE_DX=MODE_ITER_INV(MATR_RIGI=RIGID,
                       OPTION='PROCHE',
                       FREQ=(1263.497,3790.49,6317.484,8844.4477,11371.473,),),);
 
-
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
@@ -260,7 +259,6 @@ MODE_FZ=MODE_ITER_INV(MATR_RIGI=RIGID,
                       CALC_FREQ=_F(
                       OPTION='PROCHE',
                       FREQ=(269.932,1077.199,2270.705,3249.207,4649.212,),),);
-
 
 # REMARQUE : LA COMPARAISON DES VALEURS DES FREQUENCES PAR RAPPORT
 # AUX VALEURS ANALYTIQUES SONT PLUS DEFAVORABLES QUE DANS LES AUTRES CAS
@@ -324,7 +322,6 @@ MODE_DRX=MODE_ITER_INV(MATR_RIGI=RIGID,
                        CALC_FREQ=_F(
                        OPTION='PROCHE',
                        FREQ=(786.619,2359.856,3933.094,5506.33,),),);
-
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
@@ -494,9 +491,3 @@ TEST_RESU(RESU=_F(NUME_ORDRE=32,
           )
 
 FIN();
-
-
-
-
-
-

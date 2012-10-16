@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102i.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -367,9 +367,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=SITU0,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIXX',
-                  VALE_CALC=-1.35852902E-05,
+                  VALE_CALC=0.0,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=2.E-5,
                   PRECISION=1.E-2,
                   MAILLE='M12',),
           )

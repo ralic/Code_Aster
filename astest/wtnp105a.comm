@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtnp105a.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -254,6 +254,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   VALE_CALC= 1.12814470E+04,
                   VALE_REFE=1.1200E4,
                   CRITERE='RELATIF',
+                  TOLE_MACHINE=1.E-4,       #TODO variabilite
                   PRECISION=0.050000000000000003,),
           )
 
@@ -266,6 +267,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   VALE_CALC= 1.22692283E+04,
                   VALE_REFE=1.2240E4,
                   CRITERE='RELATIF',
+                  TOLE_MACHINE=1.E-4,       #TODO variabilite
                   PRECISION=0.050000000000000003,),
           )
 

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster include  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -50,9 +50,9 @@ typedef int Py_ssize_t;
 
 /* Utiliser -DUSE_ASSERT pour activer les ASSERT */
 #ifdef USE_ASSERT
-#define ASSERT(condition) if( !(condition) ){ ICI ; fprintf(stderr,"condition %s VIOLEE\n",#condition);INTERRUPTION(17);}
+#define AS_ASSERT(condition) if( !(condition) ){ ICI ; fprintf(stderr,"condition %s VIOLEE\n",#condition);INTERRUPTION(17);}
 #else
-#define ASSERT(condition)
+#define AS_ASSERT(condition)
 #endif
 
 #define PRINTERR if(PyErr_Occurred()){ \

@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 10/07/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF recal Macro  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -809,6 +809,7 @@ class CALCULS_ASTER:
 
             # Pour la dynamique la table avec la matrice MAC a un traitement different
             if self.DYNAMIQUE:
+
                if ('MAC' in reponses[i][2]):
                        t.append( self.ajout_post_mac( reponses[i] ) )
 
@@ -820,6 +821,24 @@ class CALCULS_ASTER:
             t.append("IMPR_TABLE(TABLE="+str(reponses[i][0])+", FORMAT='ASTER', UNITE="+num_ul+", INFO=1, FORMAT_R='E30.20',);\n")
             t.append("DEFI_FICHIER(ACTION='LIBERER', UNITE="+num_ul+",);\n")
 
+        if ( self.DYNAMIQUE['APPARIEMENT_MANUEL'] == 'OUI' and self.graph_mac and (True in ['MAC' in reponses[ii][2] for ii in range (len(reponses))]) ) : ## on cherche a inverser la liste de frequences potentiellement changee par la fenetre MAC 
+
+            for ind_rep in range(len(reponses)) :
+               if reponses[ind_rep][2]=='FREQ' :
+                   t.append( "data1 = "+reponses[ind_rep][0]+".EXTR_TABLE().Array('"+reponses[ind_rep][1] +"','FREQ')\n" ) ## on recupere la table des frequences
+                   t.append( "nume_freq=data1[:,0].tolist()\n" )
+                   t.append( "val_freq=data1[:,1].tolist()\n" )
+                   t.append( "val_freq_permute=[]\n" ) ## val_freq_permute contient la liste de frequences permutee
+
+                   t.append( "for ii in range(len(list_num_pour_freq)):\n" )
+                   t.append( "   if list_num_pour_freq[ii]==list_exp_pour_freq[ii]:\n" )
+                   t.append( "     val_freq_permute.append(val_freq[ii])\n" )
+                   t.append( "   else:\n" )
+                   t.append( "     ii_p= list_exp_pour_freq.index(list_num_pour_freq[ii])\n" )
+                   t.append( "     val_freq_permute.append(val_freq[ii_p])\n" )
+
+                   t.append( "DETRUIRE(CONCEPT=_F(NOM="+str(reponses[ind_rep][0])+"),)\n" )
+                   t.append( reponses[ind_rep][0]+"=CREA_TABLE(LISTE=(_F(PARA='"+reponses[ind_rep][1]+"',LISTE_I=nume_freq,),_F(PARA='FREQ',LISTE_R=val_freq_permute,),),)\n" )
 
         # number of threads to follow execution
         numthread = 1
@@ -1049,6 +1068,8 @@ class CALCULS_ASTER:
       if (self.DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI' and self.graph_mac):
           txt.append( "frame =fenetre_mac(" + self.DYNAMIQUE['MODE_EXP']+"," + self.DYNAMIQUE['MODE_CALC']+",_mac)\n" )
           txt.append( "list_exp,list_num =frame.get_list()\n" )
+          txt.append( "list_exp_pour_freq=list_exp" ) ### on duplique les valeurs pour etre reutilisees dans la table des FREQ
+          txt.append( "list_num_pour_freq=list_num" ) ### on duplique les valeurs pour etre reutilisees dans la table des FREQ
           txt.append( "for i in range(nb_freq): l_mac.append(_mac[int(list_num[i])-1,int(list_exp[i])-1])\n" )
       else:
           txt.append( "for i in range(nb_freq): l_mac.append(_mac[i,i])\n" )

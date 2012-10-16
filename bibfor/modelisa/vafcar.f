@@ -9,7 +9,7 @@
       CHARACTER*8       NOMU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,8 @@ C --- VERIFICATION DU BON TYPE DE L ELEMENT
          NPD = 1
          NPF = NPO
       ELSEIF ( (MCLF(1: 7).EQ.'DISCRET') .OR.
-     &         (MCLF(1:12).EQ.'RIGI_PARASOL') ) THEN
+     &         (MCLF(1:12).EQ.'RIGI_PARASOL') .OR.
+     &          MCLF(1:9).EQ.'MASS_AJOU') THEN
          NPD = NPO + 1
          NPF = NPO + NDI
       ELSEIF (MCLF(1:11).EQ.'ORIENTATION') THEN

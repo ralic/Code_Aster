@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION
 # ssls111b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
@@ -135,7 +135,7 @@ CHME2A=AFFE_CHAR_MECA(MODELE=MO2,
                       FORCE_ARETE=_F(GROUP_MA='L12',
                                       FZ=frep),);
 
-MACRO_MATR_ASSE(MODELE=MO2,
+ASSEMBLAGE(MODELE=MO2,
                 CHAM_MATER=CHMAT2,
                 CARA_ELEM=EP2,
                 CHARGE=CL2,
@@ -149,7 +149,6 @@ MODE2=MODE_ITER_SIMULT(MATR_RIGI=MATASS2,
                        MATR_MASS=MATASM2,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=4,),);
-
 
 RESU2A=MECA_STATIQUE(MODELE=MO2,
                 CHAM_MATER=CHMAT2,
@@ -293,9 +292,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 # IMPR_RESU(RESU=_F(RESULTAT=RESU2A,GROUP_MA='L14',))
 
 FIN();
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,6 +90,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            regles=(AU_MOINS_UN('CHAM_GD','RESULTAT','MAILLAGE',),
                    EXCLUS('CHAM_GD','RESULTAT'),),
            MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster,squelette)),
+           CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
            CHAM_GD         =SIMP(statut='f',typ=cham_gd_sdaster),
            RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
 
@@ -104,7 +105,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            ),
 
            b_vari_el       =BLOC(condition="FORMAT==('MED')",
-             IMPR_NOM_VARI=SIMP(statut='f',typ='TXM',into=("OUI","NON") ),
+             IMPR_NOM_VARI=SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",),
            ),
 
            b_extrac        =BLOC(condition="RESULTAT != None",

@@ -1,13 +1,13 @@
       SUBROUTINE ECRBAS(NBSAUV,NBNL,NBMODE,DEPGEN,VITGEN,ACCGEN,
-     &                  TEMPS,JORDRE,DEPBUT,VITBUT,FORBUT,
-     &                  REDEPG,REVITG,REACCG,RETEMP,REORDR,
+     &                  TEMPS,JORDRE,PTEMP,DEPBUT,VITBUT,FORBUT,
+     &                  REDEPG,REVITG,REACCG,RETEMP,REORDR,REPTEM,
      &                  REDEPB,REVITB,REFORB)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 16/10/2012   AUTEUR BERRO H.BERRO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -22,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE  CRP_21
 C-----------------------------------------------------------------------
 C DESCRIPTION : ARCHIVAGE DES RESULTATS
 C -----------
@@ -33,10 +34,10 @@ C ARGUMENTS
 C ---------
       INTEGER  NBSAUV, NBNL, NBMODE
       REAL*8   DEPGEN(NBMODE,*), VITGEN(NBMODE,*), ACCGEN(NBMODE,*),
-     &         TEMPS(*)
+     &         TEMPS(*), PTEMP(*)
       INTEGER  JORDRE(*)
       REAL*8   DEPBUT(NBNL,3,*), VITBUT(NBNL,3,*), FORBUT(NBNL,3,*),
-     &         REDEPG(*), REVITG(*), REACCG(*), RETEMP(*)
+     &         REDEPG(*), REVITG(*), REACCG(*), RETEMP(*), REPTEM(*)
       INTEGER  REORDR(*)
       REAL*8   REDEPB(*), REVITB(*), REFORB(*)
 C
@@ -61,6 +62,12 @@ C
       DO 120 K = 1, NBSAUV
          REORDR(K) = JORDRE(K)
  120  CONTINUE
+C
+C 1.3 PAS DE TEMPS
+C
+      DO 130 K = 1, NBSAUV
+         REPTEM(K) = PTEMP(K)
+ 130  CONTINUE
 C
 C-----------------------------------------------------------------------
 C 2.  GRANDEURS GENERALISEES

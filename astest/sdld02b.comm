@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_N
 # sdld02b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,7 +110,7 @@ FREQ=NORM_MODE( reuse=FREQ,    MODE=FREQ,
 #
 
 NB_MODES = INFO_MODE( MATR_RIGI=MATASSR,      MATR_MASS=MATASSM,
-                      FREQ_MIN=5.,         FREQ_MAX=32.    )
+                      FREQ=(5.,32.))
 
                              
 TEST_TABLE(REFERENCE='ANALYTIQUE',

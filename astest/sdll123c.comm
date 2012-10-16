@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
 # sdll123c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -408,7 +408,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
 
 
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
                 CHARGE=BLOQUAGE,
@@ -442,7 +442,6 @@ MG_SO=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
-
 # CALCUL VIA QZ
 MG_QZ=MODE_ITER_SIMULT( INFO=1,
                        MATR_RIGI=MATK,
@@ -454,7 +453,6 @@ MG_QZ=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
-
 
 # CALCUL VIA PYTHON
 rigF=MATK.EXTR_MATR()
@@ -637,7 +635,6 @@ MQ_SO=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
-
 MQ_SOR=MODE_ITER_SIMULT( INFO=1,
                        MATR_RIGI=MATK1,
                        MATR_MASS=MATM1,
@@ -650,7 +647,6 @@ MQ_SOR=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
-
 MQ_SOI=MODE_ITER_SIMULT( INFO=1,
                        MATR_RIGI=MATK1,
                        MATR_MASS=MATM1,
@@ -663,7 +659,6 @@ MQ_SOI=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
-
 # CALCUL VIA QZ
 MQ_QZ=MODE_ITER_SIMULT( INFO=1,
                        MATR_RIGI=MATK1,
@@ -676,7 +671,6 @@ MQ_QZ=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
-
 
 # CALCUL VIA PYTHON
 rigF=MATK1.EXTR_MATR()

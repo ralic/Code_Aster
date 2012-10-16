@@ -1,6 +1,6 @@
-      SUBROUTINE MPICMW( )
+      SUBROUTINE MPICMW( IEXC )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MPICMW UTILITAI  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MPICMW UTILITAI  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -19,6 +19,7 @@
 ! ================================================================== 
 C RESPONSABLE COURTOIS M.COURTOIS
       IMPLICIT NONE
+      INTEGER  IEXC
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI COMM WARN
 !       UN PROCESSEUR A RENCONTRE UNE ERREUR, IL EMET SON MESSAGE
@@ -48,12 +49,20 @@ C RESPONSABLE COURTOIS M.COURTOIS
 !     SUR LES PROCESSEURS AUTRES QUE #0
       IF ( RANK .NE. 0 ) THEN
         CALL STSTAT(ST_ER_OTH)
-        CALL U2MESS('I', 'APPELMPI_82')
+        IF ( IEXC .EQ. 0 ) THEN
+          CALL U2MESS('I', 'APPELMPI_82')
+        ELSE
+          CALL U2MESS('I', 'APPELMPI_92')
+          CALL STSTAT(ST_EXCEPT)
+        ENDIF
         CALL MPISST(ST_ER, IRET)
 !
 !     SUR LE PROCESSEUR #0
       ELSE
         CALL STSTAT(ST_ER_PR0)
+        IF ( IEXC .EQ. 1 ) THEN
+          CALL STSTAT(ST_EXCEPT)
+        ENDIF
         CALL MPICHK(NBPRO4, IRET)
       ENDIF
 !     INUTILE DE TESTER IRET, ON SAIT QU'IL Y A UNE ERREUR

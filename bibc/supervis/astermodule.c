@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -156,12 +156,12 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
         int ioc       = 0 ;
 
         mfc = MakeCStrFromFStr(motfac,lfac);
-                                                        ASSERT(mfc!=(char*)0);
+                                                        AS_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
-                                                        ASSERT(mcs!=(char*)0);
+                                                        AS_ASSERT(mcs!=(char*)0);
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getltx","ssiii",mfc,mcs,ioc,(int)*mxval, (int)*taille);
 
         /*  si le retour est NULL : exception Python a transferer
@@ -195,7 +195,7 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN STRING_SIZE lfac, _OUT INTEGER *o
         */
         PyObject *res  = (PyObject*)0 ;
         char *mfc;
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         mfc = MakeCStrFromFStr(nomfac, lfac);
         res=PyObject_CallMethod(commande,"getfac","s",mfc);
 
@@ -263,19 +263,19 @@ void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
         char *mcs      = (char*)0 ;
         PyObject *res  = (PyObject*)0 ;
         char *nomType  = (char*)0 ;
-                                                              ASSERT(lnom>0) ;
+                                                              AS_ASSERT(lnom>0) ;
         mcs = MakeCStrFromFStr(nomobj,lnom);
 
         /*
         recherche dans le jeu de commandes python du nom du type de
          du concept Aster de nom nomobj
         */
-                                                              ASSERT(commande!=(PyObject*)0);
+                                                              AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"gettco","s",mcs);
         if (res == (PyObject*)0)MYABORT("erreur dans la partie Python (gettco)");
-                                                              ASSERT( PyString_Check(res) )
+                                                              AS_ASSERT( PyString_Check(res) );
         nomType=PyString_AsString(res);
-                                                              ASSERT(nomType!=(char*)0) ;
+                                                              AS_ASSERT(nomType!=(char*)0) ;
         CopyCStrToFStr(typobj, nomType, ltyp);
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         FreeStr(mcs);
@@ -297,9 +297,9 @@ void DEFPS(GETMAT,getmat,_OUT INTEGER *nbarg,_OUT char *motcle,_IN STRING_SIZE l
         PyObject *lnom  = (PyObject*)0 ; /* liste python des noms */
         int       nval = 0 ;
         int          k = 0 ;
-                                                                        ASSERT(lcle>0);
+                                                                        AS_ASSERT(lcle>0);
         for ( k=0 ;k<lcle ; k++ ) motcle[k]=' ' ;
-                                                                        ASSERT(commande!=(PyObject*)0);
+                                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getmat","");
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -349,12 +349,12 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
         int          k = 0 ;
         int        ioc = 0 ;
         char *mfc;
-                                                                        ASSERT(ltyp>0);
+                                                                        AS_ASSERT(ltyp>0);
         for ( k=0 ;k<ltyp ; k++ ) type[k]=' ' ;
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
         mfc = MakeCStrFromFStr(nomfac, lfac);
-                                                                        ASSERT(commande!=(PyObject*)0);
+                                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getmjm","sii",mfc,ioc,(int)*nbval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -364,7 +364,7 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
         if(!PyArg_ParseTuple(res,"OO",&lnom,&lty)) MYABORT("erreur dans la partie Python");
         nval=(int)PyList_Size(lnom);
         *nbarg = (INTEGER)( (nval > *nbval) ? -nval : nval );
-                                                                        ASSERT(((nval<=*nbval)&&(*nbarg==nval))||(*nbarg==-nval)) ;
+                                                                        AS_ASSERT(((nval<=*nbval)&&(*nbarg==nval))||(*nbarg==-nval)) ;
         if(*nbarg < 0)nval=(int)*nbval;
 
         if ( nval > 0 ){
@@ -384,7 +384,7 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
                 if ( strncmp( mot , "R8" , 2 )!=0 && strncmp( mot , "IS" , 2 )!=0 && strncmp( mot , "TX" , 2 )!=0 && strncmp( mot , "C8" , 2 )!=0 ){
                         int j=0 ;
 
-                        ASSERT(ltyp>2);
+                        AS_ASSERT(ltyp>2);
                         mot[0]='C' ;
                         mot[1]='O' ;
                         for ( j=2 ; j<ltyp ; j++ ) mot[j]=' ' ;
@@ -412,8 +412,8 @@ INTEGER DEFSS( GETEXM, getexm, _IN char *motfac,_IN STRING_SIZE lfac,
         PyObject *res  = (PyObject*)0 ;
         char *mfc, *mcs;
         INTEGER presence;
-                                                                        ASSERT(motcle!=(char*)0);
-                                                                        ASSERT(commande!=(PyObject*)0);
+                                                                        AS_ASSERT(motcle!=(char*)0);
+                                                                        AS_ASSERT(commande!=(PyObject*)0);
         mfc = MakeCStrFromFStr(motfac, lfac);
         mcs = MakeCStrFromFStr(motcle, lcle);
         res=PyObject_CallMethod(commande,"getexm","ss", mfc, mcs);
@@ -455,7 +455,7 @@ void DEFSSS( GETRES ,getres, _OUT char *nomres, _IN STRING_SIZE lres,
           BlankStr(nomcmd,lcmd);
           return ;
         }
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getres","");
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -542,7 +542,7 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
         mfc = MakeCStrFromFStr(motfac,lfac);
-                                                        ASSERT(mfc!=(char*)0);
+                                                        AS_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
@@ -562,13 +562,13 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
 
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getvc8","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
-                                                        ASSERT(PyTuple_Check(res)) ;
+                                                        AS_ASSERT(PyTuple_Check(res)) ;
         ok = PyArg_ParseTuple(res,"iOi",&nval,&tup,&idef);
         if(!ok)MYABORT("erreur dans la partie Python");
 
@@ -614,7 +614,7 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
-                                                        ASSERT(mfc!=(char*)0);
+                                                        AS_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
          * VERIFICATION
@@ -632,12 +632,12 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
         }
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getvr8","ssii",mfc,mcs,ioc,(int)*mxval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
-                                                       ASSERT(PyTuple_Check(res)) ;
+                                                       AS_ASSERT(PyTuple_Check(res)) ;
         ok = PyArg_ParseTuple(res,"iOi",&nval,&tup,&idef);
         if(!ok)MYABORT("erreur dans la partie Python");
 
@@ -669,7 +669,7 @@ void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
         PyObject *tup_val;
         char *kvar, *sret;
         int i;
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         tup_par = PyTuple_New( (Py_ssize_t)*nbpu ) ;
         tup_val = PyTuple_New( (Py_ssize_t)*nbpu ) ;
         for(i=0;i<*nbpu;i++){
@@ -744,9 +744,9 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
-                                                        ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
+                                                        AS_ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
-                                                        ASSERT(mfc!=(char*)0);
+                                                        AS_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
@@ -765,7 +765,7 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
         }
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getvis","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
@@ -793,7 +793,7 @@ void DEFS(GETVLI,getvli, _OUT char *cas , _IN STRING_SIZE lcas )
         /*
         Cette fonction est destinee a etre utilisee pour le fichier "*.code" (fort.15)
         */
-                                                        ASSERT(NomCas!=(char*)0) ;
+                                                        AS_ASSERT(NomCas!=(char*)0) ;
         CopyCStrToFStr(cas, NomCas, lcas);
         return ;
 }
@@ -828,9 +828,9 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
-                                                        ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
+                                                        AS_ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
-                                                        ASSERT(mfc!=(char*)0);
+                                                        AS_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
@@ -850,7 +850,7 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
 
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getvls","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
@@ -925,7 +925,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
         }
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getvtx","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
@@ -987,9 +987,9 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
         int ok,nval,ioc,idef ;
         char *mfc;
         char *mcs;
-                                                        ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
+                                                        AS_ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
-                                                        ASSERT(mfc!=(char*)0);
+                                                        AS_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
@@ -1008,7 +1008,7 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
         }
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
-                                                        ASSERT(commande!=(PyObject*)0);
+                                                        AS_ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getvid","ssii",mfc,mcs,ioc,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
@@ -1076,8 +1076,8 @@ void DEFSSP(GCUCON,gcucon, _IN char *resul, STRING_SIZE lresul,
                resultats produits par les etapes precedentes
    */
    PyObject * res = (PyObject*)0 ;
-                                                                              ASSERT(lresul) ;
-                                                                              ASSERT(lconcep) ;
+                                                                              AS_ASSERT(lresul) ;
+                                                                              AS_ASSERT(lconcep) ;
    res = PyObject_CallMethod(commande,"gcucon","s#s#",resul,lresul,concep,lconcep);
    /*
                Si le retour est NULL : une exception a ete levee dans le code Python appele
@@ -2342,7 +2342,7 @@ int RecupNomCas(void)
    int lng;
    INTEGER longueur;
    INTEGER taille = 80; // taille max
-                                                   ASSERT(commande!=(PyObject*)0);
+                                                   AS_ASSERT(commande!=(PyObject*)0);
    CALL_GETLTX ( "CODE","NOM",iocc,&taille,mxval, &longueur ,&nbval) ;
    lng = (int)longueur;
    if(nbval == 0){
@@ -2351,9 +2351,9 @@ int RecupNomCas(void)
       NomCas = strdup("??????");
    }
    else if(nbval > 0){
-                                                   ASSERT(lng>0);
+                                                   AS_ASSERT(lng>0);
       NomCas = MakeBlankFStr(lng);
-                                                   ASSERT(NomCas!=(char*)0);
+                                                   AS_ASSERT(NomCas!=(char*)0);
       CALL_GETVTX ( "CODE","NOM",iocc,iarg,mxval, NomCas ,&nbval) ;
    }
    else{
@@ -2375,7 +2375,7 @@ PyObject *args;
         */
         PyObject *temp = (PyObject*)0 ;
         static int nbPassages=0 ;
-                                                                ASSERT((nbPassages==1)||(commande==(PyObject*)0));
+                                                                AS_ASSERT((nbPassages==1)||(commande==(PyObject*)0));
         nbPassages++ ;
         if (!PyArg_ParseTuple(args, "O",&temp)) return NULL;
 
@@ -2421,7 +2421,7 @@ PyObject *args;
 {
         PyObject *temp = (PyObject*)0 ;
         static int nbPassages=0 ;
-                                                                ASSERT((nbPassages==1)||(commande==(PyObject*)0));
+                                                                AS_ASSERT((nbPassages==1)||(commande==(PyObject*)0));
         nbPassages++ ;
         if (!PyArg_ParseTuple(args, "O",&temp)) return NULL;
 

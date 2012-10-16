@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE CALCUL MODAL D'UN ARBRE AVEC PALIERS A CARACTERISTIQUES VARIABLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -551,7 +551,7 @@ for kk in range(0,nbV,1) :
    GYAS[kk]=CO('GYAS_%d' % (kk))
    NUME[kk]=CO('NUME_%d' % (kk))
    
-   MACRO_MATR_ASSE(MODELE=modele,
+   ASSEMBLAGE(MODELE=modele,
                 CHAM_MATER=chmat,
                 CARA_ELEM=cara[kk],
                 CHARGE=bloc[kk],
@@ -589,7 +589,6 @@ for kk in range(0,nbV):
                                           STURM='NON',
                                           SEUIL=9.9999999999999995E-07),
                              )
-
    
    tab.append({'NUME_VITE' : kk, 'VITE_ROTA' : OM, 'NOM_OBJET': 'MODE_MECA', 'TYPE_OBJET': 'MODE_MECA', 'NOM_SD' : _mod[kk].nom})
 
@@ -821,7 +820,7 @@ blocage=AFFE_CHAR_MECA(MODELE=modele,
 #MATRICES ASSEMBLEES K, M
 # --------------------------------
    
-MACRO_MATR_ASSE(MODELE=modele,
+ASSEMBLAGE(MODELE=modele,
                 CHAM_MATER=chmat,
                 CARA_ELEM=cara_ele,
                 CHARGE=blocage,
@@ -856,7 +855,6 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                               STURM='NON',
                               SEUIL=9.9999999999999995E-07),
                              )
-
 
 #VITESSE DE ROTATION OMEGA=602.139 RAD/S
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -989,9 +987,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 FIN();
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE AEROREFRIGERANT SOUMIS A UNE EXCITATION SOL
 # sdls300a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,10 +104,8 @@ TABL_MAS=POST_ELEM(        MODELE=STRUC,
 
 MODE1=MACRO_MODE_MECA(    MATR_RIGI=K_ASSE,
                           MATR_MASS=M_ASSE,
-                          CALC_FREQ=_F(  FREQ_MIN = 1.,    
-                                         FREQ_MAX = 7.,    
-                                         COEF_DIM_ESPACE = 3,
-                                         NB_BLOC_FREQ = 6),
+                          CALC_FREQ=_F(  FREQ=(1.,2.,3.,4.,5.,6.,7.),
+                                         COEF_DIM_ESPACE = 3,),
                           NORM_MODE=_F(  NORME = 'TRAN_ROTA',),
                           FILTRE_MODE=_F(  CRIT_EXTR = 'MASS_EFFE_UN'),
                           IMPRESSION=_F(  CUMUL = 'OUI')

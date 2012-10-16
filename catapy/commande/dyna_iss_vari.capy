@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,9 +37,10 @@ DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",
          NB_FREQ       =SIMP(statut='f',typ='I' ),
          NOM_CMP       =SIMP(statut='o',typ='TXM',into=("DX","DY","DZ") ),
          PRECISION     =SIMP(statut='f',typ='R',defaut=0.999 ),
+         ISSF          =SIMP(statut='f',typ='TXM',into=("OUI","NON",),defaut="NON"),
          INTERF           =FACT(statut='o',
               GROUP_NO_INTERF =SIMP(statut='o',typ=grno,),
-              MODE_INTERF  =SIMP(statut='o',typ='TXM',into=("CORP_RIGI","TOUT")),
+              MODE_INTERF  =SIMP(statut='o',typ='TXM',into=("CORP_RIGI","TOUT","QUELCONQUE")),
          ),
          MATR_COHE       =FACT(statut='o',
               TYPE = SIMP(statut='o',typ='TXM' , into=("MITA_LUCO","ABRAHAMSON")   ),            

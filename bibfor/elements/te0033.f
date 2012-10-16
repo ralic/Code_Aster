@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -137,7 +137,7 @@ C     ----------------------------------
       IF (NNO.EQ.3) THEN
          CALL DXTPGL(ZR(JGEOM),PGL)
       ELSE IF (NNO.EQ.4) THEN
-         CALL DXQPGL(ZR(JGEOM),PGL)
+         CALL DXQPGL(ZR(JGEOM),PGL,'S',IRET)
       END IF
 
       CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)

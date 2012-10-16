@@ -13,14 +13,17 @@
 ! ST_ER_PR0 : error on processor #0
 ! ST_ER_OTH : error on another processor
 ! ST_UN_OTH : undefined status for another processor
+! ST_EXCEPT : not a fatal error, an exception
       INTEGER     ST_OK, ST_ER
       INTEGER     ST_ER_PR0, ST_ER_OTH, ST_UN_OTH
+      INTEGER     ST_EXCEPT
       PARAMETER ( ST_ER     =  1,
      &            ST_OK     =  0,
      &
      &            ST_ER_PR0 =  4,
      &            ST_ER_OTH =  8,
-     &            ST_UN_OTH = 16 )
+     &            ST_UN_OTH = 16,
+     &            ST_EXCEPT = 32 )
 !
 ! ST_TAG_CHK : mpi communication tag for the check step of the status
 ! ST_TAG_CNT : mpi communication tag for the continue or stop

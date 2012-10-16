@@ -1,4 +1,4 @@
-#@ MODIF appelmpi Messages  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF appelmpi Messages  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,13 +36,18 @@ cata_msg={
 
 80 : _(u"""  Le processeur #0 demande d'interrompre l'exécution."""),
 
-81 : _(u"""  On demande au processeur #%(i1)d de s'arrêter."""),
+81 : _(u"""  On demande au processeur #%(i1)d de s'arrêter ou de lever une exception."""),
 
 82 : _(u"""  On signale au processeur #0 qu'une erreur s'est produite."""),
 
 83 : _(u"""  Communication de type '%(k1)s' annulée."""),
 
 84 : _(u"""  Le processeur #%(i1)d a émis un message d'erreur."""),
+
+
+92 : _(u"""  On signale au processeur #0 qu'une exception a été levée."""),
+
+
 
 95 : _(u"""
     Tous les processeurs sont synchronisés.

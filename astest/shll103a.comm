@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE VALIDATION DE CALCUL HARMONIQUE POUR DISCRET NON SYMETRIQUE
 # shll103a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,28 +126,8 @@ blocage=AFFE_CHAR_MECA(MODELE=modele,
                                     
 # --------------------------------
 #MATRICES ASSEMBLEES K, M
+#VECTEURS ASSEMBLES
 # --------------------------------
-MACRO_MATR_ASSE(MODELE=modele,
-                CHAM_MATER=chmat,
-                CARA_ELEM=cara,
-                CHARGE=blocage,
-                NUME_DDL=CO('NUMEDDL'),
-                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),
-                           _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
-                              
-              
-
-GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
-                      MODELE=modele,
-                      CHAM_MATER=chmat,
-                      CARA_ELEM=cara,);
-
-GYAS=ASSE_MATRICE(MATR_ELEM=GYELEM,
-                  NUME_DDL=NUMEDDL,);
 
 VIT=NP.array([60.0,1500.0,15000.0])
 nbV=len(VIT);
@@ -162,17 +142,35 @@ EF_HAR_Z=AFFE_CHAR_MECA(MODELE=modele,
                         FORCE_NODALE=_F(NOEUD='N13',
                                         FZ=(val_eff),),);
 
-EF_ELE_X=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                        CHARGE=EF_HAR_X,);
+ASSEMBLAGE(MODELE=modele,
+                CHAM_MATER=chmat,
+                CARA_ELEM=cara,
+                CHARGE=blocage,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('AMOR'),
+                              OPTION='AMOR_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("EF_ASS_X"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=EF_HAR_X),
+                           _F(VECTEUR=CO("EF_ASS_Z"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=EF_HAR_Z),
+                           ),);
+                              
+              
 
-EF_ASS_X=ASSE_VECTEUR(VECT_ELEM=EF_ELE_X,
-                      NUME_DDL=NUMEDDL,);
+GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
+                      MODELE=modele,
+                      CHAM_MATER=chmat,
+                      CARA_ELEM=cara,);
 
-EF_ELE_Z=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                        CHARGE=EF_HAR_Z,);
+GYAS=ASSE_MATRICE(MATR_ELEM=GYELEM,
+                  NUME_DDL=NUMEDDL,);
 
-EF_ASS_Z=ASSE_VECTEUR(VECT_ELEM=EF_ELE_Z,
-                      NUME_DDL=NUMEDDL,);
 
 module = FORMULE(NOM_PARA=("REEL", "IMAG"), VALE="""sqrt(REEL**2 + IMAG**2)""")
 phase = FORMULE(NOM_PARA=("REEL", "IMAG"), VALE="""atan2(IMAG, REEL)/pi*180""")

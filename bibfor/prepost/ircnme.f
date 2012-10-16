@@ -2,10 +2,10 @@
      &                    NBCMP, NOMCMP, PARTIE,
      &                    NUMPT, INSTAN, NUMORD,
      &                    NBNOEC, LINOEC,
-     &                    CODRET )
+     &                    SDCARM, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,7 @@ C       INSTAN : VALEUR DE L'INSTANT A ARCHIVER
 C       NUMORD : NUMERO D'ORDRE DU CHAMP
 C       NBNOEC : NOMBRE DE NOEUDS A ECRIRE (O, SI TOUS LES NOEUDS)
 C       LINOEC : LISTE DES NOEUDS A ECRIRE SI EXTRAIT
+C       SDCARM : CARA_ELEM (UTILE POUR LES SOUS-POINTS)
 C    SORTIES:
 C       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 C_______________________________________________________________________
@@ -49,7 +50,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      CHARACTER*8 TYPECH, MODELE
+      CHARACTER*8 TYPECH, MODELE, SDCARM
       CHARACTER*19 CHANOM
       CHARACTER*64  NOCHMD
       CHARACTER*(*) NOMCMP(*),PARTIE
@@ -109,7 +110,7 @@ C
      &              NUMPT, INSTAN, NUMORD,
      &              JCNSK, JCNSD, JCNSC, JCNSV, JCNSL,
      &              NBNVPR, ZI(JNVPRO+1),
-     &              CODRET )
+     &              SDCARM, CODRET )
 C
 C====
 C 3. ON NETTOIE

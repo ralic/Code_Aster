@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 29/05/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements4 Messages  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -200,11 +200,14 @@ Le module de Young est nul.
 80 : _(u"""
   L'élément de plaque QUAD4 défini sur la maille : %(k1)s
   n'est pas plan et peut conduire a des résultats faux
-  Distance au plan :  %(r1)f
 """),
 
 81 : _(u"""
  Il manque le paramètre  %(k1)s pour la maille  %(k2)s
+"""),
+
+82 : _(u"""
+  Distance au plan :  %(r1)f
 """),
 
 84 : _(u"""

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 7/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -26,6 +26,8 @@
 #    DE FLEXION A UNE EXTREMITE. CALCUL DES CHARGES CRITIQUES
 #    CONDUISANT AU FLAMBEMENT ELASTIQUE PAR DEVERSEMENT D'UNE POUTRE
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_3D'(TRIA7)
+#  + EN ANNEXE, TEST DU COUPLAGE INFO_MODE+MODE_ITER_SIMULT SUR UN CAS
+#    DE FLAMBEMENT
 #---------------------------------------------------------------------
 #
 DEBUT( CODE=_F( NOM = 'SDLS504A',NIV_PUB_WEB='INTERNET'))
@@ -143,6 +145,42 @@ MAS_RI_M=ASSE_MATRICE(   MATR_ELEM=MEL_RI_M,   NUME_DDL=NUM)
 MAS_RI_G=ASSE_MATRICE(   MATR_ELEM=MEL_RI_G,   NUME_DDL=NUM)
 
 #
+# PRE-ESTIMATIONS DU SPECTRE
+# VALEURS ATTENDUES: 1, 3, 0 ET 5
+NBMOD1 = INFO_MODE(MATR_RIGI=MAS_RI_M,MATR_RIGI_GEOM=MAS_RI_G,
+             TYPE_MODE='MODE_FLAMB',
+             SOLVEUR=_F(METHODE='MUMPS'),
+             CHAR_CRIT=(-1.E+6,-5.E+5,0.0,1.E+5,1.1E+6,),)
+             
+IMPR_TABLE(TABLE=NBMOD1,UNITE=6)
+TEST_TABLE(TABLE=NBMOD1,REFERENCE='ANALYTIQUE',
+           NOM_PARA='NB_MODE', TYPE_TEST='SOMM',
+           VALE_CALC_I=9, VALE_REFE_I=9)
+TEST_TABLE(TABLE=NBMOD1,REFERENCE='ANALYTIQUE',
+           NOM_PARA='NB_MODE', TYPE_TEST='MIN',
+           VALE_CALC_I=0, VALE_REFE_I=0)
+TEST_TABLE(TABLE=NBMOD1,REFERENCE='ANALYTIQUE',
+           NOM_PARA='NB_MODE', TYPE_TEST='MAX',
+           VALE_CALC_I=5, VALE_REFE_I=5)
+
+#
+# REUTILISATION DU CALCUL DU NBRE DE CHARGES CRITIQUES D'INFO_MODE
+# COMPARAISON AVEC LE CALCUL COMPLET STANDARD (OPTION='BANDE')
+RESULT0=MODE_ITER_SIMULT(     MATR_RIGI=MAS_RI_M,
+                             MATR_RIGI_GEOM=MAS_RI_G,
+             CALC_CHAR_CRIT=_F(OPTION='BANDE',TABLE_CHAR_CRIT=NBMOD1,
+                CHAR_CRIT=(-1.E+06,1.E+05)),
+                             TYPE_RESU='MODE_FLAMB'
+                           )
+
+RESULT1=MODE_ITER_SIMULT(     MATR_RIGI=MAS_RI_M,
+                             MATR_RIGI_GEOM=MAS_RI_G,
+             CALC_CHAR_CRIT=_F(OPTION='BANDE',
+                CHAR_CRIT=(-1.E+06,1.+05)),
+                             TYPE_RESU='MODE_FLAMB'
+                           )
+#
+# CALCUL OPTION 'PLUS_PETITE'
 RESULT=MODE_ITER_SIMULT(     MATR_RIGI=MAS_RI_M,
                              MATR_RIGI_GEOM=MAS_RI_G,
                              CALC_CHAR_CRIT=_F( OPTION = 'PLUS_PETITE',     ),
@@ -198,4 +236,43 @@ TEST_RESU(RESU=(_F(RESULTAT = RESULT_G,
                   ),
            )
 
+TEST_RESU(RESU=(_F(RESULTAT = RESULT0,
+                   NUME_MODE = 1,  
+                   PARA = 'CHAR_CRIT',       
+                   VALE_CALC = -7.8662373445668E+05,
+                   VALE_REFE = -786624.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION = 0.03,  
+                   CRITERE = 'RELATIF',),
+                _F(RESULTAT = RESULT0,
+                   NUME_MODE = 4,  
+                   PARA = 'CHAR_CRIT',       
+                   VALE_CALC = -1.0787876516812E+05,
+                   VALE_REFE = -107879.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION = 0.03,  
+                   CRITERE = 'RELATIF',),
+                  ),
+           )
+TEST_RESU(RESU=(_F(RESULTAT = RESULT1,
+                   NUME_MODE = 1,  
+                   PARA = 'CHAR_CRIT',       
+                   VALE_CALC = -7.8662373423126E+05,
+                   VALE_REFE = -786624.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION = 0.03,  
+                   CRITERE = 'RELATIF',),
+                _F(RESULTAT = RESULT1,
+                   NUME_MODE = 4,  
+                   PARA = 'CHAR_CRIT',       
+                   VALE_CALC = -1.0787876516812E+05,
+                   VALE_REFE = -107879.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION = 0.03,  
+                   CRITERE = 'RELATIF',),
+                  ),
+           )
+#
 FIN()
+#
+# 

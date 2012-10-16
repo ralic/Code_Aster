@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF rupture0 Messages  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,7 @@ mécanique, sous le mot clé EVOL_THER.
 """),
 
 7: _(u"""
-L'entité %(k1)s renseignée au mot-clé %(k2)s sous %(k3)s n'est pas dans le maillage.
+L'entité %(k1)s renseignée au mot-clé %(k2)s n'est pas dans le maillage.
 -> Risque et Conseil :
 Veuillez vérifier les données fournies au mot-clé %(k2)s.
 """),

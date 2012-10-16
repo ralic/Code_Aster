@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE TEST INFORMATIQUE QZ ET SORENSEN NON SYMETRIQUES
 # sdll123b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,7 +98,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                           ))
 
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
                 CHARGE=BLOQUAGE,
@@ -141,7 +141,6 @@ MG_SO=MODE_ITER_SIMULT( INFO=1,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10),
                         )
-
 # CALCUL VIA QZ
 MG_QZ=MODE_ITER_SIMULT( INFO=1,
                        MATR_RIGI=MATK,
@@ -149,7 +148,6 @@ MG_QZ=MODE_ITER_SIMULT( INFO=1,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10),
                         )
-
 
 # CALCUL VIA PYTHON
 rigF=MATK.EXTR_MATR()
@@ -363,7 +361,6 @@ MQ_SO=MODE_ITER_SIMULT( INFO=1,
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,
                        APPROCHE='COMPLEXE',),
                         )
-
 MQ_SOR=MODE_ITER_SIMULT( INFO=1,
                        MATR_RIGI=MATK1,
                        MATR_MASS=MATM1,
@@ -373,7 +370,6 @@ MQ_SOR=MODE_ITER_SIMULT( INFO=1,
                        APPROCHE='REEL',),
                        VERI_MODE=_F(SEUIL=1.E-04),
                         )
-
 MQ_SOI=MODE_ITER_SIMULT( INFO=1,
                        MATR_RIGI=MATK1,
                        MATR_MASS=MATM1,
@@ -382,7 +378,6 @@ MQ_SOI=MODE_ITER_SIMULT( INFO=1,
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,
                        APPROCHE='IMAG',),
                         )
-
 # CALCUL VIA QZ
 MQ_QZ=MODE_ITER_SIMULT( INFO=1,
                        MATR_RIGI=MATK1,
@@ -392,7 +387,6 @@ MQ_QZ=MODE_ITER_SIMULT( INFO=1,
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,),
                        VERI_MODE=_F(SEUIL=1.E-04),
                         )
-
 
 # CALCUL VIA PYTHON
 rigF=MATK1.EXTR_MATR()

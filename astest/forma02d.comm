@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 #  -*- coding: iso-8859-1 -*-
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 # forma02d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -84,7 +84,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
 #
 # CALCUL DES MATRICES ASSEMBLEES K ET M
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARA_POU,
                 CHARGE=BLOQUAGE,
@@ -92,7 +92,9 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("F_0"),OPTION='CHAR_MECA')),
+                );
 
 #
 
@@ -111,23 +113,16 @@ IMPR_RESU(FORMAT='MED',
 
 # 3 - ANALYSE TRANSITOIRE :
 # FORCE APPLIQUEE AU POINT B
-
 CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='EFOND',
                                       FY=1.E7,),);
 
-#
-# CALCUL DU VECTEUR ASSEMBLE FY
-
-FY_ELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                       CHARGE=CHARGT,
-                       CARA_ELEM=CARA_POU,);
-
-FY=ASSE_VECTEUR(VECT_ELEM=FY_ELEM,
-                NUME_DDL=NUMEDDL,);
-
-#
-#
+ASSEMBLAGE(     MODELE=MODELE,
+                CARA_ELEM=CARA_POU,
+                CHARGE=BLOQUAGE,
+                NUME_DDL=NUMEDDL,
+                VECT_ASSE=(_F(VECTEUR=CO("FY"),OPTION='CHAR_MECA',CHARGE=CHARGT),),
+                );
 #
 #
 # PROJECTION DES MATRICES M ET K SUR LA BASE MODALE
@@ -310,4 +305,3 @@ TEST_RESU(RESU=(_F(GROUP_NO='BASE',
 
 FIN();
 
-#

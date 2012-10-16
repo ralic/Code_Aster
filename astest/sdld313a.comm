@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
 # sdld313a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,20 +73,14 @@ FORCENO=AFFE_CHAR_MECA(  MODELE=MODELE,
                          FORCE_NODALE=_F(  NOEUD = 'C', FX = 100.)  )
 
 
-MACRO_MATR_ASSE(   MODELE=MODELE,
+ASSEMBLAGE(   MODELE=MODELE,
                    CARA_ELEM=RIGMAS,
                    CHARGE=CONDLIM ,
                    NUME_DDL=CO("INCONNUS"),
                    MATR_ASSE=(  _F(  MATRICE = CO("MATRRIGM"), OPTION = 'RIGI_MECA'),
                                 _F(  MATRICE = CO("MATRMASS"), OPTION = 'MASS_MECA'),
-                                _F(  MATRICE = CO("MATRRIGI"), OPTION = 'RIGI_MECA_HYST')
-                              )
-                   )
-
-SCNDMEMB=CALC_VECT_ELEM(  OPTION='CHAR_MECA',
-                            CARA_ELEM=RIGMAS,  CHARGE=FORCENO     )
-
-VECTASS=ASSE_VECTEUR(  VECT_ELEM=SCNDMEMB,  NUME_DDL=INCONNUS )
+                                _F(  MATRICE = CO("MATRRIGI"), OPTION = 'RIGI_MECA_HYST'),),
+                   VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_MECA',CHARGE=FORCENO),),);
 
 
 # DEFINITION DES PULSATIONS/FREQUENCES DE LA REPONSE HARMONIQUE

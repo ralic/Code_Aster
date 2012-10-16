@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102b.para = tps_job 430 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -212,7 +212,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                                     VALE=(0.,0.,0.),),
                                     ),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CARA_ELEM=CARA_ELE,
                 CHARGE=CON_LIM,
                 NUME_DDL=CO('NUM'),
@@ -246,7 +246,6 @@ MODE=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                       OPTION='SANS',
                       CALC_FREQ=_F(OPTION='BANDE',
                                    FREQ=(1.,30.,),),);
-
 
 MODE=NORM_MODE(reuse =MODE,
                MODE=MODE,
@@ -579,7 +578,7 @@ CARA_BIC=AFFE_CARA_ELEM(MODELE=BICHOC,
                                     VALE=(0.,0.,0.,0.,0.,0.,),),                                    
                                     ),);
 
-MACRO_MATR_ASSE(MODELE=BICHOC,
+ASSEMBLAGE(MODELE=BICHOC,
                 CARA_ELEM=CARA_BIC,
                 CHARGE=CL_BICHO,
                 NUME_DDL=CO('NUMDDLC'),
@@ -622,7 +621,6 @@ MODE_BIC=MODE_ITER_SIMULT(MATR_RIGI=RIGI_BIC,
                           OPTION='SANS',
                           CALC_FREQ=_F(OPTION='BANDE',
                                        FREQ=(1.,30.,),),);
-
 
 MODE_BIC=NORM_MODE(reuse =MODE_BIC,
                    MODE=MODE_BIC,
@@ -851,10 +849,5 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
 FIN();
 
 #
-
-
-
-
-
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 # sdll125a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -125,7 +125,7 @@ blocage=AFFE_CHAR_MECA(MODELE=modele,
 # --------------------------------
 #MATRICES ASSEMBLEES K, M
 # --------------------------------
-MACRO_MATR_ASSE(MODELE=modele,
+ASSEMBLAGE(MODELE=modele,
                 CHAM_MATER=chmat,
                 CARA_ELEM=cara,
                 CHARGE=blocage,
@@ -172,7 +172,6 @@ l_mod=CALC_MODE_ROTATION(MATR_RIGI =RIGIDITE,
                  CALC_FREQ=_F(OPTION='PLUS_PETITE',NMAX_FREQ=nbF),
                  VERI_MODE=_F(STOP_ERREUR='NON',
                               SEUIL=5.9999999999999995E-02));
-
 
 IMPR_TABLE(TABLE=l_mod);
 

@@ -1,7 +1,7 @@
       SUBROUTINE CCVRRL(NOMMAI,MODELE,CARAEL,MESMAI,CHAMES,
      &                  CMPERR,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C
       REAL*8       PGL(3,3),VL(3),VG1(3),VG2(3),VG3(3),VG4(3)
 C
       CHARACTER*1  CBID
+      CHARACTER*8  NOMAIL
       CHARACTER*16 MODELI
       CHARACTER*19 CNXINV,CARSD,LIGRMO,CARCC,VECSAU
       CHARACTER*24 CARORI,CARCOQ
@@ -196,7 +197,15 @@ C
      &                  JCOORD,ADCAR1,ADCAR2,IALPHA,IBETA,
      &                  IEPAIS,JALPHA,JBETA,JGAMMA,LIGRMO,
      &                  INO,PGL,MODELI,IER)
-            IF ( IER.EQ.1 ) GOTO 20
+            IF ( IER.EQ.3 ) GOTO 20
+            IF ( IER.EQ.1.OR.IER.EQ.2 ) THEN
+              CALL JENUNO(JEXNUM(NOMMAI//'.NOMMAI',NUMMA),NOMAIL)
+              IF ( IER.EQ.1 ) THEN
+                CALL U2MESK('A','MODELISA10_5',1,NOMAIL)
+              ELSE
+                CALL U2MESK('A','ELEMENTS4_80',1,NOMAIL)
+              ENDIF
+            ENDIF
 C
             VL(1) = 1.D0
             VL(2) = 0.D0
@@ -249,7 +258,15 @@ C
      &                    JCOORD,ADCAR1,ADCAR2,IALPHA,IBETA,
      &                    IEPAIS,JALPHA,JBETA,JGAMMA,LIGRMO,
      &                    INO,PGL,MODELI,IER)
-              IF ( IER.EQ.1 ) GOTO 30
+              IF ( IER.EQ.3 ) GOTO 30
+              IF ( IER.EQ.1.OR.IER.EQ.2 ) THEN
+                CALL JENUNO(JEXNUM(NOMMAI//'.NOMMAI',NUMMA2),NOMAIL)
+                IF ( IER.EQ.1 ) THEN
+                  CALL U2MESK('A','MODELISA10_5',1,NOMAIL)
+                ELSE
+                  CALL U2MESK('A','ELEMENTS4_80',1,NOMAIL)
+                ENDIF
+              ENDIF
 C
               VL(1) = 1.D0
               VL(2) = 0.D0

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # RESPONSABLE CORUS M.CORUS
 # TITRE ANALYSE MODALE D'UNE PLAQUE APPUYEE SUR SES COINS : SOUS-STRUCTURATION
 # sdls122a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -138,7 +138,7 @@ CHARGE_3=AFFE_CHAR_MECA(MODELE=MODELE3,
                                       DZ = 0.0,),
                                    ),)
 #-- ASSEMBLAGE DES MATRICES
-MACRO_MATR_ASSE(MODELE=MODELE1,
+ASSEMBLAGE(MODELE=MODELE1,
                 CARA_ELEM=PARAM1,
                 NUME_DDL=CO("NUME1"),
                 CHARGE=CHARGE_1,
@@ -147,7 +147,7 @@ MACRO_MATR_ASSE(MODELE=MODELE1,
                            _F(  MATRICE = CO("MASS1"),  OPTION = 'MASS_MECA'))
                  )
                  
-MACRO_MATR_ASSE(MODELE=MODELE2,
+ASSEMBLAGE(MODELE=MODELE2,
                 CARA_ELEM=PARAM2,
                 NUME_DDL=CO("NUME2"),
                 CHARGE=CHARGE_2,
@@ -156,7 +156,7 @@ MACRO_MATR_ASSE(MODELE=MODELE2,
                            _F(  MATRICE = CO("MASS2"),  OPTION = 'MASS_MECA'))
                  )
 
-MACRO_MATR_ASSE(MODELE=MODELE3,
+ASSEMBLAGE(MODELE=MODELE3,
                 CARA_ELEM=PARAM3,
                 NUME_DDL=CO("NUME3"),
                 CHARGE=CHARGE_3,
@@ -176,7 +176,6 @@ MODES_1=MODE_ITER_SIMULT(MATR_RIGI=RAID1,
                          VERI_MODE=_F(STOP_ERREUR='NON',
                                       STURM='NON',),);
 
-
 MODES_2=MODE_ITER_SIMULT(MATR_RIGI=RAID2,
                          MATR_MASS=MASS2,
                          METHODE='SORENSEN',
@@ -187,7 +186,6 @@ MODES_2=MODE_ITER_SIMULT(MATR_RIGI=RAID2,
                          VERI_MODE=_F(STOP_ERREUR='NON',
                                       STURM='NON',),);
 
-
 MODES_3=MODE_ITER_SIMULT(MATR_RIGI=RAID3,
                          MATR_MASS=MASS3,
                          METHODE='SORENSEN',
@@ -197,7 +195,6 @@ MODES_3=MODE_ITER_SIMULT(MATR_RIGI=RAID3,
                                       METHODE='MUMPS',),                                       
                          VERI_MODE=_F(STOP_ERREUR='NON',
                                       STURM='NON',),);
-
 
 #-- TEST DE L'ANALYSE MODALE DE LA PLAQUE COMPLETE
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -336,7 +333,6 @@ RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
                                       SEUIL=9.9999999999999995E-01),
                          STOP_FREQ_VIDE='NON',
                         )
-
 
 #-- TEST DES RESULTATS
 #--   AVEC LA BASE AINSI DEFINIE, LES 4 PREMIERS MODES SONT CORECTS
@@ -598,7 +594,6 @@ RESGEN2=MODE_ITER_SIMULT( MATR_RIGI=K_G2,
                          STOP_FREQ_VIDE='NON',
                         )
 
-
 #-- CALCUL DES INDICATEURS DE QUALITE
 INDIC=CALC_CORR_SSD(MODELE_GENE=MODEGE2,
                      RESU_GENE=RESGEN2,
@@ -613,7 +608,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=5.806,
                    REFERENCE='NON_DEFINI',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.e-5,
+                   TOLE_MACHINE=1.e-4,      #TODO variabilite
                    PRECISION=5.1000000000000004E-3,),
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
@@ -639,7 +634,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=32.421999999999997,
                    REFERENCE='NON_DEFINI',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.e-5,
+                   TOLE_MACHINE=1.e-4,      #TODO variabilite
                    PRECISION=5.1000000000000004E-3,),
                 _F(NUME_ORDRE=5,
                    PARA='FREQ',
@@ -648,16 +643,10 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=39.844999999999999,
                    REFERENCE='NON_DEFINI',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.e-5,
+                   TOLE_MACHINE=1.e-4,      #TODO variabilite
                    PRECISION=0.050999999999999997,),
                 ),
           )
 
 #-- TESTER EGALEMENT UN DIMINUTION DE LA VALEUR DES INDICATEURS                        
 FIN();
-
-
-
-
-
-

@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,7 @@ C.......................................................................
       REAL*8   EFFINT(32)
 
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  JGEOM,IPG,INO,JDEPM,ISIG,JSIG,IDENER
+      INTEGER  JGEOM,IPG,INO,JDEPM,ISIG,JSIG,IDENER,IRET
       INTEGER  ICOMPO,ICACOQ,ICONTP,JVARI,NBVAR,IVPG
 
       CHARACTER*16 VALK(3)
@@ -88,7 +88,7 @@ C.......................................................................
       IF (NNO.EQ.3) THEN
          CALL DXTPGL ( ZR(JGEOM), PGL )
       ELSE IF (NNO.EQ.4) THEN
-         CALL DXQPGL ( ZR(JGEOM), PGL )
+         CALL DXQPGL ( ZR(JGEOM), PGL, 'S', IRET )
       END IF
 
       LKIT = ZK16(ICOMPO)(1:7).EQ.'KIT_DDI'

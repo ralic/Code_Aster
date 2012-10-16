@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtna102f.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
@@ -256,6 +256,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   VALE_CALC= 7.94780554E+03,
                   VALE_REFE=7900.0,
                   CRITERE='RELATIF',
+                  TOLE_MACHINE=1.E-4,       #TODO variabilite
                   PRECISION=1.E-2,),
           )
 
@@ -268,6 +269,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   VALE_CALC= 9.55973485E+03,
                   VALE_REFE=9500.0,
                   CRITERE='RELATIF',
+                  TOLE_MACHINE=1.E-4,       #TODO variabilite
                   PRECISION=1.E-2,),
           )
 
@@ -277,7 +279,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   NOEUD='N12',
                   NOM_CMP='PRE2',
                   VALE_CALC=7954.1700000000001,
-                  TOLE_MACHINE=1.E-3,
+                  TOLE_MACHINE=1.E-3,       #TODO variabilite
                   CRITERE='RELATIF',
                   ),
           )
@@ -291,6 +293,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   VALE_CALC= 9.55973485E+03,
                   VALE_REFE=9565.5900000000001,
                   CRITERE='RELATIF',
+                  TOLE_MACHINE=1.E-4,       #TODO variabilite
                   PRECISION=1.E-3,),
           )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,18 +51,12 @@ CH=AFFE_CHAR_MECA( MODELE=MO,DDL_IMPO=(
 
 # --------------------------------------------------------------------
 
-MACRO_MATR_ASSE(  MODELE=MO,     CHARGE=CH,      CARA_ELEM=CARELEM,
-                     NUME_DDL=CO("NUM"),MATR_ASSE=(
-                     _F(  MATRICE = CO("MATASSR"),  OPTION = 'RIGI_MECA'),
+ASSEMBLAGE(  MODELE=MO,     CHARGE=CH,      CARA_ELEM=CARELEM,
+             NUME_DDL=CO("NUM"),MATR_ASSE=(
+                               _F(  MATRICE = CO("MATASSR"),  OPTION = 'RIGI_MECA'),
                                _F(  MATRICE = CO("MATASSM"),  OPTION = 'MASS_MECA'),
-                               _F(  MATRICE = CO("MATASSC"),  OPTION = 'AMOR_MECA'))
-                  )
-
-# --------------------------------------------------------------------
-
-VECT=CALC_VECT_ELEM(  CHARGE=CH,         OPTION='CHAR_MECA' )
-
-VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECT,   NUME_DDL=NUM  )
+                               _F(  MATRICE = CO("MATASSC"),  OPTION = 'AMOR_MECA')),
+             VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_MECA'),),);
 
 # --------------------------------------------------------------------
 

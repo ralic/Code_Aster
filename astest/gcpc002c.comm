@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DSR3 SANS RENUM/AFFE_CHAR_MECA/MECA_STAT(GCPC)
 # gcpc002c.para = tps_job 250 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -785,7 +785,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=0.0,
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',
-                   TOLE_MACHINE=1.e-4,
+                   TOLE_MACHINE=2.e-4,
                    PRECISION=0.40000000000000002,),
                 ),
           )

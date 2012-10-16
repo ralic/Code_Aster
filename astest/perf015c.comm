@@ -1,0 +1,137 @@
+# MODIF  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+# TITRE TEST DE PERFORMANCE METTANT EN EVIDENCE LA SCALABILITE DES CALCULS ELEMENTAIRES
+# perf015c.para = tps_job 2400 mem_job 400Mo ncpus 1 mpi_nbcpu 4 liste_test I
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F(NOM='PERF015C',NIV_PUB_WEB='INTERNET'),);
+# TEST SUR 4 PROC
+
+CUBE=LIRE_MAILLAGE(FORMAT='MED');
+
+TROISD=AFFE_MODELE(MAILLAGE=CUBE,
+                   AFFE=_F(PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',
+                           TOUT='OUI',),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=145000.,
+                            NU=0.3,
+                            ALPHA=0.),
+                            VISCOCHAB=_F(K_0=70.,
+                                         A_K=1.,
+                                         A_R=0.65,
+                                         K=35.,
+                                         N=24.,
+                                         ALP=0.,
+                                         B=12.,
+                                         M_R=2.,
+                                         G_R=2.E-7,
+                                         MU=19.,
+                                         Q_M=460.,
+                                         Q_0=40.,
+                                         QR_0=200.,
+                                         ETA=.04,
+                                         C1=1950.,
+                                         M_1=4.,
+                                         D1=0.397E-3,
+                                         G_X1=2.E-13,
+                                         G1_0=50.,
+                                         C2=65000.,
+                                         M_2=4.,
+                                         D2=0.552E-1,
+                                         G_X2=1.E-12,
+                                         G2_0=1300.,
+                                         A_I=0.5),);
+
+MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=ACIER),);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(_F(JUSQU_A=0.4,
+                                    NOMBRE=3),
+                                 _F(JUSQU_A=0.5,
+                                    NOMBRE=20),),);
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=TROISD,
+                        DDL_IMPO=(_F(GROUP_NO='NOEUD6',
+                                     DZ=0.,
+                                     DY=0.),
+                                  _F(GROUP_NO='NOEUD1',
+                                     DY=0.),
+                                  _F(GROUP_NO='FACE1YZ',
+                                     DX=0.),),);
+
+TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
+                    FORCE_NODALE=_F(GROUP_NO='FACEYZ',
+                                    FX=-.25),);
+
+CIS=AFFE_CHAR_MECA(MODELE=TROISD,
+                   FORCE_NODALE=(_F(GROUP_NO='FACEYZ',
+                                    FY=-.25),
+                                 _F(GROUP_NO='FACEXZ',
+                                    FX=-.25),
+                                 _F(GROUP_NO='FACE1YZ',
+                                    FY=.25),
+                                 _F(GROUP_NO='FACE1XZ',
+                                    FX=.25),),);
+
+COEF_TR=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.,0.,
+                            10.,150.,),);
+
+COEF_CS=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.,0.,
+                            10.,60.,),);
+
+SOLNL=STAT_NON_LINE(MODELE=TROISD,
+                    CHAM_MATER=MAT,
+                    EXCIT=(_F(CHARGE=COND_LIM),
+                           _F(CHARGE=TRAC,
+                              FONC_MULT=COEF_TR),
+                           _F(CHARGE=CIS,
+                              FONC_MULT=COEF_CS),),
+                    COMP_INCR=_F(RELATION='VISCOCHAB',
+                                 DEFORMATION='PETIT',
+                                 ITER_INTE_MAXI=400,
+                                 ITER_INTE_PAS=100,
+                                 RESI_INTE_RELA=1.0E-07,
+                                 TOUT='OUI'),
+                    INCREMENT=_F(LIST_INST=LINST),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_INCR=1,
+                              REAC_ITER=1),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=40,
+                                   RESI_GLOB_RELA=1.0E-06),
+                    RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,
+                                     RESI_LINE_RELA=1.0E-03),);
+
+SOLNL=CALC_CHAMP(reuse=SOLNL,
+                 RESULTAT=SOLNL,
+                 CONTRAINTE=('SIGM_ELNO',),
+                 INST=0.5,);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=23,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N112',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=31.419349974422,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M166',),),);
+
+FIN();

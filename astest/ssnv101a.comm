@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (CHABOCHE_FO)
 # ssnv101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,9 +141,10 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=13,
                    NOM_CHAM='VARI_ELNO',
                    NOEUD='NO1',
                    NOM_CMP='V1',
-                   VALE_CALC=0.190153356,
+                   VALE_CALC=0.19015315569614,
                    VALE_REFE=0.19220000000000001,
                    REFERENCE='NON_DEFINI',
+                   TOLE_MACHINE=1.E-5,
                    PRECISION=0.010999999999999999,
                    MAILLE='MA1',),
                 ),

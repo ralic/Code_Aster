@@ -1,7 +1,7 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
-# forma02b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
+# forma02b.para = tps_job 140 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                    DY=0.0,
                                    DZ=0.0,),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CHARGE=BLOCAGE,
                 NUME_DDL=CO('NUMEDDL'),
@@ -61,7 +61,6 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=10,),);
-
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MAIL,
@@ -77,9 +76,3 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 FIN();
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE PRISE EN COMPTE D'UN MASSIF GENERALISE DANS LES ETUDES DE ROTORS
 # sdlv132a.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,7 +99,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                    ),
                        );
                                     
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
                 CHARGE=BLOQUAGE,
@@ -121,7 +121,6 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                                  VERI_MODE=_F(STOP_ERREUR='NON',
                                     SEUIL=9.9999999999999995E-07),
                        );
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -297,7 +296,6 @@ MODE1_CB=MODE_ITER_SIMULT(MATR_RIGI=ASSR1_CB,
                                     SEUIL=9.9999999999999995E-07),
                        );
 
-
 MODE1_MN=MODE_ITER_SIMULT(MATR_RIGI=ASSR1_MN,
                        MATR_MASS=ASSM1_MN,
                        CALC_FREQ=_F(OPTION='BANDE',
@@ -305,7 +303,6 @@ MODE1_MN=MODE_ITER_SIMULT(MATR_RIGI=ASSR1_MN,
                                  VERI_MODE=_F(STOP_ERREUR='NON',
                                     SEUIL=9.9999999999999995E-07),
                        );
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -536,7 +533,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MO2,
 # ------------------------------------------------------------------
 # CALCULS DES MATRICES
 #-------------------------------------------------------------------
-MACRO_MATR_ASSE(MODELE=MO2,
+ASSEMBLAGE(MODELE=MO2,
                 CHAM_MATER=CHMAT2,
                 CARA_ELEM=CARELEM2,
                 CHARGE=CH2,
@@ -558,7 +555,6 @@ MODE2=MODE_ITER_SIMULT(MATR_RIGI=MATASSR2,
                        VERI_MODE=_F(STOP_ERREUR='NON',
                                     SEUIL=9.9999999999999995E-07),
                             );
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -724,7 +720,6 @@ RESGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
                                      SEUIL=9.9999999999999995E-07),
                             );
 
-
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 #
@@ -802,9 +797,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 FIN();
-
-
-
-
-
 

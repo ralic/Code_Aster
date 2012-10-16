@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -267,6 +267,7 @@ TEST_RESU(RESU=(_F(INST=1.E-4,
                    NOM_CMP='PRE1',
                    VALE_CALC=0.999940871,
                    VALE_REFE=0.99999999978708998,
+                   TOLE_MACHINE=1.E-4,      #TODO n'est-ce pas 1 dans la doc V ?
                    PRECISION=6.0000000000000002E-05,),
                 _F(INST=1.E-4,
                    REFERENCE='AUTRE_ASTER',
@@ -276,6 +277,7 @@ TEST_RESU(RESU=(_F(INST=1.E-4,
                    NOM_CMP='PRE1',
                    VALE_CALC=0.999940871,
                    VALE_REFE=0.99998540842584005,
+                   TOLE_MACHINE=1.E-4,      #TODO n'est-ce pas 1 dans la doc V ?
                    PRECISION=5.0000000000000002E-05,),
                 _F(INST=250.0,
                    REFERENCE='AUTRE_ASTER',

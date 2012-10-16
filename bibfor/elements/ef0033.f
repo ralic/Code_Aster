@@ -4,7 +4,7 @@
       CHARACTER*16 NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,24 +24,17 @@ C ======================================================================
 C     CALCUL DE EFGE_ELNO
 C     ------------------------------------------------------------------
       INTEGER NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
-      INTEGER I,IRET,JCARA,VALI(2)
-      INTEGER JDEPG,JEFFG,JGEOM,JMATE,JSIGM
-      INTEGER NP,MULTIC
-      INTEGER NBCOU,ICOU
-      INTEGER ICODRE,KPG,SPT
+      INTEGER I,IRET,JCARA
+      INTEGER JDEPG,JEFFG,JGEOM
+      INTEGER NP
 
-      REAL*8 EPI,EPAIS,EPTOT,ALPHA,BETA,R8DGRD
-      REAL*8 PGL(3,3),XYZL(3,4),R8BID,VALR(2)
+      REAL*8 ALPHA,BETA,R8DGRD
+      REAL*8 PGL(3,3),XYZL(3,4)
       REAL*8 DEPL(24)
-      REAL*8 EFFGT(32),EFFPG(32)
+      REAL*8 EFFGT(32)
       REAL*8 T2EV(4),T2VE(4)
 
-
-      CHARACTER*2 VAL
-      CHARACTER*3 NUM
       CHARACTER*4 FAMI
-      CHARACTER*8 NOMRES,FAMIL,POUM
-      CHARACTER*16 PHENOM
 C     ------------------------------------------------------------------
 C
 
@@ -60,7 +53,7 @@ C
       IF (NNO.EQ.3) THEN
         CALL DXTPGL(ZR(JGEOM),PGL)
       ELSEIF (NNO.EQ.4) THEN
-        CALL DXQPGL(ZR(JGEOM),PGL)
+        CALL DXQPGL(ZR(JGEOM),PGL,'S',IRET)
       ENDIF
 
       CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)

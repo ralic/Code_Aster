@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106j.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -178,8 +178,8 @@ MAT_G=DEFI_MATERIAU(ELAS=_F(E=EGM,
                             NU=0.18,),
                     GLRC_DM=_F(GAMMA_T=0.05,
                                GAMMA_F=0.21,
-                               SYT=3.7E5,
-                               SYF=6.7E3,
+                               NYT=3.7E5,
+                               MYF=6.7E3,
                                EF=EGF,
                                NUF=0.17,),);
 

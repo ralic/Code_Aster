@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE GUIDE D'ONDE INCIDENTE A SORTIE ANECHOIQUE EN U,P,PHI - CAS 2D
 # ahlv101b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,16 +58,17 @@ IMPEMECA=AFFE_CHAR_MECA(      MODELE=GUIDE,
 
 #
 
-MACRO_MATR_ASSE(
+ASSEMBLAGE(
                       MODELE=GUIDE,         CHARGE=CHARMECA,
                       CHAM_MATER=CHAMPMAT,
                       NUME_DDL=CO("NUM"),MATR_ASSE=(
                       _F(  MATRICE = CO("MATASK"), OPTION = 'RIGI_MECA'),
                                 _F(  MATRICE = CO("MATASM"), OPTION = 'MASS_MECA'),
-                                _F(  MATRICE = CO("MATASI1"), OPTION = 'ONDE_FLUI'))
+                                _F(  MATRICE = CO("MATASI1"), OPTION = 'ONDE_FLUI')),
+                      VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_MECA')),
                    )
 
-MACRO_MATR_ASSE(
+ASSEMBLAGE(
                       MODELE=GUIDE,         CHARGE=IMPEMECA,
                       CHAM_MATER=CHAMPMAT,
                       NUME_DDL=NUM,
@@ -81,11 +82,6 @@ MATASI=COMB_MATR_ASSE( COMB_R=(_F( MATR_ASSE = MATASI1, COEF_R = 1.),
                              )
 
 #
-
-VECTELEM=CALC_VECT_ELEM(   OPTION='CHAR_MECA',  CHAM_MATER=CHAMPMAT,
-                                CHARGE=CHARMECA )
-
-VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECTELEM,   NUME_DDL=NUM )
 
 DYNAHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                              MATR_MASS=MATASM,  MATR_RIGI=MATASK,

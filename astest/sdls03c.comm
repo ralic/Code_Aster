@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKT - DST
 # sdls03c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,7 @@ CA=AFFE_CARA_ELEM(   MODELE=MO,
        GROUP_MA = 'TOUT',
   EPAIS = 0.01)  )
 
-MACRO_MATR_ASSE(   MODELE=MO,            CARA_ELEM=CA,
+ASSEMBLAGE(   MODELE=MO,            CARA_ELEM=CA,
                          CHARGE=CH,           CHAM_MATER=CHMAT,
                          NUME_DDL=CO("NUM"),MATR_ASSE=(
                         _F( MATRICE = CO("MATR"),  OPTION = 'RIGI_MECA'),
@@ -64,7 +64,6 @@ MODE_5=MODE_ITER_SIMULT(  MATR_RIGI=MATR,   MATR_MASS=MATM,
                             CALC_FREQ=_F(   OPTION = 'PLUS_PETITE',
                                          NMAX_FREQ = 6)
                           )
-
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
@@ -128,7 +127,6 @@ MODE_6=MODE_ITER_SIMULT(  MATR_RIGI=MATR,
                                           NMAX_FREQ = 6,)
                           )
 
-
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
                    REFERENCE='ANALYTIQUE',
@@ -182,9 +180,3 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 FIN()
 #
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE ENVELOPPE SPHERIQUE MINCE EN ANALYSE MODALE
 # sdls07e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,7 +60,7 @@ MATELE_1=CALC_MATR_ELEM(   MODELE=MODELE_1,     CHARGE=CINE,
                                CHAM_MATER=CH_MAT_1,
                                OPTION='RIGI_MECA' )
 
-MACRO_MATR_ASSE(   MODELE=MODELE_1,     CARA_ELEM=CARAC__1,
+ASSEMBLAGE(   MODELE=MODELE_1,     CARA_ELEM=CARAC__1,
                        CHARGE=CINE,         CHAM_MATER=CH_MAT_1,
                       NUME_DDL=CO("NUM"),MATR_ASSE=(
                 _F(  MATRICE = CO("MATASSR1"),  OPTION = 'RIGI_MECA'),
@@ -74,7 +74,6 @@ MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR1,
                          MATR_MASS=MATASSM1,
                          CALC_FREQ=_F(  OPTION = 'BANDE', FREQ = (230., 535.,))
                       )
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -221,9 +220,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 FIN()
 #
-
-
-
-
-
-

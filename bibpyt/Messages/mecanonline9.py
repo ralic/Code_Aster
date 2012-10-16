@@ -1,4 +1,4 @@
-#@ MODIF mecanonline9 Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline9 Messages  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,6 +128,11 @@ cata_msg = {
    - Si vous utilisez le préconditionneur LDLT_SP, activez la réactualisation en cas d'échec (ACTION='REAC_PRECOND' dans DEFI_LIST_INST).
    - Augmentez le nombre maximum d'itérations (NMAX_ITER).
    - Utilisez un préconditionneur plus précis ou changez d'algorithme.
+"""),
+
+16 : _(u"""
+   Arrêt pour cause de divergence du résidu (DIVE_RESI).
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
 }

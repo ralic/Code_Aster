@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,7 +79,7 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
 #
 
 
-MACRO_MATR_ASSE(MODELE=MO,
+ASSEMBLAGE(MODELE=MO,
                 CARA_ELEM=CARELEM,
                 CHARGE=CH,
                 NUME_DDL=CO('NUM'),
@@ -104,7 +104,6 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
                                     FREQ=5.0,
                                     NMAX_FREQ=5,
                                     APPROCHE='REEL',),);
-
 MODESN=NORM_MODE(MODE=MODES,NORME='MASS_GENE')
 
 # AVEC QZ + OPTION='CENTRE' + 'QZ_SIMPLE'
@@ -119,7 +118,6 @@ MODE_QZ1=CALC_MODAL(MODELE=MO,
                               FREQ=5.0,
                               NMAX_FREQ =5,
                 ),);
-
 
 
 MODE_QZ1=NORM_MODE(MODE=MODE_QZ1,reuse=MODE_QZ1,NORME='MASS_GENE')
@@ -396,9 +394,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 FIN();
-
-
-
-
-
-

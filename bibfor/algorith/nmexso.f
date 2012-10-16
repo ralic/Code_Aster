@@ -1,7 +1,7 @@
       SUBROUTINE NMEXSO(NOMA  ,RESULT,SDDYNA,NUMEDD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 15/10/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -97,12 +97,16 @@ C
       CNFSOL = ZK8(JCHSOL)
       CALL JEVEUO(CNFSOL//'.CHME.VEISS','L',JDVEIS)
 C
-C --- UNITES FICHIERS
+C --- NOMS FICHIERS
 C
       UNIRIG = ZK8(JDVEIS-1+1)
       UNIMAS = ZK8(JDVEIS-1+2)
       UNIAMO = ZK8(JDVEIS-1+3)
       UNIFOR = ZK8(JDVEIS-1+4)
+      UNITER = 0
+      UNITEM = 0
+      UNITEA = 0
+      UNITEF = 0
 C
 C --- GROUP_NO_INTERF
 C
@@ -149,10 +153,10 @@ C
 C
 C --- OUVERTURE DES FICHIERS
 C
-      READ (UNIRIG,'(I8)') UNITER
-      READ (UNIMAS,'(I8)') UNITEM
-      READ (UNIAMO,'(I8)') UNITEA
-      READ (UNIFOR,'(I8)') UNITEF
+      IF (UNIRIG.NE.' ') READ (UNIRIG,'(I8)') UNITER
+      IF (UNIMAS.NE.' ') READ (UNIMAS,'(I8)') UNITEM
+      IF (UNIAMO.NE.' ') READ (UNIAMO,'(I8)') UNITEA
+      IF (UNIFOR.NE.' ') READ (UNIFOR,'(I8)') UNITEF
 C
 C --- QUEL FICHIER VA DONNER LA FREQUENCE ?
 C
@@ -226,47 +230,40 @@ C --- LECTURE MATRICE REDUITE RIGIDITE A L'INTERFACE
 C
       TABRIG = SDEXSO(1:15)//'.RIGT'
       CALL WKVECT(TABRIG,'V V R',NBMOD2*NFREQ,JRIG)
-      DO 120 IFREQ = 1,NFREQ
-        READ(UNITER,*) RINST
-        READ(UNITER,1000) ((ZR(JRIG+(IFREQ-1)*NBMOD2+(I2-1)
-     &                      *NBMODE+I1-1),
-     &                      I2=1,NBMODE),I1=1,NBMODE)
-120   CONTINUE
+      IF (UNITER.NE.0) THEN
+        DO 120 IFREQ = 1,NFREQ
+          READ(UNITER,*) RINST
+          READ(UNITER,1000) ((ZR(JRIG+(IFREQ-1)*NBMOD2+(I2-1)
+     &                        *NBMODE+I1-1),
+     &                        I2=1,NBMODE),I1=1,NBMODE)
+120     CONTINUE
+      ENDIF
 C
 C --- LECTURE MATRICE REDUITE MASSE A L'INTERFACE
 C
       TABMAS = SDEXSO(1:15)//'.MAST'
       CALL WKVECT(TABMAS,'V V R',NBMOD2*NFREQ,JMAS)
-      DO 130 IFREQ = 1,NFREQ
-        READ(UNITEM,*) RINST
-        READ(UNITEM,1000) ((ZR(JMAS+(IFREQ-1)*NBMOD2+(I2-1)
-     &                      *NBMODE+I1-1),
-     &                      I2=1,NBMODE),I1=1,NBMODE)
-130   CONTINUE
+      IF (UNITEM.NE.0) THEN
+        DO 130 IFREQ = 1,NFREQ
+          READ(UNITEM,*) RINST
+          READ(UNITEM,1000) ((ZR(JMAS+(IFREQ-1)*NBMOD2+(I2-1)
+     &                        *NBMODE+I1-1),
+     &                        I2=1,NBMODE),I1=1,NBMODE)
+130     CONTINUE
+      ENDIF
 C
 C --- LECTURE MATRICE REDUITE AMORTISSEMENT A L'INTERFACE
 C
       TABAMO = SDEXSO(1:15)//'.AMOT'
       CALL WKVECT(TABAMO,'V V R',NBMOD2*NFREQ,JAMO)
-      DO 140 IFREQ = 1,NFREQ
-        READ(UNITEA,*) RINST
-        READ(UNITEA,1000) ((ZR(JAMO+(IFREQ-1)*NBMOD2+(I2-1)
-     &                      *NBMODE+I1-1),
-     &                      I2=1,NBMODE),I1=1,NBMODE)
-140   CONTINUE
-C
-C      DO 200  IFREQ = 1,NFREQ
-C        DO 210  I1 = 1,NBMODE
-C          DO 220  I2 = 1,NBMODE
-C            write(6,*) 'RIGI: ',ZR(JRIG+(IFREQ-1)*NBMOD2+(I2-1)
-C     &                      *NBMODE+I1-1)
-C            write(6,*) 'MASS: ',ZR(JMAS+(IFREQ-1)*NBMOD2+(I2-1)
-C     &                      *NBMODE+I1-1)
-C            write(6,*) 'AMOR: ',ZR(JAMO+(IFREQ-1)*NBMOD2+(I2-1)
-C     &                      *NBMODE+I1-1)
-C220       CONTINUE
-C210     CONTINUE
-C200   CONTINUE
+      IF (UNITEA.NE.0) THEN
+        DO 140 IFREQ = 1,NFREQ
+          READ(UNITEA,*) RINST
+          READ(UNITEA,1000) ((ZR(JAMO+(IFREQ-1)*NBMOD2+(I2-1)
+     &                        *NBMODE+I1-1),
+     &                        I2=1,NBMODE),I1=1,NBMODE)
+140     CONTINUE
+      ENDIF
 C
       CALL JEDETR(TABFRQ)
  1000 FORMAT((6(1X,1PE13.6)))

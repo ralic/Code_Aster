@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/04/2012   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 15/10/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,7 +33,7 @@ C RESPONSABLE SFAYOLLE S.FAYOLLE
       CHARACTER*8   TYPMOD(*)
       CHARACTER*16  COMPOR(3),OPTION
 C ----------------------------------------------------------------------
-C     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE POUR LES
+C     INTEGRATION DE LA LOI DE JOHNSON-COOK
 C     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
 C
 C IN  KPG,KSP  : NUMERO DU (SOUS)POINT DE GAUSS
@@ -69,7 +69,7 @@ C
       LOGICAL PLASTI,INCO,DECH
 
       INTEGER NDIMSI
-      INTEGER K,L,NITER,IBID
+      INTEGER K,L,NITER,IBID,I
       INTEGER IRET3, IRET4, IRET0,IRET5
 
       REAL*8 DEPSTH(6),VALRES(8),EPSTHE,PM,CO,DP0,TM,RPRIM0,PRECR
@@ -78,14 +78,15 @@ C
       REAL*8 KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),SIGDV(6)
       REAL*8 EM,NUM,TROIKM,DEUMUM,SIGMP(6),SIGEL(6),A
       REAL*8 TP,DEFAM(6),DEFAP(6)
-      REAL*8 RAC2,XAP
+      REAL*8 RAC2,DPMAX,FMAX,COEF1
       REAL*8 SIGPMO,DINST
       REAL*8 ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,EPSP0,TROOM,TMELT
       REAL*8 ALPHA, DIRR, DTE, DGDTSG, DKDTSK, KHI, TPDSDT, EPSPET
 
-      INTEGER     CODRET(8)
+      INTEGER     CODRET(8),ITER
       CHARACTER*6 EPSA(6)
       CHARACTER*8 NOMRES(8)
+      CHARACTER*16  METH
 
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
@@ -103,10 +104,6 @@ C     ----------------------
       ENDIF
       NDIMSI = 2*NDIM
       RAC2 = SQRT(2.D0)
-C
-      IF (.NOT.COMPOR(1)(1:5) .EQ. 'VMIS_') THEN
-            CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
-      ENDIF
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
@@ -170,51 +167,50 @@ C
 C
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
-      IF ( COMPOR(1)(1:5) .EQ. 'VMIS_') THEN
-        PLASTI=(VIM(2).GE.0.5D0)
-        IF (COMPOR(1)(6:14) .EQ. 'JOHN_COOK') THEN
-          NOMRES(1)='A'
-          NOMRES(2)='B'
-          NOMRES(3)='N_PUIS'
-          NOMRES(4)='C'
-          NOMRES(5)='M_PUIS'
-          NOMRES(6)='EPSP0'
-          NOMRES(7)='TROOM'
-          NOMRES(8)='TMELT'
-          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_COOK',0,' ',0.D0,
-     &                          3,NOMRES,VALRES,CODRET, 1 )
-          ACOOK = VALRES(1)
-          BCOOK = VALRES(2)
-          NPUIS = VALRES(3)
+      PLASTI=(VIM(2).GE.0.5D0)
 
-          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_COOK',0,' ',0.D0,
-     &                          5,NOMRES(4),VALRES(4),CODRET(4), 0 )
+      NOMRES(1)='A'
+      NOMRES(2)='B'
+      NOMRES(3)='N_PUIS'
+      NOMRES(4)='C'
+      NOMRES(5)='M_PUIS'
+      NOMRES(6)='EPSP0'
+      NOMRES(7)='TROOM'
+      NOMRES(8)='TMELT'
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_COOK',0,' ',0.D0,
+     &                      3,NOMRES,VALRES,CODRET, 1 )
+      ACOOK = VALRES(1)
+      BCOOK = VALRES(2)
+      NPUIS = VALRES(3)
 
-          IF ( CODRET(4) .NE. 0 ) THEN
-            VALRES(4) = 0.D0
-            VALRES(6) = 1.D0
-          ENDIF
-          CCOOK = VALRES(4)
-          EPSP0  = VALRES(6)
-          IF ( CODRET(5) .NE. 0 ) THEN
-            VALRES(5) = 0.D0
-            VALRES(7) = -1.D0
-            VALRES(8) = 1.D0
-          ENDIF
-          MPUIS = VALRES(5)
-          TROOM  = VALRES(7)
-          TMELT  = VALRES(8)
-          DINST = INSTAP-INSTAM
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_COOK',0,' ',0.D0,
+     &                      5,NOMRES(4),VALRES(4),CODRET(4), 0 )
 
-          IF(IRET3 .NE.0 .AND. IRET4 .NE.0)THEN
-            TM = TROOM
-            TP = TROOM
-          ENDIF
-
-          CALL ECCOOK(ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,
-     &               EPSP0,TROOM,TMELT,TM,VIM(4),VIM(1),VIM(3),RP,RPRIM)
-        ENDIF
+      IF ( CODRET(4) .NE. 0 ) THEN
+        VALRES(4) = 0.D0
+        VALRES(6) = 1.D0
       ENDIF
+      CCOOK = VALRES(4)
+      EPSP0  = VALRES(6)
+      IF ( CODRET(5) .NE. 0 ) THEN
+        VALRES(5) = 0.D0
+        VALRES(7) = -1.D0
+        VALRES(8) = 1.D0
+      ENDIF
+      MPUIS = VALRES(5)
+      TROOM  = VALRES(7)
+      TMELT  = VALRES(8)
+      DINST = INSTAP-INSTAM
+
+      IF(IRET3 .NE.0 .AND. IRET4 .NE.0)THEN
+        TM = TROOM
+        TP = TROOM
+      ENDIF
+
+      CALL ECCOOK(ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,
+     &           EPSP0,TROOM,TMELT,TM,VIM(4),VIM(1),VIM(3),RP,RPRIM)
+
+
       DEMU = DEUXMU
       IF (INCO) THEN
         CINCO =(1.D0-2.D0*NU)/NU
@@ -222,10 +218,10 @@ C     ---------------------------------------
 C
 C     -- 4 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
-      COEF = EPSTHE
+
       DEPSMO = 0.D0
       DO 110 K=1,3
-        DEPSTH(K)   = DEPS(K) -COEF
+        DEPSTH(K)   = DEPS(K) -EPSTHE
      &                -(DEFAP(K)-DEFAM(K))
         DEPSTH(K+3) = DEPS(K+3)-(DEFAP(K+3)-DEFAM(K+3))
         DEPSMO = DEPSMO + DEPSTH(K)
@@ -262,42 +258,104 @@ C     -------------------------------------------------------
  117  CONTINUE
       SIELEQ     = SQRT(1.5D0*SIELEQ)
       SEUIL      = SIELEQ - RP
-C
+
+C=======================================================================
 C     -- 7 CALCUL DE SIGP,SIGPDV,VIP,DP,RP:
-C     -------------------------------------
+C=======================================================================
+
       DP=0.D0
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &     OPTION(1:9) .EQ. 'FULL_MECA'     ) THEN
-C
+
 C       -- 7.1 CALCUL DE DP :
-C       -------------------------------------------
-        IF (COMPOR(1)(1:5) .EQ. 'VMIS_') THEN
+
           IF (SEUIL.LE.0.D0) THEN
-            VIP(2) = 0.D0
-            DP = 0.D0
-            IF (COMPOR(1)(6:14) .EQ. 'JOHN_COOK') THEN
-              VIP(3)=DP
-              VIP(4)=DINST
-            ENDIF
+             DP = 0.D0
+             VIP(2) = 0.D0
+             VIP(3)=DP
+             VIP(4)=DINST
           ELSE
-            VIP(2) = 1.D0
-            PM = VIM(1)
-            IF (COMPOR(1)(6:14) .EQ. 'JOHN_COOK') THEN
-              DP0 = (SIELEQ - RP)/(1.5D0*DEUXMU)
-              CALL ECCOOK(ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,
-     &               EPSP0,TROOM,TMELT,TP,DINST,PM,DP0,SIGY,RPRIM0)
-              XAP   = DP0
-              PRECR = CRIT(3) * SIGY
-              NITER = NINT(CRIT(1))
-              CALL ZEROFR(0,'DEKKER',NMCRI9,0.D0,XAP,PRECR,NITER,
-     &                    DP,IRET,IBID)
-              IF(IRET.EQ.1) GOTO 9999
-              CALL ECCOOK(ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,
-     &               EPSP0,TROOM,TMELT,TP,DINST,PM,DP,RP,RPRIM)
-              VIP(3)=DP
-              VIP(4)=DINST
-            ENDIF
+
+             PM = VIM(1)
+
+             DP0 = (SIELEQ - RP)/(1.5D0*DEUXMU)
+             CALL ECCOOK(ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,
+     &              EPSP0,TROOM,TMELT,TP,DINST,PM,DP0,SIGY,RPRIM0)
+             PRECR = CRIT(3) * SIGY
+             NITER = NINT(CRIT(1))
+C     -------------------------------------------------------
+C
+C ---        F0 < 0 , ON CHERCHE DPMAX PAS TROP GRAND TEL QUE FMAX < 0
+C
+             FMAX=SIGY
+             DPMAX=DP0
+             COEF1=2.D0
+             IF (ABS(FMAX).LE.PRECR) THEN
+                DP = DPMAX
+                ITER=1
+                GOTO 50
+             ELSEIF (FMAX.GT.0.D0) THEN
+C               FMAX > 0.
+C               VERIFICATION QUE DPMAX N'EST PAS TROP GRAND.BRACKETTING
+                DO 31 I = 1, NITER
+                   DPMAX = DPMAX/COEF1
+                   FMAX=NMCRI9(DPMAX)
+                   IF (ABS(FMAX).LE.PRECR) THEN
+                      DP = DPMAX
+                      ITER=I
+                      GOTO 50
+                   ELSEIF (FMAX.LT.0.D0) THEN
+C                     ON RECALCULE LA VALEUR PRECEDENTE DE DPMAX
+                      DPMAX = DPMAX*COEF1
+                      FMAX=NMCRI9(DPMAX)
+                      GOTO 21
+                   ENDIF
+  31            CONTINUE
+                GOTO 21
+
+             ELSE
+C               FMAX <0. On augmente DPMAX jusqu'à ce que F(DPMAX) > 0
+                DO 32 I = 1, NITER
+                   FMAX=NMCRI9(DPMAX)
+                   IF (ABS(FMAX).LE.PRECR) THEN
+                      DP = DPMAX
+                      ITER=I
+                      GOTO 50
+                   ELSEIF (FMAX.GT.0.D0) THEN
+                      GOTO 21
+                   ELSE
+                      DPMAX = DPMAX*COEF1
+                   ENDIF
+  32            CONTINUE
+                CALL U2MESS('A','ALGORITH6_79')
+                GOTO 21
+             ENDIF
+             
+   21        CONTINUE
+
+
+C     -------------------------------------------------------
+C            RESOLUTION 1D
+C     -------------------------------------------------------
+C            RECUPERATION DE L'ALGORITHME DE RESOLUTION 1D
+             CALL UTLCAL('VALE_NOM',METH,CRIT(6))
+C     -------------------------------------------------------
+             CALL ZEROFR(2,METH,NMCRI9,0.D0,DPMAX,PRECR,NITER,DP,IRET,
+     &                   ITER)
+
+  50         CONTINUE
+
+             VIP(2)=ITER
+             
+             IF(IRET.EQ.1) GOTO 9999
+             
+             CALL ECCOOK(ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,
+     &              EPSP0,TROOM,TMELT,TP,DINST,PM,DP,RP,RPRIM)
+             VIP(3)=DP
+             VIP(4)=DINST
+             
           ENDIF
+          
           VIP(1) = VIM(1) + DP
           PLASTI=(VIP(2).GE.0.5D0)
 C
@@ -326,30 +384,30 @@ C         -- 7.3.2 CALCUL DES DISSIPATIONS THERMOELASTIQUE :
 C         --------------------------------------------------
           DTE  = 0.D0
           IF((E.NE.EM).OR.(NU.NE.NUM))THEN
-            DGDTSG = (DEUXMU-DEUMUM)/(TP-TM)/DEUXMU
-            DKDTSK = (TROISK-TROIKM)/(TP-TM)/TROISK
+             DGDTSG = (DEUXMU-DEUMUM)/(TP-TM)/DEUXMU
+             DKDTSK = (TROISK-TROIKM)/(TP-TM)/TROISK
           ELSE
-            DGDTSG = 0.D0
-            DKDTSK = 0.D0
+             DGDTSG = 0.D0
+             DKDTSK = 0.D0
           ENDIF
           
           DO 180 K = 1, NDIMSI
-            IF(PLASTI)THEN
-              EPSPET = (DEPS(K)-3.D0*SIGPDV(K)*DP/(2.D0*SIELEQ))/DINST
-            ELSE
-              EPSPET = DEPS(K)/DINST
-            ENDIF
-            TPDSDT=TP*(DGDTSG*SIGP(K)
+             IF(PLASTI)THEN
+                EPSPET = (DEPS(K)-3.D0*SIGPDV(K)*DP/(2.D0*SIELEQ))/DINST
+             ELSE
+                EPSPET = DEPS(K)/DINST
+             ENDIF
+             TPDSDT=TP*(DGDTSG*SIGP(K)
      &            +KRON(K)*((DKDTSK-DGDTSG)*SIGPMO-TROISK*ALPHA))
-            DTE = DTE + TPDSDT*EPSPET
+             DTE = DTE + TPDSDT*EPSPET
  180      CONTINUE
           VIP(5) = DTE + DIRR
 C
-        ENDIF
       ENDIF
-C
+
+C=======================================================================
 C     -- 8 CALCUL DE DSIDEP(6,6) :
-C     ----------------------------
+C=======================================================================
       IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'.OR.
      &     OPTION(1:9)  .EQ. 'FULL_MECA'         ) THEN
 C
@@ -406,6 +464,7 @@ C       -- 8.2 PARTIE ELASTIQUE:
           DSIDEP(K,K) = DSIDEP(K,K) + DEUXMU/A
  120    CONTINUE
       ENDIF
+C=======================================================================
 
 C
  9999 CONTINUE

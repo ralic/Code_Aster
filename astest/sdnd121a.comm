@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MASSE-RESSORT AVEC CHOCS SOUS EXCITATION FORCEE
 # sdnd121a.para = tps_job 600 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,18 +51,27 @@ CHAR_MEC=AFFE_CHAR_MECA(MODELE=MODEL,
                                     DY=0.,
                                     DZ=0.,
                                     ),);
+# Definition du chargement patin selon X :
 
-# Calcul des matrices assemblees de raideur et masse (il n'y a pas
-# d'amortissement structural) :
-MACRO_MATR_ASSE(MODELE=MODEL,
+F_EXT=AFFE_CHAR_MECA(MODELE=MODEL,
+                     FORCE_NODALE=_F(GROUP_NO='N_PATIN',
+                                     FX=1.,),);
+
+# Calcul des matrices (raideur et masse, il n'y a pas
+# d'amortissement structural) et des vecteurs assembles:
+
+ASSEMBLAGE(MODELE=MODEL,
                 CARA_ELEM=CARA_ELE,
                 CHARGE=CHAR_MEC,
                 NUME_DDL=CO('NUM_DDL'),
                 MATR_ASSE=(_F(MATRICE=CO('K_ASSE'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('M_ASSE'),
-                              OPTION='MASS_MECA',),
-                              ),);
+                              OPTION='MASS_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("F_ASSE"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=F_EXT),),);
+
 
 # Calcul du mode associe au ressort de rappel :
 modes=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
@@ -71,24 +80,11 @@ modes=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
                                     FREQ=50.,
                                     NMAX_FREQ=1,),);
 
-
 # Definition du chargement exterieur (force sinusoidale)
 f = 5 ;   # freq de l'excitation (Hz)
 Fa = 3.E3; # amplitude de l'excitation
 EXCIT = FORMULE(VALE='Fa*sin(2*pi*f*(INST))',
                 NOM_PARA='INST',);
-
-F_EXT=AFFE_CHAR_MECA(MODELE=MODEL,
-                     FORCE_NODALE=_F(GROUP_NO='N_PATIN',
-                                     FX=1.,),);
-
-# Calcul de la force elementaire puis assemblee
-F_ELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                      CHARGE=F_EXT,
-                      CARA_ELEM=CARA_ELE,);
-
-F_ASSE=ASSE_VECTEUR(VECT_ELEM=F_ELEM,
-                    NUME_DDL=NUM_DDL,);
 
 # Calcul des matrices generalisees :
 PROJ_BASE(BASE=modes,
@@ -248,9 +244,3 @@ FC_ADAP2=RECU_FONCTION(RESU_GENE=DTMADAP2,
                        PARA_Y='FN',);
 
 FIN();
-
-
-
-
-
-

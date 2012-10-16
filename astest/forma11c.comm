@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE TP ANALYSE MODALE TPAM3
 # forma11c.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,7 +85,7 @@ IMPR_TABLE(TABLE=TABL_MAS,);
 
 NB_MODES=INFO_MODE(MATR_RIGI=K_ASSE,
                    MATR_MASS=M_ASSE,
-                   FREQ_MAX=4.0,);
+                   FREQ=(0.,4.0,));
 
 
                           
@@ -158,9 +158,7 @@ IMPR_RESU(FORMAT='CASTEM',
 
 MODES2=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
                        MATR_MASS=M_ASSE,
-                       CALC_FREQ=_F(FREQ_MIN=0.0,
-                                    FREQ_MAX=4.0,
-                                    NB_BLOC_FREQ=2,),
+                       CALC_FREQ=_F(FREQ=(0.0,2.0,4.0),),
                        NORM_MODE=_F( NORME='TRAN_ROTA',),
                        FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
                        IMPRESSION=_F(CUMUL='OUI',),);
@@ -175,9 +173,8 @@ MODES2=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
 
 MODES4=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
                        MATR_MASS=M_ASSE,
-                       CALC_FREQ=_F(FREQ_MIN=0.0,
-                                    FREQ_MAX=4.0,
-                                    NB_BLOC_FREQ=4,),
+                       SOLVEUR=_F(METHODE='MULT_FRONT'),
+                       CALC_FREQ=_F(FREQ=(0.0,1.0,2.0,3.0,4.0),),
                        NORM_MODE=_F( NORME='TRAN_ROTA',),
                        FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
                        IMPRESSION=_F(CUMUL='OUI',),);
@@ -192,10 +189,10 @@ MODEL4=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
                        MATR_MASS=M_ASSE,
                        METHODE='TRI_DIAG',
                        VERI_MODE=_F(SEUIL=1e-05,),
-                       CALC_FREQ=_F(FREQ_MIN=0.0,
-                                    FREQ_MAX=4.0,
+                       CALC_FREQ=_F(
+                                    FREQ=(0.0,1.0,2.0,3.0,4.0),
                                     DIM_SOUS_ESPACE = 180 ,  
-                                    NB_BLOC_FREQ=4,),
+                                   ),
                        NORM_MODE=_F( NORME='TRAN_ROTA',),
                        FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
                        IMPRESSION=_F(CUMUL='OUI',),);

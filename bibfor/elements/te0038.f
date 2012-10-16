@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 15/10/2012   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -355,11 +355,6 @@ C        --- POUTRE A SECTION VARIABLE HOMOTHETIQUE ---
          ELSE IF (ITYPE.EQ.2) THEN
             IF (A1.EQ.0.D0) THEN
                CALL U2MESS('F','ELEMENTS2_82')
-            END IF
-            IF (A1.EQ.A2) THEN
-C             SI A1 = A2 LA SECTION EST CONSTANTE.
-C             ON NE DEVRAIT DONC PAS PASSER PAR CETTE BRANCHE
-               CALL U2MESS('F','ELEMENTS2_83')
             END IF
 C           -------- MASSE
             ZR(LCASTR) = RHO* (A1+A2+SQRT(A1*A2))*XL/3.D0

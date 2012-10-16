@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
       INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
-      INTEGER      I,JGEOM,JCACO,JVECG,IDEFI
+      INTEGER      I,JGEOM,JCACO,JVECG,IDEFI,IRET
       REAL*8       PGL(3,3) , XYZL(3,4)
       REAL*8       EPSINI(6)
       REAL*8       BSIGMA(24), SIGT(32)
@@ -49,7 +49,7 @@ C     ---------------------------
       IF (     NNO .EQ. 3) THEN
          CALL DXTPGL ( ZR(JGEOM) , PGL )
       ELSE IF( NNO .EQ. 4) THEN
-         CALL DXQPGL ( ZR(JGEOM) , PGL )
+         CALL DXQPGL ( ZR(JGEOM) , PGL, 'S', IRET )
       ENDIF
 C
 C --- DETERMINATION DES COORDONNEES DES CONNECTIVITES DE L'ELEMENT

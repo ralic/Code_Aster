@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE FRICTION SLIDER WITH STATIC AND DYNAMIC FRICTION COEFFICIENTS
 # sdnd106a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,20 +65,22 @@ BOUNDARY=AFFE_CHAR_MECA(MODELE=MODEL,
                                      DY=0.,
                                      DZ=0.,),),);
 
+FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
+                     FORCE_NODALE=_F(GROUP_NO='N_IMPOF',
+                                     FX=1.),);
 
-MACRO_MATR_ASSE(MODELE=MODEL,
+ASSEMBLAGE(MODELE=MODEL,
                 CARA_ELEM=ELEM,
                 CHARGE=BOUNDARY,
                 NUME_DDL=CO('DOF_NUM'),
                 MATR_ASSE=(_F(MATRICE=CO('K_ASSEMB'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('M_ASSEMB'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("F_ASSEMB"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=FORCE),),);
 
-
-FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
-                     FORCE_NODALE=_F(GROUP_NO='N_IMPOF',
-                                     FX=1.),);
 F0=3000.; # value of the imposed force
 F_FUNCT=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.0,F0,
@@ -86,20 +88,11 @@ F_FUNCT=DEFI_FONCTION(NOM_PARA='INST',
                             0.200001,0.0),
                       PROL_DROITE='CONSTANT',);
 
-F_ELEM=CALC_VECT_ELEM(CHARGE=FORCE,
-                      CARA_ELEM=ELEM,
-                      OPTION='CHAR_MECA',);
-
-F_ASSEMB=ASSE_VECTEUR(VECT_ELEM=F_ELEM,
-                      NUME_DDL=DOF_NUM,);
-
-
 MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSEMB,
                        MATR_MASS=M_ASSEMB,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(-0.1,40.),),);
-
 
 IMPR_RESU(UNITE=80,
           FORMAT='MED',
@@ -264,9 +257,3 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.06216449988e-05,
               )
 
 FIN();
-
-
-
-
-
-

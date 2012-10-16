@@ -1,7 +1,7 @@
       SUBROUTINE CALIMC(CHARGZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C-----------------------------------------------------------------------
       INTEGER IMOD ,IMOD2 ,INOE ,IOCC ,IRET ,J ,J2 
       INTEGER J3 ,JJ ,JNCMPD ,JNCMPI ,K ,LLDEF ,N2 
       INTEGER NBEC ,NBMDEF ,NBMDYN ,NBMODE ,NBNDE2 ,NBNDEF ,NBNDYN 
-      INTEGER NBNOE ,NBNTOT ,NBTERM ,NEC ,NEC2 ,NEQ ,NLIAI 
+      INTEGER NBNOE ,NBNTOT ,NBTERM ,NEC ,NEC2 ,NEQ ,NLIAI, NUEQ 
       INTEGER NMC 
       REAL*8 BETA ,RBID ,VALE ,ZERO 
 C-----------------------------------------------------------------------
@@ -229,6 +229,8 @@ C
             IF (NOMCMP.EQ.'DRY') ICMP = 5
             IF (NOMCMP.EQ.'DRZ') ICMP = 6
             IDDL = ZI(IAPRNO-1+(NBEC+2)*(INOE-1)+1)
+            NUEQ = ZI(IAPRNO-1+(NBEC+2)*(INOE-1)+2)
+            IF (ICMP.GT.NUEQ) GOTO 26
             DO 27 II=1,NBNDEF
               DO 28 JJ=1,NEC
                 K = K + 1

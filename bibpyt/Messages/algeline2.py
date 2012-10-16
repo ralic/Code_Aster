@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline2 Messages  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,16 +121,63 @@ cata_msg = {
  L'argument de "BLOC_FIN" doit être strictement positif
 """),
 
+23 : _(u"""
+ On a rencontré un problème à la lecture de la table %(k1)s.
+ 
+ --> Conseil:
+ Vérifiez que cette carte a bien été générée précédemment par un appel à INFO_MODE.
+"""),
+
+24 : _(u"""
+ On a rencontré un problème à la lecture de la table %(k1)s. Elle ne comporte aucune ligne
+ dont les bornes sont strictement comprises entre les valeurs de la bande de test:
+                                    [ %(r1)f , %(r2)f ]
+ 
+ --> Conseil:
+ Vérifiez le contenu de la table via un IMPR_TABLE et modifiez les bornes de l'option BANDE
+ en conséquence.
+  
+ Au pire, relancez votre calcul sans spécifier de nom de table. L'opérateur effectuera alors
+ l'étape complète de prétraitement de manière transparente.
+ Mais le calcul sera un peu plus coûteux puisqu'il ne mutualisera pas cette étape commune avec
+ INFO_MODE.
+"""),
+
+25 : _(u"""
+ On a rencontré un problème à la lecture de la table %(k1)s. Elle comporte des trous ou des
+ recouvrements par  rapport aux bornes choisies. Le solveur modal risque donc de pas calculer
+ strictement tous les modes requis.
+ 
+ --> Conseil:
+ Vérifiez le contenu de la table via un IMPR_TABLE.
+
+ Modifiez éventuellement la valeur par défaut du paramètre VERI_MODE/PREC_SHIFT. Elle détermine
+ l'écartement entre les bornes de la bande de test et celles de la bande recherchée.
 
 
+ Au pire, relancez votre calcul sans spécifier de nom de table. L'opérateur effectuera alors
+ l'étape complète de prétraitement de manière transparente.
+ Mais le calcul sera un plus coûteux puisqu'il ne mutualisera pas cette étape commune avec
+ INFO_MODE.
+"""),
 
+26 : _(u"""
+ Attention, la bande sélectionnée dans la table %(k1)s comporte au moins une de ses bornes légèrement
+ décalée. Ce décalage a été opéré afin de ne pas perturber la méthode de comptage (méthode de
+ Sturm). Il a été effectué en se basant sur la paramétrage (NMAX_ITER_SHIFT/PREC_SHIFT/SEUIL_**)
+ de l'opérateur INFO_MODE qui a générer la TABLE.
+"""),
 
 28 : _(u"""
  les "MATR_ASSE" %(k1)s "  et  " %(k2)s "  ne sont pas combinables.
 """),
 
 29 : _(u"""
- la valeur d'entrée 'min' est supérieure ou égale à la valeur d'entrée 'SUP'
+ Les fréquences ou les charges critiques renseignées dans les mots-clés de cet opérateur
+ doivent être dans l'ordre strictement croissant.
+ 
+ --> Conseil:
+ Vérifiez la liste de valeurs fournie au mot-clé: FREQ ou CHAR_CRIT.
 """),
 
 30 : _(u"""

@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/10/2012   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C -----------------
      &              JBASF, JCODIM, JNUOR, JPHIE, JPOIDS, JRHOE, KCHREF,
      &              KDRIF, KFREQ, KFSIC, KMASG, KNUMO, KREFE, KVITE,
      &              LAMOG, LIRES, LMASG, LOMEG, LPROFV, N1, N2, NBAMOR,
-     &              NBMCFC, NBNOEU, NEQ, NMP
+     &              NBMCFC, NBNOEU, NEQ, NMP, NBTROU
       REAL*8        DEUXPI, R8B, XAMOR
       CHARACTER*3   OUINON, K3IV, K3IM
       CHARACTER*4   K4B
@@ -61,6 +61,8 @@ C -----------------
       CHARACTER*19  BASEFL
       CHARACTER*24  FSIC, CHREFE
       CHARACTER*24  VALK(3)
+      COMPLEX*16    C16B
+
 C
 C FONCTIONS INTRINSEQUES
 C ----------------------
@@ -132,9 +134,9 @@ C
 C 5.  RECUPERATION DU NOMBRE DE MODE SUR BASE COMPLETE
 C     ET SUR BASE REDUITE
 C     -------------------
-CCC      CALL RSORAC (NOMBM,'LONUTI',IB,R8B,K8B,C16B,0.0D0,K8B,
-CCC     &             NBM0,1,NBTROU)
-      NBM0 = NBMCFC
+      CALL RSORAC (NOMBM,'LONUTI',IB,R8B,K8B,C16B,0.0D0,K8B,
+     &             NBM0,1,NBTROU)
+C     NBM0 = NBMCFC
 C
       CALL GETVIS ( 'SCHEMA_TEMPS', 'NB_MODE', 1,IARG,1, NBMODE, N1 )
       IF ( N1.EQ.0 ) THEN

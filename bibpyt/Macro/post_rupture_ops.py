@@ -1,4 +1,4 @@
-#@ MODIF post_rupture_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_rupture_ops Macro  DATE 16/10/2012   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,17 +44,6 @@ def verif_reuse(OPERATION,obj_reuse) :
    if OPERATION in ('COMPTAGE_CYCLES','CUMUL_CYCLES','PILO_PROPA') :
       if obj_reuse :
          UTMESS('F','RUPTURE1_63',valk=(OPERATION))
-
-
-def verif_un_fond(tabin, OPERATION):
-   """ verification qu'il n'y a qu'un fond de fissure """
-   # si NUME_FOND est present dans la table
-   if 'NUME_FOND' in tabin.para:
-      # récupération de la liste des NUME_FOND dans un ensemble (set)
-      snum = set(tabin.NUME_FOND.values())
-      nfond = len(snum)
-      if nfond > 1:
-         UTMESS('F','RUPTURE1_5',valk=(OPERATION,tabin.nom),vali=nfond)
 
 
 def verif_un_instant(tabin, OPERATION, COMPTAGE):
@@ -202,6 +191,11 @@ def mise_zero(x) :
    elif x>=0. : return x
 
 
+def fonc_norm(ABSC_CURV,NUME_FOND,nume_fond,max_absc_fond):
+   for i in range(len(nume_fond)):
+        if NUME_FOND == nume_fond[i] :
+          return ABSC_CURV/max_absc_fond[i]
+
 #------------------------------------------------------------------------------------------------------
 def post_rupture_ops(self, TABLE, OPERATION, **args):
    """
@@ -241,9 +235,8 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
    l_tabin = [t.EXTR_TABLE() for t in TABLE]
    if nb_tabin == 1:
       # pour simplifier l'écriture
-      tabin = l_tabin.pop()
+      tabin = l_tabin[0]
       TABIN = TABLE[0]
-
 
    #-----------------------------------------------------------------------
    if OPERATION == 'ABSC_CURV_NORM' :
@@ -251,27 +244,46 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
       # verification que la table contient une colonne 'ABSC_CURV'
       verif_exi(tabin, 'ABSC_CURV')
 
-      # verification qu'il n'y a qu'un fond de fissure
-      verif_un_fond(tabin, OPERATION)
+      if 'NUME_FOND' in tabin.para :
+        # recuperation des numeros des fonds
+        contenu_nume_fond = tabin.NUME_FOND.values()
+        nume_fond = list(set(contenu_nume_fond))
 
-      # récupération de l'abscisse maximale et ajout dans l'environnement
-      smax = max(tabin.ABSC_CURV.values())
-      self.update_const_context({'smax' : smax})
+        indice_tmp = 0
+        max_absc_fond=[]
+        # boucle sur les fonds
+        for i,fond_i in enumerate(nume_fond):
+          # abscisse curviligne maximale pour le fond 'fond_i'      
+          tab_fond_i = tabin.NUME_FOND==fond_i
+          max_absc_fond.append(max(tab_fond_i.ABSC_CURV.values()))
 
-      __NORM_ABS=FORMULE(NOM_PARA=('ABSC_CURV'),VALE='ABSC_CURV/smax');
+        self.update_const_context({'max_absc_fond' : max_absc_fond})
+        self.update_const_context({'nume_fond' : nume_fond})
+        self.update_const_context({'fonc_norm' : fonc_norm})
 
-      tabout=CALC_TABLE(TABLE=TABIN,
-                        reuse=TABIN,
-                        ACTION=_F(OPERATION='OPER',
-                                  FORMULE=__NORM_ABS,
-                                  NOM_PARA=args['NOM_PARA']))
+        __formul = FORMULE(NOM_PARA=('ABSC_CURV','NUME_FOND'),
+                             VALE = 'fonc_norm(ABSC_CURV,NUME_FOND,nume_fond,max_absc_fond)')
 
+        tabout=CALC_TABLE(TABLE=TABIN,
+                          reuse=TABIN,
+                          ACTION=_F(OPERATION='OPER',
+                                    FORMULE=__formul,
+                                    NOM_PARA=args['NOM_PARA']))
+      else :
+        # récupération de l'abscisse maximale et ajout dans l'environnement
+        smax = max(tabin.ABSC_CURV.values())
+        self.update_const_context({'smax' : smax})
+
+        __NORM_ABS=FORMULE(NOM_PARA=('ABSC_CURV'),VALE='ABSC_CURV/smax');
+
+        tabout=CALC_TABLE(TABLE=TABIN,
+                          reuse=TABIN,
+                          ACTION=_F(OPERATION='OPER',
+                                    FORMULE=__NORM_ABS,
+                                    NOM_PARA=args['NOM_PARA']))
 
    #-----------------------------------------------------------------------
    if OPERATION == 'ANGLE_BIFURCATION' :
-
-      # verification qu'il n'y a qu'un fond de fissure
-      verif_un_fond(tabin, OPERATION)
 
       crit_ang = args['CRITERE']
       self.update_const_context({'crit_ang' : crit_ang})
@@ -334,7 +346,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
          (young, poisson)=caract_mater(self,args['MATER'])
          self.update_const_context({'E' : young})
          self.update_const_context({'nu' : poisson})
-         __cumul = FORMULE(NOM_PARA='G',VALE='sqrt(E)/((1-nu**2)*G)')
+         __cumul = FORMULE(NOM_PARA='G',VALE='sqrt(G*E/(1-nu**2))')
 
       elif cumul == 'QUADRATIQUE' :
 #         nu=
@@ -372,17 +384,8 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
       COMPTAGE=args['COMPTAGE']
 
-      # verification qu'il n'y a qu'un fond de fissure
-      verif_un_fond(tabin, OPERATION)
-
       # quantites sur lesquelles s'effectue le comptage
       list_q = args['NOM_PARA']
-
-      # convertion en une liste si on n'a une quantité pour pouvoir itérer dessus
-      if  type(list_q) == str : list_q = [list_q]
-
-      # convertion en une liste si on a un tuple pour pouvoir concaneter
-      if  type(list_q) == tuple : list_q = list(list_q)
 
       for q in list_q:
          verif_exi(tabin, q)
@@ -391,7 +394,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
       # construction de la liste des parametres "auxiliaires" (a completer en fin d'operation)
       l_para_tout = set( tabin.para )
-      l_para_deja = set( list_q+['NUME_ORDRE','INST','NUM_PT'] )
+      l_para_deja = set( list_q+('NUME_ORDRE','INST','NUM_PT','NUME_FOND') )
       l_para_aux  = l_para_tout - l_para_deja
 
       #  comptage unitaire
@@ -439,35 +442,61 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
       else :
 
          verif_exi(tabin, 'INST')
-
          __delta = FORMULE(NOM_PARA=('VALE_MIN','VALE_MAX'),VALE='VALE_MAX-VALE_MIN')
-
-         # si on effectue le comptage sur plusieurs quantités,
-         # il faut qu'elles aient le meme nombre de cycles
-         # pour cela, on stocke pour chaque quantite le nombres de cycles dans 'nb_cycles'
-         nb_cycles=[]
 
          # creation d'une table vide (en fait qui contient juste une ligne qui sera supprimee en fin)
          tabout=CREA_TABLE(LISTE=_F(LISTE_I=(0,),PARA='&BIDON&'))
 
-         # boucle sur les points du fond de fissure
-         nbpt=max(tabin.NUM_PT.values())
+         if 'NUME_FOND' in tabin.para :
+           contenu_nume_fond = tabin.NUME_FOND.values()
+           nume_fond = list(set(contenu_nume_fond))
+         else :
+           nume_fond = [1]
 
-         for ipt in range(nbpt):
+         for j,fond_j in enumerate(nume_fond):
 
-            numpt=ipt+1
+           # récupération du num_pt maximale pour le fond 'fond_j'
+           if 'NUME_FOND' in tabin.para :
+             tab_fond_j = tabin.NUME_FOND==fond_j
+             nbpt = max(tab_fond_j.NUM_PT.values())
+           else :
+             nbpt = max(tabin.NUM_PT.values())
 
-            # boucle sur les quantites à compter
-            __TABC=[None]*nq
-            for i,q in enumerate(list_q):
+           # si on effectue le comptage sur plusieurs quantités,
+           # il faut qu'elles aient le meme nombre de cycles
+           # pour cela, on stocke pour chaque quantite le nombres de cycles dans 'nb_cycles'
+           nb_cycles=[]
 
-               __EVOLQ=RECU_FONCTION(TABLE=TABIN,
-                                   PARA_X='INST',
-                                   PARA_Y=q,
-                                   FILTRE=_F(NOM_PARA='NUM_PT',
-                                             CRIT_COMP='EQ',
-                                             VALE_I=numpt),
-                                   )
+           # boucle sur les points du fond de fissure du fond 'fond_i'
+           for ipt in range(nbpt):
+
+             numpt=ipt+1
+
+             # boucle sur les quantites à compter
+             __TABC=[None]*nq
+             for i,q in enumerate(list_q):
+
+               if 'NUME_FOND' in tabin.para :
+                 __EVOLQ=RECU_FONCTION(TABLE=TABIN,
+                                     PARA_X='INST',
+                                     PARA_Y=q,
+                                     FILTRE=(_F(NOM_PARA='NUM_PT',
+                                               CRIT_COMP='EQ',
+                                               VALE_I=numpt),
+                                             _F(NOM_PARA='NUME_FOND',
+                                               CRIT_COMP='EQ',
+                                               VALE_I=fond_j),
+                                             ),
+                                     )
+
+               else :
+                 __EVOLQ=RECU_FONCTION(TABLE=TABIN,
+                                     PARA_X='INST',
+                                     PARA_Y=q,
+                                     FILTRE=_F(NOM_PARA='NUM_PT',
+                                               CRIT_COMP='EQ',
+                                               VALE_I=numpt),
+                                     )
 
                __TABC[i]=POST_FATIGUE(CHARGEMENT='UNIAXIAL',
                                       HISTOIRE=_F(SIGM=__EVOLQ),
@@ -495,19 +524,27 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                                        ACTION=_F(TABLE=__TABC[i],OPERATION='COMB',NOM_PARA='CYCLE'))
 
 
-            # on complete la table avec le point du fond
-            __TABC[0]=CALC_TABLE(reuse=__TABC[0],
+             # on complete la table avec le point du fond
+             __TABC[0]=CALC_TABLE(reuse=__TABC[0],
                                  TABLE=__TABC[0],
                                  ACTION=_F(OPERATION='AJOUT_COLONNE',
                                            VALE=numpt,
-                                           NOM_PARA='NUM_PT') )
+                                           NOM_PARA='NUM_PT'),)
 
-            # on complete la table avec les parametres auxiliaires
-            tab_tmp = tabin.NUM_PT==numpt
-            tab_tmp = tab_tmp.values()
-            for para in l_para_aux :
-               # on prend la 1ere valeur (pour bien faire, il faudrait verifier que toutes
-               # les valeurs sont bien identiques
+             # on complete la table avec le numero du fond
+             if 'NUME_FOND' in tabin.para :
+               __TABC[0]=CALC_TABLE(reuse=__TABC[0],
+                                   TABLE=__TABC[0],
+                                   ACTION=_F(OPERATION='AJOUT_COLONNE',
+                                           VALE=fond_j,
+                                           NOM_PARA='NUME_FOND'),)
+
+             # on complete la table avec les parametres auxiliaires
+             tab_tmp = tabin.NUM_PT==numpt
+             tab_tmp = tab_tmp.values()
+             for para in l_para_aux :
+              # on prend la 1ere valeur (pour bien faire, il faudrait verifier que toutes
+              # les valeurs sont bien identiques
                vale= tab_tmp[para][0]
                __TABC[0]=CALC_TABLE(reuse=__TABC[0],
                                     TABLE=__TABC[0],
@@ -515,10 +552,10 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                                               VALE=vale,
                                               NOM_PARA=para) )
 
-            # on concatene la table avec la table sortie
-            tabout=CALC_TABLE(reuse=tabout,
-                              TABLE=tabout,
-                              ACTION=_F(TABLE=__TABC[0],OPERATION='COMB'))
+             # on concatene la table avec la table sortie
+             tabout=CALC_TABLE(reuse=tabout,
+                                TABLE=tabout,
+                                ACTION=_F(TABLE=__TABC[0],OPERATION='COMB'))
 
          # on supprime la colonne bidon
          tabout=CALC_TABLE(TABLE=tabout,
@@ -528,9 +565,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
    #-----------------------------------------------------------------------
    if OPERATION == 'LOI_PROPA' :
-
-      # verification qu'il n'y a qu'un fond de fissure
-      verif_un_fond(tabin, OPERATION)
 
       # nom de la colonne correspondant au delta_K_eq
       dkeq = args['NOM_DELTA_K_EQ']
@@ -555,9 +589,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
    #-----------------------------------------------------------------------
    if OPERATION == 'CUMUL_CYCLES' :
 
-      # verification qu'il n'y a qu'un fond de fissure
-      verif_un_fond(tabin, OPERATION)
-
       # quantité sur laquelle s'effectue le cumul
       q = args['NOM_PARA']
       verif_exi(tabin, q)
@@ -572,35 +603,49 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
       l_para_deja = set( ['CYCLE' , q ])
       l_para  = list(l_para_tout - l_para_deja)
 
-      # boucle sur les points du fond de fissure
-      nbpt=max(tabin.NUM_PT.values())
+      if 'NUME_FOND' in tabin.para :
+        contenu_nume_fond = tabin.NUME_FOND.values()
+        nume_fond = list(set(contenu_nume_fond))
+      else :
+        nume_fond = [1]
 
-      for ipt in range(nbpt):
-         numpt=ipt+1
-         tab = tabin.NUM_PT==numpt
-         dic = tab.values()
+      for i,fond_i in enumerate(nume_fond):
 
-         # creation de la liste des valeurs des para initiaux
-         l_vale=[]
-         for para in l_para :
+        if 'NUME_FOND' in tabin.para :
+          tab_fond_i = tabin.NUME_FOND==fond_i
+        else :
+          tab_fond_i = tabin
+
+        # récupération du num_pt maximale pour le fond 'fond_i'
+        nbpt = max(tab_fond_i.NUM_PT.values())
+
+        # boucle sur les points du fond de fissure
+        for ipt in range(nbpt):
+          numpt=ipt+1
+          tab = tab_fond_i.NUM_PT==numpt
+          dic = tab.values()
+
+          # creation de la liste des valeurs des para initiaux
+          l_vale=[]
+          for para in l_para :
             # on prend la 1ere valeur (pour bien faire, il faudrait verifier que toutes
             # les valeurs sont bien identiques et ne pas copier les colonnes dont les
             # valeurs ne sont pas identiques...)
             l_vale.append(dic[para][0])
 
-         # rajout de la derniere colonne : moyenne des valeurs
-         l_para.append(q)
-         da_cycle = NP.array(tab.values()[q])
-         moy = da_cycle.mean()
-         l_vale.append(moy)
+          # rajout de la derniere colonne : moyenne des valeurs
+          l_para.append(q)
+          da_cycle = NP.array(tab.values()[q])
+          moy = da_cycle.mean()
+          l_vale.append(moy)
 
-         # ajout dans la table de cette ligne
-         tabout=CALC_TABLE(reuse=tabout,
-                           TABLE=tabout,
-                           ACTION=_F(OPERATION='AJOUT_LIGNE',
-                                     NOM_PARA =l_para,
-                                     VALE     =l_vale)
-                          )
+          # ajout dans la table de cette ligne
+          tabout=CALC_TABLE(reuse=tabout,
+                            TABLE=tabout,
+                            ACTION=_F(OPERATION='AJOUT_LIGNE',
+                                      NOM_PARA =l_para,
+                                      VALE     =l_vale)
+                           )
 
       # on supprime la colonne bidon
       tabout=CALC_TABLE(TABLE=tabout,

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
 # sdls119a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -142,10 +142,13 @@ depimp = AFFE_CHAR_MECA( MODELE = mode ,
                                           ( 'DAL1'  , ) ,
                                           DZ = 0., DRY = 0. ,) ,
                                           ) , );
-
+#
+chpesa = AFFE_CHAR_MECA(  MODELE = mode ,
+                          PESANTEUR = _F(GRAVITE=9.81 ,
+                                       DIRECTION=(0.0 , -1.0 , 0. ,  ) , ),);
 
 #
-MACRO_MATR_ASSE( MODELE = mode ,
+ASSEMBLAGE( MODELE = mode ,
                  CARA_ELEM = cara ,
                  CHARGE = depimp ,
                  CHAM_MATER = chmat ,
@@ -156,12 +159,12 @@ MACRO_MATR_ASSE( MODELE = mode ,
                                          _F(  MATRICE = CO("masse"),
                                                 OPTION = 'MASS_MECA' , ),
                                          _F(  MATRICE = CO("amorto"),
-                                                OPTION = 'AMOR_MECA' , ) , ) , );
+                                                OPTION = 'AMOR_MECA' , ) , ) , 
+                 VECT_ASSE=( _F(VECTEUR=CO("FASSE"),
+                                OPTION='CHAR_MECA',
+                                CHARGE=chpesa) , ) , );
 #
 
-chpesa = AFFE_CHAR_MECA(  MODELE = mode ,
-                          PESANTEUR = _F(GRAVITE=9.81 ,
-                                       DIRECTION=(0.0 , -1.0 , 0. ,  ) , ),);
 #
 mono_x = CALC_CHAR_SEISME( MATR_MASS = masse ,
                            DIRECTION=( 1. , 0. , 0. ,) ,
@@ -173,14 +176,6 @@ chseism = AFFE_CHAR_MECA( MODELE = mode ,
 INCLUDE( UNITE = 22 );
 #
 #
-
-FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                     CHAM_MATER=chmat, CARA_ELEM = cara ,
-                     CHARGE=chpesa,
-                     );
-
-FASSE=ASSE_VECTEUR(VECT_ELEM=FELEM,
-                   NUME_DDL=NUM,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=-10.0,
                       INTERVALLE=_F(JUSQU_A=0.0,

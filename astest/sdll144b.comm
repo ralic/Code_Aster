@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE ROTOR TOURNANT SUIVANT UNE LOI DE VITESSE DE ROTATION EXPONENTIELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,8 +118,17 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                   _F(GROUP_NO=('PALIER_A','PALIER_B',),
                                      DX=0.0,DY=0,),
                                      ),);
+balou = 0.15 * 1e-04;
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+bal_FX=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='N_DIS2',
+                                      FX=(balou),),);
+
+bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='N_DIS2',
+                                      FY=(balou),),);
+
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
                 CHARGE=BLOQUAGE,
@@ -133,7 +142,12 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                            _F(MATRICE=CO('AMOR'),
                               OPTION='AMOR_MECA',),),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(0.,1000.,),),);
+
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM2,
                 CHARGE=BLOQUAGE,
@@ -147,15 +161,17 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                            _F(MATRICE=CO('RIGY2'),
                               OPTION='RIGI_GYRO',),
                            _F(MATRICE=CO('AMOR2'),
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("bal_Yass"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=bal_FY),
+                           _F(VECTEUR=CO("bal_Xass"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=bal_FX),
+                           ),);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(0.,1000.,),),);
 
 
-balou = 0.15 * 1e-04;
 
 tours=NP.array([0.0,5000.0])
 
@@ -191,25 +207,6 @@ OM=FORMULE(VALE='A+B*exp(-alpha*INST)',
 ACC=FORMULE(VALE='-alpha*B*exp(-alpha*INST)',
             NOM_PARA='INST',);
 
-bal_FX=AFFE_CHAR_MECA(MODELE=MODELE,
-                      FORCE_NODALE=_F(GROUP_NO='N_DIS2',
-                                      FX=(balou),),);
-
-bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
-                      FORCE_NODALE=_F(GROUP_NO='N_DIS2',
-                                      FY=(balou),),);
-
-bal_FXe=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                       CHARGE=bal_FX,);
-
-bal_FYe=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                       CHARGE=bal_FY,);
-
-bal_Xass=ASSE_VECTEUR(VECT_ELEM=bal_FXe,
-                      NUME_DDL=NUMEDDL2,);
-
-bal_Yass=ASSE_VECTEUR(VECT_ELEM=bal_FYe,
-                      NUME_DDL=NUMEDDL2,);
 
 forx = FORMULE(VALE='(OM(INST) ** 2) * cos(PHI(INST)) + ACC(INST) * sin(PHI(INST))',
                 NOM_PARA='INST',);
@@ -321,9 +318,3 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.0264E-09,
               )
 
 FIN();
-
-
-
-
-
-

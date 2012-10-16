@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE Q4G
 # sdls03d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -48,7 +48,7 @@ CA=AFFE_CARA_ELEM(   MODELE=MO,
        GROUP_MA = 'TOUT',
   EPAIS = 0.01)  )
 
-MACRO_MATR_ASSE( MODELE=MO, CARA_ELEM=CA,
+ASSEMBLAGE( MODELE=MO, CARA_ELEM=CA,
                  CHARGE=CH, CHAM_MATER=CHMAT,
                  NUME_DDL=CO("NUM"),
                  MATR_ASSE=(
@@ -60,7 +60,6 @@ MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATR,   MATR_MASS=MATM,
              CALC_FREQ=_F(  FREQ = (5., 250., ),
                          OPTION = 'BANDE'),
                            VERI_MODE=_F(  SEUIL = 1.E-5)  )
-
 
 # --------------------------------------------------------------------
 
@@ -164,9 +163,3 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 FIN()
 #
-
-
-
-
-
-

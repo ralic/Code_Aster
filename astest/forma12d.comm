@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE TP DYNAMIQUE LINEAIRE
 # forma12d.para = tps_job 180 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -45,22 +45,6 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                    DX=0.0,
                                    DY=0.0,
                                    DZ=0.0,),);
-
-MACRO_MATR_ASSE(MODELE=MODELE,
-                CHAM_MATER=CHMAT,
-                CHARGE=BLOCAGE,
-                NUME_DDL=CO('NUMEDDL'),
-                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),);
-
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
-                       MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=20,),);
-
-
 omega = 25.0;
 
 ex = 0.3;
@@ -78,12 +62,22 @@ FOSA=AFFE_CHAR_MECA(MODELE=MODELE,
                     PRES_REP=_F(GROUP_MA='Moteur',
                                 PRES=(Balourd / surf),),);
 
+ASSEMBLAGE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CHARGE=BLOCAGE,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("FOAS"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=FOSA),),);
 
-FOEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                    CHARGE=FOSA,);
-
-FOAS=ASSE_VECTEUR(VECT_ELEM=FOEL,
-                  NUME_DDL=NUMEDDL,);
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
+                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                    NMAX_FREQ=20,),);
 
 MOSTRA=MACRO_ELAS_MULT(MODELE=MODELE,
                        CHAM_MATER=CHMAT,
@@ -167,9 +161,3 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.4478489999999998E-4,
               )
 
 FIN();
-
-
-
-
-
-

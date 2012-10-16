@@ -1,8 +1,8 @@
-#@ MODIF defi_sol_miss_ops Macro  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF defi_sol_miss_ops Macro  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -49,13 +49,18 @@ def defi_sol_miss_ops(self, MATERIAU, COUCHE, TITRE, INFO, **args):
    # 2. Création des dictionnaires des COUCHES
    l_couche = []
    n_substr = 0
+   n_epais = 0
    for Ci in COUCHE:
       dC = Ci.cree_dict_valeurs(Ci.mc_liste)
       if dC.get("SUBSTRATUM") == "OUI":
          n_substr += 1
+      if dC.get("EPAIS") != None:
+         n_epais += 1
       l_couche.append(dC)
    if n_substr != 1:
       UTMESS("F", "MISS0_3")
+   if n_epais == 0:
+      UTMESS("F", "MISS0_21")
    nb_couche = len(l_couche)
 
    # 3. définition de la table

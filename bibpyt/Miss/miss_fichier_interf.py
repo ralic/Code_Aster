@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_interf Miss  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_fichier_interf Miss  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,14 +39,24 @@ def fichier_mvol(struct):
     fmtR_fort = "3E%s" % (dict_format['R'].replace("E", ""))
     cont.append("(%s)" % fmtR_fort)
     cont.extend(en_ligne(struct.noeud_coor, dict_format['sR'], 3, ""))
-    cont.extend(en_ligne(struct.maille_connec, dict_format['sI'], 20,
-                         format_ligne="%(valeurs)s     GR    1"))
+    if len(struct.maille_connec) != 0:
+      cont.extend(en_ligne(struct.maille_connec, dict_format['sI'], 20,
+                           format_ligne="%(valeurs)s     GR    1"))
+    else:
+      cont.extend(en_ligne(struct.maille_connec1, dict_format['sI'], 20,
+                           format_ligne="%(valeurs)s     GR    1"))
+      cont.extend(en_ligne(struct.maille_connec2, dict_format['sI'], 20,
+                           format_ligne="%(valeurs)s     GR    2"))
+      cont.extend(en_ligne(struct.maille_connec3, dict_format['sI'], 20,
+                           format_ligne="%(valeurs)s     GR    3"))
+      cont.extend(en_ligne(struct.maille_connec4, dict_format['sI'], 20,
+                           format_ligne="%(valeurs)s     GR    4"))
     cont.append("")
     return os.linesep.join(cont)
 
 
 #XXX voir pour les groupes
-def fichier_chp(struct):
+def fichier_chp(param,struct):
     """Produit le contenu du fichier chp.
     """
     cont = ["GROUPE    1   2",]
@@ -63,6 +73,18 @@ def fichier_chp(struct):
         cont.extend(en_ligne(struct.mode_dyna_vale[i*mult:(i+1)*mult], dict_format['sR'], 3,
                              format_ligne="%(index_1)6d%(valeurs)s"))
         cont.append("FIN")
+    if param["ISSF"] == "OUI":
+       cont.append("GROUPE    3")
+       if param['ALLU'] != 0.:
+         refl = param['ALLU']
+         kimp = refl/(2.-refl)
+         simp=str(kimp)
+         print 'simp ',simp
+         cont.append("FLUI "+ simp + " BEM")
+       else: 
+         cont.append("DEPN  BEM") 
+       cont.append("GROUPE    4")    
+       cont.append("LIBRE")    
     cont.append("FINC")
     cont.append("EOF")
     return os.linesep.join(cont)
@@ -71,6 +93,7 @@ def fichier_chp(struct):
 def fichier_cmde(param, struct, *nom_fichier):
     """Produit le fichier de commandes Miss (in).
     """
+    print 'PARAM ',param
     dict_info = {
         "projet" : param["PROJET"],
         "titre"  : struct.titre,
@@ -88,6 +111,7 @@ def fichier_cmde(param, struct, *nom_fichier):
         "binaire"  : "",
         "z0" : param["Z0"],
         "surf"  : "",
+        "issf"  : "",
         "rfic1"  : "",
         "rfic2"  : "",
     }
@@ -95,6 +119,8 @@ def fichier_cmde(param, struct, *nom_fichier):
         dict_info["binaire"] = "BINA"
     if param["SURF"] == "OUI":
         dict_info["surf"] = "SURF"
+    if param["ISSF"] == "OUI":
+        dict_info["issf"] = "ISSF"
     if param['RFIC'] != 0.:
         dict_info["rfic1"] = "RFIC"
         dict_info["rfic2"] = str(param['RFIC'])
@@ -116,14 +142,24 @@ def fichier_cmde(param, struct, *nom_fichier):
         dict_info['_fimg2'] = itmpl % dict_info
         itmpl = template_impe_seule_in % dict_format
         dict_info['_fimg3'] = itmpl % dict_info
+        content = template_miss_in % dict_info
     else:
-        itmpl = "*" % dict_format
-        dict_info['_fimg'] = itmpl % dict_info
-        itmpl = template_ondes_non_inclinees_in % dict_format
-        dict_info['_fimg2'] = itmpl % dict_info
-        itmpl = template_impe_forc_in % dict_format
-        dict_info['_fimg3'] = itmpl % dict_info
-    content = template_miss_in % dict_info
+        if param["ISSF"] == "OUI":
+          itmpl = "*" % dict_format
+          dict_info['_fimg'] = itmpl % dict_info
+          itmpl = template_ondes_non_inclinees_in % dict_format
+          dict_info['_fimg2'] = itmpl % dict_info
+          itmpl = template_impe_forc_issf_in % dict_format
+          dict_info['_fimg3'] = itmpl % dict_info
+          content = template_miss_issf_in % dict_info
+        else:
+          itmpl = "*" % dict_format
+          dict_info['_fimg'] = itmpl % dict_info
+          itmpl = template_ondes_non_inclinees_in % dict_format
+          dict_info['_fimg2'] = itmpl % dict_info
+          itmpl = template_impe_forc_in % dict_format
+          dict_info['_fimg3'] = itmpl % dict_info
+          content = template_miss_in % dict_info
     return content
                 
 
@@ -224,6 +260,49 @@ DDL TOUS
 UI TOUS
 FINP"""
 
+template_impe_forc_issf_in = """EXEC UGTG IMPEDANCE FORCE %%(rfic1)s %%(rfic2)s %%(rfic2)s
+*
+*
+* Chargement du domaine    2
+* ---------------------------
+DOMAINE    2
+*
+* Calcul des impedances et des force induites
+*
+EXEC UGTG IMPEDANCE FORCE                      
+*
+* Resolution du probleme d interaction 
+* -------------------------------------
+EXEC GLOBAL
+*
+* Fin de la boucle sur les frequences 
+* ------------------------------------
+ENDF
+*
+* Post-traitement 
+* ----------------
+*
+DOMAINE 0
+POST
+FICH %%(fich_impe)s  %%(binaire)s
+IMPDC
+FREQ TOUTES
+CHPU TOUS
+CHPT TOUS
+FINP
+*
+* Post-traitement 
+* ----------------
+*
+DOMAINE 0
+POST
+FICH %%(fich_forc)s
+FORCE
+FREQ TOUTES
+TUDM TOUS
+UI TOUS
+FINP"""
+
 template_impe_seule_in = """EXEC UGTG IMPEDANCE %%(rfic1)s %%(rfic2)s %%(rfic2)s
 *
 *
@@ -315,6 +394,114 @@ LIRE %%(fich_sol)s
 * Chargement du domaine    2
 * ---------------------------
 DOMAINE    2
+*
+* Chargement des fonctions de Green
+* ----------------------------------
+DOS2M Z0 %%(z0)%(R)s  %%(surf)s
+LIRE %%(fich_sol)s
+*
+* Calcul dans le sol
+* -------------------
+* Calcul des fonctions de Green
+*
+EXEC SPFR
+*
+* Calcul des impedances
+*
+%%(_fimg3)s
+*
+* Fin de l execution
+* -------------------
+FIN
+""" % dict_format
+
+template_miss_issf_in = """*
+* Nom generique des fichiers MISS
+* --------------------------------
+GENER %%(projet)s
+*
+* Debut du menu DATA
+* ------------------
+DATA
+*
+* Titre de l etude
+*-----------------
+TITRE
+%%(titre)s
+*
+* Lecture du maillage
+*--------------------
+MVOL %%(fich_mvol)s
+*
+* Definition du groupe lie a la structure
+*----------------------------------------
+GROUP
+
+FING
+*
+* Definition des modes
+*---------------------
+CHAMP
+LIRE %%(fich_chp)s
+*
+* Parametres d integration
+*-------------------------
+*
+INTEGRATION RECT 6 8 TRIANGLE 12 12
+*
+* Plage de frequence MISS
+*-------------------------
+*
+%%(_lfreq)s
+%%(_fimg)s
+*
+* Definition du sous-domaine    1
+*----------------------------
+*
+SDOMAINE    1 GROUPE    -1  3  4
+STRAtifie
+FINS
+*
+* Definition du sous-domaine    2
+*----------------------------
+*
+SDOMAINE    2 GROUPE   -2  -3
+DFLUI RO 1000 CELER 1500 SURF 0.                                                
+FINS 
+*
+* Fin du menu DATA
+*-----------------
+*
+FIND
+********************************************************************************
+*
+* Debut de l execution
+*---------------------
+*
+*
+* Chargement du domaine    1
+* ---------------------------
+DOMAINE    1
+*
+* Chargement des fonctions de Green
+* ----------------------------------
+DOS2M Z0 %%(z0)%(R)s  %%(surf)s
+LIRE %%(fich_sol)s
+%%(_fimg2)s
+*
+* Chargement du domaine    2
+* ---------------------------
+DOMAINE    2
+*
+* Boucle sur les frequences 
+* --------------------------
+DOFR TOUTES SAVE MVFD TOT UI TUI IMPD FORCE
+*
+*
+*
+* Chargement du domaine    1
+* ---------------------------
+DOMAINE    1
 *
 * Chargement des fonctions de Green
 * ----------------------------------

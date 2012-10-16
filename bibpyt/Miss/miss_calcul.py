@@ -1,4 +1,4 @@
-#@ MODIF miss_calcul Miss  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_calcul Miss  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,6 +45,7 @@ from Utilitai.utils           import set_debug, _print, _printDBG
 from Miss.miss_fichier_sol    import fichier_sol
 from Miss.miss_fichier_option import fichier_option
 from Miss.miss_resu_aster     import lire_resultat_aster
+from Miss.miss_resu_aster     import lire_resultat_issf_aster
 from Miss.miss_fichier_interf import fichier_mvol, fichier_chp, fichier_cmde 
 from Miss.miss_fichier_interf import fichier_cmde_inci
 from Miss.miss_post           import PostMissFactory, info_freq
@@ -186,15 +187,28 @@ class CALCUL_MISS(object):
             __mael = MACR_ELEM_DYNA(BASE_MODALE=self.param['BASE_MODALE'],
                                     **opts)
             mael = __mael
-        IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
-                       FORMAT='MISS_3D',
-                       GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
-                       SOUS_TITRE='PRODUIT PAR CALC_MISS',
-                       UNITE=ulaster,)
+        if self.param['GROUP_MA_FLU_STR'] is None:
+          IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
+                         FORMAT='MISS_3D',
+                         GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
+                         SOUS_TITRE='PRODUIT PAR CALC_MISS',
+                         UNITE=ulaster,)
+        else:
+          IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
+                         FORMAT='MISS_3D',
+                         GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
+                         GROUP_MA_FLU_STR=self.param['GROUP_MA_FLU_STR'],
+                         GROUP_MA_FLU_SOL=self.param['GROUP_MA_FLU_SOL'],
+                         GROUP_MA_SOL_SOL=self.param['GROUP_MA_SOL_SOL'],                         
+                         SOUS_TITRE='PRODUIT PAR CALC_MISS',
+                         UNITE=ulaster,)
         UL.EtatInit()
         copie_fichier(self.param.UL.Nom(ulaster), self._fichier_tmp("aster"))
-
-        self.data = lire_resultat_aster(self._fichier_tmp("aster"))
+        print 'ISSF ',self.param['ISSF']
+        if self.param['ISSF'] != 'OUI':
+          self.data = lire_resultat_aster(self._fichier_tmp("aster"))
+        else:
+          self.data = lire_resultat_issf_aster(self._fichier_tmp("aster"))        
         self._dbg_trace("Stop")
 
 
@@ -211,7 +225,7 @@ class CALCUL_MISS(object):
         """Produit le fichier chp (modes statiques, dynamiques...).
         """
         self._dbg_trace("Start")
-        content = fichier_chp(self.data)
+        content = fichier_chp(self.param,self.data)
         open(self._fichier_tmp("chp"), "w").write(content)
         self._dbg_trace("Stop")
 

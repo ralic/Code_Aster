@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ import os
 
 
 def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FORC,
-                                 UNITE_RESU_IMPE, TYPE, MATR_GENE ,INFO,
+                                 UNITE_RESU_IMPE, TYPE, MATR_GENE ,INFO, ISSF,
 #                      NB_FREQ, FREQ_INIT, FREQ_PAS,  FREQ_MAX, OPTION,
                          **args):
    """
@@ -56,6 +56,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    CREA_CHAMP = self.get_cmd('CREA_CHAMP')
    DYNA_LINE_HARM = self.get_cmd('DYNA_LINE_HARM')
    DETRUIRE= self.get_cmd('DETRUIRE')
+
 
    DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
    CALC_FONCTION  = self.get_cmd('CALC_FONCTION')
@@ -159,7 +160,6 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    resultat = self.get_concept(nom_bamo)
    nume_ddlgene = self.get_concept(nom_ddlgene)
    modele = self.get_concept(nom_modele[0:8])
-
    #TEST base modale
    nom_bamo2 = v_refa_mass[0]
    if nom_bamo.strip() != nom_bamo2.strip():
@@ -207,20 +207,46 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    print 'MODEL :',   MODEL
 
 
-#   # PARAMETRE nom_champ
-#    cham_calc=NOM_CHAM
-#    print 'NOM_CHAMP   ',cham_calc
-#    if cham_calc=='DEPL':
-#       ii_cham=1
-#    elif   cham_calc=='VITE':
-#       ii_cham=2
-#    elif   cham_calc=='ACCE':
-#       ii_cham=3
+ #  POUR TRANS, on sort le champ en déplacement: c'est équivalent du champ en deplacement si on applique un signal en ACCE
+   
+   __CHAM=CREA_CHAMP( TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                NUME_ORDRE=nbmodd+1,
+                RESULTAT = resultat  ,
+                NOM_CHAM = 'DEPL'
+                      );
+   MCMP =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs #  on recupere la composante COMP (dx,dy,dz) des modes
 
- #   POUR TRANS, on sort le champ en dépalcement: c'est équivalen du champ en deplacement si on applique un signal en ACCE
-   cham_calc='DEPL'
-   ii_cham=1
+   NNO =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER], topo=1).noeud
+         
+   
+   MCMP1=__CHAM.EXTR_COMP(' ',[ ],0).valeurs
+   NNO1 =__CHAM.EXTR_COMP(' ',[ ], topo=1).noeud
+   NCMP1 =__CHAM.EXTR_COMP(' ',[ ], topo=1).comp
+   
+   MCMP2=__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER],0).valeurs
+   NNO2 =__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER], topo=1).noeud
+   NCMP2 =__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER], topo=1).comp
 
+   nddi=len(MCMP2)
+   PHI=NP.zeros((nddi,nbmods))
+   # ----- boucle sur les modes statiques
+   for mods in range(0,nbmods):
+      nmo = nbmodd+mods+1
+      __CHAM=CREA_CHAMP( TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                NUME_ORDRE=nmo,
+                RESULTAT = resultat  ,
+                NOM_CHAM = 'DEPL'
+                      );
+      MCMP =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs #  on recupere la composante COMP (dx,dy,dz) des modes
+
+      NNO =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER], topo=1).noeud
+      MCMP2=__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER],0).valeurs
+      PHI[:,mods]=MCMP2
+      
+   PHIT=NP.transpose(PHI)
+   PPHI=NP.dot(PHIT, PHI)
 
 #---------------------------------------------------------------------
 #---------------------------------------------------------------------
@@ -306,6 +332,12 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       PVEC=NP.zeros((nbme,nbno))
       for k1 in range(0,nbme):
          PVEC[k1, 0:nbno]=NP.sqrt(eig[k1])*vec[k1]
+
+      XOe=NP.zeros(nbme)
+      for k1 in range(0,nbme):
+        XOe[k1]=abs(NP.sum(PVEC[k1]))/nbno
+      print 'XOE ',XOe
+
       # CALCUL DE FS variable-------------------------------
       XO=NP.zeros((nbme,nbmods))
       if NOM_CMP=='DX':
@@ -314,9 +346,12 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
          COMP = 2
       elif NOM_CMP=='DZ':
          COMP = 3
-   #---------MODES interface
+  #
+  #   ------------------------MODES interface-------------------------------------
       # ----- boucle sur les modes statiques
       for mods in range(0,nbmods):
+         if INTERF['MODE_INTERF'] =='QUELCONQUE':
+           break
          nmo = nbmodd+mods+1
          __CHAM=CREA_CHAMP( TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -324,22 +359,21 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                 RESULTAT = resultat  ,
                 NOM_CHAM = 'DEPL'
                       );
-         MCMP =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs
+         MCMP =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs #  on recupere la composante COMP (dx,dy,dz) des modes
 
          NNO =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER], topo=1).noeud
-
-
+            
          som=NP.sum(MCMP)
          max1=NP.max(MCMP)
          min1=NP.min(MCMP)
          maxm=NP.max([abs(max1),abs(min1)])
 
       #-------------CALCUL DE XO -------------
-#  on recupere la composante COMP (dx,dy,dz) des modes et on projete
+      #  on a recupere la composante COMP (dx,dy,dz) des modes et on projete
          #  CAS 1: MODES DE CORPS RIGIDE
          if INTERF['MODE_INTERF'] =='CORP_RIGI':
             for modp in range(0,nbme):
-               #modes de translation
+               #pour les modes de translation
                if mods+1 <=3:
                   if abs(som)<10.E-6:
                      XO[modp,mods]=0.0
@@ -356,7 +390,6 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                   else :
                      fact = 1./(nbno)
                      XO[modp,mods]=1./(maxm**2.)*fact*NP.inner(MCMP,PVEC[modp])
-
          # CAS 2: MODES EF
          if INTERF['MODE_INTERF'] =='TOUT':
             for modp in range(0,nbme):
@@ -379,6 +412,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                            TYPE=TYPE,
                            NUME_DDL_GENE=nume_ddlgene,
                            UNITE_RESU_IMPE= UNITE_RESU_IMPE,
+                           ISSF=ISSF,
                            FREQ_EXTR=freqk,
                            );
       __rito=COMB_MATR_ASSE(COMB_C=(
@@ -395,26 +429,59 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       __fosi = LIRE_FORC_MISS(BASE=resultat,
                            NUME_DDL_GENE=nume_ddlgene,
                            NOM_CMP=NOM_CMP,
-                            NOM_CHAM='DEPL',
+                           NOM_CHAM='DEPL',
                            UNITE_RESU_FORC = UNITE_RESU_FORC,
+                           ISSF=ISSF,
                            FREQ_EXTR=freqk,);
 
 
-      # impedance
+      # -------------- impedance--------------------------------
       MIMPE=__impe.EXTR_MATR_GENE()
       #  extraction de la partie modes interface
       KRS = MIMPE[nbmodd:nbmodt,nbmodd:nbmodt]
 
+     # -------------- force sismique-------------------------------
+      FSISM=__fosi.EXTR_VECT_GENE_C()
 
+      FS0=FSISM[nbmodd:nbmodt][:]    #  extraction de la partie modes interface
+
+      if ISSF=='OUI'  :
+
+         if INTERF['MODE_INTERF'] =='CORP_RIGI':
+            U0=NP.dot(linalg.inv(KRS), FS0)  
+            XOe=XO[:,COMP-1]*U0[COMP-1]
+            XO[:,COMP-1]=XOe
+            U0[COMP-1]=0.0+0j
+            for k1 in range(0,nbme): 
+               U0[COMP-1]=U0[COMP-1]+XOe[k1]
+             
+      if INTERF['MODE_INTERF'] =='QUELCONQUE':
+         U0=NP.dot(linalg.inv(KRS), FS0)  
+         XI=NP.dot(PHI, U0)        
+
+# 
       if TYPE_RESU=="TRANS":
-           #   force sismique resultante: somme des mode POD
-         XO_s=NP.sum(XO,0)
-         FS = NP.dot(KRS,XO_s)
-         Fzero=NP.zeros((1,nbmodd))
-         FS2=NP.concatenate((Fzero,NP.reshape(FS,(1,nbmods))),1)
 
+         if INTERF['MODE_INTERF']=='QUELCONQUE' :
+            XPI=XI
+            SI=0.0+0j
+            for k1 in range(0,nbme): 
+              SI=SI+XOe[k1]
+            for idd in range(0,nddi):
+              if NCMP2[idd][0:2] == NOM_CMP:
+                XPI[idd]=SI*XI[idd]              
+            QPI=NP.dot(PHIT, XPI)
+            U0=NP.dot(linalg.inv(PPHI), QPI)      
+         if INTERF['MODE_INTERF']=='QUELCONQUE' or ISSF=='OUI' :
+            FS = NP.dot(KRS, U0)
+
+         else:     
+           #   force sismique resultante: somme des mode POD
+            XO_s=NP.sum(XO,0)
+            FS = NP.dot(KRS,XO_s)
+         FSISM[nbmodd:nbmodt][:] =FS         
         #  Calcul harmonique
-         __fosi.RECU_VECT_GENE_C(FS2[0])
+         __fosi.RECU_VECT_GENE_C(FSISM)
          __dyge = DYNA_LINE_HARM(
                           MATR_MASS = MATR_GENE['MATR_MASS'],
                           MATR_RIGI = __rito,
@@ -432,12 +499,22 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       if  TYPE_RESU=="SPEC":
          SP=NP.zeros((nbmodt,nbmodt))
          for k1 in range(0,nbme):
+            if INTERF['MODE_INTERF']=='QUELCONQUE' :
+              XPI=XI
+              for idd in range(0,nddi):
+                if NCMP2[idd][0:2] == NOM_CMP:
+                  XPI[idd]=XOe[k1]*XI[idd]              
+              QPI=NP.dot(PHIT, XPI)
+              U0=NP.dot(linalg.inv(PPHI), QPI)      
+              FS = NP.dot(KRS, U0)
+            else:
          #  calcul de la force sismique mode POD par mode POD
-            FS = NP.dot(KRS,XO[k1])
-            Fzero=NP.zeros((1,nbmodd))
-            FS2=NP.concatenate((Fzero,NP.reshape(FS,(1,nbmods))),1)
+              FS = NP.dot(KRS,XO[k1])
+#             Fzero=NP.zeros((1,nbmodd))
+#             FS2=NP.concatenate((Fzero,NP.reshape(FS,(1,nbmods))),1)
+            FSISM[nbmodd:nbmodt][:] =FS
         #  Calcul harmonique
-            __fosi.RECU_VECT_GENE_C(FS2[0])
+            __fosi.RECU_VECT_GENE_C(FSISM)
             __dyge = DYNA_LINE_HARM(
                           MATR_MASS = MATR_GENE['MATR_MASS'],
                           MATR_RIGI = __rito,
@@ -447,10 +524,10 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                                       COEF_MULT= 1.0,
                                   ),
                         );
-            #  recuperer le vecteur modal depl calcule par dyge
+         #  recuperer le vecteur modal depl calcule par dyge
             RS = NP.array(__dyge.sdj.DEPL.get())
             DETRUIRE(CONCEPT=_F(NOM=(__dyge)),INFO=1)
-            # stockage des matrices résultats: sum(s_q s_q* )
+             # stockage des matrices résultats: sum(s_q s_q* )
             SP=SP+RS*NP.conj(RS[:,NP.newaxis])
 
 

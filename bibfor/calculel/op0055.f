@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C
       CHARACTER*13  MOTCL(8)
       CHARACTER*16  TYPRES, OPER
       CHARACTER*19  BASFON, BASLOC, CNXINV, FONTYP, LNNO, LTNO
-      CHARACTER*24  VALK(3), FONDFI, FONOEU
+      CHARACTER*24  VALK(2), FONDFI, FONOEU
       INTEGER      IARG
 C DEB-------------------------------------------------------------------
 C
@@ -124,8 +124,7 @@ C
               IF (IBID.EQ.0) THEN
                 VALK(1) = ENTNOM
                 VALK(2) = MOTCL(IDONN)
-                VALK(3) = TYPFON
-                CALL U2MESK('F','RUPTURE0_7',3,VALK)
+                CALL U2MESK('F','RUPTURE0_7',2,VALK)
               ENDIF
  111        CONTINUE
           ENDIF

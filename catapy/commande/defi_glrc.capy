@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/09/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,16 +43,16 @@ DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
                                            into=("GAMMA","SEUIL")),
                    b_gamma=BLOC(condition = "COMPR == 'GAMMA'",
                                 fr="Paramètre d'endommagement en compression ",
-                                GC = SIMP(statut='o',typ='R',defaut=1.0E+0,val_min=0.0E+0, val_max=1.0E+0),),
+                                GAMMA_C = SIMP(statut='o',typ='R',defaut=1.0E+0,val_min=0.0E+0, val_max=1.0E+0),),
                    b_seuil=BLOC(condition = "COMPR == 'SEUIL'",
                                 fr="Seuil d'endommagement en compression ",
-                                SYC = SIMP(statut='o',typ='R'),),
+                                NYC = SIMP(statut='o',typ='R'),),
                    PENTE = SIMP(statut='o',typ='TXM',defaut="RIGI_ACIER",
                                 into=("PLAS_ACIER","UTIL","RIGI_ACIER")),
                    b_util = BLOC(condition = "PENTE == 'UTIL'",
                                  fr="Valeur de la déformation maximale de l'élément",
                                   EPSI_MEMB = SIMP(statut='o',typ='R',defaut=0.E+0),
-                                  EPSI_FLEX = SIMP(statut='o',typ='R',defaut=0.E+0),),
+                                  KAPPA_FLEX = SIMP(statut='o',typ='R',defaut=0.E+0),),
                    CISAIL = SIMP(statut='o',typ='TXM',defaut="NON",
                                  into=("OUI","NON"),),
                    METHODE_ENDO = SIMP(statut='o',typ='TXM',defaut="ENDO_INTER",

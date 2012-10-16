@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 # ssll11c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,17 +108,15 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='C',
 # =====================================================================
 
 
-MACRO_MATR_ASSE(     MODELE=MODELE,          CHARGE=CHARGE,
-                     CARA_ELEM=CARA_ELE,    CHAM_MATER=CH_MATER,
-                      NUME_DDL=CO("NUM"),MATR_ASSE=(
-                     _F(  MATRICE = CO("MATASSR"),  OPTION = 'RIGI_MECA'),
-                               _F(  MATRICE = CO("MATASSM"),  OPTION = 'MASS_MECA'),
-                               _F(  MATRICE = CO("MATASSC"),  OPTION = 'AMOR_MECA'))
-                  )
+ASSEMBLAGE(     MODELE=MODELE,          CHARGE=CHARGE,
+                CARA_ELEM=CARA_ELE,     CHAM_MATER=CH_MATER,
+                NUME_DDL=CO("NUM"),     MATR_ASSE=(
+                   _F(  MATRICE = CO("MATASSR"),  OPTION = 'RIGI_MECA'),
+                   _F(  MATRICE = CO("MATASSM"),  OPTION = 'MASS_MECA'),
+                   _F(  MATRICE = CO("MATASSC"),  OPTION = 'AMOR_MECA')),
+                VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_MECA'),), 
+              )
 
-VECTELE=CALC_VECT_ELEM(  CHARGE=CHARGE,      OPTION='CHAR_MECA' )
-
-VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECTELE,    NUME_DDL=NUM  )
 
 # --------------------------------------------------------------------
 

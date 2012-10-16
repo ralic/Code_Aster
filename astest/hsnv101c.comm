@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 # hsnv101c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -464,6 +464,7 @@ TEST_RESU(CHAM_ELEM=(_F(NOEUD='N2',
                      _F(NOEUD='N2',
                         CRITERE='RELATIF',
                         NOM_CMP='V3',
+                        TOLE_MACHINE=1.e-5,
                         PRECISION=2.E-3,
                         MAILLE='M4',
                         CHAM_GD=CHVA176,

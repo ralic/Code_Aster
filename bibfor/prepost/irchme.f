@@ -1,10 +1,10 @@
       SUBROUTINE IRCHME ( IFICHI, CHANOM, PARTIE, NOCHMD, NORESU,
      &                    NOMSYM, TYPECH, NUMORD, NBRCMP, NOMCMP,
      &                    NBNOEC, LINOEC, NBMAEC, LIMAEC, LVARIE,
-     &                    CODRET )
+     &                    SDCARM, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,7 @@ C        NBNOEC : NOMBRE DE NOEUDS A ECRIRE (O, SI TOUS LES NOEUDS)
 C        LINOEC : LISTE DES NOEUDS A ECRIRE SI EXTRAIT
 C        NBMAEC : NOMBRE DE MAILLES A ECRIRE (0, SI TOUTES LES MAILLES)
 C        LIMAEC : LISTE DES MAILLES A ECRIRE SI EXTRAIT
+C        SDCARM : CARA_ELEM (UTILE POUR LES SOUS-POINTS)
 C     SORTIES:
 C        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 C_______________________________________________________________________
@@ -60,7 +61,7 @@ C
 C 0.1. ==> ARGUMENTS
 C
       INCLUDE 'jeveux.h'
-      CHARACTER*8  NORESU,TYPECH
+      CHARACTER*8  NORESU,TYPECH,SDCARM
       CHARACTER*16 NOMSYM
       CHARACTER*19 CHANOM
       CHARACTER*24 NOCELK
@@ -111,17 +112,17 @@ C
 C
       IF ( CODRET.EQ.0 ) THEN
         IF ( NIVINF.GT.1 ) THEN
-           WRITE (IFM,11000) SAUX08
-           WRITE (IFM,11001) NOMSYM
+          WRITE (IFM,11000) SAUX08
+          WRITE (IFM,11001) NOMSYM
         ENDIF
         IF ( NIVINF.GT.1 ) THEN
           WRITE (IFM,11003) TYPECH
           WRITE (IFM,11004) NOCHMD
         ENDIF
       ELSE
-         CALL U2MESS('A','MED_91')
-         CALL U2MESK('A','MED_44',1,CHANOM)
-         CALL U2MESK('A','MED_45',1,NORESU)
+        CALL U2MESS('A','MED_91')
+        CALL U2MESK('A','MED_44',1,CHANOM)
+        CALL U2MESK('A','MED_45',1,NORESU)
       ENDIF
 C
 11000 FORMAT(1X,'RESULTAT           : ',A8)
@@ -181,14 +182,14 @@ C
           MODELE = ZK24(ICELK)(1:8)
           CALL JEEXIN ( MODELE//'.MAILLE', IRET)
           IF(IRET.EQ.0)THEN
-               IF ( NORESU.NE.' ' ) THEN
-                  CALL RSADPA(NORESU,'L',1,'MODELE',NUMORD, 0, IAUX,
-     &                        SAUX08 )
-                  MODELE = ZK8(IAUX)
-                  CALL JEEXIN ( MODELE//'.MAILLE', IRET)
-               ENDIF
+            IF ( NORESU.NE.' ' ) THEN
+              CALL RSADPA(NORESU,'L',1,'MODELE',NUMORD, 0, IAUX,
+     &                    SAUX08 )
+              MODELE = ZK8(IAUX)
+              CALL JEEXIN ( MODELE//'.MAILLE', IRET)
             ENDIF
-            IF(IRET.EQ.0)THEN
+          ENDIF
+          IF(IRET.EQ.0) THEN
             VALK (1) = CHANOM
             CALL U2MESG('F', 'MED_82',1,VALK,0,0,0,0.D0)
           ENDIF
@@ -211,7 +212,7 @@ C
      &                  NBRCMP, NOMCMP, PARTIE,
      &                  NUMPT, INSTAN, NUMORD,
      &                  NBNOEC, LINOEC,
-     &                  CODRET )
+     &                  SDCARM, CODRET )
         ELSE IF ( TYPECH(1:2).EQ.'EL' ) THEN
 C
 C         SI ON EST DANS LE CAS VARI ET QU'ON A DEMANDE L'EXPLOSION
@@ -222,13 +223,13 @@ C         CERTAINS TRAITEMENT
      &                    NBRCMP, NOMCMP, PARTIE,
      &                    NUMPT, INSTAN, NUMORD,
      &                    NBMAEC, LIMAEC, NORESU,
-     &                    CODRET )
+     &                    SDCARM, CODRET )
           ELSE
             CALL IRCEME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODELE,
      &                    NBRCMP, NOMCMP, ' ', PARTIE,
      &                    NUMPT, INSTAN, NUMORD,
      &                    NBMAEC, LIMAEC,
-     &                    CODRET )
+     &                    SDCARM, CODRET )
           ENDIF
         ELSE IF ( TYPECH(1:4).EQ.'CART' ) THEN
 C
@@ -236,7 +237,7 @@ C
      &                  NBRCMP, NOMCMP, ' ', PARTIE,
      &                  NUMPT, INSTAN, NUMORD,
      &                  NBMAEC, LIMAEC,
-     &                  CODRET )
+     &                  SDCARM, CODRET )
         ELSE
           CODRET = 1
           CALL U2MESK('A','MED_92',1,TYPECH(1:4))
@@ -249,7 +250,7 @@ C 3. BILAN
 C====
 C
       IF ( CODRET.NE.0.AND.CODRET.NE.100 ) THEN
-         CALL U2MESK('A','MED_89',1,CHANOM)
+        CALL U2MESK('A','MED_89',1,CHANOM)
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN

@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+#@ MODIF rupture1 Messages  DATE 16/10/2012   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,11 +44,7 @@ le mot-clé FISSURE de la commande CALC_G.
 La commande CALC_G ne traite pas le cas des fonds doubles.
 """),
 
-5: _(u"""
-La commande POST_RUPTURE / OPERATION = '%(k1)s' traite uniquement
-un seul fond de fissure. Or la table %(k2)s contient %(i1)d fonds de fissure
-(colonne 'NUME_FOND').
-"""),
+
 
 6: _(u"""
 Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement être supérieur au rayon

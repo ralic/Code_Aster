@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith2 Messages  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -219,10 +219,6 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 59 : _(u"""
   la transformation géométrique est singulière pour la maille : %(k1)s
   (jacobien = 0.)
-"""),
-
-60 : _(u"""
-  dérivées secondes non étendues au 3d
 """),
 
 61 : _(u"""

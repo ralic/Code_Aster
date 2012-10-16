@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+#@ MODIF sd_xfem SD  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,11 +66,10 @@ class sd_fiss_xfem(AsBase):
     STNO   = sd_cham_no()
     STNOR  = sd_cham_no()
 
-    MAILFISS_CTIP  = Facultatif(AsVI(SDNom(nomj='.MAILFISS  .CTIP')))
-    MAILFISS_HEAV  = Facultatif(AsVI(SDNom(nomj='.MAILFISS  .HEAV')))
-    MAILFISS_HECT  = Facultatif(AsVI(SDNom(nomj='.MAILFISS  .HECT')))
+    MAILFISS_CTIP  = Facultatif(AsVI(SDNom(nomj='.MAILFISS.CTIP')))
+    MAILFISS_HEAV  = Facultatif(AsVI(SDNom(nomj='.MAILFISS.HEAV')))
+    MAILFISS_HECT  = Facultatif(AsVI(SDNom(nomj='.MAILFISS.HECT')))
     MAILFISS_MAFOND= Facultatif(AsVI(SDNom(nomj='.MAILFISS.MAFOND')))
-    MAILFISS_INDIC = AsVI(SDNom(nomj='.MAILFISS .INDIC'), lonmax=6, )
 
 # I.3) objets relatifs a la propagation
 

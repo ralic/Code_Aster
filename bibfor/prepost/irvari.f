@@ -2,13 +2,13 @@
      &                    NBCMP, NOMCMP, PARTIE,
      &                    NUMPT, INSTAN, NUMORD,
      &                    NBMAEC, LIMAEC, NORESU,
-     &                    CODRET )
+     &                    CARAEL, CODRET )
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER NBCMP,NUMPT,NUMORD,NBMAEC,IFI, LIMAEC(*),CODRET
 C
-      CHARACTER*8   TYPECH,MODELE,NORESU
+      CHARACTER*8   TYPECH,MODELE,NORESU,CARAEL
       CHARACTER*19  CHANOM
       CHARACTER*64  NOCHMD
       CHARACTER*(*) NOMCMP(*),PARTIE
@@ -16,7 +16,7 @@ C
       REAL*8 INSTAN
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -221,7 +221,7 @@ C
      &              NBCMP, NOMCMP, NOETCM, PARTIE,
      &              NUMPT, INSTAN, NUMORD,
      &              NBMAEC, LIMAEC,
-     &              CODRET )
+     &              CARAEL, CODRET )
 C
 C --- MENAGE
       CALL DETRSD('CHAM_ELEM_S',CHAMNS)

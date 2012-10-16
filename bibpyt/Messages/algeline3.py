@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 02/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF algeline3 Messages  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -368,6 +368,16 @@ On trouve plus de 9999 valeurs propres dans la bande demandée
   Si il ne s'agit pas d'un test de vérification ('VERIFICATION A POSTERIORI DES MODES'),
   vous pouvez aussi relancez un autre calcul en décalant les bornes de l'intervalle
   pour évitez cette fréquence.
+"""),
+
+68: _(u"""
+  La borne inférieure de l'intervalle a été décalée plusieurs fois car elle est trop proche
+  d'une valeur propre. Du fait de ces décalages, elle est devenue plus grande que la borne
+  supérieure !
+
+  -> Conseils :
+  Relancez votre calcul en espaçant suffisamment les bornes des intervalles (en tenant compte
+  des valeurs des paramètres de décalage NMAX_ITER_SHIFT et PREC_SHIFT).
 """),
 
 69: _(u"""

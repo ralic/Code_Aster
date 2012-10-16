@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C RESPONSABLE SFAYOLLE S.FAYOLLE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,8 +52,8 @@ C       ALPHA   : PARAMETRE DE SEUIL FLEXION
 C       ALFMC   : PARAMETRE DE DECOUPLAGE SEUILS TRACTION-COMPRESSION
 C ----------------------------------------------------------------------
 
-      REAL*8      VALRES(7), E, NU, EP, EF, SYCMAX, RMESG(2)
-      REAL*8      SYT, SYC, SYF, NUF, DELAS(6,6)
+      REAL*8      VALRES(7), E, NU, EP, EF, NYCMAX, RMESG(2)
+      REAL*8      NYT, NYC, MYF, NUF, DELAS(6,6)
 
       INTEGER ICODRE(7)
       CHARACTER*8 NOMRES(7)
@@ -122,23 +122,23 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(1) = 'GAMMA_T'
       NOMRES(2) = 'GAMMA_C'
       NOMRES(3) = 'GAMMA_F'
-      NOMRES(4) = 'SYT'
-      NOMRES(5) = 'SYC'
-      NOMRES(6) = 'SYF'
+      NOMRES(4) = 'NYT'
+      NOMRES(5) = 'NYC'
+      NOMRES(6) = 'MYF'
       NOMRES(7) = 'ALPHA_C'
       CALL RCVALA(IMATE,' ','GLRC_DM',0,' ',0.D0,7,
      &            NOMRES,VALRES,ICODRE,0)
 
       GT    = VALRES(1)
       GF    = VALRES(3)
-      SYT   = VALRES(4)
-      SYF   = VALRES(6)
+      NYT   = VALRES(4)
+      MYF   = VALRES(6)
       ALFMC = VALRES(7)
 
       IF (ICODRE(2).EQ.0 .AND. ICODRE(5).EQ.0) THEN
 C - ON EST DANS LE CAS DE DEFI_GLRC
         GC  = VALRES(2)
-        SYC = VALRES(5)
+        NYC = VALRES(5)
       ELSEIF (ICODRE(2).EQ.0) THEN
 C - ON EST DANS LE CAS DE DEFI_MATERIAU
         GC  = VALRES(2)
@@ -147,22 +147,22 @@ C - ON EST DANS LE CAS DE DEFI_MATERIAU
           CALL U2MESR('F','ALGORITH6_1',0,RMESG)
         END IF
 
-        SYC = (1.D0-NU)*(1.D0+2.D0*NU)*(1.D0-GT)+NU**2*(1.D0-GC)
-        SYC = SYC/((1.D0-NU)*(1.D0+2.D0*NU)*(1.D0-GC)+NU**2*(1.D0-GT))
-        SYC = -SQRT(SYC*SYT**2)
+        NYC = (1.D0-NU)*(1.D0+2.D0*NU)*(1.D0-GT)+NU**2*(1.D0-GC)
+        NYC = NYC/((1.D0-NU)*(1.D0+2.D0*NU)*(1.D0-GC)+NU**2*(1.D0-GT))
+        NYC = -SQRT(NYC*NYT**2)
       ELSEIF (ICODRE(5).EQ.0) THEN
 C - ON EST DANS LE CAS DE DEFI_MATERIAU
-        SYC = VALRES(5)
-        SYCMAX = SYT*SQRT((1.D0-NU)*(1.D0+2.D0*NU))/NU
+        NYC = VALRES(5)
+        NYCMAX = NYT*SQRT((1.D0-NU)*(1.D0+2.D0*NU))/NU
 
-        IF (VALRES(5) .GT. SYCMAX) THEN
-          RMESG(1) = SYC
-          RMESG(2) = SYCMAX
+        IF (VALRES(5) .GT. NYCMAX) THEN
+          RMESG(1) = NYC
+          RMESG(2) = NYCMAX
           CALL U2MESR('F','ALGORITH6_2',2,RMESG)
         END IF
 
-        GC  = (1.D0-GT)*(SYT**2*(1.D0-NU)*(1.D0+2.D0*NU)-SYC**2*NU**2)
-        GC  = GC/(SYC**2*(1.D0-NU)*(1.D0+2.D0*NU)-SYT**2*NU**2)
+        GC  = (1.D0-GT)*(NYT**2*(1.D0-NU)*(1.D0+2.D0*NU)-NYC**2*NU**2)
+        GC  = GC/(NYC**2*(1.D0-NU)*(1.D0+2.D0*NU)-NYT**2*NU**2)
         GC  = 1.D0 - GC
       ELSE
         GC = 1.D0
@@ -178,8 +178,8 @@ C - ON EST DANS LE CAS DE DEFI_MATERIAU
         IF (GC .EQ. 1.D0) THEN
           ALFMC = 1.D0
         ELSE
-          ALFMC=(1.D0-GC)*(SYC**2*(1.D0-NU)*(1.D0+2.D0*NU)/SYT**2-NU**2)
-     &         /((1.D0-GT)*((1.D0-NU)*(1.D0+2.D0*NU)-(NU*SYC/SYT)**2))
+          ALFMC=(1.D0-GC)*(NYC**2*(1.D0-NU)*(1.D0+2.D0*NU)/NYT**2-NU**2)
+     &         /((1.D0-GT)*((1.D0-NU)*(1.D0+2.D0*NU)-(NU*NYC/NYT)**2))
         ENDIF
       ENDIF
 
@@ -193,12 +193,12 @@ C    CALCUL DU SEUIL (k0 DANS R7.01.32) ET DE ALPHA
      &          DEUXMU*(1.0D0 - GT + (1.0D0 - GC)*NU**2/ALFMC)
 
         SEUIL = SEUIL/(2.0D0*(LAMBDA*(1.0D0-2.0D0*NU) + DEUXMU))**2
-        SEUIL = SEUIL*SYT**2
+        SEUIL = SEUIL*NYT**2
 
         IF (SEUIL .NE. 0.D0) THEN
           ALPHA = LAMF*(1.0D0-NUF)**2 + DEUMUF
           ALPHA = ALPHA/(2.0D0*(LAMF*(1.0D0-NUF) + DEUMUF)**2)
-          ALPHA = ALPHA*(1.0D0 - GF)*SYF**2/SEUIL
+          ALPHA = ALPHA*(1.0D0 - GF)*MYF**2/SEUIL
         ELSE
           CALL U2MESR('F','ALGORITH6_3',0,RMESG)
         END IF

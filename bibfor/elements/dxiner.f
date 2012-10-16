@@ -5,7 +5,7 @@
       REAL*8             XYZG1(3,*), RHO, EPAIS, MASS, CDG(*), INERTI(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C     ---------------
 C-----------------------------------------------------------------------
       INTEGER I ,IDEC ,IDFDX ,IDFDY ,INO ,IPG ,IPOIDS 
       INTEGER IVF ,J ,JDEC ,JGANO ,JNO ,K ,KDEC 
-      INTEGER LDEC ,NDIM ,NNO ,NNOS ,NPG1 
+      INTEGER LDEC ,NDIM ,NNO ,NNOS ,NPG1, IRET
       REAL*8 AIRE ,AXG ,AXGGAU ,AXL ,AXLGAU ,AXX ,AXXGAU 
       REAL*8 AXY ,AXYGAU ,AYG ,AYGGAU ,AYL ,AYLGAU ,AYY 
       REAL*8 AYYGAU ,AZG ,AZGGAU ,DOUZE ,R8PREM ,ROEP ,S1 
@@ -73,7 +73,7 @@ C     ---------------
       IF ( NNOE .EQ. 3 ) THEN
          CALL DXTPGL ( XYZG1 , PGL )
       ELSEIF( NNOE .EQ. 4 ) THEN
-         CALL DXQPGL ( XYZG1 , PGL )
+         CALL DXQPGL ( XYZG1 , PGL, 'S', IRET )
       ENDIF
 C
 C --- DETERMINATION DES COORDONNEES DES NOEUDS DANS LE REPERE LOCAL :

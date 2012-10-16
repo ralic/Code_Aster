@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE HARMONIQUE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,24 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                   _F(GROUP_MA='ROTOR',
                                      DRZ=0.0,),),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+balou = 0.05;
+
+
+FUN=DEFI_CONSTANTE(VALE=1.0,);
+NTRIM = 15000.0;
+
+FREQ = (NTRIM / 60.0);
+
+OM = ((FREQ * 2) * pi);
+
+bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='N_DIS2',
+                                      FY=(balou * (OM ** 2)),),);
+
+bal_FX=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='N_DIS2',
+                                      FX=(balou * (OM ** 2)),),);
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
                 CHARGE=BLOQUAGE,
@@ -109,19 +126,16 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                            _F(MATRICE=CO('GYRO'),
                               OPTION='MECA_GYRO',),
                            _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("bal_Yass"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=bal_FY),
+                           _F(VECTEUR=CO("bal_Xass"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=bal_FX),
+                           ),
+            );
 
-
-
-balou = 0.05;
-
-
-FUN=DEFI_CONSTANTE(VALE=1.0,);
-NTRIM = 15000.0;
-
-FREQ = (NTRIM / 60.0);
-
-OM = ((FREQ * 2) * pi);
 
 
 AMOGYRO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYRO,
@@ -141,27 +155,6 @@ MQ_SO=MODE_ITER_SIMULT( INFO=1,
                                     STURM='OUI',
                                     SEUIL=9.9999999999999995E-07),
                         )
-
-
-bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
-                      FORCE_NODALE=_F(GROUP_NO='N_DIS2',
-                                      FY=(balou * (OM ** 2)),),);
-
-bal_FX=AFFE_CHAR_MECA(MODELE=MODELE,
-                      FORCE_NODALE=_F(GROUP_NO='N_DIS2',
-                                      FX=(balou * (OM ** 2)),),);
-
-bal_FYe=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                       CHARGE=bal_FY,);
-
-bal_FXe=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                       CHARGE=bal_FX,);
-
-bal_Yass=ASSE_VECTEUR(VECT_ELEM=bal_FYe,
-                      NUME_DDL=NUMEDDL,);
-
-bal_Xass=ASSE_VECTEUR(VECT_ELEM=bal_FXe,
-                      NUME_DDL=NUMEDDL,);
 
 DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_MASS=MASSE,
@@ -228,9 +221,3 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-173.921320614,
               )
 
 FIN();
-
-
-
-
-
-

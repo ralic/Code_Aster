@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 06/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -95,7 +95,7 @@ CHAR=AFFE_CHAR_MECA(     MODELE=MO,
 #                        RESOLUTION
 #---------------------------------------------------------------------
 #
-MACRO_MATR_ASSE(      MODELE=MO,
+ASSEMBLAGE(      MODELE=MO,
                     CARA_ELEM=CAR_ELE,
                    CHAM_MATER=AFFMAT,
                        CHARGE=CHAR,
@@ -113,7 +113,6 @@ MODES=MODE_ITER_SIMULT(      MATR_RIGI=K,
                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ = 9)
                           )
-
 
 #
 #---------------------------------------------------------------------
@@ -199,9 +198,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 FIN()
 #
 #
-
-
-
-
-
-

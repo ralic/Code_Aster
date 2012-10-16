@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -576,6 +576,20 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
       GROUP_MA_SEG2        = SIMP(statut='f',typ=grma,max=1),
       FREQ_EXTR            = SIMP(statut='o',typ='R',max=1),
       UNITE_RESU_IMPE      = SIMP(statut='f',typ='I',defaut=30),
+   ),
+
+#============================================================================
+   MASS_AJOU            = FACT(statut='f',max='**',
+      GROUP_MA             = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**',
+         fr="Surface servant à répartir les caractéristiques des discrets"),
+      GROUP_MA_POI1        = SIMP(statut='o',typ=grma,validators=NoRepeat(),max=1,
+         fr="Mailles de type point correspondant aux discrets"),
+      FONC_GROUP           = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+      #REPERE               = SIMP(statut='f',typ='TXM',into=("LOCAL","GLOBAL") ),
+      #Z0                   = SIMP(statut='f',typ='R',defaut= 0.E+0),
+      #VALE                 = SIMP(statut='f',typ='R',max='**',
+
+      #UNITE                = SIMP(statut='f',typ='I',val_min=1),
    ),
 
 #============================================================================

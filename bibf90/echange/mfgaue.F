@@ -1,10 +1,10 @@
       SUBROUTINE MFGAUE( FID, TYPGEO, REFCOO, MODECO, NGAUSS,
-     &                   GSCOO, WG, LOCNAME, NDIM, CRET)
+     &                   GSCOO, WG, LOCNAME, NDIM, NOMASU, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFGAUE ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFGAUE ECHANGE  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -22,7 +22,7 @@
       IMPLICIT NONE
       INTEGER FID,TYPGEO,MODECO,NGAUSS,CRET,NDIM
       REAL*8 REFCOO(*),GSCOO(*),WG(*)
-      CHARACTER*(*) LOCNAME
+      CHARACTER*(*) LOCNAME,NOMASU
 #ifdef _DISABLE_MED
       CALL U2MESS('F','FERMETUR_2')
 #else
@@ -38,11 +38,11 @@
       NGAUS4 = NGAUSS
       NDIM4  = NDIM
       CALL MLCLOW( FID4, LOCNAME, TYPGE4, NDIM4, REFCOO, MODE_4,
-     &             NGAUS4, GSCOO, WG, '', '', CRET4)
+     &             NGAUS4, GSCOO, WG, '', NOMASU, CRET4)
       CRET = CRET4
 #else
       CALL MLCLOW( FID, LOCNAME, TYPGEO, NDIM, REFCOO, MODECO,
-     &             NGAUSS, GSCOO, WG, '', '', CRET)
+     &             NGAUSS, GSCOO, WG, '', NOMASU, CRET)
 #endif
 ! END MED
 #endif

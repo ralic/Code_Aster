@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med Messages  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -375,6 +375,11 @@ cata_msg = {
 
 63 : _(u"""
   -> Le mot clé "INFO_MAILLAGE" est réservé au format MED.
+"""),
+
+64 : _(u"""
+  -> Le CARA_ELEM fournit à IMPR_RESU (%(k1)s) est différent de celui lu
+     dans le résultat a imprimer (%(k2)s). Cela n'est pas autorisé.
 """),
 
 65 : _(u"""

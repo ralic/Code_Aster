@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
 # sdld02e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,7 +130,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MO,
 
 # --------------------------------------------------------------------
 
-MACRO_MATR_ASSE(MODELE=MO,
+ASSEMBLAGE(MODELE=MO,
                 CARA_ELEM=CARELEM,
                 CHARGE=CH,
                 NUME_DDL=CO('NUM'),
@@ -172,7 +172,6 @@ FREQ=MODE_ITER_INV(MATR_RIGI=MATASSR,
                    CALC_FREQ=_F(OPTION='AJUSTE',
                                 FREQ=(5.,10.,15.,20.,24.,27.,30.,32.,),),
                    CALC_MODE=_F(OPTION='DIRECT',),);
-
 
 FREQ=NORM_MODE(reuse =FREQ,
                MODE=FREQ,
@@ -742,4 +741,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 FIN();
 
-#

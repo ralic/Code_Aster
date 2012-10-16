@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE ELANCEE, ENCASTREE-LIBRE, REPLIEE SUR ELLE-MEME
 # sdll02b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -194,6 +194,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           CHAM_NO=(_F(NOEUD='B',
                       CRITERE='RELATIF',
                       NOM_CMP='DY',
+                      TOLE_MACHINE=5.e-4,   #TODO variabilite
                       PRECISION=0.02,
                       CHAM_GD=MODE12,
                       VALE_CALC=-0.707108931,
@@ -210,6 +211,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    _F(NOEUD='B',
                       CRITERE='RELATIF',
                       NOM_CMP='DY',
+                      TOLE_MACHINE=5.e-4,   #TODO variabilite
                       PRECISION=0.040000000000000001,
                       CHAM_GD=MODE22,
                       VALE_CALC=0.707102141,
@@ -244,6 +246,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                       NOM_CMP='DY',
                       PRECISION=0.02,
                       CHAM_GD=MODE42,
+                      TOLE_MACHINE=1.e-5,
                       VALE_CALC=-0.370146882,
                       VALE_REFE=-0.37,
                       REFERENCE='NON_DEFINI',),
@@ -252,6 +255,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                       NOM_CMP='DY',
                       PRECISION=0.02,
                       CHAM_GD=MODE42,
+                      TOLE_MACHINE=1.e-5,
                       VALE_CALC=0.523468389,
                       VALE_REFE=0.52300000000000002,
                       REFERENCE='NON_DEFINI',),
@@ -300,6 +304,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=0.084511993,
                    VALE_REFE=0.084364300000000003,
                    REFERENCE='NON_DEFINI',
+                   TOLE_MACHINE=1.e-4,   #TODO variabilite
                    PRECISION=2.3999999999999998E-3,),
                 _F(NUME_ORDRE=2,
                    PARA='MASS_GENE',
@@ -307,6 +312,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=0.091503742,
                    VALE_REFE=0.091677499999999995,
                    REFERENCE='NON_DEFINI',
+                   TOLE_MACHINE=1.e-4,   #TODO variabilite
                    PRECISION=2.5000000000000001E-3,),
                 _F(NUME_ORDRE=3,
                    PARA='RIGI_GENE',

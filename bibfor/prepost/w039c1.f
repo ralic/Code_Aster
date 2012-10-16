@@ -6,7 +6,7 @@
       INTEGER IFI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C
       INTEGER JDESC,JVALE,NGEDIT,NUGD,NCMPMX,KGEDIT,JZONES,KZONE,KCMP
       CHARACTER*19 CART1,CEL2,CES2
       CHARACTER*64 NOMMED
-      CHARACTER*8 KBID,MA,TSCA,NOMGD,MODELE,TYPECH
+      CHARACTER*8 KBID,MA,TSCA,NOMGD,MODELE,TYPECH,SDCARM
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -160,8 +160,9 @@ C     -------------------------
         NOMMED=CEL2
         TYPECH='ELEM'
         MODELE=' '
+        SDCARM=' '
         CALL IRCEME(IFI,NOMMED,CEL2,TYPECH,MODELE,0,' ',' ',
-     &        ' ',0,0.D0,0,0,0,IRET)
+     &        ' ',0,0.D0,0,0,0,SDCARM,IRET)
         CALL ASSERT(IRET.EQ.0)
 
 

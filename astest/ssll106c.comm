@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_6M MACRO_ELAS_MULT
 # ssll106c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -1021,7 +1021,7 @@ RIGI=CALC_MATR_ELEM(
 
 NUM=NUME_DDL(  MATR_RIGI=RIGI )
 
-MACRO_MATR_ASSE(
+ASSEMBLAGE(
                      MODELE=MO,
                       CARA_ELEM=CAREL,
                       CHARGE=(CHAR0,),
@@ -1039,7 +1039,6 @@ MODES=MODE_ITER_SIMULT(
                   NMAX_FREQ = 13,
                   OPTION = 'CENTRE', FREQ = 1.)
                         )
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -1144,9 +1143,3 @@ FIN()
 #
 #
 #
-
-
-
-
-
-

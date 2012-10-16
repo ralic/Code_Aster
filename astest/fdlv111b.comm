@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ABSORPTION D'UNE ONDE DE PRESSION DANS UNE COLONNE FLUIDE
 # fdlv111b.para = tps_job 510 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,7 +156,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=4889.6199999999999,
                          CRITERE='ABSOLU',
                          VALE_PARA=1.1559999999999999,
                          REFERENCE='ANALYTIQUE',
-                         TOLE_MACHINE=1.e-4,
+                         TOLE_MACHINE=1.e-3,
                          PRECISION=1.0,
                          FONCTION=PN10,),
                       ),

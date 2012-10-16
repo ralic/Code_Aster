@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # RESPONSABLE ADBHHPM P.MASSIN
 # TITRE  : MODES DE VIBRATION D'UN COUDE DE TUYAUTERIE MINCE
 # sdll14c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -97,7 +97,7 @@ COND_LIM=AFFE_CHAR_MECA(     MODELE=MODELE,DDL_IMPO=(
 #---------------------------------------------------------------------
 #                        RESOLUTION
 #---------------------------------------------------------------------
-MACRO_MATR_ASSE(        MODELE=MODELE,
+ASSEMBLAGE(        MODELE=MODELE,
                       CARA_ELEM=CARELEM,
                      CHAM_MATER=AFF_MAT,
                          CHARGE=(COND_LIM,),
@@ -115,7 +115,6 @@ MOD_CAL=MODE_ITER_SIMULT(      MATR_RIGI=K,
                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ = 4)
                          )
-
 
 # CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
 IMPR_RESU(FORMAT='MED', UNITE=81,
@@ -172,9 +171,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 FIN()
 #
 #
-
-
-
-
-
-

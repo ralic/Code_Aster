@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
 # sdnv106a.para = tps_job 900 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,7 +89,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 #
 #  Calcul des modes sur le modele rigide
 #
-MACRO_MATR_ASSE ( MODELE = MO,
+ASSEMBLAGE ( MODELE = MO,
                   CHAM_MATER=CHMAT,
                   CHARGE     = (LIAISON,),
                   NUME_DDL   = CO('NUMSTA'),
@@ -103,11 +103,10 @@ MODED=MODE_ITER_SIMULT(MATR_RIGI=RIGSTA,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=95,),
                        VERI_MODE=_F(STOP_ERREUR='NON',),);
-
 #
 # Calcul des modes sur le modele souple
 #
-MACRO_MATR_ASSE ( MODELE = MO,
+ASSEMBLAGE ( MODELE = MO,
                   CHAM_MATER=CHMAT2,
                   CHARGE    = (LIAISON,),
                   NUME_DDL  = CO('NUMST2'),
@@ -121,7 +120,6 @@ MODE2=MODE_ITER_SIMULT(MATR_RIGI=RIGST2,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=95,),
                        VERI_MODE=_F(STOP_ERREUR='NON',));
-
 #
 # CALCUL AVEC SOLVEUR LINEAIRE MULT_FRONT
 REPONSE=STAT_NON_LINE(MODELE=MO,
@@ -306,7 +304,6 @@ REPONSEM=DYNA_NON_LINE( reuse=REPONSEM,
 #
 #  Frequence du premier mode pour le materiau elastique raide
 #  Valeur venant de MODE_ITER_SIMULT
-
 #
 freqel = 3.58128E-01
 #
@@ -693,9 +690,3 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 #
 FIN();
-
-
-
-
-
-

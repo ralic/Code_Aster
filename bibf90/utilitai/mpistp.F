@@ -1,6 +1,6 @@
       SUBROUTINE MPISTP( IMODE )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MPISTP UTILITAI  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MPISTP UTILITAI  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -36,25 +36,32 @@ C RESPONSABLE COURTOIS M.COURTOIS
 !-----------------------------------------------------------------------
 !
       INCLUDE 'aster_constant.h'
-      INTEGER   LOUT
+      INTEGER   LOUT, IMOD2
       CHARACTER *16 COMPEX
+      LOGICAL   GTSTAT, LABORT
 !
       CALL STSTAT(ST_ER_OTH)
+      LABORT = .NOT. GTSTAT(ST_EXCEPT)
 !
 !     S'IL FAUT FAIRE UN ABORT, ON FORCE IMODE=1
-      CALL ONERRF(' ', COMPEX, LOUT)
-      IF ( COMPEX(1:LOUT) .EQ. 'ABORT' ) THEN
-        IMODE = 1
+      IMOD2 = IMODE
+      IF ( LABORT ) THEN
+        CALL ONERRF(' ', COMPEX, LOUT)
+        IF ( COMPEX(1:LOUT) .EQ. 'ABORT' ) THEN
+          IMOD2 = 1
+        ENDIF
       ENDIF
 !
-      IF ( IMODE .EQ. 1 ) THEN
+      IF ( IMOD2 .EQ. 1 ) THEN
 #ifdef _USE_MPI
         CALL U2MESS('D', 'APPELMPI_99')
 #endif
         CALL JEFINI('ERREUR')
 !
-      ELSEIF ( IMODE .EQ. 2 ) THEN
-        CALL U2MESS('M', 'APPELMPI_95')
+      ELSEIF ( IMOD2 .EQ. 2 ) THEN
+        IF ( LABORT ) THEN
+          CALL U2MESS('M', 'APPELMPI_95')
+        ENDIF
 !
       ELSE
         CALL ASSERT(.FALSE.)

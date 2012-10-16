@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C.......................................................................
       IF (NNO.EQ.3) THEN
          CALL DXTPGL ( ZR(JGEOM), PGL )
       ELSE IF (NNO.EQ.4) THEN
-         CALL DXQPGL ( ZR(JGEOM), PGL )
+         CALL DXQPGL ( ZR(JGEOM), PGL, 'S', IRET )
       END IF
 
       LKIT = ZK16(ICOMPO)(1:7).EQ.'KIT_DDI'

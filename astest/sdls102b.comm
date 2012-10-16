@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE AUBE DE COMPRESSEUR ENCASTREE SUR UN BORD
 # sdls102b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,7 +53,7 @@ CHCAS1=AFFE_CHAR_MECA(  MODELE=MO,
            DDL_IMPO=_F(  GROUP_NO = 'BD',       DX = 0.,  DY = 0., DZ = 0.,
                                         DRX = 0., DRY = 0., DRZ = 0.) )
 
-MACRO_MATR_ASSE(   MODELE=MO,           CARA_ELEM=CARELEM,
+ASSEMBLAGE(   MODELE=MO,           CARA_ELEM=CARELEM,
                        CHARGE=CHCAS1,       CHAM_MATER=CHMAT,
                       NUME_DDL=CO("NUM"),MATR_ASSE=(
                 _F(  MATRICE = CO("MATASSR1"),  OPTION = 'RIGI_MECA'),
@@ -66,7 +66,6 @@ MACRO_MATR_ASSE(   MODELE=MO,           CARA_ELEM=CARELEM,
 MODE=MODE_ITER_INV(  MATR_RIGI=MATASSR1,      MATR_MASS=MATASSM1,
                      CALC_FREQ=_F(  FREQ = (80., 570.,))
                         )
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -122,9 +121,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #====================================================================
 FIN()
 #
-
-
-
-
-
-

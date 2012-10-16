@@ -3,7 +3,7 @@
      &                   PRECSH, NBRSSA, NBLAGR, SOLVEU, DET, IDET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,26 +23,49 @@ C ======================================================================
 C     DETERMINATION DE SHIFT(S), D'UNE MATRICE SHIFTEE, DE SA FACTORISEE
 C     DU NBRE DE PIVOTS NEGATIFS (POUR TEST DE STURM) VOIRE DU NBRE
 C     DE FREQ DANS UNE BANDE.
+C
 C     POUR ETAPE DE PRETRAITEMENTS DE MODE_ITER_SIMULT
 C     OPTION='CENTRE' --> OUTPUT: MATRICE SHIFTEE + SA FACTORISEE +
 C                         NPIVOT(1) + OMESHI
+C                         INPUT: INTENDANCE + OMEMIN
+C
 C     OPTION='BANDE'  --> OUTPUT: MATRICE SHIFTEE + SA FACTORISEE +
-C                         NPIVOT(1) + NBFREQ + OMEMIN + OMEMAX +
+C                         NPIVOT(1) + NBFREQ + OMEMIN/MAX + OMESHI +
 C                         AFFICHAGES VPECST
+C                         INPUT: INTENDANCE + OMEMIN/MAX
+C
+C     OPTION='BANDEA'  --> OUTPUT: MATRICE SHIFTEE + SA FACTORISEE +
+C                         NPIVOT(1) + OMEMIN/MAX + OMESHI + 
+C                         AFFICHAGES VPECST ENRICHIS + NBFREQ (JUSTE
+C                         POUR AFFICHAGE)
+C                         INPUT: INTENDANCE + OMEMIN/MAX + NBFREQ
+C
 C     OPTION='PLUS_PETITE'/'TOUT' --> OUTPUT: MATRICE SHIFTEE + SA FACTO
 C                         RISEE + NPIVOT(1) + OMESHI
+C                         INPUT: INTENDANCE
 C
 C     POUR ETAPE DE POST_TRAITEMENTS DE MODE_ITER_SIMULT
-C     OPTION='STURM'  --> OUTPUT: NBFREQ + OMEMIN + OMEMAX + PAS
-C                         AFFICHAGES VPECST
-C
-C     POUR INFO_MODE
-C     OPTION='STURMA' --> OUTPUT: NBFREQ + OMEMIN + OMEMAX +
-C                         AFFICHAGES VPECST
+C     OPTION='STURM'  --> OUTPUT: NBFREQ + OMEMIN/MAX + PAS VPECST
+C                         AFFICHAGES DEDIES EN AMONT
+C                         INPUT: INTENDANCE + OMEMIN/MAX
+C       
+C     POUR INFO_MODE + STURM AVEC LISTE DE FREQ OU CHAR_CRIT
+C     PREMIERE BANDE
+C     OPTION='STURML1' --> OUTPUT: NBFREQ + OMEMIN/MAX +
+C                         AFFICHAGES DEDIE VPECST + NPIVOT(2)
+C                         INPUT: INTENDANCE + OMEMIN/MAX
+C     BANDES SUIVANTES
+C     OPTION='STURMLN' --> OUTPUT: NBFREQ + OMEMIN/MAX +
+C                         AFFICHAGES DEDIE VPECST + NPIVOT(2)
+C                         INPUT: INTENDANCE + OMEMIN/MAX +
+C                         NPIVOT(1)=NPIVOT OMEMIN ET NPIVOT(2)=
+C                            NUMERO DE LA BANDE CONSIDEREE
+C                         OUTPUT:NPIVOT(2)=NPIVOT OMEMAX.
 C
 C     POUR ETAPE PRETRAITEMENT DE MODE_ITER_INV (AJUSTE/SEPARE)
-C     OPTION='STURMAD' --> OUTPUT: NBFREQ + OMEMIN + OMEMAX +
-C                     AFFICHAGES VPECST + DET(2) + IDET(2) + NPIVOT(2)
+C     OPTION='STURMAD' --> OUTPUT: NBFREQ + OMEMIN/MAX +
+C                     AFFICHAGES VPECST + DET(2)/IDET(2) + NPIVOT(2)
+C                          INPUT: INTENDANCE + OMEMIN/MAX
 C     ------------------------------------------------------------------
 C IN  OPTION  : TX : CHOIX DE L'OPTION (PLUS_PETITE,CENTRE,BANDE,STURM)
 C IN  TYPRES  : TX : TYPE DU CALCUL (DYNAMIQUE OU FLAMBEMENT)
@@ -55,8 +78,10 @@ C                      OU VALEUR DE DEPART POUR LES AUTRES OPTIONS
 C IN/OUT OMEMAX : R8 : VALEUR SUPERIEURE DE LA BANDE DE RECHERCHE
 C    OUT OMESHI : R8 : VALEUR DU SHIFT  DE LA MATRICE DE TRAVAIL
 C    OUT NBFREQ : IS : NOMBRE DE FREQUENCES DANS LA BANDE
-C    OUT NPIVOT : IS : VECTEUR NOMBRE DE PIVOTS NEGATIFS DE LA MATRICE
-C                      DE TRAVAIL FACTORISEE
+C IN/OUT NPIVOT : IS : VECTEUR NOMBRE DE PIVOTS NEGATIFS DE LA MATRICE
+C                      DE TRAVAIL FACTORISEE. 
+C                      ATTENTION PARAMETRE PARFOIS UTILISE
+C                      EN INPUT AVEC UN SENS DIFFERENT CF. OPTION.
 C IN  OMECOR : R8 : VALEUR DE LA PULSATION AU CARRE DEFINISSANT LES
 C                   MODES DE CORPS RIGIDE
 C IN  PRECSH : R8 : VALEUR DU DECALAGE DES SHIFTS QUAND LA MATRICE EST
@@ -84,241 +109,270 @@ C VARIABLES LOCALES
       CHARACTER*1  TYPEP
       CHARACTER*8  K8BID
       CHARACTER*16 CH16
-      INTEGER      NIV,IFM,NBESSA,IER,NBFMIN,NBFMAX,IBID
+      INTEGER      NIV,IFM,NBESSA,IER,NBFMIN,NBFMAX,IBID,IBANDE
       REAL*8       VALR,OMGMIN,OMGMAX,OMGSHI,FREQOM,RBID,PREC,OMGDEC
-      LOGICAL      CALDET,LDYN      
+      LOGICAL      CALDET,LDYNA      
 
       CALL INFNIV(IFM,NIV)
-      IDET=0
-      DET(1)=0.D0
-      DET(2)=0.D0
-      IDET(1)=0
-      IDET(2)=0
-      NPIVOT(1)=0
-      NPIVOT(2)=0
+C MAUVAISE VALEUR DE OPTION
+      IF ((OPTION.NE.'CENTRE').AND.(OPTION.NE.'BANDE').AND.
+     &    (OPTION.NE.'BANDEA').AND.(OPTION.NE.'PLUS_PETITE').AND.
+     &    (OPTION.NE.'TOUT').AND.(OPTION.NE.'STURM').AND.
+     &    (OPTION.NE.'STURML1').AND.(OPTION.NE.'STURMLN').AND.
+     &    (OPTION.NE.'STURMAD')) CALL ASSERT(.FALSE.)
+      DET(1)=-9999.D0
+      DET(2)=-9999.D0
+      IDET(1)=-9999
+      IDET(2)=-9999
+      IBANDE=1
+      IF (OPTION.NE.'STURMLN') THEN
+        NPIVOT(1)=-9999
+        NPIVOT(2)=-9999
+      ELSE
+        IBANDE=NPIVOT(2)
+        NPIVOT(2)=-9999
+      ENDIF
+      IF (OPTION.EQ.'STURML1') IBANDE=1
       IF (OPTION.EQ.'STURMAD') THEN
         CALDET=.TRUE.
       ELSE
         CALDET=.FALSE.
       ENDIF
       IF (TYPRES.EQ.'DYNAMIQUE') THEN
-        LDYN=.TRUE.
+        LDYNA=.TRUE.
       ELSE
-        LDYN=.FALSE.
+        LDYNA=.FALSE.
       ENDIF
-      IF (OPTION(1:5).NE.'STURM') WRITE(IFM,900)OPTION
-
+      IF (OPTION(1:5).NE.'STURM') THEN
+        IF (OPTION(1:5).EQ.'BANDE') THEN
+          WRITE(IFM,900)'BANDE'
+        ELSE
+          WRITE(IFM,900)OPTION
+        ENDIF
+      ENDIF
 C     ------------------------------------------------------------------
 C     ------------------------ OPTION CENTRE ---------------------------
 C     ------------------------------------------------------------------
 
       IF (OPTION.EQ.'CENTRE') THEN
 
-         OMGSHI = OMEMIN
-         NBESSA = 0
-         PREC=PRECSH
- 10      CONTINUE
-         IER=0
-         CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,RBID,
-     &               IBID,NPIVOT(1),IER,SOLVEU,.FALSE.,.TRUE.)
-         IF (IER.NE.0) THEN
-            NBESSA= NBESSA+1
+        OMGSHI = OMEMIN
+        NBESSA = 0
+        PREC=PRECSH
+ 10     CONTINUE
+        IER=0
+        CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,RBID,
+     &              IBID,NPIVOT(1),IER,SOLVEU,.FALSE.,.TRUE.)
+        IF (IER.NE.0) THEN
+          NBESSA= NBESSA+1
+          IF (NBESSA.LE.NBRSSA) THEN
+            IF (ABS(OMGSHI).LT.OMECOR) THEN
+              OMGSHI=OMECOR
+              IF (LDYNA) THEN
+                VALR=FREQOM(OMGSHI)
+              ELSE
+                VALR=OMGSHI
+              ENDIF
+              IF (NIV.GE.1) WRITE(IFM,1300)VALR
+C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
+              NBESSA=NBRSSA
+            ELSE
+              OMGDEC=MAX(OMECOR,PREC*ABS(OMGSHI))
+              OMGSHI=OMGSHI+OMGDEC
+              IF (LDYNA) THEN
+                VALR=FREQOM(OMGSHI)
+              ELSE
+                VALR=OMGSHI
+              ENDIF
+              IF (NIV.GE.1) THEN
+                WRITE(IFM,1400)(PREC*100.D0)
+                WRITE(IFM,1500)VALR
+              ENDIF
+              PREC=2.D0*PREC
+            ENDIF
+            GOTO 10
+          ELSE
+            IF (LDYNA) THEN
+              VALR=FREQOM(OMGSHI)
+            ELSE
+              VALR=OMGSHI
+            ENDIF
+            CALL U2MESG('F', 'ALGELINE3_65',0,' ',0,0,1,VALR)
+          ENDIF
+
+        ENDIF
+        OMESHI=OMGSHI
+        IF (NIV.GE.1) THEN
+          IF (LDYNA) THEN
+            WRITE (IFM,1000)FREQOM(OMESHI)
+          ELSE
+            WRITE (IFM,1001)OMESHI
+          ENDIF
+        ENDIF
+
+C     ------------------------------------------------------------------
+C     ------------------------ OPTION BANDE* OU STURM** ----------------
+C     ------------------------------------------------------------------
+
+      ELSE IF ((OPTION(1:5).EQ.'BANDE').OR.
+     &         (OPTION(1:5).EQ.'STURM')) THEN
+
+        OMGMIN=OMEMIN
+        IF (OPTION.EQ.'STURMLN') THEN
+          NBFMIN=NPIVOT(1)
+        ELSE IF (OPTION.NE.'BANDEA') THEN        
+          NBESSA=0
+          PREC=PRECSH
+ 21       CONTINUE
+          IER=0
+          CALL VPSTUR(LRAIDE,OMGMIN,LMASSE,LDYNAM,DET(1),
+     &                IDET(1),NPIVOT(1),IER,SOLVEU,CALDET,.FALSE.)
+          NBFMIN=NPIVOT(1)
+          IF (IER.NE.0) THEN
+            NBESSA=NBESSA+1
             IF (NBESSA.LE.NBRSSA) THEN
-              IF (ABS(OMGSHI).LT.OMECOR) THEN
-                OMGSHI=OMECOR
-                IF (LDYN) THEN
-                  VALR=FREQOM(OMGSHI)
+              IF (ABS(OMGMIN).LT.OMECOR) THEN
+                OMGMIN=-OMECOR
+                IF (LDYNA) THEN
+                  VALR=FREQOM(OMGMIN)
                 ELSE
-                  VALR=OMGSHI
+                  VALR=OMGMIN
                 ENDIF
-                IF (NIV.GE.1) WRITE(IFM,1300)VALR
+                IF (NIV.GE.1) WRITE(IFM,1600)VALR
 C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                 NBESSA=NBRSSA
               ELSE
-                OMGDEC=SIGN(1.D0,OMGSHI)*MAX(OMECOR,PREC*OMGSHI)
-                OMGSHI=OMGSHI+OMGDEC
-                IF (LDYN) THEN
+                OMGDEC=MAX(OMECOR,PREC*ABS(OMGMIN))
+                OMGMIN=OMGMIN-OMGDEC
+                IF (LDYNA) THEN
+                  VALR=FREQOM(OMGMIN)
+                ELSE
+                  VALR=OMGMIN
+                ENDIF
+                IF (NIV.GE.1) WRITE(IFM,1700)(PREC*100.D0),VALR
+                PREC=2.D0*PREC
+              ENDIF
+              GOTO 21
+            ELSE
+              CALL U2MESS('A','ALGELINE3_66')
+            ENDIF
+          ENDIF
+        ENDIF
+        OMEMIN=OMGMIN
+        IF (OMEMIN.GE.OMEMAX) CALL U2MESS('F','ALGELINE3_68')
+
+        OMGMAX=OMEMAX
+        IF (OPTION.NE.'BANDEA') THEN
+          NBESSA=0
+          PREC=PRECSH
+ 22       CONTINUE
+          IER=0
+          CALL VPSTUR(LRAIDE,OMGMAX,LMASSE,LDYNAM,DET(2),
+     &                IDET(2),NPIVOT(2),IER,SOLVEU,CALDET,.FALSE.)
+          NBFMAX=NPIVOT(2)
+          IF (IER.NE.0) THEN
+            NBESSA=NBESSA+1
+            IF (NBESSA.LE.NBRSSA) THEN
+              IF (ABS(OMGMAX).LT.OMECOR) THEN
+                OMGMAX=OMECOR
+                IF (LDYNA) THEN
+                  VALR=FREQOM(OMGMAX)
+                ELSE
+                  VALR=OMGMAX
+                ENDIF
+                IF (NIV.GE.1) WRITE(IFM,1800)VALR
+C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
+                 NBESSA=NBRSSA
+              ELSE
+                OMGDEC=MAX(OMECOR,PREC*ABS(OMGMAX))
+                OMGMAX=OMGMAX+OMGDEC
+                IF (LDYNA) THEN
+                  VALR=FREQOM(OMGMAX)
+                ELSE
+                  VALR=OMGMAX
+                ENDIF
+                IF (NIV.GE.1) WRITE(IFM,1900)(PREC*100.D0),VALR
+                PREC=2.D0*PREC
+              ENDIF
+              GOTO 22
+            ELSE
+              CALL U2MESS('A','ALGELINE3_67')
+            ENDIF
+          ENDIF
+        ENDIF
+        OMEMAX=OMGMAX
+        K8BID=' '
+        IF ((OPTION.EQ.'BANDE').OR.(OPTION.EQ.'STURMAD')) THEN
+          TYPEP='R'
+        ELSE IF (OPTION.EQ.'STURM') THEN
+          TYPEP='S'
+        ELSE IF ((OPTION.EQ.'STURML1').OR.(OPTION.EQ.'STURMLN')) THEN
+          TYPEP='D'
+          NBFREQ=IBANDE
+        ELSE IF (OPTION.EQ.'BANDEA') THEN
+          TYPEP='F'
+        ENDIF         
+        CALL VPECST(IFM,TYPRES,OMGMIN,OMGMAX,NBFMIN,NBFMAX,
+     &              NBFREQ,NBLAGR,TYPEP,K8BID,0.D0,DCMPLX(0.D0,0.D0))
+
+        OMGSHI=(OMGMAX+OMGMIN)*0.5D0
+        IF (OPTION(1:5).EQ.'BANDE') THEN
+C          --- CENTRAGE DE L INTERVALLE ---
+          NBESSA=0
+          PREC=PRECSH
+ 23       CONTINUE
+          IER=0
+          CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,RBID,
+     &                IBID,NPIVOT(1),IER,SOLVEU,.FALSE.,.TRUE.)
+          IF (IER.NE.0) THEN
+            NBESSA=NBESSA+1
+            IF (NBESSA.LE.NBRSSA) THEN
+              IF (ABS(OMGSHI).LT.OMECOR) THEN
+                OMGSHI=OMECOR
+                IF (LDYNA) THEN
                   VALR=FREQOM(OMGSHI)
                 ELSE
                   VALR=OMGSHI
                 ENDIF
-                IF (NIV.GE.1) THEN
-                  WRITE(IFM,1400)(PREC*100.D0)
-                  WRITE(IFM,1500)VALR
+                IF (NIV.GE.1) WRITE(IFM,2000)OMGSHI
+C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
+                NBESSA=NBRSSA
+              ELSE
+                OMGDEC=MAX(OMECOR,PREC*ABS(OMGSHI))
+                OMGSHI=OMGSHI-OMGDEC
+                IF (LDYNA) THEN
+                  VALR=FREQOM(OMGSHI)
+                ELSE
+                  VALR=OMGSHI
                 ENDIF
+                IF (NIV.GE.1) WRITE(IFM,2100)(PREC*100.D0),VALR
                 PREC=2.D0*PREC
               ENDIF
-              GOTO 10
+              GOTO 23
             ELSE
-              IF (LDYN) THEN
+              IF (LDYNA) THEN
                 VALR=FREQOM(OMGSHI)
               ELSE
                 VALR=OMGSHI
               ENDIF
               CALL U2MESG('F', 'ALGELINE3_65',0,' ',0,0,1,VALR)
             ENDIF
-
-         ENDIF
-         OMESHI=OMGSHI
-         IF (NIV.GE.1) THEN
-           IF (LDYN) THEN
-             WRITE (IFM,1000)FREQOM(OMESHI)
-           ELSE
-             WRITE (IFM,1001)OMESHI
-           ENDIF
-         ENDIF
-
-C     ------------------------------------------------------------------
-C     ------------------------ OPTION BANDE OU STURM** -----------------
-C     ------------------------------------------------------------------
-
-      ELSE IF ((OPTION.EQ.'BANDE').OR.(OPTION(1:5).EQ.'STURM')) THEN
-         
-         OMGMIN = OMEMIN
-         NBESSA = 0
-         PREC=PRECSH
- 21      CONTINUE
-         IER=0
-         CALL VPSTUR(LRAIDE,OMGMIN,LMASSE,LDYNAM,DET(1),
-     &               IDET(1),NPIVOT(1),IER,SOLVEU,CALDET,.FALSE.)
-         NBFMIN=NPIVOT(1)
-         IF (IER.NE.0) THEN
-           NBESSA=NBESSA+1
-           IF (NBESSA.LE.NBRSSA) THEN
-             IF (ABS(OMGMIN).LT.OMECOR) THEN
-               OMGMIN=-OMECOR
-               IF (LDYN) THEN
-                 VALR=FREQOM(OMGMIN)
-               ELSE
-                 VALR=OMGMIN
-               ENDIF
-               IF (NIV.GE.1) WRITE(IFM,1600)VALR
-C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
-                NBESSA=NBRSSA
-             ELSE
-               OMGDEC=-SIGN(1.D0,OMGMIN)*MAX(OMECOR,PREC*OMGMIN)
-               OMGMIN=OMGMIN+OMGDEC
-               IF (LDYN) THEN
-                 VALR=FREQOM(OMGMIN)
-               ELSE
-                 VALR=OMGMIN
-               ENDIF
-               IF (NIV.GE.1) WRITE(IFM,1700)(PREC*100.D0),VALR
-               PREC=2.D0*PREC
-             ENDIF
-             GOTO 21
-           ELSE
-             CALL U2MESS('A','ALGELINE3_66')
-           ENDIF
-         ENDIF
-         OMEMIN=OMGMIN
-
-         OMGMAX=OMEMAX
-         NBESSA=0
-         PREC=PRECSH
- 22      CONTINUE
-         IER=0
-         CALL VPSTUR(LRAIDE,OMGMAX,LMASSE,LDYNAM,DET(2),
-     &               IDET(2),NPIVOT(2),IER,SOLVEU,CALDET,.FALSE.)
-         NBFMAX=NPIVOT(2)
-         IF (IER.NE.0) THEN
-           NBESSA=NBESSA+1
-           IF (NBESSA.LE.NBRSSA) THEN
-             IF (ABS(OMGMAX).LT.OMECOR) THEN
-               OMGMAX=OMECOR
-               IF (LDYN) THEN
-                 VALR=FREQOM(OMGMAX)
-               ELSE
-                 VALR=OMGMAX
-               ENDIF
-               IF (NIV.GE.1) WRITE(IFM,1800)VALR
-C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
-                NBESSA=NBRSSA
-             ELSE
-               OMGDEC=SIGN(1.D0,OMGMAX)*MAX(OMECOR,PREC*OMGMAX)
-               OMGMAX=OMGMAX+OMGDEC
-               IF (LDYN) THEN
-                 VALR=FREQOM(OMGMAX)
-               ELSE
-                 VALR=OMGMAX
-               ENDIF
-               IF (NIV.GE.1) WRITE(IFM,1900)(PREC*100.D0),VALR
-               PREC=2.D0*PREC
-             ENDIF
-             GOTO 22
-           ELSE
-             CALL U2MESS('A','ALGELINE3_67')
-           ENDIF
-         ENDIF
-         OMEMAX=OMGMAX
-         K8BID=' '
-         IF ((OPTION.EQ.'BANDE').OR.(OPTION.EQ.'STURMA')
-     &        .OR.(OPTION.EQ.'STURMAD')) THEN
-           TYPEP='R'
-         ELSE IF (OPTION.EQ.'STURM') THEN
-           TYPEP='S'
-         ENDIF         
-         CALL VPECST(IFM,TYPRES,OMGMIN,OMGMAX,NBFMIN,NBFMAX,
-     &               NBFREQ,NBLAGR,TYPEP,K8BID,0.D0,DCMPLX(0.D0,0.D0))
-
-         IF (OPTION.EQ.'BANDE') THEN
-C          --- CENTRAGE DE L INTERVALLE ---
-           OMGSHI=(OMGMAX+OMGMIN)*0.5D0
-           NBESSA=0
-           PREC=PRECSH
- 23        CONTINUE
-           IER=0
-           CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,RBID,
-     &                 IBID,NPIVOT(1),IER,SOLVEU,.FALSE.,.TRUE.)
-           IF (IER.NE.0) THEN
-             NBESSA=NBESSA+1
-             IF (NBESSA.LE.NBRSSA) THEN
-               IF (ABS(OMGSHI).LT.OMECOR) THEN
-                 OMGSHI=OMECOR
-                 IF (LDYN) THEN
-                   VALR=FREQOM(OMGSHI)
-                 ELSE
-                   VALR=OMGSHI
-                 ENDIF
-                 IF (NIV.GE.1) WRITE(IFM,2000)OMGSHI
-C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
-                NBESSA=NBRSSA
-               ELSE
-                 OMGDEC=-SIGN(1.D0,OMGSHI)*MAX(OMECOR,PREC*OMGSHI)
-                 OMGSHI=OMGSHI+OMGDEC
-                 IF (LDYN) THEN
-                   VALR=FREQOM(OMGSHI)
-                 ELSE
-                   VALR=OMGSHI
-                 ENDIF
-                 IF (NIV.GE.1) WRITE(IFM,2100)(PREC*100.D0),VALR
-                 PREC=2.D0*PREC
-               ENDIF
-               GOTO 23
-             ELSE
-               IF (LDYN) THEN
-                 VALR=FREQOM(OMGSHI)
-               ELSE
-                 VALR=OMGSHI
-               ENDIF
-               CALL U2MESG('F', 'ALGELINE3_65',0,' ',0,0,1,VALR)
-             ENDIF
-           ENDIF
-           OMESHI=OMGSHI
-         ENDIF
+          ENDIF
+        ENDIF
+        OMESHI=OMGSHI
          
 C          --- AFFICHAGE COMMUN ---
-         IF ((NIV.GE.1).AND.(OPTION.EQ.'BANDE')) THEN
-           IF (LDYN) THEN
-             WRITE(IFM,2200)FREQOM(OMGMIN)
-             WRITE(IFM,2300)FREQOM(OMGMAX)
-             IF (OPTION.EQ.'BANDE') WRITE(IFM,1000)FREQOM(OMESHI)
-           ELSE
-             WRITE(IFM,2201)OMGMIN
-             WRITE(IFM,2301)OMGMAX
-             IF (OPTION.EQ.'BANDE') WRITE(IFM,1001)OMESHI
+        IF ((NIV.GE.1).AND.(OPTION(1:5).EQ.'BANDE')) THEN
+          IF (LDYNA) THEN
+            WRITE(IFM,2200)FREQOM(OMGMIN)
+            WRITE(IFM,2300)FREQOM(OMGMAX)
+            IF (OPTION(1:5).EQ.'BANDE') WRITE(IFM,1000)FREQOM(OMESHI)
+          ELSE
+            WRITE(IFM,2201)OMGMIN
+            WRITE(IFM,2301)OMGMAX
+            IF (OPTION(1:5).EQ.'BANDE') WRITE(IFM,1001)OMESHI
           ENDIF
-         ENDIF
+        ENDIF
 
 
 C     ------------------------------------------------------------------
@@ -327,55 +381,55 @@ C     ------------------------------------------------------------------
 
       ELSE IF ((OPTION.EQ.'PLUS_PETITE').OR.(OPTION.EQ.'TOUT')) THEN
 
-         OMGSHI = 0.D0
-         NBESSA = 0
-         PREC=PRECSH
- 30      CONTINUE
-         IER=0
-         CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,RBID,
-     &               IBID,NPIVOT(1),IER,SOLVEU,.FALSE.,.TRUE.)
-         IF (IER.NE.0) THEN
-           NBESSA=NBESSA+1
-           IF (NBESSA.LE.NBRSSA) THEN
-             IF (ABS(OMGSHI).LT.OMECOR) THEN
-               OMGSHI=-OMECOR
-               IF (LDYN) THEN
-                 VALR=FREQOM(OMGSHI)
-               ELSE
-                 VALR=OMGSHI
-               ENDIF
-               IF (NIV.GE.1) WRITE(IFM,1800)VALR
+        OMGSHI = 0.D0
+        NBESSA = 0
+        PREC=PRECSH
+ 30     CONTINUE
+        IER=0
+        CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,RBID,
+     &              IBID,NPIVOT(1),IER,SOLVEU,.FALSE.,.TRUE.)
+        IF (IER.NE.0) THEN
+          NBESSA=NBESSA+1
+          IF (NBESSA.LE.NBRSSA) THEN
+            IF (ABS(OMGSHI).LT.OMECOR) THEN
+              OMGSHI=-OMECOR
+              IF (LDYNA) THEN
+                VALR=FREQOM(OMGSHI)
+              ELSE
+                VALR=OMGSHI
+              ENDIF
+              IF (NIV.GE.1) WRITE(IFM,1800)VALR
 C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
-                NBESSA=NBRSSA
-             ELSE
-               OMGDEC=-SIGN(1.D0,OMGSHI)*MAX(OMECOR,PREC*OMGSHI)
-               OMGSHI=OMGSHI+OMGDEC
-               IF (LDYN) THEN
-                 VALR=FREQOM(OMGSHI)
-               ELSE
-                 VALR=OMGSHI
-               ENDIF
-               IF (NIV.GE.1) WRITE(IFM,2400)(PREC*100.D0),VALR
-               PREC=2.D0*PREC
-             ENDIF
-             GOTO 30
-           ELSE
-             IF (LDYN) THEN
-               VALR=FREQOM(OMGSHI)
-             ELSE
-               VALR=OMGSHI
-             ENDIF
-             CALL U2MESG('F', 'ALGELINE3_65',0,' ',0,0,1,VALR)
-           ENDIF
-         ENDIF
-         OMESHI=OMGSHI
-         IF (NIV.GE.1) THEN
-           IF (LDYN) THEN
-             WRITE(IFM,1000)FREQOM(OMESHI)
-           ELSE
-             WRITE(IFM,1001)OMESHI
-           ENDIF
-         ENDIF
+               NBESSA=NBRSSA
+            ELSE
+              OMGDEC=MAX(OMECOR,PREC*ABS(OMGSHI))
+              OMGSHI=OMGSHI-OMGDEC
+              IF (LDYNA) THEN
+                VALR=FREQOM(OMGSHI)
+              ELSE
+                VALR=OMGSHI
+              ENDIF
+              IF (NIV.GE.1) WRITE(IFM,2400)(PREC*100.D0),VALR
+              PREC=2.D0*PREC
+            ENDIF
+            GOTO 30
+          ELSE
+            IF (LDYNA) THEN
+              VALR=FREQOM(OMGSHI)
+            ELSE
+              VALR=OMGSHI
+            ENDIF
+            CALL U2MESG('F', 'ALGELINE3_65',0,' ',0,0,1,VALR)
+          ENDIF
+        ENDIF
+        OMESHI=OMGSHI
+        IF (NIV.GE.1) THEN
+          IF (LDYNA) THEN
+            WRITE(IFM,1000)FREQOM(OMESHI)
+          ELSE
+            WRITE(IFM,1001)OMESHI
+          ENDIF
+        ENDIF
 
 C     ------------------------------------------------------------------
 C     ------------------------ OPTION NON CONNUE -----------------------
@@ -405,7 +459,7 @@ C     -----------------------------FORMAT------------------------------
  1800 FORMAT('LA VALEUR MAXIMALE EST INFERIEURE A LA VALEUR ',
      &       'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
  1900 FORMAT('ON AUGMENTE LA VALEUR MAXIMALE DE: ',1PE12.5,' POURCENT',/
-     &       ,'LA VALEUR MAXIMALE DEVIENT:',8X,1PE12.5,/)
+     &       ,'LA VALEUR MAXIMALE DEVIENT:',8X,1PE12.5)
  2000 FORMAT('LA VALEUR DE DECALAGE EST INFERIEURE A LA VALEUR ',
      &       ' DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
  2100 FORMAT('ON MODIFIE LA VALEUR DE DECALAGE DE: ',1PE12.5,

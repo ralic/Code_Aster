@@ -3,10 +3,10 @@
      &                    NUMPT, INSTAN, NUMORD,
      &                    ADSK, ADSD, ADSC, ADSV, ADSL,
      &                    NBENEC, LIENEC,
-     &                    CODRET )
+     &                    SDCARM, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,16 +45,18 @@ C       ADSK, D, ... : ADRESSES DES TABLEAUX DES CHAMPS SIMPLIFIES
 C       NBVATO : NOMBRE DE VALEURS TOTALES
 C       NBENEC : NOMBRE D'ENTITES A ECRIRE (O, SI TOUTES)
 C       LIENEC : LISTE DES ENTITES A ECRIRE SI EXTRAIT
+C       SDCARM : CARA_ELEM (UTILE POUR LES SOUS-POINTS)
 C     SORTIES:
 C       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 C_______________________________________________________________________
 C
+C TOLE CRP_21
       IMPLICIT NONE
 C
 C 0.1. ==> ARGUMENTS
 C
       INCLUDE 'jeveux.h'
-      CHARACTER*8 TYPECH, MODELE
+      CHARACTER*8 TYPECH, MODELE, SDCARM
       CHARACTER*19  CHANOM
       CHARACTER*64 NOCHMD
       CHARACTER*(*) NOMCMP(*),PARTIE,ETIQCP
@@ -246,7 +248,7 @@ C
      &              NCMPRF, NCMPVE, NTLCMP,
      &              NBVATO, NBENEC, LIENEC, ADSD, ADSL,
      &              NOMAAS, MODELE, TYPGEO, NOMTYP,
-     &              NTPROA, CHANOM )
+     &              NTPROA, CHANOM, SDCARM )
 C
       CALL JEVEUO ( NCAIMI, 'L', ADCAII )
       CALL JEVEUO ( NCAIMK, 'L', ADCAIK )
@@ -255,10 +257,15 @@ C 3.4. ==> CARACTERISATION DES SUPPORTS QUAND CE NE SONT PAS DES NOEUDS
 C
       IF ( TYPECH(1:4).EQ.'ELGA' .OR. TYPECH(1:4).EQ.'ELEM' ) THEN
 C
+        IF ( SDCARM.NE.' ' .AND. TYPECH(1:4).EQ.'ELGA' ) THEN
+          CALL IRELST(NOFIMD,CHANOM,TYPECH,NOMAAS,NOMAMD,
+     &                NBIMPR,ZI(ADCAII),ZK80(ADCAIK),SDCARM)
+        ENDIF
+C
         CALL IRMPGA ( NOFIMD,
      &                CHANOM, TYPECH, NOMTYP,
      &                NBIMPR, ZI(ADCAII), ZK80(ADCAIK),
-     &                MODNUM, NUANOM,
+     &                MODNUM, NUANOM, SDCARM,
      &                CODRET )
 C
       ENDIF
@@ -274,17 +281,17 @@ C
 C
         IF ( CODRET.EQ.0 ) THEN
 C
-        TYGEOM = ZI(ADCAII+7*NRIMPR-2)
+        TYGEOM = ZI(ADCAII+10*NRIMPR-2)
         IF ( TYGEOM.EQ.TYPNOE ) THEN
           TYPENT = EDNOEU
         ELSE
-            IF(TYPECH.EQ.'ELNO')THEN
-               TYPENT = EDNOMA
-            ELSE
-               TYPENT = EDMAIL
-            ENDIF
+          IF(TYPECH.EQ.'ELNO')THEN
+            TYPENT = EDNOMA
+          ELSE
+            TYPENT = EDMAIL
+          ENDIF
         ENDIF
-        NVALEC = ZI(ADCAII+7*NRIMPR-4)
+        NVALEC = ZI(ADCAII+10*NRIMPR-4)
 C
         CALL JEDETR(NMCMFI)
 C

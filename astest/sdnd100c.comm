@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE LACHER D'UN PATIN FROTTANT
 # sdnd100c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,7 +161,8 @@ TEST_RESU(RESU=(_F(INST=0.0315,
                    VALE_CALC= 3.54955942E-05,
                    VALE_REFE=3.5500000000000002E-05,
                    REFERENCE='NON_DEFINI',
-                   PRECISION=0.050000000000000003,),
+                   TOLE_MACHINE=0.05,       #TODO variabilite
+                   PRECISION=0.05,),
                 ),
           )
 

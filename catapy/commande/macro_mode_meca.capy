@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,17 +47,11 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",
            NMAX_ITER_SOREN =SIMP(statut='f',typ='I',defaut= 20,val_min=0 ),
            PARA_ORTHO_SOREN=SIMP(statut='f',typ='R',defaut= 0.717,val_min=0.E+0 ),
          ),
-         OPTION          =SIMP(statut='f',typ='TXM',defaut="SANS",
-                               into=("MODE_RIGIDE","SANS") ),
+
+         OPTION          =SIMP(statut='f',typ='TXM',defaut="SANS",into=("MODE_RIGIDE","SANS") ),
+
          CALC_FREQ       =FACT(statut='o',
-           regles=(UN_PARMI('FREQ','FREQ_MAX'),
-                   PRESENT_PRESENT('FREQ_MIN','FREQ_MAX'),
-                   PRESENT_PRESENT('FREQ_MAX','NB_BLOC_FREQ'),
-                   EXCLUS('DIM_SOUS_ESPACE','COEF_DIM_ESPACE'),),
-           FREQ            =SIMP(statut='f',typ='R',min=2,validators=NoRepeat(),max='**', ),
-           FREQ_MIN        =SIMP(statut='f',typ='R' ),
-           FREQ_MAX        =SIMP(statut='f',typ='R' ),
-           NB_BLOC_FREQ    =SIMP(statut='f',typ='I' ),
+           FREQ            =SIMP(statut='o',typ='R',min=2,validators=NoRepeat(),max='**', ),
            DIM_SOUS_ESPACE =SIMP(statut='f',typ='I' ),
            COEF_DIM_ESPACE =SIMP(statut='f',typ='I' ),
            NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 3 ),
@@ -65,23 +59,32 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",
            SEUIL_FREQ      =SIMP(statut='f',typ='R' ,defaut= 1.E-2 ),
            STOP_FREQ_VIDE  =SIMP(statut='f',typ='TXM',defaut="NON" ,into=("OUI","NON") ),
          ),
+
+#-------------------------------------------------------------------
+#        Catalogue commun SOLVEUR
+         SOLVEUR         =C_SOLVEUR('INFO_MODE'),
+#-------------------------------------------------------------------
+
          VERI_MODE       =FACT(statut='d',min=0,
            STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            SEUIL           =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
            PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-3 ),
-           STURM           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           STURM           =SIMP(statut='f',typ='TXM',defaut="GLOBAL",into=("GLOBAL","LOCAL","NON") ),
          ),
+
          NORM_MODE       =FACT(statut='o',max='**',
            NORME           =SIMP(statut='f',typ='TXM',defaut="TRAN_ROTA",
                                  into=("MASS_GENE","RIGI_GENE","EUCL",
                                        "EUCL_TRAN","TRAN","TRAN_ROTA") ),
            INFO            =SIMP(statut='f',typ='I',defaut= 1 ,into=(1,2) ),
          ),
+
          FILTRE_MODE     =FACT(statut='f',
            CRIT_EXTR       =SIMP(statut='f',typ='TXM',defaut="MASS_EFFE_UN",
                                  into=("MASS_EFFE_UN","MASS_GENE") ),
            SEUIL           =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
          ),
+
          IMPRESSION      =FACT(statut='d',
            TOUT_PARA       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            CUMUL           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),

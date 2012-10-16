@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C                                  CHAR_MECA_PESA_R
 C     -----------------------------------------------------------------
       INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
       INTEGER      I, J, IER, IPLAN, JGEOM, JCOQU, JVECG, JPRES, ITEMPS
-      INTEGER      IADZI, IAZK24, LPESA,K
+      INTEGER      IADZI, IAZK24, LPESA, IRET
       REAL*8       PGL(3,3) , XYZL(3,4) , PGLO(3)  , PLOC(3)
       REAL*8       VECL(24), FOR(6,4), FOR2(6,4), RHO, EPAIS
       REAL*8       UNDEMI
@@ -55,7 +55,7 @@ C
       IF (     NNO .EQ. 3) THEN
          CALL DXTPGL ( ZR(JGEOM) , PGL )
       ELSE IF( NNO .EQ. 4) THEN
-         CALL DXQPGL ( ZR(JGEOM) , PGL )
+         CALL DXQPGL ( ZR(JGEOM) , PGL, 'S', IRET )
       ENDIF
       CALL UTPVGL ( NNO , 3 , PGL , ZR(JGEOM) , XYZL )
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 # ahlv100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -43,22 +43,15 @@ CHARACOU=AFFE_CHAR_ACOU(      MODELE=GUIDE,
 IMPEACOU=AFFE_CHAR_ACOU(      MODELE=GUIDE,
                  IMPE_FACE=_F( GROUP_MA = 'SORTIE', IMPE = ('RI',445.9,0.,)))
 
-MACRO_MATR_ASSE(
+ASSEMBLAGE(
                       MODELE=GUIDE,         CHARGE=IMPEACOU,
                       CHAM_MATER=CHAMPMAT,
                       NUME_DDL=CO("NUM"),MATR_ASSE=(
                       _F(  MATRICE = CO("MATASK"), OPTION = 'RIGI_ACOU'),
                                 _F(  MATRICE = CO("MATASM"), OPTION = 'MASS_ACOU'),
-                                _F(  MATRICE = CO("MATASI"), OPTION = 'AMOR_ACOU'))
+                                _F(  MATRICE = CO("MATASI"), OPTION = 'AMOR_ACOU')),
+                      VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_ACOU',CHARGE=CHARACOU)),
                    )
-
-#
-
-VECTELEM=CALC_VECT_ELEM(   OPTION='CHAR_ACOU',  CHAM_MATER=CHAMPMAT,
-                                CHARGE=CHARACOU )
-
-
-VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECTELEM,   NUME_DDL=NUM )
 
 #
 #  ____________________CALCUL DES MODES_________________________________

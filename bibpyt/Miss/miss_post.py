@@ -1,4 +1,4 @@
-#@ MODIF miss_post Miss  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_post Miss  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -257,6 +257,7 @@ class POST_MISS_TRAN(POST_MISS):
             _printDBG("Calcul pour la fréquence %.2f Hz" % freq)
             __impe = LIRE_IMPE_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
+                                    ISSF=self.param['ISSF'],
                                     UNITE_RESU_IMPE=self.param['UNITE_RESU_IMPE'],
                                     FREQ_EXTR=freq,
                                     TYPE=self.param['TYPE'],)
@@ -280,6 +281,7 @@ class POST_MISS_TRAN(POST_MISS):
         if self.acce_x:
             __fosx = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
+                                    ISSF=self.param['ISSF'],
                                     NOM_CMP='DX',
                                     NOM_CHAM='ACCE',
                                     UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
@@ -289,6 +291,7 @@ class POST_MISS_TRAN(POST_MISS):
         if self.acce_y:
             __fosy = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
+                                    ISSF=self.param['ISSF'],
                                     NOM_CMP='DY',
                                     NOM_CHAM='ACCE',
                                     UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
@@ -298,6 +301,7 @@ class POST_MISS_TRAN(POST_MISS):
         if self.acce_z:
             __fosz = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
+                                    ISSF=self.param['ISSF'],
                                     NOM_CMP='DZ',
                                     NOM_CHAM='ACCE',
                                     UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
@@ -430,6 +434,7 @@ class POST_MISS_TAB(POST_MISS):
             _printDBG("Calcul pour la fréquence %.2f Hz" % freq)
             __impe = LIRE_IMPE_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
+                                    ISSF=self.param['ISSF'],
                                     UNITE_RESU_IMPE=self.param['UNITE_RESU_IMPE'],
                                     FREQ_EXTR=freq,
                                     TYPE=self.param['TYPE'],)
@@ -461,6 +466,7 @@ class POST_MISS_TAB(POST_MISS):
         """Exécution d'un DYNA_LINE_HARM"""
         __fosx = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
                                 NUME_DDL_GENE=self.nddlgen,
+                                ISSF=self.param['ISSF'],
                                 NOM_CMP=dir,
                                 NOM_CHAM='ACCE',
                                 UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],

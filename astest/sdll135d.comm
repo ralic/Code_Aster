@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
 # sdll135d.para = tps_job 2770 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,7 +77,7 @@ CHARMX=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='B',
                                       MX=1.0,),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARAC,
                 CHARGE=CL,
@@ -206,7 +206,6 @@ MODE_TRA=MODE_ITER_INV(MATR_RIGI=RIGID,
                   OPTION='PROCHE',
                   FREQ=(1263.497,3790.49,6317.484,8844.4477),),);
 
-
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
@@ -255,7 +254,6 @@ MODE_FLE=MODE_ITER_INV(MATR_RIGI=RIGID,
                   CALC_FREQ=_F(
                   OPTION='PROCHE',
                   FREQ=(269.932,1077.199,2270.705,3249.207,4649.212),),);
-
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
@@ -312,7 +310,6 @@ MODE_TOR=MODE_ITER_INV(MATR_RIGI=RIGID,
                   CALC_FREQ=_F(
                   OPTION='PROCHE',
                   FREQ=(786.619,2359.856,3933.094,5506.331),),);
-
 
 # FREQUENCES DES MODES DE TORSION ( COMPARAISON AVEC DES POUTRES )
 
@@ -475,9 +472,3 @@ TEST_RESU(RESU=_F(NUME_ORDRE=32,
           )
 
 FIN();
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEUR GENERALISEES : POUTRE 3D ENCASTREE
 # zzzz208a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -349,9 +349,10 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 TEST_RESU(OBJET=_F(VALE_CALC= 6.72279425E-08,
                    VALE_REFE=6.7227942546217507E-08,
-                   REFERENCE='SOURCE_EXTERNE',
+                   REFERENCE='SOURCE_EXTERNE',      # n'est-ce pas plutot NON_REGRESSION ?
                    NOM='DYNDIAG            .DEPL',
-                   PRECISION=1.E-2,),
+                   TOLE_MACHINE=5.E-2,             #TODO variabilite
+                   PRECISION=5.E-2,),
           )
 
 #######################################################
@@ -530,14 +531,16 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 TEST_RESU(OBJET=(_F(VALE_CALC=-2.11042621E-07,
                     VALE_REFE=-2.1104262094838747E-07,
-                    REFERENCE='SOURCE_EXTERNE',
+                    REFERENCE='SOURCE_EXTERNE',     # n'est-ce pas plutot NON_REGRESSION ?
                     NOM='DYNPLEIN           .DEPL',
-                    PRECISION=1.E-2,),
+                    TOLE_MACHINE=5.E-2,             #TODO variabilite
+                    PRECISION=5.E-2,),
                  _F(VALE_CALC= 6.72279425E-08,
                     VALE_REFE=6.7227942546231073E-08,
-                    REFERENCE='SOURCE_EXTERNE',
+                    REFERENCE='SOURCE_EXTERNE',     # n'est-ce pas plutot NON_REGRESSION ?
                     NOM='DYNPLEI2           .DEPL',
-                    PRECISION=1.E-2,),
+                    TOLE_MACHINE=5.E-2,             #TODO variabilite
+                    PRECISION=5.E-2,),
                  ),
           )
 

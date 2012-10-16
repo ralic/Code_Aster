@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  DSR3 - RENUM RCMK / AFFE_CHAR_MECA / SOLVE
 # gcpc002b.para = tps_job 150 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -419,7 +419,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    VALE_CALC=-1.1343463070495,
                    VALE_REFE=-1.0671999999999999,
                    PRECISION=0.065199999999999994,
-                   TOLE_MACHINE=1.E-3,
+                   TOLE_MACHINE=5.E-3,
                    MAILLE='MA4204',),
                 ),
           )

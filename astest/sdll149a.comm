@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE CALCUL SISMIQUE DE LA TUYAUTERIE BM3 (TEST NRC)
 # sdll149a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -245,7 +245,7 @@ SUPPORT=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DRY=0,
                                   DRZ=0,),);
                                     
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARA_ELE,
                 CHARGE=SUPPORT,
@@ -259,7 +259,6 @@ MODECA=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                         MATR_MASS=MASSE,
                         CALC_FREQ=_F(OPTION='BANDE',
                                      FREQ=(0.,16.,),),);
-
 
 # -------------------------------------------------------------
 # VALIDATION DES FREQUENCES PROPRES
@@ -3160,9 +3159,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 FIN()
-
-
-
-
-
-

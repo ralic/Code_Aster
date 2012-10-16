@@ -1,10 +1,12 @@
-      SUBROUTINE DXQPGL ( XYZG , PGL )
+      SUBROUTINE DXQPGL ( XYZG, PGL, KSTOP, IRET )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8              XYZG(3,*), PGL(3,3)
+      CHARACTER*1         KSTOP
+      INTEGER             IRET
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +25,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     IN  XYZG  R  12  COORDONNEES  X1 Y1 Z1 X2 Y2 ...
+C     IN  KSTOP K1     COMPORTEMENT EN CAS D'ERREUR ('C' OU 'S')
 C     OUT PGL   R 3,3  MATRICE DE PASSAGE GLOBAL INTRINSEQUE
+C     OUT IRET  I      CODE RETOUR
+C                      (0 : OK, 1 : MODELISA10_5, 2 : ELEMENTS4_80)
 C     -----------------------------------------------------------------
 C     CONSTRUCTION DE LA MATRICE DE PASSAGE GLOBAL --> INTRINSEQUE
 C     POUR UNE MAILLE TRIANGLE DKQ OU DSQ
@@ -54,6 +59,7 @@ C     ------------------------------------------------------------------
       INTEGER IADZI,IAZK24
 C     ------------------------------------------------------------------
       REAL*8 VALR
+      IRET = 0
       XI  = (XYZG(1,1) + XYZG(1,4))/2.D0
       YI  = (XYZG(2,1) + XYZG(2,4))/2.D0
       ZZI  = (XYZG(3,1) + XYZG(3,4))/2.D0
@@ -122,8 +128,14 @@ C
 C     DISTANCE DU POINT 4 AU PLAN (123)
       NORMU = SQRT( (UX*UX) + (UY*UY) + (UZ*UZ) )
       IF ( NORMU.LT.R8MIEM() ) THEN
-         CALL TECAEL(IADZI,IAZK24)
-         CALL U2MESK('F', 'MODELISA10_5',1,ZK24(IAZK24+2))
+        IF ( KSTOP.EQ.'S' ) THEN
+          CALL TECAEL(IADZI,IAZK24)
+          CALL U2MESK('F', 'MODELISA10_5',1,ZK24(IAZK24+2))
+        ELSEIF ( KSTOP.EQ.'C' ) THEN
+          IRET = 1
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
       ENDIF
       NORM4 = SQRT( (X14*X14) + (Y14*Y14) + (Z14*Z14) )
       DIST  = PSCAL / NORMU
@@ -132,9 +144,16 @@ C
 C     TESTE SI PSCAL > EPS (1D-4 EN DUR DANS LE FORTRAN)
 C
       IF ( ABS(PSCAL).GT.1.D-4 ) THEN
-        CALL TECAEL(IADZI,IAZK24)
-        VALR = ABS(DIST)
-        CALL U2MESG('A', 'ELEMENTS4_80',1,ZK24(IAZK24+2),0,0,1,VALR)
+        IF ( KSTOP.EQ.'S' ) THEN
+          CALL TECAEL(IADZI,IAZK24)
+          VALR = ABS(DIST)
+          CALL U2MESK('A+', 'ELEMENTS4_80',1,ZK24(IAZK24+2))
+          CALL U2MESR('A', 'ELEMENTS4_82',1,VALR)
+        ELSEIF ( KSTOP.EQ.'C' ) THEN
+          IRET = 2
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
       ENDIF
 
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_VIBRA
 # sdld31b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,7 +139,7 @@ ROLEX=CALC_FONC_INTERP(FONCTION=solex,
                        NOM_PARA='INST',
                        INTERPOL='LIN',);
 
-MACRO_MATR_ASSE(MODELE=MO,
+ASSEMBLAGE(MODELE=MO,
                 CARA_ELEM=CARA_ELE,
                 CHARGE=LIAISON,
                 NUME_DDL=CO('NUDDL'),
@@ -150,17 +150,12 @@ MACRO_MATR_ASSE(MODELE=MO,
                            _F(MATRICE=CO('RIGHYST'),
                               OPTION='RIGI_MECA_HYST',),
                            _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("VRACTION"),OPTION='CHAR_MECA',CHARGE=TRACTION),),);
+
 
 AMO2=COMB_MATR_ASSE(COMB_R=_F(MATR_ASSE=AMOR,
                               COEF_R=2.,),);
-
-ERACTION=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                        CHARGE=TRACTION,);
-
-VRACTION=ASSE_VECTEUR(VECT_ELEM=ERACTION,
-                      NUME_DDL=NUDDL,);
-
 
 # CALCUL DES MODES AVEC AMORTISSEMENT HYSTERETIQUE + VISQUEUX
 
@@ -171,7 +166,6 @@ MOSOREN=MODE_ITER_SIMULT(MATR_RIGI=RIGHYST,
                                       FREQ=10.,
                                       NMAX_FREQ=1,
                                       APPROCHE='REEL',),);
-
 
 FRESOR=RECU_TABLE(CO=MOSOREN,
                   NOM_PARA=('FREQ','AMOR_REDUIT',),);
@@ -201,7 +195,6 @@ MOLANCZ=MODE_ITER_SIMULT(MATR_RIGI=RIGI,
                                       NMAX_FREQ=1,
                                       APPROCHE='COMPLEXE',),);
 
-
 FRELAN=RECU_TABLE(CO=MOSOREN,
                   NOM_PARA=('FREQ','AMOR_REDUIT',),);
 
@@ -227,7 +220,6 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGI,
                                     FREQ=3.,
                                     NMAX_FREQ=1,
                                     APPROCHE='COMPLEXE',),);
-
 
 PROJ_BASE(BASE=MODES,
                 STOCKAGE='DIAG',
@@ -399,9 +391,3 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0107846055055,
               )
 
 FIN();
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-#@ MODIF vmis_john_cook Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_john_cook Comportement  DATE 15/10/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN',),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'GDEF_LOG','GDEF_HYPO_ELAS','GREEN_REAC'),
    nom_varc       = ('TEMP',),
-   algo_inte      = ('DEKKER',),
+   algo_inte      = ('SECANTE','BRENT','DEKKER',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

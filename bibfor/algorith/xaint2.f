@@ -1,6 +1,6 @@
       SUBROUTINE XAINT2(NOMA,MODELE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,12 +56,12 @@ C
 C
 C
 C
-      CHARACTER*24  GRP(3),INDIC
+      CHARACTER*24  GRP(3)
       CHARACTER*19  CES(5),CEL(5),CNXINV,LIGREL
       CHARACTER*8   K8BID,TYPMA,NOMFIS
       CHARACTER*2   CH2
       REAL*8        CRIT,VMOIN,VPLUS,VTOT
-      INTEGER       JTYPMA,JCESD(5),JCESL(5),JCESV(5),IAD
+      INTEGER       JTYPMA,JCESD(5),JCESL(5),JCESV(5),IAD,IRET
       INTEGER       JXC,ITYPMA,NNCP,IBID,IER
       INTEGER       JNBSP,JNBSP2
       INTEGER       JCONX1,JCONX2,JTMDIM,NDIME,NDIM
@@ -69,7 +69,7 @@ C
       INTEGER       JMAIL,NFIS,IFIS
       INTEGER       I,J,K,NHEAV,IHEAV,NFISS,IFISS,NFIS2,IFIS2,IFIS3
       LOGICAL       ELIM(2),VERIF
-      INTEGER       IGRP,NBMA,JNFIS,JMOFIS,NMAENR,JINDIC,JG
+      INTEGER       IGRP,NBMA,JNFIS,JMOFIS,NMAENR,JG
       INTEGER       NFACE,NINTER,INTER,ZXAIN,IA,IFH,NFH,NMASUP,JMASUP
       INTEGER       HEAV,HE,XXMMVD,AR(12,3),NBAR,NNO2,NNGL,INTE2,NINTE2
 
@@ -129,30 +129,30 @@ C
       CALL JEVEUO(MODELE//'.FISS','L',JMOFIS)
       DO 20 IFIS = 1,NFIS
         NOMFIS = ZK8(JMOFIS-1 + IFIS)
-        GRP(1)=NOMFIS//'.MAILFISS  .HEAV'
-        GRP(2)=NOMFIS//'.MAILFISS  .CTIP'
-        GRP(3)=NOMFIS//'.MAILFISS  .HECT'
-        INDIC=NOMFIS//'.MAILFISS .INDIC'
-        CALL JEVEUO(INDIC,'L',JINDIC)
-C      BOUCLE SUR LES GROUPES
+        GRP(1)=NOMFIS//'.MAILFISS.HEAV'
+        GRP(2)=NOMFIS//'.MAILFISS.CTIP'
+        GRP(3)=NOMFIS//'.MAILFISS.HECT'
+C       BOUCLE SUR LES GROUPES
         DO 100 IGRP = 1,3
-          IF (ZI(JINDIC-1+2*(IGRP-1)+1).EQ.1) THEN
+          CALL JEEXIN(GRP(IGRP),IRET)
+          IF (IRET.NE.0) THEN
             CALL JEVEUO(GRP(IGRP),'L',JG)
-            NMAENR=ZI(JINDIC-1+2*IGRP)
-C      BOUCLE SUR LES MAILLES DU GROUPE
+            CALL JELIRA(GRP(IGRP),'LONMAX',NMAENR,K8BID)
+C           BOUCLE SUR LES MAILLES DU GROUPE
             DO 120 I=1,NMAENR
               IMA   = ZI(JG-1+I)
-C      ON INCRÉMENTE LE COMPTEUR LOCAL
+C             ON INCRÉMENTE LE COMPTEUR LOCAL
               ZI(JNBSP2-1+IMA) = ZI(JNBSP2-1+IMA)+1
  120        CONTINUE
           ENDIF
  100    CONTINUE
-C      BOUCLE SUR LES GROUPES
+C       BOUCLE SUR LES GROUPES
         DO 200 IGRP = 1,3
-          IF (ZI(JINDIC-1+2*(IGRP-1)+1).EQ.1) THEN
+          CALL JEEXIN(GRP(IGRP),IRET)
+          IF (IRET.NE.0) THEN
             CALL JEVEUO(GRP(IGRP),'L',JG)
-            NMAENR=ZI(JINDIC-1+2*IGRP)
-C      BOUCLE SUR LES MAILLES DU GROUPE
+            CALL JELIRA(GRP(IGRP),'LONMAX',NMAENR,K8BID)
+C           BOUCLE SUR LES MAILLES DU GROUPE
             DO 220 I=1,NMAENR
               IMA   = ZI(JG-1+I)
               ITYPMA=ZI(JTYPMA-1+IMA)
@@ -164,26 +164,26 @@ C      BOUCLE SUR LES MAILLES DU GROUPE
               CALL CESEXI('S',JCESD(1),JCESL(1),IMA,1,IFISS,1,IAD)
               NINTER = ZI(JCESV(1)-1+IAD)
               NFISS = ZI(JNBSP-1+IMA)
-C      ON NE TRAITE QUE LES ELEMENTS MULTI-HEAVISIDE COUPÉS
+C             ON NE TRAITE QUE LES ELEMENTS MULTI-HEAVISIDE COUPÉS
               IF (NFISS.LE.1.OR.NINTER.EQ.0) GOTO 220
               IF (NFACE.EQ.0) THEN
-C      SI PAS DE FACETTES, ON VERIFIE TOUTES LES ARETES
+C               SI PAS DE FACETTES, ON VERIFIE TOUTES LES ARETES
                 VERIF = .FALSE.
               ELSE
-C      SINON ON VERIFIE UNIQUEMENT LES ARETES NÉGATIVE 
+C               SINON ON VERIFIE UNIQUEMENT LES ARETES NÉGATIVE 
                 VERIF = .TRUE.
               ENDIF
 
               CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
               CALL CONARE(TYPMA,AR,NBAR)
               DO 230 INTER=1,NINTER
-C       BOUCLE SUR LES ARETES DE L'ÉLÉMENT CONTENANT LA JONCTION
+C               BOUCLE SUR LES ARETES DE L'ÉLÉMENT CONTENANT LA JONCTION
                 CALL CESEXI('S',JCESD(2),JCESL(2),IMA,1,IFISS,
      &                                            (INTER-1)*ZXAIN+1,IAD)
                 IA = NINT(ZR(JCESV(2)-1+IAD))
                 IF (IA.EQ.0.OR.IA.GT.0.AND.VERIF) GOTO 230
                 IA = ABS(IA)
-C       RÉCUP DES NOEUDS J DE L'ARETE
+C               RÉCUP DES NOEUDS J DE L'ARETE
                 DO 232 J = 1,2
                   INO(J)  = AR(IA,J)
                   NUNO(J) = ZI(JCONX1-1+ZI(JCONX2+IMA-1)+INO(J)-1)
@@ -262,8 +262,8 @@ C
      &                               K8BID)
                   CALL JEVEUO(JEXNUM(CNXINV,NUNO(J)),'L',JMASUP)
 
+C                 BOUCLE SUR LES ELEM CONEXES
                   DO 350 K=1,NMASUP
-C       BOUCLE SUR LES ELEM CONEXES
                     IMA2 = ZI(JMASUP-1+K)
                     ITYPMA=ZI(JTYPMA-1+IMA2)
                     NDIME= ZI(JTMDIM-1+ITYPMA)
@@ -274,8 +274,9 @@ C       BOUCLE SUR LES ELEM CONEXES
                     CALL CESEXI('S',JCESD(1),JCESL(1),IMA2,1,IFIS2,1,
      &                                                              IAD)
                     NINTE2 = ZI(JCESV(1)-1+IAD)
+
+C                   BOUCLE SUR LES ARETES AINTER
                     DO 360 INTE2 = 1,NINTE2
-C         BOUCLE SUR LES ARETES AINTER
                       CALL CESEXI('S',JCESD(2),JCESL(2),IMA2,1,IFIS2,
      &                                            (INTE2-1)*ZXAIN+1,IAD)
                       IA = ABS(NINT(ZR(JCESV(2)-1+IAD)))
@@ -294,10 +295,10 @@ C         SI L'ARETE N'EST PAS TT, ON LA REPORTE SUR SON NOEUD ACTIF
                         CALL CESEXI('S',JCESD(2),JCESL(2),IMA2,1,IFIS2,
      &                                            (INTE2-1)*ZXAIN+2,IAD)
                         IF (NUNO2(1).EQ.NUNO(J)) THEN
-C     ON REPORTE L'ARETE SUR LE NOEUD 2
+C                         ON REPORTE L'ARETE SUR LE NOEUD 2
                           ZR(JCESV(2)-1+IAD) = AR(IA,2)
                         ELSE
-C     ON REPORTE L'ARETE SUR LE NOEUD 1
+C                         ON REPORTE L'ARETE SUR LE NOEUD 1
                           ZR(JCESV(2)-1+IAD) = AR(IA,1)
                         ENDIF
                       ENDIF

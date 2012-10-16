@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +61,12 @@ CALC_MISS = MACRO(nom="CALC_MISS",
         AMOR_REDUIT     = SIMP(statut='f', typ='R', max='**'),
         GROUP_MA_INTERF = SIMP(statut='o', typ=grma, max='**',
                                fr="Groupe de mailles de l'interface"),
+        GROUP_MA_FLU_STR = SIMP(statut='f', typ=grma, max='**',
+                               fr="Groupe de mailles fluide-structure"),
+        GROUP_MA_FLU_SOL = SIMP(statut='f', typ=grma, max='**',
+                               fr="Groupe de mailles fluide-sol"),
+        GROUP_MA_SOL_SOL = SIMP(statut='f', typ=grma, max='**',
+                               fr="Groupe de mailles sol-sol"),
 
         UNITE_IMPR_ASTER = SIMP(statut='f', typ='I', defaut=25,
                                 fr="Unité des résultats transmis par Code_Aster à Miss"),
@@ -133,6 +139,12 @@ CALC_MISS = MACRO(nom="CALC_MISS",
         AMOR_REDUIT     = SIMP(statut='o', typ='R', max='**'),
         GROUP_MA_INTERF = SIMP(statut='o', typ=grma, max='**',
                                fr="Groupe de mailles de l'interface"),
+        GROUP_MA_FLU_STR = SIMP(statut='f', typ=grma, max='**',
+                               fr="Groupe de mailles fluide-structure"),
+        GROUP_MA_FLU_SOL = SIMP(statut='f', typ=grma, max='**',
+                               fr="Groupe de mailles fluide-sol"),
+        GROUP_MA_SOL_SOL = SIMP(statut='f', typ=grma, max='**',
+                               fr="Groupe de mailles sol-sol"),
 
         UNITE_IMPR_ASTER = SIMP(statut='f', typ='I',
                                 fr="Unité des résultats transmis par Code_Aster à Miss"),
@@ -154,6 +166,8 @@ CALC_MISS = MACRO(nom="CALC_MISS",
         FREQ_IMAG      = SIMP(statut='f', typ='R'),
         Z0             = SIMP(statut='f', typ='R', defaut=0.),
         SURF           = SIMP(statut='f', typ='TXM', into=("OUI","NON",), defaut="NON"),
+        ISSF           = SIMP(statut='f', typ='TXM', into=("OUI","NON",), defaut="NON"),
+        ALLU           = SIMP(statut='f', typ='R', defaut=0.),
         RFIC           = SIMP(statut='f', typ='R', defaut=0.),
 
         ALGO           = SIMP(statut='f', typ='TXM', into=("DEPL","REGU")),

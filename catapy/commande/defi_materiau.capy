@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1069,9 +1069,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              GAMMA_T         =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0),
              GAMMA_C         =SIMP(statut='f',typ='R',val_min=-1.E+0,val_max=1.E+0),
              GAMMA_F         =SIMP(statut='o',typ='R',val_min=-1.E+0,val_max=1.E+0),
-             SYT             =SIMP(statut='o',typ='R',val_min=0.E+0),
-             SYC             =SIMP(statut='f',typ='R'),
-             SYF             =SIMP(statut='o',typ='R',val_min=0.E+0),
+             NYT             =SIMP(statut='o',typ='R',val_min=0.E+0),
+             NYC             =SIMP(statut='f',typ='R'),
+             MYF             =SIMP(statut='o',typ='R',val_min=0.E+0),
              EF              =SIMP(statut='f',typ='R',val_min=0.E+0),
              NUF             =SIMP(statut='f',typ='R',val_min=0.E+0,val_max=0.5+0),
              ALPHA_C         =SIMP(statut='d',typ='R',val_min=1.E+0,defaut=1.E+0),

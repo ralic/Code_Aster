@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -122,7 +122,7 @@ CHARGE_3=AFFE_CHAR_MECA(  MODELE=MODELE3,DDL_IMPO=(
 
 # ASSEMBLAGE DES MATRICES
 
-MACRO_MATR_ASSE(MODELE=MODELE1,
+ASSEMBLAGE(MODELE=MODELE1,
                 CARA_ELEM=PARAM1,
                 CHARGE=CHARGE_1,
                 CHAM_MATER=CHMAT1,
@@ -130,7 +130,7 @@ MACRO_MATR_ASSE(MODELE=MODELE1,
                 MATR_ASSE=(_F(MATRICE = CO("RAID1"),OPTION = 'RIGI_MECA'),
                            _F(MATRICE = CO("MASS1"),OPTION = 'MASS_MECA')),
                )
-MACRO_MATR_ASSE(MODELE=MODELE2,
+ASSEMBLAGE(MODELE=MODELE2,
                 CARA_ELEM=PARAM2,
                 CHARGE=CHARGE_2,
                 CHAM_MATER=CHMAT2,
@@ -138,7 +138,7 @@ MACRO_MATR_ASSE(MODELE=MODELE2,
                 MATR_ASSE=(_F(MATRICE = CO("RAID2"),OPTION = 'RIGI_MECA'),
                            _F(MATRICE = CO("MASS2"),OPTION = 'MASS_MECA')),
                )
-MACRO_MATR_ASSE(MODELE=MODELE3,
+ASSEMBLAGE(MODELE=MODELE3,
                 CARA_ELEM=PARAM3,
                 CHARGE=CHARGE_3,
                 CHAM_MATER=CHMAT3,
@@ -153,17 +153,14 @@ MODES_1=MODE_ITER_SIMULT(MATR_RIGI=RAID1,
                          MATR_MASS=MASS1,
                          CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
                          NMAX_FREQ = 10))
-
 MODES_2=MODE_ITER_SIMULT(MATR_RIGI=RAID2,
                          MATR_MASS=MASS2,
                          CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
                          NMAX_FREQ = 10))
-
 MODES_3=MODE_ITER_SIMULT(MATR_RIGI=RAID3,
                          MATR_MASS=MASS3,
                          CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
                          NMAX_FREQ = 10))
-
 
 #  DEFINITION DES INTERFACES
 
@@ -274,7 +271,6 @@ RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
                          STOP_FREQ_VIDE='NON',
                          INFO=1,
                         )
-
                         
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 
@@ -339,9 +335,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 FIN()
-
-
-
-
-
-

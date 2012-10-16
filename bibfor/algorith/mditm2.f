@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 16/10/2012   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C -----------------
      &              ILONG, NPF, NPFMAX, NPFTS, NTTR, NDEF, INDT, NBR0
       INTEGER       JORDRE, JTEMPS, JDEPG, JVITG, JACCG, JDEP, JFOR,
      &              JVIT, KDEPL, KVITE, KACCE, KORDR, KINST, KPTEM,
-     &              KFCHO, KDCHO, KVCHO, KADCHO,KREVC,KREVD
+     &              KFCHO, KDCHO, KVCHO, KADCHO,KREVC,KREVD, JPTEM
       INTEGER       IFR, IFM, LATEST, IERCPU,
      &              NBREDE, NBREVI, KREDC, KREDD
       REAL*8        TC, DT, DIV, TC0, TS0, TOL, TOLC, TOLN, TOLV,
@@ -114,7 +114,7 @@ C -----------------
       LOGICAL       LSAUV
       CHARACTER*8   RESU, K8B
       CHARACTER*16  NOMCMD, TYPRES, CHAIN1, CHAIN2, CHAIN3, CHAIN4,
-     &              CHAIN5, CHAIN6, CHAIN7, CHAIN8, METHOD
+     &              CHAIN5, CHAIN6, CHAIN7, CHAIN8, CHAIN9, METHOD
       CHARACTER*4   K4BID(3)
 C
 C FONCTIONS INTRINSEQUES
@@ -153,9 +153,10 @@ C     --------------------------
       CHAIN6 = '&&MDITM2.DEPNC'
       CHAIN7 = '&&MDITM2.FORNC'
       CHAIN8 = '&&MDITM2.VITNC'
+      CHAIN9 = '&&MDITM2.PTEMP'
       ILONG = 0
       CALL MDITM3 ( CHAIN1,CHAIN2,CHAIN3,CHAIN4,CHAIN5,CHAIN6,
-     &              CHAIN7,CHAIN8,ILONG,NBM,NBNL)
+     &              CHAIN7,CHAIN8,CHAIN9,ILONG,NBM,NBNL)
       CALL JEVEUO(CHAIN1,'E',JORDRE)
       CALL JEVEUO(CHAIN2,'E',JTEMPS)
       CALL JEVEUO(CHAIN3,'E',JDEPG)
@@ -164,6 +165,7 @@ C     --------------------------
       CALL JEVEUO(CHAIN6,'E',JDEP)
       CALL JEVEUO(CHAIN7,'E',JFOR)
       CALL JEVEUO(CHAIN8,'E',JVIT)
+      CALL JEVEUO(CHAIN9,'E',JPTEM)
 C
 C 2.  INITIALISATION DES PARAMETRES DE CALCUL
 C     ---------------------------------------
@@ -212,8 +214,9 @@ C     ---------------------
      &                 TYPCH,NBSEG,PHII,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
      &                 ICONFB,TCONF1,FTEST0)
       ENDIF
-      CALL ECRGEN ( NBR0,NBM,TC0,DEPG0,VITG0,ACCG0,
-     &              ZR(JDEPG),ZR(JVITG),ZR(JACCG),ZR(JTEMPS),ZI(JORDRE))
+      CALL ECRGEN ( NBR0,NBM,TC0,DT0,DEPG0,VITG0,ACCG0,
+     &              ZR(JDEPG),ZR(JVITG),ZR(JACCG),ZR(JTEMPS),ZI(JORDRE),
+     &              ZR(JPTEM))
       CALL ECRCHO ( NBR0,NBNL,OLD,ZR(JDEP),ZR(JVIT),ZR(JFOR))
 C
 C-----------------------------------------------------------------------
@@ -371,7 +374,7 @@ C
             IF ( XNBR0.EQ.0 ) THEN
                CALL JELIRA(CHAIN1,'LONMAX',ILONG,K8B)
                CALL MDITM3(CHAIN1,CHAIN2,CHAIN3,CHAIN4,CHAIN5,CHAIN6,
-     &                     CHAIN7,CHAIN8,ILONG,NBM,NBNL)
+     &                     CHAIN7,CHAIN8,CHAIN9,ILONG,NBM,NBNL)
                CALL JEVEUO(CHAIN1,'E',JORDRE)
                CALL JEVEUO(CHAIN2,'E',JTEMPS)
                CALL JEVEUO(CHAIN3,'E',JDEPG)
@@ -380,9 +383,11 @@ C
                CALL JEVEUO(CHAIN6,'E',JDEP)
                CALL JEVEUO(CHAIN7,'E',JFOR)
                CALL JEVEUO(CHAIN8,'E',JVIT)
+               CALL JEVEUO(CHAIN9,'E',JPTEM)
             ENDIF
-            CALL ECRGEN ( NBR0,NBM,TC0,DEPG,VITG,ACCG,ZR(JDEPG),
-     &                    ZR(JVITG),ZR(JACCG),ZR(JTEMPS),ZI(JORDRE))
+            CALL ECRGEN ( NBR0,NBM,TC0,DT,DEPG,VITG,ACCG,ZR(JDEPG),
+     &                    ZR(JVITG),ZR(JACCG),ZR(JTEMPS),ZI(JORDRE),
+     &                    ZR(JPTEM))
             CALL ECRCHO ( NBR0,NBNL,OLD,ZR(JDEP),ZR(JVIT),ZR(JFOR))
          ENDIF
 C
@@ -470,9 +475,9 @@ C
      &            KREDC,KREDD, KREVC,KREVD,METHOD,IBID,K4BID,'TRAN')
 C
       CALL ECRBAS ( NBSAUV,NBNL,NBM,ZR(JDEPG),ZR(JVITG),ZR(JACCG),
-     &              ZR(JTEMPS),ZI(JORDRE),ZR(JDEP),ZR(JVIT),ZR(JFOR),
-     &              ZR(KDEPL),ZR(KVITE),ZR(KACCE),ZR(KINST),ZI(KORDR),
-     &              ZR(KDCHO),ZR(KVCHO),ZR(KFCHO))
+     &              ZR(JTEMPS),ZI(JORDRE),ZR(JPTEM),ZR(JDEP),ZR(JVIT),
+     &              ZR(JFOR),ZR(KDEPL),ZR(KVITE),ZR(KACCE),ZR(KINST),
+     &              ZI(KORDR),ZR(KPTEM),ZR(KDCHO),ZR(KVCHO),ZR(KFCHO))
 C     --- IMPRESSION DES RESULTATS DE CHOC
 
       IF (NBNL.NE.0) THEN

@@ -5,7 +5,7 @@
      >                    PROFAS, INNOCE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,15 +44,19 @@ C
 C     SORTIES :
 C         CAIMPI : ENTIERS POUR CHAQUE IMPRESSION
 C                  CAIMPI(1,I) = TYPE D'EF / MAILLE ASTER (0, SI NOEUD)
-C                  CAIMPI(2,I) = NOMBRE DE POINTS DE GAUSS
+C                  CAIMPI(2,I) = NOMBRE DE POINTS (GAUSS OU NOEUDS)
 C                  CAIMPI(3,I) = NOMBRE DE SOUS-POINTS
-C                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
-C                  CAIMPI(5,I) = TYPE DE MAILLES ASTER (0, SI NOEUD)
-C                  CAIMPI(6,I) = TYPE GEOMETRIQUE AU SENS MED
-C                  CAIMPI(7,I) = NOMBRE TOTAL DE MAILLES IDENTIQUES
+C                  CAIMPI(4,I) = NOMBRE DE COUCHES
+C                  CAIMPI(5,I) = NOMBRE DE SECTEURS
+C                  CAIMPI(6,I) = NOMBRE DE FIBTRES
+C                  CAIMPI(7,I) = NOMBRE DE MAILLES A ECRIRE
+C                  CAIMPI(8,I) = TYPE DE MAILLES ASTER (0, SI NOEUD)
+C                  CAIMPI(9,I) = TYPE GEOMETRIQUE AU SENS MED
+C                  CAIMPI(10,I) = NOMBRE TOTAL DE MAILLES IDENTIQUES
 C         CAIMPK : CARACTERES POUR CHAQUE IMPRESSION
 C                  CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
 C                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
+C                  CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
 C       PROFAS : PROFIL ASTER. C'EST LA LISTE DES NUMEROS ASTER DES
 C                NOEUDS POUR LESQUELS LE CHAMP EST DEFINI
 C
@@ -71,11 +75,11 @@ C
       INTEGER NBNOEC
       INTEGER LINOEC(*)
       INTEGER ADSL
-      INTEGER CAIMPI(7,1)
+      INTEGER CAIMPI(10,1)
       INTEGER PROFAS(NBVATO)
 C
       CHARACTER*(*) NOFIMD
-      CHARACTER*80 CAIMPK(2,1)
+      CHARACTER*80 CAIMPK(3,1)
 C
       LOGICAL EXICMP(NBVATO)
 C
@@ -88,11 +92,9 @@ C
       PARAMETER ( NOMPRO = 'IRCMPN' )
 C
       CHARACTER*80 EDNOPF
-      PARAMETER ( EDNOPF='                                      '//
-     &'                                          ' )
+      PARAMETER ( EDNOPF=' ' )
       CHARACTER*80 EDNOGA
-      PARAMETER ( EDNOGA='                                      '//
-     &'                                          ' )
+      PARAMETER ( EDNOGA=' ' )
 C                         12345678901234567890123456789012
 C
       INTEGER TYPNOE
@@ -191,17 +193,26 @@ C                  CAIMPI(2,I) = NOMBRE DE POINTS DE GAUSS
 C                  CAIMPI(3,I) = NOMBRE DE SOUS-POINTS
       CAIMPI(3,1) = EDNOPG
 C                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
-      CAIMPI(4,1) = NVAL
+      CAIMPI(4,1) = EDNOPG
+C                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
+      CAIMPI(5,1) = EDNOPG
+C                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
+      CAIMPI(6,1) = EDNOPG
+C                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
+      CAIMPI(7,1) = NVAL
 C                  CAIMPI(5,I) = TYPE DE MAILLES ASTER (0, SI NOEUD)
-      CAIMPI(5,1) = 0
+      CAIMPI(8,1) = 0
 C                  CAIMPI(6,I) = TYPE GEOMETRIQUE AU SENS MED
-      CAIMPI(6,1) = TYPNOE
+      CAIMPI(9,1) = TYPNOE
 C                  CAIMPI(7,I) = NOMBRE DE MAILLES IDENTIQUES
-      CAIMPI(7,1) = NBVATO
+      CAIMPI(10,1) = NBVATO
 C                  CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
       CAIMPK(1,1) = EDNOGA
 C                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
       CAIMPK(2,1) = EDNOPF
+C                  CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
+C                                AU SENS MED
+      CAIMPK(3,1) = EDNOPF
 C
 CGN      WRITE(IFM,*) 'A LA FIN DE 4, CAIMPI :'
 CGN      WRITE(IFM,4000) (CAIMPI(IAUX,1),IAUX = 1 , 7)

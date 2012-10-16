@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ESSAI DE TRACTION AVEC MEMOIRE MAXI D'ECROUISSAGE
 # ssnd105b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -433,7 +433,7 @@ TEST_FONCTION(TEST_NOOK='NON',
                          PRECISION=1.E-3,
                          NOM_PARA='INST',
                          FONCTION=DIFSIG,),
-                      _F(VALE_CALC=-0.346509356156,
+                      _F(VALE_CALC=-0.346423,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=113.5,

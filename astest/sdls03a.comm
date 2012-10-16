@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKT - DST
 # sdls03a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,7 +49,7 @@ CA=AFFE_CARA_ELEM(   MODELE=MO,
        GROUP_MA = 'TOUT',
   EPAIS = 0.01)  )
 
-MACRO_MATR_ASSE(   MODELE=MO,            CARA_ELEM=CA,
+ASSEMBLAGE(   MODELE=MO,            CARA_ELEM=CA,
                        CHARGE=CH,           CHAM_MATER=CHMAT,
                       NUME_DDL=CO("NUM"),MATR_ASSE=(
                _F(  MATRICE = CO("MATR"),  OPTION = 'RIGI_MECA'),
@@ -60,7 +60,6 @@ MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATR,   MATR_MASS=MATM,
              CALC_FREQ=_F(  FREQ = (5., 200., ),
                          OPTION = 'BANDE'),
                            VERI_MODE=_F(  SEUIL = 1.E-5)  )
-
 
 # --------------------------------------------------------------------
 
@@ -145,7 +144,7 @@ CH2=AFFE_CHAR_MECA(  MODELE=MO2,DDL_IMPO=(
                        _F(  GROUP_NO = 'BORD2',  DY = 0.))
                     )
 
-MACRO_MATR_ASSE(   MODELE=MO2,            CARA_ELEM=CA2,
+ASSEMBLAGE(   MODELE=MO2,            CARA_ELEM=CA2,
                        CHARGE=CH2,           CHAM_MATER=CHMAT,
                       NUME_DDL=CO("NUM2"),MATR_ASSE=(
                _F(  MATRICE = CO("MATR2"),  OPTION = 'RIGI_MECA'),
@@ -155,7 +154,6 @@ MACRO_MATR_ASSE(   MODELE=MO2,            CARA_ELEM=CA2,
 MODE2=MODE_ITER_SIMULT(  MATR_RIGI=MATR2,        MATR_MASS=MATM2,
               CALC_FREQ=_F(  NMAX_FREQ = 4),
                VERI_MODE=_F(  SEUIL = 1.E-5)  )
-
 
 # --------------------------------------------------------------------
 
@@ -188,7 +186,7 @@ CA3=AFFE_CARA_ELEM(   MODELE=MO3,
        GROUP_MA = 'TOUT',
  EPAIS = 0.01)  )
 
-MACRO_MATR_ASSE(   MODELE=MO3,           CARA_ELEM=CA3,
+ASSEMBLAGE(   MODELE=MO3,           CARA_ELEM=CA3,
                        CHARGE=CH3,          CHAM_MATER=CHMAT,
                       NUME_DDL=CO("NUM3"),MATR_ASSE=(
                _F(  MATRICE = CO("MATR3"), OPTION = 'RIGI_MECA'),
@@ -199,7 +197,6 @@ MODE3=MODE_ITER_SIMULT(  MATR_RIGI=MATR3,   MATR_MASS=MATM3,
              CALC_FREQ=_F(  FREQ = ( 80., ),
                          OPTION = 'CENTRE'),
                            VERI_MODE=_F(  SEUIL = 1.E-5)  )
-
 
 # --------------------------------------------------------------------
 
@@ -283,7 +280,7 @@ CH4=AFFE_CHAR_MECA(  MODELE=MO4,DDL_IMPO=(
                        _F(  GROUP_NO = 'BORD2',  DY = 0.))
                     )
 
-MACRO_MATR_ASSE(   MODELE=MO4,            CARA_ELEM=CA4,
+ASSEMBLAGE(   MODELE=MO4,            CARA_ELEM=CA4,
                        CHARGE=CH4,           CHAM_MATER=CHMAT,
                       NUME_DDL=CO("NUM4"),MATR_ASSE=(
                _F(  MATRICE = CO("MATR4"),  OPTION = 'RIGI_MECA'),
@@ -293,7 +290,6 @@ MACRO_MATR_ASSE(   MODELE=MO4,            CARA_ELEM=CA4,
 MODE4=MODE_ITER_SIMULT(  MATR_RIGI=MATR4,  MATR_MASS=MATM4,
               CALC_FREQ=_F(  NMAX_FREQ = 4),
                VERI_MODE=_F(  SEUIL = 1.E-5) )
-
 
 # --------------------------------------------------------------------
 
@@ -310,9 +306,3 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 # --------------------------------------------------------------------
 FIN()
 #
-
-
-
-
-
-

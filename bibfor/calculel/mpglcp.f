@@ -1,7 +1,7 @@
       SUBROUTINE MPGLCP(TYPECP,NBNOLO,COORDO,ALPHA,BETA,
-     &                  GAMMA,PGL)
+     &                  GAMMA,PGL,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*1 TYPECP
-      INTEGER     NBNOLO
+      INTEGER     NBNOLO,IRET
       REAL*8      COORDO(*),ALPHA,BETA,GAMMA,PGL(3,3)
 C     --- ARGUMENTS ---
 C ----------------------------------------------------------------------
@@ -48,6 +48,7 @@ C  POUR LES COQUES, SEULS ALPHA ET BETA SONT A FOURNIR
 C
 C OUT :
 C   PGL     R*   LA MATRICE DE PASSAGE DE DIMENSION 3*3
+C   IRET    I    CODE RETOUR
 C ----------------------------------------------------------------------
 C RESPONSABLE SELLENET N.SELLENET
 C
@@ -73,7 +74,7 @@ C       CALCUL DE LA MATRICE DE PASSAGE GLOBAL -> INTRINSEQUE
         IF (NBNOLO.EQ.3) THEN
           CALL DXTPGL(COORDO,PGL)
         ELSEIF (NBNOLO.EQ.4) THEN
-          CALL DXQPGL(COORDO,PGL)
+          CALL DXQPGL(COORDO,PGL,'C',IRET)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF

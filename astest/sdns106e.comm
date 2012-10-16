@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 #  TITRE  : REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME (MODELE GLRC)
 # sdns106e.para = tps_job 180 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,8 +77,8 @@ MAT = DEFI_MATERIAU(ELAS=_F(E=EGM,
                             AMOR_BETA=0.0,),
                     GLRC_DM =_F(GAMMA_T = 0.02,
                                 GAMMA_F = 0.05,
-                                SYT     = 4.7E5,
-                                SYF     = 1.6E4,
+                                NYT     = 4.7E5,
+                                MYF     = 1.6E4,
                                 EF      = EGF,
                                 NUF     = NUF,),);
 
@@ -122,7 +122,7 @@ def finst(tim,t1):
 
 f_char = FORMULE(NOM_PARA='INST',VALE=' finst(INST,t1) ');
 
-MACRO_MATR_ASSE(MODELE=MOD,
+ASSEMBLAGE(MODELE=MOD,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARA_ELE,
                 CHARGE=COND_L,

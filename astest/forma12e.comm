@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE 'TP DYNAMIQUE NON LINEAIRE'
 # forma12e.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,14 +65,6 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                    DY=0.0,
                                    DZ=0.0,),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
-                CHAM_MATER=CHMAT,
-                CHARGE=BLOCAGE,
-                NUME_DDL=CO('NUMEDDL'),
-                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),);
 freq = 25.0;
 
 omega = ((2.0 * pi) * freq);
@@ -92,11 +84,20 @@ FOSA=AFFE_CHAR_MECA(MODELE=MODELE,
                     PRES_REP=_F(GROUP_MA='Moteur',
                                 PRES=(Balourd / surf),),);
 
-FOEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                    CHARGE=FOSA,);
 
-FOAS=ASSE_VECTEUR(VECT_ELEM=FOEL,
-                  NUME_DDL=NUMEDDL,);
+ASSEMBLAGE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CHARGE=BLOCAGE,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("FOAS"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=FOSA),),);
+
+
 
 sin25 = FORMULE(VALE='sin(2*pi*freq *INST)',
                 NOM_PARA='INST',);

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE 'FLAMBEMENT' D'UNE CORNIERE ELASTIQUE
 # ssll103b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -174,9 +174,7 @@ RIGASG_2=ASSE_MATRICE(MATR_ELEM=RIGELG_2,NUME_DDL=NU)
 NB_MODES = INFO_MODE( MATR_RIGI=RIGAS,
                       MATR_RIGI_GEOM=RIGASG_2,
                       TYPE_MODE='MODE_FLAMB',
-                      CHAR_CRIT_MIN=-9.97E+6,
-                      CHAR_CRIT_MAX=-1.E6
-                            )
+                      CHAR_CRIT=(-9.97E+6,-1.E+6))
                             
 TEST_TABLE(
            VALE_CALC_I=10,
@@ -318,9 +316,7 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
 NB_MODE = INFO_MODE( MATR_A=RIGAS,
                       MATR_B=RIGASG_2,
                       TYPE_MODE='GENERAL',
-                      CHAR_CRIT_MIN=-9.97E+6,
-                      CHAR_CRIT_MAX=-1.E6
-                            )
+                      CHAR_CRIT=(-9.97E+6,-1.E+6))
                             
 TEST_TABLE(TABLE=NB_MODE,
            NOM_PARA='NB_MODE',

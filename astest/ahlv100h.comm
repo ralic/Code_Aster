@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 # ahlv100h.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,27 +68,16 @@ IMPE=AFFE_CHAR_ACOU(
 #
 # ASSEMBLAGE
 #
-MACRO_MATR_ASSE(
+ASSEMBLAGE(
      MODELE=MO,
      CHARGE=IMPE,
      CHAM_MATER=CHM,
      NUME_DDL=CO("NDDL"),MATR_ASSE=(
      _F(  MATRICE = CO("MATK"), OPTION = 'RIGI_ACOU'),
                _F(  MATRICE = CO("MATM"), OPTION = 'MASS_ACOU'),
-               _F(  MATRICE = CO("MATA"), OPTION = 'AMOR_ACOU'))
+               _F(  MATRICE = CO("MATA"), OPTION = 'AMOR_ACOU')),
+     VECT_ASSE=(_F(VECTEUR=CO("VECAS"),OPTION='CHAR_ACOU',CHARGE=VELO)),
                 )
-
-VECEL=CALC_VECT_ELEM(
-         OPTION='CHAR_ACOU',
-         CHAM_MATER=CHM,
-         CHARGE=VELO
-        )
-
-VECAS=ASSE_VECTEUR(
-         VECT_ELEM=VECEL,
-         NUME_DDL=NDDL
-        )
-
 #
 #  REPONSE HARMONIQUE
 #
@@ -204,7 +193,6 @@ MODES=MODE_ITER_SIMULT(  MATR_RIGI=MATKR,
                            CALC_FREQ=_F( OPTION = 'BANDE',
                                       FREQ = (1., 1000.,))
                          )
-
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',

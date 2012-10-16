@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC 3 DISQUES (CADYRO : DLRR08)
 # REFERENCE : M. LALANNE, G. FERRARIS -        RORORDYNAMIC, PREDICTION IN
 # ENGINEERING - pp 68-71
@@ -98,7 +98,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                    ))
                                     
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
                 CHARGE=BLOQUAGE,
@@ -125,7 +125,6 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(3.,3000.)));
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -207,7 +206,6 @@ MODEG=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                                     NMAX_FREQ=16))
 
 
-
 MODEZ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        MATR_AMOR=GYOM,
@@ -215,7 +213,6 @@ MODEZ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=12 ))
-
 
 
 
@@ -355,7 +352,6 @@ MOD2ETAG=MODE_ITER_SIMULT(MATR_RIGI=RIGE,
                           METHODE='QZ',
                           CALC_FREQ=_F(OPTION='TOUT'),)
 
-
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
@@ -417,9 +413,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 FIN()
-
-
-
-
-
 

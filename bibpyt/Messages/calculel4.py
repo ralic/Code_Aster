@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,11 +153,6 @@ Risques et conseils :
    L'option %(k1)s est nécessaire pour le calcul de l'option %(k2)s.
    Or %(k1)s est un champ qui ne contient que des sous-points, ce cas n'est pas traité.
    Vous devez d'abord extraire %(k1)s sur un sous-point avec la commande POST_CHAMP.
-"""),
-
-19 : _(u"""
- Il est impossible d'utiliser plusieurs chargements de pesanteur en présence d'éléments de
- couplage pesanteur - surface libre d'un fluide (modélisation '2D_FLUI_PESA).
 """),
 
 20 : _(u"""

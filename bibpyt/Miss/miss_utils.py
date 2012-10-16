@@ -1,4 +1,4 @@
-#@ MODIF miss_utils Miss  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_utils Miss  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,7 +83,7 @@ class MISS_PARAMETER(object):
             'PAS_INST' : None,
             'FICHIER_SOL_INCI' : 'NON', #Si ondes inclinees : None
             #XXX en attendant de savoir si on réutilisera
-            'ISSF' : 'NON',
+            #'ISSF' : 'NON',
         }
         self._keywords = {}
         # une seule occurence du mcfact

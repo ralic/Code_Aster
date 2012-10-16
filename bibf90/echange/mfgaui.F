@@ -1,9 +1,10 @@
-      SUBROUTINE MFGAUI( FID, NORDR, K64, ITYP, NBN, NDIM, CRET )
+      SUBROUTINE MFGAUI( FID, NORDR, K64, ITYP, NBN,
+     &                   NDIM, NOMASU, CRET )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFGAUI ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFGAUI ECHANGE  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -20,7 +21,8 @@
 ! ================================================================== 
       IMPLICIT NONE
       INTEGER FID,NORDR,ITYP,NBN,CRET,NDIM,TYMASU,NBMASU
-      CHARACTER*64 K64,GINAME,ISNAME
+      CHARACTER*64 K64,GINAME
+      CHARACTER*(*) NOMASU
 #ifdef _DISABLE_MED
       CALL U2MESS('F','FERMETUR_2')
 #else
@@ -33,7 +35,7 @@
       FID4 = FID
       NORDR4 = NORDR
       CALL MLCLCI( FID4, NORDR4, K64, ITYP4, NDIM4, NBN4, GINAME,
-     &             ISNAME, NBMAS4, TYMAS4, CRET4 )
+     &             NOMASU, NBMAS4, TYMAS4, CRET4 )
       ITYP = ITYP4
       NBN = NBN4
       CRET = CRET4
@@ -41,7 +43,7 @@
       NBMASU = NBMAS4
 #else
       CALL MLCLCI( FID, NORDR, K64, ITYP, NDIM, NBN, GINAME,
-     &             ISNAME, NBMASU, TYMASU, CRET )
+     &             NOMASU, NBMASU, TYMASU, CRET )
 #endif
 ! END MED
 #endif

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE SANS DISQUE 
 # sdll141c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,7 +90,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                     
 #MATRICES ASSEMBLEES K, M ET C
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
                 CHARGE=BLOQUAGE,
@@ -117,7 +117,6 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
                        FREQ=(3.,3000.)));
-
 
                                   
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -166,14 +165,12 @@ MODEG=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                                      FREQ=1.,
                                      NMAX_FREQ=30),)
 
-
 MODEZ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        MATR_AMOR=GYOM,
                        METHODE='QZ',
                        VERI_MODE=_F(SEUIL=1.E-3),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',))
-
 
 
 
@@ -296,9 +293,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 FIN();
-
-
-
-
-
-

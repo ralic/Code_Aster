@@ -12,7 +12,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C
           NM = 0
           NJ = 0
           NN = 0
-          IF ( MCL.EQ.10 ) THEN
+          IF ( MCL.EQ.10 .OR. MCL.EQ.15 ) THEN
             CALL GETVEM(NOMA,'GROUP_MA_POI1',MCLF(MCL),
      &                 'GROUP_MA_POI1',IOC,IARG,LMAX,ZK8(JDLS),NG)
             IF ( NG .EQ. 0 ) THEN
@@ -229,7 +229,7 @@ C     --------------------------------------------------
             ENDIF
  81       CONTINUE
         ENDIF
-        IF ( NBOCC(3).NE.0 .OR. NBOCC(10).NE.0) THEN
+        IF ( NBOCC(3).NE.0 .OR. NBOCC(10).NE.0 .OR. NBOCC(15).NE.0) THEN
           DO 82 I = NBEPO+1 , NBEPO+NBEDI
             IF (ZI(JDLM+NUMMAI-1).EQ.NTYELE(I)) THEN
                CALL U2MESK('A','MODELISA_39',1,NOMMAI)

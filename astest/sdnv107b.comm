@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE POUTRE PLASTIQUE EN TRACTION DYNAMIQUE CONDENSEE PAR 
 # sdnv107b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -174,7 +174,7 @@ CHARGE1B=AFFE_CHAR_MECA(  MODELE=MODELE1,DDL_IMPO=(
                );
                
 
-MACRO_MATR_ASSE(MODELE=MODELE1,
+ASSEMBLAGE(MODELE=MODELE1,
                 CHAM_MATER=CHAMAT,
                 CHARGE=(CHARGE1),
                 CARA_ELEM=PARAM1,
@@ -194,9 +194,8 @@ MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATR1,   MATR_MASS=MATM1,
                                        ),
                            VERI_MODE=_F(  STOP_ERREUR='NON')
                          );
-
                          
-MACRO_MATR_ASSE(MODELE=MODELE1,
+ASSEMBLAGE(MODELE=MODELE1,
                 CHAM_MATER=CHAMATN,
                 CHARGE=(CHARGE1B),
                 CARA_ELEM=PARAM1B,
@@ -214,7 +213,6 @@ MODSTA1=MODE_ITER_SIMULT(  MATR_RIGI=MATRN,   MATR_MASS=MATMN,
                                        ),
                            VERI_MODE=_F(  STOP_ERREUR='NON')
                          );
-
                          
 INTERDY1=DEFI_INTERF_DYNA(  NUME_DDL=NUME1,
             INTERFACE=_F( NOM = 'DROITE',
@@ -302,7 +300,7 @@ CHARGEB=AFFE_CHAR_MECA(  MODELE=MODELB,
                LIAISON_UNIF=(_F(GROUP_NO = 'SURF3',DDL=('DX')),),
                );
                                                                      
-MACRO_MATR_ASSE(MODELE=MODELB,
+ASSEMBLAGE(MODELE=MODELB,
                 CHAM_MATER=CHMATB,
                 CARA_ELEM=PARAMB,
                 CHARGE=(COND_LIB,CHARGEB),
@@ -501,9 +499,4 @@ TEST_RESU(RESU=_F(GROUP_NO='PC2',
 
 FIN( ); 
                       
-
-
-
-
-
 

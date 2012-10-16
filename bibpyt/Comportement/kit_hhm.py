@@ -1,4 +1,4 @@
-#@ MODIF kit_hhm Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF kit_hhm Comportement  DATE 15/10/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ loi = LoiComportement(
    nom_vari       = None, # depend des modeles de comportement 
    mc_mater       = None,
    modelisation   = ('D_PLAN_HHM','D_PLAN_HHMS','D_PLAN_HHMD','AXIS_HHM','AXIS_HHMS','AXIS_HHMD','3D_HHM','3D_HHMS','3D_HHMD','D_PLAN_HH2MD D_PLAN_HH2MS','AXIS_HH2MD','AXIS_HH2MS','3D_HH2MD','3D_HH2MS'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
+   deformation    = ('PETIT'),
    nom_varc       = None,
    algo_inte         = ('SANS_OBJET'),
    type_matr_tang = None,

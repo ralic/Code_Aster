@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103g.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,6 +140,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    CONTACT = CHCONT,
                    COMP_INCR=(_F(RELATION='VMIS_JOHN_COOK',
                                  DEFORMATION='GDEF_LOG',
+                                 ALGO_INTE='BRENT',
                                  ITER_INTE_MAXI=30,
                                  TOUT='OUI',),
                               _F(RELATION='ELAS',
@@ -156,6 +157,20 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    SOLVEUR=_F(SYME='OUI',),
+
+                  SUIVI_DDL=(_F(NOM_CMP    ='V1',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V2',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 GROUP_MA = 'VOL',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                                 ),
+
+
                    );
 
 VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
@@ -184,7 +199,7 @@ DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
 # TESTS DE DEPLACEMENTS, VITESSES ET ACCELERATIONS
 
 TEST_RESU(RESU=(_F(GROUP_NO='A2',
-                   INST=2.4999999999999999E-07,
+                   INST=2.5E-07,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',

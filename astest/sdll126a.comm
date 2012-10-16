@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 # sdll126a.para = tps_job 600 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,21 +80,6 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                   _F(GROUP_MA='ROTOR',
                                      DRX=0.0,),),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARELEM,
-                CHARGE=BLOQUAGE,
-                NUME_DDL=CO('NUMEDDL'),
-                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),
-                           _F(MATRICE=CO('MASDIAG'),
-                              OPTION='MASS_MECA_DIAG',),
-                           _F(MATRICE=CO('GYRO'),
-                              OPTION='MECA_GYRO',),
-                           _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
 
 balou = 0.05;
 
@@ -110,11 +95,6 @@ tfin = 5.0;
 pdtf = 1e-04;
 
 
-AMOGYRO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYRO,
-                                  COEF_R=OM,),
-                               _F(MATR_ASSE=AMOR,
-                                  COEF_R=1.0,),),);
-
 bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='N_DIS2',
                                       FY=(balou * (OM ** 2)),),);
@@ -122,18 +102,35 @@ bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
 bal_FZ=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='N_DIS2',
                                       FZ=(balou * (OM ** 2)),),);
+ASSEMBLAGE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                CHARGE=BLOQUAGE,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('MASDIAG'),
+                              OPTION='MASS_MECA_DIAG',),
+                           _F(MATRICE=CO('GYRO'),
+                              OPTION='MECA_GYRO',),
+                           _F(MATRICE=CO('AMOR'),
+                              OPTION='AMOR_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("bal_Yass"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=bal_FY),
+                           _F(VECTEUR=CO("bal_Zass"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=bal_FZ),
+                           ),
+            );
 
-bal_FYe=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                       CHARGE=bal_FY,);
 
-bal_FZe=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                       CHARGE=bal_FZ,);
-
-bal_Yass=ASSE_VECTEUR(VECT_ELEM=bal_FYe,
-                      NUME_DDL=NUMEDDL,);
-
-bal_Zass=ASSE_VECTEUR(VECT_ELEM=bal_FZe,
-                      NUME_DDL=NUMEDDL,);
+AMOGYRO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYRO,
+                                  COEF_R=OM,),
+                               _F(MATR_ASSE=AMOR,
+                                  COEF_R=1.0,),),);
 
 fory = FORMULE(VALE='cos(OM*INST)',
                NOM_PARA='INST',);

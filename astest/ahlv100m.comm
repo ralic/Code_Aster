@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE
 # ahlv100m.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,23 +72,15 @@ IMPE=AFFE_CHAR_ACOU(       MODELE=MODEL,
 # ASSEMBLAGE
 #
 
-MACRO_MATR_ASSE(       MODELE=MODEL,
+ASSEMBLAGE(       MODELE=MODEL,
                         CHARGE=IMPE,
                     CHAM_MATER=MATER,
                       NUME_DDL=CO("NUMERO"),MATR_ASSE=(
                      _F(  MATRICE = CO("MATK"), OPTION = 'RIGI_ACOU'),
                                _F(  MATRICE = CO("MATM"), OPTION = 'MASS_ACOU'),
-                               _F(  MATRICE = CO("MATA"), OPTION = 'AMOR_ACOU'))
+                               _F(  MATRICE = CO("MATA"), OPTION = 'AMOR_ACOU')),
+                      VECT_ASSE=(_F(VECTEUR=CO("CH_AS"),OPTION='CHAR_ACOU',CHARGE=VITE)),
                 )
-
-CH_EL=CALC_VECT_ELEM(        OPTION='CHAR_ACOU',
-                           CHAM_MATER=MATER,
-                               CHARGE=VITE
-                       )
-
-CH_AS=ASSE_VECTEUR(    VECT_ELEM=CH_EL,
-                          NUME_DDL=NUMERO
-                     )
 
 #
 # CALCUL DES MODES

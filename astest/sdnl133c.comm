@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE ROTOR FISSURE TOURNANT SOUMIS A UN MOMENT DE FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,7 +99,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DRX=0.,),),);
 
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
                 CHARGE=BLOQUAGE,
@@ -115,9 +115,17 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIAS,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(-1,fmax,),),);
 
+CHA_FY=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(
+                                      GROUP_NO='PAL_D',
+                                      MY=-1.,),);
 
+CHA_FZ=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(
+                        GROUP_NO='PAL_D',
+          MZ=0.,),);
 
-MACRO_MATR_ASSE(MODELE=MODELE,
+ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEF,
                 CHARGE=BLOQUAGE,
@@ -130,6 +138,13 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                               OPTION='AMOR_MECA',),
                            _F(MATRICE=CO('GYOMAF'),
                               OPTION='MECA_GYRO',),
+                           ),
+                VECT_ASSE=(_F(VECTEUR=CO("VASFY"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=CHA_FY),
+                           _F(VECTEUR=CO("VASFZ"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=CHA_FZ),
                            ),);
 
 RIGYEL=CALC_MATR_ELEM(OPTION='RIGI_GYRO',
@@ -145,7 +160,6 @@ MODFF=MODE_ITER_SIMULT(MATR_RIGI=RIGIAF,
                        VERI_MODE=_F(STURM='NON',SEUIL=1.E-4),
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(-1,fmax,),),);
-
 
 
 MODEF=EXTR_MODE(FILTRE_MODE=_F(MODE=MODFF, NUME_MODE=(1,2,), ),);
@@ -166,31 +180,6 @@ PROJ_BASE(  BASE=BMOD,
                              MATR_ASSE = RIGIAF)),
              )
 
-
-CHA_FY=AFFE_CHAR_MECA(MODELE=MODELE,
-                      FORCE_NODALE=_F(
-                                      GROUP_NO='PAL_D',
-                                      MY=-1.,),);
-
-CHA_FZ=AFFE_CHAR_MECA(MODELE=MODELE,
-                      FORCE_NODALE=_F(
-                        GROUP_NO='PAL_D',
-          MZ=0.,),);
-
-
-VEC_FY=CALC_VECT_ELEM(  CHARGE=(CHA_FY,),
-                         OPTION='CHAR_MECA',
-                         CARA_ELEM=CARELEM,
-    );
-
-VEC_FZ=CALC_VECT_ELEM(  CHARGE=(CHA_FZ,),
-                         OPTION='CHAR_MECA',
-                         CARA_ELEM=CARELEM,
-    );
-
-VASFZ=ASSE_VECTEUR(  VECT_ELEM=VEC_FZ,  NUME_DDL=NUD );
-
-VASFY=ASSE_VECTEUR(  VECT_ELEM=VEC_FY,  NUME_DDL=NUD );
 
 F_K1=LIRE_FONCTION(UNITE=38,
                   NOM_PARA='ABSC',
@@ -320,9 +309,3 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.83088061479e-09,
               )
 
 FIN();
-
-
-
-
-
-

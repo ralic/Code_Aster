@@ -1,6 +1,6 @@
       SUBROUTINE OP0019()
 
-C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,12 +43,13 @@ C     NBEMB   4 : NOMBRE D'ELEMENTS DE TYPE "MEMBRANE"
       PARAMETER  (NBEL3=NBEGB   +NBEMB)
       PARAMETER  (NBTEL=NBEL1+NBEL2+NBEL3)
 C     NBMCF  : NOMBRE DE MOTS CLES FACTEUR DE L'OPERATEUR
-      PARAMETER  (NBMCF=14)
+      PARAMETER  (NBMCF=15)
 C ----------------------------------------------------------------------
       INTEGER        NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3),NBCART,IRET,I
       INTEGER        NTYELE(NBTEL),NBVER,NLM,NLG,LXC,LXO,NLN,NLJ,LXA
       INTEGER        LXK,LXB,LXM,LXPF,LXGB,LXMB,LMAX,IFM,NIV,LXP,NBVM
       INTEGER        LXD,NBOCCD,LXRP,NOEMAF,LXRM,NOEMF2,NBMAIL,NBMTRD
+      INTEGER        LXMR,NOEMF3
       INTEGER        NPOUTR,NDISCR,NCOQUE,NCABLE,NBARRE,NMASSI,NGRILL
       INTEGER        NGRIBT,NMEMBR,ICLF,IOC,ICLE,NG,IARG
       INTEGER        DEPART,JDNM,IXNW,JDLN,JDLM,JDLS
@@ -70,7 +71,8 @@ C ----------------------------------------------------------------------
      &               'BARRE           ','MASSIF          ',
      &               'POUTRE_FLUI     ','RIGI_PARASOL    ',
      &               'GRILLE          ','RIGI_MISS_3D    ',
-     &               'DISCRET_2D      ','MEMBRANE        '/
+     &               'DISCRET_2D      ','MEMBRANE        ',
+     &               'MASS_AJOU       '/
 C     !!!! A L'ORDRE DE STOCKAGE
 C        NOMEL1 : POUTRE(13) DISCRET(8) COQUE(28) CABLE(2) BARRE(2)
 C        NOMEL2 : MASSIF(53)
@@ -121,7 +123,7 @@ C        NOMEL3 : GRILLE(6) MEMBRANE(4)
      &   'MEGCTR3         ','MEMBTR3         ','MEMBTR6         ',
      &   'MEMBQU4         ','MEMBQU8         '/
 
-      DATA NBMCLE /  2,2,4,4,2,2,2,2,2,1,2,0,4,2/
+      DATA NBMCLE /  2,2,4,4,2,2,2,2,2,1,2,0,4,2,1/
 C --- ------------------------------------------------------------------
       CALL JEMARQ()
       IRET=0
@@ -294,6 +296,13 @@ C --- VERIFICATION DE LA DIMENSION DES RAIDEURS MISS
          CALL ACEVRM(NBOCC(12),NOMA,LXRM,NOEMF2,IRET)
          LMAX = MAX(LMAX,LXRM)
       END IF
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA DIMENSION DES MASSES REPARTIES
+      LXMR = 0
+      IF (NBOCC(15).NE.0) THEN
+         CALL ACEVMR(NBOCC(15),NOMA,LXMR,NOEMF3,IRET)
+         LMAX = MAX(LMAX,LXMR)
+      END IF
 
 C --- ------------------------------------------------------------------
 C --- RECUPERATION DU NB DE MAILLES INITIALES (MAILLAGE)
@@ -461,6 +470,11 @@ C --- ------------------------------------------------------------------
 C --- AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "MEMBRANE"
       IF (NBOCC(14).NE.0) THEN
          CALL ACEAMB(NOMU,NOMA,LMAX,LOCACO,LOCAGB,NBOCC(14))
+      END IF
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES MATRICES AUX MASSES REPARTIES
+      IF (NBOCC(15).NE.0) THEN
+         CALL ACEAMR(NOMA,NOMO,LMAX,NOEMF3,NBOCC(15),IVR,IFM)
       END IF
 
 C --- ------------------------------------------------------------------

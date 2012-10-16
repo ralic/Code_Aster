@@ -1,7 +1,7 @@
       SUBROUTINE OP0041()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,10 +48,9 @@ C         FISS//'.LTNO'
 C         FISS//'.LNNO'
 C         FISS//'.GRLTNO'
 C         FISS//'.GRLNNO'
-C         FISS//'.MAILFISS .INDIC'
-C         FISS//'.MAILFISS  .HEAV'
-C         FISS//'.MAILFISS  .CTIP'
-C         FISS//'.MAILFISS  .HECT'
+C         FISS//'.MAILFISS.HEAV'
+C         FISS//'.MAILFISS.CTIP'
+C         FISS//'.MAILFISS.HECT'
 C         FISS//'.MAILFISS.MAFOND'
 C         FISS//'.FONDFISS'
 C         FISS//'.FONDMULT'
@@ -429,10 +428,9 @@ C-----------------------------------------------------------------------
 C     CALCUL DE L'ENRICHISSEMENT, DES POINTS DU FOND DE FISSURE
 C
 C     ON ENRICHI LA SD FISS_XFEM DE
-C         FISS//'.MAILFISS .INDIC'
-C         FISS//'.MAILFISS  .HEAV'
-C         FISS//'.MAILFISS  .CTIP'
-C         FISS//'.MAILFISS  .HECT'
+C         FISS//'.MAILFISS.HEAV'
+C         FISS//'.MAILFISS.CTIP'
+C         FISS//'.MAILFISS.HECT'
 C         FISS//'.MAILFISS.MAFOND'
 C         FISS//'.FONDFISS'
 C         FISS//'.FONDMULT'

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
         CALL ULOPEN ( IFMIS, FICHI, ' ', 'NEW', 'O' )
       ENDIF
       CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ,ICF)
-C      WRITE(6,*) 'FREQ= ',FREQ,' IFREQ= ',IFREQ,' IF= ',ICF
+      WRITE(6,*) 'FREQ NFREQ= ',FREQ,NFREQ,' IFREQ= ',IFREQ,' IF= ',ICF
       CALL GETVID ( ' ', 'BASE'          , 1,IARG,1, BASEMO, N4 )
       CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,IARG,1, NUMGEN, N2 )
 C
@@ -119,7 +119,7 @@ C
       ENDIF
       DO 1 I1 = 1,NBMODE
         NSAUT = NFREQ
-        IF (ICF.EQ.1) NSAUT = NFREQ-1
+        IF (ICF.GE.1) NSAUT = NFREQ-1
         IF (I1.EQ.1) NSAUT = IFREQ + NSAU0
         DO 2 I = 1, NSAUT
           READ(IFMIS,'(A72)') TEXTE

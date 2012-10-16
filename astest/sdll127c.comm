@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE CALCUL MODAL D'UN ARBRE A SECTION CIRCULAIRE VARIABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -10071,7 +10071,7 @@ CON_LIM=AFFE_CHAR_MECA(MODELE=MO,
 
 
 # ASSEMBLAGE DES MATRICES ELEMENTAIRES
-MACRO_MATR_ASSE(MODELE=MO,
+ASSEMBLAGE(MODELE=MO,
                 CHAM_MATER=MAT,
                 CARA_ELEM=CAEL,
                 CHARGE=CON_LIM,
@@ -10090,7 +10090,6 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        #METHODE='QZ',
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(3.,4750.)));
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -10198,7 +10197,6 @@ MOD2ETAG=MODE_ITER_SIMULT(MATR_RIGI=RIGE,
                           MATR_AMOR=OMGE,
                           METHODE='QZ',
                           CALC_FREQ=_F(OPTION='TOUT'),)
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

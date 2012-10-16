@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB MAILLAGE REGULIER
 # ssls124b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -267,7 +267,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC= 1.93316307E-03,
                    VALE_REFE=Uz,
-                   PRECISION=0.050000000000000003,),
+                   TOLE_MACHINE=1.E-4,      #TODO variabilite
+                   PRECISION=0.05,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
                    REFERENCE='SOURCE_EXTERNE',
@@ -276,7 +277,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC= 1.91066292E-03,
                    VALE_REFE=Uz,
-                   PRECISION=0.050000000000000003,),
+                   TOLE_MACHINE=1.E-4,      #TODO variabilite
+                   PRECISION=0.05,),
                 ),
           )
 
@@ -336,6 +338,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=0.015441970,
                    VALE_REFE=Uz,
+                   TOLE_MACHINE=4.E-3,      #TODO variabilite
                    PRECISION=0.050000000000000003,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
@@ -345,6 +348,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=0.015257924,
                    VALE_REFE=Uz,
+                   TOLE_MACHINE=4.E-3,      #TODO variabilite
                    PRECISION=0.050000000000000003,),
                 ),
           )
@@ -405,7 +409,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=0.261189668,
                    VALE_REFE=Uz,
-                   PRECISION=0.10000000000000001,),
+                   TOLE_MACHINE=0.10,      #TODO variabilite
+                   PRECISION=0.10,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
                    REFERENCE='SOURCE_EXTERNE',
@@ -414,7 +419,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=0.257211957,
                    VALE_REFE=Uz,
-                   PRECISION=0.10000000000000001,),
+                   TOLE_MACHINE=0.10,      #TODO variabilite
+                   PRECISION=0.10,),
                 ),
           )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 # sdll112a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,7 +65,7 @@ COND_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
 
 # --------------------------------------------------------------------
 
-MACRO_MATR_ASSE(  MODELE=MODELE,        CARA_ELEM=CARA_ELE,
+ASSEMBLAGE(  MODELE=MODELE,        CARA_ELEM=CARA_ELE,
                      CHAM_MATER=CHAMPMAT,  CHARGE=COND_LIM,
                      NUME_DDL=CO("NUME"),MATR_ASSE=(
                      _F(  MATRICE = CO("RIGIDITE"),  OPTION = 'RIGI_MECA'),
@@ -88,7 +88,6 @@ MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,    MATR_MASS=MASSE,
                                METHODE='TRI_DIAG',
                            CALC_FREQ=_F(  NMAX_FREQ = 10)
                   )
-
 
 MODE=NORM_MODE(reuse=MODE,   MODE=MODE,    NORME='TRAN_ROTA',
                   )
@@ -938,9 +937,3 @@ TEST_RESU(RESU=(_F(
 #
 FIN( )
 #
-
-
-
-
-
-

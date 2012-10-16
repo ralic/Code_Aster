@@ -7,7 +7,7 @@
       CHARACTER*(*) FORM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,7 +35,7 @@ C     VARIABLES LOCALES
 C
       INTEGER      IRET
       CHARACTER*1  NOMCMP(3)
-      CHARACTER*8  TYPECH
+      CHARACTER*8  TYPECH,SDCARM
       CHARACTER*19 CHREL1, CHREL2, CHREL3
       CHARACTER*64 NOMMED
       CHARACTER*80 TITRZ
@@ -63,22 +63,23 @@ C     -----------------------
       IF (FORM.EQ.'MED') THEN
 C     -------------------------
         NOMMED=CHREL1
+        SDCARM=' '
         TYPECH='ELEM'
 
         CALL IRCEME(IFI,NOMMED,CHREL1,TYPECH,MODELE,0,NOMCMP,' ',
-     &        ' ',0,0.D0,0,0,0,IRET)
+     &        ' ',0,0.D0,0,0,0,SDCARM,IRET)
         CALL ASSERT(IRET.EQ.0)
 
         NOMMED=CHREL2
         CALL IRCEME(IFI,NOMMED,CHREL2,TYPECH,MODELE,0,NOMCMP,' ',
-     &        ' ',0,0.D0,0,0,0,IRET)
+     &        ' ',0,0.D0,0,0,0,SDCARM,IRET)
         CALL ASSERT(IRET.EQ.0)
 
         NOMMED=CHREL3
 
         IF (L3D) THEN
           CALL IRCEME(IFI,NOMMED,CHREL3,TYPECH,MODELE,0,NOMCMP,' ',
-     &          ' ',0,0.D0,0,0,0,IRET)
+     &          ' ',0,0.D0,0,0,0,SDCARM,IRET)
           CALL ASSERT(IRET.EQ.0)
         ENDIF
 

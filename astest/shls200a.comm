@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
 # shls200a.para = tps_job 310 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,7 +184,9 @@ CH2=AFFE_CHAR_MECA( MODELE=MO2,
                            ),
                   )
 
-MACRO_MATR_ASSE(MODELE=MO1,
+CHARGE=AFFE_CHAR_MECA( MODELE=MO1, FORCE_NODALE=_F(GROUP_NO= 'PCHAR1',FZ = 1),);
+
+ASSEMBLAGE(MODELE=MO1,
                 CHAM_MATER=CHMAT1,
                 CARA_ELEM=CA1,
                 CHARGE=CH1,
@@ -193,8 +195,11 @@ MACRO_MATR_ASSE(MODELE=MO1,
                 MATR_ASSE=(_F(MATRICE=CO('MATR1'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MATM1'),
-                              OPTION='MASS_MECA',),),);
-MACRO_MATR_ASSE(MODELE=MO2,
+                              OPTION='MASS_MECA',),),
+                VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),
+                              OPTION='CHAR_MECA',
+                              CHARGE=CHARGE),),);
+ASSEMBLAGE(MODELE=MO2,
                 CHAM_MATER=CHMAT2,
                 CARA_ELEM=CA2,
                 CHARGE=CH2,
@@ -242,17 +247,6 @@ MATD2=COMB_MATR_ASSE( COMB_R=( _F( MATR_ASSE=MATM2,
                                   COEF_R = b ),
                              )
                     )
-CHARGE=AFFE_CHAR_MECA( MODELE=MO1,
-                         FORCE_NODALE=_F(
-                                          GROUP_NO= 'PCHAR1',
-                                          FZ = 1
-                                         )
-                        )
-VECTEL=CALC_VECT_ELEM( CHARGE=CHARGE,
-                       OPTION='CHAR_MECA'
-                      )
-VECTASS=ASSE_VECTEUR(VECT_ELEM=VECTEL,NUME_DDL=NUMDDL1)
-
 
 INTERF1=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL1,
                              INTERFACE=_F( NOM = 'LIAI1',

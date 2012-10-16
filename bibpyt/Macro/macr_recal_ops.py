@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_recal_ops Macro  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -420,7 +420,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    if (GRAPHIQUE): CALCUL_ASTER.UNITE_GRAPHIQUE = GRAPHIQUE['UNITE']
 
    # Dans le cas de la dynamique avec appariement manual des MAC, on passe la flag correspondant a True
-   if METHODE ==  'HYBRIDE':
+   if METHODE in ['HYBRIDE','LEVENBERG','GENETIQUE']: ## AAC --> j'ai modifie et donne la possibilite d'afficher la fenetre mac pour levenb et gene
       if (DYNAMIQUE!=None and DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI'): CALCUL_ASTER.graph_mac=True
 
    # Instance de la classe gérant l'affichage des resultats du calcul de l'optimisation

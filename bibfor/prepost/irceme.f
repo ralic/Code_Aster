@@ -2,10 +2,10 @@
      &                    NBCMP, NOMCMP, ETIQCP, PARTIE,
      &                    NUMPT, INSTAN, NUMORD,
      &                    NBMAEC, LIMAEC,
-     &                    CODRET )
+     &                    SDCARM, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/09/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,6 +41,7 @@ C       INSTAN : VALEUR DE L'INSTANT A ARCHIVER
 C       NUMORD : NUMERO D'ORDRE DU CHAMP
 C       NBMAEC : NOMBRE DE MAILLES A ECRIRE (0, SI TOUTES LES MAILLES)
 C       LIMAEC : LISTE DES MAILLES A ECRIRE SI EXTRAIT
+C       SDCARM : CARA_ELEM (UTILE POUR LES SOUS-POINTS)
 C    SORTIES:
 C       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 C -------------------------------------------------------------------
@@ -51,7 +52,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      CHARACTER*8 TYPECH, MODELE
+      CHARACTER*8 TYPECH, MODELE, SDCARM
       CHARACTER*19  CHANOM
       CHARACTER*64  NOCHMD
       CHARACTER*(*) NOMCMP(*),PARTIE,ETIQCP
@@ -109,7 +110,7 @@ C
      &              NUMPT, INSTAN, NUMORD,
      &              JCESK, JCESD, JCESC, JCESV, JCESL,
      &              NBMAEC, LIMAEC,
-     &              CODRET )
+     &              SDCARM, CODRET )
 C
 C====
 C 3. ON NETTOIE

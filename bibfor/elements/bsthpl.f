@@ -6,7 +6,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C     OUT BSIGTH : BT*SIGMA POUR LES CONTRAINTES THERMIQUES
 C     OUT INDITH : LOGICAL = .TRUE.  YA DES DEFORMATIONS THERMIQUES
 C                          = .FALSE. SINON
 C     ------------------------------------------------------------------
-      INTEGER       I, JGEOM, NNO
+      INTEGER       I, JGEOM, NNO, IRET
       REAL*8        PGL(3,3), XYZL(3,4),
      &              SIGTH(32), ZERO
       CHARACTER*16  TYPELE
@@ -67,7 +67,7 @@ C
      &         NOMTE.EQ.'MEQ4QU4 ' .OR.
      &         NOMTE.EQ.'MEQ4GG4 ' ) THEN
          NNO = 4
-         CALL DXQPGL(ZR(JGEOM),PGL)
+         CALL DXQPGL(ZR(JGEOM),PGL,'S',IRET)
       ELSE
          CALL U2MESK('F','ELEMENTS_14',1,NOMTE)
       END IF

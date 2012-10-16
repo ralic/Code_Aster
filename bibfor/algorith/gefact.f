@@ -1,6 +1,6 @@
       SUBROUTINE GEFACT (DUREE,NOMINF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 16/10/2012   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,22 +157,23 @@ C     DANS LE CAS OU CETTE DISCRETISATION EST CONSERVEE
         DFREQ = PAS
         DUREE = 1.D0 / DFREQ
         FREQI = ZR(LFREQ)
-        FRINIT = FREQI
+        FRINIT = MOD(FREQI,DFREQ)
 
         NBPOIN = 2**(INT(LOG(FREQF/DFREQ)/LOG(2.D0))+1)
         IF (LNBPN) THEN
           IF (NBPOIN.GT.NBPINI ) THEN
-        VALI = NBPOIN
-        R8B = 0.D0
-        CALL U2MESG('A','ALGORITH15_12',0,' ',1,VALI,0,R8B)
+            VALI = NBPOIN
+            R8B = 0.D0
+            CALL U2MESG('A','ALGORITH15_12',0,' ',1,VALI,0,R8B)
           ELSE
             PUI2  = LOG(DBLE(NBPINI))/LOG(2.D0)
             PUI2D = ABS( PUI2 - AINT( PUI2 ))
             PUI3D = ABS( 1.D0 - PUI2D )
             IF (PUI2D.GE.1.D-06 .AND. PUI3D.GE.1.D-06) THEN
-              NBPOIN = 2**(INT(PUI2)+1)
+              NBPINI = 2**(INT(PUI2)+1)
               CALL U2MESS('A','ALGORITH3_80')
             ENDIF
+            NBPOIN = NBPINI
           ENDIF
         ENDIF
 
@@ -291,11 +292,14 @@ C         DE LA DES QUELLES LA MATRICE EST NULLE---
           LPREM = .FALSE.
         ENDIF
    70 CONTINUE
+C     ------------------------------------------------------------------
+C     --- CHANGER LA FREQ INIT. A 0 HZ POUR LE CAS SANS INTERPOL
+      IF (LINTER) ZR(LVAL)=0.D0
+C     ------------------------------------------------------------------
       LVAL1 = LVAL + NBPT1
 C
 C     --- POUR CHAQUE FONCTION CALCUL DE X,Y POUR CHAQUE FREQ.
 C     (ON PROLONGE PAR 0 EN DEHORS DE (FREQI,FREQF)), PUIS ON STOCKE ---
-
       DO 80 KF = 1,NBFC
         CALL JEVEUO(JEXNUM(CHVAL,KF),'L',LVAL2)
         DIAG = .FALSE.
@@ -312,11 +316,11 @@ C     (ON PROLONGE PAR 0 EN DEHORS DE (FREQI,FREQF)), PUIS ON STOCKE ---
           ELSE
             IF (LINTER) THEN
               IF (DIAG) THEN
-                RESURE = ZR(LVAL2+IPAS-1)
+                RESURE = ZR(LVAL2+IPAS-IINF-1)
                 RESUIM = 0.D0
               ELSE
-                RESURE = ZR(LVAL2+2*(IPAS-1))
-                RESUIM = ZR(LVAL2+2*(IPAS-1)+1)
+                RESURE = ZR(LVAL2+2*(IPAS-IINF-1))
+                RESUIM = ZR(LVAL2+2*(IPAS-IINF-1)+1)
               ENDIF
             ELSE
 C ON INTERPOLLE

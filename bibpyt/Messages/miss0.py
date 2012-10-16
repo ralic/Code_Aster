@@ -1,4 +1,4 @@
-#@ MODIF miss0 Messages  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss0 Messages  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,6 +135,10 @@ Il faut donc, soit :
 - augmenter la valeur du mot-clé INST_PAS,
 - diminuer la taille des éléments du maillage de l'interface ISS,
 - bloquer ce ou ces DDL.
+"""),
+
+21 : _(u"""
+Il faut au moins une couche avec EPAIS.
 """),
 
 }
