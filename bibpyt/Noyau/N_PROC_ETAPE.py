@@ -1,4 +1,4 @@
-#@ MODIF N_PROC_ETAPE Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_PROC_ETAPE Noyau  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,7 @@ class PROC_ETAPE(N_ETAPE.ETAPE):
        - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé avec l'argument args.
        - reuse : forcément None pour une PROC
       """
-      N_ETAPE.ETAPE.__init__(self, oper, reuse=None, args=args)
+      N_ETAPE.ETAPE.__init__(self, oper, reuse=None, args=args, niveau=5)
       self.reuse = None
 
    def Build_sd(self):

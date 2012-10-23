@@ -1,4 +1,4 @@
-#@ MODIF E_Exception Execution  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF E_Exception Execution  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,14 +119,11 @@ class BoucleFrottementError(error):
 class BoucleContactError(error):
     """Echec dans la boucle de point fixe sur le statut de contact"""
 
-class CollisionError(error):
-    """Echec de la détection de la collision"""
+class EventError(error):
+    """Arrêt par évènement déclenché"""
 
-class InstabiliteError(error):
-    """Détection d'instabilité"""
-
-class InterpenetrationError(error):
-    """Echec lors de l'adaptation du coefficient de pénalisation"""
+class ActionError(error):
+    """Arrêt par échec de l'action"""
 
 class ResolutionError(error):
     """Échec lors de la résolution du système linéaire"""
@@ -181,10 +178,9 @@ ST.register(29, "PilotageError", PilotageError)
 ST.register(30, "BoucleGeometrieError", BoucleGeometrieError)
 ST.register(31, "BoucleFrottementError", BoucleFrottementError)
 ST.register(32, "BoucleContactError", BoucleContactError)
-ST.register(33, "CollisionError", CollisionError)
-ST.register(34, "InstabiliteError", InstabiliteError)
-ST.register(35, "InterpenetrationError", InterpenetrationError)
-ST.register(36, "ResolutionError", ResolutionError)
+ST.register(33, "EventError", EventError)
+ST.register(34, "ActionError", ActionError)
+ST.register(35, "ResolutionError", ResolutionError)
 
 def add_to_dict_module(dictmodule):
     """Wrapper to ExceptionsStore method to simplify call from astermodule."""

@@ -1,4 +1,4 @@
-#@ MODIF command_text Execution  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF command_text Execution  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,25 +49,27 @@ class CommandTextVisitor(JDCVisitor):
         self.curline = []
         self.indent = [indent,]
         self.sdname = None
-        self._saved = None
+        self._saved = {}
         self._count = 0
 
-    def buffer(self, save=False, restore=False):
-        """Save the current state or restore the previous saved.
-        Only work with one level of MCFACT."""
-        if save:
-            self._saved = {
-                'lines' : self.lines[:],
-                'curline' : self.curline[:],
-                'indent' : self.indent[:],
-                'sdname' : self.sdname,
-            }
-        elif restore:
-            self.lines = self._saved['lines']
-            self.curline = self._saved['curline']
-            self.indent = self._saved['indent']
-            self.sdname = self._saved['sdname']
-            self._saved = None
+    def save_buffer(self, obj):
+        """Save the current state."""
+        self._saved[id(obj)] = {
+            'lines' : self.lines[:],
+            'curline' : self.curline[:],
+            'indent' : self.indent[:],
+            'sdname' : self.sdname,
+        }
+
+    def restore_buffer(self, obj):
+        """Restore the previous saved state."""
+        ido = id(obj)
+        dsav = self._saved[ido]
+        self.lines = dsav['lines']
+        self.curline = dsav['curline']
+        self.indent = dsav['indent']
+        self.sdname = dsav['sdname']
+        del self._saved[ido]
 
     def _newline(self):
         """Initialize a new line."""
@@ -113,7 +115,7 @@ class CommandTextVisitor(JDCVisitor):
     def visitMCFACT(self, fact):
         """Visit the MCFACT object."""
         #print "visit MCFACT", fact.nom
-        self.buffer(save=True)
+        self.save_buffer(fact)
         self._count = 0
         self.curline.append("_F(")
         self._add_indent()
@@ -122,12 +124,13 @@ class CommandTextVisitor(JDCVisitor):
         self._reset_indent()
         if self._count == 0:
             # do not print _F() without any keyword
-            self.buffer(restore=True)
+            self.restore_buffer(fact)
         self._newline()
 
     def visitMCList(self, mclist):
         """Visit the MCList object."""
         #print 'visit MCList', mclist
+        self.save_buffer(mclist)
         numb = len(mclist.data)
         if numb < 1:
             return
@@ -142,6 +145,9 @@ class CommandTextVisitor(JDCVisitor):
         if numb > 1:
             self.curline.append("),")
         self._reset_indent()
+        if self._count == 0:
+            # do not print _F() without any keyword
+            self.restore_buffer(mclist)
         self._newline()
 
     def _visit_default_keywords(self, node, seen, icount):

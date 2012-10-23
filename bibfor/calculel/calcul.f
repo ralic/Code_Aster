@@ -2,7 +2,7 @@
      &                  LPAOU,BASE,MPIC)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,6 +115,7 @@ C        MESURES :
       CALL INFNIV(IFM,NIV)
       LIGREL=LIGRLZ
       IACTIF=1
+      NBOBTR=0
       BASE2=BASE
       OPTION=OPTIO
       CALL ASSERT(MPIC.EQ.'OUI'.OR.MPIC.EQ.'NON')

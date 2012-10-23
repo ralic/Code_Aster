@@ -2,7 +2,7 @@
      &                  IEVDAC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,7 +31,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME - EVENEMENTS)
 C
-C DETECTION DE L'EVENEMENT COLLISION
+C DETECTION DE L'EVENEMENT COLLISION - CAS CONTINU
 C
 C ----------------------------------------------------------------------
 C
@@ -44,8 +44,7 @@ C IN  IECHEC : OCCURRENCE DE L'ECHEC
 C OUT IEVDAC : VAUT IECHEC SI EVENEMENT DECLENCHE
 C                   0 SINON
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      IFM,NIV
       CHARACTER*24 CTEVCO
@@ -123,7 +122,6 @@ C --- ACTIVATION EVENEMENT
 C
       IF (LEVENT) THEN
         IEVDAC = IECHEC
-        CALL U2MESS('I','MECANONLINE6_41')
       ENDIF
 C
       CALL JEDEMA()

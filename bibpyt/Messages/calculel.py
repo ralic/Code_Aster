@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel Messages  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -245,7 +245,7 @@ Conseils :
 """),
 
 33 : _(u"""
-Vous utilisez CALC_ELEM ou CALC_CHAMP en reuse en surchargeant le mot-clé
+Vous utilisez CALC_CHAMP en reuse en surchargeant le mot-clé
 %(k1)s. Or ce paramètre déjà présent dans structure de données résultat sur laquelle
 vous travaillez est différent de celui donné (%(k2)s et %(k3)s).
 

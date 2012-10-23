@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline6 Messages  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,96 +64,8 @@ cata_msg = {
 """),
 
 13 : _(u"""
-  <Erreur> On ne peut pas utiliser CRIT_STAB en calcul parallèle
+ On ne peut pas utiliser CRIT_STAB en calcul parallèle
 """),
-
-29 : _(u"""
- <Erreur> Échec dans l'intégration de la loi de comportement
-"""),
-
-30 : _(u"""
- <Erreur> Échec dans le pilotage
-"""),
-
-31 : _(u"""
- <Erreur> Le nombre maximum d'itérations de Newton est atteint
-"""),
-
-32 : _(u"""
- <Erreur> Échec dans le traitement du contact discret
-"""),
-
-33 : _(u"""
- <Erreur> Il n'y a pas assez de temps CPU pour continuer les pas de temps
-"""),
-
-34 : _(u"""
- <Erreur> La matrice du système est singulière
-"""),
-
-35 : _(u"""
- <Erreur> Il n'y a pas assez de temps CPU pour continuer les itérations de Newton
-"""),
-
-36 : _(u"""
- <Erreur> Arrêt demandé par l'utilisateur.
-"""),
-
-37 : _(u"""
- <Erreur> On dépasse le nombre de boucles de point fixe de géométrie.
- """),
-
-38 : _(u"""
- <Erreur> On dépasse le nombre de boucles de point fixe de frottement.
- """),
-
-39 : _(u"""
- <Erreur> On dépasse le nombre de boucles de point fixe de contact.
- """),
-
-40 : _(u"""
- <Erreur> Instabilité détectée.
- """),
-
-41 : _(u"""
- <Erreur> Collision détectée.
- """),
-
-42 : _(u"""
- <Erreur> Interpénétration détectée.
- """),
-
-43 : _(u"""
- <Erreur> Nombre maximum d'itérations atteint dans le solveur linéaire itératif.
- """),
-
-50 : _(u"""
- <Action> On recommence le pas de temps en utilisant la solution de pilotage rejetée initialement.
- """),
-
-51 : _(u"""
- <Action> On arrête le calcul.
- """),
-
-52 : _(u"""
- <Action> On recommence le pas de temps en ayant adapté le coefficient de pénalisation.
- """),
-
-53 : _(u"""
- <Erreur> On ne peut plus adapter le coefficient de pénalisation (on atteint COEF_MAXI).
- """),
-
-54 : _(u"""
-          Sur la zone <%(i1)d>, le coefficient de pénalisation adapté vaut <%(r1)13.6G>.
- """),
-
-55 : _(u"""
- <Erreur> On ne peut pas réactualiser le préconditionneur (il l'a déjà été). On découpe.
- """),
-
-56 : _(u"""
- <Action> On recommence le pas de temps en réactualisant le préconditionneur.
- """),
 
 60 : _(u"""
   Critère(s) de convergence atteint(s)

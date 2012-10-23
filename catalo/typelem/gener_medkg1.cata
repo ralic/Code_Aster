@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,9 +28,15 @@ ENTETE__ ELEMENT__ MEDKTG3          MAILLE__ TRIA3
 ENTETE__ ELEMENT__ MEQ4GG4          MAILLE__ QUAD4
    ELREFE__  QU4       GAUSS__  RIGI=FPG4   MASS=FPG9   NOEU=NOEU  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI NOEU FPG1)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
+   OPTION__   DISS_ELGA      -1
+   OPTION__   DISS_ELNO      -1
+   OPTION__   DISS_ELEM      -1
 ENTETE__ ELEMENT__ MET3GG3          MAILLE__ TRIA3
    ELREFE__  TR3       GAUSS__  RIGI=FPG1   MASS=FPG4   NOEU=NOEU  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI NOEU FPG1)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
+   OPTION__   DISS_ELGA      -1
+   OPTION__   DISS_ELNO      -1
+   OPTION__   DISS_ELEM      -1
 
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
@@ -49,9 +55,9 @@ MODE_LOCAL__
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    EDISSR   = DISS_R   ELEM__         (TOTALE   ENDO     PLAS     )
-    EDISSPG  = DISS_R   ELGA__ RIGI    (TOTALE   ENDO     PLAS     )
-    EDISSNO  = DISS_R   ELNO__ IDEN__  (TOTALE   ENDO     PLAS     )
+    EDISSR   = DISS_R   ELEM__         (ENDO     )
+    EDISSPG  = DISS_R   ELGA__ RIGI    (ENDO     )
+    EDISSNO  = DISS_R   ELNO__ IDEN__  (ENDO     )
     EENERR   = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
     EENERPG  = ENER_R   ELGA__ RIGI    (TOTALE   MEMBRANE FLEXION  )
     EENERNO  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION  )

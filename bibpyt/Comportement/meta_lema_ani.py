@@ -1,4 +1,4 @@
-#@ MODIF meta_lema_ani Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF meta_lema_ani Comportement  DATE 23/10/2012   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    nom_vari       = ('EPSPEQ','INDIPLAS'),
    mc_mater       = ('ELAS_META', 'META_LEMA_ANI'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GREEN_REAC','GDEF_LOG'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_LOG'),
    nom_varc       = ('TEMP',),
    algo_inte         = ('NEWTON',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

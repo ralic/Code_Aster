@@ -1,7 +1,7 @@
       SUBROUTINE NMCRGA(SDERRO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,12 +44,12 @@ C
       CHARACTER*8  NCRET(ZEVEN)
       INTEGER      VCRET(ZEVEN)
       CHARACTER*16 TEVEN(ZEVEN)
-      CHARACTER*24 FEVEN(ZEVEN)
+      CHARACTER*24 FEVEN(ZEVEN),MEVEN(ZEVEN)
 C
       INTEGER      IFM,NIV
       INTEGER      IEVEN
-      CHARACTER*24 ERRECN,ERRECV,ERRENI,ERRENO,ERRAAC,ERRFCT
-      INTEGER      JEECON,JEECOV,JEENIV,JEENOM,JEEACT,JEEFCT
+      CHARACTER*24 ERRECN,ERRECV,ERRENI,ERRENO,ERRAAC,ERRFCT,ERRMSG
+      INTEGER      JEECON,JEECOV,JEENIV,JEENOM,JEEACT,JEEFCT,JEEMSG
       CHARACTER*24 ERRINF,ERRCVG,ERREVT
       INTEGER      JEINFO,JECONV,JEEEVT
 C
@@ -60,7 +60,7 @@ C
      &              'ERRE_FACT','ERRE_CTD1','ERRE_CTD2',
      &              'ERRE_TIMN','ERRE_TIMP','ERRE_EXCP',
      &              'ITER_MAXI',
-     &              'DIVE_RESI','RESI_MAXR','RESI_MAXL',
+     &              'DIVE_RESI','RESI_MAXR','RESI_MAXN',
      &              'DIVE_PFIX','CRIT_STAB','DIVE_FIXG',
      &              'DIVE_FIXF','DIVE_FIXC','ERRE_CTCG',
      &              'ERRE_CTCF','ERRE_CTCC','DIVE_FROT',
@@ -135,6 +135,22 @@ C
      &              ' ',' '       ,' ',
      &              'LDLT_SP'/
 C
+C --- CODE DU MESSAGE A AFFICHER
+C
+      DATA MEVEN /
+     &        'MECANONLINE10_1' ,'MECANONLINE10_24',' ',
+     &        'MECANONLINE10_2' ,' '               ,'MECANONLINE10_6' ,
+     &        'MECANONLINE10_6' ,'MECANONLINE10_4' ,'MECANONLINE10_4' ,
+     &        'MECANONLINE10_7' ,'MECANONLINE10_5' ,'MECANONLINE10_8' ,
+     &        'MECANONLINE10_3' ,
+     &        ' '               ,' '               ,' '               ,
+     &        ' '               ,'MECANONLINE10_20',' '               ,
+     &        ' '               ,' '               ,'MECANONLINE10_9' ,
+     &        'MECANONLINE10_10','MECANONLINE10_11',' '               ,
+     &        ' '               ,' '               ,' '               ,
+     &        ' '               ,' '               ,' '               ,
+     &        'MECANONLINE10_12'/
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -162,6 +178,7 @@ C
       ERRAAC = SDERRO(1:19)//'.EACT'
       ERRCVG = SDERRO(1:19)//'.CONV'
       ERREVT = SDERRO(1:19)//'.EEVT'
+      ERRMSG = SDERRO(1:19)//'.EMSG'
       CALL WKVECT(ERRENO,'V V K16',ZEVEN,JEENOM)
       CALL WKVECT(ERRECV,'V V I'  ,ZEVEN,JEECOV)
       CALL WKVECT(ERRECN,'V V K8' ,ZEVEN,JEECON)
@@ -170,6 +187,7 @@ C
       CALL WKVECT(ERRAAC,'V V I'  ,ZEVEN,JEEACT)
       CALL WKVECT(ERRCVG,'V V I'  ,5    ,JECONV)
       CALL WKVECT(ERREVT,'V V K16',2    ,JEEEVT)
+      CALL WKVECT(ERRMSG,'V V K24',ZEVEN,JEEMSG)
 C
       DO 10 IEVEN = 1,ZEVEN
         ZK16(JEENOM-1+IEVEN) = NEVEN(IEVEN)
@@ -177,6 +195,7 @@ C
         ZI  (JEECOV-1+IEVEN) = VCRET(IEVEN)
         ZK16(JEENIV-1+IEVEN) = TEVEN(IEVEN)
         ZK24(JEEFCT-1+IEVEN) = FEVEN(IEVEN)
+        ZK24(JEEMSG-1+IEVEN) = MEVEN(IEVEN)
  10   CONTINUE
 C
       CALL JEDEMA()

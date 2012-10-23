@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -329,31 +329,35 @@ C --------------------------------------------------------------------
       WRITE(FORMB,1002) NBCOL-1
       WRITE(FORMC,1003) NBCOL-1
       IF (NBCOL.EQ.4) THEN
-        WRITE(6,FORMB) '|','BILAN D''ENERGIE','|','WEXT','|','WINT',
-     &                 '|','WSCH','|'
+        WRITE(6,FORMB) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',
+     &                 '  ENER_TOT   ','|','  DISS_SCH   ','|'
         WRITE(6,FORMC) '|','  PAS COURANT  ','|',WEXT,'|',WINT,
      &                 '|',WSCH,'|'
         WRITE(6,FORMC) '|','     TOTAL     ','|',ZR(IENER-1+1),
      &                 '|',ZR(IENER-1+3),'|',ZR(IENER-1+6),'|'
       ELSE IF (NBCOL.EQ.5) THEN
-        WRITE(6,FORMB) '|','BILAN D''ENERGIE','|','WEXT','|','WINT',
-     &                 '|','LIAI','|','WSCH','|'
+        WRITE(6,FORMB) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',
+     &                 '  ENER_TOT   ','|','  TRAV_LIAI  ','|',
+     &                 '  DISS_SCH   ','|'
         WRITE(6,FORMC) '|','  PAS COURANT  ','|',WEXT,'|',WINT,'|',LIAI,
      &                 '|',WSCH,'|'
         WRITE(6,FORMC) '|','     TOTAL     ','|',ZR(IENER-1+1),
      &                 '|',ZR(IENER-1+3),'|',ZR(IENER-1+5),
      &                 '|',ZR(IENER-1+6),'|'
       ELSE IF (NBCOL.EQ.6) THEN
-        WRITE(6,FORMB) '|','BILAN D''ENERGIE','|','WEXT','|','WINT',
-     &                 '|','ECIN','|','AMOR','|','WSCH','|'
+        WRITE(6,FORMB) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',
+     &                 '  ENER_TOT   ','|','  ENER_CIN   ','|',
+     &                 '  TRAV_AMOR  ','|','  DISS_SCH   ','|'
         WRITE(6,FORMC) '|','  PAS COURANT  ','|',WEXT,'|',WINT,'|',ECIN,
      &                 '|',AMOR,'|',WSCH,'|'
         WRITE(6,FORMC) '|','     TOTAL     ','|',ZR(IENER-1+1),
      &                 '|',ZR(IENER-1+3),'|',ZR(IENER-1+2),
      &                 '|',ZR(IENER-1+4),'|',ZR(IENER-1+6),'|'
       ELSE IF (NBCOL.EQ.7) THEN
-        WRITE(6,FORMB) '|','BILAN D''ENERGIE','|','WEXT','|','WINT',
-     &                 '|','ECIN','|','AMOR','|','LIAI','|','WSCH','|'
+        WRITE(6,FORMB) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',
+     &                 '  ENER_TOT   ','|','  ENER_CIN   ','|',
+     &                 '  TRAV_AMOR  ','|','  TRAV_LIAI  ','|',
+     &                 '  DISS_SCH   ','|'
         WRITE(6,FORMC) '|','  PAS COURANT  ','|',WEXT,'|',WINT,'|',ECIN,
      &                 '|',AMOR,'|',LIAI,'|',WSCH,'|'
         WRITE(6,FORMC) '|','     TOTAL     ','|',ZR(IENER-1+1),
@@ -384,9 +388,7 @@ C --------------------------------------------------------------------
       CALL JEDETR('&&ENERCA.VPMVMZ')
 
 1001  FORMAT ('(',I3,'A1)')
-C1002  FORMAT ('(',I1,'(A1,4X,A4,5X),(A1,4X,A5,4X),A1)')
-1002  FORMAT ('((A1,1X,A15,1X),',I1,'(A1,4X,A4,5X),A1)')
-C1003  FORMAT ('(',I1,'(A1,1X,ES11.4,1X),(A1,4X,A5,4X),A1)')
+1002  FORMAT ('((A1,1X,A15,1X),',I1,'(A1,A13),A1)')
 1003  FORMAT ('((A1,1X,A15,1X),',I1,'(A1,1X,ES11.4,1X),A1)')
       CALL JEDEMA()
       END

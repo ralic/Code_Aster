@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 08/10/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_engine Stanley  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,6 +59,8 @@ import tempfile
 #import Tix as Tk
 import Tkinter as Tk
 
+from Noyau.N_types import force_tuple
+
 import aster_core
 import as_courbes
 import xmgrace
@@ -72,6 +74,7 @@ from Utilitai import sup_gmsh
 from Utilitai.Utmess import UTMESS
 from graphiqueTk import *
 import ihm_parametres
+#XXX c'est peut-être une commodité mais ça rend le code incompréhensible !
 from Cata.cata import *
 from Accas import _F
 from types import *
@@ -2980,13 +2983,13 @@ class DRIVER_SUP_GMSH(DRIVER) :
 
 # ==============================================================================
 def concept_exists_and_intypes(co, macro, types, append_to):
-   """Ajoute le concept dans la liste 'append_to' si 'co' existe
-   (c'est à dire si son étape a été exécutée) et si son type est parmi 'types'.
-   """
-   concept = macro.get_concept(co)
-   if concept != None:
-      if concept.__class__.__name__ in types and getattr(concept, 'executed', 0) == 1:
-         append_to.append(co)
+    """Ajoute le concept dans la liste 'append_to' si 'co' existe
+    (c'est à dire si son étape a été exécutée) et si son type est parmi 'types'.
+    """
+    concept = macro.get_concept(co)
+    types = force_tuple(types)
+    if isinstance(concept, types) and getattr(concept, 'executed', 0) == 1:
+        append_to.append(co)
 
 
 class PRE_STANLEY :
@@ -3014,7 +3017,9 @@ class PRE_STANLEY :
 
 
   def __init__(self, FICHIER_VALID=None) :
-
+    from Cata.cata import (maillage_sdaster, modele_sdaster, evol_elas, evol_noli,
+                           evol_ther, mode_meca, dyna_harmo, dyna_trans, cham_mater,
+                           cara_elem, evol_char)
 
     self.FICHIER_VALID = FICHIER_VALID
     self.para = PARAMETRES()
@@ -3031,22 +3036,21 @@ class PRE_STANLEY :
     t_cham_mater=[]
     t_cara_elem=[]
 
-    lst = [ 'maillage_sdaster', 'modele_sdaster', 'evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'cham_mater', 'cara_elem_sdaster', 'evol_char' ]
-
     current_context = self.macro.get_contexte_courant()
     for i in current_context.keys( ):
 
       concept_exists_and_intypes(i, self.macro,
-                                    types='maillage_sdaster', append_to=t_maillage)
+                                    types=maillage_sdaster, append_to=t_maillage)
       concept_exists_and_intypes(i, self.macro,
-                                    types='modele_sdaster', append_to=t_modele)
+                                    types=modele_sdaster, append_to=t_modele)
       concept_exists_and_intypes(i, self.macro,
-                                    types=('evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'evol_char'),
+                                    types=(evol_elas, evol_noli, evol_ther, mode_meca,
+                                           dyna_harmo, dyna_trans, evol_char),
                                     append_to=t_evol)
       concept_exists_and_intypes(i, self.macro,
-                                    types='cham_mater', append_to=t_cham_mater)
+                                    types=cham_mater, append_to=t_cham_mater)
       concept_exists_and_intypes(i, self.macro,
-                                    types='cara_elem', append_to=t_cara_elem)
+                                    types=cara_elem, append_to=t_cara_elem)
 
     self.t_maillage=t_maillage
     self.t_modele=t_modele

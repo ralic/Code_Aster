@@ -3,7 +3,7 @@
       CHARACTER*16 NOMTE,OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,15 +55,14 @@ C ----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
 
-      INTEGER NEQMAX,NNOMAX,NPGMAX,NEEQMX,NCEQMX
-      PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=17,NEEQMX=14,NCEQMX=17)
+      INTEGER NEEQMX,NCEQMX
+      PARAMETER (NEEQMX=14,NCEQMX=17)
 
       INTEGER NDIM,NDIM1,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
-      INTEGER IDEFO,ICONT,IEQUIF
-      INTEGER IRET,ITABIN(7),ITABOU(7),NBCMP,NCMPEQ
-      INTEGER I,J,IDCP,KP,INO
+      INTEGER IDEFO,ICONT,IEQUI
+      INTEGER IRET,ITABIN(7),ITABOU(7),NBCMP,NCMPEQ,NBSP
+      INTEGER IDEC,IDECEQ,IPG,INO,ISP
 
-      REAL*8 EQPG(NEQMAX*NPGMAX),EQNO(NEQMAX*NNOMAX)
 C
 C ----------------------------------------------------------------------
 C
@@ -93,12 +92,20 @@ C
         CALL ASSERT(.FALSE.)
       ENDIF
 
-      CALL ASSERT(ITABIN(7).LE.1)
-      CALL ASSERT(ITABOU(7).LE.1)
+      IEQUI = ITABOU(1)
+
+      NBSP = ITABOU(7)
+      CALL ASSERT(NBSP.GE.1)
+      CALL ASSERT(NBSP.EQ.ITABIN(7))
+
       NBCMP = ITABIN(2)/ITABIN(3)
       CALL ASSERT((NBCMP.EQ.1).OR.(NBCMP.EQ.4).OR.(NBCMP.EQ.6))
-      IEQUIF = ITABOU(1)
+
       NCMPEQ = ITABOU(2)/ITABOU(3)
+      CALL ASSERT((NCMPEQ.EQ.NEEQMX).OR.(NCMPEQ.EQ.NCEQMX))
+
+      CALL ASSERT(ITABIN(6).LE.1)
+      CALL ASSERT(ITABOU(6).LE.1)
 
       IF (NBCMP.EQ.6) THEN
         NDIM = 3
@@ -114,37 +121,29 @@ C ----------------------------------------------------------------
 C
       IF (OPTION(6:9).EQ.'ELGA') THEN
 C
-        DO 10 I = 1,NCMPEQ*NPG
-          EQPG(I) = 0.0D0
-   10   CONTINUE
-C
 C ------ DEFORMATIONS :
 C -------------------
         IF ((OPTION.EQ.'EPEQ_ELGA').OR.
      &      (OPTION.EQ.'EPMQ_ELGA')) THEN
-          DO 20 KP = 1,NPG
-            IDCP = (KP-1)*NCMPEQ
-            CALL FGEQUI(ZR(IDEFO+(KP-1)*NBCMP),'EPSI_DIR',
-     &                                                NDIM,EQPG(IDCP+1))
-   20     CONTINUE
+          DO 10 IPG = 1,NPG
+            DO 11 ISP = 1,NBSP
+              IDEC   = IDEFO+(IPG-1)*NBCMP *NBSP+(ISP-1)*NBCMP
+              IDECEQ = IEQUI+(IPG-1)*NCMPEQ*NBSP+(ISP-1)*NCMPEQ
+              CALL FGEQUI(ZR(IDEC),'EPSI_DIR',NDIM,ZR(IDECEQ))
+   11       CONTINUE
+   10     CONTINUE
 C
 C ----- CONTRAINTES :
 C -----------------
         ELSEIF (OPTION.EQ.'SIEQ_ELGA') THEN
-          DO 30 KP = 1,NPG
-            IDCP = (KP-1)*NCMPEQ
-            CALL FGEQUI(ZR(ICONT+(KP-1)*NBCMP),'SIGM_DIR',
-     &                                                NDIM,EQPG(IDCP+1))
-   30     CONTINUE
+          DO 20 IPG = 1,NPG
+            DO 21 ISP = 1,NBSP
+              IDEC   = ICONT+(IPG-1)*NBCMP *NBSP+(ISP-1)*NBCMP
+              IDECEQ = IEQUI+(IPG-1)*NCMPEQ*NBSP+(ISP-1)*NCMPEQ
+              CALL FGEQUI(ZR(IDEC),'SIGM_DIR',NDIM,ZR(IDECEQ))
+   21       CONTINUE
+   20     CONTINUE
         ENDIF
-C
-C ----- STOCKAGE :
-C --------------
-        DO 50 KP = 1,NPG
-          DO 40 J = 1,NCMPEQ
-            ZR(IEQUIF-1+(KP-1)*NCMPEQ+J) = EQPG((KP-1)*NCMPEQ+J)
-   40     CONTINUE
-   50   CONTINUE
 C
 C -------------------------------------------------------
 C --- DEFORMATIONS ET CONTRAINTES EQUIVALENTES AUX NOEUDS
@@ -152,37 +151,29 @@ C -------------------------------------------------------
 C
       ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
 C
-        DO 60 I = 1,NCMPEQ*NNO
-          EQNO(I) = 0.0D0
-   60   CONTINUE
-C
 C ------ DEFORMATIONS :
 C -------------------
         IF ((OPTION.EQ.'EPEQ_ELNO').OR.
      &      (OPTION.EQ.'EPMQ_ELNO')) THEN
-          DO 70 INO = 1,NNO
-            IDCP = (INO-1)*NCMPEQ
-            CALL FGEQUI(ZR(IDEFO+(INO-1)*NBCMP),'EPSI_DIR',
-     &                                                NDIM,EQNO(IDCP+1))
-   70     CONTINUE
+          DO 30 INO = 1,NNO
+            DO 31 ISP = 1,NBSP
+              IDEC   = IDEFO+(INO-1)*NBCMP *NBSP+(ISP-1)*NBCMP
+              IDECEQ = IEQUI+(INO-1)*NCMPEQ*NBSP+(ISP-1)*NCMPEQ
+              CALL FGEQUI(ZR(IDEC),'EPSI_DIR',NDIM,ZR(IDECEQ))
+   31       CONTINUE
+   30     CONTINUE
 C
 C ----- CONTRAINTES :
 C -----------------
         ELSEIF (OPTION.EQ.'SIEQ_ELNO') THEN
-          DO 80 INO = 1,NNO
-            IDCP = (INO-1)*NCMPEQ
-            CALL FGEQUI(ZR(ICONT+(INO-1)*NBCMP),'SIGM_DIR',
-     &                                                NDIM,EQNO(IDCP+1))
-   80     CONTINUE
+          DO 40 INO = 1,NNO
+            DO 41 ISP = 1,NBSP
+              IDEC   = ICONT+(INO-1)*NBCMP *NBSP+(ISP-1)*NBCMP
+              IDECEQ = IEQUI+(INO-1)*NCMPEQ*NBSP+(ISP-1)*NCMPEQ
+              CALL FGEQUI(ZR(IDEC),'SIGM_DIR',NDIM,ZR(IDECEQ))
+   41       CONTINUE
+   40     CONTINUE
         ENDIF
-C
-C ----- STOCKAGE :
-C --------------
-        DO 110 INO = 1,NNO
-          DO 90 J = 1,NCMPEQ
-            ZR(IEQUIF+(INO-1)*NCMPEQ-1+J) = EQNO((INO-1)*NCMPEQ+J)
-   90     CONTINUE
-  110   CONTINUE
 C
       ENDIF
 C

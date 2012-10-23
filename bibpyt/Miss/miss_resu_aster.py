@@ -1,4 +1,4 @@
-#@ MODIF miss_resu_aster Miss  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+#@ MODIF miss_resu_aster Miss  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,231 +32,218 @@ import aster
 from Miss.miss_utils import lire_nb_valeurs, double
 
 
-def lire_resultat_aster(fich_aster):
-    """Lit le fichier issu de IMPR_MACR_ELEM/IMPR_MISS_3D.
-    """
-    fobj = open(fich_aster, "r")
-    struct = STRUCT_RESULTAT()
-    # dimension des éléments (fixe ?)
-    struct.maille_dime = 8
-    ln = 0
-    try:
-        # modes dynamiques : nombre, type
-        ln += 1
-        ds, nb, typ = fobj.readline().split()
-        struct.mode_dyna_nb = int(nb)
-        struct.mode_dyna_type = typ
-        # modes statiques : nombre, type
-        ln += 1
-        ds, nb, typ = fobj.readline().split()
-        struct.mode_stat_nb = int(nb)
-        struct.mode_stat_type = typ
-        # titre
-        ln += 1
-        lab = fobj.readline()
-        ln += 1
-        struct.titre = fobj.readline().strip()
-        # noeuds
-        ln += 1
-        lab, nb = fobj.readline().split()
-        struct.noeud_nb = int(nb)
-        # noeuds : coordonnées
-        ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.noeud_coor, double)
-        # mailles
-        ln += 1
-        lab, nb = fobj.readline().split()
-        struct.maille_nb = int(nb)
-        # mailles : connectivité
-        ln += lire_nb_valeurs(fobj, struct.maille_nb * struct.maille_dime, struct.maille_connec, int)
-        # mode dynamiques
-        ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.mode_dyna_vale, double,
-                              struct.mode_dyna_nb, 1, max_per_line=3,
-                              regexp_label="MODE +DYNA")
-        # modes dynamiques : fréquence
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_freq, double,
-                              1, 1)
-        # modes dynamiques : amortissement
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_amor, double,
-                              1, 1)
-        # modes dynamiques : masse
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_mass, double,
-                              1, 1)
-        # modes dynamiques : rigidité
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_rigi, double,
-                              1, 1)
-        # mode statiques
-        ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.mode_stat_vale, double,
-                              struct.mode_stat_nb, 1, max_per_line=3,
-                              regexp_label="MODE +STAT +INTER")
-        # modes statiques : masse
-        ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_mass, double,
-                              1, 1)
-        # modes statiques : rigidité
-        ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_rigi, double,
-                              1, 1)
-        # modes statiques : amortissements (facultatifs)
+class ResuAsterReader(object):
+    """Lit le fichier issu de IMPR_MACR_ELEM/IMPR_MISS_3D."""
+    def __init__(self):
+        """Initialisation"""
+        self.fobj = None
+        self.struct = STRUCT_RESULTAT()
+        # dimension des éléments (fixe ?)
+        self.struct.maille_dime = 8
+        self.ln = 0
+    
+    def read(self, fich_aster):
+        """Read the file line per line."""
+        try:
+            self.fobj = open(fich_aster, "r")
+            self._read_all()
+            self.fobj.close()
+        except IOError, err:
+            raise aster.error('MISS0_7', vali=ln, valk=str(err))
+        self.check()
+        self.post()
+        return self.struct
+
+    def check(self):
+        """vérifications"""
+        struct = self.struct
+        try:
+            struct.check()
+        except AssertionError, err:
+            raise aster.error('MISS0_8', valk=traceback.format_exc(limit=2))
+    
+    def post(self):
+        """arrangements"""
+        self.struct.post()
+    
+    def _read_all(self):
+        """Read the file line per line."""
+        self._read_mode_dyna_para()
+        self._read_mode_stat_para()
+        self._read_titre()
+        self._read_noeuds_nb()
+        self._read_noeuds_coord()
+        self._read_mailles_connect()
+        self._read_mode_dyna()
+        self._read_mode_dyna_freq()
+        self._read_mode_dyna_amor()
+        self._read_mode_dyna_mass()
+        self._read_mode_dyna_rigi()
+        self._read_mode_stat()
+        self._read_mode_stat_mass()
+        self._read_mode_stat_rigi()
+        self._read_mode_stat_amor()
+        self._read_mode_coupl_para()
+        self._read_mode_coupl_mass()
+        self._read_mode_coupl_rigi()
+        self._read_mode_coupl_amor()
+
+    def _read_mode_dyna_para(self):
+        """modes dynamiques : nombre, type"""
+        self.ln += 1
+        ds, nb, typ = self.fobj.readline().split()
+        self.struct.mode_dyna_nb = int(nb)
+        self.struct.mode_dyna_type = typ
+
+    def _read_mode_stat_para(self):
+        """modes statiques : nombre, type"""
+        self.ln += 1
+        ds, nb, typ = self.fobj.readline().split()
+        self.struct.mode_stat_nb = int(nb)
+        self.struct.mode_stat_type = typ
+
+    def _read_titre(self):
+        """titre"""
+        self.ln += 1
+        lab = self.fobj.readline()
+        self.ln += 1
+        self.struct.titre = self.fobj.readline().strip()
+
+    def _read_noeuds_nb(self):
+        """noeuds"""
+        self.ln += 1
+        lab, nb = self.fobj.readline().split()
+        self.struct.noeud_nb = int(nb)
+
+    def _read_noeuds_coord(self):
+        """noeuds : coordonnées"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.noeud_nb * 3, 
+                                   self.struct.noeud_coor, double)
+
+    def _read_mailles_connect(self):
+        """mailles : connectivité"""
+        self.struct.init_connect(1)
+        self._read_mailles_connect_idx(0)
+        self.struct.maille_nb_tot = sum(self.struct.maille_nb)
+
+    def _read_mailles_connect_idx(self, idx):
+        """mailles : nb et connectivité pour un groupe"""
+        self.ln += 1
+        lab, nb = self.fobj.readline().split()
+        nb = int(nb)
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   nb * self.struct.maille_dime,
+                                   self.struct.maille_connec[idx], int)
+        self.struct.maille_nb[idx] = nb
+
+    def _read_mode_dyna(self):
+        """mode dynamiques"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.noeud_nb * 3,
+                                   self.struct.mode_dyna_vale,
+                                   double,
+                                   self.struct.mode_dyna_nb,
+                                   1, max_per_line=3, regexp_label="MODE +DYNA")
+
+    def _read_mode_dyna_freq(self):
+        """modes dynamiques : fréquence"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.mode_dyna_nb,
+                                   self.struct.mode_dyna_freq,
+                                   double, 1, 1)
+
+    def _read_mode_dyna_amor(self):
+        """modes dynamiques : amortissement"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.mode_dyna_nb,
+                                   self.struct.mode_dyna_amor,
+                                   double, 1, 1)
+    def _read_mode_dyna_mass(self):
+        """modes dynamiques : masse"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.mode_dyna_nb,
+                                   self.struct.mode_dyna_mass,
+                                   double, 1, 1)
+
+    def _read_mode_dyna_rigi(self):
+        """modes dynamiques : rigidité"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.mode_dyna_nb,
+                                   self.struct.mode_dyna_rigi,
+                                   double, 1, 1)
+
+    def _read_mode_stat(self):
+        """mode statiques"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.noeud_nb * 3,
+                                   self.struct.mode_stat_vale,
+                                   double,
+                                   self.struct.mode_stat_nb,
+                                   1, max_per_line=3, regexp_label="MODE +STAT +INTER")
+
+    def _read_mode_stat_mass(self):
+        """modes statiques : masse"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.mode_stat_nb ** 2,
+                                   self.struct.mode_stat_mass,
+                                   double, 1, 1)
+
+    def _read_mode_stat_rigi(self):
+        """modes statiques : rigidité"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.mode_stat_nb ** 2,
+                                   self.struct.mode_stat_rigi,
+                                   double, 1, 1)
+
+    def _read_mode_stat_amor(self):
+        """modes statiques : amortissements (facultatifs)"""
         lbid = []
-        unused = lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, lbid, double,
-                              1, 1, regexp_label="STAT +AMOR")
-        # modes couplés
-        ln += 1
-        lab, nbd, nbs = fobj.readline().split()
-        struct.coupl_nb = (int(nbd), int(nbs))
-        # modes couplés : masse
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb * struct.mode_stat_nb,
-                              struct.coupl_mass, double, 1, 1)
-        # modes couplés : rigidité
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb * struct.mode_stat_nb,
-                              struct.coupl_rigi, double, 1, 1)
-        # modes statiques : amortissements (facultatifs)
+        unused = lire_nb_valeurs(self.fobj,
+                                 self.struct.mode_stat_nb ** 2,
+                                 lbid,
+                                 double, 1, 1, regexp_label="STAT +AMOR")
+
+    def _read_mode_coupl_para(self):
+        """modes couplés"""
+        self.ln += 1
+        lab, nbd, nbs = self.fobj.readline().split()
+        self.struct.coupl_nb = (int(nbd), int(nbs))
+
+    def _read_mode_coupl_mass(self):
+        """modes couplés : masse"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
+                                   self.struct.coupl_mass,
+                                   double, 1, 1)
+
+    def _read_mode_coupl_rigi(self):
+        """modes couplés : rigidité"""
+        self.ln += lire_nb_valeurs(self.fobj,
+                                   self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
+                                   self.struct.coupl_rigi,
+                                   double, 1, 1)
+
+    def _read_mode_coupl_amor(self):
+        """modes couplés : amortissements (facultatifs)"""
         lbid = []
-        unused = lire_nb_valeurs(fobj, struct.mode_dyna_nb * struct.mode_stat_nb,
-                                 lbid, double, 1, 1, regexp_label="COUPL +AMOR")
-
-    except IOError, err:
-        raise aster.error('MISS0_7', vali=ln, valk=str(err))
-    # vérifications
-    try:
-        struct.check()
-    except AssertionError, err:
-        raise aster.error('MISS0_8', valk=traceback.format_exc(limit=2))
-    # arrangements : compléter la connectivité à 20
-    new = []
-    add = [0,] * (20 - struct.maille_dime)
-    for i in range(struct.maille_nb):
-        new.extend(struct.maille_connec[i*struct.maille_dime:(i+1)*struct.maille_dime] + add)
-    struct.maille_connec = new
-    return struct
-
-def lire_resultat_issf_aster(fich_aster):
-    """Lit le fichier issu de IMPR_MACR_ELEM/IMPR_MISS_3D.
-    """
-    fobj = open(fich_aster, "r")
-    struct = STRUCT_RESULTAT()
-    # dimension des éléments (fixe ?)
-    struct.maille_dime = 8
-    ln = 0
-    try:
-        # modes dynamiques : nombre, type
-        ln += 1
-        ds, nb, typ = fobj.readline().split()
-        struct.mode_dyna_nb = int(nb)
-        struct.mode_dyna_type = typ
-        # modes statiques : nombre, type
-        ln += 1
-        ds, nb, typ = fobj.readline().split()
-        struct.mode_stat_nb = int(nb)
-        struct.mode_stat_type = typ
-        # titre
-        ln += 1
-        lab = fobj.readline()
-        ln += 1
-        struct.titre = fobj.readline().strip()
-        # noeuds
-        ln += 1
-        lab, nb = fobj.readline().split()
-        struct.noeud_nb = int(nb)
-        # noeuds : coordonnées
-        ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.noeud_coor, double)
-        # mailles1
-        ln += 1
-        lab, nb1 = fobj.readline().split()
-        struct.maille_nb1 = int(nb1)
-        # mailles : connectivité
-        ln += lire_nb_valeurs(fobj, struct.maille_nb1 * struct.maille_dime, struct.maille_connec1, int)
-        # mailles2
-        ln += 1
-        lab, nb2 = fobj.readline().split()
-        struct.maille_nb2 = int(nb2)
-        # mailles : connectivité
-        ln += lire_nb_valeurs(fobj, struct.maille_nb2 * struct.maille_dime, struct.maille_connec2, int)
-        # mailles3
-        ln += 1
-        lab, nb3 = fobj.readline().split()
-        struct.maille_nb3 = int(nb3)
-        # mailles : connectivité
-        ln += lire_nb_valeurs(fobj, struct.maille_nb3 * struct.maille_dime, struct.maille_connec3, int)
-        # mailles4
-        ln += 1
-        lab, nb4 = fobj.readline().split()
-        struct.maille_nb4 = int(nb4)
-        # mailles : connectivité
-        ln += lire_nb_valeurs(fobj, struct.maille_nb4 * struct.maille_dime, struct.maille_connec4, int)
-        struct.maille_nb = int(nb1)+int(nb2)+int(nb3)+int(nb4)
-        # mode dynamiques
-        ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.mode_dyna_vale, double,
-                              struct.mode_dyna_nb, 1, max_per_line=3,
-                              regexp_label="MODE +DYNA")
-        # modes dynamiques : fréquence
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_freq, double,
-                              1, 1)
-        # modes dynamiques : amortissement
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_amor, double,
-                              1, 1)
-        # modes dynamiques : masse
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_mass, double,
-                              1, 1)
-        # modes dynamiques : rigidité
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_rigi, double,
-                              1, 1)
-        # mode statiques
-        ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.mode_stat_vale, double,
-                              struct.mode_stat_nb, 1, max_per_line=3,
-                              regexp_label="MODE +STAT +INTER")
-        # modes statiques : masse
-        ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_mass, double,
-                              1, 1)
-        # modes statiques : rigidité
-        ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_rigi, double,
-                              1, 1)
-        # modes statiques : amortissements (facultatifs)
-        lbid = []
-        unused = lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, lbid, double,
-                              1, 1, regexp_label="STAT +AMOR")
-        # modes couplés
-        ln += 1
-        lab, nbd, nbs = fobj.readline().split()
-        struct.coupl_nb = (int(nbd), int(nbs))
-        # modes couplés : masse
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb * struct.mode_stat_nb,
-                              struct.coupl_mass, double, 1, 1)
-        # modes couplés : rigidité
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb * struct.mode_stat_nb,
-                              struct.coupl_rigi, double, 1, 1)
-        # modes statiques : amortissements (facultatifs)
-        lbid = []
-        unused = lire_nb_valeurs(fobj, struct.mode_dyna_nb * struct.mode_stat_nb,
-                                 lbid, double, 1, 1, regexp_label="COUPL +AMOR")
-
-    except IOError, err:
-        raise aster.error('MISS0_7', vali=ln, valk=str(err))
-    # vérifications
-    try:
-        struct.check()
-    except AssertionError, err:
-        raise aster.error('MISS0_8', valk=traceback.format_exc(limit=2))
-    # arrangements : compléter la connectivité à 20
-
-    add = [0,] * (20 - struct.maille_dime)
-    new = []
-    for i in range(struct.maille_nb1):
-        new.extend(struct.maille_connec1[i*struct.maille_dime:(i+1)*struct.maille_dime] + add)
-    struct.maille_connec1 = new
-    new = []
-    for i in range(struct.maille_nb2):
-        new.extend(struct.maille_connec2[i*struct.maille_dime:(i+1)*struct.maille_dime] + add)
-    struct.maille_connec2 = new
-    new = []
-    for i in range(struct.maille_nb3):
-        new.extend(struct.maille_connec3[i*struct.maille_dime:(i+1)*struct.maille_dime] + add)
-    struct.maille_connec3 = new
-    new = []
-    for i in range(struct.maille_nb4):
-        new.extend(struct.maille_connec4[i*struct.maille_dime:(i+1)*struct.maille_dime] + add)
-    struct.maille_connec4 = new
-    return struct
+        unused = lire_nb_valeurs(self.fobj,
+                                 self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
+                                 lbid,
+                                 double, 1, 1, regexp_label="COUPL +AMOR")
 
 
+class ResuAsterISSFReader(ResuAsterReader):
+    """Lit le fichier issu de IMPR_MACR_ELEM/IMPR_MISS_3D avec ISSF='OUI'."""
+
+    def _read_mailles_connect(self):
+        """mailles : connectivité"""
+        self.struct.init_connect(4)
+        self._read_mailles_connect_idx(0)
+        self._read_mailles_connect_idx(1)
+        self._read_mailles_connect_idx(2)
+        self._read_mailles_connect_idx(3)
+        self.struct.maille_nb_tot = sum(self.struct.maille_nb)
 
 class STRUCT_RESULTAT:
     """Simple conteneur."""
@@ -264,12 +251,9 @@ class STRUCT_RESULTAT:
         self.titre = ""
         self.noeud_nb = 0
         self.noeud_coor = []
-        self.maille_nb = 0
+        self.maille_nb = []
+        self.maille_nb_tot = 0
         self.maille_connec = []
-        self.maille_connec1 = []
-        self.maille_connec2 = []  
-        self.maille_connec3 = []
-        self.maille_connec4 = []  
         self.maille_dime = 0
         self.mode_dyna_nb = 0
         self.mode_dyna_type = ""
@@ -287,11 +271,17 @@ class STRUCT_RESULTAT:
         self.coupl_mass = []
         self.coupl_rigi = []
 
+    def init_connect(self, nbgrp):
+        """initialise le stockage pour les nbgrp groupes de mailles."""
+        self.maille_nb = [0] * nbgrp
+        self.maille_connec = [[] for i in range(nbgrp)]
 
     def check(self):
         """Vérifications."""
         assert len(self.noeud_coor) == self.noeud_nb * 3
-       # assert len(self.maille_connec) == self.maille_nb * self.maille_dime
+        assert len(self.maille_nb) == len(self.maille_connec)
+        for nb, connec in zip(self.maille_nb, self.maille_connec):
+            assert len(connec) == nb * self.maille_dime
         assert len(self.mode_dyna_vale) == 0 \
             or len(self.mode_dyna_vale) == self.mode_dyna_nb * self.noeud_nb * 3
         assert len(self.mode_dyna_freq) == self.mode_dyna_nb
@@ -306,6 +296,16 @@ class STRUCT_RESULTAT:
         assert len(self.coupl_mass) == self.mode_dyna_nb * self.mode_stat_nb
         assert len(self.coupl_rigi) == self.mode_dyna_nb * self.mode_stat_nb
 
+    def post(self):
+        """arrangements : compléter la connectivité à 20"""
+        dime = self.maille_dime
+        add = [0,] * (20 - dime)
+        nbgrp = len(self.maille_nb)
+        for idx in range(nbgrp):
+            new = []
+            for i in range(self.maille_nb[idx]):
+                new.extend(self.maille_connec[idx][i * dime : (i+1) * dime] + add)
+            self.maille_connec[idx] = new
 
     def repr(self):
         """Pour deboggage"""
@@ -315,7 +315,10 @@ class STRUCT_RESULTAT:
             if attr.startswith('_') or callable(val):
                 continue
             if type(val) in (list, tuple):
-                val = val[:8]
+                val = list(val[:8])
+                for i in range(len(val)):
+                    if type(val[i]) in (list, tuple):
+                        val[i] = val[i][:8]
             txt.append("%-14s : %s" % (attr, val))
         return os.linesep.join(txt)
 

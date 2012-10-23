@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/10/2012   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION INTERFACE 2D PLAN (QUAD8), LOI CZM_TRA_MIX
 # ssnp118v.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -513,7 +513,7 @@ TEST_RESU(RESU=_F(INST=5.4000000000000004,
                   RESULTAT=U_TRA,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
-                  VALE_CALC=0.017991000,
+                  VALE_CALC=0.017991,
                   VALE_REFE=0.017991,
                   MAILLE='CUBEDEG',),
           )
@@ -524,8 +524,8 @@ TEST_RESU(RESU=_F(INST=5.4000000000000004,
                   RESULTAT=U_TRA,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V4',
-                  VALE_CALC=0.039910000,
-                  VALE_REFE=0.039910000000000001,
+                  VALE_CALC=0.07991,
+                  VALE_REFE=0.07991,
                   MAILLE='CUBEDEG',),
           )
 
@@ -536,7 +536,7 @@ TEST_RESU(RESU=_F(INST=7.4000000000000004,
                   RESULTAT=U_TRA,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
-                  VALE_CALC=0.029991000,
+                  VALE_CALC=0.029991,
                   VALE_REFE=0.029991,
                   MAILLE='CUBEDEG',),
           )
@@ -547,7 +547,7 @@ TEST_RESU(RESU=_F(INST=7.4000000000000004,
                   RESULTAT=U_TRA,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V4',
-                  VALE_CALC=0.199910000,
+                  VALE_CALC=0.19991,
                   VALE_REFE=0.19991,
                   MAILLE='CUBEDEG',),
           )
@@ -570,8 +570,8 @@ TEST_RESU(RESU=_F(INST=12.6,
                   RESULTAT=U_TRA,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V4',
-                  VALE_CALC=0.829305403,
-                  VALE_REFE=0.82930499999999996,
+                  VALE_CALC=0.86931194889073,
+                  VALE_REFE=0.86931194889073,
                   MAILLE='CUBEDEG',),
           )
 
@@ -582,7 +582,7 @@ TEST_RESU(RESU=_F(INST=23.0,
                   RESULTAT=U_TRA,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
-                  VALE_CALC=0.160000000,
+                  VALE_CALC=0.16,
                   VALE_REFE=0.16,
                   MAILLE='CUBEDEG',),
           )

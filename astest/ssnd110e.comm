@@ -1,6 +1,6 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/10/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CFC_IRRA
-# ssnd110e.para = tps_job 300 mem_job 460Mo ncpus 1 liste_test S
+# ssnd110e.para = tps_job 300 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

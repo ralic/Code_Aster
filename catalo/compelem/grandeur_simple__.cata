@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF COMPELEM  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -722,11 +722,9 @@ GRANDEUR_SIMPLE__
 
 
 <<  DISS_R Type:R énergie dissipée
-       TOTALE : dissipation cumulée (endommagement plus plasticité)
        ENDO   : dissipation due a l'endommagement
-       PLAS   : dissipation due a la plasticité
 >>
-    DISS_R   = R    TOTALE   ENDO     PLAS
+    DISS_R   = R    ENDO
 
 <<  DOMA_R Type:R champ de dommage sur une structure
        DOMA     : Valeur du dommage

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN_SI
 # RESPONSABLE PELLET J.PELLET
 # sslp201b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -428,7 +428,9 @@ MSLIN=MECA_STATIQUE(MODELE=MO,
                     CARA_ELEM=CARA1,
                     EXCIT=_F(CHARGE=CHMEC,
                              FONC_MULT=FO11,),
-                    LIST_INST=LR1,);
+                    LIST_INST=LR1,
+                    SOLVEUR=_F(METHODE='MUMPS',),
+                    );
 
 MSLIN=CALC_CHAMP(reuse=MSLIN,
                  RESULTAT=MSLIN,
@@ -666,6 +668,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 MSLI2=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CARA1,
+                    SOLVEUR=_F(METHODE='MUMPS',),
                     EXCIT=(_F(CHARGE=CHCI,
                               FONC_MULT=FO12,),
                            _F(CHARGE=CHMECF,

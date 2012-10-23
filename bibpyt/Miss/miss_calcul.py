@@ -1,4 +1,4 @@
-#@ MODIF miss_calcul Miss  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+#@ MODIF miss_calcul Miss  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,8 +44,7 @@ from Utilitai.UniteAster      import UniteAster
 from Utilitai.utils           import set_debug, _print, _printDBG
 from Miss.miss_fichier_sol    import fichier_sol
 from Miss.miss_fichier_option import fichier_option
-from Miss.miss_resu_aster     import lire_resultat_aster
-from Miss.miss_resu_aster     import lire_resultat_issf_aster
+from Miss.miss_resu_aster     import ResuAsterReader, ResuAsterISSFReader
 from Miss.miss_fichier_interf import fichier_mvol, fichier_chp, fichier_cmde 
 from Miss.miss_fichier_interf import fichier_cmde_inci
 from Miss.miss_post           import PostMissFactory, info_freq
@@ -65,6 +64,7 @@ class CALCUL_MISS(object):
         self.data = None
         self.verbose = parameters['INFO'] >= 2
         self.debug = self.verbose
+        self.resu_aster_reader = ResuAsterReader()
         if self.verbose:
             _print('Paramètres du calcul', self.param)
         if self.debug:
@@ -187,30 +187,15 @@ class CALCUL_MISS(object):
             __mael = MACR_ELEM_DYNA(BASE_MODALE=self.param['BASE_MODALE'],
                                     **opts)
             mael = __mael
-        if self.param['GROUP_MA_FLU_STR'] is None:
-          IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
-                         FORMAT='MISS_3D',
-                         GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
-                         SOUS_TITRE='PRODUIT PAR CALC_MISS',
-                         UNITE=ulaster,)
-        else:
-          IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
-                         FORMAT='MISS_3D',
-                         GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
-                         GROUP_MA_FLU_STR=self.param['GROUP_MA_FLU_STR'],
-                         GROUP_MA_FLU_SOL=self.param['GROUP_MA_FLU_SOL'],
-                         GROUP_MA_SOL_SOL=self.param['GROUP_MA_SOL_SOL'],                         
-                         SOUS_TITRE='PRODUIT PAR CALC_MISS',
-                         UNITE=ulaster,)
+        IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
+                       FORMAT='MISS_3D',
+                       GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
+                       SOUS_TITRE='PRODUIT PAR CALC_MISS',
+                       UNITE=ulaster,)
         UL.EtatInit()
         copie_fichier(self.param.UL.Nom(ulaster), self._fichier_tmp("aster"))
-        print 'ISSF ',self.param['ISSF']
-        if self.param['ISSF'] != 'OUI':
-          self.data = lire_resultat_aster(self._fichier_tmp("aster"))
-        else:
-          self.data = lire_resultat_issf_aster(self._fichier_tmp("aster"))        
+        self.data = self.resu_aster_reader.read(self._fichier_tmp("aster"))
         self._dbg_trace("Stop")
-
 
     def cree_fichier_mvol(self):
         """Produit le fichier de maillage.
@@ -225,7 +210,7 @@ class CALCUL_MISS(object):
         """Produit le fichier chp (modes statiques, dynamiques...).
         """
         self._dbg_trace("Start")
-        content = fichier_chp(self.param,self.data)
+        content = fichier_chp(self.param, self.data)
         open(self._fichier_tmp("chp"), "w").write(content)
         self._dbg_trace("Stop")
 
@@ -297,15 +282,51 @@ class CALCUL_MISS(object):
 
 
 class CALCUL_MISS_IMPE(CALCUL_MISS):
-    """Définition d'un calcul MISS3D de type MISS_IMPE
-    """
+    """Définition d'un calcul MISS3D de type MISS_IMPE."""
     option_calcul = 'MISS_IMPE'
+
+
+class CALCUL_MISS_ISSF(CALCUL_MISS):
+    """Définition d'un calcul MISS3D de type MISS_IMPE avec ISSF."""
+    option_calcul = 'MISS_IMPE'
+
+    def __init__(self, parent, parameters):
+        """Initialisations"""
+        CALCUL_MISS.__init__(self, parent, parameters)
+        self.resu_aster_reader = ResuAsterISSFReader()
+
+    def cree_resultat_aster(self):
+        """Produit le(s) fichier(s) issu(s) d'Aster."""
+        self._dbg_trace("Start")
+        UL = UniteAster()
+        ulaster = UL.Libre(action='ASSOCIER')
+        mael = self.param['MACR_ELEM_DYNA']
+        if mael is None:
+            opts = {}
+            if self.param['MATR_RIGI']:
+                opts['MATR_RIGI'] = self.param['MATR_RIGI']
+            if self.param['MATR_MASS']:
+                opts['MATR_MASS'] = self.param['MATR_MASS']
+            __mael = MACR_ELEM_DYNA(BASE_MODALE=self.param['BASE_MODALE'],
+                                    **opts)
+            mael = __mael
+        IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
+                       FORMAT='MISS_3D',
+                       GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
+                       GROUP_MA_FLU_STR=self.param['GROUP_MA_FLU_STR'],
+                       GROUP_MA_FLU_SOL=self.param['GROUP_MA_FLU_SOL'],
+                       GROUP_MA_SOL_SOL=self.param['GROUP_MA_SOL_SOL'],                         
+                       SOUS_TITRE='PRODUIT PAR CALC_MISS',
+                       UNITE=ulaster,)
+        UL.EtatInit()
+        copie_fichier(self.param.UL.Nom(ulaster), self._fichier_tmp("aster"))
+        self.data = self.resu_aster_reader.read(self._fichier_tmp("aster"))        
+        self._dbg_trace("Stop")
 
 
 class CALCUL_MISS_POST(CALCUL_MISS):
     """Définition d'une exécution de CALC_MISS où seul le
-    post-traitement est demandé.
-    """
+    post-traitement est demandé."""
     option_calcul = 'POST-TRAITEMENT'
 
     def prepare_donnees(self):
@@ -451,6 +472,8 @@ def CalculMissFactory(parent, param):
     elif param['TYPE_RESU'] != 'FICHIER' \
         and not param['_exec_Miss']:
         return CALCUL_MISS_POST(parent, param)
+    elif param['ISSF'] == 'OUI':
+        return CALCUL_MISS_ISSF(parent, param)
     else:
         return CALCUL_MISS_IMPE(parent, param)
 

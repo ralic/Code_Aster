@@ -1,7 +1,7 @@
-      SUBROUTINE NMDCIN(SDDISC,NUMINS)
-C
+      SUBROUTINE NRSMTB(MU,TRBE,W)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 22/10/2012   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,42 +18,17 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
-C
       IMPLICIT NONE
-      CHARACTER*19 SDDISC
-      INTEGER      NUMINS
-C
-C ----------------------------------------------------------------------
-C
-C ROUTINE MECA_NON_LINE (ALGORITHME)
-C
-C VERIFICATION DU PAS DE TEMPS
-C
-C ----------------------------------------------------------------------
-C
-C
-C IN  SDDISC : SD DISCRETISATION
-C IN  NUMINS : NUMERO D'INSTANT
-C      
-C ----------------------------------------------------------------------
-C
-      INTEGER      DININS
-      INTEGER      NIVEAP,NIVEAM
-C      
-C ----------------------------------------------------------------------
-C
-      IF (NUMINS.EQ.1) GOTO 99
-C
-C --- NIVEAUX DE DECOUPE
-C     
-      NIVEAP = DININS(SDDISC,NUMINS)
-      NIVEAM = DININS(SDDISC,NUMINS-1)
-C
-C --- ON DOIT ETRE NON REDECOUPE
-C
-      CALL ASSERT((NIVEAM-NIVEAP).LE.1)
-C
-  99  CONTINUE         
+
+
+C     BUTS  : CALCUL DU TERME EN BE DE L'ENERGIE ELASTIQUE DE SIMO-MIEHE
+C     IN  MU : COEFFICIENT DE LAME = E/ (2.D0* (1.D0+NU))
+C     IN  TRBE : TRACE DE LA DEFORMATION ELASTIQUE PARTICULIERE DE SM
+C     OUT W : VALEUR DU TERME EN BE DE L'ENERGIE ELASTIQUE DE SM
+C             M=-3K/2*EPSTHE*(J-1/J)
+
+      REAL*8 MU,TRBE,W
+
+      W=MU/2.D0*(TRBE-3.D0)
 
       END

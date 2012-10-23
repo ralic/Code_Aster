@@ -1,7 +1,7 @@
-      SUBROUTINE NMERAZ(SDERRO)
+      SUBROUTINE NMERAZ(SDERRO,TYPEVT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,26 +23,31 @@ C
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
       CHARACTER*24 SDERRO
+      CHARACTER*4  TYPEVT
 C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (SD ERREUR)
 C
-C REMISE A ZERO DES EVENEMENTS INTRINSEQUES
+C REMISE A ZERO DES EVENEMENTS
 C
 C ----------------------------------------------------------------------
 C
 C
 C IN  SDERRO : SD GESTION DES ERREURS
+C IN  TYPEVT : TYPE DE L'EVENEMENT
+C              'TOUS' - TOUS LES EVENEMENTS
+C              'EVEN' - EVENEMENT SIMPLE
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      IEVEN,ZEVEN
+      INTEGER      IRET
       CHARACTER*24 ERRINF
       INTEGER      JEINFO
-      CHARACTER*24 ERRAAC
-      INTEGER      JEEACT
+      CHARACTER*24 ERRAAC,ERRENI
+      INTEGER      JEEACT,JEENIV
+      CHARACTER*16 TEVEN
 C
 C ----------------------------------------------------------------------
 C
@@ -51,16 +56,29 @@ C
 C --- ACCES SD
 C
       ERRINF = SDERRO(1:19)//'.INFO'
+      CALL JEEXIN(ERRINF,IRET)
+      IF (IRET.EQ.0) GOTO 99
       CALL JEVEUO(ERRINF,'L',JEINFO)
       ZEVEN  = ZI(JEINFO-1+1)
       ERRAAC = SDERRO(1:19)//'.EACT'
+      ERRENI = SDERRO(1:19)//'.ENIV'
       CALL JEVEUO(ERRAAC,'E',JEEACT)
+      CALL JEVEUO(ERRENI,'L',JEENIV)
 C
 C --- EVENEMENTS DESACTIVES
 C
       DO 15 IEVEN = 1,ZEVEN
-        ZI(JEEACT-1+IEVEN) = 0
+        TEVEN  = ZK16(JEENIV-1+IEVEN)(1:9)
+        IF (TYPEVT.EQ.'TOUS') THEN
+          ZI(JEEACT-1+IEVEN) = 0
+        ELSEIF (TYPEVT.EQ.'EVEN') THEN
+          IF (TEVEN.EQ.'EVEN') ZI(JEEACT-1+IEVEN) = 0
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
  15   CONTINUE
+C
+ 99   CONTINUE
 C
       CALL JEDEMA()
       END

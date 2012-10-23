@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,7 +59,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
          - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé
            avec l'argument args.
       """
-      N_ETAPE.ETAPE.__init__(self, oper, reuse, args)
+      N_ETAPE.ETAPE.__init__(self, oper, reuse, args, niveau=5)
       self.g_context = {}
       # Contexte courant
       self.current_context = {}
@@ -665,7 +665,10 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       """
       # chercher dans self.get_contexte_avant, puis si non trouve
       # self.parent.get_concept est peut-etre plus performant
-      return self.get_contexte_courant().get(nomsd.strip(), None)
+      co = self.get_contexte_courant().get(nomsd.strip(), None)
+      if not isinstance(co, ASSD):
+          co = None
+      return co
 
    def get_concept_by_type(self, nomsd, typesd, etape=None):
       """

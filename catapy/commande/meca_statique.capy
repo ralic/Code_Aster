@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
          LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
          INST_FIN        =SIMP(statut='f',typ='R'),
          OPTION          =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","SANS"),defaut="SIEF_ELGA",max=1,
-             fr="seule option : contraintes aux points de Gauss. Utiliser CALC_ELEM pour les autres.",
+             fr="Seule option : contraintes aux points de Gauss. Utilisez CALC_CHAMP pour les autres options.",
                           ),
 
 #-------------------------------------------------------------------

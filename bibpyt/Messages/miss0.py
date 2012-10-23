@@ -1,4 +1,4 @@
-#@ MODIF miss0 Messages  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+#@ MODIF miss0 Messages  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,6 +139,11 @@ Il faut donc, soit :
 
 21 : _(u"""
 Il faut au moins une couche avec EPAIS.
+"""),
+
+22 : _(u"""
+En interaction sol, structure, fluide (ISSF='OUI'), les mots-clés
+GROUP_MA_FLU_STR, GROUP_MA_FLU_SOL, GROUP_MA_SOL_SOL sont tous les trois obligatoires.
 """),
 
 }

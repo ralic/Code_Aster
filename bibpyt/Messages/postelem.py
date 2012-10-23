@@ -1,4 +1,4 @@
-#@ MODIF postelem Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF postelem Messages  DATE 22/10/2012   AUTEUR BARGELLI R.BARGELLINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,10 +37,6 @@ cata_msg={
 
 4: _(u"""
  Avec le mot-clé RESULTAT, il faut renseigner NOM_CHAM pour identifier le champ sur lequel réaliser le post-traitement.
-"""),
-
-5: _(u"""
- En présence de déformation thermique, le calcul de l'énergie élastique de SIMO_MIEHE est interdit. Voir R5.03.21
 """),
 
 11: _(u"""

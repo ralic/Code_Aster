@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 23/10/2012   AUTEUR BERRO H.BERRO 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21b.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,22 +119,27 @@ DEPLGE40=RECU_GENE(   RESU_GENE= DYNHARGA,
 TEST_RESU(GENE=(_F(RESU_GENE=DEPLGE05,
                    VALE_CALC_C=(9.7598399999999997e-05-8.4362099999999997e-06j),
                    TOLE_MACHINE=1.0000000000000001E-05,
+                   VALE_ABS='OUI',
                    NUME_CMP_GENE=1,),
                 _F(RESU_GENE=DEPLGE10,
                    VALE_CALC_C=(9.8380600000000005e-06-1.9776299999999999e-06j),
                    TOLE_MACHINE=1.0000000000000001E-05,
+                   VALE_ABS='OUI',
                    NUME_CMP_GENE=2,),
                 _F(RESU_GENE=DEPLGE20,
                    VALE_CALC_C=(-6.38999e-06+9.0196900000000004e-06j),
                    TOLE_MACHINE=1.0000000000000001E-05,
+                   VALE_ABS='OUI',
                    NUME_CMP_GENE=4,),
                 _F(RESU_GENE=DEPLGE30,
                    VALE_CALC_C=(-2.3891199999999998e-06-1.2214099999999999e-06j),
                    TOLE_MACHINE=1.0000000000000001E-05,
+                   VALE_ABS='OUI',
                    NUME_CMP_GENE=6,),
                 _F(RESU_GENE=DEPLGE40,
                    VALE_CALC_C=(8.5029200000000003e-07+1.70081e-07j),
                    TOLE_MACHINE=1.0000000000000001E-05,
+                   VALE_ABS='OUI',
                    NUME_CMP_GENE=8,),
                 ),
           )

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +49,8 @@ CALC_MISS = MACRO(nom="CALC_MISS",
 
     # pas de post-traitement
     b_fichier   = BLOC(condition="TYPE_RESU == 'FICHIER'",
-                       regles=(UN_PARMI('MACR_ELEM_DYNA', 'BASE_MODALE'),),
+                       regles=(UN_PARMI('MACR_ELEM_DYNA', 'BASE_MODALE'),
+                               ENSEMBLE('GROUP_MA_FLU_STR', 'GROUP_MA_FLU_SOL', 'GROUP_MA_SOL_SOL'),),
         MACR_ELEM_DYNA  = SIMP(statut='f', typ=macr_elem_dyna,
                                fr="Macro élément produit en amont"),
         BASE_MODALE     = SIMP(statut='f', typ=mode_meca,
@@ -130,6 +131,7 @@ CALC_MISS = MACRO(nom="CALC_MISS",
     ),    
     # si post-traitement
     b_donnees   = BLOC(condition="TYPE_RESU != 'FICHIER' and TYPE_RESU != 'FICHIER_TEMPS'",
+                       regles=(ENSEMBLE('GROUP_MA_FLU_STR', 'GROUP_MA_FLU_SOL', 'GROUP_MA_SOL_SOL'),),
         MACR_ELEM_DYNA  = SIMP(statut='f', typ=macr_elem_dyna,
                                fr="Macro élément produit en amont"),
         BASE_MODALE     = SIMP(statut='o', typ=mode_meca,

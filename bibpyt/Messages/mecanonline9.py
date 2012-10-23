@@ -1,4 +1,4 @@
-#@ MODIF mecanonline9 Messages  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF mecanonline9 Messages  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,25 +102,6 @@ cata_msg = {
 """),
 
 12 : _(u"""
-   Arrêt par échec du traitement de la collision.
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
-"""),
-
-13  : _(u"""
-   Arrêt par détection d'instabilité (mot-clé CRIT_STAB dans STAT_NON_LINE / DYNA_NON_LINE).
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
-
-   La charge critique correspondante est accessible de deux manières :
-     - dans le fichier de message,
-     - dans la SD résultat EVOL_NOLI, elle correspond au paramètre CHAR_CRIT.
-"""),
-
-14 : _(u"""
-   Arrêt par échec de l'adaptation du coefficient de pénalisation pour limiter l'interpénétration.
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
-"""),
-
-15 : _(u"""
    Arrêt pour cause d'absence de convergence avec le nombre d'itérations requis dans le solveur linéaire itératif.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 
@@ -130,9 +111,7 @@ cata_msg = {
    - Utilisez un préconditionneur plus précis ou changez d'algorithme.
 """),
 
-16 : _(u"""
-   Arrêt pour cause de divergence du résidu (DIVE_RESI).
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
-"""),
+50 : _(u"""Arrêt par échec de l'action <%(k1)s>  pour le traitement de l'évènement <%(k2)s>. """),
+51 : _(u"""Arrêt demandé pour le déclenchement de l'évènement <%(k1)s>. """),
 
 }

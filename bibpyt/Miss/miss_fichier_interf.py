@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_interf Miss  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+#@ MODIF miss_fichier_interf Miss  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,33 +30,23 @@ import os
 from Miss.miss_utils import dict_format, en_ligne
 
 
-#XXX voir pour les groupes
 def fichier_mvol(struct):
     """Produit le contenu du fichier de maillage mvol.
     """
     cont = ["COUPLAGE MISS ASTER",]
-    cont.extend(en_ligne([struct.noeud_nb, struct.maille_nb], dict_format['sI'], 2, ""))
+    cont.extend(en_ligne([struct.noeud_nb, struct.maille_nb_tot], dict_format['sI'], 2, ""))
     fmtR_fort = "3E%s" % (dict_format['R'].replace("E", ""))
     cont.append("(%s)" % fmtR_fort)
     cont.extend(en_ligne(struct.noeud_coor, dict_format['sR'], 3, ""))
-    if len(struct.maille_connec) != 0:
-      cont.extend(en_ligne(struct.maille_connec, dict_format['sI'], 20,
-                           format_ligne="%(valeurs)s     GR    1"))
-    else:
-      cont.extend(en_ligne(struct.maille_connec1, dict_format['sI'], 20,
-                           format_ligne="%(valeurs)s     GR    1"))
-      cont.extend(en_ligne(struct.maille_connec2, dict_format['sI'], 20,
-                           format_ligne="%(valeurs)s     GR    2"))
-      cont.extend(en_ligne(struct.maille_connec3, dict_format['sI'], 20,
-                           format_ligne="%(valeurs)s     GR    3"))
-      cont.extend(en_ligne(struct.maille_connec4, dict_format['sI'], 20,
-                           format_ligne="%(valeurs)s     GR    4"))
+    for i, connec in enumerate(struct.maille_connec):
+        ngr = i + 1
+        cont.extend(en_ligne(connec, dict_format['sI'], 20,
+                             format_ligne="%%(valeurs)s     GR    %d" % ngr))
     cont.append("")
     return os.linesep.join(cont)
 
 
-#XXX voir pour les groupes
-def fichier_chp(param,struct):
+def fichier_chp(param, struct):
     """Produit le contenu du fichier chp.
     """
     cont = ["GROUPE    1   2",]
@@ -74,17 +64,16 @@ def fichier_chp(param,struct):
                              format_ligne="%(index_1)6d%(valeurs)s"))
         cont.append("FIN")
     if param["ISSF"] == "OUI":
-       cont.append("GROUPE    3")
-       if param['ALLU'] != 0.:
-         refl = param['ALLU']
-         kimp = refl/(2.-refl)
-         simp=str(kimp)
-         print 'simp ',simp
-         cont.append("FLUI "+ simp + " BEM")
-       else: 
-         cont.append("DEPN  BEM") 
-       cont.append("GROUPE    4")    
-       cont.append("LIBRE")    
+        cont.append("GROUPE    3")
+        if param['ALLU'] != 0.:
+            refl = param['ALLU']
+            kimp = refl / (2. - refl)
+            simp = str(kimp)
+            cont.append("FLUI " + simp + " BEM")
+        else: 
+            cont.append("DEPN  BEM") 
+        cont.append("GROUPE    4")    
+        cont.append("LIBRE")    
     cont.append("FINC")
     cont.append("EOF")
     return os.linesep.join(cont)
@@ -93,7 +82,6 @@ def fichier_chp(param,struct):
 def fichier_cmde(param, struct, *nom_fichier):
     """Produit le fichier de commandes Miss (in).
     """
-    print 'PARAM ',param
     dict_info = {
         "projet" : param["PROJET"],
         "titre"  : struct.titre,
@@ -143,23 +131,22 @@ def fichier_cmde(param, struct, *nom_fichier):
         itmpl = template_impe_seule_in % dict_format
         dict_info['_fimg3'] = itmpl % dict_info
         content = template_miss_in % dict_info
+    elif param["ISSF"] == "OUI":
+        itmpl = "*" % dict_format
+        dict_info['_fimg'] = itmpl % dict_info
+        itmpl = template_ondes_non_inclinees_in % dict_format
+        dict_info['_fimg2'] = itmpl % dict_info
+        itmpl = template_impe_forc_issf_in % dict_format
+        dict_info['_fimg3'] = itmpl % dict_info
+        content = template_miss_issf_in % dict_info
     else:
-        if param["ISSF"] == "OUI":
-          itmpl = "*" % dict_format
-          dict_info['_fimg'] = itmpl % dict_info
-          itmpl = template_ondes_non_inclinees_in % dict_format
-          dict_info['_fimg2'] = itmpl % dict_info
-          itmpl = template_impe_forc_issf_in % dict_format
-          dict_info['_fimg3'] = itmpl % dict_info
-          content = template_miss_issf_in % dict_info
-        else:
-          itmpl = "*" % dict_format
-          dict_info['_fimg'] = itmpl % dict_info
-          itmpl = template_ondes_non_inclinees_in % dict_format
-          dict_info['_fimg2'] = itmpl % dict_info
-          itmpl = template_impe_forc_in % dict_format
-          dict_info['_fimg3'] = itmpl % dict_info
-          content = template_miss_in % dict_info
+        itmpl = "*" % dict_format
+        dict_info['_fimg'] = itmpl % dict_info
+        itmpl = template_ondes_non_inclinees_in % dict_format
+        dict_info['_fimg2'] = itmpl % dict_info
+        itmpl = template_impe_forc_in % dict_format
+        dict_info['_fimg3'] = itmpl % dict_info
+        content = template_miss_in % dict_info
     return content
                 
 

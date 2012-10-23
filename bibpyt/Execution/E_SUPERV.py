@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,7 +102,7 @@ class SUPERV:
         """
         try:
             from Utilitai.as_timer import ASTER_TIMER
-            self.timer = ASTER_TIMER(format='aster')
+            self.timer = ASTER_TIMER(format='aster', maxlabel=_(u"> %d commandes..."))
             self.timer.Start('init (jdc)')
             self.timer.Start(' . part Superviseur', num=1.1e6)
             ier = 0

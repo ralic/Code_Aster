@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16 OPTION,NOMTE
-C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,13 +20,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
 C ......................................................................
 
 C    - FONCTION REALISEE:  CALC_CHAMP POUR LES TUYAUX :
 C        - EFGE_ELGA
-C        - EPEQ_ELGA
-C        - SIEQ_ELGA
 
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -38,18 +35,16 @@ C ......................................................................
       PARAMETER(NBSECM=32,NBCOUM=10)
       REAL*8 POICOU(2*NBCOUM+1),POISEC(2*NBSECM+1)
       REAL*8 PI,DEUXPI,SIG(6),FNO(4,6)
-      REAL*8 EFG(6),XA,XB,XC,XD
-      REAL*8 PGL(3,3),PGL4(3,3),VNO(4),VPG(4)
+      REAL*8 EFG(6)
+      REAL*8 PGL(3,3),PGL4(3,3)
       REAL*8 COSFI,SINFI
       REAL*8 FI,POIDS,R,R8PI,OMEGA
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA,L
-      REAL*8 CP(2,2),CV(2,2),CO(4,4),SI(4,4)
-      REAL*8 VEQG(16)
       INTEGER NNO,NNOS,JGANO,NDIM,NPG,NBCOU,NBSEC,LORIEN
       INTEGER IPOIDS,IVF,IC,KP,JIN,JCOOPG,JDFD2
-      INTEGER ICAGEP,I1,I2,IH,IDFDK
-      INTEGER IGAU,ICOU,ISECT,I,JOUT,INO
-      INTEGER INDICE,K,IP,ICOUD2,MMT
+      INTEGER ICAGEP,IDFDK
+      INTEGER IGAU,ICOU,ISECT,I,JOUT
+      INTEGER INDICE,ICOUD2,MMT
       INTEGER KPGS
 
       INTEGER VALI
@@ -174,72 +169,6 @@ C           -- BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
               ZR(JOUT+6*(KP-1)+IC-1)=FNO(KP,IC)
   190       CONTINUE
   200     CONTINUE
-
-
-
-C=======================================================================
-      ELSEIF (OPTION.EQ.'EPEQ_ELGA' .OR. OPTION.EQ.'SIEQ_ELGA') THEN
-
-C=======================================================================
-
-
-C ======== RAPPEL DES CONTRAINTES ====================
-
-        IF (OPTION.EQ.'SIEQ_ELGA') THEN
-          CALL JEVECH('PCONTRR','L',JIN)
-          CALL JEVECH('PCONTEQ','E',JOUT)
-        ELSE
-          CALL JEVECH('PDEFORR','L',JIN)
-          CALL JEVECH('PDEFOEQ','E',JOUT)
-        ENDIF
-
-C BOUCLE SUR LES POINTS DE GAUSS
-
-C BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
-
-        KPGS=0
-        DO 330 IGAU=1,NPG
-
-C INIALISATION DE EFG
-
-          DO 300,I=1,16
-            VEQG(I)=0.D0
-  300     CONTINUE
-
-          DO 320 ICOU=1,2*NBCOU+1
-
-C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-
-            DO 310 ISECT=1,2*NBSEC+1
-
-              KPGS=KPGS+1
-
-              INDICE=JIN-1+6*(KPGS-1)
-              SIG(1)=ZR(INDICE+1)
-              SIG(2)=ZR(INDICE+2)
-              SIG(3)=ZR(INDICE+3)
-              SIG(4)=ZR(INDICE+4)
-              SIG(5)=ZR(INDICE+5)
-              SIG(6)=ZR(INDICE+6)
-
-              IF (OPTION.EQ.'SIEQ_ELGA') THEN
-                CALL FGEQUI(SIG,'SIGM',3,VEQG)
-                ZR(JOUT-1+3*KPGS-2)=VEQG(1)
-                ZR(JOUT-1+3*KPGS-1)=VEQG(6)
-                ZR(JOUT-1+3*KPGS)=VEQG(16)
-              ELSE
-                CALL FGEQUI(SIG,'EPSI',3,VEQG)
-                ZR(JOUT-1+2*KPGS-1)=VEQG(1)
-                ZR(JOUT-1+2*KPGS)=VEQG(5)
-              ENDIF
-
-  310       CONTINUE
-  320     CONTINUE
-  330   CONTINUE
-
-C  =========================================
-
-
       ELSE
         CALL U2MESK('F','ELEMENTS4_49',1,OPTION)
       ENDIF

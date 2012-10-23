@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C
 C FONCTIONS REALISEES:
 C
 C      CALCUL DE LA DENSITE DE DISSIPATION
-C      A L'EQUILIBRE POUR LES ELEMENTS DKT
+C      A L'EQUILIBRE POUR LES ELEMENTS DKTG ET LA LOI GLRC_DM
 C      .SOIT AUX POINTS D'INTEGRATION : OPTION 'DISS_ELGA'
 C      .SOIT L INTEGRALE PAR ELEMENT  : OPTION 'DISS_ELEM'
 C
@@ -39,35 +39,23 @@ C.......................................................................
       INTEGER    NPGMX
       PARAMETER (NPGMX=4)
 
-      REAL*8   PGL(3,3),COEF,DEUX
+      REAL*8   PGL(3,3)
       REAL*8   QSI,ETA,XYZL(3,4),JACOB(5),POIDS,CARA(25)
-      REAL*8   DISSE(NPGMX),DISSP(NPGMX)
-      REAL*8   DISST(NPGMX),DSE,DSP,DST
+      REAL*8   DISSE(NPGMX),DSE
       REAL*8   R8B(9),EP,SEUIL
-      REAL*8   HIC,COEHSD,NBSP
 
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  JGEOM,IPG,IDENER,IMATE
-      INTEGER  ICOMPO,ICACOQ,JVARI,NBVAR,JTAB(7),IVPG
-      INTEGER  JNBSPI,NBCOU,NPGH,IRET,ICOU,IGAUH,ISP,TMA(3,3)
+      INTEGER  ICOMPO,ICACOQ,JVARI,NBVAR,JTAB(7)
+      INTEGER  IRET
 
       CHARACTER*16 VALK(2)
-      LOGICAL  DKQ,DKG,LKIT
+      LOGICAL  DKQ,LKIT
 
-      DEUX   = 2.D0
-      DKQ = .FALSE.
-      DKG = .FALSE.
-
-      IF (NOMTE(1:8).EQ.'MEDKQU4 ') THEN
+      IF (NOMTE(1:8).EQ.'MEDKQG4 ') THEN
         DKQ = .TRUE.
-      ELSEIF (NOMTE(1:8).EQ.'MEDKQG4 ') THEN
-        DKQ = .TRUE.
-        DKG = .TRUE.
-      ELSEIF (NOMTE(1:8).EQ.'MEDKTR3 ') THEN
-        DKQ = .FALSE.
       ELSEIF (NOMTE(1:8).EQ.'MEDKTG3 ') THEN
         DKQ = .FALSE.
-        DKG = .TRUE.
       ELSE
         CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
@@ -86,7 +74,6 @@ C.......................................................................
       LKIT = ZK16(ICOMPO)(1:7).EQ.'KIT_DDI'
 
       IF ((ZK16(ICOMPO)(1:7).EQ.'GLRC_DM')      .OR.
-     &    (ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE') .OR.
      &    (LKIT.AND.(ZK16(ICOMPO+7)(1:7).EQ.'GLRC_DM'))) THEN
 
       CALL JEVECH('PCACOQU','L',ICACOQ)
@@ -108,27 +95,10 @@ C.......................................................................
       ENDIF
 
       CALL R8INIR(NPGMX,0.D0,DISSE,1)
-      CALL R8INIR(NPGMX,0.D0,DISSP,1)
-      CALL R8INIR(NPGMX,0.D0,DISST,1)
       DSE = 0.0D0
-      DSP = 0.0D0
-      DST = 0.0D0
-
-      NPGH = 3
 
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
       EP = ZR(ICACOQ)
-
-      IF (DKG) THEN
-        NBCOU = 1
-      ELSE
-        CALL JEVECH('PNBSP_I','L',JNBSPI)
-        NBCOU=ZI(JNBSPI-1+1)
-
-        HIC = EP/NBCOU
-      ENDIF
-
-      IF (NBCOU.LE.0) CALL U2MESK('F','ELEMENTS_36',1,ZK16(ICOMPO-1+6))
 
 C ---- BOUCLE SUR LES POINTS D'INTEGRATION :
 C      ===================================
@@ -144,56 +114,19 @@ C      ===================================
          ENDIF
 
         CALL JEVECH('PMATERC','L',IMATE)
-        IF(ZK16(ICOMPO)(1:7).EQ.'GLRC_DM') THEN
 
-          CALL CRGDM(ZI(IMATE),'GLRC_DM         ',TMA,R8B(1),R8B(2),
-     &               R8B(3),R8B(4),R8B(5),R8B(6),R8B(7),SEUIL,R8B(8),
-     &               R8B(9),EP,.FALSE.)
-
-        ENDIF
+        CALL CRGDM(ZI(IMATE),'GLRC_DM         ',R8B(1),R8B(2),
+     &             R8B(3),R8B(4),R8B(5),R8B(6),R8B(7),SEUIL,R8B(8),
+     &             R8B(9),EP,.FALSE.)
 
 C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 C        ==========================================================
          IF ((OPTION.EQ.'DISS_ELGA').OR.(OPTION.EQ.'DISS_ELEM')) THEN
 
-           NBSP=JTAB(7)
+           DISSE(IPG) = (ZR(JVARI-1 + (IPG-1)*NBVAR + 1) +
+     &                   ZR(JVARI-1 + (IPG-1)*NBVAR + 2))*SEUIL
 
-           IF(DKG) THEN
-             DISSE(IPG) = (ZR(JVARI-1 + (IPG-1)*NBVAR + 1) +
-     &                     ZR(JVARI-1 + (IPG-1)*NBVAR + 2))*SEUIL
-             DISSP(IPG) = 0.0D0
-
-             DISST(IPG) = DISSE(IPG) + DISSP(IPG)
-
-             DSE = DSE + DISSE(IPG)*POIDS
-             DST = DSE
-           ELSE
-             DO 80,ICOU = 1,NBCOU
-               DO 70,IGAUH = 1,NPGH
-                 ISP=(ICOU-1)*NPGH+IGAUH
-                 IVPG = ((IPG-1)*NBSP + ISP-1)*NBVAR
-
-C       -- COTE DES POINTS D'INTEGRATION
-C       --------------------------------
-                IF (IGAUH.EQ.1) THEN
-                  COEF = 1.D0/3.D0
-                ELSE IF (IGAUH.EQ.2) THEN
-                  COEF = 4.D0/3.D0
-                ELSE
-                  COEF = 1.D0/3.D0
-                END IF
-                COEHSD = COEF*HIC/DEUX
-
-                R8B(1) = ZR(JVARI + IVPG)*SEUIL*COEHSD
-                DISSE(IPG) = DISSE(IPG) + R8B(1)
-                DSE = DSE + R8B(1)*POIDS
- 70            CONTINUE
- 80          CONTINUE
-             DISSP(IPG) = 0.0D0
-             DISST(IPG) = DISSE(IPG)
-             DST = DSE
-
-           ENDIF
+           DSE = DSE + DISSE(IPG)*POIDS
 
          ENDIF
 C
@@ -212,22 +145,18 @@ C --- OPTIONS DISS_ELGA
 C     ==============================
       IF (OPTION.EQ.'DISS_ELGA') THEN
          DO 100 IPG = 1, NPG
-           ZR(IDENER-1+(IPG-1)*3 +1) = DISST(IPG)
-           ZR(IDENER-1+(IPG-1)*3 +2) = DISSE(IPG)
-           ZR(IDENER-1+(IPG-1)*3 +3) = DISSP(IPG)
+           ZR(IDENER-1+(IPG-1)*1 +1) = DISSE(IPG)
  100     CONTINUE
 C
 C --- OPTION DISS_ELEM
 C     ================
       ELSEIF (OPTION.EQ.'DISS_ELEM') THEN
-        ZR(IDENER-1+1) = DST
-        ZR(IDENER-1+2) = DSE
-        ZR(IDENER-1+3) = DSP
+        ZR(IDENER-1+1) = DSE
       ENDIF
 
       ELSE
 C      RELATION NON PROGRAMMEE
-        VALK(1)=OPTION
+        VALK(1) = OPTION
         VALK(2) = ZK16(ICOMPO)(1:7)
         CALL U2MESK('A','ELEMENTS4_63',2,VALK)
       ENDIF

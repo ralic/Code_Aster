@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,9 +85,6 @@ MODE_LOCAL__
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     NACCELR  = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
-    EDISSR   = DISS_R   ELEM__         (TOTALE   ENDO     PLAS     )
-    EDISSPG  = DISS_R   ELGA__ RIGI    (TOTALE   ENDO     PLAS     )
-    EDISSNO  = DISS_R   ELNO__ IDEN__  (TOTALE   ENDO     PLAS     )
     EENERR   = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
     EENERPG  = ENER_R   ELGA__ RIGI    (TOTALE   MEMBRANE FLEXION  )
     EENERNO  = ENER_R   ELNO__ IDEN__  (TOTALE   MEMBRANE FLEXION  )
@@ -237,11 +234,6 @@ OPTION__
     DEGE_ELGA           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR
                               OUT__  EDEFGPG  PDEFOPG
-    DISS_ELGA           413   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CCACOQU  PCACOQU
-                                     CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
-                              OUT__  EDISSPG  PDISSPG
-    DISS_ELNO           4     IN__   EDISSPG  PDISSPG
-                              OUT__  EDISSNO  PDISSNO
     ECIN_ELEM           31    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  COMEG2R  POMEGA2  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  DDL_MECA PVITESR
                               OUT__  EENERR   PENERCR
@@ -260,9 +252,6 @@ OPTION__
                               OUT__  EENERPG  PENERDR
     ENEL_ELNO           4     IN__   EENERPG  PENERPG
                               OUT__  EENERNO  PENERNO
-    DISS_ELEM           413   IN__   NGEOMER  PGEOMER  CCOMPOR  PCOMPOR  CMATERC  PMATERC  ZVARIPG  PVARIPR
-                                     CCACOQU  PCACOQU
-                              OUT__  EDISSR   PDISSD1
     ENEL_ELEM           412   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
                                      CCACOQU  PCACOQU  ENBSP_I  PNBSP_I

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/10/2012   AUTEUR BARGELLI R.BARGELLINI 
 # TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS 3D
 # hsnv121a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,7 +186,10 @@ VT=STAT_NON_LINE( reuse=VT,
                      RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3)
               )
-
+ENERSM=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
+                 RESULTAT=VT,
+                 INST=2.,
+                 );
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',
@@ -236,6 +239,14 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    MAILLE='MA1',),
                 ),
           )
-
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 5.6031658101886E+09,
+           VALE_REFE= 5.6E9,
+           NOM_PARA='TOTALE',
+           TABLE=ENERSM,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
 FIN()
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 # ssnp15d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,10 +138,12 @@ U=CALC_CHAMP(reuse=U,
              RESULTAT=U,
              CONTRAINTE =('SIGM_ELGA','SIGM_ELNO','EFGE_ELNO'),
              DEFORMATION='EPSI_ELNO',
+             CRITERES='SIEQ_ELNO',
              VARI_INTERNE ='VARI_ELNO',);
 
 USUP=POST_CHAMP(RESULTAT=U,
-                EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO','VARI_ELNO'),
+                TOUT='OUI',
+                EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO','VARI_ELNO','SIEQ_ELNO',),
                               NUME_COUCHE=1,
                               NIVE_COUCHE='SUP',),);
 
@@ -186,11 +188,6 @@ EFGE=MODI_REPERE(RESULTAT=U,
                               NOM_CMP=('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY',),),
                  REPERE='COQUE',
                  AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
-
-USUP=CALC_CHAMP(reuse=USUP,
-                RESULTAT=USUP,
-                TOUT_ORDRE='OUI',
-                CRITERES='SIEQ_ELNO',);
 
 TEST_RESU(RESU=(_F(INST=1.0,
                    RESULTAT=U,

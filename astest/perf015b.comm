@@ -1,6 +1,6 @@
-# MODIF  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/10/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE TEST DE PERFORMANCE METTANT EN EVIDENCE LA SCALABILITE DES CALCULS ELEMENTAIRES
-# perf015b.para = tps_job 2400 mem_job 400Mo ncpus 1 mpi_nbcpu 2 liste_test I
+# perf015b.para = tps_job 3000 mem_job 400Mo ncpus 1 mpi_nbcpu 2 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,10 +128,10 @@ SOLNL=CALC_CHAMP(reuse=SOLNL,
 TEST_RESU(RESU=(_F(NUME_ORDRE=23,
                    RESULTAT=SOLNL,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N112',
+                   NOEUD='N2',
                    NOM_CMP='SIXX',
-                   VALE_CALC=31.419349974422,
+                   VALE_CALC=162.10859551785,
                    TOLE_MACHINE=1.E-3,
-                   MAILLE='M166',),),);
+                   MAILLE='M193',),),);
 
 FIN();

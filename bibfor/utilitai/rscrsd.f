@@ -5,7 +5,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCMEC1=39)
+      PARAMETER (NCMEC1=35)
       PARAMETER (NCMEC2=48)
       PARAMETER (NCMEC3=33)
       PARAMETER (NCMUTI=30)
@@ -54,7 +54,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCTHER=18)
+      PARAMETER (NCTHER=16)
       CHARACTER*16 CHTHER(NCTHER)
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
@@ -69,7 +69,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E T A
 C     ------------------------------------------------------------------
-      PARAMETER (NCTHET=2)
+      PARAMETER (NCTHET=1)
       CHARACTER*16 CHTHET(NCTHET)
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
@@ -88,8 +88,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'SIPO_ELNO',       'SIPO_NOEU',
      & 'SIEQ_ELGA',       'SIEQ_ELNO',       'SIEQ_NOEU',
      & 'EPEQ_ELGA',       'EPEQ_ELNO',       'EPEQ_NOEU',
-     & 'ALPH0_ELGA_EPSP', 'ALPHP_ELGA_ALPH0','VARI_NON_LOCAL',
-     & 'LANL_ELGA',       'SIRO_ELEM',       'FLHN_ELGA',
+     & 'SIRO_ELEM',       'FLHN_ELGA',
      & 'SIPM_ELNO',       'STRX_ELGA',       'FORC_EXTE',
      & 'FORC_AMOR',       'FORC_LIAI'/
 C
@@ -153,7 +152,6 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'META_ELNO',       'META_NOEU',
      & 'DURT_ELNO',       'DURT_NOEU',       'ETHE_ELEM',
      & 'HYDR_ELNO',       'HYDR_NOEU',
-     & 'DETE_ELNO',       'DETE_NOEU',
      & 'SOUR_ELGA',       'COMPORTHER',
      & 'ERTH_ELEM',       'ERTH_ELNO',       'ERTH_NOEU'/
 C     ------------------------------------------------------------------
@@ -176,7 +174,7 @@ C                      C H A M P _ T H E T A _ R U P T
 C     ------------------------------------------------------------------
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHTHET/
-     & 'THETA',           'GRAD_NOEU_THETA'/
+     & 'THETA'/
 C     ------------------------------------------------------------------
 
       NOMS2=NOMSD

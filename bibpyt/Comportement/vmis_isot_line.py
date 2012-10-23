@@ -1,4 +1,4 @@
-#@ MODIF vmis_isot_line Comportement  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_isot_line Comportement  DATE 23/10/2012   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    nom_vari       = ('EPSPEQ', 'INDIPLAS',),
    mc_mater       = ('ELAS', 'ECRO_LINE'),
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN', '1D','GRADVARI'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'SIMO_MIEHE','GDEF_LOG','GDEF_HYPO_ELAS','GREEN_REAC'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'SIMO_MIEHE','GDEF_LOG','GDEF_HYPO_ELAS'),
    nom_varc       = ('TEMP','SECH','HYDR'),
    algo_inte      = 'ANALYTIQUE',
    type_matr_tang = ('PERTURBATION', 'VERIFICATION','IMPLEX'),

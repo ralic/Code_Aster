@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 23/10/2012   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF EN 3D VMIS ISOTROPE
 # ssnd106a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -49,7 +49,6 @@ compor=[]
 compor.append(['VMIS_ISOT_LINE','SIMO_MIEHE'])
 compor.append(['VMIS_ISOT_LINE','GDEF_LOG'])
 compor.append(['VMIS_ISOT_LINE','GDEF_HYPO_ELAS'])
-compor.append(['VMIS_ISOT_LINE','GREEN_REAC'])
 
 mat=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F(TOUT='OUI',MATER=acier,),);
@@ -61,9 +60,6 @@ dureetracrot=1.
 tfintrac=dureetrac
 npastrac=[5]*len(compor)
 precision=[2.E-3]*len(compor)
-# pour GRREN_REAC il faut discretiser finement la traction
-npastrac[3]=25
-precision[3]=3.E-2
 npasrota=5
 nbincr=4
 angle_degres=45.0
@@ -218,7 +214,6 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
                    _F(FONCTION=vmis[0],LEGENDE=compor[0][0]+compor[0][1]),
                    _F(FONCTION=vmis[1],LEGENDE=compor[1][0]+compor[1][1]),
                    _F(FONCTION=vmis[2],LEGENDE=compor[2][0]+compor[2][1]),
-                   _F(FONCTION=vmis[3],LEGENDE=compor[3][0]+compor[3][1]),
                    ),
                   TITRE='courbes_vmis_isotrope');
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
@@ -230,7 +225,6 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
                    _F(FONCTION=epsg[0],LEGENDE=compor[0][0]+compor[0][1]),
                    _F(FONCTION=epsg[1],LEGENDE=compor[1][0]+compor[1][1]),
                    _F(FONCTION=epsg[2],LEGENDE=compor[2][0]+compor[2][1]),
-                   _F(FONCTION=epsg[3],LEGENDE=compor[3][0]+compor[3][1]),
                    ),
                   TITRE='courbes_epsg_isotrope');
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)

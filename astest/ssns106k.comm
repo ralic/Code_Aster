@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106k.para = tps_job 140 mem_job 512Mo ncpus 1 liste_test S
@@ -238,7 +238,7 @@ TDISS_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESU_G1,
                                  NOM_CHAM='DISS_NOEU',
                                  GROUP_NO='A4',
-                                 NOM_CMP=('TOTALE',),),);
+                                 NOM_CMP=('ENDO',),),);
 
 TDISS_G1=CALC_TABLE(reuse =TDISS_G1,
                TABLE=TDISS_G1,
@@ -252,7 +252,7 @@ TDISS_G1=CALC_TABLE(reuse =TDISS_G1,
 TDISS_G1=CALC_TABLE(reuse =TDISS_G1,
                     TABLE=TDISS_G1,
                     ACTION=_F(OPERATION='EXTR',
-                              NOM_PARA=('INST','TOTALE',),),);
+                              NOM_PARA=('INST','ENDO',),),);
 
 TFXA2_G1=CALC_TABLE(reuse =TFXA2_G1,
                     TABLE=TFXA2_G1,
@@ -348,7 +348,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            VALE_CALC= 0.00000000E+00,
            VALE_REFE=0.0,
-           NOM_PARA='TOTALE',
+           NOM_PARA='ENDO',
            TABLE=TDISS_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.050000000000000003,),
@@ -377,7 +377,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=254.97562079354,
            TOLE_MACHINE=1.E-3,
-           NOM_PARA='TOTALE',
+           NOM_PARA='ENDO',
            TABLE=TDISS_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.75,),
@@ -388,7 +388,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=346.57215692717,
            TOLE_MACHINE=1.E-3,
-           NOM_PARA='TOTALE',
+           NOM_PARA='ENDO',
            TABLE=TDISS_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),

@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai4 Messages  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,7 +116,7 @@ cata_msg={
      avec le MODELE fourni par l'utilisateur.
   -> Risque & Conseil : Vérifiez si le MODELE fourni dans la commande est
      bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     (ex: calcul des contraintes: CALC_ELEM) avec un MODELE différent de
+     de post-traitement avec un MODELE différent de
      celui utilisé pour calculer les déplacements, températures,...
 """),
 
@@ -126,7 +126,7 @@ cata_msg={
      avec le CARA_ELEM fourni par l'utilisateur.
   -> Risque & Conseil : Vérifiez si le CARA_ELEM fourni dans la commande est
      bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     (ex: calcul des contraintes: CALC_ELEM) avec un CARA_ELEM différent de
+     de post-traitement avec un CARA_ELEM différent de
      celui utilisé pour calculer les déplacements, températures,...
 """),
 
@@ -136,7 +136,7 @@ cata_msg={
      fourni par l'utilisateur.
   -> Risque & Conseil : Vérifiez si le matériau fourni dans la commande est
      bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     (ex: calcul des contraintes: CALC_ELEM) avec un matériau différent de
+     de post-traitement avec un matériau différent de
      celui utilisé pour calculer les déplacements, températures,...
 """),
 
@@ -146,7 +146,7 @@ cata_msg={
      fourni par l'utilisateur.
   -> Risque & Conseil : Vérifiez si le chargement fourni dans la commande est
      bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     (ex: calcul des contraintes: CALC_ELEM) avec un chargement différent de
+     post-traitement avec un chargement différent de
      celui utilisé pour calculer les déplacements, températures,...
 """),
 
@@ -156,7 +156,7 @@ cata_msg={
      On poursuit les calculs avec les fonctions multiplicatrices fournies par l'utilisateur.
   -> Risque & Conseil : Vérifiez si les fonctions fournies dans la commande sont
      bien celles que vous souhaitez. Si oui vous allez poursuivre les calculs
-     (ex: calcul des contraintes: CALC_ELEM) avec des fonctions différentes de
+     de post-traitement avec des fonctions différentes de
      celles utilisées pour calculer les déplacements, températures,...
 """),
 

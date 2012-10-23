@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 # ssls101a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,16 +85,13 @@ RESU=CALC_CHAMP(reuse=RESU,
 #
 RESU=CALC_CHAMP(reuse=RESU,
                 RESULTAT=RESU,
-                CONTRAINTE='SIGM_ELNO',);
+                CONTRAINTE='SIGM_ELNO',
+                CRITERES='SIEQ_ELNO',);
 
 RESU2=POST_CHAMP(RESULTAT=RESU,
-                     EXTR_COQUE=_F(NOM_CHAM=('SIEF_ELGA','SIGM_ELNO',),
+                     EXTR_COQUE=_F(NOM_CHAM=('SIEF_ELGA','SIGM_ELNO','SIEQ_ELNO',),
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-#
-RESU2=CALC_CHAMP(reuse=RESU2,
-                 RESULTAT=RESU2,
-                 CRITERES='SIEQ_ELNO',);
 
 #
 SVM=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
@@ -573,17 +570,15 @@ U3=CALC_CHAMP(reuse=U3,
 U3=CALC_CHAMP(reuse=U3,
               RESULTAT=U3,
               NUME_ORDRE=4,
-              CONTRAINTE='SIGM_ELNO',)
+              CONTRAINTE='SIGM_ELNO',
+              CRITERES='SIEQ_ELNO',)
 
 U3POS=POST_CHAMP(RESULTAT=U3,
                  NUME_ORDRE=4,
-                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                 EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','SIEQ_ELNO',),
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
-U3POS=CALC_CHAMP(reuse=U3POS,
-                 RESULTAT=U3POS,
-                 NUME_ORDRE=4,
-                 CRITERES='SIEQ_ELNO',);
+
 #
 SVMP=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
                                   INTITULE = 'SIG_VM_P',

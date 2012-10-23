@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -377,9 +377,9 @@ Risques et conseils :
   le champ produit est incomplet sur les éléments X-FEM.
 
   Risque & Conseils :
-  Ce champ ne pourra être utilisé sur des éléments non X-FEM.
+  Ce champ ne pourra pas être utilisé sur des éléments non X-FEM.
   Il vaut mieux utiliser les commandes de post-traitement spécifique
-  POST_MAIL_XFEM et POST_CHAM_XFEM avant le CALC_ELEM.
+  POST_MAIL_XFEM et POST_CHAM_XFEM avant la commande CALC_CHAMP.
 """),
 
 80 : _(u"""

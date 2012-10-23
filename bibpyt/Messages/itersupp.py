@@ -1,4 +1,4 @@
-#@ MODIF itersupp Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF itersupp Messages  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,36 +23,23 @@
 
 cata_msg={
 
-1: _(u"""
- <Action> On tente d'autoriser des itérations de Newton supplémentaires.
+
+2: _(u"""          On ne peux pas tenter d'autoriser des itérations de Newton supplémentaires car on dépasse déjà le nombre
+                   d'itérations maximum autorisé <%(i1)d>.
 """),
 
-2: _(u"""
- <Action> On ne peux pas tenter d'autoriser des itérations de Newton supplémentaires car on dépasse déjà le nombre
-          d'itérations maximum autorisé <%(i1)d>.
-"""),
+3: _(u"""          On estime qu'on va pouvoir converger en <%(i1)d> itérations de Newton."""),
 
-3: _(u"""
-          On estime qu'on va pouvoir converger en <%(i1)d> itérations de Newton.
-"""),
+4: _(u"""          L'extrapolation des résidus donne un nombre d'itérations inférieur à ITER_GLOB_ELAS et ITER_GLOB_MAXI.
+                   Cela peut se produire si vous avez donné ITER_GLOB_ELAS inférieur à ITER_GLOB_MAXI et que l'extrapolation du
+                   nombre d'itérations est faite en régime élastique."""),
 
-4: _(u"""
-          L'extrapolation des résidus donne un nombre d'itérations inférieur à ITER_GLOB_ELAS et ITER_GLOB_MAXI.
-          Cela peut se produire si vous avez donné ITER_GLOB_ELAS inférieur à ITER_GLOB_MAXI et que l'extrapolation du
-          nombre d'itérations est faite en régime élastique.
-"""),
 
-5: _(u"""
-          L'extrapolation des résidus donne un nombre d'itérations <%(i1)d> supérieur au maximum autorisé <%(i2)d>
-"""),
+5: _(u"""          L'extrapolation des résidus donne un nombre d'itérations <%(i1)d> supérieur au maximum autorisé <%(i2)d>"""),
 
-6: _(u"""
- <Action> Échec dans la tentative d'autoriser des itérations de Newton supplémentaires.
-"""),
+6: _(u""" <Action><Échec> Échec dans la tentative d'autoriser des itérations de Newton supplémentaires."""),
 
-7: _(u"""
- <Action> On autorise des itérations de Newton supplémentaires.
-"""),
+7: _(u""" <Action> On autorise des itérations de Newton supplémentaires."""),
 
 }
 

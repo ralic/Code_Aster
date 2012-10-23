@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -425,9 +425,9 @@ Risque et conseils :
 """),
 
 96 : _(u"""
-  pour prendre en compte les termes d'inertie,
-  il est préférable d'utiliser la commande "CALC_ELEM".
-  le mot clé "ACCE" n'est pas traité et les résultats risquent d'être faux.
+  Pour prendre en compte les termes d'inertie,
+  il est préférable d'utiliser la commande CALC_CHAMP.
+  Le mot-clé ACCE n'est pas traité et les résultats risquent d'être faux.
 """),
 
 97 : _(u"""

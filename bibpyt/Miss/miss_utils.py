@@ -1,4 +1,4 @@
-#@ MODIF miss_utils Miss  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+#@ MODIF miss_utils Miss  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,6 +72,7 @@ class MISS_PARAMETER(object):
         - On peut ajouter des vérifications infaisables dans le capy.
         - On ajoute des paramètres internes.
         """
+        # defauts hors du mot-clé PARAMETRE
         self._defaults = {
             '_INIDIR'    : initial_dir,
             '_WRKDIR'    : osp.join(initial_dir, 'tmp_miss3d'),
@@ -81,9 +82,7 @@ class MISS_PARAMETER(object):
             'EXCIT_HARMO' : None,
             'INST_FIN' : None,
             'PAS_INST' : None,
-            'FICHIER_SOL_INCI' : 'NON', #Si ondes inclinees : None
-            #XXX en attendant de savoir si on réutilisera
-            #'ISSF' : 'NON',
+            'FICHIER_SOL_INCI' : 'NON',
         }
         self._keywords = {}
         # une seule occurence du mcfact
@@ -141,6 +140,9 @@ class MISS_PARAMETER(object):
                 if nval < self['_NBM_DYN'] + self['_NBM_STAT']:
                     # on ajoute 0.
                     self._keywords['AMOR_REDUIT'].append(0.)
+        # la règle ENSEMBLE garantit que les 3 GROUP_MA_xxx sont tous absents ou tous présents
+        if self['ISSF'] != 'NON' and self['GROUP_MA_FLU_STR'] is None:
+            UTMESS('F', 'MISS0_22')
 
     def __getitem__(self, key):
         return self._keywords[key]

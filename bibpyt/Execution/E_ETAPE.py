@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,12 +129,15 @@ class ETAPE:
                       la commande avant son execution.
       """
       from Utilitai.Utmess import UTMESS
+      voir = (not isinstance(self.parent, MACRO_ETAPE)) or self.parent.nom == 'INCLUDE' \
+             or self.jdc.impr_macro == 1
       # top départ du chrono de la commande
       etiq = self.nom
       if (isinstance(self.parent,MACRO_ETAPE)) or \
          (self.parent.nom=='INCLUDE'         ):
          etiq = ' . ' + etiq
-      self.jdc.timer.Start(id(self), name=etiq)
+      if voir:
+         self.jdc.timer.Start(id(self), name=etiq)
 
       # impression du fichier .code : compte rendu des commandes et
       # mots clés activés par l'ETAPE
@@ -143,10 +146,7 @@ class ETAPE:
         self.accept(fcode)
         aster.affiche('CODE', fcode.get_text())
 
-      if (not isinstance(self.parent,MACRO_ETAPE)) or \
-         (self.parent.nom=='INCLUDE'             ) or \
-         (self.jdc.impr_macro==1                 ) :
-
+      if voir:
          # Affichage numero de la commande (4 digits)
          if self.sd != None:
             type_concept = self.sd.__class__.__name__
@@ -178,13 +178,12 @@ class ETAPE:
                   cartouche de la commande apres son execution.
       """
       from Utilitai.Utmess import UTMESS
-      voir = (not isinstance(self.parent,MACRO_ETAPE)) or \
-             (self.parent.nom=='INCLUDE'             ) or \
-             (self.jdc.impr_macro==1                 )
-      # stop pour la commande
-      cpu_user, cpu_syst, elapsed = self.jdc.timer.StopAndGet(id(self), hide=not voir)
+      voir = (not isinstance(self.parent, MACRO_ETAPE)) or self.parent.nom == 'INCLUDE' \
+             or self.jdc.impr_macro == 1
       if not voir:
          return
+      # stop pour la commande
+      cpu_user, cpu_syst, elapsed = self.jdc.timer.StopAndGet(id(self), hide=not voir)
       if avec_temps and self.icmd is not None:
          rval, iret = aster_core.get_mem_stat('VMPEAK', 'VMSIZE', 'CMAX_JV', 'CMXU_JV')
          if iret == 0:

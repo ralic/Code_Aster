@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,7 +52,7 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
    # On le met à None pour indiquer qu'il n'y a pas de module de calcul rattaché
    codex=None
 
-   def __init__(self, oper=None, reuse=None, args={}):
+   def __init__(self, oper=None, reuse=None, args={}, niveau=4):
       """
       Attributs :
        - definition : objet portant les attributs de définition d'une étape de type opérateur. Il
@@ -69,7 +69,7 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
       self.etape = self
       self.nom = oper.nom
       self.idracine = oper.label
-      self.appel = N_utils.callee_where()
+      self.appel = N_utils.callee_where(niveau)
       self.mc_globaux = {}
       self.sd = None
       self.actif = 1

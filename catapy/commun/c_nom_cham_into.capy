@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMUN  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 # encoding: iso-8859-1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,11 +151,11 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Indicateur local de décharge et de perte de radialité aux noeuds par élément"), ),
             "DERA_NOEU":        ( ("nonlin"),
                                  _(u"Indicateur local de décharge et de perte de radialité aux noeuds"), ),
-            "ENDO_ELGA":        ( ("lin", "nonlin"),
+            "ENDO_ELGA":        ( ("nonlin"),
                                  _(u"Dommage de Lemaître-Sermage aux points de Gauss"), ),
-            "ENDO_ELNO":        ( ("lin", "nonlin"),
+            "ENDO_ELNO":        ( ("nonlin"),
                                  _(u"Dommage de Lemaître-Sermage aux noeuds par élément"), ),
-            "ENDO_NOEU":        ( ("lin", "nonlin"),
+            "ENDO_NOEU":        ( ("nonlin"),
                                  _(u"Dommage de Lemaître-Sermage aux noeuds"), ),
             "EPEQ_ELGA":        ( ("lin", "nonlin"),
                                  _(u"Déformations équivalentes aux points de Gauss"), ),

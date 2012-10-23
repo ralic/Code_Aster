@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -562,7 +562,10 @@ Causes possibles :
       """
           Méthode pour récuperer un concept à partir de son nom
       """
-      return self.get_contexte_courant().get(nomsd.strip(), None)
+      co = self.get_contexte_courant().get(nomsd.strip(), None)
+      if not isinstance(co, ASSD):
+          co = None
+      return co
 
    def get_concept_by_type(self, nomsd, typesd, etape):
       """

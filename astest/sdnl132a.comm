@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
 DEBUT(CODE=_F(NOM='SDNL132A',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='ALGELINE3_66')
 # TITRE PENDULE RIGIDE AVEC CONTACT ET FROTTEMENT
@@ -80,15 +80,15 @@ obst_hau=DEFI_OBSTACLE(TYPE='PLAN_Z',);
 
 obs_frot=DEFI_OBSTACLE(TYPE='PLAN_Z',);
 
-MACRO_MATR_ASSE(MODELE=poutre,
-                CHAM_MATER=aff_mail,
-                CARA_ELEM=elem,
-                CHARGE=cl,
-                NUME_DDL=CO('NU'),
-                MATR_ASSE=(_F(MATRICE=CO('K'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('M'),
-                              OPTION='MASS_MECA',),),);
+ASSEMBLAGE(MODELE=poutre,
+           CHAM_MATER=aff_mail,
+           CARA_ELEM=elem,
+           CHARGE=cl,
+           NUME_DDL=CO('NU'),
+           MATR_ASSE=(_F(MATRICE=CO('K'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('M'),
+                         OPTION='MASS_MECA',),),);
 
 ass_f=ASSE_VECTEUR(VECT_ELEM=vec_f,
                    NUME_DDL=NU,);

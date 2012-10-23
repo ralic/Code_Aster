@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE FORMATION GC : PLAQUE CONSOLE EN FLEXION 
 # forma40b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,17 +153,14 @@ LEDEP=CALC_CHAMP(reuse =LEDEP,
                  RESULTAT=LEDEP,
                  DEFORMATION='EPSI_ELNO',
                  CONTRAINTE=('SIEF_ELNO','SIGM_ELNO',),
+                 CRITERES=('SIEQ_ELNO'),
                  FORCE='FORC_NODA');
 
 RESUPOS=POST_CHAMP(RESULTAT=LEDEP,
-                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                   EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','SIEQ_ELNO',),
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='MOY',),);
 
-RESUPOS=CALC_CHAMP(reuse =RESUPOS,
-                   RESULTAT=RESUPOS,
-                   CRITERES=('SIEQ_ELNO'),);
-                                    
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=LEDEP,
                   GROUP_MA='CONSOLE',),);

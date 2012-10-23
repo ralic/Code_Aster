@@ -1,9 +1,9 @@
-      SUBROUTINE CRGDM (IMATE,COMPOR,T,LAMBDA,DEUXMU,LAMF,DEUMUF,
+      SUBROUTINE CRGDM (IMATE,COMPOR,LAMBDA,DEUXMU,LAMF,DEUMUF,
      &                  GT,GC,GF,SEUIL,ALPHA,ALFMC,EP,LRGM)
       IMPLICIT NONE
 C RESPONSABLE SFAYOLLE S.FAYOLLE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ELEMENTS  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INCLUDE 'jeveux.h'
       LOGICAL LRGM
       CHARACTER*16 COMPOR,PHENOM
-      INTEGER      IMATE, T(2,2)
+      INTEGER      IMATE
       REAL*8       LAMBDA, DEUXMU, DEUMUF, LAMF
       REAL*8       GT, GC, GF, SEUIL, ALPHA, ALFMC
 C ----------------------------------------------------------------------
@@ -57,11 +57,6 @@ C ----------------------------------------------------------------------
 
       INTEGER ICODRE(7)
       CHARACTER*8 NOMRES(7)
-
-      T(1,1)=1
-      T(1,2)=3
-      T(2,1)=3
-      T(2,2)=2
 
       IF ((.NOT.( COMPOR(1:7) .EQ. 'GLRC_DM'))) THEN
         CALL U2MESK('F','ELEMENTS4_65',1,COMPOR)

@@ -7,7 +7,7 @@
      &                    SOLVEU, CRITER,CHONDP,NONDP)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 23/10/2012   AUTEUR BERRO H.BERRO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -568,7 +568,7 @@ C
         ALARM = 0
         CALL DLARCH ( RESULT,NEQ, ISTOC, IARCHI, ' ',
      &                ALARM, IFM, TEMPS,
-     &                NBEXCL, TYPEAR, MASSE,
+     &                NBTYAR, TYPEAR, MASSE,
      &                DEP0, VIT0, ACC0,
      &                FEXTE,FAMOR,FLIAI )
       ENDIF
