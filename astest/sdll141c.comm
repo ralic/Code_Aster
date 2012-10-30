@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 29/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE SANS DISQUE 
 # sdll141c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,11 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # (POUTRE D'EULER => RIGIDITE ET MASSES DISCRETES => MASSES )
-DEBUT(CODE=_F(NOM='SDLL141C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM='ALGELINE4_87')
-# On desactive une alarme sur le comptage des valeurs propres complexes
-# dans la methode de calcul des modes QZ.
-# On verifie que, malgre le message, on a toutes les valeurs propres voulues.
+DEBUT(CODE=_F(NOM='SDLL141C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
 
 MAIL=LIRE_MAILLAGE()
 

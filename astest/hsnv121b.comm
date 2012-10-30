@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2012   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS AXI
 # hsnv121b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,5 +206,22 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.0,),
            )
+
+
+VL = CALC_CHAMP(reuse=VL,RESULTAT=VL,ENERGIE=('ENEL_ELGA'),)
+
+
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=VL,
+                   NOM_CHAM='ENEL_ELGA',
+                   MAILLE='MA1',POINT=1,
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=2.8015812371646*2,
+                   VALE_REFE=2.8*2,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),))
+
+
+
 FIN(  )
 #

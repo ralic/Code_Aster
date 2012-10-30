@@ -1,4 +1,4 @@
-# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/10/2012   AUTEUR BERRO H.BERRO 
 # TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
 # zzzz180a.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -421,43 +421,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.727654159234,
                       ),
               )
 
-# MEME TESTS, MAIS DE NON REGRESSION
-
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.72765415923378995,
-                         VALE_PARA=10.0,
-                         FONCTION=LOGF11,
-                         ),
-                      _F(VALE_CALC=0.049367601272175002,
-                         VALE_PARA=150.0,
-                         FONCTION=LOGF11,
-                         ),
-                      _F(VALE_CALC=0.21642974687003999,
-                         VALE_PARA=10.0,
-                         FONCTION=LOGF12,
-                         ),
-                      _F(VALE_CALC=96.977706588665995,
-                         VALE_PARA=10.0,
-                         FONCTION=PF12,
-                         ),
-                      _F(VALE_CALC=-0.10983258162767,
-                         VALE_PARA=150.0,
-                         FONCTION=LOGF12,
-                         ),
-                      _F(VALE_CALC=-95.537816427820005,
-                         VALE_PARA=150.0,
-                         FONCTION=PF12,
-                         ),
-                      _F(VALE_CALC=-0.079369961326337002,
-                         VALE_PARA=10.0,
-                         FONCTION=LOGF22,
-                         ),
-                      _F(VALE_CALC=-0.054010158663319999,
-                         VALE_PARA=150.0,
-                         FONCTION=LOGF22,
-                         ),
-                      ),
-              )
-
 #
 #################################################################
 # 2.  CAS GENERATION AVEC INTERPOLATION, NB_POIN IMPOSE
@@ -681,14 +644,19 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
                                        VALE_I = 2),
                               NOM_PARA_TABL='FONCTION',     )
 
-##############################
+##########################################################################################
 # TEST SUR LES VALEURS RMS DES TEMPORELS
-##############################
+##########################################################################################
+# NOTE : LES RESULTATS OBTENUS SANS INTERPOLATION DU SPECTRE DEPENDENT LEGEREMENT
+#        DE LA MACHINE D'EXECUTION (32/64 BITS), LE COMPILATEUR UTILISE ET DE LA VERSION 
+#        DE PYTHON. POUR CES RAISONS, ON A RAJOUTE LES MOT-CLES TOLE_MACHINE DANS LES 
+#        TEST_TABLES DES VALEURS RMS AVEC DES VALEURS INFERIEURES OU EGALES A 0.1%.
+##########################################################################################
 
 RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           TOLE_MACHINE=1.E-4,      #TODO variabilite
+           TOLE_MACHINE=1.E-4,
            PRECISION=1.E-2,
            VALE_CALC=24.490963709,
            VALE_REFE=24.556058315617349,
@@ -698,7 +666,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           TOLE_MACHINE=1.E-4,      #TODO variabilite
+           TOLE_MACHINE=1.E-3,
            PRECISION=1.E-2,
            VALE_CALC=24.551284314,
            VALE_REFE=24.494897427831781,
@@ -739,7 +707,7 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
 RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           TOLE_MACHINE=1.E-4,      #TODO variabilite
+           TOLE_MACHINE=1.E-4,
            PRECISION=1.E-3,
            VALE_CALC=24.541437554,
            VALE_REFE=24.556058315617349,
@@ -749,7 +717,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           TOLE_MACHINE=1.E-4,      #TODO variabilite
+           TOLE_MACHINE=1.E-3,
            PRECISION=1.E-3,
            VALE_CALC=24.501368431,
            VALE_REFE=24.494897427831781,

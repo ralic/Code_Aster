@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,8 +82,7 @@ GF=DEFI_GEOM_FIBRE(
             COOR_AXE_POUTRE=(0.,0.,),),)
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MPOUTRE,
-                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MPOUTRE,
-                                 RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MPOUTRE, RELATION='ELAS',),
                      )
 
 
@@ -172,7 +171,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                       ),
                 SOLVEUR=_F(METHODE='LDLT',SYME='OUI'),
                 CONTACT  = CHLAG,
-                COMP_INCR=_F(RELATION='MULTIFIBRE'),
+                COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              ),
                 NEWTON=_F(REAC_ITER=1,),
@@ -288,7 +287,7 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                       ),
                 CONTACT  = CHCON,
                 SOLVEUR=_F(RENUM='MDA'),
-                COMP_INCR=_F(RELATION='MULTIFIBRE'),
+                COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              ),
                 NEWTON=_F(REAC_ITER=1,),
@@ -399,7 +398,7 @@ UESCL=STAT_NON_LINE(MODELE=MODE,
                       ),
                 CONTACT  = CHESCL,
                 SOLVEUR=_F(RENUM='MDA'),
-                COMP_INCR=_F(RELATION='MULTIFIBRE'),
+                COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=0.94,
                              ),

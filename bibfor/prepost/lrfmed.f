@@ -5,7 +5,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -288,7 +288,7 @@ C         LE PROF_CHNO PRECEDENT :
           CALL DISMOI('F','PROF_CHNO',CHANOM,'CHAM_NO',IBID,
      &                PCHN1,IER)
           IF (.NOT.IDENSD('PROF_CHNO',NOMPRN(1:19),PCHN1)) THEN
-            CALL GNOMSD( NOMPRN,15,19 )
+            CALL GNOMSD( ' ',NOMPRN,15,19 )
             CALL COPISD( 'PROF_CHNO', 'G', PCHN1, NOMPRN )
           END IF
           CALL JEVEUO( CHANOM//'.REFE', 'E', JREFE )

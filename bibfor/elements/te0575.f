@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,10 @@ C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IDCONT ,IDENER ,IDEPL ,IDEPLM ,IDEPMM ,IDFDE
-      INTEGER IDSIG ,IDSIGM ,IGAU ,IGEOM ,IMATE ,IPOIDS ,ISIG
-      INTEGER ITEMPS ,IVF ,JGANO ,JSIG ,K ,MXCMEL ,NBCONT
-      INTEGER NBNOMX ,NBSIG  ,NDIM ,NNO ,NNOS ,NPG
+      INTEGER I ,IDENER ,IDEPL ,IDEPLM ,IDEPMM ,IDFDE, IDVARI
+      INTEGER IDSIG ,IDSIGM ,IGAU ,IGEOM ,IMATE ,IPOIDS ,ISIG, NBVARI
+      INTEGER ITEMPS ,IVF ,JGANO ,K ,MXCMEL ,NBCONT
+      INTEGER NBNOMX ,NBSIG  ,NDIM ,NNO ,NNOS ,NPG,JTAB(7)
 
       REAL*8 DEUX ,ENELEM ,POIDS ,RAYON ,UNDEMI ,ZERO
 C-----------------------------------------------------------------------
@@ -54,14 +54,15 @@ C-----------------------------------------------------------------------
       INTEGER            NBSIGM, IHARMO, NH, IDIM, IRET
       INTEGER            IDENEM
       REAL*8             EPSI(NBCONT), EPSIM(NBCONT), DELTA(NBCONT)
-      REAL*8             INSTAN, NHARM, REPERE(7)
-      REAL*8             ENERPG(NBNOMX), EPSS(MXCMEL)
-      REAL*8             D1(36), XYZGAU(3),BARY(3)
+      REAL*8             NHARM, REPERE(7),INSTAN
+      REAL*8             ENERPG(NBNOMX), EPSS(MXCMEL),R
+      REAL*8             XYZGAU(3),BARY(3),F(3,3)
       REAL*8             EPSSM(MXCMEL), SIGMM(NBCONT), SIGMA(NBCONT)
-      REAL*8             INTEG1, INTEG2, INTEG
+      REAL*8             INTEG1, INTEG2, INTEG,EPSBID(6),DFDBID(27*3)
       REAL*8             DFDX(9), DFDY(9)
       CHARACTER*4        FAMI
-      LOGICAL            LTEATT
+      CHARACTER*16       COMPOR(3)
+      LOGICAL            LTEATT,GRAND,AXI
 C
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
@@ -79,7 +80,6 @@ C     -----------------
       ZERO        = 0.0D0
       UNDEMI      = 0.5D0
       DEUX        = 2.0D0
-      INSTAN      = ZERO
       NHARM       = ZERO
       ENELEM      = ZERO
 C
@@ -95,36 +95,77 @@ C
 C
 C ----   RECUPERATION DU MATERIAU
 C        ------------------------
-        CALL JEVECH('PMATERC','L',IMATE)
+         CALL JEVECH('PMATERC','L',IMATE)
 C
 C ----   RECUPERATION  DES DONNEES RELATIVES AU REPERE D'ORTHOTROPIE
-C        -----------------------------------------------------------
-C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+C         -----------------------------------------------------------
+C        COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
 
-        BARY(1) = 0.D0
-        BARY(2) = 0.D0
-        BARY(3) = 0.D0
-        DO 150 I = 1,NNO
-          DO 140 IDIM = 1,NDIM
-            BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
- 140      CONTINUE
- 150    CONTINUE
-        CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
+         BARY(1) = 0.D0
+         BARY(2) = 0.D0
+         BARY(3) = 0.D0
+         DO 150 I = 1,NNO
+            DO 140 IDIM = 1,NDIM
+               BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
+ 140        CONTINUE
+ 150     CONTINUE
+ 
+         CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
 C
-C ----   RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
-C        -------------------------------------------------------------
-        CALL JEVECH('PCONTRR','L',IDCONT)
-C
-C ----   RECUPERATION DE L'INSTANT DE CALCUL
-C        -----------------------------------
-        CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
-        IF (ITEMPS.NE.0)  INSTAN = ZR(ITEMPS)
-C
+C ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
+C        --------------------------------------------------------
+         CALL JEVECH('PDEPLAR','L',IDEPL)
+ 
+C ----    RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
+C         -------------------------------------------------------------
+         CALL JEVECH('PCONTRR','L',IDSIG)
+ 
+C ----    RECUPERATION DE L'INSTANT DE CALCUL
+C         -----------------------------------
+         CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+         IF (ITEMPS.NE.0)  INSTAN = ZR(ITEMPS)
+
+C ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
+C        N'EXISTE PAS EN LINEAIRE
+         CALL TECACH('ONN','PVARIGR',7,JTAB,IRET)
+         IF (IRET.EQ.0) THEN
+            IDVARI=JTAB(1)
+            NBVARI = MAX(JTAB(6),1)*JTAB(7)
+         ELSE
+            NBVARI=0
+         ENDIF
+
+      END IF
+      
+C ----RECUPERATION DU TYPE DE COMPORTEMENT  :
+C     N'EXISTE PAS EN LINEAIRE
+      CALL TECACH('NNN','PCOMPOR',7,JTAB,IRET)
+      COMPOR(1)='ELAS'
+      COMPOR(2)=' '
+      COMPOR(3)='PETIT'
+      IF (IRET.EQ.0) THEN
+         COMPOR(1)=ZK16(JTAB(1))
+         COMPOR(3)=ZK16(JTAB(1)+2)
       ENDIF
-C
+      
+C     GRANDES DEFORMATIONS
+
+      IF ((COMPOR(3).EQ.'SIMO_MIEHE').OR.
+     &    (COMPOR(3).EQ.'GDEF_LOG').OR.
+     &    (COMPOR(3).EQ.'GDEF_HYPO_ELAS')) THEN
+         GRAND = .TRUE.
+      ELSE
+         GRAND = .FALSE.
+      ENDIF
+        
+
 C --- CAS DU CALCUL DE LA DENSITE D'ENERGIE TOTALE :
 C     ============================================
       IF (OPTION(1:4).EQ.'ETOT') THEN
+      
+         IF (GRAND) THEN
+            CALL U2MESG('F','COMPOR1_79',1,COMPOR(3),0,0,0,0.D0)      
+         ENDIF
 C
 C ---   RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
 C       --------------------------------------------------------
@@ -188,6 +229,7 @@ C       ------------------------------
 C
          CALL DFDM2D ( NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
 C
+         AXI=.FALSE.
          IF ((LTEATT(' ','AXIS','OUI')).OR.
      &       (LTEATT(' ','FOURIER','OUI'))) THEN
             RAYON = ZERO
@@ -195,6 +237,7 @@ C
                RAYON = RAYON + ZR(IVF+K+I-1)*ZR(IGEOM+NDIM*(I-1))
   41        CONTINUE
             POIDS=POIDS*RAYON
+            AXI=.TRUE.
          ENDIF
          DO 30 ISIG = 1, NBSIG
             EPSI(ISIG) = ZERO
@@ -219,27 +262,25 @@ C
 C
 C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE :
 C        ==========================================================
-         IF (OPTION(1:4).EQ.'ENEL') THEN
-C
-C  --      CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
-C  --      POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
-C          ---------------------------------------------------------
-           CALL D1MAMC(FAMI, ZI(IMATE), INSTAN, '+',IGAU, 1,
-     +                 REPERE,XYZGAU, NBSIG, D1)
-C
-C  --      DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
-C  --      D'INTEGRATION COURANT
-C          ---------------------
-           DO 60 ISIG = 1, NBSIG
-              DO 70 JSIG = 1, NBSIG
-                 EPSI(ISIG) = EPSI(ISIG) + D1(NBSIG*(ISIG-1)+JSIG)*
-     +                                ZR(IDCONT+NBSIG*(IGAU-1)+JSIG-1)
-  70          CONTINUE
-C
-              ENERPG(IGAU) = ENERPG(IGAU) +
-     +               UNDEMI*ZR(IDCONT+NBSIG*(IGAU-1)+ISIG-1)*EPSI(ISIG)
-  60       CONTINUE
-C
+        IF (OPTION(1:4).EQ.'ENEL') THEN
+
+C --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
+
+          DO 51 I = 1,NBSIG
+            SIGMA(I) = ZR(IDSIG+ (IGAU-1)*NBSIG+I-1)
+   51     CONTINUE
+
+
+C ---     CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
+          CALL NMGEOM(2,NNO,AXI,GRAND,ZR(IGEOM),IGAU,IPOIDS,
+     &              IVF,IDFDE,ZR(IDEPL),.TRUE.,POIDS,DFDBID,F,EPSBID,R)
+
+C ---     CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
+
+          CALL ENELPG(FAMI,ZI(IMATE),INSTAN,IGAU,REPERE,XYZGAU,COMPOR,
+     &    F,SIGMA,NBVARI,ZR(IDVARI+(IGAU-1)*NBVARI),ENERPG(IGAU))
+
+
 C  --    CALCUL DE LA DENSITE D'ENERGIE TOTALE :
 C        =====================================
          ELSEIF (OPTION(1:4).EQ.'ETOT') THEN

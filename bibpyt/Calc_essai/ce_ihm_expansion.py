@@ -1,8 +1,8 @@
-#@ MODIF ce_ihm_expansion Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ce_ihm_expansion Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -41,9 +41,9 @@ from Tkinter import Frame, Menubutton, Menu, StringVar, IntVar, Listbox
 from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry
 from Tkinter import Checkbutton, Canvas, Toplevel
 from Calc_essai.outils_ihm import MyMenu, ModeFreqList
-from Calc_essai.outils_ihm import DispFRFDialogue, MacWindowFrame
+from Calc_essai.outils_ihm import DispFRFDialogue, MacWindowFrame,DispObs
 from Calc_essai.ce_calcul_expansion import CalcEssaiExpansion
-
+from Calc_essai.ce_ihm_parametres import CalcEssaiSalome
 
 
 ########################
@@ -120,10 +120,10 @@ class InterfaceCorrelation(Frame):
         self.menu_resu1.update( mdo.get_resultats_name(), self.var_resu1, self.visu1_changed )
         self.menu_resu2.update( mdo.get_resultats_name(), self.var_resu2, self.visu2_changed )
 
+
     def teardown(self):
         """!Appelée par le gestionnaire de tab lors du masquage (passage à un autre tab)"""
         return
-
 
 
     def interface_main(self):
@@ -132,7 +132,7 @@ class InterfaceCorrelation(Frame):
         """
         self.columnconfigure(0, weight=1)
         self.rowconfigure(2, weight=1)
-        l = Label(self,text=u"Expansion de données", pady=5, font=("Helvetica", "16") )
+        l = Label(self,text=u"Expansion de données ", pady=5, font=("Helvetica", "16") )
         l.grid(row=0)
 
         select_box = self.interface_selection(self)
@@ -141,9 +141,6 @@ class InterfaceCorrelation(Frame):
         main_param = self.interface_parametres(self)
         main_param.grid(row=2, sticky='nsew')
         
-        visu_param = self.interface_visu(self)
-        visu_param.grid(row=3, sticky='nsew')
-        self.main = self
 
 
     def interface_selection(self, root):
@@ -164,6 +161,17 @@ class InterfaceCorrelation(Frame):
         self.menu_resu_exp = MyMenu( f, options = self.objects.get_resultats_name(),
                                      var = self.var_resu_exp, cmd = self.exp_changed )
         self.menu_resu_exp.grid(row=1, column=3, sticky='ew')
+
+
+        self.var_resu1 = StringVar()
+        self.menu_resu1= MyMenu( f, options = self.objects.get_resultats_name(),
+                                     var = self.var_resu1, cmd = self.visu1_changed )
+
+
+        self.var_resu2 = StringVar()
+        self.menu_resu2= MyMenu( f, options = self.objects.get_resultats_name(),
+                                     var = self.var_resu2, cmd = self.visu2_changed)
+
 
 ## La norme pourrait etre utilisee pour le MAC, mais elle ne l'est pas actuellement : on commente ces lignes
 ##        # menu de selection de la norme numerique
@@ -286,54 +294,6 @@ class InterfaceCorrelation(Frame):
         self.expans_param_frame.withdraw()
         self.param = self.param_proj_mesu.get_option()
 
-    def interface_visu(self, root):
-        """!Création de l'interface de visualisation
-
-        permet de choisir d'afficher les matrices MAC ou les modes avec gmsh
-        gère la compatibilité des choix de l'utilisateur (les calculs de MAC
-        ne sont pas tous possibles)
-        """
-        mdo = self.objects
-        f = Frame(root,relief='sunken', borderwidth=1 )
-        Label(f, text="   ").grid(row=0, column=1,columnspan = 3,sticky='w'+'e' )
-        Label(f, text="   ").grid(row=2, column=1,columnspan = 3,sticky='w'+'e' )
-        f.columnconfigure(0,weight=3)
-        f.columnconfigure(1,weight=3)
-        
-
-        f1 = Frame(f)
-        f1.grid(row=1,column=0,sticky='ew' )
-        f1.columnconfigure(1,weight=4)
-        f1.columnconfigure(2,weight=4)
-        
-        bir1 = Checkbutton(f1,variable=self.is_resu1, command=self.cb_changed)
-        bir1.grid(row=0, column = 0,sticky='e',padx=20)
-        bir2 = Checkbutton(f1,variable=self.is_resu2,command=self.cb_changed)
-        bir2.grid(row=1, column = 0,sticky='e',padx=20)
-
-        Label(f1,text=u"Résultat 1").grid(row=0,column=1,sticky='w')
-        self.var_resu1 = StringVar()
-        self.menu_resu1 = MyMenu( f1, options = mdo.get_resultats_name(),
-                                  var = self.var_resu1, cmd = self.visu1_changed )
-        self.menu_resu1.grid(row=0, column=2, sticky='ew',padx=20)
-
-        Label(f1,text=u"Résultat 2").grid(row=1,column=1,sticky='w')
-        self.var_resu2 = StringVar()
-        self.menu_resu2 = MyMenu( f1, options = mdo.get_resultats_name(),
-                                  var = self.var_resu2, cmd = self.visu2_changed )
-        self.menu_resu2.grid(row=1, column=2, sticky='ew',padx=20)
-
-        f2 = Frame(f)        
-        f2.grid(row=1,column=1)
-        self.mac_button = Button(f2,text="    MAC    ",command=self.view_macs,state='disabled')
-        self.mac_button.grid(row=1,column=0, sticky='ew' )
-        self.phi_button = Button(f2,text=u"Déformées",command=self.view_modes,state='disabled')
-        self.phi_button.grid(row=2,column=0, sticky='ew')
-        self.frf_button = Button(f2,text="    FRF    ",command=self.view_frf)
-        self.frf_button.grid(row=3,column=0, sticky='ew' )
-
-        return f
-
     def set_proj_svd(self):
         self.proj_champ_meth.set("SVD")
         
@@ -354,99 +314,6 @@ class InterfaceCorrelation(Frame):
         self.check_state()
 
 
-    def check_state(self):
-        """Verifie la compatibilite des bases pour le MAC et l'existence
-           des donnees necessaires pour la visu des deformees et des FRF"""
-        mdo = self.objects
-   
-        # Y a-t-il un MAC a calculer ?
-        if (self.is_resu1.get() and not self.is_resu2.get()) or (self.is_resu2.get() and not self.is_resu1.get()):
-            self.mac_button.configure(state='normal')
-        elif self.is_resu1.get() and self.is_resu2.get():
-            resu1 = mdo.get_resultats(self.var_resu1.get())
-            resu2 = mdo.get_resultats(self.var_resu2.get())
-            if resu1.modele_name.strip() and resu1.modele_name == resu2.modele_name:
-                self.mac_button.configure(state='normal')
-            else:
-                self.mac_button.configure(state='disabled')
-        else:
-            self.mac_button.configure(state='disabled')
-
-        # Y a-t-il des deformees a representer ?
-        if self.is_resu1.get() or self.is_resu2.get():
-            self.phi_button.configure(state='normal')
-        else:
-            self.phi_button.configure(state='disabled')
-
-            
-    def view_frf(self):
-        """lancement d'une fenetre de visualisation des frf"""
-        mdo = self.objects
-        resu1 = None
-        resu2 = None
-        if self.is_resu1.get():
-            resu1 = mdo.get_resultats(self.var_resu1.get())
-        if self.is_resu2.get():
-            resu2 = mdo.get_resultats(self.var_resu2.get())
-        fenetre = DispFRFDialogue(self.mess, self.objects, self.param_visu, resu1, resu2)
-            
-
-    def view_modes(self, *args):
-        """!Visualisation des modes par GMSH ou Salome
-        """
-        mdo = self.objects
-        l_resultat = []
-        l_modele = []
-        if self.is_resu1.get():
-            resu1 = mdo.get_resultats(self.var_resu1.get())
-            
-            l_resultat.append(resu1.obj)
-        if self.is_resu2.get():
-            resu2 = mdo.get_resultats(self.var_resu2.get())
-            l_resultat.append(resu2.obj)
-        term = self.param_visu.visu_resu(resultat=l_resultat)
-        
-        self.term.append(term)
-
-
-    def view_macs(self):
-        """!Creation d'une nouvelle fenetre de visu MAC"""
-        mdo = self.objects
-        resu1 = None
-        resu2 = None
-        if self.is_resu1.get() and self.is_resu2.get():
-            resu1 = mdo.get_resultats(self.var_resu1.get())
-            resu2 = mdo.get_resultats(self.var_resu2.get())
-        elif self.is_resu1.get():
-            resu1 = mdo.get_resultats(self.var_resu1.get())
-            resu2 = mdo.get_resultats(self.var_resu1.get())
-        elif self.is_resu2.get():
-            resu1 = mdo.get_resultats(self.var_resu2.get())
-            resu2 = mdo.get_resultats(self.var_resu2.get())
-
-        mac = self.calculs.calc_mac_mode( resu1, resu2, norme = None )
-
-        titre = "matrice de MAC pour " + resu1.nom + " et " + resu2.nom
-
-        f = Toplevel()
-        size = (20,300)
-        f.columnconfigure(0,weight=1)
-        f.rowconfigure(0,weight=1)
-        mac_win = MacWindowFrame( f, titre, resu1.nom, resu2.nom, size)
-        mac_win.grid(row=0,column=0,sticky='nsew')
-        afreq1 = resu1.get_modes_data()['FREQ']
-        neud_cmp1 = resu1.get_modes_data()['NOEUD_CMP']
-        afreq2 = resu2.get_modes_data()['FREQ']
-        neud_cmp2 = resu2.get_modes_data()['NOEUD_CMP']
-        # si mode statique, on donne le champ NOEUD_CMP a la place de la frequence
-        for ind_ordr in range(len(afreq1)):
-            if afreq1[ind_ordr]==None:afreq1[ind_ordr]=neud_cmp1[ind_ordr]
-        for ind_ordr in range(len(afreq2)):
-            if afreq2[ind_ordr]==None:afreq2[ind_ordr]=neud_cmp2[ind_ordr]
-        mac_win.set_modes(afreq1, afreq2, mac)
-
-        self.mac_windows.append( mac_win )
-
             
     def prepare_calcul(self, *args):
         """! Demande le lancement de la macro MACRO_EXPANS dans calc_proj_resu
@@ -462,8 +329,8 @@ class InterfaceCorrelation(Frame):
             self.mess.disp_mess(u"Il manque le modele associe au résultat expérimental")
             return
 
-        self.modes_num_list = self.liste_num.selection()
-        self.modes_exp_list = self.liste_exp.selection()
+        self.modes_num_list = self.liste_num.get_selection()
+        self.modes_exp_list = self.liste_exp.get_selection()
         param =  self.param_proj_mesu.get_resolution()
 
         self.calculs.setup( self.resu_num, self.modes_num_list,
@@ -472,7 +339,6 @@ class InterfaceCorrelation(Frame):
 
         self.calculs.calc_proj_resu(self.suffix,self.export_name.get())
         self.setup()
-
 
 
     def quit(self):

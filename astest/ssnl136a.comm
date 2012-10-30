@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE GRANDS DEPLACEMENTS DE L'ARC A ANGLE D'OUVERTURE 45 DEGRES
 # ssnl136a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -44,8 +44,7 @@ GF=DEFI_GEOM_FIBRE(
             COOR_AXE_POUTRE=(0.,0.,),),)
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=ACIER,
-                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=ACIER,
-                                 RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=ACIER,RELATION='ELAS',),
                      )
 
 
@@ -95,7 +94,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=FORCE,
                              FONC_MULT=F_FORCE,),),
-                   COMP_INCR=_F(RELATION='MULTIFIBRE'),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=TEMPS,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),

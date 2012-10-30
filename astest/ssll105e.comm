@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE FLAMBEMENT NON LINEAIRE POUTRE EN L
 # ssll105e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,9 +31,9 @@ modele=AFFE_MODELE(MAILLAGE=mail,
                            MODELISATION='POU_D_TGM',),);
 
 gf=DEFI_GEOM_FIBRE(
-           SECTION = _F ( GROUP_FIBRE='SECF',
-                            MAILLAGE_SECT = ma_sect , GROUP_MA_SECT = 'SECT',
-                            COOR_AXE_POUTRE = (0., 0.,)),
+           SECTION = _F( GROUP_FIBRE='SECF',
+                         MAILLAGE_SECT = ma_sect , GROUP_MA_SECT = 'SECT',
+                         COOR_AXE_POUTRE = (0., 0.,)),
             )
 
 cara_pou=AFFE_CARA_ELEM(MODELE=modele,
@@ -87,7 +87,7 @@ res=STAT_NON_LINE(MODELE=modele,
                          _F(CHARGE=effort,
                             FONC_MULT=fonc,),),
                   COMP_INCR=_F(RELATION='MULTIFIBRE',
-                               DEFORMATION='GROT_GDEP',),
+                               DEFORMATION='PETIT',),
                   INCREMENT=_F(LIST_INST=list,),
                   NEWTON=_F(MATRICE='TANGENTE',),
                   CRIT_STAB=_F(),
@@ -128,7 +128,7 @@ res2=STAT_NON_LINE(MODELE=modele,
                          _F(CHARGE=effort2,
                             FONC_MULT=fonc,),),
                   COMP_INCR=_F(RELATION='MULTIFIBRE',
-                               DEFORMATION='GROT_GDEP',),
+                               DEFORMATION='PETIT',),
                   INCREMENT=_F(LIST_INST=list2,),
                   NEWTON=_F(MATRICE='TANGENTE',),
                   CRIT_STAB=_F(),

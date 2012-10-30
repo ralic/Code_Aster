@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGELINE  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C
       INTEGER      ISLVK,ISLVI,JREFA,ITEST,NMULTC,LAMOR,JLMOD,JLMOE,
      &             PIVOT1,PIVOT2,MXDDL,NBRSS,IERD,II,IFAPM,K,NBMOD,
      &             NBLAGR,NBCINE,NEQACT,NEQ,NITERC,NPIVOT(2),
-     &             L,LMASSE,LRAIDE,LDDL,LDYNAM,NK,NBROW,
+     &             L,LMASSE,LRAIDE,LDDL,LDYNAM,NK,NBROW,L1,L2,L3,
      &             LPROD,IRET,NBFREQ,KREFA,IDET(2),JSTU,
      &             IFM,NIV,NBTETC,NBTET0,NBTET1,NBMODE(1),
      &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID,IBID2(2)
@@ -84,7 +84,7 @@ C     --- COMPUTATION OF THE MATRIX DESCRIPTORS ---
       CALL GETVID(' ',MATRB,1,IARG,1,MASSE,L)
       AMOR=' '
       LAMOR=0
-      IF (TYPMOD .NE. 'MODE_FLAMB')
+      IF ((TYPMOD.EQ.'GENERAL').OR.(TYPMOD.EQ.'MODE_COMPLEXE'))
      &  CALL GETVID(' ',MATRC,1,IARG,1,AMOR,LAMOR)
       IF (LAMOR.EQ.0) THEN
         LC=.FALSE.
@@ -135,6 +135,8 @@ C     --- AUTOMATIC PARAMETRIZATION WITH 'AUTO'                 ---
         ELSE
           TYPMET='STURM'
         ENDIF
+        VALK(1)=TYPMET
+        CALL U2MESK('I','ALGELINE2_27',1,VALK)
       ENDIF
 C     --- IF GENERAL: KIND OF COMPUTATION   ---
       IF (TYPMOD(1:7).EQ.'GENERAL') THEN
@@ -144,6 +146,21 @@ C     --- IF GENERAL: KIND OF COMPUTATION   ---
         ELSE
           TYPMOD='MODE_FLAMB'
         ENDIF
+        VALK(1)=TYPMOD
+        CALL U2MESK('I','ALGELINE2_31',1,VALK)
+      ENDIF
+
+C     --- TEMPORARY EXCLUSION RULES                             --- 
+C     --- + DEFAULT VALUES                                      ---
+      IF ((TYPMOD(1:13).EQ.'MODE_COMPLEXE').AND.
+     &    (TYPMET(1:3).NE.'APM')) THEN
+        CALL U2MESS('I','ALGELINE4_20')
+        TYPMET='APM'
+      ENDIF
+      IF ((TYPMOD(1:13).NE.'MODE_COMPLEXE').AND.
+     &    (TYPMET(1:5).NE.'STURM')) THEN
+        CALL U2MESS('I','ALGELINE4_20')
+        TYPMET='STURM'
       ENDIF
 
 C     --- KIND OF COMPUTATION : REAL (GEP), DYNAMIC OR BUCKLING    ---
@@ -174,15 +191,18 @@ C     --- COUPLE OR LIST OF FREQUENCIES ---
    10     CONTINUE
           ZR(JLMOE+NBMOD-1)=-9999.D0
         ELSE
-C     --- WE NEEDS AT LEAST 2 VALUES
-          CALL ASSERT(.FALSE.)
+C       --- PARAMETRIZATION PB
+          CALL U2MESS('F','ALGELINE2_22')
         ENDIF
         
       ELSE IF (TYPMOD(1:13).EQ.'MODE_COMPLEXE') THEN
 C     --- CHARACTERISTIC OF THE COMPLEX SHAPE ---
-        CALL GETVTX(' ','TYPE_CONTOUR',1,IARG,1,TYPCON,IBID)
-        CALL GETVR8(' ','RAYON_CONTOUR',1,IARG,1,RAYONC,IBID)
-        CALL GETVC8(' ','CENTRE_CONTOUR',1,IARG,1,CENTRC,IBID)
+        CALL GETVTX(' ','TYPE_CONTOUR',1,IARG,1,TYPCON,L1)
+        CALL GETVR8(' ','RAYON_CONTOUR',1,IARG,1,RAYONC,L2)
+        CALL GETVC8(' ','CENTRE_CONTOUR',1,IARG,1,CENTRC,L3)
+C       --- PARAMETRIZATION PB
+        IF ((ABS(L1)*ABS(L2)*ABS(L3)).NE.1)
+     &    CALL U2MESS('F','ALGELINE2_22')
         CALPAC(1) = DBLE(CENTRC)
         CALPAC(2) = DIMAG(CENTRC)    
         CALPAC(3) = RAYONC     
@@ -206,27 +226,14 @@ C     --- COUPLE OR LIST OF BUCKLING MODES ---
    12     CONTINUE
           ZR(JLMOE+NBMOD-1)=-9999.D0
         ELSE
-C     --- WE NEEDS AT LEAST 2 VALUES
-          CALL ASSERT(.FALSE.)
+C       --- PARAMETRIZATION PB
+          CALL U2MESS('F','ALGELINE2_22')
         ENDIF         
 
       ELSE
 C     --- BAD VALUE OF TYMOD ---
         CALL ASSERT(.FALSE.)      
 
-      ENDIF
-
-C     --- TEMPORARY EXCLUSION RULES                             --- 
-C     --- + DEFAULT VALUES                                      ---
-      IF ((TYPMOD(1:13).EQ.'MODE_COMPLEXE').AND.
-     &    (TYPMET(1:3).NE.'APM')) THEN
-        CALL U2MESS('I','ALGELINE4_20')
-        TYPMET='APM'
-      ENDIF
-      IF ((TYPMOD(1:13).NE.'MODE_COMPLEXE').AND.
-     &    (TYPMET(1:5).NE.'STURM')) THEN
-        CALL U2MESS('I','ALGELINE4_20')
-        TYPMET='STURM'
       ENDIF
       
 C     --- GET THE PARAMETERS OF THE METHOD                      --- 

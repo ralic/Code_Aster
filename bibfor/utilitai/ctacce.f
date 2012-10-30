@@ -7,7 +7,7 @@
       CHARACTER*8              TYPAC,RESU
       CHARACTER*16        NSYMB
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 30/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -275,6 +275,10 @@ C         NKCHA = TABLEAU DES NOMS DE CHAMP
                GOTO 50
             ENDIF
             N1=-N1
+            IF (N1.GT.1) THEN
+              VALK = TYPAC
+              CALL U2MESG('F','TABLE0_46',1,VALK,0,IBID,1,ZR(JRVAL+I-1))
+            ENDIF
             CALL RSORAC(RESU,TYPAC,0,ZR(JRVAL+I-1),K8B,
      &                  CBID,EPSI,CRIT,ZI(JNIORD+I-1),N1,N2)
             CALL RSEXCH(' ',RESU,NSYMB,ZI(JNIORD+I-1),ZK24(JKCHA+I-1),

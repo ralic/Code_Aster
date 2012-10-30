@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC 3 DISQUES (CADYRO : DLRR08)
 # REFERENCE : M. LALANNE, G. FERRARIS -        RORORDYNAMIC, PREDICTION IN
 # ENGINEERING - pp 68-71
@@ -121,7 +121,7 @@ GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
 
 
                     
-MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+X="""MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(3.,3000.)));
@@ -187,7 +187,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=845.313831401,
                    VALE_REFE=846.01300000000003,),
                 ),
-          )
+          )"""
 
 OM=25000.*pi/30.
 
@@ -196,19 +196,19 @@ GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
 
 
 
-MODEG=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+X="""MODEG=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        MATR_AMOR=GYOM,
                        METHODE='SORENSEN',
                        VERI_MODE=_F(SEUIL=1.E-3),
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=1.,
-                                    NMAX_FREQ=16))
+                                    NMAX_FREQ=16))"""
 
 
 MODEZ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
-                       MATR_AMOR=GYOM,
+                       MATR_AMOR=GYOM,INFO=1,
                        VERI_MODE=_F(SEUIL=1.E-3),
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
@@ -216,7 +216,8 @@ MODEZ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
 
 
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+X="""TEST_RESU(RESU=(
+               _F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEG,
@@ -274,7 +275,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=715.02599999999995,
                    PRECISION=2.E-3,),
                 ),
-          )
+          )"""
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -336,7 +337,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-PROJ_BASE(BASE=MODES,
+X="""PROJ_BASE(BASE=MODES,
           STOCKAGE='PLEIN',
           MATR_ASSE_GENE=(_F(MATRICE=CO('MAGE'),
                              MATR_ASSE=MASSE,),
@@ -410,7 +411,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=715.02599999999995,
                    PRECISION=2.E-3,),
                 ),
-          )
+          )"""
 
 FIN()
 

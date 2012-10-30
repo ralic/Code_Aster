@@ -5,7 +5,7 @@
       INTEGER  IOCC
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C     ---------------------------------
       CALL GETRES(K16B,K16B,OPER)
       IF (OPER.NE.'IMPR_RESU') THEN
         NOOJB='12345678.LIGR000000.LIEL'
-        CALL GNOMSD(NOOJB,14,19)
+        CALL GNOMSD(' ',NOOJB,14,19)
       ELSE
 C     -- DANS LE CAS IMPR_RESU, GNOMSD NE PEUT PAS SERVIR CAR
 C        LA COMMANDE NE CREE PAS DE CONCEPT

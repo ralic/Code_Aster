@@ -1,6 +1,6 @@
       SUBROUTINE TE0491(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/10/2012   AUTEUR BARGELLI R.BARGELLINI 
+C MODIF ELEMENTS  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,46 +115,31 @@ C.......................................................................
       INCLUDE 'jeveux.h'
 C-----------------------------------------------------------------------
       INTEGER IDCOMP ,IDCONM ,IDENE1 ,IDENE2 ,IDEPL ,IDEPLM ,IDEPMM
-      INTEGER IDFDE ,IDSIG ,IDSIGM ,IDVARI ,IGAU ,IGEOM ,IMATE
-      INTEGER IPOIDS ,IVF ,JGANO ,JPROL ,JVALE ,MXCMEL ,NBSGM
-      INTEGER NBSIG ,NBSIG2 ,NBVAL ,NBVARI ,NDIM ,NNO ,NNOS
-      INTEGER NPG1, NSOL
+      INTEGER IDFDE ,IDSIG ,IDSIGM ,IDVARI ,IGAU ,IGEOM ,IMATE,ICODRE(5)
+      INTEGER IPOIDS ,IVF ,JGANO ,JPROL ,JVALE ,MXCMEL ,NBSGM,ITEMPS
+      INTEGER NBSIG ,NBSIG2 ,NBVAL ,NBVARI ,NDIM ,NNO ,NNOS,NPG1
+      INTEGER NBSIGM,IRET,IRET1,IDIM
+      INTEGER I,JTAB(7)
+      PARAMETER (MXCMEL=162)
+      PARAMETER (NBSGM=6)
       REAL*8 AIREP ,C1 ,C2 ,DEUX ,DEUXMU ,DSDE ,E
       REAL*8 ENELAS ,ENELDV ,ENELSP ,ENELTO ,EPLAEQ ,EPLAST ,EPSEQ
       REAL*8 OMEGA ,P ,POIDS ,PSI ,R8PREM ,RBID ,RP
       REAL*8 RPRIM ,SIGEQ ,SIGY ,TEMPG ,TREPSM ,TROIS ,TRSIG
-      REAL*8 TRT ,UN ,UNDEMI ,UNTIER ,VOLUME ,WELAS ,WTOTAL
-      REAL*8 ZERO
-C-----------------------------------------------------------------------
-      PARAMETER (MXCMEL=162)
-      PARAMETER (NBSGM=6)
-      INTEGER ICODRE(5)
+      REAL*8 UN ,UNDEMI ,UNTIER ,VOLUME ,WELAS ,WTOTAL,ZERO
+      REAL*8 VALRES(5),DFDX(27),DFDY(27),DFDZ(27)
+      REAL*8 SIGMA(NBSGM),EPSDV(NBSGM)
+      REAL*8 EPSEL(NBSGM),EPSPLA(NBSGM),X(NBSGM)
+      REAL*8 EPSIM(NBSGM),SIGMM(NBSGM),DELTA(NBSGM)
+      REAL*8 EPSI(NBSGM),EPSSM(MXCMEL),EPSS(MXCMEL)
+      REAL*8 REPERE(7),INSTAN,NHARM,INTEG,INTEG1
+      REAL*8 EPSM(MXCMEL),INTEG2,NU,K,INDIGL,XYZ(3)
+      REAL*8 F(3,3),R,RESU,EPSBID(6),DFDBID(27*3)
       CHARACTER*4 FAMI
       CHARACTER*8 NOMRES(5),TYPE
       CHARACTER*16 NOMTE,OPTION,OPTIO2
-      REAL*8 VALRES(5),DFDX(27),DFDY(27),DFDZ(27),SOL(3)
-      REAL*8 SIGMA(NBSGM),EPSDV(NBSGM),JZERO,UZERO,MZERO
-      REAL*8 EPSEL(NBSGM),EPSPLA(NBSGM),X(NBSGM),MJAC,UJAC
-      REAL*8 EPSIM(NBSGM),SIGMM(NBSGM),DELTA(NBSGM),WBE
-      REAL*8 EPSI(NBSGM),EPSSM(MXCMEL),EPSS(MXCMEL)
-      REAL*8 REPERE(7),INSTAN,NHARM,INTEG,INTEG1
-      REAL*8 EPSM(MXCMEL),INTEG2,BE(6)
-      REAL*8 NU,K,INDIGL,XYZ(3)
-      INTEGER NBSIGM,IRET,IRET1,IDIM
-      REAL*8 F(3,3),R,RESU
       LOGICAL GRAND,AXI
-      REAL*8 MU,TROISK,JAC,EPSBID(6),DFDBID(27*3)
-      REAL*8 TAU(6),TRTAU,EQTAU,DVTAU(6),TLOG(6)
-      REAL*8 TRBE,EPSTHE
-      INTEGER I,JTAB(7)
-      REAL*8 KR(6),PDTSCA(6)
-
-
-
-
-      DATA KR/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      DATA PDTSCA/1.D0,1.D0,1.D0,2.D0,2.D0,2.D0/
-
+C-----------------------------------------------------------------------
 
 C ---- INITIALISATIONS :
 
@@ -174,17 +159,6 @@ C ---- INITIALISATIONS :
       VOLUME = ZERO
       INDIGL = ZERO
       INSTAN = ZERO
-      NSOL   = 0
-      JZERO  = ZERO
-      UZERO  = ZERO
-      UJAC   = ZERO
-      MZERO  = ZERO
-      MJAC   = ZERO
-      WBE =ZERO
-      DO 10 I =1,3
-         SOL(I)=ZERO
- 10   CONTINUE
-
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
@@ -227,17 +201,35 @@ C ---- RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION :
 
       CALL JEVECH('PCONTPR','L',IDSIG)
 
+C ---- RECUPERATION DE L'INSTANT DE CALCUL
+C      -----------------------------------
+      CALL TECACH('NNN','PTEMPSR',1,ITEMPS,IRET)
+      IF (ITEMPS.NE.0)  INSTAN = ZR(ITEMPS)
+
 C ---- RECUPERATION DU TYPE DE COMPORTEMENT  :
 
       CALL JEVECH('PCOMPOR','L',IDCOMP)
 
+C     ON REGARDE SI ON EST EN GRANDES DEFORMATIONS
+
+      IF ((ZK16(IDCOMP+2).EQ.'SIMO_MIEHE').OR.
+     &    (ZK16(IDCOMP+2).EQ.'GDEF_LOG').OR.
+     &    (ZK16(IDCOMP+2).EQ.'GDEF_HYPO_ELAS')) THEN
+       GRAND = .TRUE.
+      ELSE
+       GRAND = .FALSE.
+      ENDIF
+      
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
 
       IF (OPTION.EQ.'ENER_TOTALE') THEN
-        CALL TECACH('NNN','PDEPLM',1,IDEPLM,IRET)
-        IF (IDEPLM.NE.0) THEN
-          CALL JEVECH('PDEPLM','L',IDEPMM)
-        END IF
+         IF (GRAND) THEN
+            CALL U2MESG('F','COMPOR1_78',1,ZK16(IDCOMP+2),0,0,0,0.D0)
+         ENDIF
+         CALL TECACH('NNN','PDEPLM',1,IDEPLM,IRET)
+         IF (IDEPLM.NE.0) THEN
+            CALL JEVECH('PDEPLM','L',IDEPMM)
+         END IF
       END IF
 
 C ON TESTE LA RECUPERATION DU CHAMP DE CONTRAINTES DU PAS PRECEDENT
@@ -252,14 +244,6 @@ C ON TESTE LA RECUPERATION DU CHAMP DE CONTRAINTES DU PAS PRECEDENT
         END IF
       END IF
 
-C ON REGARDE SI ON EST EN GRANDES DEFORMATIONS
-
-      IF ((ZK16(IDCOMP+2) (1:10).EQ.'SIMO_MIEHE')
-     & .OR.(ZK16(IDCOMP+2) (1:8).EQ.'GDEF_LOG'))  THEN
-        GRAND = .TRUE.
-      ELSE
-        GRAND = .FALSE.
-      END IF
 
 C ---- RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 
@@ -308,6 +292,7 @@ C                      = OPTION   "ENEL_ELEM"    =
 C                      = OPTION   "ENER_TOTALE"  =
 C                      =                         =
 C                      ===========================
+
       IF (OPTION.EQ.'INDIC_ENER' .OR. OPTION.EQ.'ENEL_ELEM' .OR.
      &    OPTION.EQ.'ENER_TOTALE') THEN
 
@@ -318,24 +303,6 @@ C --- BOUCLE SUR LES POINTS D'INTEGRATION
           OMEGA = ZERO
           PSI = ZERO
 
-
-C  --- DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
-
-          CALL VERIFT(FAMI,IGAU,1,'+',ZI(IMATE),'ELAS',1,EPSTHE,IRET)
-
-C --- RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
-
-          NOMRES(1) = 'E'
-          NOMRES(2) = 'NU'
-
-          CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ','ELAS',0,' ',
-     &                0.D0,2,NOMRES,VALRES,ICODRE,2)
-
-
-          E = VALRES(1)
-          NU = VALRES(2)
-          MU = E/ (2.D0* (1.D0+NU))
-          TROISK = E/ (1.D0-2.D0*NU)
 C --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 
           DO 50 I = 1,NBSIG
@@ -344,98 +311,15 @@ C --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 
 
 C --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
-          CALL NMGEOM(3,NNO,AXI,GRAND,ZR(IGEOM),IGAU,
-     &              IPOIDS,IVF,IDFDE,ZR(IDEPL),.TRUE.,POIDS,DFDBID,F,EPS
-     &BID,R)
+          CALL NMGEOM(3,NNO,AXI,GRAND,ZR(IGEOM),IGAU,IPOIDS,IVF,IDFDE,
+     &              ZR(IDEPL),.TRUE.,POIDS,DFDBID,F,EPSBID,R)
 
 
 C --- CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
 
-C --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
-          IF ((ZK16(IDCOMP+2) (1:10).EQ.'SIMO_MIEHE') .AND.
-     &        ((ZK16(IDCOMP) (1:9).EQ.'VMIS_ISOT').OR. (ZK16(IDCOMP) (1:
-     &        9).EQ.'ELAS'))) THEN
+        CALL ENELPG(FAMI,ZI(IMATE),INSTAN,IGAU,REPERE,XYZ,ZK16(IDCOMP),
+     &         F,SIGMA,NBVARI,ZR(IDVARI+(IGAU-1)*NBVARI),ENELAS)
 
-            JAC = F(1,1)* (F(2,2)*F(3,3)-F(2,3)*F(3,2)) -
-     &            F(2,1)* (F(1,2)*F(3,3)-F(1,3)*F(3,2)) +
-     &            F(3,1)* (F(1,2)*F(2,3)-F(1,3)*F(2,2))
-
-C --- CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
-
-            TAU(5) = 0.D0
-            TAU(6) = 0.D0
-
-            DO 60 I = 1,NBSIG
-              TAU(I) = JAC*SIGMA(I)
-   60       CONTINUE
-
-C --- CALCUL DE LA TRACE DE TAU- TAU EQUIVALENT ET TAU DEVIATORIQUE
-
-            TRTAU = TAU(1) + TAU(2) + TAU(3)
-            EQTAU = 0.D0
-            DO 70 I = 1,6
-              DVTAU(I) = TAU(I) - KR(I)*TRTAU/3.D0
-              EQTAU = EQTAU + PDTSCA(I)* (DVTAU(I)**2.D0)
-   70       CONTINUE
-            EQTAU = SQRT(1.5D0*EQTAU)
-
-C --- CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
-
-            CALL DCOPY(6,ZR(IDVARI+(IGAU-1)*NBVARI+1),1,BE,1)
-            TRBE=BE(1)+BE(2)+BE(3)
-            TRBE=JAC**(-2.D0/3.D0)*(3.D0-2.D0*TRBE)
-
-C --- ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...
-            IF (EPSTHE.NE.0) THEN
-               CALL ZEROP3(-3.D0*EPSTHE,-1.D0,-3.D0*EPSTHE,SOL,NSOL)
-               JZERO=SOL(1)
-               CALL NRSMT1(TROISK/3.D0,JZERO,UZERO)
-               CALL NRSMTT(TROISK,JZERO,EPSTHE,MZERO)
-               CALL NRSMTT(TROISK,JAC,EPSTHE,MJAC)
-            END IF
-C --- CALCUL DES TERMES DE L'ENERGIE            
-            CALL NRSMT1(TROISK/3.D0,JAC,UJAC)
-            CALL NRSMTB(MU,TRBE,WBE)
-
-            ENELAS = UJAC+WBE+MJAC-UZERO-MZERO
-
-
-C --- CAS EN GRANDES DEFORMATIONS GDEF_LOG
-
-          ELSEIF ((ZK16(IDCOMP+2) (1:8).EQ.'GDEF_LOG')) THEN
-
-            JAC = F(1,1)* (F(2,2)*F(3,3)-F(2,3)*F(3,2)) -
-     &            F(2,1)* (F(1,2)*F(3,3)-F(1,3)*F(3,2)) +
-     &            F(3,1)* (F(1,2)*F(2,3)-F(1,3)*F(2,2))
-
-            C1 = (UN+NU)/E
-            C2 = NU/E
-
-            CALL DCOPY(6,ZR(IDVARI+(IGAU-1)*NBVARI+NBVARI-6),1,TLOG,1)
-            TRT=TLOG(1)+TLOG(2)+TLOG(3)
-
-            ENELAS = UNDEMI* (TLOG(1)* (C1*TLOG(1)-C2*TRT)+
-     &               TLOG(2)* (C1*TLOG(2)-C2*TRT)+
-     &               TLOG(3)* (C1*TLOG(3)-C2*TRT)+
-     &               (TLOG(4)*C1*TLOG(4)+TLOG(5)*C1*TLOG(5)+
-     &               TLOG(6)*C1*TLOG(6)))
-
-
-C --- EN HPP SI ON CONSIDERE LE MATERIAU ISOTROPE
-C --- E_ELAS = 1/2*SIGMA*1/D*SIGMA :
-
-          ELSE
-
-            C1 = (UN+NU)/E
-            C2 = NU/E
-
-            TRSIG = SIGMA(1) + SIGMA(2) + SIGMA(3)
-            ENELAS = UNDEMI* (SIGMA(1)* (C1*SIGMA(1)-C2*TRSIG)+
-     &               SIGMA(2)* (C1*SIGMA(2)-C2*TRSIG)+
-     &               SIGMA(3)* (C1*SIGMA(3)-C2*TRSIG)+
-     &               DEUX* (SIGMA(4)*C1*SIGMA(4)+SIGMA(5)*C1*SIGMA(5)+
-     &               SIGMA(6)*C1*SIGMA(6)))
-          END IF
 
 C --- TRAITEMENT DE L'OPTION ENEL_ELEM :
 
@@ -451,6 +335,18 @@ C  ===============================================
 
           END IF
 
+
+C --- RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
+
+          NOMRES(1) = 'E'
+          NOMRES(2) = 'NU'
+
+          CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ','ELAS',0,' ',
+     &                0.D0,2,NOMRES,VALRES,ICODRE,2)
+
+
+          E = VALRES(1)
+          NU = VALRES(2)
 
 C-------------------------------------------------------
 C   CACUL DU TERME OMEGA REPRESENTANT L'ENERGIE TOTALE -
@@ -758,13 +654,6 @@ C ----  POUR LES OPTIONS ENEL_ELEM ET ENER_TOTALE :
           ZR(IDENE1) = WTOTAL
         END IF
 
-C      FIN OPTION.EQ.'INDIC_ENER'.OR.OPTION.EQ.'ENEL_ELEM'.OR.
-C     +    OPTION.EQ.'ENER_TOTALE') THEN
-C ===========================
-C =                         =
-C = OPTION   "INDIC_SEUIL"  =
-C =                         =
-C ===========================
 
       ELSE IF (OPTION.EQ.'INDIC_SEUIL') THEN
 

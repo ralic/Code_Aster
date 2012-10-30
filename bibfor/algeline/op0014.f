@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     ------------------------------------------------------------------
       INTEGER IRET,IRETGC,ISINGU,ISTOP,JADIA,PCPIV,NIREMP
       INTEGER LDTBLO,LFNBLO,NDECI,NEQ,NIV,NPVNEG
       INTEGER JSLVK,JSLVR,JSLVI,REACPR
-      REAL*8 RBID,FILLIN,EPSMAT
+      REAL*8 RBID,FILLIN,EPSMAT,EPS
       INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -133,6 +133,7 @@ C     ----------------------
          KOOC='AUTO'
          MIXPRE='NON'
          EPSMAT=-1.D0
+         EPS=-1.D0
          IF (MASS.NE.MFAC) CALL COPISD('MATR_ASSE','G',MASS,MFAC)
          CALL DISMOI('F','SOLVEUR',MASS,'MATR_ASSE',IBID,SOLVEU,IER1)
          CALL GETVIS(' ','PCENT_PIVOT',1,IARG,1,PCPIV,IBID)
@@ -156,6 +157,7 @@ C     ----------------------
          ZK24(JSLVK-1+11)='XXXX'
          ZK24(JSLVK-1+12)='XXXX'
          ZR(JSLVR-1+1)  =EPSMAT
+         ZR(JSLVR-1+2)  =EPS
          ILDEB = 1
          ILFIN = 0
       ENDIF

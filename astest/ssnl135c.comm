@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135c.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -302,8 +302,7 @@ MDI0001 = DEFI_MATERIAU(
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT0001,
                   MULTIFIBRE=_F(GROUP_FIBRE=('AE45X3','AE40X4','AE35X3.5','PL150X10'),
                                  MATER=MAT0001,
-                                 RELATION='VMIS_ISOT_LINE',
-                                 DEFORMATION='GROT_GDEP',)
+                                 RELATION='VMIS_ISOT_LINE',)
                   )
 
 
@@ -647,7 +646,7 @@ MEKEFOR0=STAT_NON_LINE(MODELE=MO,
                                     ('D008022','D008032','D009022','D009032','D00A032',
                                              'D00A042','D00A041','D00A052','D00A062','D00A072','D00A082','D00B032','D00B042',
                                              'D00B052','D00B062','D00B061','D00B072','D00B082',),),
-                                 _F(RELATION='MULTIFIBRE',
+                                 _F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',
                                     GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),),),
                       INCREMENT=_F(LIST_INST=DEFLIST,
                                    INST_FIN=0.1,),
@@ -670,7 +669,7 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                                     ('D008022','D008032','D009022','D009032','D00A032',
                                              'D00A042','D00A041','D00A052','D00A062','D00A072','D00A082','D00B032','D00B042',
                                              'D00B052','D00B062','D00B061','D00B072','D00B082',),),
-                                 _F(RELATION='MULTIFIBRE',
+                                 _F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',
                                     GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),),),
                       INCREMENT=_F(LIST_INST=DEFLIST,
                                    INST_FIN=1.0,),

@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,21 +42,21 @@ C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,IPOIDS,IVF,NBNOMX,
-     &        NBCONT,NPG1,NBSIG,IGAU,ISIG,IGEOM,IDIM,ITEMPS,
-     &        IMATE,JSIG,IDENER,IDFDE,IDEPL,IDEPLM,IDEPMM,
-     &        IDSIG,IDSIGM,MXCMEL,IRET,IDENEM
+     &        NBCONT,NPG1,NBSIG,IGAU,ISIG,IGEOM,IDIM,ITEMPS,NBVARI,
+     &        IMATE,IDENER,IDFDE,IDEPL,IDEPLM,IDEPMM,IDVARI,
+     &        IDSIG,IDSIGM,MXCMEL,IRET,IDENEM,JTAB(7)
       PARAMETER (NBNOMX=27)
       PARAMETER (NBCONT=6)
       PARAMETER (MXCMEL=162)
-      REAL*8 EPSI(NBCONT),REPERE(7)
-      REAL*8 INSTAN,ZERO,UNDEMI,ENELEM
-      REAL*8 ENERPG(NBNOMX)
-      REAL*8 D1(NBCONT,NBCONT),XYZGAU(3),XYZ(3)
-      REAL*8 NHARM,DEUX,INTEG1,INTEG2,INTEG
+      REAL*8 EPSI(NBCONT),REPERE(7),INSTAN,ZERO,UNDEMI,ENELEM
+      REAL*8 ENERPG(NBNOMX),XYZGAU(3),XYZ(3)
+      REAL*8 NHARM,DEUX,INTEG1,INTEG2,INTEG,R
       REAL*8 EPSIM(NBCONT),DELTA(NBCONT),EPSS(MXCMEL)
-      REAL*8 EPSSM(MXCMEL),SIGMM(NBCONT),SIGMA(NBCONT)
-      REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
+      REAL*8 EPSSM(MXCMEL),SIGMM(NBCONT),SIGMA(NBCONT),F(3,3)
+      REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,EPSBID(6),DFDBID(27*3)
       CHARACTER*4 FAMI
+      CHARACTER*16 COMPOR(3)
+      LOGICAL GRAND
 C DEB ------------------------------------------------------------------
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -74,7 +74,6 @@ C     -----------------
       ZERO = 0.0D0
       UNDEMI = 0.5D0
       DEUX = 2.0D0
-      INSTAN = ZERO
       NHARM = ZERO
       ENELEM = ZERO
 
@@ -90,76 +89,114 @@ C      ----------------------------------------------
 
 C ----   RECUPERATION DU MATERIAU
 C        ------------------------
-        CALL JEVECH('PMATERC','L',IMATE)
+         CALL JEVECH('PMATERC','L',IMATE)
 
 C ----   RECUPERATION  DES DONNEES RELATIVES AU REPERE D'ORTHOTROPIE
 C        -----------------------------------------------------------
-C       COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-        XYZ(1) = ZERO
-        XYZ(2) = ZERO
-        XYZ(3) = ZERO
-        DO 150 I = 1,NNO
-          DO 140 IDIM = 1,NDIM
-            XYZ(IDIM) = XYZ(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
-140       CONTINUE
-150     CONTINUE
-        CALL ORTREP(ZI(IMATE),NDIM,XYZ,REPERE)
+C        COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+         XYZ(1) = ZERO
+         XYZ(2) = ZERO
+         XYZ(3) = ZERO
+         DO 150 I = 1,NNO
+            DO 140 IDIM = 1,NDIM
+              XYZ(IDIM) = XYZ(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
+140         CONTINUE
+150      CONTINUE
+         CALL ORTREP(ZI(IMATE),NDIM,XYZ,REPERE)
 
+C ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
+C        --------------------------------------------------------
+         CALL JEVECH('PDEPLAR','L',IDEPL)
+ 
 C ----   RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
 C        -------------------------------------------------------------
-        CALL JEVECH('PCONTRR','L',IDSIG)
+         CALL JEVECH('PCONTRR','L',IDSIG)
 
-C ----   RECUPERATION DE L'INSTANT DE CALCUL
-C        -----------------------------------
-        CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
-        IF (ITEMPS.NE.0) THEN
-          INSTAN = ZR(ITEMPS)
-        END IF
+C ----    RECUPERATION DE L'INSTANT DE CALCUL
+C         -----------------------------------
+         CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+         IF (ITEMPS.NE.0)  INSTAN = ZR(ITEMPS)
+
+C ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
+C        N'EXISTE PAS EN LINEAIRE
+         CALL TECACH('ONN','PVARIGR',7,JTAB,IRET)
+         IF (IRET.EQ.0) THEN
+            IDVARI=JTAB(1)
+            NBVARI = MAX(JTAB(6),1)*JTAB(7)
+         ELSE
+            NBVARI=0
+         ENDIF
 
       END IF
+
+C ----RECUPERATION DU TYPE DE COMPORTEMENT  :
+C     N'EXISTE PAS EN LINEAIRE
+      CALL TECACH('NNN','PCOMPOR',7,JTAB,IRET)
+      COMPOR(1)='ELAS'
+      COMPOR(2)=' '
+      COMPOR(3)='PETIT'
+      IF (IRET.EQ.0) THEN
+         COMPOR(1)=ZK16(JTAB(1))
+         COMPOR(3)=ZK16(JTAB(1)+2)
+      ENDIF
+      
+C     GRANDES DEFORMATIONS
+
+      IF ((COMPOR(3).EQ.'SIMO_MIEHE').OR.
+     &    (COMPOR(3).EQ.'GDEF_LOG').OR.
+     &    (COMPOR(3).EQ.'GDEF_HYPO_ELAS')) THEN
+         GRAND = .TRUE.
+      ELSE
+         GRAND = .FALSE.
+      ENDIF
+        
 
 C --- CAS DU CALCUL DE LA DENSITE D'ENERGIE TOTALE :
 C     ============================================
       IF (OPTION(1:4).EQ.'ETOT') THEN
+      
+         IF (GRAND) THEN
+            CALL U2MESG('F','COMPOR1_79',1,COMPOR(3),0,0,0,0.D0)      
+         ENDIF
+         
+C ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
+C        --------------------------------------------------------
+         CALL JEVECH('PDEPLR','L',IDEPL)
 
-C ---   RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
-C       --------------------------------------------------------
-        CALL JEVECH('PDEPLR','L',IDEPL)
+C ---    RECUPERATION EVENTUELLE DU CHAMP DE DEPLACEMENT A
+C ---    L'INSTANT PRECEDENT :
+C        -------------------
+         CALL TECACH('NNN','PDEPLM',1,IDEPLM,IRET)
+         IF (IDEPLM.NE.0) THEN
+           CALL JEVECH('PDEPLM','L',IDEPMM)
+         END IF
 
-C ---   RECUPERATION EVENTUELLE DU CHAMP DE DEPLACEMENT A
-C ---   L'INSTANT PRECEDENT :
-C       -------------------
-        CALL TECACH('NNN','PDEPLM',1,IDEPLM,IRET)
-        IF (IDEPLM.NE.0) THEN
-          CALL JEVECH('PDEPLM','L',IDEPMM)
-        END IF
+C ---    RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
+C ---    A L'INSTANT COURANT :
+C        -------------------
+         CALL JEVECH('PCONTPR','L',IDSIG)
 
-C ---   RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
-C ---   A L'INSTANT COURANT :
-C       -------------------
-        CALL JEVECH('PCONTPR','L',IDSIG)
+C ---    RECUPERATION EVENTUELLE DU CHAMP DE CONTRAINTES A
+C ---    L'INSTANT PRECEDENT :
+C        -------------------
+         CALL TECACH('NNN','PCONTMR',1,IDSIGM,IRET)
+         IF (IDSIGM.NE.0) THEN
+           CALL JEVECH('PCONTMR','L',IDSIGM)
+         END IF
 
-C ---   RECUPERATION EVENTUELLE DU CHAMP DE CONTRAINTES A
-C ---   L'INSTANT PRECEDENT :
-C       -------------------
-        CALL TECACH('NNN','PCONTMR',1,IDSIGM,IRET)
-        IF (IDSIGM.NE.0) THEN
-          CALL JEVECH('PCONTMR','L',IDSIGM)
-        END IF
+C ---    CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
+C ---    CORRESPONDANT AU CHAMP DE DEPLACEMENT COURANT :
+C        ---------------------------------------------
+         CALL EPS1MC(NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+     +               ZR(IGEOM),ZR(IDEPL),NHARM,EPSS)
 
-C ---   CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
-C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT COURANT :
-C       ---------------------------------------------
-        CALL EPS1MC(NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
-     +              ZR(IGEOM),ZR(IDEPL),NHARM,EPSS)
-
-C ---   CALCUL EVENTUEL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
-C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT A L'INSTANT PRECEDENT :
-C       -----------------------------------------------------------
-        IF (IDEPLM.NE.0) THEN
-        CALL EPS1MC(NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
-     +              ZR(IGEOM),ZR(IDEPMM),NHARM,EPSSM)
-        END IF
+C ---    CALCUL EVENTUEL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
+C ---    CORRESPONDANT AU CHAMP DE DEPLACEMENT A L'INSTANT PRECEDENT :
+C        -----------------------------------------------------------
+         IF (IDEPLM.NE.0) THEN
+         CALL EPS1MC(NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+     +               ZR(IGEOM),ZR(IDEPMM),NHARM,EPSSM)
+         END IF
 
       END IF
 
@@ -197,25 +234,21 @@ C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE :
 C        ==========================================================
         IF (OPTION(1:4).EQ.'ENEL') THEN
 
-C  --      CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
-C  --      POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
-C          ---------------------------------------------------------
-          CALL D1MAMC(FAMI,ZI(IMATE),INSTAN,'+',IGAU,1,
-     &                REPERE,XYZGAU,NBSIG,D1)
+C --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 
-C  --      DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
-C  --      D'INTEGRATION COURANT
-C          ---------------------
-          DO 70 ISIG = 1,NBSIG
-            DO 60 JSIG = 1,NBSIG
-              EPSI(ISIG) = EPSI(ISIG) + D1(ISIG,JSIG)*
-     &                     ZR(IDSIG+NBSIG* (IGAU-1)+JSIG-1)
-   60       CONTINUE
+          DO 51 I = 1,NBSIG
+            SIGMA(I) = ZR(IDSIG+ (IGAU-1)*NBSIG+I-1)
+   51     CONTINUE
 
-            ENERPG(IGAU) = ENERPG(IGAU) +
-     &                     UNDEMI*ZR(IDSIG+NBSIG* (IGAU-1)+ISIG-1)*
-     &                     EPSI(ISIG)
-   70     CONTINUE
+C --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
+          CALL NMGEOM(3,NNO,.FALSE.,GRAND,ZR(IGEOM),IGAU,IPOIDS,
+     &              IVF,IDFDE,ZR(IDEPL),.TRUE.,POIDS,DFDBID,F,EPSBID,R)
+
+C ---     CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
+
+          CALL ENELPG(FAMI,ZI(IMATE),INSTAN,IGAU,REPERE,XYZGAU,COMPOR,
+     &    F,SIGMA,NBVARI,ZR(IDVARI+(IGAU-1)*NBVARI),ENERPG(IGAU))
+
 
 C  --    CALCUL DE LA DENSITE D'ENERGIE TOTALE :
 C        =====================================

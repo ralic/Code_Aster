@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TP ANALYSE MODALE TPAM2
 # forma11b.para = tps_job 480 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,7 +70,8 @@ MODE_SOB=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
                           MATR_MASS=M_ASSE,
                           METHODE='SORENSEN',
                           CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(-.1,2700.0,),),
+                                       FREQ=(-.1,2700.0,),
+                                       NMAX_ITER_SHIFT=1),
                           TITRE='1/ METHODE DE SORENSEN',);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,

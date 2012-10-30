@@ -1,21 +1,21 @@
-#@ MODIF perm_mac3coeur_ops Mac3coeur  DATE 04/09/2012   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF perm_mac3coeur_ops Mac3coeur  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE FERNANDES
 
@@ -62,7 +62,7 @@ def perm_mac3coeur_ops(self, **args):
 
     _SANS_CONTACT = 'NON'
 
-    ### on recupere le concept maillage 
+    ### on recupere le concept maillage
     iret,ibid,nom_mo = aster.dismoi('F','MODELE',RESUI.nom,'RESULTAT')
     iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',nom_mo.strip(),'MODELE')
 
@@ -90,7 +90,7 @@ def perm_mac3coeur_ops(self, **args):
     _FLU_NP1  = _coeurp1.definition_fluence(_fluence,_MA_NP1)
     _CHTHNP1  = _coeurp1.definition_champ_temperature(_MA_NP1)
     _AFSCNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_SANS_CONTACT,_FLU_NP1,_CHTHNP1)
-       
+
     _CL_BID = AFFE_CHAR_CINE(MODELE=_MO_NP1,MECA_IMPO = (_F(TOUT = 'OUI', DX = 0.0, DY = 0.0, DZ = 0.0, DRX = 0.0, DRY = 0.0, DRZ = 0.0,),))
 
     tran_x = 0.0
@@ -109,7 +109,7 @@ def perm_mac3coeur_ops(self, **args):
                               CARA_ELEM   = _CARANP1,
                               EXCIT       = (_F(CHARGE = _CL_BID,),),
                               COMP_INCR   =(
-                                    _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
+                                    _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION='GROT_GDEP',),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
                                     _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
@@ -133,7 +133,7 @@ def perm_mac3coeur_ops(self, **args):
                               MAILLAGE_FINAL = _MA_NP1,
                               MODELE_FINAL   = _MO_NP1,
                               TRAN       = (tran_x,tran_y,tran_z))
- 
+
            _dep[indice] = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
                            OPERATION = 'EXTR',
                            PRECISION =  1.0E-10,

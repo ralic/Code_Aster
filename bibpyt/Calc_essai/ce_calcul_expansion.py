@@ -1,8 +1,8 @@
-#@ MODIF ce_calcul_expansion Calc_essai  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF ce_calcul_expansion Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -209,5 +209,135 @@ class CalcEssaiExpansion:
         DETRUIRE( CONCEPT = _F( NOM = (__MAC,)), INFO = 1)
         return mac
 
+
+def make_mac_salome(mac,resu1,resu2,unite):
+    
+    from Cata.cata import LIRE_MAILLAGE, AFFE_MODELE, CREA_CHAMP, DETRUIRE
+    from Cata.cata import INFO_EXEC_ASTER, IMPR_RESU, DEFI_FICHIER, CREA_RESU
+    import random
+    # dimension du MAC
+
+    nb_l = mac.shape[0]-1
+    nb_c = mac.shape[1]-1
+    # fabrication d'un maillage au format aster
+    unite_mesh=make_mesh_mac(nb_l,nb_c)
+
+
+    __MA = LIRE_MAILLAGE(UNITE=unite_mesh,FORMAT='ASTER')
+
+    __MO = AFFE_MODELE(MAILLAGE=__MA,
+                       AFFE=(_F(TOUT='OUI',
+                                MODELISATION = 'PLAN_ELDI',
+                                PHENOMENE = 'MECANIQUE'),),);
+
+
+    
+    ##affection avec CREA_CHAMP
+
+    ##mcfact = []
+    ##ii=0
+    ##for ind_l in range(1,nb_l+1):
+    ##    for ind_c in range(1,nb_c+1):
+    ##        mcfact.append({'MAILLE':'M%s_%s' %(ind_l,ind_c),'NOM_CMP':'X1','VALE':toto[ii]})
+    ##        ii+=1
+
+    mcfact = []
+##    aller chercher les nume_ordre et les freq
+    nume_ordre_1 = resu1.get_modes_data()['NUME_ORDRE']
+    nume_ordre_2 = resu2.get_modes_data()['NUME_ORDRE']
+    nb_mod1 = len(nume_ordre_1)
+    nb_mod2=len(nume_ordre_2)
+    freq1 = resu1.get_modes_data()['FREQ']
+    if not freq1:freq1=[0.0 for kk in range(nb_mod1)]
+    freq2 = resu2.get_modes_data()['FREQ']
+    if not freq2:freq2=[0.0 for kk in range(nb_mod2)]
+
+
+    for ind_l in range(1,nb_l+1):
+        for ind_c in range(1,nb_c+1):
+            mcfact.append({'MAILLE':'M%s_%s' %(ind_l,ind_c),'NOM_CMP':'ERREST','VALE':mac[ind_l,ind_c]})
+            mcfact.append({'MAILLE':'M%s_%s' %(ind_l,ind_c),'NOM_CMP':'NUEST','VALE':nume_ordre_1[ind_l]})
+            mcfact.append({'MAILLE':'M%s_%s' %(ind_l,ind_c),'NOM_CMP':'SIGCAL','VALE':freq1[ind_l]})
+            mcfact.append({'MAILLE':'M%s_%s' %(ind_l,ind_c),'NOM_CMP':'TERMRE','VALE':nume_ordre_2[ind_c]})
+            mcfact.append({'MAILLE':'M%s_%s' %(ind_l,ind_c),'NOM_CMP':'TERMR2 ','VALE':freq2[ind_c]})
+            
+    ##__CHA = CREA_CHAMP( OPERATION= 'AFFE',
+    ##                    TYPE_CHAM='CART_NEUT_R' , MAILLAGE = MAIL,
+    ##                    AFFE=mcfact)
+
+    __CHA = CREA_CHAMP( OPERATION= 'AFFE',
+                        MODELE=__MO,
+                        PROL_ZERO='OUI',
+                        TYPE_CHAM='ELEM_ERRE_R' , 
+                        AFFE=mcfact)
+    
+    IMPR_RESU (UNITE=unite, FORMAT='MED',RESU=_F(CHAM_GD=__CHA) )
+
+    DETRUIRE(CONCEPT=_F(NOM=(__MA,__MO,__CHA,)))
+
+    DEFI_FICHIER(ACTION='LIBERER', UNITE=unite_mesh)
+    
+    return 
+
+
+
+
+def make_mesh_mac(nb_l,nb_c):
+    from Cata.cata import INFO_EXEC_ASTER
+    _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
+    unite=_UL['UNITE_LIBRE',1]
+
+    f = open('./fort.%s'%unite,'w')
+
+    f.writelines( 'TITRE : MAILLAGE CARRE POUR REPRESENTATION MAC_MODES\n')
+    f.writelines( 'CREE PAR SCRIPT PYTHON AU FORMAT ASTER\n')
+    f.writelines( ' FINSF\n')
+    f.writelines( ' %\n')
+    f.writelines( ' COOR_3D\n')
+    ## Les noeuds sont appeles 'Ni1_i2' les mailles 'Mj1_j2' comme suit
+    ##         N1_1    N1_2    N1_3    N1_4
+    ##             M1_1    M1_2    M1_3
+    ##         N2_1    N2_2    N2_3    N2_4
+    ##             M2_1    M2_2    M2_3
+    ##         N3_1    N3_2    N3_3    N3_4
+    ### dimension du MAC
+
+    for ind_l in range(1,nb_l+2):
+        for ind_c in range(1,nb_c+2):
+            nom_no = 'N%s_%s' %(ind_l,ind_c)
+            coordo_x =  ind_c/(nb_c+1.0)
+            coordo_y = -ind_l/(nb_l+1.0)
+            coordo_z =  0.0
+    ##        print nom_no
+            f.writelines( ' '+ nom_no.ljust(8) +
+                          '%22.14E%22.14E%22.14E' %(coordo_x,coordo_y,coordo_z) +
+                          '\n')
+
+    f.writelines( ' FINSF\n')
+    f.writelines( ' %\n')
+    f.writelines( ' QUAD4\n')
+
+    for ind_l in range(1,nb_l+1):
+        for ind_c in range(1,nb_c+1):
+            nom_maille = 'M%s_%s' %(ind_l,ind_c)
+            nom_noeud_1 = 'N%s_%s' %(ind_l,ind_c)
+            nom_noeud_2 = 'N%s_%s' %(ind_l,ind_c+1)
+            nom_noeud_3 = 'N%s_%s' %(ind_l+1,ind_c+1)
+            nom_noeud_4 = 'N%s_%s' %(ind_l+1,ind_c)
+
+            f.writelines( ' '+ nom_maille.ljust(8) + nom_noeud_1.ljust(8) +
+                          nom_noeud_2.ljust(8) + nom_noeud_3.ljust(8) +
+                           nom_noeud_4.ljust(8) + '\n')
+
+    f.writelines( ' FINSF\n')
+    f.writelines( ' %\n')
+    f.writelines( ' FIN\n')
+
+
+    f.close()
+##    import shutil
+##    shutil.copy('./fort.%s'%unite,'/local00/home/D95272AA/maillage.mail')
+
+    return unite
 
 

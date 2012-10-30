@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC AMORTISSEMENT (LMME)
 # sdll137d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM = 'SDLL137D',NIV_PUB_WEB='INTERNET'),
-       DEBUG=_F(SDVERI='OUI'),
+       DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('ALGELINE3_67',),
        IMPR_MACRO='OUI',
          )
 
@@ -182,9 +182,9 @@ MASSUP=ASSE_MATRICE(MATR_ELEM=MELSUP,
 AASSUP=ASSE_MATRICE(MATR_ELEM=AELSUP,
                       NUME_DDL=NUMSUP,);
 
-MODESUP=MODE_ITER_SIMULT(MATR_A=KASSUP,
-                         MATR_B=MASSUP,
-                         METHODE='TRI_DIAG', MATR_C=AASSUP,
+MODESUP=MODE_ITER_SIMULT(MATR_RIGI=KASSUP,
+                         MATR_MASS=MASSUP,
+                         METHODE='TRI_DIAG', MATR_AMOR=AASSUP,
                          VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=20,
@@ -279,12 +279,12 @@ MPROJ=PROJ_MATR_BASE(BASE=BASEMOST,
                      NUME_DDL_GENE=NUMGEN,
                      MATR_ASSE=MASSUP,);
 
-MODESGEN=MODE_ITER_SIMULT(MATR_A=KPROJ,
-                       MATR_B=MPROJ,
-                       VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
+MODESGEN=MODE_ITER_SIMULT(MATR_RIGI=KPROJ,
+                       MATR_MASS=MPROJ,
+                       VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI'),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=12,
-                                    SEUIL_FREQ=1.E-4,),);
+                                    SEUIL_FREQ=1.E-4,NMAX_ITER_SHIFT=2),);
 
 BASGEN=REST_GENE_PHYS(RESU_GENE=MODESGEN,
                    TOUT_ORDRE='OUI',
@@ -395,8 +395,8 @@ MASCPL=ASSE_MATRICE(MATR_ELEM=MELCPL,NUME_DDL=NUMCPL)
 AASCPL=ASSE_MATRICE(MATR_ELEM=AELCPL,NUME_DDL=NUMCPL)
 # CALCUL MODAL SUR LE MODELE COUPLE
 
-MODECPL=MODE_ITER_SIMULT(MATR_A=KASCPL,MATR_B=MASCPL,
-                       MATR_C=AASCPL,METHODE='TRI_DIAG',
+MODECPL=MODE_ITER_SIMULT(MATR_RIGI=KASCPL,MATR_MASS=MASCPL,
+                       MATR_AMOR=AASCPL,METHODE='TRI_DIAG',
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=2,
@@ -568,9 +568,9 @@ TEST_TABLE(CRITERE='ABSOLU',
 nmodes=2
 
 # controle recuperation matrices rigidite - masse 
-MODECPL3=MODE_ITER_SIMULT(MATR_A=KASCPL,
-                       MATR_B=MASCPL,
-                       MATR_C=AASCPL,METHODE='TRI_DIAG',
+MODECPL3=MODE_ITER_SIMULT(MATR_RIGI=KASCPL,
+                       MATR_MASS=MASCPL,
+                       MATR_AMOR=AASCPL,METHODE='TRI_DIAG',
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=nmodes,
@@ -621,9 +621,9 @@ MASDIR=ASSE_MATRICE(MATR_ELEM=MELDIR,
 AASDIR=ASSE_MATRICE(MATR_ELEM=AELDIR,
                       NUME_DDL=NUMDIR,);
 
-MODEDIR=MODE_ITER_SIMULT(MATR_A=KASDIR,
-                       MATR_B=MASDIR,
-                       MATR_C=AASDIR,METHODE='TRI_DIAG',
+MODEDIR=MODE_ITER_SIMULT(MATR_RIGI=KASDIR,
+                       MATR_MASS=MASDIR,
+                       MATR_AMOR=AASDIR,METHODE='TRI_DIAG',
                        VERI_MODE=_F(SEUIL=1.E-05,STOP_ERREUR='OUI',),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=nmodes,

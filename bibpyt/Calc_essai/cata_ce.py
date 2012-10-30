@@ -1,4 +1,4 @@
-#@ MODIF cata_ce Calc_essai  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF cata_ce Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,8 +68,6 @@ class Resultat:
                     self.modele = self.objects.modeles[self.modele_name]
                     return
 
-        # TODO : si cela ne marche pas, passer par les matrices
-
         # Si cela ne marche pas, on passe par le maillage
         if not self.modele:
             self.get_maillage()
@@ -83,6 +81,7 @@ class Resultat:
         if not self.modele:
             self.mess.disp_mess("On ne trouve pas le modele associe au resultat " + self.nom)
             UTMESS('A','CALCESSAI0_8',valk=(self.nom))
+##            raise IndexError
 
 
 
@@ -484,6 +483,7 @@ class InterSpectre:
                     fonc.append(self.matr_inte_spec[ind_freq,i,j].real)
                     fonc.append(self.matr_inte_spec[ind_freq,i,j].imag)
                 nume_ordr.append([int(i),int(j)])
+
                 _fonc=DEFI_FONCTION( NOM_PARA   ="FREQ",
                                      NOM_RESU   ="DSP",
                                      INTERPOL   ="NON",
@@ -500,7 +500,7 @@ class InterSpectre:
             # on range les fonctions par rapport aux noeuds et composantes
             if not self.nume_phy:
                 self.nume_phy = nume_ddl_phy(self.resu)
-            ddl = self.nume_phy 
+            ddl = self.nume_phy
             noeu_i = []
             noeu_j = []
             cmp_i = []
@@ -533,9 +533,10 @@ class InterSpectre:
         """ Associe une sd_interspectre intsp a l'instance de InterSpectre"""
         self.obj = intsp
 
-    def def_nom(self, nom):
-        """ Associe un nom (self.nom) a l'InterSpectre"""
-        self.nom = nom
+##    def def_nom(self, nom):
+##        """ Associe un nom (self.nom) a l'InterSpectre"""
+##        A SUPPRIMER ????
+##        self.nom = nom
 
     def var_opt(self, opt):
         if opt =='Efforts discrets localises':
@@ -544,7 +545,6 @@ class InterSpectre:
             self.opt = 1
         else:
             self.opt = 0
-
 
 
     def set_model(self, resu):
@@ -556,73 +556,119 @@ class InterSpectre:
         """
         self.resu = resu
 
-
-    def extr_inte_spec(self, resu):
-        """!Extraction d'une matrice inter-spectrale a partir d'une sd_interspectre
-           Verification de la coherence entre les ddl de l'inter-spectre et du concept resultat"""
-        self.mess.disp_mess("Extraction de l'inter-spectre " + self.nom)
-        self.mess.disp_mess(" ")
-        
+    def extr_nume_ordr(self):
+        """! Extraction des numeros d'ordre de l'inter-spectre"""
         coupl_ddl = []
-        try:
-            # Cas ou l'inter-spectre est defini par ses noeuds et composantes
-            noeudi  = aster.getvectjev(self.obj.nom.ljust(8)+'.NOEI')
-            noeudj  = aster.getvectjev(self.obj.nom.ljust(8)+'.NOEJ')
-            cmpi    = aster.getvectjev(self.obj.nom.ljust(8)+'.CMPI')
-            cmpj    = aster.getvectjev(self.obj.nom.ljust(8)+'.CMPJ')
+        
+        # Cas ou l'inter-spectre est defini par ses noeuds et composantes
+        noeudi  = aster.getvectjev(self.obj.nom.ljust(8)+'.NOEI')
+        noeudj  = aster.getvectjev(self.obj.nom.ljust(8)+'.NOEJ')
+        cmpi    = aster.getvectjev(self.obj.nom.ljust(8)+'.CMPI')
+        cmpj    = aster.getvectjev(self.obj.nom.ljust(8)+'.CMPJ')
+            
+
+        # l'inter-spectre n'est defini qu'avec des numeros d'ordre independants du modele
+        numi  = aster.getvectjev(self.obj.nom.ljust(8)+'.NUMI')
+        numj  = aster.getvectjev(self.obj.nom.ljust(8)+'.NUMJ')
+
+##        # verif : les numi,numj doivent etre ordonnes
+##        snumi = sorted(numi)
+##        snumj = sorted(numj)
+##        if snumi != numi or snumj != numj:
+##            self.mess.disp_mess(u"Attention : les listes doivent etre ordonnees par\
+##                                numero croissant de mesure et de reference")
+
+        if noeudi:
+            self.isnume = 1
             for ind in range(len(noeudi)):
                 coupl_ddl.append( (noeudi[ind].split()[0] + '_' + cmpi[ind].split()[0],
                                    noeudj[ind].split()[0] + '_' + cmpj[ind].split()[0]) )
-            isnume = 0
-            nb_fonc = len(noeudi)
-
-        except:
-            # l'inter-spectre n'est defini qu'avec des numeros d'ordre independants du modele
-            numi  = aster.getvectjev(self.obj.nom.ljust(8)+'.NUMI')
-            numj  = aster.getvectjev(self.obj.nom.ljust(8)+'.NUMJ')
+        elif numi:
+            self.isnume = 0
             for ind in range(len(numi)):
                 coupl_ddl.append((numi[ind],numj[ind]))
-            isnume = 1
-            nb_fonc = len(numi)
 
+        return coupl_ddl
+            
+
+    def extr_inte_spec(self, resu=None, intersp=1):
+        """!Extraction d'une matrice inter-spectrale a partir d'une sd_interspectre
+           Verification de la coherence entre les ddl de l'inter-spectre et du concept resultat
+            - Si resi!= None, on peut associer les numeros d'ordre de l'IS a des DDL du resu,
+            - Si intersp = 1, on a un vrai inter-spectre. Si = 0, alors c'est une FRF ou une coherence
+              (exemple, CALC_SEPC calcule des FRF mais rend un concept de type inter-spectre).
+              Dans ce cas, on ne calcule pas la partie symetrique de la matrice."""
+        from Cata.cata import RECU_FONCTION, DETRUIRE
+        self.mess.disp_mess("Extraction de l'inter-spectre " + self.nom)
+        self.mess.disp_mess(" ")
+            
+        coupl_ddl = self.extr_nume_ordr()
+        nb_fonc = len(coupl_ddl)
         nb_freq = len(self.f)
 
-        self.set_model(resu)
-        self.nume_phy = nume_ddl_phy(resu)
-        nb_mes = len(self.nume_phy)
+        nume_ordr_l = list(set([kk[0] for kk in coupl_ddl]))
+        nb_l = len(nume_ordr_l)
+        nume_ordr_c = list(set([kk[1] for kk in coupl_ddl]))
+        nb_c = len(nume_ordr_c)
 
-        # il doit y avoir coherence de longueur entre taille de l'inter-spectre et le nombre de DDL du resu
-        if nb_mes*(nb_mes+1)/2 != nb_fonc:
-            nb_mes_intsp = 0.5*(-1+numpy.sqrt(1+8*nb_fonc))
-            self.mess.disp_mess(" Nombre de mesures de CPhi : " + str(int(nb_mes)))
-            self.mess.disp_mess(" Nombre de mesures de l'inter-spectre : "
-                                + str(int(nb_mes_intsp)))
-            self.mess.disp_mess(" ")
-            raise TypeError
+        if intersp:
+            if nb_l != nb_c:
+                self.mess.disp_mess("Inter-spectre non valide")
+                return
 
-        self.matr_inte_spec = numpy.zeros((nb_freq, nb_mes, nb_mes), complex)
+        # Initialisation
+        self.matr_inte_spec = numpy.zeros((nb_freq, nb_l, nb_c), complex)
 
-        intspec = aster.getcolljev(self.obj.nom.ljust(8)+'.VALE')
+        # Y a-t-il une numerotation associee a l'inter-spectre. Si oui
+        if resu:
+            self.set_model(resu)
+            self.nume_phy = nume_ddl_phy(resu)
+            nume = self.nume_phy
+            nb_mes = len(self.nume_phy)
+            # verification de la coherence entre la taille de l'inter-spectre et du DDL du resu
+            # TODO : retirer la verif ici et la mettre ailleurs
+            if nb_mes*(nb_mes+1)/2 != nb_fonc:
+                nb_mes_intsp = 0.5*(-1+numpy.sqrt(1+8*nb_fonc))
+                self.mess.disp_mess(" Nombre de mesures de CPhi : " + str(int(nb_mes)))
+                self.mess.disp_mess(" Nombre de mesures de l'inter-spectre : "
+                                    + str(int(nb_mes_intsp)))
+                self.mess.disp_mess(" ")
+                raise TypeError
 
-        # Rangement dans l'ordre des fonctions (par rapport a la numerotation du self.resu)
-        nume = self.nume_phy
-        for ind_coupl in range(len(coupl_ddl)):
-            if isnume:
-                ind_l = coupl_ddl[ind_coupl][0]-1
-                ind_c = coupl_ddl[ind_coupl][1]-1
-            else:
-                ind_l = nume.index(coupl_ddl[ind_coupl][0])
-                ind_c = nume.index(coupl_ddl[ind_coupl][1])
-            for ind_freq in range(nb_freq):
-                if ind_l != ind_c:
-                    valc=complex(intspec[ind_coupl+1][2*ind_freq],intspec[ind_coupl+1][2*ind_freq+1])
-                    self.matr_inte_spec[ind_freq,ind_l,ind_c] = valc
-                    self.matr_inte_spec[ind_freq,ind_c,ind_l] = numpy.conjugate(valc)
+        for nume_i,nume_j in coupl_ddl:
+            if not self.nume_phy or not self.isnume:
+                # rangement alpha-numerique des donnees de l'inter-spectre
+                ind_l = nume_ordr_l.index(nume_i)
+                ind_c = nume_ordr_c.index(nume_j)
+                __fonc = RECU_FONCTION(INTE_SPEC = self.obj,
+                                       NUME_ORDRE_I = nume_i,
+                                       NUME_ORDRE_J = nume_j)
+            elif self.nume_phy:
+                # rangement selon l'ordre des DDL donne par self.nume
+                ind_l = self.nume_phy.index(nume_i)
+                ind_c = self.nume_phy.index(nume_j)
+                if nume_i == nume_j:
+                    __fonc = RECU_FONCTION(INTE_SPEC = self.obj,
+                                           NOEUD_I = nume_i.split('_')[0],NOM_CMP_I = nume_i.split('_')[1])
                 else:
-                    valc=complex(intspec[ind_coupl+1][ind_freq],0.0)
-                    self.matr_inte_spec[ind_freq,ind_l,ind_c] = valc
+                    __fonc = RECU_FONCTION(INTE_SPEC = self.obj,
+                                           NOEUD_I = nume_i.split('_')[0],NOM_CMP_I = nume_i.split('_')[1],
+                                           NOEUD_J = nume_j.split('_')[0],NOM_CMP_J = nume_j.split('_')[1])
+            else:
+                self.mess.disp_mess(u"Erreur dans l'extraction de l'inter-spectre : cas non-traite")
+            fonc_py = __fonc.convert('complex')
+            ordo = numpy.array(fonc_py.vale_y)
+            absc = numpy.array(fonc_py.vale_x)
+            if ind_l != ind_c:
+                self.matr_inte_spec[:,ind_l,ind_c] = ordo
+                self.matr_inte_spec[:,ind_c,ind_l] = numpy.conjugate(ordo)
+            else:
+                self.matr_inte_spec[:,ind_l,ind_c] = ordo
+
+            DETRUIRE(CONCEPT=_F(NOM=__fonc))
 
 
+                    
     def extr_freq(self):
         """Extraction des frequences d'etude dans la tabl_intsp qui contient
         les inter-spectres mesures"""
@@ -695,9 +741,10 @@ class Tempo:
         """ Associe une table intsp aster a l'instance de InterSpectre"""
         self.obj = tempo
 
-    def def_nom(self, nom):
-        """ Associe un nom (self.nom) a l'InterSpectre"""
-        self.nom = nom
+##    def def_nom(self, nom):
+##        """ Associe un nom (self.nom) a l'InterSpectre"""
+##        A SUPPRIMER ???
+##        self.nom = nom
 
     def var_opt(self, opt):
         if opt =='Efforts discrets localises':
@@ -706,7 +753,6 @@ class Tempo:
             self.opt = 1
         else:
             self.opt = 0
-
 
 
     def set_model(self, resu):
@@ -720,7 +766,6 @@ class Tempo:
 
 
     def extr_tempo(self):
-
         """!Recuperation d'une table_fonction pour creer un catalogue de temporels"""
         from Cata.cata import RECU_FONCTION
         from Cata.cata import DETRUIRE
@@ -878,6 +923,11 @@ class CalcEssaiObjects:
     def recup_objects( self ):
         self.del_weakref()
         ctx = CONTEXT.get_current_step().get_contexte_courant()
+
+        # NB utile : voir par quelle commande ont ete crees les concepts
+        #        for etape in CONTEXT.get_current_step().jdc.etapes:
+        #            if etape.nom == 'OBSERVATION':
+        #                print etape.get_created_sd()[0].nom, etape.valeur
 
         for i, v in ctx.items():
             if isinstance( v, modele_sdaster ):

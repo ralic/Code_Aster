@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES ROTATIONS SSNV138A
 # ssnv138e.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -46,8 +46,7 @@ GF=DEFI_GEOM_FIBRE(
             COOR_AXE_POUTRE=(0.,0.,),),)
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MATE,
-                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MATE,
-                                 RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MATE, RELATION='ELAS',),
                      )
 
 
@@ -131,7 +130,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=MOMENT,
                              FONC_MULT=MOMENT_F,),),
-                   COMP_INCR=_F(RELATION='MULTIFIBRE',),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=tfin,),
                    NEWTON=_F(MATRICE='TANGENTE',

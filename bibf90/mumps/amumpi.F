@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPI MUMPS  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -101,9 +101,9 @@ C       ------------------------------------------------
       CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
       NPREC=ZI(JSLVI)
 
-C       ------------------------------------------------
-C        INITIALISATION SYM, PAR ET JOB POUR MUMPS
-C       ------------------------------------------------
+C       -----------------------------------------------------
+C        INITIALISATION SYM, PAR ET JOB POUR MUMPS (CREATION)
+C       -----------------------------------------------------
       IF (OPTION.EQ.0) THEN
 
         IF (TYPE.EQ.'S') THEN
@@ -182,9 +182,9 @@ C ---     PARAMETRES D'INITIALISATION DE L'OCCURENCE MUMPS KXMPS
           CALL ASSERT(.FALSE.)
         ENDIF
 
-C       ------------------------------------------------
-C        INITIALISATION ICNTL POUR MUMPS
-C       ------------------------------------------------
+C       ------------------------------------------------------
+C        INITIALISATION ICNTL/CNTL POUR MUMPS (ANALYSE +FACTO)
+C       ------------------------------------------------------
       ELSE IF (OPTION.EQ.2) THEN
 
 C ---     INIT
@@ -249,21 +249,11 @@ C ---     ET CELA PERMET DE SURCHARGER PLUS RAPIDEMENT POUR TESTER
 C ---     TYPE DE RESOLUTION: A OU AT
         ICNTL(9) = 1
 
-C ---     RAFFINEMENT ITERATIF
-        ICNTL(10) = 0
+C ---     RAFFINEMENT ITERATIF ET ANALYSE QUALITE SOLUTION
+C ---     PARAMETRES ACTIVES JUSTE AVANT SOLVE VIA AMUMPI OPTION=3
+        ICNTL(10)=0
         CNTL(2)=0.D0
-        IF (LQUALI)  THEN
-          IF (ZK24(JSLVK-1+11).EQ.'SANS') THEN
-          ELSE IF (ZK24(JSLVK-1+11).EQ.'AUTO') THEN
-            ICNTL(10)=4
-            CNTL(2)=1.D-14
-          ELSE IF (ZK24(JSLVK-1+11).EQ.'FORCE') THEN
-            ICNTL(10)=10
-            CNTL(2)=10.D-50
-          ENDIF
-        ENDIF
-        ICNTL(11) = 0
-        IF (LQUALI)  ICNTL(11) = 1
+        ICNTL(11)=0
 
 C ---     PARALLELISME INDUIT PAR SCALAPACK (VOIR NPREC PLUS BAS)
         ICNTL(13) = 0
@@ -385,6 +375,77 @@ C ---   DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
             CALL ASSERT(.FALSE.)
         ENDIF
 
+C       ------------------------------------------------------
+C        INITIALISATION ICNTL/CNTL POUR MUMPS (SOLVE)
+C       ------------------------------------------------------
+      ELSE IF (OPTION.EQ.3) THEN
+C ---   POUR CMD ECLATEE RESOUDRE PRINCIPALEMENT
+
+C ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
+        CALL AMUMPU(3,TYPE,KXMPS,K12BID,IBID,LBID,KVERS)
+
+C ---     MESSAGE/ALERTES MUMPS
+        ICNTL(1) = IFM
+        ICNTL(2) = 0
+        ICNTL(3) = 0
+        ICNTL(4) = 1
+        IF (NIV.GE.2) THEN
+C ---     ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS, 3 PUIS 4
+           ICNTL(3) = IFM
+           ICNTL(4) = 2
+        ENDIF
+
+C ---     RAFFINEMENT ITERATIF ET ETUDE DE LA QUALITE
+        ICNTL(10)=0
+        ICNTL(11)=0
+        CNTL(2)=0.D0
+        IF (LQUALI)  THEN
+          IF (ZK24(JSLVK-1+11).EQ.'SANS') THEN
+          ELSE IF (ZK24(JSLVK-1+11).EQ.'AUTO') THEN
+            ICNTL(10)=4
+            CNTL(2)=1.D-14
+          ELSE IF (ZK24(JSLVK-1+11).EQ.'FORCE') THEN
+            ICNTL(10)=10
+            CNTL(2)=10.D-50
+          ENDIF
+          ICNTL(11)=1
+        ENDIF
+        IF (TYPE.EQ.'S') THEN
+          SMPSK%ICNTL(1)=ICNTL(1)
+          SMPSK%ICNTL(2)=ICNTL(2)
+          SMPSK%ICNTL(3)=ICNTL(3)
+          SMPSK%ICNTL(4)=ICNTL(4)
+          SMPSK%ICNTL(10)=ICNTL(10)
+          SMPSK%ICNTL(11)=ICNTL(11)
+          SMPSK%CNTL(2)  =CNTL(2)
+        ELSE IF (TYPE.EQ.'C') THEN
+          CMPSK%ICNTL(1)=ICNTL(1)
+          CMPSK%ICNTL(2)=ICNTL(2)
+          CMPSK%ICNTL(3)=ICNTL(3)
+          CMPSK%ICNTL(4)=ICNTL(4)
+          CMPSK%ICNTL(10)=ICNTL(10)
+          CMPSK%ICNTL(11)=ICNTL(11)
+          CMPSK%CNTL(2)  =CNTL(2)
+        ELSE IF (TYPE.EQ.'D') THEN
+          DMPSK%ICNTL(1)=ICNTL(1)
+          DMPSK%ICNTL(2)=ICNTL(2)
+          DMPSK%ICNTL(3)=ICNTL(3)
+          DMPSK%ICNTL(4)=ICNTL(4)
+          DMPSK%ICNTL(10)=ICNTL(10)
+          DMPSK%ICNTL(11)=ICNTL(11)
+          DMPSK%CNTL(2)  =CNTL(2)
+        ELSE IF (TYPE.EQ.'Z') THEN
+          ZMPSK%ICNTL(1)=ICNTL(1)
+          ZMPSK%ICNTL(2)=ICNTL(2)
+          ZMPSK%ICNTL(3)=ICNTL(3)
+          ZMPSK%ICNTL(4)=ICNTL(4)
+          ZMPSK%ICNTL(10)=ICNTL(10)
+          ZMPSK%ICNTL(11)=ICNTL(11)
+          ZMPSK%CNTL(2)  =CNTL(2)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+ 
 C       ------------------------------------------------
 C        MAUVAISE OPTION
 C       ------------------------------------------------

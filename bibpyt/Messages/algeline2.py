@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF algeline2 Messages  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,17 @@ cata_msg = {
 21 : _(u"""
  L'argument de "BLOC_FIN" doit être strictement positif
 """),
-
+22 : _(u"""
+ Opérateur INFO_MODE:
+ On a rencontré un problème lors de la lecture des caractéristiques de la zone de
+ l'axe réel ou du plan complexe que vous vouliez calibrer.
+ 
+ --> Conseil:
+ Vérifiez si vous traitez un problème quadratique ou un généralisé avec matrice non symétrique
+ ou complexe, que vous avez bien paramétré les mots-clés RAYON et CENTRE_CONTOUR.
+ Dans le cas contraire, ce sont les mots-clés FREQ ou CHAR_CRIT qu'il faut valoriser (avec
+ au moins deux valeurs).
+"""),
 23 : _(u"""
  On a rencontré un problème à la lecture de la table %(k1)s.
  
@@ -168,6 +178,12 @@ cata_msg = {
  de l'opérateur INFO_MODE qui a générer la TABLE.
 """),
 
+27 : _(u"""
+ Opérateur INFO_MODE + COMPTAGE/METHODE='AUTO'.
+ Compte-tenu des propriétés des matrices fournies (nombre, type, symétrie), on a choisi pour vous la
+ méthode de comptage: %(k1)s.
+"""),
+
 28 : _(u"""
  les "MATR_ASSE" %(k1)s "  et  " %(k2)s "  ne sont pas combinables.
 """),
@@ -182,6 +198,12 @@ cata_msg = {
 
 30 : _(u"""
  les matrices  " %(k1)s "  et  " %(k2)s "  n'ont pas le même domaine de définition.
+"""),
+
+31 : _(u"""
+ Opérateur INFO_MODE + TYPE_MODE='GENERAL'.
+ Compte-tenu des propriétés des matrices fournies (type, symétrie), on bascule automatiquement
+ en mode de fonctionnement: %(k1)s.
 """),
 
 33 : _(u"""

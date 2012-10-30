@@ -1,4 +1,4 @@
-#@ MODIF ce_ihm_identification Calc_essai  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ce_ihm_identification Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,9 +34,9 @@ from Cata.cata import OBSERVATION, DETRUIRE, CO, IMPR_RESU
 from Calc_essai.cata_ce import Resultat, ModeMeca, InterSpectre, CreaTable
 from Calc_essai.cata_ce import nume_ddl_phy, nume_ddl_gene, CreaTable
 from Calc_essai.ce_calcul_identification import CalcEssaiIdentification
-from Calc_essai.outils_ihm import SelectionNoeuds, SelectionMailles
-from Calc_essai.outils_ihm import Compteur, MyMenu, MultiList
-from Calc_essai.outils_ihm import ChgtRepereDialogue
+from Calc_essai.outils_ihm import Compteur, MyMenu, MultiList, VisuSpectre
+from Calc_essai.outils_ihm import ChgtRepereDialogue,ObservationWindow
+import aster_core
 
 
 ########################
@@ -116,7 +116,7 @@ class InterfaceIdentification(Frame):
         colonne_1.grid(row=1, column=0, rowspan=1, sticky='ew')
         colonne_2.grid(row=1, column=1, rowspan=1, sticky='new')
         self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)
+        self.columnconfigure(1, weight=2)
 
     def setup(self):
         "Utilisé par outils_ihm.TabbedWindow"
@@ -125,14 +125,7 @@ class InterfaceIdentification(Frame):
                                    self.var_resu_fonc,self._get_inter_spec)
         self.menu_resu_mod.update(mdo.get_mode_meca_name(),
                                   self.var_resu_mod,self._get_base)
-        self.menu_obs_resu.update(mdo.get_mode_meca_name(),
-                                 self.nom_obs_resu,self._observabilite_changed)
-        self.menu_com_resu.update(mdo.get_mode_meca_name(),
-                                 self.nom_com_resu,self._commandabilite_changed)
-        self.menu_com_modele.update(mdo.get_model_name(),
-                                    self.nom_com_modele, self._commandabilite_changed)
-        self.menu_obs_modele.update(mdo.get_model_name(),
-                                    self.nom_obs_modele,self._observabilite_changed)
+        
 
     def _create_opt_data(self):
         opt_res_definitions = [
@@ -153,32 +146,28 @@ class InterfaceIdentification(Frame):
             self.opt_noms.append(nom)
         
     def _construit_colonne_1(self):
-        col = Frame(self, relief = 'sunken', borderwidth=1)
+        col = Frame(self, relief = 'sunken',borderwidth=1)
         # Menu de choix des donnes de calcul en entree
         Label(col, text=u"Choix des données de calcul",
               font=self.font2).grid(row=0, padx=50, pady=2)
-        
-        box_cd = self._choix_base_modale(col) 
-        
-        box_obs = self._definit_observabilite(col)
-        
-        box_cmd = self._definit_commandabilite(col)
 
-        box_int = self._choix_interspectre(col)
-    
-        box_cm = self._choix_methode(col)
+        box_cd = self._choix_base_modale(col,relief='flat') 
+        box_obs = self._definit_observabilite(col,self,relief='flat')
+        box_cmd = self._definit_commandabilite(col,self,relief='flat')
+        box_int = self._choix_interspectre(col,relief='flat')
+        box_cm = self._choix_methode(col,relief='flat')
         
         for idx, box in enumerate([box_cd, box_obs, box_cmd, box_int, box_cm]):
-            box.grid(row=idx + 1, sticky='w'+'e'+'n', padx=4, pady=2) 
+            box.grid(row=idx + 1, sticky='ew', padx=4, pady=2) 
         Button(col, text="Calculer",
                command=self.calculs).grid(row=6, sticky='s'+'e',
                                           padx=4, pady=2)
 
         return col
 
-    def _choix_base_modale(self, root):
+    def _choix_base_modale(self,parent,**args):
         """Choix des données d'entrée"""
-        fra = Frame(root, relief='sunken', borderwidth=1)
+        fra = Frame(parent,args)
 
         # Menu choix de la base modale
         Label(fra, text="Base modale").grid(row=1, column=0, sticky='w')
@@ -191,104 +180,27 @@ class InterfaceIdentification(Frame):
 
         return fra
    
-    def _definit_observabilite(self, root):
+    def _definit_observabilite(self,parent,root,**args):
         """Définition du concept d'observabilité."""
-        fra = Frame(root, relief='sunken', borderwidth=1)
 
-        Label(fra,
-              text=u"Définition du concept d'observabilité",
-              font=self.font2).grid(row=0, column=0, columnspan=3)   
-        
-        # Menu choix du modele experimental associé
-        # aux donnees en fonctionnement
-        Label(fra, text=u"Modèle expérimental").grid(row=1,column=0, sticky='ew')
-        self.nom_obs_modele = StringVar()
-        self.menu_obs_modele = MyMenu(fra,
-                                      self.objects.get_model_name(),
-                                      self.nom_obs_modele,
-                                      self._observabilite_changed)
-        self.menu_obs_modele.grid(row=2, column=0, sticky='we')
+        self.observabilite = ObservationWindow(parent,root,self.mess,self.objects,
+                                               None,u"'observabilité",0,**args)
+        return self.observabilite
 
-        Label(fra, text=u"Base de déformées").grid(row=1,column=1, sticky='ew')
-        self.nom_obs_resu = StringVar()
-        self.menu_obs_resu = MyMenu(fra,
-                                    self.objects.get_mode_meca_name(),
-                                    self.nom_obs_resu,
-                                    self._observabilite_changed)
-        self.menu_obs_resu.grid(row=2, column=1, sticky='we')
-        
-        no_title = "Groupe de noeuds et DDL des capteurs"
-        self.obs_noeuds = SelectionNoeuds(fra, no_title, bg='#90a090',
-                                          chgt_rep=self.chgt_rep)
-        self.obs_noeuds.grid(row=3, column=0, sticky='we',
-                             columnspan=3, pady=2, padx=2)
-        
-        ma_title = "Groupe de mailles et DDL des capteurs"
-        self.obs_mailles = SelectionMailles(fra, ma_title, bg='#9090a0',
-                                            chgt_rep=self.chgt_rep)
-        self.obs_mailles.grid(row=4, column=0, sticky='we',
-                              columnspan=3, pady=2, padx=2)
-        
-        but = Button(fra, text="Valider",
-                     command=self._calculate_observabilite)
-        but.grid(row=5, column=3, sticky='e', padx=2, pady=2)
-        
-        fra.columnconfigure(0, weight=1)
-        fra.columnconfigure(1, weight=1)
 
-        return fra
-
-    def _definit_commandabilite(self, root):
+    def _definit_commandabilite(self,parent,root,**args):
         """Définition du concept de commandabilité."""
-        fra = Frame(root, relief='sunken', borderwidth=1)
-        
-        Label(fra, text=u"Définition du concept de commandabilité",
-              font=self.font2).grid(row=0, column=0, columnspan=3)
-        
-        Label(fra, text="Modèle de controlabilite"
-              ).grid(row=1, column=0, sticky='ew')
-        self.nom_com_modele = StringVar()
-        self.menu_com_modele = MyMenu(fra,
-                                      self.objects.get_model_name(),
-                                      self.nom_com_modele,
-                                      self._commandabilite_changed)
-        self.menu_com_modele.grid(row=2, column=0, sticky='ew')
+        self.commandabilite = ObservationWindow(parent,root,self.mess,self.objects,
+                                                None,u"e commandabilité",0,**args)
+        return self.commandabilite 
 
-        Label(fra, text="Base de déformées").grid(row=1,column=1, sticky='ew')
-        self.nom_com_resu = StringVar()
-        self.menu_com_resu = MyMenu(fra,
-                                    self.objects.get_mode_meca_name(),
-                                    self.nom_com_resu,
-                                    self._commandabilite_changed)
-        self.menu_com_resu.grid(row=2, column=1, sticky='we')
-        
-        no_title = "Groupe de noeuds et DDL des capteurs"
-        self.com_noeuds = SelectionNoeuds(fra, no_title, bg='#90a090',
-                                          chgt_rep=self.chgt_rep)
-        self.com_noeuds.grid(row=3, column=0, sticky='w'+'e',
-                             columnspan=2, pady=2, padx=2)
-        
-        ma_title = "Groupe de mailles et DDL des capteurs"
-        self.com_mailles = SelectionMailles(fra, ma_title, bg='#9090a0',
-                                            chgt_rep=self.chgt_rep)
-        self.com_mailles.grid(row=4, column=0, sticky='w'+'e',
-                              columnspan=2, pady=2, padx=2)
-        
-        but = Button(fra, text="Valider",
-                     command=self._calculate_commandabilite)
-        but.grid(row=5, column=3, sticky='e', padx=2, pady=2)
-        
-        fra.columnconfigure(0, weight=1)
-        fra.columnconfigure(1, weight=1)
 
-        return fra
-
-    def _choix_interspectre(self, root):
+    def _choix_interspectre(self, root,**args):
         """ Choix de l'interspectre"""
 
         self.var_resu_fonc = StringVar() # le nom de l'interspectre
         self.typ_resu_fonc = StringVar() # le type de 'interspectre
-        fra = Frame(root, relief='sunken', borderwidth=1)
+        fra = Frame(root, args)
         desc = "Interspectre en fonctionnement"
         Label(fra, text=desc).grid(row=1, column=0, sticky='w')
        
@@ -304,9 +216,9 @@ class InterfaceIdentification(Frame):
         
         return fra
 
-    def _choix_methode(self, root):
+    def _choix_methode(self, root,**args):
         """Choix de la méthode de résolution (techniques de régularisation)"""
-        fra = Frame(root, relief='sunken', borderwidth=1 )
+        fra = Frame(root,args )
 
         # Menu de choix de la methode de calcul des efforts
         Label(fra, text="Définition du calcul",
@@ -335,83 +247,26 @@ class InterfaceIdentification(Frame):
     def _construit_colonne_2(self):
         """ Affichage dans une fenetre des voies à afficher, possibilité
         de visualiser les autospectres et les interspectres"""
-        fra = Frame(self, relief='sunken', borderwidth=1)
-        self.curve_color = StringVar()
-        self.var_abs = StringVar()
-        self.var_ord = StringVar()
-        self.var_amp = StringVar()
-        self.born_freq = StringVar()
-
-        Label(fra, text="Visualisation des résultats",
-              font=self.font2).grid(row=0, column=0,columnspan=3)
- 
-        Label(fra, text="Choix des données à visualiser").grid(row=1,
-                                                               column=0,
-                                                               columnspan=3)
-
-        self.var_visu_resu = [StringVar(), StringVar()]
-        self.var_export = [StringVar(), StringVar()]
-        self.menu_visu_resu = [None, None]
-        self.menu_list = [None, None]
-
-        for ind_tab in range(2):
-            self.menu_visu_resu[ind_tab] = MyMenu(fra, self.opt_noms,
-                                                  self.var_visu_resu[ind_tab])
-            self.menu_visu_resu[ind_tab].grid(row=2, column=ind_tab,
-                                              columnspan=5, sticky='w')
-            self.menu_list[ind_tab] = MultiList(fra, ["indice mode/position"])
-            self.menu_list[ind_tab].grid(row=3,column=ind_tab, sticky='wens')
-            exportvar = Entry(fra, textvariable=self.var_export[ind_tab])
-            exportvar.grid(row=4, column=ind_tab, sticky='we')
-            fonc = "export_inte_spec" + str(ind_tab + 1)
-            Button(fra, text="Exporter Inter-spectre",
-                        command=getattr(self, fonc)).grid(row=5, column=ind_tab)
-        Button(fra, text="Valider", command=self.get_list).grid(row=2, column=2)
-
-        # Options de visualisation (échelles)
-        opt_box1 = Frame(fra)
-        Label(opt_box1,
-             text="Echelle Absisses").grid(row=0, column=0, sticky='w')
-        Label(opt_box1,
-              text="Echelle Ordonnées").grid(row=1, column=0, sticky='w')
-        Label(opt_box1, text="Amp/Phase").grid(row=2, column=0, sticky='w')
-        self.amp_phas = ["Amplitude","Phase"]
-        opt_trac = ["LIN","LOG"]
-        self.menu_abs = MyMenu(opt_box1, opt_trac, self.var_abs)
-        self.menu_abs.grid(row=0, column=1, columnspan=5, sticky='e')
-        self.menu_ord = MyMenu(opt_box1, opt_trac, self.var_ord)
-        self.menu_ord.grid(row=1, column=1, columnspan=5, sticky='e')
-        self.menu_amp = MyMenu(opt_box1, self.amp_phas, self.var_amp)
-        self.menu_amp.grid(row=2, column=1, columnspan=5, sticky='e')
+        # variables pour la visu
+        self.nb_col_visu = 2
+        self.var_visu_resu = [StringVar() for kk in range(self.nb_col_visu)]#,StringVar()]#*self.nb_col_visu
+        self.var_export = [StringVar()]*self.nb_col_visu
+        self.label_visu = [StringVar()]*self.nb_col_visu                    # variable pour le label de la colonne de visu
+        self.curve_list = [None]*self.nb_col_visu
+        self.radio_donnees = IntVar()                                       # visu reel, abs, imag, phase
+        self.xlinlog = IntVar()                                             # axe x lin ou log
+        self.ylinlog = IntVar()                                             # axe y lin ou log
         
-        self.var_amp.set("Amplitude")
-        self.var_abs.set("LIN")
-        self.var_ord.set("LIN")
-        opt_box1.grid(row=6, column=0, columnspan=2, sticky = 'e''w')
         
-        opt_box2 = Frame(fra)
-        Button(opt_box2, text="Afficher courbe",
-               command=self.plot_curve).grid(row=0, column=0)
-        Button(opt_box2, text="Critère d'erreur",
-               command=self.plot_curve).grid(row=1, column=0)
-        Entry(opt_box2, textvariable=self.born_freq).grid(row=2, column=0)
-        opt_box2.grid(row=3, column=2, sticky = 'e''w')
+        fra = VisuSpectre(self,self.nb_col_visu,choix=self.opt_noms,export='oui',
+                          label_visu=self.label_visu,
+                          relief='sunken',borderwidth=1)
 
+        for label in self.label_visu:
+            label.set(u"Noeuds/numéros d'ordre")
+        
         return fra
-    
-    def _observabilite_changed(self):
-        nom_modele = self.nom_obs_modele.get()
-        modele = self.objects.get_model(nom_modele)
-        
-        self.obs_noeuds.set_resultat(modele)
-        self.obs_mailles.set_resultat(modele)
 
-    def _commandabilite_changed(self):
-        nom_modele = self.nom_com_modele.get()
-        modele = self.objects.get_model(nom_modele)
-        
-        self.com_noeuds.set_resultat(modele)
-        self.com_mailles.set_resultat(modele)
 
 
     def _get_base(self):
@@ -429,144 +284,43 @@ class InterfaceIdentification(Frame):
         nom_intsp = self.var_resu_fonc.get()
         self.inter_spec = self.objects.inter_spec[nom_intsp]
         
-    
-    def _calculate_observabilite(self):
-        if self.obs_co:
-            DETRUIRE(CONCEPT=_F(NOM=self.obs_co.obj), INFO=1)
-        self.obs_co = ModeMeca(self.objects,"__OBS",CO("__OBS"))
+    def check_data(self):
+        """verification des donnees d'entree"""
+        # TODO : on pourrait ajouter ici la verification sur les
+        # dimensions des matrices
+        self.objects.recup_objects()
+        if self.var_resu_fonc.get() == 'Choisir':
+            self.mess.disp_mess("Il faut choisir la base modale")
+            return 0
+        if not self.observabilite.obs_co:
+            self.mess.disp_mess(u"Il faut définir le concept d'observabilité")
+            return 0
+        self.obs_co = self.observabilite.obs_co
+        if not self.commandabilite.obs_co:
+            self.mess.disp_mess(u"Il faut définir le concept de commandabilité")
+            return 0
+        self.com_co = self.commandabilite.obs_co
+        if self.var_resu_fonc.get() == 'Choisir':
+            self.mess.disp_mess("Il faut choisir l'inter-spectre des mesures")
+            return 0
 
-        message = "Pour definir l'observabilite, il faut une base"\
-                  "de deformees ET un modele"
-        nom_resu = self.nom_obs_resu.get()
-        if nom_resu.strip() == 'Choisir':
-            self.mess.disp_mess(message)
-            return
-        resu = self.objects.get_mode_meca(nom_resu)
-
-        nom_modele = self.nom_obs_modele.get()
-        if nom_modele.strip() == 'Choisir':
-            self.mess.disp_mess(message)
-            return
-
-        grp_no = self.obs_noeuds.get_selected()
-        grp_ma = self.obs_mailles.get_selected()
-        if not (grp_no or grp_ma):
-            self.mess.disp_mess("Aucun noeud n'est selctionne. Tous les noeuds"\
-                                "du modele experimental")
-
-        modele = self.objects.get_model(nom_modele)
-        if modele.kass == None or modele.mass == None :
-            modele.get_matrices()
-
-        proj = 'OUI'
-        if resu.modele_name == modele.nom:
-            proj = 'NON'
-
-        try:
-            __OBS = OBSERVATION( RESULTAT = resu.obj,
-                                 MODELE_1 = resu.modele.obj,
-                                 MODELE_2  = modele.obj,
-                                 PROJECTION  = proj,
-                                 TOUT_ORDRE  = 'OUI',
-                                 MATR_A = modele.kass,
-                                 MATR_B = modele.mass,
-                                 NOM_CHAM = 'DEPL',
-                                 FILTRE   = get_filtres(grp_no, grp_ma),
-                                 MODI_REPERE = get_chgt_repere(grp_no, grp_ma)
-                               );
-        except:
-            self.mess.disp_mess("Le concept d'observabilité " \
-                                "n'a pas pu être calculé.\n"\
-                                "L'erreur est affichée en console.")
-            raise
-
-        self.mess.disp_mess("Le concept d'observabilité " \
-                            "a été calculé.")
-        self.obs_co = ModeMeca(self.objects,__OBS.nom,__OBS,self.mess)
-        self.obs_co.get_modele()
-        self.obs_co.get_matrices()
-        self.obs_co.get_nume()
-        self.obs_co.get_maillage()
-
-
-    def _calculate_commandabilite(self):
-        if self.com_co:
-            DETRUIRE(CONCEPT=_F(NOM=self.com_co.obj), INFO=1)
-        self.com_co = ModeMeca(self.objects,"__COM",CO("__COM"))
-
-        message = "Pour definir la commandabilite, il manque "
-        nom_resu = self.nom_com_resu.get()
-        if nom_resu.strip() == 'Choisir':
-            self.mess.disp_mess(message)
-            return
-        resu = self.objects.get_mode_meca(nom_resu)
-
-        nom_modele = self.nom_com_modele.get()        
-        if nom_modele.strip() == 'Choisir':
-            self.mess.disp_mess(message)
-            return
-
-        grp_no = self.com_noeuds.get_selected()
-        grp_ma = self.com_mailles.get_selected()
-        if not (grp_no or grp_ma):
-            self.mess.disp_mess("Aucun noeud n'est selctionne. Tous les noeuds"\
-                                "du modele experimental")
-
-        modele = self.objects.get_model(nom_modele)
-        if modele.kass == None or modele.mass == None:
-            modele.get_matrices()
-
-        proj = 'OUI'
-        if resu.modele_name == modele.nom:
-            proj = 'NON'
-
-        try:
-            __COM = OBSERVATION(RESULTAT = resu.obj,
-                                MODELE_1 = resu.modele.obj,
-                                MODELE_2 = modele.obj,
-                                PROJECTION = proj,
-                                TOUT_ORDRE = 'OUI',
-                                MATR_A = modele.kass,
-                                MATR_B = modele.mass,
-                                NOM_CHAM = 'DEPL',
-                                FILTRE   = get_filtres(grp_no, grp_ma),
-                                MODI_REPERE = get_chgt_repere(grp_no, grp_ma)
-                               )
-        except:
-            self.mess.disp_mess("Le concept de commandabilité " \
-                                "n'a pas pu être calculé.\n" \
-                                "L'erreur est affichée en console.")
-            raise
-
-        self.mess.disp_mess("Le concept de commandabilité " \
-                            "a été calculé.")
-        self.com_co = ModeMeca(self.objects,__COM.nom,__COM,self.mess)
-        self.com_co.get_modele()
-        self.com_co.get_matrices()
-        self.com_co.get_nume()
-        self.com_co.get_maillage()
+        return 1
         
 
     def calculs(self):
         """!Lance la classe CalculAster, qui dirige toutes les routines
             Aster et python
         """
-        if self.var_resu_fonc.get() == 'Choisir':
-            self.mess.disp_mess("Il faut choisir la base modale")
-            return
-        self.calcturb.set_base(self.base)
-        
-        # Attention à rafraîchir la mémoire de CalcEssaiObjects
-        self.objects.recup_objects()
-        self.calcturb.set_observabilite(self.obs_co)
-        self.calcturb.set_commandabilite(self.com_co)
 
-        if self.var_resu_fonc.get() == 'Choisir':
-            self.mess.disp_mess("Il faut choisir l'inter-spectre des mesures")
+        iret = self.check_data()
+        if iret == 0:
             return
+      
+        self.calcturb.set_base(self.base)
+        self.calcturb.set_observabilite(self.observabilite.obs_co)
+        self.calcturb.set_commandabilite(self.commandabilite.obs_co)
         self.calcturb.set_interspectre(self.inter_spec)
         self.calcturb.set_type_intsp(self.typ_resu_fonc.get())
-
         self.calcturb.set_alpha(self.alpha.get())
         self.calcturb.set_epsilon(self.epsilon.get())
         self.calcturb.set_mcoeff(self.mcoeff.get())
@@ -624,8 +378,8 @@ class InterfaceIdentification(Frame):
         for ind in range(len(liste)):
             lst = crea_list_no(ind, liste)
             for ind in lst:
-                self.var_list[ind_tabl].append([ind])
-        self.menu_list[ind_tabl].set_values(self.var_list[ind_tabl])
+                self.var_list[ind_tabl].append(ind)
+        self.curve_list[ind_tabl].set_values(self.var_list[ind_tabl])
 
     def calcul_eff_phy(self, resultat_attr, ind_tabl):
         """Calcul les paramètres: 'Eff Phy'."""
@@ -634,8 +388,8 @@ class InterfaceIdentification(Frame):
         for ind in range(len(liste)):
             lst = crea_list_no(ind, liste)
             for ind in lst:
-                self.var_list[ind_tabl].append([ind])
-        self.menu_list[ind_tabl].set_values(self.var_list[ind_tabl])
+                self.var_list[ind_tabl].append(ind)
+        self.curve_list[ind_tabl].set_values(self.var_list[ind_tabl])
 
 
     def calcul_eff_mod(self, resultat_attr, ind_tabl):
@@ -645,34 +399,38 @@ class InterfaceIdentification(Frame):
         for mode in range(len(liste)):
             lst = crea_list_mo(mode, liste)
             for ind in lst:
-                self.var_list[ind_tabl].append([ind])
-        self.menu_list[ind_tabl].set_values(self.var_list[ind_tabl])
+                self.var_list[ind_tabl].append(ind)
+        self.curve_list[ind_tabl].set_values(self.var_list[ind_tabl])
     
     def calcul_valeurs(self, resultat_attr, ind_tabl):
         """Calcul les paramètres: 'Valeurs sing', 'regul'."""
         if not self.calcturb.inter_spec.nume_gene:
             liste = nume_ddl_gene(self.calcturb.res_base)
         for ind in liste:
-            self.var_list[ind_tabl].append([ind])
-        self.menu_list[ind_tabl].set_values(self.var_list[ind_tabl])
+            self.var_list[ind_tabl].append(ind)
+        self.curve_list[ind_tabl].set_values(self.var_list[ind_tabl])
 
     def _get_selected_variables(self, ind_tab):
         """Retourne les variables selectionées dans une colonne
         affichant les résultats."""
         var_list = []
-        liste = self.menu_list[ind_tab].get_selected()
+        liste = self.curve_list[ind_tab].get_selection()
         for idx in liste:
-            var = self.var_list[ind_tab][int(idx)]
-            var_list.append(var[0])
+            var_list.append(idx[1])
         return var_list
 
     def _get_graph_data(self):
-        """Retourne les valeurs et les légendes pour
-        les courbes de résultats."""
+        """Retourne les valeurs et les légendes pour les courbes de résultats.
+           Remarque importante : ici les fonctions sont extraites de la matrice
+           inter-spectrale python alors que dans ce_calc_spec, on fait un RECU_FONCTION
+           sur le concept inter-spectre aster.
+           TODO : homogénéiser les deux procédures dans une méthiode commune à mettre
+           dans la classe VisuSpectre (dans outils_ihm.py)"""
         # values = liste dont chaque elmt est une courbe
         values = []
         captions = []
-        freq = []
+        
+        freq = self.inter_spec.f
         
         for ind_tab in range(2):
             opt_key = self.var_visu_resu[ind_tab].get()
@@ -691,38 +449,59 @@ class InterfaceIdentification(Frame):
                     ikey, jkey = var.split(',')
                     iidx = num.index(ikey)
                     jidx = num.index(jkey)
-                    vect = getattr(res, 'matr_inte_spec')[1:, iidx, jidx]
+                    vect = getattr(res, 'matr_inte_spec')[:, iidx, jidx]
                 elif num_option == 6 or num_option == 7:
                     idx = int(var[2:])
                     vect = res[idx - 1, 1:]
-                absc = getattr(res, 'f')[1:]
 
-                # Options de visualisation  
-                if self.var_amp.get() == 'Amplitude':
+                # Options de visualisation : reel, abs, imag, phase
+                if self.radio_donnees.get() == 0:
+                    vect = vect.real
+                elif self.radio_donnees.get() == 1:
                     vect = abs(vect)
-                elif self.var_amp.get() == 'Phase':
+                elif self.radio_donnees.get() == 2:
+                    vect = vect.imag
+                elif self.radio_donnees.get() == 3:      
                     vect = arctan(vect.imag / vect.real)
-                if self.var_ord.get() != "Lin" and  \
-                                            self.var_amp.get() == 'Phase':
-                    self.mess.disp_mess("!! Impossible de représenter " \
-                                        "la phase dans un !!")
-                    self.mess.disp_mess("!!           diagramme " \
-                                        "logarithmique          !!")
 
+                # axes de visu : lin ou log
+                # en log y, on ne visualise que la valeur absolue
+                if self.ylinlog.get() == 1:
+                    self.radio_donnees.set(1)
+                    vect = log(abs(vect))/log(10)
+                if self.xlinlog.get() == 1:
+                    # on supprime le pas de frequence nulle si on visualise en log x
+                    vect = vect[1:]
+                
                 values.append(vect)
-                freq.append(array(absc))
                 captions.append("%s %s" % (opt_key, var))
+
+            if self.xlinlog.get() == 1 and self.radio_donnees.get() == 'Phase':
+                self.mess.disp_mess("Impossible de représenter la phase dans un\n"\
+                                    "diagramme logarithmique !")
+                return ([],[],[])
+
+        if self.xlinlog.get() == 1:
+            freq = log(freq[1:])/log(10.0)
         
         return freq, values, captions
 
-    def plot_curve(self):
+    def display_curve(self):
         """Selection dans les interspectres disponibles des resultats
-        sélectionnées dans les listes menu_list, et plot
+        sélectionnées dans les listes curve_list, et plot
         des courbes correspondantes"""       
         freq, values, caption = self._get_graph_data()
+        if freq == []:
+            return
         
-        self.param_visu.visu_courbe(freq, values, l_legende=caption,
-                                    titre_x=self.var_abs.get(), titre_y=self.var_ord.get())
+        self.param_visu.visu_courbe(freq, values,
+                                    couleur=None,
+                                    titre='Inter-spectres',
+                                    l_legende=caption,
+                                    legende_x='Frequence',
+                                    legende_y='Amplitude',
+                                    unite_x='Hz',
+                                    unite_y='u^2/Hz')
    
     def export_inte_spec1(self):
         option = self.var_visu_resu[0].get()
@@ -808,7 +587,6 @@ def get_chgt_repere(grp_no, grp_ma):
             chgt_reps.append(_F(GROUP_MA=grp["NOM"],
                                 **grp["CHGT_REP"]))
     return chgt_reps
-
 
 
 

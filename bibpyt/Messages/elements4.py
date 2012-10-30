@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF elements4 Messages  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,11 @@ cata_msg = {
 
 3 : _(u"""
  pour l'option INDIC_SEUIL, les seules relations admises sont "VMIS_ISOT_LINE", "VMIS_ISOT_TRAC"  et "VMIS_CINE_LINE" .
+"""),
+
+14 : _(u"""
+  Vous utilisez un élément de type multifibre <%(k1)s>.
+  Il faut que sous COMP_INCR le mot clef RELATION='MULTIFIBRE'.
 """),
 
 15 : _(u"""

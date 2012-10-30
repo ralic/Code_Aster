@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 # ssnv505j.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,9 +72,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=6894.8,
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,
                   MATER_SECT=MATER,
                   MULTIFIBRE=_F(GROUP_FIBRE='GFIB1',
-                                MATER=MATER,
-                                DEFORMATION='GROT_GDEP',
-                                RELATION='ELAS',),);
+                                MATER=MATER, RELATION='ELAS',),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
@@ -161,7 +159,7 @@ RESUD=STAT_NON_LINE(MODELE=MO,
                     COMP_INCR=(_F(RELATION='ELAS',
                                   DEFORMATION='GROT_GDEP',
                                   GROUP_MA='POUBAS',),
-                               _F(RELATION='MULTIFIBRE',
+                               _F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',
                                   GROUP_MA='POUHAU',),),
                     INCREMENT=_F(LIST_INST=L_TEMPS,),
                     NEWTON=_F(REAC_ITER=1,),
@@ -243,7 +241,7 @@ RESUC=STAT_NON_LINE(MODELE=MO,
                     COMP_INCR=(_F(RELATION='ELAS',
                                   DEFORMATION='GROT_GDEP',
                                   GROUP_MA='POUBAS',),
-                               _F(RELATION='MULTIFIBRE',
+                               _F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',
                                   GROUP_MA='POUHAU',),),
                     INCREMENT=_F(LIST_INST=L_TEMPS,),
                     NEWTON=_F(REAC_ITER=1,),

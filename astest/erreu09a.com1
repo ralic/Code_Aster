@@ -2,7 +2,7 @@
 #   - que l'objet aster.error est présent dans le pick.1,
 #   - et qu'on peut donc poursuivre le calcul.
 POURSUITE(CODE=_F(NOM='ERREU09A'),
-          PAR_LOT='OUI', IGNORE_ALARM='SUPERVIS_1')
+          PAR_LOT='OUI',);
 
 is_ok = int(isinstance(err, aster.error))
 

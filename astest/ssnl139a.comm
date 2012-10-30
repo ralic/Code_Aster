@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALIDATION DE LA REACTUALISATION DE L'ANGLE DE VRILLE DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,10 +65,8 @@ BETON=DEFI_MATERIAU(ELAS=_F(E=EB, NU=NUB, RHO=RHOB),
 
 # MATERIAU POUR LES GROUPES DE FIBRES
 MATFF=DEFI_COMPOR(GEOM_FIBRE=GFF,MATER_SECT=BETON,
-                 MULTIFIBRE=(_F(GROUP_FIBRE='BETON',MATER=BETON,RELATION='ELAS',
-                                DEFORMATION='GROT_GDEP'
-                                ),
-                             ))
+                 MULTIFIBRE=(_F(GROUP_FIBRE='BETON',MATER=BETON,RELATION='ELAS',),),
+)
 
 
 # LES CHAMPS DE MATERIAUX
@@ -114,7 +112,7 @@ U1=STAT_NON_LINE(MODELE=MOPOU,
                         _F(CHARGE=CHARG,FONC_MULT=FOFO),
                         _F(CHARGE=PERTU),
                          ),
-                 COMP_INCR=(_F(RELATION='MULTIFIBRE'),
+                 COMP_INCR=(_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                                ),
                  INCREMENT=_F(LIST_INST=LINST,
                               ),

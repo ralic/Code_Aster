@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR IDOUX L.IDOUX 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 # ssnp15a.para = tps_job 120 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -298,6 +298,9 @@ U=CALC_CHAMP(reuse=U,RESULTAT=U,ENERGIE=('ETOT_ELGA'))
 U=CALC_CHAMP(reuse=U,RESULTAT=U,ENERGIE=('ETOT_ELNO'))
 
 
+U=CALC_CHAMP(reuse=U,RESULTAT=U,ENERGIE=('ETOT_NOEU'))
+
+
 U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,ENERGIE=('ETOT_ELGA'))
 
 
@@ -305,6 +308,9 @@ U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,ENERGIE=('ETOT_ELNO'))
 
 
 U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,ENERGIE=('ETOT_ELEM'))
+
+
+U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,ENERGIE=('ETOT_NOEU'))
 
 
 ENER_TOT=POST_ELEM(ENER_TOTALE=_F(TOUT='OUI',),
@@ -592,6 +598,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',
                    MAILLE='CUBE',),
+                _F(INST=3.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U2,
+                   NOM_CHAM='ETOT_NOEU',
+                   NOEUD='NO4',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC= 9.406504582,
+                   VALE_REFE= 9.40650),
                 ),
           )
 

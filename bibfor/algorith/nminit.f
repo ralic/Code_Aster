@@ -9,7 +9,7 @@
      &                  VALINC,SOLALG,MEASSE,VEELEM,MEELEM,
      &                  VEASSE,CODERE)
 C
-C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 30/10/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -240,8 +240,8 @@ C
      &              SDDYNA)
         CALL ACCEL0(MODELE,NUMEDD,NUMFIX,FONACT,LISCHA,
      &              DEFICO,RESOCO,MAPREC,SOLVEU,VALINC,
-     &              SDDYNA,SDSTAT,SDTIME,SDDISC,MEELEM,
-     &              MEASSE,VEELEM,VEASSE,SOLALG)
+     &              SDDYNA,SDSTAT,SDTIME,MEELEM,MEASSE,
+     &              VEELEM,VEASSE,SOLALG)
       ENDIF
 C
 C --- CREATION DE LA SD CONVERGENCE

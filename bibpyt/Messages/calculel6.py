@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel6 Messages  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,13 +86,6 @@ Conseils :
   Erreur d'utilisation :
     Vous avez dépassé une des limites de la programmation concernant les champs de matériaux :
     On ne pas utiliser plus de 9999 matériaux différents
-"""),
-
-13: _(u"""
- interpolation déformations anélastiques :
- EVOL_NOLI: %(k1)s
- instant  : %(r1)f
- icoret   : %(i1)d
 """),
 
 15: _(u"""

@@ -1,0 +1,395 @@
+# MODIF  DATE 29/10/2012   AUTEUR IDOUX L.IDOUX 
+# TITRE VALIDATION DU CALCUL DE L'ENERGIE ELASTIQUE EN 3D 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# zzzz328a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+
+DEBUT(CODE=_F(NOM='ZZZZ328A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI',),DEBUG=_F(SDVERI='OUI'))
+
+MA=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=1e9,
+                            NU=0.2,),);
+
+L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.0,
+                                   NOMBRE=1,),);
+
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                   NOMBRE=1,),);
+
+# MODELISATION 3D
+
+MO0=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+MOMAT0=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+
+AX=0.0
+AY=0.0
+AZ=0.0
+BX=1.E-3
+BY=0.0
+BZ=-6.E-4
+CX=2.E-3
+CY=-2.E-3
+CZ=-3.E-3
+DX=1.E-3
+DY=-2.E-3
+DZ=-2.4E-3
+EX=0.0
+EY=2.2E-3
+EZ=3.E-3
+FX=1.E-3
+FY=2.2E-3
+FZ=2.4E-3
+GX=2.E-3
+GY=2.E-4
+GZ=0.0
+HX=1.E-3
+HY=2.E-4
+HZ=6.E-4
+
+BLOC0=AFFE_CHAR_MECA(MODELE=MO0,
+                       DDL_IMPO=(_F(GROUP_NO='A',
+                                    DX=AX,
+                                    DY=AY,
+                                    DZ=AZ,),
+                                 _F(GROUP_NO='B',
+                                    DX=BX,
+                                    DY=BY,
+                                    DZ=BZ,),
+                                 _F(GROUP_NO='C',
+                                    DX=CX,
+                                    DY=CY,
+                                    DZ=CZ,),
+                                 _F(GROUP_NO='D',
+                                    DX=DX,
+                                    DY=DY,
+                                    DZ=DZ,),
+                                 _F(GROUP_NO='E',
+                                    DX=EX,
+                                    DY=EY,
+                                    DZ=EZ,),
+                                 _F(GROUP_NO='F',
+                                    DX=FX,
+                                    DY=FY,
+                                    DZ=FZ,),
+                                 _F(GROUP_NO='G',
+                                    DX=GX,
+                                    DY=GY,
+                                    DZ=GZ,),
+                                 _F(GROUP_NO='H',
+                                    DX=HX,
+                                    DY=HY,
+                                    DZ=HZ,),),);
+
+U0=STAT_NON_LINE(MODELE=MO0,
+                CHAM_MATER=MOMAT0,
+                EXCIT=_F(CHARGE=BLOC0,),
+                COMP_INCR=_F(RELATION='ELAS',),
+                INCREMENT=_F(LIST_INST=L_TPS,),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+
+U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM', RESULTAT=U0, );
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
+                  NOM_CHAM='ENEL_ELEM',
+                  NOM_CMP='TOTALE',
+                  VALE_REFE=6680.555556,
+                  VALE_CALC=6680.555556,
+                  MAILLE='M19',),);
+
+# MODELISATION 3D_SI
+
+MA1 = CREA_MAILLAGE(MAILLAGE = MA,
+                    LINE_QUAD = _F(TOUT = 'OUI'),);
+
+MO1=AFFE_MODELE(MAILLAGE=MA1,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D_SI',),);
+
+MOMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+
+NS1X=(AX+EX)*0.5
+NS1Y=(AY+EY)*0.5
+NS1Z=(AZ+EZ)*0.5
+NS2X=(EX+HX)*0.5
+NS2Y=(EY+HY)*0.5
+NS2Z=(EZ+HZ)*0.5
+NS3X=(DX+HX)*0.5
+NS3Y=(DY+HY)*0.5
+NS3Z=(DZ+HZ)*0.5
+NS4X=(AX+DX)*0.5
+NS4Y=(AY+DY)*0.5
+NS4Z=(AZ+DZ)*0.5
+NS5X=(BX+FX)*0.5
+NS5Y=(BY+FY)*0.5
+NS5Z=(BZ+FZ)*0.5
+NS6X=(FX+GX)*0.5
+NS6Y=(FY+GY)*0.5
+NS6Z=(FZ+GZ)*0.5
+NS7X=(CX+GX)*0.5
+NS7Y=(CY+GY)*0.5
+NS7Z=(CZ+GZ)*0.5
+NS8X=(BX+CX)*0.5
+NS8Y=(BY+CY)*0.5
+NS8Z=(BZ+CZ)*0.5
+NS9X=(AX+BX)*0.5
+NS9Y=(AY+BY)*0.5
+NS9Z=(AZ+BZ)*0.5
+NS10X=(EX+FX)*0.5
+NS10Y=(EY+FY)*0.5
+NS10Z=(EZ+FZ)*0.5
+NS11X=(CX+DX)*0.5
+NS11Y=(CY+DY)*0.5
+NS11Z=(CZ+DZ)*0.5
+NS12X=(GX+HX)*0.5
+NS12Y=(GY+HY)*0.5
+NS12Z=(GZ+HZ)*0.5
+
+BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
+                       DDL_IMPO=(_F(GROUP_NO='A',
+                                    DX=AX,
+                                    DY=AY,
+                                    DZ=AZ,),
+                                 _F(GROUP_NO='B',
+                                    DX=BX,
+                                    DY=BY,
+                                    DZ=BZ,),
+                                 _F(GROUP_NO='C',
+                                    DX=CX,
+                                    DY=CY,
+                                    DZ=CZ,),
+                                 _F(GROUP_NO='D',
+                                    DX=DX,
+                                    DY=DY,
+                                    DZ=DZ,),
+                                 _F(GROUP_NO='E',
+                                    DX=EX,
+                                    DY=EY,
+                                    DZ=EZ,),
+                                 _F(GROUP_NO='F',
+                                    DX=FX,
+                                    DY=FY,
+                                    DZ=FZ,),
+                                 _F(GROUP_NO='G',
+                                    DX=GX,
+                                    DY=GY,
+                                    DZ=GZ,),
+                                 _F(GROUP_NO='H',
+                                    DX=HX,
+                                    DY=HY,
+                                    DZ=HZ,),
+                                 _F(NOEUD='NS1',
+                                    DX=NS1X,
+                                    DY=NS1Y,
+                                    DZ=NS1Z,),
+                                 _F(NOEUD='NS2',
+                                    DX=NS2X,
+                                    DY=NS2Y,
+                                    DZ=NS2Z,),
+                                 _F(NOEUD='NS3',
+                                    DX=NS3X,
+                                    DY=NS3Y,
+                                    DZ=NS3Z,),
+                                 _F(NOEUD='NS4',
+                                    DX=NS4X,
+                                    DY=NS4Y,
+                                    DZ=NS4Z,),
+                                 _F(NOEUD='NS5',
+                                    DX=NS5X,
+                                    DY=NS5Y,
+                                    DZ=NS5Z,),
+                                 _F(NOEUD='NS6',
+                                    DX=NS6X,
+                                    DY=NS6Y,
+                                    DZ=NS6Z,),
+                                 _F(NOEUD='NS7',
+                                    DX=NS7X,
+                                    DY=NS7Y,
+                                    DZ=NS7Z,),
+                                 _F(NOEUD='NS8',
+                                    DX=NS8X,
+                                    DY=NS8Y,
+                                    DZ=NS8Z,),
+                                 _F(NOEUD='NS9',
+                                    DX=NS9X,
+                                    DY=NS9Y,
+                                    DZ=NS9Z,),
+                                 _F(NOEUD='NS10',
+                                    DX=NS10X,
+                                    DY=NS10Y,
+                                    DZ=NS10Z,),
+                                 _F(NOEUD='NS11',
+                                    DX=NS11X,
+                                    DY=NS11Y,
+                                    DZ=NS11Z,),
+                                 _F(NOEUD='NS12',
+                                    DX=NS12X,
+                                    DY=NS12Y,
+                                    DZ=NS12Z,),),);
+
+U1=STAT_NON_LINE(MODELE=MO1,
+                CHAM_MATER=MOMAT1,
+                EXCIT=_F(CHARGE=BLOC1,),
+                COMP_INCR=_F(RELATION='ELAS',),
+                INCREMENT=_F(LIST_INST=L_TPS,),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+
+U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', RESULTAT=U1, );
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U1,
+                  NOM_CHAM='ENEL_ELEM',
+                  NOM_CMP='TOTALE',
+                  VALE_REFE=6680.555556,
+                  VALE_CALC=6680.555556,
+                  MAILLE='M19',),);
+
+# MODELISATION 3D_GRAD_EPSI
+
+MO2=AFFE_MODELE(MAILLAGE=MA1,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D_GRAD_EPSI',),);
+
+MAT2=DEFI_MATERIAU(ELAS=_F(E=1e9,
+                           NU=0.2,),
+                   ENDO_ORTH_BETON=_F(K0=3000e6,
+                                      K1=10500000.0,
+                                      ECROB=1000.0,
+                                      ECROD=60000.0,),
+                   NON_LOCAL = _F(LONG_CARA=0.0,),);
+
+MOMAT2=AFFE_MATERIAU(MAILLAGE=MA1,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT2,),);
+
+BLOC2=AFFE_CHAR_MECA(MODELE=MO2,
+                       DDL_IMPO=(_F(GROUP_NO='A',
+                                    DX=AX,
+                                    DY=AY,
+                                    DZ=AZ,),
+                                 _F(GROUP_NO='B',
+                                    DX=BX,
+                                    DY=BY,
+                                    DZ=BZ,),
+                                 _F(GROUP_NO='C',
+                                    DX=CX,
+                                    DY=CY,
+                                    DZ=CZ,),
+                                 _F(GROUP_NO='D',
+                                    DX=DX,
+                                    DY=DY,
+                                    DZ=DZ,),
+                                 _F(GROUP_NO='E',
+                                    DX=EX,
+                                    DY=EY,
+                                    DZ=EZ,),
+                                 _F(GROUP_NO='F',
+                                    DX=FX,
+                                    DY=FY,
+                                    DZ=FZ,),
+                                 _F(GROUP_NO='G',
+                                    DX=GX,
+                                    DY=GY,
+                                    DZ=GZ,),
+                                 _F(GROUP_NO='H',
+                                    DX=HX,
+                                    DY=HY,
+                                    DZ=HZ,),
+                                 _F(NOEUD='NS1',
+                                    DX=NS1X,
+                                    DY=NS1Y,
+                                    DZ=NS1Z,),
+                                 _F(NOEUD='NS2',
+                                    DX=NS2X,
+                                    DY=NS2Y,
+                                    DZ=NS2Z,),
+                                 _F(NOEUD='NS3',
+                                    DX=NS3X,
+                                    DY=NS3Y,
+                                    DZ=NS3Z,),
+                                 _F(NOEUD='NS4',
+                                    DX=NS4X,
+                                    DY=NS4Y,
+                                    DZ=NS4Z,),
+                                 _F(NOEUD='NS5',
+                                    DX=NS5X,
+                                    DY=NS5Y,
+                                    DZ=NS5Z,),
+                                 _F(NOEUD='NS6',
+                                    DX=NS6X,
+                                    DY=NS6Y,
+                                    DZ=NS6Z,),
+                                 _F(NOEUD='NS7',
+                                    DX=NS7X,
+                                    DY=NS7Y,
+                                    DZ=NS7Z,),
+                                 _F(NOEUD='NS8',
+                                    DX=NS8X,
+                                    DY=NS8Y,
+                                    DZ=NS8Z,),
+                                 _F(NOEUD='NS9',
+                                    DX=NS9X,
+                                    DY=NS9Y,
+                                    DZ=NS9Z,),
+                                 _F(NOEUD='NS10',
+                                    DX=NS10X,
+                                    DY=NS10Y,
+                                    DZ=NS10Z,),
+                                 _F(NOEUD='NS11',
+                                    DX=NS11X,
+                                    DY=NS11Y,
+                                    DZ=NS11Z,),
+                                 _F(NOEUD='NS12',
+                                    DX=NS12X,
+                                    DY=NS12Y,
+                                    DZ=NS12Z,),),);
+
+U2=STAT_NON_LINE(MODELE=MO2,
+                CHAM_MATER=MOMAT2,
+                EXCIT=_F(CHARGE=BLOC2,),
+                COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',),
+                INCREMENT=_F(LIST_INST=L_TPS,),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+
+U2=CALC_CHAMP(reuse = U2, ENERGIE='ENEL_ELEM', RESULTAT=U2, );
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U2,
+                  NOM_CHAM='ENEL_ELEM',
+                  NOM_CMP='TOTALE',
+                  VALE_REFE=6680.555556,
+                  VALE_CALC=6680.555556,
+                  MAILLE='M19',),);
+
+FIN();

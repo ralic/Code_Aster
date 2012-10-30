@@ -1,4 +1,4 @@
-#@ MODIF ce_calcul_modifstruct Calc_essai  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF ce_calcul_modifstruct Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

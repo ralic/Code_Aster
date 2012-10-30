@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL K_I EN X-FEM AXI-SYMMETRIQUE
 # sslv134i.para = tps_job 150 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,12 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSLV134I', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('CALCULEL2_63')
-      )
-
-# <CALCULEL2_63> : dans un modele, il existe des elements de type "bord" qui n'ont pas de voisin avec rigidite
-#  le modele provoquant ces alarmes ne sert qu'a la visualisation
+DEBUT(CODE=_F(NOM='SSLV134I', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),);
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 

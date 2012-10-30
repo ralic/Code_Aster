@@ -6,7 +6,7 @@
       CHARACTER*16 TYPRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C
          GOTO 60
         ENDIF
         NOOBJ ='12345678'//'.1234'//'.EXCIT.INFC'
-        CALL GNOMSD(NOOBJ,10,13)
+        CALL GNOMSD(' ',NOOBJ,10,13)
         LISCH2 = NOOBJ(1:19)
         IBID=0
         IF(TYPRES.EQ.'EVOL_ELAS'.OR.

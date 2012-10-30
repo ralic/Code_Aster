@@ -14,7 +14,7 @@
       LOGICAL        LOCDOM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 30/10/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1081,11 +1081,20 @@ C        EVALUATE THE NORM. AND TANG. COMPONENTS OF THE PROPAGATION
 C        SPEED IN THE NODE WITH RESPECT TO THE LOCAL REFERENCE SYSTEM
 C        ***************************************************************
 
-         BETAP=(ZR(JBETA-1+JMIN+1)-ZR(JBETA-1+JMIN))*SMIN+
-     &          ZR(JBETA-1+JMIN)
+         IF (NDIM.EQ.2) THEN
+         
+           BETAP=ZR(JBETA-1+JMIN)
+           VP=ZR(JVIT-1+JMIN)
+           
+         ELSEIF (NDIM.EQ.3) THEN  
 
-         VP=(ZR(JVIT-1+JMIN+1)-ZR(JVIT-1+JMIN))*SMIN+ZR(JVIT-1+JMIN)
+           BETAP=(ZR(JBETA-1+JMIN+1)-ZR(JBETA-1+JMIN))*SMIN+
+     &            ZR(JBETA-1+JMIN)
 
+           VP=(ZR(JVIT-1+JMIN+1)-ZR(JVIT-1+JMIN))*SMIN+ZR(JVIT-1+JMIN)
+
+         ENDIF
+         
          ZR(JVNV+I-1)=VP*SIN(BETAP)
          ZR(JVTV+I-1)=VP*COS(BETAP)
          ZL(JVTL+I-1) = .TRUE.

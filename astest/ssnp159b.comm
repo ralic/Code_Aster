@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2012   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
 #  TITRE TRACTION PLASTIQUE GRANDES DEFORMATIONS AXI CALCUL DES ENERGIES ELASTIQUES
 # ssnp159b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,6 +150,19 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.0,),
            )
+           
+PT = CALC_CHAMP(reuse=PT,RESULTAT=PT,ENERGIE=('ENEL_ELGA'),)
+
+
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=PT,
+                   NOM_CHAM='ENEL_ELGA',
+                   MAILLE='MA1',POINT=1,
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=3.081125*2,
+                   VALE_REFE=3.08*2,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),))
 
 ###################################################           
 #CALCUL ET TEST AVEC LES DEFORMATIONS GDEF_LOG
@@ -216,6 +229,20 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=2.0,),
            )
 
+LOG = CALC_CHAMP(reuse=LOG,RESULTAT=LOG,ENERGIE=('ENEL_ELGA'),)
+
+
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=LOG,
+                   NOM_CHAM='ENEL_ELGA',
+                   MAILLE='MA1',POINT=1,
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=2.80981728*2,
+                   VALE_REFE=2.81*2,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),))
+
+
 ###################################################           
 #CALCUL ET TEST AVEC LES DEFORMATIONS DE SIMO_MIEHE
 SM=STAT_NON_LINE(
@@ -280,6 +307,20 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.0,),
            )
+           
+SM = CALC_CHAMP(reuse=SM,RESULTAT=SM,ENERGIE=('ENEL_ELGA'),)
+
+
+TEST_RESU(RESU=(_F(INST=2.0,
+                   RESULTAT=SM,
+                   NOM_CHAM='ENEL_ELGA',
+                   MAILLE='MA1',POINT=1,
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=2.819343193*2,
+                   VALE_REFE=2.82*2,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),))
+
 
 FIN(  )
 #

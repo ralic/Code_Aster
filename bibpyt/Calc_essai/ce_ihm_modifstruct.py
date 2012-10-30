@@ -1,8 +1,8 @@
-#@ MODIF ce_ihm_modifstruct Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ce_ihm_modifstruct Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -461,10 +461,10 @@ class InterfaceExpansion(Frame):
 
         # Ordres a afficher
         if self.modif_struct.method_name == "LMME":
-            modes_expansion = self.liste_sup.selection()
+            modes_expansion = self.liste_sup.get_selection()
         else:
             modes_expansion = []
-            for num in self.liste_sup.selection():
+            for num in self.liste_sup.get_selection():
                 node,comp = self.modif_struct.calc_base_es().get_modes_data()['NOEUD_CMP'][num-1].split()
                 modes_expansion.append(node)
                 modes_expansion.append(comp)
@@ -485,7 +485,7 @@ class InterfaceExpansion(Frame):
         resu = self.root.objects.get_mode_meca(resu_exp)
 
         # Modes a afficher
-        modes_ide = self.liste_exp.selection()
+        modes_ide = self.liste_exp.get_selection()
         term = self.param_visu.visu_resu(resultat=resu.obj,
                                          nume_mode=modes_ide)
         self.term.append( term )
@@ -710,7 +710,7 @@ class InterfaceCouplage(Frame):
         grno_iface = expans.iface.get_selected()
         self.modif_struct.set_interface_groups(grno_iface)
 
-        modes_ide = expans.liste_exp.selection()
+        modes_ide = expans.liste_exp.get_selection()
         if not modes_ide:
             disp_mess(u"Il faut sélectionner des modes " \
                       u"du modèle experimental pour la condensation")
@@ -718,7 +718,7 @@ class InterfaceCouplage(Frame):
         else:
             self.modif_struct.set_modes_ide(modes_ide)
 
-        modes_expansion = [int(m) for m in expans.liste_sup.selection()]
+        modes_expansion = [int(m) for m in expans.liste_sup.get_selection()]
         if not modes_expansion:
             disp_mess(u"Il faut sélectionner des modes " \
                       u"de la base d'expansion pour la condensation")
@@ -853,6 +853,7 @@ class InterfaceVisu(Frame):
         resu1 = self.modif_struct.x_mide
         resu2 = self.modif_struct.modes_retr.obj
 
+##        self.param_visu.type_resu.set('deformee')
         term = self.param_visu.visu_resu( resultat=[resu1, resu2])
 
         self.term.append( term )

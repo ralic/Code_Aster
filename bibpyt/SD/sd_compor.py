@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF sd_compor SD  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,7 +180,7 @@ class sd_compor(AsBase):
                 sd2=sd_mater(mater1) ; sd2.check(checker)
                 assert loifib1 != '' , cprk
                 assert algo1d  in ('ANALYTIQUE','DEBORST') , cprk
-                assert deform  in ('PETIT','PETIT_REAC','GROT_GDEP') , cprk
+                assert deform  == 'VIDE' , cprk
                 assert nbfib > 0      , cprk
             else :
                 nbfib=    cprk[6*k+5]

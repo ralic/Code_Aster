@@ -1,4 +1,4 @@
-#@ MODIF outils_ihm Calc_essai  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF outils_ihm Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,8 @@ import aster
 import string
 import os
 
+import tkFont
+
 from Stanley.xmgrace import Xmgr
 from Stanley.as_courbes import Courbe
 from Accas import _F, ASSD
@@ -35,7 +37,7 @@ from popen2 import Popen3
 from numpy import minimum, maximum, array, arange, log
 from Utilitai.Utmess import UTMESS, MESSAGE_LOGGER
 from Calc_essai.cata_ce import DynaHarmo,ModeMeca
-
+##from Calc_essai.ce_ihm_parametres import CalcEssaiSalome
 
 palette = [ "#%02x%02x%02x" % (255-i, 255-i, 255-i) for i in range(256) ]
 # MESSAGE_LOGGER = classe permettant de formatter et d'afficher les messages d'erreur
@@ -49,7 +51,7 @@ class TabbedWindow(Frame):
 
         Ce widget est une Frame qui contient les boutons de selection (tabs)
         et une fenetre principale
-
+        
         \param root La fenetre parente
         \param tablabels Une liste des labels de tab
 
@@ -86,10 +88,10 @@ class TabbedWindow(Frame):
         self.main = Canvas(self,yscrollcommand=self.vsb.set,
                            height=700,width=1000)
         self.main.grid(row=1, column=0, sticky="nswe")
-##        self.main.rowconfigure(1, weight=1)
-##        self.main.columnconfigure(0, weight=1)
+        self.main.rowconfigure(1, weight=1)
+        self.main.columnconfigure(0, weight=1)
         self.vsb.config(command=self.main.yview)
-
+                                                                                                    
 
     def set_objects(self, objects):
         self.objects = objects
@@ -185,66 +187,224 @@ class MyMenu(Menubutton):
         for opt in options:
             self.menu.add_radiobutton( label=opt, variable=var, command=cmd )
 
+# ------------------------------------------------ #
+# Classes pour la visualisation de listes d'objets
+# ------------------------------------------------ #
 
-
-def txtfield( root, title, var, row ):
-    Label(root,text=title).grid(row=row,column=0)
-    e=Entry(root)
-    e.grid(row=row,column=1,textvariable=var)
-    return e
-
-
-
-class ModeList(Frame): # pure Tk -> testable hors aster
-    """Interface permettant de selectionner les modes
-    d'unes structure sd_resultat_dyn
+class ScrollList(Frame):
+    """Interface liste à choix multiples + scroll bar.
+       Plusieurs options selon utilisation (annuler/valider, tout/rien)
     """
-    def __init__(self, root, title):
+    def __init__(self, root, title,**args):
         Frame.__init__(self, root)
         self.title = title
         self.resu = None # la sd resultat sélectionnée
         self.modes = []  # la liste de modes
         self.rowconfigure(1,weight=1)
-        Label(self, text=title, bg="#f0f0f0").grid(column=0,row=0,columnspan=2,sticky="ew")
+        self.titre = Label(self, text=title, bg="#f0f0f0")
+        self.titre.grid(column=0,row=0,columnspan=2,sticky="ew")
         scroll = Scrollbar ( self, orient='vertical' )
         scroll.grid ( row=1, column=1, sticky='ns' )
-        lst = Listbox(self,
-                      selectmode='extended',
-                      yscrollcommand=scroll.set,
-                      exportselection=False,
-                      font=("Courier","12"),
-#                      width=10, height=20,
-                      background='white'
-                      )
-        lst.grid(column=0, row=1, sticky='sn')
+        self.liste = Listbox(self,
+                             selectmode='extended',
+                             yscrollcommand=scroll.set,
+                             exportselection=False,
+                             background='white')
+        self.liste.grid(column=0, row=1, sticky='sn')
         self.columnconfigure(0,weight=0)
-        scroll["command"] = lst.yview
-        self.modes_list = lst
+        scroll["command"] = self.liste.yview
+
+
+    def set_values(self, valeurs ):
+        """Remplit la liste avec des valeurs"""
+        self.liste.delete(0,END)
+        self.values = valeurs
+        for val in valeurs:
+            self.liste.insert( END,val )
+
+    def delete(self):
+        self.liste.delete(0,END)
+
+    def get_selection(self):
+        """retourne la liste des indices entiers selectionnes et la liste des valeurs
+           liste = [[int1, value1], [int2,value2], [int3,vlue3]]"""
+        return [[int(v),self.values[int(v)]] for v in self.liste.curselection() ]
+
+
+
+class ModeList(ScrollList):
+    """ Customisation de la ScrollList pour afficher des couples
+       numeros d'ordre/frequence. Ajout d'une ligne pour tout/rien selectionner"""
+    def __init__(self, parent, title,**args):
+        ScrollList.__init__(self, parent, title,**args)
         buttonbar = Frame(self,bg='blue')
         buttonbar.grid(row=2,column=0,columnspan=2)
         Button(buttonbar, text="Tout", command=self.select_all).grid(row=0,column=0)
         Button(buttonbar, text="Rien", command=self.deselect_all).grid(row=0,column=1)
 
-    def select_all(self):
-        self.modes_list.selection_set(0,END)
-
-    def deselect_all(self):
-        self.modes_list.selection_clear(0,END)
-
-    def fill_modes(self, modes ):
-        """Remplit une liste de modes de la forme
+    def set_values(self, modes ):
+        """Ecrase la set_values de ScrollList.
+           Remplit une liste de modes de la forme
            modes = [('indice1','vale1'),('indice2','vale2')]
         """
-        self.modes_list.delete(0,END)
+        self.liste.delete(0,END)
         self.modes = modes
         self.values = []
         for val, label in modes:
-            self.modes_list.insert( END, val +" "+ label )
+            self.liste.insert( END, val +" "+ label )
+            self.values.append( val )
+    
+    def select_all(self):
+        self.liste.selection_set(0,END)
+
+    def deselect_all(self):
+        self.liste.selection_clear(0,END)
+
+    def get_selection(self):
+        """retourne la liste des NUME_ORDRE selectionnes"""
+        print 'toto = ',  self.values
+        return [int(self.values[int(v)]) for v in self.liste.curselection() ]
+    
+
+class StudyList(ScrollList):
+    """!Liste permettant de choisir l'étude Salomé pour l'affichage des
+        données.
+    """
+    def __init__(self, parent,param_visu, title):
+        self.param_visu = param_visu
+        
+        ScrollList.__init__(self, parent,title)
+        buttonbar = Frame(self,bg='blue')
+        buttonbar.grid(row=2,column=0,columnspan=2)
+        Button(buttonbar, text="Actualiser", command=self.actualiser).grid(row=0,column=0)
+        Button(buttonbar, text="Valider", command=self.valider).grid(row=0,column=1)
+
+    
+    def actualiser(self):
+        param_visu = self.param_visu
+        self.studylist = param_visu.visu_studylist()
+        self.liste.delete(0,END)
+        self.values = []
+        for val in self.studylist:
+            self.liste.insert( END, val)
             self.values.append( val )
 
-    def selection(self):
-        """retourne la liste des indices entiers selectionnes : liste = [int1, int2, int3]"""
-        return [int(self.modes[int(v)][0]) for v in self.modes_list.curselection() ]
+    def valider(self):
+        num_std = int(self.liste.curselection()[0])
+        study = self.studylist[num_std]
+        self.param_visu.set_study(study)
+
+
+
+class VisuSpectre(Frame):
+    """!Crée une frame de nb_col colonnes pour afficher les numéros d'ordre
+        d'un inter-spectre, les sélectionner et les afficher"""
+
+    def __init__(self,parent,nb_col=1,
+                 choix=None,export=None,
+                 type_data='C',label_visu=None,
+                 **args):
+        
+        self.font1 = tkFont.Font( family="Helvetica", size=16 )
+        self.font2 = tkFont.Font( family="Helvetica", size=14 )
+        self.parent = parent
+        self.menu_list = [None]*nb_col
+        self.var_export = [StringVar()]*nb_col        
+
+        
+        Frame.__init__(self,parent,args)
+        r1 = 0
+        
+        Label(self, text=u"Visualisation des résultats",
+              font=self.font2).grid(row=r1, padx=50, pady=3)
+        r1+=1
+
+        box_1 = Frame(self,relief='flat')    
+        for ind_col in range(nb_col):
+            r2 = 0
+            if choix:
+                # possibilite de choisir entre plusieurs spectres a visualiser
+                if isinstance(self.parent.var_visu_resu,list):
+                    var_visu_resu = self.parent.var_visu_resu[ind_col]
+                else: var_visu_resu = self.parent.var_visu_resu
+
+                self.menu_list[ind_col] = MyMenu(box_1,choix,
+                                                 var_visu_resu,
+                                                 self.parent.get_list)
+                self.menu_list[ind_col].grid(row=r2,column=ind_col)
+                r2+=1
+                
+            if isinstance(self.parent.var_visu_resu,list):
+                label = self.parent.label_visu[ind_col].get()
+            else:
+                label = self.parent.label_visu.get()
+
+            curve_list = ScrollList(box_1,title=label,**args)
+            curve_list.grid(row=r2,column=ind_col)
+            
+            if isinstance(self.parent.var_visu_resu,list):
+                self.parent.curve_list[ind_col] = curve_list
+            else: self.parent.curve_list = curve_list
+            
+            r2+=1
+    
+            if export:
+                # possibilite d'exporter le spectre
+                if isinstance(self.parent.var_export,list):
+                    var_export = self.parent.var_export[ind_col]
+                else: var_export = self.parent.var_visu_resu
+                Entry(box_1, textvariable=var_export).grid(row=r2, column=ind_col, sticky='we')
+                r2+=1
+                fonc="export_inte_spec" + str(ind_col+1)
+                Button(box_1, text="Exporter Spectre",
+                       command=getattr(self.parent,fonc)).grid(row=r2, column=ind_col)
+
+        box_1.grid(row=r1,column=0)
+        r1+=1
+
+        box_2 = Frame(self,relief='flat')  
+        rc_r=[0,0,1,1]
+        rc_c=[1,2,1,2]
+        r2 = 0
+
+        if type_data=='C' : #donnees complexes a visualiser
+            donnees=["Reel ","Abs.","Imag.","Pha."]
+            Label(box_2,text=u"Données :",pady=5).grid(row=r2,column=0)
+            for lon in range(len(donnees)) :
+               Radiobutton(box_2, text=donnees[lon],
+                           variable=self.parent.radio_donnees,
+                           value=lon).grid(row=r2+rc_r[lon],column=rc_c[lon])
+
+            r2+=2
+        else :
+            donnees=["Reel ","Abs."]
+            Label(box_2,text=u"Données :",pady=5).grid(row=r2,column=0)
+            for lon in range(2) :
+               Radiobutton(box_2, text=donnees[lon],
+                           variable=self.parent.radio_donnees,
+                           value=lon).grid(row=r2+rc_r[lon],column=rc_c[lon])
+            r2+=1
+
+        Label(box_2,text="Echelle X :",pady=5).grid(row=r2,column=0)
+        ech=[u"Linéaire","Logarithmique"]
+        for lon in range(len(ech)) :
+           Radiobutton(box_2, text=ech[lon],
+                       variable=self.parent.xlinlog, value=lon
+                       ).grid(row=r2,column=lon+1)
+
+        r2+=1
+        Label(box_2,text="Echelle Y :",pady=5).grid(row=r2,column=0)
+        for lon in range(len(ech)) :
+           Radiobutton(box_2, text=ech[lon],
+                       variable=self.parent.ylinlog, value=lon
+                       ).grid(row=r2,column=lon+1)
+
+        r2+=1
+        self.disp_mes = Button(box_2, text="Visualiser", command=self.parent.display_curve)
+        self.disp_mes.grid(row=r2,column=1)
+        
+        box_2.grid(row=r1,column=0)
+        r1+=1
 
 
 
@@ -265,7 +425,8 @@ class ModeFreqList(ModeList):
         noeud_cmp = cara_mod['NOEUD_CMP']
         for ind_ordr in range(len(freq)):
             if not freq[ind_ordr]: freq[ind_ordr] = noeud_cmp[ind_ordr]
-        self.fill_modes( [ ('%3i' % n, self.set_display(f)) for n,f in zip(nume_ordr,freq) ] )
+        print 'titi = ', [ ('%3i' % n, self.set_display(f)) for n,f in zip(nume_ordr,freq) ]
+        self.set_values( [ ('%3i' % n, self.set_display(f)) for n,f in zip(nume_ordr,freq) ] )
 
     def set_display(self,data):
         """ determine l'affichage des caras selon que l'on ait des modes stat ou dyn"""
@@ -290,7 +451,7 @@ class GroupNoList(ModeList):
 
     def set_mesh(self, mail):
         groupno = mail.sdj.GROUPENO.get()
-        self.fill_modes( zip( groupno.keys(), groupno.keys() ) )
+        self.set_values( zip( groupno.keys(), groupno.keys() ) )
 
 
 
@@ -301,7 +462,7 @@ class GroupMaList(ModeList):
 
     def set_mesh(self, mail):
         groupno = mail.sdj.GROUPEMA.get()
-        self.fill_modes( zip( groupno.keys(), groupno.keys() ) )
+        self.set_values( zip( groupno.keys(), groupno.keys() ) )
 
 
 
@@ -309,7 +470,7 @@ class MultiList(Frame):
     """!Widget permettant de gérer plusieurs listes (colonnes) synchronisée
     sur la meme barre de défilement
     """
-    def __init__(self, root, labels, format = None ):
+    def __init__(self, root, labels, format = None,**args ):
         """!Constructeur
 
         \param root Fenetre parente
@@ -323,9 +484,8 @@ class MultiList(Frame):
         self.scroll = Scrollbar( self, orient='vertical' )
         for i, l in enumerate(labels):
             Label(self, text=l).grid(row=0, column=i)
-            lb = Listbox( self, selectmode='multiple',
-                          yscrollcommand=self.scroll.set,
-                          exportselection=False )
+            lb = Listbox( self,yscrollcommand=self.scroll.set,
+                          **args )
             lb.grid(row=1, column=i)
             self.lists.append( lb )
         i+=1
@@ -354,6 +514,10 @@ class MultiList(Frame):
         """!Renvoie la selection courante"""
         for lst in self.lists:
             return lst.curselection()
+
+    def delete(self):
+        for lst in self.lists:
+            lst.delete(0,'end')
 
 
 class OptionFrame(Frame):
@@ -511,7 +675,7 @@ class ParamModeIterInv(Frame):
             self.opt_panel.destroy()
         if opt == "PROCHE":
             panel = ModeList(self, u"Fréquences proches")
-            panel.fill_modes( [ (f, "% 6.2f Hz"%f) for f in self.frequences ] )
+            panel.set_values( [ (f, "% 6.2f Hz"%f) for f in self.frequences ] )
         elif opt == "SEPARE":
             panel = OptionFrame(self, None, [
                 (u"Fréquence min",Entry,{'textvariable':self.opt_freq1}),
@@ -845,6 +1009,7 @@ class ChgtRepereDialogue(Toplevel):
                 u"Il doit d'abord être fermé pour pouvoir lancer " \
                 u"un autre changement de repère."
                 )
+        
 
 
 class GroupNoWidget(Frame):
@@ -885,6 +1050,7 @@ class GroupNoWidget(Frame):
         if self.ypos>len(self.data)-self.nlines:
             self.ypos=len(self.data)-self.nlines
         self.redraw()
+
 
     def set_data(self, user_data):
         """Place les DDL à séléctioner dans la grille.
@@ -973,12 +1139,52 @@ class GroupNoWidget(Frame):
                 resu_lst.append(resdict)
         return resu_lst
 
+
+    def set_selected(self,valeur_etape):
+        """Si le concept a ete cree ac OBSERVATION, remplit le self.data
+           et met a jour l'interface.
+        """
+        if valeur_etape.has_key('FILTRE'):
+            filtres = valeur_etape['FILTRE']
+            if isinstance(filtres,dict):
+                filtres=[filtres]
+
+            for filtre in filtres:
+                grnos = filtre['GROUP_NO']
+                if type(grnos)==str:grnos=[grnos]
+                ddls = filtre['DDL_ACTIF']
+                for grno in grnos:
+                    for row_dict in self.data:
+                        if row_dict['NOM'].split()==grno.split():
+                            for ddl in ddls:
+                                for ddl_key, int_widget in zip(row_dict["NOM_CMP"],row_dict["DDL_VARS"]):
+                                    if ddl_key.split() == ddl.split():
+                                        int_widget.set(1)
+
+        if valeur_etape.has_key('MODI_REPERE'):
+            modis_reperes = valeur_etape['MODI_REPERE']
+            self.set_chgt_rep(self.root.chgt_rep)
+            
+            if isinstance(modis_reperes,dict):
+                modis_reperes=[modis_reperes]
+
+            for modi_repere in modis_reperes:
+                grnos = modi_repere['GROUP_NO']
+                if isinstance(grnos,str):grnos = [grnos]
+                for grno in grnos:
+                    for row_dict in self.data:
+                        if row_dict['NOM'].split()==grno.split():
+                            row_dict.chgt_repere_choix.set(modi_repere['REPERE'])
+                            row_dict['CHGT_REP'] = modi_repere
+                            # le mot-cle GROUP_NO est deja dans le row_dict : on l'enleve
+                            row_dict['CHGT_REP'].pop('GROUP_NO')
+                            row_dict.set_chgt_rep(self.chgt_rep)
+
+        return Rien
+
+
     def toggled(self):
         self.root.notify()
-
-
-
-
 
 
 
@@ -1222,7 +1428,7 @@ class DispFRFDialogue(Toplevel):
 
     def choix_ddl(self,num_resu):
         # la liste des ddls dispos pour le champ selectionne
-        from Cata.cata import CREA_CHAMP, DETRUIRE, IMPR_CO
+        from Cata.cata import CREA_CHAMP, DETRUIRE
         ddls = []
         self.champ_choisi[num_resu] = self.param_disp[num_resu]['champ'].get()
         try:
@@ -1255,7 +1461,6 @@ class DispFRFDialogue(Toplevel):
         self.ddls[num_resu] = ddls
 
         self.update()
-
 
 
 
@@ -1318,13 +1523,13 @@ class DispFRFDialogue(Toplevel):
         freq = []
         ordo = []
         couleur = []
-        legende = []
+        l_legende = []
         for ind in range(2):
             if not dynas[ind]:
                 pass
             else:
                 if not self.verif_param(param[ind]):
-                    self.mess.disp_mess('Il manque des donnes pour afficher les FRF, colonne ' +str(ind+1))
+                    self.mess.disp_mess(u"Il manque des données pour afficher les FRF, colonne " +str(ind+1))
                     pass
                 else:
                     champ = param[ind]['champ'].get()
@@ -1342,19 +1547,234 @@ class DispFRFDialogue(Toplevel):
 
                     fonc_py = __fonc.convert('complex')
                     ordo.append(fonc_py.vale_y)
-                    freq.append(fonc_py.vale_x)
-                    legende.append("%s %s_%s" % (dynas[ind].nom,champ,ddl))
+                    freq = fonc_py.vale_x
+                    l_legende.append("%s %s_%s" % (dynas[ind].nom,champ,ddl))
                     couleur.append(ind+1)
 
         module = [abs(kk) for kk in ordo]
 
-        self.param_visu.visu_courbe(freq, module, couleur, legende, 'LIN', 'LIN')
+        titre = "Visualisation des FRF"
+
+        print "freq = ", freq
+        print "module = ", module
+        print couleur
+        print l_legende
+        self.param_visu.visu_courbe(freq, module, couleur, titre, l_legende,
+                                    'Frequence', 'FRF','Hz','unite/Hz')
 
 
 
     def hide(self):
         """Annulation du dialogue"""
         self.withdraw()
+
+
+class ObservationWindow(Frame):
+
+    def __init__(self,parent,root,mess,ce_objects,resu=None,
+                 type_co=u"'observabilité",close_widget=1,**args):
+        Frame.__init__(self,parent,args)
+        self.parent = parent
+        self.root = root
+        self.font2 = tkFont.Font( family="Helvetica", size=14 )
+        self.objects = ce_objects 
+        self.chgt_rep = ChgtRepereDialogue(mess)     
+        self.mess = mess
+        self.obs_co = None
+        self.type_co = type_co
+        self.close_widget = close_widget
+        
+        self.create_obsframe()
+
+    def setup(self):
+        mdo = self.objects
+        self.menu_obs_resu.update(mdo.get_mode_meca_name(),
+                                  self.nom_obs_resu,
+                                  self._observabilite_changed)
+        self.root.setup()
+
+    def set_selected(self,valeur_etape):
+        self.obs_noeuds.grp.set_selected(valeur_etape)
+        
+
+    def create_obsframe(self):
+        Label(self,text=u"Définition du concept d"+(self.type_co),
+              font=self.font2).grid(row=0, column=0, columnspan=4)   
+
+
+        # Menu choix des deformees a projeter
+        Label(self, text=u"Base de déformées").grid(row=1,column=0, sticky='ew')
+        self.nom_obs_resu = StringVar()
+        self.menu_obs_resu = MyMenu(self,self.objects.get_mode_meca_name(),
+                                    self.nom_obs_resu,
+                                    self._observabilite_changed)
+        self.menu_obs_resu.grid(row=2, column=0, sticky='we',pady=2, padx=20)
+
+        # Menu choix du modele experimental associe
+        Label(self, text=u"Modèle expérimental").grid(row=1,column=1, sticky='ew')
+        self.nom_obs_modele = StringVar()
+        self.menu_obs_modele = MyMenu(self,self.objects.get_model_name(),
+                                      self.nom_obs_modele,
+                                      self._observabilite_changed)
+        self.menu_obs_modele.grid(row=2, column=1, sticky='we',pady=2, padx=20)
+
+        # Menu choix des DDL par groupe de mailles et de noeuds
+        no_title = "Groupe de noeuds et DDL des capteurs"
+        self.obs_noeuds = SelectionNoeuds(self, no_title, bg='#90a090',
+                                          chgt_rep=self.chgt_rep)
+        self.obs_noeuds.grid(row=3, column=0, sticky='we',
+                             columnspan=3, pady=2, padx=2)
+        
+        ma_title = "Groupe de mailles et DDL des capteurs"
+        self.obs_mailles = SelectionMailles(self, ma_title, bg='#9090a0',
+                                            chgt_rep=self.chgt_rep)
+        self.obs_mailles.grid(row=4, column=0, sticky='we',
+                              columnspan=3, pady=2, padx=2)
+       
+        but = Button(self, text="Valider",
+                     command=self._calculate_observabilite)
+        but.grid(row=5, column=3, sticky='e', padx=2, pady=2)
+
+        if self.close_widget:
+            but = Button(self, text="Fermer",command=self.detruire)
+            but.grid(row=5, column=2, sticky='e', padx=2, pady=2)
+
+
+
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+        self.grid(sticky='e')
+
+    
+    def _observabilite_changed(self):
+        
+        nom_resu = self.nom_obs_resu.get()
+        if nom_resu.strip() !='Choisir':
+            resu = self.objects.get_resultats(nom_resu)
+
+        nom_modele = self.nom_obs_modele.get()
+        if nom_modele.strip() != 'Choisir':
+            modele = self.objects.get_model(nom_modele)
+            self.obs_noeuds.set_resultat(modele)
+            self.obs_mailles.set_resultat(modele)
+
+
+    def _calculate_observabilite(self):
+
+        from Cata.cata import CO,OBSERVATION, DETRUIRE
+
+        if self.obs_co:
+            DETRUIRE(CONCEPT=_F(NOM=self.obs_co.obj), INFO=1)
+        self.obs_co = ModeMeca(self.objects,"__OBS",CO("__OBS"))
+
+        message = "Pour definir l'observabilite, il faut une base"\
+                  "de deformees ET un modele"
+        nom_resu = self.nom_obs_resu.get()
+        if nom_resu.strip() == 'Choisir':
+            self.mess.disp_mess(message)
+            return
+        resu = self.objects.get_mode_meca(nom_resu)
+
+        nom_modele = self.nom_obs_modele.get()
+        if nom_modele.strip() == 'Choisir':
+            self.mess.disp_mess(message)
+            return
+
+        grp_no = self.obs_noeuds.get_selected()
+        grp_ma = self.obs_mailles.get_selected()
+        if not (grp_no or grp_ma):
+            self.mess.disp_mess("Aucun noeud n'est selctionne. Tous les noeuds"\
+                                "du modele experimental")
+
+        modele = self.objects.get_model(nom_modele)
+        if modele.kass == None or modele.mass == None :
+            modele.get_matrices()
+
+        proj = 'OUI'
+        if resu.modele_name == modele.nom:
+            proj = 'NON'
+
+        print "modele_1 = ", resu.modele.obj.nom
+        print "modele_2 = ", modele.obj.nom
+
+        try:
+            __OBS = OBSERVATION( RESULTAT = resu.obj,
+                                 MODELE_1 = resu.modele.obj,
+                                 MODELE_2  = modele.obj,
+                                 PROJECTION  = proj,
+                                 TOUT_ORDRE  = 'OUI',
+                                 MATR_A = modele.kass,
+                                 MATR_B = modele.mass,
+                                 NOM_CHAM = 'DEPL',
+                                 FILTRE   = get_filtres(grp_no, grp_ma),
+                                 MODI_REPERE = get_chgt_repere(grp_no, grp_ma)
+                               );
+        except:
+            self.mess.disp_mess(u"Le concept d"+self.type_co+ \
+                                u"n'a pas pu être calculé.\n"\
+                                u"L'erreur est affichée en console.")
+            raise
+
+        self.mess.disp_mess(u"Le concept d"+self.type_co+ \
+                            u" a été calculé et il porte le nom " + __OBS.nom)
+
+
+        self.obs_co = ModeMeca(self.objects,__OBS.nom,__OBS,self.mess)
+        self.obs_co.get_modele()
+        self.obs_co.get_matrices()
+        self.obs_co.get_nume()
+        self.obs_co.get_maillage()
+        self.objects.update(__OBS.nom,__OBS)
+        self.setup()
+
+    def detruire(self):
+        self.parent.destroy()
+
+
+
+class DispObs(Toplevel):
+
+    def __init__(self,mess,ce_objects, resu=None):
+        Toplevel.__init__(self)
+        self.resu = resu
+        self.objects = ce_objects 
+        self.font2 = tkFont.Font( family="Helvetica", size=14 )
+        self.obs_co = None                                                         
+        self.mess = mess
+
+        self.obs_window = ObservationWindow(self,self,mess,ce_objects)
+        self.obs_window.create_obsframe()
+        self.obs_window.grid()
+
+    def set_resu(self,nom_resu):
+        self.obs_window.nom_obs_resu.set(nom_resu)
+        
+        ctx = CONTEXT.get_current_step().get_contexte_courant()
+        # si nom_resu a ete cree par OBSERVATION
+        for etape in CONTEXT.get_current_step().jdc.etapes:
+            if etape.nom == 'OBSERVATION':
+                if etape.get_created_sd()[0].nom == nom_resu:
+                    nom_modele = etape.valeur['MODELE_2'].nom
+                    self.set_modele(nom_modele)
+                    self.set_selected(etape.valeur)
+        
+        self.obs_window._observabilite_changed()
+
+    def set_modele(self,nom_modele):
+        self.obs_window.nom_obs_modele.set(nom_modele)
+        self.obs_window._observabilite_changed()
+        
+    def set_selected(self,valeur_etape):
+        self.obs_window.set_selected(valeur_etape)
+            
+        
+    def setup(self):
+        self.obs_co = self.obs_window.obs_co
+
+    def hide(self):
+        """Annulation du dialogue"""
+        self.withdraw()
+
 
 
 # Récupération du concept donnant la composante
@@ -1404,7 +1824,7 @@ class _SelectionBase(Frame):
 
         Frame.__init__(self, root, **kwargs)
 
-        Label(self, text=title, **kwargs).grid(row=0, column=0, columnspan=2)
+        Label(self, text=title, **kwargs).grid(row=0, column=0, columnspan=2,padx=100)
         Label(self, text=' ', pady=30, **kwargs).grid(row=1, column=0, columnspan=2)
         self.grp = GroupNoWidget(self, 2, **kwargs)
         self.grp.grid(row=1,column=1)
@@ -1518,7 +1938,6 @@ class SelectionMailles(_SelectionBase):
 
 
 
-
 class VecteurEntry:
     """Permet de rentrer les valeurs pour les 3 composantes
     d'un vecteur.
@@ -1567,7 +1986,7 @@ class VecteurEntry:
 
 class CalcEssaiXmgr(Xmgr):
     """Une interface à Xmgrace pouvant être lancée
-    plusieur fois en même temps (l'unique différence
+    plusieurs fois en même temps (l'unique différence
     avec la version Stanley)."""
 
     def __init__(self, xmgr_idx, gr_max = 10, options=None,
@@ -1646,7 +2065,8 @@ class XmgrManager:
         self.echelle_dict = {'LIN' : 'NORMAL',
                              'LOG' : 'LOGARITHMIC'}
 
-    def affiche(self, abscisses, ordonnees, couleur, legende, ech_x, ech_y):
+    def affiche(self, abscisses, ordonnees, couleur, legende,
+                ech_x, ech_y):
         """!Sortie des données sur une courbe XMGrace
 
         \param abscisse abscisses du graphe
@@ -1660,12 +2080,12 @@ class XmgrManager:
         xmgr.Axe_x("Frequence")
         xmgr.Axe_y("Amplitude")
 
-        for absc, ordo, leg in zip(abscisses, ordonnees, legende):
-            cbr = Courbe(absc, ordo)
+        for ordo, leg in zip(ordonnees, legende):
+            cbr = Courbe(abscisses, ordo)
             xmgr.Courbe(cbr,leg)
 
-        xmgr.Ech_x(self.echelle_dict[ech_x])
-        xmgr.Ech_y(self.echelle_dict[ech_y])
+        #xmgr.Ech_x(self.echelle_dict[ech_x])
+        #xmgr.Ech_y(self.echelle_dict[ech_y])
 
     def fermer(self):
         """Enlève les fichiers temporaires utlisés
@@ -1883,5 +2303,32 @@ class MacWindowFrame(Frame):
         if mode_data is None:
             return "None"
 
+
+def get_filtres(grp_no, grp_ma):
+        filtres = []
+        for grp in grp_no:
+            filtres.append(_F(GROUP_NO=grp["NOM"],
+                              DDL_ACTIF=grp["NOM_CMP"],
+                              NOM_CHAM='DEPL'))
+        for grp in grp_ma:
+            filtres.append(_F(GROUP_MA=grp["NOM"],
+                              DDL_ACTIF=grp["NOM_CMP"],
+                              NOM_CHAM='DEPL'))
+        return filtres
+
+
+    
+def get_chgt_repere(grp_no, grp_ma):
+
+        chgt_reps = []
+        for grp in grp_no:
+            if grp["CHGT_REP"]:
+                chgt_reps.append(_F(GROUP_NO=grp["NOM"],
+                                    **grp["CHGT_REP"]))
+        for grp in grp_ma:
+            if grp["CHGT_REP"]:
+                chgt_reps.append(_F(GROUP_MA=grp["NOM"],
+                                    **grp["CHGT_REP"]))
+        return chgt_reps
 
 

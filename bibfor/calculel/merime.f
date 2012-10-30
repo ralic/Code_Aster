@@ -1,17 +1,9 @@
-      SUBROUTINE MERIME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
-     &                  COMPOR,MATELZ,NH,BASEZ)
-      IMPLICIT NONE
-      INCLUDE 'jeveux.h'
-      INTEGER NCHAR,NH
-      REAL*8 TIME
-      CHARACTER*(*) MODELZ,CARAZ,MATELZ
-      CHARACTER*8 MODELE,CARA
-      CHARACTER*19 MATEL
-      CHARACTER*(*) LCHAR(*),MATE,BASEZ,COMPOR
-      CHARACTER*(1) BASE
-      LOGICAL EXITIM
+      SUBROUTINE MERIME(MODELZ,NCHAR ,LCHAR ,MATE  ,CARELZ,
+     &                  EXITIM,TIME  ,COMPOZ,MATELZ,NH    ,
+     &                  BASZ  )
+C
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 30/10/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,88 +22,121 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C                          DE MERIME...  PROSPER YOUP-LA-BOUM!
-
-C     CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE MECA
-
+C
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+      INTEGER       NCHAR,NH
+      REAL*8        TIME
+      CHARACTER*(*) MODELZ,CARELZ,MATELZ
+      CHARACTER*(*) LCHAR(*),MATE,BASZ,COMPOZ
+      LOGICAL       EXITIM
+C
 C ----------------------------------------------------------------------
-C IN  : MODELZ : NOM DU MODELE
-C IN  : NCHAR  : NOMBRE DE CHARGES
-C IN  : LCHAR  : LISTE DES CHARGES
-C IN  : MATE   : CARTE DE MATERIAU
-C IN  : CARAZ  : CHAMP DE CARAC_ELEM
-C IN  : MATELZ : NOM DU MATR_ELEM RESULTAT
-C IN  : EXITIM : VRAI SI L'INSTANT EST DONNE
-C IN  : TIME   : INSTANT DE CALCUL
-C IN  : NH     : NUMERO D'HARMONIQUE DE FOURIER
-C IN  : BASEZ  : NOM DE LA BASE
-C IN  : COMPOR : COMPOR POUR LES MULTIFIBRE (POU_D_EM)
+C
+C CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE MECANIQUE
+C
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
-      CHARACTER*2 CODRET
-      CHARACTER*8 LPAIN(32),LPAOUT(2),KBID
-      CHARACTER*16 OPTION,NOMCMD,TYPRES
-      CHARACTER*19 NOMFON,CHVARC
+C
+C IN  MODELE : NOM DU MODELE
+C IN  NCHAR  : NOMBRE DE CHARGES
+C IN  LCHAR  : LISTE DES CHARGES
+C IN  MATE   : CARTE DE MATERIAU
+C IN  CARELE : CHAMP DE CARAC_ELEM
+C IN  MATELZ : NOM DU MATR_ELEM RESULTAT
+C IN  EXITIM : VRAI SI L'INSTANT EST DONNE
+C IN  TIME   : INSTANT DE CALCUL
+C IN  NH     : NUMERO D'HARMONIQUE DE FOURIER
+C IN  BASE   : NOM DE LA BASE
+C IN  COMPOR : COMPOR POUR LES MULTIFIBRE (POU_D_EM)
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER      NBOUT,NBIN
+      PARAMETER    (NBOUT=2, NBIN=31)
+      CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
+      CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
+C
+      CHARACTER*2  CODRET
+      CHARACTER*8  K8BID
+      CHARACTER*16 OPTION,K16BID,NOMCMD
+      CHARACTER*19 CHVARC,COMPOR
       CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC,LSN,LST,STANO
       CHARACTER*19 PMILTO,FISSNO,PINTER
-      CHARACTER*24 LIGRMO,LIGRCH,LCHIN(32),LCHOUT(2)
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
       CHARACTER*24 ARGU,CHTIME
-      COMPLEX*16 CBID
-C-----------------------------------------------------------------------
-      INTEGER IAREFE ,IBID ,ICHA ,ICODE ,IER ,ILIRES ,IRET 
-      INTEGER IRET1 
-C-----------------------------------------------------------------------
-      DATA CHVARC/'&&MERIME.CH_VARC_R'/
-
+      COMPLEX*16   C16BID
+      CHARACTER*8  MODELE,CARELE
+      CHARACTER*19 MATELE,LIGRMO,LIGRCH
+      CHARACTER*1  BASE
+      INTEGER      IAREFE,IBID,ICHA,ICODE,ILIRES,IRET 
+      LOGICAL      LXFEM
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
       MODELE = MODELZ
       CALL ASSERT(MODELE.NE.' ')
-      CARA = CARAZ
-      MATEL = MATELZ
-      BASE = BASEZ
-
-      CALL GETRES(NOMFON,TYPRES,NOMCMD)
-      OPTION = 'RIGI_MECA'
-      CALL MECHAM(OPTION,MODELE,NCHAR,LCHAR,CARA,NH,CHGEOM,CHCARA,
-     &            CHHARM,ICODE)
-
-
-      IF (.NOT.EXITIM) TIME = 0.D0
+      CARELE = CARELZ
+      MATELE = MATELZ
+      COMPOR = COMPOZ
+      BASE   = BASZ
+      CHVARC = '&&MERIME.CH_VARC_R'
       CHTIME = '&&MERIME.CHAMP_INST'
-      CALL MECACT('V',CHTIME,'MODELE',MODELE//'.MODELE','INST_R',1,
-     &            'INST',IBID,TIME,CBID,KBID)
-
-
+      CALL GETRES(K8BID,K16BID,NOMCMD)
+      LIGRMO = MODELE//'.MODELE'
+      OPTION = 'RIGI_MECA'
+      CALL EXIXFE(MODELE,IRET)
+      LXFEM  = IRET.NE.0
+C
+C --- INITIALISATION DES CHAMPS POUR CALCUL
+C
+      CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
+     &            NBOUT ,LPAOUT,LCHOUT)
+C
+C --- CHAMPS DE BASE
+C
+      CALL MECHAM(OPTION,MODELE,NCHAR ,LCHAR ,CARELE,
+     &            NH    ,CHGEOM,CHCARA,CHHARM,ICODE )
+C
+C --- CHAMP TEMPS
+C
+      IF (.NOT.EXITIM) TIME = 0.D0
+      CALL MECACT('V'   ,CHTIME,'MODELE',LIGRMO,'INST_R',
+     &            1     ,'INST',IBID    ,TIME  ,C16BID  ,
+     &            K8BID )
+C
+C --- CHAMP DES VARIABLES DE COMMANDE
+C
       IF (NOMCMD.EQ.'MECA_STATIQUE'.OR.NOMCMD.EQ.'CALC_MATR_ELEM') THEN
-        CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
-      END IF
-
-
-      CALL MEMARE(BASE,MATEL,MODELE,MATE,CARA,OPTION)
+        CALL VRCINS(MODELE,MATE,CARELE,TIME,CHVARC,CODRET)
+      ENDIF
+C
+C --- PREPARATION DES MATRICES ELEMENTAIRES
+C
+      CALL MEMARE(BASE,MATELE,MODELE,MATE,CARELE,OPTION)
 C     SI LA RIGIDITE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:
       IF (ICODE.EQ.0 .OR. ICODE.EQ.2) THEN
-        CALL JEVEUO(MATEL//'.RERR','E',IAREFE)
+        CALL JEVEUO(MATELE//'.RERR','E',IAREFE)
         ZK24(IAREFE-1+3) (1:3) = 'OUI'
       END IF
 
-      CALL JEEXIN(MATEL//'.RELR',IRET1)
-      IF (IRET1.GT.0) CALL JEDETR(MATEL//'.RELR')
-
-      ILIRES = 0
-
+      CALL JEEXIN(MATELE//'.RELR',IRET)
+      IF (IRET.GT.0) CALL JEDETR(MATELE//'.RELR')
+C
+C --- CHAMPS DE SORTIE
+C
       LPAOUT(1) = 'PMATUUR'
-      LCHOUT(1) = MATEL(1:8)//'.ME001'
+      LCHOUT(1) = MATELE(1:8)//'.ME001'
       LPAOUT(2) = 'PMATUNS'
-      LCHOUT(2) = MATEL(1:8)//'.ME002'
-      LIGRMO = MODELE//'.MODELE'
-
-C  ---VERIFICATION DE L'EXISTENCE D'UN MODELE X-FEM-------
-      CALL EXIXFE(MODELE,IER)
-
-      IF (IER.NE.0) THEN
-
-C  ---  CAS DU MODELE X-FEM-----------
-
+      LCHOUT(2) = MATELE(1:8)//'.ME002'
+C
+C --- CHAMPS POUR XFEM
+C
+      ILIRES = 0
+      IF (LXFEM) THEN
         ILIRES = ILIRES+1
         PINTTO = MODELE(1:8)//'.TOPOSE.PIN'
         CNSETO = MODELE(1:8)//'.TOPOSE.CNS'
@@ -137,79 +162,83 @@ C  ---  CAS DU MODELE X-FEM-----------
         FISSNO = '&&MERIME.FISSNO.BID'
         PINTER = '&&MERIME.PINTER.BID'
       ENDIF
-
-C ----- REMPLISSAGE DES CHAMPS D'ENTREE
 C
-      IF ((IER.NE.0).OR.((IER.EQ.0).AND.(ICODE.EQ.0))) THEN
-        LPAIN(1) = 'PGEOMER'
-        LCHIN(1) = CHGEOM
-        LPAIN(2) = 'PMATERC'
-        LCHIN(2) = MATE
-        LPAIN(3) = 'PCAORIE'
-        LCHIN(3) = CHCARA(1)
-        LPAIN(4) = 'PCADISK'
-        LCHIN(4) = CHCARA(2)
-        LPAIN(5) = 'PCAGNPO'
-        LCHIN(5) = CHCARA(6)
-        LPAIN(6) = 'PCACOQU'
-        LCHIN(6) = CHCARA(7)
-        LPAIN(7) = 'PCASECT'
-        LCHIN(7) = CHCARA(8)
-        LPAIN(8) = 'PCAARPO'
-        LCHIN(8) = CHCARA(9)
-        LPAIN(9) = 'PHARMON'
-        LCHIN(9) = CHHARM
-        LPAIN(11) = 'PGEOME2'
-        LCHIN(11) = CHGEOM
-        LPAIN(12) = 'PCAGNBA'
-        LCHIN(12) = CHCARA(11)
-        LPAIN(13) = 'PCAMASS'
-        LCHIN(13) = CHCARA(12)
-        LPAIN(14) = 'PCAPOUF'
-        LCHIN(14) = CHCARA(13)
-        LPAIN(15) = 'PCAGEPO'
-        LCHIN(15) = CHCARA(5)
-        LPAIN(16) = 'PVARCPR'
-        LCHIN(16) = CHVARC
-        LPAIN(17) = 'PTEMPSR'
-        LCHIN(17) = CHTIME
-        LPAIN(18) = 'PNBSP_I'
-        LCHIN(18) = CHCARA(16)
-        LPAIN(19) = 'PFIBRES'
-        LCHIN(19) = CHCARA(17)
-        LPAIN(20) = 'PCOMPOR'
-        LCHIN(20) = COMPOR
-        LPAIN(21) = 'PCINFDI'
-        LCHIN(21) = CHCARA(15)
-        LPAIN(22) = 'PPINTTO'
-        LCHIN(22) = PINTTO
-        LPAIN(23) = 'PHEAVTO'
-        LCHIN(23) = HEAVTO
-        LPAIN(24) = 'PLONCHA'
-        LCHIN(24) = LONCHA
-        LPAIN(25) = 'PCNSETO'
-        LCHIN(25) = CNSETO
-        LPAIN(26) = 'PBASLOR'
-        LCHIN(26) = BASLOC
-        LPAIN(27) = 'PLSN'
-        LCHIN(27) = LSN
-        LPAIN(28) = 'PLST'
-        LCHIN(28) = LST
-        LPAIN(29) = 'PSTANO'
-        LCHIN(29) = STANO
-        LPAIN(30) = 'PPMILTO'
-        LCHIN(30) = PMILTO
-        LPAIN(31) = 'PFISNO'
-        LCHIN(31) = FISSNO
-        LPAIN(32) = 'PPINTER'
-        LCHIN(32) = PINTER
-
-        CALL CALCUL('S',OPTION,LIGRMO,32,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
-     &              BASE,'OUI')
-        CALL REAJRE(MATEL,LCHOUT(1),BASE)
-        CALL REAJRE(MATEL,LCHOUT(2),BASE)
-        ILIRES = ILIRES +2      
+C --- MATRICES DE RIGIDITE
+C
+      IF ((LXFEM).OR.((.NOT.LXFEM).AND.(ICODE.EQ.0))) THEN
+        LPAIN(1)  = 'PGEOMER'
+        LCHIN(1)  = CHGEOM(1:19)
+        LPAIN(2)  = 'PMATERC'
+        LCHIN(2)  = MATE(1:19)
+        LPAIN(3)  = 'PCAORIE'
+        LCHIN(3)  = CHCARA(1)(1:19)
+        LPAIN(4)  = 'PCADISK'
+        LCHIN(4)  = CHCARA(2)(1:19)
+        LPAIN(5)  = 'PCAGNPO'
+        LCHIN(5)  = CHCARA(6)(1:19)
+        LPAIN(6)  = 'PCACOQU'
+        LCHIN(6)  = CHCARA(7)(1:19)
+        LPAIN(7)  = 'PCASECT'
+        LCHIN(7)  = CHCARA(8)(1:19)
+        LPAIN(8)  = 'PCAARPO'
+        LCHIN(8)  = CHCARA(9)(1:19)
+        LPAIN(9)  = 'PHARMON'
+        LCHIN(9)  = CHHARM(1:19)
+        LPAIN(10) = 'PGEOME2'
+        LCHIN(10) = CHGEOM(1:19)
+        LPAIN(11) = 'PCAGNBA'
+        LCHIN(11) = CHCARA(11)(1:19)
+        LPAIN(12) = 'PCAMASS'
+        LCHIN(12) = CHCARA(12)(1:19)
+        LPAIN(13) = 'PCAPOUF'
+        LCHIN(13) = CHCARA(13)(1:19)
+        LPAIN(14) = 'PCAGEPO'
+        LCHIN(14) = CHCARA(5)(1:19)
+        LPAIN(15) = 'PVARCPR'
+        LCHIN(15) = CHVARC(1:19)
+        LPAIN(16) = 'PTEMPSR'
+        LCHIN(16) = CHTIME(1:19)
+        LPAIN(17) = 'PNBSP_I'
+        LCHIN(17) = CHCARA(16)(1:19)
+        LPAIN(18) = 'PFIBRES'
+        LCHIN(18) = CHCARA(17)(1:19)
+        LPAIN(19) = 'PCOMPOR'
+        LCHIN(19) = COMPOR
+        LPAIN(20) = 'PCINFDI'
+        LCHIN(20) = CHCARA(15)(1:19)
+        LPAIN(21) = 'PPINTTO'
+        LCHIN(21) = PINTTO(1:19)
+        LPAIN(22) = 'PHEAVTO'
+        LCHIN(22) = HEAVTO(1:19)
+        LPAIN(23) = 'PLONCHA'
+        LCHIN(23) = LONCHA(1:19)
+        LPAIN(24) = 'PCNSETO'
+        LCHIN(24) = CNSETO(1:19)
+        LPAIN(25) = 'PBASLOR'
+        LCHIN(25) = BASLOC(1:19)
+        LPAIN(26) = 'PLSN'
+        LCHIN(26) = LSN(1:19)
+        LPAIN(27) = 'PLST'
+        LCHIN(27) = LST(1:19)
+        LPAIN(28) = 'PSTANO'
+        LCHIN(28) = STANO(1:19)
+        LPAIN(29) = 'PPMILTO'
+        LCHIN(29) = PMILTO(1:19)
+        LPAIN(30) = 'PFISNO'
+        LCHIN(30) = FISSNO(1:19)
+        LPAIN(31) = 'PPINTER'
+        LCHIN(31) = PINTER(1:19)
+        CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,
+     &                                NBOUT,LCHOUT,LPAOUT,
+     &                                BASE,'OUI')
+        CALL REAJRE(MATELE,LCHOUT(1),BASE)
+        CALL REAJRE(MATELE,LCHOUT(2),BASE)
+        ILIRES = ILIRES + 2      
       ENDIF
+C
+C --- MATRICE DIRICHLET
+C
+      OPTION = 'MECA_DDLM_R'
       DO 10 ICHA = 1,NCHAR
         LIGRCH = LCHAR(ICHA) (1:8)//'.CHME.LIGRE'
         ARGU = LCHAR(ICHA) (1:8)//'.CHME.LIGRE.LIEL'
@@ -219,19 +248,19 @@ C
         ARGU = LCHAR(ICHA) (1:8)//'.CHME.CMULT.DESC'
         CALL JEEXIN(ARGU,IRET)
         IF (IRET.LE.0) GO TO 10
-
         LPAIN(1) = 'PDDLMUR'
         ILIRES=ILIRES+1
         CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
         OPTION = 'MECA_DDLM_R'
-        CALL CALCUL('S',OPTION,LIGRCH,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &              BASE,'OUI')
-        CALL REAJRE(MATEL,LCHOUT(1),BASE)
+        CALL CALCUL('S',OPTION,LIGRCH,1,LCHIN,LPAIN,
+     &                                1,LCHOUT,LPAOUT,
+     &                                BASE,'OUI')
+        CALL REAJRE(MATELE,LCHOUT(1),BASE)
    10 CONTINUE
-
-C     -- DESTRUCTION DES RESUELEM NULS :
-      CALL REDETR(MATEL)
-
+C
+C --- DESTRUCTION DES RESUELEM NULS
+C
+      CALL REDETR(MATELE)
       CALL DETRSD('CHAMP_GD',CHTIME)
 
       CALL JEDEMA()

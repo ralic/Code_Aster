@@ -1,8 +1,8 @@
-      SUBROUTINE GNOMSD(NOOJB,K1,K2)
+      SUBROUTINE GNOMSD(NOMRES,NOOJB,K1,K2)
       IMPLICIT   NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +29,14 @@ C     - LE NOM (1:8) EST OBTENU PAR GETRES (RESULTAT DE LA COMMANDE)
 C     - LE NOM (K1:K2) EST UN NUMERO ('0001','0002', ...)
 
 C VAR : NOOJB : NOM D'UN OBJET JEVEUX  (K24)
+C IN  : NOMRES: NOM DU RESULTAT SUR LEQUEL ON SOUHAITE CREER L'OBJET
+C               S'IL VAUT ' ', ON FAIT UN APPEL A GETRES
 C IN  : K1,K2 : INDICES DANS NOOJB DE LA SOUS-CHAINE "NUMERO"
 C     -----------------------------------------------------------------
 C
       INTEGER IRET,K1,K2,NMAXSD,NDIGIT,IESSAI,INUM,N1,N2
-      CHARACTER*8 NOMU
+      CHARACTER*(*) NOMRES
+      CHARACTER*8 NOMU,NOMRE2
       CHARACTER*16 CONCEP,CMD
       CHARACTER*24 NOOJB,NOOJB1
 C     -----------------------------------------------------------------
@@ -41,7 +44,12 @@ C     -----------------------------------------------------------------
       CALL ASSERT(K1.GT.8)
       CALL ASSERT(K2.LE.24)
 
-      CALL GETRES(NOMU,CONCEP,CMD)
+      NOMRE2=NOMRES
+      IF ( NOMRE2.EQ.' ' ) THEN
+        CALL GETRES(NOMU,CONCEP,CMD)
+      ELSE
+        NOMU=NOMRE2
+      ENDIF
       NOOJB1=NOOJB
       NOOJB1(1:8)=NOMU
 

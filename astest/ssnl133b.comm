@@ -1,4 +1,4 @@
-# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
 # ssnl133b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -45,7 +45,7 @@ GF=DEFI_GEOM_FIBRE(
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=ACIER,
                   MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=ACIER,
-                                 RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+                                 RELATION='ELAS',),
                      )
 
 MAT=AFFE_MATERIAU(MAILLAGE=MA,
@@ -105,7 +105,7 @@ RESO0=STAT_NON_LINE(MODELE=MO,
                     EXCIT=(_F(CHARGE=CL,),
                            _F(CHARGE=FORCE,
                               FONC_MULT=FORCE_F,),),
-                    COMP_INCR=_F(RELATION='MULTIFIBRE'),
+                    COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                     INCREMENT=_F(LIST_INST=TEMPS,
                                  INST_FIN=tforc,),
                     NEWTON=_F(MATRICE='TANGENTE',
@@ -125,7 +125,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=FORCE,
                              TYPE_CHARGE='FIXE_PILO',),),
-                   COMP_INCR=_F(RELATION='MULTIFIBRE'),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=tsuiv,),
                    NEWTON=_F(MATRICE='TANGENTE',
@@ -152,8 +152,7 @@ RESO=STAT_NON_LINE(reuse=RESO,
                    EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=FORCE,
                              TYPE_CHARGE='FIXE_PILO',),),
-                   COMP_INCR=_F(RELATION='MULTIFIBRE',
-                                ),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=tfin,),
                    NEWTON=_F(MATRICE='TANGENTE',

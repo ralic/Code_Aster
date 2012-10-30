@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,7 +100,7 @@ previous_errors = set([
     'raymin', 'rayon-raymin', 'rcmaco', 'relcom',
     'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch', 'sd',
     'skin.pos', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',
-    'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx', 'xxxxxx.py'])
+    'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx', 'xxxxxx.py' , 'multifibre'])
 
 current_errors = checker.get_unknown_words()
 new = list(set(current_errors).difference(previous_errors))
@@ -143,8 +143,8 @@ TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            VALE_CALC_I=0,
            VALE_REFE_I=0,
-           TOLE_MACHINE=313.1,
-           PRECISION=313.1,
+           TOLE_MACHINE=314.1,
+           PRECISION=314.1,
            NOM_PARA='NBWARN',
            TABLE=tabw,
            )

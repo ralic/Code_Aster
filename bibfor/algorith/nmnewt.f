@@ -9,7 +9,7 @@
      &                  DEFICU,RESOCU,ETA   ,NBITER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/10/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,6 @@ C     3 - STOP -> ERREUR FATALE - ARRET DU CALCUL
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      INCRUN
       INTEGER      NIVEAU,ITERAT
       LOGICAL      LERRIT
       LOGICAL      ISFONC,LBOUCL,LCTCD
@@ -117,7 +116,6 @@ C
 C
 C --- INITIALISATIONS
 C
-      INCRUN = 1
       ITERAT = 0
       NIVEAU = 0
       NBITER = 0
@@ -175,8 +173,8 @@ C
 C --- GESTION DEBUT DE BOUCLE POINTS FIXES
 C
       CALL NMIBLE(MODELE,NOMA  ,DEFICO,RESOCO,FONACT,
-     &            NIVEAU,NUMEDD,SDSTAT,SDTIME,SDIMPR,
-     &            SDDISC)
+     &            NUMINS,NIVEAU,NUMEDD,SDSTAT,SDTIME,
+     &            SDIMPR)
 C
 C --- CREATION OBJETS POUR CONTACT CONTINU
 C
@@ -201,10 +199,6 @@ C
      &            VEELEM,VEASSE,LERRIT)
 C
       IF (LERRIT) GOTO 315
-C
-C --- PREMIER INSTANT PASSE
-C
-      CALL DIBCLE(SDDISC,'PREMIE','E',INCRUN)
 C
 C ======================================================================
 C     BOUCLE SUR LES ITERATIONS DE NEWTON

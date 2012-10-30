@@ -1,5 +1,5 @@
-#@ MODIF ce_calcul_identification Calc_essai  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
-
+#@ MODIF ce_calcul_identification Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,7 @@ class CalcEssaiIdentification:
 
     def set_var_opt(self, var_opt):
         """Une variable pour calculer l'interspectre."""
-        self.var_opt = var_opt
+        self.var_opt = var_opt        
 
     def calculate_force(self):
         self.is_Syy = 0

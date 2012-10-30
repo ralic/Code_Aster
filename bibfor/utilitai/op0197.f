@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -384,7 +384,7 @@ C
 
 C       DETERMINATION DU NOM DES 2 TABLES A CREER:
         NOOBJ ='12345678.TB00000   .TBNP'
-        CALL GNOMSD(NOOBJ,12,16)
+        CALL GNOMSD(' ',NOOBJ,12,16)
         ZK16(ITABW-1+IRESU)=NOOBJ(1:16)
         READ(NOOBJ(12:16),'(I5)') KK
         KK=KK+1

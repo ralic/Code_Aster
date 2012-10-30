@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE : VALIDATION POLYCRISTAL LOI DD_CC_IRRA
 # ssnv194f.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,16 +19,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV194F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('ALGORITH7_60','MECANONLINE5_21'))
+DEBUT(CODE=_F(NOM='SSNV194F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('MECANONLINE5_21'))
 
 # SDVERI='NON' car la verification est trop couteuse en CPU
-
-# IGNORE_ALARM='ALGORITH7_60' car pour RUNGE_KUTTA, RESI_INTE_RELA=1.E-4 suffit pour une bonne precision
-# comparaison : resi_inte_rela  CPU total (calibre7)  RESU
-#                1.E-6          219s                  OK
-#                1.E-5           94s                  OK
-#                1.E-4           51s                  OK
-# on choisit donc 1.E-4, sachant qu'en explicite, le pas de temps est petit
 
 # IGNORE_ALARM='MECANONLINE5_21' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-3 suffit pour une bonne precision
 # comparaison : resi_inte_rela  CPU total (calibre7)   RESU

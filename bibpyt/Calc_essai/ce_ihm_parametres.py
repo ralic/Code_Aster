@@ -1,8 +1,8 @@
-#@ MODIF ce_ihm_parametres Calc_essai  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ce_ihm_parametres Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,29 +27,25 @@ from Utilitai.Utmess import UTMESS
 import sys
 import aster
 
+
+from Calc_essai.cata_ce import  CaraElem, InterSpectre, CalcEssaiObjects, Resultat, ModeMeca, DynaHarmo
+
+
 from Accas import _F
 import weakref
 import os
 import time
+import tkFont
+
 
 from Tkinter import Tk, Frame, Menubutton, Menu, StringVar, IntVar, BooleanVar, Listbox
 from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry
 from Tkinter import Checkbutton, Canvas, Toplevel
 from Tkinter import NORMAL, DISABLED
-from Calc_essai.outils_ihm import XmgrManager, MyMenu
-
-# teste si pylotage est present pour pouvoir utiliser Salome
-try:
-    import pylotage
-    __salome__ = True
-    # Lorsque les modifs de Calc_essai_salome_visu seront reportees dans pylotage,
-    # supprimer la ligne suivante:
-    from Calc_essai.ce_visu import Visu, NODE
-    
-    from pylotage.TOOLS.Study import StudyManager
-except ImportError:
-    __salome__ = False
-    Visu = object
+from Calc_essai.outils_ihm import XmgrManager, MyMenu, MacWindowFrame, StudyList,DispFRFDialogue, DispObs
+from Utilitai.Table import Table
+from Cata.cata import EXEC_LOGICIEL
+from Calc_essai.ce_calcul_expansion import make_mac_salome, make_mesh_mac,CalcEssaiExpansion
 
 try:
     from Stanley.gmsh import GMSH
@@ -70,31 +66,38 @@ def StateActivate(l_widget):
     for widget in l_widget:
         widget.config(state=NORMAL)
 
-def StateDeactivate(l_widget):
+def StateDesactivate(l_widget):
     """! Desactive tous les widgets de la liste l_widget"""
     for widget in l_widget:
         widget.config(state=DISABLED)
 
+
+
 class InterfaceParametres(Frame):
+
     """!Interface principale de l'outil de projection des modes
     expérimentaux sur les modes numériques
     
     permet la sélection et de calcul des modes en air et écoulement"""
+
     def __init__(self,
                  root,
-                 mess):
+                 objects,
+                 macro,
+                 mess,
+                 ):
         """!Constructeur
         """
-        
+
+
         Frame.__init__(self, root, relief='sunken', borderwidth=1) # Première frame
         
         self.mess = mess
         self.root = root
         self.logiciel = StringVar()
         self.salome_port = IntVar()
-        self.mode_distant = BooleanVar()
-        self.machine_distante_name = StringVar()
         self.machine_locale_name = self.get_machine_name()
+        self.type_visu = StringVar()
         self.user = StringVar()
         self.protocole = StringVar()
         self.machine_name = self.machine_locale_name
@@ -102,27 +105,62 @@ class InterfaceParametres(Frame):
         self.distant_widgets = []
         self.protocole_ok = None
         self.logiciel_courbes = None
+
+        self.macro = macro
+        self.objects = objects 
+        self.param_visu = self      
+        self.is_resu1 = IntVar()
+        self.is_resu2 = IntVar()
+        self.use_nume_mass = IntVar()
+        self.proj_champ_meth = StringVar()
+        self.proj_svd_param = StringVar()
+        self.calculs = CalcEssaiExpansion( macro, mess, objects)
+        self.type_resu_exp = StringVar()
+        self.term = []
+        self.mac_windows = []
+        self.afreq = None
+        self.anum = None
+        self.resu_num = None   # base d'expansion (instance de ModeMeca)
+        self.resu_exp = None   # donnees exp (instance de ModeMeca ou de DynaHarmo)
         self.interface_param()
 
 
     def setup(self):
         """!Appelée par le gestionnaire de tab lors de l'affichage"""
-        pass
 
+        mdo = self.objects
+        mdo.recup_objects
+
+        self.menu_resu1.update( mdo.get_resultats_name(), self.var_resu1, self.visu1_changed )
+        self.menu_resu2.update( mdo.get_resultats_name(), self.var_resu2, self.visu2_changed )
+        pass
+        
     def teardown(self):
         """!Appelée par le gestionnaire de tab lors
            du masquage (passage à un autre tab)"""
         return
 
+    def _observabilite_changed(self):
+        nom_resu = self.nom_obs_resu.get()
+        if nom_resu.strip() !='Choisir':
+            resu = self.objects.get_resultats(nom_resu)
+
+        nom_modele = self.nom_obs_modele.get()
+        if nom_modele.strip() != 'Choisir':
+            modele = self.objects.get_model(nom_modele)
+            self.obs_noeuds.set_resultat(resu.modele)
+            self.obs_mailles.set_resultat(resu.modele)
+
+##    def _observabilite_changed (seilf ) :
+##        nom_resu=self.nom_obs_resu.get()
+##        if nom_resu.strip() !='choisir':
+##            resu=self.objects.get_results(nom_resu)
 
     def interface_param(self):
-        """!Fonction principale de création de l'interface
-
-        """
+        """!Fonction principale de création de l'interface"""
+        
         self.columnconfigure(0, weight=1)
-        #self.rowconfigure(1, weight=1)
         self.rowconfigure(2, weight=1)
-        #self.rowconfigure(3, weight=1)
         l = Label(self,text=u" CALC_ESSAI : Paramètres de visualisation",
                   padx = 270, pady=5, font=("Helvetica", "16") )
         l.grid(row=0, sticky='nsew')
@@ -130,31 +168,205 @@ class InterfaceParametres(Frame):
         select_box = self.interface_parametres(self)
         select_box.grid(row=1, sticky='nsew')
 
+        visu_param = self.interface_visu(self)
+        visu_param.grid(row=3, sticky='nsew')
+
         self.main = self
+
+
+    def interface_selection(self, root):
+       
+        self.var_resu_num = StringVar()
+        self.menu_resu_num = MyMenu( f, options = self.objects.get_mode_meca_name(),
+                                     var = self.var_resu_num, cmd = self.num_changed )
+
+
+        self.var_resu_exp = StringVar()
+        self.menu_resu_exp = MyMenu( f, options = self.objects.get_resultats_name(),
+                                     var = self.var_resu_exp, cmd = self.exp_changed )
+     
+        return f
+
+        
+
+    def interface_visu(self,root):
+        """!Création de l'interface de visualisation
+
+        permet de choisir d'afficher les matrices MAC ou les modes avec gmsh
+        gère la compatibilité des choix de l'utilisateur (les calculs de MAC
+        ne sont pas tous possibles)
+        """
+
+        mdo = self.objects
+        
+        f = Frame(root,relief='sunken', borderwidth=1 )
+        Label(f, text="   ").grid(row=0, column=1,columnspan = 3,sticky='w'+'e' )
+        Label(f, text="   ").grid(row=2, column=1,columnspan = 3,sticky='w'+'e' )
+        f.columnconfigure(0,weight=3)
+        f.columnconfigure(1,weight=3)
+
+        f1 = Frame(f)
+        f1.grid(row=1,column=0,sticky='ew' )
+        f1.columnconfigure(1,weight=4)
+        f1.columnconfigure(2,weight=4)
+
+        
+        bir1 = Checkbutton(f1,variable=self.is_resu1, command=self.cb_changed)
+        bir1.grid(row=0, column = 0,sticky='e',padx=20)
+        bir2 = Checkbutton(f1,variable=self.is_resu2,command=self.cb_changed)
+        bir2.grid(row=1, column = 0,sticky='e',padx=20)
+
+        Label(f1,text=u"Résultat 1").grid(row=0,column=1,sticky='w')
+        self.var_resu1 = StringVar()
+        self.menu_resu1 = MyMenu( f1, options = mdo.get_resultats_name(),
+                                  var = self.var_resu1, cmd = self.visu1_changed )
+        self.menu_resu1.grid(row=0, column=2, sticky='ew',padx=20)
+
+        Label(f1,text=u"Résultat 2").grid(row=1,column=1,sticky='w')
+        self.var_resu2 = StringVar()
+        self.menu_resu2 = MyMenu( f1, options = mdo.get_resultats_name(),
+                                  var = self.var_resu2, cmd = self.visu2_changed )
+        self.menu_resu2.grid(row=1, column=2, sticky='ew',padx=20)
+
+        f2 = Frame(f)        
+        f2.grid(row=1,column=1)
     
-    def activate_distant_widgets(self):
-        StateActivate(self.distant_widgets)
-    
-    def deactivate_distant_widgets(self):
-        StateDeactivate(self.distant_widgets)
-    
-    def activate_or_deactivate_distant_widgets(self):
-        if self.mode_distant.get():
-            self.activate_distant_widgets()
+
+        self.mac_button = Button(f2,text="    MAC    ",command=self.view_macs,state='disabled')
+        self.mac_button.grid(row=1,column=2, sticky='ew' )
+        self.phi_button = Button(f2,text=u"Déformées",command=self.view_modes,state='disabled')
+        self.phi_button.grid(row=2,column=2, sticky='ew')
+        self.frf_button = Button(f2,text="    FRF    ",command=self.view_frf)
+        self.frf_button.grid(row=3,column=2, sticky='ew' )
+        self.frf_button = Button(f1,text=" Observation ",command=self.view_obs_1)
+        self.frf_button.grid(row=0,column=3, sticky='ew' )
+        self.frf_button = Button(f1,text=" Observation ",command=self.view_obs_2)
+        self.frf_button.grid(row=1,column=3, sticky='ew' )
+ 
+        return f  
+
+    def visu1_changed(self):
+        """ desactivation du bouton concernant le visu1"""
+        self.is_resu1.set(1)
+        self.check_state()        
+
+    def visu2_changed(self):
+        """ desactivation du bouton concernant le visu1"""
+        self.is_resu2.set(1)
+        self.check_state()
+
+    def cb_changed(self):
+        self.check_state()
+
+
+    def check_state(self):
+        """Verifie la compatibilite des bases pour le MAC et l'existence
+           des donnees necessaires pour la visu des deformees et des FRF"""
+        mdo = self.objects
+   
+        # Y a-t-il un MAC a calculer ?
+        if (self.is_resu1.get() and not self.is_resu2.get()) or (self.is_resu2.get() and not self.is_resu1.get()):
+            self.mac_button.configure(state='normal')
+        elif self.is_resu1.get() and self.is_resu2.get():
+            resu1 = mdo.get_resultats(self.var_resu1.get())
+            resu2 = mdo.get_resultats(self.var_resu2.get())
+            if resu1.modele_name.strip() and resu1.modele_name == resu2.modele_name:
+                self.mac_button.configure(state='normal')
+            else:
+                self.mac_button.configure(state='disabled')
         else:
-            self.deactivate_distant_widgets()
-    
+            self.mac_button.configure(state='disabled')
+
+        # Y a-t-il des deformees a representer ?
+        if self.is_resu1.get() or self.is_resu2.get():
+            self.phi_button.configure(state='normal')
+        else:
+            self.phi_button.configure(state='disabled')
+            
+    def view_frf(self):
+        """lancement d'une fenetre de visualisation des frf"""
+        mdo = self.objects
+        resu1 = None
+        resu2 = None
+        if self.is_resu1.get():
+            resu1 = mdo.get_resultats(self.var_resu1.get())
+        if self.is_resu2.get():
+            resu2 = mdo.get_resultats(self.var_resu2.get())
+        fenetre = DispFRFDialogue(self.mess, self.objects, self.param_visu, resu1, resu2)
+            
+    def  view_obs_1(self):
+        if self.is_resu1.get():
+            self.view_obs(self.var_resu1)
+        else : 
+            self.mess.disp_mess(u"Choisir un résultat")
+            return
+        self.setup()
+
+        
+    def  view_obs_2(self):
+        if self.is_resu2.get():
+            self.view_obs(self.var_resu2)
+        else : 
+            self.mess.disp_mess(u"Choisir un résultat")
+            return
+        self.setup()
+
+
+    def view_obs(self,var_resu):
+        """lancement d'une fenetre d'observation"""
+        mdo = self.objects
+        resu = mdo.get_resultats(var_resu.get())
+        fenetre = DispObs(self.mess,self.objects,resu)
+        fenetre.set_resu(resu.nom)
+                
+
+    def view_modes(self, *args):
+        """!Visualisation des modes par GMSH ou Salome"""
+          
+        mdo = self.objects
+        l_resultat = []
+        l_modele = []
+        if self.is_resu1.get():
+            resu1 = mdo.get_resultats(self.var_resu1.get())
+            
+            l_resultat.append(resu1.obj)
+        if self.is_resu2.get():
+            resu2 = mdo.get_resultats(self.var_resu2.get())
+            l_resultat.append(resu2.obj)
+        term = self.param_visu.visu_resu(resultat=l_resultat)
+        
+        self.term.append(term)
+        return
+
+
+    def view_macs(self):
+        """!Creation d'une nouvelle fenetre de visu MAC"""
+        mdo = self.objects
+        resu1 = None
+        resu2 = None
+        if self.is_resu1.get() and self.is_resu2.get():
+            resu1 = mdo.get_resultats(self.var_resu1.get())
+            resu2 = mdo.get_resultats(self.var_resu2.get())
+        elif self.is_resu1.get():
+            resu1 = mdo.get_resultats(self.var_resu1.get())
+            resu2 = mdo.get_resultats(self.var_resu1.get())
+        elif self.is_resu2.get():
+            resu1 = mdo.get_resultats(self.var_resu2.get())
+            resu2 = mdo.get_resultats(self.var_resu2.get())
+
+        mac = self.calculs.calc_mac_mode( resu1, resu2, norme = None )
+
+        self.param_visu.visu_mac(mac,resu1,resu2)
+
+
     def activate_salome_widgets(self):
-        self.activate_or_deactivate_distant_widgets()
         StateActivate(self.salome_widgets)
     
-    def deactivate_salome_widgets(self):
-        self.deactivate_distant_widgets()
-        StateDeactivate(self.salome_widgets)
+    def desactivate_salome_widgets(self):
+        StateDesactivate(self.salome_widgets)
     
     def interface_parametres(self, root):
         """!Création de l'interface de choix des logiciels de visualisation
-
         On permet à l'utilisateur de choisir Gmsh/Xmgrace ou Salome
         """
         
@@ -178,90 +390,30 @@ class InterfaceParametres(Frame):
         entry_salome_port.grid(row=3, column=2)
         self.salome_widgets.append(entry_salome_port)
         self.salome_port.set(self.get_runnig_salome_port())
-        
-        label_parametres_distant = Label(logiciels_frame, text=u"Paramètres mode distant")
-        label_parametres_distant.grid(row=5, column=2, columnspan=3)
-        self.distant_widgets.append(label_parametres_distant)
-        
-        label_machine_name = Label(logiciels_frame, text=u"Nom machine")
-        label_machine_name.grid(row=6, column=2, sticky='w')
-        self.distant_widgets.append(label_machine_name)
-        
-        entry_machine_name = Entry(logiciels_frame, textvariable=self.machine_distante_name)
-        entry_machine_name.grid(row=6,column=3, columnspan=2)
-        self.distant_widgets.append(entry_machine_name)
-        self.machine_distante_name.set(self.get_machine_name())
-        
-        label_user_name = Label(logiciels_frame, text=u"Nom utilisateur")
-        label_user_name.grid(row=7, column=2, sticky='w')
-        self.distant_widgets.append(label_user_name)
-        
-        entry_user = Entry(logiciels_frame, textvariable=self.user)
-        entry_user.grid(row=7,column=3, columnspan=2)
-        self.distant_widgets.append(entry_user)
-        self.user.set(self.get_user())
-        
-        label_protocole = Label(logiciels_frame, text=u"Protocole de copie")
-        label_protocole.grid(row=8, column=2, sticky='w')
-        self.distant_widgets.append(label_protocole)
-        
-        button_rcp = Radiobutton(logiciels_frame, text="rcp", value="rcp", variable=self.protocole)
-        button_rcp.grid(row=8, column=3, sticky='w')
-        self.distant_widgets.append(button_rcp)
-        self.protocole.set("rcp")
-        
-        button_scp = Radiobutton(logiciels_frame, text="scp", value="scp", variable=self.protocole)
-        button_scp.grid(row=8, column=4, sticky='w')
-        self.distant_widgets.append(button_scp)
-        
-        button_verifier_protocole = Button(logiciels_frame, text=u'Vérifier protocole', command=self.check_protocole)
-        button_verifier_protocole.grid(row=9, column=3, columnspan=2)
-        self.distant_widgets.append(button_verifier_protocole)
-        
-        button_local = Radiobutton(logiciels_frame, text="Local", value=False, variable=self.mode_distant,
-                            command = self.deactivate_distant_widgets )
-        button_local.grid(row=4, column=1, sticky='w')
-        self.salome_widgets.append(button_local)
-        
-        button_distant = Radiobutton(logiciels_frame, text="Distant", value=True, variable=self.mode_distant,
-                            command = self.activate_distant_widgets )
-        button_distant.grid(row=5, column=1, sticky='w')
-        self.salome_widgets.append(button_distant)
+        self.ce_salome = None
 
-        # Par defaut, on coche mode local
-        self.mode_distant.set(False)
-        
-        # => On desactive les widgets du mode distant
-        self.activate_or_deactivate_distant_widgets()
-        
+        liste_etudes = StudyList(logiciels_frame, self, u"choix de l'étude Salomé")
+        liste_etudes.grid(row=4, column=2, sticky='w')
+        self.salome_widgets.append(liste_etudes.liste)
+        self.salome_widgets.append(liste_etudes.titre)
+        liste_etudes.actualiser()
+
+
         label_choix_logiciel = Label(logiciels_frame, text=u"Choix du logiciel")
         label_choix_logiciel.grid(row=0, column=0, columnspan=3 )
         button_gmsh = Radiobutton(logiciels_frame, text=u"Gmsh/Xmgrace", value="Gmsh/Xmgrace", variable=self.logiciel,
-                                  command = self.deactivate_salome_widgets  )
+                                  command = self.desactivate_salome_widgets  )
         button_gmsh.grid(row=1, column=0, sticky='w')
         
         button_salome = Radiobutton(logiciels_frame, text=u"Salomé", value="Salome", variable=self.logiciel,
                                     command = self.activate_salome_widgets )
         button_salome.grid(row=2, column=0, rowspan=3, sticky='w')
-        
-        if __salome__ is not True:
-            self.logiciel.set("Gmsh/Xmgrace")
-            self.mess.disp_mess( u"Le module python 'pylotage' semble être absent, ou mal configuré.")
-            self.mess.disp_mess( u"On désactive le choix Salomé.")
-            StateDeactivate(self.salome_widgets+[button_salome])
-        elif not self.is_salome_launched():
-            self.logiciel.set("Gmsh/Xmgrace")
-            self.deactivate_salome_widgets()
-            self.mess.disp_mess( u"Salomé n'a pas été trouvé en local. On utilise Gmsh/Xmgrace.")
-        else:
-            self.logiciel.set(u"Salomé")
+
+            
+        self.logiciel.set("Salome")
         
         logiciels_frame.grid(row=1)
         
-        # Pas besoin d'utiliser un bouton valider si on ne sauvegarde pas les parametres dans un fichier
-        #button_valider = Button(f,text='Valider',command=self.save_parameters)
-        #button_valider.grid( row = 2)
-
         f.grid(row=1, sticky='w'+'e'+'s'+'n')
         return main_param
 
@@ -310,58 +462,22 @@ class InterfaceParametres(Frame):
                 self.mess.disp_mess(msg)
         return salome_port
     
-    # Verifie que le protocole de copie fonctionne
-    def check_protocole(self):
-        import signal
-        
-        txt = 'toto'
-        
-        executable = "%ssh"%(self.protocole.get()[0])
-        
-        args = [self.machine_distante_name.get(), "-l", self.user.get(), "echo '%s' > /dev/null"%txt]
-        
-        pid = os.spawnlp(os.P_NOWAIT, executable, executable, *args)
-        
-        returncode = -1
-        wpid = 0
-        t = 0
-        # on attend que la commande se termine ou on quitte apres 5s
-        while (wpid == 0 and t<5):
-            wpid, returncode = os.waitpid(pid,1)
-            time.sleep(1)
-            t = t+1
-        
-        # si la commande n'est pas terminee apres 5s, on la tue
-        if wpid == pid and returncode == 0:
-            self.mess.disp_mess(u"Le protocole %s est correctement configuré."%self.protocole.get())
-            self.protocole_ok = True
-        else:
-            os.kill(pid, signal.SIGTERM)
-            self.mess.disp_mess(u"Le protocole %s est mal configuré. Vérifiez vos paramètres."%self.protocole.get())
-            self.protocole_ok = False
-        pass
 
     def save_parameters(self, do_check_protocole=True):
         """! Sauvegarde les parametres dans une classe parente pour qu'ils soient communs a tous les onglets """
-        if self.logiciel.get() == "Salome":
-            if self.mode_distant.get():
-                self.machine_name = self.machine_distante_name.get()
-                if do_check_protocole and self.protocole_ok is None:
-                    self.check_protocole()
-            else:
-                self.machine_name = self.machine_locale_name
-            pass
-        pass
+        self.machine_name = self.machine_locale_name
+
     
     def get_logiciel(self):
         self.save_parameters()
         if self.logiciel.get() == "Gmsh/Xmgrace":
             return CalcEssaiGmsh(self.mess)
         else:
-            return CalcEssaiSalome(self.mess, self.machine_name, self.salome_port.get(),
-                                   self.mode_distant.get(), self.user.get(), self.protocole.get(),
-                                   self.protocole_ok, self)
-        pass
+            if self.ce_salome:return self.ce_salome
+            else: return CalcEssaiSalome(self.mess, self.machine_name, self.salome_port.get(),
+                                         self.user.get(), self.protocole.get(),
+                                         self.protocole_ok, self)
+        pass 
     
     def get_logiciel_courbes(self):
         # Les courbes sont transferees par CORBA
@@ -370,19 +486,53 @@ class InterfaceParametres(Frame):
         if self.logiciel.get() == "Gmsh/Xmgrace":
             return CalcEssaiXmgrace()
         else:
-            return CalcEssaiSalomeCourbes(self.mess, self.machine_name, self.salome_port.get(),self)
+            if self.ce_salome_courbes:return self.ce_salome_courbes
+            else:return CalcEssaiSalomeCourbes(self.mess, self.machine_name, self.salome_port.get(),self)
         pass
+
+    def visu_studylist(self):
+        self.ce_salome = CalcEssaiSalome(self.mess, self.machine_name, self.salome_port.get(),
+                                         self.user.get(), self.protocole.get(),
+                                         self.protocole_ok, self)
+
+        self.ce_salome_courbes = CalcEssaiSalomeCourbes(self.mess, self.machine_name, self.salome_port.get(),self)
+
+        studylist = self.ce_salome.studylist()
+        return studylist
+
+    def set_study(self, study):
+        self.ce_salome.study_name = study
+        self.ce_salome_courbes.study_name = study
+        self.mess.disp_mess(u"Les courbes et vues seront affichées dans l'étude Salomé "+study)
     
     # fonction proxy vers le bon logiciel
     def visu_resu(self,resultat, nume_mode=None):
         logiciel = self.get_logiciel()
+        self.param_visu.type_visu.set('deformee')
         term = logiciel.visu_resu(resultat, nume_mode)
         return term
+
+    def visu_mac(self,mac,resu1,resu2):
+        logiciel = self.get_logiciel()
+        term = logiciel.visu_mac(mac,resu1,resu2)
+        return term
     
-    def visu_courbe(self, l_x, ll_y, couleur=None, l_legende=None, titre_x="Abscisses", titre_y="Ordonnées"):
+    def visu_courbe(self, l_x, ll_y, couleur=None, titre='Courbe', l_legende=None,
+                    legende_x="Abscisses",legende_y="Ordonnées",
+                    unite_x="ua",unite_y="ua"):
         self.logiciel_courbes = self.get_logiciel_courbes()
-        self.logiciel_courbes.affiche(l_x, ll_y, couleur, l_legende, titre_x, titre_y)
+        self.logiciel_courbes.affiche(l_x, ll_y,
+                                      couleur, titre,
+                                      l_legende,
+                                      legende_x, legende_y,
+                                      unite_x,unite_y)
         pass
+
+
+    def quit(self):
+        for term in self.term:
+            if term is not None:
+                term.Fermer()
 
 
 
@@ -484,11 +634,10 @@ class CalcEssaiLogiciel(object):
                     self.impr_resu(resultat[i], nume_mode)
         else:
             self.impr_resu(resultat, nume_mode)
-        self.libere_fichier()
         term = self.affiche()
         
         return term
-
+ 
     
 # Classe specifique pour la gestion de la visu GSMH
 class CalcEssaiGmsh(CalcEssaiLogiciel):
@@ -500,10 +649,9 @@ class CalcEssaiGmsh(CalcEssaiLogiciel):
         self.term  = None
         self.param = None
         self.get_gmsh_params()
+
     
-    def get_gmsh_params(self):
-        # TODO: supprimer ces lignes de recherche de gmsh de ce_ihm_expansion.py (et autres) pour ne le garder qu'ici.
-        
+    def get_gmsh_params(self):        
         GMSH_CANDIDATES = [ os.path.join( pth, "gmsh" ) for pth in os.environ['PATH'].split(":") ]
         GMSH_CANDIDATES += ["./gmsh"] # custom paths
         GMSH_CANDIDATES += ["/logiciels/Aster/outils/gmsh"]
@@ -533,24 +681,46 @@ class CalcEssaiGmsh(CalcEssaiLogiciel):
         return term
 
 
+    def visu_mac(self,mac,resu1,resu2):
+
+        titre = "matrice de MAC pour " + resu1.nom + " et " + resu2.nom
+
+        f = Toplevel()
+        size = (20,300)
+        f.columnconfigure(0,weight=1)
+        f.rowconfigure(0,weight=1)
+        mac_win = MacWindowFrame( f, titre, resu1.nom, resu2.nom, size)
+        mac_win.grid(row=0,column=0,sticky='nsew')
+        afreq1 = resu1.get_modes_data()['FREQ']
+        noeud_cmp1 = resu1.get_modes_data()['NOEUD_CMP']
+        afreq2 = resu2.get_modes_data()['FREQ']
+        noeud_cmp2 = resu2.get_modes_data()['NOEUD_CMP']
+        # si mode statique, on donne le champ NOEUD_CMP a la place de la frequence
+        for ind_ordr in range(len(afreq1)):
+            if afreq1[ind_ordr]==None:afreq1[ind_ordr]=noeud_cmp1[ind_ordr]
+        for ind_ordr in range(len(afreq2)):
+            if afreq2[ind_ordr]==None:afreq2[ind_ordr]=noeud_cmp2[ind_ordr]
+        mac_win.set_modes(afreq1, afreq2, mac)
+
+  
 
 
 # Classe specifique pour la gestion de la visu Salome
 class CalcEssaiSalome(CalcEssaiLogiciel):
-    def __init__(self, mess, machine_name, salome_port, mode_distant,
-                 user, protocole, protocole_ok, ihm_param):
+    def __init__(self, mess, machine_name, salome_port,
+                 user, protocole, protocole_ok, param_visu):
         CalcEssaiLogiciel.__init__(self, mess)
         self.impr_resu_format = "MED"
         self.impr_resu_params = {}
         self.machine_name = machine_name
         self.salome_port = salome_port
-        self.mode_distant = mode_distant
         self.user = user
         self.protocole = protocole
         self.protocole_ok = protocole_ok
         self.dataPresentation = None
         self.theMedFile = None
-        self.ihm_param = ihm_param
+        self.param_visu = param_visu
+        self.study_name = None
 
     def affiche(self, fichier=None):
         if fichier is None:
@@ -559,250 +729,198 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         working_dir     = os.getcwd()
         self.theMedFile = os.path.join(working_dir, fichier)
         
-        # liste des etudes ouvertes sous le name service donne
-        st_mng = StudyManager(ORBInitRef='NameService=corbaname::%s:%i'%(self.machine_name, self.salome_port),
-                              machineName = self.machine_name)
-        studies = st_mng.getOpenStudies()
+        self.Show( './fort.%s'%self.unite_logique)
+        self.libere_fichier()
+
+
+    def studylist(self):
+        """
+        Retourne la liste des études
+        """
+        result = []
+
+        _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
+        unite=_UL['UNITE_LIBRE',1]
+
+        dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeGetStudies.py',
+                    'SALOME_HOST'      : self.machine_name,
+                    'SALOME_PORT'      : self.salome_port,
+                    'FICHIERS_SORTIE'  : [ './fort.%s' % unite ],
+                   #'SALOME_RUNAPPLI'  : '/local00/home/aster/outils/runSalomeScript',
+                  }
+
+        EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+                      INFO=2,
+                      SALOME=dSALOME
+                      );
+
+        f=open('./fort.%s' % unite, 'r')
+        result=[ study.strip() for study in f.readlines() ]
+        f.close()
+
+        DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
+
+        return result
+
+    def visu_mac(self,mac,resu1,resu2):
         
-        self.study_name = None
-        if not studies :
-            # pas d'etudes Salome ouverte : il faut en ouvrir une
-            study = st_mng.getOrCreateStudy('CALC_ESSAI')
-            self.study_name = 'CALC_ESSAI'
-            self.suite()
-        # cas ou une ou plusieurs etudes salome sont ouvertes.
-        if len(studies) == 1:
-            # une seule etude ouverte
-            self.study_name = studies[0]
-            self.suite()
+        param_visu=self.param_visu
+        param_visu.type_visu.set('mac')
+
+
+        self.defi_fichier()
+        make_mac_salome(mac,resu1,resu2,self.unite_logique)
+        self.Show( './fort.%s'%self.unite_logique)
+        self.libere_fichier()
+
+
+    def Show(self, medFilePath) :
+        """
+        Lecture d'un fichier MED par le composant VISU de SALOME.
+
+        @type     medFilePath : string
+        @param  medFilePath:  chemin du fichier MED
+
+        @type     visuType :     integer
+        @param  visuType:      type de visualisation
+        """
+
+        import shutil
+        shutil.copy(medFilePath,'/home/bodel/resu.med')
+        
+        if self.param_visu.type_visu.get()=='mac' :
+            script = './Python/Templates/salomeScriptMac.py'
+        elif self.param_visu.type_visu.get()=='deformee' :
+            script = './Python/Templates/salomeScript.py'
         else:
-            # plusieurs etudes ouvertes : on ouvre une fenetre pour choisir l'etude a selectionner
-            choix_st = ChoixStudy(self,studies,self.ihm_param)
-
-            
-    def suite(self):
-        """ suite de la methode affiche"""
-        entity = NODE
-        theDelay = 0
-        try:
-            salomeVisu = Visu( ORBInitRef='NameService=corbaname::%s:%i'%(self.machine_name, self.salome_port),
-                               studyName = self.study_name,
-                               machineName = self.machine_name  )
-        except:
-            self.mess.disp_mess(u"Impossible de trouver le module VISU de la machine %s sur le port %i" \
-                               %(self.machine_name, self.salome_port))
-            self.mess.disp_mess(u"Conseil : si i existe une cession de Salomé, pensez à activer le modue Visu")
+            print "Le type de deformee a visualiser n'a pas ete defini"
+        if not self.study_name:
+            self.mess.disp_mess(u"Choisir l'étude Salomé dans laquelle afficher les résultats")
             return
-        
-        # Transfert vers machine distante
-        if self.mode_distant:
-            if not self.protocole_ok:
-                self.mess.disp_mess(u"Le protocole %s est mal configuré. Vérifiez vos paramètres."%self.protocole)
-                return
-            ok = self.transfert_med_file()
-            if not ok:
-                return
-        
-        # On procede au chargement des données du fichier med
-        ok = salomeVisu.importMED(self.theMedFile)
-        if not ok:
-            self.mess.disp_mess("Problème à l'import du fichier med %s"%theMedFile)
-            return
-        
-        # Pour recuperer les infos sur le fichier med
-        self.dataPresentation = salomeVisu.dataPresentation
-        self.study = salomeVisu.study
-        
-        l_mesh_names = salomeVisu.dataPresentation.GetMeshNames()
-        
-        for mesh_name in l_mesh_names:
-            ok = salomeVisu.setEntity(entity, mesh_name)
-            if not ok:
-                self.mess.disp_mess("Impossible de creer le maillage %s"%mesh_name)
-                return
-            
-            # BUG (ou spec???) Renvoit une liste de chaines de caracteres vides!
-            # => cf REX 12607
-            ##l_field_names = salomeVisu.dataPresentation.GetFields(theMeshName, NODE)
-            # => on developpe notre propre methode getFieldNames:
-            l_field_names = self.getFieldNames(mesh_name)
-            
-            for field_name in l_field_names:
-                l_time_stamps = salomeVisu.dataPresentation.GetTimeStampNumbers(mesh_name, NODE, field_name)
-                nb_time_stamps = len(l_time_stamps)
-                for iteration in range(1, nb_time_stamps+1):
-                    ok = salomeVisu.DeformedShape( field_name , iteration, "DEPL",  theDelay)
-                    if not ok:
-                        self.mess.disp_mess("Impossible d'afficher %s, iteration %i"%(field_name, iteration))
-                        return
-                    pass
-                pass
-            pass
-        pass
-    
-    # On transfert le fichier med via rcp ou scp
-    #
-    # L'ideal serait de pouvoir transferer le fichier via CORBA, comme dans ExportToMED de Smesh dans pylotage
-    # pour qu'on n'ait pas a entrer le nom d'utilisateur et le protocole dans l'interface,
-    # mais le transfert dans ce sens n'est pas implemente dans le KERNEL de SALOME.
-    # Pour pouvoir transférer un fichier de la machine locale vers la machine contenant les services CORBA,
-    # dans SALOME_FileTransfer_i.cxx, il faut :
-    # - implémenter le mode 'w' dans la méthode open pour ouvrir un fichier sur la machine CORBA
-    # - une méthode putBlock qui écrit un bloc d'octets dans ce fichier.
-    # => TODO: demande a NEPAL
-    # => cf REX Code_Aster 12606
-    def transfert_med_file(self):
-        
-        current_time =  time.strftime("%Y_%m_%d-%H_%M_%S")
-        med_distant = "/tmp/CALC_ESSAI-%s-%s.med"%(self.user, current_time)
-        cmd = "%s %s %s@%s:%s"%(self.protocole, self.theMedFile, self.user, self.machine_name, med_distant)
-        print "cmd = ", cmd
-        ret = os.system(cmd)
-        print "ret = ", ret
-        if ret != 0:
-            self.mess.disp_mess("Problème lors de la copie du fichier med vers %s avec le protocole %s"%(self.machine_name, self.protocole))
-            return False
-        self.theMedFile = med_distant
-        return True
-    
-    # Remplacement de VISU.Result.GetFields par un parcours de l'arbre d'etude
-    # - nom du fichier med
-    #     - nom du maillage 1
-    #     + Families
-    #     + Groups
-    #     - Fields
-    #         + nom du champ 1
-    #         + nom du champ 2
-    #     - nom du maillage 2
-    # ...
-    def getFieldNames(self, mesh_name):
-        l_field_names = []
-        med_result_id = self.dataPresentation.GetID()
-        med_result_SObj = self.study.FindObjectIOR( med_result_id )
-        #self.mess.disp_mess(med_result_SObj.GetName())
-        i = 1
-        mesh_SObj = None
-        while med_result_SObj.FindSubObject(i)[0]:
-            try:
-                mesh_SObj = med_result_SObj.FindSubObject(i)[1]
-                #self.mess.disp_mess(mesh_SObj.GetName())
-                #self.mess.disp_mess("i=%i"%i)
-                if mesh_SObj.GetName() == mesh_name:
-                    #self.mess.disp_mess("=> trouvé")
-                    break
-            except:
-                self.mess.disp_mess("=> pb dans mesh_name i=%i"%i)
-                pass
-            i = i+1
-        
-        if mesh_SObj is None:
-            self.mess.disp_mess("maillage %s non trouvé"%mesh_name)
-            return
-        
-        # 1: Groups
-        # 2: Families
-        # 3: Fields
-        # => FindSubObject(3)
-        fields_SObj = mesh_SObj.FindSubObject(3)[1]
-        j = 1
-        while fields_SObj.FindSubObject(j)[0]:
-            try:
-                field = fields_SObj.FindSubObject(j)[1]
-                field_name_tmp = field.GetName()
-                field_name = field_name_tmp.split(",")[0]
-                #self.mess.disp_mess("j=%i"%j)
-                #self.mess.disp_mess(field_name)
-                l_field_names.append(field_name)
-            except:
-                self.mess.disp_mess("=> pb dans field_name j=%i"%j)
-                pass
-            j = j+1
-        
-        return l_field_names
 
-class CalcEssaiLogicielCourbes(CalcEssaiLogiciel):
-    
-    def __init__(self):
-        pass
+        dSALOME = { 'CHEMIN_SCRIPT'    : script,
+                    'SALOME_PORT'      : self.salome_port,
+                    'FICHIERS_ENTREE'  : [ medFilePath ],
+                    'NOM_PARA'         : [ 'STUDY' ],
+                    'VALE'             : [ self.study_name ],
+                   #'SALOME_RUNAPPLI'  : '/local00/home/aster/outils/runSalomeScript',
+                  }
 
-    def fermer(self):
-        pass
+        EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+                      INFO=2,
+                      SALOME=dSALOME
+                      );
 
-class CalcEssaiSalomeCourbes(CalcEssaiLogicielCourbes):
+        UTMESS('I','STANLEY_20')
+
+
+
+class CalcEssaiSalomeCourbes(CalcEssaiSalome):
     
-    def __init__(self, mess, machine_name, salome_port, ihm_param):
+    def __init__(self, mess, machine_name, salome_port, param_visu):
         self.mess = mess
         self.machine_name = machine_name
         self.salome_port = salome_port
-        self.ihm_param = ihm_param
+        self.param_visu = param_visu
+        self.study_name = None
     
     # l_x: liste des abscisses
     # ll_y: liste de liste des ordonnees (une liste par courbe)
     # l_legende: liste de legendes (une legende par courbe)
-    def affiche(self, l_x, ll_y, couleur=None, l_legende=None, titre_x="Abscisses", titre_y="Ordonnées"):
-        # les donnees d'entree sont passees en attribut de la classe pour etre utilisees dans la methode "suite"
-        self.l_x = l_x
-        self.ll_y = ll_y
-        self.couleur = couleur
-        self.l_legende = l_legende
-        self.titre_x = titre_x
-        self.titre_y = titre_y
+    def affiche(self, l_x, ll_y, couleur=None, titre="Courbes", l_legende=None,
+                legende_x="Abscisses",legende_y="Ordonnées",
+                unite_x="ua",unite_y="ua"):
 
-        # recuperation des noms des etudes Salome ouvertes :
-        st_mng = StudyManager(ORBInitRef='NameService=corbaname::%s:%i'%(self.machine_name, self.salome_port),
-                              machineName = self.machine_name)
-        studies = st_mng.getOpenStudies()
-        
-        self.study_name = None
-        if not studies :
-            # pas d'etudes Salome ouverte : il faut en ouvrir une
-            study = st_mng.getOrCreateStudy('CALC_ESSAI')
-            self.study_name = 'CALC_ESSAI'
-            self.suite()
-        # cas ou une ou plusieurs etudes salome sont ouvertes.
-        if len(studies) == 1:
-            # une seule etude ouverte
-            self.study_name = studies[0]
-            self.suite()
-        else:
-            # plusieurs etudes ouvertes : on ouvre une fenetre pour choisir l'etude a selectionner
-            choix_st = ChoixStudy(self,studies,self.ihm_param)
-        
+        if l_legende == None:
+            l_legende = [' toto ']*len(ll_y)
 
-    def suite(self):
-        """ suite de la methode affiche"""
-        # On cree la meme liste de courbes que celle sortie dans Stanley donnee a pylotage
-        from Stanley import as_courbes
-        
-        l_courbes = []
-        l_x = self.l_x
-        # boucle sur les listes d'ordonnees
-        for i, l_y in enumerate(self.ll_y):
-            courbe = as_courbes.Courbe(l_x, l_y)
-            if self.l_legende is None:
-                nom_courbe = "Courbe %i"%i
-            else:
-                nom_courbe = self.l_legende[i]
-            l_courbes.append((courbe, nom_courbe))
 
-        # on recupere les services du module VISU
-        try:
-            salomeVisu = Visu( ORBInitRef='NameService=corbaname::%s:%i'%(self.machine_name, self.salome_port),
-                               studyName = self.study_name, machineName = self.machine_name  )
-        except:
-            self.mess.disp_mess("Impossible de trouver le module VISU de la machine %s sur le port %i" \
-                              %(self.machine_name, self.salome_port))
-            self.mess.disp_mess("Conseil : si i existe une cession de Salomé, pensez à activer le modue Visu")
+        # Creation d'une table pour ranger les fonctions
+        titre1 = 'TITLE:'+titre
+        legende_x=legende_x.strip()
+        legende_x=legende_x.replace(' ','')
+        legende_y=legende_y.strip()
+        legende_y=legende_y.replace(' ','')
+
+        # Liste des noms des courbes, et titre des axes       
+        l_colonnes = [legende_x]
+        titre2 = 'COLUMN_TITLES:'+legende_x+' | '
+        for legende in l_legende:
+            legende=legende.strip()
+            legende=legende.replace(' ','')
+            l_colonnes.append(legende)
+            titre2 = titre2 + legende+' | '
+
+        # unite des axes
+        unite_x=unite_x.strip()
+        unite_x=unite_x.replace(' ','')
+        unite_y=unite_y.strip()
+        unite_y=unite_y.replace(' ','')
+        titre3 = 'COLUMN_UNITS:' + unite_x +' '+ unite_y
+        TITRE = titre1+'\n'+titre2+'\n'+titre3
+
+        # Liste des noms des courbes
+        dico = []
+        for ind_absc in range(len(l_x)):
+            dico.append({ legende_x:l_x[ind_absc]})
+            for ind_courb in range(len(ll_y)):
+                dico[ind_absc].update({l_colonnes[ind_courb+1]:ll_y[ind_courb][ind_absc]})
+
+        table = Table(titr=TITRE)
+        table.extend(dico)
+        table = table[l_colonnes]
+
+        self.defi_fichier()
+        fw=open('fort.%s' %self.unite_logique, 'w')
+        fw.write( str(table) )
+        fw.close()
+
+        #import shutil
+        #shutil.copy('./fort.%s' %self.unite_logique,'/home/bodel/resu1')
+
+        # recuperation des noms des etudes Salome ouvertes
+        if not self.study_name:
+            self.mess.disp_mess(u"Sélectonner l'étude Salomé dans laquelle afficher les courbes")
             return
-        if self.l_legende is None:
-            titre='Courbes CALC_ESSAI'
-        else:
-            titre=self.l_legende[0]
-        
-        salomeVisu.XYPlot2(l_courbes, titre, self.titre_x, self.titre_y)
+
+        self.Show( './fort.%s'%self.unite_logique)
+        self.libere_fichier()
+
+
+    def Show(self,medFilePath):
+        """
+        Lecture d'un fichier MED par le composant VISU de SALOME.
+
+        @type     medFilePath : string
+        @param  medFilePath:  chemin du fichier MED
+
+        @type     visuType :     integer
+        @param  visuType:      type de visualisation
+        """
+
+        dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeScript.py',
+                    'SALOME_PORT'      : self.salome_port,
+                    'FICHIERS_ENTREE'  : [ medFilePath ],
+                    #'SALOME_RUNAPPLI'  : self.salome_runscript,
+                    'NOM_PARA'         : [ 'CHOIX', 'STUDY' ],
+                    'VALE'             : [ 'COURBE', self.study_name ],
+                  }
+
+
+        EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+                      INFO=2,
+                      SALOME=dSALOME
+                      );
+
+        UTMESS('I','STANLEY_20')
+
+    def fermer(self):
         pass
 
-class CalcEssaiXmgrace(CalcEssaiLogicielCourbes):
+
+
+##class CalcEssaiXmgrace(CalcEssaiLogicielCourbes):
+class CalcEssaiXmgrace():
     
     def __init__(self):
         self.xmgr_manager = None
@@ -810,7 +928,9 @@ class CalcEssaiXmgrace(CalcEssaiLogicielCourbes):
     
     # l_x: liste des abscisses
     # ll_y: liste de liste des ordonnees (une liste par courbe)
-    def affiche(self, l_x, ll_y, couleur=None, legende=None, titre_x=None, titre_y=None):
+    def affiche(self, l_x, ll_y, couleur=None, titre='Courbes', l_legende=None,
+                legende_x=' ', legende_y=' ',
+                unite_x=' ',unite_y=' '):
         if couleur is None:
             # XXX color n'est plus uilisé mais est-ce important? 
             # Xmgrace applique automatiquement une nouvelle couleur
@@ -823,30 +943,10 @@ class CalcEssaiXmgrace(CalcEssaiLogicielCourbes):
                     couleur.append(',1')
         
         self.xmgr_manager = XmgrManager()
-        self.xmgr_manager.affiche(l_x, ll_y, couleur, legende, titre_x, titre_y)
+        self.xmgr_manager.affiche(l_x, ll_y, couleur, l_legende, legende_x, legende_y)
         pass
     
     def fermer(self):
-        self.xmgr_manager.fermer()
         pass
     
 
-class ChoixStudy:
-
-    def __init__(self,parent,results,ihm_parent): # attention : rajouter ihm_parametre a l'appel
-        self.parent = parent
-        
-        self.fenetre = Toplevel(ihm_parent)
-        self.var_resu = StringVar()
-        self.fenetre.title("Choix de l'etude Salome")
-        f = Frame(self.fenetre)
-        MyMenu( f, options = results,var = self.var_resu).grid(row=0, column=0, sticky='ew')
-        Button(f,text='OK',command=self.fermer,width = 30).grid(row=1,column=0,sticky='ew')
-        f.grid(row=0,column=0)
-
-        self.fenetre.mainloop()
-
-    def fermer(self):
-        self.parent.study_name = self.var_resu.get()
-        self.parent.suite()
-        self.fenetre.destroy()

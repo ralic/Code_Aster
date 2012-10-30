@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -390,6 +390,18 @@ Erreur dans le calcul du tenseur équivalent au sens de HILL.
 
 76 : _(u"""
 Pour le comportement %(k1)s les paramètres %(k2)s et %(k3)s sont obligatoires.
+"""),
+
+77 : _(u"""
+Le calcul de ENEL_ELGA  n'est pas possible avec DEFORMATION= %(k1)s.
+"""),
+
+78 : _(u"""
+Le calcul de ENER_TOTALE  n'est pas possible avec DEFORMATION= %(k1)s.
+"""),
+
+79 : _(u"""
+Le calcul de ETOT_ELGA  n'est pas possible avec DEFORMATION= %(k1)s.
 """),
 
 }

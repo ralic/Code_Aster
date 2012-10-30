@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -219,6 +219,7 @@ OPTION__
                               OUT__  EENERR   PENERCR
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
+                                     CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  ZVARIPG  PVARIGR  ZVARCPG  PVARCRR
                               OUT__  EENERPG  PENERDR
     ENEL_ELNO           4     IN__   EENERPG  PENERPG
                               OUT__  EENERNO  PENERNO

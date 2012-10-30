@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POUTRE EN FLAMBEMENT
 # ssnl502d.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,8 +99,7 @@ GF=DEFI_GEOM_FIBRE(
             COOR_AXE_POUTRE=(0.,0.,),),)
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT,
-                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MAT,
-                                 RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MAT,RELATION='ELAS',),
                      )
 
 
@@ -155,8 +154,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=LIAISON,),
                           _F(CHARGE=FORCE,
                              FONC_MULT=FO_MULT,),),
-                   COMP_INCR=_F(RELATION='MULTIFIBRE',
-                                GROUP_MA='AB',),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',GROUP_MA='AB',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=0.95,),
                    NEWTON=_F(MATRICE='TANGENTE',
@@ -174,7 +172,7 @@ RESO=STAT_NON_LINE(reuse =RESO,
                    EXCIT=(_F(CHARGE=LIAISON,),
                           _F(CHARGE=FORCE,
                              TYPE_CHARGE='FIXE_PILO',),),
-                   COMP_INCR=_F(RELATION='MULTIFIBRE',),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                    ETAT_INIT=_F(
                    EVOL_NOLI=RESO,),
                    INCREMENT=_F(LIST_INST=L_INST,),

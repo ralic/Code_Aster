@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF table0 Messages  DATE 30/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -183,4 +183,11 @@ Conseil :
     Si c'est le cas, utilisez LIRE_TABLE au FORMAT='ASTER'.
 """),
 
+46 : _(u"""
+Plusieurs numéros d'ordre sont associés à l'accès %(k1)s de valeur %(r1)f
+
+
+Conseil :
+    Vous pouvez modifier la recherche en renseignant le mot clé PRECISION.
+"""),
 }

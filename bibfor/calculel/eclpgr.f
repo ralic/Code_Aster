@@ -1,6 +1,6 @@
       SUBROUTINE ECLPGR
       IMPLICIT   NONE
-C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF CALCULEL  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ C     --------------------------------------
 C       -- ON SUPPOSE QUE TOUS LES INSTANTS ONT LE MEME PROFIL :
 C          PRCHNO
         NOOJB='12345678.00000.NUME.PRNO'
-        CALL GNOMSD(NOOJB,10,14)
+        CALL GNOMSD(' ',NOOJB,10,14)
         PRCHNO=NOOJB(1:19)
 
         NOMSY1=LICHAM(ISY)

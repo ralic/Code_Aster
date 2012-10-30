@@ -18,7 +18,7 @@
        REAL*8       LST(NNOP),MATUU(*),SIG(*),BASLOC(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 30/10/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,6 @@ C OUT IVECTU  : VECTEUR FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C..............................................................
 C----------------------------------------------------------------
       CHARACTER*8   ELREFP,ELRESE(6),FAMI(6)
-      CHARACTER*16  K16BID
       REAL*8        HE(NFISS),R8BID,COORSE(81)
       INTEGER       NSE,NPG,NBSIGM
       INTEGER       J,ISE,IN,INO,IDEBS,IDEBV
@@ -191,7 +190,7 @@ C       DEBUT DE LA ZONE MEMOIRE DE SIG ET VI CORRESPONDANTE
             CALL XNMEL2(POUM,ELREFP,ELRESE(NDIM+IRESE),NDIM,COORSE,
      &                  IGEOM,HE,NFH,DDLC,DDLM,
      &                  NFE,BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,
-     &                  K16BID,LGPG,R8BID,IBID,LSN,LST,IDECPG,
+     &                  COMPOR,LGPG,R8BID,IBID,LSN,LST,IDECPG,
      &                  R8BID,R8BID,MATUU,IBID,CODRET,
      &                  NFISS,FISNO)
 

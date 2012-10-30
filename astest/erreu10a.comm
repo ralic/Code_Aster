@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/10/2012   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE GREFFET
 #
 # TITRE GESTION EXCEPTION INSTABILITE (CAS-TEST INSPIRE PAR SSLL105)
@@ -106,7 +106,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "MECANONLINE9_13":
+   if err.id_message == "MECANONLINE9_51":
       is_ok = 1
 # TEST_RESU
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
@@ -143,7 +143,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "MECANONLINE9_13":
+   if err.id_message == "MECANONLINE9_51":
       is_ok = 1
 # TEST_RESU
 TAB1N=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
@@ -182,7 +182,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "MECANONLINE9_13":
+   if err.id_message == "MECANONLINE9_51":
       is_ok = 1
 # TEST_RESU
 TAB1P=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),

@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel3 Messages  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -310,18 +310,6 @@ Risques & conseils :
 
 63 : _(u"""
  champ de géométrie non trouve
-"""),
-
-64 : _(u"""
- l'instant du calcul est pris  arbitrairement a 0.0
-"""),
-
-65 : _(u"""
-  on n'accepte un instant arbitraire que si le concept déformations anélastiques n'a qu'un champ.
-"""),
-
-66 : _(u"""
-  le concept EVOL_NOLI :  %(k1)s  ne contient aucun champ de déformations anélastiques.
 """),
 
 71 : _(u"""

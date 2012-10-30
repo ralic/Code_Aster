@@ -6,7 +6,7 @@
      &                  MEELEM,MEASSE,VEELEM,VEASSE,NBITER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 30/10/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,13 +82,11 @@ C
 C ----------------------------------------------------------------------
 C
       CHARACTER*24 K24BLA
-      INTEGER      INCRUN
       LOGICAL      LERRIT
 C
 C ----------------------------------------------------------------------
 C
       K24BLA = ' '
-      INCRUN = 1
 C
 C --- INITIALISATION DES CHAMPS D'INCONNUES POUR LE NOUVEAU PAS DE TEMPS
 C
@@ -115,10 +113,6 @@ C
      &            VEASSE,LERRIT)
 C
       IF (LERRIT) GOTO 315
-C
-C --- PREMIER INSTANT PASSE
-C
-      CALL DIBCLE(SDDISC,'PREMIE','E',INCRUN)
 C
 C --- CALCUL PROPREMENT DIT DE L'INCREMENT DE DEPLACEMENT
 C

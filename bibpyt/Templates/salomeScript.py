@@ -1,4 +1,4 @@
-#@ MODIF salomeScript Templates  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF salomeScript Templates  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,6 +48,7 @@ if not os.path.isfile(INPUTFILE1): raise Exception("Fichier %s non present!" % I
 
 
 #%====================Initialisation Salome================================%
+import sys
 import salome
 import SALOMEDS
 import salome_kernel
@@ -55,6 +56,9 @@ orb, lcc, naming_service, cm = salome_kernel.salome_kernel_init()
 obj = naming_service.Resolve('myStudyManager')
 myStudyManager = obj._narrow(SALOMEDS.StudyManager)
 
+root=os.path.normpath(os.path.dirname(os.path.abspath(os.path.realpath(sys.argv[0]))))
+INPUTFILE2 = os.path.join(root,INPUTFILE1)
+if not os.path.isfile(INPUTFILE2): raise Exception("Fichier %s non present!" % INPUTFILE1)
 
 #%====================Initialisation etude================================%
 if STUDY:
@@ -88,7 +92,7 @@ if myViewManager is None : raise Exception("Erreur de creation de study")
 #%===================Construction courbe======================%
 
 if CHOIX=='COURBE':
-    table_txt = myVisu.ImportTables(INPUTFILE1,0)
+    table_txt = myVisu.ImportTables(INPUTFILE2,0)
     if table_txt :
         IsFound,aSObject = table_txt.FindSubObject(1)
         if  IsFound :
@@ -103,7 +107,7 @@ if CHOIX=='COURBE':
 #%====================Construction isovaleurs====================%
 
 else :
-     myResult = myVisu.ImportFile(INPUTFILE1)
+     myResult = myVisu.ImportFile(INPUTFILE2)
      if myResult is None : raise Exception("Erreur de fichier MED")
 
      MAILLAGE = myResult.GetMeshNames()[0]

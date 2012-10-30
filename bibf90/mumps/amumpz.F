@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP,PREPOS,PCENTP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPZ MUMPS  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF AMUMPZ MUMPS  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -167,9 +167,9 @@ C       ------------------------------------------------
         RANG=ZMPSK%MYID
         NBPROC=ZMPSK%NPROCS
 
-C       ------------------------------------------------
-C        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS :
-C       ------------------------------------------------
+C       --------------------------------------------------------------
+C        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (ANALYSE+FACTO):
+C       --------------------------------------------------------------
         CALL AMUMPI(2,LQUALI,LDIST,KXMPS,TYPE)
 
 C       ----------------------------------------------------------
@@ -417,6 +417,11 @@ C       ------------------------------------------------
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPP(0,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,LBIS,
      &              RBID,CSOLU,VCINE,PREPOS,LPRECO)
+
+C       --------------------------------------------------------------
+C        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (SOLVE):
+C       --------------------------------------------------------------
+        CALL AMUMPI(3,LQUALI,LDIST,KXMPS,TYPE)
 
 C       ------------------------------------------------
 C        RESOLUTION MUMPS :

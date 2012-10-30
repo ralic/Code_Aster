@@ -8,7 +8,7 @@
       REAL*8       FNO(NDIM*NNOP),RHO
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 30/10/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,9 @@ C     PARAMETRES DES FORCES VOLUMIQUES
 C     INITIALISATION DE FNO
       CALL VECINI(NDIM*NNOP,0.D0,FNO)
 
+C     INITIALISATION DE RHO
+      RHO = 0.D0
+
 C     ------------------------------------------------------------------
 C                     TRAITEMENT DES FORCES VOLUMIQUES
 C     ------------------------------------------------------------------
@@ -126,6 +129,7 @@ C     ------------------------------------------------------------------
         CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
         CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,1,' ',RBID,1,
      &              'RHO',RHO,ICODRE,1)
+          
         IF (IPESA.NE.0) THEN
           DO 60 INO=1,NNOP
             DO 61 J=1,NDIM

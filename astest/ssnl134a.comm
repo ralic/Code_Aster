@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 # ssnl134a.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,7 +52,7 @@ GF=DEFI_GEOM_FIBRE(
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=ACIER,
                   MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=ACIER,
-                                 RELATION='VMIS_ISOT_LINE',DEFORMATION='GROT_GDEP',),
+                                 RELATION='VMIS_ISOT_LINE',),
                      )
 
 MATER=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
@@ -106,8 +106,7 @@ RESO0=STAT_NON_LINE(MODELE=MOD_TGM,
                            _F(CHARGE=FORCE,
                               FONC_MULT=FO_MULT,
                               ),),
-                    COMP_INCR=_F(RELATION='MULTIFIBRE',
-                                 ),
+                    COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=tforc,),
                     NEWTON=_F(MATRICE='TANGENTE',
@@ -124,8 +123,7 @@ RESO=STAT_NON_LINE(MODELE=MOD_TGM,
                            _F(CHARGE=FORCE,
                               TYPE_CHARGE='FIXE_PILO',
                               ),),
-                    COMP_INCR=_F(RELATION='MULTIFIBRE',
-                                 ),
+                    COMP_INCR=_F(RELATION='MULTIFIBRE',DEFORMATION='GROT_GDEP',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=tfin,),
                     NEWTON=_F(MATRICE='TANGENTE',

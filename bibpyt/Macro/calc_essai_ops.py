@@ -1,8 +1,8 @@
-#@ MODIF calc_essai_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_essai_ops Macro  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -158,8 +158,10 @@ def create_interactive_window(macro,
     from Calc_essai.ce_ihm_expansion import InterfaceCorrelation
     from Calc_essai.ce_ihm_modifstruct import InterfaceModifStruct
     from Calc_essai.ce_ihm_identification import InterfaceIdentification
-    from Calc_essai.ce_ihm_parametres import InterfaceParametres
+    from Calc_essai.ce_ihm_parametres import InterfaceParametres#, InterfaceParametres_init
     from Calc_essai.ce_calc_spec import InterfaceCalcSpec
+##    from Calc_essai.ce_ihm_expansion import InterfaceVisual
+
     
     # fenetre principale
     tk = Tk()
@@ -172,7 +174,8 @@ def create_interactive_window(macro,
                 "Modification structurale",
                 "Identification de chargement",
                 "Traitement du signal",
-                u"Paramètres de visualisation" ]
+                u"Paramètres et visualisation"]
+##                "Visualisation"]
     
     tabs, mess = create_tab_mess_widgets(tk, tabskeys)
     main = tabs.root()
@@ -180,20 +183,20 @@ def create_interactive_window(macro,
     # importation des concepts aster de la memoire jeveux    
     objects = CalcEssaiObjects(macro, mess)
     tabs.set_objects(objects)
-    
-    param_visu = InterfaceParametres(main, mess)
-    
+
+    param_visu = InterfaceParametres(main,objects,macro,mess)
     iface = InterfaceCorrelation(main, objects, macro, mess,param_visu)
     imodifstruct = InterfaceModifStruct(main, objects, macro,mess, out_modifstru, param_visu)
     identification = InterfaceIdentification(main, objects, mess, out_identification, param_visu)
     calc_spec= InterfaceCalcSpec(main,objects,mess,param_visu)
-
-    tabs.set_tab(tabskeys[0], iface.main)
+#
+    tabs.set_tab(tabskeys[0], iface)
     tabs.set_tab(tabskeys[1], imodifstruct.main)
     tabs.set_tab(tabskeys[2], identification)
     tabs.set_tab(tabskeys[3], calc_spec)
     tabs.set_tab(tabskeys[4], param_visu)    
-    
+##    tabs.set_tab(tabskeys[5], visual)    
+
     tabs.set_current_tab(tabskeys[4])
 
     tk.protocol("WM_DELETE_WINDOW", FermetureCallback(tk, identification).apply)
