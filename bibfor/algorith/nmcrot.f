@@ -1,7 +1,7 @@
       SUBROUTINE NMCROT(RESULT,SDOBSE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,26 +39,27 @@ C IN  SDOBSE : NOM DE LA SD POUR OBSERVATION
 C
 C ----------------------------------------------------------------------
 C
+      INTEGER      NBPARA
+      PARAMETER   (NBPARA=16)
+      CHARACTER*8  TYPARA(NBPARA)
+      CHARACTER*16 NOPARA(NBPARA)
+C
       CHARACTER*24 OBSTAB
       INTEGER      JOBST
       INTEGER      IRET
       CHARACTER*19 NOMTAB
-      INTEGER      NBPARA
-      PARAMETER   (NBPARA=15)
-      CHARACTER*8  TYPARA(NBPARA)
-      CHARACTER*16 NOPARA(NBPARA)
 C
-      DATA NOPARA/'NOM_OBSERVATION' ,'TYPE_OBJET','NOM_SD',
-     &            'NUME_ORDRE','INST'   ,'NOM_CHAM',
-     &            'EVAL_CHAM','NOM_CMP','EVAL_CMP',
-     &            'NOEUD'     ,'MAILLE' ,
-     &            'EVAL_ELGA' ,'POINT','SOUS_POINT',
-     &            'VALE'      /
+      DATA NOPARA/'NOM_OBSERVATION','TYPE_OBJET'  ,'NOM_SD' ,
+     &            'NUME_REUSE'     ,'NUME_OBSE'   ,'INST'   ,
+     &            'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP',
+     &            'EVAL_CMP'       ,'NOEUD'       ,'MAILLE' ,
+     &            'EVAL_ELGA'      ,'POINT'       ,'SOUS_POINT',
+     &            'VALE'           /
       DATA TYPARA/'K80','K16','K24',
-     &            'I' ,'R' ,'K16',
-     &            'K8','K8','K8' ,
-     &            'K8','K8',
-     &            'K8','I' ,'I'  ,
+     &            'I'  ,'I'  ,'R'  ,
+     &            'K16','K8' ,'K8' ,
+     &            'K8' ,'K8' ,'K8' ,
+     &            'K8' ,'I'  ,'I'  ,
      &            'R' /
 C
 C ----------------------------------------------------------------------
@@ -73,9 +74,7 @@ C
 C --- CREATION DE LA LISTE DE TABLES SI ELLE N'EXISTE PAS
 C
       CALL JEEXIN(RESULT//'           .LTNT',IRET)
-      IF (IRET.EQ.0) THEN
-        CALL LTCRSD(RESULT,'G')
-      ENDIF
+      IF (IRET.EQ.0) CALL LTCRSD(RESULT,'G')
 C
 C --- RECUPERATION DE LA TABLE CORRESPONDANT AUX OBSERVATIONS
 C

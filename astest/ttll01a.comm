@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 05/11/2012   AUTEUR BRIE N.BRIE 
 # TITRE CHOC THERMIQUE SUR UN MUR INFINI QUAD8
 # ttll01a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,5 +206,22 @@ TEST_RESU(OBJET=_F(
                    TOLE_MACHINE=1.E-3,
                    NOM='MASSTHER.ME001     .RESL',),
           )
+
+
+#--------------------------------------------------------------------------
+# TEST (INFORMATIQUE SEULEMENT) DE L'OPTION MASS_THER SOUS LA COMMANDE ASSEMBLAGE
+
+ASSEMBLAGE( MODELE=MOTH,
+            CHARGE=CHTH,
+            CHAM_MATER=CHMAT,
+            NUME_DDL=CO("NUM"),
+            MATR_ASSE=(
+                       _F(MATRICE=CO("MTH_ASS"),
+                          OPTION='MASS_THER'),
+                       _F(MATRICE=CO("KTH_ASS"),
+                          OPTION='RIGI_THER'),
+                       )
+)
+
 
 FIN()

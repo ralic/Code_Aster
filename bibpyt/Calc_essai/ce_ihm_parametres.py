@@ -1,4 +1,4 @@
-#@ MODIF ce_ihm_parametres Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF ce_ihm_parametres Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,10 +151,6 @@ class InterfaceParametres(Frame):
             self.obs_noeuds.set_resultat(resu.modele)
             self.obs_mailles.set_resultat(resu.modele)
 
-##    def _observabilite_changed (seilf ) :
-##        nom_resu=self.nom_obs_resu.get()
-##        if nom_resu.strip() !='choisir':
-##            resu=self.objects.get_results(nom_resu)
 
     def interface_param(self):
         """!Fonction principale de création de l'interface"""
@@ -316,7 +312,7 @@ class InterfaceParametres(Frame):
         """lancement d'une fenetre d'observation"""
         mdo = self.objects
         resu = mdo.get_resultats(var_resu.get())
-        fenetre = DispObs(self.mess,self.objects,resu)
+        fenetre = DispObs(self,self.mess,self.objects,resu)
         fenetre.set_resu(resu.nom)
                 
 

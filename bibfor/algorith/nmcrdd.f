@@ -1,7 +1,7 @@
       SUBROUTINE NMCRDD(NOMA  ,NOMO  ,SDIETO,SDSUIV)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/10/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER      IFM,NIV
-      INTEGER      NTSDDL,NBOCC
+      INTEGER      NTSDDL,NBOCC,NUMREU
       CHARACTER*16 MOTFAC
 C
 C ----------------------------------------------------------------------
@@ -58,6 +58,7 @@ C
 C --- INITIALISATIONS
 C
       NTSDDL = 0
+      NUMREU = 0
       MOTFAC = 'SUIVI_DDL'
 C
 C --- NOMBRE OCCURRENCES
@@ -68,7 +69,7 @@ C
 C --- LECTURE DES DONNEES
 C
       CALL NMEXTR(NOMA  ,NOMO  ,SDSUIV,SDIETO,MOTFAC,
-     &            NBOCC ,NTSDDL)
+     &            NBOCC ,NUMREU,NTSDDL)
 C
 C --- NOM DES COLONNES
 C

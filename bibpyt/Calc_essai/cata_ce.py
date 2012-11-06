@@ -1,4 +1,4 @@
-#@ MODIF cata_ce Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF cata_ce Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -571,12 +571,6 @@ class InterSpectre:
         numi  = aster.getvectjev(self.obj.nom.ljust(8)+'.NUMI')
         numj  = aster.getvectjev(self.obj.nom.ljust(8)+'.NUMJ')
 
-##        # verif : les numi,numj doivent etre ordonnes
-##        snumi = sorted(numi)
-##        snumj = sorted(numj)
-##        if snumi != numi or snumj != numj:
-##            self.mess.disp_mess(u"Attention : les listes doivent etre ordonnees par\
-##                                numero croissant de mesure et de reference")
 
         if noeudi:
             self.isnume = 1
@@ -687,10 +681,6 @@ class Tempo:
     - Cree un lien entre les numerotations des ddl de cette matrice
       avec les numerotations d'un modele EF. ex : la ligne/colonne 3 de la
       matrice interspectrale correspond au noeud 1DZ du modele
-#    - Cree une table inter-spectrale sd_aster a partir d'une matrice python
-#         - Cree une table inter-spectrale sd_aster a partir d'une matrice python
-#        On peut creer une table avec le nom, la table format aster (obj_ast) ou la matrice
-#        format python (mat)
     """
     def __init__(self,
                  nom        = None,
@@ -736,15 +726,10 @@ class Tempo:
             pass # TODO : faire en sorte que cette table ne soit pas visible
 
 
-
     def def_tempo(self, tempo):
         """ Associe une table intsp aster a l'instance de InterSpectre"""
         self.obj = tempo
 
-##    def def_nom(self, nom):
-##        """ Associe un nom (self.nom) a l'InterSpectre"""
-##        A SUPPRIMER ???
-##        self.nom = nom
 
     def var_opt(self, opt):
         if opt =='Efforts discrets localises':

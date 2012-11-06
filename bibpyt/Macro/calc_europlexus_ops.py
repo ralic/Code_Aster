@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 24/09/2012   AUTEUR IDOUX L.IDOUX 
+#@ MODIF calc_europlexus_ops Macro  DATE 05/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -405,7 +405,7 @@ class EUROPLEXUS:
 
   #-----------------------------------------------------------------------
     def export_MAILLAGE(self,):
-
+        from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
         epx = self.epx
 
         # Cle identifiant
@@ -424,6 +424,12 @@ class EUROPLEXUS:
         nom_fichier = self.nom_fichiers['MAILLAGE'] + '.msh'
         fichier_maillage = self.REPE_epx + os.sep + nom_fichier
 
+        # Dans le cas de 2 CALC_EUROPLEXUS, le maillage est deja present (dans REPE_OUT) donc on choisi de le suprimer
+        if os.path.isfile(fichier_maillage):
+            try:
+                os.remove(fichier_maillage)
+            except:
+                pass
 
 
         # Recuperer le concept maillage modifie ou initial
@@ -433,29 +439,29 @@ class EUROPLEXUS:
             concept_maillage = copy.copy(self.NEW_MA)
 
 
+        # On crée des groupes de noeuds de mêmes noms que les groupes de mailles présents dans le modèle
+        # car EPX ne sait pas faire la correspondance comme en CASTEM
+        # Cela pourra être supprimer quand le problème sera résolu dans EPX.
+        liste_gma=[]
 
+        # groupes de mailles du modele
+        for model in ['T3GS','Q4GS','BR3D','POUT'] :
+            if model in self.modelisations :
+                liste_gma.extend(self.dic_gma[model])
+        # le risque est que le groupe existe deja
+        MasquerAlarme('MODELISA7_9')
+        DEFI_GROUP(reuse=concept_maillage,
+                        MAILLAGE=concept_maillage,
+                        CREA_GROUP_NO=_F(GROUP_MA=liste_gma))
+        RetablirAlarme('MODELISA7_9')
 
 
         DEFI_FICHIER(UNITE=unite, FICHIER=fichier_maillage, ACTION='ASSOCIER')
+
         if self.ETAT_INIT is not None:
             # Europlexus ne sait pas lire un état initial de contraintes sur les POU_D_E
             if 'POUT' in self.modelisations and self.ETAT_INIT['CONTRAINTE']=='OUI': UTMESS('F','PLEXUS_17')
             RESULTAT = self.ETAT_INIT['RESULTAT']
-            # On crée des groupes de noeuds de mêmes noms que les groupes de mailles présents dans le modèle
-            # car EPX ne sait pas faire la correspondance comme en CASTEM
-            # Cela pourra être supprimer quand le problème sera résolu dans EPX.
-            liste_gma=[]
-
-            # groupes de mailles du modele
-            for model in ['T3GS','Q4GS','BR3D'] :
-                if model in self.modelisations :
-                    liste_gma.extend(self.dic_gma[model])
-            try :
-                DEFI_GROUP(reuse=concept_maillage,
-                       MAILLAGE=concept_maillage,
-                       CREA_GROUP_NO=_F(GROUP_MA=liste_gma))
-            except:
-                pass
 
             list_cham=['DEPL']
             if self.ETAT_INIT['CONTRAINTE']=='OUI': list_cham.append('SIEF_ELGA')
@@ -465,14 +471,14 @@ class EUROPLEXUS:
                   FORMAT = 'MED',
                   RESU   = _F(NUME_ORDRE=nume_ordre,RESULTAT=RESULTAT,NOM_CHAM=list_cham)
                  )
-            epx[MODULE].append('MEDL 28')
         else:
 
             IMPR_RESU(UNITE  = unite,
-                  FORMAT = 'CASTEM',
+                  FORMAT = 'MED',
                   RESU   = _F(MAILLAGE=concept_maillage)
                  )
-            epx[MODULE].append('CASTEM TOUT')
+
+        epx[MODULE].append('MEDL 28')
 
         DEFI_FICHIER(UNITE=unite,ACTION='LIBERER');
 
@@ -657,7 +663,7 @@ class EUROPLEXUS:
 
    #-----------------------------------------------------------------------
     def export_CARA_ELEM(self):
-
+        from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
         epx = self.epx
 
         # Cle identifiant
@@ -665,6 +671,8 @@ class EUROPLEXUS:
 
         # Recuperer la structure du concept sorti de AFFE_CARA_ELEM
         cara_elem_struc = self.recupere_structure(self.CARA_ELEM)
+        concept_modele  = self.recupere_structure(self.CARA_ELEM,'MODELE')
+        concept_maillage = self.recupere_structure(concept_modele,'MAILLAGE')
 
         epx[MODULE] = ['*--CARACTERISTIQUES DES ELEMENTS DE STRUCTURE']
 
@@ -697,9 +705,17 @@ class EUROPLEXUS:
                     vale = elem['VALE']
                     epx[MODULE].append('MASSE  123 %s' %vale)
                     epx[MODULE].append(7*' ' + 'LECT')
+                    # creation du groupe de noeuds a partir du groupe de mailles
                     for group in group_ma:
                         epx[MODULE].append(11*' '+group)
                     epx[MODULE].append(7*' ' + 'TERM')
+                    MasquerAlarme('MODELISA7_9')
+                    DEFI_GROUP(reuse = concept_maillage,
+                               MAILLAGE = concept_maillage,
+                               CREA_GROUP_NO = _F(GROUP_MA=group_ma)
+                              )
+                    RetablirAlarme('MODELISA7_9')
+
                 if elem['CARA'] == 'K_TR_D_N' :
                     group_ma = self.get_group_ma(elem)
                     vale     = elem['VALE']
@@ -933,7 +949,6 @@ class EUROPLEXUS:
                         lmailles.add(mailles)
             for maille in lmailles :
                 dicma.append({'NOM' : maille, 'MAILLE' : maille})
-
             for no in lnoeuds :
                 if not self.MApyt.gno.has_key(no) :
                     crea_poi1.append(_F(NOEUD=no,NOM_GROUP_MA=no))
@@ -1802,6 +1817,9 @@ class EUROPLEXUS:
           init='INIT MEDL'
           if self.ETAT_INIT['CONTRAINTE']=='OUI':
               init=init+' CONT'
+          else:
+              niter = self.ETAT_INIT['NITER']
+              init = init +' NITER %s' %niter
           if self.ETAT_INIT['EQUILIBRE']=='OUI':
               init=init+' EQUI'
           epx[MODULE].append(init)
@@ -2426,8 +2444,8 @@ class EUROPLEXUS:
                                'NOM_CMP_RESU' : tupVar, 'CUMUL' : 'OUI','COEF_R':1.})
                       dicDetr.append({'NOM' : __ECR3[j]})
           # if 'DKT3' in self.modelisations:
-
-          RetablirAlarme('MED_98')
+          
+#          RetablirAlarme('MED_98')
 
           __SIGN = CREA_CHAMP(
               INFO      = self.INFO,
@@ -2548,9 +2566,14 @@ class EUROPLEXUS:
   #                   CODE_RETOUR_MAXI=-1,
   #                   INFO=2)
 
+#       EXEC_LOGICIEL(LOGICIEL='cd %s ; ls -al ; ls -alR .. ; unset TMPDIR ; unset PMI_RANK ; %s %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.REPE_epx, self.EXEC, fichier_epx, self.pwd),
+#                     CODE_RETOUR_MAXI=-1,
+#                    INFO=2)
+
        EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; unset PMI_RANK ; %s %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.REPE_epx, self.EXEC, fichier_epx, self.pwd),
-                     CODE_RETOUR_MAXI=-1,
-                     INFO=2)
+                      CODE_RETOUR_MAXI=-1,
+                      INFO=2)
+
 
 
 #------------------------------------------------------------------------

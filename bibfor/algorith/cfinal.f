@@ -2,7 +2,7 @@
      &                  LLF   ,LLF1  ,LLF2  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,6 +99,7 @@ C
       TYPEAJ = 'A'
       TYPEC0 = 'C0'
       SPLIAI = 0
+      AJLIAI = 0
 C
 C --- PARAMETRES
 C

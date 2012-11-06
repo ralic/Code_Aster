@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,6 +99,9 @@ CONT = DEFI_CONTACT(MODELE        = MOD,
                     ITER_GCP_MAXI = 500,
                     PRE_COND      = 'DIRICHLET',
                     RESI_ABSO     = 1.E-9,
+                    # NE PAS MODIFIER PARAMETRES REAC_GEOM: TEST BUG FICHE 19580
+                    REAC_GEOM     = 'CONTROLE',
+                    NB_ITER_GEOM  = 10,
                     # Le preconditionneur ne sera active que lorsque
                     # le jeu initial aura ete divise par 1000
                     COEF_RESI     = 1.E-3,
@@ -149,6 +152,8 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    INCREMENT=_F(LIST_INST=LINST,),
                    NEWTON=_F(MATRICE='ELASTIQUE',),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
+# NE PAS MODIFIER: TEST BUG FICHE 19580
+                                  ITER_GLOB_MAXI=3,
                                   ),
                    INFO=1,);
 #
@@ -174,7 +179,7 @@ RESU=CALC_CHAMP(reuse =RESU,
              FORCE='REAC_NODA',);
 #
 # --------------------------------------------------------------------
-#                COMPARAISON SOURCE EXTRENE
+#                COMPARAISON SOURCE EXTERNE
 # --------------------------------------------------------------------
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -183,32 +188,17 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.841258704,
+                  VALE_CALC=-0.84140004661861,
                   VALE_REFE=-0.81000000000000005,
                   CRITERE='RELATIF',
                   PRECISION=0.040000000000000001,),
-          )
-
-# --------------------------------------------------------------------
-#                NON REGRESSION
-# --------------------------------------------------------------------
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='PA4',
-                  RESULTAT=RESU,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.8412587035911,
-                  TOLE_MACHINE=1.E-3,
-                  CRITERE='RELATIF',
-                  ),
           )
 
 #
 # --------------------------------------------------------------------
 #                CALCUL DE LA REACTION A L'ENCASTREMENT
 # --------------------------------------------------------------------
-#                COMPARAISON SOURCE EXTRENE
+#                COMPARAISON SOURCE EXTERNE
 # --------------------------------------------------------------------
 
 REACENC=POST_RELEVE_T(ACTION=_F(INTITULE='ENCASTREMENT',
@@ -224,21 +214,11 @@ REACENC=POST_RELEVE_T(ACTION=_F(INTITULE='ENCASTREMENT',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.016,
-           VALE_CALC= 1.74965941E+04,
+           VALE_CALC= 17501.91800212,
            VALE_REFE=1.7229580000000002E4,
            NOM_PARA='DY',
            TABLE=REACENC,)
 
-# --------------------------------------------------------------------
-#                NON REGRESSION
-# --------------------------------------------------------------------
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=1.7496594126798998E4,
-           TOLE_MACHINE=1.E-3,
-           NOM_PARA='DY',
-           TABLE=REACENC,
-           )
 
 FIN();
 #

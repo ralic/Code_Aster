@@ -8,7 +8,7 @@
       CHARACTER*4 TYCH,DEJAIN
 C    -------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 05/11/2012   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,19 +187,16 @@ C     -- PONDERATION DU CHAMP PAR LES POIDS DES POINTS :
 
           DO 30 ISP=1,NBSP
             DO 40 ICMP=1,NBCMP
-               CALL CESEXI('C',JCHSD,JCHSL,IMA,IPT,ISP,ICMP,IAD1)
-               CALL CESEXI('C',JOUTD,JOUTL,IMA,IPT,ISP,ICMP,IAD3)
-C              IAD1 ET IDA3 DOIVENT ETRE DU MEME SIGNE SINON
-C              CELA SIGNIFIE QUE LES DEUX CHAMPS N'ONT PAS LE
-C              MEME PROFIL
-               IF ( .NOT.(IAD1.GT.0.AND.IAD3.GT.0) ) THEN
-                 CALL ASSERT(.FALSE.)
-               ELSE
-C                SI IAD1 EST NEGATIF OU NUL ALORS IL N'Y A
-C                RIEN A REMPLIR ON PASSE A LA CMP SUIVANTE
-                 IF ( IAD1.LE.0 ) GOTO 40
-                 ZR(JOUTV-1+IAD3)=ZR(JCHSV-1+IAD1)*POIDS
-               ENDIF
+              CALL CESEXI('C',JCHSD,JCHSL,IMA,IPT,ISP,ICMP,IAD1)
+              CALL CESEXI('C',JOUTD,JOUTL,IMA,IPT,ISP,ICMP,IAD3)
+C             SI IAD1 EST NEGATIF OU NUL ALORS IL N'Y A
+C             RIEN A REMPLIR ON PASSE A LA CMP SUIVANTE
+              IF ( IAD1.LE.0 ) THEN 
+                GOTO 40
+              ELSE 
+                CALL ASSERT(IAD3.GT.0)
+                ZR(JOUTV-1+IAD3)=ZR(JCHSV-1+IAD1)*POIDS
+              ENDIF
  40         CONTINUE
  30       CONTINUE
  20     CONTINUE

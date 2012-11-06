@@ -9,7 +9,7 @@
       CHARACTER*(*)     MOME, RESU, TYPCDI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C                =.FALSE. , PAS DE COMBINAISON DES DIRECTIONS
 C IN  : TYPCDI : TYPE DE COMBINAISON DES DIRECTIONS
 C     ------------------------------------------------------------------
       INTEGER       IBID,I,  ID, IEQ, IER, IN, IORDR, JDEF, JDIR, JVAL,
-     &              LVALE, NBMODE, NBTROU
+     &              LVALE, NBMODE, NBTROU, JDRR
       REAL*8        R8B, R1, R10, R11, R12, R13, R14, R15, R16, R17,
      &              R18, R19, R2, R20, R21, R22, R23, R24, R3, R4, R5,
      &              R6, R7, R8, R9, RX, RY, RZ, XXX
@@ -116,6 +116,8 @@ C           --- PARAMETRE ---
             ZK16(JDIR) = 'DIR     '//COMP(ID)
             CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IORDR,0,JDEF,K8B)
             ZK16(JDEF) = DEF
+            CALL RSADPA(RESU,'E',1,'FREQ',IORDR,0,JDRR,K8B)
+            ZR(JDRR) = ID
          ENDIF
  20   CONTINUE
 C
@@ -193,6 +195,8 @@ C        --- PARAMETRE ---
          ENDIF
          CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IORDR,0,JDEF,K8B)
          ZK16(JDEF) = DEF
+         CALL RSADPA(RESU,'E',1,'FREQ',IORDR,0,JDRR,K8B)
+         ZR(JDRR) = 4
       ENDIF
 C
       CALL JEDEMA()

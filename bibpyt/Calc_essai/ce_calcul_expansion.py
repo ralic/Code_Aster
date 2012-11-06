@@ -1,4 +1,4 @@
-#@ MODIF ce_calcul_expansion Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF ce_calcul_expansion Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -308,7 +308,6 @@ def make_mesh_mac(nb_l,nb_c):
             coordo_x =  ind_c/(nb_c+1.0)
             coordo_y = -ind_l/(nb_l+1.0)
             coordo_z =  0.0
-    ##        print nom_no
             f.writelines( ' '+ nom_no.ljust(8) +
                           '%22.14E%22.14E%22.14E' %(coordo_x,coordo_y,coordo_z) +
                           '\n')

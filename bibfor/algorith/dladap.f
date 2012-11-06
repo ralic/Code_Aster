@@ -8,7 +8,7 @@
      &                  SOLVEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,6 +117,7 @@ C
       INTEGER       ADEEQ
       INTEGER       IBID
       INTEGER       IARG
+      INTEGER       NUMREU
       LOGICAL       ENER
 C
 C     -----------------------------------------------------------------
@@ -133,6 +134,10 @@ C 1.2. ==> NOM DES STRUCTURES
 C     --- RECUPERATION NOM DE LA COMMANDE ---
 
       CALL GETRES ( K8B, TYPRES, K16BID )
+C
+C --- NUMERO DE REUSE (PAS DE REUSE AVEC DYNA_VIBRA)
+C
+      NUMREU = 0
 C
       NDEEQ = NUMEDD(1:8)//'      .NUME.DEEQ'
 C
@@ -479,7 +484,7 @@ C ON CALCULE LA VITESSE A T N-1
 C
 C ------------- ARCHIVAGE DES PARAMETRES
 C
-      CALL NMARPC(RESULT,SDENER,TEMPS)
+      CALL NMARPC(RESULT,SDENER,NUMREU,TEMPS)
 C
 C ------------- TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
         TEMPS = TEMP2

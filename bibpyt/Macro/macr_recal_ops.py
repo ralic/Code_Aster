@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF macr_recal_ops Macro  DATE 05/11/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, LIST_POIDS, LIST_PARA, RESU_CALC, 
    import aster
    import Macro
    from Cata import cata
-   from Cata.cata import DEFI_LIST_REEL, CREA_TABLE, TEST_TABLE, INCLUDE
+   from Cata.cata import DEFI_LIST_REEL, CREA_TABLE, TEST_TABLE, INCLUDE, INFO_EXEC_ASTER
    from Cata.cata import OPER, MACRO
 
    from Macro import reca_message
@@ -260,8 +260,14 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
        # On essaie d'importer Gnuplot -> PAS DE GRAPHIQUE
        try:
           import Gnuplot
+#           from Cata.cata import INFO_EXEC_ASTER, DETRUIRE
+#           _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
+#           valul=_UL['UNITE_LIBRE',1]
+#           DETRUIRE(CONCEPT=(_F(NOM=_UL),))
+#           print "valul=", valul
+#           GRAPHIQUE['UNITE'] = int(valul)
        except ImportError:
-          GRAPHIQUE == None
+          GRAPHIQUE = None
           UTMESS('A','RECAL0_3')
 
 
@@ -417,7 +423,8 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    CALCUL_ASTER.Dim       = Dim
    CALCUL_ASTER.reca_algo = reca_algo
 
-   if (GRAPHIQUE): CALCUL_ASTER.UNITE_GRAPHIQUE = GRAPHIQUE['UNITE']
+   if (GRAPHIQUE):
+      CALCUL_ASTER.UNITE_GRAPHIQUE = GRAPHIQUE['UNITE']
 
    # Dans le cas de la dynamique avec appariement manual des MAC, on passe la flag correspondant a True
    if METHODE in ['HYBRIDE','LEVENBERG','GENETIQUE']: ## AAC --> j'ai modifie et donne la possibilite d'afficher la fenetre mac pour levenb et gene
@@ -663,7 +670,10 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
                 if (GRAPHIQUE):
                     if GRAPHIQUE['AFFICHAGE']=='TOUTE_ITERATION':
                         GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
-                        pilote=GRAPHIQUE['PILOTE']
+                        if dGRAPHIQUE.has_key('FORMAT') and dGRAPHIQUE['FORMAT'] == 'XMGRACE':
+                           pilote=GRAPHIQUE['PILOTE']
+                        else:
+                           pilote='INTERACTIF'
                         reca_utilitaires.graphique(GRAPHIQUE['FORMAT'], L_F, RESU_EXP, RESU_CALC, iter, GRAPHE_UL_OUT, pilote)
 
                 # On teste le residu
@@ -726,4 +736,3 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
    nomres = Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess)
    return
-

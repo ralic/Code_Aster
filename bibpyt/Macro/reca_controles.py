@@ -1,9 +1,9 @@
-#@ MODIF reca_controles Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_controles Macro  DATE 05/11/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -170,9 +170,12 @@ def verif_UNITE(GRAPHIQUE,UNITE_RESU):
    """
    txt=""
    if GRAPHIQUE:
-      GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
-      if (GRAPHE_UL_OUT==UNITE_RESU):
-          txt=txt + "\nLes unités logiques des fichiers de résultats graphiques et de résultats d'optimisation sont les memes."
+       try:
+          GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
+          if (GRAPHE_UL_OUT==UNITE_RESU):
+              txt=txt + "\nLes unités logiques des fichiers de résultats graphiques et de résultats d'optimisation sont les memes."
+       except:
+          pass
    return txt
 
 

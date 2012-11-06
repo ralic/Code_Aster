@@ -1,0 +1,670 @@
+# MODIF  DATE 05/11/2012   AUTEUR TARDIEU N.TARDIEU 
+# TITRE INCLUSION DE DEUX COURONNES
+# ssnp152h.para = tps_job 200 mem_job 768Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# p=1.0E6, E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
+
+DEBUT(CODE=_F(NOM='SSNP152H',NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),IGNORE_ALARM=('CONTACT3_16'));
+# IGNORE_ALARM=('CONTACT3_16') : utilisation d'un schema de Gauss pour le contact
+
+MA=LIRE_MAILLAGE(FORMAT='MED',);
+
+#| noms des groupes de noeuds et mailles
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(GROUP_MA='S1R2',
+                                NOM='CONT_N_1',),
+                             _F(GROUP_MA='S2R2',
+                                NOM='CONT_N_2',),),);
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_2D=(_F(GROUP_MA='S1R1',),
+                               _F(GROUP_MA='S1R2',),
+                               _F(GROUP_MA='S2R2',),
+                               _F(GROUP_MA='S2R3',),),);
+E1 = 1000000000.0;
+
+E2 = 1000000000.0;
+
+nu1 = 0.2;
+
+nu2 = 0.2;
+
+
+MAT1=DEFI_MATERIAU(ELAS=_F(E=E1,
+                           NU=nu1,),);
+
+MAT2=DEFI_MATERIAU(ELAS=_F(E=E2,
+                           NU=nu2,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(GROUP_MA='C1',
+                             MATER=MAT1,),
+                          _F(GROUP_MA='C2',
+                             MATER=MAT2,),),);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN_SI',),);
+
+#+----------------------------------------+
+#|       conditions aux limites           |
+#+----------------------------------------+
+# pression externe
+p = 1000000.0;
+
+R1 = 1.0;
+
+R2 = 0.6;
+
+R3 = 0.2;
+
+
+# calcul analytique de la pression de contact
+pres_cont = ((((2 * p) * R1) * R1) / ((((R2 * R2) * (1 - nu1)) + ((R1 * R1) * (1 + nu1))) + (((E1 / E2) * (((R1 * R1) - (R2 * R2)) / ((R2 * R2) - (R3 * R3)))) * (((R2 * R2) * (1 - nu2)) + ((R3 * R3) * (1 + nu2))))));
+
+
+# couronne externe
+a1 = ((((pres_cont * R2) * R2) - ((p * R1) * R1)) / ((R1 * R1) - (R2 * R2)));
+
+b1 = (((pres_cont - p) * (((R1 * R1) * R2) * R2)) / ((R1 * R1) - (R2 * R2)));
+
+eps_r_1 = ((1 / E1) * (((a1 * (1 - nu1)) * R1) + ((b1 * (1 + nu1)) / R1)));
+
+
+ux1 = FORMULE(VALE='eps_r_1*cos(atan2(Y,X))',
+              NOM_PARA=('X','Y',),);
+
+uy1 = FORMULE(VALE='eps_r_1*sin(atan2(Y,X))',
+              NOM_PARA=('X','Y',),);
+
+CH1=AFFE_CHAR_MECA_F(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_MA='S1R1',
+                                 DX=ux1,
+                                 DY=uy1,),);
+
+# couronne interne
+a2 = (((-(pres_cont) * R2) * R2) / ((R2 * R2) - (R3 * R3)));
+
+b2 = ((-(pres_cont) * (((R2 * R2) * R3) * R3)) / ((R2 * R2) - (R3 * R3)));
+
+eps_r_2 = ((1 / E2) * (((a2 * (1 - nu2)) * R3) + ((b2 * (1 + nu2)) / R3)));
+
+
+ux2 = FORMULE(VALE='eps_r_2*cos(atan2(Y,X))',
+              NOM_PARA=('X','Y',),);
+
+uy2 = FORMULE(VALE='eps_r_2*sin(atan2(Y,X))',
+              NOM_PARA=('X','Y',),);
+
+CH2=AFFE_CHAR_MECA_F(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_MA='S2R3',
+                                 DX=ux2,
+                                 DY=uy2,),);
+
+#+----------------------------------------+
+#|               contact                  |
+#+----------------------------------------+
+
+CONT_N=DEFI_CONTACT(MODELE=MO,
+                    FORMULATION='CONTINUE',
+                    LISSAGE='OUI',
+                    ALGO_RESO_GEOM='NEWTON',
+                    ALGO_RESO_CONT='NEWTON',
+                    ZONE=_F(GROUP_MA_MAIT='S1R2',
+                            GROUP_MA_ESCL='S2R2',),);
+
+CONT_G=DEFI_CONTACT(MODELE=MO,
+                    FORMULATION='CONTINUE',
+                    LISSAGE='OUI',
+                    ALGO_RESO_GEOM='NEWTON',
+                    ALGO_RESO_CONT='NEWTON',
+                    ZONE=_F(GROUP_MA_MAIT='S1R2',
+                            GROUP_MA_ESCL='S2R2',
+                            INTEGRATION='GAUSS',
+                            ),);
+
+#+----------------------------------------+
+#|               calcul                   |
+#+----------------------------------------+
+
+T=DEFI_LIST_REEL(DEBUT=0.1,
+                 INTERVALLE=_F(JUSQU_A=2.1,
+                               NOMBRE=20,),);
+
+EXP = FORMULE(VALE='pow(10,INST-1.1)',
+              NOM_PARA='INST',);
+
+RP_EXP=CALC_FONC_INTERP(FONCTION=EXP,
+                        LIST_PARA=T,
+                        PROL_DROITE='EXCLU',
+                        PROL_GAUCHE='EXCLU',);
+
+INSTS=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=2.1,
+                                   NOMBRE=21,),);
+
+RESU1=STAT_NON_LINE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=CH1,
+                              FONC_MULT=RP_EXP,),
+                           _F(CHARGE=CH2,
+                              FONC_MULT=RP_EXP,),),
+                    CONTACT=CONT_N,
+                    COMP_INCR=_F(RELATION='ELAS',
+                                 DEFORMATION='GROT_GDEP',),
+                    INCREMENT=_F(LIST_INST=INSTS,),
+                    NEWTON=_F(REAC_INCR=1,
+                              REAC_ITER=1,),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                    SOLVEUR=_F(METHODE='MUMPS',),
+                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                    INFO=1,);
+
+RESU2=STAT_NON_LINE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=CH1,
+                              FONC_MULT=RP_EXP,),
+                           _F(CHARGE=CH2,
+                              FONC_MULT=RP_EXP,),),
+                    CONTACT=CONT_G,
+                    COMP_INCR=_F(RELATION='ELAS',
+                                 DEFORMATION='GROT_GDEP',),
+                    INCREMENT=_F(LIST_INST=INSTS,),
+                    NEWTON=_F(REAC_INCR=1,
+                              REAC_ITER=1,),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                    SOLVEUR=_F(METHODE='MUMPS',),
+                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                    INFO=1,);
+
+#+----------------------------------------+
+#|          tests de validation           |
+#+----------------------------------------+
+# noeud
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=92592.5925926,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=92510.873688359,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=116567.167759,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.1646066900755E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=146749.369672,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.4660955731997E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=4,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=184746.510645,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.8456140287365E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=5,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=232582.076992,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=2.3233462688068E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=6,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=292803.487053,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=2.9246912339719E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=7,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=368617.750512,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=3.6816061080046E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=8,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=464062.253359,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=4.6342937813565E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=9,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=584219.763408,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=5.8333210268021E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=735489.106226,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=7.3422752810098E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=11,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=925925.925926,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=9.2410937427797E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=12,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=1165671.67759,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.1630229767407E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=13,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=1467493.69672,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.4635858951948E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=14,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=1847465.10645,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.8416371324435E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=2325820.76992,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=2.3170446602674E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=16,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=2928034.87053,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=2.9147065453018E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=17,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=3686177.50512,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=3.6657868050003E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=18,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=4640622.53359,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=4.6092325722445E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=19,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=5842197.63408,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=5.7936230238943E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=7354891.06226,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=7.2794007451996E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=21,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=9259259.25926,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=9.1415292003457E+06,),);
+
+# gauss
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=92592.5925926,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=92404.765929507,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=116567.167759,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.163270990113E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=146749.369672,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.464414212871E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=4,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=184746.510645,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.8434976168911E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=5,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=232582.076992,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=2.3206823323262E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=6,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=292803.487053,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=2.9213382785212E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=7,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=368617.750512,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=3.6773861631447E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=8,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=464062.253359,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=4.6289830493225E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=9,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=584219.763408,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=5.8266381655133E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=10,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=735489.106226,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=7.3338667394903E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=11,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=925925.925926,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=9.2305154383827E+05,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=12,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=1165671.67759,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.1616924236082E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=13,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=1467493.69672,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.4619126929844E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=14,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=1847465.10645,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=1.8395336520832E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=15,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=2325820.76992,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=2.3144012223372E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=16,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=2928034.87053,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=2.9113860850912E+06 ,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=17,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=3686177.50512,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=3.661618375915E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=18,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=4640622.53359,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=4.6040035158169E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=19,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=5842197.63408,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=5.787069666559E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=20,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=7354891.06226,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=7.2711975670092E+06,),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=21,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='LAGS_C',
+                  NOEUD='N10',
+                  VALE_ABS='OUI',
+                  VALE_REFE=9259259.25926,
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=9.1312766001836E+06,),);
+
+FIN();

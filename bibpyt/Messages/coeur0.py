@@ -1,4 +1,4 @@
-#@ MODIF coeur0 Messages  DATE 04/09/2012   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF coeur0 Messages  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,22 @@ de RESU_INIT.
 
 2 : _(u"""
 Assemblage des %(i1)d permutations
+"""),
+
+3 : _(u"""
+Permutation de l\'assemblage %(k1)s en position %(k1)s
+"""),
+
+4 : _(u"""
+Récupération des jeux entre les assemblages
+"""),
+
+5 : _(u"""
+Récupération des jeux entre les assemblages de bord et le cloisonnement
+"""),
+
+6 : _(u"""
+Post-traitement des déformations des assemblages combustibles
 """),
 }
 

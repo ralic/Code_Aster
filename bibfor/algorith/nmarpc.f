@@ -1,7 +1,7 @@
-      SUBROUTINE NMARPC(RESULT,SDENER,INSTAN)
+      SUBROUTINE NMARPC(RESULT,SDENER,NUMREU,INSTAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,6 +25,7 @@ C
       REAL*8       INSTAN
       CHARACTER*8  RESULT
       CHARACTER*19 SDENER
+      INTEGER      NUMREU
 C
 C ----------------------------------------------------------------------
 C
@@ -34,28 +35,28 @@ C ARCHIVAGE DES PARAMETRES DANS LA TABLE DES PARAMETRES CALCULES
 C
 C ----------------------------------------------------------------------
 C
-C
-C
-C
 C IN  RESULT : NOM SD RESULTAT
 C IN  SDENER : NOM SD ENERGIE
 C IN  INSTAN : VALEUR DE L'INSTANT DE CALCUL
+C IN  NUMREU : NUMERO DE REUSE
 C
+C ----------------------------------------------------------------------
 C
-      INTEGER      IFM,NIV,IENER,IAUX
       INTEGER      NBPAR
-      PARAMETER   (NBPAR=7)
+      PARAMETER   (NBPAR=8)
       CHARACTER*10 NOMPAR(NBPAR)
+C ----------------------------------------------------------------------
+      INTEGER      IFM,NIV
+      INTEGER      JENER,IPARAR
       CHARACTER*19 TABLPC
-
-      INTEGER      IBID
+      INTEGER      VALI
       CHARACTER*8  K8BID
       COMPLEX*16   C16BID
-      REAL*8       VR(NBPAR)
-
-      DATA         NOMPAR / 'INST'      ,'TRAV_EXT  ','ENER_CIN'  ,
-     &                      'ENER_TOT'  ,'TRAV_AMOR ','TRAV_LIAI' ,
-     &                      'DISS_SCH'/
+      REAL*8       VALR(7)
+C
+      DATA         NOMPAR / 'NUME_REUSE','INST'      ,'TRAV_EXT  ',
+     &                      'ENER_CIN'  ,'ENER_TOT'  ,'TRAV_AMOR ',
+     &                      'TRAV_LIAI' ,'DISS_SCH'/
 C
 C ----------------------------------------------------------------------
 C
@@ -67,18 +68,18 @@ C     AUX PARAMETRE CALCULES
 C
       CALL LTNOTB(RESULT,'PARA_CALC',TABLPC)
 C
+C --- CONSTRUCTION DES LISTES DES PARAMETRES
+C
+      CALL JEVEUO(SDENER//'.VALE','L',JENER)
+      VALR(1) = INSTAN
+      DO 10 IPARAR=1,6 
+        VALR(1+IPARAR) = ZR(JENER-1+IPARAR)
+ 10   CONTINUE
+      VALI    = NUMREU
+C
 C --- CONSTRUCTION DES LISTES DE PARAMETRES A SAUVEGARDER PAR TYPE
 C
-C     TYPE 'I'
-C     TYPE 'R'
-      CALL JEVEUO(SDENER//'.VALE','L',IENER)
-      VR(1)=INSTAN
-      DO 10 IAUX=1,6 
-        VR(1+IAUX)=ZR(IENER-1+IAUX)
- 10   CONTINUE
-C     TYPE 'C'
-C     TYPE 'K' 
-      CALL TBAJLI(TABLPC,NBPAR,NOMPAR,IBID,VR,C16BID,K8BID,0)
+      CALL TBAJLI(TABLPC,NBPAR,NOMPAR,VALI,VALR,C16BID,K8BID,0)
 
       CALL JEDEMA()
 

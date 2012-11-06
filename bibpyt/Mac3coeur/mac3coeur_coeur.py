@@ -1,21 +1,21 @@
-#@ MODIF mac3coeur_coeur Mac3coeur  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF mac3coeur_coeur Mac3coeur  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE FERNANDES R.FERNANDES
 
@@ -39,11 +39,11 @@ class Coeur(object):
         #Nombre d'assemblages pour définir le coeur
         'NBAC',
         # Position des grilles pour definition du champ de fluence
-        'alt_g1', 'alt_g2', 'alt_gm', 'alt_gn', 'altitude',
+        'altitude',
         # Position des crayons et tubes-guides pour definition du champ de fluence
         'XINFT', 'XSUPT', 'XINFC', 'XSUPC', 'LONCR',
-        # Caractéristique de la cuve
-        'pas_assemblage',
+        # Caractéristique de la cuve 
+        'pas_assemblage',       
         'XINFCUVE','XSUPCUVE',
         #---fleche des ressorts de maintien à la fermeture de la cuve
         'flechResMaint',
@@ -181,7 +181,7 @@ class Coeur(object):
         defi_fonc.append(som_feq)
         defi_fonc.append(string.atof(cote[pos_thyc[0]]))
         defi_fonc.append(0.0)
-
+        
         "Pour aller de la premiere a la derniere grille."
         for j in range(0,len(pos_thyc)-1):
             som_l = 0.0
@@ -255,7 +255,7 @@ class Coeur(object):
                 pos_gril_inf = i
             if ((self.XSUPC>(string.atof(cote[i])-string.atof(epaisseur[i])/2.)) & (self.XSUPC<(string.atof(cote[i])+string.atof(epaisseur[i])/2.))):
                 pos_gril_sup = i
-
+    
         # Recuperation des efforts transverses sur les grilles
         mcf = []
         mcft= []
@@ -264,20 +264,19 @@ class Coeur(object):
             line2 = f2.readline().split()
             posi_aster1 = self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line[1])-1]  + "_" + self.ALPHAMAC[string.atoi(line[0])-2]
             posi_aster2 = self.ALPHAMAC[len(self.ALPHAMAC)+2-string.atoi(line2[1])-1] + "_" + self.ALPHAMAC[string.atoi(line2[0])-2]
-
-            print line[0],line[1],posi_aster1
+            
             if (posi_aster1!=posi_aster2):
                 raise KeyError("position d assemblage avec ordre different")
-
+    
             for j in range(0,len(pos_thyc)):
                mtmp = (_F(GROUP_NO = 'G_'+posi_aster1+'_'+str(j+1), FY = string.atof(line[pos_thyc[j]])/4.0, FZ = - string.atof(line2[pos_thyc[j]])/4.0),)
                mcf.extend(mtmp)
-
+        
             _resu_fy = self.definir_chargement_transverse(cote,epaisseur,pos_thyc,line,1)
             _resu_fz = self.definir_chargement_transverse(cote,epaisseur,pos_thyc,line2,-1)
             mtmp = (_F(GROUP_MA = 'CR_'+posi_aster1, FY = _resu_fy, FZ = _resu_fz),)
             mcft.extend(mtmp)
-
+        
         _AF_CHTRNO = AFFE_CHAR_MECA(MODELE=MODELE,FORCE_NODALE = mcf)
         _AF_CHTRFX = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcft)
 
@@ -286,7 +285,7 @@ class Coeur(object):
         line = f.readline().split()
         line = f.readline().split()
         line = f.readline().split()
-
+        
         mcp  = []
         mcpf = []
         for i in range(0,self.NBAC):
@@ -313,20 +312,20 @@ class Coeur(object):
             # Force axiale pour l'embout inferieur
             mtmp = (_F(GROUP_NO = 'PI_'+posi_aster, FX = string.atof(line[2])/FOHYCH_1*ac.K_EBIN/KTOT),)
             mcp.extend(mtmp)
-
+            
             # Force axiale pour l'embout superieur
             mtmp = (_F(GROUP_NO = 'PS_'+posi_aster, FX = string.atof(line[2])/FOHYCH_1*ac.K_EBSU/KTOT),)
             mcp.extend(mtmp)
-
+            
             # Force axiale pour les crayons (appel a DEFI_FONCTION)
             vale = string.atof(line[2])/FOHYCH_1*ac.K_TUB/KTOT*ac.NBCR/(ac.NBCR+ac.NBTG)/ac.LONCR
-            _FXC = DEFI_FONCTION(NOM_PARA='X',VALE=(ac.XINFC,vale,ac.XSUPC,vale))
+            _FXC = DEFI_FONCTION(NOM_PARA='X',VALE=(ac.XINFC,vale,ac.XSUPC,vale))            
             mtmp = (_F(GROUP_MA = 'CR_'+posi_aster, FX = _FXC),)
             mcpf.extend(mtmp)
-
+            
             # Force axiale pour les tubes-guides (appel a DEFI_FONCTION)
             vale = string.atof(line[2])/FOHYCH_1*ac.K_TUB/KTOT*ac.NBTG/(ac.NBCR+ac.NBTG)/ac.LONTU
-            _FXT = DEFI_FONCTION(NOM_PARA='X',VALE=(ac.XINFT,vale,ac.XSUPT,vale))
+            _FXT = DEFI_FONCTION(NOM_PARA='X',VALE=(ac.XINFT,vale,ac.XSUPT,vale))            
             mtmp = (_F(GROUP_MA = 'TG_'+posi_aster, FX = _FXT),)
             mcpf.extend(mtmp)
 
@@ -372,6 +371,13 @@ class Coeur(object):
         mcf = []
         for ac in self.collAC.values():
             mcf.extend(ac.mcf_cara_multifibre())
+        return mcf
+
+    def mcf_cara_barre(self):
+        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/BARRE."""
+        mcf = []
+        for ac in self.collAC.values():
+            mcf.extend(ac.mcf_cara_barre())
         return mcf
 
     def mcf_cara_poutre(self):
@@ -430,7 +436,7 @@ class Coeur(object):
                                                      ac.XSUPC,(ac.AFCRA_1 / ac.LONCR )))
             mcf.extend(ac.chargement_archimede2(_FCT_TG,_FCT_CR))
         return mcf
-
+                
     def definition_archimede2(self,MODELE):
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
         mcf = self.chargement_archimede2()
@@ -443,14 +449,14 @@ class Coeur(object):
         """ Valeur  a froid (20 degres) de la force d'Archimede = 860/985.46*1000.52 """
         ARCHFR1 = 873.  # Valeur en arret a froid (20 degres)
         ARCHFR2 = 860.  # Valeur en arret a froid (60 degres)
-        ARCHCH  = 620.  # Valeur a chaud (307 degres)
+        ARCHCH  = 620.  # Valeur a chaud (307 degres)   
 
         _ARCH_F1 = DEFI_FONCTION( NOM_PARA = 'INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                                   VALE     = ( self.temps_simu['T0'],ARCHFR1,
                                                self.temps_simu['T1'],ARCHFR1,
                                                self.temps_simu['T2'],ARCHFR2,
-                                               self.temps_simu['T4'],ARCHCH,
-                                               self.temps_simu['T5'],ARCHCH,
+                                               self.temps_simu['T4'],ARCHCH, 
+                                               self.temps_simu['T5'],ARCHCH, 
                                                self.temps_simu['T7'],ARCHFR2,
                                                self.temps_simu['T8'],ARCHFR1,
                                                self.temps_simu['T9'],ARCHFR1,),);
@@ -468,9 +474,9 @@ class Coeur(object):
                                                self.temps_simu['T1'],0.0,
                                                self.temps_simu['T2'],FOHYFR_1,
                                                self.temps_simu['T3'],FOHYCH_1,
-                                               self.temps_simu['T4'],FOHYCH_1,
-                                               self.temps_simu['T5'],FOHYCH_1,
-                                               self.temps_simu['T6'],FOHYCH_1,
+                                               self.temps_simu['T4'],FOHYCH_1, 
+                                               self.temps_simu['T5'],FOHYCH_1, 
+                                               self.temps_simu['T6'],FOHYCH_1, 
                                                self.temps_simu['T7'],FOHYFR_1,
                                                self.temps_simu['T8'],0.0,
                                                self.temps_simu['T9'],0.0,),);
@@ -486,8 +492,8 @@ class Coeur(object):
                                   VALE     = ( self.temps_simu['T0'],SANS,
                                                self.temps_simu['T1'],SANS,
                                                self.temps_simu['T2'],SANS,
-                                               self.temps_simu['T4'],AVEC,
-                                               self.temps_simu['T5'],AVEC,
+                                               self.temps_simu['T4'],AVEC, 
+                                               self.temps_simu['T5'],AVEC, 
                                                self.temps_simu['T7'],SANS,
                                                self.temps_simu['T8'],SANS,
                                                self.temps_simu['T9'],SANS,),);
@@ -498,6 +504,7 @@ class Coeur(object):
         AFFE_CARA_ELEM = self.macro.get_cmd('AFFE_CARA_ELEM')
 
         mcm = self.mcf_cara_multifibre()
+        mcr = self.mcf_cara_barre()
         mcp = self.mcf_cara_poutre()
         mtmp=_F(GROUP_MA='DIL',SECTION='RECTANGLE',CARA=('HY','HZ'),VALE=(0.03,0.21338),)
         mcp.append(mtmp)
@@ -507,14 +514,13 @@ class Coeur(object):
         mtmp=_F(GROUP_MA=('RES_EXT','RES_CONT',),REPERE='LOCAL',CARA='M_T_D_L',VALE=0.,)
         mcd.append(mtmp)
 
-        print 'debut de la procedure AFFE_CARA_ELEM'
         _CARA = AFFE_CARA_ELEM( MODELE      = MODELE,
                                 POUTRE      = mcp,
+                                BARRE       = mcr,
                                 GEOM_FIBRE  = _GFF,
                                 MULTIFIBRE  = mcm,
                                 DISCRET     = mcd,
                     ORIENTATION = (_F(GROUP_MA=('ELA_EX','ELA_ME','RIG_EX','RIG_ME','DIL'),CARA='VECT_Y',VALE=(1.,0.,0.),),),)
-        print 'fin de la procedure AFFE_CARA_ELEM'
         return _CARA
 
     def definition_pesanteur(self,MODELE):
@@ -531,7 +537,7 @@ class Coeur(object):
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
-
+        
         _DXpsc=DEFI_FONCTION(NOM_PARA='INST',
                               VALE=( -2.0,   0.,
                                  -1.0,   0.,
@@ -544,13 +550,13 @@ class Coeur(object):
                                  self.temps_simu['T6'],   -1.*self.flechResMaint,
                                  self.temps_simu['T7'],   -1.*self.flechResMaint,
                                  self.temps_simu['T8'],   -1.*self.flechResMaint,
-                                 self.temps_simu['T8b'],  0.,
+                                 self.temps_simu['T8b'],  -1.*self.flechResMaint/3.,
                                  self.temps_simu['T9'],   0.,),
                               PROL_DROITE='CONSTANT',
                               PROL_GAUCHE='CONSTANT',);
-
+                              
         _F_EMBO = AFFE_CHAR_MECA_F( MODELE   = MODELE,
-                                   DDL_IMPO = _F(GROUP_NO = 'PMNT_S',           DX=_DXpsc,  ),);
+                                   DDL_IMPO = _F(GROUP_NO = 'PMNT_S',           DX=_DXpsc,  ),); 
         return _F_EMBO
 
     def affectation_maillage(self,MA0):
@@ -596,11 +602,9 @@ class Coeur(object):
             else:
                LISGRILI.append('GRIL_'+str(igr+1))
 
-        print 'Adaptation du maillage'
         _MA=CREA_MAILLAGE(MAILLAGE=MA0,
                       CREA_POI1=tuple(LISGRIL+LISG),)
 
-        print 'Defi_group sur le maillage'
         _MA=DEFI_GROUP( reuse         = _MA, ALARME='NON',
                 MAILLAGE = _MA,
                 CREA_GROUP_MA=(_F(NOM='GRIL_I',UNION=tuple(LISGRILI),),
@@ -644,7 +648,7 @@ class Coeur(object):
                            MODELISATION = 'DIS_T',),
                        _F( GROUP_MA     =('MAINTIEN',),
                            PHENOMENE    = 'MECANIQUE',
-                           MODELISATION = 'DIS_T',),
+                           MODELISATION = 'BARRE',),
                        _F( GROUP_MA     =('RES_EXT','RES_CONT'),
                            PHENOMENE    = 'MECANIQUE',
                            MODELISATION = 'DIS_T',),),);
@@ -719,11 +723,11 @@ class Coeur(object):
         #   CREATION DU PROFIL AXIAL DE FLUX   #
         ########################################
         _FLUXAX1 = DEFI_FONCTION( NOM_PARA    = 'X',
-               VALE           = (self.alt_g1,         0.54,
-                                 self.alt_g2,         1.,
-                                 self.alt_gm - 0.001, 1.,
-                                 self.alt_gm,         0.85,
-                                 self.alt_gn,         0.57,),
+               VALE           = (self.altitude[0],  0.54,
+                                 self.altitude[1],  1.,
+                                 self.altitude[-3], 1.,
+                                 self.altitude[-2], 0.85,
+                                 self.altitude[-1], 0.06,),
                                  PROL_DROITE = 'CONSTANT',
                                  PROL_GAUCHE = 'CONSTANT',);
 
@@ -801,7 +805,7 @@ class Coeur(object):
         ##############################################################
         # Temperature de reference #
         ############################
-        #TP_REF   =
+        #TP_REF   = 
         #ARRET_FR =  arret a froid (temp moyenne cuve)
         #ARRET_CH =  arret a chaud (297.2 dans doc TF JD DC 1494)
                     ## c est une temperature moyenne en cuve
@@ -939,7 +943,7 @@ class Coeur(object):
                                                   MATER       =  ac.mate.mate['TG'],
                                                   RELATION    =  'GRAN_IRRA_LOG',),)
             mtmp = (_F(GROUP_MA = 'CR_' + ac.idAST, COMPOR = _CMPC,),
-                    _F(GROUP_MA = 'TG_' + ac.idAST, COMPOR = _CMPT,),)
+                        _F(GROUP_MA = 'TG_' + ac.idAST, COMPOR = _CMPT,),)
             mcf.extend(mtmp)
 
         return mcf
@@ -978,7 +982,7 @@ class Coeur(object):
         FORMULE = self.macro.get_cmd('FORMULE')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
         RECU_TABLE = self.macro.get_cmd('RECU_TABLE')
-
+                
         _TEMPPIC=DEFI_FONCTION(NOM_PARA='INST',
                               NOM_RESU='TEMP',
                               VALE=( -2.0,   self.TP_REF,
@@ -995,7 +999,7 @@ class Coeur(object):
                                  self.temps_simu['T9'],   self.TP_REF,),
                               PROL_DROITE='CONSTANT',
                               PROL_GAUCHE='CONSTANT',);
-
+        
         _TEMPPSC=DEFI_FONCTION(NOM_PARA='INST',
                               NOM_RESU='TEMP',
                               VALE=( -2.0,   self.TP_REF,
@@ -1012,7 +1016,7 @@ class Coeur(object):
                                  self.temps_simu['T9'],   self.TP_REF,),
                               PROL_DROITE='CONSTANT',
                               PROL_GAUCHE='CONSTANT',);
-
+        
         _TEMPENV=DEFI_FONCTION(NOM_PARA='INST',
                               NOM_RESU='TEMP',
                               VALE=( -2.0,   self.TP_REF,
@@ -1031,7 +1035,7 @@ class Coeur(object):
                               PROL_GAUCHE='CONSTANT',);
 
         TP_REFlocal = self.TP_REF
-
+        
         # interpolation linéaire du coefficient de dilatation
         #des internes de cuve en fonction de la température
         ALPH1local=self.ALPH1
@@ -1048,10 +1052,10 @@ class Coeur(object):
         ymin = _TABG['Y_MIN',1]
         ymax = _TABG['Y_MAX',1]
         zmin = _TABG['Z_MIN',1]
-        zmax = _TABG['Z_MAX',1]
+        zmax = _TABG['Z_MAX',1]        
         Y0 = (ymin + ymax) / 2.
-        Z0 = (zmin + zmax) / 2.
-
+        Z0 = (zmin + zmax) / 2.        
+        
         L='(sqrt( ((Y-%(Y0)f)**2)+ ((Z-%(Z0)f)**2)))'
         epsilon=1.E-6
         # on rentre un epsilon pour le cas où L=0 (assemblage central)
@@ -1063,26 +1067,26 @@ class Coeur(object):
         f_DthZ=Dcth+'*'+SINTE
         _DthY=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthY%locals())
         _DthZ=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZ%locals())
-
-
+        
+        
         Dthpic=L+' * '+ALPHPIC+' * (' + _TEMPPIC.nom + '(INST)-%(TP_REFlocal)f) '
         f_DthYpic=Dthpic+'*'+COSTE
         f_DthZpic=Dthpic+'*'+SINTE
         _DthYpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthYpic%locals())
         _DthZpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZpic%locals())
-
+        
         Dthpsc=L+' * '+ALPHPSC+' * (' + _TEMPPSC.nom + '(INST)-%(TP_REFlocal)f) '
         f_DthYpsc=Dthpsc+'*'+COSTE
         f_DthZpsc=Dthpsc+'*'+SINTE
         _DthYpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthYpsc%locals())
         _DthZpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZpsc%locals())
-
+        
         # le déplacement de la PIC est égal à la différence de hauteur de cavité
         # (entre l'instant "cuve fermée à 20C"et l'instant considéré)
-        # à laquelle on retranche celui de la PSC
+        # 
         _DthXpic=DEFI_FONCTION(NOM_PARA='INST',
                               VALE=( -2.0,   0.,
-                                 -1.0,   0.,
+                                 -1.0,   0.,                                 
                                  self.temps_simu['T0'],   0.,
                                  self.temps_simu['T1'],   self.Hcav1 - self.Hcav1 ,
                                  self.temps_simu['T2'],   self.Hcav1 - self.Hcav2 ,
@@ -1100,13 +1104,13 @@ class Coeur(object):
         XSUPCUVElocal=self.XSUPCUVE
         f_DthX='(-1.*'  +_DthXpic.nom + '(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +'  +_DthXpic.nom + '(INST))'
         _DthX=FORMULE(NOM_PARA=('X','INST'),VALE=f_DthX%locals())
-
+        
         _dilatation = AFFE_CHAR_MECA_F( MODELE   = MODEL,
                                    DDL_IMPO = (
                                                 _F(GROUP_NO = 'FIX',              DX=_DthXpic,  DY=_DthYpic,  DZ=_DthZpic ),
                                                 _F(GROUP_NO = 'PMNT_S',                      DY=_DthYpsc,  DZ=_DthZpsc,),
-                                                _F(GROUP_NO = 'P_CUV',            DX=_DthX,   DY=_DthY,     DZ=_DthZ ),),);
-
+                                                _F(GROUP_NO = 'P_CUV',            DX=_DthX,   DY=_DthY,     DZ=_DthZ ),),); 
+        
         return _dilatation
 
 class CoeurFactory(Mac3Factory):

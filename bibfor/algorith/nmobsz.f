@@ -1,10 +1,9 @@
       SUBROUTINE NMOBSZ(SDOBSE,NOMTAB,TITOBS,NOMCHA,TYPCHA,
      &                  EXTRCH,EXTRCP,EXTRGA,NOMCMP,NOMNOE,
-     &                  NOMMAI,NUM   ,SNUM  ,NUMINS,INSTAN,
-     &                  VALR  )
+     &                  NOMMAI,NUM   ,SNUM  ,INSTAN,VALR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,18 +53,18 @@ C IN  NOMMAI : NOM DE LA MAILLE
 C IN  NUM    : NUMERO POINT DE GAUSS
 C IN  SNUM   : NUMERO SOUS-POINT DE GAUSS
 C IN  NUOBSV : NUMERO DE L'OBSERVATIONC
-C IN  NUMINS : NUMERO DE L'INSTANT COURANT
 C IN  INSTAN : VALEUR DE L'INSTANT
 C IN  VALR   : VALEUR A SAUVEGARDER DANS LA TABLE
 C
 C ----------------------------------------------------------------------
 C
       INTEGER      NBPARA
-      PARAMETER   (NBPARA=15)
+      PARAMETER   (NBPARA=16)
       CHARACTER*16 NOPARA(NBPARA)
       INTEGER      NPAR
       CHARACTER*24 OBSINF
       INTEGER      JOBSIN
+      INTEGER      NUMREU,NUMOBS
       COMPLEX*16   C16BID
       CHARACTER*16 TYPOBJ
       CHARACTER*24 NOMSD
@@ -74,12 +73,12 @@ C
       CHARACTER*24 TABK(NBPARA),NOPARZ(NBPARA)
       INTEGER      IPAR,KVAL,IVAL,RVAL
 C
-      DATA NOPARA/'NOM_OBSERVATION' ,'TYPE_OBJET','NOM_SD',
-     &            'NUME_ORDRE','INST'   ,'NOM_CHAM',
-     &            'EVAL_CHAM','NOM_CMP','EVAL_CMP',
-     &            'NOEUD'     ,'MAILLE' ,
-     &            'EVAL_ELGA' ,'POINT','SOUS_POINT',
-     &            'VALE'      /
+      DATA NOPARA/'NOM_OBSERVATION','TYPE_OBJET'  ,'NOM_SD' ,
+     &            'NUME_REUSE'     ,'NUME_OBSE'   ,'INST'   ,
+     &            'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP',
+     &            'EVAL_CMP'       ,'NOEUD'       ,'MAILLE' ,
+     &            'EVAL_ELGA'      ,'POINT'       ,'SOUS_POINT',
+     &            'VALE'           /
 C
 C ----------------------------------------------------------------------
 C
@@ -98,6 +97,8 @@ C
       RVAL   = 1
       TYPOBJ = 'R'
       NOMSD  = ' '
+      NUMOBS = ZI(JOBSIN-1+3)
+      NUMREU = ZI(JOBSIN-1+4)
 C
 C --- CE QUI EST COMMUN
 C
@@ -118,22 +119,27 @@ C
 
       NOPARZ(IPAR) = NOPARA(4)
       IPAR         = IPAR + 1
-      TABI(IVAL)   = NUMINS
+      TABI(IVAL)   = NUMREU
       IVAL         = IVAL + 1
 
       NOPARZ(IPAR) = NOPARA(5)
       IPAR         = IPAR + 1
+      TABI(IVAL)   = NUMOBS
+      IVAL         = IVAL + 1
+
+      NOPARZ(IPAR) = NOPARA(6)
+      IPAR         = IPAR + 1
       TABR(RVAL)   = INSTAN
       RVAL         = RVAL + 1
 
-      NOPARZ(IPAR) = NOPARA(6)
+      NOPARZ(IPAR) = NOPARA(7)
       IPAR         = IPAR + 1
       TABK(KVAL)   = NOMCHA
       KVAL         = KVAL + 1
 C
 C --- EXTRACTION DU CHAMP: TYPE
 C
-      NOPARZ(IPAR) = NOPARA(7)
+      NOPARZ(IPAR) = NOPARA(8)
       IPAR         = IPAR + 1
       TABK(KVAL)   = EXTRCH
       KVAL         = KVAL + 1
@@ -141,12 +147,12 @@ C
 C --- EXTRACTION DES COMPOSANTES: TYPE
 C
       IF (EXTRCP.EQ.' ') THEN
-        NOPARZ(IPAR) = NOPARA(8)
+        NOPARZ(IPAR) = NOPARA(9)
         IPAR         = IPAR + 1
         TABK(KVAL)   = NOMCMP
         KVAL         = KVAL + 1
       ELSE
-        NOPARZ(IPAR) = NOPARA(9)
+        NOPARZ(IPAR) = NOPARA(10)
         IPAR         = IPAR + 1
         TABK(KVAL)   = EXTRCP
         KVAL         = KVAL + 1
@@ -156,51 +162,51 @@ C --- NOEUD OU MAILLE
 C
       IF (TYPCHA.EQ.'NOEU') THEN
         IF (EXTRCH.EQ.'VALE') THEN
-          NOPARZ(IPAR) = NOPARA(10)
+          NOPARZ(IPAR) = NOPARA(11)
           IPAR         = IPAR + 1
           TABK(KVAL)   = NOMNOE
           KVAL         = KVAL + 1
         ELSE
-          NOPARZ(IPAR) = NOPARA(7)
+          NOPARZ(IPAR) = NOPARA(8)
           IPAR         = IPAR + 1
           TABK(KVAL)   = EXTRCH
           KVAL         = KVAL + 1
         ENDIF
-        NOPARZ(IPAR) = NOPARA(15)
+        NOPARZ(IPAR) = NOPARA(16)
         IPAR         = IPAR + 1
         TABR(RVAL)   = VALR
         RVAL         = RVAL + 1
       ELSEIF (TYPCHA.EQ.'ELGA') THEN
         IF (EXTRCH.EQ.'VALE') THEN
-          NOPARZ(IPAR) = NOPARA(11)
+          NOPARZ(IPAR) = NOPARA(12)
           IPAR         = IPAR + 1
           TABK(KVAL)   = NOMMAI
           KVAL         = KVAL + 1
         ELSE
-          NOPARZ(IPAR) = NOPARA(7)
+          NOPARZ(IPAR) = NOPARA(8)
           IPAR         = IPAR + 1
           TABK(KVAL)   = EXTRCH
           KVAL         = KVAL + 1
         ENDIF
         IF (EXTRGA.EQ.'VALE') THEN
-          NOPARZ(IPAR) = NOPARA(13)
+          NOPARZ(IPAR) = NOPARA(14)
           IPAR         = IPAR + 1
           TABI(IVAL)   = NUM
           IVAL         = IVAL + 1
-          NOPARZ(IPAR) = NOPARA(14)
+          NOPARZ(IPAR) = NOPARA(15)
           IPAR         = IPAR + 1
           TABI(IVAL)   = SNUM
           IVAL         = IVAL + 1
-          NOPARZ(IPAR) = NOPARA(15)
+          NOPARZ(IPAR) = NOPARA(16)
           IPAR         = IPAR + 1
           TABR(RVAL)   = VALR
           RVAL         = RVAL + 1
         ELSE
-          NOPARZ(IPAR) = NOPARA(12)
+          NOPARZ(IPAR) = NOPARA(13)
           IPAR         = IPAR + 1
           TABK(KVAL)   = EXTRGA
           KVAL         = KVAL + 1
-          NOPARZ(IPAR) = NOPARA(15)
+          NOPARZ(IPAR) = NOPARA(16)
           IPAR         = IPAR + 1
           TABR(RVAL)   = VALR
           RVAL         = RVAL + 1

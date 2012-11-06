@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -477,9 +477,11 @@ C
 C
         CALL MDRECF(NEXCIT,NEXCIR,ZI(JIDESC),ZK8(JNOMFO),ZR(JCOEFM),
      &              ZI(JIADVE),ZI(JINUMO),ZK8(JNODEP),ZK8(JNOVIT),
-     &              ZK8(JNOACC),JPSDEL,NEQ,TYPBA2,BASEMO,NBMODE,
+     &              ZK8(JNOACC),NEQ,TYPBA2,BASEMO,NBMODE,
      &              ZR(JRAIG),MONMOT,NOMRES)
-
+        CALL JEEXIN(NOMRES//'           .IPSD',IRET)
+        IF ( IRET.NE.0 )
+     &    CALL JEVEUO(NOMRES//'           .IPSD','E',JPSDEL)
 
         IF (METHOD.EQ.'ITMI') THEN
           NBF = 0

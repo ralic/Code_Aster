@@ -13,7 +13,7 @@
       LOGICAL       MONOAP, MUAPDE, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -232,10 +232,10 @@ C     --- BOUCLE SUR LES OPTIONS DE CALCUL "NOMSY" ---
          CALL JEVEUO(KVAL,'L',JVAL)
          CALL WKVECT(KVX1, 'V V R', 3*NEQ*NBSUP,JREP1)
          CALL WKVECT(KVX2, 'V V R', 3*NEQ*NBSUP,JREP2)
-         CALL WKVECT(KVE2, 'V V R',3*NEQ*NINTRA,JCREP)
+         CALL WKVECT(KVE2, 'V V R',3*NEQ*NBSUP,JCREP)
          CALL WKVECT(KVE3, 'V V R',       3*NEQ,JDIR )
          CALL WKVECT(KVE4, 'V V R',   NBSUP*NEQ,JTABS)
-         CALL WKVECT(KVE5, 'V V R',3*NEQ*NINTRA,JCRER)
+         CALL WKVECT(KVE5, 'V V R',3*NEQ*NBSUP,JCRER)
 C
 C        ---------------------------------------------------------------
 C                        REPONSE PRIMAIRE OU GLOBAL

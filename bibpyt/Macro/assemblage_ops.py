@@ -1,4 +1,4 @@
-#@ MODIF assemblage_ops Macro  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF assemblage_ops Macro  DATE 05/11/2012   AUTEUR BRIE N.BRIE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,7 +72,7 @@ def assemblage_ops(self,MODELE,CHAM_MATER,CARA_ELEM,CHARGE,MATR_ASSE,VECT_ASSE,
       try :
         for m in MATR_ASSE:
           option=m['OPTION']
-          if option in ('RIGI_MECA','RIGI_MECA_LAGR','RIGI_THER','RIGI_ACOU') :
+          if option in ('RIGI_MECA','RIGI_THER','RIGI_ACOU','RIGI_FLUI_STRU') :
              decal=m
              MATR_ASSE.remove(decal)
              MATR_ASSE.insert(0,decal)
@@ -83,8 +83,8 @@ def assemblage_ops(self,MODELE,CHAM_MATER,CARA_ELEM,CHARGE,MATR_ASSE,VECT_ASSE,
       for m in MATR_ASSE:
         iocc=iocc+1
         option=m['OPTION']
-        if iocc == 1 and lnume == 1 and option not in ('RIGI_MECA','RIGI_MECA_LAGR',
-                                                       'RIGI_THER','RIGI_ACOU')      :
+        if iocc == 1 and lnume == 1 and option not in ('RIGI_MECA','RIGI_THER','RIGI_ACOU',
+                                                       'RIGI_FLUI_STRU') :
           UTMESS('F','MATRICE0_9')
     
     
@@ -112,11 +112,6 @@ def assemblage_ops(self,MODELE,CHAM_MATER,CARA_ELEM,CHARGE,MATR_ASSE,VECT_ASSE,
         try : motscles['MODE_FOURIER']   =m['MODE_FOURIER']
         except IndexError : pass
     
-        try : motscles['THETA']   =m['THETA']
-        except IndexError : pass
-    
-        try : motscles['PROPAGATION']   =m['PROPAGATION']
-        except IndexError : pass
         _a=CALC_MATR_ELEM(MODELE=MODELE,**motscles)
     
         if option == 'RIGI_MECA':
@@ -126,7 +121,7 @@ def assemblage_ops(self,MODELE,CHAM_MATER,CARA_ELEM,CHARGE,MATR_ASSE,VECT_ASSE,
           masel  = _a
           lmasel = 1
     
-        if lnume and option in ('RIGI_MECA','RIGI_THER','RIGI_ACOU','RIGI_MECA_LAGR'):
+        if lnume and option in ('RIGI_MECA','RIGI_THER','RIGI_ACOU','RIGI_FLUI_STRU'):
           self.DeclareOut('num',numeddl)
           # On peut passer des mots cles egaux a None. Ils sont ignores
           num=NUME_DDL(MATR_RIGI=_a,METHODE=methode,RENUM=renum,INFO=info)

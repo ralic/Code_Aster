@@ -1,4 +1,4 @@
-#@ MODIF post_mac3coeur_ops Mac3coeur  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_mac3coeur_ops Mac3coeur  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -279,6 +279,8 @@ def post_mac3coeur_ops(self, **args):
     """Corps principal de la macro de post-traitement de MAC3COEUR"""
     import aster
     from Accas import _F
+    from Utilitai.Utmess import  UTMESS
+
     CREA_CHAMP    = self.get_cmd('CREA_CHAMP')
     CREA_TABLE    = self.get_cmd('CREA_TABLE')
     CALC_TABLE    = self.get_cmd('CALC_TABLE')
@@ -308,7 +310,8 @@ def post_mac3coeur_ops(self, **args):
              post_table=1
 
        _formule = FORMULE(NOM_PARA='V8',VALE='1000.*V8')
-       print 'Recuperation des jeux inter-assemblages'
+      
+       UTMESS('I','COEUR0_4')
        k=0
        dim=len(_coeur.nomContactAssLame)
        for name in _coeur.nomContactAssLame:
@@ -330,9 +333,8 @@ def post_mac3coeur_ops(self, **args):
           tab1.Renomme(name, 'P_LAME')
           valjeuac[name] = tab1.P_LAME.values()
           k=k+1
-          print 'liaison ',k,'/',dim
 
-       print 'Recuperation des jeux entre les assemblages de bord et le cloisonnement'
+       UTMESS('I','COEUR0_5')
        k=0
        dim=len(_coeur.nomContactCuve)
        for name in _coeur.nomContactCuve:
@@ -352,7 +354,6 @@ def post_mac3coeur_ops(self, **args):
           tab2.Renomme(name, 'P_LAME')
           valjeucu[name] = tab2.P_LAME.values()
           k=k+1
-          print 'liaison ',k,'/',dim
 
        for attr in POST_LAME:
           _num_grille = attr['NUME_GRILLE']
@@ -370,10 +371,8 @@ def post_mac3coeur_ops(self, **args):
              texte = 'sur la valeur '+post
 
           if (_typ_post=='GRACE'):
-             print 'Realisation au format GRACE de la sortie de post-traitement des lames d\'eau ',texte
              makeXMGRACEjeu(_unit,post,_coeur,valjeuac,valjeucu)
           elif (_typ_post=='TABLE'):
-             print 'Realisation au format TABLE de la sortie de post-traitement des lames d\'eau ',texte
              IMPR_TABLE(UNITE=_unit,TABLE=_TAB3)
 
     if (POST_DEF != None) :
@@ -391,7 +390,7 @@ def post_mac3coeur_ops(self, **args):
           if (_typ_post=='TABLE'):
               post_table=1
 
-       print 'Post-traitement des deformations des assemblages combustibles sur coeur ',_typ_coeur
+       UTMESS('I','COEUR0_6')
        POSITION = _coeur.get_geom_coeur()
        k=0
        dim=len(POSITION)
@@ -432,7 +431,6 @@ def post_mac3coeur_ops(self, **args):
           valdirYac[real_name] = tab1.DY.values()
           valdirZac[real_name] = tab1.DZ.values()
           k=k+1
-          print 'assemblage ', k,'/',dim
 
        for attr in POST_DEF:
           _num_grille = attr['NUME_GRILLE']
@@ -445,10 +443,8 @@ def post_mac3coeur_ops(self, **args):
           DEFI_FICHIER(ACTION='LIBERER',UNITE=_unit)
 
           if (_extremum == None):
-             print 'Realisation de la sortie de post-traitement des deformations sur la grille ',_num_grille
              post = _num_grille
           else:
-             print 'Realisation de la sortie de post-traitement des deformations sur la valeur ',_extremum
              post = _extremum
 
           if (_typ_post=='GRACE'):

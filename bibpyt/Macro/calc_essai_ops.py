@@ -1,4 +1,4 @@
-#@ MODIF calc_essai_ops Macro  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF calc_essai_ops Macro  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

@@ -1,4 +1,4 @@
-#@ MODIF matrice0 Messages  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF matrice0 Messages  DATE 05/11/2012   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ cata_msg={
 
 5: _(u"""
  La construction d'un nouveau concept NUME_DDL ne peut se faire qu'en présence du mot clé MATR_ASSE avec une des options
- suivantes: RIGI_MECA, RIGI_THER, RIGI_ACOU ou RIGI_MECA_LAGR.
+ suivantes: RIGI_MECA, RIGI_THER, RIGI_ACOU ou RIGI_FLUI_STRU.
  Attention: si vous cherchez à assembler des vecteurs seulement, le concept NUME_DDL doit être construit préalablement. 
 """),
 
@@ -58,7 +58,7 @@ cata_msg={
 """),
 
 9: _(u"""
- Une des options doit être RIGI_MECA ou RIGI_THER ou RIGI_ACOU ou RIGI_MECA_LAGR.
+ Une des options doit être RIGI_MECA ou RIGI_THER ou RIGI_ACOU ou RIGI_FLUI_STRU.
 """),
 
 10: _(u"""
@@ -73,5 +73,13 @@ cata_msg={
  Une des charges renseignées pour l'assemblage des vecteurs est déjà présente dans le mot-clé 
  CHARGE définissant les conditions de Dirichlet. Il est interdit de renseigner plus d'une fois la même charge.
 """),
+
+13: _(u"""
+La numérotation généralisée retenue pour la construction des
+matrices ne fait pas référence au modèle généralisé. Si vous essayez de
+construire une matrice généralisée à partir d'une matrice assemblée et 
+d'une base, il faut utiliser la commande PROJ_BASE.
+"""),
+
 
 }

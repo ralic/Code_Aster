@@ -1,4 +1,4 @@
-#@ MODIF outils_ihm Calc_essai  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF outils_ihm Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -262,9 +262,32 @@ class ModeList(ScrollList):
 
     def get_selection(self):
         """retourne la liste des NUME_ORDRE selectionnes"""
-        print 'toto = ',  self.values
         return [int(self.values[int(v)]) for v in self.liste.curselection() ]
     
+
+class ModeFreqList(ModeList):
+    """!Permet de créer une liste de modes contenues dans un sd_resultat.
+        indexes par leur frequence (modes dynamiques ou leur noeud_cmp
+        (modes statiques)"""
+    def __init__(self, root, title=None):
+        if title is None:
+            title="Choisissez les modes"
+        ModeList.__init__(self, root, title)
+
+    def set_resu(self, resu):
+        cara_mod = resu.get_modes_data()
+        freq = cara_mod['FREQ']
+        nume_ordr = cara_mod['NUME_ORDRE']
+        noeud_cmp = cara_mod['NOEUD_CMP']
+        for ind_ordr in range(len(freq)):
+            if not freq[ind_ordr]: freq[ind_ordr] = noeud_cmp[ind_ordr]
+        self.set_values( [ ('%3i' % n, self.set_display(f)) for n,f in zip(nume_ordr,freq) ] )
+
+    def set_display(self,data):
+        """ determine l'affichage des caras selon que l'on ait des modes stat ou dyn"""
+        if isinstance(data,str): return data
+        elif isinstance(data,float): return '%8.2f Hz' % data
+
 
 class StudyList(ScrollList):
     """!Liste permettant de choisir l'étude Salomé pour l'affichage des
@@ -408,62 +431,9 @@ class VisuSpectre(Frame):
 
 
 
-
-class ModeFreqList(ModeList):
-    """!Permet de créer une liste de modes contenues dans un sd_resultat.
-        indexes par leur frequence (modes dynamiques ou leur noeud_cmp
-        (modes statiques)"""
-    def __init__(self, root, title=None):
-        if title is None:
-            title="Choisissez les modes"
-        ModeList.__init__(self, root, title)
-
-    def set_resu(self, resu):
-        cara_mod = resu.get_modes_data()
-        freq = cara_mod['FREQ']
-        nume_ordr = cara_mod['NUME_ORDRE']
-        noeud_cmp = cara_mod['NOEUD_CMP']
-        for ind_ordr in range(len(freq)):
-            if not freq[ind_ordr]: freq[ind_ordr] = noeud_cmp[ind_ordr]
-        print 'titi = ', [ ('%3i' % n, self.set_display(f)) for n,f in zip(nume_ordr,freq) ]
-        self.set_values( [ ('%3i' % n, self.set_display(f)) for n,f in zip(nume_ordr,freq) ] )
-
-    def set_display(self,data):
-        """ determine l'affichage des caras selon que l'on ait des modes stat ou dyn"""
-        if isinstance(data,str): return data
-        elif isinstance(data,float): return '%8.2f Hz' % data
-
-
-
-
 class ModeHarmoList(ModeList):
     """!liste de numeros d'ordre plutot pour les dyna_harmo"""
     pass
-
-
-
-class GroupNoList(ModeList):
-    """!Crée une liste de groupe de noeuds à partir d'un maillage"""
-    def __init__(self, root):
-        if title is None:
-            title="Choisissez les groupes de noeuds"
-        ModeList.__init__(self, root, title)
-
-    def set_mesh(self, mail):
-        groupno = mail.sdj.GROUPENO.get()
-        self.set_values( zip( groupno.keys(), groupno.keys() ) )
-
-
-
-class GroupMaList(ModeList):
-    """!Crée une liste de groupe de noeuds à partir d'un maillage"""
-    def __init__(self, root):
-        ModeList.__init__(self, root, "Choisissez les groupes de mailles")
-
-    def set_mesh(self, mail):
-        groupno = mail.sdj.GROUPEMA.get()
-        self.set_values( zip( groupno.keys(), groupno.keys() ) )
-
 
 
 class MultiList(Frame):
@@ -518,6 +488,32 @@ class MultiList(Frame):
     def delete(self):
         for lst in self.lists:
             lst.delete(0,'end')
+
+
+
+class GroupNoList(ModeList):
+    """!Crée une liste de groupe de noeuds à partir d'un maillage"""
+    def __init__(self, root):
+        if title is None:
+            title="Choisissez les groupes de noeuds"
+        ModeList.__init__(self, root, title)
+
+    def set_mesh(self, mail):
+        groupno = mail.sdj.GROUPENO.get()
+        self.set_values( zip( groupno.keys(), groupno.keys() ) )
+
+
+
+class GroupMaList(ModeList):
+    """!Crée une liste de groupe de noeuds à partir d'un maillage"""
+    def __init__(self, root):
+        ModeList.__init__(self, root, "Choisissez les groupes de mailles")
+
+    def set_mesh(self, mail):
+        groupno = mail.sdj.GROUPEMA.get()
+        self.set_values( zip( groupno.keys(), groupno.keys() ) )
+
+
 
 
 class OptionFrame(Frame):
@@ -715,6 +711,7 @@ class ParamModeIterInv(Frame):
             mc['NMAX_ITER_AJUSTE'] = self.nmax_iter_ajuste.get()
             mc['PREC_AJUSTE'] = self.prec_ajuste.get()
         return mc
+
 
 class ParamProjMesuModal(Frame):
     """Un panneau pour spécifier les paramètres de résolution
@@ -1144,13 +1141,28 @@ class GroupNoWidget(Frame):
         """Si le concept a ete cree ac OBSERVATION, remplit le self.data
            et met a jour l'interface.
         """
+        message = u"La macro OBSERVATION a été utilisée avec le \
+                    mot-clé NOEUD ou MAILLE. On ne peut pas traiter \
+                    ce cas dans la fenêtre d'Observation"
+
+##        print "  "
+##        print "self.data = "
+##        print self.data
+##        print "  "
         if valeur_etape.has_key('FILTRE'):
             filtres = valeur_etape['FILTRE']
-            if isinstance(filtres,dict):
+            if not isinstance(filtres,list) and not isinstance(filtres,tuple):
                 filtres=[filtres]
 
             for filtre in filtres:
-                grnos = filtre['GROUP_NO']
+                if filtre.has_key('GROUP_NO'):
+                    grnos = filtre['GROUP_NO']
+                elif filtre.has_key('GROUP_MA'):
+                    grnos = filtre['GROUP_MA']
+                else:
+                    # cas ou les filtres ont ete definis par les mc NOEUD ou MAILLE : non traite
+                    self.mess.disp_mess(message)
+
                 if type(grnos)==str:grnos=[grnos]
                 ddls = filtre['DDL_ACTIF']
                 for grno in grnos:
@@ -1161,15 +1173,23 @@ class GroupNoWidget(Frame):
                                     if ddl_key.split() == ddl.split():
                                         int_widget.set(1)
 
+                    
+
         if valeur_etape.has_key('MODI_REPERE'):
             modis_reperes = valeur_etape['MODI_REPERE']
-            self.set_chgt_rep(self.root.chgt_rep)
-            
-            if isinstance(modis_reperes,dict):
+            if not isinstance(modis_reperes,list) and not isinstance(modis_reperes,tuple):
                 modis_reperes=[modis_reperes]
+            self.set_chgt_rep(self.root.chgt_rep)
+
 
             for modi_repere in modis_reperes:
-                grnos = modi_repere['GROUP_NO']
+                if filtre.has_key('GROUP_NO'):
+                    grnos = filtre['GROUP_NO']
+                elif filtre.has_key('GROUP_MA'):
+                    grnos = filtre['GROUP_MA']
+                else:
+                    # cas ou les filtres ont ete definis par les mc NOEUD ou MAILLE : non traite
+                    self.mess.disp_mess(message)
                 if isinstance(grnos,str):grnos = [grnos]
                 for grno in grnos:
                     for row_dict in self.data:
@@ -1179,8 +1199,7 @@ class GroupNoWidget(Frame):
                             # le mot-cle GROUP_NO est deja dans le row_dict : on l'enleve
                             row_dict['CHGT_REP'].pop('GROUP_NO')
                             row_dict.set_chgt_rep(self.chgt_rep)
-
-        return Rien
+                            
 
 
     def toggled(self):
@@ -1554,11 +1573,6 @@ class DispFRFDialogue(Toplevel):
         module = [abs(kk) for kk in ordo]
 
         titre = "Visualisation des FRF"
-
-        print "freq = ", freq
-        print "module = ", module
-        print couleur
-        print l_legende
         self.param_visu.visu_courbe(freq, module, couleur, titre, l_legende,
                                     'Frequence', 'FRF','Hz','unite/Hz')
 
@@ -1583,6 +1597,7 @@ class ObservationWindow(Frame):
         self.obs_co = None
         self.type_co = type_co
         self.close_widget = close_widget
+
         
         self.create_obsframe()
 
@@ -1591,10 +1606,12 @@ class ObservationWindow(Frame):
         self.menu_obs_resu.update(mdo.get_mode_meca_name(),
                                   self.nom_obs_resu,
                                   self._observabilite_changed)
+        self.root.objects = mdo
         self.root.setup()
 
     def set_selected(self,valeur_etape):
         self.obs_noeuds.grp.set_selected(valeur_etape)
+        self.obs_mailles.grp.set_selected(valeur_etape)
         
 
     def create_obsframe(self):
@@ -1694,8 +1711,6 @@ class ObservationWindow(Frame):
         if resu.modele_name == modele.nom:
             proj = 'NON'
 
-        print "modele_1 = ", resu.modele.obj.nom
-        print "modele_2 = ", modele.obj.nom
 
         try:
             __OBS = OBSERVATION( RESULTAT = resu.obj,
@@ -1734,7 +1749,7 @@ class ObservationWindow(Frame):
 
 class DispObs(Toplevel):
 
-    def __init__(self,mess,ce_objects, resu=None):
+    def __init__(self,parent,mess,ce_objects, resu=None):
         Toplevel.__init__(self)
         self.resu = resu
         self.objects = ce_objects 
@@ -1742,9 +1757,12 @@ class DispObs(Toplevel):
         self.obs_co = None                                                         
         self.mess = mess
 
-        self.obs_window = ObservationWindow(self,self,mess,ce_objects)
+        self.obs_window = ObservationWindow(self,parent,mess,ce_objects)
         self.obs_window.create_obsframe()
         self.obs_window.grid()
+
+    def setup(self):
+        self.obs_window.setup()
 
     def set_resu(self,nom_resu):
         self.obs_window.nom_obs_resu.set(nom_resu)
@@ -1757,8 +1775,10 @@ class DispObs(Toplevel):
                     nom_modele = etape.valeur['MODELE_2'].nom
                     self.set_modele(nom_modele)
                     self.set_selected(etape.valeur)
+                    nom_resu = etape.valeur['RESULTAT'].nom
+                    self.obs_window.nom_obs_resu.set(nom_resu)
         
-        self.obs_window._observabilite_changed()
+##        self.obs_window._observabilite_changed()
 
     def set_modele(self,nom_modele):
         self.obs_window.nom_obs_modele.set(nom_modele)
@@ -1863,7 +1883,7 @@ class _SelectionBase(Frame):
         le modèle et le maillage lors de sa création."""
         self.set_modele_maillage(modele.obj, modele.maya)
 
-    def display_comp(self, composantes):
+    def display_comp(self, composantes,type_gr):
         data = []
         groupes = composantes.keys()
         groupes.sort()
@@ -1875,7 +1895,7 @@ class _SelectionBase(Frame):
                     ddl_keys.sort(key=sort_compo_key)
                 except TypeError: # version de python < 2.4
                     ddl_keys.sort()
-                data.append({"NOM": grp, "NOM_CMP" : ddl_keys})
+                data.append({"NOM": grp, "NOM_CMP" : ddl_keys,"TYPE":type_gr})
 
         self.grp.set_data(data)
 
@@ -1908,7 +1928,7 @@ class SelectionNoeuds(_SelectionBase):
         nos = maillage.sdj.NOMNOE.get()
         nb_no = len(nos)
         composantes = find_composantes(groupno, noeuds_def, nb_no)
-        self.display_comp(composantes)
+        self.display_comp(composantes,'NOEUDS')
 
 
 class SelectionMailles(_SelectionBase):
@@ -1934,7 +1954,7 @@ class SelectionMailles(_SelectionBase):
         nos = maillage.sdj.NOMNOE.get()
         nb_no = len(nos)
         composantes = find_composantes(groupno, noeuds_def, nb_no)
-        self.display_comp(composantes)
+        self.display_comp(composantes,'MAILLES')
 
 
 

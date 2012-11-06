@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+#& MODIF COMMANDE  DATE 05/11/2012   AUTEUR BRIE N.BRIE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ def assemblage_prod(self,NUME_DDL,MATR_ASSE,VECT_ASSE,**args):
   if MATR_ASSE !=None: 
       for m in MATR_ASSE:
         opti=m['OPTION']
-        if opti in ( "RIGI_MECA","RIGI_FLUI_STRU","RIGI_MECA_LAGR" ,
+        if opti in ( "RIGI_MECA","RIGI_FLUI_STRU",
                      "MASS_MECA" , "MASS_FLUI_STRU" ,"RIGI_GEOM" ,"RIGI_ROTA",
                      "AMOR_MECA","IMPE_MECA","ONDE_FLUI","MASS_MECA_DIAG",
                      "MECA_GYRO","RIGI_GYRO" ) : t=matr_asse_depl_r
@@ -85,7 +85,7 @@ ASSEMBLAGE=MACRO(nom="ASSEMBLAGE",
                                    into=("RIGI_MECA","MASS_MECA","MASS_MECA_DIAG",
                                          "AMOR_MECA","RIGI_MECA_HYST","IMPE_MECA",
                                          "ONDE_FLUI","RIGI_FLUI_STRU","MASS_FLUI_STRU",
-                                         "RIGI_ROTA","RIGI_GEOM","RIGI_MECA_LAGR","MECA_GYRO","RIGI_GYRO",
+                                         "RIGI_ROTA","RIGI_GEOM","MECA_GYRO","RIGI_GYRO",
                                          "RIGI_THER","MASS_THER",
                                          "RIGI_ACOU","MASS_ACOU","AMOR_ACOU",)
                                    ),
@@ -99,11 +99,6 @@ ASSEMBLAGE=MACRO(nom="ASSEMBLAGE",
                MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0),
              ),
 
-             b_rigi_meca_lagr = BLOC( condition = "OPTION=='RIGI_MECA_LAGR'",
-               THETA           =SIMP(statut='o',typ=theta_geom),
-               PROPAGATION     =SIMP(statut='f',typ='R'),
-             ),
-
              b_rigi_ther = BLOC( condition = "OPTION=='RIGI_THER'",
                MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0),
              ),
@@ -112,7 +107,7 @@ ASSEMBLAGE=MACRO(nom="ASSEMBLAGE",
 #          
          VECT_ASSE       =FACT(statut='f',max='**',
              VECTEUR         =SIMP(statut='o',typ=CO),             
-             OPTION          =SIMP(statut='o',typ='TXM',into=("CHAR_MECA","CHAR_ACOU","CHAR_TER") ),
+             OPTION          =SIMP(statut='o',typ='TXM',into=("CHAR_MECA","CHAR_ACOU","CHAR_THER") ),
            b_char_meca     =BLOC(condition = "OPTION == 'CHAR_MECA'", fr="chargement mécanique",
               CHARGE       =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
               MODE_FOURIER =SIMP(statut='f',typ='I',defaut= 0 ),

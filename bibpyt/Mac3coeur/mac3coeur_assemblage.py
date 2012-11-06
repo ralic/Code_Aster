@@ -1,4 +1,4 @@
-#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 24/07/2012   AUTEUR PERONY R.PERONY 
+#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,6 +231,18 @@ class Assemblage(object):
         )
         return mcf
 
+    def mcf_cara_barre(self):
+        """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/BARRE."""
+        from Cata.cata import _F        
+        #On donne une section unitaire       
+        mcf = (
+            _F(GROUP_MA='MNT_' + self.idAST,
+               SECTION = 'GENERALE',
+               CARA = 'A',
+               VALE= 1.,),)
+        return mcf
+
+
     def mcf_AC_mater(self):
         """Retourne les mots-clés facteurs pour AFFE_MATERIAU/AFFE."""
         from Cata.cata import _F
@@ -356,17 +368,6 @@ class Assemblage(object):
                REPERE='LOCAL',
                CARA='M_T_D_N',
                VALE=self.m_gri / 4.,),
-
-        # discrets des ressorts de maintien
-        #(valeurs arbitraires car raideurs définies dans materiau DIS_BILI_ELAS)
-            _F(GROUP_MA='MNT_' + self.idAST,
-               REPERE='LOCAL',
-               CARA='K_T_D_L',
-               VALE=(1.e9, 1.e9, 1.e9,),),
-            _F(GROUP_MA='MNT_' + self.idAST,
-               REPERE='LOCAL',
-               CARA='M_T_D_L',
-               VALE=0.,),
         )
         return mcf
 

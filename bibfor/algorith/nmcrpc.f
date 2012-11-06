@@ -1,7 +1,7 @@
       SUBROUTINE NMCRPC(RESULT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,17 +33,22 @@ C ----------------------------------------------------------------------
 C
 C IN  RESULT : NOM SD RESULTAT
 C
-      INTEGER      IFM,NIV,IRET
+C ----------------------------------------------------------------------
+C
       INTEGER      NBPAR
-      PARAMETER   (NBPAR=7)
+      PARAMETER   (NBPAR=8)
       CHARACTER*2  TYPPAR(NBPAR)
       CHARACTER*10 NOMPAR(NBPAR)
+C ----------------------------------------------------------------------
+      INTEGER      IFM,NIV,IRET
       CHARACTER*19 TABLPC
-      DATA         NOMPAR / 'INST'      ,'TRAV_EXT  ','ENER_CIN'  ,
-     &                      'ENER_TOT'  ,'TRAV_AMOR ','TRAV_LIAI' ,
-     &                      'DISS_SCH'/
-      DATA         TYPPAR / 'R' ,'R' ,'R' ,'R' ,'R' ,'R' ,'R'/
-C
+      DATA         NOMPAR / 'NUME_REUSE','INST'      ,'TRAV_EXT  ',
+     &                      'ENER_CIN'  ,'ENER_TOT'  ,'TRAV_AMOR ',
+     &                      'TRAV_LIAI' ,'DISS_SCH'/
+      DATA         TYPPAR / 'I'         ,'R'         ,'R'         ,
+     &                      'R'         ,'R'         ,'R'         ,
+     &                      'R'         ,'R'/
+C  
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -52,28 +57,23 @@ C
 C --- CREATION DE LA LISTE DE TABLES SI ELLE N'EXISTE PAS
 C 
       CALL JEEXIN(RESULT//'           .LTNT',IRET)
-      IF (IRET.EQ.0) THEN 
-        CALL LTCRSD(RESULT,'G')
-      ENDIF
+      IF (IRET.EQ.0) CALL LTCRSD(RESULT,'G')
 C
 C --- RECUPERATION DU NOM DE LA TABLE CORRESPONDANT
 C     AUX PARAMETRE CALCULES
 C
       TABLPC = ' ' 
       CALL LTNOTB(RESULT,'PARA_CALC',TABLPC)
-
+C
+C --- LA TABLE PARA_CALC EXISTE-T-ELLE ?
+C
       CALL EXISD('TABLE',TABLPC,IRET)
-
-C     LA TABLE PARA_CALC N'EXISTE PAS
-C     (ATTENTION, SE BASER SUR REUSE NE MARCHE PAS TOUJOURS)
-      IF (IRET.EQ.0) THEN
-
-C       CREATION DE LA TABLE VIDE    
+C
+C --- NON, ON LA CREE
+C
+      IF (IRET.EQ.0) THEN  
         CALL TBCRSD(TABLPC,'G')
-
-C       ON AJOUTE DES PARAMETRES A LA TABLE
         CALL TBAJPA(TABLPC, NBPAR, NOMPAR, TYPPAR )
-        
       ENDIF
 
       CALL JEDEMA()

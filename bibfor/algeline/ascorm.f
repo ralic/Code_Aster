@@ -18,7 +18,7 @@
       LOGICAL           MONOAP, CORFRE, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/06/2012   AUTEUR CHANSARD F.CHANSARD 
+C MODIF ALGELINE  DATE 05/11/2012   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CRP_21 CRS_1404
+C TOLE CRP_21 
 C     ------------------------------------------------------------------
 C     COMMANDE : COMB_SISM_MODAL
 C        RECOMBINAISON DES REPONSES MODALES
@@ -65,8 +65,10 @@ C     ------------------------------------------------------------------
       REAL*8   XNU, XDE, XXX, XX1, XX2, TEST
       REAL*8   ZERO, DEMI, UN, DEUX, QUATRE, HUIT
       REAL*8   FPROP, ALPHA, ALPHA1, ALPHA2, R8PI, PI
-      REAL*8   REPMOR(NBSUP,NEQ,ID), REPMOP(NBSUP,NEQ,ID)
+      REAL*8   REPMOR, REPMOP
 C      
+      CALL JEMARQ()
+C
       PI = R8PI()
       ZERO   = 0.D0
       DEMI   = 0.5D0
@@ -192,17 +194,17 @@ C       CALCUL DU FACTEUR DE REPONSE RIGIDE DU MODE IM
 C
 C           CALCUL DES PARTIES RIGIDE ET PERIODIQUE DE LA REPONDE DU 
 C           MODE IM
-            REPMOR(IS,IN,ID) = ALPHA*REPMO1(IS,IN,ID) 
-            REPMOP(IS,IN,ID) = SQRT(UN-ALPHA*ALPHA)*REPMO1(IS,IN,ID)
+            REPMOR = ALPHA*REPMO1(IS,IN,ID) 
+            REPMOP = SQRT(UN-ALPHA*ALPHA)*REPMO1(IS,IN,ID)
             IOC = NBDIS(IS)   
 C
-C           SOMME DES VALEURS ABS DES REPONSES RIGIDES MODALES
-            RECMOR(IOC,IN,ID) = RECMOR(IOC,IN,ID)+ REPMOR(IS,IN,ID)
+C           SOMME ALGEBRIQUE DES REPONSES RIGIDES MODALES
+            RECMOR(IOC,IN,ID) = RECMOR(IOC,IN,ID)
+     +                        + REPMOR
 C
 C           SOMME DES CARRES DES REPONSES MODALES DYNAMIQUES
 C           METHODE SIMPLE            
-            RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID)+ 
-     +      (REPMOP(IS,IN,ID)*REPMOP(IS,IN,ID))
+            RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) + REPMOP**2
  90       CONTINUE
  89     CONTINUE   
  88   CONTINUE
@@ -354,4 +356,6 @@ C     --- DSC AVEC FORMULE DE ROSENBLUETH ---
       ENDIF
       ENDIF
 C
+
+      CALL JEDEMA()
       END

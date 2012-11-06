@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF discretisation Messages  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,6 +36,14 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
 Conseils :
    Vérifiez que le résultat <%(k1)s> provient bien de la commande STAT_NON_LINE ou DYNA_NON_LINE.
 """),
+
+4 : _(u"""
+ Problème lors de la récupération de la table contenant les paramètres calculés du résultat <%(k1)s>.
+ Ce résultat a été construit en reprise (REUSE). On ne sait pas extraire une liste d'instants correcte.
+Conseils :
+   Faites votre calcul initial sans reprise.
+"""),
+
 
 5 : _(u"""
  L'adaptation du pas de temps a été désactivée. Seuls les instants définis par LIST_INST seront calculés

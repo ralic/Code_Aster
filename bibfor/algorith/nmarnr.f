@@ -1,5 +1,5 @@
-      SUBROUTINE NTCRA0(SDDISC)
-C      
+      SUBROUTINE NMARNR(RESULT,NUMREU)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
@@ -18,30 +18,33 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*19 SDDISC
+      CHARACTER*8  RESULT
+      INTEGER      NUMREU
 C
 C ----------------------------------------------------------------------
 C
-C ROUTINE THER_* (STRUCTURES DE DONNES)
+C ROUTINE *_NON_LINE (ARCHIVAGE)
 C
-C CREATION SD ARCHIVAGE SPECIAL SI CALCUL NON TRANSITOIRE
-C
-C ----------------------------------------------------------------------
-C
-C
-C IN  SDDISC : SD DISCRETISATION TEMPORELLE
+C RECUPERATION NUMERO DE REUSE COURANT
 C
 C ----------------------------------------------------------------------
 C
-      CHARACTER*24 ARCINF,ARCEXC
-      INTEGER      JARINF,JAREXC
-      CHARACTER*19 SDARCH
-      INTEGER      IOCC
-      CHARACTER*16 MOTFAC,MOTPAS
-      CHARACTER*1  BASE
+C
+C IN  RESULT : NOM DE LA SD RESULTAT
+C OUT NUMREU : NUMERO DE REUSE
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER      IRET
+      CHARACTER*19 NOMTAB
+      CHARACTER*2  TYPVAR
+      LOGICAL      LEXIST
+      CHARACTER*19 LISRES
+      INTEGER      JLISRE,NVAL,IVAL,VALI
 C
 C ----------------------------------------------------------------------
 C
@@ -49,23 +52,50 @@ C
 C
 C --- INITIALISATIONS
 C
-      MOTFAC = ' '
-      MOTPAS = ' '
-      IOCC   = 0
-      BASE   = 'V'
+      NUMREU = -1
+      LISRES = '&&NMARNR.NUME_REUSE'
 C
-C --- NOM SD ARCHIVAGE
-C
-      SDARCH = SDDISC(1:14)//'.ARCH'
-      ARCINF = SDARCH(1:19)//'.AINF'
-      ARCEXC = SDARCH(1:19)//'.AEXC'
-C
-C --- CREATION DES SDS
-C      
-      CALL WKVECT(ARCEXC,'V V K16',1,JAREXC)
-      CALL WKVECT(ARCINF,'V V I'  ,2,JARINF)
-      CALL NMCRPX(MOTFAC,MOTPAS,IOCC  ,SDARCH,BASE  )
+C --- RECUPERATION DE LA LISTE DE TABLES SI ELLE EXISTE
 C 
+      CALL JEEXIN(RESULT//'           .LTNT',IRET)
+      IF (IRET.EQ.0) THEN
+        NUMREU = 0
+        GOTO 99
+      ENDIF
+C
+C --- RECUPERATION DU NOM DE LA TABLE
+C
+      NOMTAB = ' '
+      CALL LTNOTB(RESULT,'OBSERVATION',NOMTAB)
+C
+C --- LA TABLE EXISTE-T-ELLE ?
+C
+      CALL EXISD('TABLE',NOMTAB,IRET)
+      IF (IRET.EQ.0) THEN
+        NUMREU = 0
+        GOTO 99
+      ELSE
+        CALL TBEXIP(NOMTAB,'NUME_REUSE',LEXIST,TYPVAR)
+        IF (.NOT.LEXIST.OR.TYPVAR.NE.'I') CALL ASSERT(.FALSE.)
+C
+C ----- EXTRACTION DE LA COLONNE 'NUME_REUSE' DANS UN OBJET TEMPORAIRE
+C
+        CALL TBEXVE(NOMTAB,'NUME_REUSE',LISRES,'V',NVAL,TYPVAR)
+        CALL JEVEUO(LISRES,'L',JLISRE)
+C
+C ----- RECUPERATION DU MAX
+C
+        DO 10 IVAL = 1,NVAL
+          VALI = ZI(JLISRE-1+IVAL)
+          IF (VALI.GT.NUMREU) NUMREU = VALI
+  10    CONTINUE
+        NUMREU = NUMREU + 1
+      ENDIF
+C
+  99  CONTINUE
+C
+      CALL JEDETR(LISRES)
+      CALL ASSERT(NUMREU.GE.0)
+C
       CALL JEDEMA()
-
       END

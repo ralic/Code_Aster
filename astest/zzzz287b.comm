@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 05/11/2012   AUTEUR CHANSARD F.CHANSARD 
 # TITRE VALIDATION ELEMENTAIRE DE L'OPERATEUR POST_RUPTURE
 # zzzz287b.para = tps_job 20 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,8 +77,47 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 DETRUIRE(CONCEPT=_F(NOM=TAB),INFO=1)
 
+# en C_PLAN
+TAB=LIRE_TABLE(UNITE=45, FORMAT='ASTER')
 
-# en 2D
+TAB=POST_RUPTURE(TABLE=TAB,
+                 reuse=TAB,
+                 OPERATION='K1_NEGATIF',
+                 MODELISATION='C_PLAN',
+                 MATER=ACIER)
+
+IMPR_TABLE(TABLE=TAB)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-14,
+           VALE_CALC= 0.00000000000000E+00,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=1.E-14,
+           NOM_PARA='K1',
+           TYPE_TEST='MIN',
+           TABLE=TAB,)
+
+GrefCP = 1./e
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-14,
+           VALE_CALC=GrefCP,
+           VALE_REFE=GrefCP,
+           TOLE_MACHINE=1.E-14,
+           NOM_PARA='G',
+           TABLE=TAB,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=6,),
+                   _F(NOM_PARA='INST',
+                      VALE=2.,),
+                   _F(NOM_PARA='NUME_FOND',
+                      VALE_I=1,),),);
+
+DETRUIRE(CONCEPT=_F(NOM=TAB),INFO=1)
+
+# en D_PLAN
 TAB=LIRE_TABLE(UNITE=45, FORMAT='ASTER')
 
 TAB=POST_RUPTURE(TABLE=TAB,
@@ -98,6 +137,23 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='K1',
            TYPE_TEST='MIN',
            TABLE=TAB,)
+
+GrefDP = (1.-nu**2)/e
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-14,
+           VALE_CALC=GrefDP,
+           VALE_REFE=GrefDP,
+           TOLE_MACHINE=1.E-14,
+           NOM_PARA='G',
+           TABLE=TAB,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=6,),
+                   _F(NOM_PARA='INST',
+                      VALE=2.,),
+                   _F(NOM_PARA='NUME_FOND',
+                      VALE_I=1,),),);
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'ABSC_CURV_NORM'

@@ -3,7 +3,7 @@
      &                  LISCH2,FORCE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,8 +40,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       LOGICAL      DIDERN
       REAL*8       INSTAM,INSTAN
@@ -52,6 +51,7 @@ C
       CHARACTER*19 K19BID
       CHARACTER*16 K16B1,K16B2
       CHARACTER*8  K8BID,RESULT
+      INTEGER      NUMREU
 C
 C ----------------------------------------------------------------------
 C
@@ -69,7 +69,7 @@ C
 C
 C --- NUMERO D'ARCHIVAGE
 C
-      CALL DINUAR(SDDISC,NUMINS,FORCE ,NUMARC)
+      CALL DINUAR(SDDISC,NUMINS,FORCE ,NUMARC,NUMREU)
 C
 C --- INSTANT COURANT
 C

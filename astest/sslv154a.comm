@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 06/11/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE
 # sslv154a.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,6 +171,7 @@ k1ref = K1REF(0)
 k2ref_0 = K2REF(0)
 k3ref_90 = K3REF(90)
 
+tole_machine = 0.3e-2
 
 # TEST DE CALC_G
 #---------------
@@ -178,18 +179,20 @@ k3ref_90 = K3REF(90)
 # test de KI sur tout le fond de fissure
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.050000000000000003,
+           PRECISION=0.05,
+           TOLE_MACHINE=tole_machine,
            VALE_CALC= 8.36111958E+05,
-           VALE_REFE=7.9788456080286519E5,
+           VALE_REFE=K1REF(0),
            NOM_PARA='K1',
            TYPE_TEST='MAX',
            TABLE=CG,)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.040000000000000001,
+           PRECISION=0.04,
+           TOLE_MACHINE=tole_machine,
            VALE_CALC= 8.24834435E+05,
-           VALE_REFE=7.9788456080286519E5,
+           VALE_REFE=K1REF(0),
            NOM_PARA='K1',
            TYPE_TEST='MIN',
            TABLE=CG,)
@@ -199,9 +202,10 @@ TEST_TABLE(CRITERE='RELATIF',
 # il se trouve que le K2 de CALC_G est de signe oppose a celui de POST_K
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.080000000000000002,
+           PRECISION=0.09,
+           TOLE_MACHINE=tole_machine,
            VALE_CALC= 8.64354694E+05,
-           VALE_REFE=9.3868771859160636E5,
+           VALE_REFE=k2ref_0,
            NOM_PARA='K2',
            TABLE=CG,
            FILTRE=_F(NOM_PARA='ANGLE',
@@ -213,9 +217,10 @@ TEST_TABLE(CRITERE='RELATIF',
 # il se trouve que le K3 de CALC_G est de signe oppose a celui de POST_K
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
+           PRECISION=0.03,
+           TOLE_MACHINE=tole_machine,
            VALE_CALC= 6.74697864E+05,
-           VALE_REFE=6.5708140301412437E5,
+           VALE_REFE=k3ref_90,
            NOM_PARA='K3',
            TABLE=CG,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -230,9 +235,9 @@ TEST_TABLE(CRITERE='RELATIF',
 # test de KI sur tout le fond de fissure
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
+           PRECISION=0.03,
            VALE_CALC= 8.14169892E+05,
-           VALE_REFE=7.9788456080286519E5,
+           VALE_REFE=k1ref,
            NOM_PARA='K1',
            TYPE_TEST='MAX',
            TABLE=PK,)
@@ -241,7 +246,7 @@ TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
            VALE_CALC= 7.87418520E+05,
-           VALE_REFE=7.9788456080286519E5,
+           VALE_REFE=k1ref,
            NOM_PARA='K1',
            TYPE_TEST='MIN',
            TABLE=PK,)
@@ -251,7 +256,7 @@ TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
            VALE_CALC= 9.27160421E+05,
-           VALE_REFE=9.3868771859160636E5,
+           VALE_REFE=k2ref_0,
            NOM_PARA='K2',
            TABLE=PK,
            FILTRE=_F(NOM_PARA='ANGLE',
@@ -265,7 +270,7 @@ TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
            VALE_CALC=-6.47639020E+05,
-           VALE_REFE=-6.5708140301412437E5,
+           VALE_REFE=-k3ref_90,
            NOM_PARA='K3',
            TABLE=PK,
            FILTRE=_F(CRITERE='ABSOLU',

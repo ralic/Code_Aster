@@ -1,8 +1,8 @@
-#@ MODIF reca_graphique Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_graphique Macro  DATE 05/11/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -25,8 +25,9 @@ from Accas import _F
 
 try:
   import Gnuplot
+  isGnuplot = True
 except:
-  pass
+  isGnuplot = False
 
 
 #_____________________________________________
@@ -48,8 +49,6 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, interactif):
            if interactif: motscle2['PILOTE']= 'INTERACTIF'
            else:          motscle2['PILOTE']= 'POSTSCRIPT'
 
-#           DEFI_FICHIER(UNITE=int(UL_out), ACCES='NEW',)
-
            IMPR_FONCTION(FORMAT='XMGRACE',
                          UNITE=int(UL_out),
                          TITRE='Courbe de : ' + reponses[i][0],
@@ -58,34 +57,34 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, interactif):
                          LEGENDE_Y=reponses[i][2],
                          **motscle2
                          );
-#           DEFI_FICHIER(ACTION='LIBERER',UNITE=int(UL_out),)
 
    elif FORMAT=='GNUPLOT':
-       graphe=[]
-       impr=Gnuplot.Gnuplot()
-       Gnuplot.GnuplotOpts.prefer_inline_data=1
-       impr('set data style linespoints')
-       impr('set grid')
-       impr('set pointsize 2.')
-       impr('set terminal postscript color')
-       impr('set output "fort.'+str(UL_out)+'"')
-
-       for i in range(len(L_F)):
-             if interactif:
-                graphe.append(Gnuplot.Gnuplot(persist=0))
-                graphe[i]('set data style linespoints')
-                graphe[i]('set grid')
-                graphe[i]('set pointsize 2.')
-                graphe[i].xlabel(reponses[i][1])
-                graphe[i].ylabel(reponses[i][2])
-                graphe[i].title(reponses[i][0]+'  Iteration '+str(iter))
-                graphe[i].plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
-                graphe[i]('pause 5')
-
-             impr.xlabel(reponses[i][1])
-             impr.ylabel(reponses[i][2])
-             impr.title(reponses[i][0]+'  Iteration '+str(iter))
-             impr.plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
+       if isGnuplot:
+           graphe=[]
+           impr=Gnuplot.Gnuplot()
+           Gnuplot.GnuplotOpts.prefer_inline_data=1
+           #impr('set data style linespoints')
+           impr('set grid')
+           impr('set pointsize 2.')
+           impr('set terminal postscript color')
+           impr('set output "fort.'+str(UL_out)+'"')
+    
+           for i in range(len(L_F)):
+                 if interactif:
+                    graphe.append(Gnuplot.Gnuplot(persist=0))
+                    #graphe[i]('set data style linespoints')
+                    graphe[i]('set grid')
+                    graphe[i]('set pointsize 2.')
+                    graphe[i].xlabel(reponses[i][1])
+                    graphe[i].ylabel(reponses[i][2])
+                    graphe[i].title(reponses[i][0]+'  Iteration '+str(iter))
+                    graphe[i].plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
+                    graphe[i]('pause 5')
+    
+                 impr.xlabel(reponses[i][1])
+                 impr.ylabel(reponses[i][2])
+                 impr.title(reponses[i][0]+'  Iteration '+str(iter))
+                 impr.plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
 
    else:
      pass

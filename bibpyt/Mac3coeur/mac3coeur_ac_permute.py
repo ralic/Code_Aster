@@ -1,8 +1,8 @@
-#@ MODIF mac3coeur_ac_permute Mac3coeur  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF mac3coeur_ac_permute Mac3coeur  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -220,7 +220,6 @@ def mac3coeur_ac_permute(self, **args):
 
    self.DeclareOut('sortie', self.sd)
    sortie = EXTR_RESU(RESULTAT=__RESU_F,ARCHIVAGE=_F(INST=0.0),)
-   print 'Permutation de l\'assemblage ',POS_INIT,'en position ',POS_FIN
    
    return ier
 

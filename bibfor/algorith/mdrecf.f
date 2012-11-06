@@ -1,5 +1,5 @@
       SUBROUTINE MDRECF (NEXCI,NEXCIR,IDESCF,NOMFON,COEFM,
-     &                   IADVEC,INUMOR,FONDEP,FONVIT,FONACC,JPSDEL,
+     &                   IADVEC,INUMOR,FONDEP,FONVIT,FONACC,
      &                   NEQ,TYPBAS,BASEMO,NBMODE,RIGGEN,NOMMOT,NOMRES)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 05/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,6 +167,8 @@ C           CAS D'UN NUME_ORDRE
             IF (IIPSDL.EQ.0) THEN
                CALL WKVECT(NOMRES//'           .IPSD','G V R8',NPSDEL,
      &                     JPSDEL)
+            ELSE
+               CALL JEVEUO(NOMRES//'           .IPSD','E',JPSDEL)
             ENDIF
 
             CALL GETVID(' ','MODE_STAT',1,IARG,1,MODSTA,NBV)
@@ -195,6 +197,8 @@ C           CAS D'UN NUME_ORDRE
             IF (IIPSDL.EQ.0) THEN
                CALL WKVECT(NOMRES//'           .IPSD','G V R8',NPSDEL,
      &                     JPSDEL)
+            ELSE
+               CALL JEVEUO(NOMRES//'           .IPSD','E',JPSDEL)
             ENDIF
             CALL GETVID(' ','MODE_CORR',1,IARG,1,MODCOR,NBV)
             IF(NBV.EQ.0) THEN

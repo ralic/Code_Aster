@@ -1,6 +1,7 @@
+# MODIF  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
 
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
+# ssnv167a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 # ssnv167e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,60 +21,38 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+
 DEBUT(CODE=_F(NOM='SSNV167E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-#
 
-PRE_GMSH();
+MA = LIRE_MAILLAGE()
 
-MA=LIRE_MAILLAGE();
-#
+MO=AFFE_MODELE(
+                MAILLAGE=MA,
+                AFFE=_F(  TOUT = 'OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = '3D')  )
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_MA=(_F(NOM='PetitCub',
-                                GROUP_MA='GM1',),
-                             _F(NOM='Esclave',
-                                GROUP_MA='GM2',),
-                             _F(NOM='Deplacem',
-                                GROUP_MA='GM3',),
-                             _F(NOM='GrosCube',
-                                GROUP_MA='GM4',),
-                             _F(NOM='Maitre',
-                                GROUP_MA='GM5',),
-                             _F(NOM='Blocage',
-                                GROUP_MA='GM6',),),);
+MA = MODI_MAILLAGE( reuse=MA,  MAILLAGE=MA,
+                    ORIE_PEAU_3D=_F(  GROUP_MA = ('CONT1','CONT2')))
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(GROUP_MA=('PetitCub','Esclave','Deplacem','GrosCube','Maitre','Blocage',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
-#
 
-MA=MODI_MAILLAGE(reuse =MA,
-                 MAILLAGE=MA,
-                 ORIE_PEAU_3D=_F(GROUP_MA='Esclave',),
-                 );
+MAT=DEFI_MATERIAU(     ELAS=_F(  E = 200000.,
+                                  NU = 0.0,),)
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=100000.0,
-                          NU=0.3,),);
-#
+CHMAT=AFFE_MATERIAU( MAILLAGE=MA,
+                     AFFE=_F(  TOUT = 'OUI',  MATER = MAT,
+                               )
+                    )
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
-#
 
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_MA='Blocage',
-                                 DX=0.0,
-                                 DY=0.0,
-                                 DZ=0.0,),
-                              _F(GROUP_MA='Deplacem',
-                                 DX=0.0,
-                                 DY=0.0,
-                                 DZ=-0.5,),),);
-#
-CHA2 =DEFI_CONTACT(MODELE      = MO,
+
+CHBLO = AFFE_CHAR_MECA(    MODELE=MO,
+                 DDL_IMPO=(_F(  GROUP_NO = ('NH5','NH6','NH7','NH8'), DX=0.0, DY=0.0, DZ = -0.2 ),
+                           _F(  GROUP_NO = ('NB1','NB2','NB3','NB4'), DX=0.0, DY=0.0, DZ =  0.0 ),
+                           ),)
+
+
+CHCO=DEFI_CONTACT(MODELE      = MO,
                   FORMULATION  = 'DISCRETE',
                   REAC_GEOM    = 'AUTOMATIQUE',
                   RESI_ABSO    = 1e-08,
@@ -81,111 +60,185 @@ CHA2 =DEFI_CONTACT(MODELE      = MO,
                   ZONE=(
                         _F(
                           ALGO_CONT    = 'GCP',
-                          GROUP_MA_MAIT='Maitre',
-                          GROUP_MA_ESCL='Esclave',
+                          GROUP_MA_MAIT='CONT2',
+                          GROUP_MA_ESCL='CONT1',
                          ),                         
                        ),  
                   )
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=10,),);
-#
+LIST=DEFI_LIST_REEL(    DEBUT=0.,
+                           INTERVALLE=_F(  JUSQU_A = 1.,  NOMBRE = 1)
+                         )
 
-F=DEFI_FONCTION(NOM_PARA='INST',
-                VALE=(0.0,0.0,
-                      1.0,1.0,
-                      ),);
+SOL = STAT_NON_LINE( MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     SOLVEUR=_F(SYME='OUI',),
+                     INFO=2,
+                     EXCIT=(_F(CHARGE = CHBLO),),
+                         CONTACT = CHCO,
+                         COMP_ELAS=_F(RELATION = 'ELAS'),
+                         INCREMENT=_F(LIST_INST = LIST,),)
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
-                   MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHA1,
-                             FONC_MULT=F,),
-                          ),
-                   CONTACT  = CHA2,       
-                   COMP_ELAS=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,
-                                  ITER_GLOB_MAXI=20,
-                                  ITER_GLOB_ELAS=25,
-                                  ARRET='OUI',),
-                   INFO=1,);
-
-MATABLE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='INFOS CONTACT',
-                                RESULTAT=RESU,
-                                NOM_CHAM='DEPL',
-                                NOEUD=('N1','N2','N3','N4','N203','N204','N208','N212',),
-                                TOUT_CMP='OUI',),);
-
-IMPR_TABLE(TABLE=MATABLE,);
+SOL=CALC_CHAMP(reuse =SOL,
+              RESULTAT=SOL,
+              FORCE='REAC_NODA',);
 
 TEST_RESU(RESU=(_F(INST=1,
-                   RESULTAT=RESU,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
                    NOM_CHAM='DEPL',
-                   NOEUD='N1',
+                   GROUP_NO='NH1',
                    NOM_CMP='DZ',
-                   VALE_CALC=-0.23333300000000001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
-                   ),
+                   VALE_CALC=-0.1,
+                   VALE_REFE=-0.1,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
                 _F(INST=1,
-                   RESULTAT=RESU,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='NH2',
                    NOM_CMP='DZ',
-                   VALE_CALC=-0.23333300000000001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
-                   ),
+                   VALE_CALC=-0.1,
+                   VALE_REFE=-0.1,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
                 _F(INST=1,
-                   RESULTAT=RESU,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
                    NOM_CHAM='DEPL',
-                   NOEUD='N3',
+                   GROUP_NO='NH3',
                    NOM_CMP='DZ',
-                   VALE_CALC=-0.23333300000000001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
-                   ),
+                   VALE_CALC=-0.1,
+                   VALE_REFE=-0.1,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
                 _F(INST=1,
-                   RESULTAT=RESU,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
                    NOM_CHAM='DEPL',
-                   NOEUD='N4',
+                   GROUP_NO='NH4',
                    NOM_CMP='DZ',
-                   VALE_CALC=-0.23333300000000001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
-                   ),
-                _F(INST=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N203',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.13333300000000001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
-                   ),
-                _F(INST=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N204',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.13333300000000001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
-                   ),
-                _F(INST=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N208',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.13333300000000001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
-                   ),
-                _F(INST=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N212',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.13333300000000001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
-                   ),
+                   VALE_CALC=-0.1,
+                   VALE_REFE=-0.1,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
                 ),
           )
 
-FIN();
+TEST_RESU(RESU=(_F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='DEPL',
+                   GROUP_NO='NB5',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.1,
+                   VALE_REFE=-0.1,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='DEPL',
+                   GROUP_NO='NB6',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.1,
+                   VALE_REFE=-0.1,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='DEPL',
+                   GROUP_NO='NB7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.1,
+                   VALE_REFE=-0.1,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='DEPL',
+                   GROUP_NO='NB8',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.1,
+                   VALE_REFE=-0.1,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='REAC_NODA',
+                   GROUP_NO='NH1',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.00000000E+04,
+                   VALE_REFE=1.E4,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='REAC_NODA',
+                   GROUP_NO='NH2',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.00000000E+04,
+                   VALE_REFE=1.E4,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='REAC_NODA',
+                   GROUP_NO='NH3',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.00000000E+04,
+                   VALE_REFE= 1.E4,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='REAC_NODA',
+                   GROUP_NO='NH4',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.00000000E+04,
+                   VALE_REFE=1.E4,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='REAC_NODA',
+                   GROUP_NO='NB5',
+                   NOM_CMP='DZ',
+                   VALE_CALC= -1.00000000E+04,
+                   VALE_REFE=-1.E4,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='REAC_NODA',
+                   GROUP_NO='NB6',
+                   NOM_CMP='DZ',
+                   VALE_CALC= -1.00000000E+04,
+                   VALE_REFE=-1.E4,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='REAC_NODA',
+                   GROUP_NO='NB7',
+                   NOM_CMP='DZ',
+                   VALE_CALC= -1.00000000E+04,
+                   VALE_REFE= -1.E4,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                _F(INST=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=SOL,
+                   NOM_CHAM='REAC_NODA',
+                   GROUP_NO='NB8',
+                   NOM_CMP='DZ',
+                   VALE_CALC= -1.00000000E+04,
+                   VALE_REFE=-1.E4,
+                   TOLE_MACHINE = 1.E-8,PRECISION=1.E-08,),
+                ),
+          )
+
+FIN()
+
+
