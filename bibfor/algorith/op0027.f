@@ -1,7 +1,7 @@
       SUBROUTINE OP0027()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,8 @@ C ----------------------------------------------------------------------
       IMPLICIT   NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER      IRET, N1, N, I, M, IAK,IADR,IADR1,IADR2
       INTEGER      IDESC, IALIME, IACONL, JREFA2, JREFA1
       INTEGER      JUMP, IRET2
@@ -142,7 +144,7 @@ C -- EXISTENCE DES MATRICES, PRESENCE AMORTISSEMENT, COPIE STUCTURES
 
 C -- RAIDEUR
         CALL GETVR8 ( ' ', 'COEF_VAR_RIGI'     , 1,IARG,1, DELTA,  N1 )
-        IF (DELTA.GT.0.D0) THEN 
+        IF (DELTA.GT.0.D0) THEN
 C GENRRATION RAIDEUR
 
           CALL JEVEUO(NOMMAT//'.MAEL_RAID_VALE','L',IAK)

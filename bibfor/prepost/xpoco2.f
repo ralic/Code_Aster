@@ -3,7 +3,7 @@
      &                  COMPS1,COMPS2)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
+
       CHARACTER*8   MALINI,RESUCO
       CHARACTER*19  CNS1,CNS2,CES1,CES2,CESVI1,CESVI2
       CHARACTER*19  COMPS1,COMPS2
@@ -171,7 +172,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      3.  COMPORTEMENT
 C     ------------------------------------------------------------------
-      
+
 C     RECUPERATION DU CHAM_ELEM_S DU COMPORTEMENT EN ENTREE
       CALL EXISD('CHAM_ELEM_S',COMPS1,IRET)
 
@@ -196,7 +197,7 @@ C       RECUP DES INFOS SUR LE CHAM_ELEM_S DU COMPORTEMENT EN SORTIE
         CALL JEVEUO(COMPS2//'.CESL','E',JRESL2)
 
         DO 300 IMA = 1,NBMA
-  
+
           IMA2 = DIRMA(IMA)
 
 C         ON ZAPPE LES MAILLES NON CLASSIQUES
@@ -214,12 +215,11 @@ C         ON ZAPPE LES MAILLES NON CLASSIQUES
            ENDIF
 
  310      CONTINUE
- 300    CONTINUE      
+ 300    CONTINUE
 
       ENDIF
-      
+
 C     ------------------------------------------------------------------
-      
- 999  CONTINUE      
+
       CALL JEDEMA()
       END

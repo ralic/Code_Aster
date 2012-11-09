@@ -3,13 +3,15 @@
      &                    SMASS, SRIGI, SAMOR, CMASS, CRIGI, CAMOR )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8        MASSE, NOMA, BASEMO
       REAL*8             MASS(*), RIGI(*), SMASS(*), SRIGI(*),
      &                   SAMOR(*), CMASS(*),CRIGI(*), CAMOR(*),
      &                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,16 +45,16 @@ C
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IADMO1 ,IADMO2 ,IAMOR ,IBID ,IC ,IDBASE 
-      INTEGER IDDL ,IDDL0 ,IDGM ,IDGM2 ,IDGM3 ,IDGM4 ,IDGM5 
-      INTEGER IDNO ,IE ,IFMIS ,II ,IJ ,IMESS ,IN 
-      INTEGER INO ,INOE ,IPARNO ,IUNIFI ,J ,J2 ,JCOOR 
-      INTEGER JTYP ,JVAL ,K ,L ,LDGM ,LDNM ,NB 
-      INTEGER NBGR ,NBGR2 ,NBGR3 ,NBGR4 ,NBGR5 ,NBMA ,NBMA2 
-      INTEGER NBMA3 ,NBMA4 ,NBMA5 ,NBMODE ,NBMODS ,NBMODT ,NBNO 
-      INTEGER NBNOEU ,NBV ,NCMP ,NEC ,NEQ ,NF ,NI 
-      INTEGER NM ,NN ,NTI ,NU 
-      REAL*8 ZERO 
+      INTEGER I ,IADMO1 ,IADMO2 ,IAMOR ,IBID ,IC ,IDBASE
+      INTEGER IDDL ,IDDL0 ,IDGM ,IDGM2 ,IDGM3 ,IDGM4 ,IDGM5
+      INTEGER IDNO ,IE ,IFMIS ,II ,IJ ,IMESS ,IN
+      INTEGER INO ,INOE ,IPARNO ,IUNIFI ,J ,J2 ,JCOOR
+      INTEGER JTYP ,JVAL ,K ,L ,LDGM ,LDNM ,NB
+      INTEGER NBGR ,NBGR2 ,NBGR3 ,NBGR4 ,NBGR5 ,NBMA ,NBMA2
+      INTEGER NBMA3 ,NBMA4 ,NBMA5 ,NBMODE ,NBMODS ,NBMODT ,NBNO
+      INTEGER NBNOEU ,NBV ,NCMP ,NEC ,NEQ ,NF ,NI
+      INTEGER NM ,NN ,NTI ,NU
+      REAL*8 ZERO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IMESS = IUNIFI('MESSAGE')

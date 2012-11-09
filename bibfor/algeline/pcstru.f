@@ -1,7 +1,7 @@
       SUBROUTINE PCSTRU(N,IN,IP,ICPL,ICPC,ICPD,ICPCX,ICPLX,NIVEAU,
      &                  COMPLT,LCA,IMP,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C   ICPLX      : IDEM ICPL
 C----------------------------------------------------------------------
 C----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
       INTEGER IN(N)
       INTEGER*4 IP(*),ICPC(*)
       INTEGER ICPL(0:N),ICPD(N)
@@ -56,8 +57,8 @@ C     WRITE (6,*) ' TAILLE INITIALE ',NCOEF
 C IN-IP---> IPL-IPC
 C =================
 C-----------------------------------------------------------------------
-      INTEGER I ,IER ,IMP ,JIND ,K ,K1 ,K2 
-      INTEGER KK ,LCA ,N ,NIV ,NIVEAU ,NZ 
+      INTEGER I ,IER ,IMP ,JIND ,K ,K1 ,K2
+      INTEGER KK ,LCA ,N ,NIV ,NIVEAU ,NZ
 C-----------------------------------------------------------------------
       CALL WKVECT('&&PCSTRU.IND','V V I',N,JIND)
       CALL PCFALU(N,IN,IP,ICPL,ICPC,ZI(JIND),IMP)
@@ -123,6 +124,4 @@ C     WRITE (6,*) ' DUREE  ',TFIN
 
       CALL JEDETR('&&PCSTRU.IND')
 
- 1500 FORMAT (/,1X,80 (1H*))
- 1000 FORMAT (' S-P PCSTRU NIVEAU= ',I3,' TAILLE MAX= ',I8)
       END

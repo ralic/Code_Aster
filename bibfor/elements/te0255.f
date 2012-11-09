@@ -1,6 +1,6 @@
       SUBROUTINE TE0255(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       INCLUDE 'jeveux.h'
+
       INTEGER ICODRE
       CHARACTER*16 NOMTE,OPTION
       REAL*8 POIDS,NX,NY
@@ -40,8 +41,8 @@ C.......................................................................
 
 
 C-----------------------------------------------------------------------
-      INTEGER I ,II ,JGANO ,NDIM ,NNOS 
-      REAL*8 R ,R8B ,RHO 
+      INTEGER I ,II ,JGANO ,NDIM ,NNOS
+      REAL*8 R ,R8B ,RHO
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 

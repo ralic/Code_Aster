@@ -1,10 +1,12 @@
       SUBROUTINE AJLAGR ( RIGID , MASSE , MASINV )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*(*)       RIGID , MASSE , MASINV
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,8 +43,8 @@ C-----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IMATI ,IMATM ,IMATR ,IMTRER ,J ,JCONL 
-      INTEGER JMASS ,JRAID ,JREFA1 ,JREFA2 ,JSMDE ,LDDL ,NBMAT 
+      INTEGER I ,IMATI ,IMATM ,IMATR ,IMTRER ,J ,JCONL
+      INTEGER JMASS ,JRAID ,JREFA1 ,JREFA2 ,JSMDE ,LDDL ,NBMAT
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -179,7 +181,7 @@ C
 C --- MENAGE
 C
       CALL JEDETR('&&AJLAGR.LAGR')
-      CALL DETRSD('MATR_ASSE','&&RIGIL') 
+      CALL DETRSD('MATR_ASSE','&&RIGIL')
 C
       CALL JEDEMA()
       END

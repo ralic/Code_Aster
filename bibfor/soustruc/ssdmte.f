@@ -1,6 +1,6 @@
       SUBROUTINE SSDMTE(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,8 @@ C ======================================================================
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       CHARACTER*8 MAG
 C ----------------------------------------------------------------------
 C     BUT:
@@ -54,12 +56,12 @@ C              (NBNOT2= NBNOLA+NBNOP2)
 C
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,I2COEX ,IACOEX ,IACONX ,IACOO2 ,IADESC ,IADIM2 
-      INTEGER IADIME ,IAGNO ,IANCNF ,IANENO ,IANMCR ,IANON2 ,IAREFE 
-      INTEGER IASUPM ,IATYPL ,IAVALE ,IBID ,ICO ,IGEOMR ,IGNO 
-      INTEGER ILCOEX ,IMA ,INO ,IRET ,ISMA ,JNO ,K 
-      INTEGER KNO ,NBGNO ,NBMA ,NBNO ,NBNOCO ,NBNOE ,NBNOET 
-      INTEGER NBNOGN ,NBNOL ,NBNOLA ,NBNOP2 ,NBNOPH ,NBNOT2 ,NBSMA 
+      INTEGER I ,I2COEX ,IACOEX ,IACONX ,IACOO2 ,IADESC ,IADIM2
+      INTEGER IADIME ,IAGNO ,IANCNF ,IANENO ,IANMCR ,IANON2 ,IAREFE
+      INTEGER IASUPM ,IATYPL ,IAVALE ,IBID ,ICO ,IGEOMR ,IGNO
+      INTEGER ILCOEX ,IMA ,INO ,IRET ,ISMA ,JNO ,K
+      INTEGER KNO ,NBGNO ,NBMA ,NBNO ,NBNOCO ,NBNOE ,NBNOET
+      INTEGER NBNOGN ,NBNOL ,NBNOLA ,NBNOP2 ,NBNOPH ,NBNOT2 ,NBSMA
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()

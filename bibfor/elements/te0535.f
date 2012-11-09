@@ -1,6 +1,6 @@
       SUBROUTINE TE0535(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C --- ------------------------------------------------------------------
 C
@@ -91,6 +92,8 @@ C     CEPENDANT CE CHAMP EST INITIALISE A 0 PAR LA ROUTINE NMMATR.
       IF (VECTEU) THEN
          CALL TECACH('OON','PVARIMP',7,JTAB,IRET)
          IVARMP = JTAB(1)
+      ELSE
+         IVARMP=1
       ENDIF
 C
 C --- DEFORMATIONS ANELASTIQUES

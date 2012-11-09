@@ -1,6 +1,6 @@
       SUBROUTINE MODEXI(MODELZ, NOMODZ, IEXI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,8 @@ C                                 = 0 SINON
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*(*) MODELZ, NOMODZ
 C -----  VARIABLES LOCALES
       INTEGER       REPI
@@ -44,8 +46,8 @@ C -----  VARIABLES LOCALES
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C-----------------------------------------------------------------------
-      INTEGER IALIEL ,IERD ,IEXI ,IGREL ,IRET ,ITYPEL ,L 
-      INTEGER NBGREL ,NEL 
+      INTEGER IALIEL ,IERD ,IEXI ,IGREL ,IRET ,ITYPEL ,L
+      INTEGER NBGREL ,NEL
 C-----------------------------------------------------------------------
       CALL JEMARQ ( )
 C

@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPA ( UNIT , NOMLU , COM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,6 +126,7 @@ C DEB -----------------------------------------------------------------
       IRET = 0
       JCOL = 1
       ILON = 1
+      LCONST=.FALSE.
       CALL JJVERN ( NOML32 , ICRE , IRET )
 C
       IF ( IRET .EQ. 0 ) THEN

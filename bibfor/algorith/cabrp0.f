@@ -3,7 +3,7 @@
      +                  AXI,REGULA,B,POIDS,POIDS2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,7 @@ C TOLE CRP_21 CRS_1404
 C ======================================================================
       IMPLICIT  NONE
       INCLUDE 'jeveux.h'
+
       LOGICAL   AXI
       INTEGER   KPI,IPOIDS,IPOID2,IDFDE,IDFDE2,NDIM,REGULA(6),DIMDEF,IVF
       INTEGER   IVF2,NNO,NNOS,NNOM,NDDLS,NDDLM,DIMUEL

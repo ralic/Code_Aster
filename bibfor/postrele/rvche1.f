@@ -1,11 +1,13 @@
       SUBROUTINE RVCHE1 ( CHELEZ, NOMJV, NBEL, NUMAIL, PGL )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXATR
       INTEGER             NBEL, NUMAIL(*)
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              PGL(3,3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

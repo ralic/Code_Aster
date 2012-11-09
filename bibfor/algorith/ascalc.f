@@ -5,6 +5,8 @@
      +                    DEPSUP, TCOSUP, CORFRE, F1GUP, F2GUP)
       IMPLICIT  NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER       NDIR(*),TCOSUP(*),NORDR(*),NSUPP(*)
       REAL*8        AMORT(*),SPECTR(*),ASSPEC(*),DEPSUP(*),REASUP(*)
       REAL*8        F1GUP, F2GUP
@@ -13,7 +15,7 @@
       LOGICAL       MONOAP, MUAPDE, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2012   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +70,7 @@ C IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
 C IN  : DEPSUP : VECTEUR DES DEPLACEMENTS DES SUPPORTS
 C IN  : TCOSUP : TYPE DE RECOMBINAISON DES SUPPORTS
 C IN  : CORFRE : =.TRUE.  , CORRECTION DES FREQUENCES
-C IN  : F1GUP  : FREQUENCE F1 POUR LA METHODE DE GUPTA 
+C IN  : F1GUP  : FREQUENCE F1 POUR LA METHODE DE GUPTA
 C IN  : F2GUP  : FREQUENCE F2 POUR LA METHODE DE GUPTA
 C     ------------------------------------------------------------------
       INTEGER       IBID, ID, IOPT, IRET, JCRER, JCREP, JDIR, JMOD,
@@ -252,8 +254,8 @@ C
                CALL ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ,
      +                       NBMODE, ZR(JREP1), ZR(JREP2), AMORT,
      +                       ZR(JVAL), ID, TEMPS, ZR(JCRER), ZR(JCREP),
-     +                       ZR(JTABS),NOMSY, ZR(JMOD), REASUP, SPECTR, 
-     +                       CORFRE, MUAPDE, TCOSUP, NINTRA, NBDIS, 
+     +                       ZR(JTABS),NOMSY, ZR(JMOD), REASUP, SPECTR,
+     +                       CORFRE, MUAPDE, TCOSUP, NINTRA, NBDIS,
      +                       F1GUP, F2GUP)
 C
 C              --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---

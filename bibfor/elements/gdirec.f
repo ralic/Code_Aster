@@ -4,7 +4,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,8 @@ C                .FALSE. : ELEMENT LINEAIRE
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*24  OBJ3,DIRE1,DIRE2,DIRE3,NUMNO
       CHARACTER*24  CONEX,NOMOBJ,COORN
       CHARACTER*8   FOND,NOMA,NOEUG,NOMNO2
@@ -85,8 +87,8 @@ C
 C OBJETS DEFINISSANT LA CONNECTIVITE  ET LE TYPE DES MAILLES
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IADTYP ,IATYMA ,IBID ,IL ,IN2 ,INO2 
-      INTEGER IR ,J ,K ,NOEUD3 
+      INTEGER I ,IADTYP ,IATYMA ,IBID ,IL ,IN2 ,INO2
+      INTEGER IR ,J ,K ,NOEUD3
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CONEX = NOMA//'.CONNEX'

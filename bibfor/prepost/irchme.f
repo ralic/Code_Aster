@@ -4,7 +4,7 @@
      &                    SDCARM, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +61,8 @@ C
 C 0.1. ==> ARGUMENTS
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8  NORESU,TYPECH,SDCARM
       CHARACTER*16 NOMSYM
       CHARACTER*19 CHANOM

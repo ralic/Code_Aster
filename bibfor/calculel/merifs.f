@@ -2,6 +2,7 @@
      &                  NH)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER NCHAR,NH
       REAL*8 TIME
       CHARACTER*8 MODELE,CARA
@@ -10,7 +11,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +49,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(15),LCHOUT(10)
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
 C-----------------------------------------------------------------------
-      INTEGER IAREFE ,ICHA ,ICODE ,ILIRES ,IRET ,IRET1 
+      INTEGER IAREFE ,ICHA ,ICODE ,ILIRES ,IRET ,IRET1
 C-----------------------------------------------------------------------
       DATA CHVARC /'&&MERIFS.CHVARC'/
 

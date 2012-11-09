@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C ======================================================================
 C     PROCEDURE IMPR_GENE
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*3  TOUCHA, TOUCMP, TOUPAR, INTERP
       CHARACTER*4  MOTFAC
       CHARACTER*8  K8B, FORM
@@ -32,11 +34,11 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IFI ,IOCC ,IRE2 ,IRET ,ISY ,JCMPG 
-      INTEGER JDISC ,JNOSY ,JORDR ,JPARA ,JRANG ,N ,N01 
-      INTEGER N10 ,N11 ,N21 ,N22 ,NBCMPG ,NBDISC ,NBNOSY 
-      INTEGER NBORDR ,NBPARA ,NC ,NOCC ,NP ,NR 
-      REAL*8 PREC 
+      INTEGER IBID ,IFI ,IOCC ,IRE2 ,IRET ,ISY ,JCMPG
+      INTEGER JDISC ,JNOSY ,JORDR ,JPARA ,JRANG ,N ,N01
+      INTEGER N10 ,N11 ,N21 ,N22 ,NBCMPG ,NBDISC ,NBNOSY
+      INTEGER NBORDR ,NBPARA ,NC ,NOCC ,NP ,NR
+      REAL*8 PREC
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()

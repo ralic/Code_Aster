@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,12 @@ C     ------------------------------------------------------------------
       TRAVRR = '&&'//NOMPRO//'_TRAVR_R        '
       TRAVIR = '&&'//NOMPRO//'_TRAVI_R        '
       TRAVCR = '&&'//NOMPRO//'_TRAVC_R        '
+      IREFI=1
+      IREFR=1
+      IREFC=1
+      IREFIR=1
+      IREFCR=1
+      IREFRR=1
 
       DO 100 IOCC = 1,NOCC
         LIGN1  = ' '
@@ -204,7 +210,7 @@ C
 
           CALL UTEST3('GENE',IOCC,TBTXT)
 
-          IF (LREF) THEN 
+          IF (LREF) THEN
             TBREF(1)=TBTXT(1)
             TBREF(2)=TBTXT(2)
             TBTXT(1)='NON_REGRESSION'
@@ -281,7 +287,7 @@ C
 
             CALL UTEST3('GENE',IOCC,TBTXT)
 
-            IF (LREF) THEN 
+            IF (LREF) THEN
               TBREF(1)=TBTXT(1)
               TBREF(2)=TBTXT(2)
               TBTXT(1)='NON_REGRESSION'
@@ -289,7 +295,7 @@ C
             CALL UTITES(TBTXT(1),TBTXT(2),TYPRES,NREF,ZI(IREFI),
      &                  ZR(IREFR),ZC(IREFC),VALI,VALR,VALC,EPSI,
      &                  CRIT,IFIC,.TRUE.,SSIGNE)
-            IF (LREF)  
+            IF (LREF)
      &      CALL UTITES(TBREF(1),TBREF(2),TYPRES,NREF,ZI(IREFIR),
      &                  ZR(IREFRR),ZC(IREFCR),VALI,VALR,VALC,EPSIR,
      &                  CRIT,IFIC,.FALSE.,SSIGNE)
@@ -385,14 +391,14 @@ C
 
           CALL UTEST3('GENE',IOCC,TBTXT)
 
-          IF (LREF) THEN 
+          IF (LREF) THEN
             TBREF(1)=TBTXT(1)
             TBREF(2)=TBTXT(2)
             TBTXT(1)='NON_REGRESSION'
           ENDIF
           CALL UTITES(TBTXT(1),TBTXT(2),TYPRES,NREF,ZI(IREFI),ZR(IREFR),
      &            ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,.TRUE.,SSIGNE)
-          IF (LREF)  
+          IF (LREF)
      &    CALL UTITES(TBREF(1),TBREF(2),TYPRES,NREF,
      &            ZI(IREFIR),ZR(IREFRR),ZC(IREFCR),
      &            VALI,VALR,VALC,EPSIR,CRIT,IFIC,.FALSE.,SSIGNE)
@@ -472,7 +478,7 @@ C
           ENDIF
 
           CALL UTEST3('GENE',IOCC,TBTXT)
-          IF (LREF) THEN 
+          IF (LREF) THEN
             TBREF(1)=TBTXT(1)
             TBREF(2)=TBTXT(2)
             TBTXT(1)='NON_REGRESSION'
@@ -561,7 +567,7 @@ C
           ENDIF
 
           CALL UTEST3('GENE',IOCC,TBTXT)
-          IF (LREF) THEN 
+          IF (LREF) THEN
             TBREF(1)=TBTXT(1)
             TBREF(2)=TBTXT(2)
             TBTXT(1)='NON_REGRESSION'

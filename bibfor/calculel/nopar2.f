@@ -1,7 +1,7 @@
       CHARACTER*8 FUNCTION NOPAR2(NOMOPT,NOMGD,STATUT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,8 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PELLET J.PELLET
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*(*)  NOMOPT,NOMGD,STATUT
 C ----------------------------------------------------------------------
 C     ENTREES:

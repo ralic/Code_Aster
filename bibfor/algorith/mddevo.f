@@ -15,7 +15,7 @@ C
 C
       INCLUDE 'jeveux.h'
       INTEGER      LOGCHO(*),IORSTO(*),IREDST(*),IPARCH(*),ICHOST(*),
-     &             IREVST(*)  
+     &             IREVST(*)
       REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),
      &             AMOGEN(*),PARCHO(*),PARRED(*),DEPSTO(*),VITSTO(*),
      &             ACCSTO(*),TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),
@@ -30,7 +30,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,24 +93,24 @@ C
       CHARACTER*8   TRAN
       INTEGER       PALMAX, ETAUSR
 C-----------------------------------------------------------------------
-      INTEGER I ,IARCHI ,IF ,IM ,IM1 ,IRET ,ISTO1 
-      INTEGER ISTO2 ,ISTO3 ,JACCE ,JBID1 ,JCHOR ,JDEP1 ,JDEP2 
-      INTEGER JDEP3 ,JDEP4 ,JDEPL ,JFEX1 ,JFEX2 ,JFEX3 ,JFEX4 
-      INTEGER JFEXT ,JREDI ,JREDR ,JTRA1 ,JVINT ,JVIT1 ,JVIT2 
+      INTEGER I ,IARCHI ,IF ,IM ,IM1 ,IRET ,ISTO1
+      INTEGER ISTO2 ,ISTO3 ,JACCE ,JBID1 ,JCHOR ,JDEP1 ,JDEP2
+      INTEGER JDEP3 ,JDEP4 ,JDEPL ,JFEX1 ,JFEX2 ,JFEX3 ,JFEX4
+      INTEGER JFEXT ,JREDI ,JREDR ,JTRA1 ,JVINT ,JVIT1 ,JVIT2
       INTEGER JVIT3 ,JVIT4 ,JVITE ,N100 ,NBCHOC ,NBEXCI ,NBMOD1
       INTEGER ISTO4, JREVR, JREVI
-      INTEGER NBMODE ,NBPAS ,NBREDE ,NBREVI ,NBSAUV ,NBSCHO ,NDT 
+      INTEGER NBMODE ,NBPAS ,NBREDE ,NBREVI ,NBSAUV ,NBSCHO ,NDT
 
-      REAL*8 DEUX ,DT ,DT1 ,DT2 ,DT3 ,DT4 ,DT5 
-      REAL*8 DT6 ,G1 ,G2 ,G3 ,G4 ,QUATRE ,SIX 
-      REAL*8 TARCHI ,TEMPS ,TINIT ,X1 ,X2 ,ZERO 
+      REAL*8 DEUX ,DT ,DT1 ,DT2 ,DT3 ,DT4 ,DT5
+      REAL*8 DT6 ,G1 ,G2 ,G3 ,G4 ,QUATRE ,SIX
+      REAL*8 TARCHI ,TEMPS ,TINIT ,X1 ,X2 ,ZERO
 C-----------------------------------------------------------------------
       PARAMETER (PALMAX=20)
       CHARACTER*6   TYPAL(PALMAX)
       CHARACTER*3   FINPAL(PALMAX)
       CHARACTER*8   CNPAL(PALMAX)
       INTEGER       IARG
-      REAL*8        FSAUV(PALMAX,3)       
+      REAL*8        FSAUV(PALMAX,3)
 C
       CALL JEMARQ()
       ZERO = 0.D0
@@ -153,15 +153,23 @@ C     --- VECTEURS DE TRAVAIL ---
 C        INITIALISATION POUR LE FLAMBAGE
          CALL JEVEUO(NOMRES//'           .VINT','E',JVINT)
          CALL R8INIR(NBCHOC,0.D0,ZR(JVINT),1)
+      ELSE
+         JCHOR=1
       ENDIF
       IF (NBREDE.NE.0) THEN
          CALL WKVECT('&&MDDEVO.SREDR','V V R8',NBREDE,JREDR)
          CALL WKVECT('&&MDDEVO.SREDI','V V I' ,NBREDE,JREDI)
+      ELSE
+        JREDR=1
+        JREDI=1
       ENDIF
       IF (NBREVI.NE.0) THEN
          CALL WKVECT('&&MDEUL1.SREVR','V V R8',NBREVI,JREVR)
          CALL WKVECT('&&MDEUL1.SREVI','V V I' ,NBREVI,JREVI)
-      ENDIF     
+      ELSE
+        JREVR=1
+        JREVI=1
+      ENDIF
 C
       JDEP1 = JDEPL
       JDEP2 = JDEP1 + NBMODE

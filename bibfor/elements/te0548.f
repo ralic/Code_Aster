@@ -1,10 +1,11 @@
       SUBROUTINE TE0548(OPTION,NOMTE)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,10 +47,9 @@ C......................................................................
       INTEGER      DDLS,NDDL,NNOL,LACT(8),NLACT,IGEOM,DDLM
       INTEGER      IER,CONTAC
       CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC
-      REAL*8       SEUIL,FFI,E,G(3),RBID,FFP(27),FFC(8),ND(3)
+      REAL*8       SEUIL,FFI,G(3),RBID,FFP(27),FFC(8),ND(3)
       REAL*8       FFPC(27),DFBID(27,3),R3BID(3)
-      REAL*8       CPENCO,CSTACO
-      LOGICAL      NOEUD,LPENAC
+      LOGICAL      NOEUD
 C......................................................................
 
       CALL JEMARQ()

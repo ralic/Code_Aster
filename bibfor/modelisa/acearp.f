@@ -1,11 +1,13 @@
       SUBROUTINE ACEARP(NOMA,NOMO,LMAX,NOEMAF,NBOCC,IVR,IFM)
       IMPLICIT      NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER       IFM,LMAX,NOEMAF,NBOCC,IVR(*)
       CHARACTER*8   NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

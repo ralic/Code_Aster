@@ -1,5 +1,5 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C ======================================================================
 C TOLE CRP_20
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*) OPTIOZ,NOMTZ
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
@@ -27,9 +28,9 @@ C     OPTIONS : VARI_ELNO
 C          -----------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,IC ,ICHG ,ICOMP ,ICOMPO ,II
-      INTEGER INO ,INP ,INTE ,INTSN ,INTSR ,IRET ,ISOM
-      INTEGER J ,J1 ,JCARA ,JCONN ,JEFFG ,JGEOM ,JJ
+      INTEGER I ,I1 ,IC ,ICHG  ,ICOMPO ,II
+      INTEGER INO ,INP ,INTE ,INTSN ,INTSR ,IRET
+      INTEGER J ,J1 ,JCARA ,JCONN  ,JGEOM ,JJ
       INTEGER JVARI ,K ,K1 ,K2 ,KPGS ,L ,LGPG
       INTEGER LZI ,LZR ,NBCOU ,NBVARI ,NCMP ,NEP ,NP1
       INTEGER NP2 ,NP3 ,NP4 ,NPGE ,NPGT ,NPO ,NPP
@@ -44,7 +45,7 @@ C-----------------------------------------------------------------------
       REAL*8 VECTG(2,3),VECTT(3,3)
       REAL*8 EPAIS
       REAL*8 MATEVN(2,2,NPGT),MATEVG(2,2,NPGT)
-      REAL*8 SIGM(6,270),SIGMA(6,120),SIGGN(6,9),EFFGC(8,9),EFFGT(8,9)
+      REAL*8 SIGM(6,270),SIGMA(6,120),SIGGN(6,9)
       REAL*8 PK2(6,270),SIGGNU(6,9)
       LOGICAL       LGREEN
 

@@ -1,10 +1,11 @@
       SUBROUTINE TE0338(OPTION,NOMTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -327,6 +328,8 @@ C     ----------------------------------------------------
               SREF = VALRES(4)
               SIG1 = SIG1/SREF
             END IF
+          ELSE
+            SIG1=0.D0
           END IF
           SIGOLD = ZR(ISIGIE+KP-1)
           IF (SIG1.GT.SIGOLD) THEN

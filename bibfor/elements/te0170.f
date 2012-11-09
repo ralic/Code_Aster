@@ -1,6 +1,6 @@
       SUBROUTINE TE0170(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,11 +30,12 @@ C.......................................................................
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-C-----------------------------------------------------------------------
-      INTEGER ICOMPO ,IDEPLM ,IDEPLP ,IVECTU ,K ,L ,N1 
-      INTEGER N2 ,NBRES ,NDIM ,NN ,NNO2 ,NNOS ,NT2 
 
-      REAL*8 R8BID 
+C-----------------------------------------------------------------------
+      INTEGER ICOMPO ,IDEPLM ,IDEPLP ,IVECTU ,K ,L ,N1
+      INTEGER N2 ,NBRES ,NDIM ,NN ,NNO2 ,NNOS ,NT2
+
+      REAL*8 R8BID
 C-----------------------------------------------------------------------
       PARAMETER (NBRES=2)
       CHARACTER*8 NOMRES(NBRES),FAMI,POUM

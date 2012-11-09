@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,9 +43,9 @@ C ......................................................................
       INTEGER NNO,NPG,IDFDK,IVF,IRET,IRET1,IRET2,IRET3,IDEC,INTE,NPGE
 
 C-----------------------------------------------------------------------
-      INTEGER ICOU ,IPOIDS ,IRET4 ,ISP ,JGANO ,JNBSPI ,NBCMP 
-      INTEGER NBCOU ,NDIM ,NNOS 
-      REAL*8 R8NNEM ,SI11 ,SI12 ,SI22 ,ZIC 
+      INTEGER ICOU ,IPOIDS ,IRET4 ,ISP ,JGANO ,JNBSPI ,NBCMP
+      INTEGER NBCOU ,NDIM ,NNOS
+      REAL*8 R8NNEM ,SI11 ,SI12 ,SI22 ,ZIC
 C-----------------------------------------------------------------------
       CALL ELREF1(ELREFE)
 
@@ -200,7 +200,7 @@ C
                 SI22=C2*NU*EP11-EPSTHE
               ELSE
                 SI11=E*(EP11-EPSTHE)
-                SI12=0.D0
+                SI22=0.D0
               ENDIF
               SI12=C1*EP12
 C

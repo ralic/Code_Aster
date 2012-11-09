@@ -1,13 +1,14 @@
       SUBROUTINE FGDOMA(NOMMAT,NBCYCL,EPSMIN,EPSMAX,DOM)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*)     NOMMAT
       REAL*8                          EPSMIN(*),EPSMAX(*)
       REAL*8                  DOM(*)
       INTEGER                  NBCYCL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +42,7 @@ C
       REAL*8       NRUPT,DELTA
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,NBPAR 
+      INTEGER I ,NBPAR
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NOMRES = 'MANSON_C '

@@ -3,7 +3,7 @@
      &                  ACMA,ACSM,REACRE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,8 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER      NITER,NBREOR,NBREOI,REACRE
       REAL*8       EPSI,TESTCO
       CHARACTER*(*) CRITER
@@ -441,8 +443,11 @@ C  POUR FETFIV
           CALL JEEXIN(MATDD//'.CONL',IRET)
           ZI(IAUX3)=IRET
           IAUX3=IAUX3+1
-          IF (IRET.NE.0)
-     &      CALL JEVEUO(MATDD//'.CONL','L',IAUX2)
+          IF (IRET.NE.0) THEN
+            CALL JEVEUO(MATDD//'.CONL','L',IAUX2)
+          ELSE
+            IAUX2=1
+          ENDIF
           ZI(IAUX3)=IAUX2
           IAUX3=IAUX3+1
           CALL JENUNO(JEXNUM(SDFETG,IDD),NOMSD)

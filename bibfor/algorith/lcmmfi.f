@@ -7,7 +7,7 @@
       INTEGER IRR,DECIRR,NBSYST,DECAL
       COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,9 +46,8 @@ C ======================================================================
 C     ----------------------------------------------------------------
       REAL*8 P,R0,Q,B,RP,B1,B2,Q1,Q2
       REAL*8 PR,MU,CEFF,ALPHAM(12),ALPHAS(12),R8B
-      REAL*8 ALLOOP,ALPVID,DZIRRA,FILOOP,PHISAT,RHOSAT,RHOVID,XIIRRA
+      REAL*8 ALLOOP,ALPVID,FILOOP,RHOVID
       INTEGER IEI,IR,NUEISO
-      INTEGER NUMHSR
 C     ----------------------------------------------------------------
 
       IEI=NBCOMM(IFA,3)
@@ -100,7 +99,7 @@ C        DE LA FAMILLE COURANTE;
          P=VIND(NSFV+3*(IS-1)+3)+ABS(DY(IS))
          RP=R0+Q1*SQ+Q2*(1.D0-EXP(-B2*P))
 
-C      ELSEIF ((NECRIS.EQ.'ECRO_DD_CFC').OR. 
+C      ELSEIF ((NECRIS.EQ.'ECRO_DD_CFC').OR.
 C             (NECRIS.EQ.'ECRO_ECP_CFC')) THEN
       ELSEIF ((NUEISO.EQ.3).OR.(NUEISO.EQ.4)) THEN
 
@@ -128,7 +127,7 @@ C        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
             RP=RP+ALPHAS(IR)*HSR(IS,IR)
             ENDIF
   23     CONTINUE
-  
+
          IF (NUEISO.EQ.3) THEN
            CALL LCMMDC(COEFT,IFA,NMAT,NBCOMM,ALPHAS,IS,CEFF,R8B)
          ELSE
@@ -138,14 +137,14 @@ C          CAS NUEISO = 4 C'EST A DIRE NECRIS = 'ECRO_ECP_CFC'
 
 C        CE QUE L'ON APPELLE RP CORRESPOND ICI A TAU_S_FOREST
          RP=MU*SQRT(RP)*CEFF
-                  
+
 C        DD_CFC_IRRA
       ELSEIF (NUEISO.EQ.8) THEN
 
-         RHOVID =COEFT(IEI+4)  
-         FILOOP =COEFT(IEI+5)  
-         ALPVID =COEFT(IEI+6)  
-         ALLOOP =COEFT(IEI+7)  
+         RHOVID =COEFT(IEI+4)
+         FILOOP =COEFT(IEI+5)
+         ALPVID =COEFT(IEI+6)
+         ALLOOP =COEFT(IEI+7)
          MU     =COEFT(IEI+12)
 
 C        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
@@ -161,20 +160,20 @@ C        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
             IF (ALPHAS(IR).GT.0.D0) THEN
             RP=RP+ALPHAS(IR)*HSR(IS,IR)
             ENDIF
-  24     CONTINUE  
+  24     CONTINUE
          CALL LCMMDC(COEFT,IFA,NMAT,NBCOMM,ALPHAS,IS,CEFF,R8B)
-         
-         RP=RP*CEFF*CEFF         
+
+         RP=RP*CEFF*CEFF
          RP=RP+ALLOOP*FILOOP*VIND(DECIRR+(IS-1)+1)
          RP=RP+ALPVID*RHOVID*VIND(DECIRR+12+(IS-1)+1)
-         
+
 C        CE QUE L'ON APPELLE RP CORRESPOND ICI A TAU_S_FOREST
          RP=MU*SQRT(RP)
-         
+
 C        DD_CC : ON SORT UNIQUEMENT TAU_F
       ELSEIF (NUEISO.EQ.7) THEN
          RP=COEFT(IEI+1)
-      
+
       ELSE
           CALL U2MESS('F','COMPOR1_21')
       ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE TE0056(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ======================================================================
 C.......................................................................
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 
 C     BUT: CALCUL DU SECOND MEMBRE ELEMENTAIRE EN THERMIQUE CORRESPON-
@@ -40,8 +41,8 @@ C.......................................................................
 
 
 C-----------------------------------------------------------------------
-      INTEGER IER ,L ,NDIM ,NNOS 
-      REAL*8 SOUN ,SOUNP1 
+      INTEGER IER ,L ,NDIM ,NNOS
+      REAL*8 SOUN ,SOUNP1
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 

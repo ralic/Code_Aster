@@ -1,12 +1,13 @@
       SUBROUTINE RLDLGG(LMAT,XSOL,CXSOL,NBSOL)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER LMAT,NBSOL
       REAL*8 XSOL
       COMPLEX*16 CXSOL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +30,7 @@ C ======================================================================
       CHARACTER*8 METRES
 C------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IBID 
+      INTEGER IBID
 C-----------------------------------------------------------------------
       CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
       CALL UTTCPU('CPU.RESO.5','DEBUT',' ')

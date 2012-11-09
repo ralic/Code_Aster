@@ -1,7 +1,7 @@
       SUBROUTINE TE0295(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,7 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C.......................................................................
 C
       INCLUDE 'jeveux.h'
+
       INTEGER ICODRE(3)
       CHARACTER*4  FAMI
       CHARACTER*8  NOMRES(3),NOMPAR(4)

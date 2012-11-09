@@ -2,6 +2,8 @@
      +                    NUMSIQ, PJ, MJ, SEISME, MSE, SNIJ )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER             NUMSIP, NUMSIQ
       REAL*8              PI, MI(*), PJ, MJ(*), MSE(*), SNIJ
       LOGICAL             SEISME
@@ -9,22 +11,22 @@
       CHARACTER*(*)       TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
@@ -53,7 +55,7 @@ C
       REAL*8       PIJ, MIJ(12), SN, SIJ(6), SIGU,
      +             SQMA(6), SQMI(6), SN1, SN2, SNTH(6)
       CHARACTER*4  TYP2
-      CHARACTER*8  K8B, TYPE, KNUMES, KNUMET 
+      CHARACTER*8  K8B, TYPE, KNUMES, KNUMET
 C DEB ------------------------------------------------------------------
       TYPE = TYPZ
       SN = 0.D0
@@ -106,7 +108,7 @@ C
                TYP2 = 'SITU'
             ENDIF
             IF ( SEISME ) THEN
-               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),
      &                                          NBINST, ZR(INDICP), SN )
             ELSE
                CALL RC32ST ( SIJ, NBINST, ZR(INDICP), SN )
@@ -141,7 +143,7 @@ C
                  SNTH(I1) = ZR(INDICP+6+I1-1) -ZR(INDICP+I1-1)
  14            CONTINUE
                IF ( SEISME ) THEN
-                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),
      &                                          NBINST, SNTH, SN )
                ELSE
                  IF (TYP2.EQ.'SITU') THEN
@@ -174,7 +176,7 @@ C
                TYP2 = 'SITU'
             ENDIF
             IF ( SEISME ) THEN
-               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78), NBINST, 
+               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78), NBINST,
      &                                                ZR(INDICQ), SN )
             ELSE
                CALL RC32ST ( SIJ, NBINST, ZR(INDICQ), SN )
@@ -182,7 +184,7 @@ C
             SNIJ = MAX( SNIJ , SN )
             IF ( TYP2.EQ.'COMB' .AND. NBTHEP.NE.0 ) THEN
                IF (SEISME) THEN
-                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),
      &                                      NBINST,SNTH, SN )
                ELSE
                  CALL RC32ST ( SIJ, 2, SNTH, SN )
@@ -219,7 +221,7 @@ C
  24            CONTINUE
                IF (TYP2.EQ.'SITU') THEN
                  IF (SEISME) THEN
-                   CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+                   CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),
      &                                         NBINST, SNTH, SN )
                  ELSE
                    CALL RC32ST ( SIJ, NBINST, SNTH, SN )
@@ -231,9 +233,9 @@ C
                      SQMA(I1) = ZR(INDICP+6+I1-1) - ZR(INDICQ+I1-1)
  114               CONTINUE
                    IF (SEISME) THEN
-                     CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+                     CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),
      &                                       NBINST, SQMI, SN1 )
-                     CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+                     CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),
      &                                       NBINST, SQMA, SN2 )
                      SN = MAX( SN1, SN2 )
                    ELSE
@@ -242,7 +244,7 @@ C
                      SN = MAX( SN1, SN2 )
                    ENDIF
                  ENDIF
-               ENDIF             
+               ENDIF
                SNIJ = MAX( SNIJ , SN )
  110        CONTINUE
          END IF

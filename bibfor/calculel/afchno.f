@@ -2,13 +2,15 @@
      +                    DESC, LONVAL, TYPVAL, RVAL, CVAL, KVAL )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER           NBCPNO(*), DESC(*)
       REAL*8            RVAL(*)
       COMPLEX*16        CVAL(*)
       CHARACTER*(*)     CHAMN, GRAN, NOMA, BASE, TYPVAL, KVAL(*)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,9 +37,9 @@ C
       INTEGER NCMP,NCMPMX,JCORR2
 C
 C-----------------------------------------------------------------------
-      INTEGER I1 ,IC ,IDEC ,IE ,IEC ,II ,INEC 
-      INTEGER INO ,JJ ,LNUEQ ,LONVAL ,LPRNO ,LVALE ,NBNOEU 
-      INTEGER NEC ,NN ,NUMGD 
+      INTEGER I1 ,IC ,IDEC ,IE ,IEC ,II ,INEC
+      INTEGER INO ,JJ ,LNUEQ ,LONVAL ,LPRNO ,LVALE ,NBNOEU
+      INTEGER NEC ,NN ,NUMGD
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CHAMNO = CHAMN

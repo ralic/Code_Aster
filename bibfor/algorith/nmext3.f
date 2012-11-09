@@ -4,7 +4,7 @@
      &                  CHGAUS,CHELGA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,8 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER       NBCMP,NBMA,NBPI,NBSPI
       CHARACTER*8   NOMA
       CHARACTER*24  NOMCHA,NOMCHS
@@ -244,7 +246,6 @@ C
      &                       +(ISPIR-1)) =
      &          VALR+VAL2R
               ELSE
-                WRITE(6,*) 'EXTRCH: ',EXTRCH
                 CALL ASSERT(.FALSE.)
               ENDIF
   77        CONTINUE

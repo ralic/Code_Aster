@@ -1,7 +1,7 @@
       SUBROUTINE XMELEL(NDIM,JMAIL,JTYMAI,NUMAE,NUMAM,
      &                  IMOD,IATT,IMAIL,NNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,8 @@ C ======================================================================
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER      NDIM,JMAIL,JTYMAI,NUMAE,NUMAM
       INTEGER      IMOD,IATT(2),IMAIL(2),NNO(2)
 C
@@ -50,7 +52,7 @@ C
       CHARACTER*16  TYPMA,TYPEL
       CHARACTER*16  MODE(3),ATTR(7),MAIL(2,4)
       CHARACTER*16  ATT,MOD
-      INTEGER      NBNO(2,4),ITYEL,ITYMA,K,IBID,IER
+      INTEGER      NBNO(2,4),K,IBID,IER
 C
       DATA (MODE(K),K=1,3) /'C_','D_','3D'/
       DATA (ATTR(K),K=1,7) /

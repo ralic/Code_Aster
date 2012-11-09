@@ -2,11 +2,12 @@
      &                    PROLGD, BASFON )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*)       NOMTA, PARAX, PARAY, NOMFO, BASFON, INTERP,
      &                    PROLGD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +102,7 @@ C
           IF ( (TYPEX(1:1).EQ.'I' .AND. TYPEY(1:1).EQ.'R') .OR.
      &         (TYPEX(1:1).EQ.'R' .AND. TYPEY(1:1).EQ.'I')) GOTO 17
           CALL U2MESS('F','UTILITAI4_77')
-      ENDIF     
+      ENDIF
  17   CONTINUE
 C
       CALL JEVEUO ( NOJVX , 'L', JVALEX )

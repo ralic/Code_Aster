@@ -1,6 +1,6 @@
       SUBROUTINE TE0022(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C.......................................................................
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 NOMTE,OPTION
       REAL*8 SIGMA(162),REPERE(7),INSTAN,NHARM
       REAL*8 BARY(3)

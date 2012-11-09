@@ -1,21 +1,21 @@
       SUBROUTINE  CALLIS (NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OfF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OfF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
 C***********************************************************************
@@ -38,6 +38,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C
 C
       CHARACTER*1    K1BID
@@ -48,7 +50,7 @@ C
      &               TRAMO1,TRAMO2,INDCOL
       CHARACTER*8    SST1,SST2,INTF1,INTF2,MOD1,MOD2,
      &               LINT1,LINT2,K8BID,MA1,MA2,MATPRJ
-      CHARACTER*16   MOTCLE(2)  
+      CHARACTER*16   MOTCLE(2)
       INTEGER        NBLIS,LDPMLI,NBBLOC,LLLIA,IAD,NBLIG,I,IRET,
      &               IBID,NBNO1,NBNO2,IER,LLINT1,LLINT2,
      &               IINC,IREP11,IREP12,IREP21,IREP22,IOPT,
@@ -91,7 +93,7 @@ C
       CALL JECREC(FPLI1N,'V V I','NU','DISPERSE','VARIABLE',NBLIS)
       CALL JECREC(FPLI2N,'V V I','NU','DISPERSE','VARIABLE',NBLIS)
       CALL JECREC(FPLI1O,'V V I','NU','DISPERSE','VARIABLE',NBLIS)
-      CALL JECREC(FPLI2O,'V V I','NU','DISPERSE','VARIABLE',NBLIS)      
+      CALL JECREC(FPLI2O,'V V I','NU','DISPERSE','VARIABLE',NBLIS)
 C
 C------------------------BOUCLE SUR LES LIAISON-------------------------
 C    POUR COMPTAGE BLOC ET STOCKAGE DIMENSION ET AUTRE
@@ -131,8 +133,8 @@ C
         CALL MGUTDM(NOMRES,SST2,IBID,'NOM_MODELE  ',IBID,MOD2)
 C
 C-------------LE NOM DES MAILLAGES
-        CALL DISMOI('F','NOM_MAILLA',MOD1,'MODELE',IBID,MA1,IER) 
-        CALL DISMOI('F','NOM_MAILLA',MOD2,'MODELE',IBID,MA2,IER) 
+        CALL DISMOI('F','NOM_MAILLA',MOD1,'MODELE',IBID,MA1,IER)
+        CALL DISMOI('F','NOM_MAILLA',MOD2,'MODELE',IBID,MA2,IER)
 C
 C--------------LES INTERFACES AMONT DES SOUS-STRUCTURES
         CALL MGUTDM(NOMRES,SST1,IBID,'NOM_LIST_INTERF',IBID,LINT1)
@@ -142,7 +144,7 @@ C--------------LES NOMBRES DES NOEUDS DES INTERFACES
         INT1=LINT1//'.IDC_LINO'
         CALL JENONU(JEXNOM(INT1(1:13)//'NOMS',INTF1),IBID)
         CALL JELIRA(JEXNUM(INT1,IBID),'LONMAX',NBNO1,K8BID)
-C      
+C
         INT2=LINT2//'.IDC_LINO'
         CALL JENONU(JEXNOM(INT2(1:13)//'NOMS',INTF2),IBID)
         CALL JELIRA(JEXNUM(INT2,IBID),'LONMAX',NBNO2,K8BID)
@@ -151,14 +153,14 @@ C--------------LES LISTES DES NUMEROS DES NOEUDS DES INTERFACES
         CALL JENONU(JEXNOM(LINT1 //'.IDC_NOMS',INTF1),IBID)
         CALL JEVEUO(JEXNUM(LINT1 //'.IDC_LINO',IBID),'L',
      &                LLINT1)
-     
+
         CALL JENONU(JEXNOM(LINT2 //'.IDC_NOMS',INTF2),IBID)
         CALL JEVEUO(JEXNUM(LINT2 //'.IDC_LINO',IBID),'L',
      &                LLINT2)
-C     
 C
-        IF (OPTION.EQ.'CLASSIQU') THEN  
-        
+C
+        IF (OPTION.EQ.'CLASSIQU') THEN
+
 C  *******************************************
 C  CALCUL DES MATRICES DE LIAISON
 C  *******************************************
@@ -185,7 +187,7 @@ C-- LA GESTION DE L'INCOMPATIBILITE SE BORNE A FAIRE UNE INTERPOLATION
 C-- LINEAIRE DES DEPLACEMENTS DE LA MAILLE MAITRE...
 
           IINC=0
-C       On teste si la liaison est incompatible        
+C       On teste si la liaison est incompatible
           CALL GETVTX('LIAISON','GROUP_MA_MAIT_1',I,IARG,1,K8BID,IREP11)
           CALL GETVTX('LIAISON','MAILLE_MAIT_1',I,IARG,1,K8BID,IREP12)
           CALL GETVTX('LIAISON','GROUP_MA_MAIT_2',I,IARG,1,K8BID,IREP21)
@@ -208,7 +210,7 @@ C       On teste si la liaison est incompatible
             IINC=2
           ELSE
             NBLIG=ZI(LDPMLI+(I-1)*9)
-          ENDIF                
+          ENDIF
 C
 C  MATRICE LAGRANGE-LAGRANGE
 C
@@ -220,26 +222,26 @@ C
           ICAR(2)=ZI(IAD+1)
           ICAR(3)=ZI(IAD+2)
           ICAR(4)=1
-          
-          NBBLOC=NBBLOC+1   
-          
+
+          NBBLOC=NBBLOC+1
+
 C-------------------------DETERMINATION MATRICES ORIENTEES--------------
 C
 C   ROTATION DES MATRICES DE LIAISON DE LA LIAISON COURANTE
-C       
+C
           IF (IINC.EQ.0) THEN
             CALL VERILI(NOMRES,I,FPLI1O,FPLI2O,IRET)
             IF(IRET.GT.0) THEN
               CALL U2MESG('F', 'ALGORITH12_38',0,' ',0,0,0,0.D0)
             ENDIF
-          
+
             IAD=LDPMLI+(I-1)*9
             CALL ROTLIS(NOMRES,FMLIA,ZI(IAD),FPLI1N,FPLI1O,I,SST1,
-     &                  INTF1,UN)     
+     &                  INTF1,UN)
             IAD=LDPMLI+(I-1)*9+3
             CALL ROTLIS(NOMRES,FMLIA,ZI(IAD),FPLI2N,FPLI2O,I,
      &                  SST2,INTF2,MOINS1)
-            
+
           ELSE
             IF (IINC.EQ.1) THEN
               CALL INCLIS(NOMRES,SST1,SST2,INTF1,INTF2,FMLIA,FPLI1N,
@@ -251,13 +253,13 @@ C
      &                    ZI(LDPMLI+(I-1)*9),I,MATPRJ)
             ENDIF
             CALL JEDETR(MATPRJ)
-          ENDIF  
+          ENDIF
 C
 C  MATRICE LAGRANGE-LAGRANGE
 C
           IAD=LDPMLI+(I-1)*9+6
           CALL INILAG(FMLIA,ICAR)
-          
+
 C--------------------------------------------------C
 C--                                              --C
 C-- INTERFACES DEFINIES AVEC DES DDL GENERALISES --C
@@ -265,15 +267,15 @@ C--                                              --C
 C---------------------------------------------------C
 
 C   DANS CE CAS, ON NE PEUT PAS ECRIRE
-C             L1.Q1+L2.Q2=0, 
+C             L1.Q1+L2.Q2=0,
 C       OU Q1 ET Q2 SONT DES DDL PHYSUQUES
 C
 C   ICI, ON A :  Q1=PHI1.QG1   ET  Q2=PHI2.QG2
 C       PHI1 / PHI2 : BASE MODALE
 C       QG1 / QG2 : DDL GENERALISES
 C
-C   ON ASSURE DONC LA CONTINUITE DANS LE 
-C   SOUS ESPACE ENGENDRE PAR PHI1 OU PAR PHI2. 
+C   ON ASSURE DONC LA CONTINUITE DANS LE
+C   SOUS ESPACE ENGENDRE PAR PHI1 OU PAR PHI2.
 C   ON CHOISI ICI LA SOUS STRUTURE ESCLAVE (PAR EX. PHI1)
 C   ON CONSTRUIT DONC LA RELATION LG1.QG1+LG2.QG2=0, SOIT
 C   PHI1^T(L1.PHI1).QC1 + PHI1^T(L2.PHI2).QC2=0
@@ -281,11 +283,11 @@ C
 C   CETTE RELATION NE PERMET DONC PAS UN RECOLLEMNT PARFAIT
 C   A L'INTERFACE, EN PARTICULIER SI PHI1 ET PHI2 SONT TRES
 C   DIFFERENTES. DANS CE CAS, ON VERIFIE LE RANG DE PHI1^T(L2.PHI2)
-C   ET ON FILTRE LES RELATIONS MAL PROJETEES, EN AVERTISSANT 
+C   ET ON FILTRE LES RELATIONS MAL PROJETEES, EN AVERTISSANT
 C   L'UTILISATEUR
 
         ELSEIF (OPTION(1:6).EQ.'REDUIT') THEN
-          
+
 C----------------------------------------------------------------C
 C--                                                            --C
 C-- EXTRACTION ET ROTATION DE LA TRACE DES MODES A L'INTERFACE --C
@@ -297,12 +299,12 @@ C-- VERIFICATION DE LA COMPATIBILITE DES NOEUDS
           IRET=I
           CALL VECOMO(NOMRES,SST1,SST2,INTF1,INTF2,IRET,OPTION)
 C          IF (IRET .EQ.1) THEN
-C          
+C
 C            VERIFIER ICI QUE, DANS CE CAS, ALORS CHAQUE NOEUD
 C            PORTE LES MEMES DDL QUE SONT VIS A VIS
 C            SINON, IRET=0
 C
-C          ENDIF 
+C          ENDIF
 
 C-- SOUS STRUCTURE 1
           LINO1='&&VECT_NOEUD_INTERF1'
@@ -330,7 +332,7 @@ C----------------------------------------C
           CALL GETVTX('LIAISON','MAILLE_MAIT_1',I,IARG,1,K8BID,IREP12)
           CALL GETVTX('LIAISON','GROUP_MA_MAIT_2',I,IARG,1,K8BID,IREP21)
           CALL GETVTX('LIAISON','MAILLE_MAIT_2',I,IARG,1,K8BID,IREP22)
-         
+
           IF ((IREP21.NE.0).OR.(IREP22.NE.0)) THEN
             IMAST=2
             IF (IRET .EQ. 0) THEN
@@ -349,7 +351,7 @@ C-- SI ON NE PRECISE RIEN, C'EST LA SOUS STRUCTURE 1 QUI EST MAITRE
      &                    DDLA1,DDLA2,NBEQ1,NBEQ2,IMAST,TRAMO1)
 C-- ET ON PROJETTE L'EQUATION DE LIAISON SUR PHI2
             ENDIF
-            
+
           ENDIF
 
 C-------------------------------------------------------------------C
@@ -359,8 +361,8 @@ C--                                                               --C
 C-------------------------------------------------------------------C
 
           INDCOL='BLANC'
-          NBCOL=0          
-          
+          NBCOL=0
+
           IF (IMAST .LT. 2) THEN
 
             IAD=LDPMLI+(I-1)*9
@@ -370,18 +372,18 @@ C-------------------------------------------------------------------C
      &                  TRAMO2,DDLA2,NBEQ2,TAILLE,INDCOL,NBCOL)
             ZI(IAD)=TAILLE(1)
             ZI(IAD+1)=TAILLE(2)
-     
-            IAD=LDPMLI+(I-1)*9+3       
+
+            IAD=LDPMLI+(I-1)*9+3
             NBBLOC=NBBLOC+1
-            ZI(IAD+2)=NBBLOC        
+            ZI(IAD+2)=NBBLOC
             CALL LIARED (NOMRES,FMLIA,NBBLOC,TRAMO2,DDLA2,NBEQ2,
      &                   TRAMO2,DDLA2,NBEQ2,TAILLE,INDCOL,NBCOL)
             ZI(IAD)=TAILLE(1)
             ZI(IAD+1)=TAILLE(2)
             NBLIG=TAILLE(1)
-            
+
           ELSE
-          
+
             IAD=LDPMLI+(I-1)*9
             NBBLOC=NBBLOC+1
             ZI(IAD+2)=NBBLOC
@@ -392,16 +394,16 @@ C-------------------------------------------------------------------C
 
             IAD=LDPMLI+(I-1)*9+3
             NBBLOC=NBBLOC+1
-            ZI(IAD+2)=NBBLOC        
+            ZI(IAD+2)=NBBLOC
             CALL LIARED(NOMRES,FMLIA,NBBLOC,TRAMO2,DDLA1,NBEQ2,
      &                  TRAMO1,DDLA1,NBEQ1,TAILLE,INDCOL,NBCOL)
             ZI(IAD)=TAILLE(1)
             ZI(IAD+1)=TAILLE(2)
-     
+
             NBLIG=TAILLE(1)
-            
+
           ENDIF
-                          
+
           CALL JEDETR(INDCOL)
 C
 C  MATRICE LAGRANGE-LAGRANGE
@@ -416,9 +418,9 @@ C
           ICAR(3)=ZI(IAD+2)
           ICAR(4)=IMAST
           CALL INILAG(FMLIA,ICAR)
-                    
+
 C-- DESTRUCTION DES CONCEPTS TEMPORAIRES
-          
+
           CALL JEDETR(INDIN1)
           CALL JEDETR(LINO1)
           CALL JEDETR(TRAMO1)

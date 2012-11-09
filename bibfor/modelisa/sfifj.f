@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,8 @@ C     AUTEUR : G. ROUSSEAU
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER       NFINIT, NFIN, NBM, NBPOIN, NBID,IARG
       INTEGER       NPOIN, IFF, IVARE, LVALE, IBID, IN
       INTEGER       IM1, IM2, IVATE, IVECX, IVECY, IVECZ, NVECX, NVECY
@@ -208,10 +210,10 @@ C
         CALL ACCEP2(BASE(1:8),NBM,PG,PHI,SPHI)
       ELSE
         CALL ACCEP1 (NOMRES, BASE(1:8), LIGRMO, NBM, DIR, YANG)
-      ENDIF 
+      ENDIF
 
 
-C CAS SPEC_CORR_CONV_1 ET 2                             
+C CAS SPEC_CORR_CONV_1 ET 2
       MXVAL = NBM*(NBM+1)/2
       CHNUMI = NOMRES//'.NUMI'
       CALL WKVECT(CHNUMI,'G V I',MXVAL,LNUMI)

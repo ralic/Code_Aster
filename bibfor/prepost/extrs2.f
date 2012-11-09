@@ -4,6 +4,8 @@
      &                    NBARCH, NUARCH, NBEXCL, CHEXCL, NBNOSY )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER NBORDR,NUORDR(*),NBARCH,NBACC,NUARCH(*),NBEXCL,NBNOSY
       CHARACTER*16 NOMACC(*),CHEXCL(*)
       CHARACTER*(*) RESU0, RESU1
@@ -12,7 +14,7 @@
       LOGICAL LREST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

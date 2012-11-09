@@ -2,8 +2,8 @@
      +                  ADRESS,GLOBAL,LGSN,FACTOL,FACTOU,SM,X,
      +                  INVP,PERM,AD,TRAV,TYPSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
-C RESPONSABLE JFBHHUC C.ROSE
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C RESPONSABLE ROSE C.ROSE
 C     TOLE CRP_4
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER NBSN,NBND,NBLOC,LGBLOC(NBSN),NCBLOC(NBND),DECAL(NBSN)
       INTEGER*4 GLOBAL(*)
       INTEGER SEQ(NBSN),SUPND(NBSN+1),LGSN(NBSN)
@@ -50,6 +52,7 @@ C
       BETA=1.D0
       INCX=1
       INCY=1
+      K0=0
 C
       DO 110 J = 1,NBND
           X(INVP(J)) = SM(J)

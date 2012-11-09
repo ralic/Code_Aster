@@ -1,6 +1,6 @@
       SUBROUTINE TE0485(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C
       INCLUDE 'jeveux.h'
+
 C-----------------------------------------------------------------------
       INTEGER I ,ICONT ,IDEPL ,IDFDE ,IGEOM ,IMATE ,IPOIDS
       INTEGER IRET ,IVF ,J ,JGANO ,LAG ,NBRES ,NBV

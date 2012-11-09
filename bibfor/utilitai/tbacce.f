@@ -1,13 +1,14 @@
       SUBROUTINE TBACCE ( NOMTA, NUMELI, PARA, MODE, VI, VR, VC, VK )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       INTEGER             NUMELI, VI
       REAL*8              VR
       COMPLEX*16          VC
       CHARACTER*(*)       NOMTA, PARA, MODE, VK
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE DURAND C.DURAND
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

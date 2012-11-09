@@ -1,12 +1,14 @@
       SUBROUTINE PALIGI(PHENO,MODL,LIGRCH,IGREL,INEMA,ILISTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*4 PHENO
       CHARACTER*(*) MODL,LIGRCH
       INTEGER IGREL,INEMA,ILISTE(*)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,8 +50,8 @@ C                   NUMA2 EN VIS A VIS AVEC LE NOEUD N1(INO)
       CHARACTER*24 LIEL,NEMA
       INTEGER NMAXOB
 C-----------------------------------------------------------------------
-      INTEGER IDLIEL ,IDNEMA ,IMA ,INO ,ITYPEL ,JMA ,NBMA 
-      INTEGER NBNO 
+      INTEGER IDLIEL ,IDNEMA ,IMA ,INO ,ITYPEL ,JMA ,NBMA
+      INTEGER NBNO
 C-----------------------------------------------------------------------
       PARAMETER (NMAXOB=30)
       INTEGER ITABL(NMAXOB),NVAL

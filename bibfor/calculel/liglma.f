@@ -1,6 +1,6 @@
       SUBROUTINE LIGLMA(LIGREL,NBMA,LINUMA,LINUTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,8 @@ C RESPONSABLE PELLET J.PELLET
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*(*) LINUMA,LINUTE
       CHARACTER*19 LIGREL
       INTEGER NBMA
@@ -37,7 +39,7 @@ C IN/JXOUT LINUTE  : OBJET (V I) QUI CONTIENDRA LES NUMEROS DES
 C                    TYPE_ELEMENT ASSOCIES AUX ELEMENTS DU LIGREL
 C ----------------------------------------------------------------------
       CHARACTER*8 KBID
-      INTEGER IBID,NBGREL,IGREL,IEL,NUMA,NUTE,N1,NBEL
+      INTEGER NBGREL,IGREL,IEL,NUMA,NUTE,N1,NBEL
       INTEGER JNUMA,JNUTE,ICO,JLIEL
 
 C ----------------------------------------------------------------------

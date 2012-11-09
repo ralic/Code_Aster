@@ -1,7 +1,7 @@
       SUBROUTINE TFVEGR(CMD,NOMMCF,OCGRIL)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,15 +32,16 @@ C                  VERIFIE LES ARGUMENTS FOURNIS SOUS LES OPERANDES
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
       CHARACTER*16  CMD, NOMMCF
       INTEGER       OCGRIL, NTYPG
       INTEGER      IARG
 C
 C    ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IGRIL ,IVECI ,NBGTOT ,NTOT2 ,NTYPG2 ,NTYPG3 
-      INTEGER NTYPG4 ,NTYPG5 ,NTYPG6 
-      REAL*8 RBID 
+      INTEGER IBID ,IGRIL ,IVECI ,NBGTOT ,NTOT2 ,NTYPG2 ,NTYPG3
+      INTEGER NTYPG4 ,NTYPG5 ,NTYPG6
+      REAL*8 RBID
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

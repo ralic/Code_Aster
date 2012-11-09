@@ -3,7 +3,7 @@
      &                  NNOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,8 @@ C ======================================================================
 C
       IMPLICIT      NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8   NOMA,NOMO
       CHARACTER*16  MOTFAC
       INTEGER       NZOCU
@@ -33,14 +35,14 @@ C
       CHARACTER*24  LISNOE
       CHARACTER*24  POINOE
       INTEGER       NNOCO
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (LIAISON_UNILATER - LECTURE)
 C
 C ELIMINATION AU SEIN DE CHAQUE SURFACE DE CONTACT POTENTIELLE DES
 C NOEUDS ET MAILLES REDONDANTS. MODIFICATION DES POINTEURS ASSOCIES.
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -81,7 +83,7 @@ C
       CALL JEMARQ()
 C
 C --- ACCES SD
-C 
+C
       CALL JEVEUO(NOLINO,'E',JNL)
       CALL JEVEUO(NOPONO,'L',JNP)
       CALL JEVEUO(NBGDCU,'L',JNBGD)
@@ -93,12 +95,12 @@ C
 C
 C --- CREATION DU POINTEUR
 C
-      CALL WKVECT(POINOE,'V V I',NZOCU+1,JPOI  )  
+      CALL WKVECT(POINOE,'V V I',NZOCU+1,JPOI  )
       ZI(JPOI) = 1
 C
       DO 1000 IZONE=1,NZOCU
 C
-C --- VECTEUR CONTENANT LES NOEUDS ZONE 
+C --- VECTEUR CONTENANT LES NOEUDS ZONE
 C
         NBNO   = ZI(JNP+IZONE) - ZI(JNP+IZONE-1)
         JDEBUT = ZI(JNP+IZONE-1)
@@ -156,7 +158,7 @@ C
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNO1),NOMNOE)
             NB = 0
             DO 31 ICMP=1,NBCMP
-               
+
               CMP = ZK8(JCMPG-1+JDECAT+ICMP-1)
               CALL EXISCP(CMP,K8BLA,NOMO,
      &                    1,'NUM',K8BLA,NUMNO1,

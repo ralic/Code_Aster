@@ -1,5 +1,5 @@
       SUBROUTINE NMDEPR(MODELE,LIGREL,CARELE,CHARGE,ICHA,INSTAN,RESUFV)
-C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,6 +20,7 @@ C ======================================================================
 C RESPONSABLE PELLET J.PELLET
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*) MODELE,CARELE,RESUFV(3),LIGREL,CHARGE
       REAL*8 INSTAN
       INTEGER ICHA

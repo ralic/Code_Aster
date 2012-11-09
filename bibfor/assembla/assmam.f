@@ -7,13 +7,15 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       CHARACTER*(*) BASE,MATAS,TLIMAT(*),NU
       INTEGER NBMAT,ITYSCA
       REAL*8 LICOEF(*)
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

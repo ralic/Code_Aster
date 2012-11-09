@@ -1,8 +1,10 @@
       SUBROUTINE MDCHST ( NUMDDL, TYPNUM, IMODE, IAMOR, PULSAT,
      &                    MASGEN,AMOGEN,LFLU,NBNLI,NBPAL,NOECHO,NBRFIS,
      &                    LOGCHO, PARCHO, INTITU, DDLCHO, IER )
-      IMPLICIT  NONE
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER             NBNLI, IAMOR, IMODE, IER, LOGCHO(NBNLI,*),
      &                    DDLCHO(*),NBRFIS
       REAL*8              PARCHO(NBNLI,*),PULSAT(*),MASGEN(*),AMOGEN(*)
@@ -12,7 +14,7 @@
       CHARACTER*16        TYPNUM, TYPFRO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +51,7 @@ C OUT : INTITU : INTITULE DE CHOC
 C OUT : DDLCHO : TABLEAU DES NUMEROTATIONS DES NOEUDS DE CHOC
 C OUT : IER    : NIVEAU D'ERREUR
 C     ------------------------------------------------------------------
-C TOLE CRP_4 CRS_512 CRP_20
+C TOLE CRP_20
 
       INTEGER       NBCHOC, NBSISM, NBFLAM, NBOCC, I, J, IOC, IBID, IL,
      &              JCOOR, JMAMA, NBNMA, KMA, NN1, NN2, INO1, INO2, IG,
@@ -74,18 +76,18 @@ C     ===========================
       CHARACTER*3   COMP(6)
 C     =================================
       INTEGER       NBPAL
-   
-      INTEGER       PALMAX 
+
+      INTEGER       PALMAX
       PARAMETER (PALMAX=20)
-      
+
       INTEGER       DIMNAS
-      PARAMETER     (DIMNAS=8)  
-      CHARACTER*8   CNPAL(PALMAX)    
+      PARAMETER     (DIMNAS=8)
+      CHARACTER*8   CNPAL(PALMAX)
 
       INTEGER       IADRK
-      CHARACTER*24  CPAL   
+      CHARACTER*24  CPAL
       INTEGER      IARG
-C      
+C
       CALL JEMARQ()
       CALL GETFAC ( 'CHOC'     , NBCHOC )
       CALL GETFAC ( 'ANTI_SISM', NBSISM )
@@ -287,7 +289,7 @@ C
            CALL GETVR8(MOTFAC,'RIGI_TAN'   ,IOC,IARG,1,KTANG       ,N1)
            CALL GETVTX(MOTFAC,'FROTTEMENT',IOC,IARG,1,
      &                 TYPFRO       ,N1)
-            IF (TYPFRO .EQ. 'COULOMB         ') THEN   
+            IF (TYPFRO .EQ. 'COULOMB         ') THEN
                CALL GETVR8(MOTFAC,'COULOMB'    ,IOC,IARG,1,
      &          PARCHO(ILIAI,6) ,N1)
                CALL GETVR8(MOTFAC,'COULOMB'    ,IOC,IARG,1,
@@ -455,8 +457,8 @@ C            CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
       ENDIF
 C FIN PALIERS EDYOS
 C
-C    ROTOR FISSURE 
-      MOTFAC='ROTOR_FISS' 
+C    ROTOR FISSURE
+      MOTFAC='ROTOR_FISS'
       COMP(1)='DRX'
       COMP(2)='DRY'
       COMP(3)='DRZ'
@@ -517,10 +519,10 @@ C DETERMINATION DES DIRECTION ET ORIENTATION DU ROTOR
                      MEMAIL=.FALSE.
                      DO 78 J2=1,NBNO
                         IF (ZI(IBID+J2-1).EQ.NN2) MEMAIL=.TRUE.
-78                   CONTINUE       
+78                   CONTINUE
                      IF (.NOT.MEMAIL) THEN
                         COMPT1=COMPT1+1
-                        IF (J1.EQ.1) BONO1=ZI(IBID+1)    
+                        IF (J1.EQ.1) BONO1=ZI(IBID+1)
                         IF (J1.EQ.2) BONO1=ZI(IBID)
                      ENDIF
                   ENDIF
@@ -528,22 +530,22 @@ C DETERMINATION DES DIRECTION ET ORIENTATION DU ROTOR
                      MEMAIL=.FALSE.
                      DO 79 J2=1,NBNO
                         IF (ZI(IBID+J2-1).EQ.NN1) MEMAIL=.TRUE.
-79                   CONTINUE       
+79                   CONTINUE
                      IF (.NOT.MEMAIL) THEN
                         COMPT2=COMPT2+1
-                        IF (J1.EQ.1) BONO2=ZI(IBID+1)    
+                        IF (J1.EQ.1) BONO2=ZI(IBID+1)
                         IF (J1.EQ.2) BONO2=ZI(IBID)
                      ENDIF
                   ENDIF
-77             CONTINUE       
+77             CONTINUE
             ENDIF
-66       CONTINUE    
+66       CONTINUE
          CALL ASSERT(COMPT1 .GE. 1)
          CALL ASSERT(COMPT2 .GE. 1)
 
          DO 89 J=1,3
             AXE(J)=ZR(JCOOR+3*(BONO1-1)+J-1) - ZR(JCOOR+3*(BONO2-1)+J-1)
-89       CONTINUE    
+89       CONTINUE
 
 C ORIENTATION DU ROTOR
          CALL ANGVX ( AXE, ALPHA, BETA )

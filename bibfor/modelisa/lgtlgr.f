@@ -1,7 +1,7 @@
       SUBROUTINE LGTLGR (BASEZ, LIGREY, LIGREZ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,8 @@ C-------------------------------------------------------------
 C
 C ====================== DEBUT DES DECLARATIONS ========================
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C
 C ----- ARGUMENTS
       CHARACTER*(*) BASEZ, LIGREY, LIGREZ
@@ -47,11 +49,11 @@ C ----- VARIABLES LOCALES -------------------------------
 C ====================== DEBUT DU CODE EXECUTABLE ======================
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IDAPMA ,IDAPNO ,IDLIGI ,IDLIMA ,IDLINO 
-      INTEGER IDLITY ,IDMODE ,IDNEMA ,IDPHEN ,IDPOMA ,IDPONO ,IER 
-      INTEGER IJ ,IMODL ,IRET ,J ,JDNBNO ,JDPM ,K 
-      INTEGER K1 ,LONLIE ,NBAPMA ,NBAPNO ,NBMATO ,NBMATY ,NBNO 
-      INTEGER NBNO2 ,NBNOTO ,NTYPOI ,NUTYP1 ,NUTYPE 
+      INTEGER I ,IBID ,IDAPMA ,IDAPNO ,IDLIGI ,IDLIMA ,IDLINO
+      INTEGER IDLITY ,IDMODE ,IDNEMA ,IDPHEN ,IDPOMA ,IDPONO ,IER
+      INTEGER IJ ,IMODL ,IRET ,J ,JDNBNO ,JDPM ,K
+      INTEGER K1 ,LONLIE ,NBAPMA ,NBAPNO ,NBMATO ,NBMATY ,NBNO
+      INTEGER NBNO2 ,NBNOTO ,NTYPOI ,NUTYP1 ,NUTYPE
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

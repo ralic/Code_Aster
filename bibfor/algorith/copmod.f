@@ -1,6 +1,7 @@
       SUBROUTINE COPMOD ( BASEMO, CHAMZ, NEQ, NU, NBMODE, BMODAL )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       INTEGER             NEQ, NBMODE
       REAL*8              BMODAL(NEQ*NBMODE)
       CHARACTER*8         BASEMO
@@ -8,7 +9,7 @@
       CHARACTER*(*)       CHAMZ
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,10 +39,9 @@ C              / PROF_CHNO (K19)
 C    OUT :BMODAL          VECTEUR CONTENANT LES MODES
 C-----------------------------------------------------------------------
       INTEGER       IDDEEQ, I, IRET, IADMOD ,IBID,IEXI,IE
-      INTEGER VALI
       CHARACTER*16  CHAMP
       CHARACTER*19 NU19,PRCHNO
-      CHARACTER*24  NOMCHA, DEEQ, VALK(2)
+      CHARACTER*24  NOMCHA, DEEQ
       LOGICAL IDENSD
 C-----------------------------------------------------------------------
 C

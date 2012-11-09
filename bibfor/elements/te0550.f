@@ -1,6 +1,6 @@
       SUBROUTINE TE0550(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       INCLUDE 'jeveux.h'
+
       INTEGER ICODRE
       CHARACTER*8 FAMI,POUM
       CHARACTER*16 NOMTE,OPTION
@@ -43,9 +44,9 @@ C.......................................................................
 
 
 C-----------------------------------------------------------------------
-      INTEGER I ,II ,IVECTU ,IVIEN ,IVITE ,J ,JGANO 
-      INTEGER JJ ,NDIM ,NNOS 
-      REAL*8 CELER ,R ,R8B 
+      INTEGER I ,II ,IVECTU ,IVIEN ,IVITE ,J ,JGANO
+      INTEGER JJ ,NDIM ,NNOS
+      REAL*8 CELER ,R ,R8B
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       NDI = 2*NNO

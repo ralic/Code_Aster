@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,8 @@ C ----------------------------------------------------------------------
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C
 C
       CHARACTER*8 K8B,NOMRES,RESIN,NOMSST,MAILSK,MODE
@@ -38,9 +40,9 @@ C
 C
 C     -----------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IR ,IR1 ,IRET ,ISK ,J ,J1REFE 
-      INTEGER J2REFE ,J3REFE ,JREFN ,JREFNB ,LMACR ,LMODGE ,LNUME 
-      INTEGER LRAID ,LREFM ,N1 ,N2 ,NBCHAM ,NUMSEC 
+      INTEGER IBID ,IR ,IR1 ,IRET ,ISK ,J ,J1REFE
+      INTEGER J2REFE ,J3REFE ,JREFN ,JREFNB ,LMACR ,LMODGE ,LNUME
+      INTEGER LRAID ,LREFM ,N1 ,N2 ,NBCHAM ,NUMSEC
 C-----------------------------------------------------------------------
       DATA K8B/'        '/
       DATA PARAM/'MODELE','CHAMPMAT','CARAELEM'/
@@ -252,7 +254,7 @@ C --- STOCKAGE
         CALL JEVEUO(NOMRES//'           .ORDR','L',JORD)
         CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
         CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
-        
+
         CALL GETVID(' ','SQUELETTE',1,IARG,0,K8B,ISK)
         IF (ISK .EQ. 0) THEN
           CALL GETVTX(' ','SOUS_STRUC',1,IARG,1,NOMSST,IBID)

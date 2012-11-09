@@ -3,7 +3,7 @@
      &                  OPTION, PARAM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/10/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,6 +53,8 @@ C-----------------------------------------------------------------------
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER NROFIC,NBMA,NTYPEL,NPGMAX,NUMPT, NUMORD
       INTEGER PGMAIL(NBMA),PGMMIL(NBMA),INDPG(NTYPEL,NPGMAX)
       CHARACTER*8 PARAM

@@ -1,6 +1,6 @@
       SUBROUTINE GICNX2()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,12 +32,14 @@ C     VARIABLES LOCALES:
 C     ------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8  KBI,NOMOBJ
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IACNEX ,IACNX2 ,IADESC ,IANOOB ,IMA ,IMAT 
-      INTEGER INO ,IRET ,LONT ,NBEL ,NBMATO ,NBNO ,NBOBJ 
-      INTEGER NBOBJ4 
+      INTEGER I ,IACNEX ,IACNX2 ,IADESC ,IANOOB ,IMA ,IMAT
+      INTEGER INO ,IRET ,LONT ,NBEL ,NBMATO ,NBNO ,NBOBJ
+      INTEGER NBOBJ4
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEEXIN('&&GILIRE.NOMOBJ',IRET)

@@ -2,12 +2,14 @@
      &                    NBMA, LISTMA, CHRESU )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXATR
       INTEGER             NBMA, LISTMA(*)
       CHARACTER*8         NOMA
       CHARACTER*24        NCNCIN, CHINDI, CHCARA, CHRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

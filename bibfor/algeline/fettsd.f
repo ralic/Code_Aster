@@ -2,22 +2,22 @@
      &                  IFETI,IFM,LPARA,ITPS,NIVMPI,RANG,CHSOL,OPTION,
      &                  LTEST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_4
 C-----------------------------------------------------------------------
@@ -66,6 +66,8 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER      NBI,NBSD,VDDL(NBSD),IREX,NBI2,IFETI,IFM,ITPS,NIVMPI,
      &             RANG,OPTION
       CHARACTER*19 SDFETI,CHSOL
@@ -107,8 +109,8 @@ C CORPS DU PROGRAMME
       ENDIF
 C POUR ECRITURE DANS UN FICHIER DE LA MATRICE, DU SECOND MEMBRE,
 C DU NUME_DDL. IFM18 UNITE LOGIQUE ASSOCIEE
-      IFM18=18      
-C-----------------------------      
+      IFM18=18
+C-----------------------------
 C VALIDATION COHERENCE DE LA SD_FETI
 C-----------------------------
       IF ((INFOFE(12:12).EQ.'T').AND.(ITPS.EQ.1).AND.(OPTION.EQ.1)) THEN
@@ -121,7 +123,7 @@ C INIT
         SDFETT=SDFETI//'.FETI'
         SDFETB=SDFETI//'.FETB'
         SDFETG=SDFETI//'.FETG'
-C-----------------------------      
+C-----------------------------
 C VALIDATION .FETB/.FETG/.FETI VIA FETREX/FETSCA
 C-----------------------------
         K24B='&&FETTSD.VERIF1'
@@ -165,10 +167,10 @@ C      CALL JEIMPO(6,'&&ALFETI.VERIF1',' ','')
         CALL JEDETR('&&FETTSD.VERIF2')
         CALL JEDETR('&&FETTSD.VERIF3')
 
-C-----------------------------      
+C-----------------------------
 C VALIDATION .FETB/.FETH/.FLII
 C-----------------------------
-        
+
 C LE JUGE DE PAIX, LE NOMBRE DE DDLS TOTAL VIA LE CHAM_NO GLOBAL
         CHREF=CHSOL//'.REFE'
         CALL JEVEUO(CHREF,'L',IREFE)
@@ -196,7 +198,7 @@ C NOMBRE DE DDLS (PHYSIQUES+TARDIFS) MENTIONNES DANS LES CHAM_NOS LOCAUX
           CALL FETMPI(6,1,IFM,NIVMPI,IBID,IBID,K24B,K24B,K24B,RBID)
           DDLNEL=ZI(IRET6)
           CALL JEDETR(K24B)
-        ENDIF   
+        ENDIF
 C NOMBRE DE DDLS (PHYSIQUES+TARDIFS) MENTIONNES DANS .FETH
         DDLHI=0
         CALL JEVEUO(SDFETH,'L',IRET1)
@@ -220,9 +222,9 @@ C ON NE COMPTE QUE LES NOEUDS PHYSIQUES HORS INTERFACE
                 NBDDL1=ZI(IRET3-1+2*(I-1)+2)-ZI(IRET3-1+2*(I-2)+2)
               ENDIF
               DDLBI=DDLBI+NBDDL1
-            ENDIF           
+            ENDIF
    25     CONTINUE
-          
+
           CALL JEEXIN(JEXNOM(SDFETL,NOMSD),IRET)
           IF (IRET.NE.0) THEN
             CALL JEVEUO(JEXNOM(SDFETL,NOMSD),'L',IRET4)
@@ -234,7 +236,7 @@ C QU'ILS NE SONT PAS SUR L'INTERFACE !
               DDLBI=DDLBI+2*ZI(IRET4-1+2*(I-1)+2)
    27       CONTINUE
           ENDIF
-   30   CONTINUE        
+   30   CONTINUE
 C ON LEUR ENLEVE LES DOUBLONS DU AUX DDLS PHYSIQUES D'INTERFACE .FETI
         K24B='&&FETTSD.VERIF5'
         CALL WKVECT(K24B,'V V I',NBI2,IRET5)
@@ -281,9 +283,9 @@ C ON LEUR ENLEVE LES DOUBLONS DU AUX DDLS PHYSIQUES D'INTERFACE .FETI
         ENDIF
         CALL JEDETR(K24B)
 
-C-----------------------------      
+C-----------------------------
 C PREPARATION DU TERRAIN (VECTEUR &TEST.DIAG.FETI) POUR
-C INSERER LA RESOLUTION DU SYSTEME DIAGONAL 
+C INSERER LA RESOLUTION DU SYSTEME DIAGONAL
 C DIAG(1...1)*U=(1...1)T
 C DONT LA SOLUTION TRIVIALE EST U=(1....1)T
 C-----------------------------
@@ -307,9 +309,9 @@ C-----------------------------
             ZI(ITEST+3*(COMPT-1)+2)=ZI(IFETJ-1+ZI(IFETI1+4*(I-1)+3))
    37       CONTINUE
    38     CONTINUE
-          ZI(ITEST+3*NBII)=COMPT          
+          ZI(ITEST+3*NBII)=COMPT
         ENDIF
-C-----------------------------      
+C-----------------------------
 C ON N'ASSEMBLE PAS LA MATRICE ET ON LA REMPLACE PAR DIAG(1...1)
 C-----------------------------
       ELSE IF ((INFOFE(12:12).EQ.'T').AND.(OPTION.EQ.3)) THEN
@@ -324,7 +326,7 @@ C-----------------------------
         JCOL=1
         NBMR=0
         DO 60 KTERM = 1, NZ
-          IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1      
+          IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1
           ILIG=ZI4(JSMHC-1+KTERM)
           IF (ILIG.EQ.JCOL) THEN
             INO=ZI(IDEEQ+2*(ILIG-1))
@@ -339,7 +341,7 @@ C            DII=1.D0*INO
                     NBMR=NBMR+1
                   ELSE
                     DII3=1.D-5
-                  ENDIF                 
+                  ENDIF
                   IF (IDD.EQ.ZI(ITEST+3*(I-1)+2)) THEN
                     DII=1.D0
 C                    DII2=INO*1.D0-((ZI(ITEST+3*(I-1)+1)-1)*DII3)
@@ -358,8 +360,8 @@ C                    DII2=INO*1.D0-((ZI(ITEST+3*(I-1)+1)-1)*DII3)
             ZR(IADVAL-1+KTERM)=0.D0
           ENDIF
    60   CONTINUE
-C-----------------------------      
-C ON N'ASSEMBLE PAS LE SECOND MEMBRE ET ON LE REMPLACE PAR 
+C-----------------------------
+C ON N'ASSEMBLE PAS LE SECOND MEMBRE ET ON LE REMPLACE PAR
 C (1...1)T / NBRE DE SECOND MEMBRE (POUR FAIRE 1)
 C-----------------------------
       ELSE IF ((INFOFE(12:12).EQ.'T').AND.(OPTION.EQ.4)) THEN
@@ -388,7 +390,7 @@ C          DII=1.D0*INO/NBCHAR
           ENDIF
           ZR(IADVAL+I-1)=DII*DII2
    50   CONTINUE
-C-----------------------------      
+C-----------------------------
 C VERIFICATION DE U=(1....1)T DANS FETRIN
 C-----------------------------
       ELSE IF ((INFOFE(12:12).EQ.'T').AND.(OPTION.EQ.5)) THEN
@@ -429,7 +431,7 @@ C ON NE S'INTERESSE QU'AUX COMPOSANTES PHYSIQUES
         WRITE(IFM,*)'ECART MAX A LA SOLUTION',ECARMA
         WRITE(IFM,*)'NOMBRE D''ERREUR A TOLERANCE ',TOL,' = ',NBER
         WRITE(IFM,*)
-C-----------------------------      
+C-----------------------------
 C ON ECRIT DANS IFM18 LA MATRICE LOCALE
 C-----------------------------
       ELSE IF (((INFOFE(14:14).EQ.'T').OR.(INFOFE(15:15).EQ.'T'))
@@ -443,11 +445,11 @@ C-----------------------------
         WRITE(IFM18,*)'MATRICE DU SOUS-DOMAINE ',IDD,'I/J/KIJ'
         WRITE(IFM18,*)'TAILLE DU PB/NOMBRE DE TERMES ',NSMDI,NZ
         DO 80 KTERM = 1, NZ
-          IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1      
+          IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1
           ILIG=ZI4(JSMHC-1+KTERM)
           WRITE(IFM18,*)ILIG,JCOL,ZR(IADVAL-1+KTERM)
    80   CONTINUE
-C-----------------------------      
+C-----------------------------
 C ON ECRIT DANS IFM18 LE SECOND MEMBRE LOCALE
 C-----------------------------
       ELSE IF ((INFOFE(14:14).EQ.'T').AND.(OPTION.EQ.7).AND.
@@ -460,7 +462,7 @@ C-----------------------------
           ICMP=ZI(IDEEQ+2*(I-1)+1)
           WRITE(IFM18,*)I,INO,ICMP,ZR(IADVAL-1+I)
    90   CONTINUE
-C-----------------------------      
+C-----------------------------
 C ON ECRIT DANS IFM18 LA SOLUTION LOCALE
 C-----------------------------
       ELSE IF ((INFOFE(14:14).EQ.'T').AND.(OPTION.EQ.8)) THEN
@@ -472,7 +474,7 @@ C-----------------------------
           ICMP=ZI(IDEEQ+2*(I-1)+1)
           WRITE(IFM18,*)I,INO,ICMP,ZR(IADVAL-1+I)
    91   CONTINUE
-C-----------------------------      
+C-----------------------------
 C ON ECRIT DANS IFM18 LA SOLUTION GLOBALE
 C-----------------------------
       ELSE IF ((INFOFE(14:14).EQ.'T').AND.(OPTION.EQ.9)) THEN
@@ -486,7 +488,7 @@ C-----------------------------
           ICMP=ZI(IDEEQ+2*(I-1)+1)
           WRITE(IFM18,*)I,INO,ICMP,ZR(IADVAL-1+I)
    92   CONTINUE
-C-----------------------------      
+C-----------------------------
 C ON ECRIT DANS IFM18 UN MODE RIGIDE
 C-----------------------------
       ELSE IF ((INFOFE(15:15).EQ.'T').AND.(OPTION.EQ.10)) THEN

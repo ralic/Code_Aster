@@ -4,6 +4,8 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER        IFI, NBORDR, LCH,ICH, VERSIO
       REAL*8         PARA(*)
       LOGICAL        LRESU, SCAL, VECT, TENS
@@ -13,7 +15,7 @@ C     NBRE POUR CHAQUE TYPE D'ELEMENT
       INTEGER        NBEL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

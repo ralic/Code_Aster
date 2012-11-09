@@ -2,6 +2,8 @@
      &                  MA2,NBTMX,NBTM,NUTM,ELRF)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM,JEXATR
       CHARACTER*2 DIM
       CHARACTER*8 MOA1,MOA2,MA1,MA2
       CHARACTER*(*) MOCLE
@@ -9,7 +11,7 @@
       CHARACTER*8 ELRF(NBTMX)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

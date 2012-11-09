@@ -2,12 +2,11 @@
      &                   IORDR,RESUCO,RESUC1,CHAMP)
       IMPLICIT NONE
       INTEGER IORDR
-      REAL*8 TIME
       CHARACTER*(*) MODELE,SIGMA,CHMAT,SIGNO,OPTION,LIGREL
       CHARACTER*(*) CHAMP,RESUCO
       CHARACTER*19 RESUC1,CHVARC
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

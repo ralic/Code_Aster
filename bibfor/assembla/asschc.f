@@ -1,12 +1,14 @@
       SUBROUTINE ASSCHC(MATAS,NBCHC,LCHCI,NOMNU,CUMUL)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*(*) MATAS,LCHCI(*),NOMNU
       CHARACTER*1 BASE
       INTEGER NBCHC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

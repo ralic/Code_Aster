@@ -1,7 +1,7 @@
       SUBROUTINE TE0206(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -22,6 +22,7 @@ C ======================================================================
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16       NOMTE, OPTION
 
 C ----------------------------------------------------------------------
@@ -80,6 +81,12 @@ C     RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS
         CALL JEVECH('PCONTPR','E',ICONT)
         CALL JEVECH('PVECTUR','E',IVECT)
         CALL JEVECH('PCODRET','E',ICORET)
+      ELSE
+        IDDEP=1
+        IVARIP=1
+        ICONT=1
+        IVECT=1
+        ICORET=1
       ENDIF
 
       IF (RIGI) THEN
@@ -92,7 +99,8 @@ C     RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS
           MATSYM = .TRUE.
           CALL JEVECH('PMATUUR','E',IMATR)
         ENDIF
-
+      ELSE
+        IMATR=1
       ENDIF
 
       CALL NMFI3D(NNO,NDDL,NPG,LGPG,ZR(IPOIDS),ZR(IVF),ZR(IDFDE),

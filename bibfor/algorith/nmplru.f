@@ -1,7 +1,7 @@
       SUBROUTINE NMPLRU(FAMI,KPG,KSP,POUM,NDIM,TYPMOD,IMATE,COMPOR,
      &                  PPG,EPS,EPSP,RP,ENER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2012   AUTEUR BARGELLI R.BARGELLINI 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
       INTEGER       KPG,KSP,NDIM,IMATE
       CHARACTER*(*) FAMI,POUM
       CHARACTER*8   TYPMOD(*)
@@ -63,7 +64,7 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IRET1 ,IRET2 
+      INTEGER IRET1 ,IRET2
 C-----------------------------------------------------------------------
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C
@@ -123,7 +124,7 @@ C - LECTURE DES CARACTERISTIQUES DE NON LINEARITE DU MATERIAU
 C
       AIREP=0.D0
       DAIREP=0.D0
-      
+
       IF (LINE) THEN
         NOMRES(1)='D_SIGM_EPSI'
         NOMRES(2)='SY'

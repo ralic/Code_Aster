@@ -2,7 +2,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C TOLE CRP_7
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER            KPG,KSP,NDIM,IMATE,IRET,IRET0,IRET1,IRET2
       CHARACTER*(*)      FAMI
       CHARACTER*8        TYPMOD(*)
@@ -80,7 +81,7 @@ C
       INTEGER ICODRE(3)
       CHARACTER*8 NOMRES(3),TYPE
 C-----------------------------------------------------------------------
-      REAL*8 DP0 ,XAP 
+      REAL*8 DP0 ,XAP
 C-----------------------------------------------------------------------
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C DEB ------------------------------------------------------------------
@@ -91,6 +92,7 @@ C     ----------------------
       NDIMSI = 2*NDIM
       IMATE2=IMATE
       IRET=0
+      JPROLP=1
 C
 C MISE AU FORMAT DES CONTRAINTES DE RAPPEL
 C
@@ -384,7 +386,7 @@ C
                IRET=2
             ENDIF
          ENDIF
-      ENDIF 
+      ENDIF
 C
 C MISE AU FORMAT DES CONTRAINTES DE RAPPEL
 C
@@ -399,6 +401,6 @@ C
             VIP(K+2) = XP(K)/SQRT(2.D0)
  30      CONTINUE
       END IF
-      
+
 9999  CONTINUE
       END

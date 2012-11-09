@@ -1,10 +1,11 @@
       SUBROUTINE TE0163(OPTION,NOMTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,10 +43,10 @@ C     ------------------------------------------------------------------
       INTEGER     IADZI,IAZK24
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IDFDK ,ILAPL ,ILIST ,IMA ,IPOIDS ,IVECT 
-      INTEGER IVF ,J ,JGANO ,JGEOM ,JLIMA ,K ,KP 
-      INTEGER LX ,NBMA ,NBMA2 ,NDDL ,NDIM ,NNO ,NNOS 
-      INTEGER NO1 ,NO2 ,NPG 
+      INTEGER I ,IDFDK ,ILAPL ,ILIST ,IMA ,IPOIDS ,IVECT
+      INTEGER IVF ,J ,JGANO ,JGEOM ,JLIMA ,K ,KP
+      INTEGER LX ,NBMA ,NBMA2 ,NDDL ,NDIM ,NNO ,NNOS
+      INTEGER NO1 ,NO2 ,NPG
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL ELREF1(ELREFE)

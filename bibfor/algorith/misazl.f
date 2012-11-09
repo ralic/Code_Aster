@@ -1,7 +1,7 @@
       SUBROUTINE MISAZL(VECINC,DEFICO)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,15 +21,17 @@ C ======================================================================
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*19  VECINC
       CHARACTER*24  DEFICO
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 C
 C MISE A ZERO DES LAGRANGIENS CONTACT/FROTTEMENT DANS VECTEUR INCONNUES
-C      
+C
 C ----------------------------------------------------------------------
 C
 C IN  DEFICO : SD DE DEFINITION DU CONTACT
@@ -58,7 +60,7 @@ C --- INITIALISATIONS
 C
       NNOCO  = CFDISI(DEFICO,'NNOCO')
       NTNOE  = CFDISI(DEFICO,'NTNOE')
-      NBNO   = 0      
+      NBNO   = 0
 C
 C --- ACCES AU NOM DE LA GRANDEUR
 C
@@ -109,20 +111,20 @@ C         INDIRECTION VERS LE .NUEQ
           CALL ASSERT(POSLC.NE.0)
 C         ADRESSE DU DDL LAGS_C DANS LE .VALE
           IVALC = ZI(JNUEQ - 1 +  INUEQ - 1 + POSLC)
-          ZR(JVALE - 1 + IVALC) = 0.D0 
+          ZR(JVALE - 1 + IVALC) = 0.D0
           IF (POSLF1.NE.0) THEN
 C           ADRESSE DU DDL LAGS_F1 DANS LE .VALE
             IVALF1 = ZI(JNUEQ - 1 + INUEQ - 1 + POSLF1)
-            ZR(JVALE - 1 + IVALF1) = 0.D0 
+            ZR(JVALE - 1 + IVALF1) = 0.D0
             IF (POSLF2.NE.0) THEN
 C              ADRESSE DU DDL LAGS_F2 DANS LE .VALE
                IVALF2 = ZI(JNUEQ - 1 + INUEQ - 1 + POSLF2)
-               ZR(JVALE - 1 + IVALF2) = 0.D0 
+               ZR(JVALE - 1 + IVALF2) = 0.D0
             ENDIF
           ENDIF
-        ENDIF  
+        ENDIF
  10   CONTINUE
       CALL ASSERT(NBNO.EQ.NTNOE)
-C      
+C
       CALL JEDEMA()
       END

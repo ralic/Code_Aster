@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_6 CRS_508 CRS_512 CRS_505 CRP_20
+C TOLE CRP_18 CRP_6 CRS_508 CRS_505
       IMPLICIT NONE
       INTEGER            LONOI,LTY,ITAB(*),JITAB,IADMI,IADYN
       CHARACTER*(*)            GENRI,TYPEI     ,CI
@@ -43,10 +43,10 @@ C ----------------------------------------------------------------------
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C-----------------------------------------------------------------------
-      INTEGER I ,IADA ,IDM ,IERR ,IESSAI ,ILDYNA ,JCARA 
-      INTEGER JDATE ,JHCOD ,JIADD ,JIADM ,JISZO2 ,JLONG ,JLONO 
-      INTEGER JLTYP ,JLUTI ,JMARQ ,LGBL ,LSI ,LSO 
-      INTEGER LTOT ,N ,NDE 
+      INTEGER I ,IADA ,IDM ,IERR ,IESSAI ,ILDYNA ,JCARA
+      INTEGER JDATE ,JHCOD ,JIADD ,JIADM ,JISZO2 ,JLONG ,JLONO
+      INTEGER JLTYP ,JLUTI ,JMARQ ,LGBL ,LSI ,LSO
+      INTEGER LTOT ,N ,NDE
 C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
@@ -70,14 +70,8 @@ C ----------------------------------------------------------------------
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       REAL *8         MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO
       COMMON /R8DYJE/ MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO(2)
-      INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,              IDLONG     ,
-     &               IDLONO     , IDLUTI     , IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C ----------------------------------------------------------------------
-      INTEGER          INIT,IBLANC,IDEC(2),VALLOC,LSIC
+      INTEGER          INIT,IBLANC,VALLOC,LSIC
       INTEGER          IC,IVAL(4),UNMEGA
       LOGICAL          LINIT,LDEPS
       CHARACTER *8     CBLANC
@@ -92,8 +86,6 @@ C DEB ------------------------------------------------------------------
       JITAB = 0
       IADMI = 0
       IADYN = 0
-      IDEC(1) = 3
-      IDEC(2) = 4
       LINIT = ( CI(1:4) .EQ. 'INIT' )
       LSO = LONOI
 C

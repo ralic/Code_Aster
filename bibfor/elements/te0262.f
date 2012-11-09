@@ -2,8 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +22,7 @@ C ======================================================================
 C TOLE CRS_512
 C ======================================================================
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
@@ -37,16 +37,16 @@ C       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 C                         MULTI-FIBRES (SECTION CONSTANTE)
 
 
-      INTEGER NBRES,I,NL
+      INTEGER NBRES,NL
       PARAMETER (NBRES=3,NL=144)
       REAL*8 VALRES(NBRES)
       INTEGER CODRES(NBRES)
       CHARACTER*8 NOMPAR,NOMRES(NBRES),FAMI,POUM
-      REAL*8 PGL(3,3),KLV(NL),KLW(NL),MLV(105)
+      REAL*8 PGL(3,3),KLV(NL)
       REAL*8 E, RHO
       REAL*8     VALPAR, XNU, ZERO
       INTEGER IMATE, LMAT, LORIEN, LSECT
-      INTEGER NBPAR, NC, NNO,KPG,SPT
+      INTEGER NBPAR, NNO,KPG,SPT
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','RHO','NU'/
 C     ------------------------------------------------------------------
@@ -59,7 +59,6 @@ C
      &    NOMTE.EQ.'MECA_POU_D_T'  .OR.
      &    NOMTE.EQ.'MECA_POU_D_EM'     ) THEN
         NNO = 2
-        NC  = 6
       ELSE
         CALL U2MESK('F','ELEMENTS2_42',1,NOMTE)
       ENDIF

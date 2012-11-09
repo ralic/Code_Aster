@@ -1,8 +1,8 @@
       SUBROUTINE ELPIV1(XJVMAX,INDIC ,NBLIAC,AJLIAI,SPLIAI,
      &                  SPAVAN,NOMA  ,DEFICO,RESOCO)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,8 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8  NOMA
       CHARACTER*24 RESOCO,DEFICO
       REAL*8       XJVMAX
@@ -30,7 +32,7 @@ C
       INTEGER      INDIC
       INTEGER      AJLIAI,SPLIAI
       INTEGER      SPAVAN
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES DISCRETES - UTILITAIRE)
@@ -61,7 +63,7 @@ C
 C
 C
       CHARACTER*1  TYPESP
-      CHARACTER*2  TYPEC0    
+      CHARACTER*2  TYPEC0
       CHARACTER*19 LIAC, LIOT, MACONT, STOC,OUVERT
       INTEGER      JLIAC,JLIOT,JVALE,JVA,JOUV
       INTEGER      CFDISD,NBBLOC,NBLIAI
@@ -77,10 +79,10 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFDBG('CONTACT',IFM,NIV) 
-C 
+      CALL INFDBG('CONTACT',IFM,NIV)
+C
 C --- LECTURE DES STRUCTURES DE DONNEES
-C 
+C
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
       MACONT = RESOCO(1:14)//'.MATC'
@@ -90,9 +92,9 @@ C
       CALL JEVEUO(STOC//'.SCIB','L',JSCIB)
       CALL JEVEUO(STOC//'.SCBL','L',JSCBL)
       CALL JEVEUO(STOC//'.SCDE','L',JSCDE)
-C 
+C
 C --- INITIALISATIONS
-C 
+C
       NBLIAI = CFDISD(RESOCO,'NBLIAI')
       TYPESP = 'S'
       TYPEC0 = 'C0'
@@ -123,8 +125,8 @@ C
           DERCOL = ZI(JSCBL+IBLC-1)
           BLOC   = DERCOL*(DERCOL+1)/2
 C
-C ------- ON ACCEDE AU BLOC 
-C          
+C ------- ON ACCEDE AU BLOC
+C
           IF (.NOT.ZL(JOUV-1+IBLC)) THEN
             IF ((IBLC.GT.1).AND.(KK1F.NE.(SPAVAN+1))) THEN
               CALL JELIBE(JEXNUM(MACONT//'.UALF',(IBLC-1)))
@@ -135,7 +137,7 @@ C
           ENDIF
 C
 C ------- ACCES A LA DIAGONALE
-C          
+C
           JVA    = JVALE-1+(KK1F-1)*(KK1F)/2-BLOC+KK2F
 C
 C ------- PIVOT NUL ?

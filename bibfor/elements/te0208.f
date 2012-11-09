@@ -1,7 +1,7 @@
       SUBROUTINE TE0208(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -22,8 +22,9 @@ C ======================================================================
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16  NOMTE, OPTION
-      
+
 C-----------------------------------------------------------------------
 C     PILOTAGE POUR LES ELEMENTS DE JOINT 3D
 C     OPTION : PILO_PRED_ELAS
@@ -35,7 +36,7 @@ C-----------------------------------------------------------------------
       INTEGER IDDEPL, IDEPL0, IDEPL1, ICTAU ,ICOPIL, NDIM,NNO,NNOS,NDDL
       INTEGER IPOIDS, IVF,    IDFDE,  JGANO
       CHARACTER*8 TYPMOD(2)
-      
+
 C    PARAMETRES DE L'ELEMENT FINI
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
@@ -53,18 +54,18 @@ C - PARAMETRES EN ENTREE
 
       TYPMOD(1) = '3D'
       TYPMOD(2) = 'ELEMJOIN'
-      
-C RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS : 
+
+C RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS :
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
-      LGPG = MAX(JTAB(6),1)*JTAB(7)      
-   
+      LGPG = MAX(JTAB(6),1)*JTAB(7)
+
 C PARAMETRE EN SORTIE
       CALL JEVECH('PCOPILO','E',ICOPIL)
-                          
-      CALL PIPEF3( NDIM,NNO,NDDL, NPG, LGPG, ZR(IPOIDS), ZR(IVF), 
+
+      CALL PIPEF3( NDIM,NNO,NDDL, NPG, LGPG, ZR(IPOIDS), ZR(IVF),
      &             ZR(IDFDE), ZI(IMATER) , ZR(IGEOM) , ZR(IVARIM),
      &             ZR(IDDEPL) , ZR(IDEPLM) , ZR(IDEPL0) , ZR(IDEPL1) ,
      &             ZR(ICTAU)  , ZR(ICOPIL) , TYPMOD )
 
-              
+
       END

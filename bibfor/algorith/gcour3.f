@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*24      TRAV1,TRAV2,TRAV3,CHFOND,CHAMNO,COORN
       CHARACTER*24      BASFON
       CHARACTER*19      CNSGT, GRLT
@@ -78,8 +80,8 @@ C
       LOGICAL           THLAGR,MILIEU, DEBUG,THLAG2,PAIR
 C
 C-----------------------------------------------------------------------
-      INTEGER IADRTT ,JBAS ,KNO 
-      REAL*8 S0 ,S1 
+      INTEGER IADRTT ,JBAS ,KNO
+      REAL*8 S0 ,S1
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -318,7 +320,7 @@ C                 CORRECTION DE LA DIRECTION A L ETREMITE
                       ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
                     ENDIF
                   ENDIF
-                  
+
                 ENDIF
               ENDIF
  500      CONTINUE

@@ -2,12 +2,14 @@
      &                  NPOINT,NUSP,IVARI,IER)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*1   BASE
       CHARACTER*8   MAILLE,NOEUD,CMP
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +41,6 @@ C IN  : NUSP   : NUMERO DU SOUS-POINT ( CAS DES CHAM_ELEMS )
 C IN  : IVARI   : NUMERO DE LA CMP (POUR VARI_R)
 C OUT : IER    : CODE RETOUR, = 0 : OK
 C     ------------------------------------------------------------------
-      INTEGER VALI
       CHARACTER*1 TYPE
       CHARACTER*4 TYPCH2
       CHARACTER*8 K8B,NOMA,NOGD,NOMACC,NOEUZ

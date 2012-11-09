@@ -2,22 +2,22 @@
      &  ETAMIN,ETAMAX,COPILO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C TOLE CRP_20
@@ -36,12 +36,12 @@ C IN  TYPMOD  : TYPE DE MODELISATION
 C IN  TAU     : 2ND MEMBRE DE L'EQUATION F(ETA)=TAU
 C IN  IMATE   : NATURE DU MATERIAU
 C IN  VIM     : VARIABLES INTERNES EN T-
-C IN  EPSM    : CHAMP DE DEFORMATION EN T- 
+C IN  EPSM    : CHAMP DE DEFORMATION EN T-
 C IN  EPSPC   : INCREMENT DE DEFORMATION DU AUX CHARGES FIXES
 C IN  EPSDC   : INCREMENT DE DEFORMATION DU AUX CHARGES PILOTEES
 C IN  ETAMIN  : DONNEE UTILISATEUR DU MINIMUM DE ETA
 C IN  ETAMAX  : DONNEE UTILISATEUR DU MAXIMUM DE ETA
-C OUT COPILO  : COEFFICIENTS DE PILOTAGE : 
+C OUT COPILO  : COEFFICIENTS DE PILOTAGE :
 C                F := COPILO(1,1)+COPILO(2,1)*ETA = TAU
 C                F := COPILO(1,2)+COPILO(2,2)*ETA = TAU
 C ----------------------------------------------------------------------
@@ -166,12 +166,12 @@ C    ETAT MECANIQUE EN T-
       DM   = VIM(1)
       D = DM+TAU
       FPD = (1+GAMMA) / (1+GAMMA*D)**2
-      
-C -- CAS DE L'ENDOMMAGEMENT QUI SATURERA, ON NE PILOTE PAS      
+
+C -- CAS DE L'ENDOMMAGEMENT QUI SATURERA, ON NE PILOTE PAS
       IF (D .GT. 1.D0) THEN
         IF (NIV.EQ.2) CALL U2MESS('I','PILOTAGE_2')
         GOTO 666
-      ENDIF  
+      ENDIF
 
 
 
@@ -266,7 +266,7 @@ C definir l'intervalle de recherche
       ETAINF=-ETAMAX/EPSNOR
 
 
-C Test sur la valeur de la trace de la deformee pour eta=etainf 
+C Test sur la valeur de la trace de la deformee pour eta=etainf
 C pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
       TREINF=EPSP(1)+EPSP(2)+EPSP(3)+ETAINF*(EPSD(1)+EPSD(2)+EPSD(3))
       IF (ABS(TREINF).GT.1.D0) THEN
@@ -281,7 +281,7 @@ C        WRITE(6,*) 'devient  :',ETAINF
      &              CRIT1,CRITP1)
 
 
-C Test sur la valeur de la trace de la deformee pour eta=etasup 
+C Test sur la valeur de la trace de la deformee pour eta=etasup
 C pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
 
       TRESUP=EPSP(1)+EPSP(2)+EPSP(3)+ETASUP*(EPSD(1)+EPSD(2)+EPSD(3))
@@ -316,7 +316,7 @@ C        WRITE(6,*) 'cas 1'
         GOTO 666
       ENDIF
 
-C on reste au dessus du seuil sur l'intervalle, 
+C on reste au dessus du seuil sur l'intervalle,
 C        on utilise la convexite pour le voir
 
       IF (((CRIT1.GT.0.D0).AND.(CRITP1.GT.(-CRIT1/LINTER))).OR.
@@ -366,7 +366,7 @@ C        WRITE(6,*) 'cas 3'
         GOTO 9999
 
       ENDIF
-        
+
       IF ((CRIT1.GT.0.D0).AND.(CRIT2.LT.0.D0)) THEN
 C        WRITE(6,*) 'cas 4'
         X(2)=ETAINF
@@ -419,7 +419,7 @@ C valeur du critere negative
 C s'il y en a une, il y a 2 solutions, sinon 0 solution
 C
 C On utilise les tangentes pour aller vers le "minimum"
-C on s'arrete quand le critere est negatif, on se fiche 
+C on s'arrete quand le critere est negatif, on se fiche
 C de trouver exactement le minimum
 
          X1=ETAINF

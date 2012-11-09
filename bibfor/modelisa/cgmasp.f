@@ -1,6 +1,6 @@
       SUBROUTINE CGMASP (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,8 @@ C -------------------------------------------------------
 C
 C.========================= DEBUT DES DECLARATIONS ====================
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C
 C -----  ARGUMENTS
       CHARACTER*(*) MOFAZ, NOMAZ, LISMAZ
@@ -58,10 +60,10 @@ C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IDCOOR ,IDLIMA ,IDNOEU ,IER ,IMA ,INO 
-      INTEGER IOCC ,IRET ,NB ,NBMA ,NBMAI ,NDIM ,NRAYON 
-      INTEGER NUMNOE 
-      REAL*8 D2 ,RAYON ,ZERO 
+      INTEGER IBID ,IDCOOR ,IDLIMA ,IDNOEU ,IER ,IMA ,INO
+      INTEGER IOCC ,IRET ,NB ,NBMA ,NBMAI ,NDIM ,NRAYON
+      INTEGER NUMNOE
+      REAL*8 D2 ,RAYON ,ZERO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

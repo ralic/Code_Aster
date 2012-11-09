@@ -3,6 +3,7 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
       REAL*8 X(NEQ,1),MX(NEQ,*),ERR,X0(NEQ)
       REAL*8 VALP
       INTEGER PLACE,IEXCL(*),IMODE,NEQ,MXITER,ITER
@@ -10,7 +11,7 @@ C
       CHARACTER*19 SOLVEU
 C     ----------------------- ------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +58,8 @@ C     ------------------------------------------------------------------
 C
 C     INIT. OBJETS ASTER
 C-----------------------------------------------------------------------
-      INTEGER IDET0 ,IEQ ,IER ,IQUOTI ,JTER 
-      REAL*8 DSEED ,TOL 
+      INTEGER IDET0 ,IEQ ,IER ,IQUOTI ,JTER
+      REAL*8 DSEED ,TOL
       INTEGER IRET
 C-----------------------------------------------------------------------
       MATASS=ZK24(ZI(LDYNAM+1))

@@ -4,6 +4,7 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
       INTEGER           IFI,NBNO,PRNO(*),NUEQ(*),NEC,DG(*),NCMPMX
       INTEGER           IR,NUMNOE(*),NCMPS(*),NBCMP
       REAL*8            VALE(*)
@@ -12,7 +13,7 @@ C
       LOGICAL           LMASU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,12 +66,12 @@ C
 C  --- INITIALISATIONS ----
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IBCMPS ,IC ,ICHS ,ICMP ,ICMPS ,ICMS 
-      INTEGER ICMSUP ,ICOMPT ,ICP ,IDA ,IDEBU ,IEC ,IER 
-      INTEGER IFIN ,ILIG ,INDATS ,INNO ,INO ,INOCHS ,INOGDS 
-      INTEGER IRES ,IRET ,IRVAL ,ITABL ,IVAL ,J ,JADM 
-      INTEGER JJ ,JL ,JMAX ,JPOS ,JTITR ,K ,L 
-      INTEGER LL ,LXLGUT ,NBDATS ,NCMP ,NI 
+      INTEGER I ,IBCMPS ,IC ,ICHS ,ICMP ,ICMPS ,ICMS
+      INTEGER ICMSUP ,ICOMPT ,ICP ,IDA ,IDEBU ,IEC ,IER
+      INTEGER IFIN ,ILIG ,INDATS ,INNO ,INO ,INOCHS ,INOGDS
+      INTEGER IRES  ,IRVAL ,ITABL ,IVAL ,J ,JADM
+      INTEGER JJ ,JL ,JMAX ,JPOS ,JTITR ,K ,L
+      INTEGER LL ,LXLGUT ,NBDATS ,NCMP ,NI
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

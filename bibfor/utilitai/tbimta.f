@@ -18,10 +18,11 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       INTEGER             IFR, NPARIM
       CHARACTER*(*)       TABLE, FORMAR, LIPAIM(*)
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_602
 C      IMPRESSION DE LA TABLE AU FORMAT "TABLEAU"
 C ----------------------------------------------------------------------

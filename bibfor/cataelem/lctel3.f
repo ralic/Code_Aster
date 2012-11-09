@@ -1,6 +1,6 @@
       SUBROUTINE LCTEL3()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CATAELEM  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CATAELEM  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,8 @@ C          3 : LE TYPE_ELEM UTILISE LA CMP "Z"
 C
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER INDIK8,DG
       LOGICAL EXISDG
       CHARACTER*8 K8BID
@@ -38,9 +40,9 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IADIGE ,IAMOLO ,ICODE ,IER ,IGD ,IGDGEO ,IML 
-      INTEGER INOCMP ,ITE ,IX ,IY ,IZ ,K ,NBCMP 
-      INTEGER NBDG ,NBEC ,NBML ,NBPT ,NBTE 
+      INTEGER IADIGE ,IAMOLO ,ICODE ,IER ,IGD ,IGDGEO ,IML
+      INTEGER INOCMP ,ITE ,IX ,IY ,IZ ,K ,NBCMP
+      INTEGER NBDG ,NBEC ,NBML ,NBPT ,NBTE
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JELIRA('&CATA.TE.NOMTE','NOMMAX',NBTE,K8BID)

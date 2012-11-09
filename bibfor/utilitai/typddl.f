@@ -2,13 +2,15 @@
      &                  NBLIAI)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER           NEQ,TABDDL(*),NBACTI,NBBLOQ,NBLAGR,NBLIAI
       CHARACTER*4       CHOIX
       CHARACTER*14            NUME
       CHARACTER*(*)     CHOIXZ, NUMEZ
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,9 +64,9 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,ICMP ,ICO ,J ,JORIG ,JPRNO 
-      INTEGER JREFE ,N1DDL ,N2DDL ,NBDEFO ,NBEC ,NBPRNO ,NBSST 
-      INTEGER NUSST 
+      INTEGER I ,IBID ,ICMP ,ICO ,J ,JORIG ,JPRNO
+      INTEGER JREFE ,N1DDL ,N2DDL ,NBDEFO ,NBEC ,NBPRNO ,NBSST
+      INTEGER NUSST
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 

@@ -5,7 +5,7 @@
       INTEGER                        ILIGD,ICOLD,NBTITR,MXPARA, NBPARA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  K8BID
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER ICLASS ,IPARA 
+      INTEGER ICLASS ,IPARA
 C-----------------------------------------------------------------------
       NBPARA = 0
       ILIG   = ILIGD
@@ -57,7 +57,7 @@ C-DEL                WRITE(6,*) ' TITREC "(" '
             ICOLD = 1
             ILIGD = ILIGD + 1
             IF(ILIGD.GT.NBTITR) THEN
-CCC  EXPRESSION INCORRECTE 
+CCC  EXPRESSION INCORRECTE
                NBPARA = 0
                GO TO 20
             ENDIF
@@ -71,12 +71,12 @@ CCC            CALL LXCAPS(PARA(NBPARA))
             GOTO 12
          ELSEIF (ICLASS .EQ. 5 .AND. CVAL(1:1) .EQ. ')' ) THEN
             IF ( NBPARA .NE. MXPARA ) THEN
-CCC  NOMBRE D ARGUMENTS INCORRECT POUR LE DEMON 
+CCC  NOMBRE D ARGUMENTS INCORRECT POUR LE DEMON
                NBPARA = 0
             ENDIF
             GOTO 20
          ELSE
-CCC  PARAMETRE INCORRECT 
+CCC  PARAMETRE INCORRECT
             NBPARA = 0
          ENDIF
  20   CONTINUE

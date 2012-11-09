@@ -1,32 +1,32 @@
         SUBROUTINE BURCVX(MOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
      &                    NVI,VIND,NR,SIGD,DEPS,YD,YF,TOLER,SEUIL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2012   AUTEUR HAELEWYN J.HAELEWYN 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE FOUCAULT A.FOUCAULT
 C=====================================================================
-C  BETON_BURGER_FP : CALCUL SOLUTION ESSAI ELASTIQUE 
+C  BETON_BURGER_FP : CALCUL SOLUTION ESSAI ELASTIQUE
 C  LA SOLUTION D'ESSAI EST ETABLIE SUIVANT UNE APPROCHE LINEARISEE
 C  D'ORDRE 1 AUTOUR DE L'ETAT MATERIAU A L'INSTANT T
 C  IN  NMAT   : DIMENSION MATER
 C      MATERD : COEFFICIENTS MATERIAU A T
 C      MATERF : COEFFICIENTS MATERIAU A T+DT
-C      MOD    : TYPE DE MODELISATION 
+C      MOD    : TYPE DE MODELISATION
 C      TIMED  : INSTANT T
 C      TIMEF  : INSTANT T+DT
 C      NVI    : DIMENSION VECTEUR VARIABLES INTERNES
@@ -37,7 +37,7 @@ C      DEPS   : INCREMENT DE DEFORMATIONS TOTALES
 C      TOLER  : TOLERANCE A CONVERGENCE
 C  OUT SEUIL  : SEUIL > 0 -> PASSAGE DANS LCPLAS
 C               SEUIL < 0 -> PASSAGE DANS LCELPL
-C      YD     : VECTEUR SOLUTION A T 
+C      YD     : VECTEUR SOLUTION A T
 C      YF     : VECTEUR SOLUTION A T+DT
 C=====================================================================
       IMPLICIT NONE
@@ -53,7 +53,7 @@ C     ----------------------------------------------------------------
       REAL*8          AFI(6),BFI(6,6),CFI(6,6)
       REAL*8          AN(6) ,BN(6,6) ,CN(6,6)
       REAL*8          DSIG(6),R8PREM,MAXI,MINI
-      REAL*8          EPSFI(6),EISP,ER,SEUIL,NFIF,EPSFIF(6),NFID
+      REAL*8          EPSFI(6),EISP,ER,SEUIL,NFIF,EPSFIF(6)
       CHARACTER*8     MOD
 
 C === =================================================================
@@ -86,9 +86,9 @@ C --- INITIALISATION DE YD ET DY A ZERO
 C === =================================================================
       CALL LCEQVN ( NDT  ,  SIGD , YD )
 C === ============================================================
-C     CONSTRUCTION DES DEFORMATIONS IRREVERSIBLES DE FLUAGE PROPRE 
+C     CONSTRUCTION DES DEFORMATIONS IRREVERSIBLES DE FLUAGE PROPRE
 C === ============================================================
-C --- RECUPERATION PARTIE SPHERIQUE	    
+C --- RECUPERATION PARTIE SPHERIQUE
 C === ============================================================
       EISP = VIND(2)
 C === ============================================================
@@ -121,7 +121,7 @@ C === =================================================================
       CALL BURSIF(MATERD,MATERF,NMAT,AN,BN,CN,DEPS,NR,YD,DSIG)
       DO 3 I = 1,NDT
         DY(I) = DSIG(I)
- 3    CONTINUE 
+ 3    CONTINUE
 C === =================================================================
 C --- CALCUL ESSAI : EPSFI(T+DT) - PUIS DEPSFI = EPSFI(T+DT) - EPSFI(T)
 C === =================================================================
@@ -146,7 +146,7 @@ C === =================================================================
       CALL BURRES(MOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
      &            NVI,VIND,YD,YF,DEPS,DY,NR,R)
 C === =================================================================
-C --- CALCUL NORME RESIDU 
+C --- CALCUL NORME RESIDU
 C === =================================================================
       ER    = 0.0D0
       DO 13 I=NDT+1,NR
@@ -155,13 +155,13 @@ C === =================================================================
       ER    = SQRT(ER)
 
 C === =================================================================
-C --- ASSIGNATION DE LA VALEUR AU SEUIL     
+C --- ASSIGNATION DE LA VALEUR AU SEUIL
 C === =================================================================
       SEUIL = 1.D0
       IF(ER.LT.TOLER)SEUIL = -1.D0
 
 C === =================================================================
-C --- CONTROLE DU TERME PORTANT SUR LES DEFORMATIONS IRREVERSIBLES 
+C --- CONTROLE DU TERME PORTANT SUR LES DEFORMATIONS IRREVERSIBLES
 C --- SI LA NORME OBTENUE EST INFERIEURE A VIND(21) ALORS LA SOLUTION
 C --- LINEARISEE EST EXACTE
 C === =================================================================
@@ -172,7 +172,7 @@ C === =================================================================
       CALL LCPRSC(EPSFIF,EPSFIF,NFIF)
       NFIF = SQRT(NFIF)
 
-      IF(NFIF.LT.VIND(21))THEN 
+      IF(NFIF.LT.VIND(21))THEN
         SEUIL = -1.D0
       ENDIF
 

@@ -2,6 +2,7 @@
      &                   SIGMA, MATOPA, RAIDE, LQZ, SOLVEU)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*)       MATOPA,RAIDE
       CHARACTER*19        SOLVEU
       INTEGER             LMASSE,LAMOR,LRAIDE
@@ -12,7 +13,7 @@
 C     -----------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +52,7 @@ C
 
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      REAL*8 FSHIFT 
+      REAL*8 FSHIFT
 C-----------------------------------------------------------------------
       DATA NAMDDL/'        '/
 C     ------------------------------------------------------------------

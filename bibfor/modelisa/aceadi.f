@@ -1,12 +1,14 @@
       SUBROUTINE ACEADI(NOMA,NOMO,MCF,LMAX,NBOCC,IVR,IFM)
       IMPLICIT       NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8    NOMA,NOMO
       INTEGER        LMAX,NBOCC,IVR(*),IFM
       CHARACTER*(*)  MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

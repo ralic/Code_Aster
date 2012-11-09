@@ -2,6 +2,7 @@
      +                   VP,VECP,MXRESF,RESUFI,RESUFR,VAUC)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*) OPT
       INTEGER       NBFREQ,NBVECT,NEQ,
      &              RESUFI(MXRESF,*),MXRESF
@@ -9,7 +10,7 @@
       REAL*8        RESUFR(MXRESF,*)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +47,7 @@ C     ------------------------------------------------------------------
       INTEGER    I,J,K,IADIND
 C     -----------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER NBCMPP 
+      INTEGER NBCMPP
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/09/2012   AUTEUR BERRO H.BERRO 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,18 +41,20 @@ C IN  : IVITE : NUMERO VITESSE DU FLUIDE
 C     ----------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       LOGICAL       CASINT
       CHARACTER*8   NOMU, TABLE
       INTEGER       NBM, NBMR, IMOD1, NUOR(*),IVITE
       REAL*8        FREQ(*), MASG(*)
 C
 C-----------------------------------------------------------------------
-      INTEGER IDEB ,IFONC ,IHI ,IHI1 ,IHR 
-      INTEGER IHR1 ,IL ,IM ,IM1 ,IM2 ,IMB ,IMODF 
-      INTEGER IP ,IV ,LVALE ,NBPF 
+      INTEGER IDEB ,IFONC ,IHI ,IHI1 ,IHR
+      INTEGER IHR1 ,IL ,IM ,IM1 ,IM2 ,IMB ,IMODF
+      INTEGER IP ,IV ,LVALE ,NBPF
 
-      REAL*8 FR ,FRI ,HHI ,HHR ,HII1 ,HII2 ,HIR1 
-      REAL*8 HIR2 ,PI ,R8PI 
+      REAL*8 FR ,FRI ,HHI ,HHR ,HII1 ,HII2 ,HIR1
+      REAL*8 HIR2 ,PI ,R8PI
 C-----------------------------------------------------------------------
       INTEGER       IVAL(3), VALI(2)
       INTEGER       LNUMI,LNUMJ,LFREQ,I1,NBABS

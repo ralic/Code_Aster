@@ -4,6 +4,7 @@
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
+
       CHARACTER*8 MODELE,LCHAR(*),RESULT,SYMECH
       CHARACTER*16 OPTIOZ,NOPRUP(*)
       CHARACTER*24 DEPLA1,DEPLA2,MATE,THETA
@@ -12,7 +13,7 @@
       LOGICAL EXTIM
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

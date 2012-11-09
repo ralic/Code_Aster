@@ -2,6 +2,7 @@
      &                                      ZH,ZB,U1,U2,U3,N,SOLVEU)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       COMPLEX*16  SIGMA, U1(*),U2(*),U3(*),YH(*),YB(*),
      &            ZH(*),ZB(*)
       INTEGER     LMATRA,LMASSE,LAMOR,N,LBLOQ(*)
@@ -9,7 +10,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

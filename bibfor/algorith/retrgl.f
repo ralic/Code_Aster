@@ -1,6 +1,6 @@
       SUBROUTINE RETRGL(NOMRES,RESGEN,MAILSK,PROFNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C
 C
       REAL*8       EPSI
@@ -56,14 +58,14 @@ C
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,IAD ,IAR ,IARCHI ,IBID ,ICH 
-      INTEGER IDEP ,IDINSG ,IDRESU ,IDVECG ,IEQ ,IER ,IRE1 
-      INTEGER IRE2 ,IRE3 ,IRET ,IRETOU ,J ,JINST ,JNUME 
-      INTEGER K ,K1 ,L ,LDNEW ,LINST ,LLCHAB ,LLIND 
-      INTEGER LLINSK ,LLNEQU ,LLNUEQ ,LLORS ,LLPRS ,LLREF1 ,LLREF2 
-      INTEGER LLROT ,LREFE ,LTROTX ,LTROTY ,LTROTZ ,LTVEC ,N1 
-      INTEGER NBBAS ,NBCHAM ,NBCMP ,NBCOU ,NBINSG ,NBINST ,NBNOT 
-      INTEGER NBSST ,NEQ ,NEQGEN ,NEQS ,NUMSST ,NUTARS 
+      INTEGER I ,I1 ,IAD ,IAR ,IARCHI ,IBID ,ICH
+      INTEGER IDEP ,IDINSG ,IDRESU ,IDVECG ,IEQ ,IER ,IRE1
+      INTEGER IRE2 ,IRE3 ,IRET ,IRETOU ,J ,JINST ,JNUME
+      INTEGER K ,K1 ,L ,LDNEW ,LINST ,LLCHAB ,LLIND
+      INTEGER LLINSK ,LLNEQU ,LLNUEQ ,LLORS ,LLPRS ,LLREF1 ,LLREF2
+      INTEGER LLROT ,LREFE ,LTROTX ,LTROTY ,LTROTZ ,LTVEC ,N1
+      INTEGER NBBAS ,NBCHAM ,NBCMP ,NBCOU ,NBINSG ,NBINST ,NBNOT
+      INTEGER NBSST ,NEQ ,NEQGEN ,NEQS ,NUMSST ,NUTARS
 C-----------------------------------------------------------------------
       DATA PGC   /'RETRGL'/
       DATA SOUTR /'&SOUSSTR'/
@@ -210,8 +212,8 @@ C
         DO 10 I=1,NBSST
           NEQET=NEQET+ZI(LSILIA+I-1)
   10    CONTINUE
-        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V R',NEQET,LMOET)    
-      ENDIF      
+        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V R',NEQET,LMOET)
+      ENDIF
 C
 C -------------------------------------
 C --- RESTITUTION SUR BASE PHYSIQUE ---
@@ -223,23 +225,23 @@ C
       CALL JENONU(JEXNOM(NUMGEN//'.LILI',SOUTR),IBID)
       CALL JEVEUO(JEXNUM(NUMGEN//'.PRNO',IBID),'L',LLPRS)
 C
-      IARCHI = 0     
-       
+      IARCHI = 0
+
       IF (INTERP(1:3).NE.'NON') THEN
-      
+
         CALL JEVEUO(TRANGE//'.DISC','L',IDINSG)
         CALL JELIRA(TRANGE//'.DISC','LONMAX',NBINSG,K8B)
         IF (ELIM .EQ. 0) THEN
            CALL WKVECT('&&RETREC.VECTGENE','V V R',NEQGEN,IDVECG)
         ELSE
-           CALL WKVECT('&&RETREC.VECTGENE','V V R',NEQET,IDVECG)        
+           CALL WKVECT('&&RETREC.VECTGENE','V V R',NEQET,IDVECG)
         ENDIF
 C
         DO 30 I=0,NBINST-1
           IARCHI = IARCHI + 1
 C
           DO 32 ICH=1,NBCHAM
-          
+
             IDRESU = ITRESU(ICH)
             CALL RSEXCH(' ',NOMRES,CHMP(ICH),IARCHI,CHAMNO,IRET)
             IF (IRET.EQ.0) THEN
@@ -254,8 +256,8 @@ C
             CALL EXTRAC(INTERP,EPSI,CRIT,NBINSG,ZR(IDINSG),ZR(JINST+I),
      &                  ZR(IDRESU),NEQGEN,ZR(IDVECG),IER)
 
-C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES       
-            IF (ELIM .NE. 0) THEN              
+C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
+            IF (ELIM .NE. 0) THEN
               DO 21 I1=1,NEQET
                 ZR(LMOET+I1-1)=0.D0
                 DO 31 K1=1,NEQRED
@@ -282,7 +284,7 @@ C
                   IEQ=0
                   DO 41 I1=1,K-1
                     IEQ=IEQ+ZI(LSILIA+I1-1)
-  41              CONTINUE 
+  41              CONTINUE
                 ELSE
                   NUMSST=K
 C  RECUPERATION DU NUMERO TARDIF DE LA SST
@@ -291,7 +293,7 @@ C  RECUPERATION DU NUMERO TARDIF DE LA SST
   42              CONTINUE
                   IEQ=ZI(LLPRS+(NUTARS-1)*2)
                 ENDIF
-                
+
                 KBID = '  '
                 CALL MGUTDM(MODGEN,KBID,NUMSST,'NOM_BASE_MODALE',
      &                      IBID,BASMOD)
@@ -309,12 +311,12 @@ C
                 DO 38 J=1,NBBAS
                   CALL DCAPNO(BASMOD,'DEPL',J,CHAMBA)
                   CALL JEVEUO(CHAMBA,'L',LLCHAB)
-                  
+
                   IF (ELIM .NE. 0) THEN
                     IAD=LMOET+IEQ+J-1
                   ELSE
                     IAD=IDVECG+ZI(LLNUEQ+IEQ+J-2)-1
-                  ENDIF                                    
+                  ENDIF
 C
 C --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 C
@@ -363,8 +365,8 @@ C
 C
           DO 52 ICH=1,NBCHAM
             IDRESU = ITRESU(ICH)
-C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES       
-            IF (ELIM .NE. 0) THEN      
+C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
+            IF (ELIM .NE. 0) THEN
               DO 22 I1=1,NEQET
                 ZR(LMOET+I1-1)=0.D0
                 DO 33 K1=1,NEQRED
@@ -372,8 +374,8 @@ C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
      &              ZR(LMAPRO+(K1-1)*NEQET+I1-1)*
      &              ZR(IDRESU+K1-1+(ZI(JNUME+I)-1)*NEQRED)
   33            CONTINUE
-  22          CONTINUE             
-            ENDIF        
+  22          CONTINUE
+            ENDIF
 
             CALL RSEXCH(' ',NOMRES,CHMP(ICH),IARCHI,CHAMNO,IRET)
             IF (IRET.EQ.0) THEN
@@ -402,7 +404,7 @@ C
                   IEQ=0
                   DO 43 I1=1,K-1
                     IEQ=IEQ+ZI(LSILIA+I1-1)
-  43              CONTINUE 
+  43              CONTINUE
                 ELSE
                   NUMSST=K
 C  RECUPERATION DU NUMERO TARDIF DE LA SST

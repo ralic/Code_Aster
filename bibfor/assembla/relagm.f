@@ -1,6 +1,6 @@
       SUBROUTINE RELAGM(MO,MA,NM,NL,NEWN,OLDN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8 MO,MA
       INTEGER NM,NL,NEWN(*),OLDN(*)
 C ----------------------------------------------------------------------
@@ -46,9 +48,9 @@ C
 C     -- SI LE MODELE N'A PAS DE SOUS-STRUCTURES ON RESSORT :
 C     --------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IAAVAP ,IAMAIL ,IAOLDT ,IASSSA ,IATYPL ,ICO 
-      INTEGER ICOL ,IERD ,IL ,IMA ,INO ,INOMAX ,INOMIN 
-      INTEGER IOLD ,IPREM ,IRET ,ITYPI ,NBNM ,NBSMA ,NBSSA 
+      INTEGER I ,IAAVAP ,IAMAIL ,IAOLDT ,IASSSA ,IATYPL ,ICO
+      INTEGER ICOL ,IERD ,IL ,IMA ,INO ,INOMAX ,INOMIN
+      INTEGER IOLD ,IPREM ,IRET ,ITYPI ,NBNM ,NBSMA ,NBSSA
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()

@@ -2,6 +2,7 @@
      &                    VI, VR, VC, VK, LPREC, LCRIT, IRET )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       INTEGER             NPACRI, VI(*), IRET
       REAL*8              VR(*), LPREC(*)
       COMPLEX*16          VC(*)
@@ -9,7 +10,7 @@
      &                    LCRIT(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

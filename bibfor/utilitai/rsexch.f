@@ -1,11 +1,13 @@
       SUBROUTINE RSEXCH(KSTOP,NOMSD,NOMSY,IORDR,CHEXTR,ICODE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER IORDR,ICODE
       CHARACTER*(*) KSTOP,NOMSD,NOMSY,CHEXTR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +51,7 @@ C ----------------------------------------------------------------------
       CHARACTER*19 NOMD2,CHEXT2,CHEXT3
       CHARACTER*1 K1BID
       CHARACTER*24 VALK(3)
-      INTEGER IEXI,IRANG,ISYMB,JTACH,NBORDR,NBORMX,JORDR,K
+      INTEGER IEXI,IRANG,ISYMB,JTACH,NBORDR,NBORMX,JORDR
       REAL*8 RBID
 C ----------------------------------------------------------------------
       CALL JEMARQ()

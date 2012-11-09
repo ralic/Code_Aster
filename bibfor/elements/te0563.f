@@ -1,7 +1,7 @@
       SUBROUTINE TE0563(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16       NOMTE,OPTION
 C.----------------------------------------------------------------------
 C     OPTION : NORME
@@ -31,11 +32,10 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.----------------------------------------------------------------------
 C
 
-      INTEGER IPOIDS,ICHAM,INORM,NBV,NCMP1,NCMP2,NPG,I,J,IRET,NCMP3
+      INTEGER IPOIDS,ICHAM,INORM,NCMP1,NCMP2,NPG,I,J,IRET,NCMP3
       INTEGER NDIM,NNO,NNOS,IVF,IDFDX,JGANO,JTAB1(2),JTAB2(2),ICOEF
       INTEGER JTAB3(2),IBID
       REAL*8 RESU,VALE,POIDS
-      CHARACTER*8 K8B
 
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IBID,IVF,IDFDX,JGANO)

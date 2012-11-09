@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*19 SSCH19,SDLIEU,SDEVAL
 C
 C**********************************************************************
@@ -78,8 +80,8 @@ C
 C==================== CORPS DE LA ROUTINE =============================
 C
 C-----------------------------------------------------------------------
-      INTEGER NBCO ,NBSP 
-      REAL*8 R8VIDE 
+      INTEGER NBCO ,NBSP
+      REAL*8 R8VIDE
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

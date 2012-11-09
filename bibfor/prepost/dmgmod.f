@@ -3,6 +3,8 @@
      &                  NUMCMP,IMPR,VDOMAG)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8       NOMMAT
       CHARACTER*16      NOMSYM
       CHARACTER*19      NOMSD,NOMSD2
@@ -11,7 +13,7 @@
       INTEGER           NTCMP,IMPR,NBORDR,JORDR,JCOEF
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -4,6 +4,8 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*(*)     CHAMNO,    FORM,TITRE,NOMSD,NOMSYM
       CHARACTER*(*)            NOMCMP(*), FORMR, PARTIE
       INTEGER      NBNOT,IFI,NUMNOE(*),NBCMP,NIVE
@@ -14,7 +16,7 @@ C
       REAL*8            BORSUP,     BORINF
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,14 +71,13 @@ C
       CHARACTER*24 NOMNU
       CHARACTER*24 VALK(3)
       CHARACTER*80 TITMAI
-      INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IAD ,IADESC ,IAEC ,IANUEQ ,IAPRNO ,IAREFE 
-      INTEGER IAVALE ,IBID ,IER ,INO ,IRET ,ITYPE ,JCOOR 
-      INTEGER JNCMP ,JNO ,JNU ,JTITR ,LXLGUT ,NBCMPT ,NBEC 
-      INTEGER NBNO ,NBNOT2 ,NBTITR ,NCMPMX ,NDIM ,NEC ,NUM 
+      INTEGER I ,IAD ,IADESC ,IAEC ,IANUEQ ,IAPRNO ,IAREFE
+      INTEGER IAVALE ,IBID ,IER ,INO ,IRET ,ITYPE ,JCOOR
+      INTEGER JNCMP ,JNO ,JNU ,JTITR ,LXLGUT ,NBCMPT ,NBEC
+      INTEGER NBNO ,NBNOT2 ,NBTITR ,NCMPMX ,NDIM ,NEC ,NUM
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -169,11 +170,8 @@ C         NOEUDS, DE MAILLES, DE GPES DE NOEUDS OU DE GPES DE MAILLES)
         NBNOT2= NBNOT
       ENDIF
 C --- RECHERCHE DES COORDONNEES ET DE LA DIMENSION -----
-      IF (LCOR) THEN
-        CALL DISMOI('F','DIM_GEOM_B',NOMMA,'MAILLAGE',NDIM,CBID,IER)
-C
-        CALL JEVEUO(NOMMA//'.COORDO    .VALE','L',JCOOR)
-      ENDIF
+      CALL DISMOI('F','DIM_GEOM_B',NOMMA,'MAILLAGE',NDIM,CBID,IER)
+      CALL JEVEUO(NOMMA//'.COORDO    .VALE','L',JCOOR)
 C
       IF (FORM.EQ.'RESULTAT') THEN
         IF (ITYPE.EQ.1.AND.NUM.GE.0) THEN

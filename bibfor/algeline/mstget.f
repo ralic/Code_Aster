@@ -1,11 +1,13 @@
       SUBROUTINE MSTGET(NOMCMP,MATRIC,MOTFAC,NBIND,DDLSTA)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER                                NBIND,DDLSTA(*)
       CHARACTER*(*)     NOMCMP,MATRIC,MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,12 +46,12 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IC ,IDGN ,IEQ ,IERD ,II 
-      INTEGER III ,IMODE ,IN ,IND ,ING ,IRET ,JCMP 
-      INTEGER JIND1 ,JIND2 ,JNOE ,LACB ,LACT ,LBLO ,LCMP 
-      INTEGER LDGN ,LLAG ,LNOE ,NA ,NAC ,NB ,NBA 
-      INTEGER NBB ,NBGR ,NBL ,NBLIAI ,NCMP ,ND ,NI 
-      INTEGER NNOE ,NSC ,NT ,NTC 
+      INTEGER I ,IBID ,IC ,IDGN ,IEQ ,IERD ,II
+      INTEGER III ,IMODE ,IN ,IND ,ING ,IRET ,JCMP
+      INTEGER JIND1 ,JIND2 ,JNOE ,LACB ,LACT ,LBLO ,LCMP
+      INTEGER LDGN ,LLAG ,LNOE ,NA ,NAC ,NB ,NBA
+      INTEGER NBB ,NBGR ,NBL ,NBLIAI ,NCMP ,ND ,NI
+      INTEGER NNOE ,NSC ,NT ,NTC
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       MAGRNO = ' '

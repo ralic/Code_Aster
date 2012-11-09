@@ -1,6 +1,6 @@
       SUBROUTINE SINOZ1(MODELE,SIGMA,SIGNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,8 @@ C----------------------------------------------------------------------
 C ----------------------- DECLARATIONS --------------------------------
 
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*1 TYPRES,K1BID
       CHARACTER*8 MODELE
       CHARACTER*14 NUPGM
@@ -50,9 +52,9 @@ C ----------------------- DECLARATIONS --------------------------------
 
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IEQ ,IER ,INDEQ ,JKMOCH ,JNUEQ ,JPRNO 
-      INTEGER JSIG ,JSIXX ,JSIXY ,JSIXZ ,JSIYY ,JSIYZ ,JSIZZ 
-      INTEGER JSLVI ,JVECAS ,NBLIGR ,NBNO 
+      INTEGER I ,IEQ ,IER ,INDEQ ,JKMOCH ,JNUEQ ,JPRNO
+      INTEGER JSIG ,JSIXX ,JSIXY ,JSIXZ ,JSIYY ,JSIYZ ,JSIZZ
+      INTEGER JSLVI ,JVECAS ,NBLIGR ,NBNO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

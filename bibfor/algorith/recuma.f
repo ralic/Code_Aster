@@ -1,6 +1,6 @@
       SUBROUTINE RECUMA (MAILLA,NBMA,NBGR,NOMMA,NOMGR,NBTO,NUMNOT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8 MAILLA,NOMMA(NBMA),NOMGR(NBGR),NOMCOU
       CHARACTER*24 VALK(2)
       INTEGER NUMNOT(NBTO)
@@ -47,8 +49,8 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IADG ,ICOMP ,J ,NB ,NBGR ,NBMA 
-      INTEGER NBTO ,NUMA 
+      INTEGER I ,IADG ,ICOMP ,J ,NB ,NBGR ,NBMA
+      INTEGER NBTO ,NUMA
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       ICOMP=0

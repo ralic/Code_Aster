@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,8 @@ C IN  : IVITEF : INDICE VITESSE DE FLUIDE
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       LOGICAL      INTPHY,INTMOD,EXIIND
       INTEGER      IOPTCH,NBMR,NBN,IMOD1,NBPF,NBM,IVITEF
       INTEGER      NUOR(NBMR),LNUMI,LNUMJ,IJ
@@ -77,11 +79,11 @@ C
       INTEGER       NBABS,ISPEC,MXVAL,MXVALS,LNOEI,LNOEJ,LCMPI,LCMPJ
       REAL*8        PI, R8PI
 C-----------------------------------------------------------------------
-      INTEGER I1 ,I2 ,IDEB ,IDEBM ,IDEBN ,IF1 ,IFON 
+      INTEGER I1 ,I2 ,IDEB ,IDEBM ,IDEBN ,IF1 ,IFON
       INTEGER IL ,IM1 ,IM2 ,IMI ,IMJ ,INI ,INJ ,LFREQ,LFREQS
       INTEGER ISJ ,ISM ,IV
 
-      REAL*8 SPECI ,SPECR 
+      REAL*8 SPECI ,SPECR
 C
       CHARACTER*8   K8B
       CHARACTER*24  KVAL(5), VALK(2),CHVALS,CHFREQ

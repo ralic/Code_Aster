@@ -1,7 +1,7 @@
       SUBROUTINE TYPECO(CHAR  ,NOMA  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8  NOMA ,CHAR
 C
 C ----------------------------------------------------------------------
@@ -117,7 +119,7 @@ C
           POSMAM = JDECMM + IMAM
           INDMAM = INDMAM + 1
           ZI(JTYPMA+ZTYPM*(POSMAM-1)+1-1) = 1
-          ZI(JTYPMA+ZTYPM*(POSMAM-1)+2-1) = INDMAM    
+          ZI(JTYPMA+ZTYPM*(POSMAM-1)+2-1) = INDMAM
           IF (IFORM.EQ.2) THEN
             CALL CFNUMM(DEFICO,1     ,POSMAM,NUMMAM)
             CALL MMELTY(NOMA  ,NUMMAM,ALIAS,IBID,IBID)

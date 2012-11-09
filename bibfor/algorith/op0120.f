@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,16 +24,18 @@ C
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
 C-----------------------------------------------------------------------
-      INTEGER I ,IFFT ,IFM ,IMATR ,IT ,J ,K 
-      INTEGER KB ,KF ,KK ,KTABL ,L ,L1 ,L2 
+      INTEGER I ,IFFT ,IFM ,IMATR ,IT ,J ,K
+      INTEGER KB ,KF ,KK ,KTABL ,L ,L1 ,L2
       INTEGER LCOMP1 ,LFON ,LINT ,LONG1 ,LONG2
-      INTEGER LRESU1 ,LRMS ,LS1 ,LSSX ,LTABL ,LVALC ,LVALE 
-      INTEGER NBPTS ,NBPTS2 ,NDA ,NDD 
-      INTEGER NFCOD ,NFONC ,NIV ,NMATR 
-      REAL*8 BMATR ,DFREQ ,DT ,DURANA ,DURDEC ,FREFIN ,FREINI 
-      REAL*8 PTS ,PTS1 ,PTS2 ,PTS3 ,TINST ,TINST1 
-      REAL*8 TINST2 
+      INTEGER LRESU1 ,LRMS ,LS1 ,LSSX ,LTABL ,LVALC ,LVALE
+      INTEGER NBPTS ,NBPTS2 ,NDA ,NDD
+      INTEGER NFCOD ,NFONC ,NIV ,NMATR
+      REAL*8 BMATR ,DFREQ ,DT ,DURANA ,DURDEC ,FREFIN ,FREINI
+      REAL*8 PTS ,PTS1 ,PTS2 ,PTS3 ,TINST ,TINST1
+      REAL*8 TINST2
 C-----------------------------------------------------------------------
       INTEGER       LONG, IVAL(2), IER
       REAL*8        RESU, ZERO

@@ -1,13 +1,15 @@
       SUBROUTINE ACNOCE(NOMA,TYPE,LISTE,NB,COOR,RC,XCEN,TOLE,V1,ISPV)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       REAL*8 COOR(*), XCEN(3), RC, TOLE, V1(3)
       CHARACTER*8         NOMA, LISTE(*)
       CHARACTER*4         TYPE
       INTEGER NB, ISPV
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,9 +50,9 @@ C ----------------------------------------------------------------------
       REAL*8 X1(3), X2(3), XC1(3), XC2(3), PVEC(3)
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IG ,IM ,IMG ,IR ,JDGM ,JDNO 
-      INTEGER NBM ,NM ,NN1 ,NN2 ,NUMMAI 
-      REAL*8 DDOT ,PADIST ,PS ,XRC1 ,XRC2 
+      INTEGER I ,IG ,IM ,IMG ,IR ,JDGM ,JDNO
+      INTEGER NBM ,NM ,NN1 ,NN2 ,NUMMAI
+      REAL*8 DDOT ,PADIST ,PS ,XRC1 ,XRC2
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       MLGGMA = NOMA//'.GROUPEMA'

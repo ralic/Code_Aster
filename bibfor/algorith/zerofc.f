@@ -1,6 +1,6 @@
       SUBROUTINE ZEROFC(F,XMIN,XMAX,PREC,NITER,DP,IRET,NIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C OUT IRET    : CODE RETOUR : IRET = 0 : OK
 C             :               SINON : PB
 C OUT NIT     : NOMBRE D'ITERATIONS NECESSAIRE POUR CONVERGER
 C
-      REAL*8  X(4),Y(4),BB,FB,F,YMIN
+      REAL*8  X(4),Y(4),F
       INTEGER I,NIT
 C DEB ------------------------------------------------------------------
 C

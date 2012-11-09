@@ -1,13 +1,14 @@
       SUBROUTINE RLDLG3(METRES,LMAT,XSOL,CXSOL,NBSOL)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*) METRES
       INTEGER LMAT,NBSOL
       REAL*8 XSOL
       COMPLEX*16 CXSOL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +32,7 @@ C ======================================================================
       CHARACTER*8 KBID
 C------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER JSCBL ,JSCDI ,JSCHC ,NBBLOC ,NEQ 
+      INTEGER JSCBL ,JSCDI ,JSCHC ,NBBLOC ,NEQ
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NEQ = ZI(LMAT+2)

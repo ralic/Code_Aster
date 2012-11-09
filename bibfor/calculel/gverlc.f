@@ -1,6 +1,6 @@
       SUBROUTINE GVERLC(RESUCO,COMPOR,IORD, INCR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,8 @@ C ======================================================================
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER      IORD
       CHARACTER*8  RESUCO
       CHARACTER*24 COMPOR
@@ -44,11 +46,11 @@ C
       CHARACTER*16 VALK(3)
       CHARACTER*19 CHRESU,CHCALC,CHTMP
       CHARACTER*24 COMPOM
-      
+
       DATA  LCHAM/ 'RELCOM', 'DEFORM', 'INCELA'/
 
       CALL JEMARQ()
-      
+
       INCR = .FALSE.
 
       CHTMP ='&&GVERLC_CHTMP'
@@ -82,7 +84,7 @@ C     ET QUE LA LOI DE COMPORTEMENT EST 'ELAS'.
       IF (IRET.NE.0)THEN
         DO 10,IMA = 1,NBMA
           CALL CESEXI('C',JCALD,JCALL,IMA,1,1,1,IADC)
-          
+
           IF(IADC.GT.0)THEN
              IF(ZK16(JCALV+IADC-1).EQ.'ELAS            ') THEN
                  GOTO 10
@@ -110,7 +112,7 @@ C
         CALL JEVEUO(CHRESU//'.CESV','L',JRESV)
         CALL JEVEUO(CHRESU//'.CESL','L',JRESL)
         CALL JEVEUO(CHRESU//'.CESK','L',JRESK)
-        
+
         DO 20,IMA = 1,NBMA
 
           CALL CESEXI('C',JRESD,JRESL,IMA,1,1,1,IADR)
@@ -127,8 +129,8 @@ C SI LE LDC DANS SNL EST COMP_INC, ON EMMET UNE ALAMRE
                   ENDIF
                ENDIF
             ENDIF
-          ENDIF 
-         
+          ENDIF
+
           IF (IADC.GT.0 )THEN
             CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),NOMAIL)
             IF (ZK16(JCALV+IADC-1+2)(1:9) .EQ. 'COMP_INCR') THEN
@@ -136,12 +138,12 @@ C SI LE LDC DANS SNL EST COMP_INC, ON EMMET UNE ALAMRE
             ENDIF
           ENDIF
 
-                    
+
           IF(IADC.GT.0 .AND.IADR.GT.0 )THEN
 
              IF(ZK16(JRESV+IADR-1).EQ.ZK16(JCALV+IADC-1)) THEN
-C LE TYPE DE DEFORMATION EST DIFFERENT 
-                 
+C LE TYPE DE DEFORMATION EST DIFFERENT
+
                 IF (ZK16(JRESV+IADR-1+1).EQ.ZK16(JCALV+IADC-1+1)) THEN
                   GOTO 20
                 ELSE
@@ -150,9 +152,9 @@ C LE TYPE DE DEFORMATION EST DIFFERENT
                   VALK(2)=ZK16(JCALV+IADC-1+1)
                   VALK(3)=NOMAIL
                   CALL U2MESK('A','RUPTURE1_45',3,VALK)
-                  GOTO 9999                      
+                  GOTO 9999
                 ENDIF
-                
+
              ELSE
                CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),NOMAIL)
                VALK(1)=ZK16(JRESV+IADR-1)

@@ -8,7 +8,7 @@
       REAL*8 G,ALFAY1,ALFAY2,ALFAZ1,ALFAZ2,EY,EZ
 C    -------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C     SOUS - PROGRAMMES UTILISES
 C FUN1     - AIRES ET CONSTANTE DE TORSION EQUIVALENTES
 C FUN2     - MOMENTS D INERTIE EQUIVALENTS
 C     ------------------------------------------------------------------
-      INTEGER IP(16),I,J,K
+      INTEGER IP(16),I,K
       REAL*8 ZERO,R8GAEM
       REAL*8  C2,C4,C8,C9,C12,C60
       REAL*8  EXL,XL2,XL3, PHIY,PHIZ, ASY,ASZ

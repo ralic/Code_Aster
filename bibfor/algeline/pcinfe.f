@@ -1,6 +1,6 @@
       SUBROUTINE PCINFE(N,ICPL,ICPC,ICPD,ICPLP,ICPCP,IND,LCA,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,9 +70,9 @@ C     INITIALISATION DU TABLEAU INDIC
 C     -------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IC1 ,IC2 ,IER ,ISTOP ,J ,JJ 
-      INTEGER K ,K1 ,K2 ,KP1 ,KP2 ,L ,LCA 
-      INTEGER N ,NZERO 
+      INTEGER I ,IC1 ,IC2 ,IER ,ISTOP ,J ,JJ
+      INTEGER K ,K1 ,K2 ,KP1 ,KP2 ,L ,LCA
+      INTEGER N ,NZERO
 C-----------------------------------------------------------------------
       DO 10 I = 1,N
         IND(I) = 0
@@ -241,7 +241,4 @@ C     WRITE (6,200) NIV,LCA,NZERO
       IER = NZERO
   150 CONTINUE
 
-  107 FORMAT (' NIVEAU',I4,' REMPLISSAGE FINAL',/,
-     &       'ARRET DES CALCULS PLACE MEMOIRE',I12,
-     &       ' INSUFFISANTE  LIGNE ',I9)
       END

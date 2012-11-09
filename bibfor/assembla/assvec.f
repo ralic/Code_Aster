@@ -2,7 +2,7 @@
      &                  TYPE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C ======================================================================
 C TOLE CRP_20 CRP_6
 
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       CHARACTER*(*) VEC,TLIVEC(*),VECPRO,BASE,NU
       CHARACTER*4 MOTCLE
       INTEGER NBVEC,TYPE

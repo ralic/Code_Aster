@@ -4,9 +4,9 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/07/2009   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -221,7 +221,7 @@ C       -------------------------
      &                  NITER0,EPSCON,TRAC)
           NITER = NITER + NITER0
           IF(TRAC)  GOTO 9999
-          
+
           IF ( NOCONV.AND.(.NOT.AREDEC)) GOTO 500
           IF(NOCONV) THEN
             IRET=1

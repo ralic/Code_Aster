@@ -1,7 +1,7 @@
       SUBROUTINE JJIMPO (UNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
      &                   LT    , LONOI , MESS , PARM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_4 CRS_508 CRS_512
+C TOLE CRP_18 CRP_4 CRS_508
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT NONE
       INTEGER            UNIT
@@ -39,10 +39,10 @@ C IN  MESS   : MESSAGE D'INFORMATION
 C IN  PARM   : ?
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER ICLS ,IDCO ,IDENOM ,IDOS ,IEP ,IES ,IPS 
-      INTEGER J ,JDOCU ,JGENR ,JI ,JORIG ,JRNOM ,JTYPE 
-      INTEGER K ,KADM ,L ,LADM ,N ,NB ,ND 
-      INTEGER NL ,NM ,NU 
+      INTEGER ICLS ,IDCO ,IDENOM ,IDOS ,IEP ,IES ,IPS
+      INTEGER J ,JDOCU ,JGENR ,JI ,JORIG ,JRNOM ,JTYPE
+      INTEGER K ,KADM ,L ,LADM ,N ,NB ,ND
+      INTEGER NL ,NM ,NU
 C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       CHARACTER*1      GENR    , TYPE
@@ -70,11 +70,9 @@ C ----------------------------------------------------------------------
      &                 DN2(N)
 C
 C ----------------------------------------------------------------------
-      INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
-      PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
+      INTEGER          IDENO , ILMAX , ILUTI
+      PARAMETER      ( IDENO=2,ILMAX=4,ILUTI=5 )
 C ----------------------------------------------------------------------
-      CHARACTER*6      PGME
-      PARAMETER      ( PGME = 'JJIMPO' )
       CHARACTER*18     FMT
 C DEB ------------------------------------------------------------------
 C

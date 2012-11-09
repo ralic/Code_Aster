@@ -1,6 +1,6 @@
       SUBROUTINE SS2MM2(MO,VECEL,NOMCAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,8 @@ C
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8 MO,NOMCAS
       CHARACTER*19 VECEL
 C ----------------------------------------------------------------------
@@ -49,8 +51,8 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IALSCH ,IAMACR ,IAREFR ,IASSSA ,IBID ,IERD 
-      INTEGER IRET ,NBSMA ,NBSSA 
+      INTEGER I ,IALSCH ,IAMACR ,IAREFR ,IASSSA ,IBID ,IERD
+      INTEGER IRET ,NBSMA ,NBSSA
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA,IERD)

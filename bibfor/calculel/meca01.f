@@ -4,7 +4,7 @@
      &                    CARA  , CHVARC, NPASS , CODRET )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,8 @@ C
 C     --- ARGUMENTS ---
 
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER NBORDR, JORDR, NCHAR, JCHA
       INTEGER  NPASS
       INTEGER CODRET
@@ -249,7 +251,7 @@ C - --
             TIME   = 0.D0
             DELTAT = RUNDF
             THETA  = RUNDF
-          ENDIF  
+          ENDIF
 C--- CREATION DE LA CARTE DES INSTANTS
           CALL MECHTI(NOMA,TIME,DELTAT,THETA,CHTIME)
 C
@@ -521,7 +523,7 @@ C          POUR LE NUMERO D'ORDRE IORDR
             TIME = ZR(IAINST)
           ELSE
             TIME = 0.D0
-          ENDIF  
+          ENDIF
 
 C 4.2.8. ==> CREE UNE CARTE D'INSTANTS
           CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
@@ -645,7 +647,7 @@ C          POUR LE NUMERO D'ORDRE IORDR
             TIME = ZR(IAINST)
           ELSE
             TIME = 0.D0
-          ENDIF  
+          ENDIF
 C
 C 6.2.7.1. ==> RECUPERE LE CHAMP DE VARIABLE DE COMMANDE
           CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CRET)
@@ -699,7 +701,7 @@ C
               TIME = ZR(IAINST)
             ELSE
               TIME = 0.D0
-            ENDIF  
+            ENDIF
             CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CRET)
             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
             CALL ERNOZZ(MODELE,CHSIG,MATE,CHSIGN,CHVARC,OPTION,LIGRMO,

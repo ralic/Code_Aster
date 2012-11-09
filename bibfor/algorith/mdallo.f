@@ -7,13 +7,14 @@
      +                   NBSYM,NOMSYM,TYPCAL)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*) BASEMO,MASGEN,RIGGEN,AMOGEN
       CHARACTER*8 NOMRES,INTITU(*),KBID,KB
       CHARACTER*8 NOECHO(NBCHOC,*),FONRED(NBREDE,*),FONREV(NBREVI,*)
       CHARACTER*16 METHOD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +33,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C
-C     ALLOCATION DES VECTEURS DE SORTIE POUR UN CALCUL TRANSITOIRE 
+C     ALLOCATION DES VECTEURS DE SORTIE POUR UN CALCUL TRANSITOIRE
 C     SUR BASE GENERALISEE (SD_DYNA_GENE)
 C     ------------------------------------------------------------------
 C IN  : NOMRES : NOM DU RESULTAT
@@ -53,7 +54,7 @@ C IN  : METHOD : ALGORITHME UTILISE (DEVOGE, EULER, ...)
 C                DANS LE CAS ITMI, UN OBJET EST DIFFERENT
 C IN  : TYPCAL : VAUT 'HARM' OU 'TRAN'
 C ----------------------------------------------------------------------
-      INTEGER      NBSAUV, NBSTOC,J1REFE, NBSYM, IARG, INOM
+      INTEGER      NBSAUV, NBSTOC,J1REFE, NBSYM, INOM
       CHARACTER*8  NUMGEN,BLANC
       CHARACTER*5  ATTRIB
       CHARACTER*4  TYPCAL,NOMSYM(3)
@@ -61,11 +62,11 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER I ,IC ,IRET ,JACCE ,JADCHO ,JDCHO ,JDEPL, JCHMP
-      INTEGER JDESC ,JFCHO ,JDISC ,JINTI ,JNCHO ,JORDR ,JPTEM 
+      INTEGER JDESC ,JFCHO ,JDISC ,JINTI ,JNCHO ,JORDR ,JPTEM
       INTEGER JREDC ,JREDD ,JREDN , JREVC ,JREVD ,JREVN
-      INTEGER JREFE ,JSST ,JVCHO ,JVINT 
+      INTEGER JREFE ,JSST ,JVCHO ,JVINT
       INTEGER JVITE ,NBCHOC ,NBMODE ,NBREDE ,NBREVI ,NBSTO1
-      REAL*8 DT 
+      REAL*8 DT
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NBSTOC = NBMODE * NBSAUV
@@ -103,8 +104,8 @@ C
          CALL WKVECT(NOMRES//'           .DESC','G V I',5,JDESC)
 C
          ZI(JDESC) = 1
-C        
-         IF (TYPCAL.EQ.'HARM') THEN 
+C
+         IF (TYPCAL.EQ.'HARM') THEN
            ZI(JDESC) = 4
 C          -- DANS LE CAS 'HARM' ON REMPLIT LA VALEUR A 4
 C
@@ -114,11 +115,11 @@ C          -- BLINDAGE : VERIFICATION DE NBSYM ET NOMSYM
            ENDIF
            DO 50, INOM = 1,NBSYM
              IF ((NOMSYM(INOM)(1:4).NE.'DEPL').AND.
-     &           (NOMSYM(INOM)(1:4).NE.'VITE').AND. 
+     &           (NOMSYM(INOM)(1:4).NE.'VITE').AND.
      &           (NOMSYM(INOM)(1:4).NE.'ACCE')) THEN
                CALL U2MESS('F','ALGORITH17_29')
              ENDIF
-  50       CONTINUE 
+  50       CONTINUE
          ELSEIF (TYPCAL.EQ.'TRAN') THEN
 C         -- INITIALISATION DES CHAMPS A ALLOUER DANS LE CAS TRANS.
           NBSYM     = 3
@@ -143,7 +144,7 @@ C        ---
          ZI(JDESC+4) = NBREVI
       ENDIF
 C
-      IF (TYPCAL.EQ.'TRAN') THEN 
+      IF (TYPCAL.EQ.'TRAN') THEN
           ATTRIB = 'G V R'
           NBSYM = 3
           NOMSYM(1) = 'DEPL'
@@ -166,7 +167,7 @@ C
 C
 C         INITIALISATION DES CHAMPS A ZERO
 C
-          IF (TYPCAL.EQ.'TRAN') THEN 
+          IF (TYPCAL.EQ.'TRAN') THEN
             DO 150, I = 0,NBSTOC-1
               ZR(JCHMP+I) = 0.D0
  150        CONTINUE
@@ -269,7 +270,7 @@ C     --- CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_DEPL ---
         ENDIF
       ENDIF
 C
-C     --- CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_VITE ---      
+C     --- CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_VITE ---
       IF ( NBREVI.NE.0 ) THEN
         NBSTOC = NBREVI * NBSAUV
         IF (NBSAUV.NE.0) THEN
@@ -290,6 +291,6 @@ C     --- CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_VITE ---
  30       CONTINUE
         ENDIF
       ENDIF
-C      
+C
       CALL JEDEMA()
       END

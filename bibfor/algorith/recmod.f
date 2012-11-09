@@ -2,13 +2,14 @@
      &                    TYMMEC, GRDMOD )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       INTEGER             NBMODE, NBAMOR
       REAL*8              BANDE(2)
       CHARACTER*8         MODMEC, TYMMEC
       CHARACTER*16        GRDMOD
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +37,6 @@ C OUT : BANDE  : LES DEUX BORNES DE L INTERVALLE DE FREQUENCES
 C OUT : TYMMEC : TPYE R OU C POUR LES MODES MECAS
 C OUT : GRDMOD : TYPE DE GRANDEUR A RECUPERER DANS LES MODES DYN ET STA
 C-----------------------------------------------------------------------
-      INTEGER VALI
 C
       INTEGER       IBID, NBTROU, NBMOD1, LNUMOR, ILMODE, IAD, IMOD1,
      &              IM, IRET, IADRMG, ILAMOD, ILAMOR, NA1

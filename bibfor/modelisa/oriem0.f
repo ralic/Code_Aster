@@ -9,7 +9,7 @@ C RESPONSABLE PELLET J.PELLET
       CHARACTER*(*) NOMA
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,8 +50,8 @@ C              IMAI EST LE NUMERO DE LA MAILLE QUI A LA MEME NORMALE
 C              SORTANTE QUE LA MAILLE DE PEAU.
 C.========================= DEBUT DES DECLARATIONS ====================
 C
-      INTEGER INO,N1,N2,N3,IC,K,INDIIS,INDI
-      REAL*8 X1,X2,NOR1(3),N1N2(3),N1N3(3),PS1,PS2,DDOT
+      INTEGER INO,N1,N2,N3,IC,INDIIS,INDI
+      REAL*8 NOR1(3),N1N2(3),N1N3(3),PS1,PS2,DDOT
 C
 C ========================= DEBUT DU CODE EXECUTABLE ==================
 C

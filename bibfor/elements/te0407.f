@@ -1,6 +1,6 @@
       SUBROUTINE TE0407(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ======================================================================
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
@@ -36,11 +37,14 @@ C ......................................................................
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
       INTEGER IVECTU,ICONTP,IVARIP,JCRET,CODRET
       INTEGER IVARIX
-      INTEGER JTAB(7),NNOS,ICAMAS,IDIM
+      INTEGER JTAB(7),NNOS,IDIM
       REAL*8 DEF(6,3,8),DFDI(8,3)
       REAL*8 ANGMAS(7),BARY(3)
 
-
+      ICONTP=1
+      IVARIP=1
+      IMATUU=1
+      IVECTU=1
 
 C - FONCTIONS DE FORMES ET POINTS DE GAUSS
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)

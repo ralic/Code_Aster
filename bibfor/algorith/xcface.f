@@ -4,6 +4,7 @@
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
+
       REAL*8        LSN(*),LST(*),PINTER(*),AINTER(*)
       INTEGER       JGRLSN,IGEOM,NINTER,NFACE,CFACE(5,3),NPTF
       INTEGER       NFISS,IFISS,FISCO(*),NFISC
@@ -11,7 +12,7 @@
       CHARACTER*16  ENR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -226,8 +227,8 @@ C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS INTERSECTÉES
       ENDIF
 C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
       IF (ENR(2:2).EQ.'T'.OR.ENR(3:3).EQ.'T') THEN
-      
-C       ON A DROIT A 1 POINT EN PLUS      
+
+C       ON A DROIT A 1 POINT EN PLUS
         CALL XCFACF(PINTER,PTMAX+1,IPT,AINTER,LSN,LST,IGEOM,NNO,NDIM,
      &                                                    LLIN,TYPMA)
       ENDIF
@@ -448,7 +449,6 @@ C       PROBLEME DE DIMENSION : NI 2D, NI 3D
 
       IF (NFACE.EQ.0) NINTER = 0
 
- 999  CONTINUE
 
       CALL JEDEMA()
       END

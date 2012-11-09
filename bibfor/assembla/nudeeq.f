@@ -1,6 +1,6 @@
       SUBROUTINE NUDEEQ(BASE,NU14,NEQ,GDS,IDDLAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C ======================================================================
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*14 NU14
       CHARACTER*2 BASE
       INTEGER NEQ,GDS,IDDLAG
@@ -84,11 +86,11 @@ C     ------------------
 
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IADG ,IBID ,IDDL ,IED ,IEQ ,IER 
-      INTEGER ILAG ,J ,JDEEQ ,JDELG ,JLBLQ ,JNCMP ,JNUEQ 
-      INTEGER JPRNO ,JTYPL ,K ,L ,NBLAG ,NBLIGR ,NBNL 
-      INTEGER NBNM ,NBNO ,NCMPMX ,NDDLB ,NEC ,NOB ,NUCMP 
-      INTEGER NUNO 
+      INTEGER I ,IADG ,IBID ,IDDL ,IED ,IEQ ,IER
+      INTEGER ILAG ,J ,JDEEQ ,JDELG ,JLBLQ ,JNCMP ,JNUEQ
+      INTEGER JPRNO ,JTYPL ,K ,L ,NBLAG ,NBLIGR ,NBNL
+      INTEGER NBNM ,NBNO ,NCMPMX ,NDDLB ,NEC ,NOB ,NUCMP
+      INTEGER NUNO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NUMEQA=NU14//'.NUME'

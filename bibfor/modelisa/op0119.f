@@ -1,6 +1,6 @@
       SUBROUTINE OP0119()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,8 @@ C --- ------------------------------------------------------------------
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 
       INTEGER     NBVAL,NCARFI,ITROIS
       PARAMETER  (NBVAL=999,NCARFI=3,ITROIS=3)

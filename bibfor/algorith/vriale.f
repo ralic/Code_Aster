@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,11 @@ C
 C
       CALL GETVTX ( 'EXCIT', 'NOEUD', 1,IARG,0, K8B, NNOEEX )
       NNOEEX = -NNOEEX
-      IF ( NNOEEX .NE. 0 ) NAPEXC = NNOEEX
+      IF ( NNOEEX .NE. 0 ) THEN
+        NAPEXC = NNOEEX
+      ELSE
+        NAPEXC=0
+      ENDIF
 C
       CALL GETVID ( 'EXCIT', 'CHAM_NO', 1,IARG,0, K8B, NVASEX )
       NVASEX = -NVASEX

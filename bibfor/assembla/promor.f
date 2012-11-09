@@ -1,11 +1,13 @@
       SUBROUTINE PROMOR(NUZ,BASE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXATR
       CHARACTER*(*) NUZ
       CHARACTER*1 BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +25,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_4  CRP_20
+C TOLE CRP_20
 C     CALCUL DE LA STRUCTURE COMPACTE D'UNE MATRICE
 C     ------------------------------------------------------------------
 C IN  K*14 NU     : NOM DE LA SD_UME_DDL A COMPLETER.

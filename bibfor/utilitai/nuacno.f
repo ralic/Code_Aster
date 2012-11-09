@@ -1,10 +1,12 @@
       SUBROUTINE NUACNO ( NUAGE, LNO, CHNO )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*(*)       NUAGE, LNO, CHNO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,11 +37,11 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IAD ,IAEC ,IANUEQ ,IAPRNO ,IBID ,ICMP 
-      INTEGER ICOMPT ,IE ,IEC ,IEQ ,INO ,ITYPE ,IVAL 
-      INTEGER J ,JDESC ,JLNO ,JNUAI ,JNUAV ,JREFE ,K 
-      INTEGER KCOMP ,KVALE ,NC ,NCMP ,NCMPMX ,NEC ,NP 
-      INTEGER NUM 
+      INTEGER I ,IAD ,IAEC ,IANUEQ ,IAPRNO ,IBID ,ICMP
+      INTEGER ICOMPT ,IE ,IEC ,IEQ ,INO ,ITYPE ,IVAL
+      INTEGER J ,JDESC ,JLNO ,JNUAI ,JNUAV ,JREFE ,K
+      INTEGER KCOMP ,KVALE ,NC ,NCMP ,NCMPMX ,NEC ,NP
+      INTEGER NUM
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       KNUAGE = NUAGE

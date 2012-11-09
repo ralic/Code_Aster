@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,12 +25,13 @@ C
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
       REAL*8             MODULE
 C
       INTEGER       NBV, NBR8, NBNO, NOCC2D, NOCC3D, IADRT1
       INTEGER       IADRNO, IMPR, IADRCO, IADRMA, IADRT2, IADRT3,
      &              IADRT4, IADRT5, ICODE, IFIC, N1
-      REAL*8        R8B, DIR(3), RINF, RSUP, ABSC
+      REAL*8        R8B, DIR(3), RINF, RSUP
       LOGICAL       LDIREC, ULEXIS
       CHARACTER*8   K8B, NOMA, MODELE, FOND, RESU, NOEUD, FORMAT
       CHARACTER*16  TYPE, OPER, FICHIE,VALK(2)

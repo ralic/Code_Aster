@@ -1,11 +1,13 @@
       SUBROUTINE CAFACI ( FONREE, CHAR )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/10/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -290,9 +292,9 @@ C                 CREER LNOEU2 ET COPIER MESNO3
                   CALL JEVEUO(LNOEU2,'E',JLINO2)
 C                 COMPLETER AVEC LES NOEUDS
                   NELIM = 0
-                  DO 300 J = 0 , NBNO3-1                     
+                  DO 300 J = 0 , NBNO3-1
                      NOMNO = ZK8(JLIST3+J)
-                     DO 301 K = 0 , NBNO2-1                     
+                     DO 301 K = 0 , NBNO2-1
                        IF(NOMNO.EQ.ZK8(JLINO2+K)) THEN
                           NELIM = NELIM + 1
                           GO TO 300

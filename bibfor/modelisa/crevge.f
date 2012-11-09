@@ -1,6 +1,6 @@
       SUBROUTINE CREVGE(LIGREL,BAS1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,8 @@ C           A2  (2D PAR ARRETE)  ET S2 (2D PAR SOMMET)
 C-----------------------------------------------------------------------
 
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*19 LIGREL
       CHARACTER*1 BAS1
       CHARACTER*12 VGE

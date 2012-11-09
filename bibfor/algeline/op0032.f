@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C     EIGENVALUE-COUNTING METHODS FOR GEP OR QEP
 C     ------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
-C TOLE CRP_20 
+C TOLE CRP_20
 C
 C
       INCLUDE 'jeveux.h'
@@ -31,13 +31,13 @@ C
      &             NBLAGR,NBCINE,NEQACT,NEQ,NITERC,NPIVOT(2),
      &             L,LMASSE,LRAIDE,LDDL,LDYNAM,NK,NBROW,L1,L2,L3,
      &             LPROD,IRET,NBFREQ,KREFA,IDET(2),JSTU,
-     &             IFM,NIV,NBTETC,NBTET0,NBTET1,NBMODE(1),
-     &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID,IBID2(2)
+     &             IFM,NIV,NBTETC,NBTET0,NBTET1,
+     &             NBTET2,NBEV0,NBEV1,NBEV2,MITERC,IARG,IBID
       REAL*8       OMEGA2,OMGMIN,OMGMAX,OMIN,OMAX,FCORIG,OMECOR,FREQOM,
      &             PRECSH,RAYONC,DIMC1,
      &             CALPAR(2),CALPAC(3),CALPAF(2),RBID,DET(2)
       COMPLEX*16   CENTRC,ZIMC1,CBID
-      LOGICAL      LTEST,LC,LDYNA,LFLAMB 
+      LOGICAL      LTEST,LC,LDYNA,LFLAMB
       CHARACTER*1  TYPEP,TPPARN(1),TPPARR(2),TPPARC(3),TPPARF(2),
      &             TPPARM(2)
       CHARACTER*3  IMPR
@@ -106,7 +106,7 @@ C   --- REFERENCE MATRICE TO BE USE AS A PATTERN FOR BUILDING THE ---
 C   --- DYNAMIC MATRICES (THE ISSUE IS SYMMETRIC OR NOT)          ---
       MATREF=RAIDE
       IF (ZI(LMASSE+4).EQ.0) MATREF=MASSE
-      IF (ZI(LRAIDE+4).EQ.0) MATREF=RAIDE        
+      IF (ZI(LRAIDE+4).EQ.0) MATREF=RAIDE
       IF (LC) THEN
         CALL MTDSCR(AMOR)
         CALL JEVEUO(AMOR//'.&INT','E',LAMOR)
@@ -131,7 +131,7 @@ C     --- AUTOMATIC PARAMETRIZATION WITH 'AUTO'                 ---
       IF (TYPMET(1:4).EQ.'AUTO') THEN
         IF (ZI(LMASSE+3)*ZI(LMASSE+4)*ZI(LRAIDE+3)*ZI(LRAIDE+4).NE.1
      &      .OR.LC) THEN
-          TYPMET='APM'    
+          TYPMET='APM'
         ELSE
           TYPMET='STURM'
         ENDIF
@@ -150,7 +150,7 @@ C     --- IF GENERAL: KIND OF COMPUTATION   ---
         CALL U2MESK('I','ALGELINE2_31',1,VALK)
       ENDIF
 
-C     --- TEMPORARY EXCLUSION RULES                             --- 
+C     --- TEMPORARY EXCLUSION RULES                             ---
 C     --- + DEFAULT VALUES                                      ---
       IF ((TYPMOD(1:13).EQ.'MODE_COMPLEXE').AND.
      &    (TYPMET(1:3).NE.'APM')) THEN
@@ -194,7 +194,7 @@ C     --- COUPLE OR LIST OF FREQUENCIES ---
 C       --- PARAMETRIZATION PB
           CALL U2MESS('F','ALGELINE2_22')
         ENDIF
-        
+
       ELSE IF (TYPMOD(1:13).EQ.'MODE_COMPLEXE') THEN
 C     --- CHARACTERISTIC OF THE COMPLEX SHAPE ---
         CALL GETVTX(' ','TYPE_CONTOUR',1,IARG,1,TYPCON,L1)
@@ -204,8 +204,8 @@ C       --- PARAMETRIZATION PB
         IF ((ABS(L1)*ABS(L2)*ABS(L3)).NE.1)
      &    CALL U2MESS('F','ALGELINE2_22')
         CALPAC(1) = DBLE(CENTRC)
-        CALPAC(2) = DIMAG(CENTRC)    
-        CALPAC(3) = RAYONC     
+        CALPAC(2) = DIMAG(CENTRC)
+        CALPAC(3) = RAYONC
         NBMOD=2
 
       ELSE IF (TYPMOD(1:10).EQ.'MODE_FLAMB') THEN
@@ -228,21 +228,21 @@ C     --- COUPLE OR LIST OF BUCKLING MODES ---
         ELSE
 C       --- PARAMETRIZATION PB
           CALL U2MESS('F','ALGELINE2_22')
-        ENDIF         
+        ENDIF
 
       ELSE
 C     --- BAD VALUE OF TYMOD ---
-        CALL ASSERT(.FALSE.)      
+        CALL ASSERT(.FALSE.)
 
       ENDIF
-      
-C     --- GET THE PARAMETERS OF THE METHOD                      --- 
+
+C     --- GET THE PARAMETERS OF THE METHOD                      ---
 C     --- INITIALIZATIONS JUST IN CASE                          ---
       FCORIG=1.D-2
       PRECSH=1.D-2
       NBRSS=5
       NBTETC=40
-      NITERC=3     
+      NITERC=3
       IF (TYPMET(1:5).EQ.'STURM') THEN
         IF (TYPMOD(1:9).EQ.'DYNAMIQUE') THEN
           CALL GETVR8('COMPTAGE','SEUIL_FREQ',1,IARG,1,FCORIG,IBID)
@@ -254,7 +254,7 @@ C     --- INITIALIZATIONS JUST IN CASE                          ---
         ENDIF
         CALL GETVR8('COMPTAGE','PREC_SHIFT',1,IARG,1,PRECSH,IBID)
         CALL GETVIS('COMPTAGE','NMAX_ITER_SHIFT',1,IARG,1,NBRSS,IBID)
-      ELSE IF (TYPMET(1:3).EQ.'APM') THEN      
+      ELSE IF (TYPMET(1:3).EQ.'APM') THEN
         CALL GETVIS('COMPTAGE','NBPOINT_CONTOUR',1,IARG,1,NBTETC,IBID)
         CALL GETVIS('COMPTAGE','NMAX_ITER_CONTOUR',1,IARG,1,NITERC,IBID)
 C     --- TEMPORARY, WE UNPLUG THE USE OF ROMBOUT METHOD, IT NEEDS ---
@@ -290,8 +290,8 @@ C-----------------------------------------------------------------------
 C-------------------------- PRE-TRAITEMENTS ----------------------------
 C-----------------------------------------------------------------------
 
-C     --- PREPARATION FOR THE COMPUTATION OF THE DYNAMIC MATRIX --- 
-C     --- IN GEP ONLY DYNAM, IN QEP DYNAM            ---    
+C     --- PREPARATION FOR THE COMPUTATION OF THE DYNAMIC MATRIX ---
+C     --- IN GEP ONLY DYNAM, IN QEP DYNAM            ---
       IF ((TYPMET(1:5).EQ.'STURM').OR.
      &   ((TYPMET(1:3).EQ.'APM').AND.(TYPCHA(1:4).EQ.'LDLT'))) THEN
         DYNAM = '&&OP0032.MATR_DYNAM'
@@ -308,7 +308,7 @@ C     --- IF APM TEST, DYNAM'TYPE IS ALWAYS COMPLEX.            ---
         CALL MTDSCR(DYNAM)
         CALL JEVEUO(DYNAM(1:19)//'.&INT','E',LDYNAM)
       ENDIF
-      
+
 C     --- COMPUTATION OF THE LAGRANGE MULTIPLIERS ---
       IF (TYPMET(1:5).EQ.'STURM') THEN
         NEQ = ZI(LRAIDE+2)
@@ -323,7 +323,7 @@ C-----------------------------STURM METHOD -----------------------------
 C-----------------------------------------------------------------------
       NBROW=-9999
       IF (TYPMET(1:5).EQ.'STURM') THEN
-        
+
         IF (NBMOD.LT.2) CALL ASSERT(.FALSE.)
         NBROW=NBMOD-1
 
@@ -337,7 +337,7 @@ C       --- STEP 1: FIRST BANDE         ---
           OMAX=ZR(JLMOD+1)
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF       
+        ENDIF
         CALL VPFOPR('STURML1',TYPMOD,LMASSE,LRAIDE,LDYNAM,OMIN,OMAX,
      &              RBID,ZI(JSTU),NPIVOT,OMECOR,PRECSH,NBRSS,NBLAGR,
      &              SOLVEU,DET,IDET)
@@ -352,14 +352,14 @@ C        --- WE STORE THE POSSIBLY CORRECTED FREQUENCY/BUCKLING MODE
 
         DO 20 K=2,NBROW
 C        --- STEP K: BANDE NUMBER K
-          OMIN=OMAX     
+          OMIN=OMAX
           IF (LDYNA) THEN
             OMAX=OMEGA2(ZR(JLMOD+K))
           ELSE
             OMAX=ZR(JLMOD+K)
           ENDIF
           NPIVOT(1)=NPIVOT(2)
-          NPIVOT(2)=K       
+          NPIVOT(2)=K
           CALL VPFOPR('STURMLN',TYPMOD,LMASSE,LRAIDE,LDYNAM,OMIN,OMAX,
      &                RBID,ZI(JSTU+K-1),NPIVOT,OMECOR,PRECSH,NBRSS,
      &                NBLAGR,SOLVEU,DET,IDET)
@@ -369,7 +369,7 @@ C        --- STEP K: BANDE NUMBER K
             ZR(JLMOE+K)=OMAX
           ENDIF
    20   CONTINUE
-   
+
 
 C-----------------------------------------------------------------------
 C------------------------ ARGUMENT PRINCIPAL METHOD --------------------
@@ -405,7 +405,7 @@ C   --- FOR TEST ISSUE ONLY (SEE APM012/APTEST)---
           NK=ZI(LMASSE+2)
         ENDIF
 C   --- STEPS 0/1/2 OF THE APM ALGORITHM IF WE USE ROMBOUT VARIANT ---
-        IF (TYPCHA(1:7).EQ.'ROMBOUT')     
+        IF (TYPCHA(1:7).EQ.'ROMBOUT')
      &    CALL APM012(NK,K24RC,LTEST,ITEST,RAYONC,CENTRC,LRAIDE,
      &                LMASSE,SOLVEU)
 
@@ -414,7 +414,7 @@ C   --- ITERATION LOOP TO DETERMINE THE STABILIZED NUMBER OF   ---
 C   --- EIGENVALUES. TRICKS TO LIMIT THE NUMBER OF COMPUTATION ---
 C   --- WITH THE PARAMETERS MITERC AND NMULTC
         NBTET0=MIN(MITERC,MAX(1,NBTETC/NMULTC))
-        NBTET1=MIN(MITERC,NBTETC)       
+        NBTET1=MIN(MITERC,NBTETC)
         NBTET2=MIN(MITERC,NBTETC*NMULTC)
         PIVOT1=0
         PIVOT2=-9999
@@ -446,11 +446,11 @@ C   --- TO CONTINUE THE HEURISTIC                    ---
             NBTET0=NBTET1
             NBTET1=NBTET2
             NBTET2=NMULTC*NBTET2
-            
+
             NBEV0=NBEV1
             NBEV1=NBEV2
 
-C   --- ERROR MESSAGES      
+C   --- ERROR MESSAGES
             IF (NBTET2.GT.MITERC)
      &        CALL U2MESI('F','ALGELINE4_13',1,MITERC)
             IF (II.EQ.NITERC) CALL U2MESI('F','ALGELINE4_14',1,NITERC)
@@ -468,7 +468,7 @@ C    --- THE HEURISTIC CONVERGES
    31   CONTINUE
         IF (TYPCHA(1:7).EQ.'ROMBOUT') CALL JEDETR(K24RC)
         IF (PIVOT2.LT.0) CALL U2MESS('F','ALGELINE4_22')
-                     
+
       ELSE
 C   --- ILLEGAL OPTION ---
         CALL ASSERT(.FALSE.)
@@ -497,7 +497,7 @@ C   --- TO AN SD_TABLE                                            ---
         CALL VPECST(IFM,TYPMOD,OMGMIN,OMGMAX,PIVOT1,PIVOT2,
      &              NBFREQ,NBLAGR,TYPEP,TYPCON,DIMC1,ZIMC1)
       ENDIF
-     
+
       CALL TBCRSD(TABLE,'G')
       CALL TITRE
 
@@ -512,7 +512,7 @@ C   --- BUILDING OF THE DATA STRUCTURE CARTE  ---
       NMPARF(2) = 'CHAR_CRIT_MAX'
       NMPARM(1) = 'BORNE_MIN_EFFECT'
       NMPARM(2) = 'BORNE_MAX_EFFECT'
-      
+
       TPPARN(1) = 'I'
       TPPARR(1) = 'R'
       TPPARR(2) = 'R'
@@ -523,7 +523,7 @@ C   --- BUILDING OF THE DATA STRUCTURE CARTE  ---
       TPPARF(2) = 'R'
       TPPARM(1) = 'R'
       TPPARM(2) = 'R'
-            
+
       CALL TBAJPA(TABLE,2,NMPARR,TPPARR)
       CALL TBAJPA(TABLE,3,NMPARC,TPPARC)
       CALL TBAJPA(TABLE,2,NMPARF,TPPARF)

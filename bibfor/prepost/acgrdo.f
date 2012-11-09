@@ -1,9 +1,10 @@
       SUBROUTINE ACGRDO(JVECTN, JVECTU, JVECTV, NBORDR,ORDINI, KWORK,
      &                  SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,JDTAUM,
      &                  JRESUN,NOMMET,NOMMAT,NOMCRI,VALA,COEFPA,
-     &            NOMFOR,GRDVIE,FORVIE,POST,VALPAR, VRESU)
-      IMPLICIT   NONE
+     &                  NOMFOR,GRDVIE,FORVIE,POST,VALPAR, VRESU)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER    JVECTN, JVECTU, JVECTV, NBORDR, KWORK
       INTEGER    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG, JDTAUM,JRESUN
       CHARACTER*16  NOMMET, NOMCRI, NOMFOR,FORVIE
@@ -12,7 +13,7 @@
       REAL*8     VRESU(24),VALPAR(22),VALA,COEFPA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/09/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +33,7 @@ C ======================================================================
 C TOLE CRP_20 CRP_21 CRS_512 CRS_1404
 C ---------------------------------------------------------------------
 C BUT: POUR LA FATIGUE A AMPLITUDE CONSTANTE
-C      CALCULER DES GRANDEURS SERVANT A EVALUER LES CRITERES D4AMORCAGE
+C      CALCULER DES GRANDEURS SERVANT A EVALUER LES CRITERES D'AMORCAGE
 C      ET CALCULER LA GRANDEUR EQUIVALENT
 C
 C REMARQUE: CETTE SUBROUTINE EST APPLICABLE POUR UN NOEUD OU IPG EGALE
@@ -81,7 +82,7 @@ C23456
       REAL*8     RESUPC(24), GRDEQ(2), DTAUM(2), NXM(2), NYM(2), COEPRE
       REAL*8     NZM(2), NRUPT(2), DOM(2), SIGEQ(2)
       REAL*8     NORMAX(2), NORMOY(2),EPNMAX(2), EPNMOY(2), VALPU(22)
-      REAL*8     PHYDRO, PHYDRM, VALE,VALNU, R8B, SIGM(NBORDR*6)
+      REAL*8     PHYDRO, PHYDRM, SIGM(NBORDR*6)
       REAL*8     SIG(6),EPS(6), EPSE(6), EPSP(6),VEPSP(6)
       REAL*8     EPSL(6), EPSEL(6), EPSPL(6),EQEPSP, JACAUX(3)
       REAL*8     VSIG(6), SIGL(6), EQSIG, VSIGE, EQUI(17)
@@ -128,7 +129,7 @@ C RECUPERER LA LISTE DE GRANDEURS ACTIVES
 
 C  INITIALISER
 
-        CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT, 
+        CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT,
      &   LBID, LBID, LBID, LBID, LBID)
 
 C ------------------------------------------------------------------
@@ -142,7 +143,7 @@ C INITIALISATION
       VEPSPE = 0.D0
       VSIGE = 0.D0
       EPRMAX = 0.D0
-C      EPRMIN = R8MAEM()
+      EPRMIN = R8MAEM()
       NM1X = 0.D0
       NM1Y = 0.D0
       NM1Z = 0.D0
@@ -164,7 +165,7 @@ C      EPRMIN = R8MAEM()
       DOM(2) = 0.D0
       NRUPT(1) = 1.D7
       NRUPT(2) = 1.D7
-      
+
       DO 20 I = 1, 24
          RESUPC(I) = 0.0D0
 20    CONTINUE
@@ -206,7 +207,7 @@ C       C2 = VALNU/VALE
 
 C ---------------------------------------------------------------
 
-C POUR LE POST-FATIGUE, ON CONSIDERE QUE L'HISTOIRE EST 
+C POUR LE POST-FATIGUE, ON CONSIDERE QUE L'HISTOIRE EST
 C POUR UN CYCLE ENTIER - COMPLET
 
 C C      IF (POST) THEN
@@ -215,12 +216,12 @@ C       ORDFIN = NBORDR
 C C      ENDIF
 C       IF ((PARACT(11) .EQ. 1) .OR. (PARACT(10) .EQ. 1) ) THEN
 C C ANALYSER LES CHARGEMENTS APLIQUES
-C 
+C
 C          CALL ACANCY(NBORDR, KWORK, SOMPGW, JRWORK, TSPAQ, IPG, C1,
 C      &                C2, ORINIE, ORDFIE, NBCYAD,CYFERM, EPSPA)
 C          ORDINI = ORINIE
 C          ORDFIN = ORDFIE
-C 
+C
 C       ENDIF
 
 C
@@ -232,9 +233,9 @@ C      &                C2, ORDINI, ORDFIN, NBCYAD,CYFERM, EPSPA)
 C ---------------------------------------------------------------
 C CALCULER LES GRANDEURS
 
-C POUR LE POST-FATIGUE, ON CONSIDERE QUE L'HISTOIRE EST 
+C POUR LE POST-FATIGUE, ON CONSIDERE QUE L'HISTOIRE EST
 C POUR UN CYCLE ENTIER - COMPLET
-C 
+C
 C       IF (POST) THEN
 C          ORDINI = 1
 C       ENDIF
@@ -242,8 +243,8 @@ C       ENDIF
 C ---------------------------------------------------------------
 C CALCULER LES GRANDEURS
       ORDFIN = NBORDR
-      
-      DO 10 J= ORDINI, ORDFIN 
+
+      DO 10 J= ORDINI, ORDFIN
          DECAL = 18
 C         ADR = (J-1)*TSPAQ+KWORK*SOMPGW*6+(IPG-1)*6
 
@@ -284,7 +285,7 @@ C    CALCULER PRESSION HYDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])
 C ---------------------------------------------------------------
 C -- CALCULER LA DEMI-AMPLITUDE DE LA DEFORMATION PLASIQUE EQVA
 C POUR LE CRIETRE MANSON_COFF
-         
+
          IF (PARACT(7) .EQ. 1)  THEN
 
             DO 11 L = J, ORDFIN
@@ -380,7 +381,7 @@ C
 
                CALL TENEPS(JRWORK,ADRL,C1,C2,
      &                         SIGL,EPSL, EPSEL, EPSPL)
-     
+
                CALL LCDEVI(SIGL, DSIGL)
                CALL LCDEVI(EPSEL, DEPSL)
 
@@ -548,7 +549,7 @@ C CALCULER DEFORMATION PLASTIQUE ACCUMULEE
                EPSPAC = EPSPAC + SOMDEF**0.5D0
             ENDIF
 
-         ENDIF 
+         ENDIF
 
 10    CONTINUE
 
@@ -556,10 +557,10 @@ C CALCULER DEFORMATION PLASTIQUE ACCUMULEE
 C ---------------------------------------------------------------
 C CALCULER LE RAYON DE SPHERE CIRCONCRITE
       IF (PARACT(21) .EQ. 1)  THEN
-      
+
          DO 16 J= 1, NBORDR*6
             SIGM(J) = 0.D0
-16       CONTINUE 
+16       CONTINUE
 
          DO 15 J= ORDINI, ORDFIN
             DECAL = 18
@@ -567,17 +568,17 @@ C CALCULER LE RAYON DE SPHERE CIRCONCRITE
             ADR = (J-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
             CALL TENEPS( JRWORK,ADR, C1, C2, SIG, EPS, EPSE, EPSP)
-            
+
             DO 17 K= 1, 6
                SIGM((J-1)*6+ K) = SIG(K)
-17          CONTINUE            
+17          CONTINUE
 15       CONTINUE
-         
+
          NBF = 6
-         NBTOT = ORDFIN - ORDINI +1 
+         NBTOT = ORDFIN - ORDINI +1
          CALL FMRAYO (NBF, NBTOT, SIGM, RAYSPH)
-             
-      ENDIF 
+
+      ENDIF
 
 C ---------------------------------------------------------------
 C POUR LES GRANDEURS DES CRITERERS "CISSAILEMENT PLAN CRITIQUE",
@@ -589,7 +590,7 @@ C
 
          PLCICR = .TRUE.
       ENDIF
-   
+
       DO 109 K = 1,2
               DTAUM(K) = 0.D0
               NXM(K)   = 0.D0
@@ -600,7 +601,7 @@ C
               EPNMAX(K)= 0.D0
               EPNMOY(K)= 0.D0
 109   CONTINUE
-      
+
       IF (PLCICR) THEN
 
            CALL ACMATA ( JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
@@ -671,14 +672,14 @@ C        POUR CRITERE= DANG_VAN OU MATAKE
          IF (ENDUR) THEN
             NRUPT(K)=R8MAEM()
          ELSE
-         
+
 
             CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',GRDEQ(K),
      &           1,'WOHLER  ',NRUPT(K),ICODRE,1)
          ENDIF
          DOM(K) = 1.D0/NRUPT(K)
          NRUPT(K)= NINT(NRUPT(K))
-         
+
       ENDIF
 
  120  CONTINUE
@@ -805,6 +806,6 @@ C        VECTRMAL ASSOCIE.
 101   CONTINUE
          VRESU(23) = 0.0D0
          VRESU(24) = 0.0D0
-         
+
 C      CALL JEDEMA()
       END

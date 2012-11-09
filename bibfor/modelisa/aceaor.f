@@ -2,12 +2,14 @@
      &                  NOMELE,IVR,IFM,NBOCC)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER           LMAX,NBEPO,NBEDI,NTYELE(*),IVR(*),NBOCC(*)
       CHARACTER*8       NOMA,NOMO
       CHARACTER*16      NOMELE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,14 +34,14 @@ C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : NOMO   : NOM DU MODELE
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IER ,IFM ,IOC ,IXMA ,IXNO 
-      INTEGER IXNW ,J ,JAD ,JDCMPO ,JDCO ,JDGM ,JDGN 
-      INTEGER JDLS ,JDME ,JDNE ,JDNO ,JDNW ,JDOR ,JDTM 
-      INTEGER JDVLVO ,K ,NBCAR ,NBMAGR ,NBMAIL ,NBMTOT ,NBMTRD 
-      INTEGER NBNOGR ,NBTEL ,NBVAL ,NCAR ,NCO ,NG ,NJ 
-      INTEGER NM ,NN ,NO1 ,NO2 ,NOCAOR ,NTPOI ,NTSEG 
-      INTEGER NTSEG3 ,NTSEG4 ,NUMMAI ,NUMNOE ,NUMTRD ,NUTYEL ,NUTYMA 
-      INTEGER NVAL 
+      INTEGER I ,IBID ,IER ,IFM ,IOC ,IXMA ,IXNO
+      INTEGER IXNW ,J ,JAD ,JDCMPO ,JDCO ,JDGM ,JDGN
+      INTEGER JDLS ,JDME ,JDNE ,JDNO ,JDNW ,JDOR ,JDTM
+      INTEGER JDVLVO ,K ,NBCAR ,NBMAGR ,NBMAIL ,NBMTOT ,NBMTRD
+      INTEGER NBNOGR ,NBTEL ,NBVAL ,NCAR ,NCO ,NG ,NJ
+      INTEGER NM ,NN ,NO1 ,NO2 ,NOCAOR ,NTPOI ,NTSEG
+      INTEGER NTSEG3 ,NTSEG4 ,NUMMAI ,NUMNOE ,NUMTRD ,NUTYEL ,NUTYMA
+      INTEGER NVAL
 C-----------------------------------------------------------------------
       PARAMETER    ( NBCAR = 100 , NBVAL = 1000 , NCO = 4 )
       REAL*8       VAL(NBVAL), X1(3), X2(3), X3(3)

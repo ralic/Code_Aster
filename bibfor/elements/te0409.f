@@ -1,7 +1,7 @@
       SUBROUTINE TE0409(OPTION,NOMTE)
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -245,6 +245,7 @@ C     -- OPTIONS NON-LINEAIRES
           IF (NOMTE.EQ.'MEQ4GG4'.OR. NOMTE.EQ.'MET3GG3') THEN
              COMPOR = 'ELAS            '
           ENDIF
+          ICARCR=1
         ENDIF
         IF (NOMTE.EQ.'MEDKTG3'.OR. NOMTE.EQ.'MET3GG3') THEN
           IF (COMP3(1:9).EQ.'COMP_INCR') THEN

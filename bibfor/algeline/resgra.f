@@ -2,7 +2,7 @@
      &                  CRITER,NSECM ,RSOLU ,SOLVEU,ISTOP ,
      &                  IRET  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,9 +19,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_4
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*(*) MAT   ,MATF  ,VCINE
       INTEGER       NITER ,NSECM
       REAL*8        EPSI  ,RSOLU(*)
@@ -129,6 +130,10 @@ C     -----------------------------------------------------
         CALL JEVEUO(KSTOCF//'.SMDI','L',IDINPC)
         CALL JEVEUO(KSTOCF//'.SMHC','L',IDIPPC)
         CALL JEVEUO(JEXNUM(MATFAC//'.VALM',1),'L',IDACPC)
+      ELSE
+        IDINPC=1
+        IDIPPC=1
+        IDACPC=1
       ENDIF
 
 

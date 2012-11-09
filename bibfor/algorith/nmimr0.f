@@ -1,7 +1,7 @@
       SUBROUTINE NMIMR0(SDIMPR,NOMBCL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,8 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       INCLUDE      'jeveux.h'
-      CHARACTER*24 SDIMPR,SDCONV
+
+      CHARACTER*24 SDIMPR
       CHARACTER*4  NOMBCL
 C
 C ----------------------------------------------------------------------

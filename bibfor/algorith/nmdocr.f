@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,10 +33,12 @@ C                     3 : THETA (POUR THM)
 C                     4 : ITER_INTE_PAS
 C                     5 : ALGO_INTE
 C                     .............
-C                     13 PARM_ALPHA  -> ALPHA DE SUSHI (DÉFAUT 1)
+C                     13 PARM_ALPHA  -> ALPHA DE SUSHI (DEFAUT 1)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*1  K1BID
       CHARACTER*8  NOMA,K8B,TYPMCL(2)
       CHARACTER*16 TYMATG,COMP,ALGO,MOCLES(2),MOCLEF(2),CRIRUP
@@ -59,7 +61,7 @@ C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       INTEGER NBKIT,NBNVI(DIMANV),NCOMEL,NVMETA,NUMLC
       CHARACTER*16 NOMKIT(DIMAKI),LCOMEL(5),MECA,MECACO
 
-C      
+C
       INTEGER      IARG
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -107,7 +109,7 @@ C     MOTS CLES FACTEUR
 
 C       NOMBRE D'OCCURRENCES
         DO 150 K = 1,NBOCC
-        
+
           NCOMEL=1
 
           CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOCLEF(I),K,2,MOCLES,
@@ -150,9 +152,9 @@ C           LOI DE COMPORTEMENT (1ERE VALEUR DE LA LISTE)
             CALL LCALGO(COMCOD,ALGO)
           ENDIF
 
-C         CERTAINES LOIS EN CPLAN CHANGENT L'ALGO D'INTEGRATION 
+C         CERTAINES LOIS EN CPLAN CHANGENT L'ALGO D'INTEGRATION
           CPLAN = EXICP(MODELE(1:8),MESMAI,NBMA)
-                    
+
           IF (CPLAN) THEN
             IF (COMP.EQ.'VMIS_ECMI_LINE'.OR.
      &          COMP.EQ.'VMIS_ECMI_TRAC'.OR.
@@ -161,7 +163,7 @@ C         CERTAINES LOIS EN CPLAN CHANGENT L'ALGO D'INTEGRATION
               ALGO = 'SECANTE'
             ENDIF
           ENDIF
-          
+
 C         PASSAGE NOM ALGO -> IDENTIFICATEUR (VALEUR REELLE)
           CALL UTLCAL('NOM_VALE',ALGO,ALGOR)
 
@@ -268,25 +270,25 @@ C         TOLERANCE POUR LE CRITERE DE RADIALITE
      &           TYMATG(1:16).NE.'TANGENTE_SECANTE') THEN
                 CALL GETVR8(MOCLEF(I),'RESI_RADI_RELA',K,IARG,1,TOLRAD,
      &                      IRET)
-                IF (IRET.NE.0) THEN 
+                IF (IRET.NE.0) THEN
                    TSEUIL=TOLRAD
                 ELSE
                    TSEUIL=-10.D0
                 ENDIF
              ENDIF
-          ENDIF 
+          ENDIF
 C         CRIT_RUPT
           IF (MOCLEF(I) .EQ. 'COMP_INCR') THEN
              IF (TYPTGT.EQ.0 .AND.
      &           TYMATG(1:16).NE.'TANGENTE_SECANTE') THEN
-               CALL GETVTX(MOCLEF(I),'POST_ITER',K,IARG,1,CRIRUP,IRET) 
-                IF (IRET.EQ.1) THEN       
+               CALL GETVTX(MOCLEF(I),'POST_ITER',K,IARG,1,CRIRUP,IRET)
+                IF (IRET.EQ.1) THEN
 C            VERIF QUE CRIRUP EST POSSIBLE POUR COMP
                 TSAMPL = 1.D0
-                ENDIF 
-              ENDIF     
-          ENDIF  
-          
+                ENDIF
+              ENDIF
+          ENDIF
+
 C         STOCKAGE DE LA CARTE CARCRI
 
           ZR(JVALV-1+1)  = ITEINT

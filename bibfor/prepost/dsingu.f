@@ -3,13 +3,14 @@
      &                  ALPHA,NALPHA)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER NDIM,NELEM,NNOEM,NSOMMX,NELCOM,DEGRE,NBR(NELEM)
       INTEGER ICNC(NSOMMX+2,NELEM),NUMELI(NELCOM+2,NNOEM)
       REAL*8  XY(3,NNOEM),ERREUR(NELEM),ENERGI(NELEM),MESU(NELEM)
       REAL*8  ALPHA(NELEM)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

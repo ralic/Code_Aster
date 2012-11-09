@@ -1,6 +1,6 @@
       SUBROUTINE JXVERI( CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,12 +35,12 @@ C ----------------------------------------------------------------------
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
 C-----------------------------------------------------------------------
-      INTEGER IADMI ,IADMOC ,IADYN ,IADYOC ,IBACOL ,IBIADM ,IC 
-      INTEGER IDM ,IL ,IRET ,ISD ,ISDC ,ISF ,IXDESO 
-      INTEGER IXIADD ,IXIADM ,IXLONO ,J ,JCARA ,JDATE ,JDOCU 
-      INTEGER JGENR ,JHCOD ,JIADD ,JIADM ,JLONG ,JLONO ,JLTYP 
-      INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K ,N 
-      INTEGER NCLA1 ,NCLA2 ,NMAX 
+      INTEGER IADMI ,IADMOC ,IADYN ,IADYOC ,IBACOL ,IBIADM ,IC
+      INTEGER IDM ,IL ,IRET ,ISD ,ISDC ,ISF
+      INTEGER IXIADM  ,J ,JCARA ,JDATE ,JDOCU
+      INTEGER JGENR ,JHCOD ,JIADD ,JIADM ,JLONG ,JLONO ,JLTYP
+      INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K ,N
+      INTEGER NCLA1 ,NCLA2 ,NMAX
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
@@ -65,11 +65,9 @@ C-----------------------------------------------------------------------
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,              IDLONG     ,
-     &               IDLONO     , IDLUTI     , IDNUM
+     &               IDLONO
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
+     &               IDLONO = 8 )
 C ----------------------------------------------------------------------
       CHARACTER*32     NOM32
       CHARACTER*1      CGENR
@@ -97,9 +95,6 @@ C
             CALL JJVERN (NOM32 , 0 , IRET)
             CALL JJALLC (IC , J , 'L' , IBACOL)
             IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
-            IXIADD = ISZON ( JISZON + IBACOL + IDIADD )
-            IXDESO = ISZON ( JISZON + IBACOL + IDDESO )
-            IXLONO = ISZON ( JISZON + IBACOL + IDLONO )
             NMAX   = ISZON ( JISZON + IBACOL + IVNMAX )
             IF (IXIADM .GT. 0) THEN
               IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )

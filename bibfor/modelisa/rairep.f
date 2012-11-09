@@ -2,12 +2,14 @@
      &  TABNOE,RIGNOE,RIGTO,AMOTO,RIROT,NDIM)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER      IOC, NBGR, NBNO,NDIM
       CHARACTER*8  NOMA, LIGRMA(NBGR), TABNOE(*),KM
       REAL*8       RIGNOE(*), RIGTO(*), AMOTO(*),RIROT(3)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,15 +37,15 @@ C
       INTEGER      IARG,APPUI
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,ICOEF ,ICOEGR ,IDNO ,IER ,IFONGR ,II 
-      INTEGER IJ ,IM ,IN ,INOE ,IRET ,ISURMA ,JCOOR 
-      INTEGER LDGM ,LDGN ,LDNM ,LTYP ,NB ,NBMA ,NCG 
-      INTEGER NFG ,NGN ,NM ,NN ,NNO ,NOEMAX ,NTOPO 
-      INTEGER NUMA 
-      REAL*8 COEF ,DDOT ,DIST ,HC ,R1 ,R2 ,R3 
-      REAL*8 R4 ,R5 ,R6 ,RIG3 ,RIG4 ,RIG45 ,RIG46 
-      REAL*8 RIG5 ,RIG56 ,RIG6 ,SURF ,SURTOT ,XC ,XG 
-      REAL*8 XX ,YC ,YG ,YY ,ZG ,ZZ 
+      INTEGER I ,ICOEF ,ICOEGR ,IDNO ,IER ,IFONGR ,II
+      INTEGER IJ ,IM ,IN ,INOE ,IRET ,ISURMA ,JCOOR
+      INTEGER LDGM ,LDGN ,LDNM ,LTYP ,NB ,NBMA ,NCG
+      INTEGER NFG ,NGN ,NM ,NN ,NNO ,NOEMAX ,NTOPO
+      INTEGER NUMA
+      REAL*8 COEF ,DDOT ,DIST ,HC ,R1 ,R2 ,R3
+      REAL*8 R4 ,R5 ,R6 ,RIG3 ,RIG4 ,RIG45 ,RIG46
+      REAL*8 RIG5 ,RIG56 ,RIG6 ,SURF ,SURTOT ,XC ,XG
+      REAL*8 XX ,YC ,YG ,YY ,ZG ,ZZ
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       ZERO = 0.D0
@@ -263,6 +265,7 @@ C
       RIG45 = ZERO
       RIG46 = ZERO
       RIG56 = ZERO
+      RIG3 = 0.D0
       DO 50 IJ = 1, NOEMAX
          IF (ZI(IDNO+IJ-1).EQ.0) GOTO 50
          II = II + 1
@@ -276,6 +279,7 @@ C
            RIG45 = RIG45 - RIGI(3)*XX*YY*ZR(ICOEF+IJ-1)
            RIG46 = RIG46 - RIGI(2)*XX*ZZ*ZR(ICOEF+IJ-1)
            RIG56 = RIG56 - RIGI(1)*YY*ZZ*ZR(ICOEF+IJ-1)
+           RIG3 = 0.D0
          ELSE
            RIG3 = RIG3 + (RIGI(2)*XX**2+RIGI(1)*YY**2)*ZR(ICOEF+IJ-1)
          ENDIF

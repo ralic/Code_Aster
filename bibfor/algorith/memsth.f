@@ -1,6 +1,6 @@
       SUBROUTINE MEMSTH(MODELE,CARELE,MATE,INST,MEMASS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*24 MODELE,CARELE,INST,MEMASS,MATE
 C ----------------------------------------------------------------------
 C CALCUL DES MATRICES ELEMENTAIRES DE MASSE THERMIQUE
@@ -36,10 +37,9 @@ C OUT MEMASS  : MATRICES ELEMENTAIRES
       CHARACTER*24 LIGRMO,LCHIN(5),LCHOUT(1)
       CHARACTER*24 CHGEOM,CHCARA(18)
       CHARACTER*19 CHVARC
-      REAL*8 TIME
       INTEGER IRET,ILIRES
       LOGICAL EXIGEO,EXICAR
-      
+
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       CHVARC = '&&NXACMV.CHVARC'
@@ -47,7 +47,7 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL MEGEOM(MODELE,'      ',EXIGEO,CHGEOM)
       CALL MECARA(CARELE,EXICAR,CHCARA)
-      
+
       CALL JEEXIN(MEMASS,IRET)
       IF (IRET.EQ.0) THEN
         MEMASS = '&&MEMASS           .RELR'

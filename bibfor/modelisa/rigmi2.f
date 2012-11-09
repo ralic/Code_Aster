@@ -1,6 +1,6 @@
       SUBROUTINE RIGMI2(NOMA,NOGR,IFREQ,NFREQ,IFMIS,RIGMA,RIGMA2,RIGTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,8 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER      IFMIS
       INTEGER      IFREQ, NFREQ
       CHARACTER*8  NOMA, NOGR
@@ -32,11 +34,11 @@ C
 
 C
 C-----------------------------------------------------------------------
-      INTEGER I1 ,I2 ,IDNO ,IFR ,II ,IJ ,IM 
-      INTEGER IN ,INOE ,IPARNO ,IRET ,ISOPA ,ISOTO ,IUNIFI 
-      INTEGER JRIG ,LDGM ,LDNM ,NB ,NBMODE ,NBNO ,NOEMAX 
+      INTEGER I1 ,I2 ,IDNO ,IFR ,II ,IJ ,IM
+      INTEGER IN ,INOE ,IPARNO ,IRET ,ISOPA ,ISOTO ,IUNIFI
+      INTEGER JRIG ,LDGM ,LDNM ,NB ,NBMODE ,NBNO ,NOEMAX
 
-      REAL*8 R1 ,R2 ,R3 
+      REAL*8 R1 ,R2 ,R3
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IFR = IUNIFI('RESULTAT')

@@ -1,6 +1,6 @@
       SUBROUTINE TE0396(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ======================================================================
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  OPTION : 'CHAR_MECA_TEMP_R'
@@ -40,9 +41,9 @@ C ......................................................................
 C      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
 
 C-----------------------------------------------------------------------
-      INTEGER ICO ,JGANO ,NDIM ,NNOS 
-      REAL*8 A ,AJACOB ,AY ,AZ ,E ,G ,PJACOB 
-      REAL*8 R8BID ,UNSURJ ,XIY ,XIZ ,XJX 
+      INTEGER ICO ,JGANO ,NDIM ,NNOS
+      REAL*8 A ,AJACOB ,AY ,AZ ,E ,G ,PJACOB
+      REAL*8 R8BID ,UNSURJ ,XIY ,XIZ ,XJX
 C-----------------------------------------------------------------------
       CALL ELREF1(ELREFE)
 

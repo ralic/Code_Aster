@@ -2,13 +2,15 @@
      &                  NBTEL,NTYELE,IVR,IFM,JDLM)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER           LMAX,NBARRE,NBOCC,NBTEL,IFM,JDLM
       INTEGER           NTYELE(*),IVR(*)
       CHARACTER*8       NOMA,NOMO
       CHARACTER*(*)     MCLF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,14 +54,14 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IDW ,IER ,IISEC ,IOC ,ISEC ,ITABL 
-      INTEGER ITBLP ,ITBNP ,IVECT ,IXMA ,J ,JCAR ,JCARA 
-      INTEGER JDCBA ,JDCBAF ,JDCBG ,JDGE ,JDGEF ,JDGM ,JDLS 
-      INTEGER JDME ,JDVBA ,JDVBAF ,JDVBG ,JEXP ,JPARA ,JSECT 
-      INTEGER JTAB ,JVALE ,K ,NBAAFF ,NBCAR ,NBCOLO ,NBLIGN 
-      INTEGER NBMAGR ,NBMAIL ,NBO ,NBVAL ,NCAR ,NDIM ,NFCX 
-      INTEGER NG ,NM ,NNOSEC ,NSEC ,NTAB ,NTYPSE ,NUMMAI 
-      INTEGER NUTYEL ,NVAL 
+      INTEGER I ,IDW ,IER ,IISEC ,IOC ,ISEC ,ITABL
+      INTEGER ITBLP ,ITBNP ,IVECT ,IXMA ,J ,JCAR ,JCARA
+      INTEGER JDCBA ,JDCBAF ,JDCBG ,JDGE ,JDGEF ,JDGM ,JDLS
+      INTEGER JDME ,JDVBA ,JDVBAF ,JDVBG ,JEXP ,JPARA ,JSECT
+      INTEGER JTAB ,JVALE ,K ,NBAAFF ,NBCAR ,NBCOLO ,NBLIGN
+      INTEGER NBMAGR ,NBMAIL ,NBO ,NBVAL ,NCAR ,NDIM ,NFCX
+      INTEGER NG ,NM ,NNOSEC ,NSEC ,NTAB ,NTYPSE ,NUMMAI
+      INTEGER NUTYEL ,NVAL
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(NOMU,CONCEP,CMD)

@@ -1,9 +1,9 @@
       SUBROUTINE CFACA2(NDIM  ,NBLIAC,SPLIAI,LLF   ,LLF1  ,
-     &                  LLF2  ,INDFAC,NESMAX,RESOCO,LMAT  , 
+     &                  LLF2  ,INDFAC,NESMAX,RESOCO,LMAT  ,
      &                  NBLIAI,XJVMAX)
-C 
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,13 +25,15 @@ C TOLE CRP_20
 C
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
-      INTEGER      NBLIAI,NBLIAC,LLF,LLF1,LLF2      
+
+      CHARACTER*32 JEXNUM
+      INTEGER      NBLIAI,NBLIAC,LLF,LLF1,LLF2
       INTEGER      SPLIAI,INDFAC
       INTEGER      NDIM  ,NESMAX
       INTEGER      LMAT
       REAL*8       XJVMAX
       CHARACTER*24 RESOCO
-C        
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION - A.C-1.AT)
@@ -82,9 +84,9 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C 
+C
 C --- RECUPERATION D'OBJETS JEVEUX
-C 
+C
       CM1A   = RESOCO(1:14)//'.CM1A'
       APPOIN = RESOCO(1:14)//'.APPOIN'
       APDDL  = RESOCO(1:14)//'.APDDL'
@@ -106,9 +108,9 @@ C
       CALL JEVEUO(STOC//'.SCIB','L',JSCIB)
       CALL JEVEUO(STOC//'.SCBL','L',JSCBL)
       CALL JEVEUO(STOC//'.SCDE','L',JSCDE)
-C 
-C --- INITIALISATIONS 
-C 
+C
+C --- INITIALISATIONS
+C
       TYPEF0 = 'F0'
       NEQ    = ZI(LMAT+2)
       DEKLAG = 0

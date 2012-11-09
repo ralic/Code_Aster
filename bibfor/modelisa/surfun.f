@@ -1,7 +1,7 @@
       SUBROUTINE SURFUN(CHAR  ,NOMA  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,15 +21,17 @@ C ======================================================================
 C
       IMPLICIT    NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8 CHAR
       CHARACTER*8 NOMA
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE LIAISON_UNILATERALE (AFFICHAGE DONNEES)
 C
 C AFFICHAGE DES RESULTATS DE LA LECTURE DU MOT-CLE LIAISON_UNILATERALE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -56,7 +58,7 @@ C
 C
 C --- INITIALISATIONS
 C
-      DEFICU = CHAR(1:8)//'.UNILATE' 
+      DEFICU = CHAR(1:8)//'.UNILATE'
       NOEUMA = NOMA // '.NOMNOE'
       LGBLOC = CUDISI(DEFICU,'NB_RESOL')
       NNOCU  = CUDISI(DEFICU,'NNOCU')
@@ -67,14 +69,14 @@ C
       NOEUMA = NOMA // '.NOMNOE'
       NOEUCU = DEFICU(1:16)//'.LISNOE'
       POINCU = DEFICU(1:16)//'.POINOE'
-      CMPGCU = DEFICU(1:16)//'.CMPGCU'      
+      CMPGCU = DEFICU(1:16)//'.CMPGCU'
       COEGCU = DEFICU(1:16)//'.COEFG'
       COEDCU = DEFICU(1:16)//'.COEFD'
       CALL JEVEUO(NOEUCU,'L',JNOEU)
-      CALL JEVEUO(POINCU,'L',JPOIN)            
+      CALL JEVEUO(POINCU,'L',JPOIN)
       CALL JEVEUO(CMPGCU,'L',JCMPG )
       CALL JEVEUO(COEGCU,'L',JCOEFG)
-      CALL JEVEUO(COEDCU,'L',JCOEFD)      
+      CALL JEVEUO(COEDCU,'L',JCOEFD)
 
 C ======================================================================
 C                    IMPRESSIONS POUR L'UTILISATEUR
@@ -84,18 +86,18 @@ C ======================================================================
 
 C
 C --- IMPRESSIONS POUR L'UTILISATEUR
-C 
-        WRITE (IFM,*)      
+C
+        WRITE (IFM,*)
         WRITE (IFM,*) '<LIA_UNIL> INFOS GENERALES'
-        WRITE (IFM,*) 
+        WRITE (IFM,*)
 
-        WRITE (IFM,1070) 'NB_RESOL        ',LGBLOC        
+        WRITE (IFM,1070) 'NB_RESOL        ',LGBLOC
 C
 C --- INFOS GENERALES
 C
         WRITE (IFM,*)
-        WRITE (IFM,1070) 'NNOCU           ',NNOCU 
-        WRITE (IFM,1070) 'NCMPG           ',NCMPG 
+        WRITE (IFM,1070) 'NNOCU           ',NNOCU
+        WRITE (IFM,1070) 'NCMPG           ',NCMPG
         WRITE (IFM,*)
 
 
@@ -123,7 +125,7 @@ C
 
       ENDIF
 C
- 1070 FORMAT (' <LIA_UNIL> ...... PARAM. : ',A16,' - VAL. : ',I5)   
+ 1070 FORMAT (' <LIA_UNIL> ...... PARAM. : ',A16,' - VAL. : ',I5)
 
 
  1031 FORMAT ('<LIA_UNIL> ',A25)

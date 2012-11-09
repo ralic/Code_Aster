@@ -1,7 +1,7 @@
       SUBROUTINE RECIEX ( INTEXC, IDEREX, NINDEX, NNOEEX, NCMPEX,
      &                    NVASEX, GRAEXC, EXCMOD, NAPEXC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,11 +38,13 @@ C
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
 C-----------------------------------------------------------------------
-      INTEGER I1 ,I2 ,IBID1 ,IDEREX ,IJ2 ,ILCMPI 
-      INTEGER ILCMPJ ,ILCPEX ,ILFEX ,ILINDI ,ILINDJ ,ILLEX ,ILNOEX 
-      INTEGER ILVAEX ,IVITE ,NAPEXC ,NCMPEX 
-      INTEGER NDIM ,NINDEX ,NNOEEX ,NVASEX 
+      INTEGER I1 ,I2 ,IBID1 ,IDEREX ,IJ2 ,ILCMPI
+      INTEGER ILCMPJ ,ILCPEX ,ILFEX ,ILINDI ,ILINDJ ,ILLEX ,ILNOEX
+      INTEGER ILVAEX ,IVITE ,NAPEXC ,NCMPEX
+      INTEGER NDIM ,NINDEX ,NNOEEX ,NVASEX
 C-----------------------------------------------------------------------
       INTEGER       IBID, IRET
       CHARACTER*4   EXCMOD

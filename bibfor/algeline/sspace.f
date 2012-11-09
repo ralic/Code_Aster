@@ -3,12 +3,14 @@
      &                  SOLVEU)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER LRAID,LMATRA,LMASS,NEQ,NBVEC,NFREQ
       INTEGER LPROD(NEQ),ITEMAX,NPERM,NITJAC,NITBAT
       REAL*8 TOL,TOLDYN,VALPRO(NBVEC),VECT(NEQ,NBVEC)
       CHARACTER*19 SOLVEU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,11 +61,11 @@ C-----------------------------------------------------------------------
       INTEGER      IRET
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IAA ,IAR ,IBR ,ICOMP ,ICONV ,IFPOS 
-      INTEGER II ,IIPOS ,IJAC ,IRDIAK ,IRDIAM ,ITEMPO ,ITER 
-      INTEGER ITOLVE ,IVECPR ,IVECT ,JJ ,KK ,LL ,NFRCV 
-      INTEGER NITJA 
-      REAL*8 ART ,BRT ,DSEED 
+      INTEGER I ,IAA ,IAR ,IBR ,ICOMP ,ICONV ,IFPOS
+      INTEGER II ,IIPOS ,IJAC ,IRDIAK ,IRDIAM ,ITEMPO ,ITER
+      INTEGER ITOLVE ,IVECPR ,IVECT ,JJ ,KK ,LL ,NFRCV
+      INTEGER NITJA
+      REAL*8 ART ,BRT ,DSEED
 C-----------------------------------------------------------------------
       DATA VALM/'                   .VALM'/
 

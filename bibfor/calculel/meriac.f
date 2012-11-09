@@ -1,13 +1,14 @@
       SUBROUTINE MERIAC (MODELZ,NCHAR,LCHAR,MATE,MATELZ)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER                   NCHAR
       CHARACTER*8                     LCHAR(*)
       CHARACTER*(*)      MODELZ,            MATE
       CHARACTER*19                               MATELZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +57,7 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IRET ,JLIRE1 ,LONG1 
+      INTEGER I  ,JLIRE1 ,LONG1
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       MODELE = MODELZ

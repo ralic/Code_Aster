@@ -3,6 +3,8 @@
      &                    NINTRA, NBDIS)
       IMPLICIT  NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER           ID, NEQ, NBSUP, NSUPP(*), NDIR(*), NINTRA,
      &                  NBDIS(NBSUP)
       REAL*8            DEPSUP(NBSUP,*), RECMOD(NBSUP,NEQ,*)
@@ -11,7 +13,7 @@
       LOGICAL           MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2012   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

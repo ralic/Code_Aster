@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/09/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,8 @@ C
 C ARGUMENTS
 C ---------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8   MAILLA
       CHARACTER*19  XNOCA, YNOCA, ZNOCA, TABLCA
       CHARACTER*24  COMIMA,GROMAI
@@ -79,7 +81,7 @@ C -----------------
      &              D1X, D1X1, D1XN, D1Y, D1Y1, D1YN, D1Z, D1Z1, D1ZN,
      &              D2X, D2Y, D2Z, DC, DC1, DCN, DET1, DET2, DET3, DU,
      &              DX, DY, DZ, NORMV2, VALPAR(2)
-      REAL*8        XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX,R8MAEM,DIFF,RR
+      REAL*8        XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX,R8MAEM,RR
       COMPLEX*16    CBID
       CHARACTER*3   K3B
       CHARACTER*24  COORNO, NONOCA, NONOMA

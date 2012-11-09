@@ -1,6 +1,6 @@
       SUBROUTINE SSDEU1(MOTCLE,NOMA,NBNO,ILISTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,8 @@ C ======================================================================
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*(*) MOTCLE
       CHARACTER*8   NOMA
       INTEGER NBNO,ILISTE(*)
@@ -45,8 +47,8 @@ C
 C ----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IAGPNO ,IAWK1 ,IBID ,ICO ,II ,IRET 
-      INTEGER N1 ,N2 ,N3 ,N4 ,NDIM 
+      INTEGER I ,IAGPNO ,IAWK1 ,IBID ,ICO ,II ,IRET
+      INTEGER N1 ,N2 ,N3 ,N4 ,NDIM
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NBNO=0

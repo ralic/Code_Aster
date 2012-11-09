@@ -1,6 +1,6 @@
       SUBROUTINE TE0085 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16        OPTION , NOMTE , PHENOM
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES TERMES ELEMENTAIRES EN MECANIQUE
@@ -37,8 +38,8 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER JGANO ,NDIM ,NNOS 
-      REAL*8 R8B ,RHO 
+      INTEGER JGANO ,NDIM ,NNOS
+      REAL*8 R8B ,RHO
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C

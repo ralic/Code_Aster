@@ -1,7 +1,7 @@
       SUBROUTINE RCVALC( JMAT,PHENOM,NBPAR,NOMPAR,VALPAR,
      &                   NBRES,NOMRES,VALRES,ICODRE, IARRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER            IMAT,NBPAR,NBRES,JMAT,NBMAT
       CHARACTER*(*)      PHENOM, NOMPAR(NBPAR), NOMRES(NBRES)
       INTEGER  IARRET
@@ -54,8 +55,8 @@ C PARAMETER ASSOCIE AU MATERIAU CODE
 C DEB ------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER ICOMP ,IDF ,IK ,IPI ,IR ,IRES ,IVALC 
-      INTEGER IVALK ,NBC ,NBF ,NBOBJ ,NBR ,NBT 
+      INTEGER ICOMP ,IDF ,IK ,IPI ,IR ,IRES ,IVALC
+      INTEGER IVALK ,NBC ,NBF ,NBOBJ ,NBR ,NBT
 C-----------------------------------------------------------------------
       NBMAT=ZI(JMAT)
       CALL ASSERT(NBMAT.EQ.1)

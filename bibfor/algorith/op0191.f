@@ -1,6 +1,6 @@
       SUBROUTINE OP0191()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +17,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE JMBHH01 J.M.PROIX
-      IMPLICIT   NONE
+C RESPONSABLE PROIX J.M.PROIX
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C
 C     COMMANDE : MODI_REPERE
@@ -26,8 +26,8 @@ C
 C ----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
       INTEGER      N0    , NBORDR, IRET  , NOCC  , I , J  , NP, IORDR
-      INTEGER VALI
       INTEGER      N1    , NBCMP , IORD  , IOC , IBID, NC
       INTEGER      JORDR , NBNOSY, JPA, IADIN, IADOU
       INTEGER      NBPARA, NBAC  , NBPA  , IFM   , NIV

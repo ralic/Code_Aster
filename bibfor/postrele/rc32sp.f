@@ -2,6 +2,8 @@
      &                  SPIJ,TYPEKE,SPMECA,SPTHER)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER           NUMSIP,NUMSIQ
       REAL*8            PI,MI(*),PJ,MJ(*),MSE(*),SPIJ(2),TYPEKE,
      &                  SPMECA(2),SPTHER(2)
@@ -10,7 +12,7 @@
       CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -149,10 +151,10 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
                   CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), 1,
      &                                                 SPTH, SP )
                 ELSE
-                  CALL RC32ST ( SIJ, NBINST, SPTH, SP) 
+                  CALL RC32ST ( SIJ, NBINST, SPTH, SP)
                 ENDIF
                 SPIJ(1) = MAX(SPIJ(1),SP)
-C --- CALCUL DE KE_THER POUR LA SITUATION P 
+C --- CALCUL DE KE_THER POUR LA SITUATION P
                 IF (TYPEKE.GT.0.D0) THEN
                   CALL RC32S2 ( SIJ0,SPTH, SPTHER )
                 END IF
@@ -217,11 +219,11 @@ C - CAS NBQ = 0 / NBP != 0
                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST,
      &                                               SPTH, SP )
               ELSE
-                CALL RC32ST ( SIJ, NBINST, SPTH, SP ) 
+                CALL RC32ST ( SIJ, NBINST, SPTH, SP )
               ENDIF
               SPIJ(1) = SP
             ELSE
-C - CAS NBP = 0 / NBQ != 0            
+C - CAS NBP = 0 / NBQ != 0
               IF (NBTHEP.EQ.0) THEN
                 DO 113 I1 = 1,6
                   SQTH(I1) = ZR(JTHUNQ+I1-1) - ZR(JTHUNQ+6+I1-1)
@@ -285,5 +287,5 @@ C --- CALCUL DE KE_MECA
         SPMECA(1) =SP
 C
       END IF
-      
+
       END

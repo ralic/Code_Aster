@@ -2,7 +2,7 @@
      &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
       INTEGER          NBMODE,NBSAUV,LDLIM,
      &                 IMODE,IER,IBID,LVALE,I,
      &                 JREFA

@@ -3,7 +3,7 @@
       CHARACTER*16 NOMTE,OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
 C ----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
 
       INTEGER NEEQMX,NCEQMX
       PARAMETER (NEEQMX=14,NCEQMX=17)

@@ -1,7 +1,7 @@
       SUBROUTINE TE0008(OPTION,NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ======================================================================
 C
       IMPLICIT      NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16  OPTION,NOMTE
 C
 C ----------------------------------------------------------------------
@@ -66,7 +67,7 @@ C --- PARAMETRE EN SORTIE: VECTEUR DES FORCES INTERNES (BT*SIGMA)
 C
       CALL JEVECH('PVECTUR','E',IVECTU)
 C
-C --- PARAMETRE EN ENTREE: GEROMETRIE 
+C --- PARAMETRE EN ENTREE: GEROMETRIE
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       DO 30 I = 1,NDIM*NNO
@@ -91,7 +92,7 @@ C
 C ----- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
 C
         CALL BSIGMC(NNO   ,NDIM  ,NBSIG ,NPG1  ,IPOIDS    ,
-     &              IVF   ,IDFDE ,GEO   ,NHARM ,ZR(ICONTM), 
+     &              IVF   ,IDFDE ,GEO   ,NHARM ,ZR(ICONTM),
      &              BSIGM )
 C
 C ----- AFFECTATION DU VECTEUR EN SORTIE
@@ -106,18 +107,18 @@ C
 
         CALL R8INIR(NBSIG*NPG1,0.D0,SIGTMP,1)
         CALL R8INIR(NDIM*NNO,0.D0,FTEMP,1)
-        
+
         DO 200 I=1,NBSIG*NPG1
 
           SIGTMP(I) = SIGREF
-          CALL BSIGMC(NNO   ,NDIM  ,NBSIG ,NPG1  ,IPOIDS, 
-     &                IVF   ,IDFDE ,GEO   ,NHARM ,SIGTMP, 
+          CALL BSIGMC(NNO   ,NDIM  ,NBSIG ,NPG1  ,IPOIDS,
+     &                IVF   ,IDFDE ,GEO   ,NHARM ,SIGTMP,
      &                BSIGM )
 
           DO 21 J=1,NDIM*NNO
             FTEMP(J) = FTEMP(J)+ABS(BSIGM(J))
 21        CONTINUE
-          
+
           SIGTMP(I) = 0.D0
 
 200     CONTINUE

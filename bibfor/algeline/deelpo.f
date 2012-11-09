@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,8 @@ C  OUT: PHIE   : DIAMETRE EXTERIEUR SUR L'ELEMENT
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8  CAELEM,NOMA
       INTEGER      NUMAIL
       REAL*8       PHIE
@@ -40,11 +42,11 @@ C
       CHARACTER*24 CADESC,CAVALE,CALIMA,GPMAMA,NOMAMA
 C
 C-----------------------------------------------------------------------
-      INTEGER IAS ,IASBON ,IASEDI ,IASMAX ,ICAD ,ICAV ,ICMP 
-      INTEGER ICODE ,IGPMA ,IGRAND ,ILIMA ,IMA ,INOMCP ,IRANG1 
-      INTEGER IRANG2 ,IRANV1 ,IRANV2 ,IRET ,ITAB ,NBCMP ,NBMA 
-      INTEGER NUENTI ,NUMA 
-      REAL*8 DIFR ,R1 ,R2 ,TOLR 
+      INTEGER IAS ,IASBON ,IASEDI ,IASMAX ,ICAD ,ICAV ,ICMP
+      INTEGER ICODE ,IGPMA ,IGRAND ,ILIMA ,IMA ,INOMCP ,IRANG1
+      INTEGER IRANG2 ,IRANV1 ,IRANV2 ,IRET ,ITAB ,NBCMP ,NBMA
+      INTEGER NUENTI ,NUMA
+      REAL*8 DIFR ,R1 ,R2 ,TOLR
 C-----------------------------------------------------------------------
       DATA NOMCMP /'R1      ','R2      '/
 C

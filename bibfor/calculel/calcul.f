@@ -2,7 +2,7 @@
      &                  LPAOU,BASE,MPIC)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,6 +25,8 @@ C TOLE CRP_20 CRS_1404
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER NIN,NOU
       CHARACTER*(*) BASE,OPTIO
       CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGRLZ,MPIC

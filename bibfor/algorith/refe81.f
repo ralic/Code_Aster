@@ -1,6 +1,6 @@
       SUBROUTINE  REFE81 (NOMRES,BASMOD,RAIDF,MASSF,AMORF,MAILLA)
       IMPLICIT NONE
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,7 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
       CHARACTER*24 VALK(2),TYPBAS
       CHARACTER*8  NOMRES,MAILLA,BASMOD,MAILLB,AMOR,BLANC,LINTF,K8BID
       CHARACTER*14 NUMDDL,NUMBIS,NUMTER
@@ -48,8 +49,8 @@ C
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADREF ,IBID ,IOC ,IRET ,L ,LDDESC ,LLDESC 
-      INTEGER LLREF ,LLREFB ,NBVAL 
+      INTEGER IADREF ,IBID ,IOC ,IRET ,L ,LDDESC ,LLDESC
+      INTEGER LLREF ,LLREFB ,NBVAL
 C-----------------------------------------------------------------------
       DATA BLANC         /'        '/
 C-----------------------------------------------------------------------

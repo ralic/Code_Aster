@@ -2,13 +2,15 @@
      &                   FONREV,IER)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER       NBREVI,NBMODE,NEQ,IER
       REAL*8        DPLREV(NBREVI,NBMODE,*),BMODAL(NEQ,*)
       CHARACTER*8   FONREV(NBREVI,*)
       CHARACTER*14  NUMDDL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +55,8 @@ C
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IRET ,J ,JDPL ,LLREFE ,NC ,NF 
-      INTEGER NN ,NS 
+      INTEGER IBID ,IRET ,J ,JDPL ,LLREFE ,NC ,NF
+      INTEGER NN ,NS
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0

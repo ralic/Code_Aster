@@ -1,10 +1,11 @@
       SUBROUTINE TE0148(OPTION,NOMTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,8 +49,8 @@ C
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,ILAPL ,ILIST ,IMA ,IVECT ,J ,JGEOM 
-      INTEGER JLIMA ,JTRAN ,LX ,NBMA ,NBMA2 ,NO1 ,NO2 
+      INTEGER I ,ILAPL ,ILIST ,IMA ,IVECT ,J ,JGEOM
+      INTEGER JLIMA ,JTRAN ,LX ,NBMA ,NBMA2 ,NO1 ,NO2
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()

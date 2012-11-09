@@ -1,12 +1,14 @@
       SUBROUTINE MTCMBI(TYPMAT,LMAT,COEF,CCOEF,LRES)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER LMAT,LRES
       CHARACTER*(*) TYPMAT
       COMPLEX*16 CCOEF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +25,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_4
 C     DUPLIQUE LA MATRICE EN METTANT TOUTES LES TERMES A ZERO SAUF
 C     LES "LAGRANGE" EN LEUR APPLIQUANT UN COEFFICIENT.
 C     -----------------------------------------------------------------
@@ -45,11 +46,11 @@ C     -----------------------------------------------------------------
       LOGICAL MATSYM
 C     -----------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IATMAI ,IATMAT ,IATREI ,IATRES ,IBID ,ICOEF 
-      INTEGER IDEBLI ,IEQUA ,IERD ,IFINLI ,ILIG ,IND ,IVAL 
-      INTEGER JREFA ,JSMDI ,JSMHC ,KIN ,LDDL ,NBCOMB ,NEQ 
+      INTEGER I ,IATMAI ,IATMAT ,IATREI ,IATRES ,IBID ,ICOEF
+      INTEGER IDEBLI ,IEQUA ,IERD ,IFINLI ,ILIG ,IND ,IVAL
+      INTEGER JREFA ,JSMDI ,JSMHC ,KIN ,LDDL ,NBCOMB ,NEQ
 
-      REAL*8 COEF ,ZERO 
+      REAL*8 COEF ,ZERO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 

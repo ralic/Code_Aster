@@ -1,6 +1,6 @@
       SUBROUTINE SSVALV(STATUT,NOMCAS,MO,MA,ISMA,IDRESL,LONG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,8 @@ C
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8 MO,MA
       CHARACTER*(*) STATUT
       CHARACTER*8   NOMCAS
@@ -68,9 +70,9 @@ C
 C     1- SI APPEL INITIAL : ON ALLOUE UN OBJET SUFFISANT :
 C     ----------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IADESM ,IALICA ,IALICH ,IANMCR ,IAPARR ,IASSSA 
-      INTEGER IDRES2 ,IERD ,IRET ,J ,JSMA ,LONG ,NBSMA 
-      INTEGER NBSSA ,NDDLE ,NDDLI ,NDDLT ,NMXVAL 
+      INTEGER I ,IADESM ,IALICA ,IALICH ,IANMCR ,IAPARR ,IASSSA
+      INTEGER IDRES2 ,IERD ,IRET ,J ,JSMA ,LONG ,NBSMA
+      INTEGER NBSSA ,NDDLE ,NDDLI ,NDDLT ,NMXVAL
 C-----------------------------------------------------------------------
       IF (STATUT(1:5).EQ.'DEBUT')THEN
         CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)

@@ -1,6 +1,6 @@
       SUBROUTINE OP0016()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,8 @@ C
 C     DIRECTIVE IMPR_JEVEUX
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8  FICH
       CHARACTER*24 NOMOBJ,NOM
       CHARACTER*32 NOML32
@@ -32,9 +34,9 @@ C
       INTEGER      IARG
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IMES ,INFO ,IRES ,IRET ,IUNI ,IUNIFI 
-      INTEGER N ,N1 ,N2 ,N3 ,NFIC ,NIF ,NOC 
-      INTEGER NRG ,NUM ,NUMERG ,NUNI 
+      INTEGER I ,IMES ,INFO ,IRES ,IRET ,IUNI ,IUNIFI
+      INTEGER N ,N1 ,N2 ,N3 ,NFIC ,NIF ,NOC
+      INTEGER NRG ,NUM ,NUMERG ,NUNI
 C-----------------------------------------------------------------------
       CALL INFMAJ()
       IRES=IUNIFI('RESULTAT')
@@ -46,7 +48,7 @@ C
       CALL ULDEFI( IUNI,' ',' ','A','N','O' )
       CALL GETVTX('IMPRESSION','NOM',1,IARG,1,FICH,NFIC)
       IF (NFIC.NE.0) THEN
-C        
+C
          IF(FICH(1:8).EQ.'RESULTAT') THEN
             IUNI=IRES
          ELSE IF(FICH(1:7).EQ.'MESSAGE') THEN

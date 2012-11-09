@@ -10,31 +10,31 @@
       REAL*8 N,GAMMA0,R8MIEM,RMIN,RHOP(12),R8MAEM
       REAL*8 TAUF,RHOM(12),RMAX,HS,GAMPRO,GP1,GP2,R8PI,YS,TAUEFF
       REAL*8 B,H,DELTG0,TAU0,D,BETA,TEMP,DLAT,KF,KSELF,RHOMOB,KBOLTZ
-      REAL*8 YAT,MU,LC,RHOTOT,EPSEQ,DG,DELTAG,T1,T2,T3,T4,T5,T6,T7,T8,T9
+      REAL*8 YAT,MU,LC,RHOTOT,DG,DELTAG,T1,T2,T3,T4,T5,T6,T7,T8,T9
       REAL*8 RS,D1,LAMBDA,ALPHAT,LS,TAUSLT,TAUSLR,GAMNUC,ASR
-      REAL*8 DELTA1,DELTA2,AIRR,XI,RHOIRR,DEPDT,TAUC,T10
+      REAL*8 DELTA1,DELTA2,AIRR,RHOIRR,DEPDT,TAUC,T10
       LOGICAL NEW
       COMMON /DEPS6/DEPSDT
       INTEGER IRR,DECIRR,NBSYST,DECAL
       COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
 C  COMPORTEMENT MONOCRISTALLIN : ECOULEMENT (VISCO)PLASTIQUE
@@ -64,7 +64,7 @@ C ======================================================================
       IFL=NBCOMM(IFA,1)
       RMIN=R8MIEM()
       RMAX=SQRT(R8MAEM())
-      
+
       B=     COEFT(IFL+1)
       H=     COEFT(IFL+2)
       DELTG0=COEFT(IFL+3)
@@ -94,31 +94,31 @@ C         XI    =COEFT(IFL+23)
 
 C     DELTA1=1 par defaut : nouvelle formulation. Sinon, ancienne
       NEW=(ABS(DELTA1-1.D0).LT.1.D-6)
-      
+
 C initialisation des arguments en sortie
       DGAMMA=0.D0
       DALPHA=0.D0
       DP=0.D0
       IRET=0
-      
+
       LC=500.D0*B*(TEMP/300.D0)**2
 
       DO 55 IR=1,NBSYS
          RHOM(IR)=VIND(DECAL+3*(IR-1)+1)
          RHOP(IR)=RHOM(IR)+DY(IR)
  55   CONTINUE
-   
+
       IF (RHOP(IS).LT.RMIN) THEN
          IRET=1
          GOTO 9999
       ENDIF
-      
+
 C     on resout en alpha=rho
 
 C 1.  CALCUL de DeltaG approximatif
       RHOTOT=0.D0
       IF (NEW) THEN
-C rho tot represente rho_f (foret)      
+C rho tot represente rho_f (foret)
          DO 11 IR=1,12
             IF (IR.EQ.IS) GOTO 11
             RHOTOT=RHOTOT+RHOP(IR)
@@ -148,7 +148,7 @@ C        DEPSDT DU POINT DE GAUSS
       ELSE
          DELTAG=DELTG0
       ENDIF
-      
+
 C 2.  Calcul de Rs
       T1=1.D0-DELTAG/DELTG0
       IF (T1.LT.0.D0) THEN
@@ -163,8 +163,8 @@ C 3.  calcul de lambda
       D1=(D+2.D0*RS)*RHOTOT
       T2=MIN(SQRT(RHOTOT),D1)
       LAMBDA=1.D0/T2 - D
-      
-C 4.  calcul de Alpha-s_AT et Ls      
+
+C 4.  calcul de Alpha-s_AT et Ls
       ALPHAT=0.D0
       IF (NEW) THEN
          DO 21 IR=1,12
@@ -203,7 +203,7 @@ C 6.  calcul de Taus_LR
       ELSE
          TAUSLR=BETA*ALPHAT*MU*B*SQRT(RHOTOT)
       ENDIF
-      
+
 C 7.  calcul de Taus_eff
       IF (NEW) THEN
          TAUC=TAUF + SQRT( TAUSLT**2+TAUSLR**2)
@@ -211,24 +211,24 @@ C 7.  calcul de Taus_eff
       ELSE
          TAUEFF=ABS(TAUS)-TAUF - TAUSLT - TAUSLR
       ENDIF
-      
+
       IF (ABS(TAUS).GT.RMIN) THEN
          SGNS=TAUS/ABS(TAUS)
       ELSE
          SGNS=0.D0
       ENDIF
-      
+
 C 8.  calcul de gamma_nuc
       IF (TAUEFF.GT.TAU0) THEN
          IRET=1
          GOTO 9999
       ELSEIF (TAUEFF.LT.RMIN) THEN
          T5=0.D0
-      ELSE 
+      ELSE
          T5=SQRT(TAUEFF/TAU0)
       ENDIF
       GAMNUC=RHOMOB*B*H*LS*EXP(-DELTG0*(1.D0-T5)/KBOLTZ/TEMP)
-C     ON POURRAIT DESACTIVER CE SYSTEME SI TAU_EFF < 0      
+C     ON POURRAIT DESACTIVER CE SYSTEME SI TAU_EFF < 0
       GAMNUC=GAMNUC*SGNS
 
 C 9.  calcul de gamma_prob
@@ -260,7 +260,7 @@ C 10. ECOULEMENT CALCUL DE DGAMMA,DP
          T10=1.D0
          IF (TAUEFF.GT.RMIN) T10=(1.D0-DELTA1*TAUEFF/TAU0)
       ENDIF
-      
+
 C 11. CALCUL DE RHO_POINT RENOMME DALPHA
       IF (RHOP(IS).GT.RMIN) THEN
          IF (NEW) THEN
@@ -270,11 +270,11 @@ C 11. CALCUL DE RHO_POINT RENOMME DALPHA
          ENDIF
       ELSE
          T7=0.D0
-C        ou bien IRET=1, a voir  
+C        ou bien IRET=1, a voir
       ENDIF
-      
+
       IF (NEW) THEN
-         T8=ALPHAT*RHOTOT*LAMBDA*T10      
+         T8=ALPHAT*RHOTOT*LAMBDA*T10
       ELSE
          T8=0.D0
          DO 30 IR=1,12
@@ -289,7 +289,7 @@ C        ou bien IRET=1, a voir
             ENDIF
  30      CONTINUE
       ENDIF
-      
+
       IF (TAUEFF.GT.RMIN) THEN
          T9=1.D0/YAT+DELTA2*2.D0*R8PI()*TAUEFF/MU/B
       ELSE
@@ -300,5 +300,5 @@ C        ou bien IRET=1, a voir
       DALPHA=HS*DP/B
 
  9999 CONTINUE
-C 12. irradiation mise ajout dans LCDPEC / LCDPEQ      
+C 12. irradiation mise ajout dans LCDPEC / LCDPEQ
       END

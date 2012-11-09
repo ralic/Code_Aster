@@ -4,6 +4,8 @@
      &                    VERSIO, LGMSH, TYCHA )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM,JEXATR
       INTEGER           IFI, NBCHAM, NBORDR, NBCMP, ORDR(*), NBMAT,
      &                  NUMMAI(*),VERSIO
       LOGICAL           LRESU,LGMSH
@@ -12,7 +14,7 @@
       CHARACTER*8       TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

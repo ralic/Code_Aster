@@ -1,6 +1,6 @@
       SUBROUTINE  COMPMA (MAILLA,NBGR,NOMGR,NBTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8 MAILLA,NOMGR(NBGR),NOMCOU
       CHARACTER*24 VALK(2)
       CHARACTER*1 K1BID
@@ -47,7 +49,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IER ,NB ,NBGR ,NBTO ,NUM 
+      INTEGER I ,IER ,NB ,NBGR ,NBTO ,NUM
 C-----------------------------------------------------------------------
       IF(NBGR.EQ.0) THEN
         NBTO=0

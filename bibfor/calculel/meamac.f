@@ -1,12 +1,13 @@
       SUBROUTINE MEAMAC(MODELZ,NCHA,LCHA,MATE,MATELZ)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER                  NCHA
       CHARACTER*(*)     MODELZ,          MATE,MATELZ
       CHARACTER*8                   LCHA(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +55,7 @@ C
       CHARACTER*19 MATEL
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IRET ,JLIRE2 ,LONG2 
+      INTEGER I  ,JLIRE2 ,LONG2
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       MODELE = MODELZ

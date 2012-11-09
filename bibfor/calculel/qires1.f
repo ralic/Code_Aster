@@ -3,7 +3,7 @@
      &                   MATE  , CHVOIS, TABIDO, CHELEM           )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,8 @@ C ......................................................................
 
 C DECLARATION PARAMETRES D'APPELS
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER  NCHARP,NCHARD
       INTEGER  TABIDO(5)
       CHARACTER*8   MODELE,LCHARP(1),LCHARD(1)
@@ -240,6 +242,8 @@ C            LA CARTE A ETE ETENDUE
       ELSE
         IADEP1 = 0
         IAVAP1 = 0
+        IPTMP1 = 1
+        NUMGP1 = 0
       ENDIF
 C
       IF (CARTP2 .NE. ' ') THEN
@@ -256,6 +260,8 @@ C            LA CARTE A ETE ETENDUE
       ELSE
         IADEP2 = 0
         IAVAP2 = 0
+        IPTMP2 = 1
+        NUMGP2 = 0
       ENDIF
 C
       IATYMA = TABIDO(1)
@@ -330,6 +336,8 @@ C            LA CARTE A ETE ETENDUE
       ELSE
         IADED1 = 0
         IAVAD1 = 0
+        NUMGD1 = 0
+        IPTMD1 = 1
       ENDIF
 C
       IF (CARTD2 .NE. ' ') THEN
@@ -346,6 +354,8 @@ C            LA CARTE A ETE ETENDUE
       ELSE
         IADED2 = 0
         IAVAD2 = 0
+        NUMGD2 = 0
+        IPTMD2 = 1
       ENDIF
 C
       ICMPD(1)  = IAREPE

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,8 @@ C                DE FORME ASSOCIEES A L'EXCITATION
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8   NOMA, NOMNOA
       INTEGER       NBN, NUNO(*), NBNFEN, NOEFEN(*)
       REAL*8        LONG, DIAX(*), DISFEN(*)
@@ -61,11 +63,11 @@ C
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IDISCP ,IDISCS ,INDAP ,INO ,INUNOP ,INUNOS ,ISENSP 
-      INTEGER ISENSS ,LP ,LS ,NBNOP ,NBNOS ,NBRMA ,NUNOAP 
-      INTEGER NUNOD ,NUNOG 
-      REAL*8 DIFX1 ,DIFX2 ,R8PREM ,REFX1 ,TOL ,X ,X1 
-      REAL*8 X2 ,XAP ,XDECAL 
+      INTEGER IDISCP ,IDISCS ,INDAP ,INO ,INUNOP ,INUNOS ,ISENSP
+      INTEGER ISENSS ,LP ,LS ,NBNOP ,NBNOS ,NBRMA ,NUNOAP
+      INTEGER NUNOD ,NUNOG
+      REAL*8 DIFX1 ,DIFX2 ,R8PREM ,REFX1 ,TOL ,X ,X1
+      REAL*8 X2 ,XAP ,XDECAL
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       TOL = 100.D0 * R8PREM()

@@ -1,6 +1,6 @@
       SUBROUTINE TE0182(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C
       IMPLICIT NONE
 C*
       INCLUDE 'jeveux.h'
+
       INTEGER ICODRE,KPG,SPT
       CHARACTER*8 FAMI,POUM
       CHARACTER*16       NOMTE,OPTION
@@ -44,9 +45,9 @@ C*
 C
 C**
 C-----------------------------------------------------------------------
-      INTEGER I ,IIMP ,IJ ,INO ,J ,JNO ,MATER 
+      INTEGER I ,IIMP ,IJ ,INO ,J ,JNO ,MATER
 
-      REAL*8 R8B 
+      REAL*8 R8B
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFDX,JGANO)
 C**

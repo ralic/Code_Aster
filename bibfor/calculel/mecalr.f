@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,8 @@ C
 C     --- ARGUMENTS ---
 
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER NBORDR,NCHAR
       CHARACTER*4 CTYP
       CHARACTER*8 RESUCO,RESUC1,MODELE,CARA

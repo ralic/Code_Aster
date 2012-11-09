@@ -3,6 +3,8 @@
      +                    LMAX, NT, MAILLA, NOGRNO, TYPSOU )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER             NT
       REAL*8              EPSI, RIP, REP, RIT, RET, BET, ESO, HSO,
      +                    H2, H3, L3, L4, L5, L6, TETAF, XMAX, YMAX,
@@ -11,7 +13,7 @@
       CHARACTER*8         MAILLA, NOGRNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

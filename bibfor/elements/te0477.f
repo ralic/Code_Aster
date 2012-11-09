@@ -1,6 +1,6 @@
       SUBROUTINE TE0477(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,12 +19,13 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
 C-----------------------------------------------------------------------
-      INTEGER I ,ICARCR ,ICOMPO ,ICONTM ,ICONTP ,IDEPLM ,IDEPLP 
-      INTEGER IDFDE ,IGEOM ,IMATE ,IMATUU ,IPG ,IPOIDS ,IVARIM 
-      INTEGER IVARIP ,IVECTU ,IVF ,J ,JCRET ,JGANO ,K 
-      INTEGER LAG ,NBRES ,NBV ,NDIM ,NNO ,NNOS ,NPG 
-      REAL*8 TEMPM ,YGOT 
+      INTEGER I ,ICARCR ,ICOMPO ,ICONTM ,ICONTP ,IDEPLM ,IDEPLP
+      INTEGER IDFDE ,IGEOM ,IMATE ,IMATUU ,IPG ,IPOIDS ,IVARIM
+      INTEGER IVARIP ,IVECTU ,IVF ,J ,JCRET ,JGANO ,K
+      INTEGER LAG ,NBRES ,NBV ,NDIM ,NNO ,NNOS ,NPG
+      REAL*8 TEMPM ,YGOT
 C-----------------------------------------------------------------------
       PARAMETER (NBRES=2)
       CHARACTER*8 TYPMOD(2)
@@ -60,7 +61,7 @@ C - PARAMETRES EN ENTREE
         CALL JEVECH('PCONTMR','L',ICONTM)
         CALL JEVECH('PVARIMR','L',IVARIM)
         CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
-C       LGPG : nombre de variables internes par sous point 
+C       LGPG : nombre de variables internes par sous point
         LGPG = MAX(JTAB(6),1)
         CALL JEVECH('PDEPLMR','L',IDEPLM)
         CALL JEVECH('PDEPLPR','L',IDEPLP)
@@ -118,7 +119,7 @@ C  =============================================
         IF (ZK16(ICOMPO+2).NE.'PETIT') THEN
            IF (ZK16(ICOMPO+2).NE.'GROT_GDEP') THEN
               CALL U2MESG('F','COMPOR1_69',1,ZK16(ICOMPO+2),0,0,0,0.D0)
-           ENDIF 
+           ENDIF
         ENDIF
         IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
           IF (OPTION(1:16).EQ.'RIGI_MECA_TANG' .OR.

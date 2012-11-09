@@ -1,8 +1,8 @@
       SUBROUTINE MLTASA(NBLOC,LGBLOC,ADINIT,NOMMAT,LONMAT,
      +     FACTOL,FACTOU,TYPSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
-C RESPONSABLE JFBHHUC C.ROSE
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,8 @@ C     TOLE CRS_512
 C COMPIL PARAL
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER NBLOC,LGBLOC(*),LONMAT,ADINIT(LONMAT),TYPSYM
       CHARACTER*24 FACTOL,FACTOU,VALM
       CHARACTER*(*) NOMMAT
@@ -36,7 +38,7 @@ C     ----------
 C     VERSION NON SYMETRIQUE
 C=============================================================
       CHARACTER*8 BASE
-      INTEGER I,I1,IB,IFACL,IFACU,CODE,ADPROV,VALI(3)
+      INTEGER I,I1,IB,IFACL,IFACU,CODE,ADPROV
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       DATA VALM/'                   .VALM'/

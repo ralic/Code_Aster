@@ -1,36 +1,38 @@
       SUBROUTINE FONLEV ( RESU, NOMA, NBNOFF )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8         RESU, NOMA
       INTEGER             NBNOFF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C FONCTION REALISEE:
 C
-C     VERIFICATION DES LEVRES ET DE LEUR CONNEXITE  
+C     VERIFICATION DES LEVRES ET DE LEUR CONNEXITE
 C
 C     ENTREES:
 C        RESU       : NOM DU CONCEPT RESULTAT DE L'OPERATEUR
 C        NOMA       : NOM DU MAILLAGE
 C        NBNOFF     : NOMBRE DE NOEUDS EN FOND DE FISSURE
-C        
+C
 C     -----------------------------------------------------------------
 C
       INTEGER       JMAI1,JADR,JNOE1,JMAI2,JMAII, JJJ, IATYMA
@@ -43,7 +45,7 @@ C
       REAL*8        D, PREC, PRECR
       CHARACTER*4   TYPMA
       CHARACTER*6   NOMPRO
-      CHARACTER*8   K8B, MAILLE, TYPE, NOEUG, TYPMCL(2),MOTCLE(2) 
+      CHARACTER*8   K8B, MAILLE, TYPE, NOEUG, TYPMCL(2),MOTCLE(2)
       CHARACTER*9   TYPLEV(2),MOTFAC, VALK(2)
       CHARACTER*24  NOMOBJ, GROUMA, NOMMAI, CONEC, TRAV
       PARAMETER(PREC=1.D-1)
@@ -51,7 +53,7 @@ C
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
-      
+
       NOMPRO = 'FONLEV'
 C
 C     ------------------------------------------------------------------
@@ -63,7 +65,7 @@ C     ------------------------------------------------------------------
       CALL JEVEUO (NOMA//'.TYPMAIL','L',IATYMA)
 
 C     ------------------------------------------------------------------
-C     BOUCLE SUR LES DEUX LEVRES 
+C     BOUCLE SUR LES DEUX LEVRES
 C     CELLES-CI SONT TRAITEES DE LA MEME MANIERE
 C     ------------------------------------------------------------------
       TYPLEV(1) = 'LEVRE_SUP'
@@ -71,11 +73,11 @@ C     ------------------------------------------------------------------
       MOTCLE(1) = 'GROUP_MA'
       MOTCLE(2) = 'MAILLE'
       TYPMCL(1) = 'GROUP_MA'
-      TYPMCL(2) = 'MAILLE'        
-       
+      TYPMCL(2) = 'MAILLE'
+
       DO 10 INDICE=1,2
         MOTFAC=TYPLEV(INDICE)
-C        
+C
 C       EVALUATION DU NOMBRE DE MAILLES ET CONSTRUCTION DU VECTEUR DE
 C       MAILLES DE TRAVAIL
 C
@@ -95,7 +97,7 @@ C
 
 C
 C ---   ALLOCATION D'UN PREMIER OBJET DE TRAVAIL
-C       DANS LEQUEL SERONT STOCKES LES MAILLES AVANT DE S'ASSURER QU'IL 
+C       DANS LEQUEL SERONT STOCKES LES MAILLES AVANT DE S'ASSURER QU'IL
 C       N'Y A PAS DUPPLICATION
 C
         CALL WKVECT('&&'//NOMPRO//'.MAIL','V V K8',NBMAL,JMAI1)
@@ -197,12 +199,12 @@ C --- VERIFICATION COHERENCE LEVRE SUP / FOND
 C
         CALL JEEXIN(RESU//'.FOND.NOEU',IRET)
         IF(IRET.NE.0) THEN
-          CALL JELIRA(RESU//'.FOND.NOEU' , 'LONUTI', 
+          CALL JELIRA(RESU//'.FOND.NOEU' , 'LONUTI',
      &                                                  NBNOFF, K8B)
           CALL JEVEUO(RESU//'.FOND.NOEU' ,'L',JNOE1)
         ELSE
           IF (MOTFAC .EQ. 'LEVRE_SUP') THEN
-            CALL JELIRA(RESU//'.FOND_SUP.NOEU' , 'LONUTI', 
+            CALL JELIRA(RESU//'.FOND_SUP.NOEU' , 'LONUTI',
      &                                                  NBNOFF, K8B)
             CALL JEVEUO(RESU//'.FOND_SUP.NOEU' ,'L',JNOE1)
           ELSEIF (MOTFAC .EQ. 'LEVRE_INF') THEN
@@ -235,7 +237,7 @@ C
                 IF(NOEUG.EQ.ZK8(JNOE1-1 + I)) THEN
                    COMPTA = COMPTA + 1
                    GOTO 610
-                ENDIF   
+                ENDIF
  630           CONTINUE
  620        CONTINUE
             IF(COMPTA .EQ. 0)  THEN

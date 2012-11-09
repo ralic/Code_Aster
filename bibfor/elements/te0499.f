@@ -1,6 +1,6 @@
       SUBROUTINE TE0499(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 
@@ -44,12 +45,11 @@ C ......................................................................
       REAL*8 TRACE,NORM,JAC
       INTEGER NNO,KP,NPG,IPOIDS,IVF,IDFDE,IGEOM
       INTEGER IVECTU,K,I,MATER
-      CHARACTER*8 NOMAIL
 
 C-----------------------------------------------------------------------
-      INTEGER IER ,II ,IMATE ,INDIC1 ,INDIC2 ,IONDC ,IONDE 
-      INTEGER J ,JGANO ,JINST ,NDIM ,NNOS 
-      REAL*8 COEDIR ,R8B ,TYPER ,VALFON 
+      INTEGER IER ,II ,IMATE ,INDIC1 ,INDIC2 ,IONDC ,IONDE
+      INTEGER J ,JGANO ,JINST ,NDIM ,NNOS
+      REAL*8 COEDIR ,R8B ,TYPER ,VALFON
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
@@ -59,7 +59,7 @@ C-----------------------------------------------------------------------
       CALL JEVECH('PONDPLR','L',IONDC)
       CALL JEVECH('PTEMPSR','L',JINST)
       CALL JEVECH('PVECTUR','E',IVECTU)
-      
+
       IF (ZK24(IONDE)(1:7).EQ.'&FOZERO') GOTO 140
 
 C     --- INITIALISATION DE SIGMA
@@ -79,7 +79,7 @@ C     --- INITIALISATION DE SIGMA
       POUM='+'
       CALL RCVALB(FAMI,KPG,SPT,POUM,MATER,' ','ELAS',0,' ',R8B,3,
      &            NOMRES,VALRES,ICODRE,1)
-     
+
       E = VALRES(1)
       IF (E.LT.1.D-1) GO TO 140
       NU = VALRES(2)
@@ -95,7 +95,7 @@ C     --- CARACTERISTIQUES DE L'ONDE PLANE
       DIRX =ZR(IONDC)
       DIRY =ZR(IONDC+1)
       TYPER=ZR(IONDC+3)
-      
+
       IF (TYPER.EQ.0.D0) TYPE = 'P'
       IF (TYPER.EQ.1.D0) TYPE = 'S'
 
@@ -123,26 +123,26 @@ C    BOUCLE SUR LES POINTS DE GAUSS
 C        --- CALCUL DU CHARGEMENT PAR ONDE PLANE
 CKH          ON SUPPOSE QU'ON RECUPERE UNE VITESSE
       CALL FOINTE('F ',ZK24(IONDE),1,'INST',ZR(JINST),VALFON,IER)
-        
+
         VALFON = -VALFON/CELE
 C        VALFON = VALFON/CELE
-        
+
 C        CALCUL DES CONTRAINTES ASSOCIEES A L'ONDE PLANE
 C        CALCUL DU GRADIENT DU DEPLACEMENT
         IF (TYPE.EQ.'P') THEN
-        
+
           GRAD(1,1) = DIRX*VALFON*DIRX
           GRAD(1,2) = DIRY*VALFON*DIRX
           GRAD(2,1) = DIRX*VALFON*DIRY
           GRAD(2,2) = DIRY*VALFON*DIRY
-          
+
         ELSEIF (TYPE.EQ.'S') THEN
-        
+
           GRAD(1,1) = DIRX*VALFON*NORX
           GRAD(1,2) = DIRY*VALFON*NORX
           GRAD(2,1) = DIRX*VALFON*NORY
           GRAD(2,2) = DIRY*VALFON*NORY
-          
+
         END IF
 
 C        CALCUL DES DEFORMATIONS

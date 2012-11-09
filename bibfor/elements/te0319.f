@@ -1,6 +1,6 @@
       SUBROUTINE TE0319(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C CALCUL DES FLUX AU CARRE AUX POINTS DE GAUSS
@@ -41,8 +42,8 @@ C IN  NOMTE  : NOM DU TYPE ELEMENT
       LOGICAL ANISO,GLOBAL
 C FIN ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER ICAMAS ,L ,NDIM ,NNOS ,NUNO 
-      REAL*8 ALPHA ,BETA ,R8DGRD 
+      INTEGER ICAMAS ,L ,NDIM ,NNOS ,NUNO
+      REAL*8 ALPHA ,BETA ,R8DGRD
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 

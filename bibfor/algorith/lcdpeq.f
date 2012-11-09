@@ -3,7 +3,7 @@
 
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,11 +45,11 @@ C     ----------------------------------------------------------------
       REAL*8  ID(3,3),F(3,3),FPM(3,3),FP(3,3),FE(3,3),DETP,LCNRTE
       REAL*8  DETOT(*),EPSD(*),PK2(6),DEVI(6),ENDOC,DP,XI,QM(3,3)
       REAL*8  MATERF(NMAT,2),RHOIRR(12),TAU(60)
-      REAL*8  RHOSAT,PHISAT,DZ,ROLOOP(12),FIVOID(12),SDP,DPS(12)
+      REAL*8  RHOSAT,PHISAT,DZ,ROLOOP(12),FIVOID(12),SDP
       CHARACTER*16 LOI,CPMONO(5*NMAT+1),LOCA,COMP(*),NECOUL,NOMFAM
       INTEGER IRR,DECIRR,NBSYST,DECAL
       COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
-      DATA    ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/    
+      DATA    ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 
       LOI  = COMP(1)
       IF (LOI(1:8).EQ.'MONOCRIS')  THEN
@@ -59,8 +59,11 @@ C     ----------------------------------------------------------------
          ENDIF
       ENDIF
 
-      IF (LOI(1:8).EQ.'MONOCRIS') THEN      
-  
+      EPSEQ = 0.D0
+      NBSYS = 0
+
+      IF (LOI(1:8).EQ.'MONOCRIS') THEN
+
          NBFSYS=NBCOMM(NMAT,2)
 C        NSFV : debut de la famille IFA dans les variables internes
          NSFV=6
@@ -89,7 +92,7 @@ C            NUECOU=NINT(MATERF(IFL,2))
                IRR=0
                IRR2=0
             ENDIF
-            
+
             IF(IRR2.EQ.1) THEN
                DO 7 IS=1,12
 C                 VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
@@ -98,9 +101,9 @@ C                 VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                   RHOIRR(IS)=RHOIRR(IS)*EXP(-XI*DP)
   7            CONTINUE
                CALL DCOPY(12, RHOIRR,1,VINF(NSFV+3*NBSYS+1),1)
-               
+
             ENDIF
-           
+
             IF(IRR2.EQ.2) THEN
                DO 8 IS=1,12
 C                 SOMME SUR COPLA(S)
@@ -121,15 +124,15 @@ C                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                CALL DCOPY(12, ROLOOP,1,VINF(NSFV+3*NBSYS+1),1)
                CALL DCOPY(12, FIVOID,1,VINF(NSFV+3*NBSYS+13),1)
             ENDIF
-         
+
             NSFV=NSFV+NBSYS*3
   6      CONTINUE
-  
-  
+
+
          INDTAU=NSFV
          IF (IRR2.EQ.1) INDTAU=INDTAU+12
          IF (IRR2.EQ.2) INDTAU=INDTAU+24
-C        CISSIONS TAU_S  
+C        CISSIONS TAU_S
          NS=0
          DO 61 IFA=1,NBFSYS
             IFL=NBCOMM(IFA,1)
@@ -148,8 +151,8 @@ C              TAU      : SCISSION REDUITE TAU=SIG:MUS
             NS=NS+NBSYS
   61     CONTINUE
          CALL DCOPY(NS,TAU,1,VINF(INDTAU+1),1)
-            
-  
+
+
          IF (COMP(3)(1:5).NE.'PETIT') THEN
 C           ICI CONTRAIREMENT A LCMMON, NVI EST LE NOMBRE TOTAL DE V.I
             CALL DCOPY(9,VINF(NVI-3-18+1 ),1,FP,1)
@@ -160,19 +163,19 @@ C           CALCUL DES CONTRAINTES DE KIRCHOFF
             CALL DCOPY(6,SIG,1,PK2,1)
             CALL DSCAL(3,SQRT(2.D0),PK2(4),1)
             CALL PK2SIG(3,FE,1.D0,PK2,SIG,1)
-C           LES RACINE(2) ATTENDUES PAR NMCOMP :-)       
+C           LES RACINE(2) ATTENDUES PAR NMCOMP :-)
             CALL DSCAL(3,SQRT(2.D0),SIG(4),1)
             CALL DAXPY(9,-1.D0,ID,1,FE,1)
             CALL DCOPY(9,FE,1,VINF(NVI-3-18+10),1)
             CALL LCGRLA(FP,DEVI)
             CALL DCOPY(6,DEVI,1,VINF,1)
-            CALL DSCAL(3,SQRT(2.D0),DEVI(4),1) 
+            CALL DSCAL(3,SQRT(2.D0),DEVI(4),1)
             CALL DAXPY(9,-1.D0,ID,1,FP,1)
             CALL DCOPY(9,FP,1,VINF(NVI-3-18+1 ),1)
             EPSEQ = LCNRTE(DEVI)
          ELSE
 C           V.I. 1 A 6 REPRÈSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
-            EPSEQ=0
+            EPSEQ=0.D0
             DO 10 I=1,6
                 DVIN(I)=VINF(I)-VIND(I)
                 EPSEQ=EPSEQ+DVIN(I)*DVIN(I)
@@ -180,11 +183,11 @@ C           V.I. 1 A 6 REPRÈSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
             EPSEQ = SQRT ( 2.0D0/3.0D0* EPSEQ )
          ENDIF
          VINF (NVI-1) = VIND (NVI-1) + EPSEQ
-         
+
       ELSEIF (LOI(1:8).EQ.'POLYCRIS') THEN
 
 C        V.I. 1 A 6 REPRÈSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
-         EPSEQ=0
+         EPSEQ=0.D0
          DO 20 I=1,6
              DVIN(I)=VINF(I)-VIND(I)
              EPSEQ=EPSEQ+DVIN(I)*DVIN(I)
@@ -219,7 +222,7 @@ C         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
    2        CONTINUE
    1     CONTINUE
 
-C        IRRADIATION   
+C        IRRADIATION
          NSFV=7+6*NBPHAS
          NUMIRR=0
          DO 33 IPHAS=1,NBPHAS
@@ -246,7 +249,7 @@ C                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                   NUMIRR=NUMIRR+NBSYS
                ENDIF
 
-               IF (NECOUL.EQ.'MONO_DD_CFC_IRRA') THEN         
+               IF (NECOUL.EQ.'MONO_DD_CFC_IRRA') THEN
                   NBSYS=12
                   CALL DCOPY(12, VIND(DECIRR+NUMIRR+1),1,ROLOOP,1)
                   CALL DCOPY(12, VIND(DECIRR+NUMIRR+13),1,FIVOID,1)
@@ -275,7 +278,7 @@ C                       PARTIE POSITIVE DE ALPHA
                   CALL DCOPY(12, ROLOOP,1,VINF(DECIRR+NUMIRR+1),1)
                   CALL DCOPY(12, FIVOID,1,VINF(DECIRR+NUMIRR+13),1)
                   NUMIRR=NUMIRR+NBSYS+NBSYS
-               ENDIF         
+               ENDIF
 
                NSFV=NSFV+NBSYS*3
   32        CONTINUE
@@ -298,7 +301,7 @@ C --    CALCUL DE DSDE SUIVANT QUE LE MATERIAU EST ENDOMMAGE OU PAS
         ENDOC=(1.0D0-VINF(9))
         MATERF(1,1)=MATERF(1,1)*ENDOC
       ENDIF
-     
+
       IF (LOI(1:8).EQ.'HAYHURST') THEN
 C --    DEBUT TRAITEMENT DE HAYHURST --
 C --    CALCUL DE DSDE SUIVANT QUE LE MATERIAU EST
@@ -307,5 +310,5 @@ C --    ENDOMMAGE OU PAS
         MATERF(1,1)=MATERF(1,1)*ENDOC
 C --    FIN   TRAITEMENT DE HAYHURST --
       ENDIF
-      
+
       END

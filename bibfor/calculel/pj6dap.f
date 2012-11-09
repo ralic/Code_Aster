@@ -3,13 +3,14 @@
      &                  LOIN,DMIN)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       REAL*8 COBARY(2),GEOM1(*),GEOM2(*),BTVR(*)
       INTEGER ITR3,NBTROU,BTDI(*),BTNB(*),BTLC(*),BTCO(*)
       INTEGER SEG2(*),IFM,NIV
       CHARACTER*8 MA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -2,7 +2,7 @@
      &                  NUMINS,VALINC)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,8 @@ C ======================================================================
 C
       IMPLICIT     NONE
       INCLUDE      'jeveux.h'
-      CHARACTER*8  NOMA  
+
+      CHARACTER*8  NOMA
       CHARACTER*24 MODELE, MATE,SDCRIQ
       CHARACTER*19 VALINC(*)
       INTEGER      NUMINS
@@ -48,7 +49,7 @@ C IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 C IN  SDCRIQ : SD CRITERE QUALITE
 C
 C ----------------------------------------------------------------------
-C     
+C
       INTEGER      NBOUT,NBIN
       PARAMETER    (NBOUT=1, NBIN=6)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
@@ -70,7 +71,7 @@ C
       COMPLEX*16   CBID,CCMP
       REAL*8       SOMME(1)
       REAL*8       DIINST,INSTAP,INSTAM,DELTAT
-      REAL*8       LONGC, PRESC      
+      REAL*8       LONGC, PRESC
       CHARACTER*24 ERRTHM
       INTEGER      JERRT
       REAL*8       R8BID
@@ -81,11 +82,11 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()      
+      CALL JEMARQ()
       CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
-C       
+C
       OPTION = 'ERRE_TEMPS_THM'
       LIGRMO = MODELE(1:8)//'.MODELE'
       IF (NIVDBG.GE.2) THEN
@@ -105,13 +106,13 @@ C
 C
 C --- RECUPERATION TABLEAU GRANDEURS
 C
-      CALL CETULE(MODELE,TBGRCA,CODRET)      
+      CALL CETULE(MODELE,TBGRCA,CODRET)
       LONGC  = TBGRCA(1)
       PRESC  = TBGRCA(2)
 C
 C --- ERREUR PRECEDENTE
 C
-      ERRTHM = SDCRIQ(1:19)//'.ERRT'    
+      ERRTHM = SDCRIQ(1:19)//'.ERRT'
       CALL JEVEUO(ERRTHM,'E',JERRT )
       TABERR(1) = ZR(JERRT-1+1)
       TABERR(2) = ZR(JERRT-1+2)
@@ -137,7 +138,7 @@ C
       RCMP(2)  = PRESC
 C
       CALL MECACT(BASE    ,CARTCA,'MODELE',LIGRMO,
-     &            'NEUT_R',NPARA,LICMP,ICMP,RCMP,CCMP,KCMP)      
+     &            'NEUT_R',NPARA,LICMP,ICMP,RCMP,CCMP,KCMP)
 C
 C --- CALCUL DES INDICATEURS LOCAUX PAR ELEMENT
 C
@@ -163,7 +164,7 @@ C
         CALL DBGCAL(OPTION,IFMDBG,
      &              NBIN  ,LPAIN ,LCHIN ,
      &              NBOUT ,LPAOUT,LCHOUT)
-      ENDIF   
+      ENDIF
       CALL CALCUL('C',OPTION,LIGRMO,NBIN   ,LCHIN ,LPAIN ,
      &                              NBOUT  ,LCHOUT,LPAOUT,BASE,'OUI')
 C
@@ -171,7 +172,7 @@ C
       IF (IRET.EQ.0) THEN
         CALL U2MESK('F','CALCULEL2_88',1,OPTION)
         GOTO 9999
-      ENDIF      
+      ENDIF
 C
 C --- PASSAGE A UNE VALEUR GLOBALE EN ESPACE
 C
@@ -188,7 +189,7 @@ C
 C --- SAUVEGARDE
 C
       ZR(JERRT-1+1) = TABERR(1)
-      ZR(JERRT-1+2) = TABERR(2)    
+      ZR(JERRT-1+2) = TABERR(2)
 C
  9999 CONTINUE
 C

@@ -2,22 +2,22 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
@@ -26,6 +26,8 @@ C
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER      IBID, N1, IOCC, NBTHER, NUME, NBINST, JINST,
      +             I, J, K, L, NDIM, NBABSC, JABSC, JORIG, JEXTR, NCMP,
      +             JCONT, IRET,KK
@@ -61,7 +63,7 @@ C
       PREC(2) = 1.0D-06
       CRIT(1) = 'RELATIF'
       CRIT(2) = 'RELATIF'
-C 
+C
       JVORIG = '&&RC3200.THER_UNIT .ORIG'
       JVEXTR = '&&RC3200.THER_UNIT .EXTR'
       CALL JECREC (JVORIG, 'V V R', 'NO','DISPERSE','VARIABLE',NBTHER)
@@ -123,7 +125,7 @@ C
          CALL JEECRA (JEXNOM(JVEXTR,KNUME),'LONUTI',NDIM,' ')
          CALL JEVEUO (JEXNOM(JVEXTR,KNUME), 'E', JEXTR )
 C
-         DO 116 K = 1 , NBABSC*NCMP 
+         DO 116 K = 1 , NBABSC*NCMP
            SIGTH(K) = 0.D0
  116     CONTINUE
          DO 1116 K = 1 , 2
@@ -146,7 +148,7 @@ C
                VALE(2) = ZR(JABSC+K-1)
 C
                CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
-     +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                       CBID, K8B, CRIT, PREC, NOCMP(J),
      +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
                IF (IRET.NE.0) THEN
                   VALK (1) = TABLE
@@ -158,7 +160,7 @@ C
                SIGTH((K-1)*NCMP+J) = ZR(JCONT+K-1)
                IF (J.EQ.NCMP) THEN
                  CALL RCTRES(SIGTH((K-1)*NCMP+1),TRESC(KK))
-                 
+
                  IF (TRACE(3,SIGTH((K-1)*NCMP+1)).LT.0.D0) THEN
                    R3(KK) = TRESC(KK)*(-1.0D0)
                  ELSE
@@ -169,7 +171,7 @@ C
                     TREMAX(KK) = R3(KK)
                     TMIN(KK) = VALE(1)
                     TMAX(KK) = VALE(1)
-                 ELSE 
+                 ELSE
                    IF (R3(KK).LT.TREMIN(KK)) THEN
                     TREMIN(KK) = R3(KK)
                     TMIN(KK) = VALE(1)
@@ -178,9 +180,9 @@ C
                     TREMAX(KK) = R3(KK)
                     TMAX(KK) = VALE(1)
                    ENDIF
-                 ENDIF                   
-               ENDIF     
-                         
+                 ENDIF
+               ENDIF
+
  16          CONTINUE
 C
  14        CONTINUE
@@ -190,11 +192,11 @@ C
 C   POUR LA VALEUR MINIMALE
          DO 66 J = 1,NCMP
            VALE(1) = TMIN(1)
-           DO 166 K=1,NBABSC  
+           DO 166 K=1,NBABSC
              VALE(2) = ZR(JABSC+K-1)
 
              CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
-     +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                       CBID, K8B, CRIT, PREC, NOCMP(J),
      +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
  166       CONTINUE
            ZR(JORIG-1+J) = ZR(JCONT)
@@ -205,13 +207,13 @@ C
 C
            L = NCMP*4 + J
            ZR(JORIG-1+L) = MOMEN0
- 
+
            VALE(1) = TMIN(2)
-           DO 266 K=1,NBABSC  
+           DO 266 K=1,NBABSC
              VALE(2) = ZR(JABSC+K-1)
 
              CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
-     +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                       CBID, K8B, CRIT, PREC, NOCMP(J),
      +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
  266       CONTINUE
            ZR(JEXTR-1+J) = ZR(JCONT+NBABSC-1)
@@ -226,17 +228,17 @@ C
 C
            L = NCMP*6 + J
            ZR(JEXTR-1+L) = 0.5D0*MOMEN1
-                          
+
 C   POUR LA VALEUR MAXIMALE
            VALE(1) = TMAX(1)
-           DO 366 K=1,NBABSC  
+           DO 366 K=1,NBABSC
              VALE(2) = ZR(JABSC+K-1)
 
              CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
-     +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                       CBID, K8B, CRIT, PREC, NOCMP(J),
      +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
  366       CONTINUE
-           L = NCMP + J 
+           L = NCMP + J
            ZR(JORIG-1+L) = ZR(JCONT)
 C
            CALL RC32MY (NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
@@ -249,16 +251,16 @@ C
 C
            L = NCMP*7 + J
            ZR(JORIG-1+L) = 0.5D0*MOMEN1
-           
+
            VALE(1) = TMAX(2)
-           DO 466 K=1,NBABSC  
+           DO 466 K=1,NBABSC
              VALE(2) = ZR(JABSC+K-1)
 
              CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
-     +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                       CBID, K8B, CRIT, PREC, NOCMP(J),
      +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
  466       CONTINUE
-           L = NCMP + J 
+           L = NCMP + J
            ZR(JEXTR-1+L) = ZR(JCONT+NBABSC-1)
 C
            CALL RC32MY (NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)

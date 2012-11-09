@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C ======================================================================
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
       CHARACTER*8 MODELE,CARA,LCHAR(*)
       CHARACTER*19 MATEL
       CHARACTER*24 MATE
@@ -62,7 +63,7 @@ C     ------------------
       CHARACTER*24 CHGEOM,CHROTA,LCHIN(10),LCHOUT(10)
       CHARACTER*24 LIGRMO,CHCARA(18)
 C-----------------------------------------------------------------------
-      INTEGER ICHA ,IRET ,NBRO 
+      INTEGER ICHA ,IRET ,NBRO
 C-----------------------------------------------------------------------
       DATA CHVARC /'&&MERIRO.CHVARC'/
 

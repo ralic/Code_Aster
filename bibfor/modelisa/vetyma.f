@@ -1,6 +1,6 @@
       SUBROUTINE VETYMA(NOMA,LISTMA,NBMA,LISTGR,NBGR,OPTION,NDIM,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,8 @@ C
 C ROUTINES APPELEES:
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER CODRET
       CHARACTER*8 LISTMZ, LISTGZ
       CHARACTER*(*) NOMA,LISTMA(1),LISTGR(1),OPTION
@@ -49,8 +51,8 @@ C
       CHARACTER*1 K1BID
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IADGMA ,IADTYP ,IATYMA ,IBID ,IMA ,J 
-      INTEGER NBGR ,NBMA ,NDIM ,NERR 
+      INTEGER I ,IADGMA ,IADTYP ,IATYMA ,IBID ,IMA ,J
+      INTEGER NBGR ,NBMA ,NDIM ,NERR
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       OPTIOZ = OPTION

@@ -2,11 +2,13 @@
      &                    IFM, NBOCC )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER             NBEPO, NTYELE(*), NBOCC(*), IVR(3), IFM
       CHARACTER*8         NOMA, NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,6 +212,10 @@ C     VALEURS PAR DEFAUT COHERENTES AVEC LE CATALOGUE
 C
       EPSI=1.D-4
       CRIT='RELATIF'
+C
+C     POUR NE PAS PASSER DES VARIABLES NON-INITIALISEES EN ARGUMENT
+      JNOZK = 1
+      JCOZK = 1
 C
       IF (NBOCC(4).NE.0) THEN
         CALL WKVECT('&&ACEATU.LISNOZK','V V I',NBOCC(4),JNOZK)

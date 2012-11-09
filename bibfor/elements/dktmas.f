@@ -1,10 +1,11 @@
       SUBROUTINE DKTMAS ( XYZL, OPTION, PGL, MAS, ENER, MULTIC)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       REAL*8        XYZL(3,*), PGL(*), MAS(*), ENER(*)
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,7 +200,7 @@ C     ===============================
         WGTF= CARAT3(8)*ROF
         CALL UTPSLG(3,6,PGL,MASLOC,MASGLO)
         CALL DIALUM(3,6,18,WGT,MASGLO,MAS)
-        
+
       ELSEIF (OPTION.EQ.'MASS_MECA_EXPLI') THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,MASLOC)
         WGT = CARAT3(8)*ROE
@@ -209,7 +210,7 @@ C     ===============================
 
         COEF1 = EPAIS*EPAIS/DOUZE
         COEF2 = CARAT3(8)/HUIT
-        IF(COEF2 .GT. COEF1) THEN 
+        IF(COEF2 .GT. COEF1) THEN
           COEF1 = COEF2
         ENDIF
         DO 210 J = 1,NNO
@@ -220,13 +221,13 @@ C     ===============================
           I2 = 6*(J-1) + 4
           I3 = 6*J
 
-          M1 = (K + 1)*K/2 
-          M2 = (M2 + 1)*M2/2 
-          M3 = (M3 + 1)*M3/2 
+          M1 = (K + 1)*K/2
+          M2 = (M2 + 1)*M2/2
+          M3 = (M3 + 1)*M3/2
           I1 = (I1 + 1)*I1/2
           I2 = (I2 + 1)*I2/2
           I3 = (I3 + 1)*I3/2
-          
+
           MAS(M2) = MAS(M1)
           MAS(M3) = MAS(M1)
           MAS(I1) = MAS(M1)*COEF1

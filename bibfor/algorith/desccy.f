@@ -1,6 +1,6 @@
       SUBROUTINE DESCCY(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,8 @@ C
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER VALI(3)
 C
 C
@@ -44,10 +46,10 @@ C
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IER ,LDDNIN ,LDNOEA ,LDNOED ,LDNOEG ,LDNUMG 
-      INTEGER LLDESC ,LLREF ,NBA ,NBD ,NBDA ,NBDD ,NBDG 
-      INTEGER NBG ,NBMCAL ,NBMOD ,NBMOD1 ,NBMOD2 ,NBNOT ,NBOC 
-      INTEGER NBTEMP ,NUMA ,NUMD ,NUMG 
+      INTEGER IBID ,IER ,LDDNIN ,LDNOEA ,LDNOED ,LDNOEG ,LDNUMG
+      INTEGER LLDESC ,LLREF ,NBA ,NBD ,NBDA ,NBDD ,NBDG
+      INTEGER NBG ,NBMCAL ,NBMOD ,NBMOD1 ,NBMOD2 ,NBNOT ,NBOC
+      INTEGER NBTEMP ,NUMA ,NUMD ,NUMG
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       KBID=' '

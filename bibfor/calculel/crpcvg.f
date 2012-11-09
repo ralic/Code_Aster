@@ -2,13 +2,15 @@
      +                    LIMA1, LIMA2, LINOEU )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       REAL*8              TRAN(3), PREC
       INTEGER             LINOEU(*)
       CHARACTER*8         MA1, MA2, GMA1, GMA2
       CHARACTER*(*)       LIMA1, LIMA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,13 +123,13 @@ C
                LINOEU(INO2) = INO1
 C
  20         CONTINUE
- 
+
             IF ( NUTYP1 .NE. NUTYP2 ) THEN
                VALK (1) = GMA1
                VALK (2) = GMA2
                CALL U2MESG('F', 'CALCULEL5_68',2,VALK,0,0,0,0.D0)
             ENDIF
- 
+
             ZI(JNUM1+IMA-1) = IMA1
             ZI(JNUM2+IMA-1) = IMA2
             GOTO 10

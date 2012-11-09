@@ -2,6 +2,7 @@
      &                  RESUFI,RESUFR,RESUFK,VECPRO,SOLVEU)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER           LMASSE,LAMOR,LRAIDE,NITF,NBFREQ,NEQ
       INTEGER           RESUFI(MXRESF,*)
       COMPLEX*16        VECPRO(NEQ,*)
@@ -10,7 +11,7 @@
       CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,9 +46,9 @@ C     -----------------------------------------------------------------
       REAL*8        CONST(6),FREQOM,RBID
 C     -----------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER ICOMB ,IEQ ,IMODE ,ITER ,JTER ,LACC1 ,LACC2 
-      INTEGER LDYNAM ,LYN ,MXRESF 
-      REAL*8 DSEED ,ERR ,ERR2 
+      INTEGER ICOMB ,IEQ ,IMODE ,ITER ,JTER ,LACC1 ,LACC2
+      INTEGER LDYNAM ,LYN ,MXRESF
+      REAL*8 DSEED ,ERR ,ERR2
       INTEGER IRET
 C-----------------------------------------------------------------------
       DATA          NOMDDL /'        '/

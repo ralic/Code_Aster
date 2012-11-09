@@ -4,6 +4,8 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER      NIL,TETE,QUEUE,SUCC(*),PREC(*),DESC(*),DESCTM(*)
       INTEGER      CONEX(*),VLC(*),NBSGTE
       REAL*8       COORDO(*),SGT(*),EPSI
@@ -11,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/07/2012   AUTEUR DESROCHE X.DESROCHES 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +69,7 @@ C======================================================================
 C
 CCC   MXSGEL =  100
 C-----------------------------------------------------------------------
-      INTEGER J1 ,J2 
+      INTEGER J1 ,J2
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       MXSGEL =  10
@@ -303,11 +305,11 @@ C REPERABLES PAR DES NUMEROS DE FACE NON NULS)
 C ON EMET UNE ALARME DANS CE CAS
             IF(F1.EQ.0) THEN
                CALL U2MESS('A','PREPOST6_44')
-               GO TO 100   
+               GO TO 100
             ENDIF
             IF(F2.EQ.0) THEN
                CALL U2MESS('A','PREPOST6_45')
-               GO TO 100   
+               GO TO 100
             ENDIF
 C
             A1  = ZI(ZI(ALSTPT+3-1)+J1-1)

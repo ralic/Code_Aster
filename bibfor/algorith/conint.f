@@ -2,7 +2,7 @@
      &                  NNOINT,NUME91,RAIINT,SSAMI)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_4
 C-----------------------------------------------------------------------
 C    M. CORUS     DATE 7/03/10
 C-----------------------------------------------------------------------
@@ -47,6 +46,8 @@ C
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
 
+      CHARACTER*32 JEXNUM,JEXNOM
+
 C-- VARIABLES EN ENTREES / SORTIE
       INTEGER      SIZECO,CONNEC,NNOINT
       CHARACTER*14 NUME,NUME91
@@ -59,8 +60,7 @@ C-- VARIABLES DE LA ROUTINE
      &             NOEUCO,NUMNO,LCONNC,LREFN,LDPRS,LDORS,LDDEEQ,LIPOS,
      &             LDNUEQ,LDDELG,NEQDDL,NOZERO,NO1,NO2,LINDNO,
      &             INDEQ,ISMHC,INDDDL,NEQD2,NBVOIS,IRET,
-     &             NBVMAX,LCOORD,LRAINT,LMAINT,
-     &             ISLVK,ISLVR,ISLVI   
+     &             NBVMAX,LCOORD,LRAINT,LMAINT
       REAL*8       RAYON,DIST,MINDIS,MAXDIS,KR(12,12),MR(12,12),
      &             DIREC(3),PTREF(3),TEMP,LONG,VTEST(3)
       CHARACTER*8  K8BID,NOMMA
@@ -264,20 +264,20 @@ C-- ON REMPLIT LE BLOC DIAGONAL DU NOEUD COURANT
 
 C-- CREATION DU SOLVEUR
       SOLVEU=NUME91//'.SOLV'
-      
-C-- TEST SUR LA PRESENCE DE MUMPS POUR ACCELERER LE CALCUL    
+
+C-- TEST SUR LA PRESENCE DE MUMPS POUR ACCELERER LE CALCUL
       CALL HASLIB('MUMPS',IRET)
       IF (IRET .EQ. 0) THEN
         CALL CRSOLV ('LDLT','SANS',SOLVEU,'V')
-      ELSE    
-        IF (NEQ .LT. 120) THEN     
-C-- SOLVEUR = LDLT / OPTIONS PAR DEFAUT      
+      ELSE
+        IF (NEQ .LT. 120) THEN
+C-- SOLVEUR = LDLT / OPTIONS PAR DEFAUT
           CALL CRSOLV ('LDLT','SANS',SOLVEU,'V')
-        ELSE   
+        ELSE
 C-- SOLVEUR = MUMPS / OPTIONS PAR DEFAUT
           CALL CRSINT(SOLVEU)
         ENDIF
-      ENDIF  
+      ENDIF
 
 C-----------------------------------------------------C
 C--                                                 --C

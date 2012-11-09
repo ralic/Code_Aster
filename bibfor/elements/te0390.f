@@ -1,6 +1,6 @@
       SUBROUTINE TE0390(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ======================================================================
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C    - ELEMENT:  MECA_POU_D_T_GD
@@ -45,17 +46,17 @@ C ......................................................................
 
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IACCKM ,IACCP ,ICO ,ICOMPO ,IDDEPL ,IDEPDE 
-      INTEGER IDEPKM ,IDEPM ,IDFDK ,IFINT ,IGEOM ,IMAT ,IMATE 
-      INTEGER IMATUU ,INSTMR ,INSTPR ,IPOIDS ,IRET ,IROMK ,IROMKM 
-      INTEGER ISTADY ,IVARIM ,IVARIP ,IVF ,IVITKM ,IVITP ,J 
-      INTEGER JCRET ,JEFINT ,JGANO ,K0 ,K1 ,K2 ,K3 
-      INTEGER K4 ,K5 ,K6 ,K7 ,KC ,KP ,KS 
-      INTEGER LORIEN ,LSECT ,LSIG ,LSIGMA ,NDIM ,NE ,NNO 
-      INTEGER NNOS ,NORD ,NPG 
-      REAL*8 A ,AJACOB ,ALFNMK ,AY ,AZ ,DELNMK ,DEMI 
-      REAL*8 DEUX ,E ,G ,PAS ,PJACOB ,R8BID ,RHO 
-      REAL*8 STOUDY ,UN ,XIY ,XIZ ,XJX ,ZERO 
+      INTEGER I ,IACCKM ,IACCP ,ICO ,ICOMPO ,IDDEPL ,IDEPDE
+      INTEGER IDEPKM ,IDEPM ,IDFDK ,IFINT ,IGEOM ,IMAT ,IMATE
+      INTEGER IMATUU ,INSTMR ,INSTPR ,IPOIDS ,IRET ,IROMK ,IROMKM
+      INTEGER ISTADY ,IVARIM ,IVARIP ,IVF ,IVITKM ,IVITP ,J
+      INTEGER JCRET ,JEFINT ,JGANO ,K0 ,K1 ,K2 ,K3
+      INTEGER K4 ,K5 ,K6 ,K7 ,KC ,KP ,KS
+      INTEGER LORIEN ,LSECT ,LSIG ,LSIGMA ,NDIM ,NE ,NNO
+      INTEGER NNOS ,NORD ,NPG
+      REAL*8 A ,AJACOB ,ALFNMK ,AY ,AZ ,DELNMK ,DEMI
+      REAL*8 DEUX ,E ,G ,PAS ,PJACOB ,R8BID ,RHO
+      REAL*8 STOUDY ,UN ,XIY ,XIZ ,XJX ,ZERO
 C-----------------------------------------------------------------------
       CALL ELREF1(ELREFE)
       IF (OPTION.EQ.'FORC_NODA') GO TO 210

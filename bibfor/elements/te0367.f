@@ -1,7 +1,7 @@
       SUBROUTINE TE0367(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ======================================================================
 C
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C
 C ----------------------------------------------------------------------
@@ -63,7 +64,7 @@ C
       REAL*8       VTMP(N)
       INTEGER      CONTAC,IBID,NPTE
       INTEGER      NDEPLE,DDLE(2),DDLM(2),NFHE,NFHM
-      REAL*8       FFEC(8),NLAGR
+      REAL*8       FFEC(8)
       LOGICAL      LMULTI
 C
 C ----------------------------------------------------------------------
@@ -160,6 +161,9 @@ C
 C --- RECUPERATION DE LA PLACE DES LAGRANGES
 C
         CALL JEVECH('PHEAVNO','L',JHEANO )
+      ELSE
+        JHEAFA=1
+        JHEANO=1
       ENDIF
 C
 C --- ON CONSTRUIT LA MATRICE DE CONNECTIVITÉ CFACE (MAILLE ESCLAVE)
@@ -194,6 +198,7 @@ C
         CALL XMOFFC(LACT,NLACT,NNC,FFEC,FFC)
       ELSE
         CALL ELRFVF(TYPMAC,COORC,NNC,FFC,NNC)
+        NLACT=0
       ENDIF
 C
 C --- JACOBIEN POUR LE POINT DE CONTACT
@@ -209,7 +214,7 @@ C
       CALL XTLAGM(TYPMAI,NDIM  ,NNC   ,NNE   ,
      &            DDLE(1),NFAES ,CFACE ,JDEPDE,
      &            JPCAI  ,FFC   ,LFROTT,CONTAC,
-     &            NFHE,LMULTI,ZI(JHEANO),DLAGRC,DLAGRF) 
+     &            NFHE,LMULTI,ZI(JHEANO),DLAGRC,DLAGRF)
 C
 C --- NOEUDS EXCLUS PAR PROJECTION HORS ZONE
 C
@@ -240,7 +245,7 @@ C
      &                  COEFCP,LPENAC,JEU   ,NORM  ,
      &                  TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,CONTAC,
      &                  DDLE, DDLM,NFHE  ,NFHM  ,LMULTI,ZI(JHEANO),
-     &                  ZI(JHEAFA),VTMP  )     
+     &                  ZI(JHEAFA),VTMP  )
 
         ELSE IF (INDCO .EQ. 0) THEN
           IF (NVIT.EQ.1) THEN
@@ -273,7 +278,7 @@ C
      &                  JPCAI ,HPG   ,FFC   ,JACOBI,
      &                  LPENAC,DLAGRF,CFACE ,TYPMAI,
      &                  TAU1  ,TAU2  ,DDLE  ,CONTAC,
-     &                  NFHE  ,LMULTI,ZI(JHEANO),VTMP  )     
+     &                  NFHE  ,LMULTI,ZI(JHEANO),VTMP  )
           ENDIF
         ELSE IF (INDCO.EQ.1) THEN
 C

@@ -1,6 +1,6 @@
       SUBROUTINE SLECOL(IMOD,NBMAIL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF STBTRIAS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,7 @@ C     ================================================================
 C
 C
       INCLUDE 'jeveux.h'
+
       CHARACTER*1 PRFMAI
       CHARACTER*4 KBID
       CHARACTER*8 CHMAIL,CHGROU
@@ -46,8 +47,8 @@ C  ------------ FIN DECLARATION -------------
 C
 C  -->N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
 C-----------------------------------------------------------------------
-      INTEGER I ,IC ,ICMAX ,ICOL ,IMOD ,INUM ,IPOS 
-      INTEGER J ,JINFO ,NBMA ,NBMAIL ,NBMAX ,NBTOT 
+      INTEGER I ,IC ,ICMAX ,ICOL ,IMOD ,INUM ,IPOS
+      INTEGER J ,JINFO ,NBMA ,NBMAIL ,NBMAX ,NBTOT
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

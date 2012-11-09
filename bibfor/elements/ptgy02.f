@@ -2,7 +2,7 @@
      &                   EY,EZ,IST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C ======================================================================
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       REAL*8 SK(*)
       REAL*8 XNU,RHO,A,XL,XIY,XIZ,XJX,EY,EZ
       INTEGER NL,IST
@@ -90,11 +91,11 @@ C
 
 C
 C     I : LIGNE ; J : COLONNE
-      I = 3 
+      I = 3
       J = 2
       IPOINT = NC*(J) + I
       SK(IPOINT) = -36.D0 * COM
-      I = 5 
+      I = 5
       J = 2
       IPOINT = NC*(J) + I
       SK(IPOINT) = (3.D0 - 15.D0 * PHI) * COM *XL
@@ -106,11 +107,11 @@ C     I : LIGNE ; J : COLONNE
       J = 2
       IPOINT = NC*(J) + I
       SK(IPOINT) = (3.D0 - 15.D0 * PHI) * COM * XL
-      I = 3 
+      I = 3
       J = 6
       IPOINT = NC*(J) + I
       SK(IPOINT) = -(3.D0  - 15.D0 * PHI) * COM *XL
-      I = 5 
+      I = 5
       J = 6
       IPOINT = NC*(J) + I
       SK(IPOINT) = (4.D0+5.D0*PHI+10.D0*PHI*PHI)*COM*XL*XL
@@ -122,11 +123,11 @@ C     I : LIGNE ; J : COLONNE
       J = 6
       IPOINT = NC*(J) + I
       SK(IPOINT) = -(1.D0+5.D0*PHI-5.D0*PHI*PHI)*COM*XL*XL
-      I = 3 
+      I = 3
       J = 8
       IPOINT = NC*(J) + I
       SK(IPOINT) = 36.D0 * COM
-      I = 5 
+      I = 5
       J = 8
       IPOINT = NC*(J) + I
       SK(IPOINT) = -(3.D0 - 15.D0 * PHI) * COM * XL
@@ -138,11 +139,11 @@ C     I : LIGNE ; J : COLONNE
       J = 8
       IPOINT = NC*(J) + I
       SK(IPOINT) = -(3.D0 - 15.D0 * PHI) * COM * XL
-      I = 3 
+      I = 3
       J = 12
       IPOINT = NC*(J) + I
       SK(IPOINT) = -(3.D0 - 15.D0 * PHI) * COM * XL
-      I = 5 
+      I = 5
       J = 12
       IPOINT = NC*(J) + I
       SK(IPOINT) = -(1.D0+5.D0*PHI-5.D0*PHI*PHI)*COM*XL*XL

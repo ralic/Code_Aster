@@ -1,6 +1,6 @@
       SUBROUTINE TE0490(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -222,7 +222,7 @@ C      -----------------------------------
 C ---- RECUPERATION DU TYPE DE COMPORTEMENT  :
 
       CALL JEVECH('PCOMPOR','L',IDCOMP)
-      
+
 C ON REGARDE SI ON EST EN GRANDE DEFORMATION SIMO MIEHE
 
       IF ((ZK16(IDCOMP+2).EQ.'SIMO_MIEHE').OR.
@@ -529,7 +529,7 @@ C --- SOIT        EPSZZ = D-1*SIGMA(3) - EPSXX_PLAS - EPSYY_PLAS:
 
         C1     = (UN + NU)/E
         C2     =  NU/E
-             TRSIG = SIGMA(1) + SIGMA(2) 
+             TRSIG = SIGMA(1) + SIGMA(2)
          EPSEL(1) = C1*SIGMA(1) - C2*TRSIG
          EPSEL(2) = C1*SIGMA(2) - C2*TRSIG
          EPSEL(3) =             - C2*TRSIG

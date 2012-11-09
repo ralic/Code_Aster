@@ -5,6 +5,8 @@
      &                    PMMAX, PBMAX, PMBMAX )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER             IG, IOCS, NPASS
       REAL*8              SNMAX, SNEMAX, SPMAX, KEMAX, SAMAX, UTOT, SM,
      &                    SIGPM, RESUAS(*), RESUSS(*), RESUCA(*),
@@ -14,7 +16,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

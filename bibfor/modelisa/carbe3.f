@@ -1,24 +1,26 @@
       SUBROUTINE CARBE3(CHARGE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8 CHARGE
 C TOLE CRP_20
 C
@@ -30,7 +32,7 @@ C ----------------------------------------------------------------------
 
       CHARACTER*1  K1BID
       CHARACTER*2  TYPLAG
-      CHARACTER*4  TYPCOE,TYPVAL,TYPCO2
+      CHARACTER*4  TYPCOE,TYPVAL
       CHARACTER*7  TYPCHA
       CHARACTER*8  K8BID,MODE,NOMA,NOMRES,GROMAI,NOEMAI,NOMNOE,DDLTRR(6)
       CHARACTER*8  DDLCOD,DDLMAC(6),BETAF,NUMLAG
@@ -70,9 +72,9 @@ C ----------------------------------------------------------------------
       DDLTRR(5) = 'DRY'
       DDLTRR(6) = 'DRZ'
 
-      CALL INFNIV(IFM,NIV)      
+      CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
-      
+
       IF (NIV.EQ.2) THEN
         WRITE(IFM,*) 'NOMBRE RELATIONS RBE3 : ',NBRBE3
 C       CALL JXVERI(' ')
@@ -141,11 +143,11 @@ C        -------------------------------------------------------
         CNTDDL = CNTDDL + MAXESC * 6
         MAXDDL = MAX(MAXDDL,CNTDDL)
    40 CONTINUE
-   
+
       IF (NIV.EQ.2) THEN
         WRITE(IFM,*) 'MAXESC : ',MAXESC
         WRITE(IFM,*) 'MAXDDL : ',MAXDDL
-      ENDIF   
+      ENDIF
 
 C     -- ALLOCATION DES TABLEAUX DE TRAVAIL
 C     -------------------------------------
@@ -164,7 +166,7 @@ C     -------------------------------------
       CALL WKVECT('&&CARBE3.COEFES','V V R',MAXESC,JCOFES)
       CALL WKVECT('&&CARBE3.COOREL','V V R',MAXESC*3,JCOORE)
       CALL WKVECT('&&CARBE3.DDLESCL','V V K24',MAXESC,JDDLES)
-      
+
 C     BOUCLE SUR LES RELATIONS RBE3
 C     -----------------------------------
       DO 80 IDXRBE=1,NBRBE3
@@ -180,7 +182,7 @@ C     -----------------------------------
           CALL JEVEUO(JEXNOM(GROUNO,GROMAI),'L',JNOGRO)
           CALL JELIRA(JEXNOM(GROUNO,GROMAI),'LONUTI',NBENT,K1BID)
           IF (NBENT.NE.1) THEN
-            CALL U2MESG('F', 'MODELISA10_9', 1, GROMAI, 1, NBENT, 
+            CALL U2MESG('F', 'MODELISA10_9', 1, GROMAI, 1, NBENT,
      &                  0, RBID)
           ENDIF
           CALL JENUNO(JEXNUM(NOEUMA,ZI(JNOGRO-1+1)),NOEMAI)
@@ -220,7 +222,7 @@ C     -----------------------------------
             DDLMAI(5) = .TRUE.
           ELSE IF (DDLTRR(6).EQ.DDLCOD) THEN
             DDLMAI(6) = .TRUE.
-          ENDIF          
+          ENDIF
   510   CONTINUE
 
         CALL GETVTX(MOTFAC,'GROUP_NO_ESCL',IDXRBE,IARG,0,K8BID,NBGROU)
@@ -320,8 +322,8 @@ C           -------------------------------------------------------
             ENDIF
             ZL(JCESCL-1+(IDXNOE-1)*6+IDXLIG) = DDLESC(IDXLIG)
   215     CONTINUE
-  110   CONTINUE 
-  
+  110   CONTINUE
+
         IF (NIV.EQ.2) THEN
           WRITE (IFM,*) 'NOMBRE DDL NOEUDS ESCLAVES : ',NBDLES
         ENDIF
@@ -482,7 +484,7 @@ C       -------------------------------------------------------
         IF (NIV.EQ.2) THEN
           WRITE (IFM,*) 'IMPRESSION MATRICE MGAUSS'
           DO 850 IDXLIG=1,6
-            WRITE (IFM,*) 'LIGNE : ', IDXLIG, 
+            WRITE (IFM,*) 'LIGNE : ', IDXLIG,
      &       (STWS(IDXCOL, IDXLIG),IDXCOL=1,6)
   850     CONTINUE
         ENDIF
@@ -572,13 +574,13 @@ C --- SI NON TYPLAG = '12'
 C     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 C     ---------------------------------------------
       CALL AFLRCH(LISREL,CHARGE)
-      
+
       CALL JEDEMA()
-      
+
 C     IF (NIV.EQ.2) THEN
 C       CALL JXVERI(' ')
-C     ENDIF       
-      
+C     ENDIF
+
  9999 CONTINUE
 
       END

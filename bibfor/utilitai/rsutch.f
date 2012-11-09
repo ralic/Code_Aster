@@ -1,12 +1,14 @@
       SUBROUTINE RSUTCH(NOMSD,NOMSY,IORDR,NOMCHA,LVERIF)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER IORDR
       CHARACTER*(*) NOMSD,NOMSY,NOMCHA
       LOGICAL LVERIF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,8 +44,7 @@ C ----------------------------------------------------------------------
       CHARACTER*3 NUCH
       CHARACTER*6 CHFORD
       CHARACTER*19 RESU19,NOMCH3,NOMCH2
-      CHARACTER*1 K1BID
-      INTEGER ISYMB,IRANG,JTACH,NBORMX,NBORDR
+      INTEGER ISYMB,IRANG,JTACH,NBORDR
 C ----------------------------------------------------------------------
 
       RESU19 = NOMSD

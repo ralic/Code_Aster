@@ -5,9 +5,9 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/07/2009   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -127,7 +127,7 @@ C
         REAL*8 I1D
 C
         INTEGER   UMESS,IUNIFI
-        
+
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
@@ -165,7 +165,7 @@ C     --------------------------------
 
         IF (((IISNAN(TEMPM).GT.0).OR.(IISNAN(TREF).GT.0)).
      &     AND.(MATERF(3,1).NE.0.D0)) THEN
-          CALL U2MESS('F','CALCULEL_15')     
+          CALL U2MESS('F','CALCULEL_15')
         ELSEIF (MATERF(3,1).EQ.0.D0) THEN
           EPSTHE = 0.D0
           EPSTHM = 0.D0
@@ -175,7 +175,7 @@ C     --------------------------------
         ENDIF
         DO 20 I=1,NDI
           DEPSTH(I)   = DEPS(I) - EPSTHE
-          EPSDTH(I)   = EPSD(I) - EPSTHM 
+          EPSDTH(I)   = EPSD(I) - EPSTHM
   20    CONTINUE
         DO 21 I=NDI+1,NDT
           DEPSTH(I) = DEPS(I)
@@ -295,9 +295,9 @@ C
 
 C
           IF ( (SEUILI .GT. 0.D0) .OR. (SEUILD .GT. 0.D0) ) THEN
-          
-C ecriture des contraintes 
-           
+
+C ecriture des contraintes
+
 C
 C --      PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
 C
@@ -311,7 +311,7 @@ C
            IF((TRAC)) THEN
              ETATF = 'ELASTIC'
            ENDIF
-                     
+
           ELSE
 C
 C --      PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
@@ -369,7 +369,7 @@ C          MECANISMES ISOTROPE ET DEVIATOIRE
 
 
         IF ( OPT .EQ. 'FULL_MECA' ) THEN
-         
+
           CALL LCINMA ( 0.D0, DSDE )
 
 

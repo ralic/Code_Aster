@@ -1,11 +1,13 @@
       SUBROUTINE RVOUEX(MCF,IOCC,NCHPT,LSTCMP,LSTMAC,LSTNAC,IRET)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXATR
       CHARACTER*24                     LSTCMP,LSTMAC,LSTNAC
       CHARACTER*(*)     MCF,     NCHPT
       INTEGER               IOCC,                            IRET
 C**********************************************************************
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

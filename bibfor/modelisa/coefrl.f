@@ -1,7 +1,7 @@
       SUBROUTINE COEFRL(NOM1,NOM2,NOM3,NCKMAX,IPAS,IRES,BORNCK,NBORCK,
      &                  COEFCK,IPAS1,IRES1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,8 +50,8 @@ C
 C ----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IPAS1 ,IRES1 ,IUNIT ,J ,K ,KK 
-      INTEGER NB1 
+      INTEGER I ,IPAS1 ,IRES1 ,IUNIT ,J ,K ,KK
+      INTEGER NB1
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -90,8 +90,6 @@ C
             ZI(JBORNE-1+1) = IPAS1
             ZI(JBORNE-1+2) = IRES1
             ZI(JBORNE-1+3) = NB1
-            ZR(JVIRED-1+1) = VRMIN
-            ZR(JVIRED-1+2) = VRMAX
             READ (UNIT,*) (BOCK1(I),I = 1,NB1),VRMIN,VRMAX
             DO 40 I = 1,NB1
               ZR( JCOEFF+I-1 ) = BOCK1(I)

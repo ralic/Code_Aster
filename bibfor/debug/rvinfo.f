@@ -1,12 +1,14 @@
       SUBROUTINE RVINFO ( IFM, IOCC, I1, I2, C, SDCHEF )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER             IFM, IOCC, I1, I2
       CHARACTER*1         C
       CHARACTER*16        SDCHEF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF DEBUG  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

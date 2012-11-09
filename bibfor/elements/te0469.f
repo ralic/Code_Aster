@@ -1,6 +1,6 @@
       SUBROUTINE TE0469(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,11 +34,12 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       INCLUDE 'jeveux.h'
+
 C-----------------------------------------------------------------------
-      INTEGER I ,IDECNO ,IDECPG ,IDFDK ,IDFLIN ,IER ,IGAU 
-      INTEGER IGEOM ,INO ,IPOIDS ,ITEMPS ,IVECTU ,IVF ,JGANO 
-      INTEGER NBNOMX ,NDIM ,NNO ,NNOS ,NPG 
-      REAL*8 ZERO 
+      INTEGER I ,IDECNO ,IDECPG ,IDFDK ,IDFLIN ,IER ,IGAU
+      INTEGER IGEOM ,INO ,IPOIDS ,ITEMPS ,IVECTU ,IVF ,JGANO
+      INTEGER NBNOMX ,NDIM ,NNO ,NNOS ,NPG
+      REAL*8 ZERO
 C-----------------------------------------------------------------------
       PARAMETER (NBNOMX=27)
       CHARACTER*8 NOMPAR(4)

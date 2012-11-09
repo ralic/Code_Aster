@@ -2,7 +2,7 @@
      &                   NOMMAT, VEPPR, VSIPN )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       INTEGER    NBORDR, TDISP, KWORK, SOMMW, TSPAQ, I
       REAL*8     VWORK(TDISP), VEPPR(NBORDR), VSIPN(NBORDR)
       CHARACTER*8   NOMMAT
@@ -94,7 +95,7 @@ C RECUPER LES CONTRAINTES ET DEFORMATION
      &                     JACAUX,NITJAC,ITYPE,IORDRE)
 
          VEPPR(IORDR) = VALPRO(1)
-         
+
          NM1X = VECPRO (1,1)
          NM1Y = VECPRO (2,1)
          NM1Z = VECPRO (3,1)

@@ -1,10 +1,12 @@
       SUBROUTINE IMPTOU(BASE,TOUS,MESS)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*(*) BASE,TOUS,MESS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF DEBUG  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +82,5 @@ C     --------------------------------------------------------------
       CALL JEDETR('&&IMPTOU.LISTE')
 
       CALL JEDEMA()
- 1001 FORMAT (A10,A25,I7,I7,A4,I7,I12,I12,E15.8)
 
       END

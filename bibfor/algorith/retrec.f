@@ -1,6 +1,6 @@
       SUBROUTINE RETREC(NOMRES,RESGEN,NOMSST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C
 C
       REAL*8       EPSI
@@ -52,13 +54,13 @@ C
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,IAD ,IARCHI ,IBID ,ICH ,IDINSG 
-      INTEGER IDRESU ,IDVECG ,IEQ ,IER ,IRE1 ,IRE2 ,IRE3 
-      INTEGER IRETOU ,J ,JINST ,JNUME ,K ,K1 ,LDNEW 
-      INTEGER LINST ,LLCHAB ,LLNEQU ,LLNUEQ ,LLORS ,LLPRS ,LLREF1 
-      INTEGER LLREF2 ,LLREFE ,LMAPRO ,LMOET ,LREFE ,LSILIA ,LSST 
-      INTEGER N1 ,NBCHAM ,NBDDG ,NBINSG ,NBINST ,NBSST ,NEQ 
-      INTEGER NEQET ,NEQGEN ,NEQRED ,NUSST ,NUTARS 
+      INTEGER I ,I1 ,IAD ,IARCHI ,IBID ,ICH ,IDINSG
+      INTEGER IDRESU ,IDVECG ,IEQ ,IER ,IRE1 ,IRE2 ,IRE3
+      INTEGER IRETOU ,J ,JINST ,JNUME ,K ,K1 ,LDNEW
+      INTEGER LINST ,LLCHAB ,LLNEQU ,LLNUEQ ,LLORS ,LLPRS ,LLREF1
+      INTEGER LLREF2 ,LLREFE ,LMAPRO ,LMOET ,LREFE ,LSILIA ,LSST
+      INTEGER N1 ,NBCHAM ,NBDDG ,NBINSG ,NBINST ,NBSST ,NEQ
+      INTEGER NEQET ,NEQGEN ,NEQRED ,NUSST ,NUTARS
 C-----------------------------------------------------------------------
       DATA SOUTR  /'&SOUSSTR'/
 C-----------------------------------------------------------------------
@@ -133,7 +135,7 @@ C
       CALL JEVEUO(NUMGEN//'.NEQU','L',LLNEQU)
       NEQGEN = ZI(LLNEQU)
       CALL JELIBE(NUMGEN//'.NEQU')
-      
+
 C
 C --- RECUPERATION NUMERO DE LA SOUS-STRUCTURE
 C
@@ -152,9 +154,9 @@ C
       SST=   NUMGEN(1:14)//'.ELIM.NOMS'
 
       CALL JEEXIN(SELIAI,ELIM)
-      
+
       IF (ELIM .EQ. 0) THEN
-            
+
         CALL JENONU(JEXNOM(NUMGEN//'.LILI',SOUTR),IBID)
         CALL JEVEUO(JEXNUM(NUMGEN//'.ORIG',IBID),'L',LLORS)
         CALL JENONU(JEXNOM(NUMGEN//'.LILI',SOUTR),IBID)
@@ -173,7 +175,7 @@ C --- NOMBRE DE MODES ET NUMERO DU PREMIER DDL DE LA SOUS-STRUCTURE
         IEQ=ZI(LLPRS+(NUTARS-1)*2)
 
       ELSE
-      
+
         NEQET=0
         IEQ=0
         CALL JELIRA(MODGEN//'      .MODG.SSNO','NOMMAX',NBSST,KBID)
@@ -191,8 +193,8 @@ C --- NOMBRE DE MODES ET NUMERO DU PREMIER DDL DE LA SOUS-STRUCTURE
         DO 41 I1=1,NUSST-1
             IEQ=IEQ+ZI(LSILIA+I1-1)
   41    CONTINUE
-        
-        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V R',NEQET,LMOET)    
+
+        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V R',NEQET,LMOET)
       ENDIF
 C
 C --- RECUPERATION D'INFORMATIONS SUR LA SOUS-STRUCTURE
@@ -202,7 +204,7 @@ C
         CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',NBDDG,KBID,
      &              IER)
       ENDIF
-      
+
       CALL JEVEUO(BASMOD//'           .REFD','L',LLREFE)
 C -->AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
       LINT = ZK24(LLREFE+4)(1:8)
@@ -247,8 +249,8 @@ C
       IF (INTERP(1:3).NE.'NON') THEN
         CALL JEVEUO(TRANGE//'.DISC','L',IDINSG)
         CALL JELIRA(TRANGE//'.DISC','LONMAX',NBINSG,K8B)
-        
-        IF (ELIM .EQ. 0) THEN 
+
+        IF (ELIM .EQ. 0) THEN
           CALL WKVECT('&&RETREC.VECTGENE','V V R',NEQGEN,IDVECG)
         ELSE
           CALL WKVECT('&&RETREC.VECTGENE','V V R',NEQGEN,IDVECG)
@@ -271,7 +273,7 @@ C
             CALL JEVEUO(CHAMNO,'E',LDNEW)
             CALL EXTRAC(INTERP,EPSI,CRIT,NBINSG,ZR(IDINSG),
      &                  ZR(JINST+I),ZR(IDRESU),NEQGEN,ZR(IDVECG),IER)
-     
+
             IF (ELIM .NE. 0) THEN
               DO 21 I1=1,NEQET
                 ZR(LMOET+I1-1)=0.D0
@@ -280,20 +282,20 @@ C
      &              ZR(LMAPRO+(K1-1)*NEQET+I1-1)*
      &              ZR(IDVECG+K1-1)
   31            CONTINUE
-  21          CONTINUE                
-            ENDIF          
+  21          CONTINUE
+            ENDIF
 C
 C --- BOUCLE SUR LES MODES PROPRES DE LA BASE
 C
             DO 50 J=1,NBDDG
               CALL DCAPNO(BASMOD,'DEPL',J,CHAMBA)
               CALL JEVEUO(CHAMBA,'L',LLCHAB)
-              
+
               IF (ELIM .NE. 0) THEN
                 IAD=LMOET+IEQ+J-1
               ELSE
                 IAD=IDVECG+ZI(LLNUEQ+IEQ+J-2)-1
-              ENDIF                                    
+              ENDIF
 C
 C --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 C
@@ -318,9 +320,9 @@ C
 
           DO 42 ICH=1,NBCHAM
             IDRESU = ITRESU(ICH)
-                        
-C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES       
-            IF (ELIM .NE. 0) THEN      
+
+C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
+            IF (ELIM .NE. 0) THEN
               DO 22 I1=1,NEQET
                 ZR(LMOET+I1-1)=0.D0
                 DO 33 K1=1,NEQRED
@@ -328,9 +330,9 @@ C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
      &              ZR(LMAPRO+(K1-1)*NEQET+I1-1)*
      &              ZR(IDRESU+K1-1+(ZI(JNUME+I)-1)*NEQRED)
   33            CONTINUE
-  22          CONTINUE             
+  22          CONTINUE
             ENDIF
-            
+
             CALL RSEXCH(' ',NOMRES,CHMP(ICH),IARCHI,CHAMNO,IRET)
             IF (IRET.EQ.0) THEN
               CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
@@ -347,7 +349,7 @@ C
             DO 70 J=1,NBDDG
               CALL DCAPNO(BASMOD,'DEPL',J,CHAMBA)
               CALL JEVEUO(CHAMBA,'L',LLCHAB)
-              
+
               IF (ELIM .NE. 0) THEN
                 IAD=LMOET+IEQ+J-1
               ELSE

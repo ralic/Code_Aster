@@ -1,10 +1,11 @@
       SUBROUTINE TE0045(OPTION,NOMTE)
       IMPLICIT          NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +35,7 @@ C
 C
 C     ------------------------------------------------------------------
       CHARACTER*8    K8BID
-      CHARACTER*16   CH16,KMESS(4)
+      CHARACTER*16   CH16
       REAL*8         MAT1(78),MAT2(144),ZERO,DEUX,TROIS,PGL(3,3),R8BID
       INTEGER        INFODI,IREPM,NBTERM,NNO,NC,NDIM,ITYPE,I,I1,I2,I3
       INTEGER        LMASS,LCOOR,LORIEN,LCASTR,IBID

@@ -1,7 +1,7 @@
       SUBROUTINE LISNNN(MOTFAC,IEXCI ,CHARGE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ======================================================================
 C
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 MOTFAC
       INTEGER      IEXCI
       CHARACTER*8  CHARGE
@@ -40,7 +41,6 @@ C OUT CHARGE : NOM DE LA CHARGE (OU DU VECT_ASSE[_GENE])
 C
       INTEGER      NVAL,IARG
       INTEGER      EXIMVE,EXIMVG,GETEXM
-      CHARACTER*24 K24BID
 C
 C ----------------------------------------------------------------------
 C

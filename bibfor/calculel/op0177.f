@@ -1,7 +1,7 @@
       SUBROUTINE OP0177()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,6 +91,10 @@ C
       CALL GETVR8(' ','VALE_CALC'    , 1,IARG,0,R8B   ,N1)
       CALL GETVIS(' ','VALE_CALC_I'  , 1,IARG,0,IBID  ,N2)
       CALL GETVC8(' ','VALE_CALC_C'  , 1,IARG,0,C16B  ,N3)
+
+      IREFR=1
+      IREFI=1
+      IREFC=1
       IF( N1 .NE. 0) THEN
         NREF=-N1
         TYPR = 'R'
@@ -118,6 +122,10 @@ C ----------------------------------------------------------------------
          CALL GETVR8(' ','VALE_REFE'     ,1,IARG,0,R8B ,N1R)
          CALL GETVIS(' ','VALE_REFE_I'   ,1,IARG,0,IBID,N2R)
          CALL GETVC8(' ','VALE_REFE_C'   ,1,IARG,0,C16B,N3R)
+
+         IREFRR=1
+         IREFIR=1
+         IREFCR=1
          IF (N1R.NE.0) THEN
            CALL ASSERT((N1R.EQ.N1))
            NREF=-N1R
@@ -215,7 +223,7 @@ C
      &                        LIGN2(161:NL22)
          ENDIF
 
-         IF (LREF) THEN 
+         IF (LREF) THEN
            TBREF(1)=TBTXT(1)
            TBREF(2)=TBTXT(2)
            TBTXT(1)='NON_REGRESSION'
@@ -273,13 +281,13 @@ C
       ENDIF
       IF ( CTYPE(1:1) .NE. TYPR ) CALL U2MESS('F','CALCULEL6_8')
 
-      IF (LREF) THEN 
+      IF (LREF) THEN
         TBREF(1)=TBTXT(1)
         TBREF(2)=TBTXT(2)
         TBTXT(1)='NON_REGRESSION'
       END IF
       CALL UTITES(TBTXT(1), TBTXT(2), TYPR, NREF, ZI(IREFI),
-     &            ZR(IREFR), ZC(IREFC), VALI, VALR, VALC, 
+     &            ZR(IREFR), ZC(IREFC), VALI, VALR, VALC,
      &            EPSI, CRIT, IFIC, .TRUE., SSIGNE)
       IF (LREF) THEN
         CALL UTITES(TBREF(1), TBREF(2), TYPR, NREF, ZI(IREFIR),

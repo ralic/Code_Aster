@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,8 @@ C     LE MAILLAGE ASTER PEUT COMPORTER DES SEG2, DES SEG3, DES COQUES
 
 C     -----------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 
       INTEGER NBV,NBMAPL,IBID,NTOUT,NNUME,NP,IUL,IUNIFI
       INTEGER VALI(2)

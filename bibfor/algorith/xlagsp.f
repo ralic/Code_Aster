@@ -2,7 +2,7 @@
      &                  NLISEQ,NLISRL,NLISCO,NBASCO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,8 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXATR
       CHARACTER*8   NOMA,NOMO,FISS
       INTEGER       NDIM
       INTEGER       ALGOLA
@@ -270,8 +272,8 @@ C - SI PILOTAGE ET NOEUD INTERSECTE, ON L AJOUTE
                    ENDIF
                 ENDIF
 C --- SI CE N'EST PAS UNE ARETE COUPEE, ON SORT
-            ELSE 
-               IF (IA.EQ.0) GOTO 110  
+            ELSE
+               IF (IA.EQ.0) GOTO 110
                NA = AR(IA,1)
                NB = AR(IA,2)
             ENDIF

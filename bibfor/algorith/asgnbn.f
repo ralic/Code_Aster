@@ -1,7 +1,7 @@
       SUBROUTINE  ASGNBN (IBLA,BLOCA,NBTERM,INOBL,IADBL,NOMBLO,
      &NUMBLO,FACT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*24 NOMBLO
       INTEGER     NBTERM,INOBL(NBTERM),IADBL(NBTERM)
       REAL*8      FACT,BLOCA(*)
@@ -55,7 +57,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IBLA ,LLBLO ,NUMBLO 
+      INTEGER I ,IBLA ,LLBLO ,NUMBLO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF(NUMBLO.EQ.0) THEN

@@ -1,5 +1,5 @@
       SUBROUTINE TE0239(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,6 +56,8 @@ C ......................................................................
       PARAMETER (NPGE=3)
 
       DATA ZERO,UN,DEUX/0.D0,1.D0,2.D0/
+
+      IVARIP=1
 
       EPS = 1.D-3
       CODRET = 0

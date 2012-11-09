@@ -1,6 +1,6 @@
       SUBROUTINE COPMA2(MATR,MAT1,MAT2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF DEBUG  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_4
 C-----------------------------------------------------------------------
 C
 C     FONCTION : COPIE MATR_ASSE VERSION MULT_FRONT DANS MATRICE PLEINE
@@ -33,6 +32,8 @@ C-----------------------------------------------------------------------
 
 C DECLARATION PARAMETRES D'APPELS
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*19 MATR
       REAL*8       MAT1(*),MAT2(*)
 

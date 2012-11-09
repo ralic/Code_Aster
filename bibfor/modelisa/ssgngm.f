@@ -1,10 +1,12 @@
       SUBROUTINE SSGNGM(NOMA,IOCC,NBGNAJ)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8 NOMA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,10 +39,10 @@ C-----------------------------------------------------------------------
 C DEB-------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IAD2 ,IALGMA ,IALIMA ,IALINO ,IANBNO ,IANGNO 
-      INTEGER IBID ,IER ,IERD ,IOCC ,IRET ,J ,JTRAV 
-      INTEGER N1 ,NB ,NBGMA ,NBGNAJ ,NBGNO ,NBMA ,NBNOTO 
-      INTEGER NO 
+      INTEGER I ,IAD2 ,IALGMA ,IALIMA ,IALINO ,IANBNO ,IANGNO
+      INTEGER IBID ,IER ,IERD ,IOCC ,IRET ,J ,JTRAV
+      INTEGER N1 ,NB ,NBGMA ,NBGNAJ ,NBGNO ,NBMA ,NBNOTO
+      INTEGER NO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       GRPMA = NOMA//'.GROUPEMA       '

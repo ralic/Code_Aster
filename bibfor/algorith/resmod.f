@@ -1,7 +1,7 @@
       SUBROUTINE RESMOD(BMODAL,NBMODE,NEQ,NUMGEN,MDGENE,NOECHO,MODSST)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C
 C
       INTEGER      NBMODE,DDL(6),NEQ
@@ -48,8 +50,8 @@ C
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IEQ ,J ,JCOORD ,LCHAB ,LLORS 
-      INTEGER LLPRS ,NEQGEN ,NSST ,NUNOE ,NUSST ,NUTARS 
+      INTEGER I ,IBID ,IEQ ,J ,JCOORD ,LCHAB ,LLORS
+      INTEGER LLPRS ,NEQGEN ,NSST ,NUNOE ,NUSST ,NUTARS
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
       DATA SOUTR  /'&SOUSSTR'/

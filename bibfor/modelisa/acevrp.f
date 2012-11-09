@@ -1,11 +1,13 @@
       SUBROUTINE ACEVRP(NBOCC,NOMA,NOEMAX,NOEMAF,IER)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER      NBOCC,NOEMAX,IER
       CHARACTER*8  NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,9 +36,9 @@ C ----------------------------------------------------------------------
       CHARACTER*8  K8B
       INTEGER      IARG
 C-----------------------------------------------------------------------
-      INTEGER I ,IDGM ,IDNO2 ,II ,IJ ,IN ,INOE 
-      INTEGER IOC ,LDGM ,LDNM ,NB ,NBGR ,NBGRMX ,NBV 
-      INTEGER NM ,NN ,NOEMA2 ,NOEMAF 
+      INTEGER I ,IDGM ,IDNO2 ,II ,IJ ,IN ,INOE
+      INTEGER IOC ,LDGM ,LDNM ,NB ,NBGR ,NBGRMX ,NBV
+      INTEGER NM ,NN ,NOEMA2 ,NOEMAF
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NBGRMX = 0

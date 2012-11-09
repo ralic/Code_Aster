@@ -3,13 +3,15 @@
      &                    MCF,IOCC, NBNAC, NNOEUD )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER       NBM, NBC, NUMMAI(*), IOCC, NBNAC, NNOEUD(*)
       CHARACTER*6   INDIC
       CHARACTER*8   NMAILE(*), NCMP(*)
       CHARACTER*19  NCHMEL,  NSSCHE, NCHME2
       CHARACTER*(*) MCF
 C*********************************************************************
-C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

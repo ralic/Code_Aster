@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,12 @@ C     ------------------------------------------------------------------
       TRAVRR = '&&TRRESU_TRAVR_R'
       TRAVIR = '&&TRRESU_TRAVI_R'
       TRAVCR = '&&TRRESU_TRAVC_R'
-
+      IREFI=1
+      IREFR=1
+      IREFC=1
+      IREFIR=1
+      IREFCR=1
+      IREFRR=1
       DO 70 IOCC = 1,NOCC
         NODDL = ' '
         TESTOK = 'NOOK'
@@ -206,7 +211,7 @@ C ----------------------------------------------------------------------
      &                           LIGN2(161:NL22)
             ENDIF
 
-            IF (LREF) THEN 
+            IF (LREF) THEN
               TBREF(1)=TBTXT(1)
               TBREF(2)=TBTXT(2)
               TBTXT(1)='NON_REGRESSION'
@@ -273,7 +278,7 @@ C ----------------------------------------------------------------------
      &                               LIGN2(161:NL22)
                   ENDIF
 
-                  IF (LREF) THEN 
+                  IF (LREF) THEN
                     TBREF(1)=TBTXT(1)
                     TBREF(2)=TBTXT(2)
                     TBTXT(1)='NON_REGRESSION'
@@ -292,7 +297,7 @@ C ----------------------------------------------------------------------
                   CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,NBCMP,
      &                        ZK8(JCMP),
      &                        N4)
-                  IF (LREF) THEN 
+                  IF (LREF) THEN
                     TBREF(1)=TBTXT(1)
                     TBREF(2)=TBTXT(2)
                     TBTXT(1)='NON_REGRESSION'
@@ -397,7 +402,7 @@ C              RIEN A FAIRE.
      &                               LIGN2(161:NL22)
                 ENDIF
 
-                IF (LREF) THEN 
+                IF (LREF) THEN
                   TBREF(1)=TBTXT(1)
                   TBREF(2)=TBTXT(2)
                   TBTXT(1)='NON_REGRESSION'
@@ -468,7 +473,7 @@ C              RIEN A FAIRE.
      &                               LIGN2(161:NL22)
                 ENDIF
 
-                IF (LREF) THEN 
+                IF (LREF) THEN
                   TBREF(1)=TBTXT(1)
                   TBREF(2)=TBTXT(2)
                   TBTXT(1)='NON_REGRESSION'

@@ -1,10 +1,12 @@
       SUBROUTINE CGNOXF (MOFAZ, IOCC, NOMAZ, LISNOZ, NBNO)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER IOCC,NBNO
       CHARACTER*(*) MOFAZ,NOMAZ,LISNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -197,7 +199,7 @@ C                    GRID NAME
                      NOMAGR = ZK8(IBID)
                      IF (NOMAGR.NE.MA) CALL U2MESS('F','XFEM2_86')
                   ELSE
-                     CALL U2MESS('F','XFEM2_86')  
+                     CALL U2MESS('F','XFEM2_86')
                   ENDIF
                   CALL CNOCNS(FISS//'.GRI.LTNO','V',CNSLT)
                   CALL CNOCNS(FISS//'.GRI.LNNO','V',CNSLN)
@@ -288,7 +290,7 @@ C                COINCIDENT WITH THE WHOLE MODEL.
             ENDIF
 
 15       CONTINUE
-      
+
       ELSE
          CALL ASSERT(.FALSE.)
       ENDIF

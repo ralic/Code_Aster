@@ -1,10 +1,11 @@
       SUBROUTINE IREDMI ( MACR )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,12 +32,12 @@ C
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,I2 ,IAM ,ICAMOR ,ICMASS ,ICRIGI ,IER 
-      INTEGER IRET ,ISAMOR ,ISMASS ,ISRIGI ,IVAL1 ,IVAL2 ,IVAL3 
-      INTEGER J ,J2 ,JAMO2 ,JAMOR ,JFREQ ,JMASS ,JORDR 
-      INTEGER JREFE ,JRIGI ,JVAL ,K ,LAMOR ,N1 ,N2 
-      INTEGER NBAMOR ,NBMODE ,NBMODS ,NBMODT 
-      REAL*8 PETIR8 ,PI ,R8B ,R8PI 
+      INTEGER I ,I2 ,IAM ,ICAMOR ,ICMASS ,ICRIGI ,IER
+      INTEGER IRET ,ISAMOR ,ISMASS ,ISRIGI ,IVAL1 ,IVAL2 ,IVAL3
+      INTEGER J ,J2 ,JAMO2 ,JAMOR ,JFREQ ,JMASS ,JORDR
+      INTEGER JREFE ,JRIGI ,JVAL ,K ,LAMOR ,N1 ,N2
+      INTEGER NBAMOR ,NBMODE ,NBMODS ,NBMODT
+      REAL*8 PETIR8 ,PI ,R8B ,R8PI
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       MAEL = MACR

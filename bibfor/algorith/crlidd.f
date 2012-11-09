@@ -1,6 +1,6 @@
       SUBROUTINE CRLIDD(NOMRES,MAILLA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8 NOMRES,MAILLA,CB,MN,HA,AU,NOMTYP
       CHARACTER*8 K8BID
       CHARACTER*24 TEMMN,TEMCB,TEMHA,TEMAU,TEMMAS
@@ -58,10 +60,10 @@ C
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IAD ,INO ,IRAN ,IRET ,J ,LLDES 
-      INTEGER LLNIN ,LLTYP ,LTAU ,LTCB ,LTHA ,LTMAS ,LTMN 
-      INTEGER NBAU ,NBCB ,NBCMP ,NBEC ,NBHA ,NBINT ,NBMN 
-      INTEGER NBNO ,NBTEM ,NBTO 
+      INTEGER I ,IAD ,INO ,IRAN ,IRET ,J ,LLDES
+      INTEGER LLNIN ,LLTYP ,LTAU ,LTCB ,LTHA ,LTMAS ,LTMN
+      INTEGER NBAU ,NBCB ,NBCMP ,NBEC ,NBHA ,NBINT ,NBMN
+      INTEGER NBNO ,NBTEM ,NBTO
 C-----------------------------------------------------------------------
       DATA CB,MN,HA,AU /'CRAIGB','MNEAL','CB_HARMO','AUCUN'/
       DATA DOUBOK /.FALSE./
@@ -129,6 +131,8 @@ C
       TEMCB='&&CRLIDD.NOE.CB'
       IF(NBCB.GT.0) THEN
         CALL WKVECT(TEMCB,'V V I',NBCB,LTCB)
+      ELSE
+        LTCB=1
       ENDIF
 C
 C---------ALLOCATION DU VECTEUR DES NOEUDS MAC NEAL---------------------
@@ -136,6 +140,8 @@ C
       TEMMN='&&CRLIDD.NOE.MN'
       IF(NBMN.GT.0) THEN
         CALL WKVECT(TEMMN,'V V I',NBMN,LTMN)
+      ELSE
+        LTMN=1
       ENDIF
 C
 C---------ALLOCATION DU VECTEUR DES NOEUDS CB_HARMO---------------------
@@ -143,6 +149,8 @@ C
       TEMHA='&&CRLIDD.NOE.HA'
       IF(NBHA.GT.0) THEN
         CALL WKVECT(TEMHA,'V V I',NBHA,LTHA)
+      ELSE
+        LTHA=1
       ENDIF
 C
 C------------ALLOCATION DU VECTEUR DES NOEUDS AUCUN---------------------
@@ -150,6 +158,8 @@ C
       TEMAU='&&CRLIDD.NOE.AU'
       IF(NBAU.GT.0) THEN
         CALL WKVECT(TEMAU,'V V I',NBAU,LTAU)
+      ELSE
+        LTAU=1
       ENDIF
 C
 C---------BOUCLE DE REMPLISSAGE DES 3 VECTEURS TEMCB TEMMN TEMAU--------

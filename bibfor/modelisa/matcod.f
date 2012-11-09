@@ -1,12 +1,14 @@
       SUBROUTINE MATCOD ( CHMAT,INDMAT,NBMAT,IMATE,IGRP,MATERI,CODI)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXATR
       CHARACTER*8        CHMAT,MATERI
       CHARACTER*19       CODI
       INTEGER            INDMAT,NBMAT,IMATE,IGRP
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +25,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE                            D6BHHJP J.P.LEFEBVRE
+C RESPONSABLE LEFEBVRE J.P.LEFEBVRE
 C-----------------------------------------------------------------------
 C     MATERIAU CODE APPELE PAR RCMACO ET PMMACO
 C-----------------------------------------------------------------------

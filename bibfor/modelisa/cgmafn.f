@@ -1,6 +1,6 @@
       SUBROUTINE CGMAFN (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,8 @@ C -------------------------------------------------------
 C
 C.========================= DEBUT DES DECLARATIONS ====================
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C
 C -----  ARGUMENTS
       CHARACTER*(*) MOFAZ, NOMAZ, LISMAZ
@@ -65,13 +67,13 @@ C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C-----------------------------------------------------------------------
-      INTEGER IATYMA ,IBID ,IDCOOR ,IDLIMA ,IDNOEU ,IER ,IMA 
-      INTEGER INO1 ,INO2 ,INO3 ,IOCC ,ITYP ,JTYP ,NANGLE 
-      INTEGER NB ,NBANG ,NBMA ,NBMAI ,NBNO ,NBO ,NBOUI 
-      INTEGER NDIM ,NDIM1 ,NV ,NVECT 
-      REAL*8 A ,ANG ,ANGPRE ,B ,C ,EPS ,PSCA 
-      REAL*8 R8BID ,R8DGRD ,R8PREM ,UN ,UNDEMI ,XNOREL ,XNORM 
-      REAL*8 XNORM2 ,ZERO 
+      INTEGER IATYMA ,IBID ,IDCOOR ,IDLIMA ,IDNOEU ,IER ,IMA
+      INTEGER INO1 ,INO2 ,INO3 ,IOCC ,ITYP ,JTYP ,NANGLE
+      INTEGER NB ,NBANG ,NBMA ,NBMAI ,NBNO ,NBO ,NBOUI
+      INTEGER NDIM ,NDIM1 ,NV ,NVECT
+      REAL*8 A ,ANG ,ANGPRE ,B ,C ,EPS ,PSCA
+      REAL*8 R8BID ,R8DGRD ,R8PREM ,UN ,UNDEMI ,XNOREL ,XNORM
+      REAL*8 XNORM2 ,ZERO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

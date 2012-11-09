@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,8 @@ C       - L AFFECTATION D ELEMENTS FINIS A TOUS LES NOEUDS DEMANDES
 C       - L AFFECTATION D ELEMENTS FINIS SUR UNE MAILLE AU MOINS
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 
       INTEGER VALI(4),D1,D2
       CHARACTER*4 KIOC,CDIM

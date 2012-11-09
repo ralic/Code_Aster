@@ -4,7 +4,7 @@
      &                  DTAU,   COPILO, TYPMOD             )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================

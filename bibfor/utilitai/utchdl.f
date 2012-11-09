@@ -2,10 +2,12 @@
      &                  NOCMP1,IDDL)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,9 @@ C     CALCUL DE REPONSE DYNAMIQUE SOUS FORME D INTERSPECTRE
 C     EXCITATION ET REPONSES SONT DES INTERSPECTRES.
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
-      INTEGER       IDEREX, IDERRE, IVAL(2), IRET, ILNOEX, ILCPEX, I1,
+
+      CHARACTER*32 JEXNUM
+      INTEGER       IDEREX, IDERRE, IRET, ILNOEX, ILCPEX, I1,
      +              ILVAEX, NAPEXC, NINDEX, NNOEEX, NCMPEX, NVASEX, I2,
      +              NBPTMD, IADFRQ, ILAMOR, IJ1, IGIM, IGRE,
      +              ILMODE, ILAMSC, NMOST1, IADPIM, IADSC3, N1,
@@ -67,12 +69,15 @@ C
       CALL RECIEX ( INTEXC, IDEREX, NINDEX, NNOEEX,
      &              NCMPEX, NVASEX, GRAEXC, EXCMOD, NAPEXC )
 C
+      ILNOEX = 1
       CALL JEEXIN('&&OP0131.LISTENOEEXC',IRET)
       IF (IRET.GT.0) CALL JEVEUO('&&OP0131.LISTENOEEXC','L',ILNOEX)
 C
+      ILCPEX = 1
       CALL JEEXIN('&&OP0131.LISTECMPEXC',IRET)
       IF (IRET.GT.0) CALL JEVEUO('&&OP0131.LISTECMPEXC','L',ILCPEX)
 C
+      ILVAEX = 1
       CALL JEEXIN('&&OP0131.LVECTASSEXC',IRET)
       IF (IRET.GT.0) CALL JEVEUO('&&OP0131.LVECTASSEXC','L',ILVAEX)
 C
@@ -197,7 +202,7 @@ C
             ZI(LNUMI-1+IJ1) = I1
             ZI(LNUMJ-1+IJ1) = I2
             IF ( (TYPOPT.EQ.'TOUT') .OR. (I1.EQ.I2) ) THEN
-              IF (I1.EQ.I2) THEN 
+              IF (I1.EQ.I2) THEN
                NBABS = NPDSC3
               ELSE
                NBABS = 2*NPDSC3

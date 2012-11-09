@@ -1,13 +1,15 @@
       SUBROUTINE AFFGEN(TMP,NOM,NEL,NTEL,NAPCIS,FONCIS)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER                       NTEL(*)
       CHARACTER*8           NOM
-      CHARACTER*19 NAPCIS, FONCIS 
+      CHARACTER*19 NAPCIS, FONCIS
       CHARACTER*24      TMP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,9 +43,9 @@ C     ------------------------------------------------------------------
         REAL*8    VALPAY(2), VALPAZ(2), VALPAF
         CHARACTER*24 NOMPA(2), NOMPAF
 C-----------------------------------------------------------------------
-      INTEGER I ,IER ,IGEN ,IGEN2 ,IGEOC ,IGEOR ,ISEC 
-      INTEGER JDGE ,NEL 
-      REAL*8 AINT ,AY ,AZ 
+      INTEGER I ,IER ,IGEN ,IGEN2 ,IGEOC ,IGEOR ,ISEC
+      INTEGER JDGE ,NEL
+      REAL*8 AINT ,AY ,AZ
 C-----------------------------------------------------------------------
         DATA    EPS     /1.D-3/
 C     ------------------------------------------------------------------
@@ -149,8 +151,8 @@ C              --- CAS DU TUBE RECTANGULAIRE ---
                CT = 2.D0*EPY*EPZ*(HY-EPY)*(HY-EPY)*(HZ-EPZ)*(HZ-EPZ)
                CD = HY*EPY + HZ*EPZ - EPY*EPY - EPZ*EPZ
                JX = CT /CD
-C              
-C	       --- INTERPOLATION DES COEFFICIENTS DE CISAILLEMENT
+C
+C          --- INTERPOLATION DES COEFFICIENTS DE CISAILLEMENT
                ALPHA = (HY - 2.D0 * EPY ) / HY
                BETA = (HZ - 2.D0 * EPZ ) / HZ
                CALL ASSERT((ALPHA.GE.0.D0) .OR. (BETA.GE.0.D0))
@@ -164,9 +166,9 @@ C	       --- INTERPOLATION DES COEFFICIENTS DE CISAILLEMENT
                VALPAZ(1)= BETA
                VALPAZ(2)= ALPHA
                CALL FOINTE('A',NAPCIS,2,NOMPA,VALPAY,AY,IER)
-               CALL FOINTE('A',NAPCIS,2,NOMPA,VALPAZ,AZ,IER)       
+               CALL FOINTE('A',NAPCIS,2,NOMPA,VALPAZ,AZ,IER)
 C
-C  AY            
+C  AY
                IF (NEL.EQ.NTEL(2).OR.NEL.EQ.NTEL(12)) THEN
                    ZR(JDGE+IGEN+2) = 0.D0
                ELSE
@@ -244,15 +246,15 @@ C  RZ
             ZR(JDGE+IGEN+8) = RE
 C  RT
             ZR(JDGE+IGEN+9) = RE
-C              
-C	    --- INTERPOLATION DES COEFFICIENTS DE CISAILLEMENT
+C
+C       --- INTERPOLATION DES COEFFICIENTS DE CISAILLEMENT
 C
             ALPHA = RI / RE
             CALL ASSERT((ALPHA .GE. 0.D0) .OR. (ALPHA .LE. 1.D0))
             NOMPAF = 'ALPHA'
             VALPAF = ALPHA
             CALL FOINTE('A',FONCIS,1,NOMPAF,VALPAF,CCIS,IER)
-C  AY	    
+C  AY
             IF (NEL.EQ.NTEL(2).OR.NEL.EQ.NTEL(12)) THEN
                 ZR(JDGE+IGEN+2) = 0.D0
             ELSE

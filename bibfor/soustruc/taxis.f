@@ -1,6 +1,6 @@
       SUBROUTINE TAXIS(NOMA,INDIC,NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8 NOMA
       INTEGER INDIC(*)
       INTEGER NBMA
@@ -35,12 +37,12 @@ C
 C     VARIABLES LOCALES:
 C     ------------------
       REAL*8 VALR(1)
-      
+
       CHARACTER*8  K8BID,K8B,K8A
       CHARACTER*24 VALK(2)
 C
 C-----------------------------------------------------------------------
-      INTEGER IACNEX ,IER ,IMA ,INO ,JVALE ,NBNOMA ,NUMNO 
+      INTEGER IACNEX ,IER ,IMA ,INO ,JVALE ,NBNOMA ,NUMNO
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()

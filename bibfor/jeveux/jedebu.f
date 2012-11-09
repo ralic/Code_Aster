@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,6 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRP_6 CRS_508 CRS_512
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER             NBFI, MXZON, IDB
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR D'INITIALISATION GENERALE POUR LE GESTIONNAIRE
@@ -43,11 +44,11 @@ C ----------------------------------------------------------------------
       COMMON /ILOCJE/  ILOC
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IACCE ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD 
-      INTEGER JIACCE ,JIADD ,JIADM ,JJPREM ,JLONG ,JLONO ,JLTYP 
-      INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K ,LOFIEM 
-      INTEGER MOFIEM ,N ,NBACCE, IBID 
-      REAL*8 VAL 
+      INTEGER I ,IACCE ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD
+      INTEGER JIACCE ,JIADD ,JIADM ,JJPREM ,JLONG ,JLONO ,JLTYP
+      INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K ,LOFIEM
+      INTEGER MOFIEM ,N ,NBACCE, IBID
+      REAL*8 VAL
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
@@ -126,10 +127,10 @@ C ----------------------------------------------------------------------
       COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
 C --------------------------------- ------------------------------------
-      INTEGER          MXLICI , IPREM  , INIT,    IRET, IRET2
+      INTEGER          MXLICI , IPREM  , INIT,    IRET
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM
-      INTEGER          LOR8EM , LOC8EM , ISNNEM , IRT
-      REAL*8           R8BID,RVAL(6),RV(2)
+      INTEGER          LOR8EM , LOC8EM , ISNNEM , IRT, ISMAEM
+      REAL*8           R8BID,RVAL(6),R8NNEM
       CHARACTER*8      K8TAB(6)
       PARAMETER      ( MXLICI = 67 )
       CHARACTER *(MXLICI) CLICIT
@@ -137,6 +138,12 @@ C --------------------------------- ------------------------------------
      &mnopqrstuvwxyz'/
 C DEB ------------------------------------------------------------------
 C
+C ON AFFECTE ZI(1), ZR(1) ET ZC(1) AVEC UNE VALEUR QUI PEUT FAIRE
+C PLANTER SI ELLE EST UTILISEE
+C
+      ZI(1)=ISMAEM()
+      ZR(1)=R8NNEM()
+      ZC(1)=DCMPLX(ZR(1),ZR(1))
 C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LFIC = LOFIEM()
       CALL GTOPTR('maxbase', VAL, IRET)
@@ -205,7 +212,7 @@ C
       CALL UTPTME(1,'MEM_MUMP',0.D0,IRET)
       CALL UTGTME(1,'VMPEAK  ',RVAL,IRET)
       IF ( RVAL(1) .LE. 0 ) THEN
-        CALL U2MESG('I','JEVEUX1_75',0,' ',0,IBID,0,RVAL)  
+        CALL U2MESG('I','JEVEUX1_75',0,' ',0,IBID,0,RVAL)
       ENDIF
       K8TAB(1) = 'LIMIT_JV'
       K8TAB(2) = 'MEM_TOTA'
@@ -214,16 +221,16 @@ C
       K8TAB(5) = 'COUR_JV'
       K8TAB(6) = 'MEM_MUMP'
       CALL UTGTME(6,K8TAB,RVAL,IRET)
-C  
+C
       IF ( RVAL(3) .GT. 0 ) THEN
-C     
+C
         CALL UTPTME(1,'RLQ_MEM ',RVAL(3),IRET)
         IF ( RVAL(1)-RVAL(3) .LE. 0 ) THEN
           CALL U2MESR('F' ,'JEVEUX1_71',3,RVAL)
-        ENDIF 
+        ENDIF
         CALL JERMXD((RVAL(1)-RVAL(3))*1024*1024,IRET)
-      ENDIF 
-C 
+      ENDIF
+C
       LISZON = 1
       JISZON = 1
       LK1ZON = LISZON * LOIS

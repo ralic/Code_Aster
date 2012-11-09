@@ -4,10 +4,12 @@ C
 C DECLARATION PARAMETRES D'APPEL
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*(*)       MOZ,  MAZ, CHVOIZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,9 +55,9 @@ C
       INTEGER          IAVAL1, IAVAL2, JAD, IAD, IADV
       INTEGER          JCELD,NBMAV1,NBMAV2,NBMAV3,NBMAV4
       INTEGER          NUMAV1,NUMAV2,NUMAV3,NUMAV4,TYP,SOM(4,6,4),IATYMA
-      
+
       REAL*8           R8BIDT(1)
-      
+
       LOGICAL          TROISD
 C
       INTEGER            DEBUGR
@@ -265,7 +267,7 @@ C
                             NBVOIS = NBVOIS + 1
 C
                             IF (NBVOIS.GT.1) GOTO 803
-C                        
+C
                             ZI(IAVAL2+IFA) = NUMAV1
                             IADV=IATYMA-1+NUMAV1
                             TYP = ZI(IADV)
@@ -287,7 +289,7 @@ C
                         NBVOIS = NBVOIS + 1
 C
                         IF (NBVOIS.GT.1) GOTO 803
-C                        
+C
                         ZI(IAVAL2+IFA) = NUMAV1
                         IADV=IATYMA-1+NUMAV1
                         TYP = ZI(IADV)
@@ -391,7 +393,7 @@ C
                   NBVOIS = NBVOIS + 1
 C
                   IF (NBVOIS.GT.1) GOTO 603
-C                      
+C
                   ZI(IAVAL1+14*(IEL-1)+INO) = NUMAV1
                   IADV=IATYMA-1+NUMAV1
                   TYP = ZI(IADV)

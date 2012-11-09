@@ -1,6 +1,6 @@
       SUBROUTINE SDCHGD(CHAMP,TYSCA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*(*) CHAMP,TYSCA
 C ----------------------------------------------------------------------
 C     BUT: CHANGER LA GRANDEUR ASSOCIEE A UN CHAM_NO/_ELEM
@@ -49,7 +51,7 @@ C     ------------------
 C
 C DEB-------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADESC ,IBID ,IGD ,IGD2 
+      INTEGER IADESC ,IBID ,IGD ,IGD2
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NOCHAM= CHAMP

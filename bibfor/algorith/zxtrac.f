@@ -7,7 +7,7 @@
       CHARACTER*(*) INTERP,CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,8 +41,8 @@ C-----------------------------------------------------------------------
       REAL*8  PREC2
 C
 C-----------------------------------------------------------------------
-      INTEGER I 
-      REAL*8 ALPHA ,TEMPS 
+      INTEGER I
+      REAL*8 TEMPS
 C-----------------------------------------------------------------------
       IER = 0
 C

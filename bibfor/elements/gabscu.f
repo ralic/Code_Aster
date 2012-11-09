@@ -1,6 +1,6 @@
       SUBROUTINE GABSCU(LOBJ2,COORN,NOMNO,FOND,XL,ABSGAM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,8 @@ C        ABSGAM : ABSCISSE CURVILIGNE DES NOEUDS DU FOND DE FISSURE
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*24      NOMNO,COORN,NUMGAM,ABSGAM,FOND
 C
       INTEGER           LOBJ2,IADRCO,IADRNO,IADNUM,IADABS
@@ -47,7 +49,7 @@ C
 C
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IRET ,J 
+      INTEGER I ,IRET ,J
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEVEUO(COORN,'L',IADRCO)

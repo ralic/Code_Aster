@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,6 +46,7 @@ C
 C ARGUMENTS
 C ---------
       INCLUDE 'jeveux.h'
+
       CHARACTER*19  MELFLU
       CHARACTER*8   TYPFLU,BASE
       INTEGER       NBM
@@ -298,7 +299,6 @@ C    LE MODE PROPRE DU TUBE EST DE LA FORME C*S+D
          DO 95 I=1,NBVAL
            ZR(IRAP-1+(IM-1)*NBVAL+I) = ZR(IVEN-1+IM)/
      &           ZR(IVCN-1+(IM-1)*NBVAL+I)
-C           write(6,*)'Rapport Gevibus': ZR(IRAP-1+(IM-1)*NBVAL+I)
  95      CONTINUE
  90   CONTINUE
 
@@ -422,7 +422,6 @@ C    LA MASSE GENERALISEE DU MODE IM
          DO 195 I=1,NBVAL
            ZR(IRAP-1+(IM-1)*NBVAL+I+NBM*NBVAL) = ZR(IVEN-1+NBM+IM)/
      &        ZR(IVCN-1+(IM-1)*NBVAL+I+NBM*NBVAL)
-C           write(6,*)'Rapport': ZR(IRAP-1+(IM-1)*NBVAL+I+NBM*NBVAL)
 195      CONTINUE
 190   CONTINUE
 

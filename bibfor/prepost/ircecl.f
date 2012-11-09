@@ -6,6 +6,8 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXATR
       INTEGER           IFI,NBEL,LIGREL(*),NBGREL,LONGR(*),NCMPMX,NBNOT,
      &                  NBCMPT,NUCMPU(*),CELD(*),CONNEX(*),POINT(*),
      &                  NUMNOE(*),NBMAT,NDIM,NUMMAI(*),NCMPV,NUCMP(*)
@@ -16,7 +18,7 @@ C
       LOGICAL           LSUP,LINF,LMAX,LMIN,LCOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,6 +1,6 @@
       SUBROUTINE JENUNO ( NOMLU , NOMO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRS_508  CRS_512
+C TOLE CRP_18 CRS_508
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT NONE
       CHARACTER *(*)      NOMLU , NOMO
@@ -39,11 +39,11 @@ C ----------------------------------------------------------------------
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADMEX ,IADMI ,IBACOL ,IDECO ,IDENOM ,IPGCEX ,IXNOM 
-      INTEGER JCARA ,JCTAB ,JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD 
-      INTEGER JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG 
-      INTEGER JRNOM ,JTYPE ,K ,KADM ,LNOM ,LUTII ,N 
-      INTEGER NK 
+      INTEGER IADMEX ,IADMI ,IBACOL ,IDECO ,IDENOM ,IPGCEX ,IXNOM
+      INTEGER JCARA ,JCTAB ,JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD
+      INTEGER JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG
+      INTEGER JRNOM ,JTYPE ,K ,KADM ,LNOM ,LUTII ,N
+      INTEGER NK
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
@@ -67,22 +67,16 @@ C ----------------------------------------------------------------------
       INTEGER          NUMEC
       COMMON /INUMJE/  NUMEC
 C ----------------------------------------------------------------------
-      INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
-      PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
+      INTEGER          IDENO , ILNOM
+      PARAMETER      ( IDENO=2,ILNOM=3 )
 C ----------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,             IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+      INTEGER        IDNOM
+      PARAMETER    ( IDNOM  = 5 )
 C ----------------------------------------------------------------------
       CHARACTER *32    NOML32
       CHARACTER *1     GENRI
       INTEGER          ICRE , IRET, ITAB, VALI(2)
       REAL*8           VALR
-      CHARACTER *8     NUME
-      DATA             NUME  / '$$XNUM  ' /
 C DEB ------------------------------------------------------------------
       IPGCEX = IPGC
       IPGC = -2

@@ -1,6 +1,6 @@
       SUBROUTINE SSAFMO(MO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8 MO
 C ----------------------------------------------------------------------
 C     BUT: TRAITER LE MOT-CLEF AFFE_SOUS_STRUC DE LA COMMANDE
@@ -48,8 +50,8 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IALMAI ,IASSSA ,IBID ,IERD ,IMAS ,IOC 
-      INTEGER IRET ,N1 ,N2 ,NBOC ,NBSMA ,NBSS ,NL 
+      INTEGER I ,IALMAI ,IASSSA ,IBID ,IERD ,IMAS ,IOC
+      INTEGER IRET ,N1 ,N2 ,NBOC ,NBSMA ,NBSS ,NL
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()

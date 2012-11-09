@@ -3,7 +3,7 @@
      &                  MULTCU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,8 @@ C ======================================================================
 C
       IMPLICIT      NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8   CHAR
       CHARACTER*8   NOMA
       CHARACTER*8   NOMO
@@ -33,13 +35,13 @@ C
       CHARACTER*24  COEFCU
       CHARACTER*24  COMPCU
       CHARACTER*24  MULTCU
-C     
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE LIAISON_UNILATERALE (CREATION SD)
 C
 C CONSTRUCTION FINALE DES VECTEURS ON OUBLIE LE CONCEPT DE ZONES
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -67,7 +69,7 @@ C
        INTEGER        NBGAU
        CHARACTER*24   DEFICU
        INTEGER        JMULT,JNOE,JPOI,JNBGD
-       INTEGER        JCOED,JCOEG,JCOMPG,JCOEF,JNCMP      
+       INTEGER        JCOED,JCOEG,JCOMPG,JCOEF,JNCMP
        INTEGER        INO,ICMP,IZONE
        CHARACTER*24   NOEUCU,NOEUMA
        CHARACTER*24   VALK(2)
@@ -88,7 +90,7 @@ C
 C
 C --- INITIALISATIONS
 C
-      DEFICU = CHAR(1:8)//'.UNILATE' 
+      DEFICU = CHAR(1:8)//'.UNILATE'
       NOEUMA = NOMA // '.NOMNOE'
       K8BLA  = ' '
       CALL JEVEUO(MULTCU,'L',JMULT)
@@ -115,7 +117,7 @@ C
 C --- CREATION DES VECTEURS TEMPORAIRES
 C
       CALL WKVECT('&&CREAUN.INDIR','V V I' ,NNOCU+1,JINDIR)
-      CALL WKVECT('&&CREAUN.CMPG' ,'V V K8',NBGAU,JCOMPG)    
+      CALL WKVECT('&&CREAUN.CMPG' ,'V V K8',NBGAU,JCOMPG)
       CALL WKVECT('&&CREAUN.COEFG','V V K8',NBGAU,JCOEG)
       CALL WKVECT('&&CREAUN.COEFD','V V K8',NNOCU,JCOED)
       ZI(JINDIR) = 1
@@ -177,7 +179,7 @@ C
 
       CPTD   = CPTD  - 1
       CPTND  = CPTND - 1
-      NCMPG  = NCMPG  - 1 
+      NCMPG  = NCMPG  - 1
 
       CALL ASSERT(CPTD.EQ.NNOCU)
       CALL ASSERT(CPTND.EQ.NNOCU)

@@ -18,12 +18,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF CALCULEL  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C     COMMANDE:  CALC_MATR_ELEM
 
 C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
       REAL*8 TIME,TPS(6)
       CHARACTER*1 BASE
       CHARACTER*4 CTYP,KMPIC

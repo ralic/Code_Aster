@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER MODLOC(*),TCMP(*),NBC,TABERR(*),NBSP
       REAL*8  TVALE(*),VALCMP(*)
 C
@@ -76,8 +78,8 @@ C
 C======================================================================
 C
 C-----------------------------------------------------------------------
-      INTEGER IPOSDG 
-      REAL*8 R8VIDE 
+      INTEGER IPOSDG
+      REAL*8 R8VIDE
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       GD = MODLOC(2)

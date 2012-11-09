@@ -1,11 +1,12 @@
       SUBROUTINE TE0464(OPTION,NOMTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16      OPTION,NOMTE
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +36,7 @@ C     ------------------------------------------------------------------
       INTEGER        NDDLM,NL, IPOINT, LORIEN
       PARAMETER     (NDDLM=6,NL=NDDLM*NDDLM)
       INTEGER        I, NC, NNO, JDM, JDC, J, INFODI,IBID
-      REAL*8         VXX, R8BID, PGL(3,3), KLV(NL), KLW(NL)
+      REAL*8         VXX, R8BID, PGL(3,3), KLV(NL)
       CHARACTER*8    K8BID
 
 C     ------------------------------------------------------------------

@@ -1,5 +1,5 @@
       SUBROUTINE ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ, NBMODE,
-     +                    REPMO1, REPMO2, AMORT, MODAL, ID, TEMPS, 
+     +                    REPMO1, REPMO2, AMORT, MODAL, ID, TEMPS,
      +                    RECMOR, RECMOP, TABS, NOMSY, VECMOD, REASUP,
      +                    SPECTR, CORFRE, MUAPDE, TCOSUP, NINTRA, NBDIS,
      +                    F1GUP, F2GUP)
@@ -18,24 +18,24 @@
       LOGICAL           MONOAP, CORFRE, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/11/2012   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21 
+C TOLE CRP_21
 C     ------------------------------------------------------------------
 C     COMMANDE : COMB_SISM_MODAL
 C        RECOMBINAISON DES REPONSES MODALES
@@ -56,7 +56,7 @@ C OUT : RECMOR : VECTEUR DES COMBINAISONS DES REPONSES RIGIDES DES MODES
 C OUT : RECMOP : VECTEUR DES COMBINAISONS DES REPONSES PERIO DES MODES
 C IN  : NINTRA : NOMBRE d'INTRA-GROUPE
 C IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
-C IN  : F1GUP  : FREQUENCE F1 POUR LA METHODE DE GUPTA 
+C IN  : F1GUP  : FREQUENCE F1 POUR LA METHODE DE GUPTA
 C IN  : F2GUP  : FREQUENCE F2 POUR LA METHODE DE GUPTA
 C     ------------------------------------------------------------------
       INTEGER  NSUP, II, IM, IM1, IM2, IN, IS, IOC
@@ -66,7 +66,7 @@ C     ------------------------------------------------------------------
       REAL*8   ZERO, DEMI, UN, DEUX, QUATRE, HUIT
       REAL*8   FPROP, ALPHA, ALPHA1, ALPHA2, R8PI, PI
       REAL*8   REPMOR, REPMOP
-C      
+C
       CALL JEMARQ()
 C
       PI = R8PI()
@@ -77,14 +77,14 @@ C
       QUATRE = 4.D0
       HUIT   = 8.D0
 C
-      IF (MONOAP.OR.(.NOT.MUAPDE)) THEN 
+      IF (MONOAP.OR.(.NOT.MUAPDE)) THEN
 CCC         NSUP=NBSUP
          NSUP=1
       ELSE
          NSUP=NSUPP(ID)
       ENDIF
 C
-      DO 2 IS = 1,NSUP      
+      DO 2 IS = 1,NSUP
          DO 3 IN = 1,NEQ
             RECMOR(IS,IN,ID) = ZERO
             RECMOP(IS,IN,ID) = ZERO
@@ -99,19 +99,19 @@ C
      +                    NBMODE, VECMOD, MODAL, ID, REASUP,
      +                    SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
      +                    TCOSUP, IM, NBDIS)
-            DO 4 IS = 1,NSUP 
+            DO 4 IS = 1,NSUP
                DO 6 IN = 1,NEQ
                   XXX = REPMO1(IS,IN,ID)
                   IOC = NBDIS(IS)
-                  RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) + 
+                  RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) +
      +                                      ABS(XXX)
  6             CONTINUE
  4          CONTINUE
  5       CONTINUE
-         DO 7 IS = 1,NSUP      
+         DO 7 IS = 1,NSUP
             DO 8 IN = 1,NEQ
                IOC = NBDIS(IS)
-               RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) * 
+               RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) *
      +                             RECMOP(IOC,IN,ID)
  8          CONTINUE
  7       CONTINUE
@@ -129,8 +129,8 @@ C     --- AVEC REGLE DES "DIX POUR CENT" ---
      +                    TCOSUP, IM1, NBDIS)
             DO 41 IS = 1,NSUP
                DO 42 IN = 1,NEQ
-                  TABS(IS,IN) = ABS(REPMO1(IS,IN,ID))  
- 42            CONTINUE                                 
+                  TABS(IS,IN) = ABS(REPMO1(IS,IN,ID))
+ 42            CONTINUE
  41         CONTINUE
  52         CONTINUE
             IF (IM1.LE.NBMODE) THEN
@@ -147,7 +147,7 @@ C     --- AVEC REGLE DES "DIX POUR CENT" ---
      +                      NBMODE, VECMOD, MODAL, ID, REASUP,
      +                      SPECTR, REPMO2, CORFRE, AMORT, MUAPDE,
      +                      TCOSUP, IM2, NBDIS)
-                     DO 45 IS = 1,NSUP      
+                     DO 45 IS = 1,NSUP
                         DO 46 IN = 1,NEQ
                            XXX = ABS(REPMO2(IS,IN,ID))
                            TABS(IS,IN)= TABS(IS,IN)  + XXX
@@ -161,11 +161,11 @@ C     --- AVEC REGLE DES "DIX POUR CENT" ---
  44            CONTINUE
             ENDIF
  48         CONTINUE
-            DO 49 IS = 1,NSUP      
+            DO 49 IS = 1,NSUP
                DO 50 IN = 1,NEQ
                    XXX =  TABS(IS,IN)
                    IOC = NBDIS(IS)
-                   RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) + 
+                   RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) +
      +                                       XXX*XXX
  50            CONTINUE
  49         CONTINUE
@@ -192,25 +192,25 @@ C       CALCUL DU FACTEUR DE REPONSE RIGIDE DU MODE IM
         DO 89 IS = 1,NSUP
           DO 90 IN = 1,NEQ
 C
-C           CALCUL DES PARTIES RIGIDE ET PERIODIQUE DE LA REPONDE DU 
+C           CALCUL DES PARTIES RIGIDE ET PERIODIQUE DE LA REPONDE DU
 C           MODE IM
-            REPMOR = ALPHA*REPMO1(IS,IN,ID) 
+            REPMOR = ALPHA*REPMO1(IS,IN,ID)
             REPMOP = SQRT(UN-ALPHA*ALPHA)*REPMO1(IS,IN,ID)
-            IOC = NBDIS(IS)   
+            IOC = NBDIS(IS)
 C
 C           SOMME ALGEBRIQUE DES REPONSES RIGIDES MODALES
             RECMOR(IOC,IN,ID) = RECMOR(IOC,IN,ID)
      +                        + REPMOR
 C
 C           SOMME DES CARRES DES REPONSES MODALES DYNAMIQUES
-C           METHODE SIMPLE            
+C           METHODE SIMPLE
             RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) + REPMOP**2
  90       CONTINUE
- 89     CONTINUE   
+ 89     CONTINUE
  88   CONTINUE
 C
 C     SOMME DES CARRES DES REPONSES MODALES DYNAMIQUES
-C     METHODE CQC   
+C     METHODE CQC
       DO 220 IM1 = 1,NBMODE-1
         FPROP = SQRT(MODAL(IM1,1))/(DEUX*PI)
         IF (FPROP.LE.F1GUP) THEN
@@ -251,17 +251,17 @@ C     METHODE CQC
      +                  NBMODE, VECMOD, MODAL, ID, REASUP,
      +                  SPECTR, REPMO2, CORFRE, AMORT, MUAPDE ,
      +                  TCOSUP, IM2, NBDIS)
-          DO 221 IS = 1,NSUP      
+          DO 221 IS = 1,NSUP
             DO 224 IN = 1,NEQ
               XX1 = SQRT(UN-ALPHA1*ALPHA1)*REPMO1(IS,IN,ID)
               XX2 = SQRT(UN-ALPHA2*ALPHA2)*REPMO2(IS,IN,ID)
               IOC = NBDIS(IS)
-              RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) 
+              RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID)
      +                            + (DEUX*XX1*XX2*XXX)
  224        CONTINUE
  221      CONTINUE
  222    CONTINUE
- 220  CONTINUE      
+ 220  CONTINUE
       ELSE
 C
 C     --- COMBINAISON QUADRATIQUE SIMPLE ---
@@ -270,11 +270,11 @@ C     --- COMBINAISON QUADRATIQUE SIMPLE ---
      +                 NBMODE, VECMOD, MODAL, ID, REASUP,
      +                 SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
      +                 TCOSUP, IM, NBDIS)
-         DO 10 IS = 1,NSUP      
+         DO 10 IS = 1,NSUP
             DO 12 IN = 1,NEQ
-               XXX = REPMO1(IS,IN,ID)   
-               IOC = NBDIS(IS)         
-               RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) + 
+               XXX = REPMO1(IS,IN,ID)
+               IOC = NBDIS(IS)
+               RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) +
      +                                   ( XXX * XXX )
  12         CONTINUE
  10      CONTINUE
@@ -306,12 +306,12 @@ C     --- CQC AVEC FORMULE DE DER-KIUREGHIAN ---
      +                       NBMODE, VECMOD, MODAL, ID, REASUP,
      +                       SPECTR, REPMO2, CORFRE, AMORT, MUAPDE ,
      +                       TCOSUP, IM2, NBDIS)
-               DO 21 IS = 1,NSUP      
+               DO 21 IS = 1,NSUP
                   DO 24 IN = 1,NEQ
                      XX1 = REPMO1(IS,IN,ID)
                      XX2 = REPMO2(IS,IN,ID)
                      IOC = NBDIS(IS)
-                     RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) 
+                     RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID)
      +                                + (DEUX*XX1*XX2*XXX)
  24               CONTINUE
  21            CONTINUE
@@ -324,14 +324,14 @@ C     --- DSC AVEC FORMULE DE ROSENBLUETH ---
             B1 = AMORT(IM1)
             W1 = SQRT(MODAL(IM1,1))
             BP1 = B1 + ( DEUX / ( TEMPS * W1 ) )
-            WP1 = W1 * (SQRT( UN - (BP1*BP1) ) ) 
-            BP1W1 = BP1 * W1    
+            WP1 = W1 * (SQRT( UN - (BP1*BP1) ) )
+            BP1W1 = BP1 * W1
             DO 31 IM2 = IM1+1,NBMODE
                B2 = AMORT(IM2)
                W2 = SQRT(MODAL(IM2,1))
                BP2 = B2 + ( DEUX / ( TEMPS * W2 ) )
                WP2 = W2 * (SQRT( UN - (BP2*BP2) ) )
-               BP2W2 = BP2 * W2      
+               BP2W2 = BP2 * W2
                XDE = ( WP1-WP2 ) / ( BP1W1 + BP2W2 )
                XXX = UN / ( UN + (XDE*XDE) )
                CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
@@ -342,12 +342,12 @@ C     --- DSC AVEC FORMULE DE ROSENBLUETH ---
      +                       NBMODE, VECMOD, MODAL, ID, REASUP,
      +                       SPECTR, REPMO2, CORFRE, AMORT, MUAPDE,
      +                       TCOSUP, IM2, NBDIS)
-               DO 32 IS = 1,NSUP      
+               DO 32 IS = 1,NSUP
                   DO 34 IN = 1,NEQ
                      XX1 = REPMO1(IS,IN,ID)
                      XX2 = REPMO2(IS,IN,ID)
                      IOC = NBDIS(IS)
-                     RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID) 
+                     RECMOP(IOC,IN,ID) = RECMOP(IOC,IN,ID)
      +                                + (DEUX*XX1*XX2*XXX)
  34               CONTINUE
  32            CONTINUE

@@ -7,7 +7,7 @@
       CHARACTER*(*)       FORMAT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,8 +67,5 @@ C
  1010 FORMAT(5X,'ABSC_CURV',5X,'NOEUD',9X,'R_INF',10X,'R_SUP',10X,
      &       'THETA',10X,'DIR_X',10X,'DIR_Y',10X,'DIR_Z')
  1020 FORMAT(1P,3X,E12.5,3X,A9,6(3X,E12.5))
- 1030 FORMAT( '==> CHAMP THETA : ',A8,/)
- 1040 FORMAT(7X,'R_INF',10X,'R_SUP',10X, 'THETA')
- 1050 FORMAT(3(3X,E12.5))
 C
       END

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C ======================================================================
 C     OPERATEUR RESOUDRE
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
       INTEGER IBID,IFM,NIV,NB,J1,MXITER,IER
       CHARACTER*8 XSOL,SECMBR,MATR,VCINE,MATF,METRES,KVARI
       CHARACTER*16 CONCEP,NOMCMD

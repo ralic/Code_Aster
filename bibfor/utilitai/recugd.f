@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,8 @@ C OUT : VALRES : VALEURS DES COMPOSANTES.
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
         REAL*8       VALRES(NBGD*IASSEF)
         CHARACTER*8  NOMCMP(NBGD)
       CHARACTER*1  K1BID
@@ -42,9 +44,9 @@ C
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IASSEF ,IASSMX ,ICARD ,ICARV ,ICMP ,ICODE 
-      INTEGER IDECA ,IDECAL ,IGD ,II ,IJ ,IRANG ,IRANV 
-      INTEGER ITAB ,JJ ,KK ,LL ,NBCMP ,NBGD 
+      INTEGER I ,IASSEF ,IASSMX ,ICARD ,ICARV ,ICMP ,ICODE
+      INTEGER IDECA ,IDECAL ,IGD ,II ,IJ ,IRANG ,IRANV
+      INTEGER ITAB ,JJ ,KK ,LL ,NBCMP ,NBGD
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CARAV = CAELEM(1:19)//'.VALE'

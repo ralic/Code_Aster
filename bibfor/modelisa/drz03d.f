@@ -1,7 +1,7 @@
       SUBROUTINE DRZ03D(LISNOZ,LONLIS,CHARGZ,TYPLAZ,LISREZ,DMIN)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8 CHARGE
       CHARACTER*19 LISREL
       CHARACTER*24 LISNOE
@@ -58,11 +60,11 @@ C -------------------------------------------------------
 
 C --------- VARIABLES LOCALES ---------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IER ,IERD ,ILISNO ,INOA ,INOM 
-      INTEGER ITRIAN ,J ,JCOOR ,JLISCC ,JLISCR ,JLISDI ,JLISDL 
-      INTEGER JLISDM ,JLISNO ,JNOMA ,LONLIS ,NBCMP ,NBEC ,NBTERM 
-      INTEGER NDDLA ,NMOCL 
-      REAL*8 BETA ,UN ,ZERO 
+      INTEGER I ,IBID ,IER ,IERD ,ILISNO ,INOA ,INOM
+      INTEGER ITRIAN ,J ,JCOOR ,JLISCC ,JLISCR ,JLISDI ,JLISDL
+      INTEGER JLISDM ,JLISNO ,JNOMA ,LONLIS ,NBCMP ,NBEC ,NBTERM
+      INTEGER NDDLA ,NMOCL
+      REAL*8 BETA ,UN ,ZERO
 C-----------------------------------------------------------------------
       PARAMETER (NMOCL=300)
       COMPLEX*16 BETAC

@@ -1,13 +1,14 @@
       SUBROUTINE TBAJLI ( NOMTA, NBPAR, NOMPAR, VI, VR, VC, VK, NUME )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       INTEGER                    NBPAR,         VI(*),          NUME
       REAL*8                                        VR(*)
       COMPLEX*16                                        VC(*)
       CHARACTER*(*)       NOMTA,        NOMPAR(*),          VK(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

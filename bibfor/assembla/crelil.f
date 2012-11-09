@@ -5,13 +5,15 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       INTEGER NBMAT,ILIMAT,GD,NEC,ILIMO,NLILI,ICONX1,ICONX2,NBELM,
      &        IADNEM,IADLIE
       CHARACTER*(*) LILI,NOMMA,PREF,MAILLA
       CHARACTER*1 BASE,KSTOP
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,9 +95,9 @@ C----------------------------------------------------------------------
 C                DEBUT DES INSTRUCTIONS
 C----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IAD ,IAREFR ,IBID ,ICOMP ,IDIMLI ,IDLRES ,IERC 
-      INTEGER IERD ,ILI ,IMAT ,IRESU ,IRET ,IRET1 ,N1 
-      INTEGER NBCMP ,NBEC ,NBGR ,NBMO ,NBRESU ,NBSUP ,NCMP 
+      INTEGER IAD ,IAREFR ,IBID ,ICOMP ,IDIMLI ,IDLRES ,IERC
+      INTEGER IERD ,ILI ,IMAT ,IRESU ,IRET ,IRET1 ,N1
+      INTEGER NBCMP ,NBEC ,NBGR ,NBMO ,NBRESU ,NBSUP ,NCMP
 
 C-----------------------------------------------------------------------
       K24LIL = LILI

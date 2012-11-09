@@ -1,6 +1,6 @@
       SUBROUTINE SSMAU2(NOMU,OPTION)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C ======================================================================
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8 NOMU
       CHARACTER*(*) OPTION
 C ----------------------------------------------------------------------
@@ -51,10 +53,10 @@ C ----------------------------------------------------------------------
 
 
 C-----------------------------------------------------------------------
-      INTEGER IAMPEE ,IAPHI0 ,IAPHIE ,IASCDI ,IASCHC ,IASCIB ,IATMI0 
-      INTEGER IATMIE ,IBLOLD ,IBLPH ,IER ,II ,IIBLPH ,J 
-      INTEGER JBLPH ,JDESM ,JJBLPH ,JREFA ,JUALF ,K ,KK 
-      INTEGER LGBLPH ,LMAT ,NBLPH ,NDDLE ,NDDLI ,NLBLPH 
+      INTEGER IAMPEE ,IAPHI0 ,IAPHIE ,IASCDI ,IASCHC ,IASCIB ,IATMI0
+      INTEGER IATMIE ,IBLOLD ,IBLPH ,IER ,II ,IIBLPH ,J
+      INTEGER JBLPH ,JDESM ,JJBLPH ,JREFA ,JUALF ,K ,KK
+      INTEGER LGBLPH ,LMAT ,NBLPH ,NDDLE ,NDDLI ,NLBLPH
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       OPTIO2 = OPTION

@@ -1,7 +1,7 @@
       SUBROUTINE OP0076()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2012   AUTEUR BERRO H.BERRO 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,15 +24,16 @@ C     TRAN_GENE.
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
       REAL*8        TEMPS,PREC,FREQ
-      CHARACTER*8   NOMRES, TRANGE, BASEMO, NOMCHA, INTERP, CRIT, MATRIG
+      CHARACTER*8   NOMRES, TRANGE, BASEMO, NOMCHA, INTERP, CRIT
       CHARACTER*16  CONCEP, NOMCMD
       CHARACTER*24  NDDLGE
       CHARACTER*1 K1BID
-      INTEGER      IARG, IREFA
+      INTEGER      IARG
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADESC ,IAREFE ,IDCHAM ,IDDESC ,IDINST ,IDREFE ,IDVECG 
+      INTEGER IADESC ,IAREFE ,IDCHAM ,IDDESC ,IDINST ,IDREFE ,IDVECG
       INTEGER IERD ,N1 ,NBINST ,NBMODE, NT, NF, NI
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -76,15 +77,15 @@ C
       ZK24(IDREFE)   = BASEMO
       ZK24(IDREFE+1) = NDDLGE
 C
-C     --- CAS DU TRAN_GENE      
-      IF (ZI(IADESC).NE.4) THEN 
+C     --- CAS DU TRAN_GENE
+      IF (ZI(IADESC).NE.4) THEN
 C
 C       ---  ON PLANTE SI LE MOT CLE DEMANDE EST FREQ POUR UN TRAN_GENE
         IF (NF.NE.0) CALL U2MESS('E','ALGORITH9_51')
 C
 C       --- CREATION DU VECT_ASSE_GENE RESULTAT ---
         CALL WKVECT(NOMRES//'           .VALE','G V R'  ,NBMODE,IDVECG)
-C  
+C
 C       --- RECUPERATION DU CHAMP ---
         CALL EXTRAC(INTERP,PREC,CRIT,NBINST,ZR(IDINST),TEMPS,ZR(IDCHAM),
      &              NBMODE,ZR(IDVECG),IERD)
@@ -95,8 +96,8 @@ C
 C
 C --- CAS DU HARM_GENE
 C
-      ELSE 
-C       ---  ON PLANTE SI LE MOT CLE DEMANDE EST INST POUR UN HARM_GENE 
+      ELSE
+C       ---  ON PLANTE SI LE MOT CLE DEMANDE EST INST POUR UN HARM_GENE
         IF (NT.NE.0) CALL U2MESS('E','ALGORITH9_52')
 C
 C       --- CREATION DU VECT_ASSE_GENE RESULTAT ---

@@ -1,9 +1,8 @@
       SUBROUTINE OP0164 ()
       IMPLICIT NONE
-C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +26,8 @@ C
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER      N1, N2, N4, JSCDE, ULISOP
       REAL*8       PARTR, PARTI, INST
       CHARACTER*8  K8B, NOMRES, BASEMO, NUMGEN
@@ -42,12 +43,12 @@ C
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,I2 ,IACONL ,IADESC ,IALIME ,IC 
-      INTEGER IER ,IFMIS ,IFR ,IFREQ ,II ,J ,JFRQ 
-      INTEGER JJ ,JREFA ,JRI2 ,JRIG ,JRIT ,LDBLO ,LDBLO2 
-      INTEGER NBMODD ,NBMODE ,NBMODS ,NFR ,NFREQ ,NIT ,NSAUT 
-      INTEGER NTERM ,NUEQ 
-      REAL*8 FREQ ,R8PREM 
+      INTEGER I ,I1 ,I2 ,IACONL ,IADESC ,IALIME ,IC
+      INTEGER IER ,IFMIS ,IFR ,IFREQ ,II ,J ,JFRQ
+      INTEGER JJ ,JREFA ,JRI2 ,JRIG ,JRIT ,LDBLO ,LDBLO2
+      INTEGER NBMODD ,NBMODE ,NBMODS ,NFR ,NFREQ ,NIT ,NSAUT
+      INTEGER NTERM ,NUEQ
+      REAL*8 FREQ ,R8PREM
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -80,7 +81,7 @@ C
 C RECUPERATION DU NOMBRE DE MODES REDUIT,
 C NB_VECT DONNE PAR NUME_DDL_GENE
       CALL JEVEUO(STOLCI//'.SCDE','L',JSCDE)
-      
+
       CALL DISMOI('F','NB_MODES_DYN',BASEMO,'RESULTAT',
      &                      NBMODD,K8B,IER)
       CALL DISMOI('F','NB_MODES_STA',BASEMO,'RESULTAT',
@@ -134,13 +135,13 @@ C
             READ(IFMIS,*) (A2(J),J=1,3)
             ZR(JRI2+2*(I2-1)*NBMODE+2*I1-2) = A2(2)
             ZR(JRI2+2*(I2-1)*NBMODE+2*I1-1) = -A2(3)
-            ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) = 
-     &      ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) + 
+            ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) =
+     &      ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) +
      &                     (FREQ-A(1))/(A2(1)-A(1))
      &                   * (ZR(JRI2+2*(I2-1)*NBMODE+2*I1-2)
      &                     -ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2))
-            ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) = 
-     &      ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) + 
+            ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) =
+     &      ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) +
      &                     (FREQ-A(1))/(A2(1)-A(1))
      &                   * (ZR(JRI2+2*(I2-1)*NBMODE+2*I1-1)
      &                     -ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1))
@@ -189,7 +190,7 @@ C
         IF (IC.GE.1) THEN
           READ(IFMIS) ((ZR(JRI2+2*(I2-1)*NBMODE+2*I1-2),
      &                  ZR(JRI2+2*(I2-1)*NBMODE+2*I1-1),
-     &                  I1=1,NBMODE),I2=1,NBMODE)        
+     &                  I1=1,NBMODE),I2=1,NBMODE)
           DO 8 I1 = 1, NBMODE
           DO 8 I2 = 1, NBMODE
             ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) =

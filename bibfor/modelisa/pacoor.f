@@ -1,12 +1,14 @@
       SUBROUTINE PACOOR(NOMMA,IMA,NBNO,COOR)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8       NOMMA
       INTEGER                 IMA,NBNO
       REAL*8                           COOR(*)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,8 +47,8 @@ C                   COOR(3*(INO-1)+3)= X3(INO) ( EN 2D 0)
       CHARACTER*8  K24BID
 C --- DEBUT
 C-----------------------------------------------------------------------
-      INTEGER I ,ICMP ,ICOOR ,IDCONN ,IDDESC ,IDINO ,IDVALE 
-      INTEGER INO ,INOMA ,NBCMP ,NBNOMX 
+      INTEGER I ,ICMP ,ICOOR ,IDCONN ,IDDESC ,IDINO ,IDVALE
+      INTEGER INO ,INOMA ,NBCMP ,NBNOMX
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       DESC = NOMMA(1:8)//'.COORDO    .DESC'

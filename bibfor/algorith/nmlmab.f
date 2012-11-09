@@ -2,7 +2,7 @@
      &               CRIT,TMOINS,TPLUS,XLONG0,E,A,COELMA,
      &               IRRAM,IRRAP,VARIM,VARIP,KLS,FLC,EFFNOC,EM,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2012   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
       INTEGER NNO, NPG, NC, NEQ, NBT, NCOEFL, NITER, IMATE
 C-----------------------------------------------------------------------
-      INTEGER ICODMA ,IRET ,IT ,NCHAN 
+      INTEGER IRET ,IT ,NCHAN
 C-----------------------------------------------------------------------
       PARAMETER (NEQ = 12, NBT = 78, NCOEFL = 12)
       REAL*8  CRIT(3)
@@ -118,7 +118,7 @@ C
 C-- CALCUL DES INCREMENTS DE DEFORMATION
       CALL VERIFM('RIGI',NPG,1,'T',IMATE,'ELAS',1,DEPTHE,IRET)
       DEPST = DLONG0/XLONG0
-      
+
       IF (IRET.EQ.0) THEN
       CALL GRANAC('RIGI',1,1,IMATE,'        ','LMARC_IRRA      ',
      +                               IRRAP,IRRAM,TEMPM,TEMPP,DEPGRD)

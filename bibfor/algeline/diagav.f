@@ -1,7 +1,7 @@
       SUBROUTINE DIAGAV(NOMA19,NEQ,ILFIN,TYPVAR,EPS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,8 @@ C     OUT : EPS    : 'EPSILON' TEL QU'UN TERME DIAGONAL APRES
 C                    FACTORISATION SERA CONSIDERE COMME NUL
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*19 NOMA19
       CHARACTER*14 NU
       CHARACTER*1 BASE
@@ -39,7 +41,7 @@ C     ------------------------------------------------------------------
 C
 
       CALL JEMARQ()
-      CALL INFDBG('FACTOR',IFM,NIV) 
+      CALL INFDBG('FACTOR',IFM,NIV)
 
       CALL DISMOI('F','MPI_COMPLET',NOMA19,'MATR_ASSE',IBID,KMPIC,IBID)
       IF (KMPIC.NE.'OUI') CALL U2MESS('F','CALCULEL6_54')

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*24      TRAV1,TRAV2,TRAV3,OBJOR,OBJEX,CHFOND,REPK
       CHARACTER*24      OBJ3,NORM,NUMGAM,CHAMNO
       CHARACTER*24      STOK4,DIRE4,COORN,NOMNO,DIRE5,INDICG
@@ -86,9 +88,9 @@ C
       INTEGER      IARG
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,IBID ,IDESC ,IDIRI ,IDIRS ,IELSUP 
-      INTEGER IENORM ,IREFE ,J ,JRESU ,K ,NBEL 
-      REAL*8 S0 ,S1 
+      INTEGER I ,I1 ,IBID ,IDESC ,IDIRI ,IDIRS ,IELSUP
+      INTEGER IENORM ,IREFE ,J ,JRESU ,K ,NBEL
+      REAL*8 S0 ,S1
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 

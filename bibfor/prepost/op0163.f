@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C     INTERFACE ASTER - MISS3D : COMMANDE  LIRE_MISS_3D
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
       INTEGER         IER, ITRESR(3), ITRESI(3)
       INTEGER      ULISOP
       CHARACTER*4   TYPE(3)

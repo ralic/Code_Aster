@@ -2,12 +2,14 @@
      &                  INEMA,NBNO,TYPLAZ)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*(*) LIGRZ, LK(*), TYPLAZ
       CHARACTER*8   TYPLAG
       CHARACTER*19  LIGR
       INTEGER      IGREL,NUMEL,NB,LI(*),CODE,IREPE,INEMA,NBNO(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,8 +77,8 @@ C                       LE SECOND LAGRANGE EST APRES
       CHARACTER*8 NOMA
 C --- DEBUT
 C-----------------------------------------------------------------------
-      INTEGER IC ,ILAG1 ,ILAG2 ,JDLGNS ,JLIGR ,JNEMA ,JNOMA 
-      INTEGER K ,KLIGR ,LONIGR ,NUMPOI ,NUMSEG ,NUNOEU 
+      INTEGER IC ,ILAG1 ,ILAG2 ,JDLGNS ,JLIGR ,JNEMA ,JNOMA
+      INTEGER K ,KLIGR ,LONIGR ,NUMPOI ,NUMSEG ,NUNOEU
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       TYPLAG = TYPLAZ

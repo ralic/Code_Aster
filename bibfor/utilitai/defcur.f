@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,8 @@ C                    FONCTION.
 C     IN  : MONMAI : NOM DU MAILLAGE.
 C     IN  : NM     : NOMBRE DE MAILLES.
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER      PTCH, PNOE
       REAL*8        VECR1(NB), VECR2(NV)
       CHARACTER*2  PROLGD
@@ -40,12 +42,12 @@ C     IN  : NM     : NOMBRE DE MAILLES.
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IACH ,IACNEX ,IAGM ,IAV1 ,IAV2 ,IEXI 
-      INTEGER II ,IM ,IMA1 ,IMA2 ,IND ,ING ,INO 
-      INTEGER ISEG2 ,ISENS ,ITYM ,ITYPM ,JGCNX ,JI ,JJ 
-      INTEGER JP ,KK ,KSEG ,LABS ,LNOE ,LVALI ,MI 
-      INTEGER NB ,NBCHM ,NBNOMA ,NBPOI1 ,NBRMA ,NBRMA1 ,NBRMA2 
-      INTEGER NBRSE1 ,NBRSE2 ,NBRSEG ,NBSEG2 ,NM ,NUMNO ,NV 
+      INTEGER I ,IACH ,IACNEX ,IAGM ,IAV1 ,IAV2 ,IEXI
+      INTEGER II ,IM ,IMA1 ,IMA2 ,IND ,ING ,INO
+      INTEGER ISEG2 ,ISENS ,ITYM ,ITYPM ,JGCNX ,JI ,JJ
+      INTEGER JP ,KK ,KSEG ,LABS ,LNOE ,LVALI ,MI
+      INTEGER NB ,NBCHM ,NBNOMA ,NBPOI1 ,NBRMA ,NBRMA1 ,NBRMA2
+      INTEGER NBRSE1 ,NBRSE2 ,NBRSEG ,NBSEG2 ,NM ,NUMNO ,NV
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()

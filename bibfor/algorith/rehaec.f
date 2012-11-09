@@ -1,6 +1,6 @@
       SUBROUTINE REHAEC(NOMRES,RESGEN,NOMSST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C
 C
       REAL*8       EPSI
@@ -51,13 +53,13 @@ C
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,IAD ,IARCHI ,IBID ,ICH 
-      INTEGER IDRESU ,IEQ ,IER ,IRE1 ,IRE2 ,IRE3 
-      INTEGER IRETOU ,J ,JFREQ ,JNUME ,K ,K1 ,LDNEW 
-      INTEGER LFREQ ,LLCHAB ,LLNEQU ,LLNUEQ ,LLORS ,LLPRS ,LLREF1 
-      INTEGER LLREF2 ,LLREFE ,LMAPRO ,LMOET ,LREFE ,LSILIA ,LSST 
-      INTEGER N1 ,NBCHAM ,NBDDG ,NBFREQ ,NBSST ,NEQ 
-      INTEGER NEQET ,NEQGEN ,NEQRED ,NUSST ,NUTARS 
+      INTEGER I ,I1 ,IAD ,IARCHI ,IBID ,ICH
+      INTEGER IDRESU ,IEQ ,IER ,IRE1 ,IRE2 ,IRE3
+      INTEGER IRETOU ,J ,JFREQ ,JNUME ,K ,K1 ,LDNEW
+      INTEGER LFREQ ,LLCHAB ,LLNEQU ,LLNUEQ ,LLORS ,LLPRS ,LLREF1
+      INTEGER LLREF2 ,LLREFE ,LMAPRO ,LMOET ,LREFE ,LSILIA ,LSST
+      INTEGER N1 ,NBCHAM ,NBDDG ,NBFREQ ,NBSST ,NEQ
+      INTEGER NEQET ,NEQGEN ,NEQRED ,NUSST ,NUTARS
 C-----------------------------------------------------------------------
       DATA SOUTR  /'&SOUSSTR'/
 C-----------------------------------------------------------------------
@@ -80,7 +82,7 @@ C
         VALK (1) = RESGEN
         CALL U2MESG('F', 'ALGORITH14_35',1,VALK,0,0,0,0.D0)
       ENDIF
-C     
+C
       CALL GETVTX(' ','TOUT_CHAM',0,IARG,1,K8REP,N1)
       IF (K8REP(1:3).EQ.'OUI') THEN
         IF (IRE1.EQ.0) THEN
@@ -100,13 +102,13 @@ C
         CALL JEVEUO(HARMGE//'.VITE','L',ITRESU(2))
         CALL JEVEUO(HARMGE//'.ACCE','L',ITRESU(3))
       ELSE
-C ----  ON RECHERCHE LES CHAMPS QU'IL FAUT RESTITUER      
+C ----  ON RECHERCHE LES CHAMPS QU'IL FAUT RESTITUER
          CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,0, CHAMP, N1 )
          NBCHAM = -N1
          CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,NBCHAM, CHAMP, N1 )
 C ----   BOUCLE SUR LES CHAMPS DEMANDES
          DO 69 I = 1 , NBCHAM
-         
+
            IF ( CHAMP(I).EQ.'DEPL' ) THEN
               CHMP(I) = 'DEPL'
               CALL JEEXIN ( HARMGE//'.DEPL' , IRET )
@@ -175,9 +177,9 @@ C
       SST=   NUMGEN(1:14)//'.ELIM.NOMS'
 C
       CALL JEEXIN(SELIAI,ELIM)
-C     
+C
       IF (ELIM .EQ. 0) THEN
-            
+
         CALL JENONU(JEXNOM(NUMGEN//'.LILI',SOUTR),IBID)
         CALL JEVEUO(JEXNUM(NUMGEN//'.ORIG',IBID),'L',LLORS)
         CALL JENONU(JEXNOM(NUMGEN//'.LILI',SOUTR),IBID)
@@ -196,7 +198,7 @@ C --- NOMBRE DE MODES ET NUMERO DU PREMIER DDL DE LA SOUS-STRUCTURE
         IEQ=ZI(LLPRS+(NUTARS-1)*2)
 C
       ELSE
-C      
+C
         NEQET=0
         IEQ=0
         CALL JELIRA(MODGEN//'      .MODG.SSNO','NOMMAX',NBSST,KBID)
@@ -214,8 +216,8 @@ C
         DO 41 I1=1,NUSST-1
             IEQ=IEQ+ZI(LSILIA+I1-1)
   41    CONTINUE
-C        
-        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V C',NEQET,LMOET)    
+C
+        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V C',NEQET,LMOET)
       ENDIF
 C
 C --- RECUPERATION D'INFORMATIONS SUR LA SOUS-STRUCTURE
@@ -225,7 +227,7 @@ C
         CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',NBDDG,KBID,
      &              IER)
       ENDIF
-      
+
       CALL JEVEUO(BASMOD//'           .REFD','L',LLREFE)
 C -->AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
       LINT = ZK24(LLREFE+4)(1:8)
@@ -267,7 +269,7 @@ C
       CALL JEVEUO(NUMGEN//'.NUEQ','L',LLNUEQ)
 C
       IARCHI = 0
-      IF (INTERP(1:3).NE.'NON') THEN 
+      IF (INTERP(1:3).NE.'NON') THEN
         CALL U2MESS('F','ALGORITH3_86')
 C
       ELSE
@@ -278,9 +280,9 @@ C
 
           DO 42 ICH=1,NBCHAM
             IDRESU = ITRESU(ICH)
-C                       
-C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES       
-            IF (ELIM .NE. 0) THEN      
+C
+C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
+            IF (ELIM .NE. 0) THEN
               DO 22 I1=1,NEQET
                 ZC(LMOET+I1-1)=DCMPLX(0.D0,0.D0)
                 DO 33 K1=1,NEQRED
@@ -288,9 +290,9 @@ C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
      &              ZR(LMAPRO+(K1-1)*NEQET+I1-1)*
      &              ZC(IDRESU+K1-1+(ZI(JNUME+I)-1)*NEQRED)
   33            CONTINUE
-  22          CONTINUE             
+  22          CONTINUE
             ENDIF
-            
+
             CALL RSEXCH(' ',NOMRES,CHMP(ICH),IARCHI,CHAMNO,IRET)
             IF (IRET.EQ.0) THEN
               CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
@@ -307,7 +309,7 @@ C
             DO 70 J=1,NBDDG
               CALL DCAPNO(BASMOD,'DEPL',J,CHAMBA)
               CALL JEVEUO(CHAMBA,'L',LLCHAB)
-              
+
               IF (ELIM .NE. 0) THEN
                 IAD=LMOET+IEQ+J-1
               ELSE

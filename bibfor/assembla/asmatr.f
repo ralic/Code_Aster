@@ -1,6 +1,6 @@
       SUBROUTINE ASMATR(NBMAT,TLIMAT,LICOEF,NU,SOLVEU,INFCHA,CUMUL,
      &                  BASE,ITYSCA,MATAZ)
-C MODIF ASSEMBLA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE PELLET J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -21,6 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*) BASE,MATAZ,TLIMAT(*),LICOEF,NU
       INTEGER       NBMAT,ITYSCA
       CHARACTER*(*) SOLVEU,INFCHA

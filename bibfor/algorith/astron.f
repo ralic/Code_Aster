@@ -3,6 +3,7 @@
      &                    NOMSUP, REASUP, RECMOR, RECMOP )
       IMPLICIT  NONE
       INCLUDE 'jeveux.h'
+
       INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID
       REAL*8            VECMOD(NEQ,*),PARMOD(NBMODE,*),SPECTR(*),
      &                  REASUP(NBSUP,NBMODE,*),RECMOP(NBSUP,NEQ,*),
@@ -12,7 +13,7 @@
       LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +53,7 @@ C OUT : RECMOP : VECTEUR DES COMBINAISONS DES REPONSES PERIO DES MODES
 C OUT : RECMOR : VECTEUR DES COMBINAISONS DES REPONSES RIGIDES DES MODES
 C     ------------------------------------------------------------------
       INTEGER       IBID, IM, IN, IORDR, IRET, IS, JMOD, JVALE, NBTROU
-      INTEGER       IND, IOC
+      INTEGER       IND
       REAL*8        R8B, GAMMA0, RNI, UN, XXX
       COMPLEX*16    CBID
       CHARACTER*8   K8B, NOEU, CMP, NOMCMP(3)

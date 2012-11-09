@@ -7,7 +7,7 @@
      &                    SOLVEU, CRITER,CHONDP,NONDP)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2012   AUTEUR BERRO H.BERRO 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,8 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER IINTEG, NEQ, IMAT(3), NCHAR, NVECA, LIAD(*), NUME, NONDP
 C
       CHARACTER*8 MASSE, RIGID, AMORT, CHONDP(NONDP)
@@ -286,7 +288,12 @@ C     --- MISE A ZERO DES DDL DE LAGRANGE
             ZI(JMLTAP+IEXCI-1) = 0
           END IF
   108   CONTINUE
-
+      ELSE
+        JNODEP = 1
+        JNOVIT = 1
+        JNOACC = 1
+        JMLTAP = 1
+        JPSDEL = 1
       END IF
 
 C 1.9. ==> INTIALISATIONS DIVERSES

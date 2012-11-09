@@ -2,8 +2,8 @@
      +                  ADRESS,GLOBAL,LGSN,FACTOL,FACTOU,SM,X,
      +                  INVP,PERM,AD,TRAV,TYPSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
-C RESPONSABLE JFBHHUC C.ROSE
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C RESPONSABLE ROSE C.ROSE
 C     TOLE CRP_4
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,8 @@ C ======================================================================
 C     VERSION COMPLEXE DE MLTDRA
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER NBSN,NBND,NBLOC,LGBLOC(NBSN),NCBLOC(NBND),DECAL(NBSN)
       INTEGER*4 GLOBAL(*)
       INTEGER SEQ(NBSN),SUPND(NBSN+1),LGSN(NBSN)
@@ -44,6 +46,7 @@ C
 C
       CALL JEMARQ()
 C
+      K0=0
       TRA='N'
       ALPHA= DCMPLX(-1.D0,0.D0)
       BETA = DCMPLX( 1.D0,0.D0)

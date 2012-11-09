@@ -2,14 +2,14 @@
      &                   RESUCO,RESUC1)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER JCELD,IAVALE,IORD,LONGT,NBGR
-      REAL*8 TIME
       CHARACTER*(*) RESUCO
       CHARACTER*19 RESUC1,LIGREL
       CHARACTER*(*) OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -230,7 +230,6 @@ C
       ENDIF
 C
 108   FORMAT(A17,1P,D16.8,1X,0P,F7.3,' %',1X,1P,D16.8)
-109   FORMAT(1P,A17,D16.8)
 110   FORMAT(1P,A17,I5)
 111   FORMAT(A17,A8)
 C

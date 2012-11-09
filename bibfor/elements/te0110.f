@@ -1,10 +1,11 @@
       SUBROUTINE TE0110 ( OPTION , NOMTE )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16  OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,10 +35,10 @@ C ......................................................................
 
       INTEGER    NBRES,NBPAR,NDIMAX
 C-----------------------------------------------------------------------
-      INTEGER ICOEHF ,ICOEHR ,IER ,IRET ,IVF1 ,IVF2 ,KQ 
-      INTEGER L ,MZR ,NBDDL ,NBNOSO ,NBV ,NBVAR 
-      REAL*8 DELTAT ,PK ,PM ,POI1 ,POI2 ,THETA ,UN 
-      REAL*8 XGAU ,YGAU ,ZERO ,ZGAU 
+      INTEGER ICOEHF ,ICOEHR ,IER ,IRET ,IVF1 ,IVF2 ,KQ
+      INTEGER L ,MZR ,NBDDL ,NBNOSO ,NBV ,NBVAR
+      REAL*8 DELTAT ,PK ,PM ,POI1 ,POI2 ,THETA ,UN
+      REAL*8 XGAU ,YGAU ,ZERO ,ZGAU
 C-----------------------------------------------------------------------
       PARAMETER (NBRES=30)
       PARAMETER (NBPAR=4)

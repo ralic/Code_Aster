@@ -1,7 +1,7 @@
       SUBROUTINE TE0545(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ======================================================================
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
@@ -43,13 +44,12 @@ C ......................................................................
       REAL*8  XYZ(3),UNIT(NNOMAX),ANGMAS(7)
       REAL*8  B(EPSMAX,NPGMAX,DDLMAX),W(NPGMAX),NI2LDC(EPSMAX)
 
-      CHARACTER*32 JEXR8
 
 C - INITIALISATION
-       
+
       RESI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RAPH_MECA'
       RIGI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA'
-      
+
       CALL TEATTR(' ','S','TYPMOD',TYPMOD(1),IRET)
       TYPMOD(2) = 'GRADVARI'
       AXI = TYPMOD(1).EQ.'AXIS'
@@ -76,13 +76,20 @@ C - PARAMETRES EN SORTIE
 
       IF (RIGI) THEN
         CALL JEVECH('PMATUNS','E',IMATUU)
+      ELSE
+        IMATUU=1
       END IF
-      
+
       IF (RESI) THEN
         CALL JEVECH('PVECTUR','E',IVECTU)
         CALL JEVECH('PCONTPR','E',ICONTP)
         CALL JEVECH('PVARIPR','E',IVARIP)
         CALL JEVECH('PCODRET','E',ICORET)
+      ELSE
+        IVECTU=1
+        ICONTP=1
+        IVARIP=1
+        ICORET=1
       END IF
 
 
@@ -108,8 +115,6 @@ C - CALCUL DES ELEMENTS CINEMATIQUES
 
       CALL NMGVMB(NDIM,NNO,NNOB,NPG,AXI,ZR(IGEOM),ZR(IVF),ZR(IVFB),
      &            IDFDE,IDFDEB,IPOIDS,NDDL,NEPS,B,W,NI2LDC)
-     
-
 
 C - CALCUL DES FORCES INTERIEURES ET MATRICES TANGENTES
 
@@ -118,5 +123,5 @@ C - CALCUL DES FORCES INTERIEURES ET MATRICES TANGENTES
      &            ZR(IINSTP),ZR(IDEPLM),ZR(IDEPLP),NI2LDC,ZR(ICONTM),
      &            ZR(IVARIM),ZR(ICONTP),ZR(IVARIP),ZR(IVECTU),
      &            ZR(IMATUU),ZI(ICORET))
-      
+
       END

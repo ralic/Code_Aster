@@ -1,10 +1,11 @@
       SUBROUTINE TE0152(OPTION,NOMTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +26,8 @@ C     CALCULE DES TERMES PROPRES A UN STRUCTURE
 C     OPTION : 'MASS_INER'              (ELEMENTS FLUIDES 3D)
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER L ,LCASTR ,NBRES ,NDIM ,NNOS 
-      REAL*8 R8BID ,RHO ,XXI ,YYI ,ZERO ,ZZI 
+      INTEGER L ,LCASTR ,NBRES ,NDIM ,NNOS
+      REAL*8 R8BID ,RHO ,XXI ,YYI ,ZERO ,ZZI
 C-----------------------------------------------------------------------
       PARAMETER (NBRES=2)
       CHARACTER*8 NOMRES(NBRES),FAMI,POUM

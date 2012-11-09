@@ -1,10 +1,11 @@
       SUBROUTINE GILIR2 ( NFIC, NIV, NDIM, NBOBO )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER    NFIC, NIV, NDIM, NBOBO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +43,7 @@ C
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IAPTIN ,IRET ,NBNOTO ,NBVAL 
+      INTEGER I ,IAPTIN ,IRET ,NBNOTO ,NBVAL
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -150,7 +151,6 @@ C
 C     -- ON CREE .NUMANEW:
       CALL GIDOMA ( NBNOTO )
 C
- 9998 CONTINUE
 C
 C
  1001  FORMAT(1X,A14,4X,A4,3X,A1)

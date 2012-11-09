@@ -1,6 +1,6 @@
       SUBROUTINE TE0169 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ======================================================================
 C SUPPRESSION D'INSTRUCTIONS INUTILES
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES FORCES NODALES DE MEPOULI

@@ -1,11 +1,13 @@
       SUBROUTINE CALIOB(FONREE,CHARGE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*4 FONREE
       CHARACTER*8 CHARGE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,12 +33,12 @@ C IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
 C ---------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,IBID ,IER ,IGR ,IN ,INO 
-      INTEGER IOCC ,IRET ,J ,JCMU ,JCMUC ,JDDL ,JGR0 
-      INTEGER JJJ ,JLISTE ,JNOMA ,K ,N ,N1 ,NA 
-      INTEGER NBDDL ,NBEM ,NBET ,NBGM ,NBNO ,NDIM ,NDIMMO 
-      INTEGER NENT ,NG ,NGR ,NGRO ,NLIAI ,NNO 
-      REAL*8 BETA 
+      INTEGER I ,I1 ,IBID ,IER ,IGR ,IN ,INO
+      INTEGER IOCC ,IRET ,J ,JCMU ,JCMUC ,JDDL ,JGR0
+      INTEGER JJJ ,JLISTE ,JNOMA ,K ,N ,N1 ,NA
+      INTEGER NBDDL ,NBEM ,NBET ,NBGM ,NBNO ,NDIM ,NDIMMO
+      INTEGER NENT ,NG ,NGR ,NGRO ,NLIAI ,NNO
+      REAL*8 BETA
 C-----------------------------------------------------------------------
       PARAMETER (NBDDL=6)
       INTEGER IMP

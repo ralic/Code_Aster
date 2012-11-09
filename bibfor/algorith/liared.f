@@ -1,7 +1,7 @@
       SUBROUTINE LIARED (NOMRES,FMLI,IBLO,LIAMOD,NLILIA,NCOLIA,
      &                   PROMOD,NLIPRO,NCOPRO,TAILLE,INDCOL,NBCOL)
       IMPLICIT NONE
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,8 @@ C
 
 C-- VARIABLES EN ENTREES / SORTIE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER      IBLO,NLILIA,NCOLIA,NLIPRO,NCOPRO,TAILLE(2),
      &             NBCOL
       CHARACTER*8  NOMRES
@@ -162,98 +164,10 @@ C--
   60      CONTINUE
   50    CONTINUE
 
-C-- TEST EN PRENANT LE PSEUDO INVERSE
-
-C-- CREATION DE LA MATRICE TEMPORAIRE DE LIAISON POUR LE PRODUIT
-
-C##        CALL WKVECT('&&LIARED.MAT_TEMP','V V R',NBCOL*NLIPRO,LMAT)
-C##
-C##C-- ON RECOPIE LE PROJECTEUR EN LE TRANSPOSANT
-C##
-C##C        WRITE(6,*)'RAOUL'
-C##C        WRITE(6,*)'      '
-C##C        WRITE(6,*)'      '
-C##C        WRITE(6,*)'      '
-C##C        WRITE(6,*)'      '
-C##
-C##
-C##        DO 50 I1=1,NLIPRO
-C##          DO 60 J1=1,NBCOL
-C##            K1=ZI(LPRO+J1-1)
-C##            ZR(LMAT+(I1-1)*NBCOL+J1-1)=
-C##     &         ZR(LPROMO+(K1-1)*NLIPRO+I1-1)
-C##  60      CONTINUE
-C##  50    CONTINUE
-C##
-C##C        DO 11 I1=1,NBCOL
-C##C          DO 12 J1=1,NLIPRO
-C##C            WRITE(6,*)'PHIT(',I1,',',J1,')=',
-C##C     &                 ZR(LMAT+(J1-1)*NBCOL+I1-1),';'
-C##C  12      CONTINUE
-C##C  11    CONTINUE
-C##
-C##        M=NLIPRO
-C##        N=NBCOL
-C##        CALL WKVECT('&&LIARED.MATRICE_B','V V R',MAX(M,N)**2,LMATB)
-C##        CALL WKVECT('&&LIARED.MATRICE_S','V V R',MIN(M,N),LMATS)
-C##        DO 70 I1=1,N
-C##          ZR(LMATB+(I1-1)*NLIPRO+I1-1)=1.
-C##  70    CONTINUE
-C##        CALL DGELSS(N,M,N,ZR(LMAT),N,ZR(LMATB),M,ZR(LMATS),EPS,RANK,
-C##     &              SWORK,-1,INFO)
-C##        LWORK=INT(SWORK)
-C##        CALL WKVECT('&&LIARED.MATR_WORK','V V R',LWORK,LLWORK)
-C##        CALL DGELSS(N,M,N,ZR(LMAT),N,ZR(LMATB),M,ZR(LMATS),EPS,RANK,
-C##     &              ZR(LLWORK),LWORK,INFO)
-C##
-C##
-C##C        WRITE(6,*)'      '
-C##C        WRITE(6,*)'      '
-C##
-C##C        DO 80 I1=1,NLIPRO
-C##C          DO 90 J1=1,NBCOL
-C##C            WRITE(6,*)'PHI_INV(',I1,',',J1,')=',
-C##C     &                 ZR(LMATB+(J1-1)*NLIPRO+I1-1),';'
-C##C  90      CONTINUE
-C##C  80    CONTINUE
-C##
-C##
-C##C        WRITE(6,*)'COEFF=',COEFF
-C##C        WRITE(6,*)'NBCOL=',NBCOL
-C##C        WRITE(6,*)'NLIPRO=',NLIPRO
-C##
-C##
-C##        DO 51 J1=1,NCOLIA
-C##          DO 61 K1=1,NLIPRO
-C##            TEMP=ZR(LLIAMO+(J1-1)*NLILIA+K1-1)
-C##              DO 71 L1=1,NBCOL
-C##C                I1=ZI(LPRO+L1-1)
-C##                ZR(LTEMP+(J1-1)*NBCOL+L1-1)=
-C##     &             ZR(LTEMP+(J1-1)*NBCOL+L1-1)+
-C##     &             COEFF*TEMP*ZR(LMATB+(L1-1)*NLIPRO+K1-1)
-C##  71          CONTINUE
-C##  61      CONTINUE
-C##  51    CONTINUE
-C##      CALL JEDETR('&&LIARED.MATRICE_S')
-C##      CALL JEDETR('&&LIARED.MATRICE_B')
-C##      CALL JEDETR('&&LIARED.MAT_TEMP')
-C##      CALL JEDETR('&&LIARED.MATR_WORK')
-
-
       ENDIF
 
       TAILLE(1)=NBCOL
       TAILLE(2)=NCOLIA
-
-C      WRITE(6,*)'  '
-C      WRITE(6,*)'  '
-C      DO 52 J1=1,NCOLIA
-C        DO 72 L1=1,NBCOL
-C          WRITE(6,*)'T(',L1,',',J1,')=',
-C     &          ZR(LTEMP+(J1-1)*NBCOL+L1-1),';'
-C  72    CONTINUE
-C  52  CONTINUE
-
 
       CALL JEDEMA()
 

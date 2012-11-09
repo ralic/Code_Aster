@@ -1,7 +1,7 @@
       SUBROUTINE ABSCUR(CONNEX,TYPMAI,COOVAL,NOMU,IT)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,8 @@ C ======================================================================
 C-----------------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8  NOMU
       CHARACTER*24 CONNEX, TYPMAI, COOVAL
 C-----------------------------------------------------------------------
@@ -48,15 +50,15 @@ C
       CHARACTER*1 K1BID
 C
 C-----------------------------------------------------------------------
-      INTEGER IAB1 ,IAB2 ,IACH ,IACNEX ,IADR2 ,IAGM ,IANCMP 
-      INTEGER IAV1 ,IAV2 ,IAVALV ,ICOO1 ,ICOO2 ,ICOR2 ,IJ 
-      INTEGER IM ,IMA ,IMA1 ,IMA2 ,IND ,ING ,INO 
-      INTEGER IPOI1 ,ISEG2 ,ISENS ,IT ,ITYM ,ITYPM ,IVAL 
-      INTEGER JGCNX ,KSEG ,LPLACE ,MI ,N ,N1 ,N2 
-      INTEGER NBCHM ,NBNOMA ,NBPOI1 ,NBRMA ,NBRMA1 ,NBRMA2 ,NBSEG2 
-      INTEGER NUMNO 
-      REAL*8 S ,STOT ,X1 ,X2 ,Y1 ,Y2 ,Z1 
-      REAL*8 Z2 
+      INTEGER IAB1 ,IAB2 ,IACH ,IACNEX ,IADR2 ,IAGM ,IANCMP
+      INTEGER IAV1 ,IAV2 ,IAVALV ,ICOO1 ,ICOO2 ,ICOR2 ,IJ
+      INTEGER IM ,IMA ,IMA1 ,IMA2 ,IND ,ING ,INO
+      INTEGER IPOI1 ,ISEG2 ,ISENS ,IT ,ITYM ,ITYPM ,IVAL
+      INTEGER JGCNX ,KSEG ,LPLACE ,MI ,N ,N1 ,N2
+      INTEGER NBCHM ,NBNOMA ,NBPOI1 ,NBRMA ,NBRMA1 ,NBRMA2 ,NBSEG2
+      INTEGER NUMNO
+      REAL*8 S ,STOT ,X1 ,X2 ,Y1 ,Y2 ,Z1
+      REAL*8 Z2
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF (IT.EQ.1) THEN

@@ -1,6 +1,6 @@
       SUBROUTINE DXEFGI(NOMTE,XYZL,PGL,EPSINI,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 NOMTE
       REAL*8 XYZL(3,1),PGL(3,3)
       REAL*8 EPSINI(6)
@@ -49,8 +50,8 @@ C     ------------------------------------------------------------------
 C --- INITIALISATIONS :
 C     -----------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IGAU ,NNO ,NPG 
-      REAL*8 EPXX ,EPXY ,EPYY ,ZERO 
+      INTEGER I ,IGAU ,NNO ,NPG
+      REAL*8 EPXX ,EPXY ,EPYY ,ZERO
 C-----------------------------------------------------------------------
       ZERO = 0.0D0
 

@@ -1,7 +1,7 @@
       SUBROUTINE TE0027(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 
 
@@ -55,7 +56,7 @@ C DECLARATION VARIABLES LOCALES
       REAL*8 EPSREF(6),EPSI,RAC2,R8PREM,CRIT(3)
       REAL*8 DFDI(81),F(3,3),SR(3,3)
       REAL*8 EPS(6),EPSIN(6),DEPSIN(6,3),EPSP(6),DEPSP(6,3)
-      REAL*8 EPSINO(162),EPSIPG(162),FNO(81),EPSNO(162)
+      REAL*8 EPSINO(162),FNO(81)
       REAL*8 SIGL(6),SIGIN(6),DSIGIN(6,3)
       REAL*8 THET,TGDM(3),TGD(20)
       REAL*8 PROD,PROD1,PROD2,DIVT,VALPAR(4)
@@ -134,8 +135,8 @@ C CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI
         CALL TECACH('ONN','PEPSINR',1,IEPSR,IRET)
         IF (IEPSR.NE.0) EPSINI = .TRUE.
       END IF
-      
-C LOI DE COMPORTEMENT      
+
+C LOI DE COMPORTEMENT
       DO 50 I = 1,4
         COMPOR(I) = ZK16(ICOMP+I-1)
    50 CONTINUE
@@ -155,11 +156,11 @@ C LOI DE COMPORTEMENT
         CALL TECACH('ONN','PVITESS',1,IVITES,IRET)
         CALL TECACH('ONN','PACCELE',1,IACCEL,IRET)
       ENDIF
-      
+
       DO 60 I = 1,NCMP*NNO
         EPSINO(I) = 0.D0
    60 CONTINUE
-   
+
 C =====================================================================
 C MESSAGES D'ERREURS
 C =====================================================================
@@ -241,7 +242,7 @@ C CORRECTION DES FORCES VOLUMIQUES
         END IF
       END IF
 
-      
+
 
 C ======================================================================
 
@@ -258,7 +259,7 @@ C BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 C ======================================================================
 
       DO 800 KP = 1,NPG
-      
+
 C INITIALISATIONS
         L = (KP-1)*NNO
         PPG = 0.D0
@@ -445,7 +446,7 @@ C CALCUL DU GRADIENT DE SIGMA INITIAL
   460       CONTINUE
   470     CONTINUE
 
-C TRAITEMENTS PARTICULIERS DES TERMES CROISES  
+C TRAITEMENTS PARTICULIERS DES TERMES CROISES
           DO 490 I = 4,NCMP
             SIGIN(I) = SIGIN(I)*RAC2
             DO 480 J = 1,NDIM
@@ -459,12 +460,12 @@ C CALCUL DE LA DEFORMATION DE REFERENCE
      &              ICODRE,1)
           CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'E',E,
      &              ICODRE,1)
-        
+
           MU = E/(2.D0*(1.D0+NU))
-          
+
           EPSREF(1)=-(1.D0/E)*(SIGIN(1)-(NU*(SIGIN(2)+SIGIN(3))))
-          EPSREF(2)=-(1.D0/E)*(SIGIN(2)-(NU*(SIGIN(3)+SIGIN(1))))    
-          EPSREF(3)=-(1.D0/E)*(SIGIN(3)-(NU*(SIGIN(1)+SIGIN(2)))) 
+          EPSREF(2)=-(1.D0/E)*(SIGIN(2)-(NU*(SIGIN(3)+SIGIN(1))))
+          EPSREF(3)=-(1.D0/E)*(SIGIN(3)-(NU*(SIGIN(1)+SIGIN(2))))
           EPSREF(4)=-(1.D0/MU)*SIGIN(4)
           EPSREF(5)=-(1.D0/MU)*SIGIN(5)
           EPSREF(6)=-(1.D0/MU)*SIGIN(6)
@@ -474,7 +475,7 @@ C ENERGIE ELASTIQUE (expression WADIER)
             ENERGI(1) = ENERGI(1) + (EPS(I)-0.5D0*EPSREF(I))*SIGIN(I)
 465       CONTINUE
         ENDIF
-        
+
 C =======================================================
 C STOCKAGE DE SIGMA ET TRAITEMENTS DES TERMES CROISES
 C =======================================================
@@ -582,7 +583,7 @@ C =======================================================
               PROD2=PROD2+SIGL(I)*DEPSIN(I,J)*DTDM(J,4)
 621           CONTINUE
 631         CONTINUE
-          END IF 
+          END IF
         END IF
 C ==================================================================
 C FIN DE BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS

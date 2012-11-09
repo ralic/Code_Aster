@@ -2,6 +2,8 @@
      &                    NDORIG, NDEXTR, BASE,VECORI)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER             NBMA
       CHARACTER*24 MAFOUR
       CHARACTER*8  NOMAIL, NDORIG, NDEXTR
@@ -9,7 +11,7 @@
       CHARACTER*1         BASE
       REAL*8 VECORI(3)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,9 +51,9 @@ C-----------------------------------------------------------------------
       INTEGER       IATYMA, JTYPM, JCOUR1, JCOUR2, JMAIL
       INTEGER       IM, NID, NIG, NJONC, N, I, K, NBNO
       INTEGER       JRDM, JNOE,NTEMP,JCOOR
-      CHARACTER*8   K8B, NOMMA, TYPM
-      CHARACTER*8   NOEUD, NOEUD1, NOEUD2, NOEUD3, NOEUD4
-      CHARACTER*24  CONEC, TYPP, NOMMAI, NOMNOE
+      CHARACTER*8     TYPM
+      CHARACTER*8   NOEUD
+      CHARACTER*24  CONEC, TYPP, NOMNOE
 C DEB-------------------------------------------------------------------
       CALL JEMARQ()
 

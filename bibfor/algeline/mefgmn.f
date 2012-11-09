@@ -2,11 +2,13 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       CHARACTER*8         NOMA, LIGRMA(*)
       INTEGER             NBGMA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,8 +41,8 @@ C
 C DEB-------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IALIMA ,IALINO ,IANBNO ,IERD ,IGRNO ,IRET 
-      INTEGER J ,N1 ,NBMA ,NBNOTO 
+      INTEGER I ,IALIMA ,IALINO ,IANBNO ,IERD ,IGRNO ,IRET
+      INTEGER J ,N1 ,NBMA ,NBNOTO
 C-----------------------------------------------------------------------
       CALL JEMARQ ( )
       GRPMA = NOMA//'.GROUPEMA       '

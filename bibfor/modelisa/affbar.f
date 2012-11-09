@@ -2,6 +2,8 @@
      &                  ISEC,CAR,VAL,EXP,NBO,KIOC,IER)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER                      ISEC,            NBO,     IER
       REAL*8                                VAL(*)
       CHARACTER*6                                       KIOC
@@ -9,7 +11,7 @@
       CHARACTER*24      TMP,TMPF
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +49,7 @@ C-----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IISEC ,J ,JDGE ,JDGEF ,NUM 
+      INTEGER I ,IISEC ,J ,JDGE ,JDGEF ,NUM
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(RESU,CONCEP,CMD)

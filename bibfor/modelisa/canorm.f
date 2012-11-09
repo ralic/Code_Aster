@@ -1,11 +1,13 @@
       SUBROUTINE CANORM(COOR,NORMAL,NDIM,ITYP,INORM)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER NDIM,ITYP,INORM
       REAL*8 COOR(*),NORMAL(3)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +49,7 @@ C     JENUNO     JEXNUM
 C DEBUT ----------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER J 
+      INTEGER J
 C-----------------------------------------------------------------------
       CALL JENUNO(JEXNUM('&CATA.TM.NBNO',ITYP),NOMTM)
       IF (NOMTM(1:3).EQ.'SEG') THEN

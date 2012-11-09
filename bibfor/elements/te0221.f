@@ -18,9 +18,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 C                          COQUE 1D
 C                          OPTION : 'RIGI_MECA      '
@@ -32,8 +33,8 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
 C-----------------------------------------------------------------------
-      INTEGER JGANO ,NBRES ,NDIM ,NNOS 
-      REAL*8 GSS 
+      INTEGER JGANO ,NBRES ,NDIM ,NNOS
+      REAL*8 GSS
 C-----------------------------------------------------------------------
       PARAMETER (NBRES=2)
       CHARACTER*8 NOMRES(NBRES),NOMPAR

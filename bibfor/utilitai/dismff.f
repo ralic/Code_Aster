@@ -1,7 +1,7 @@
       SUBROUTINE DISMFF(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,7 @@ C     --     DISMOI(FOND_FISS)
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
       CHARACTER*32 REPK
@@ -40,8 +41,7 @@ C
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER JINFO,JMOD,LONG
-      CHARACTER*8 K8BID
+      INTEGER JINFO
 
 C
       CALL JEMARQ()

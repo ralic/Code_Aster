@@ -1,6 +1,6 @@
       SUBROUTINE ACEVTR(NOMA,NOMO,ITYP,NOMS,ITAB,NN,IDIM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,8 @@ C.======================================================================
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8 NOMS(*)
       CHARACTER*8  NOMO,NOMA
       INTEGER ITYP,NN,IDIM,ITAB(*)
@@ -36,8 +38,8 @@ C -----  VARIABLES LOCALES
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C-----------------------------------------------------------------------
-      INTEGER IALIEL ,IERD ,IERR ,IGREL ,IMA ,IRET ,ITYPEL 
-      INTEGER KMA ,KMAI ,NBGREL ,NEL 
+      INTEGER IALIEL ,IERD ,IERR ,IGREL ,IMA ,IRET ,ITYPEL
+      INTEGER KMA ,KMAI ,NBGREL ,NEL
 C-----------------------------------------------------------------------
       CALL JEMARQ ( )
 C

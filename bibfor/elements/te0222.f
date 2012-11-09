@@ -1,6 +1,6 @@
       SUBROUTINE TE0222(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C.......................................................................
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16       OPTION, NOMTE
       REAL*8             UNDEMI
       INTEGER            ITAB1(3), ITAB2(3)
@@ -39,7 +40,7 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IRET 
+      INTEGER IRET
 C-----------------------------------------------------------------------
       UNDEMI = 0.5D0
 C

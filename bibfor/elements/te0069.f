@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C
 C ---------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
 C
       INTEGER ICODRE(2)
       INTEGER NNO,KP,K,ITEMPE,ITEMP,IFLUX,J,NNOS,IFPG,NDIM
@@ -37,7 +38,7 @@ C
 
       REAL*8 DFDX(9),DFDY(9),TPG,POIDS,LAMBDA,FPG(18),LAMBOR(2)
       REAL*8 P(2,2),POINT(2),ORIG(2),FLUGLO(2),FLULOC(2)
-      REAL*8 VALRES(2),R8PREM
+      REAL*8 VALRES(2)
       REAL*8 R8DGRD,ALPHA,FLUXX,FLUXY
       REAL*8 XU,YU,XNORM
 

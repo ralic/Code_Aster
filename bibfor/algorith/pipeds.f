@@ -3,22 +3,22 @@
      &                  A0    ,A1    ,A2    ,A3    ,ETAS  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C
@@ -28,7 +28,7 @@ C
       REAL*8             VIM(2),EPSM(6),EPSPC(6),EPSDC(6)
       REAL*8             ETAMAX,TAU,ETAMIN
       REAL*8             A0, A1,A2,A3,ETAS
-C       
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (PILOTAGE - PRED_ELAS)
@@ -36,7 +36,7 @@ C
 C LOI DE COMPORTEMENT ENDO_ISOT_BETON EN LOCAL GRAD_VARI
 C
 C ----------------------------------------------------------------------
-C    
+C
 C
 C IN  NDIM   : DIMENSION DE L'ESPACE
 C IN  TYPMOD : TYPE DE MODELISATION
@@ -83,7 +83,7 @@ C
       REAL*8      KRON(6)
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
-C----- GET INFO=1,2      
+C----- GET INFO=1,2
       CALL INFNIV(IFM,NIV)
 C
 C ----------------------------------------------------------------------
@@ -129,7 +129,7 @@ C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       DSIGM  = VALRES(1)
       SYT    = VALRES(2)
       SYC    = VALRES(3)
-      
+
       GAMMA  = -E/DSIGM
       K0     = (SYT*SYT)*(1.D0+GAMMA)/(2.D0*E)*
      &                     (1.D0+NU-2.D0*NU*NU)/(1.D0+NU)
@@ -168,12 +168,12 @@ C    ETAT MECANIQUE EN T-
       DM     = VIM(1)
       D      = DM+TAU
       FPD    = (1+GAMMA) / (1+GAMMA*D)**2
-           
-C -- CAS DE L'ENDOMMAGEMENT QUI SATURERA, ON NE PILOTE PAS      
+
+C -- CAS DE L'ENDOMMAGEMENT QUI SATURERA, ON NE PILOTE PAS
       IF (D .GT. 1.D0) THEN
         IF (NIV.EQ.2) CALL U2MESS('I','PILOTAGE_2')
         GOTO 666
-      ENDIF  
+      ENDIF
 
 
 C -- CALCUL DES DEFORMATIONS EN PRESENCE DE CONTRAINTES PLANES
@@ -251,7 +251,7 @@ C definir l'intervalle de recherche
       ETAINF = -ETAMAX/EPSNOR
 
 
-C Test sur la valeur de la trace de la deformee pour eta=etainf 
+C Test sur la valeur de la trace de la deformee pour eta=etainf
 C pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
       TREINF = EPSP(1)+EPSP(2)+EPSP(3)+ETAINF*(EPSD(1)+EPSD(2)+EPSD(3))
       IF (ABS(TREINF).GT.1.D0) THEN
@@ -264,7 +264,7 @@ C pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
      &            FPD   ,SEUIL ,CRIT1 ,CRITP1)
 
 
-C Test sur la valeur de la trace de la deformee pour eta=etasup 
+C Test sur la valeur de la trace de la deformee pour eta=etasup
 C pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
 
       TRESUP = EPSP(1)+EPSP(2)+EPSP(3)+ETASUP*(EPSD(1)+EPSD(2)+EPSD(3))
@@ -296,7 +296,7 @@ C on reste en dessous du seuil sur l'intervalle
         GOTO 666
       ENDIF
 
-C on reste au dessus du seuil sur l'intervalle, 
+C on reste au dessus du seuil sur l'intervalle,
 C        on utilise la convexite pour le voir
 
       IF (((CRIT1.GT.0.D0).AND.(CRITP1.GT.(-CRIT1/LINTER))).OR.
@@ -344,7 +344,7 @@ C CAS A 1 SOLUTION
         GOTO 9999
 
       ENDIF
-        
+
       IF ((CRIT1.GT.0.D0).AND.(CRIT2.LT.0.D0)) THEN
         X(2)=ETAINF
         Y(2)=CRIT1
@@ -395,7 +395,7 @@ C valeur du critere negative
 C s'il y en a une, il y a 2 solutions, sinon 0 solution
 C
 C On utilise les tangentes pour aller vers le "minimum"
-C on s'arrete quand le critere est negatif, on se fiche 
+C on s'arrete quand le critere est negatif, on se fiche
 C de trouver exactement le minimum
 
          X1=ETAINF

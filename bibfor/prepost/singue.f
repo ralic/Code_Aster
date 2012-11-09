@@ -2,6 +2,7 @@
      &                    PREC,LIGRMO,IORDR,CHELEM,TYPES)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER NDIM,NNOEM,NELEM,IORDR
       REAL*8  XY(3,NNOEM),PREC
       CHARACTER*8 NOMAIL
@@ -10,7 +11,7 @@
       CHARACTER*24 LIGRMO,CHELEM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

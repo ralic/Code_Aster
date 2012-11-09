@@ -1,6 +1,6 @@
       SUBROUTINE RECYEC(NMRESZ,MDCYCZ,NUMSEC,TYPSDZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
       CHARACTER*8 NOMRES,MODCYC,BASMOD,TYPINT
       CHARACTER*(*) NMRESZ,MDCYCZ,TYPSDZ
       CHARACTER*16 TYPSD
@@ -48,7 +49,7 @@ C
 C-----------------ECRITURE DU TITRE-------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER LLREF ,LLTYP ,NUMSEC 
+      INTEGER LLREF ,LLTYP ,NUMSEC
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NOMRES = NMRESZ

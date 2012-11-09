@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2012   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C OUT
 C
       REAL*8        N,SR,PR,SMAX
       REAL*8        M,S1,USN,USM,S1MAX
-      REAL*8        X0,Y0W,Y0WP,Y0G,Y0GP,Y1,A1,B1,C1
+      REAL*8        X0,Y0W,Y0WP,Y1,A1,B1,C1
       REAL*8        SMIN,S1MIN,AR,BR
 C ======================================================================
 C
@@ -87,7 +87,6 @@ C
       ENDIF
 
 C =====================================================================
- 9001 FORMAT (A8,2X,A30,2X,A8)
 C ======================================================================
 
       END

@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,8 @@ C        NIVE  : NIVEAU IMPRESSION CASTEM 3 OU 10
 C        INFMAI: POUR LE FORMAT MED, NIVEAU DES INFORMATIONS A IMPRIMER
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXATR
 C---------------- ARGUMENTS --------------------------------------------
       INTEGER VERSIO,NIVE,INFMAI
       LOGICAL      LMOD
@@ -123,6 +125,7 @@ C           - SI PAS DE GROUPE DE NOEUDS - NOMBRE DE GROUPES = 0
             NBGRN=0
           ENDIF
         ELSE
+          JNOGN=1
           NBGRN=0
       ENDIF
 C       - TEST EXISTENCE DE GROUPES DE MAILLE
@@ -139,13 +142,16 @@ C         - RECUPERATION DU NOMBRE ET DES NOMS DES GROUPES DE MAILLES
             NBGRM=0
           ENDIF
         ELSE
+          JNOGM=1
           NBGRM=0
       ENDIF
       IF (LMOD) THEN
-C         - IMPRESSION DU MODELE
-C           --> ON RECUPERE LE TYPE D'ELEMENT FINI DES MAILLES
-          CALL JEVEUO(NOMO//'.MAILLE','L',JTYPL)
-        ENDIF
+C       - IMPRESSION DU MODELE
+C         --> ON RECUPERE LE TYPE D'ELEMENT FINI DES MAILLES
+        CALL JEVEUO(NOMO//'.MAILLE','L',JTYPL)
+      ELSE
+        JTYPL=1
+      ENDIF
 C
       IF (FORM.EQ.'RESULTAT') THEN
 C       - TRAITEMENT DU FORMAT 'RESULTAT'

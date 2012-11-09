@@ -1,10 +1,11 @@
       SUBROUTINE TE0532(OPTION,NOMTE)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -311,7 +312,7 @@ C              INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
                    ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 0
                  END IF
 C
-C                ON REGARDE LA REACTION POUR LES POINTS 
+C                ON REGARDE LA REACTION POUR LES POINTS
 C                SUPPOSES CONTACTANT :
                ELSE IF (ZI(JINDCO-1+60*(IFISS-1)+ISSPG).EQ.1) THEN
                  IF ((REAC-RHON*DN).GT.R8PREM()) THEN
@@ -343,9 +344,9 @@ C           IMPRESSION (2EME PARTIE)
      &                        ZI(JOUT2-1+60*(IFISS-1)+ISSPG)
  698             FORMAT(5X,I1,4X,1PE12.5,4X,1PE12.5,4X,I1)
                ENDIF
-            
+
              ENDIF
-                  
+
              IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
 C
 C              CALCUL SAUT DE DEPLACEMENT EQUIVALENT

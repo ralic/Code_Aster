@@ -3,7 +3,7 @@
      &            NOMA,NBGRN,NOGN,NBGRM,NOGM,
      &                  LMASU,NOMAI,NONOE,VERSIO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,8 @@ C          NOGN : NOM DES GROUPES DE NOEUDS
 C          NBGRM: NOMBRE DE GROUPES DE MAILLES
 C          NOGM : NOM DES GROUPES DE MAILLES
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8  NOMA
 C     ------------------------------------------------------------------
       CHARACTER*8 NOGN(*),NOGM(*),NOMAI(*),NONOE(*), NOMTM
@@ -64,14 +66,14 @@ C     ------------------------------------------------------------------
       CHARACTER*8 KBID
 C ---------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IAGRMA ,IAGRNO ,ICA ,ICC ,ICF ,ICOD 
-      INTEGER ICOD1 ,ICOD2 ,ICOL ,ICOLD ,ICOLE ,ICOLL ,ICOLP 
-      INTEGER ICOLT ,ICOU ,ICS ,ICSS ,ICST ,ICSV ,IER 
-      INTEGER IFC ,IGM ,IGM2 ,IGN ,IMA ,IMAIL ,IMAS 
-      INTEGER IMAT ,INBO ,INO ,IOFF ,IPHY ,IPOIN ,IRET 
-      INTEGER ISUP ,ITSEG2 ,ITYPE ,J ,JM ,JMAGR ,JN 
-      INTEGER JNOGR ,K ,L ,M ,MAXNOD ,NBGRM ,NBGRN 
-      INTEGER NBM ,NBM2 ,NBMA ,NBN ,NDIM ,NNO ,NNOE 
+      INTEGER I ,IAGRMA ,IAGRNO ,ICA ,ICC ,ICF ,ICOD
+      INTEGER ICOD1 ,ICOD2 ,ICOL ,ICOLD ,ICOLE ,ICOLL ,ICOLP
+      INTEGER ICOLT ,ICOU ,ICS ,ICSS ,ICST ,ICSV ,IER
+      INTEGER IFC ,IGM ,IGM2 ,IGN ,IMA ,IMAIL ,IMAS
+      INTEGER IMAT ,INBO ,INO ,IOFF ,IPHY ,IPOIN ,IRET
+      INTEGER ISUP ,ITSEG2 ,ITYPE ,J ,JM ,JMAGR ,JN
+      INTEGER JNOGR ,K ,L ,M ,MAXNOD ,NBGRM ,NBGRN
+      INTEGER NBM ,NBM2 ,NBMA ,NBN ,NDIM ,NNO ,NNOE
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()

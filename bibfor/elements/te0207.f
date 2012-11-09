@@ -1,7 +1,7 @@
       SUBROUTINE TE0207(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -22,8 +22,9 @@ C ======================================================================
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16       NOMTE, OPTION
-      
+
 C ----------------------------------------------------------------------
 C     FORCES NODALES DES ELEMENTS DE JOINT 3D, OPTION 'FORC_NODA'
 C ----------------------------------------------------------------------
@@ -44,15 +45,15 @@ C    PAR EXEMPLE FONCTION DE FORME DU QUAD4 POUR LES HEXA8.
 
       IF (NNO.GT.4) CALL U2MESS('F','ELEMENTS5_22')
       IF (NPG.GT.4) CALL U2MESS('F','ELEMENTS5_23')
-      
+
       NDDL = 6*NNO
-           
-C - LECTURE DES PARAMETRES           
+
+C - LECTURE DES PARAMETRES
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PCONTMR','L',ICONT)
       CALL JEVECH('PVECTUR','E',IVECT)
 
       CALL NMFIFN(NNO,NDDL,NPG,ZR(IPOIDS),ZR(IVF),ZR(IDFDE),
      &            ZR(IGEOM),ZR(ICONT),ZR(IVECT))
-                                
+
       END

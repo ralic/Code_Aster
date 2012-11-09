@@ -1,6 +1,6 @@
       SUBROUTINE TE0353(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -28,9 +29,9 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C-----------------------------------------------------------------------
-      INTEGER ICOMPO ,ICONTR ,IRET1 ,IVARI ,J ,K ,LGPG 
-      INTEGER MATER ,NBCON ,NBRES 
-      REAL*8 SIGMO 
+      INTEGER ICOMPO ,ICONTR ,IRET1 ,IVARI ,J ,K ,LGPG
+      INTEGER MATER ,NBCON ,NBRES
+      REAL*8 SIGMO
 C-----------------------------------------------------------------------
       PARAMETER(NBRES=21)
       CHARACTER*8 NOMRES(NBRES),NOMCLE(5),ACIER(4),ZIRC(2),TYPE

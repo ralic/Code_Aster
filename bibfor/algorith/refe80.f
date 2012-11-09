@@ -1,6 +1,6 @@
       SUBROUTINE REFE80(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,7 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
       CHARACTER*8 NOMRES,BASMOD,INTF,MAILLA
       CHARACTER*10 TYPBAS(3)
       CHARACTER*24 BLANC, IDESC
@@ -45,7 +46,7 @@ C
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IOC1 ,IRET ,LDREF ,LLREF 
+      INTEGER IBID ,IOC1 ,IRET ,LDREF ,LLREF
 C-----------------------------------------------------------------------
       DATA TYPBAS/'CLASSIQUE','CYCLIQUE','RITZ'/
 C

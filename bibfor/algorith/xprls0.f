@@ -2,13 +2,15 @@
      &                  LEVSET,NODTOR,ELETOR,POIFI,TRIFI)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXATR
       CHARACTER*2    LEVSET
       CHARACTER*8    NOMA,FISPRE
       CHARACTER*19   CNSLN,CNSLT,ISOZRO,NOESOM,NODTOR,ELETOR,POIFI,
      &               TRIFI
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +80,6 @@ C     ------------------------------------------------------------------
      &               ZB,S,A(3),B(3),C(3),EPS(3),M(3),D,VN(3),
      &               LSNA,LSNB,LSTA,LSTB,LSTC,LST(6),BESTD,BESTDI,LSN,
      &               BESTLT,BESTLI,DIST,ARMIN,LONGAR,LONGMX,PADIST,
-     &
      &               MP(3)
       CHARACTER*8    K8B,TYPMA
       CHARACTER*19   MAICOU,NOMCOU,VNOULS,VNOULT,MAI,POIFIS,TRIFIS
@@ -727,7 +728,7 @@ C     ELEMENT AND LSN=0 (ONLY FOR THE UPWIND SCHEME)
       DO 500 I=1,NBPFIS*4
          ZR(POS-1+I) = ZR(JPOI-1+I)
 500   CONTINUE
-   
+
       CALL JEDETR('&&XPRLS0.POIFIS')
 
 C  REMPLACEMENT DES LEVEL SETS PAR CELLES CALCULEES
@@ -737,11 +738,11 @@ C  ------------------------------------------------
 
 C        CALCULATE THE LEVEL SETS BY PROJECTION AT ALL THE NODES WHICH
 C        HAVEN'T A PROJECTION INSIDE A TRIANGLE
-         IF (ZL(JZERO-1+NUNO).AND.ZL(IPPROJ-1+INO)) THEN         
+         IF (ZL(JZERO-1+NUNO).AND.ZL(IPPROJ-1+INO)) THEN
                P(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
                P(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
                IF (NDIM.EQ.3) P(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
-               IF (NDIM.EQ.2) P(3)=0.D0            
+               IF (NDIM.EQ.2) P(3)=0.D0
                LSNP = ZR(JLSNO-1+NUNO)
                IF (LSNP.NE.0.D0) THEN
                   CALL XPRPFI(P,LSNP,ARMIN,POIFIS,TRIFIS,FISPRE,NDIM,

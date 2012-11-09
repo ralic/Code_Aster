@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,8 @@ C
 C**********************************************************************
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*24 TYPE, CONEC
       INTEGER      MAILLE(*),CHEMIN(*),PTCHM(*),NBCHM,M1(*),M2(*)
 C
@@ -60,7 +62,7 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IATYMA ,NSG 
+      INTEGER IATYMA ,NSG
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JELIRA(CONEC(1:15),'NMAXOC',NBM,K1BID)

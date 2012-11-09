@@ -10,7 +10,7 @@ C
       REAL*8        W(4*NBMOD),Z(4*NBMOD,2*NBMOD)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,11 +74,11 @@ C ----------------------------------------------------------------------
 C
 C --- LECTURE DES DIMENSIONS
 C-----------------------------------------------------------------------
-      INTEGER ICODE ,IER ,IFM ,IHH ,IUNIFI ,JHH ,N 
-      INTEGER NITQR 
-      REAL*8 A ,ADIV ,ALPHA ,ALPHAI ,ALPHAR ,B ,BDIV 
-      REAL*8 BETA ,BETAI ,BETAR ,C ,DET ,PI ,R8PI 
-      REAL*8 SNOR ,U ,V ,VNORMA ,VNORMB 
+      INTEGER ICODE ,IER ,IFM ,IHH ,IUNIFI ,JHH ,N
+      INTEGER NITQR
+      REAL*8 A ,ADIV ,ALPHA ,ALPHAI ,ALPHAR ,B ,BDIV
+      REAL*8 BETA ,BETAI ,BETAR ,C ,DET ,PI ,R8PI
+      REAL*8 SNOR ,U ,V ,VNORMA ,VNORMB
 C-----------------------------------------------------------------------
       NBMOD  = NDIM(2)
 C
@@ -369,8 +369,6 @@ C
      &       ,'RELATIVE DE LA  *')
  6003 FORMAT (1X,'*  DE VECTEUR  *     PARTIE REELLE       *    PARTIE'
      &       ,' IMAGINAIRE    *')
- 6004 FORMAT (1P,1X,'*    ',I4,'      *   ',3X,D13.6,3X,'   *   '
-     &       ,3X,D13.6,3X,'   *')
  6005 FORMAT (1P,1X,'*   MAX :    ','  * ',5X,D13.6,4X,'  *  '
      &       ,4X,D13.6,5X,' *')
  6006 FORMAT (1P,1X,'*   MIN :    ','  * ',5X,D13.6,4X,'  *  '

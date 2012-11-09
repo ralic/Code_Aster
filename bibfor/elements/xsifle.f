@@ -4,7 +4,7 @@
      &                  PRESN,OPTION,IGTHET,JBASEC)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/07/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,7 @@ C TOLE CRP_21 CRS_1404
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*8   NOMPAR(4)
       CHARACTER*16 OPTION
       INTEGER   NDIM,IFA,CFACE(5,3),JAINT,IGEOM,NFH,SINGU,JLST,IPRES
@@ -363,13 +364,13 @@ C         -----------------------------------
             IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
               K1 = K1 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U1(J)
               K2 = K2 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U2(J)
-              IF (NDIM.EQ.3) 
+              IF (NDIM.EQ.3)
      &           K3 = K3 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U3(J)
             ENDIF
  520      CONTINUE
 
           JM = JAC*MULT*0.5D0
-          
+
           IF (NDIM.EQ.3) THEN
 
             ZR(IGTHET-1+1)=ZR(IGTHET-1+1)+G*JAC*MULT
@@ -384,7 +385,7 @@ C         -----------------------------------
             ENDIF
 
           ELSEIF(NDIM.EQ.2)THEN
-          
+
             ZR(IGTHET-1+1)=ZR(IGTHET-1+1)+G*JAC*MULT
 
             IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
@@ -393,7 +394,7 @@ C         -----------------------------------
               ZR(IGTHET-1+4)=ZR(IGTHET-1+4)+K1*JM*COEFF
               ZR(IGTHET-1+5)=ZR(IGTHET-1+5)+K2*JM*COEFF
             ENDIF
-        
+
           ENDIF
 
  300    CONTINUE

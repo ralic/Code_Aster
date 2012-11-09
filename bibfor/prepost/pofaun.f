@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C              CHARGEMENT PUREMENT UNIAXIAL
 C     -----------------------------------------------------------------
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
       INTEGER NBOCC,IFONC,NBPTS,I,N1,NBPAPF,IFM,NIV,NBP
       INTEGER IVKE,IVCORR,IVPOIN,NBPOIN,IVMAX,IVMIN,IVTRAV
       INTEGER IBID,INTRAV,IVPICS,NBPICS,NBCYCL,NBPAR,IVDOME
@@ -41,7 +42,7 @@ C     --- POST_FATI_UNIAX ----------------------------------------------
       PARAMETER (NBPAPF=5)
       CHARACTER*1 TYPPPF(NBPAPF)
       CHARACTER*16 NOMPPF(NBPAPF)
-      INTEGER      IARG, NBPOST
+      INTEGER      IARG
       DATA NOMPPF/'CYCLE','VALE_MIN','VALE_MAX','DOMMAGE','DOMM_CUMU'/
       DATA TYPPPF/'I','R','R','R','R'/
 C     ------------------------------------------------------------------
@@ -88,15 +89,15 @@ C     --- RECUPERATION DU COEFFICIENT D'AMPLIFICATION ---
       CALL GETFAC('COEF_MULT',NBOCC)
       IF (NBOCC.NE.0)  THEN
         CALL GETVR8('COEF_MULT','KT',1,IARG,1,RAMPL,N1)
-C        CALL FGAMPL(RAMPL,NBPTS,ZR(NBPTS+IFONC))     
-           
+C        CALL FGAMPL(RAMPL,NBPTS,ZR(NBPTS+IFONC))
+
       END IF
-      
+
 C     --- EXTRACTION DES PICS DE LA FONCTION DE CHARGEMENT ---
 
       CALL GETVR8(' ','DELTA_OSCI',1,IARG,1,PSEUIL,N1)
       CALL FGPEAK(NOMFON,PSEUIL, RAMPL,NBPOIN,ZR(IVPOIN))
-      
+
 C     --- IMPRESSION DES PICS EXTRAITS DE LA FONCTION ----
       IF (NIV.EQ.2) THEN
         WRITE (IFM,*)
@@ -136,9 +137,9 @@ C     ---RECUPERATION DE LA LOI DE COMPTAGES DE CYCLES
      &              NBPICS)
         CALL FGRAIN(ZR(IVPICS),NBPICS,ZI(INTRAV),NBCYCL,ZR(IVMIN1),
      &              ZR(IVMAX1))
-      
+
         CALL FGRMAX(NBCYCL,ZR(IVMIN1),ZR(IVMAX1),ZR(IVMIN),ZR(IVMAX))
-     
+
       ELSE IF (METHOD.EQ.'RCCM') THEN
         CALL FGORDO(NBPOIN,ZR(IVPOIN),ZR(IVTRAV))
         CALL FGRCCM(NBPOIN,ZR(IVTRAV),NBCYCL,ZR(IVMIN),ZR(IVMAX))

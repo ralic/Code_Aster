@@ -1,9 +1,10 @@
       SUBROUTINE SPEPH0(NOMU,TABLE)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +27,6 @@ C   RESTITUTION D'UN INTERSPECTRE DE REPONSE MODALE DANS LA BASE
 C   PHYSIQUE  OPERATEUR REST_SPEC_PHYS
 C-----------------------------------------------------------------------
 
-      INTEGER VALI
       INTEGER IBID,NBMOD1,NBTROU,LNUMOR,NBMODE,ILMODE,IM,
      &        IMOD1,IAD,NAPEXC,ILNOEX,NCMPEX,IRET,ILCPEX,IDIM1,IDIM0,
      &        NBN,INOEN,ICMPN,NBMAIL,I,IMAIN,INDDL,INOEUD,IDDL,NUPO,

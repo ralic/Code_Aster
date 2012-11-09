@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,6 +76,7 @@ C --------------------------------------------------------------------
 C            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 C            NC :    NOMBRE DE COTES DE L'ELEMENT
       INCLUDE 'jeveux.h'
+
       REAL*8 POIDS
 C            POIDS:  POIDS DE GAUSS (Y COMPRIS LE JACOBIEN)
 C            AIRE:   SURFACE DE L'ELEMENT
@@ -102,7 +103,7 @@ C            EFFINT : EFFORTS DANS LE REPERE DE L'ELEMENT
 C            DF :    MATRICE DE RIGIDITE TANGENTE MATERIELLE  (FLEXION)
 C            DM :    MATRICE DE RIGIDITE TANGENTE MATERIELLE  (MEMBRANE)
 C            DMF:    MATRICE DE RIGIDITE TANGENTE MATERIELLE  (COUPLAGE)
-C            DC:     MATRICE DE RIGIDITE ELASTIQUE MATERIELLE 
+C            DC:     MATRICE DE RIGIDITE ELASTIQUE MATERIELLE
 C                                                         (CISAILLEMENT)
 C
       REAL*8 DCI(4),DMC(6),DFC(6)
@@ -111,7 +112,7 @@ C
 C            BF :    MATRICE "B" (FLEXION)
 C            BM :    MATRICE "B" (MEMBRANE)
 C            BC :    MATRICE "B" (CISAILLEMENT)
-      REAL*8 FLEX(3*4,3*4),MEMB(2*4,2*4),KC(3*4,3*4),FLEXI(3*4,3*4)
+      REAL*8 FLEX(3*4,3*4),MEMB(2*4,2*4),FLEXI(3*4,3*4)
       REAL*8 MEFL(2*4,3*4),WORK(3,3*4)
 C           MEMB:    MATRICE DE RIGIDITE DE MEMBRANE
 C           FLEX:    MATRICE DE RIGIDITE DE FLEXION
@@ -187,6 +188,10 @@ C
         CALL JEVECH('PVARIMR','L',IVARIM)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         LEUL = ZK16(ICOMPO+2).EQ.'GROT_GDEP'
+      ELSE
+        IVARIM=1
+        ICOMPO=1
+        ICONTM=1
       ENDIF
 
       CALL JEVECH('PCACOQU','L',ICACOQ)
@@ -379,7 +384,7 @@ C
 C
 C CALCUL DE L'ACCOISSEMENT EFFORT CISAILLEMENT
 C
-C   
+C
           IF(Q4GG) THEN
             DSIG(7) = DCC(1,1)*DGAM(1)
             DSIG(8) = DCC(2,2)*DGAM(2)
@@ -573,7 +578,7 @@ C     FIN BOUCLE SUR LES POINTS DE GAUSS
 
 C     ACCUMULATION DES SOUS MATRICES DANS KTAN :
       IF (MATRIC) THEN
-        IF(NOMTE(1:8).EQ.'MEDKTG3 ' .OR. 
+        IF(NOMTE(1:8).EQ.'MEDKTG3 ' .OR.
      &     NOMTE(1:8).EQ.'MET3GG3 ') THEN
 
           CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,KTAN)

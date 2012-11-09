@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,10 +35,10 @@ C.......................................................................
 
 
       INCLUDE 'jeveux.h'
+
       INTEGER ICODRE
 
       CHARACTER*16 NOMTE,OPTION,PHENOM
-      CHARACTER*8 ELREFE
       CHARACTER*4 FAMI
       CHARACTER*1 STOPZ(3)
       REAL*8 A(3,3,27,27),MATP(81,81),MATV(3321)
@@ -299,10 +299,10 @@ C IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
             CALL PMAVEC('ZERO',NDDL,MATP,ZR(IDEPL),MASDEP)
             ZR(IECIN) = .5D0*DDOT(NDDL,ZR(IDEPL),1,MASDEP,1)*ZR(IFREQ)
           ELSE
-            CALL U2MESK('F','ELEMENTS2_1',1,OPTION) 
+            CALL U2MESK('F','ELEMENTS2_1',1,OPTION)
           ENDIF
         ENDIF
-C 
+C
       ELSE
 CC OPTION DE CALCUL INVALIDE
         CALL ASSERT(.FALSE.)

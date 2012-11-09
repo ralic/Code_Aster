@@ -1,7 +1,7 @@
       SUBROUTINE PJEFCH(CORRES,CH1,CH2,TYCHA2,PRFCHN,PROL0,LIGREL,BASE,
      &                                                            IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C                = 10   : ON NE SAIT PAS ENCORE FAIRE
 C-------------------------------------------------------------------
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
       CHARACTER*19 CH1,CH2,CH0S,CH1S,CH2S,PRFCHN,LIGREL
       CHARACTER*16 OPTION,CORRES
       CHARACTER*4 TYCH,TYCHV,TYCHA2

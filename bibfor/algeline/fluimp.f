@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C  IN : CARAC   : DIAMETRE HYDRAULIQUE ET EPAISSEUR
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
       INTEGER        ITYPFL,NIVPAR,NIVDEF,NBM,NPV,NUOR(NBM),JVCN,JVEN
       INTEGER        NIVE,NBVAL,LFSVI,PAS,JCONN,JRAP
       CHARACTER*19   MELFLU
@@ -73,11 +74,11 @@ C
       LOGICAL        LCOR,LSUP,LINF,LMIN,LMAX,LRESU,CALCUL(2)
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IFR ,IK ,IM ,IMOD ,IND 
-      INTEGER IUNIFI ,IV ,J ,JPROFV ,JTRAV5 ,K ,L1 
-      INTEGER L2 ,L3 ,N1 ,N2 ,NBNO ,NPASV ,NZONE 
+      INTEGER I ,IBID ,IFR ,IK ,IM ,IMOD ,IND
+      INTEGER IUNIFI ,IV ,J ,JPROFV ,JTRAV5 ,K ,L1
+      INTEGER L2 ,L3 ,N1 ,N2 ,NBNO ,NPASV ,NZONE
 
-      REAL*8 AMOR1 ,BMAX ,BMIN ,DIF1 ,FREQ1 ,RBID ,VRED 
+      REAL*8 AMOR1 ,BMAX ,BMIN ,DIF1 ,FREQ1 ,RBID ,VRED
 
 C-----------------------------------------------------------------------
       DATA           NOMCMP /'DX      ','DY      ','DZ      ',

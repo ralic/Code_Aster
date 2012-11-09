@@ -3,13 +3,14 @@
      &                    NEQ, NBMODE, TYPMOD, NBPARI, NBPARR, NBPARK )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*)     MODES, NOMSY, NOMVEC, TYPMOD, NOPARA
       CHARACTER*(*)     NOMVAI, NOMVAR, NOMVAK
       INTEGER           NBVECT, LPOSI(*), NEQ, NBMODE, NBPARA
       INTEGER           NBPARI, NBPARR, NBPARK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +68,6 @@ C     ------------------------------------------------------------------
       REAL*8        RBID(2)
       CHARACTER*4   TYPE
       CHARACTER*8   K8B
-      CHARACTER*16  NOMCMD
       CHARACTER*24  VALE, NOMJV
       CHARACTER*24 VALK(2)
       COMPLEX*16    C16B

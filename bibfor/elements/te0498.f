@@ -1,6 +1,6 @@
       SUBROUTINE TE0498 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C
@@ -61,7 +62,7 @@ C
       CALL JEVECH ( 'PONDPLR', 'L' ,IONDC )
       CALL JEVECH ( 'PTEMPSR', 'L', JINST )
       CALL JEVECH ( 'PVECTUR', 'E', IRES  )
-      
+
       IF (ZK24(IONDE)(1:7).EQ.'&FOZERO') GOTO 140
 C
 C     --- INITIALISATION DE SIGMA
@@ -97,7 +98,7 @@ C
       DIRY =ZR(IONDC+1)
       DIRZ =ZR(IONDC+2)
       TYPER=ZR(IONDC+3)
-      
+
       IF (TYPER.EQ.0.D0) TYPE = 'P'
       IF (TYPER.EQ.1.D0) TYPE = 'SV'
       IF (TYPER.EQ.2.D0) TYPE = 'SH'
@@ -108,7 +109,7 @@ C
       DIRX = DIRX/NORM
       DIRY = DIRY/NORM
       DIRZ = DIRZ/NORM
-      
+
 C     CALCUL DU REPERE ASSOCIE A L'ONDE
       TANX = DIRY
       TANY = -DIRX
@@ -159,11 +160,11 @@ CKH          ON SUPPOSE QU'ON RECUPERE UNE VITESSE
          CALL FOINTE('FM',ZK24(IONDE),1,'INST',ZR(JINST),VALFON,IER)
          VALFON = -VALFON/CELE
 C         VALFON = +VALFON/CELE
-         
+
 C        CALCUL DES CONTRAINTES ASSOCIEES A L'ONDE PLANE
 C        CALCUL DU GRADIENT DU DEPLACEMENT
          IF (TYPE.EQ.'P') THEN
-         
+
             GRAD(1,1) = DIRX*VALFON*DIRX
             GRAD(1,2) = DIRY*VALFON*DIRX
             GRAD(1,3) = DIRZ*VALFON*DIRX
@@ -175,9 +176,9 @@ C        CALCUL DU GRADIENT DU DEPLACEMENT
             GRAD(3,1) = DIRX*VALFON*DIRZ
             GRAD(3,2) = DIRY*VALFON*DIRZ
             GRAD(3,3) = DIRZ*VALFON*DIRZ
-            
+
          ELSEIF (TYPE.EQ.'SV') THEN
-         
+
             GRAD(1,1) = DIRX*VALFON*NORX
             GRAD(1,2) = DIRY*VALFON*NORX
             GRAD(1,3) = DIRZ*VALFON*NORX
@@ -189,9 +190,9 @@ C        CALCUL DU GRADIENT DU DEPLACEMENT
             GRAD(3,1) = DIRX*VALFON*NORZ
             GRAD(3,2) = DIRY*VALFON*NORZ
             GRAD(3,3) = DIRZ*VALFON*NORZ
-            
+
          ELSEIF (TYPE.EQ.'SH') THEN
-         
+
             GRAD(1,1) = DIRX*VALFON*TANX
             GRAD(1,2) = DIRY*VALFON*TANX
             GRAD(1,3) = DIRZ*VALFON*TANX
@@ -203,7 +204,7 @@ C        CALCUL DU GRADIENT DU DEPLACEMENT
             GRAD(3,1) = 0.D0
             GRAD(3,2) = 0.D0
             GRAD(3,3) = 0.D0
-            
+
          ENDIF
 
 C        CALCUL DES DEFORMATIONS
@@ -283,7 +284,7 @@ C
              VONDT(2) = -CELE*VALFON*TANY
              VONDT(3) = 0.D0
           ENDIF
-          
+
 C        --- CALCUL DE LA VITESSE NORMALE ET DE LA VITESSE TANGENCIELLE
           CALL PRONOR(NUX,NUY,NUZ,VONDT,VONDN)
 C

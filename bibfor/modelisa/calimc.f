@@ -1,7 +1,7 @@
       SUBROUTINE CALIMC(CHARGZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,8 @@ C -------------------------------------------------------
 C.========================= DEBUT DES DECLARATIONS ====================
       INCLUDE 'jeveux.h'
 
+      CHARACTER*32 JEXNUM,JEXNOM
+
 C -----  ARGUMENTS
       CHARACTER*(*) CHARGZ
 C      CHARACTER*8 NOMA
@@ -58,15 +60,15 @@ C ------ VARIABLES LOCALES
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,I2 ,I3 ,IACONX ,IADREF ,IADRIF ,IAPRNO 
-      INTEGER IBID ,ICMP ,ICMP2 ,IDBASE ,IDCOEC ,IDCOER ,IDDDL 
-      INTEGER IDDL ,IDDL2 ,IDIMEN ,IDIREC ,IDNOEU ,IERD ,II 
-      INTEGER IMOD ,IMOD2 ,INOE ,IOCC ,IRET ,J ,J2 
-      INTEGER J3 ,JJ ,JNCMPD ,JNCMPI ,K ,LLDEF ,N2 
-      INTEGER NBEC ,NBMDEF ,NBMDYN ,NBMODE ,NBNDE2 ,NBNDEF ,NBNDYN 
-      INTEGER NBNOE ,NBNTOT ,NBTERM ,NEC ,NEC2 ,NEQ ,NLIAI, NUEQ 
-      INTEGER NMC 
-      REAL*8 BETA ,RBID ,VALE ,ZERO 
+      INTEGER I ,I2 ,I3 ,IACONX ,IADREF ,IADRIF ,IAPRNO
+      INTEGER IBID ,ICMP ,ICMP2 ,IDBASE ,IDCOEC ,IDCOER ,IDDDL
+      INTEGER IDDL ,IDDL2 ,IDIMEN ,IDIREC ,IDNOEU ,IERD ,II
+      INTEGER IMOD ,IMOD2 ,INOE ,IOCC ,IRET ,J ,J2
+      INTEGER J3 ,JJ ,JNCMPD ,JNCMPI ,K ,LLDEF ,N2
+      INTEGER NBEC ,NBMDEF ,NBMDYN ,NBMODE ,NBNDE2 ,NBNDEF ,NBNDYN
+      INTEGER NBNOE ,NBNTOT ,NBTERM ,NEC ,NEC2 ,NEQ ,NLIAI, NUEQ
+      INTEGER NMC
+      REAL*8 BETA ,RBID ,VALE ,ZERO
 C-----------------------------------------------------------------------
       DATA LISCMP   /'DX      ','DY      ','DZ      ',
      &               'DRX     ','DRY     ','DRZ     '/

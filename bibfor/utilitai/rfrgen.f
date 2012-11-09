@@ -1,10 +1,12 @@
       SUBROUTINE RFRGEN ( TRANGE )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*19       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/09/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,14 +40,14 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IAGNO ,IDBASE ,IDDL ,IDINSG ,IDVECG ,IE 
-      INTEGER IER ,IERD ,IGN2 ,II ,INO ,INOEUD ,IORDR 
-      INTEGER IP ,IPAS ,IPSDEL ,IRET ,ITRESU ,JFON ,JINST 
-      INTEGER LDESC ,LFON ,LG1 ,LG2 ,LORDR ,LPAS ,LPRO 
-      INTEGER LVAR ,MXMODE ,N1 ,N2 ,N3 ,NBEXCI ,NBINSG 
-      INTEGER NBMODE ,NBORDR ,NBPARI ,NBPARK ,NBPARR ,NBPAS ,NEQ 
-      INTEGER NFONCT ,NGN ,NUMCMP 
-      REAL*8 ALPHA ,EPSI ,REP 
+      INTEGER I ,IAGNO ,IDBASE ,IDDL ,IDINSG ,IDVECG ,IE
+      INTEGER IER ,IERD ,IGN2 ,II ,INO ,INOEUD ,IORDR
+      INTEGER IP ,IPAS ,IPSDEL ,IRET ,ITRESU ,JFON ,JINST
+      INTEGER LDESC ,LFON ,LG1 ,LG2 ,LORDR ,LPAS ,LPRO
+      INTEGER LVAR ,MXMODE ,N1 ,N2 ,N3 ,NBEXCI ,NBINSG
+      INTEGER NBMODE ,NBORDR ,NBPARI ,NBPARK ,NBPARR ,NBPAS ,NEQ
+      INTEGER NFONCT ,NGN ,NUMCMP
+      REAL*8 ALPHA ,EPSI ,REP
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -55,7 +57,7 @@ C
       CALL GETRES ( NOMFON , TYPCON , NOMCMD )
 
       CALL GETTCO ( TRANGE, TYSD )
-C TRAITEMENT DU MODE_GENE      
+C TRAITEMENT DU MODE_GENE
       IF ( TYSD .EQ. 'MODE_GENE' ) THEN
          CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,IARG,1, K8B,  N1 )
          CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,IARG,1, IBID, N2 )
@@ -66,7 +68,7 @@ CCC  FONCTIONNALITE NON DEVELOPPEE
             CALL ASSERT(.FALSE.)
          ENDIF
          GOTO 9999
-C TRAITEMENT DU HARM_GENE   
+C TRAITEMENT DU HARM_GENE
       ELSEIF ( TYSD .EQ. 'HARM_GENE' ) THEN
         CALL  RFHGE2 ( TRANGE )
         GOTO 9999
@@ -189,7 +191,7 @@ C
            MATRAS = ZK24(LREFE2)(1:19)
            NOMSY = 'DEPL'
 
-           
+
            IF (MATRAS.NE.' ') THEN
              CALL VPRECU( BASEMO, NOMSY,-1,IBID, '&&RFRGEN.VECT.PROPRE',
      &                   0, K8B, K8B,  K8B, K8B,

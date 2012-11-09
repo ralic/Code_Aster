@@ -1,6 +1,6 @@
       SUBROUTINE SSDMDM(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,8 @@ C ======================================================================
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8 MAG
 C ----------------------------------------------------------------------
 C     BUT:
@@ -38,12 +40,12 @@ C
       INTEGER      IARG
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,I1NOE ,I1NOL ,IACONX ,IACOO2 ,IACOOR ,IADESM 
-      INTEGER IADIM2 ,IADIME ,IALK81 ,IALK82 ,IANMCR ,IAPARR ,IASUPM 
-      INTEGER IBID ,IDIM ,IDIMTO ,IERD ,INO ,INOLD ,IOCC 
-      INTEGER IRET ,ISMA ,ITROU ,J ,JNO ,K ,N1 
-      INTEGER N2 ,N3 ,N4 ,N5 ,NBNOE ,NBNOET ,NBNOL 
-      INTEGER NBSMA ,NNNOE ,NNNOL ,NOCC 
+      INTEGER I ,I1NOE ,I1NOL ,IACONX ,IACOO2 ,IACOOR ,IADESM
+      INTEGER IADIM2 ,IADIME ,IALK81 ,IALK82 ,IANMCR ,IAPARR ,IASUPM
+      INTEGER IBID ,IDIM ,IDIMTO ,IERD ,INO ,INOLD ,IOCC
+      INTEGER IRET ,ISMA ,ITROU ,J ,JNO ,K ,N1
+      INTEGER N2 ,N3 ,N4 ,N5 ,NBNOE ,NBNOET ,NBNOL
+      INTEGER NBSMA ,NNNOE ,NNNOL ,NOCC
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       R1= R8DGRD()

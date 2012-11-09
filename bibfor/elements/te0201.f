@@ -1,7 +1,7 @@
       SUBROUTINE TE0201(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C ======================================================================
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16       NOMTE, OPTION
 
 C-----------------------------------------------------------------------
@@ -43,7 +44,7 @@ C-----------------------------------------------------------------------
       CHARACTER*8 TYPMOD(2)
       LOGICAL LTEATT,RESI,RIGI,MATSYM
 
-      RESI = OPTION.EQ.'RAPH_MECA' .OR. OPTION(1:9).EQ.'FULL_MECA' 
+      RESI = OPTION.EQ.'RAPH_MECA' .OR. OPTION(1:9).EQ.'FULL_MECA'
       RIGI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA'
 
       NPG=2
@@ -71,11 +72,15 @@ C RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS :
       LGPG1 = MAX(JTAB(6),1)*JTAB(7)
       LGPG = LGPG1
 
-C POINTEURS POUR LA LECTURE DU DEPL ET L'ECRITURE DES VIP 
+C POINTEURS POUR LA LECTURE DU DEPL ET L'ECRITURE DES VIP
       IF (RESI) THEN
         CALL JEVECH('PDEPLPR','L',IDDEP)
         CALL JEVECH('PVARIPR','E',IVARIP)
         CALL JEVECH('PCODRET','E',ICORET)
+      ELSE
+        IDDEP=1
+        IVARIP=1
+        ICORET=1
       ENDIF
 
 C CALCUL DES CONTRAINTES, VIP, FORCES INTERNES ET MATR TANG ELEMENTAIRES
@@ -89,10 +94,10 @@ C STOCKAGE DE LA MATRICE
 
         MATSYM = .TRUE.
         IF (ZK16(ICOMP)(1:15).EQ.'JOINT_MECA_RUPT') MATSYM = .FALSE.
-        IF (ZK16(ICOMP)(1:15).EQ.'JOINT_MECA_FROT') MATSYM = .FALSE.  
-                 
+        IF (ZK16(ICOMP)(1:15).EQ.'JOINT_MECA_FROT') MATSYM = .FALSE.
+
         IF (MATSYM) THEN
-        
+
           CALL JEVECH('PMATUUR','E',IMATR)
           KK = 0
           DO 10 I = 1,8
@@ -103,7 +108,7 @@ C STOCKAGE DE LA MATRICE
  10       CONTINUE
 
         ELSE
-            
+
           CALL JEVECH('PMATUNS','E',IMATR)
           KK = 0
           DO 11 I = 1,8
@@ -112,7 +117,7 @@ C STOCKAGE DE LA MATRICE
               KK = KK+1
  16         CONTINUE
  11       CONTINUE
-                  
+
         ENDIF
 
       ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE TE0286(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C FONCTION REALISEE:
@@ -43,10 +44,10 @@ C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IDEPL ,IDFDE ,IENER ,IGEOM ,IHARMO ,IMATE 
-      INTEGER IPOIDS ,IRET ,IVF ,JGANO ,NBSIG ,NDIM ,NDIM2 
-      INTEGER NH ,NNO ,NNOS ,NPG 
-      REAL*8 ENTHTH ,EPOT ,UNDEMI ,ZERO 
+      INTEGER I ,IDEPL ,IDFDE ,IENER ,IGEOM ,IHARMO ,IMATE
+      INTEGER IPOIDS ,IRET ,IVF ,JGANO ,NBSIG ,NDIM ,NDIM2
+      INTEGER NH ,NNO ,NNOS ,NPG
+      REAL*8 ENTHTH ,EPOT ,UNDEMI ,ZERO
 C-----------------------------------------------------------------------
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)

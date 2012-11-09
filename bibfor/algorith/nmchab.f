@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,12 +19,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE JMBHH01 J.M.PROIX
+C RESPONSABLE PROIX J.M.PROIX
 C.======================================================================
       IMPLICIT NONE
 C
 C      NMCHAB   -- INTEGRATION DU MODELE DE COMPORTEMENT ELASTOPLASTIQUE
-C                  DE CHABOCHE A ECROUISSAGE CINEMATIQUE NON LINEAIRE 
+C                  DE CHABOCHE A ECROUISSAGE CINEMATIQUE NON LINEAIRE
 C                  ET ISOTROPE ET EFFET DE MEMOIRE.
 C                  CE MODELE COMPORTE UNE OU DEUX VARIABLES CINEMATIQUES
 C                  CE MODELE EST INTEGRE PAR LA RESOLUTION D'UNE
@@ -140,7 +140,7 @@ C
       IRET=0
       CALL NMCHAM(FAMI,KPG,KSP,IMATE,COMPOR,
      &            MATEL,MAT,NBVAR,MEMO,VISC,COEF)
-     
+
 C     NBVARI=2+6*NBVAR+MEMO*14
       UN     = 1.0D0
       RAC2   = SQRT(2.D0)
@@ -420,7 +420,7 @@ C     ========================================
 C     Critere de radialite
       IF (OPTION(1:9).NE.'RIGI_MECA') THEN
          IF (CRIT(10).GT.0.D0) THEN
-C           CALCUL DE X1, X2         
+C           CALCUL DE X1, X2
             CALL DCOPY(NDIMSI,ALFAM,1,XM,1)
             CALL DCOPY(NDIMSI,ALFA, 1,XP,1)
             CALL DSCAL(NDIMSI,CM/1.5D0,XM,1)
@@ -436,7 +436,7 @@ C           CALCUL DE X1, X2
                IRET=2
             ENDIF
          ENDIF
-      ENDIF       
+      ENDIF
 
  9999 CONTINUE
       END

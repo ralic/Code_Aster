@@ -1,6 +1,6 @@
       SUBROUTINE SSCHGE(NOMACR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8 NOMACR
 C ----------------------------------------------------------------------
 C     BUT: TRAITER LE MOT CLEF "CAS_CHARGE"
@@ -47,10 +49,10 @@ C
       INTEGER      IARG
 C
 C-----------------------------------------------------------------------
-      INTEGER IADESM ,IALICA ,IALICH ,IAREFM ,IAVALE ,ICAS ,IOCC 
-      INTEGER KK ,N1 ,N2 ,NCH ,NDDLE ,NDDLI ,NDDLT 
-      INTEGER NOCC 
-      REAL*8 TIME 
+      INTEGER IADESM ,IALICA ,IALICH ,IAREFM ,IAVALE ,ICAS ,IOCC
+      INTEGER KK ,N1 ,N2 ,NCH ,NDDLE ,NDDLI ,NDDLT
+      INTEGER NOCC
+      REAL*8 TIME
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

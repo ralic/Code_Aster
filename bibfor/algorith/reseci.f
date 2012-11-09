@@ -1,7 +1,7 @@
       SUBROUTINE RESECI(CARELE,NUMMAI,AI1,AI2)
 C**********************************************************************C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,8 @@ C**********************************************************************C
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*1 KBID
       CHARACTER*8 CARELE,K8BID1
       CHARACTER*24 K24BI1
@@ -41,11 +43,11 @@ C**********************************************************************C
 C***1.      RECUPERATION DU TYPE GRANDEUR NB ASSOCIATION***************C
 C**********************************************************************C
 C-----------------------------------------------------------------------
-      INTEGER IAD1 ,IALIMA ,IASS1 ,IAVALE ,IBID1 ,ICMP ,ICODE1 
-      INTEGER IEC1 ,IGD ,IGDNCM ,IMAI1 ,INASMX ,INBMAI ,INECGD 
-      INTEGER INULIM ,IRGAI1 ,IRGAI2 ,ITEST1 ,ITEST2 ,NUMAI1 ,NUMGD 
-      INTEGER NUMMAI 
-      REAL*8 AI1 ,AI2 
+      INTEGER IAD1 ,IALIMA ,IASS1 ,IAVALE ,IBID1 ,ICMP ,ICODE1
+      INTEGER IEC1 ,IGD ,IGDNCM ,IMAI1 ,INASMX ,INBMAI ,INECGD
+      INTEGER INULIM ,IRGAI1 ,IRGAI2 ,ITEST1 ,ITEST2 ,NUMAI1 ,NUMGD
+      INTEGER NUMMAI
+      REAL*8 AI1 ,AI2
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       K24BI1 = CARELE//'.CARGENPO  .DESC'

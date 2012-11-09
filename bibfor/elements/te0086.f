@@ -1,6 +1,6 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES CONTRAINTES EN 2D
@@ -37,11 +38,11 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,ICONT ,IDEPL ,IDFDE ,IGAU ,IGEOM ,IMATE 
-      INTEGER INO ,IPOIDS ,ISIG ,IVF ,J ,JGANO ,NBSIG 
-      INTEGER NBSIG1 ,NBSIG2 ,NBSIGM ,NDIM ,NNO ,NNOS ,NPG 
+      INTEGER I ,ICONT ,IDEPL ,IDFDE ,IGAU ,IGEOM ,IMATE
+      INTEGER INO ,IPOIDS ,ISIG ,IVF ,J ,JGANO ,NBSIG
+      INTEGER NBSIG1 ,NBSIG2 ,NBSIGM ,NDIM ,NNO ,NNOS ,NPG
 
-      REAL*8 ZERO 
+      REAL*8 ZERO
 C-----------------------------------------------------------------------
       IF ( OPTION(6:9) .EQ.'ELNO' ) THEN
         FAMI='GANO'
@@ -83,7 +84,7 @@ C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
       BARY(2) = 0.D0
       BARY(3) = 0.D0
       DO 160 I = 1,NNO
-        DO 150 IDIM = 1,NDIM 
+        DO 150 IDIM = 1,NDIM
            BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
  150    CONTINUE
  160  CONTINUE

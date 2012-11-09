@@ -1,6 +1,6 @@
       SUBROUTINE JEAGCO(SCHIN, SCHOUT, NBOCNW, LONTNW, CLAOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +18,11 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C TOLE CRP_18 CRS_508  CRS_512
+C TOLE CRP_18 CRS_508
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*(*)     SCHIN, SCHOUT, CLAOUT
       INTEGER           NBOCNW, LONTNW
 C ----------------------------------------------------------------------
@@ -45,15 +47,15 @@ C ----------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C-----------------------------------------------------------------------
-      INTEGER IADMI ,IADMO1 ,IADMO2 ,IADOUT ,IADYN ,IADZON ,IBACOL 
-      INTEGER IBAOUT ,IBIADD ,IBIADM ,IBIADO ,IBLONO ,IBMARO ,ICIN 
-      INTEGER ICOUT ,IDAT ,IDCOUT ,IDIN ,IDOUT ,IOC ,IRET1 
-      INTEGER IRET2 ,IRET3 ,ISTA1 ,ISTA2 ,IXDESO ,IXIADD ,IXIADM 
-      INTEGER IXIADO ,IXLONG ,IXLONO ,IXMARO ,IXNOM ,JCARA ,JDATE 
-      INTEGER JDOCU ,JGENR ,JHCOD ,JIADD ,JIADM ,JLONG ,JLONO 
-      INTEGER JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K 
-      INTEGER LLECT ,LONOI ,N ,NBL ,NMAX 
-      REAL*8 VAL 
+      INTEGER IADMI ,IADMO1 ,IADMO2 ,IADOUT ,IADYN ,IADZON ,IBACOL
+      INTEGER IBAOUT ,IBIADD ,IBIADM ,IBIADO ,IBLONO ,IBMARO ,ICIN
+      INTEGER ICOUT ,IDAT ,IDCOUT ,IDIN ,IDOUT ,IOC ,IRET1
+      INTEGER IRET2 ,IRET3 ,ISTA1 ,ISTA2 ,IXDESO ,IXIADD ,IXIADM
+      INTEGER IXIADO ,IXLONG ,IXLONO ,IXMARO ,IXNOM ,JCARA ,JDATE
+      INTEGER JDOCU ,JGENR ,JHCOD ,JIADD ,JIADM ,JLONG ,JLONO
+      INTEGER JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K
+      INTEGER LLECT ,LONOI ,N ,NBL ,NMAX
+      REAL*8 VAL
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
@@ -81,16 +83,16 @@ C
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      +               IDMARQ     , IDNOM      ,              IDLONG     ,
-     +               IDLONO     , IDLUTI     , IDNUM
+     +               IDLONO     , IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
      +               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
+     +               IDLONO = 8 , IDNUM  = 10 )
       INTEGER          IV(IDNUM)
       CHARACTER*8      CSUFFI(IDNUM)
 C ----------------------------------------------------------------------
       INTEGER          LTYPI,IADDI(2)
       CHARACTER*24     NOM24
-      CHARACTER*32     NOMIN,NOMOUT,NOMCOL
+      CHARACTER*32     NOMIN,NOMOUT
       CHARACTER*1      KCLAS,GENRI,TYPEI
       LOGICAL          LIBCOL,X2U,LCONST,LNOM
       DATA             IV / 0 , 0 , 0 , 0 , 1 , 0 , 1 , 1 , 1 , 1  /
@@ -111,7 +113,6 @@ C
 C
 C ----  OBJET DE TYPE COLLECTION
 C
-        NOMCOL = NOMIN
         IDIN   = IDATCO
         ICIN   = ICLACO
         IBACOL = IADM ( JIADM(ICIN) + 2*IDIN-1 )

@@ -1,10 +1,11 @@
       SUBROUTINE TE0065(OPTION,NOMTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +27,8 @@ C     OPTION : 'MASS_INER'              (ELEMENTS ISOPARAMETRIQUES 3D)
 C     ------------------------------------------------------------------
       INTEGER       NBRES,NBFAMX
 C-----------------------------------------------------------------------
-      INTEGER L ,LCASTR ,NDIM ,NNOS 
-      REAL*8 RHO ,XXI ,YYI ,ZERO ,ZZI 
+      INTEGER L ,LCASTR ,NDIM ,NNOS
+      REAL*8 RHO ,XXI ,YYI ,ZERO ,ZZI
 C-----------------------------------------------------------------------
       PARAMETER   ( NBRES = 3, NBFAMX = 20 )
 

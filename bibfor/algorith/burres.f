@@ -1,22 +1,22 @@
         SUBROUTINE BURRES(TYPMOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
      &                    NVI,VIN,YD,YF,DEPS,DY,NR,R)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2012   AUTEUR HAELEWYN J.HAELEWYN 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE FOUCAULT A.FOUCAULT
 C=====================================================================
@@ -46,7 +46,7 @@ C=====================================================================
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT ,NDI
 C     ----------------------------------------------------------------
-      INTEGER         I,J,NDT,NDI,NMAT,NVI,NR,IRET
+      INTEGER         I,NDT,NDI,NMAT,NVI,NR,IRET
       REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2),TIMED,TIMEF,DT
       REAL*8          VIN(NVI),YD(NR),YF(NR),DY(NR),R(NR)
       REAL*8          DEPS(6),EPSEM(6),EPSEF(6),HOOKM(6,6)
@@ -181,10 +181,10 @@ C === =================================================================
 C --- CONSTRUCTION TENSEUR ORDRE 4 DE VISCOSITE KAPPA*(ETA_I^0)*DIFEXP
 C === =================================================================
       CALL LCINMA(0.D0,ETAI0)
-      DO 7 I = 1, NDI 
+      DO 7 I = 1, NDI
         ETAI0(I,I) = (ETAS+2.D0*ETAD)/3.D0
         ETAI0(I+NDI,I+NDI) = ETAD
- 7    CONTINUE 
+ 7    CONTINUE
       ETAI0(1,2) = (ETAS-ETAD)/3.D0
       ETAI0(2,1) = ETAI0(1,2)
       ETAI0(3,1) = ETAI0(1,2)
@@ -193,7 +193,7 @@ C === =================================================================
       ETAI0(3,2) = ETAI0(1,2)
       CALL LCPRSM(KAPPA*DIFEXP,ETAI0,KETAI0)
 C === =================================================================
-C --- CALCUL DE LA NORME DES INCREMENTS DE DEFORMATIONS IRREVERSIBLES 
+C --- CALCUL DE LA NORME DES INCREMENTS DE DEFORMATIONS IRREVERSIBLES
 C === =================================================================
       CALL LCPRSC(DEPSFI,DEPSFI,NDFI)
 C --- ON S'ASSURE QUE TOUTE DIVISION PAR ZERO EST IMPOSSIBLE
@@ -203,7 +203,7 @@ C --- ON S'ASSURE QUE TOUTE DIVISION PAR ZERO EST IMPOSSIBLE
         NDFI = 0.D0
       ENDIF
 C === =================================================================
-C --- CALCUL DE LA DIRECTION DES INCREMENTS DEFORMATION IRREVERSIBLE 
+C --- CALCUL DE LA DIRECTION DES INCREMENTS DEFORMATION IRREVERSIBLE
 C === =================================================================
       CALL LCPRSV(NDFI,DEPSFI,NORMAL)
 C === =================================================================

@@ -1,6 +1,6 @@
       SUBROUTINE TE0419 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -39,10 +40,10 @@ C ......................................................................
       REAL*8 FORTHI(42),FORCTH(42),VECL(51)
       REAL*8 YOUNG,NU,ALPHA
 C-----------------------------------------------------------------------
-      INTEGER I ,IB ,INDIC ,INDITH ,INTE ,INTSN ,INTSR 
-      INTEGER J ,JCARA ,JGEOM ,JVECG ,KWGT ,LZI ,LZR 
+      INTEGER I ,IB ,INDIC ,INDITH ,INTE ,INTSN ,INTSR
+      INTEGER J ,JCARA ,JGEOM ,JVECG ,KWGT ,LZI ,LZR
 
-      REAL*8 EPAIS ,TEMPER 
+      REAL*8 EPAIS ,TEMPER
 C-----------------------------------------------------------------------
       PARAMETER (NPGE=2)
       REAL*8 EPSVAL(NPGE),KSI3S2,KSI3

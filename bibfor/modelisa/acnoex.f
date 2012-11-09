@@ -1,11 +1,13 @@
       SUBROUTINE ACNOEX ( NOMA,TYPE,LISTE,NB,NO1,NO2 )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8         NOMA, LISTE(*)
       CHARACTER*4         TYPE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +41,9 @@ C ----------------------------------------------------------------------
       CHARACTER*24 VALK
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IG ,IM ,IMG ,IN ,IR ,JDGM ,JDNO 
-      INTEGER JNBN ,NB ,NBM ,NBN ,NM ,NN ,NN1 
-      INTEGER NN2 ,NO1 ,NO2 ,NUMMAI 
+      INTEGER IG ,IM ,IMG ,IN ,IR ,JDGM ,JDNO
+      INTEGER JNBN ,NB ,NBM ,NBN ,NM ,NN ,NN1
+      INTEGER NN2 ,NO1 ,NO2 ,NUMMAI
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL DISMOI('C','NB_NO_MAILLA',NOMA,'MAILLAGE',NBN,C24,IR)

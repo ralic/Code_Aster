@@ -1,7 +1,7 @@
       SUBROUTINE  ASSGCY (NOMRES,NUGENE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,8 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8  NOMRES,MODGEN
       CHARACTER*14 NUGENE
       CHARACTER*19 STOLCI,RESU
@@ -64,7 +66,7 @@ C
 C--------------------------CREATION DU .REFA----------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER JSCDE 
+      INTEGER JSCDE
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

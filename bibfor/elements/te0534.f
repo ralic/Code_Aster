@@ -1,10 +1,11 @@
       SUBROUTINE TE0534(OPTION,NOMTE)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +57,7 @@ C
       REAL*8       VTMP(400),REAC,REAC12(3),FFI,JAC
       REAL*8       ND(3),FFP(27),FFC(8),SEUIL(60)
       REAL*8       RHON,MU,RHOTK,P(3,3),TAU1(3),TAU2(3),PB(3)
-      REAL*8       LST,R,RR,E,G(3),RBID,FFPC(27),DFBID(27,3)
+      REAL*8       LST,R,RR,G(3),RBID,FFPC(27),DFBID(27,3)
       REAL*8       CSTACO,CSTAFR,CPENCO,CPENFR,X(4)
       REAL*8       COHES(60),SAUT(3)
       REAL*8       ALPHA,DTANG(3),DNOR(3),RELA
@@ -64,7 +65,7 @@ C
 
 
       LOGICAL      LPENAF,NOEUD,LPENAC,LBID,LELIM
-      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC,NOMRES(3),JOB
+      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC,JOB
       CHARACTER*16 ENR
 
 C.......................................................................
@@ -73,7 +74,7 @@ C.......................................................................
 
 C --- INITIALISATIONS
 C
-      CALL VECINI(27,0.D0,FFP)       
+      CALL VECINI(27,0.D0,FFP)
       DO 5 I  = 1,8
         LACT(I) = 0
  5    CONTINUE
@@ -161,7 +162,7 @@ C
         ELSE
           RELA  = 0.D0
         ENDIF
-         
+
         IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
           CALL JEVECH('PMATERC','L',IMATE)
           IMATE = IMATE +60*(IFISS-1)
@@ -352,7 +353,7 @@ C --- (DEPDEL+DEPMOI)
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
               ENDIF
-            REAC = REAC + 
+            REAC = REAC +
      &         FFI * (ZR(IDEPL-1+PLI)+ZR(IDEPM-1+PLI))
 
               DO 121 J=1,NDIM
@@ -457,7 +458,7 @@ C
                   CALL XMMSA2(NDIM ,IPGF  ,ZI(IMATE)   ,SAUT ,ND  ,
      &                       TAU1 ,TAU2  ,COHES(ISSPG),JOB  ,RELA,
      &                       ALPHA,DSIDEP,SIGMA       ,PP   ,DNOR,
-     &                       DTANG,P     ,AM)     
+     &                       DTANG,P     ,AM)
 C
 C --- CALCUL DES SECONDS MEMBRES DE COHESION
 C

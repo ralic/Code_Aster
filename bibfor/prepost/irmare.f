@@ -4,6 +4,8 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*80 TITRE(*)
       CHARACTER*8  NOMAI(*),NONOE(*),NOMA
       CHARACTER*16 FORMAR
@@ -12,7 +14,7 @@ C
       LOGICAL      LMOD
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,11 +63,11 @@ C
 C     ECRITURE DU TITRE
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IAGRMA ,IAGRNO ,ICO ,IFIN ,IGM ,IGN 
-      INTEGER IMA ,INO ,IPO ,IPOIN ,IT ,ITYPE ,ITYPP 
-      INTEGER J ,JM ,JMAI ,JN ,K ,NBFOIS ,NBGRM 
-      INTEGER NBGRN ,NBM ,NBMA ,NBN ,NBREST ,NDIM ,NNO 
-      INTEGER NNOE 
+      INTEGER I ,IAGRMA ,IAGRNO ,ICO ,IFIN ,IGM ,IGN
+      INTEGER IMA ,INO ,IPO ,IPOIN ,IT ,ITYPE ,ITYPP
+      INTEGER J ,JM ,JMAI ,JN ,K ,NBFOIS ,NBGRM
+      INTEGER NBGRN ,NBM ,NBMA ,NBN ,NBREST ,NDIM ,NNO
+      INTEGER NNOE
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       FORMAT = FORMAR

@@ -1,7 +1,7 @@
       SUBROUTINE GMGNRE(NOMA,NBNOTO,LITRAV,LISTMA,NBMA,LISTNO,
      &                  NBNO,SELEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,8 @@ C ======================================================================
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8 NOMA
       CHARACTER*(*) SELEZ
       CHARACTER*16  SELEC
@@ -52,7 +54,7 @@ C     ------------------
       INTEGER      PINI(3,19), PFIN(3,19)
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IACNEX ,IMA ,INO ,NBNOMA ,NUMNO 
+      INTEGER I ,IACNEX ,IMA ,INO ,NBNOMA ,NUMNO
 C-----------------------------------------------------------------------
       DATA NOTYMA / 'POI1'  ,
      &              'SEG2'  , 'SEG3'   ,

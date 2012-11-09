@@ -1,6 +1,6 @@
       SUBROUTINE MERGTH(MODELE,CHARGE,INFCHA,CARELE,MATE,INST,MERIGI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*24 MODELE,CHARGE,INFCHA,CARELE,INST,MERIGI,MATE
 C ----------------------------------------------------------------------
 C CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE THERMIQUE
@@ -40,13 +41,12 @@ C OUT MERIGI  : MATRICES ELEMENTAIRES
       CHARACTER*24 LIGREL(2),LCHIN(7),LCHOUT(1)
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
       CHARACTER*19 CHVARC
-      REAL*8 TIME
       INTEGER IRET,NCHAR,ILIRES,ICHA,JCHAR,JINF
       LOGICAL EXICAR,EXIGEO
 C ----------------------------------------------------------------------
       INTEGER NBCHMX
 C-----------------------------------------------------------------------
-      INTEGER IRET3 ,K ,NH 
+      INTEGER IRET3 ,K ,NH
 C-----------------------------------------------------------------------
       PARAMETER (NBCHMX=2)
       INTEGER NLIGR(NBCHMX)

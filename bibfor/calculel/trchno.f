@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,12 @@ C     ------------------------------------------------------------------
       TRAVRR = '&&'//NOMPRO//'_TRAVR_R        '
       TRAVIR = '&&'//NOMPRO//'_TRAVI_R        '
       TRAVCR = '&&'//NOMPRO//'_TRAVC_R        '
+      IREFI=1
+      IREFR=1
+      IREFC=1
+      IREFIR=1
+      IREFRR=1
+      IREFCR=1
 
       DO 100 IOCC = 1,NOCC
         LIGN1  = ' '
@@ -184,7 +190,7 @@ C ----------------------------------------------------------------------
      &                          LIGN2(161:NL22)
             ENDIF
 
-            IF (LREF) THEN 
+            IF (LREF) THEN
               TBREF(1)=TBTXT(1)
               TBREF(2)=TBTXT(2)
               TBTXT(1)='NON_REGRESSION'
@@ -202,7 +208,7 @@ C ----------------------------------------------------------------------
             CALL WKVECT('&&TRCHNO.NOM_CMP','V V K8',NBCMP,JCMP)
             CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,IARG,NBCMP,
      &                  ZK8(JCMP),N4)
-            IF (LREF) THEN 
+            IF (LREF) THEN
               TBREF(1)=TBTXT(1)
               TBREF(2)=TBTXT(2)
               TBTXT(1)='NON_REGRESSION'
@@ -257,7 +263,7 @@ C            RIEN A FAIRE.
             NONOEU(10:17) = NOGRNO
           END IF
 
-          IF (LREF) THEN 
+          IF (LREF) THEN
             TBREF(1)=TBTXT(1)
             TBREF(2)=TBTXT(2)
             TBTXT(1)='NON_REGRESSION'

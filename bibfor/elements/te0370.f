@@ -1,6 +1,6 @@
       SUBROUTINE TE0370(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C.......................................................................
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*8        FAMI
       CHARACTER*16       NOMTE,OPTION
       REAL*8             A(2,2,27,27)
@@ -49,8 +50,8 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IDEPLM ,IDEPLP ,NPG2 
-      REAL*8 R8B 
+      INTEGER IDEPLM ,IDEPLP ,NPG2
+      REAL*8 R8B
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFRDE,JGANO)
 C

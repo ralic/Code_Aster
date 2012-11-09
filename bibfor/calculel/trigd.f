@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C RESPONSABLE PELLET J.PELLET
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
       INTEGER DG1(*),DG2(*),DEB1,DEB2,INO,NNO
       LOGICAL CUMUL
 C ----------------------------------------------------------------------
@@ -66,7 +67,7 @@ C    -------------------------------------------------------------------
       PARAMETER(NSAV=5)
       INTEGER IND2(NSAV),NECOLD(NSAV)
       INTEGER DG1OLD(NEC2,NSAV),DG2OLD(NEC2,NSAV),POSCMP(NEC2*30,NSAV)
-      INTEGER IEQ,I,K,KK,KK1
+      INTEGER IEQ,I,K
       SAVE DG1OLD,DG2OLD,POSCMP,IND2,NECOLD
       DATA NECOLD/NSAV*0/
 

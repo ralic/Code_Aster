@@ -1,6 +1,6 @@
       SUBROUTINE TE0051(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,10 +31,11 @@ C.......................................................................
 
 
       INCLUDE 'jeveux.h'
+
 C-----------------------------------------------------------------------
-      INTEGER ICAMAS ,IJ ,L ,N1 ,N2 ,NBRES ,NDIM 
-      INTEGER NNOS ,NUNO 
-      REAL*8 ALPHA ,BETA ,R8DGRD 
+      INTEGER ICAMAS ,IJ ,L ,N1 ,N2 ,NBRES ,NDIM
+      INTEGER NNOS ,NUNO
+      REAL*8 ALPHA ,BETA ,R8DGRD
 C-----------------------------------------------------------------------
       PARAMETER (NBRES=3)
       CHARACTER*8 NOMRES(NBRES)

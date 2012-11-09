@@ -3,22 +3,22 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/10/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_7
 C RESPONSABLE SFAYOLLE S.FAYOLLE
@@ -69,7 +69,7 @@ C
       LOGICAL PLASTI,INCO,DECH
 
       INTEGER NDIMSI
-      INTEGER K,L,NITER,IBID,I
+      INTEGER K,L,NITER,I
       INTEGER IRET3, IRET4, IRET0,IRET5
 
       REAL*8 DEPSTH(6),VALRES(8),EPSTHE,PM,CO,DP0,TM,RPRIM0,PRECR
@@ -163,6 +163,8 @@ C
      +                 1,NOMRES(1),VALRES(1),CODRET(1), 0 )
         IF ( CODRET(1) .NE. 0 ) VALRES(1) = 0.D0
         ALPHA = VALRES(1)
+      ELSE
+        ALPHA = 0.D0
       ENDIF
 C
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
@@ -314,7 +316,7 @@ C                     ON RECALCULE LA VALEUR PRECEDENTE DE DPMAX
                 GOTO 21
 
              ELSE
-C               FMAX <0. On augmente DPMAX jusqu'à ce que F(DPMAX) > 0
+C               FMAX <0. On augmente DPMAX jusqu'A ce que F(DPMAX) > 0
                 DO 32 I = 1, NITER
                    FMAX=NMCRI9(DPMAX)
                    IF (ABS(FMAX).LE.PRECR) THEN
@@ -330,7 +332,7 @@ C               FMAX <0. On augmente DPMAX jusqu'à ce que F(DPMAX) > 0
                 CALL U2MESS('A','ALGORITH6_79')
                 GOTO 21
              ENDIF
-             
+
    21        CONTINUE
 
 
@@ -346,16 +348,16 @@ C     -------------------------------------------------------
   50         CONTINUE
 
              VIP(2)=ITER
-             
+
              IF(IRET.EQ.1) GOTO 9999
-             
+
              CALL ECCOOK(ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,
      &              EPSP0,TROOM,TMELT,TP,DINST,PM,DP,RP,RPRIM)
              VIP(3)=DP
              VIP(4)=DINST
-             
+
           ENDIF
-          
+
           VIP(1) = VIM(1) + DP
           PLASTI=(VIP(2).GE.0.5D0)
 C
@@ -390,7 +392,7 @@ C         --------------------------------------------------
              DGDTSG = 0.D0
              DKDTSK = 0.D0
           ENDIF
-          
+
           DO 180 K = 1, NDIMSI
              IF(PLASTI)THEN
                 EPSPET = (DEPS(K)-3.D0*SIGPDV(K)*DP/(2.D0*SIELEQ))/DINST

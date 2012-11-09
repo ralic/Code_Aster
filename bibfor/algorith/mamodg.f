@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,8 @@ C            SOUS-STRUCTURES - DEFORMEES STATIQUES + MODES
 C             NORMAUX
 C---------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER       NBPRES,IMATX,IMATY,ITXSTO,ITYSTO,ITZSTO,IDELAT
       INTEGER       IVX,IVY,ITPX,ITPY,IPRES,IPRSTO,IADIA,IHCOL,IMATZ
       INTEGER       IABLO,IRANG,JRANG,I,J,IBLO,LDBLO,IVZ,ITPZ,IADIRG

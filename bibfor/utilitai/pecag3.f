@@ -2,6 +2,8 @@
      &                    NOMMAI, VALPAR )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER             NDIM,                             NBMAIL
       REAL*8                      VALPAR(*)
       CHARACTER*8         NOMMAI(*),          NOMA
@@ -9,7 +11,7 @@
       LOGICAL                   NSYMX, NSYMY
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,12 +38,12 @@ C
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IG ,IM ,IN ,JCOOR ,JDES 
-      INTEGER JGRO ,NBMA ,NBNO ,NBNOEU ,NUMAIL ,NUNO 
-      REAL*8 ALPHA ,CDX ,CDY ,COSA ,R ,R8DGRD ,R8MAEM 
-      REAL*8 RMAX ,RX ,RY ,SINA ,TAMP ,X ,X0 
-      REAL*8 XMAX ,XMIN ,Y ,Y0 ,YMAX ,YMIN ,ZMAX 
-      REAL*8 ZMIN 
+      INTEGER I ,IBID ,IG ,IM ,IN ,JCOOR ,JDES
+      INTEGER JGRO ,NBMA ,NBNO ,NBNOEU ,NUMAIL ,NUNO
+      REAL*8 ALPHA ,CDX ,CDY ,COSA ,R ,R8DGRD ,R8MAEM
+      REAL*8 RMAX ,RX ,RY ,SINA ,TAMP ,X ,X0
+      REAL*8 XMAX ,XMIN ,Y ,Y0 ,YMAX ,YMIN ,ZMAX
+      REAL*8 ZMIN
 C-----------------------------------------------------------------------
       CALL JEMARQ ( )
       MLGGMA = NOMA//'.GROUPEMA'

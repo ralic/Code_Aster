@@ -2,7 +2,7 @@
      &                   LISTIS,PRECIS,CRIT,EPSI,LINOCH,NBNOCH)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,8 @@ C     IN : NBNOCH : I     : NOMBRE DE CHAMPS A LIRE
 C     -----------------------------------------------------------------
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       LOGICAL ASTOCK
       INTEGER IDEAS,PRECIS,NBNOCH
       CHARACTER*(*) NOMRES,MAIL,TYPRES,ACCES,LISTR8,LISTIS,CRIT

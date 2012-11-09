@@ -4,6 +4,8 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER      IEQUIV,NBCYL,NUMNOG(*),NBNOG(*),NUMMAG(*)
       INTEGER      NUMGRP(*),IROT(3),NBGRP
       REAL*8       XINT(NBCYL),YINT(NBCYL),ZINT(NBZ,NBGRP),COOR(*)
@@ -11,7 +13,7 @@ C
       CHARACTER*19 CAELEM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,9 +72,9 @@ C     ------------------------------------------------------------------
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IAD ,ICESC ,ICESD ,ICESL ,ICESV ,ICMP ,IDESC 
-      INTEGER NBZ ,NPMAX ,NUMMA ,NUMNO1 ,NUMNO2 
-      REAL*8 EPSIT 
+      INTEGER IAD ,ICESC ,ICESD ,ICESL ,ICESV ,ICMP ,IDESC
+      INTEGER NBZ ,NPMAX ,NUMMA ,NUMNO1 ,NUMNO2
+      REAL*8 EPSIT
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       EPSIT = 1.D-5

@@ -1,9 +1,10 @@
       SUBROUTINE CELCEL(TRANSF,CEL1,BASE,CEL2)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*(*) TRANSF,CEL1,BASE,CEL2
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE PELLET
+C RESPONSABLE PELLET J.PELLET
 C ----------------------------------------------------------------------
 C  BUT : TRANSFORMER UN CHAM_ELEM (CEL1) EN UN CHAM_ELEM (CEL2) QUI
 C        A DE NOUVELLES PROPRIETES. PAR EXEMPLE POUR POUVOIR ETRE

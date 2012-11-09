@@ -1,7 +1,7 @@
       SUBROUTINE CAIMCH(CHARGZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,8 @@ C -------------------------------------------------------
 C.========================= DEBUT DES DECLARATIONS ====================
       INCLUDE 'jeveux.h'
 
+      CHARACTER*32 JEXNUM,JEXNOM
+
 C -----  ARGUMENTS
       CHARACTER*(*) CHARGZ
 C ------ VARIABLES LOCALES
@@ -57,11 +59,11 @@ C ------ VARIABLES LOCALES
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IDCOEC ,IDCOER ,IDDDL ,IDEEQ ,IDIMEN ,IDIREC 
-      INTEGER IDNOEU ,IDVALE ,IEQUA ,IER ,INO ,INOCMP ,IOCC 
-      INTEGER IRET ,K ,NB ,NBCMP ,NBEC ,NBNOEU ,NBTERM 
-      INTEGER NEQUA ,NLIAI ,NUCMP 
-      REAL*8 RBID ,VALE ,ZERO 
+      INTEGER IBID ,IDCOEC ,IDCOER ,IDDDL ,IDEEQ ,IDIMEN ,IDIREC
+      INTEGER IDNOEU ,IDVALE ,IEQUA ,IER ,INO ,INOCMP ,IOCC
+      INTEGER IRET ,K ,NB ,NBCMP ,NBEC ,NBNOEU ,NBTERM
+      INTEGER NEQUA ,NLIAI ,NUCMP
+      REAL*8 RBID ,VALE ,ZERO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 

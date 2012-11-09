@@ -1,7 +1,7 @@
       SUBROUTINE ASSMA1(MATAS,LDIST)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_4
 C RESPONSABLE PELLET J.PELLET
 C--------------------------------------------------------------
 C BUT : METTRE A L'ECHELLE LES LIGNES ET COLONNES D'UNE MATR_ASSE
@@ -31,6 +30,8 @@ C IN LDIST (LOGICAL): INDIQUE SI LE CALCUL EST DISTRIBUE AU SENS
 C                     DONNEE INCOMPLETE PAR PROC
 C---------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*(*) MATAS
 C---------------------------------------------------------------
       LOGICAL LMNSY,EXILAG,LDIST

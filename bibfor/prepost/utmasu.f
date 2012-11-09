@@ -3,6 +3,8 @@
       IMPLICIT NONE
 C RESPONSABLE PELLET J.PELLET
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXATR
       INTEGER             LIMA(*), NLIMA, NBMAVO, MAILVO(*)
       REAL*8              COOR(*)
       CHARACTER*2         KDIM
@@ -11,7 +13,7 @@ C RESPONSABLE PELLET J.PELLET
       LOGICAL COINCE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,15 +69,14 @@ C       SOIT LA MEME QUE CELLE DE LA MAILLE DE PEAU.
 C
 C-----------------------------------------------------------------------
 C
-      INTEGER       P1,P2,P3,P4, JM3D, INDIIS, NBMAT, IRET, IM1, IM2
+      INTEGER       P1,P2,P3,P4, JM3D, INDIIS, NBMAT, IM1, IM2
       INTEGER       IMA, NUMA, NNOE, INO, NBM, I, K, INDI, NNOEM, NNOE1
       INTEGER       IFM , NIV, IPOS, ITYPMA, NUTYMA
       INTEGER       LISNOE(27),INDMAI
       LOGICAL       FIRST
-      CHARACTER*8   K8B, NOMAIL, TYPE, VNOR
+      CHARACTER*8   K8B, NOMAIL, TYPE
       CHARACTER*16  OPER,K16B
       CHARACTER*24  NOMAVO,VALK(4)
-      INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV ( IFM , NIV )

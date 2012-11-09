@@ -2,6 +2,7 @@
      &                  EXITIM,TIME,CHACCE,VECEL,BASEZ,LIGREZ)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER NCHAR
       REAL*8 TIME
       CHARACTER*8 LCHAR(*)
@@ -9,7 +10,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +52,7 @@ C ----------------------------------------------------------------------
       CHARACTER*24 LIGRMO,LCHIN(18),LCHOUT(1),COMPOR
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,VECELZ
 C-----------------------------------------------------------------------
-      INTEGER IAREFE ,IBID ,ICODE ,IRET ,NH 
+      INTEGER IAREFE ,IBID ,ICODE ,IRET ,NH
 C-----------------------------------------------------------------------
       DATA CHVARC /'&&MEMAM2.VARC'/
       CALL JEMARQ()

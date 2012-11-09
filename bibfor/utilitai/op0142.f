@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,8 @@ C      EN FONCTION D'UNE ABSCISSE CURVILIGNE.
 C     STOCKAGE DANS UN OBJET DE TYPE FONCTION
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER      PNOE , PTCH, LXLGUT,IER
       CHARACTER*2  PROLGD
       CHARACTER*4  INTERP(2)
@@ -38,15 +40,15 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IABS ,IACH ,IACNEX ,IAGM ,IAV1 ,IAV2 
-      INTEGER IBID ,IEXI ,IFM ,IJ ,IM ,IMA1 ,IMA2 
-      INTEGER IND ,ING ,INO ,IPLAC1 ,IPLAC2 ,ISEG2 ,ISENS 
-      INTEGER ITP ,ITYM ,ITYPM ,JGCNX ,KSEG ,L ,LABS 
-      INTEGER LNOE ,LPRO ,LVAL ,MI ,N3 ,NBBAV ,NBCHM 
-      INTEGER NBNOMA ,NBPOI1 ,NBRM21 ,NBRMA ,NBRMA1 ,NBRMA2 ,NBRSE1 
-      INTEGER NBRSE2 ,NBRSEG ,NBSEG2 ,NIV ,NNOE ,NUM1 ,NUM2 
-      INTEGER NUMNO 
-      REAL*8 RVALE 
+      INTEGER I ,IABS ,IACH ,IACNEX ,IAGM ,IAV1 ,IAV2
+      INTEGER IBID ,IEXI ,IFM ,IJ ,IM ,IMA1 ,IMA2
+      INTEGER IND ,ING ,INO ,IPLAC1 ,IPLAC2 ,ISEG2 ,ISENS
+      INTEGER ITP ,ITYM ,ITYPM ,JGCNX ,KSEG ,L ,LABS
+      INTEGER LNOE ,LPRO ,LVAL ,MI ,N3 ,NBBAV ,NBCHM
+      INTEGER NBNOMA ,NBPOI1 ,NBRM21 ,NBRMA ,NBRMA1 ,NBRMA2 ,NBRSE1
+      INTEGER NBRSE2 ,NBRSEG ,NBSEG2 ,NIV ,NNOE ,NUM1 ,NUM2
+      INTEGER NUMNO
+      REAL*8 RVALE
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

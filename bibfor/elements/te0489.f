@@ -1,10 +1,11 @@
       SUBROUTINE TE0489(OPTION,NOMTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +79,7 @@ C
       REAL*8 ZERNOR, R8PREM, NORSIG, DCHAXM
       REAL*8 VALRES(3)
       REAL*8 TRACE, SQRT
-      REAL*8 SIGEQN 
+      REAL*8 SIGEQN
       CHARACTER*4  FAMI
       CHARACTER*8  TYPE
       CHARACTER*8  NOMRES(3)
@@ -118,7 +119,7 @@ C ----     DIMENSION DE L'ELEMENT :
 C ----     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
       NBSIG = NBSIGM()
 
-C ---- RECUPERATION DU NOMBRE DE COMPOSANTES 
+C ---- RECUPERATION DU NOMBRE DE COMPOSANTES
         CALL TECACH('OOO','PDERAMG',7,JTAB,IRET)
         IDERA1 = JTAB(1)
         NBCMP  = JTAB(2)/JTAB(3)
@@ -167,7 +168,7 @@ C      ----------------
 
           TRSIG1 = SIGMA1(1+ (IGAU-1)*NBSIG) +
      &             SIGMA1(2+ (IGAU-1)*NBSIG) + SIGMA1(3+ (IGAU-1)*NBSIG)
-          
+
           TRSIG2 = SIGMA2(1+ (IGAU-1)*NBSIG) +
      &             SIGMA2(2+ (IGAU-1)*NBSIG) + SIGMA2(3+ (IGAU-1)*NBSIG)
           SIGMA1(1+ (IGAU-1)*NBSIG) = SIGMA1(1+ (IGAU-1)*NBSIG) -
@@ -190,7 +191,7 @@ C ---- RECUPERATION DES COMPOSANTES DU TENSEUR DE RAPPEL
 C ---- AUX INSTANTS T ET T+DT :
 C      ----------------------
       ELSE IF (COMPOR(1:14).EQ.'VMIS_CINE_LINE') THEN
-        
+
         CALL JEVECH('PVARIMR','L',IDVAR1)
         CALL JEVECH('PVARIPR','L',IDVAR2)
 
@@ -216,9 +217,9 @@ C
           DO 90 I = 1,NBSIG
           K = K + 1
 
-            SIGT1(I+ (IGAU-1)*NBSIG) = ZR(ISIGTM+K-1) 
+            SIGT1(I+ (IGAU-1)*NBSIG) = ZR(ISIGTM+K-1)
 C     &                                -X1(I+ (IGAU-1)*NBSIG)
-            SIGT2(I+ (IGAU-1)*NBSIG) = ZR(ISIGTP+K-1) 
+            SIGT2(I+ (IGAU-1)*NBSIG) = ZR(ISIGTP+K-1)
 C     &                                -X2(I+ (IGAU-1)*NBSIG)
             SIGMA1(I+ (IGAU-1)*NBSIG) = ZR(ISIGTM+K-1) -
      &                                  X1(I+ (IGAU-1)*NBSIG)
@@ -235,7 +236,7 @@ C
 
           TRSIG1 = SIGMA1(1+ (IGAU-1)*NBSIG) +
      &             SIGMA1(2+ (IGAU-1)*NBSIG) + SIGMA1(3+ (IGAU-1)*NBSIG)
-          
+
           TRSIG2 = SIGMA2(1+ (IGAU-1)*NBSIG) +
      &             SIGMA2(2+ (IGAU-1)*NBSIG) + SIGMA2(3+ (IGAU-1)*NBSIG)
 
@@ -286,15 +287,15 @@ C ---- CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE ERR_RADI
       CALL JEVECH('PMATERC','L',IMATE)
       CALL RADIPG(SIGT1,SIGT2,NPG,NBSIG,RADIT,COSANG,1,
      &            COMPOR,ZI(IMATE),NBVARI,ZR(IDVAR1),ZR(IDVAR2))
-     
+
       IF (COMPOR(1:9).EQ.'VMIS_ISOT') THEN
 
-C - ON RECUPERE 
-C      > LES INDICATEURS A L'INSTANT T-DT 
+C - ON RECUPERE
+C      > LES INDICATEURS A L'INSTANT T-DT
 C      > LES VARIABLES INTERNES AUX INSTANTS T et T+DT
 C      > LES PARAMETERS MATERIAUX A INSTANT T
 
-        
+
 C ---- CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE RADI:
 C ----  I = 1- ABS(SIGMA1:DSIGMA)/(NORME(SIGMA1)*NORME(DSIGMA) :
 C      -------------------------------------------------------
@@ -314,7 +315,7 @@ C
 C --- BOUCLE SUR LES POINTS DE GAUSS
 C
         DO 200 IGAU = 1,NPG
-          IDECAL = (IGAU-1)*6        
+          IDECAL = (IGAU-1)*6
 C --- DEFORMATION PLASTIQUE CUMULEE
           PM = ZR(IDVAR1-1+(IGAU-1)*NBVARI+1)
           PP = ZR(IDVAR2-1+(IGAU-1)*NBVARI+1)
@@ -326,16 +327,16 @@ C
           ELSE IF (ABS(DCHAXM+2.D0).GT.ZERNOR) THEN
             IF(DP.GT.ZERNOR) THEN
               IF(COSANG(IGAU).GT.ZERNOR) THEN
-                DCHAX(IGAU) =  2.D0 
+                DCHAX(IGAU) =  2.D0
               ELSE
                 DCHAX(IGAU) = -2.D0
               ENDIF
             ELSE IF(DP.LE.ZERNOR) THEN
               IF(ABS(DCHAXM+1.D0).GT.ZERNOR) THEN
-C --- RECUPERATION DES CARACTERISTIQUES DE LA LOI DE COMPORTEMENT     
+C --- RECUPERATION DES CARACTERISTIQUES DE LA LOI DE COMPORTEMENT
                 IF (COMPOR.EQ.'VMIS_ISOT_LINE') THEN
                   NOMRES(1) = 'D_SIGM_EPSI'
-                  NOMRES(2) = 'SY' 
+                  NOMRES(2) = 'SY'
                   CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ','ECRO_LINE',
      &                      IBID,' ',0.D0,2,NOMRES,VALRES,ICODRE, 2)
                   DSDE  = VALRES(1)
@@ -377,7 +378,7 @@ C
                 ELSE
                   CALL U2MESS('F','ELEMENTS_32')
                 ENDIF
-C --- CALCUL DE X                                      
+C --- CALCUL DE X
                 CST1 = (RP-RP0)/RP
                 DO 210 ISIG = 1, NBSIG
                    XRAPEL(IDECAL+ISIG)=SIGT1(ISIG+(IGAU-1)*NBSIG)*CST1
@@ -400,7 +401,7 @@ C
                   DCHAX(IGAU) =  -2.D0
                   DCHAY(IGAU) =  NORSIG(SIGMX,NBSIG)/RP0
                 ENDIF
-              ELSE IF(ABS(DCHAXM+1.D0).LE.ZERNOR) THEN                
+              ELSE IF(ABS(DCHAXM+1.D0).LE.ZERNOR) THEN
                 DO 230 ISIG = 1, NBSIG
                   SIGMX(ISIG) = SIGT1(ISIG)-
      &                          ZR(IDERA1-1+(IGAU-1)*NBCMP+2+ISIG)
@@ -434,7 +435,7 @@ C
                 ELSE
                   CALL U2MESS('F','ELEMENTS_32')
                 ENDIF
-                IF(SIGEQN.LE.RP0) THEN 
+                IF(SIGEQN.LE.RP0) THEN
                   DCHAX(IGAU) = -1.D0
                 ELSE
                   DCHAX(IGAU) = -2.D0
@@ -448,16 +449,16 @@ C
             ENDIF
           ELSE
 C  IND_DCHA = -2 AU PAS PRECEDENT T-DT
-C        ON STOCKE DANS LE PAS COURANT T, LES VALEURS OBTENUES 
+C        ON STOCKE DANS LE PAS COURANT T, LES VALEURS OBTENUES
 C        AU PAS PRECEDENT (T-DT)
             DCHAX(IGAU) = -2.D0
             DCHAY(IGAU) = ZR(IDERA1+(IGAU-1)*NBCMP-1+4)
             DO 250 ISIG = 1, NBSIG
               XRAPEL((IGAU-1)*6+ISIG)=ZR(IDERA1+(IGAU-1)*NBCMP+3+ISIG)
 250         CONTINUE
-          ENDIF            
+          ENDIF
 200     CONTINUE
-        ENDIF         
+        ENDIF
 C
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 C ---- AVEC LE VECTEUR DES INDICATEURS LOCAUX :

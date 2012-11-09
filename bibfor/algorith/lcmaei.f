@@ -2,7 +2,7 @@
      &     NBVAL,VALRES,NMAT,ITBINT,NFS,NSG,HSRI,IFA,NOMFAM,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ C     OUT NBVAL  :  NB DE COEFFICIENTS MATERIAU
 C     OUT HSR    :  MATRICE D'INTERACTION
 C     ----------------------------------------------------------------
       INTEGER         KPG,KSP,ITBINT,NFS,NSG
-      INTEGER         NMAT,NBVAL,IMAT,I,NBSYS,IFA,J,NBHSR,NBCOEF
+      INTEGER         NMAT,NBVAL,IMAT,I,NBSYS,IFA,NBCOEF
       REAL*8          VALH(6)
       REAL*8          VALRES(NMAT),HSRI(NSG,NSG),H,E,NU,MU
       REAL*8          VALLUE(NMAT)
@@ -121,7 +121,7 @@ C         PAR CONVENTION ECRO_DD_CFC A LE NUMERO 3
 
           CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',
      &                 0.D0,NBVAL,NOMRES, VALLUE,ICODRE,1)
-     
+
 C         CALCUL ET STOCKAGE DE MU
           CALL RCCOMA(IMAT,'ELAS',PHENOM,ICODRE)
 
@@ -234,7 +234,7 @@ C
          IF (ZECRIS) THEN
            NECRIS = 'MONO_DD_FAT'
          ENDIF
- 
+
       ENDIF
  9999 CONTINUE
       END

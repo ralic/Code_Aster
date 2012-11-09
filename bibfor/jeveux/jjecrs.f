@@ -1,7 +1,7 @@
       SUBROUTINE JJECRS ( IADMI, IADYN, ICLAS, IDOS, IDCO, CUS, IMARQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 03/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C ----------------------------------------------------------------------
       INTEGER          ISTA1,ISTA2,IS,KTEMPO(2)
 C DEB ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADMA ,IADRS ,IADYN ,K ,LSI 
+      INTEGER IADMA ,IADRS ,IADYN ,K ,LSI
 C-----------------------------------------------------------------------
       ISTA1 = ISZON(JISZON+IADMI-1)
       IS    = JISZON+ISZON(JISZON+IADMI-4)

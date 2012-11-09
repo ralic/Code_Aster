@@ -7,7 +7,7 @@
      &                  CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,8 +32,9 @@ C
 C =====================================================================
 C
       INCLUDE 'jeveux.h'
-      INTEGER      MAXFA,MAXDIM
-      PARAMETER    (MAXFA=6,MAXDIM=3)
+
+      INTEGER      MAXFA
+      PARAMETER    (MAXFA=6)
       INTEGER      DIMCON,DIMUEL
       INTEGER      CODRET
       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
@@ -44,11 +45,6 @@ C
       LOGICAL      AXI
       CHARACTER*16 OPTION
       INTEGER      NNO,NNOS,NNOM,NFACE
-C
-C
-      REAL*8       MFACE(1:MAXFA),DFACE(1:MAXFA),
-     >             XFACE(1:MAXDIM,1:MAXFA),
-     >             NORMFA(1:MAXDIM,1:MAXFA),SFACE(1:MAXFA)
 C
       INTEGER      IFA,FA
       INTEGER      IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO

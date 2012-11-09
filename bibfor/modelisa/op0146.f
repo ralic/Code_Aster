@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,16 +26,18 @@ C     MODALE PERTURBEE PAR PRISE EN COMPTE DU COUPLAGE FLUIDE STRUCTURE
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER LVMOY ,N1 ,N2 ,NB ,NBM
       INTEGER       DIM,IJ,NBABS
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IDEB ,IDISC ,IFREQ ,IK ,IM1 ,IM2 
-      INTEGER INUMO ,IPF ,IPV ,IS ,ISPECT ,IV ,IVALI 
-      INTEGER IVATE ,IVITE ,IZ ,JS ,JVAVF ,LBAREF ,LFSVI 
-      INTEGER LFSVK ,LINDS ,LNOE ,LNOZO ,LPASF ,LSPEC 
-      INTEGER NBPF ,NBSPEC ,NFF ,NFI ,NMODF ,NMODI ,NPOI 
-      INTEGER NPV ,NSPELO ,NUZO ,NZEX 
-      REAL*8 AIRE ,ALONTO ,FREQF ,FREQI ,PAS ,PUI ,PUI2 
+      INTEGER IBID ,IDEB ,IDISC ,IFREQ ,IK ,IM1 ,IM2
+      INTEGER INUMO ,IPF ,IPV ,IS ,ISPECT ,IV ,IVALI
+      INTEGER IVATE ,IVITE ,IZ ,JS ,JVAVF ,LBAREF ,LFSVI
+      INTEGER LFSVK ,LINDS ,LNOE ,LNOZO ,LPASF ,LSPEC
+      INTEGER NBPF ,NBSPEC ,NFF ,NFI ,NMODF ,NMODI ,NPOI
+      INTEGER NPV ,NSPELO ,NUZO ,NZEX
+      REAL*8 AIRE ,ALONTO ,FREQF ,FREQI ,PAS ,PUI ,PUI2
       REAL*8 PUI2D ,PUI3D ,VMOY ,VMOYTO ,X1 ,X2 ,EPSI
 C-----------------------------------------------------------------------
       PARAMETER   ( NB = 1024 )
@@ -326,7 +328,7 @@ C
       CHFREQ = NOMU//'.FREQ'
       CALL WKVECT(CHFREQ,'G V R',NBPF,LFREQ)
 
-      
+
         IV = IVITEF
 
         IF (NPOI.EQ.0) THEN

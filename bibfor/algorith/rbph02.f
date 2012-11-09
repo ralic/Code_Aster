@@ -2,6 +2,8 @@
      &                    NCMP, OBJVE2, OBJVE3, OBJVE4 )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER             NBNOEU, NEQ
       CHARACTER*8         MAILLA
       CHARACTER*14        NUMDDL
@@ -9,7 +11,7 @@
       CHARACTER*24        OBJVE1 , OBJVE2 , OBJVE3 , OBJVE4
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +55,7 @@ C
       TYPMCL(3) = 'GROUP_MA'
       TYPMCL(4) = 'MAILLE'
 C
-      CALL RELIEM(' ', MAILLA, 'NU_NOEUD', ' ', 1, 4, 
+      CALL RELIEM(' ', MAILLA, 'NU_NOEUD', ' ', 1, 4,
      +                                  MOTCLS, TYPMCL, OBJVE1, NBNOEU )
       CALL JEVEUO ( OBJVE1, 'L', JNOEU )
 C

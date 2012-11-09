@@ -1,7 +1,7 @@
       SUBROUTINE EDITGD(CHINZ,NCMP,GD,NEDIT,DG)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,8 @@ C
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER DG(*),NCMP,GD,NEDIT
       CHARACTER*(*) CHINZ
 C ----------------------------------------------------------------------
@@ -52,7 +54,7 @@ C     ------------------
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IAD1 ,IAD2 ,IBID ,ICO ,INDGD ,NCMP2 
+      INTEGER IAD1 ,IAD2 ,IBID ,ICO ,INDGD ,NCMP2
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CHIN=CHINZ

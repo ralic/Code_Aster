@@ -1,10 +1,11 @@
       SUBROUTINE TE0320 ( OPTION , NOMTE )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISMTRIBUTE IT AND/OR MODIFY
@@ -83,7 +84,7 @@ C        MATERIAU FERRITIQUE
 C        ---------------------
 C     ON RECALCULE DIRECTEMENT A PARTIR DES TEMPERATURES AUX NOEUDS
             NOMRES = 'MS0'
-            CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ','META_ACIER', 
+            CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ','META_ACIER',
      &            1,'INST',0.D0,1,NOMRES,MS0,ICODRE,1)
             TNO0 = ZERO
             DO 101 KN=1,NNO

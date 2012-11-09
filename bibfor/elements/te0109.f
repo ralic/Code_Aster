@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C
 C ---------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+
 C
       INTEGER NBRES
       PARAMETER (NBRES=3)
@@ -79,17 +80,6 @@ C     -------------------------------------------------
 
       DO 40 ICOU = -1, 1
 C
-        IF (ICOU.LT.0) THEN
-          PX3 = ORD - EP/2.D0
-          CDEC = 3
-        ELSE IF (ICOU.GT.0) THEN
-          PX3 = ORD + EP/2.D0
-          CDEC = 6
-        ELSE
-          PX3 = ORD
-          CDEC = 0
-        END IF
-
 C       -----------------------------
 C ----- CAS DES COQUES MULTICOUCHES :
 C       -----------------------------
@@ -140,6 +130,17 @@ C
           EP = 2.D0*H
         ELSE
           CALL U2MESK('F','ELEMENTS3_18',1,PHENOM)
+        END IF
+
+        IF (ICOU.LT.0) THEN
+          PX3 = ORD - EP/2.D0
+          CDEC = 3
+        ELSE IF (ICOU.GT.0) THEN
+          PX3 = ORD + EP/2.D0
+          CDEC = 6
+        ELSE
+          PX3 = ORD
+          CDEC = 0
         END IF
 C
         CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,

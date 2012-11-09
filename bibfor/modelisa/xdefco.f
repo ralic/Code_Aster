@@ -2,7 +2,7 @@
      &                  NLISEQ,NLISRL,NLISCO,NBASCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,9 @@ C ======================================================================
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER      NDIM,I,IER
-      CHARACTER*8  FISS,NOMA,NOMO,K8BID
+      CHARACTER*8  FISS,NOMA,NOMO
       INTEGER      ALGOLA
       CHARACTER*19 NLISEQ,NLISRL,NLISCO,NBASCO
       CHARACTER*24 GRMA(3)
@@ -48,7 +49,6 @@ C OUT NLISCO : LISTE REL. LIN. POUR V1 ET V2
 C OUT NLISEQ : LISTE REL. LIN. POUR V2 SEULEMENT
 C OUT NBASCO : CHAM_NO POUR BASE COVARIANTE
 C
-      INTEGER      NMAENR,NMAEN1,NMAEN2,NMAEN3
 C
 C ----------------------------------------------------------------------
 C

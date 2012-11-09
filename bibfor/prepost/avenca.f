@@ -1,6 +1,6 @@
       SUBROUTINE AVENCA( RVECPG, NBVEC, NBORDR, LSIG0, IFLAG, RMIMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,9 +17,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE F1BHHAJ J.ANGLES
-      IMPLICIT      NONE
+C RESPONSABLE ANGLES J.ANGLES
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       INTEGER       NBVEC, NBORDR, IFLAG(NBVEC)
       REAL*8        RVECPG(2*NBVEC*NBORDR), RMIMA(4*NBVEC)
       LOGICAL       LSIG0
@@ -60,7 +61,7 @@ C                     POUR TOUS LES VECTEURS NORMAUX.
 C
 C-----------------------------------------------------------------------
 C     ------------------------------------------------------------------
-      INTEGER      N1, IVECT, IORDR, NSIG0, J
+      INTEGER      N1, IVECT, IORDR, NSIG0
 C
       REAL*8       EPSILO, R8MAEM, CUMIN, CUMAX, CVMIN, CVMAX
       REAL*8       CUI, CVI
@@ -76,7 +77,7 @@ C    |  TRAITEMENT DU CAS GENERAL  |
 C    ------------------------------
 C-----------------------------------------------------------------------
 
-      EPSILO = 1.0D-5 
+      EPSILO = 1.0D-5
 
 C ININTIALISATION
 
@@ -84,11 +85,11 @@ C ININTIALISATION
       NSIG0 = 0
 
       DO 30 IVECT=1, NBVEC
-      
+
 C INITIALISATION
-     
+
          IFLAG(IVECT) = 0
-         
+
          CUMIN = R8MAEM()
          CUMAX = -R8MAEM()
          CVMIN = R8MAEM()
@@ -148,8 +149,8 @@ C    SONT INFERIEURS A EPSILO, ON NE FERA PAS DE PROJECTION.
          IF (NSIG0 .EQ. NBVEC) THEN
             LSIG0 = .TRUE.
          ENDIF
-            
+
  30   CONTINUE
-           
+
       CALL JEDEMA()
       END

@@ -1,10 +1,12 @@
       SUBROUTINE NUMEL2 ( CHAM, IMA, IGREL, IEL )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*(*)       CHAM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +36,8 @@ C
       CHARACTER*19 CHAM19, NOLIGR
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IACELK ,IALIEL ,IEL ,IGR ,IGREL ,IMA 
-      INTEGER NBGREL ,NEL 
+      INTEGER I ,IACELK ,IALIEL ,IEL ,IGR ,IGREL ,IMA
+      INTEGER NBGREL ,NEL
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IGREL=0

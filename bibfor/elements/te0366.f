@@ -1,7 +1,7 @@
        SUBROUTINE TE0366(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
       REAL*8       MMAT(N,N),TAU1(3),TAU2(3),NORM(3)
       REAL*8       MPROJT(3,3)
       REAL*8       COORE(3),COORM(3),COORC(2)
-      REAL*8       FFE(8),FFM(8),FFC(8),DFFC(2,8)       
+      REAL*8       FFE(8),FFM(8),FFC(8),DFFC(2,8)
       REAL*8       JACOBI,HPG
       CHARACTER*8  TYPMAE,TYPMAM,TYPMAC,TYPMAI,TYPMEC
       INTEGER      INADH,NVIT,LACT(8),NLACT,NINTER
@@ -156,6 +156,9 @@ C
 C --- RECUPERATION DE LA PLACE DES LAGRANGES
 C
         CALL JEVECH('PHEAVNO','L',JHEANO )
+      ELSE
+        JHEAFA=1
+        JHEANO=1
       ENDIF
 C
 C --- ON CONSTRUIT LA MATRICE DE CONNECTIVITÉ CFACE (MAILLE ESCLAVE)
@@ -193,6 +196,7 @@ C
         CALL XMOFFC(LACT,NLACT,NNC,FFEC,FFC)
       ELSE
         CALL ELRFVF(TYPMAC,COORC,NNC,FFC,NNC)
+        NLACT=0
       ENDIF
 C
 C --- JACOBIEN POUR LE POINT DE CONTACT
@@ -231,8 +235,8 @@ C
             CALL XMMAA0(NDIM  ,NNC   ,NNE  ,HPG   ,
      &                  NFAES ,CFACE ,FFC   ,JACOBI,JPCAI ,
      &                  COEFCR,COEFCP,LPENAC,TYPMAI,
-     &                  DDLE,CONTAC,NFHE,LMULTI,ZI(JHEANO),MMAT  )     
-     
+     &                  DDLE,CONTAC,NFHE,LMULTI,ZI(JHEANO),MMAT  )
+
           ENDIF
         ELSE
           CALL ASSERT(.FALSE.)
@@ -262,7 +266,7 @@ C
      &                  JPCAI ,HPG   ,FFC   ,JACOBI,
      &                  LPENAC,TYPMAI,CFACE ,TAU1  ,
      &                  TAU2  ,DDLE,CONTAC,
-     &                  NFHE,LMULTI,ZI(JHEANO),MMAT  )     
+     &                  NFHE,LMULTI,ZI(JHEANO),MMAT  )
           ENDIF
         ELSE IF (INDCO.EQ.1) THEN
 C
@@ -298,9 +302,9 @@ C
      &                  COEFFP,COEFFF,LPENAF,TAU1  ,TAU2  ,
      &                  RESE  ,MPROJT,TYPMAI,NSINGE,
      &                  NSINGM,RRE   ,RRM   ,NVIT  ,CONTAC,
-     &                  DDLE,DDLM,NFHE,MMAT  )     
-     
-     
+     &                  DDLE,DDLM,NFHE,MMAT  )
+
+
 C
           ELSE IF (INADH.EQ.0) THEN
 C
@@ -313,7 +317,7 @@ C
      &                  COEFFP,LPENAF,COEFFF,TAU1  ,TAU2  ,
      &                  RESE  ,NRESE ,MPROJT,TYPMAI,
      &                  NSINGE,NSINGM,RRE,RRM,NVIT,CONTAC,
-     &                  DDLE,DDLM,NFHE,MMAT  )     
+     &                  DDLE,DDLM,NFHE,MMAT  )
           END IF
         ELSE
           CALL ASSERT(.FALSE.)

@@ -1,7 +1,7 @@
       SUBROUTINE NMDOCN(MODELE,PARCRI,PARCON)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,15 +22,16 @@ C RESPONSABLE ABBAS M.ABBAS
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       REAL*8        PARCRI(*),PARCON(*)
       CHARACTER*24  MODELE
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (LECTURE)
 C
 C LECTURE DES CRITERES DE CONVERGENCE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -67,29 +68,29 @@ C
       INTEGER      ITERAT,IRET,IRE1,IRE2,IRE3,IRE4,PLATIT
       REAL*8       R8VIDE,R8NNEM
       CHARACTER*8  REP
-      INTEGER      IFM,NIV 
+      INTEGER      IFM,NIV
       LOGICAL      LRETCV
       INTEGER      IARG
-C      
+C
 C ----------------------------------------------------------------------
-C      
+C
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> ... LECTURE CRITERES CONVERGENCE' 
+        WRITE (IFM,*) '<MECANONLINE> ... LECTURE CRITERES CONVERGENCE'
       ENDIF
 C
 C --- INITIALISATIONS
-C      
+C
       PARCRI(7)  = R8VIDE()
       PARCRI(8)  = R8VIDE()
       PARCRI(9)  = R8VIDE()
       PARCRI(10) = R8VIDE()
       PARCRI(11) = R8VIDE()
-      PARCRI(12) = R8VIDE()                
+      PARCRI(12) = R8VIDE()
 C
 C --- RECUPERATION DES CRITERES DE CONVERGENCE GLOBAUX
 C
@@ -124,7 +125,7 @@ C
         CALL GETVR8('CONVERGENCE','VARI_REFE',1,IARG,1,PARCON(6),IRET)
         IF (IRET.LE.0) PARCON(6)=R8NNEM()
         CALL GETVR8('CONVERGENCE','FORC_REFE',1,IARG,2,PARCON(7),IRET)
-        IF (IRET.LE.0) THEN 
+        IF (IRET.LE.0) THEN
           PARCON(7) = R8NNEM()
           PARCON(8) = R8NNEM()
         ENDIF
@@ -133,12 +134,10 @@ C
         CALL GETVR8('CONVERGENCE','LAGR_REFE',1,IARG,1,PARCON(10),IRET)
         IF (IRET.LE.0) PARCON(10)=R8NNEM()
       ENDIF
-     
-          
       CALL GETVR8('CONVERGENCE','RESI_COMP_RELA',1,IARG,1,
      &            PARCRI(12),IRE4)
       IF (IRE4.LE.0) PARCRI(12) = R8VIDE()
-      
+
 
 
 C
@@ -147,7 +146,7 @@ C
       LRETCV=(IRE1.LE.0 .AND. IRE2.LE.0 .AND. IRE3.LE.0 .AND. IRE4.LE.0)
       IF (LRETCV)THEN
         PARCRI(2) = 1.D-6
-      ENDIF  
+      ENDIF
 
       CALL GETVTX('CONVERGENCE','ARRET',1,IARG,1,REP,IRET)
       PARCRI(4) = 0
@@ -163,21 +162,21 @@ C
         IF ( REP  .EQ. 'PIC' ) THEN
           PARCRI(7) = 0
         ELSEIF ( REP  .EQ. 'PLATEAU' ) THEN
-          PARCRI(7) = 1 
+          PARCRI(7) = 1
           CALL GETVR8('CONVERGENCE','PLATEAU_RELA',1,IARG,1,
      &                PARCRI(9),IRET)
           CALL GETVIS('CONVERGENCE','PLATEAU_ITER',1,IARG,1,PLATIT,IRET)
           PARCRI(8) = PLATIT
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF  
-      ENDIF         
+        ENDIF
+      ENDIF
 C
 C --- ALARMES RELATIVES A LA QUALITE DE LA CONVERGENCE
 C
       IF (PARCRI(2).NE.R8VIDE()  .AND. PARCRI(2).GT.1.0001D-4) THEN
         CALL U2MESS('A','MECANONLINE5_21')
       ENDIF
-C      
+C
       CALL JEDEMA()
       END

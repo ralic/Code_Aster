@@ -2,6 +2,8 @@
      &                IFM,NBZK,NOZK,COZK,ISENS,COOR,EPSI,CRIT,NNO,NMMT)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       CHARACTER*8       NOMA,NOMU,CRIT
       INTEGER NBPART,NBTUY,NBMAP(NBPART),ELPAR(NBPART,NBTUY),IVR(3)
       INTEGER NOPAR(NBPART,NNO,NBTUY),NBZK,NOZK(NBZK),ISENS(NBPART),IFM
@@ -10,7 +12,7 @@
       REAL*8  ANGL1(3),ANGL2(3),ANGL3(3),EPSI,ANGL4(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +57,7 @@ C ----------------------------------------------------------------------
       REAL*8  PGL1(3,3),PGL2(3,3),PGL3(3,3),NORME,PGL4(3,3)
 C
 C-----------------------------------------------------------------------
-      REAL*8 DN1N2 ,OMEGA ,RAYON ,THETA ,VX ,VY ,VZ 
+      REAL*8 DN1N2 ,OMEGA ,RAYON ,THETA ,VX ,VY ,VZ
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -292,17 +294,6 @@ C
       WRITE(IFM,1055) NBDROI
       WRITE(IFM,1056) NBCOUD
 
- 1001 FORMAT(
-     &3X,'MAILLE  NOEUD1  NOEUD2  NOEUD3   TYPE   ',
-     &'Z1_X',8X,'Z1_Y',8X,'Z1_Z',8X,'ALPHA1',6X,'BETA1',7X,'GAMMA1')
- 1002 FORMAT(
-     &3X,'MAILLE  NOEUD1  NOEUD2  NOEUD3   TYPE   ',
-     &'Z1_X',8X,'Z1_Y',8X,'Z1_Z',8X,'Z2_X',8X,'Z2_Y',8X,'Z2_Z',
-     &8X,'RAYON',7X,'ANGLE',7X,'OMEGA',
-     &7X,'ALPHA1',6X,'BETA1',7X,'GAMMA1',
-     &6X,'ALPHA2',6X,'BETA2',7X,'GAMMA2',
-     &6X,'ALPHA3',6X,'BETA3',7X,'GAMMA3')
-
  1031 FORMAT(
      &3X,'MAILLE  NOEUD1  NOEUD2  NOEUD3  NOEUD4   TYPE   ',
      &'Z1_X',8X,'Z1_Y',8X,'Z1_Z',8X,'ALPHA1',6X,'BETA1',7X,'GAMMA1')
@@ -319,8 +310,6 @@ C
  1010 FORMAT(3X,5A8,1X,'DROIT',1X,9(D11.4,1X))
  1011 FORMAT(3X,5A8,1X,'COUDE',1X,18(D11.4,1X))
 C
- 1040 FORMAT(3X,5A8,1X,'DROIT',1X,9(D11.4,1X))
- 1041 FORMAT(3X,5A8,1X,'COUDE',1X,18(D11.4,1X))
  1055 FORMAT(3X,'NOMBRE TOTAL D ELEMENTS TUYAU DROITS ',1X,I6)
  1056 FORMAT(3X,'NOMBRE TOTAL D ELEMENTS TUYAU COUDES ',1X,I6)
 C

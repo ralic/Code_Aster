@@ -2,7 +2,7 @@
      &                  NBP, NUMPAQ, TSPAQ, NOMCRI, NOMMAI,
      &                  NOMOPT, CXSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
+
       INTEGER      TDISP, NBP, LISTE(NBP), NBT, NBORDR, NUMINI
       INTEGER      NUMPAQ, TSPAQ
       REAL*8       VWORK(TDISP)
@@ -135,10 +136,10 @@ C  IL Y A 6 COMPOSANTES POUR LES CONTRAINTES ==> DECAL=6
                DO 40 J=(I+1), NBORDR
 
                   ADRSI = (I-1)*TSPAQ + KWORK*SOMNOW*DECAL
-     &                                + (IBIDNO-1)*DECAL 
+     &                                + (IBIDNO-1)*DECAL
 
                   ADRSJ = (J-1)*TSPAQ + KWORK*SOMNOW*DECAL
-     &                                + (IBIDNO-1)*DECAL 
+     &                                + (IBIDNO-1)*DECAL
 
 C   TENSI/J(1) = CPXXI/J   TENSI/J(2) = CPYYI/J   TENSI/J(3) = CPZZI/J
 C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
@@ -165,7 +166,7 @@ C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
                   CALL RVINVT(DTENS,VMIS,TRES,TRAC,DETR)
 
 
-                     
+
                   IF (VMIS .GT. VAVMIS) THEN
                      VAVMIS = VMIS
                   ENDIF
@@ -260,10 +261,10 @@ C  BOUCLE SUR LES NUMEROS D'ORDRES
                   DO 140 J=(I+1), NBORDR
 
                      ADRSI = (I-1)*TSPAQ + KWORK*SOMPGW*DECAL
-     &                                   + (IPG-1)*DECAL 
+     &                                   + (IPG-1)*DECAL
 
                      ADRSJ = (J-1)*TSPAQ + KWORK*SOMPGW*DECAL
-     &                                   + (IPG-1)*DECAL 
+     &                                   + (IPG-1)*DECAL
 
 
 C   TENSI/J(1) = CPXXI/J   TENSI/J(2) = CPYYI/J   TENSI/J(3) = CPZZI/J

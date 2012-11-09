@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,8 @@ C     _SIMPLE
 C     _ELEMENTAIRE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER GD,CODE
       CHARACTER*8 NOMGD,NOMGD1,NOMGD2
 C     INCLUDE($FUNJEV)
@@ -41,7 +43,7 @@ C
       CHARACTER*8 CBID
 C
 C-----------------------------------------------------------------------
-      INTEGER IDDGD ,IGD1 ,IGD2 
+      INTEGER IDDGD ,IGD1 ,IGD2
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NBCMP=0

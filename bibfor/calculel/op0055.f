@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,8 +24,10 @@ C      OPERATEUR :     DEFI_FOND_FISS
 C
 C-----------------------------------------------------------------------
 C
-C 
+C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNOM
       INTEGER       IADR1,IFM,NIV
       INTEGER       NBOCC, NBNOFF
       INTEGER       IBAS, IBID, IOCC, IDON, IDONN, NDONN
@@ -62,13 +64,13 @@ C
 C
 C
 C     ---------------------------------------------------------------
-C     RECUPERATION DU TYPE DE FOND 
+C     RECUPERATION DU TYPE DE FOND
 C     OUVERT OU FERME OU INF/SUP
 C     ---------------------------------------------------------------
 C
       CALL GETFAC ( 'FOND_FISS', NBOCC )
       DO 1 IOCC=1,NBOCC
-      
+
         CALL GETVTX ( 'FOND_FISS', 'TYPE_FOND', IOCC,IARG,0, K6B, N1)
         IF (N1.NE.0) THEN
           CALL GETVTX ('FOND_FISS','TYPE_FOND',IOCC,IARG,1,
@@ -77,7 +79,7 @@ C
           TYPFON = 'OUVERT'
         ENDIF
 C
-C      
+C
 C     ---------------------------------------------------------------
 C     VERIFICATION DE L'EXISTANCE DES ENTITES DU MAILLAGE RENSEIGNEES
 C     ET CONSTRUCTION DE VECTEURS DE TRAVAIL POUR CHACUNE D'ELLES
@@ -92,7 +94,7 @@ C
         MOTCL(1)  = 'NOEUD'
         MOTCL(2)  = 'MAILLE'
         MOTCL(3)  = 'GROUP_NO'
-        MOTCL(4)  = 'GROUP_MA' 
+        MOTCL(4)  = 'GROUP_MA'
         MOTCL(5)  = 'NOEUD_ORIG'
         MOTCL(6)  = 'GROUP_NO_ORIG'
         IF (TYPFON.EQ.'OUVERT') THEN
@@ -105,7 +107,7 @@ C
           ENTIT(7)  = '.NOMMAI'
           ENTIT(8)  = '.GROUPEMA'
           MOTCL(7)  = 'MAILLE_ORIG'
-          MOTCL(8)  = 'GROUP_MA_ORIG' 
+          MOTCL(8)  = 'GROUP_MA_ORIG'
           NDONN = 8
         ELSE
           NDONN = 6
@@ -153,15 +155,15 @@ C
           IF ((IRET1.NE.0).OR.(IRET2.NE.0)) THEN
             CALL FONMAI ( RESU, NOMA, TYPFON, IOCC, NBNOFF)
           ENDIF
-CC       
-C        
+CC
+C
 C       DESTRUCTION DES VECTEURS DE TRAVAIL
 C       ----------------------------------------
         DO 20 IDONN=1,NDONN
           CALL JEEXIN ( '&&'//NOMPRO//'.'//MOTCL(IDONN), IRET )
           IF (IRET.NE.0) CALL JEDETR('&&'//NOMPRO//'.'//MOTCL(IDONN))
   20    CONTINUE
-        
+
   1   CONTINUE
 C
 C
@@ -176,7 +178,7 @@ C
       CALL FONLEV(RESU,NOMA,NBNOFF)
 
 C
-C     TRAITEMENT DE LA NORMALE ET DES 
+C     TRAITEMENT DE LA NORMALE ET DES
 C     MOTS CLES FACTEUR : DTAN_EXTR, DTAN_ORIG
 C                         VECT_GRNO_ORIG, VECT_GRNO_EXTR
 C     ----------------------------------------

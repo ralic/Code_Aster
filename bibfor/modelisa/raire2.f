@@ -2,12 +2,14 @@
      &  TABNOE,RIGNOE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER      NBGR, NBNO, NBNOEU, TABNOE(NBNOEU)
       CHARACTER*8  NOMA, LIGRMA(NBGR)
       REAL*8       RIGNOE(6*NBNOEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,15 +37,15 @@ C
       INTEGER      IARG
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,ICOEF ,ICOEGR ,IDNO ,IFONGR ,IFR ,II 
-      INTEGER IJ ,IM ,IN ,INOE ,IRET ,ISURMA ,IUNIFI 
-      INTEGER JCOOR ,LDGM ,LDGN ,LDNM ,NB ,NBMA ,NCF 
-      INTEGER NCG ,NFG ,NGN ,NM ,NN ,NNO ,NOEMAX 
+      INTEGER I ,ICOEF ,ICOEGR ,IDNO ,IFONGR ,IFR ,II
+      INTEGER IJ ,IM ,IN ,INOE ,IRET ,ISURMA ,IUNIFI
+      INTEGER JCOOR ,LDGM ,LDGN ,LDNM ,NB ,NBMA ,NCF
+      INTEGER NCG ,NFG ,NGN ,NM ,NN ,NNO ,NOEMAX
 
-      REAL*8 COEF ,DDOT ,DIST ,HC ,R1 ,R2 ,R3 
-      REAL*8 R4 ,R5 ,R6 ,RIG4 ,RIG45 ,RIG46 ,RIG5 
-      REAL*8 RIG56 ,RIG6 ,SURF ,SURTOT ,XC ,XG ,XX 
-      REAL*8 YC ,YG ,YY ,ZG ,ZZ 
+      REAL*8 COEF ,DDOT ,DIST ,HC ,R1 ,R2 ,R3
+      REAL*8 R4 ,R5 ,R6 ,RIG4 ,RIG45 ,RIG46 ,RIG5
+      REAL*8 RIG56 ,RIG6 ,SURF ,SURTOT ,XC ,XG ,XX
+      REAL*8 YC ,YG ,YY ,ZG ,ZZ
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       ZERO = 0.D0

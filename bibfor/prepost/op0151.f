@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,9 +55,10 @@ C                                                      /DOMA_ELGA_EPME
 C                                                      /DOMA_ELNO_EPME
 C       ----------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
 C       ---------------------------------------------------------------
         INTEGER         ICODRE,ICODWO,ICODBA,ICODHS,ICODMA
-        INTEGER         NPARMA, ID, NP
         CHARACTER*8     NOMU,NOMRES,NOMMAI,K8B,NOMMAT
         CHARACTER*8     NOMFON,NOMNAP,CARA,NOMMOD,GRDVIE,INSCRI
         CHARACTER*16    CONCEP,CMD,PHENO,PHENOM,TYPCAL,NOMCRI,NOMMET
@@ -66,7 +67,7 @@ C       ---------------------------------------------------------------
         CHARACTER*16    MEXPIC,MCOMPT,MDOMAG,TYPEQ,TYPOI,TYPDG,OPTION
         CHARACTER*19    NOMSD,CHELEM,CHELRS,LIGREL,NOMSD2
         CHARACTER*24    VALK(6)
-        LOGICAL         FORDEF,GRDEXI, CRSIGM, CREPST, CREPSE,CREPSP
+        LOGICAL         FORDEF, CRSIGM, CREPST, CREPSE,CREPSP
         REAL*8          RBID
         REAL*8          PREC, INSTIC
 C
@@ -75,9 +76,9 @@ C
         INTEGER         IVDMG,NUMSYM,NBPT2,NBORD2,IRET,IVCH
         INTEGER         VALI(2), PARACT(30), IARG
 C
-C ------------ 
+C ------------
 C-----------------------------------------------------------------------
-      INTEGER I 
+      INTEGER I
 C-----------------------------------------------------------------------
         CALL JEMARQ()
         CALL INFMAJ()
@@ -113,17 +114,17 @@ C       OU LES CHAM_NOS DE SIGMA
 C
 C ---   NOM DU CRITERE
         CALL GETVTX(' ','CRITERE',1,IARG,1,NOMCRI,NVAL)
-        
+
         CALL GETVID(' ','FORMULE_GRDEQ',1,IARG,1,NOMFOR,NVAL)
         IF (NVAL .EQ. 0) THEN
             NOMFOR = '        '
         ENDIF
-        
+
         CALL GETVTX(' ','COURBE_GRD_VIE',1,IARG,1,GRDVIE,NVAL)
         IF (NVAL .EQ. 0) THEN
             GRDVIE = '        '
         ENDIF
-        
+
         CALL GETVID(' ','FORMULE_VIE',1,IARG,1,FORVIE,NVAL)
         IF (NVAL .EQ. 0) THEN
             FORVIE = '        '
@@ -149,33 +150,33 @@ C ---   NOM DU MAILLAGE
         ENDIF
 
 C ----- INSTANT INITIAL DU PARTIE DE CHARGEMENT CYCLIQUE
-C       
+C
         PREC = 1.D-6
         INSCRI = '        '
         INSTIC = 0.D0
-        
-        CALL GETVR8(' ','INST_INIT_CYCL',1,IARG,1,INSTIC,NVAL) 
+
+        CALL GETVR8(' ','INST_INIT_CYCL',1,IARG,1,INSTIC,NVAL)
         CALL GETVTX(' ','INST_CRIT',1,IARG,1,INSCRI,NVAL)
         CALL GETVR8(' ','PRECISION',1,IARG,1,PREC,NVAL)
 
-              
+
 C---    ANALYSER LE CRITERE
 C C  INITIALISER
-        CRSIGM = .FALSE. 
-        CREPST = .FALSE. 
-        CREPSE = .FALSE. 
+        CRSIGM = .FALSE.
+        CREPST = .FALSE.
+        CREPSE = .FALSE.
         CREPSP = .FALSE.
         CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'OUI', PARACT,
      &            FORDEF, CRSIGM, CREPST, CREPSE,CREPSP)
-C        
+C
 C   FORDEF EST UNE BOOLEAN QUI INDIQUE S'IL EXISTE LE PARAMETRE
 C   DE DEFORMATION DAS LA FORMULE (COMME DANS FATEMISOCIE)
-    
+
         IF (NOMOPT .EQ. 'DOMA_ELGA') THEN
 C
 C ---   CONSTRUCTION DES PAQUETS DE MAILLES
           CALL PAQMAI(NOMRES, NOMU, NOMMAI, NOMMET, NOMCRI,NOMFOR,
-     &                GRDVIE, FORVIE, FORDEF, TYPCHA, PROAXE, 
+     &                GRDVIE, FORVIE, FORDEF, TYPCHA, PROAXE,
      &                INSTIC,INSCRI,PREC )
 C
         ELSEIF (NOMOPT .EQ. 'DOMA_NOEUD') THEN
@@ -185,7 +186,7 @@ C ---   CONSTRUCTION DES PAQUETS DE NOEUDS
      &                GRDVIE, FORVIE, FORDEF, TYPCHA, PROAXE,
      &                INSTIC,INSCRI,PREC )
         ENDIF
-        
+
 C
         GOTO 7777
       ENDIF
@@ -283,7 +284,7 @@ C
         CALL RCPARE(NOMMAT,PHENO,CARA,ICODHS)
         IF(ICODWO.NE.0.AND.ICODBA.NE.0.AND.ICODHS.NE.0)
      &     CALL U2MESS('F','FATIGUE1_30')
-     
+
       ELSEIF(MDOMAG.EQ.'MANSON_COFFIN') THEN
         IF(NOMOPT(11:14).NE.'EPSI'.AND.NOMOPT(11:14).NE.'EPME') THEN
           CALL U2MESK('F','FATIGUE1_31',1,NOMOPT)
@@ -295,7 +296,7 @@ C
         CALL RCPARE(NOMMAT,PHENO,CARA,ICODMA)
         IF(ICODMA.NE.0)
      &    CALL U2MESS('F','FATIGUE1_32')
-     
+
       ELSEIF(MDOMAG.EQ.'TAHERI_MANSON') THEN
         IF(NOMOPT(11:14).NE.'EPSI'.AND.NOMOPT(11:14).NE.'EPME') THEN
           CALL U2MESK('F','FATIGUE1_25',1,NOMOPT)
@@ -315,7 +316,7 @@ C
           IF(NVAL.EQ.0) THEN
             CALL U2MESS('F','FATIGUE1_27')
           ENDIF
-          
+
       ELSEIF(MDOMAG.EQ.'TAHERI_MIXTE') THEN
         IF(NOMOPT(11:14).NE.'EPSI'.AND.NOMOPT(11:14).NE.'EPME') THEN
           CALL U2MESK('F','FATIGUE1_28',1,NOMOPT)

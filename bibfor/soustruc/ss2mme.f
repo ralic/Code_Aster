@@ -1,7 +1,7 @@
       SUBROUTINE SS2MME(NOMO  ,MOTFAZ,VESSTR,BASE)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,23 +21,25 @@ C ======================================================================
 C
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8   NOMO
       CHARACTER*19  VESSTR
       CHARACTER*1   BASE
       CHARACTER*(*) MOTFAZ
-C      
+C
 C ----------------------------------------------------------------------
 C
 C PREPARER LE VECT_ELEM DANS LE CAS DE SOUS-STRUCTURES
 C
-C      
+C
 C ----------------------------------------------------------------------
 C
 C IN  NOMO   : NOM DU MODELE
 C IN  MOTFAC : MOT-CLEF FACTEUR DECRIVANT LES SOUS-STRUCTURES
 C IN  BASE   : BASE DE CREATION DU VECT_ELEM
 C I/O VESSTR : NOM DU VECT_ELEM
-C                OUT : VESSTR EST (EVENTUELLEMENT) ENRICHI DE 
+C                OUT : VESSTR EST (EVENTUELLEMENT) ENRICHI DE
 C                L'OBJET .RELC
 C
 C
@@ -47,13 +49,13 @@ C
       INTEGER      NBSSA ,NBSMA ,N1    ,N2    ,NBOC
       INTEGER      IAREFR,IALMAI,IALSCH,IMAS  ,IASSSA,IAMACR
       INTEGER      IER0  ,IOC   ,I     ,IBID  ,IERD  ,IRET
-      CHARACTER*16 MOTFAC,VALK(2)     
+      CHARACTER*16 MOTFAC,VALK(2)
       INTEGER      IARG
-C      
+C
 C ----------------------------------------------------------------------
-C      
+C
       CALL JEMARQ()
-C      
+C
       MOTFAC = MOTFAZ
       CALL GETFAC(MOTFAC,NBOC  )
       IF (NBOC.EQ.0) GO TO 9999
@@ -81,7 +83,7 @@ C
       CALL WKVECT('&&SS2MME.LMAI','V V K8',NBSMA,IALMAI)
 C
 C --- BOUCLE SUR LES CAS_DE_CHARGE
-C 
+C
       IER0   = 0
       DO 10 IOC= 1,NBOC
 C
@@ -89,8 +91,8 @@ C
         CALL JECROC(JEXNOM(VESSTR(1:19)//'.RELC',NOMCAS))
         CALL JEVEUO(JEXNOM(VESSTR(1:19)//'.RELC',NOMCAS),'E',IALSCH)
 C
-C       -- CAS : TOUT: 'OUI' 
-C       
+C       -- CAS : TOUT: 'OUI'
+C
         CALL GETVTX(MOTFAC,'TOUT',IOC   ,IARG,1     ,
      &              K8BID ,N1)
         IF (N1.EQ.1) THEN
@@ -101,12 +103,12 @@ C
         END IF
 C
 C       -- CAS : MAILLE: L_MAIL
-C       
+C
         CALL GETVTX(MOTFAC,'SUPER_MAILLE',IOC   ,IARG,0     ,
      &              K8BID ,N2)
         IF (-N2.GT.NBSMA) THEN
           CALL U2MESS('F','SOUSTRUC_25')
-        ELSE  
+        ELSE
           CALL GETVTX(MOTFAC,'SUPER_MAILLE',IOC   ,IARG,NBSMA  ,
      &                ZK8(IALMAI),N2)
         ENDIF
@@ -123,14 +125,14 @@ C
  2      CONTINUE
 C
 C       -- ON VERIFIE QUE LES VECTEURS ELEMENTAIRES SONT CALCULES
-C 
+C
  5      CONTINUE
         DO 3 I=1,NBSMA
-          IF (ZI(IALSCH-1+I).NE.0) THEN 
+          IF (ZI(IALSCH-1+I).NE.0) THEN
             CALL JENUNO(JEXNUM(NOMA//'.SUPMAIL',I),NOSMA)
             IF (ZI(IASSSA-1+I).NE.1) THEN
               CALL U2MESK('F','SOUSTRUC_27',1,NOSMA)
-            ENDIF  
+            ENDIF
 C
             NOMACR = ZK8(IAMACR-1+I)
             CALL JEEXIN(JEXNOM(NOMACR//'.LICA',NOMCAS),IRET)

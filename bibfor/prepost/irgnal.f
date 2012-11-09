@@ -4,6 +4,8 @@
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER        NUMEL, NBEL, IFI, NBORDR, NBCMP
       INTEGER        CONNEX(*), POINT(*),
      &               CNSC(*), CNSL(*), CNSV(*), CNSD(*),JTYPE
@@ -12,7 +14,7 @@ C
       CHARACTER*8    NOCMP(NBCMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

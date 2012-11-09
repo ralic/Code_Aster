@@ -1,9 +1,9 @@
       SUBROUTINE ELPIV2(XJVMAX,NDIM  ,INDIC ,NBLIAC,AJLIAI,
      &                  SPLIAI,LLF   ,LLF1  ,LLF2  ,NOMA  ,
      &                  DEFICO,RESOCO)
-C 
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,8 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER      NDIM
       INTEGER      INDIC
       INTEGER      NBLIAC,LLF,LLF1,LLF2
@@ -31,7 +33,7 @@ C
       REAL*8       XJVMAX
       CHARACTER*8  NOMA
       CHARACTER*24 RESOCO,DEFICO
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES DISCRETES - UTILITAIRE)
@@ -81,9 +83,9 @@ C ----------------------------------------------------------------------
 C
       CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
-C 
+C
 C --- LECTURE DES STRUCTURES DE DONNEES
-C 
+C
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
       MACONT = RESOCO(1:14)//'.MATC'
@@ -93,9 +95,9 @@ C
       CALL JEVEUO(STOC//'.SCIB','L',ISCIB)
       CALL JEVEUO(STOC//'.SCBL','L',JSCBL)
       CALL JEVEUO(STOC//'.SCDE','L',JSCDE)
-C 
+C
 C --- INITIALISATIONS
-C 
+C
       NBBLOC = ZI(JSCDE-1+3)
       NBLIAI = CFDISD(RESOCO,'NBLIAI')
       IBID   = 0

@@ -2,9 +2,9 @@
      &                  TYPMOD,IMATE ,COMPOR,CRIT  ,OPTION,
      &                  EPSM  ,DEPS  ,SIGM  ,SIGP  ,DSIDEP,
      &                  CODRET)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,7 +140,7 @@ C --- CALCUL DES CONTRAINTES ISOTROPIQUES
         IF (CODRET.EQ.1) THEN
           GOTO 99
         END IF
-C --- CALCUL DES CONTRAINTES VOLUMIQUES   
+C --- CALCUL DES CONTRAINTES VOLUMIQUES
         CALL HYP3CV(C11   ,C22   ,C33   ,C12   ,C13   ,
      &              C23   ,K     ,SVOL  ,CODRET)
         IF (CODRET.EQ.1) THEN
@@ -153,7 +153,7 @@ C --- CALCUL DE LA MATRICE TANGENTE (PARTIE ISOTROPIQUE)
         IF (CODRET.EQ.1) THEN
           GOTO 99
         END IF
-C --- CALCUL DE LA MATRICE TANGENTE (PARTIE VOLUMIQUE)        
+C --- CALCUL DE LA MATRICE TANGENTE (PARTIE VOLUMIQUE)
         CALL HYP3DV(C11   ,C22   ,C33   ,C12   ,C13   ,
      &              C23   ,K     ,CVOL  ,CODRET)
         IF (CODRET.EQ.1) THEN
@@ -184,7 +184,7 @@ C --- CALCUL DE LA MATRICE TANGENTE
      &              C10   ,C01   ,C20   ,DSIDEP,CODRET)
         IF (CODRET.EQ.1) THEN
           GOTO 99
-        END IF        
+        END IF
         DO 130 M=1,2*NDIM
           IF (M.EQ.3) GOTO 130
           DO 140 L=1,2*NDIM
@@ -200,7 +200,7 @@ C --- CALCUL DES ELONGATIONS
         C22 = 2.D0*EPS(2)+1.D0
 C --- CALCUL DES CONTRAINTES
         CALL HYPDPC(C11   ,C22   ,C12   ,K     ,C10   ,
-     &              C01   ,C20   ,SIGP  ,CODRET) 
+     &              C01   ,C20   ,SIGP  ,CODRET)
         IF (CODRET.EQ.1) THEN
           GOTO 99
         END IF

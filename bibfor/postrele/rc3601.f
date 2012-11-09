@@ -2,13 +2,15 @@
      &                  NOMMAT,SNMAX,SAMAX,UTOT,SM,FACTUS)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM
       INTEGER      IG,IOCS,NPASS,IMA,IPT,NBM,ADRM(*)
       REAL*8       C(*),K(*),CARA(*),SNMAX,SAMAX,UTOT,SM,FACTUS(*)
       LOGICAL      SEISME
       CHARACTER*8  NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

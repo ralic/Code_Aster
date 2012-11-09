@@ -1,10 +1,11 @@
       SUBROUTINE TE0575(OPTION,NOMTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,17 +110,17 @@ C        COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
                BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
  140        CONTINUE
  150     CONTINUE
- 
+
          CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
 C
 C ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
 C        --------------------------------------------------------
          CALL JEVECH('PDEPLAR','L',IDEPL)
- 
+
 C ----    RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
 C         -------------------------------------------------------------
          CALL JEVECH('PCONTRR','L',IDSIG)
- 
+
 C ----    RECUPERATION DE L'INSTANT DE CALCUL
 C         -----------------------------------
          CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
@@ -132,11 +133,12 @@ C        N'EXISTE PAS EN LINEAIRE
             IDVARI=JTAB(1)
             NBVARI = MAX(JTAB(6),1)*JTAB(7)
          ELSE
+            IDVARI=1
             NBVARI=0
          ENDIF
 
       END IF
-      
+
 C ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 C     N'EXISTE PAS EN LINEAIRE
       CALL TECACH('NNN','PCOMPOR',7,JTAB,IRET)
@@ -147,7 +149,7 @@ C     N'EXISTE PAS EN LINEAIRE
          COMPOR(1)=ZK16(JTAB(1))
          COMPOR(3)=ZK16(JTAB(1)+2)
       ENDIF
-      
+
 C     GRANDES DEFORMATIONS
 
       IF ((COMPOR(3).EQ.'SIMO_MIEHE').OR.
@@ -157,14 +159,14 @@ C     GRANDES DEFORMATIONS
       ELSE
          GRAND = .FALSE.
       ENDIF
-        
+
 
 C --- CAS DU CALCUL DE LA DENSITE D'ENERGIE TOTALE :
 C     ============================================
       IF (OPTION(1:4).EQ.'ETOT') THEN
-      
+
          IF (GRAND) THEN
-            CALL U2MESG('F','COMPOR1_79',1,COMPOR(3),0,0,0,0.D0)      
+            CALL U2MESG('F','COMPOR1_79',1,COMPOR(3),0,0,0,0.D0)
          ENDIF
 C
 C ---   RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :

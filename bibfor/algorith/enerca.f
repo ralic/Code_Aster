@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,7 @@ C ----------------------------------------------------------------------
 C DECLARATION PARAMETRES D'APPELS
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+
       CHARACTER*19 VALINC(*), MASSE, AMORT, RIGID, SDENER
       REAL*8 DEP0(*), VIT0(*), DEPL1(*), VITE1(*)
       REAL*8 FEXTE(*), FAMOR(*), FLIAI(*), FNODA(*), FCINE(*)
@@ -83,7 +84,7 @@ C
 C ----------------------------------------------------------------------
 C DECLARATION VARIABLES LOCALES
 C ----------------------------------------------------------------------
-      INTEGER      IAUX,NEQ,IBID,IE,IRET,NBCOL,LONG
+      INTEGER      IAUX,NEQ,IBID,IE,NBCOL,LONG
       INTEGER      JDEEQ,IMDV,ICVMOZ,IENER
       INTEGER      IMASSE,IAMORT,IRIGID
       INTEGER      IUMOY,IUPMUM,IUMOYZ,IUPMUZ
