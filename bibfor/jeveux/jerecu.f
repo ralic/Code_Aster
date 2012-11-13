@@ -1,7 +1,7 @@
       SUBROUTINE JERECU ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,8 +18,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE  CRP_18 CRS_508 CRS_512 CRS_505
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       CHARACTER*1         CLAS
 C ----------------------------------------------------------------------
 C MARQUE LIBRES LES ENREGISTREMENTS ASSOCIÉS AUX PETITS OBJETS QUAND
@@ -27,11 +27,8 @@ C L'ENSEMBLE DES OBJETS ASSOCIÉS A ETE DETRUIT
 C
 C IN  CLAS   : NOM DE CLASSE ASSOCIEE
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
@@ -44,25 +41,16 @@ C     ------------------------------------------------------------------
       COMMON /ISTAJE/  ISTAT(4)
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IC ,IDCO ,IDCOL ,IDCOP ,IDEC ,IDOS ,IDOSL 
-      INTEGER IDOSP ,IUSADI ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD 
+      INTEGER IC ,IDCO ,IDCOL ,IDEC ,IDOS ,IDOSL 
+      INTEGER JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD 
       INTEGER JIADD ,JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ 
       INTEGER JORIG ,JRNOM ,JTYPE ,JUSADI ,K ,LGL ,N 
       INTEGER NBDET ,NBGROS ,NBLIM ,NBPETI ,NCLA1 ,NCLA2 
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
-      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
-      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
@@ -73,7 +61,6 @@ C
      +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       LOGICAL          LITLEC
       COMMON /LFICJE/  LITLEC(N)
-      COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
       COMMON /INBDET/  NBLIM(N),NBGROS(N),NBPETI(N)
       CHARACTER*2      DN2
@@ -84,19 +71,11 @@ C
       REAL *8          SVUSE,SMXUSE   
       COMMON /STATJE/  SVUSE,SMXUSE  
 C     ------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,             IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
-C     ------------------------------------------------------------------
       LOGICAL          ACTU
       CHARACTER*1      KCLAS
-      INTEGER          ITP(1),JITP,IADITP,IADDI(2),IADDIB(2),LGBL,IADYN
+      INTEGER          ITP(1),JITP,IADITP,IADDI(2),LGBL,IADYN
 C DEB ------------------------------------------------------------------
       IADDI(2)  = 0
-      IADDIB(2) = 0
       KCLAS = CLAS
       IF ( KCLAS .EQ. ' ' ) THEN
         NCLA1 = 1
@@ -132,8 +111,6 @@ C
 C ----- BOUCLE "TANT QUE" SUR LES ENREGISTREMENTS UTILISES
 C
         K = 1
-        IDOSP = 0
-        IDCOP = 0
  200    CONTINUE
 C --------L'ENREGISTREMENT 1 N'EST JAMAIS RECUPERABLE
         K = K + 1

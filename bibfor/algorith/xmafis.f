@@ -8,7 +8,7 @@
       CHARACTER*24  MAFIS,LISMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C
       REAL*8        LSNP,LSN
       CHARACTER*8   K8B
       CHARACTER*19  MAI
+      CHARACTER*32  JEXATR
 
 C ----------------------------------------------------------------------
 
@@ -80,7 +81,7 @@ C     BOUCLE SUR LES MAILLES DE GROUP_ENRI
         DO 101 IN=2,NNOS
           NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+IN-1)
           LSN=ZR(JLNSV-1+(NUNO-1)+1)
-          IF ((LSNP*LSN).LE.0) THEN
+          IF ((LSNP*LSN).LE.0.D0) THEN
 C           LSN A CHANGÉ DE SIGNE DONC ON STOCKE LA MAILLE DANS MAFIS
             I=I+1
             ZI(JMAFIS-1+I)=NMAABS

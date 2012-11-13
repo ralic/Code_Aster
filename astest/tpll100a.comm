@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE MUR PLAN ANISOTROPE EN THERMIQUE STATIONNAIRE ANISOTROPE (HEXA8)
 # tpll100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,6 +95,10 @@ TEMPE=CALC_CHAMP(reuse=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'),RESULTAT=TEMPE)
 TEMPE=CALC_CHAMP(reuse=TEMPE,  THERMIQUE='FLUX_NOEU',
                     RESULTAT=TEMPE               )
 
+TEMPE=CALC_ERREUR(reuse=TEMPE,
+                  RESULTAT=TEMPE,
+                  TOUT='OUI',
+                  OPTION=('ERTH_ELEM',),);
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    GROUP_NO='A',
@@ -148,6 +152,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    NOM_CMP='FLUY',
                    VALE_CALC=1040.0,
                    TOLE_MACHINE=1.E-3,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='ERTH_ELEM',
+                   NOM_CMP='ERTABS',
+                   VALE_CALC=6.6874030660557,
                    MAILLE='M2',),
                 ),
           )

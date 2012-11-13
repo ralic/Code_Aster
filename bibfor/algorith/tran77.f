@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,9 +35,9 @@ C ----------------------------------------------------------------------
       CHARACTER*8   K8B, BLANC, BASEMO, CRIT, INTERP, BASEM2,
      &              MAILLA, NOMRES, NOMIN, MODE, NOMMA,
      &              MATGEN, NOMGD
-      CHARACTER*14  NUMDDL, NUMGEN
+      CHARACTER*14  NUMDDL
       CHARACTER*16  TYPRES, TYPE(8), TYPCHA,
-     &              TYPBAS(8), TYPREP, CONCEP
+     &              TYPBAS(8), CONCEP
       CHARACTER*19  KINST, KNUME, KREFE, TRANGE,
      &              TYPREF(8), PROF
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, OBJVE1,K24BID,
@@ -48,7 +48,7 @@ C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,IDBASE 
       INTEGER IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE ,INOCMP 
-      INTEGER INOECP ,INUDDL ,INUMNO ,IRET ,IRETOU ,ISK ,J2REFE 
+      INTEGER INOECP ,INUDDL ,INUMNO ,IRET ,IRETOU ,ISK 
       INTEGER J3REFE ,JC ,JINST ,JNUME ,LINST ,LLCHA ,LREFE 
       INTEGER LVALE ,N1 ,N2 ,N3 ,N4 ,NBCHAM ,NBINSG 
       INTEGER NBINST ,NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT 
@@ -87,10 +87,6 @@ C
         BASEMO = ZK24(IAREFE+4)(1:8)
         CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
         IF (MATGEN(1:8) .NE. BLANC) THEN
-          CALL JEVEUO(MATGEN//'           .REFA','L',J2REFE)
-          NUMGEN = ZK24(J2REFE+1)(1:14)
-          CALL JEVEUO(NUMGEN//'.NUME.REFN','L',J3REFE)
-          CALL GETTCO(ZK24(J3REFE),TYPREP)
           MATRIC = ZK24(IADRIF)
           IF (MATRIC.NE.BLANC) THEN
            CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,

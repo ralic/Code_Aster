@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 12/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
 C
       CHARACTER*1 SAUX01
       CHARACTER*8 CHANOM, NOMAAS, NOMO, NOMGD
-      CHARACTER*19 CHATMP,LIGREL
+      CHARACTER*19 CHATMP
       CHARACTER*8 TYPECH, PARAM
       CHARACTER*8 CRIT,SAUX08,K8B
       CHARACTER*3 PROLZ
@@ -202,12 +202,6 @@ C
 C 2.5. ==> NOM DU MODELE, NOM DU MAILLAGE ASTER ASSOCIE
 C
       CALL GETVID ( ' ', 'MODELE', 0,IARG, 1, NOMO, IAUX )
-      IF(IAUX.NE.0)THEN
-        LIGREL = NOMO//'.MODELE'
-      ELSE
-C                 1234567890123456789
-        LIGREL = '                   '
-      ENDIF
 
       CALL GETVID ( ' ', 'MAILLAGE', 0,IARG, 1, NOMAAS, IAUX )
       IF ( IAUX.EQ.0 ) THEN
@@ -266,9 +260,6 @@ C
      &                                            NBMA,K8B,IRET)
          CALL WKVECT('&&OP0150_NBPG_MAILLE','V V I',NBMA,JNBPGM)
          CALL WKVECT('&&OP0150_NBPG_MED','V V I',NBMA,JNBPMM)
-      ELSE
-         JNBPGM=1
-         JNBPMM=1
       ENDIF
 
       IF ( FORMAT.EQ.'MED' ) THEN
@@ -311,7 +302,7 @@ C
      &                NOMAAS, TYCH(1:8), NOMGD, TYPENT,
      &                NBCMPV, NCMPVA, NCMPVM, PROLZ,
      &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     &                UNITE, LIGREL, OPTION, PARAM,
+     &                UNITE, OPTION, PARAM,
      &                ZI(JNBPGM),ZI(JNBPMM),CODRET )
 C
         CALL COPISD('CHAMP_GD','G',CHATMP,CHANOM)

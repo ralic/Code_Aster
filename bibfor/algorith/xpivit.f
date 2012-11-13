@@ -3,7 +3,7 @@
      &                  NARET )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR MARTIN A.MARTIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,8 +92,6 @@ C
           PINT = 1
         ELSEIF (XPC.EQ.1) THEN
           PINT = 2
-        ELSEIF (XPC.EQ.0) THEN
-          PINT = 3
         ENDIF
       ELSEIF (NDIM.EQ.3) THEN
         IF ((XPC.EQ.0).AND.(YPC.EQ.0)) THEN

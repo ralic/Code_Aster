@@ -1,12 +1,14 @@
       SUBROUTINE RC36TH ( NOMA, NBMA, LISTMA ,CHTH, IOCS, NBTHS, LITHS)
-      IMPLICIT   NONE        
+      IMPLICIT   NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXATR
       INTEGER             NBMA, LISTMA(*), IOCS, NBTHS, LITHS(*)
       CHARACTER*8         NOMA
       CHARACTER*24        CHTH(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +35,7 @@ C
       INTEGER      NBRETH, NBCMP, ITHS, ITH, IRET, N1, N2, IOCC, IERD,
      &             INO, IAD, IN, IMA, IM, JMAIL, JNOEU, NBMAIL, NBMAT,
      &             NBTOU, NBNOEU, JCESD, JCESL, JCESV, NBPT, DECAL, I,
-     &             IPT, JCONX1, JCONX2, ICMP, IT1, VALI(4), JINST, 
+     &             IPT, JCONX1, JCONX2, ICMP, IT1, VALI(4), JINST,
      &             JTHER, JMOYE, JABSC, NBABSC, NBINST, IBID
       PARAMETER   ( NBCMP = 2 )
       REAL*8       INST, EPSI, VMOY, TA, TINT, TEXT, VALE(2), PREC(2)
@@ -44,7 +46,7 @@ C
       CHARACTER*16 MOTCLF, MOTCLS(2), TYPMCS(2), MOTCLN(2), TYPMCN(2)
       CHARACTER*16 NOPARA(2)
       CHARACTER*19 CHAMS0
-      CHARACTER*24 INSTAN,ABSCUR, MESMAI,MESNOE, NOJVTH,NOJVMY, VALK(7) 
+      CHARACTER*24 INSTAN,ABSCUR, MESMAI,MESNOE, NOJVTH,NOJVMY, VALK(7)
       INTEGER      IARG
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()

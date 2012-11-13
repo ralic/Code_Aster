@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF mecanonline2 Messages  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ cata_msg = {
 
  Le résidu global converge plus vite que la condition des contraintes planes. 
  La convergence de la condition des contraintes planes peut être améliorée en 
- augmentant ITER_MAXI_DEBORST (=1 par défaut), sous le mot clef facteur COMP_INCR. 
+ augmentant ITER_CPLAN_MAXI (=1 par défaut), sous le mot-clé facteur COMP_INCR. 
 
 """),
 

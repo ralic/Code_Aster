@@ -8,7 +8,7 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C ======================================================================
       INTEGER ICODRE(NRESMA)
       REAL*8  DSDEME(6,6)
       REAL*8  R8BID,ANGMA1(3),ANGMAS(7)
-      CHARACTER*16 COMPLG(2)
+      CHARACTER*16 COMPLG(3)
       LOGICAL         CP , YAPRE2
 C ======================================================================
 C    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
@@ -200,6 +200,7 @@ C ======================================================================
 
         COMPLG(1) = 'HUJEUX'
         WRITE (COMPLG(2),'(I16)') NVIMEC
+        COMPLG(3) = COMPOR(3)
         NUMLC=34
         CP=.FALSE.
         CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
@@ -214,6 +215,7 @@ C --- End
       IF (MECA.EQ.'LAIGLE') THEN
         COMPLG(1) = 'LAIGLE'
         WRITE (COMPLG(2),'(I16)') NVIMEC
+        COMPLG(3) = COMPOR(3)
         MECTRU = .TRUE.
         TINI = T - DT
         NUMLC=33
@@ -227,6 +229,7 @@ C --- End
       IF (MECA.EQ.'HOEK_BROWN_EFF') THEN
         COMPLG(1) = 'HOEK_BROWN_EFF'
         WRITE (COMPLG(2),'(I16)') NVIMEC
+        COMPLG(3) = COMPOR(3)
         MECTRU = .TRUE.
         TINI = T - DT
         NUMLC=33
@@ -247,6 +250,7 @@ C --- End
       IF (MECA.EQ.'LETK') THEN
         COMPLG(1) = 'LETK'
         WRITE (COMPLG(2),'(I16)') NVIMEC
+        COMPLG(3) = COMPOR(3)
         MECTRU = .TRUE.
         TINI = T - DT
         NUMLC=35

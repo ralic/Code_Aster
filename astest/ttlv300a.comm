@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE  PARALLELEPIPEDE SOUMIS A UNE DENSITE DE FLUX SUR SES FACES
 # ttlv300a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,6 +90,10 @@ TEMPE=THER_LINEAIRE(   MODELE=MOTH,
 # ANALYSE DES RESULTATS -----------------------------------------------
 #
 
+TEMPE=CALC_ERREUR(reuse=TEMPE,
+                  RESULTAT=TEMPE,
+                  OPTION=('ERTH_ELEM',),);
+
 TEMP_005=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,
                             INST=.05
@@ -129,6 +133,10 @@ TEMP_10=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,
                             INST=10.
                       )
+
+ERREUR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELEM_ERRE_R',
+NOM_CHAM='ERTH_ELEM', RESULTAT=TEMPE,
+          INST=10. )
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='N2',
                       NOM_CMP='TEMP',
@@ -298,6 +306,11 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N2',
                       VALE_CALC=12.388694926,
                       VALE_REFE=12.391999999999999,
                       REFERENCE='NON_DEFINI',),
+                   ),
+        CHAM_ELEM=(_F(MAILLE='M17',
+                      NOM_CMP='ERTABS',
+                      CHAM_GD=ERREUR,
+                      VALE_CALC=0.038408483145322,),
                    ),
           )
 

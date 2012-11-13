@@ -1,4 +1,4 @@
-#@ MODIF cjs Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF cjs Comportement  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'CJS',
-   doc = """Comportement élastoplastique multi-critere des sols  cf. R7.01.13""",
+   doc = """Comportement élastoplastique multicritère des sols  cf. R7.01.13""",
    num_lc         = 23,
    nb_vari        = 16,
    nom_vari       = ('SEUILISO','ANGLEDEV','XCINXX','XCINYY','XCINZZ','XCINXY','XCINXZ','XCINYZ','DISTSDEV','SDEVCRIT','DISTSISO','NBITER','RESIDU','NBSSPAS','SDEVEPSP','INDIPLAS'),

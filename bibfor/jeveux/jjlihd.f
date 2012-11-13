@@ -1,7 +1,7 @@
       SUBROUTINE JJLIHD (IDTS,NBVAL,LONOI,GENRI,TYPEI,LTYPI,
-     &                   IC,IDO,IDC,IMARQ,IADMI,IADYN)
+     &                   IC,IDO,IDC,JMARQ,IADMI,IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,10 +19,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_4 CRS_508 CRS_513 CRS_505
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      INTEGER            IDTS,NBVAL,LONOI,LTYPI,IC,IDO,IDC,IMARQ,IADMI
+      INCLUDE 'jeveux_private.h'
+      INTEGER            IDTS,NBVAL,LONOI,LTYPI,IC,IDO,IDC,IADMI,JMARQ
       CHARACTER*(*)      GENRI,TYPEI
 C ----------------------------------------------------------------------
 C RELIT UN SEGMENT DE VALEURS DANS UN FICHIER HDF EN FONCTION DU TYPE
@@ -41,17 +41,14 @@ C IN  LTYPI  : LONGUEUR DU TYPE
 C IN  ID0    : IDENTIFICATEUR DE L'OBJET JEVEUX
 C IN  IDC    : IDENTIFICATEUR DE COLLECTION JEVEUX
 C IN  IC     : CLASSE DE L'OBJET JEVEUX
-C IN  IMARQ  : ADRESSE DE LA MARQUE JEVEUX
+C IN  JMARQ  : ADRESSE DE LA MARQUE JEVEUX
 C OUT IADMI  : ADRESSE JEVEUX DU SEGMENT DE VALEURS
 C OUT IADYN  : ADRESSE DYNAMIQUE DU SEGMENT DE VALEURS
 C ----------------------------------------------------------------------
 C
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ISTAT
@@ -60,13 +57,16 @@ C ----------------------------------------------------------------------
       COMMON /STATJE/  SVUSE,SMXUSE  
       CHARACTER*1      TYPEB
       INTEGER          HDFRSV,HDFTSD,ICONV,IADYN,KDYN
-      INTEGER          IRET,JADR,KITAB,NBV,IR,LON,KADM,K,IBID,LTYPB
+      INTEGER          IRET,JADR,KITAB,NBV,IR,LON,KADM,K,LV,LTYPB
       INTEGER         IZR,IZC,IZL,IZK8,IZK16,IZK24,IZK32,IZK80,IZI4
       EQUIVALENCE    (IZR,ZR),(IZC,ZC),(IZL,ZL),(IZK8,ZK8),(IZK16,ZK16),
      &               (IZK24,ZK24),(IZK32,ZK32),(IZK80,ZK80),(IZI4,ZI4)
 C DEB ------------------------------------------------------------------
       IRET = -1
       ICONV = 0
+      LTYPB = 0
+      TYPEB = ' '
+      LV = 0
       NBV = NBVAL
       IF ( TYPEI .EQ. 'I' ) THEN
         CALL JJALLS(LONOI,IC,GENRI,TYPEI,LTYPI,'INIT',ZI ,JADR,IADMI,
@@ -102,10 +102,10 @@ C DEB ------------------------------------------------------------------
         CALL JJALLS(LONOI,IC,GENRI,TYPEI,LTYPI,'INIT',IZL,JADR,IADMI,
      &              IADYN)
       ENDIF
-      CALL JJECRS (IADMI,IADYN,IC,IDO,IDC,'E',IMARQ)
+      CALL JJECRS (IADMI,IADYN,IC,IDO,IDC,'E',JMARQ)
       IF ( TYPEI .EQ. 'I' ) THEN
         ICONV = 1
-        IRET = HDFTSD(IDTS,TYPEB,LTYPB,IBID)
+        IRET = HDFTSD(IDTS,TYPEB,LTYPB,LV)
         IF ( LOIS .LT. LTYPB ) THEN
           LON = NBVAL*LTYPB
           CALL JJALLS(LON,IC,'V',TYPEI,LOIS,'INIT',ZI,JADR,KADM,KDYN)

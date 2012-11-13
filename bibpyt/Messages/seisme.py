@@ -1,4 +1,4 @@
-#@ MODIF seisme Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF seisme Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -174,7 +174,7 @@ cata_msg={
 31: _(u"""
  Attention,
  il n'y a pas de déplacements différentiels pris en compte dans votre calcul
- spectral multi-appui.
+ spectral multiappui.
 """),
 
 32: _(u"""

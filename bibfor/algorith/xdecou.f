@@ -10,7 +10,7 @@
       CHARACTER*8   ELP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR MARTIN A.MARTIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,7 +138,7 @@ C         RECUP COOR GLOBALES
             A(I)=PINTT(NDIM*(NA-1001)+I)
   310     CONTINUE
 C           CALCUL DES FF
-          CALL REEREF(ELP,AXI,NNOP,IBID,ZR(IGEOM),A,0,LBID,
+          CALL REEREF(ELP,AXI,NNOP,IBID,ZR(IGEOM),A,1,LBID,
      &            NDIM,RBID,RBID, RBID,
      &            IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,'NON',
      &            RBID2,FF,RBID,RBID,RBID,RBID)
@@ -187,7 +187,7 @@ C
           LSNA=LSN((NA-1)*NFISS+IFISS)
         ELSE
 C         CALCUL DES FF
-          CALL REEREF(ELP,AXI,NNOP,IBID,ZR(IGEOM),A,0,LBID,
+          CALL REEREF(ELP,AXI,NNOP,IBID,ZR(IGEOM),A,1,LBID,
      &              NDIM,RBID,RBID, RBID,
      &              IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,'NON',
      &              RBID2,FF,RBID,RBID,RBID,RBID)
@@ -202,7 +202,7 @@ C         INTERPOLATION LSN
           LSNB=LSN((NB-1)*NFISS+IFISS)
         ELSE
 C         CALCUL DES FF
-          CALL REEREF(ELP,AXI,NNOP,IBID,ZR(IGEOM),B,0,LBID,
+          CALL REEREF(ELP,AXI,NNOP,IBID,ZR(IGEOM),B,1,LBID,
      &              NDIM,RBID,RBID, RBID,
      &              IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,'NON',
      &              RBID2,FF,RBID,RBID,RBID,RBID)
@@ -231,7 +231,7 @@ C           INTERPOLATION DES COORDONNEES DE C
  130        CONTINUE
             IF (NFISS.GE.2) THEN
 C         CALCUL DES FF
-              CALL REEREF(ELP,AXI,NNOP,IBID,ZR(IGEOM),C,0,LBID,
+              CALL REEREF(ELP,AXI,NNOP,IBID,ZR(IGEOM),C,1,LBID,
      &                NDIM,RBID,RBID, RBID,
      &                IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,
      &                'NON',RBID2,FF,RBID,RBID,RBID,RBID)

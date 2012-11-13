@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -281,7 +281,12 @@ C       ---- AUTRE METHODE :
 C       ---- ON PEUT PROJETER DES CHAM_NO OU DES CHAM_ELEM
 C       ---- ON INTERDIT LE MOT-CLE 'TYPE_CHAM' POUR UN CHAMP ISOLE
 
-            CALL GETVTX(' ','TYPE_CHAM',1,IARG,1,TYCHV,IBID)
+            CALL GETVTX(' ','TYPE_CHAM',1,IARG,0,TYCHV,N1)
+            IF(N1.NE.0)THEN
+              CALL GETVTX(' ','TYPE_CHAM',1,IARG,1,TYCHV,N1)
+            ELSE
+              TYCHV=' '
+            ENDIF
             IF (TYCHV.EQ.'NOEU') THEN
               CALL U2MESS('F','CALCULEL5_36')
             ENDIF

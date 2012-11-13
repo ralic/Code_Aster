@@ -1,7 +1,7 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +18,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRS_508 CRS_512 CRS_513 CRS_505
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+      INCLUDE 'jeveux_private.h'
       INTEGER            IDTS,NBVAL,IADMI
 C ----------------------------------------------------------------------
 C RELIT UN SEGMENT DE VALEURS ASSOCIE A UN OBJET JEVEUX, LE TYPE INTEGER
@@ -30,11 +30,8 @@ C IN  IDTS   : IDENTIFICATEUR DU DATASET HDF
 C IN  NBVAL  : NOMBRE DE VALEURS DU DATASET
 C IN  IADMI  : ADRESSE DANS JISZON DU TABLEAU DE VALEURS LUES
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ISTAT
@@ -48,6 +45,8 @@ C ----------------------------------------------------------------------
       CHARACTER*1      TYPEI
 C DEB ------------------------------------------------------------------
       ICONV = 0
+      LTYPI = 0
+      NBV = 0
       IRET = HDFTSD(IDTS,TYPEI,LTYPI,NBV)
       IF (IRET .NE. 0) THEN
         CALL U2MESS('F','JEVEUX_52')

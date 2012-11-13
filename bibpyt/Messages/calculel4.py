@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF calculel4 Messages  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -425,10 +425,6 @@ Conseil :
  Erreur de programmation :
  on n'a pas pu extraire toutes les composantes voulues du champ global associe
  au paramètre: %(k1)s  (option: %(k2)s  type_élément: %(k3)s )
-"""),
-
-97 : _(u"""
- TOUT = OUI obligatoire avec  %(k1)s
 """),
 
 98 : _(u"""

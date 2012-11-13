@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,21 +32,20 @@ cata_msg={
 """),
 
 3: _(u"""
- CAM_CLAY :: le coefficient de poisson et ou le module de YOUNG ne sont pas corrects
-             dans la maille %(k1)s
+ CAM_CLAY : Le coefficient de poisson et/ou le module de YOUNG ne sont pas corrects
+            dans la maille %(k1)s.
 
-             *** vérifiez la cohérence des données mécaniques suivantes :
-                 E, nu, eO (indice des vides), KAPA
+             Vérifiez la cohérence des données mécaniques suivantes :
+                 E, NU, eO (indice des vides), KAPA
                  (contrainte volumique initiale) et KCAM la compressibilité
-                 initiale. Si PTRAC et KCAM sont nuls, il faut initialiser les contraintes
+                 initiale. Si PTRAC et KCAM sont nuls, il faut initialiser les contraintes.
 
-                 il faut notamment vérifier ceci:
+                 Il faut notamment vérifier ceci:
 
         NU = (TROIS*((UN+E0)*SIGMMO+KAPA*KCAM)-DEUXMU*KAPA)/
      &         (SIX*((UN+E0)*SIGMMO+KAPA*KCAM)+DEUXMU*KAPA)
 
         E = DEUXMU*(UN+NU)
- ***
 """),
 
 4: _(u"""
@@ -97,7 +96,7 @@ localement via ITER_INTE_PAS.
 """),
 
 15: _(u"""
-  Pour les poutres multi-fibres, l'utilisation de lois de comportement via
+  Pour les poutres multifibres, l'utilisation de lois de comportement via
   ALGO_1D='DEBORST' nécessite d'avoir un seul matériau par poutre!
  """),
 
@@ -222,9 +221,9 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 42: _(u"""
- CAM_CLAY ::  Kcam et Ptrac doivent vérifier la relation suivante :
+ CAM_CLAY ::  KCAM et PTRAC doivent vérifier la relation suivante :
 
-              KCAM > -K0 * PTRAC  ou KCAM > -(1+e0)/kapa * PTRAC
+              KCAM > -K0 * PTRAC  ou KCAM > -(1+e0)/KAPA * PTRAC
 """),
 
 

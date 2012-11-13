@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,25 +128,6 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 22 : _(u"""     Grandeur associée au champ : %(k1)s
      Commentaire:"""),
 23 : _(u"""***********************************"""),
-
-
-
-
-
-
-
-
-
-
-
-
-
-27 : _(u"""
-   Pas de lumpe en 3d P2: hexa20_d --> face8_d
-"""),
-
-
-
 
 30 : _(u"""
 PROJ_CHAMP :

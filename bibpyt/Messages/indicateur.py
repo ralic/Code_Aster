@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF indicateur Messages  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,12 +20,6 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
-
-1 : _(u"""
-Le choix TOUT = 'OUI' est obligatoire avec l'option %(k1)s.
-On ne peut pas faire de calcul de champ d'indicateur d'erreur sur des mailles
-ou des groupes de mailles car on doit connaître tous les voisins.
-"""),
 
 2 : _(u"""
 Le champ de contraintes n'a pas été calculé sur tout le modèle.

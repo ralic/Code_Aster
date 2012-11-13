@@ -1,4 +1,4 @@
-#@ MODIF hujeux Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF hujeux Comportement  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ loi = LoiComportement(
    nom            = 'HUJEUX',
    doc = """Relation de comportement élasto-plastique cyclique pour la mécanique des sols (géomatériaux granulaires :
    argiles sableuses, normalement consolidées ou sur-consolidées, graves) (Cf. [R7.01.23] pour plus de détails).
-   Ce modèle est un modèle multi-critères qui comporte un mécanisme élastique non linéaire, trois mécanismes plastiques déviatoires et un mécanisme plastique isotrope. 
+   Ce modèle est un modèle multicritère qui comporte un mécanisme élastique non linéaire, trois mécanismes plastiques déviatoires et un mécanisme plastique isotrope. 
    Pour faciliter l'intégration de ce modèle, on peut utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS)""",
    num_lc         = 34,
    nb_vari        = 50,

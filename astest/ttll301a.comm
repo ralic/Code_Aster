@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TRANSFERT THERMIQUE DANS UNE BARRE AVEC TEMPERATURE IMPOSEE
 # ttll301a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,6 +95,11 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
 
 # ANALYSE DES RESULTATS -------------------------------------------
 
+TEMPE=CALC_ERREUR(reuse=TEMPE,
+                  RESULTAT=TEMPE,
+                  TOUT='OUI',
+                  OPTION=('ERTH_ELEM',),);
+
 TEMP_32=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,
             INST=32.0 )
@@ -117,13 +122,3 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N17',
           )
 
 FIN()
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#

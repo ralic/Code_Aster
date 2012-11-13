@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements3 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,7 +160,7 @@ cata_msg = {
   -> Risque & Conseil :
      En présence de grands déplacements et grandes rotations, avec une loi de comportement
      non linéaire, il est préférable  d'utiliser la modélisation POU_D_TGM
-     (poutre multi-fibres) avec DEFORMATION=GROT_GDEP. Si le comportement reste
+     (poutre multifibre) avec DEFORMATION=GROT_GDEP. Si le comportement reste
      élastique, il est également possible d'utiliser la modélisation POU_D_T_GD avec
      DEFORMATION='GROT_GDEP'.
 """),

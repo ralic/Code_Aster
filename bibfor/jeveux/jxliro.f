@@ -1,6 +1,6 @@
       SUBROUTINE JXLIRO ( IC , IADMI , IADDI , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,9 +17,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_6 CRS_508
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER             IC , IADMI , IADDI(2) , LSO
 C ----------------------------------------------------------------------
 C LECTURE D'UN SEGMENT DE VALEUR
@@ -30,16 +30,13 @@ C IN  IADDI : ADRESSE DISQUE DU SEGMENT DE VALEURS
 C IN  LSO   : LONGUEUR EN OCTET DU SEGMENT DE VALEURS
 C
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADM ,IUSADI ,JUSADI ,LADM ,N ,NDE 
+      INTEGER JADM, JUSADI ,LADM ,N ,NDE 
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
@@ -51,7 +48,6 @@ C
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       LOGICAL          LITLEC
       COMMON /LFICJE/  LITLEC(N)
-      COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
 C ----------------------------------------------------------------------
       INTEGER          IADMO , KADD , LADD , LGBL , LSO2 
@@ -61,12 +57,12 @@ C ----------------------------------------------------------------------
 C REMARQUE : LE PARAMETER NDE EST AUSSI DEFINI DANS JXECRO
 C
 C DEB ------------------------------------------------------------------
-      IADM   = IADMI
-      LADM   = ISZON(JISZON + IADM - 3 )
+      JADM   = IADMI
+      LADM   = ISZON(JISZON + JADM - 3 )
       KADD   = IADDI(1)
       LADD   = IADDI(2)
       LGBL   = 1024*LONGBL(IC)*LOIS
-      IADMO  = ( IADM - 1 ) * LOIS + LADM + 1
+      IADMO  = ( JADM - 1 ) * LOIS + LADM + 1
       LSO2   = LSO
       IF ( MOD(LSO,LOIS) .NE. 0 ) LSO2 = (1 + LSO/LOIS) * LOIS
       LPETIT = ( LSO .LT. LGBL-NDE*LOIS )

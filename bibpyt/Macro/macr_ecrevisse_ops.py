@@ -1,4 +1,4 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 12/11/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,7 +145,6 @@ def macr_ecrevisse_ops(self, reuse,
         print 'liste des instants liste_inst = ', liste_inst
 
     # Drapeaux pour les 1ers calculs et les 1eres definitions
-    IsDefineMaterMeca  = False
     # si l'execution d'Ecrevisse n'a pas plantee ou a ete realisee
     EcrevisseExe       = False
 
@@ -284,7 +283,7 @@ def macr_ecrevisse_ops(self, reuse,
                       INFO       = InfoAster,
                       **motclefs )
 
-                    RTHERMPJ=PROJ_CHAMP(RESULTAT=THINIT,
+                    _RTHMPJ=PROJ_CHAMP(RESULTAT=THINIT,
                                         MODELE_1=MODELE_THER,
                                         MODELE_2=MODELE_MECA,
                                         METHODE='COLLOCATION',
@@ -305,7 +304,7 @@ def macr_ecrevisse_ops(self, reuse,
 
                     # Projection du champ thermique, a tous les instants
                     # sinon pas de deformations thermiques
-                    RTHERMPJ=PROJ_CHAMP(RESULTAT=RTHERM,
+                    _RTHMPJ=PROJ_CHAMP(RESULTAT=RTHERM,
                                         MODELE_1=MODELE_THER,
                                         MODELE_2=MODELE_MECA,
                                         METHODE='COLLOCATION',
@@ -313,26 +312,26 @@ def macr_ecrevisse_ops(self, reuse,
                                                      TOUT_2='OUI',),
                                         INFO=2,)
 
-                # Definition du materiau pour la mecanique : a faire une seule fois
-                if ( not IsDefineMaterMeca ):
-                    motclefmater = {}
-                    motclefmater['AFFE'] = []
-                    motclefmater['AFFE_VARC'] = []
+                # Definition du materiau pour la mecanique
+                # note : on doit le faire a chaque fois car le nom de concept _RTHMPJ
+                #        est different a chaque passage
+                motclefmater = {}
+                motclefmater['AFFE'] = []
+                motclefmater['AFFE_VARC'] = []
 
-                    for j in CHAM_MATER['AFFE_VARC'] :
-                        dvarc = j.cree_dict_toutes_valeurs()
-                        motclefmater['AFFE_VARC'].append(dvarc)
+                for j in CHAM_MATER['AFFE_VARC'] :
+                    dvarc = j.cree_dict_toutes_valeurs()
+                    motclefmater['AFFE_VARC'].append(dvarc)
 
-                    for j in CHAM_MATER['AFFE'] :
-                        motclefmater['AFFE'].append(j.cree_dict_toutes_valeurs())
+                for j in CHAM_MATER['AFFE'] :
+                    motclefmater['AFFE'].append(j.cree_dict_toutes_valeurs())
 
-                    #XXX on croise les doigts que AFFE_VARC est de longueur non nulle ?!!
-                    dvarc['EVOL'] = RTHERMPJ
-                    motclefmater['MAILLAGE'] = CHAM_MATER['MAILLAGE']
-                    __MATMEC=AFFE_MATERIAU(
-                       **motclefmater
-                    )
-                    IsDefineMaterMeca = True
+                #XXX on croise les doigts que AFFE_VARC est de longueur non nulle ?!!
+                dvarc['EVOL'] = _RTHMPJ
+                motclefmater['MAILLAGE'] = CHAM_MATER['MAILLAGE']
+                __MATMEC=AFFE_MATERIAU(
+                   **motclefmater
+                )
 
                 # ---------------------
                 #        MECANIQUE
@@ -390,7 +389,7 @@ def macr_ecrevisse_ops(self, reuse,
                 # Destruction des concepts
                 #  Thermique projete
                 #  Liste des pas
-                DETRUIRE(CONCEPT=(_F(NOM=RTHERMPJ),
+                DETRUIRE(CONCEPT=(_F(NOM=_RTHMPJ),
                                   _F(NOM=__pas),),
                          INFO=1)
 

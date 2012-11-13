@@ -1,7 +1,7 @@
       SUBROUTINE JXLIBD ( IDCO , IDOS , IC , IADDI , LONOI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,8 +18,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CRP_18 CRP_6 CRS_508
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER             IDCO , IDOS , IC , IADDI(2) , LONOI
 C ----------------------------------------------------------------------
 C MARQUE LA PLACE DISQUE EN VUE D'UNE RECUPERATION ULTERIEURE
@@ -30,17 +30,14 @@ C IN  IC     : CLASSE ASSOCIEE A L'OBJET JEVEUX
 C IN  IADDI  : ADRESSE DISQUE DE L'OBJET REPERE PAR ID
 C IN  LONOI  : LONGUEUR EN OCTETS DE L'OBJET
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IUSADI ,JIECR ,JUSADI ,N ,NBGROS ,NBLENT 
+      INTEGER I  ,JIECR ,JUSADI ,N ,NBGROS ,NBLENT 
       INTEGER NBLIM ,NBPETI 
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
@@ -53,7 +50,6 @@ C-----------------------------------------------------------------------
       LOGICAL          LITLEC
       COMMON /LFICJE/  LITLEC(N)
       COMMON /JUSADI/  JUSADI(N)
-      COMMON /KUSADI/  IUSADI(1)
       COMMON /INBDET/  NBLIM(N),NBGROS(N),NBPETI(N)
 C     ------------------------------------------------------------------
       INTEGER          KADD , LADD , LGBL

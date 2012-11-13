@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 12/11/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -519,10 +519,9 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
                     sdnom = self.gcncon('.')
                 else:
                     sdnom = self.gcncon('_')
-            elif self.nom in ('INCLUDE', 'MACR_RECAL', 'MACR_ECREVISSE'):
+            elif self.nom in ('INCLUDE', 'MACR_RECAL'):
                 # dans le cas d'INCLUDE, on passe
                 # MACR_RECAL fonctionne comme INCLUDE
-                # MACR_ECREVISSE : à corriger
                 pass
             else:
                 # On est dans le cas d'un nom de concept global

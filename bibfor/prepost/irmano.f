@@ -1,6 +1,6 @@
       SUBROUTINE IRMANO(NOMA,NBMA,NUMAI,NBNOS,NUMNOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF PREPOST  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,8 @@ C ======================================================================
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXATR
       CHARACTER*(*) NOMA
       INTEGER       NBMA,NUMAI(*),NBNOS,NUMNOS(*)
 C ----------------------------------------------------------------------
@@ -40,8 +42,8 @@ C     ------------------------------------------------------------------
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IER ,IMA ,IMAI ,INO ,INOE ,IPOIN ,JCONX 
-      INTEGER JNUNOS ,JPOIN ,NBNOE ,NUM 
+      INTEGER IER ,IMA ,IMAI ,INO ,INOE ,IPOIN ,JCONX
+      INTEGER JNUNOS ,JPOIN ,NBNOE ,NUM
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NOMMA=NOMA

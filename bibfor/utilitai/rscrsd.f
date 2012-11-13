@@ -7,7 +7,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=35)
-      PARAMETER (NCMEC2=48)
+      PARAMETER (NCMEC2=49)
       PARAMETER (NCMEC3=34)
       PARAMETER (NCMUTI=30)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3+NCMUTI)
@@ -108,7 +108,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'VARI_NOEU',       'VARI_ELNO',
      & 'EPSA_ELNO',       'EPSA_NOEU',
      & 'COMPORTEMENT',    'DERA_ELGA',       'DERA_ELNO',
-     & 'DERA_NOEU',       'PRME_ELNO',
+     & 'DERA_NOEU',       'PRME_ELNO',       'EPME_NOEU',
      & 'EPME_ELNO',       'EPME_ELGA',       'EPMG_ELNO',
      & 'EPMG_ELGA',       'ENEL_ELGA',       'ENEL_ELNO',
      & 'ENEL_NOEU',       'ENEL_ELEM',
@@ -123,14 +123,14 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EPFD_ELNO',       'EPFD_ELGA',
      & 'EPVC_ELNO',       'EPVC_ELGA',       'VALE_CONT',
      & 'ETOT_ELGA',       'ETOT_ELNO',       'ETOT_ELEM',
-     & 'MODE_FLAMB',
+     & 'MODE_FLAMB',      'ETOT_NOEU',
      & 'ENDO_ELGA',       'ENDO_ELNO',       'ENDO_NOEU',
      & 'INDL_ELGA',       'VAEX_ELGA',       'VAEX_ELNO',
      & 'VAEX_NOEU',       'DEPL_VIBR',       'SISE_ELNO',
      & 'COHE_ELEM',       'INDC_ELEM',       'SECO_ELEM',
      & 'VARC_ELGA',       'FERRAILLAGE',     'EPVC_NOEU',
      & 'EPFD_NOEU',       'EPFP_NOEU',       'PDIL_ELGA',
-     & 'MODE_STAB',       'ETOT_NOEU'/
+     & 'MODE_STAB'/
 C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMUTI/

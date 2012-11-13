@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 05/03/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF modelisa8 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,23 +36,23 @@ cata_msg = {
 4 : _(u"""
  La somme des aires des fibres est différente de l'aire de la section de la poutre.
 
- L'erreur relative est supérieure a la précision définie par le mot clé PREC_AIRE :
+ L'erreur relative est supérieure à la précision définie par le mot clé PREC_AIRE :
 
-   - occurrence de multi-fibres : %(r1).0f
+   - occurrence de multifibre : %(r1).0f
 
-   - aire de la poutre       : %(r2)12.5E
+   - aire de la poutre        : %(r2)12.5E
 
-   - aire des fibres         : %(r3)12.5E
+   - aire des fibres          : %(r3)12.5E
 
-   - erreur relative         : %(r4)12.5E
+   - erreur relative          : %(r4)12.5E
 """),
 
 5 : _(u"""
- La somme des moments d'inertie des fibres par rapport a l'axe 0Y est différente du moment de la poutre.
+ La somme des moments d'inertie des fibres par rapport à l'axe 0Y est différente du moment de la poutre.
 
- L'erreur relative est supérieure a la précision définie par le mot clé PREC_INERTIE :
+ L'erreur relative est supérieure à la précision définie par le mot clé PREC_INERTIE :
 
-   - occurrence de multi-fibres       : %(r1).0f
+   - occurrence de multifibre      : %(r1).0f
 
    - moment d'inertie de la poutre : %(r2)12.5E
 
@@ -62,11 +62,11 @@ cata_msg = {
 """),
 
 6 : _(u"""
- La somme des moments d'inertie des fibres par rapport a l'axe 0Z est différente du moment de la poutre.
+ La somme des moments d'inertie des fibres par rapport à l'axe 0Z est différente du moment de la poutre.
 
- L'erreur relative est supérieure a la précision définie par le mot clé PREC_INERTIE :
+ L'erreur relative est supérieure à la précision définie par le mot clé PREC_INERTIE :
 
-   - occurrence de multi-fibres       : %(r1).0f
+   - occurrence de multifibre      : %(r1).0f
 
    - moment d'inertie de la poutre : %(r2)12.5E
 
@@ -76,7 +76,7 @@ cata_msg = {
 """),
 
 7 : _(u"""
- actuellement on ne peut mettre que %(k1)s groupes de fibres sur un élément
+ Actuellement, on ne peut mettre que %(k1)s groupes de fibres sur un élément.
 """),
 
 8 : _(u"""

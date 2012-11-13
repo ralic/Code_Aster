@@ -1,11 +1,6 @@
       SUBROUTINE JXCOPY ( CLSINZ , NOMINZ,  CLSOUZ , NMOUTZ , NBEXT )
-      IMPLICIT NONE
-      CHARACTER*(*) CLSINZ , NOMINZ,  CLSOUZ , NMOUTZ
-      CHARACTER*1         CLASIN , CLASOU
-      CHARACTER*8         NOMIN  , NOMOUT
-C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +18,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_6 CRS_508 CRS_505
+C TOLE CRP_6
+      IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
+      CHARACTER*(*) CLSINZ , NOMINZ,  CLSOUZ , NMOUTZ
+      CHARACTER*1         CLASIN , CLASOU
+      CHARACTER*8         NOMIN  , NOMOUT
+C     ------------------------------------------------------------------
 C     RECOPIE D'UNE BASE DE DONNEES APRES ELIMINATION DES
 C     ENREGISTREMENTS DEVENUS INACCESSIBLES
 C     ------------------------------------------------------------------
@@ -33,11 +34,8 @@ C IN  CLSOUZ : NOM DE CLASSE ASSOCIEE EN SORTIE
 C IN  NMOUTZ : NOM DE LA BASE EN SORTIE
 C OUT NBEXT  : NOMBRE D'"EXTENDS" UTILISES APRES RETASSAGE
 C     ------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8

@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,7 @@ cata_msg = {
 """),
 
 48 : _(u"""
-  -> Intégration élastoplastique de loi multi-critères BETON_DOUBLE_DP :
+  -> Intégration élastoplastique de loi multicritères BETON_DOUBLE_DP :
      la contrainte équivalente est nulle pour la maille %(k1)s
      le calcul de la matrice tangente est impossible.
   -> Risque & Conseil :

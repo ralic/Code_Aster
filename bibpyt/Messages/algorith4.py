@@ -1,4 +1,4 @@
-#@ MODIF algorith4 Messages  DATE 24/07/2012   AUTEUR PERONY R.PERONY 
+#@ MODIF algorith4 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,7 +162,7 @@ cata_msg = {
 """),
 
 84 : _(u"""
- intégration élastoplastique de loi multi-critère : erreur de programmation
+ intégration élastoplastique de loi multicritère : erreur de programmation
 """),
 
 85 : _(u"""

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
-% RESPONSABLE DELMAS
+% RESPONSABLE DELMAS J.DELMAS
 ERTH_ELEM
 <<  ERTH_ELEM :
     INDICATEUR D'ERREUR SPATIALE EN RESIDU PUR
@@ -27,7 +27,8 @@ OPTION__
    IN__
         PGEOMER  GEOM_R
        <<  PGEOMER : COORDONNEES DES NOEUDS  >>
-        
+        PFLUX_M  FLUX_R
+       <<  PFLUX_M : FLUX A L INSTANT PRECEDENT  >>
         PFLUX_P  FLUX_R
        <<  PFLUX_P : FLUX A L INSTANT COURANT  >>
         PSOURCR  SOUR_R
@@ -40,11 +41,10 @@ OPTION__
        <<  PCHARG : CARTE D ADRESSE JEVEUX  >>
         PVOISIN  VOISIN
        <<  PVOISIN : VOISINS DE L ELEMENT  >>
-        
+        PTEMP_M  TEMP_R
+       <<  PTEMP_M : TEMPERATURE A L INSTANT PRECEDENT  >>
         PTEMP_P  TEMP_R
        <<  PTEMP_P: TEMPERATURE A L INSTANT COURANT  >>
    OUT__
         PERREUR ERRE_R ELEM__
        <<  PERREUR : ESTIMATEUR D ERREUR  >>
-
-

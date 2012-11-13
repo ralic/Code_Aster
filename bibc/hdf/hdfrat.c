@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrat hdf  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF hdfrat hdf  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -26,7 +26,7 @@
 /   - in  iddat : identificateur du dataset (hid_t)
 /   - in  nomat : nom de l'attribut (char *)
 /   - in  nbv   : nombre de valeurs associées à l'attribut (long)
-/   - in  valat : valeur de l'attribut (char *)
+/   - out valat : valeur de l'attribut (char *)
 /  Résultats :
 /     =0 OK, =-1 problème 
 /-----------------------------------------------------------------------------*/

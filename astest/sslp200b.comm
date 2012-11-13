@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE PELLET J.PELLET
 # sslp200b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -435,10 +435,17 @@ MSLIN=MECA_STATIQUE(MODELE=MO,
 MSLIN=CALC_CHAMP(reuse=MSLIN,
                  RESULTAT=MSLIN,
                  LIST_INST=LR1,
-                 CRITERES=('SIEQ_ELNO','SIEQ_ELGA','EPEQ_ELNO','EPEQ_ELGA'),
-                 DEFORMATION=('EPME_ELGA','EPME_ELNO','EPSI_ELGA','EPSI_ELNO'),
-                 ENERGIE=('EPOT_ELEM'),
-                 CONTRAINTE=('SIGM_ELNO'),);
+                 CONTRAINTE=(             'SIEF_ELNO','SIEF_NOEU',
+                              'SIGM_ELGA','SIGM_ELNO','SIGM_NOEU',),
+                 DEFORMATION=('EPME_ELGA','EPME_ELNO','EPME_NOEU',
+                              'EPSI_ELGA','EPSI_ELNO','EPSI_NOEU',),
+                 ENERGIE=(                'ECIN_ELEM',
+                              'ENEL_ELGA','ENEL_ELEM','ENEL_ELNO','ENEL_NOEU',
+                                          'EPOT_ELEM',
+                              'ETOT_ELGA','ETOT_ELEM','ETOT_ELNO','ETOT_NOEU',),
+                 CRITERES=(   'EPEQ_ELGA','EPEQ_ELNO','EPEQ_NOEU',
+                              'EPMQ_ELGA','EPMQ_ELNO','EPMQ_NOEU',
+                              'SIEQ_ELGA','SIEQ_ELNO','SIEQ_NOEU'),);
 
 ENGENDRE_TEST(CO=MSLIN,);
 
@@ -675,23 +682,29 @@ MSLI2=MECA_STATIQUE(MODELE=MO,
 # ----------------------------------------------------------------------
 #   POST_TRAITEMENT DU CALCUL
 # ----------------------------------------------------------------------
-
 MSLI2=CALC_CHAMP(reuse=MSLI2,
                  RESULTAT=MSLI2,
                  NUME_ORDRE=(1,2,3),
-                 CRITERES=('SIEQ_ELNO','SIEQ_ELGA','EPEQ_ELNO','EPEQ_ELGA'),
-                 DEFORMATION=('EPME_ELGA','EPME_ELNO','EPSG_ELGA','EPSG_ELNO','EPSI_ELGA','EPSI_ELNO'),
-                 ENERGIE=('EPOT_ELEM'),
-                 CONTRAINTE=('SIGM_ELNO'),);
+                 CONTRAINTE=(             'SIEF_ELNO','SIEF_NOEU',
+                              'SIGM_ELGA','SIGM_ELNO',),
+                 DEFORMATION=('EPME_ELGA','EPME_ELNO','EPME_NOEU',
+                              'EPSI_ELGA','EPSI_ELNO',),
+                 ENERGIE=(                'ECIN_ELEM',
+                              'ENEL_ELGA','ENEL_ELEM','ENEL_ELNO','ENEL_NOEU',
+                                          'EPOT_ELEM',
+                              'ETOT_ELGA','ETOT_ELEM','ETOT_ELNO','ETOT_NOEU',),
+                 CRITERES=(   'EPEQ_ELGA','EPEQ_ELNO',
+                              'EPMQ_ELGA','EPMQ_ELNO','EPMQ_NOEU',
+                              'SIEQ_ELGA','SIEQ_ELNO',),);
 
 MSLI2=CALC_CHAMP(reuse =MSLI2,
-              RESULTAT=MSLI2,
-              INST=11.5,
-              CRITERE='ABSOLU',
-              PRECISION=0.001,
-              DEFORMATION='EPSI_NOEU',
-              CRITERES=('SIEQ_NOEU','EPEQ_NOEU'),
-              CONTRAINTE='SIGM_NOEU');
+                 RESULTAT=MSLI2,
+                 INST=11.5,
+                 CRITERE='ABSOLU',
+                 PRECISION=0.001,
+                 DEFORMATION='EPSI_NOEU',
+                 CRITERES=('SIEQ_NOEU','EPEQ_NOEU'),
+                 CONTRAINTE='SIGM_NOEU');
 
 ENGENDRE_TEST(CO=MSLI2,);
 
@@ -898,42 +911,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MSLI2,
                    NOM_CHAM='EPOT_ELEM',
                    VALE_CALC=7289.2767973710997,
-                   ),
-                _F(NUME_ORDRE=1,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=MSLI2,
-                   NOM_CHAM='EPSG_ELGA',
-                   VALE_CALC=3.2174215737048001E5,
-                   ),
-                _F(NUME_ORDRE=2,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=MSLI2,
-                   NOM_CHAM='EPSG_ELGA',
-                   VALE_CALC=3.3708250980105001E5,
-                   ),
-                _F(NUME_ORDRE=3,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=MSLI2,
-                   NOM_CHAM='EPSG_ELGA',
-                   VALE_CALC=3.5265998668482999E5,
-                   ),
-                _F(NUME_ORDRE=1,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=MSLI2,
-                   NOM_CHAM='EPSG_ELNO',
-                   VALE_CALC=3.6235093912525999E5,
-                   ),
-                _F(NUME_ORDRE=2,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=MSLI2,
-                   NOM_CHAM='EPSG_ELNO',
-                   VALE_CALC=3.7825628361207998E5,
-                   ),
-                _F(NUME_ORDRE=3,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=MSLI2,
-                   NOM_CHAM='EPSG_ELNO',
-                   VALE_CALC=3.9456642030752997E5,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',

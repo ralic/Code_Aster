@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/11/2012   AUTEUR PROIX J-M.PROIX 
 #====================================================================== 
 #
 # TITRE : VARIATION DE TEMPERATURE DANS 'ROUSS_VISC' 
@@ -286,17 +286,15 @@ for i in range(NCAL):
           
           TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='VMIS',
-                     VALE_CALC=U['VMIS',i+2],   #TODO: creer une liste des vale_calc
+                     VALE_CALC=RESU[i]['VMIS',2],   
                      VALE_REFE=U['VMIS',i+2],
-                     TOLE_MACHINE=1.e-3,
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 
           TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='TRACE',
-                     VALE_CALC=U['TRACE',i+2],   #TODO: creer une liste des vale_calc
+                     VALE_CALC=RESU[i]['TRACE',2],   
                      VALE_REFE=U['TRACE',i+2],
-                     TOLE_MACHINE=1.e-3,
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 
@@ -305,9 +303,8 @@ for i in range(NCAL):
              if U[nomvari,i+2] > epsi :
                 TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA=nomvari,
-                     VALE_CALC=U[nomvari,i+2],   #TODO: creer une liste des vale_calc
+                     VALE_CALC=RESU[i][nomvari,2],   
                      VALE_REFE=U[nomvari,i+2],
-                     TOLE_MACHINE=1.e-3,
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 

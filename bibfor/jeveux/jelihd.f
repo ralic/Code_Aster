@@ -1,7 +1,7 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +18,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_20 CRS_508 CRS_512 CRS_513 CRS_505
+C TOLE CRP_20
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+      INCLUDE 'jeveux_private.h'
       CHARACTER*(*)       NOMF, FICHDF, CLAS
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR D'OUVERTURE D'UNE BASE AVEC LECTURE SUR
@@ -37,37 +38,20 @@ C ----------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      REAL*8           R8ZON(1)
-      LOGICAL          LSZON(1)
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) , R8ZON(1) , LSZON(1) )
       INTEGER          N
       PARAMETER      ( N = 5 )
-      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
-      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       INTEGER          JLTYP   , JLONG   , JDATE   , JIADD   , JIADM   ,
      &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       INTEGER          JGENR   , JTYPE   , JDOCU   , JORIG   , JRNOM
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
-      INTEGER          IACCE,JIACCE,IUSADI,JUSADI,INDIR,JINDIR,NBACCE
-      COMMON /IACCED/  IACCE(1)
+      INTEGER          JIACCE,JUSADI,JINDIR,NBACCE
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
-      COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
-      COMMON /KINDIR/  INDIR(1)
       COMMON /JINDIR/  JINDIR(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
@@ -129,8 +113,8 @@ C ----------------------------------------------------------------------
       EQUIVALENCE     (IGENR,GENR),(ITYPE,TYPE),
      &                (IDOCU,DOCU),(IORIG,ORIG),(IRNOM,RNOM)
 C     ------------------------------------------------------------------
-      INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
-      PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
+      INTEGER          ILOREP , IDENO    , IDEHC
+      PARAMETER      ( ILOREP=1,IDENO=2,IDEHC=6)
 C ----------------------------------------------------------------------
       INTEGER          LIDBAS      , LIDEFF, IDYN32, IDYN8
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
@@ -177,6 +161,12 @@ C
       NOMOS  = D32
       NOMCO  = D32(1:24)
       NOMOC  = D32
+      LTYPB = 0
+      TYPEB = ' '
+      DO 1001 I=1, 5
+        KATTR(I) = ' '
+        KATTRG(I) = ' '
+ 1001 CONTINUE
 C
 C ----- OPEN FICHIER
 C ----- LECTURE DE L'OBJET ________GLOBALE ________$$CARA
@@ -453,11 +443,13 @@ C
       SVUSE = SVUSE + (ISZON(JISZON+KTEMP2-4) - KTEMP2 + 4)
       SMXUSE = MAX(SMXUSE,SVUSE)
       IRET2 = HDFTYP(IDFIC,NGRP,NBOBJ,K8(JK8))
+      CALL ASSERT(IRET2 .EQ. 0)
 C
 C     ON AJUSTE LA LONGUEUR DU TYPE POUR LES INTEGER *8 OU *4
 C     SUIVANT LA PLATE-FORME, ET LA LONGUEUR DES OBJETS DE GENRE
 C     REPERTOIRE
 C
+      IRT = 0
       DO 51 K=LIDEFF+1,NREMAX(IC)
         IF(TYPE(JTYPE(IC)+K).EQ.'I') THEN
           LTYP(JLTYP(IC)+K) = LOIS
@@ -487,6 +479,7 @@ C
             CALL JJLCHD (IDCO,IC,IDFIC,IDTS,NGRP)
           ENDIF
           IRET3=HDFCLD(IDTS)
+          CALL ASSERT(IRET3 .EQ. 0)
         ENDIF
  101  CONTINUE
 C

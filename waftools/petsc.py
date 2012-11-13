@@ -28,7 +28,7 @@ def configure(self):
         if opts.enable_petsc == True:
             raise
     else:
-        self.env.append_unique('DEFINE', ['_HAVE_PETSC'])
+        self.env.append_unique('DEFINES', ['_HAVE_PETSC'])
         self.env.HAVE_PETSC = True
 
 

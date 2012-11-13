@@ -1,7 +1,7 @@
       SUBROUTINE JXLIRB ( IC , IADDI , IADMO , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,8 +18,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CRP_18 CRP_6 CRS_508
+C TOLE CRP_6
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER             IC , IADDI , IADMO , LSO
 C ----------------------------------------------------------------------
 C LECTURE D'UN BLOC DU FICHIER D'ACCES DIRECT ASSOCIE A UNE BASE
@@ -31,17 +32,14 @@ C IN  IADMO : ADRESSE MEMOIRE EN OCTETS
 C IN  LSO   : LONGUEUR EN OCTETS
 C ----------------------------------------------------------------------
 C
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IACCE ,IADLOC ,IERR ,JIACCE ,JIECR ,N 
+      INTEGER I  ,IADLOC ,IERR ,JIACCE ,JIECR ,N 
       INTEGER NBACCE ,NBLENT ,NUMEXT 
       REAL*8 R8BID 
 C-----------------------------------------------------------------------
@@ -66,7 +64,6 @@ C
       COMMON /BALVJE/  LREPGL,LREPVO
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
-      COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
 C     ------------------------------------------------------------------
       LOGICAL          LRAB

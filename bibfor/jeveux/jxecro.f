@@ -1,7 +1,7 @@
       SUBROUTINE JXECRO ( IC , IADMI , IADDI , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,8 +18,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CRP_18 CRP_6  CRS_508
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER             IC , IADMI , IADDI(2) , LSO , IDCO , IDOS
 C ----------------------------------------------------------------------
 C ECRITURE D'UN SEGMENT DE VALEUR
@@ -31,17 +31,14 @@ C IN  LSO   : LONGUEUR EN OCTET DU SEGMENT DE VALEURS
 C IN  IDCO  : IDENTIFICATEUR DE COLLECTION
 C IN  IDOS  : IDENTIFICATEUR D'OBJET SIMPLE OU D'OBJET DE COLLECTION
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADM ,ISO ,IUSADI ,JIECR ,JUSADI ,K ,KD 
+      INTEGER JADM, ISO  ,JIECR ,JUSADI ,K ,KD 
       INTEGER KL ,LADM ,LSA ,LSADI ,N ,NBL ,NUMDEB 
       INTEGER NUMEXT 
 C-----------------------------------------------------------------------
@@ -58,7 +55,6 @@ C-----------------------------------------------------------------------
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
-      COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
 C     ------------------------------------------------------------------
       REAL*8           R8BID
@@ -89,11 +85,11 @@ C          SUIVENT ENSUITE LES VALEURS
 C          SI IDCI EST NUL, ON A ATTEINT LA FIN DE L'ENREGISTREMENT
 C
 C DEB ------------------------------------------------------------------
-      IADM   = IADMI
-      LADM   = ISZON(JISZON + IADM - 3 )
+      JADM   = IADMI
+      LADM   = ISZON(JISZON + JADM - 3 )
       KADD   = IADDI(1)
       LADD   = IADDI(2)
-      IADMO  = ( IADM - 1 ) * LOIS + LADM + 1
+      IADMO  = ( JADM - 1 ) * LOIS + LADM + 1
       LGBL   = 1024*LONGBL(IC)*LOIS
       LSO2   = LSO
       IF ( MOD(LSO,LOIS) .NE. 0 ) LSO2 = (1 + LSO/LOIS) * LOIS

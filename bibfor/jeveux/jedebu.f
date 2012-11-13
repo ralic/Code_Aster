@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_6 CRS_508 CRS_512
+C TOLE CRP_6
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+      INCLUDE 'jeveux_private.h'
       INTEGER             NBFI, MXZON, IDB
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR D'INITIALISATION GENERALE POUR LE GESTIONNAIRE
@@ -32,11 +33,8 @@ C IN  IDB    : PARAMETRE DE DEBUG
 C              ( 0: RIEN, 1: MISE A UNDEF DES SEGMENTS DE VALEURS )
 C
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C ----------------------------------------------------------------------
       INTEGER          NBFIC
       COMMON /IPARJE/  NBFIC
@@ -44,25 +42,16 @@ C ----------------------------------------------------------------------
       COMMON /ILOCJE/  ILOC
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IACCE ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD
-      INTEGER JIACCE ,JIADD ,JIADM ,JJPREM ,JLONG ,JLONO ,JLTYP
-      INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K ,LOFIEM
-      INTEGER MOFIEM ,N ,NBACCE, IBID
-      REAL*8 VAL
+      INTEGER I  ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD 
+      INTEGER JIACCE ,JIADD ,JIADM ,JLONG ,JLONO ,JLTYP 
+      INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K ,LOFIEM 
+      INTEGER MOFIEM ,N ,NBACCE, IBID 
+      REAL*8 VAL 
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
-      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
-      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
@@ -124,12 +113,11 @@ C ----------------------------------------------------------------------
       COMMON /R8DYJE/ MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO(2)
       REAL *8          SVUSE,SMXUSE
       COMMON /STATJE/  SVUSE,SMXUSE
-      COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
 C --------------------------------- ------------------------------------
-      INTEGER          MXLICI , IPREM  , INIT,    IRET
+      INTEGER          MXLICI , IRET
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM
-      INTEGER          LOR8EM , LOC8EM , ISNNEM , IRT, ISMAEM
+      INTEGER          LOR8EM , LOC8EM , ISNNEM , ISMAEM
       REAL*8           R8BID,RVAL(6),R8NNEM
       CHARACTER*8      K8TAB(6)
       PARAMETER      ( MXLICI = 67 )
@@ -303,8 +291,5 @@ C
       KPOSMA(2) = 0
       LGPUTI = 0
       IPGC   = 0
-      INIT   = 100
-      IRT    = 0
-      IPREM  = JJPREM(INIT,IRT)
 C FIN ------------------------------------------------------------------
       END

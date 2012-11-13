@@ -1,6 +1,6 @@
       SUBROUTINE JJLBSG (IC, ID, IOC, IBACOL, IADMI, IADYN, LTOT) 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,26 +33,20 @@ C OUT   LTOT  : LONGUEUR EN ENTIERS LIBEREE
 C
 C ----------------------------------------------------------------------
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C TOLE CRP_18 CRS_505 CRS_508 CRS_512
+C TOLE CRS_505
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER            IC, ID, IOC, IBACOL, IADMI, IADYN, LTOT  
 C     ------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C-----------------------------------------------------------------------
-      INTEGER IACCE ,IBIADD ,IBIADM ,IBID ,IBLONO ,IXDESO ,IXIADD 
+      INTEGER IBIADD ,IBIADM ,IBID ,IBLONO ,IXDESO ,IXIADD 
       INTEGER IXIADM ,IXLONO ,JCARA ,JDATE ,JHCOD ,JIACCE ,JIADD 
       INTEGER JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ ,LONOI 
       INTEGER LSV ,N ,NBACCE 
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
-      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
-      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
@@ -62,7 +56,6 @@ C
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
      &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
-      COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
@@ -75,12 +68,10 @@ C
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,             IDLONG     ,
-     +               IDLONO     , IDLUTI     , IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9  ,IDNUM  = 10 )
+      INTEGER         IDDESO     , IDIADD    , IDIADM     ,
+     +               IDLONO          
+      PARAMETER    (  IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     +               IDLONO = 8    )
 C ----------------------------------------------------------------------
       INTEGER        IDM, ISD, ISF, IL, LTYPI, LGS, IADDI(2),NBIOAV(2)
 C      

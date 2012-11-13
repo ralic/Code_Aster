@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN_SI
 # RESPONSABLE PELLET J.PELLET
 # sslp201b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -435,10 +435,16 @@ MSLIN=MECA_STATIQUE(MODELE=MO,
 MSLIN=CALC_CHAMP(reuse=MSLIN,
                  RESULTAT=MSLIN,
                  LIST_INST=LR1,
-                 CRITERES=('SIEQ_ELNO','SIEQ_ELGA','EPEQ_ELNO','EPEQ_ELGA'),
-                 DEFORMATION=('EPME_ELGA','EPME_ELNO','EPSI_ELGA','EPSI_ELNO'),
-                 ENERGIE=('EPOT_ELEM'),
-                 CONTRAINTE=('SIGM_ELNO'),);
+                 CONTRAINTE=(             'SIEF_ELNO','SIEF_NOEU',
+                              'SIGM_ELGA','SIGM_ELNO','SIGM_NOEU',),
+                 DEFORMATION=('EPME_ELGA','EPME_ELNO','EPME_NOEU',
+                              'EPSI_ELGA','EPSI_ELNO','EPSI_NOEU',),
+                 ENERGIE=(    'ENEL_ELGA','ENEL_ELEM','ENEL_ELNO','ENEL_NOEU',
+                                          'EPOT_ELEM',
+                              'ETOT_ELGA','ETOT_ELEM','ETOT_ELNO','ETOT_NOEU',),
+                 CRITERES=(   'EPEQ_ELGA','EPEQ_ELNO','EPEQ_NOEU',
+                              'EPMQ_ELGA','EPMQ_ELNO','EPMQ_NOEU',
+                              'SIEQ_ELGA','SIEQ_ELNO','SIEQ_NOEU'),);
 
 #IMPR_RESU(FORMAT='MED',
 #          RESU=_F(RESULTAT=MSLIN))
@@ -680,14 +686,19 @@ MSLI2=MECA_STATIQUE(MODELE=MO,
 # ----------------------------------------------------------------------
 #   POST_TRAITEMENT DU CALCUL
 # ----------------------------------------------------------------------
-
 MSLI2=CALC_CHAMP(reuse=MSLI2,
                  RESULTAT=MSLI2,
                  NUME_ORDRE=(1,2,3),
-                 CRITERES=('SIEQ_ELNO','SIEQ_ELGA','EPEQ_ELNO','EPEQ_ELGA'),
-                 DEFORMATION=('EPME_ELGA','EPME_ELNO','EPSI_ELGA','EPSI_ELNO'),
-                 ENERGIE=('EPOT_ELEM'),
-                 CONTRAINTE=('SIGM_ELNO'),);
+                 CONTRAINTE=(             'SIEF_ELNO','SIEF_NOEU',
+                              'SIGM_ELGA','SIGM_ELNO',),
+                 DEFORMATION=('EPME_ELGA','EPME_ELNO','EPME_NOEU',
+                              'EPSI_ELGA','EPSI_ELNO',),
+                 ENERGIE=(    'ENEL_ELGA','ENEL_ELEM','ENEL_ELNO','ENEL_NOEU',
+                                          'EPOT_ELEM',
+                              'ETOT_ELGA','ETOT_ELEM','ETOT_ELNO','ETOT_NOEU',),
+                 CRITERES=(   'EPEQ_ELGA','EPEQ_ELNO',
+                              'EPMQ_ELGA','EPMQ_ELNO','EPMQ_NOEU',
+                              'SIEQ_ELGA','SIEQ_ELNO',),);
 
 MSLI2=CALC_CHAMP(reuse =MSLI2,
               RESULTAT=MSLI2,

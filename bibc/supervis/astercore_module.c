@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astercore_module supervis  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astercore_module supervis  DATE 13/11/2012   AUTEUR REZETTE C.REZETTE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -509,6 +509,7 @@ void DEFSS(UTALRM,utalrm, _IN char *bool, _IN STRING_SIZE lbool,
 
     Py_DECREF(res);
     FreeStr(onoff);
+    FreeStr(s_id);
 }
 
 void DEFP(GTALRM,gtalrm, _OUT INTEGER *nb)

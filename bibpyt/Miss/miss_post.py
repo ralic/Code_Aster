@@ -1,4 +1,4 @@
-#@ MODIF miss_post Miss  DATE 16/10/2012   AUTEUR DEVESA G.DEVESA 
+#@ MODIF miss_post Miss  DATE 13/11/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -556,8 +556,8 @@ class POST_MISS_TAB(POST_MISS):
         _reptemp = DEFI_FONCTION(VALE=fft.tabul(),
                                  **fft.para)
         opts = {}
-        if self.param['LIST_FREQ']:
-            opts['LIST_FREQ'] = self.param['LIST_FREQ']
+        if self.param['LIST_FREQ_SPEC_OSCI']:
+            opts['LIST_FREQ'] = self.param['LIST_FREQ_SPEC_OSCI']
         _spec = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=_reptemp,
                                            NORME=self.param['NORME'],
                                            AMOR_REDUIT=self.param['AMOR_SPEC_OSCI'],

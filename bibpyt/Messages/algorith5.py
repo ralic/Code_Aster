@@ -1,4 +1,4 @@
-#@ MODIF algorith5 Messages  DATE 16/10/2012   AUTEUR BERRO H.BERRO 
+#@ MODIF algorith5 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,7 +149,7 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
 """),
 
 37 : _(u"""
- le multi-appui + sous-structuration n'est pas développé - bon courage
+ La sous-structuration en présence de multiappui n'est pas développée.
 """),
 
 38 : _(u"""

@@ -6,7 +6,7 @@
      &                    DEPL0 ,DEPL1 ,DTAU  ,INDCO,COPILO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR MARTIN A.MARTIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -103,11 +103,11 @@ C           ET LA NORMALE ND ORIENTEE DE ESCL -> MAIT
             IF (NDIM.EQ.3) THEN   
                CALL XJACFF(ELREF,ELREFC,ELC,NDIM,FPG,JPTINT,
      &                 IFA,CFACE,IPGF,NNO,IGEOM,JBASEC,G,
-     &                 'NON',JAC,FFP,FFPC,DFBID,ND,TAU1,TAU2)        
+     &                 JAC,FFP,FFPC,DFBID,ND,TAU1,TAU2)        
             ELSEIF (NDIM.EQ.2) THEN
                CALL XJACF2(ELREF,ELREFC,ELC,NDIM,FPG,JPTINT,
      &                 IFA,CFACE,NPTF,IPGF,NNO,IGEOM,JBASEC,
-     &                 G,'NON',JAC,FFP,FFPC,DFBID,ND,TAU1)
+     &                 G,JAC,FFP,FFPC,DFBID,ND,TAU1)
             ENDIF
 C
 C           CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)

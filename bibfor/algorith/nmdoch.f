@@ -1,7 +1,7 @@
       SUBROUTINE NMDOCH(LISCHA,IEXCIT,EXCIT )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -207,13 +207,15 @@ C
           IF (IEXCIT.EQ.1) THEN
             INDIC  = INDIC + 1
    30       CONTINUE
-            CALL GETVID('EXCIT','CHARGE',INDIC,IARG,1,NOMCHA,N1)
-            DO 131,ICHD = 1,NCHAR
-              IF (NOMCHA.EQ.ZK8(JLISDB+ICHD-1)) THEN
-                CALL U2MESK('E','CHARGES_1',1,NOMCHA)
-              ENDIF
- 131        CONTINUE
-            IF (N1.EQ.0) THEN
+            CALL GETVID('EXCIT','CHARGE',INDIC,IARG,0,NOMCHA,N1)
+            IF(N1.NE.0)THEN
+              CALL GETVID('EXCIT','CHARGE',INDIC,IARG,1,NOMCHA,N1)
+              DO 131,ICHD = 1,NCHAR
+                IF (NOMCHA.EQ.ZK8(JLISDB+ICHD-1)) THEN
+                  CALL U2MESK('E','CHARGES_1',1,NOMCHA)
+                ENDIF
+ 131          CONTINUE
+            ELSE
               INDIC  = INDIC + 1
               GOTO 30
             END IF

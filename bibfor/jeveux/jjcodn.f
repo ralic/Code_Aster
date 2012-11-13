@@ -1,6 +1,6 @@
       FUNCTION JJCODN(ICRE , NOMREP , NOMEC , IREP, CREP , NMAX , NUTI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,22 +17,19 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRS_512
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT NONE
       CHARACTER*(*)          NOMREP , NOMEC ,       CREP(*)
       INTEGER         ICRE                  , IREP(*)    , NMAX , NUTI
 C ----------------------------------------------------------------------
-      INTEGER  ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC,JXHCOD
+      INTEGER  ILOREP , IDENO , ILNOM , ILUTI , IDEHC,JXHCOD
 C-----------------------------------------------------------------------
       INTEGER I ,IDEHCO ,IDENOM ,IIN ,IN ,J ,JIN
       INTEGER JJCODN ,K ,LL ,LNOM ,LOREP ,NE
 C-----------------------------------------------------------------------
-      PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
+      PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILUTI=5,IDEHC=6)
       INTEGER          IRET
       CHARACTER*32     CLE , NOM , VALK(2)
-      CHARACTER*6      PGME
-      PARAMETER      ( PGME = 'JJCODN' )
       LOGICAL          RINSER
 C DEB ------------------------------------------------------------------
       JJCODN = 0

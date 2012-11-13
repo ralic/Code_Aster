@@ -1,7 +1,6 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
-C TOLE CRP_18 CRS_508 CRS_512 CRS_505
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,32 +24,21 @@ C L'EXCEPTION DES OBJETS SYSTEME
 C
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INCLUDE 'jeveux_private.h'
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C-----------------------------------------------------------------------
       INTEGER IADMAR ,IADMI ,IADMOC ,IADYN ,IADYOC ,IBACOL ,IBIADD 
-      INTEGER IBIADM ,IBLONO ,IBMARQ ,INDIR ,IRET ,IXDESO ,IXIADD 
+      INTEGER IBIADM ,IBLONO ,IBMARQ  ,IRET ,IXDESO ,IXIADD 
       INTEGER IXIADM ,IXLONO ,IXMARQ ,JCARA ,JDATE ,JDOCU ,JGENR 
       INTEGER JHCOD ,JIACCE ,JIADD ,JIADM ,JIDO ,JINDIR ,JLONG 
       INTEGER JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE 
       INTEGER K ,LONOI ,N ,NBACCE ,NMAX 
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
-      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
-      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
@@ -66,7 +54,6 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IFNIVO, NIVO
       COMMON /JVNIVO/  IFNIVO, NIVO
-      COMMON /KINDIR/  INDIR(1)
       COMMON /JINDIR/  JINDIR(N)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
@@ -79,14 +66,14 @@ C
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,             IDLONG     ,
-     &               IDLONO     , IDLUTI     , IDNUM
+     &               IDMARQ     ,
+     &               IDLONO     , IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
+     &               IDMARQ = 4 ,
+     &               IDLONO = 8 , IDNUM  = 10 )
 C     ------------------------------------------------------------------
-      INTEGER          LIDBAS      , LIDEFF
-      PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
+      INTEGER          LIDBAS      
+      PARAMETER      ( LIDBAS = 20 )
       INTEGER          IC,ID(IDNUM),IDO,IADDI(2)
       REAL*8           VALR(3)
       CHARACTER*1      CGENR

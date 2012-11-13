@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF utilitai8 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -255,7 +255,7 @@ Conseil:
 
 60 : _(u"""
  L'intégrale d'un champ sur des éléments de structure
-(poutre, plaque, coque, tuyau, poutre multi-fibres) n'est pas programmée.
+(poutre, plaque, coque, tuyau, poutre multifibre) n'est pas programmée.
  Réduisez la zone de calcul par le mot-clé GROUP_MA/MAILLE.
 """),
 

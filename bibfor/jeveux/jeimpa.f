@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPA ( UNIT , NOMLU , COM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,16 +17,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRS_508 CRS_512
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER             UNIT
       CHARACTER *(*)      NOMLU , COM
 C
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
@@ -40,15 +37,10 @@ C-----------------------------------------------------------------------
       INTEGER I ,IBACOL ,IC ,ICOL ,ID ,ILON ,IPGCEX
       INTEGER IXIADD ,IXLONG ,J ,JCOL ,JDOCU ,JGENR ,JLON
       INTEGER JORIG ,JRNOM ,JTYPE ,K ,N ,NNAC ,NNACI
-      INTEGER NNAO,NNL
+      INTEGER NNAO
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C
       CHARACTER *8     NUME       , NOME
@@ -56,19 +48,17 @@ C
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C     -----------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,             IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+      INTEGER         IDDESO     ,IDIADD          ,
+     &                            IDLONG
+      PARAMETER    (  IDDESO = 1 ,IDIADD = 2  ,
+     &                            IDLONG = 7  )
 C
       CHARACTER *72   COML
       CHARACTER *32   NOML32
       CHARACTER *33   CVAL
       INTEGER         ICRE , IRET , IVAL
 C
-      PARAMETER     ( NNAO = 15 , NNL = 10)
+      PARAMETER     ( NNAO = 15 )
       PARAMETER     ( NNAC = 6  )
       CHARACTER *8    NAC(NNAC) , NAO(NNAO)
       CHARACTER *1    TAC(NNAC) , TAO(NNAO)  , GENRI

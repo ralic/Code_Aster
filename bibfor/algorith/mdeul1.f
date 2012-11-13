@@ -40,7 +40,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,12 @@ C
           AMOGEN(IM) = DEUX * AMOGEN(IM) * PULSAT(IM)
  100    CONTINUE
       ELSE
-        CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,1,K8B,N1)
+        CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,0,K8B,N1)
+        IF(N1.NE.0)THEN
+           CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,1,K8B,N1)
+        ELSE
+           K8B=' '
+        ENDIF
         VROTIN = 0.D0
         AROTIN = 0.D0
         IF (K8B.EQ.'OUI') THEN

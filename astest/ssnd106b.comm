@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/11/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF EN D_PLAN VMIS ISOTROPE
 # ssnd106b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -96,6 +96,11 @@ DEFLIST1 = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='MANUEL',LIST_INST = L_inst,))
 resu=[None]*len(compor)
 vmis=[None]*len(compor)
 epsg=[None]*len(compor)
+valec=[None]*len(compor)
+valec[0]=[1124.68762,1410.375168,1663.91301657,1891.69594455 ]
+valec[1]=[1126.95511,1412.70481, 1666.15590 ,1893.83240 ]
+valec[2]=[1126.41956,1411.03701,1664.00779,1891.6627714,]
+
 icl=-1
 for icomp,comp in enumerate(compor) :
 
@@ -162,35 +167,32 @@ for icomp,comp in enumerate(compor) :
                               NOM_CMP='VMIS',MAILLE='M2',POINT=1,);
     epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA',
                               NOM_CMP='EPYY',MAILLE='M2',POINT=1,);
-    TEST_FONCTION(VALEUR=(_F(VALE_CALC=1125.0,    #TODO vale_calc
+
+    TEST_FONCTION(VALEUR=(_F(VALE_CALC=valec[icomp][0],
                              VALE_REFE=1125.0,
                              VALE_PARA=1.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=2.E-3,
                              PRECISION=2.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
-                          _F(VALE_CALC=1410.37516802,
+                          _F(VALE_CALC=valec[icomp][1],
                              VALE_REFE=1411.0,
                              VALE_PARA=2.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=2.E-3,
                              PRECISION=2.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
-                          _F(VALE_CALC=1663.91301657,
+                          _F(VALE_CALC=valec[icomp][2],
                              VALE_REFE=1664.0,
                              VALE_PARA=3.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=2.E-3,
                              PRECISION=2.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
-                          _F(VALE_CALC=1891.69594456,
+                          _F(VALE_CALC=valec[icomp][3],
                              VALE_REFE=1891.7,
                              VALE_PARA=4.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=2.E-3,
                              PRECISION=2.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
@@ -199,7 +201,7 @@ for icomp,comp in enumerate(compor) :
 
 
 
-IMPR_RESU(RESU=_F(RESULTAT=resu[1],),FORMAT='MED');
+#IMPR_RESU(RESU=_F(RESULTAT=resu[1],),FORMAT='MED');
 
 DEFI_FICHIER( UNITE=38, FICHIER='./REPE_OUT/courbes2D_vmis_isotrope.agr')
 IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,14 +73,14 @@ previous_errors = set([
     'HDFCRF', 'HEXS', 'HUJCI', 'HUJCRI', 'HUJDDD', 'HUJDP', 'HUJELA', 'HUJIID', 'HUJJID',
     'HUJKSI', 'HUJNVI', 'HUJPLA', 'HUJPOT', 'HUJTEL', 'HUJTID', 'ICHIN', 'ICOEF', 'IDDL',
     'IM', 'INFOG', 'JECROC', 'JENONU', 'JENUNO', 'JEXNOM', 'JEXNUM', 'JM', 'JUVECA', 'K.PHI',
-    'K.U', 'KMOD', 'KSIB', 'KTILDA', 'Kcam', "L'elrefe", 'LCDPPA', 'LIBRARY', 'LIGREL',
+    'K.U', 'KMOD', 'KSIB', 'KTILDA', "L'elrefe", 'LCDPPA', 'LIBRARY', 'LIGREL',
     'LIGRELs', 'LMAT', 'LONCUM', 'LONT', 'LTNT', 'MOLOC', 'Map', 'NBCMP', 'NBCYCL', 'NBDDL',
     'NBMECA', 'NBNOEUD', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
     'NEMA', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
     'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL', 'NUEQ', 'NUME.LILI', 'NUMER',
     'NUMERO.F', 'NUMERO.f', 'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
     'PARAMETER', 'PATH', 'PERMEA', 'PFACY', 'PHYSICAL', 'PMAX', 'POLYNOME',
-    'POSTK', 'PREML', 'PRNO', 'Ptrac', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF', 'RM-EP',
+    'POSTK', 'PREML', 'PRNO', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF', 'RM-EP',
     'ROMBOUT', 'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
     'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'STOGI', 'SV', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
     'TRIA-QUAD', 'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY',
@@ -90,9 +90,9 @@ previous_errors = set([
     'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn', "d'ACIER",
     'deltat', 'dfdi', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa', 'elrefe', 'ep',
     'er', 'error', 'etanca', 'etenca', 'exchml.f', 'exe', 'export',
-    'flag', 'floating', 'fointa', 'fonree', 'gl', 'grels', 'hexa',
-    'i.e', 'icoret', 'indn', 'ipos', 'kapa', 'kr', "l'AXE", "l'EVOL", 'lg',
-    'ligrel', 'lkcaln', 'lkdhds', 'lkds', 'lklmat', 'lmat', 'longt', 'lumpe', 'majpad',
+    'flag', 'floating', 'fointa', 'fonree', 'gl', 'grels',
+    'i.e', 'indn', 'ipos', 'kr', "l'AXE", "l'EVOL", 'lg',
+    'ligrel', 'lkcaln', 'lkdhds', 'lkds', 'lklmat', 'lmat', 'longt', 'majpad',
     'materiau.nomrc', 'mdump', 'medconforme', 'medimport', 'mem', 'memjeveux',
     'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp', 'nmaxocl',
     'nmocl', 'nomres', 'nomta', 'nomte', 'nomtyp', 'not', 'nt', 'number', 'nume',
@@ -100,7 +100,8 @@ previous_errors = set([
     'raymin', 'rayon-raymin', 'rcmaco', 'relcom',
     'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch', 'sd',
     'skin.pos', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',
-    'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx', 'xxxxxx.py' , 'multifibre'])
+    'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx', 'xxxxxx.py',
+    'hexa', 'lumpe'])
 
 current_errors = checker.get_unknown_words()
 new = list(set(current_errors).difference(previous_errors))
@@ -143,8 +144,8 @@ TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            VALE_CALC_I=0,
            VALE_REFE_I=0,
-           TOLE_MACHINE=314.1,
-           PRECISION=314.1,
+           TOLE_MACHINE=309.1,
+           PRECISION=309.1,
            NOM_PARA='NBWARN',
            TABLE=tabw,
            )

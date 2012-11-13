@@ -1,7 +1,7 @@
       SUBROUTINE JJIMPO (UNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
      &                   LT    , LONOI , MESS , PARM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +18,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_4 CRS_508
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
+C TOLE CRS_513
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER            UNIT
       INTEGER            IADMI , IDECI , IDATOC        , LT , LONOI
       CHARACTER*(*)      MESS  , PARM  , GENRI , TYPEI
@@ -45,23 +46,12 @@ C-----------------------------------------------------------------------
       INTEGER NL ,NM ,NU
 C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      REAL*8           R8ZON(1)
-      LOGICAL          LSZON(1)
-      INTEGER*4        I4ZON(1)
-      EQUIVALENCE    ( ISZON(1), K1ZON(1), R8ZON(1), LSZON(1), I4ZON(1))
 C ----------------------------------------------------------------------
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE

@@ -1,6 +1,6 @@
       SUBROUTINE JELIBD ( NOMLU , LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,41 +27,31 @@ C OUT  LTOT  : LONGUEUR EN ENTIERS LIBEREE
 C
 C ----------------------------------------------------------------------
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C TOLE CRP_18 CRS_508 CRS_512
-C
+C POUR LES VARS I4ZON, LSZON, R8ZON QUI DANS UN COMMON MAIS UNIQUEMENT
+C PAR EQUIVALENCE
+C TOLE CRS_512
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       CHARACTER*(*)    NOMLU
 C
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C     -----------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IACCE ,IADMEX ,IADMI ,IADYN ,IBACOL ,IBIADD ,IBIADM 
-      INTEGER IDECI ,INAT ,INDIR ,IXDESO ,IXIADD ,IXIADM ,JCARA 
+      INTEGER IADMI ,IADYN ,IBACOL ,IBIADM 
+      INTEGER INAT  ,IXDESO ,IXIADD ,IXIADM ,JCARA 
       INTEGER JDATE ,JDOCU ,JGENR ,JHCOD ,JIACCE ,JIADD ,JIADM 
       INTEGER JINDIR ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG 
-      INTEGER JRNOM ,JTYPE ,K ,LONOI ,LTOT ,LTYPI ,N 
+      INTEGER JRNOM ,JTYPE ,K ,LTOT ,LTYPI ,N 
       INTEGER NBACCE ,NBMAX 
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
-      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
-      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
@@ -78,9 +68,7 @@ C
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
-      COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
-      COMMON /KINDIR/  INDIR(1)
       COMMON /JINDIR/  JINDIR(N)
       INTEGER          ISSTAT
       COMMON /ICONJE/  ISSTAT
@@ -95,21 +83,13 @@ C
       INTEGER          DATEI
       COMMON /IHEUJE/  DATEI
 C ----------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,             IDLONG     ,
-     +               IDLONO     , IDLUTI     , IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9  ,IDNUM  = 10 )
+      INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 )
 C ----------------------------------------------------------------------
       CHARACTER*32   NOML32
-      CHARACTER*8    NOML8
       INTEGER        ICRE,IRET
-      INTEGER        IADDI(2)
 C
       NOML32 = NOMLU
-      NOML8  = NOML32(25:32)
-C
       LTOT = 0
       ICRE = 0
       CALL JJVERN ( NOML32 , ICRE , IRET )
@@ -124,7 +104,6 @@ C
         INAT = 1
         IADMI  = IADM (JIADM(ICLAOS)+2*IDATOS-1)
         LTYPI  = LTYP (JLTYP(ICLAOS)+IDATOS)
-        LONOI  = LONO (JLONO(ICLAOS)+IDATOS) * LTYPI
         IF ( IADMI .EQ. 0 ) THEN
           GOTO 9999
         ENDIF
@@ -157,8 +136,6 @@ C
 C ------- COLLECTION CONTIGUE
 C
           IADMI  = IADM ( JIADM(ICLACO) + 2*IXDESO-1 )
-          IADDI(1) = IADD ( JIADD(ICLACO) + 2*IXDESO-1 )
-          IADDI(2) = IADD ( JIADD(ICLACO) + 2*IXDESO   )
           IF ( IADMI .EQ. 0 ) THEN
             GOTO 9999
           ENDIF
@@ -172,8 +149,6 @@ C ------- COLLECTION DISPERSEE
 C
           NBMAX  = ISZON ( JISZON + IBACOL + IVNMAX )
           IBIADM = IADM ( JIADM(ICLACO) + 2*IXIADM-1 )
-          IBIADD = IADM ( JIADM(ICLACO) + 2*IXIADD-1 )
-          IDECI  = 0
           DO 10 K = 1,NBMAX
             IADMI = ISZON(JISZON + IBIADM - 1 + 2*K-1 )
             IF ( IADMI .EQ. 0 ) THEN
@@ -196,9 +171,7 @@ C
 C -------- COLLECTION DISPERSEE
 C
           IBIADM = IADM ( JIADM(ICLACO) + 2*IXIADM-1 )
-          IBIADD = IADM ( JIADM(ICLACO) + 2*IXIADD-1 )
           IADMI  = ISZON(JISZON + IBIADM - 1 + 2*IDATOC-1 )
-          IADMEX = IADMI
           IF ( IADMI .EQ. 0 ) THEN
             GOTO 9999
           ENDIF

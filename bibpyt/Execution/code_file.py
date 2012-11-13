@@ -1,4 +1,4 @@
-#@ MODIF code_file Execution  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF code_file Execution  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,8 +73,6 @@ class CodeVisitor(JDCVisitor):
 
     def visitMCSIMP(self, mcsimp):
         """Visit the MCSIMP object."""
-        if mcsimp.definition.statut == 'c':
-            return
         self.mcsimp = mcsimp.nom
         self.value = ''
         lval = force_list(mcsimp.valeur)

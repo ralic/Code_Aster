@@ -4,7 +4,7 @@
      &                  XE,FF,DFDI,F,EPS,GRAD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/11/2012   AUTEUR MARTIN A.MARTIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,16 +88,10 @@ C
       REAL*8      INVJAC(3,3)
       REAL*8      DFF(3,NBNOMX)
       REAL*8      KRON(3,3),TMP,EPSTAB(3,3)
-      LOGICAL CALBID
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-
-C     -- QUAND ON APPELLE REEREF AVEC IDEPL=0,
-C        ON NE PEUT PAS S'EN SERVIR !
-      CALBID=IDEPL.EQ.0
-
 
 C --- INITIALISATIONS
 C
@@ -181,7 +175,6 @@ C --- DDLM=-1 PERMET D'EVITER D'AVOIR A FOURNIR DDLM DANS CHAQUE CAS
 C -- DDLS CLASSIQUES
         DO 403 I=1,NDIM
           CPT = CPT+1
-          IF (CALBID) GOTO 403
           DO 404 J=1,NDIM
             GRAD(I,J) = GRAD(I,J) + DFDI(N,J) *
      &                            ZR(IDEPL-1+NN+CPT)
@@ -192,7 +185,6 @@ C -- DDLS HEAVISIDE
         DO 405 IG=1,NFH
           DO 406 I=1,NDIM
             CPT = CPT+1
-            IF (CALBID) GOTO 406
             DO 407 J=1,NDIM
               GRAD(I,J) = GRAD(I,J) + HE(FISNO(N,IG)) * DFDI(N,J) *
      &                            ZR(IDEPL-1+NN+CPT)
@@ -204,7 +196,6 @@ C -- DDL ENRICHIS EN FOND DE FISSURE
         DO 408 IG=1,NFE
           DO 409 I=1,NDIM
             CPT = CPT+1
-            IF (CALBID) GOTO 409
             DO 410 J=1,NDIM
               GRAD(I,J) = GRAD(I,J) + ZR(IDEPL-1+NN+CPT) *
      &                    (DFDI(N,J) * FE(IG) + FF(N) * DGDGL(IG,J))

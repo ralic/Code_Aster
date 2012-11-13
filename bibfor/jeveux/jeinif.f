@@ -1,7 +1,7 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,8 +18,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_20 CRS_508
+C TOLE CRP_20
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER                                   NREP, NBLOC, LBLOC
       CHARACTER*(*)       STI, STO, NOMF, CLAS
 C ----------------------------------------------------------------------
@@ -45,8 +46,8 @@ C
 C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IACCE ,IADRS ,IC ,ICRE ,INDIR ,IPGCA
-      INTEGER IRET ,IUSADI ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD
+      INTEGER I  ,IADRS ,IC ,ICRE  ,IPGCA
+      INTEGER IRET  ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD
       INTEGER JIACCE ,JIADD ,JIADM ,JINDIR ,JLONG ,JLONO ,JLTYP
       INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,JUSADI ,K
       INTEGER L ,LCARAO ,LDYNOL ,LLOC ,LMARQ ,LON ,LON1
@@ -54,24 +55,12 @@ C-----------------------------------------------------------------------
       INTEGER NBLMA2 ,NBLOCO ,NBPETI ,NREPO,JJPREM
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
-      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
-      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
-      COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
-      COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
-      COMMON /KINDIR/  INDIR(1)
       COMMON /JINDIR/  JINDIR(N)
       COMMON /INBDET/  NBLIM(N),NBGROS(N),NBPETI(N)
 C ----------------------------------------------------------------------

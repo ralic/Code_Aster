@@ -13,7 +13,7 @@
       CHARACTER*8   ELP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/11/2012   AUTEUR MARTIN A.MARTIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -445,7 +445,7 @@ C           RECUP DE LA GÉOMETRIE
 C           CALCUL DES FF
 
 
-            CALL REEREF(ELP,AXI, NNOP,IBID,ZR(IGEOM),GEOM,0,LBID,
+            CALL REEREF(ELP,AXI, NNOP,IBID,ZR(IGEOM),GEOM,1,LBID,
      &              NDIM,RBID,RBID, RBID,
      &              IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,'NON',
      &              RBID2,FF,RBID,RBID,RBID,RBID)

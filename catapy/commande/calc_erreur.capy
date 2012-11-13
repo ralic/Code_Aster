@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,11 +48,7 @@ CALC_ERREUR=OPER(nom="CALC_ERREUR",op=42,sd_prod=calc_erreur_prod,reentrant='f',
      b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
          PRECISION       =SIMP(statut='o',typ='R'),),
      LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
-     TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-     GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                           fr="Le calcul ne sera effectué que sur ces mailles là"),
-     MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
-                           fr="Le calcul ne sera effectué que sur ces mailles là"),
+     TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI"),
 
 #-----------------------------------------------------------------------
 # pour conserver la compatibilité mais ne sert à rien

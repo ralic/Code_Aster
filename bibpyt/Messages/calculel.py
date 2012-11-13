@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 23/10/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,7 @@ Risques & conseils :
 6 : _(u"""
  Erreur d'utilisation :
    On n'arrive pas à construire correctement le champ contenant le nombre de sous-points
-   des éléments finis (coques multi-couches, tuyaux, poutre multi-fibres, ...)  du modèle %(k1)s.
+   des éléments finis (coques multicouches, tuyaux, poutres multifibres, ...) du modèle %(k1)s.
 
  Risques & conseils :
    Cette erreur intervient lorsque l'on ne définit pas TOUTES les caractéristiques élémentaires

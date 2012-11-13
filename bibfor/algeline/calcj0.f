@@ -1,7 +1,6 @@
       SUBROUTINE CALCJ0(T,SIGPRI,VALP)
-C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,8 +17,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CRP_18
-C ----------------------------------------------------------------------
       IMPLICIT NONE
 C     CALCUL LE MAXIMUM DES :
 C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
@@ -29,8 +26,6 @@ C ----------------------------------------------------------------------
 C     IN     T     TENSEUR CONTRAINTE OU DEFORMATION (XX YY ZZ XY XZ YZ)
 C            ON EST EN DIMENSION ESPACE = 3
 C     OUT    VALP  VECTEUR DES GRANDEURS EQUIVALENTES
-C ----------------------------------------------------------------------
-C
 C ----------------------------------------------------------------------
       REAL*8         T(6) ,    TB(6) , TS(6) , TU(6) , VECP(3,3)
       REAL*8         VALP(3) , JACAUX(3)
@@ -43,8 +38,6 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       DATA   NPERM ,TOL,TOLDYN    /12,1.D-10,1.D-2/
 C ----------------------------------------------------------------------
-
-C
 C     ON RECALCULE LES TERMES REELS DU TENSEURS SACHANT
 C     QUE LES TERMES NON DIAGONAUX ONT ETE MULTIPLIE PAR SQRT(2)
 C
@@ -63,23 +56,21 @@ C
       TS(5)=TB(6)
       TS(6)=TB(3)
 C
-C       MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
+C     MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
+      TU(1) = 1.D0
+      TU(2) = 0.D0
+      TU(3) = 0.D0
+      TU(4) = 1.D0
+      TU(5) = 0.D0
+      TU(6) = 1.D0
 C
-        TU(1) = 1.D0
-        TU(2) = 0.D0
-        TU(3) = 0.D0
-        TU(4) = 1.D0
-        TU(5) = 0.D0
-        TU(6) = 1.D0
+C -    VALEURS PRINCIPALES
+       NBVEC = 3
+       ITYPE = 2
+       IORDRE = 2
+       CALL JACOBI(NBVEC,NPERM,TOL,TOLDYN,TS,TU,VECP,VALP(1),JACAUX,
+     &             NITJAC,ITYPE,IORDRE)
 C
-C -       VALEURS PRINCIPALES
-          NBVEC = 3
-          ITYPE = 2
-          IORDRE = 2
-          CALL JACOBI(NBVEC,NPERM,TOL,TOLDYN,TS,TU,VECP,VALP(1),JACAUX,
-     &                NITJAC,ITYPE,IORDRE)
-C
-C
-         SIGPRI=MAX(VALP(1),VALP(2),VALP(3))
+      SIGPRI=MAX(VALP(1),VALP(2),VALP(3))
 C
       END

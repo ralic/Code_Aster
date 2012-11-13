@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley_engine Stanley  DATE 12/11/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2629,6 +2629,9 @@ class DRIVER_COURBES(DRIVER) :
 
             if isOk: DETR( __COTMP1 )
             if l_detr: DETR( tuple(l_detr) )
+
+            # Dans le cas de plusieurs points, il faut revenir au contexte initial
+            contexte = self.stan.contexte
 
 
     elif selection.geom[0] == 'CHEMIN' :

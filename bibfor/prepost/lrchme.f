@@ -2,12 +2,12 @@
      &                    NOMAAS, TYPECH, NOMGD, TYPENT,
      &                    NBCMPV, NCMPVA, NCMPVM, PROLZ,
      &                    IINST, NUMPT,  NUMORD, INST, CRIT, PREC,
-     &                    NROFIC, LIGREL, OPTION, PARAM, 
+     &                    NROFIC, OPTION, PARAM,
      &                    NBPGMA, NBPGMM, CODRET )
 C TOLE CRP_21
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 12/11/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,6 @@ C        INST   : INSTANT EVENTUEL
 C        CRIT   : CRITERE SUR LA RECHERCHE DU BON INSTANT
 C        PREC   : PRECISION SUR LA RECHERCHE DU BON INSTANT
 C        NROFIC : NUMERO NROFIC LOGIQUE DU FICHIER MED
-C        LIGREL : NOM DU LIGREL
 C        OPTION / PARAM : POUR CREER LE CHAMP COMME S'IL ETAIT LE
 C                 PARAMETRE EN SORTIE DE CETTE OPTION (CHAMPS ELGA)
 C     SORTIES:
@@ -62,7 +61,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      CHARACTER*19  CHANOM,LIGREL
+      CHARACTER*19  CHANOM
       CHARACTER*(*) NCMPVA, NCMPVM
       CHARACTER*8   NOMAAS
       CHARACTER*8   NOMGD, TYPECH
@@ -105,11 +104,12 @@ C
         IF ( IAUX.EQ.0.AND.TYPECH(1:4).NE.'CART' ) THEN
           CALL U2MESS('F','MED_71')
         ENDIF
+        IF ( IAUX.EQ.0 ) NOMMOD = ' '
         CALL LRCEME ( CHANOM,  NOCHMD, TYPECH(1:4), NOMAMD,
      &                NOMAAS, NOMMOD, NOMGD, TYPENT,
      &                NBCMPV, NCMPVA, NCMPVM, PROLZ,
      &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     &                NROFIC, LIGREL, OPTION, PARAM,
+     &                NROFIC, OPTION, PARAM,
      &                NBPGMA, NBPGMM, CODRET )
       ELSE
         CODRET = 1

@@ -2,7 +2,7 @@
      &                  EPSMAT,KTYPR)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF AMUMPM MUMPS  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -53,6 +53,8 @@ C============================================================
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C============================================================
 
       INTEGER    NMXINS
@@ -186,7 +188,7 @@ C       ------------------------------------------------
         CALL ASSERT(N1.EQ.NSMDI)
 C --- CALCUL DE N
         N=NSMDI
-        
+
 C --- GESTION ELIM_LAGR2
 C --- ON A ESSAYE UNE BASULE AUTOMATIQUE ELIM_LAGR2='OUI'/'NON'
 C --- EN FONCTION DE LA PROPORTION DE LAGRANGES. EN FAIT, 'OUI'
@@ -249,7 +251,7 @@ C --- SEUILLAGE DES TERMES DE FILTRAGE POUR EVITER LES VALEURS ABBERANTES
         ELSE
           LFILTR=.FALSE.
         ENDIF
-      ENDIF  
+      ENDIF
 
 C       ------------------------------------------------
 C       DETERMINATION DU NBRE LOCAL DE TERMES PAR PROC: NZLOC
@@ -300,7 +302,7 @@ C --- PREPARATION DES DONNES (NUM DE COLONNE, TERME DE FILTRAGE...)
           ELSE
             RFILTR=-1.D0
           ENDIF
-          
+
 
 C --- PARTIE TRIANGULAIRE INF. SI REEL
           IF (LTYPR) THEN
@@ -323,9 +325,9 @@ C --- PARTIE TRIANGULAIRE INF. SI REEL
 C ---   TERME RIGOUREUSEMENT NUL
               NFILT1=NFILT1+1
             ENDIF
-              
+
           ELSE
-          
+
 C --- PARTIE TRIANGULAIRE INF. SI COMPLEXE
             CAUX=ZC(JVALE-1+KTERM)
             IF (CAUX.NE.(0.D0,0.D0)) THEN
@@ -347,10 +349,10 @@ C ---   TERME RIGOUREUSEMENT NUL
               NFILT1=NFILT1+1
             ENDIF
           ENDIF
-          
+
 C --- PARTIE TRIANGULAIRE SUP. SI REEL
           IF ((SYM.EQ.0).AND.(ILIGL.NE.JCOLL)) THEN
-          
+
             IF (LTYPR) THEN
               IF (LMNSY) RAUX=ZR(JVALE2-1+KTERM)
               IF (RAUX.NE.0.D0) THEN
@@ -371,9 +373,9 @@ C --- PARTIE TRIANGULAIRE SUP. SI REEL
 C ---   TERME RIGOUREUSEMENT NUL
                 NFILT1=NFILT1+1
               ENDIF
-              
+
             ELSE
-            
+
 C --- PARTIE TRIANGULAIRE SUP. SI COMPLEXE
               IF (LMNSY) CAUX=ZC(JVALE2-1+KTERM)
               IF (CAUX.NE.(0.D0,0.D0)) THEN
@@ -523,7 +525,7 @@ C       ------------------------------------------------
             ENDDO
           ENDIF
         ENDIF
- 
+
 C --- REMPLISSAGE EFFECTIF DES TERMES DE LA MATRICE
         JCOLL=1
         ITERM=0
@@ -611,7 +613,7 @@ C ---- PARTIE TRIANGULAIRE INF. TERME NON NUL
                 CALL ASSERT(.FALSE.)
               ENDIF
             ENDIF
-            KZERO=0         
+            KZERO=0
             IF (ELI2LG) THEN
 C ------      ON ELIMINE LE DERNIER TERME DE A/A_loc SI LAG2
               IF (ZI(JDELG-1+ILIGL).EQ.-1) THEN
@@ -628,9 +630,9 @@ C ------      ON ELIMINE LE DERNIER TERME DE A/A_loc SI LAG2
             ENDIF
 C --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
             IF ((LSPD).AND.(KZERO.EQ.0)) THEN
-              IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC)) 
+              IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC))
      &         CALL U2MESS('F','FACTOR_84')
-            ENDIF           
+            ENDIF
           ENDIF
 
 C --- PARTIE TRIANGULAIRE SUP. SI REEL
@@ -715,14 +717,14 @@ C ---- PARTIE TRIANGULAIRE SUP. TERME NON NUL
               ENDIF
 C --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
               IF ((LSPD).AND.(KZERO.EQ.0)) THEN
-                IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC)) 
+                IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC))
      &           CALL U2MESS('F','FACTOR_84')
-              ENDIF           
+              ENDIF
             ENDIF
           ENDIF
 C ---FIN DE LA BOUCLE SUR NZ
         ENDDO
-            
+
         CALL ASSERT(ITERM.LE.NZ2)
         NZ2=ITERM
         IF (LDIST) THEN

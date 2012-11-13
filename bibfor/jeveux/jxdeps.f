@@ -1,7 +1,7 @@
       SUBROUTINE JXDEPS ( IADINI , IADFIN , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,18 +24,15 @@ C IN  IADINI : ADRESSE INITIALE
 C IN  IADFIN : ADRESSE CIBLE
 C IN  LSO : LONGUEUR DE LA ZONE A DEPLACER
 C     ------------------------------------------------------------------
-C TOLE CRP_18 CRS_508
       IMPLICIT NONE
 C             ROUTINE AVEC ADHERENCE SYSTEME    CRAY
 C             FONCTION(S) UTILISEE(S) : IAND
 C
+      INCLUDE 'jeveux_private.h'
       INTEGER             IADINI , IADFIN , LSO
 C     ------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C     ------------------------------------------------------------------
       INTEGER          MSLOIS
       COMMON /JENVJE/  MSLOIS

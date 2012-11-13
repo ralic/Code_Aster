@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/11/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE TEST BETON_BURGER_FP POUR LA PRISE EN COMPTE DE LA TEMPERATURE
 # comp011f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -352,14 +352,13 @@ for i in range(NCAL):
                                 MAILLE = 'M1',
                                 RESULTAT=RESU[i],
                                 NOM_CHAM='SIEQ_ELNO',
-                          #      NOM_CMP='VMIS',
                                 NOM_CMP='PRIN_1',
                                 OPERATION='EXTRACTION',),);
           IMPR_TABLE(TABLE=SVMIS[i])
 
           TEST_TABLE(TABLE=SVMIS[i],
                      NOM_PARA='PRIN_1',
-                     VALE_CALC=Vmis['PRIN_1',i+2],   #TODO: creer une liste des vale_calc
+                     VALE_CALC=Vmis['PRIN_1',i+2],   
                      VALE_REFE=Vmis['PRIN_1',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);

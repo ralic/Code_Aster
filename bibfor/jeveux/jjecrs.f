@@ -1,7 +1,7 @@
-      SUBROUTINE JJECRS ( IADMI, IADYN, ICLAS, IDOS, IDCO, CUS, IMARQ )
+      SUBROUTINE JJECRS ( IADMI, IADYN, ICLAS, IDOS, IDCO, CUS, JMARQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +18,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRS_508 CRS_505
       IMPLICIT NONE
-      INTEGER             IADMI , ICLAS , IDOS , IDCO ,       IMARQ(2)
+      INCLUDE 'jeveux_private.h'
+      INTEGER             IADMI , ICLAS , IDOS , IDCO,          JMARQ(2)
       CHARACTER*(*)                                     CUS
 C ----------------------------------------------------------------------
 C ACTUALISE LES ENTIERS ENCADRANT UN SEGMENT DE VALEURS
@@ -31,14 +31,11 @@ C IN  ICLAS  : CLASSE DE L'OBJET JEVEUX
 C IN  IDOS   : IDENTIFICATEUR D'OBJET SIMPLE OU D'OBJET DE COLLECTION
 C IN  IDCO   : IDENTIFICATEUR DE COLLECTION
 C IN  CUS    : USAGE DU SEGMENT DE VALEUR EN ACCES U
-C OUT IMARQ  : IMAR(1) MARQUE AFFECTEE AU SEGMENT DE VALEUR ASSOCIE
-C              IMAR(2) ADRESSE DE L'OBJET DANS LE DESCRIPTEUR DESMA
+C OUT JMARQ  : JMARQ(1) MARQUE AFFECTEE AU SEGMENT DE VALEUR ASSOCIE
+C              JMARQ(2) ADRESSE DE L'OBJET DANS LE DESCRIPTEUR DESMA
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C ----------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
@@ -91,7 +88,7 @@ C
         ENDIF
       ENDIF
       IF (ISTA1 .EQ. ISTAT(1) ) THEN
-        IMARQ(1) = IPGC
+        JMARQ(1) = IPGC
         IF (IPGC .GT. 0 ) THEN
           IF ( LGDUTI .EQ. LGD ) THEN
 C
@@ -114,21 +111,21 @@ C
           ENDIF
           LGDUTI = LGDUTI+1
           ISZON(JISZON + KDESMA(1) + LGDUTI - 1) = IADMI
-          IMARQ(2) = LGDUTI
+          JMARQ(2) = LGDUTI
         ENDIF
       ELSE IF ( IPGC .EQ. -1 )  THEN
-        IF ( IMARQ(1) .NE. -3 ) THEN
-          IMARQ(1) = IPGC
-          IF ( IMARQ(2) .GT . 0 ) THEN
-            ISZON(JISZON + KDESMA(1) + IMARQ(2) - 1 ) = 0
-            IMARQ(2) = 0
+        IF ( JMARQ(1) .NE. -3 ) THEN
+          JMARQ(1) = IPGC
+          IF ( JMARQ(2) .GT . 0 ) THEN
+            ISZON(JISZON + KDESMA(1) + JMARQ(2) - 1 ) = 0
+            JMARQ(2) = 0
           ENDIF
         ENDIF
       ELSE IF ( IPGC .EQ. -3 )  THEN
-        IMARQ(1) = IPGC
-        IF ( IMARQ(2) .GT . 0 ) THEN
-          ISZON(JISZON + KDESMA(1) + IMARQ(2) - 1 ) = 0
-          IMARQ(2) = 0
+        JMARQ(1) = IPGC
+        IF ( JMARQ(2) .GT . 0 ) THEN
+          ISZON(JISZON + KDESMA(1) + JMARQ(2) - 1 ) = 0
+          JMARQ(2) = 0
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------

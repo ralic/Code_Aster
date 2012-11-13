@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2012   AUTEUR DEBONNIERES P.DE-BONNIERES 
+# MODIF  DATE 12/11/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF EN 3D VMIS ISOTROPE
 # ssnd106a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
@@ -97,6 +97,11 @@ INCLUDE(UNITE=30)
 resu=[None]*len(compor)
 vmis=[None]*len(compor)
 epsg=[None]*len(compor)
+valec=[None]*len(compor)
+valec[0]=[1124.6876205,1410.37516799,1663.913016577,1891.69594455 ]
+valec[1]=[1126.9551126,1412.70480850,1666.155899966,1893.83239982 ]
+valec[2]=[1126.4195562,1411.03540254,1664.0048563,1891.662360946,]
+
 icl=-1
 for icomp,comp in enumerate(compor) :
 
@@ -169,35 +174,32 @@ for icomp,comp in enumerate(compor) :
                               NOM_CMP='VMIS',MAILLE='M2',POINT=1,);
     epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA',
                               NOM_CMP='EPZZ',MAILLE='M2',POINT=1,);
-    TEST_FONCTION(VALEUR=(_F(VALE_CALC=1125.0, #TODO vale_calc
+
+    TEST_FONCTION(VALEUR=(_F(VALE_CALC=valec[icomp][0],
                              VALE_REFE=1125.0,
                              VALE_PARA=1.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=precision[icomp],
                              PRECISION=precision[icomp],
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
-                          _F(VALE_CALC=1410.37516799,
+                          _F(VALE_CALC=valec[icomp][1],
                              VALE_REFE=1411.0,
                              VALE_PARA=2.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=precision[icomp],
                              PRECISION=precision[icomp],
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
-                          _F(VALE_CALC=1663.91301657,
+                          _F(VALE_CALC=valec[icomp][2],
                              VALE_REFE=1664.0,
                              VALE_PARA=3.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=precision[icomp],
                              PRECISION=precision[icomp],
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
-                          _F(VALE_CALC=1891.69594456,
+                          _F(VALE_CALC=valec[icomp][3],
                              VALE_REFE=1891.7,
                              VALE_PARA=4.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=precision[icomp],
                              PRECISION=precision[icomp],
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),

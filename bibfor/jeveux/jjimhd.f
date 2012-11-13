@@ -1,7 +1,7 @@
       SUBROUTINE JJIMHD (IDFIC,INAT,CRNOM,NGRP,KATTR,IADMI,GENRI,
      &                   TYPEI,LT,LONOI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +18,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRS_508 CRS_512
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER            IDFIC,INAT,IADMI,LT,LONOI
       CHARACTER*(*)      CRNOM,NGRP,GENRI,TYPEI
       CHARACTER*24       KATTR(*)
@@ -40,26 +40,16 @@ C IN  LT     : LONGUEUR DU TYPE
 C IN  LONOI  : LONGEUR EN ENTIER DU SEGMENT
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IPS ,JDOCU ,JGENR ,JI ,JITAB ,JORIG ,JRNOM 
+      INTEGER JDOCU ,JGENR ,JI ,JITAB ,JORIG ,JRNOM 
       INTEGER JTYPE ,KITAB ,N 
 C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      REAL*8           R8ZON(1)
-      LOGICAL          LSZON(1)
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) , R8ZON(1) , LSZON(1) )
 C ----------------------------------------------------------------------
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
@@ -67,20 +57,17 @@ C ----------------------------------------------------------------------
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
      &                 DN2(N)
 C ----------------------------------------------------------------------
-      INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
-      PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
+      INTEGER          ILOREP , IDENO , ILNOM , ILMAX  , IDEHC
+      PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,IDEHC=6)
 C ----------------------------------------------------------------------
       INTEGER          LG,IRET,IDDAT,KADM,LADM,IDG
       INTEGER          HDFWSV,HDFOPD,HDFWAT,HDFCLD
       INTEGER          HDFCRG,HDFCLG
-      CHARACTER*6      PGME
-      PARAMETER      ( PGME = 'JJIMHD' )
       CHARACTER*24     NOMATR
       PARAMETER      ( NOMATR = 'ATTRIBUTS JEVEUX' )
 C DEB ------------------------------------------------------------------
       KADM = IADMI
       LADM = ISZON(JISZON + KADM - 3)
-      IPS  = KADM - 4
 C
       IF ( INAT .EQ. 0 ) THEN
         KATTR(1)='OBJET SYSTEME'

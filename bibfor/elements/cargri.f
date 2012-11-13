@@ -1,0 +1,54 @@
+      SUBROUTINE CARGRI(LEXC,DENSIT,DISTN,DIR11)
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+      LOGICAL LEXC
+      REAL*8 DENSIT,DISTN,DIR11(3)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 13/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C     ------------------------------------------------------------------
+C
+C         LECTURE DES CARACTERISTIQUES DES GRILLES
+C
+C  IN  LEXC : TRUE  SI GRILLE_EXCENTREE
+C             FALSE SI GRILLE_MEMBRANE
+C  OUT DENSIT : DENSITE D'ARMATURE
+C  OUT DISTN  : EXCENTREMENT ( R8VIDE() SI LEXC = .FALSE.)
+C  OUT DIR11  : DIRECTION DES ARMATURE
+C
+C     ------------------------------------------------------------------
+      REAL*8     ALPHA,BETA,R8DGRD,R8VIDE
+      INTEGER    ICACOQ
+
+      CALL JEVECH('PCACOQU','L',ICACOQ)
+
+      DENSIT = ZR(ICACOQ)
+      ALPHA = ZR(ICACOQ+1) * R8DGRD()
+      BETA  = ZR(ICACOQ+2) * R8DGRD()
+      DIR11(1) = COS(BETA)*COS(ALPHA)
+      DIR11(2) = COS(BETA)*SIN(ALPHA)
+      DIR11(3) = - SIN(BETA)
+
+      IF (LEXC)THEN
+        DISTN = ZR(ICACOQ+3)
+      ELSE
+        DISTN = R8VIDE()
+      ENDIF
+C
+      END

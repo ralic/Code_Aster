@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CHOC THERMIQUE SUR UN MUR PLAN AVEC CONDITION D ECHANGE
 # ttll100a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,6 +85,11 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTHER,
                             ARCHIVAGE=_F( LIST_INST = LIST)
                        )
 
+TEMPE=CALC_ERREUR(reuse=TEMPE,
+                  RESULTAT=TEMPE,
+                  TOUT='OUI',
+                  OPTION=('ERTH_ELEM',),);
+
 TEMP_1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,
           INST=0.1 )
@@ -99,6 +104,10 @@ NOM_CHAM='TEMP', RESULTAT=TEMPE,
 
 TEMP_4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,
+          INST=10. )
+
+ERREUR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELEM_ERRE_R',
+NOM_CHAM='ERTH_ELEM', RESULTAT=TEMPE,
           INST=10. )
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='N16',
@@ -213,6 +222,11 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N16',
                       VALE_CALC=6.888519471,
                       VALE_REFE=6.7948000000000004,
                       REFERENCE='NON_DEFINI',),
+                   ),
+        CHAM_ELEM=(_F(MAILLE='M17',
+                      NOM_CMP='ERTABS',
+                      CHAM_GD=ERREUR,
+                      VALE_CALC=14.313868719316,),
                    ),
           )
 

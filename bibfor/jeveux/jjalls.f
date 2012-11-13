@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,8 +19,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_6 CRS_508 CRS_505
+C TOLE CRP_6 CRS_505
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER            LONOI,LTY,ITAB(*),JITAB,IADMI,IADYN
       CHARACTER*(*)            GENRI,TYPEI     ,CI
 C ----------------------------------------------------------------------
@@ -37,11 +38,8 @@ C OUT JITAB  : ADRESSE DANS ITAB DU SEGMENT DE VALEUR
 C OUT IADMI  : ADRESSE DU PREMIER MOT DU SEGMENT DE VALEUR
 C OUT IADYN  : ADRESSE DU TABLEAU ALLOUE DYNAMIQUEMENT
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C-----------------------------------------------------------------------
       INTEGER I ,IADA ,IDM ,IERR ,IESSAI ,ILDYNA ,JCARA
       INTEGER JDATE ,JHCOD ,JIADD ,JIADM ,JISZO2 ,JLONG ,JLONO
@@ -49,10 +47,6 @@ C-----------------------------------------------------------------------
       INTEGER LTOT ,N ,NDE
 C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
-      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
-      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,

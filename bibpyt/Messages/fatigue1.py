@@ -1,4 +1,4 @@
-#@ MODIF fatigue1 Messages  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
+#@ MODIF fatigue1 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg={
 1: _(u"""
  Aucun élément du modèle ne sait calculer l'option
- de fatigue multi-axiale, ('PFACY_R').
+ de fatigue multiaxiale, ('PFACY_R').
  Il se peut que la modélisation affectée au groupe de mailles
  sur lequel vous faites un calcul de fatigue ne soit pas "3D".
 

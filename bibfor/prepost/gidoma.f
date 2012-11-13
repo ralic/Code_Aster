@@ -1,6 +1,6 @@
       SUBROUTINE GIDOMA(NBNOTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+
+      CHARACTER*32 JEXATR
       INTEGER NBNOTO
 C
 C ----------------------------------------------------------------------
@@ -43,10 +45,10 @@ C
 C
 C     -- RECUPERATION DU NOMBRE DE MAILLES TOTAL (AVANT COMPACTAGE):
 C-----------------------------------------------------------------------
-      INTEGER IACNX2 ,IANEMA ,IAWK1 ,IAWK2 ,IAWK3 ,ICO ,ILCNX2 
-      INTEGER IMA ,IMAJ ,IMAK ,INO ,IPOS ,J ,K 
-      INTEGER L ,NBMA ,NBMATO ,NBNOJ ,NBNOK ,NUNO1 ,NUNOJ 
-      INTEGER NUNOK 
+      INTEGER IACNX2 ,IANEMA ,IAWK1 ,IAWK2 ,IAWK3 ,ICO ,ILCNX2
+      INTEGER IMA ,IMAJ ,IMAK ,INO ,IPOS ,J ,K
+      INTEGER L ,NBMA ,NBMATO ,NBNOJ ,NBNOK ,NUNO1 ,NUNOJ
+      INTEGER NUNOK
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JELIRA('&&GILIRE.CONNEX2','NMAXOC',NBMATO,KBI)

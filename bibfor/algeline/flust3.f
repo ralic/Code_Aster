@@ -10,7 +10,7 @@
       CHARACTER*19 MELFLU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 13/11/2012   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -508,6 +508,9 @@ C
 C
 C --- MENAGE
 C
+      DO 170 I = 1,NBGRP
+         CALL JEDETR('&&MEFGMN.'//ZK8(IGRMA-1+I))
+  170 CONTINUE
       CALL JEDETR('&&FLUST3.TMP.NBCC')
       CALL JEDETR('&&FLUST3.TMP.REQ')
       CALL JEDETR('&&FLUST3.TMP.NOEQ')
@@ -526,9 +529,6 @@ C
       CALL JEDETR('&&FLUST3.TMP.PHI')
       CALL JEDETR('&&FLUST3.TMP.IZ')
       CALL JEDETR('&&FLUST3.TMP.NUM')
-      DO 170 I = 1,NBGRP
-         CALL JEDETR('&&MEFGMN.'//ZK8(IGRMA-1+I))
-  170 CONTINUE
 C
       CALL JEDEMA()
       END

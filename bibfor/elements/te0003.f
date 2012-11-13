@@ -1,7 +1,7 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -355,7 +355,7 @@ C INITIALISATION DIMENSION DE L'ESPACE DE TRAVAIL/LLUMPE OU PAS
      &       ( ELREFE(1:3).EQ.'P15' ) .OR.
      &       ( ELREFE(1:3).EQ.'T10' ) .OR.
      &       ( ELREFE(1:3).EQ.'P13' ) ) THEN
-          CALL U2MESS('F','CALCULEL5_27')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
 
@@ -466,7 +466,8 @@ C------------------------------------------------------------------
 C RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
       CALL RCCOMA(ZI(IMATE),'THER',PHENOM,ICODRE)
       CALL ASSERT(ICODRE(1).EQ.0)
-      IF (PHENOM.EQ.'THER') THEN
+      IF ((PHENOM.EQ.'THER') .OR.
+     &   (PHENOM.EQ.'THER_ORTH')) THEN
         LNONLI = .FALSE.
         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',INST,1,'RHO_CP',
      &             RHOCP, ICODRE,1)

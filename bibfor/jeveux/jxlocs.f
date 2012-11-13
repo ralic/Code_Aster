@@ -1,6 +1,6 @@
-      SUBROUTINE JXLOCS ( ITAB, GENR, LTYP, LONO, IADM , LDEPS, JITAB)
+      SUBROUTINE JXLOCS ( ITAB, GEN1, LTY1, LON1, JADM , LDEPS, JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,29 +17,27 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_6 CRP_18 CRS_508 CRP_4
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
+C TOLE CRP_6
       IMPLICIT NONE
-      INTEGER             ITAB(*),    LTYP, LONO, IADM ,        JITAB
+      INCLUDE 'jeveux_private.h'
+      INTEGER             ITAB(*) ,   LTY1,  LON1, JADM,  JITAB
       LOGICAL                                            LDEPS
-      CHARACTER *(*)            GENR
+      CHARACTER *(*)            GEN1
 C ----------------------------------------------------------------------
 C RENVOIE L'ADRESSE DU SEGMENT DE VALEUR PAR RAPPORT A ITAB
 C ROUTINE AVEC APPEL SYSTEME : LOC
 C
 C IN  ITAB   : TABLEAU PAR RAPPORT AUQUEL L'ADRESSE EST RENVOYEE
-C IN  GENR   : GENRE DE L'OBJET ASSOCIE
-C IN  LTYP   : LONGUEUR DU TYPE DE L'OBJET ASSOCIE
-C IN  LONO   : LONGUEUR DU SEGMENT DE VALEUR EN OCTET
-C IN  IADM   : ADRESSE MEMOIRE DU SEGMENT DE VALEUR EN OCTET
+C IN  GEN1   : GENRE DE L'OBJET ASSOCIE
+C IN  LTY1   : LONGUEUR DU TYPE DE L'OBJET ASSOCIE
+C IN  LON1   : LONGUEUR DU SEGMENT DE VALEUR EN OCTET
+C IN  JADM   : ADRESSE MEMOIRE DU SEGMENT DE VALEUR EN OCTET
 C IN  LDEPS  : .TRUE. SI ON AUTUORISE LE DEPLACEMENT EN MEMOIRE
 C OUT JITAB  : ADRESSE DANS ITAB DU SEGMENT DE VALEUR
 C ----------------------------------------------------------------------
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ILOC
@@ -51,32 +49,32 @@ C DEB-------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER IR ,KADM ,LADM 
 C-----------------------------------------------------------------------
-      KADM = IADM
+      KADM = JADM
       LADM = ISZON(JISZON + KADM - 3)
       JITAB = 0
       VALLOC = LOC(ITAB)
       IA = (ILOC-VALLOC) + KADM*LOIS
       IR = 0
-      LTYP2 = LTYP
+      LTYP2 = LTY1
       IDEC = MOD(IA,LTYP2)
-      IF ( IDEC .NE. 0 .AND. GENR(1:1) .NE. 'N' ) THEN
+      IF ( IDEC .NE. 0 .AND. GEN1(1:1) .NE. 'N' ) THEN
         IF ( IDEC .GT. 0 ) THEN
-          IR = LTYP - IDEC
+          IR = LTY1 - IDEC
         ELSE
           IR = -IDEC
         ENDIF
       ENDIF
-      IF ( LTYP .NE. LOIS .AND. GENR(1:1) .NE. 'N' ) THEN
+      IF ( LTY1 .NE. LOIS .AND. GEN1(1:1) .NE. 'N' ) THEN
         IF ( IR .NE. LADM ) THEN
           IF ( LDEPS ) THEN
             CALL JXDEPS ( (KADM-1)*LOIS + LADM + 1 ,
-     &                    (KADM-1)*LOIS + IR   + 1 , LONO )
+     &                    (KADM-1)*LOIS + IR   + 1 , LON1 )
           ELSE
             CALL U2MESS('F','JEVEUX1_60')
           ENDIF
         ENDIF
       ENDIF
-      JITAB = 1 + (IA+IR)/LTYP
+      JITAB = 1 + (IA+IR)/LTY1
       ISZON(JISZON + KADM - 3 ) = IR
 C FIN ------------------------------------------------------------------
       END

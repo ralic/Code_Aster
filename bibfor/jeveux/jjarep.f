@@ -1,7 +1,7 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,8 +18,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRS_508 CRS_505
       IMPLICIT NONE
+      INCLUDE 'jeveux_private.h'
       INTEGER             ICLAS , NRMAX
 C ----------------------------------------------------------------------
 C     PERMET D'AGRANDIR UN REPERTOIRE DE NOM
@@ -31,14 +31,11 @@ C ----------------------------------------------------------------------
       INTEGER          IGENR,ITYPE,IDOCU,IORIG,IRNOM(4)
       EQUIVALENCE      (IGENR,GENR),(ITYPE,TYPE),
      &                 (IDOCU,DOCU),(IORIG,ORIG),(IRNOM,RNOM)
-      CHARACTER*1      K1ZON
-      COMMON /KZONJE/  K1ZON(8)
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
-      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C-----------------------------------------------------------------------
       INTEGER I ,IC ,IDATIN ,IIN ,IL ,IN ,IND 
-      INTEGER INDIR ,IPGCA ,IREF ,J ,JCARA ,JDATE ,JDOCU 
+      INTEGER IPGCA ,IREF ,J ,JCARA ,JDATE ,JDOCU 
       INTEGER JGENR ,JHCOD ,JIADD ,JIADM ,JINDIR ,JJPREM ,JLONG 
       INTEGER JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE 
       INTEGER JXHCOD ,K ,KHCDY ,KL ,KN ,KNODY ,LDYNOL 
@@ -46,18 +43,9 @@ C-----------------------------------------------------------------------
       INTEGER NBTOT ,NE 
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
-      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
-      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
-      CHARACTER*1      GENR    , TYPE
-      CHARACTER*4      DOCU
-      CHARACTER*8      ORIG
-      CHARACTER*32     RNOM
-      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
@@ -68,7 +56,6 @@ C ----------------------------------------------------------------------
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
-      COMMON /KINDIR/  INDIR(1)
       COMMON /JINDIR/  JINDIR(N)
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI

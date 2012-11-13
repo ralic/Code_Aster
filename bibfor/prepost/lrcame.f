@@ -8,7 +8,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF PREPOST  DATE 12/11/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,8 +97,7 @@ C
       INTEGER VALI(4)
       PARAMETER (EDLECT=0)
       CHARACTER*64 EDNOPF
-      PARAMETER ( EDNOPF='                                '//
-     &'                                ' )
+      PARAMETER ( EDNOPF=' ' )
 C
       INTEGER NTYMAX
       PARAMETER (NTYMAX=66)
@@ -262,6 +261,16 @@ C
            CALL U2MESK('F','MED_51', 2 ,VALK)
         ENDIF
 C
+      ENDIF
+C
+      IF ( TYPECH.EQ.'NOEU' ) THEN
+        CALL DISMOI('F','NB_NO_MAILLA',NOMAAS,'MAILLAGE',
+     &              NBNOMA,K8B,IRET)
+        NBVATO = NBNOMA
+      ELSE
+        CALL DISMOI('F','NB_MA_MAILLA',NOMAAS,'MAILLAGE',
+     &              NBMA,K8B,IRET)
+        NBVATO = NBMA
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
@@ -494,8 +503,6 @@ C
         CALL JEVEUO ( CHAMES//'.CNSL', 'E', ADSL )
       ELSE
         IF (TYPECH(1:4).EQ.'ELGA')THEN
-          CALL DISMOI('F','NB_MA_MAILLA',NOMAAS,'MAILLAGE',
-     &                NBMA,K8B,IRET)
           CALL LRMPGA(NROFIC,LIGREL,NOCHMD,NBMA,NPGMA,NPGMM,
      &                NTYPEL,NPGMAX,INDPG,NUMPT,NUMORD,
      &                OPTION,PARAM)
@@ -515,7 +522,6 @@ C
         CALL JEVEUO ( CHAMES//'.CESV', 'E', ADSV )
         CALL JEVEUO ( CHAMES//'.CESL', 'E', ADSL )
       ENDIF
-      NBVATO = ZI(ADSD-1+1)
 C
 C=====================================================================
 C 3. TRAITEMENT DES CHAMPS AUX NOEUDS                             ====

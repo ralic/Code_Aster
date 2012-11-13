@@ -1,4 +1,4 @@
-# MODIF  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 12/11/2012   AUTEUR BOYERE E.BOYERE 
 # TITRE TP ANALYSE MODALE TPAM2
 # forma11b.para = tps_job 480 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,8 +27,6 @@
 # INTERCOMPARAISON DES METHODES DE SOUS-ESPACES (SORENSEN, LANCZOS,
 # ET QZ).
 #-------------------------------------------------------------------
-
-#directory = "/home/xxx/ASTER/TP_MODAL/TPAM2/"
 
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
@@ -70,8 +68,10 @@ MODE_SOB=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
                           MATR_MASS=M_ASSE,
                           METHODE='SORENSEN',
                           CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(-.1,2700.0,),
-                                       NMAX_ITER_SHIFT=1),
+                                       FREQ=(-.3,2700.0,),
+#                                       SEUIL_FREQ=.1,
+#                                       NMAX_ITER_SHIFT=6,
+                                       ),
                           TITRE='1/ METHODE DE SORENSEN',);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -175,18 +175,18 @@ TEST_RESU(RESU=_F(NUME_ORDRE=11,
 #FIN();
 
 # QUESTION 3: CALCUL DES 16 PLUS PETITES AVEC SORENSEN
-# NE MARCHE PAS : TRES MAUVAIS EXEMPLE !!!
-# IL VAUT MIEUX UTILISER l'OPTION BANDE
+# ON UTILISE "SEUIL_FREQ" POUR EVITER LE SOUCI AVEC LES CORPS RIGIDES
 
-#MODE_SOP=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-#                           MATR_MASS=M_ASSE,
-#                           METHODE='SORENSEN',
-#                           CALC_FREQ=_F(OPTION='PLUS_PETITE',
-#                                        NMAX_FREQ=16,),
-#                           TITRE='1/ METHODE DE SORENSEN',);
+MODE_SOP=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
+                           MATR_MASS=M_ASSE,
+                           METHODE='SORENSEN',
+                           CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                       SEUIL_FREQ=1.,
+                                        NMAX_FREQ=16,),
+                          )
 
-#IMPR_RESU(RESU=_F(RESULTAT=MODE_SOP,
-#                  TOUT_CHAM='NON',
-#                  TOUT_PARA='OUI',),);
+IMPR_RESU(RESU=_F(RESULTAT=MODE_SOP,
+                  TOUT_CHAM='NON',
+                  TOUT_PARA='OUI',),);
 
 FIN();

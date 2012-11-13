@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 15/10/2012   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF elements2 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,7 @@ cata_msg = {
 """),
 
 39 : _(u"""
- loi LEMA_SEUIL non implémentée avec les poutres multi-fibres
+ loi LEMA_SEUIL non implémentée avec les poutres multifibres
 """),
 
 40 : _(u"""

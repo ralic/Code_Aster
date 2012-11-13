@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+#& MODIF COMMANDE  DATE 13/11/2012   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,16 +55,16 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            ),
          b_constante         =BLOC(condition="VITESSE_VARIABLE=='NON'",
                VITE_ROTA          = SIMP(statut='o',typ='R',defaut=0.E0),
+               COUPLAGE_EDYOS     =FACT(statut='f',max=1,
+                                   PAS_TPS_EDYOS      = SIMP(statut='o',typ='R' ),
+         ),
+               
            ),
                
          AMOR_MODAL      =FACT(statut='f', max=1,
                     regles=(EXCLUS('AMOR_REDUIT','LIST_AMOR'),),
                 AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
                 LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
-         ),
-         COUPLAGE_EDYOS     =FACT(statut='f',max=1,
-                             VITE_ROTA          = SIMP(statut='o',typ='R' ),
-                             PAS_TPS_EDYOS      = SIMP(statut='o',typ='R' ),
          ),
 
          ROTOR_FISS = FACT(statut='f',max='**',

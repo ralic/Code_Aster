@@ -60,16 +60,22 @@ def check_optimization_fcflags(self):
     """
     loop optimization error using LOC function in gfortran
     Debian bug report: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51267
+    Check if it must be fixed using the 'VOLATILE' statement.
     """
-    int_size = self.env.DEST_CPU == 'x86_64' and 8 or 4
-    fragment = self.uncompress64('''
-eNp9UsFOhDAUvO9XzMXQrgWFTfbGkRguHnQPxouptGADtiuUxM/3AZYQV+XU92bmzfSVHZbv3Lum
-l+/wevCdq3bfbWO9bnQPMw4s5cIII5WwghhCfxpfOaUDtXONqWQH1/4Ue/nKjjx0LXJkK0UqKhmJ
-K0Y0jng+kh0Hxw2uWHl/Ku6Kh5fH8rngKuiUQ5rC5KmwoYU5JA28ZmZ/iLNpQI44/QNP/8eBDU5W
-QOWsN3Zc7+taghPfjzrZpMqyOdVhv8l17mkT2ItoWkRES4x4HompMFyALYdEfyQUapOmDhASqxNM
-iRfPWnbDbEpml7kmnWs5/JveZAivRfrb0NU05lfGuhNtlalDQY/boXgqTyxQ+YZ38Qd9Afm7k44=
-''') % dict(INTEGER_SIZE=int_size)
-
+    with_volatile = self.uncompress64('''
+eJx9kkFPhDAQhe/+infbFgtaNtnshYOJa7LRxIsHrxUKNtR2A8X48x3YlCVZlFP7Zr43ry3A9J06
+33TqC0H3wfry5qzi21sVjNUwQx8144JudJfsR5FJvqILoyrhBBkJ/WNC6Ssdu6xvTKksfHvNBfXB
+drOfQ4F8blIVbRnhJaM2jnRaUgIOjjvsY2PlISVMIYWLEqag5HDLTLJN85EokMo/6vL/OrCo0yig
+9C4YN8xH9C2Vs9ANOlukyvMp1TZZ5qoxnoYZjszpDOPsM10r2084YdcTRs63HOFTL9ziVRN/f1FP
+HV0wEoHN6/MmyprcV0G5Bj49HF8OjxfYVaaOG3pLi8P78Y1FF77ou/qvfgGhoZdy
+''')
+    without_volatile = self.uncompress64('''
+eJx9kkFPhDAQhe/7K95tWwS0bGL2wsHommw08eLBa4WCDbXdQDH+fAfWsiSgnNo38715bQHG79S6
+upWf8KrzxhWb+7OML2ek10ZB993mV9PWq1q10X4QmeAreqxlGduYnGL1rX3hShW6jKt1IQ1cs+S8
+fGe3k59FjmxqkiVtGeEFozaOZFxSAg6Oa+xDY+kgBHQuYhskjEHJ4YrpaJdkA5EjEX/Uxf91YFan
+UUDhrNe2n47oGiqnvu1VOkuVZWOqXTTPVWE4DdMcqVUphtlnupKmG3HClhMGzjUc/kPN3MJVE39z
+UU8tXTCiGNuXp22QFbmvgmINfLw7Ph8eLrAtdRU29JYGh7fjKwsufNa3+LF+AEX8l7U=
+''')
     self.setenv('debug')
     flags = ['-g']
     self.start_msg('Setting fortran debug flags')
@@ -77,26 +83,38 @@ iRfPWnbDbEpml7kmnWs5/JveZAivRfrb0NU05lfGuhNtlalDQY/boXgqTyxQ+YZ38Qd9Afm7k44=
     self.end_msg(flags)
 
     self.setenv('release')
-    testit = partial(self.check_fc, fragment=fragment, mandatory=False,
+    testit = partial(self.check_fc, mandatory=False,
                      compile_filename='testloc.f', execute=True, use=['OPENMP'])
     self.start_msg('Getting fortran optimization flags')
     flags = [f for f in self.env.FCFLAGS
              if (f.startswith('-O') and f[-1].isdigit()) or f == '-g']
-    map(self.env.FCFLAGS.remove, flags) # remove existing optimization flags
+    # remove existing optimization flags
+    map(self.env.FCFLAGS.remove, flags)
     if not flags:
         flags = ['-O2']
-    if not testit(fcflags=flags,
-                  errmsg='Optimization flag not compatible try with -O0'):
-        flags.append('-fno-tree-dse')
-        if not testit(fcflags=flags):
-            flags = ['-O0']
-            testit(fcflags=flags, mandatory=True,
-                errmsg=('No config found to prevent "LOC in loop" failure.',
-                        'It is known to fail with gcc 4.6 and flag "-Oi" (i>0).'))
-            #XXX the unittest fails but it's known to work with Intel compilers.
-            if self.env.FC_NAME == 'IFORT':
-                flags = ['-O2']
-    self.env.append_unique('FCFLAGS', flags)
-    self.end_msg(flags)
-
-
+    # different cases to check
+    # '-fno-tree-dse' is a workaround that works with gfortran 4.6
+    last_ressort = ['-O0']
+    cases = [(without_volatile,
+              (flags, flags + ['-fno-tree-dse']),),
+             (with_volatile,
+              (flags, flags + ['-fno-tree-dse'], last_ressort),),]
+    optflag = ''
+    legend = 'failed'
+    for code, all_opts in cases:
+        for opts in all_opts:
+            if testit(fcflags=opts, fragment=code, 
+                      mandatory=opts is last_ressort):
+                optflag = opts
+                if code is with_volatile:
+                    # should be used in jeveux*.h in future
+                    DEF = 'USE_VOLATILE_COMMON'
+                    legend = 'VOLATILE is required, -D%s' % DEF
+                    self.env.append_unique('DEFINES', [DEF])
+                else:
+                    legend = 'VOLATILE not required'
+                break
+        if optflag:
+            break
+    self.env.append_unique('FCFLAGS', optflag)
+    self.end_msg('%s (%s)' % (optflag, legend))
