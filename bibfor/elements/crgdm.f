@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C RESPONSABLE SFAYOLLE S.FAYOLLE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/11/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C ----------------------------------------------------------------------
       ENDIF
 
       CALL R8INIR(6*6,0.0D0,DELAS,1)
+      CALL R8INIR(7,0.0D0,VALRES,1)
       PHENOM = 'GLRC_DM         '
       IF(PHENOM . NE . 'GLRC_DM         ' ) THEN
         CALL U2MESK('F','ELEMENTS2_32',1,PHENOM)
@@ -140,7 +141,7 @@ C - ON EST DANS LE CAS DE DEFI_MATERIAU
         GC  = VALRES(2)
 
         IF (GC .EQ. 1.D0 .AND. GT .EQ. 1.D0) THEN
-          CALL U2MESR('F','ALGORITH6_1',0,RMESG)
+          CALL U2MESS('F','ALGORITH6_1')
         END IF
 
         NYC = (1.D0-NU)*(1.D0+2.D0*NU)*(1.D0-GT)+NU**2*(1.D0-GC)
@@ -165,7 +166,7 @@ C - ON EST DANS LE CAS DE DEFI_MATERIAU
       END IF
 
       IF (GC .EQ. 1.D0 .AND. GT .EQ. 1.D0) THEN
-        CALL U2MESR('F','ALGORITH6_1',0,RMESG)
+        CALL U2MESS('F','ALGORITH6_1')
       END IF
 
       IF (ICODRE(7).EQ.0 .AND. GC .NE. 1.D0)THEN
@@ -196,7 +197,7 @@ C    CALCUL DU SEUIL (k0 DANS R7.01.32) ET DE ALPHA
           ALPHA = ALPHA/(2.0D0*(LAMF*(1.0D0-NUF) + DEUMUF)**2)
           ALPHA = ALPHA*(1.0D0 - GF)*MYF**2/SEUIL
         ELSE
-          CALL U2MESR('F','ALGORITH6_3',0,RMESG)
+          CALL U2MESS('F','ALGORITH6_3')
         END IF
       END IF
 

@@ -10,7 +10,7 @@
       CHARACTER*19 MELFLU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/11/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -227,6 +227,7 @@ C
 C
 C--- 1.10. CARACTERISTIQUES DES GRILLES
 C
+      IZG = 1
       IF (NTYPG.NE.0) THEN
          CALL WKVECT('&&FLUST3.TMP.TYPG','V V I',NBGTOT,JTYPG)
          IF (IEQUIV.EQ.1) THEN

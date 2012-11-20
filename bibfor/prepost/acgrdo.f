@@ -13,7 +13,7 @@
       REAL*8     VRESU(24),VALPAR(22),VALA,COEFPA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C23456
       REAL*8     R8MAEM, PHYMIN, C1, C2, RBID(6), VEPSPE , LCIV2E
       REAL*8     NM1X, NM1Y, NM1Z, BR(6),VECPRO(3,3),VALPRO(3)
       REAL*8     EPRMAX, EPRMIN, SIGNM1, TOL, TOLDYN, AR(6)
-      REAL*8     FXM, FYM, FZM, SINM1M, SOMDEF
+      REAL*8     FXM, FYM, FZM, SINM1M, SOMDEF, R8PREM
       REAL*8     DEVSIG(6), DVEPSE(6), DENDIS, DSIGL(6), RAYSPH
       REAL*8     DEPSL(6), SOMDEN,DENDIE, ETREMA, ETREMI
       REAL*8     SIGMAX, EXM, EYM, EZM,EPSNM1,EPNM1M, SIGMIN
@@ -142,7 +142,7 @@ C INITIALISATION
       PHYDRO = 0.D0
       VEPSPE = 0.D0
       VSIGE = 0.D0
-      EPRMAX = 0.D0
+      EPRMAX = R8PREM()
       EPRMIN = R8MAEM()
       NM1X = 0.D0
       NM1Y = 0.D0
@@ -156,7 +156,7 @@ C INITIALISATION
       STREMA = 0.D0
       STREMI = 0.D0
       EPNM1M = 0.D0
-      SIGMAX = 0.D0
+      SIGMAX = R8PREM()
       SIGMIN = R8MAEM()
       VEPST  = 0.D0
       EPSPAC = 0.D0
@@ -169,11 +169,6 @@ C INITIALISATION
       DO 20 I = 1, 24
          RESUPC(I) = 0.0D0
 20    CONTINUE
-
-C       DO 2100 I = 1, 22
-C          VALPAR(I) = 0.0D0
-C C         VALPU(I) = 0.0D0
-C 2100  CONTINUE
 
       DO 35 I = 1, 6
          SIG(I) = 0.0D0
@@ -352,12 +347,14 @@ C CALCNORM = vect_F.vect_n
                   SINM1M = ABS(SIGNM1)
                ENDIF
 
+
             ENDIF
+            
 
             IF (EPRMIN .GT. VALPRO(1)) THEN
                EPRMIN = VALPRO(1)
             ENDIF
-
+            
             IF (ETREMA .LT. (VALPRO(1)-VALPRO(3))) THEN
                ETREMA = (VALPRO(1)-VALPRO(3))
             ENDIF

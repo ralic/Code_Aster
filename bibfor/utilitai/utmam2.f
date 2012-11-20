@@ -1,0 +1,86 @@
+      SUBROUTINE  UTMAM2(MODELE,NBMA,NBTROU,TATROU)
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+
+      INTEGER NBMA,NBTROU,TATROU(NBMA)
+      CHARACTER*8 MODELE
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C RESPONSABLE DELMAS J.DELMAS
+C
+C     BUT:
+C       FILTRER LES MAILLES AFFECTEES PAR LE MODELE
+C                   **                       **
+C       IDEM QUE UTMAMO MAIS AVEC UNE LISTE DE MAILLE
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   MODELE    : NOM DU MODELE
+C IN   NBMA      : NOMBRE DE MAILLE DU MAILLAGE
+C
+C      SORTIE :
+C-------------
+C OUT  NBTROU    : NOMBRE DE MAILLE TROUVEES
+C OUT  LITROU    : LISTE DES MAILLES TROUVEES (OBJET JEVEUX)
+C                  SI NBTROU = 0, L'OBJET JEVEUX N'EST PAS CREE
+C
+C.......................................................................
+C
+      INTEGER NBMAIL,IMA,ITROU
+      INTEGER ITEMPO,JMAMO
+
+      CHARACTER*8 K8BID
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+      CALL JEVEUO(MODELE//'.MAILLE','L',JMAMO)
+      CALL JELIRA(MODELE//'.MAILLE','LONMAX',NBMAIL,K8BID)
+      CALL ASSERT(NBMA.EQ.NBMAIL)
+C      
+      CALL WKVECT('&&UTMAM2.LISTE_M_TEMP','V V I',NBMAIL,ITEMPO)
+C      
+      NBTROU = 0
+C
+      DO 10, IMA=1,NBMAIL
+        IF (ZI(JMAMO-1+IMA).GT.0) THEN
+          NBTROU=NBTROU+1
+          ZI(ITEMPO-1+NBTROU)=IMA
+        ENDIF
+ 10   CONTINUE
+C
+      IF (NBTROU.EQ.0) GOTO 9999
+C
+      DO 20 ITROU = 1, NBTROU
+          TATROU(ITROU) = ZI(ITEMPO-1+ITROU)
+   20 CONTINUE
+C
+ 9999 CONTINUE
+C
+      CALL JEDEMA()
+C
+      CALL JEDETR('&&UTMAM2.LISTE_M_TEMP')
+C
+      END

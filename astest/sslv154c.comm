@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE AVEC 3D_INCO_
 # sslv154c.para = tps_job 200 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,6 +158,12 @@ k1ref = 8.3611195825061E+05
 k2ref_0 = 8.6435469393827E+05
 k3ref_90 = 6.7469786391964E+05
 
+# valeurs de ref calcule abtenus avec aster4
+k1calmax = 8.5329635382739E+05
+k1calmin = 8.4245454114162E+05 
+k2calc = 8.5271747151955E+05
+k3calc = 6.9086624915006E+05
+
 # ajout des colonnes 'angle' et valeurs de ref dans les tables
 
 for i in range(2):
@@ -174,9 +180,7 @@ for i in range(2):
 
 # impression de chaque table
    IMPR_TABLE(TABLE=CG[i])
-
-
-
+ 
 #-----------------------------------------------------------------------------------------------------------------------------
 #                                 TESTS DES TABLES
 #-----------------------------------------------------------------------------------------------------------------------------
@@ -187,20 +191,18 @@ for i in range(2):
    TEST_TABLE(TABLE=CG[i],
            TYPE_TEST='MAX',
            NOM_PARA='K1',
-           VALE_CALC=k1ref,     #TODO vale_calc
+           VALE_CALC=k1calmax,
            VALE_REFE=k1ref,
            CRITERE='RELATIF',
-           TOLE_MACHINE=0.03,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE')
 
    TEST_TABLE(TABLE=CG[i],
            TYPE_TEST='MIN',
            NOM_PARA='K1',
-           VALE_CALC=k1ref,     #TODO vale_calc
+           VALE_CALC=k1calmin,
            VALE_REFE=k1ref,
            CRITERE='RELATIF',
-           TOLE_MACHINE=0.01,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE')
 
@@ -211,10 +213,9 @@ for i in range(2):
            FILTRE=_F(NOM_PARA='ANGLE',
                      VALE=0.),
            NOM_PARA='K2',
-           VALE_CALC=k2ref_0,     #TODO vale_calc
+           VALE_CALC=k2calc,
            VALE_REFE=k2ref_0,
            CRITERE='RELATIF',
-           TOLE_MACHINE=0.03,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE')
 
@@ -227,10 +228,9 @@ for i in range(2):
                      CRITERE='ABSOLU',
                      PRECISION=0.5,),
            NOM_PARA='K3',
-           VALE_CALC=k3ref_90,     #TODO vale_calc
+           VALE_CALC=k3calc,
            VALE_REFE=k3ref_90,
            CRITERE='RELATIF',
-           TOLE_MACHINE=0.03,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE')
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 # sslv111b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,6 @@
 # ======================================================================
 #
 # MODELISATION 1 : ELEMENTS MECANIQUE C_PLAN QUAD4
-# MAILLAGE       : ALIBABA > ASTER
 # ----------------------------------------------------------------------
 
 DEBUT(CODE=_F(NOM='SSLV111B',
@@ -386,29 +385,11 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    POINT=1,
                    RESULTAT=RESU,
                    NOM_CHAM='ERZ1_ELEM',
-                   NOM_CMP='ERREST',
-                   VALE_CALC=0.0,
-                   TOLE_MACHINE=1.E-3,
-                   CRITERE='ABSOLU',
-                   MAILLE='M1',),
-                _F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='ERZ1_ELEM',
                    NOM_CMP='NUEST',
-                   VALE_CALC=5.790469175,
+                   VALE_CALC=7.1753587755055,
                    VALE_REFE=0.0,
-                   REFERENCE='NON_DEFINI',
-                   CRITERE='ABSOLU',
-                   PRECISION=10.0,
-                   MAILLE='M1',),
-                _F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='ERZ2_ELEM',
-                   NOM_CMP='ERREST',
-                   VALE_CALC=0.0,
-                   TOLE_MACHINE=1.E-3,
+                   PRECISION=7.2,
+                   REFERENCE='ANALYTIQUE',
                    CRITERE='ABSOLU',
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
@@ -416,11 +397,11 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU,
                    NOM_CHAM='ERZ2_ELEM',
                    NOM_CMP='NUEST',
-                   VALE_CALC=8.833098347,
+                   VALE_CALC=9.8782623888816,
                    VALE_REFE=0.0,
+                   PRECISION=9.9,
                    REFERENCE='NON_DEFINI',
                    CRITERE='ABSOLU',
-                   PRECISION=10.0,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
                    POINT=1,

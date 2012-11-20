@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
       INTEGER           IREFE,NBNOFF,IEBAS
 C
       REAL*8            DIRX,DIRY,DIRZ,XI1,YI1,ZI1,XJ1,YJ1,ZJ1
-      REAL*8            XIJ,YIJ,ZIJ,EPS,D,TEI,TEJ
+      REAL*8            XIJ,YIJ,ZIJ,EPS,D,TEI,TEJ, R8PREM
       REAL*8            XM,YM,ZM,XIM,YIM,ZIM,S,DMIN,SMIN,XN,YN,ZN
       REAL*8            RII,RSI,ALPHA,VALX,VALY,VALZ,NORM2
       REAL*8            NORME,VECX,VECY,VECZ,DIR(3),TMPV(3),PSCA
@@ -90,6 +90,7 @@ C-----------------------------------------------------------------------
       INTEGER ITANEX ,ITANOR ,J ,LNDIR ,NBEL
 C-----------------------------------------------------------------------
       CALL JEMARQ()
+
       CALL GETRES(K8B,K16B,NOMCMD)
       IF (NOMCMD .EQ. 'CALC_G')THEN
           MOTFAC='THETA'
@@ -373,7 +374,7 @@ C POUR CALCULER PROJ(M)=N
             YN = S*YIJ+YI1
             ZN = S*ZIJ+ZI1
             D = SQRT((XN-XM)*(XN-XM)+(YN-YM)*(YN-YM)+(ZN-ZM)*(ZN-ZM))
-            IF(D.LT.DMIN) THEN
+            IF(D.LT. (DMIN*(1-ABS(R8PREM())*100)) ) THEN
               DMIN = D
               JMIN = J
               SMIN = S

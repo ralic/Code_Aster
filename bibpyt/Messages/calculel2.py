@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -339,9 +339,10 @@ Erreur d'utilisation :
          (par exemple 'PLAN_DIAG' en thermique, 'AXIS_SI' en mécanique)
 """),
 
-
-
-
+66: _(u"""Erreur d'utilisation :
+ On ne peut pas utiliser plus de 50 paramètres pour évaluer une fonction.
+ Ici, les différents champs du mot-clé CHAM_PARA possèdent au total plus de 50 composantes.
+"""),
 
 67: _(u"""Erreur d'utilisation :
  On ne peut pas filtrer les mailles de type %(k1)s car ce n'est pas un type de maille connu.
@@ -436,6 +437,22 @@ Conseils :
   * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques d'"orientation"
     sur la maille incriminée ?
 """),
+
+78: _(u"""
+Erreur utilisateur :
+  Pour évaluer une fonction, Il ne faut pas fournir plusieurs fois le même paramètre.
+  Ici, le paramètre %(k1)s a été fourni plus d'une fois.
+
+Conseil :
+  Si les champs utilisés avec le mot clé CHAM_PARA ont été obtenus avec la commande CREA_CHAMP,
+  on peut voir leur contenu avec le mot clé INFO=2.
+"""),
+
+
+
+
+
+
 
 81: _(u"""
  pas de champ de géométrie

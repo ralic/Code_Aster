@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -241,7 +241,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERZ1',
                   RESULTAT=RESU,
-                  VALE_CALC=3.0877585644437E-3,
+                  VALE_CALC=3.4380781072905E-03,
                   CRITERE='RELATIF',
                   ),
           )
@@ -249,7 +249,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERZ2',
                   RESULTAT=RESU,
-                  VALE_CALC=7.4767989844696002E-3,
+                  VALE_CALC=7.4687359696583E-03,
                   CRITERE='RELATIF',
                   ),
           )
@@ -265,7 +265,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERZ1',
                   RESULTAT=RESUDUAL,
-                  VALE_CALC=62.002976336899998,
+                  VALE_CALC=66.87134739717,
                   CRITERE='RELATIF',
                   ),
           )
@@ -273,7 +273,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERZ2',
                   RESULTAT=RESUDUAL,
-                  VALE_CALC=143.62442647949999,
+                  VALE_CALC=142.28245781516,
                   CRITERE='RELATIF',
                   ),
           )
@@ -289,7 +289,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_QIZ1',
                   RESULTAT=RESU,
-                  VALE_CALC=3.0877585644437E-3,
+                  VALE_CALC=3.4380781072905E-03,
                   CRITERE='RELATIF',
                   ),
           )
@@ -297,7 +297,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_QIZ2',
                   RESULTAT=RESU,
-                  VALE_CALC=7.4767989844696002E-3,
+                  VALE_CALC=7.4687359696583E-03,
                   CRITERE='RELATIF',
                   ),
           )

@@ -1,7 +1,7 @@
       SUBROUTINE XBASLO(NOMA  ,FISS  ,GRLT  ,GRLN  , NDIM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C
       INTEGER           LONG,NFON,NBNO,IRET,INO,J
       REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1,XIJ,YIJ,ZIJ,EPS,D,NORM2
       REAL*8            XM,YM,ZM,XIM,YIM,ZIM,S,DMIN,XN,YN,ZN,A(3)
-      REAL*8            R8MAEM
+      REAL*8            R8MAEM, R8PREM
 C
       DATA LICMP / 'X1','X2','X3',
      &             'X4','X5','X6',
@@ -164,7 +164,7 @@ C           DISTANCE MN
             D = SQRT((XN-XM)*(XN-XM)+(YN-YM)*(YN-YM)+
      &               (ZN-ZM)*(ZN-ZM))
           ENDIF
-          IF(D.LT.DMIN) THEN
+          IF(D.LT. (DMIN*(1-ABS(R8PREM())*100))) THEN
             DMIN = D
             A(1)=XN
             A(2)=YN

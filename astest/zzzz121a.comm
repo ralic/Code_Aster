@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 # zzzz121a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -250,7 +250,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU[4],
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=5.0933749999999998E-3,
+                   VALE_CALC=5.12362239108E-03,
                    
                    CRITERE='RELATIF',
                    ),
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU[4],
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.027634975999999999,
+                   VALE_CALC=-0.027452157381186,
                    
                    CRITERE='RELATIF',
                    ),
@@ -272,8 +272,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU[5],
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=5.0939773999999997E-3,
-                   
+                   VALE_CALC=5.1284748805173E-03,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=1,
@@ -281,8 +280,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU[5],
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.031587150000000001,
-                   
+                   VALE_CALC=-0.031219319724004,
                    CRITERE='RELATIF',
                    ),
                 ),

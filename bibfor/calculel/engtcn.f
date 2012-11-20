@@ -7,7 +7,7 @@
       CHARACTER*19 CHAMNO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,9 +47,9 @@ C
       LG1 = LXLGUT( FORMR  )
       LG2 = LXLGUT( TYPTES )
       FORM1 = '(''              TYPE_TEST= '''''//TYPTES(1:LG2)//
-     +          ''''', VALE= '','//FORMR(1:LG1)//','' ),'')'
+     +          ''''', VALE_CALC= '','//FORMR(1:LG1)//','' ),'')'
       FORM2 = '(''              TYPE_TEST= '''''//TYPTES(1:LG2)//
-     +          ''''', VALE_I= '',I9,'' ),'')'
+     +          ''''', VALE_CALC_I = '',I9,'' ),'')'
 C
       WRITE(IFIC,1000)
 C
@@ -120,8 +120,7 @@ C
  1010 FORMAT ('          _F( CHAM_GD= ',A8,', ' )
 C
  1022 FORMAT ('              CRITERE= ''ABSOLU'', ')
- 1020 FORMAT ('              REFERENCE= ''NON_REGRESSION'', ',
-     +                      'PRECISION= ',A10,',')
+ 1020 FORMAT ('              TOLE_MACHINE= ',A10,',')
 C
  1030 FORMAT ( '          )' )
 C

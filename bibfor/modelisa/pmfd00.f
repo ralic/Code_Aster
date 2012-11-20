@@ -1,6 +1,6 @@
       SUBROUTINE PMFD00()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 CARELE,NOMO,NOMA,K8B,MODELE
       CHARACTER*8 SDGF
       CHARACTER*16 CONCEP,CMD
-      CHARACTER*16 LTYMCL(3),PHENO
+      CHARACTER*16 LTYMCL(3)
       CHARACTER*19 CESDEC,LIGRMO,CELBID
       CHARACTER*24 MODNOM
       CHARACTER*24 MLGNMA
@@ -55,9 +55,9 @@ C ----------------------------------------------------------------------
       INTEGER I,J,IOC,IPOS
       INTEGER JDNM,JNF,JMP
       INTEGER JNBFG,NBGF,JNGF,JCARFI,JPOINT,IPOINT,NGF,IG,NG,IG1
-C nb de groupes max par element
-C Ce nombre doit �tre en accord avec les catalogues
-C  grandeur_simple__.cata et gener_mepmf1.cata !
+C     NB DE GROUPES MAX PAR ELEMENT
+C     CE NOMBRE DOIT ETRE EN ACCORD AVEC LES CATALOGUES
+C     GRANDEUR_SIMPLE__.CATA ET GENER_MEPMF1.CATA !
       INTEGER NGMXEL
       CHARACTER*2 KNGMX
       PARAMETER (NGMXEL=10,KNGMX='10')
@@ -78,11 +78,8 @@ C     ------------------------------------------------------------------
 
 
       CALL GETVID(' ','MODELE',1,IARG,1,NOMO,NBVM)
-      CALL DISMOI('F','PHENOMENE',NOMO,'MODELE',IBID,PHENO,IBID)
-      IF (PHENO.NE.'MECANIQUE') GO TO 9999
 
       CALL GETRES(CARELE,CONCEP,CMD)
-
 
       VNBFIB = CARELE//'.PMFNF'
 
@@ -93,12 +90,12 @@ C     ------------------------------------------------------------------
         VPOINT = SDGF//'.POINTEUR'
         VCARFI = SDGF//'.CARFI'
         RNOMGF = SDGF//'.NOMS_GROUPES'
-C Nombre de groupes total = dimension de VNBFIG
+C ----- NOMBRE DE GROUPES TOTAL = DIMENSION DE VNBFIG
         CALL JELIRA(VNBFIG,'LONMAX',NBGF,K1BID)
         CALL JEVEUO(VNBFIG,'L',JNBFG)
         CALL JEVEUO(VCARFI,'L',JCARFI)
         CALL JEVEUO(VPOINT,'L',JPOINT)
-C Nombre total de fibres sur tous les groupes
+C ----- NOMBRE TOTAL DE FIBRES SUR TOUS LES GROUPES
         NBFIB=0
         DO 10 IG=1,NBGF
           NBFIB=NBFIB+ZI(JNBFG-1+IG)
@@ -155,8 +152,8 @@ C --- NOMBRE DE GROUPES A AFFECTER
 C --- NOMS DES GROUPES A AFFECTER
         CALL GETVTX('MULTIFIBRE','GROUP_FIBRE',IOC,IARG,NGF,
      &              ZK8(JNGF),IBID)
-C --- on compte le nombre de fibres de l'ensemble des groupes de cette
-C     occurence, et on note les numeros de groupes
+C --- ON COMPTE LE NOMBRE DE FIBRES DE L'ENSEMBLE DES GROUPES DE CETTE
+C     OCCURENCE, ET ON NOTE LES NUMEROS DE GROUPES
         NBFIB=0
         DO 50 IG=1,NGF
           CALL JENONU(JEXNOM(RNOMGF,ZK8(JNGF+IG-1)),NG)
@@ -180,7 +177,7 @@ C     ET NUMERO DES GROUPES
 
 C --- VERIFICATIONS PREC_AIRE, PREC_INERTIE POUR L'OCCURENCE
 C     DE MULTIFIBRE
-C   --- On int�gre pour tous les groupes de cette occurence
+C   --- ON INTEGRE POUR TOUS LES GROUPES DE CETTE OCCURENCE
         DO 89 I=1,6
           CASECT(I)=ZERO
  89     CONTINUE

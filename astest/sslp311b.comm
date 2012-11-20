@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 # sslp311b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,7 +118,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=CHAMDEPL,
                   NOM_CHAM='DEPL',
                   VALE_CALC=4.0000002676292998E5,
-                  TOLE_MACHINE=1.E-3,),
+                  ),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -126,7 +126,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=CHAMDEPL,
                   NOM_CHAM='SIEF_ELGA',
                   VALE_CALC=3.6201732221381001E12,
-                  TOLE_MACHINE=1.E-3,),
+                  ),
           )
 
 #

@@ -14,7 +14,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C-----------------------------------------------------------------------
       INTEGER JDGM ,JDGN ,JDLS ,JDME ,JDNE ,JDNW ,K
       INTEGER MCL ,NBCAR ,NBEMA ,NBMAGR ,NBMAIL ,NBMTRD ,NBNOGR
       INTEGER NCAR ,NCARA ,NG ,NJ ,NM ,NN ,NNOE
-      INTEGER NORIG ,NUMMAI ,NUMNOE ,NUTYEL
+      INTEGER NAXE ,NUMMAI ,NUMNOE ,NUTYEL
       REAL*8 R8B
 C-----------------------------------------------------------------------
       PARAMETER    ( NBCAR = 100 )
@@ -116,7 +116,7 @@ C
             CALL GETVEM(NOMA,'NOEUD',MCLF(MCL),'NOEUD',
      &                  IOC,IARG,LMAX,ZK8(JDLS),NN)
           ELSEIF ((MCL.EQ.11).OR.(MCL.EQ.14)) THEN
-            CALL GETVR8(MCLF(MCL),'ORIG_AXE',IOC,IARG,0,R8B,NORIG)
+            CALL GETVR8(MCLF(MCL),'AXE',IOC,IARG,0,R8B,NAXE)
           ENDIF
           IF (MCL.EQ.1 .OR. MCL.EQ.3 .OR .MCL.EQ.4 .OR .MCL.EQ.13 .OR.
      &        MCL.EQ.10) THEN

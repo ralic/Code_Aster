@@ -7,7 +7,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,16 +43,16 @@ C-----------------------------------------------------------------------
       INTEGER       NUMAIL, NUMA, IDTYMA, NUTYMA, NBMAPR, NBMABO, NTRAIT
       INTEGER       JCOOR, JTYMA, JGROUP, JGRO, JNMA, JMAB, JPRI, JBOR
       INTEGER       IF1, IF2, IF3, IMF1, IMF2, IPRES, IDNOR, IDTAN
-      INTEGER       NORIEN, NORIE1, NORIE2
+      INTEGER       NORIEN, NORIE1, NORIE2, JLIMA, NBMAMO
       INTEGER       UTMOTP
       REAL*8        R8B, DNOR, R8PREM, ARMIN, PREC
       INTEGER       GETEXM
       LOGICAL       REORIE, MCFL(NBT)
       COMPLEX*16    CBID
       CHARACTER*1   K1BID
-      CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, TYPEL
+      CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, NOMMO, TYPEL
       CHARACTER*16  MCFT(NBT), MOTFAC, VALMC(4), TYPMC(4)
-      CHARACTER*19  NOMT19
+      CHARACTER*19  NOMT19, LIMAMO
       CHARACTER*24  GRMAMA, MAILMA, PARA
       CHARACTER*24  VALK(2)
       INTEGER      IARG
@@ -74,8 +74,10 @@ C     NOMBRE DE MOTS-CLES FACTEUR A VERIFIER
       NBMFAC = NBT
 C
       NOMMA  = NOMA
+      NOMMO  = NOMO
       GRMAMA = NOMMA//'.GROUPEMA'
       MAILMA = NOMMA//'.NOMMAI'
+      LIMAMO = '&&CHVENO.MAIL_MODEL'
 C
 C --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
 C
@@ -234,8 +236,16 @@ C
      &                                                      NORIE1 )
                   ELSEIF ( (NBMAPR.EQ.0 .AND. NBMABO.EQ.NBMAIL) .OR.
      &                     (MOTFAC .EQ. 'ZONE')          ) THEN
-                    CALL ORILMA ( NOMMA, NDIM, ZI(JGRO), NBMAIL,
-     &                    NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID )
+                    IF (MOTFAC .EQ. 'ZONE') THEN
+                      NBMAMO = 0
+                      JLIMA = 1
+                    ELSE
+                      CALL UTMAMO ( NOMMO, NBMAMO, LIMAMO )
+                      CALL JEVEUO(LIMAMO,'L',JLIMA)
+                    ENDIF
+                    CALL ORILMA ( NOMMA, NDIM, ZI(JGRO), NBMAIL, NORIE1,
+     &                        NTRAIT, REORIE, PREC, NBMAMO, ZI(JLIMA ) )
+                    CALL JEDETR(LIMAMO)
                   ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN
                     CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
      &                                                      NORIE1 )
@@ -316,8 +326,16 @@ C
      &                                                       NORIE1 )
                 ELSEIF ( (NBMAPR.EQ.0 .AND. NBMABO.EQ.NBOBJ) .OR.
      &                   (MOTFAC .EQ. 'ZONE') ) THEN
-                  CALL ORILMA ( NOMMA, NDIM, ZI(JNMA), NBOBJ,
-     &                  NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID  )
+                  IF (MOTFAC .EQ. 'ZONE') THEN
+                    NBMAMO = 0
+                    JLIMA = 1
+                  ELSE
+                      CALL UTMAMO ( NOMMO, NBMAMO, LIMAMO )
+                      CALL JEVEUO(LIMAMO,'L',JLIMA)
+                  ENDIF
+                  CALL ORILMA ( NOMMA, NDIM, ZI(JNMA), NBOBJ, NORIE1,
+     &                         NTRAIT, REORIE, PREC, NBMAMO, ZI(JLIMA) )
+                  CALL JEDETR(LIMAMO)
                 ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN
                   CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
      &                                                       NORIE1 )
@@ -335,7 +353,7 @@ C
                       ZI(JBOR+NBMABO-1) = ZI(JNMA+IMPB-1)
                     ENDIF
  220              CONTINUE
-                  CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,NORIE1)
+                  CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE, NORIE1)
                   CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO,
      &                  NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID  )
                   CALL JEDETR('&&CHVENO.PRIN')
@@ -343,7 +361,7 @@ C
                 ENDIF
                 CALL JEDETR('&&CHVENO.MAILLE_BORD')
               ELSE
-                CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,NORIE2 )
+                CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE, NORIE2 )
               ENDIF
               NORIEN = NORIE1 + NORIE2
               IF ( NORIEN .NE. 0 ) THEN

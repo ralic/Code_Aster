@@ -7,7 +7,7 @@
       CHARACTER*19 EXCIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 20/11/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -212,33 +212,32 @@ C
 C--- LECTURE DES INFORMATIONS UTILISATEUR
 C
       NCHALU=0
-
+C
       IF (GETEXM('EXCIT','CHARGE').EQ.1) THEN
-        CALL GETFAC('EXCIT',NCHALU)
+         CALL GETFAC('EXCIT',NCHALU)
 C
-        IF ( NCHALU .NE. 0 ) THEN
-          CALL WKVECT(KCHA,'V V K8',NCHALU,LCHALU)
-          CALL WKVECT(KFON,'V V K8',NCHALU,FCHALU)
+         IF ( NCHALU .NE. 0 ) THEN
+            CALL WKVECT(KCHA,'V V K8',NCHALU,LCHALU)
+            CALL WKVECT(KFON,'V V K8',NCHALU,FCHALU)
 C
-          DO 10 IEX = 1, NCHALU
-            CALL GETVID('EXCIT','CHARGE',IEX,IARG,1,
-     &                   ZK8(LCHALU+IEX-1),N1)
+            DO 10 IEX = 1, NCHALU
+               CALL GETVID('EXCIT','CHARGE',IEX,IARG,1,
+     &                     ZK8(LCHALU+IEX-1),N1)
 C
-            CALL GETVID('EXCIT','FONC_MULT',IEX,IARG,1,FONCLU,N2)
-
-            IF (N2.NE.0) THEN
-              ZK8(FCHALU+IEX-1) = FONCLU
-            ENDIF
-  10      CONTINUE
-        ENDIF
+               CALL GETVID('EXCIT','FONC_MULT',IEX,IARG,1,FONCLU,N2)
+               IF (N2.NE.0) THEN
+                  ZK8(FCHALU+IEX-1) = FONCLU
+               ENDIF
+  10        CONTINUE
+         ENDIF
       ENDIF
 
       IF (GETEXM(' ','CHARGE').EQ.1) THEN
-        CALL GETVID(' ','CHARGE'    ,0,IARG,0,K8B   ,N4)
-        NCHA = -N4
-        NCHALU = MAX(1,NCHA)
-        CALL WKVECT( KCHA ,'V V K8',NCHALU,LCHALU)
-        CALL GETVID(' ','CHARGE',0,IARG,NCHA,ZK8(LCHALU),N4)
+         CALL GETVID(' ','CHARGE'    ,0,IARG,0,K8B   ,N4)
+         NCHA = -N4
+         NCHALU = MAX(1,NCHA)
+         CALL WKVECT( KCHA ,'V V K8',NCHALU,LCHALU)
+         CALL GETVID(' ','CHARGE',0,IARG,NCHA,ZK8(LCHALU),N4)
       ENDIF
 C
 C--- LECTURE DES INFORMATIONS CONTENUES DANS LA SD RESULTAT
@@ -250,87 +249,92 @@ C--- VERIFICATIONS ET AFFECTATIONS
 C
 C     IEXCIT = 0 SD RESULTAT
 C            = 1 UTILISATEUR
-
       IF(NOMCMD.EQ.'POST_ELEM') THEN
-        IF (N4.EQ.0)  THEN
-          IEXCIT = 0
-          NCHALU = 0
-        ELSE
-          IEXCIT = 1
-        ENDIF
+         IF (N4.EQ.0)  THEN
+            IEXCIT = 0
+            NCHALU = 0
+         ELSE
+            IEXCIT = 1
+         ENDIF
       ELSE
-        IF (NCHALU.NE.0)  IEXCIT = 1
+         IF (NCHALU.NE.0)  IEXCIT = 1
       ENDIF
-
+C
       IF (NCHALU.EQ.0.AND.EXCISD(1:1).EQ.' ') IEXCIT = 1
-
+C
       IF (EXCISD.NE.' ') THEN
-        EXCIT = EXCISD(1:19)
-        CALL JEVEUO(EXCIT(1:19)//'.LCHA','L',JLCHA)
-        CALL JEVEUO(EXCIT(1:19)//'.INFC','L',JINFC)
-        CALL JEVEUO(EXCIT(1:19)//'.FCHA','L',JFCHA)
-        NCHASD = ZI(JINFC)
+         EXCIT = EXCISD(1:19)
+         CALL JEVEUO(EXCIT(1:19)//'.LCHA','L',JLCHA)
+         CALL JEVEUO(EXCIT(1:19)//'.INFC','L',JINFC)
+         CALL JEVEUO(EXCIT(1:19)//'.FCHA','L',JFCHA)
+         NCHASD = ZI(JINFC)
+      ELSE
+         VALK(1) = RESULT
+         IF ( NCHALU.EQ.0 ) THEN
+            CALL U2MESK('I','UTILITAI4_2',1,VALK)
+         ELSE
+            CALL U2MESK('I','UTILITAI4_1',1,VALK)
+         ENDIF
       ENDIF
 C
 C--- VERIFICATIONS DES CHARGEMENTS
 C
-      IF( (NCHALU.NE.0) .AND. (EXCISD.NE.' ')) THEN
+      IF( (NCHALU.NE.0).AND.(EXCISD.NE.' ') ) THEN
 C
 C--- VERIFICATION DE LA COHERENCE DU NOMBRE DE CHARGES ENTRE
 C    CELLES PRESENTES DANS LA SD RESULTAT ET CELLES FOURNIES
 C    PAR L'UTILISATEUR
-
-      IF(NCHALU.NE.NCHASD) THEN
-         VALI(1)=NCHALU
-         VALI(2)=NCHASD
-         CALL U2MESI('A','CALCULEL6_65',2,VALI)
-      ENDIF
+         IF(NCHALU.NE.NCHASD) THEN
+            VALI(1)=NCHALU
+            VALI(2)=NCHASD
+            CALL U2MESI('A','CALCULEL6_65',2,VALI)
+         ENDIF
 C
 C--- VERIFICATIONS DU NOM DES CHARGEMENTS
 C
-        DO 40 ILU = 1,NCHALU
-          DO 20 ISD = 1,NCHASD
-            IF(ZK8(LCHALU-1+ILU).EQ.ZK24(JLCHA-1+ISD)(1:8)) GOTO 30
- 20       CONTINUE
-          CALL U2MESS('A','UTILITAI4_40')
- 30       CONTINUE
- 40     CONTINUE
+         DO 40 ILU = 1,NCHALU
+            DO 20 ISD = 1,NCHASD
+               IF(ZK8(LCHALU-1+ILU).EQ.ZK24(JLCHA-1+ISD)(1:8)) GOTO 30
+20          CONTINUE
+            CALL U2MESS('A','UTILITAI4_40')
+30          CONTINUE
+40       CONTINUE
 C
 C--- VERIFICATIONS DU NOM DES FONCTION MULTIPLICATRICES
 C
-        IF(NOMCMD.NE.'POST_ELEM') THEN
-          DO 70 ILU = 1,NCHALU
-            DO 50 ISD = 1,NCHASD
-              FONCSD = ZK24(JFCHA-1+ISD)(1:8)
-              IF(FONCSD(1:2).EQ.'&&') FONCSD = ' '
-              IF(ZK8(FCHALU-1+ILU).EQ.FONCSD) GOTO 60
- 50         CONTINUE
-              CALL U2MESS('A','UTILITAI4_41')
- 60         CONTINUE
- 70       CONTINUE
+         IF(NOMCMD.NE.'POST_ELEM') THEN
+            DO 70 ILU = 1,NCHALU
+               DO 50 ISD = 1,NCHASD
+                  FONCSD = ZK24(JFCHA-1+ISD)(1:8)
+                  IF(FONCSD(1:2).EQ.'&&') FONCSD = ' '
+                  IF(ZK8(FCHALU-1+ILU).EQ.FONCSD) GOTO 60
+50             CONTINUE
+               CALL U2MESS('A','UTILITAI4_41')
+60          CONTINUE
+70          CONTINUE
          ENDIF
 C
 C--- VERIFICATIONS DES COUPLES NOM DE CHARGE ET FONCTION MULTIPLICATRICE
 C    FOURNI PAR L'UTILISATEUR AVEC CEUX PRESENTS DANS LA SD RESULTAT
 C
-        IF(NOMCMD.NE.'POST_ELEM') THEN
-        DO 80 ILU = 1,NCHALU
-          DO 90 ISD = 1,NCHASD
-           IF(ZK8(LCHALU-1+ILU).EQ.ZK24(JLCHA-1+ISD)(1:8)) THEN
-              FONCSD = ZK24(JFCHA-1+ISD)(1:8)
-              IF(FONCSD(1:2).EQ.'&&') FONCSD = ' '
-              IF(ZK8(FCHALU-1+ILU).EQ.FONCSD) GOTO 95
-              VALK(1)=ZK8(LCHALU-1+ILU)
-              VALK(2)=ZK8(FCHALU-1+ILU)
-              VALK(3)=ZK24(JLCHA-1+ISD)(1:8)
-              VALK(4)=FONCSD
-              CALL U2MESK('A','CALCULEL6_66',4,VALK)
-           ENDIF
- 90       CONTINUE
- 95     CONTINUE
- 80     CONTINUE
-        ENDIF
-       ENDIF
+         IF(NOMCMD.NE.'POST_ELEM') THEN
+            DO 80 ILU = 1,NCHALU
+               DO 90 ISD = 1,NCHASD
+                  IF(ZK8(LCHALU-1+ILU).EQ.ZK24(JLCHA-1+ISD)(1:8)) THEN
+                     FONCSD = ZK24(JFCHA-1+ISD)(1:8)
+                     IF(FONCSD(1:2).EQ.'&&') FONCSD = ' '
+                     IF(ZK8(FCHALU-1+ILU).EQ.FONCSD) GOTO 95
+                     VALK(1)=ZK8(LCHALU-1+ILU)
+                     VALK(2)=ZK8(FCHALU-1+ILU)
+                     VALK(3)=ZK24(JLCHA-1+ISD)(1:8)
+                     VALK(4)=FONCSD
+                     CALL U2MESK('A','CALCULEL6_66',4,VALK)
+                  ENDIF
+ 90            CONTINUE
+ 95            CONTINUE
+ 80         CONTINUE
+         ENDIF
+      ENDIF
 C
 C--- MENAGE
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -512,14 +512,13 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
 #  ============================================================================
    GRILLE               = FACT(statut='f',max='**',
       regles               = (UN_PARMI('MAILLE','GROUP_MA'),
-                              EXCLUS('ANGL_REP','ORIG_AXE'),
-                              ENSEMBLE('ORIG_AXE','AXE')),
+                              EXCLUS('ANGL_REP','AXE'),
+                              ),
       MAILLE               = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
       GROUP_MA             = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
       SECTION              = SIMP(statut='o',typ='R'),
       ANGL_REP             = SIMP(statut='f',typ='R',max=2),
       EXCENTREMENT         = SIMP(statut='f',typ='R'),
-      ORIG_AXE             = SIMP(statut='f',typ='R',max='**'),
       AXE                  = SIMP(statut='f',typ='R',max='**'),
       COEF_RIGI_DRZ        = SIMP(statut='f',typ='R',defaut= 1.0E-10 ),
       GRILLE_NCOU          = SIMP(statut='f',typ='I',defaut= 1,),
@@ -528,12 +527,11 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
 #  ============================================================================
    MEMBRANE             = FACT(statut='f',max='**',
       regles               = (UN_PARMI('MAILLE','GROUP_MA'),
-                              EXCLUS('ANGL_REP','ORIG_AXE'),
-                              ENSEMBLE('ORIG_AXE','AXE')),
+                              EXCLUS('ANGL_REP','AXE'),
+                              ),
       MAILLE               = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
       GROUP_MA             = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
       ANGL_REP             = SIMP(statut='f',typ='R',max=2),
-      ORIG_AXE             = SIMP(statut='f',typ='R',max='**'),
       AXE                  = SIMP(statut='f',typ='R',max='**'),
       MEMBRANE_NCOU        = SIMP(statut='f',typ='I',defaut= 1,),
    ),

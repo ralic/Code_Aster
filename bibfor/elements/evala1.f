@@ -1,8 +1,8 @@
       SUBROUTINE EVALA1( MOD, RELCOM, SIG, VIN, IMAT, MODULE, ICODE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/05/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ELEMENTS  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -79,6 +79,7 @@ C --- INITIALISATION A ZERO DE LA VALEUR DU MODULE
 C --- UNIQUE VARIABLE DE SORTIE
 C =====================================================================
       MODULE = 0.D0
+      VALEUR = 0.D0
 C =====================================================================
 C --- INITIALISATION A ZERO DE L'ANGLE DE DEPART DE RECHERCHE
 C =====================================================================

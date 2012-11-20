@@ -4,7 +4,7 @@
      &                CRITER,SOLVEU,MATAS ,SMBR  ,ISTOP ,
      &                IRET  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +80,7 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       CALL MATFPE(-1)
+      ITER=0
 C
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)

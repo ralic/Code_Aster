@@ -1,7 +1,7 @@
       SUBROUTINE OP0045()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/11/2012   AUTEUR BRIE N.BRIE 
+C MODIF ALGELINE  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,7 +134,9 @@ C     TYPE_RESU : 'DYNAMIQUE' OU 'MODE_FLAMB' OU 'GENERAL'
 
 C     --- CATALOGUE DE COMMANDE, DIFFERENT SELON LE TYPE_RESU
 C     -> ON STOCKE DANS DES VARIABLES POUR EVITER DE FAIRE DES GETXXX
-C     POUR CHAQUE TYPE_RESU
+C     POUR CHAQUE TYPE_RESU. 
+C     POUR L'INSTANT TYPE_RESU='GENERAL' REVIENT A 'MODE_FLAMB'
+C     SAUF LE NOM DES MATRICES
       IF (TYPRES .EQ. 'DYNAMIQUE') THEN
         MATRA = 'MATR_RIGI'
         MATRB = 'MATR_MASS'
@@ -149,6 +151,7 @@ C     POUR CHAQUE TYPE_RESU
         MATRB = 'MATR_B'
         MATRC = 'MATR_C'
         TYPEVP = 'CHAR_CRIT'
+        TYPRES='MODE_FLAMB'
       ENDIF
 
 C     --- RECUPERATION DES ARGUMENTS MATRICIELS ---
@@ -253,15 +256,6 @@ C     --- LISTES DES FREQUENCES/CHARGES CRITIQUES ---
          NNVALP = -NNVALP
          CALL WKVECT(CBORVP,' V V R',NNVALP,LBORVP)
          CALL GETVR8('CALC_'//TYPEVP,TYPEVP,1,IARG,NNVALP,ZR(LBORVP),L)
-C PROBLEME QUADRATIQUE : A ETE CONCU POUR LES MODES DE VIBRATIONS DONC
-C AVEC UN TRAITEMENT EN FREQUENCE. SI ON EST EN TYPE_RESU='GENERAL', ON
-C TRAITE EN VALEURS PROPRES BRUTES DONC IL FAUT CONVERTIR LES VALEURS
-C RENSEIGNEES PAR L'UTILISATEUR
-         IF ( LC .AND. (TYPRES .EQ. 'GENERAL') ) THEN
-            DO 6 I = 1, NNVALP
-               ZR(LBORVP+I-1)=FREQOM(ZR(LBORVP+I-1))
-   6        CONTINUE
-         ENDIF
       ELSE
          CALL WKVECT(CBORVP,' V V R',1,LBORVP)
          ZR(LBORVP)=0.D0
@@ -442,7 +436,7 @@ C     --- VERIFICATION DES FREQUENCES MIN ET MAX, PASSAGE EN OMEGA2
       ENDIF
 
 C     --- ARRET SI PAS DE FREQUENCE DANS L'INTERVALLE DONNE  ---
-      CALL GETVTX ( ' ', 'STOP_FREQ_VIDE', 1,IARG,1, ARRET, N1 )
+      CALL GETVTX ( ' ', 'STOP_BANDE_VIDE', 1,IARG,1, ARRET, N1 )
 
 C     ------------------------------------------------------------------
 C     ----  DETETECTION DES MODES DE CORPS RIGIDE                 ------
@@ -650,7 +644,7 @@ C     --- DETERMINATION DE NBVECT (DIMENSION DU SOUS ESPACE) ---
       ENDIF
 
 C     --- TRAITEMENT SPECIFIQUE A SORENSEN ---
-      IF ((METHOD.EQ.'SORENSEN').AND.(NBVECT-NFREQ.LT.2)) THEN
+      IF ((METHOD.EQ.'SORENSEN').AND.(NBVECT-NFREQ.LE.2)) THEN
         IF (NFREQ.GT.(NEQACT+2)) THEN
 CC        DIMINUTION FORCEE DE NFREQ
           NFREQ=NEQACT-2
@@ -1051,7 +1045,7 @@ C     ------------------------------------------------------------------
           CALL WP2VEC(APPR,OPTIOF,NFREQ,NBVECT,NEQ,SIGMA,ZR(IADX),
      &                  ZR(IADY),ZR(IADZ),2*NBVECT,ZR(LSURDR),
      &                  ZR(LDIAGR),ZC(LVEC),MXRESF,
-     &                  ZI(LRESUI),ZR(LRESUR),ZI(LPROD))
+     &                  ZI(LRESUI),ZR(LRESUR),ZI(LPROD),OMECOR)
           DO 36 IMET = 1,NFREQ
             ZI(LRESUI-1+MXRESF+IMET) = NITQRM
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
@@ -1071,7 +1065,7 @@ C     ------------------------------------------------------------------
           NFREQ=NFREQ/2
           CALL WP4VEC(NFREQ,NCONV,NEQ,SIGMA,
      &           ZC(LVALPR),ZC(LVEC),MXRESF,
-     &           ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC))
+     &           ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC),OMECOR)
           DO 578 IMET = 1,NFREQ
             ZI(LRESUI-1+MXRESF+IMET) = 0
             ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
@@ -1094,7 +1088,7 @@ C     ------------------------------------------------------------------
               NFREQ = NCONV / 2
               CALL WP3VEC(APPR,OPTIOF,NFREQ,NCONV,NEQ,SIGMA,
      &          ZR(LSURDR),ZR(LDIAGR),ZC(LVEC),MXRESF,
-     &          ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC))
+     &          ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC),OMECOR)
             ELSE
 C     ------------------------------------------------------------------
 C     -------  SORENSEN PB QUADRATIQUE REEL,SYM OU NON   --------
@@ -1109,7 +1103,7 @@ C     ------------------------------------------------------------------
               NFREQ = NCONV / 2
               CALL WP4VEC(NFREQ,NCONV,NEQ,SIGMA,
      &           ZC(LDSOR),ZC(LVEC),MXRESF,
-     &           ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC))
+     &           ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC),OMECOR)
             ENDIF
             DO 378 IMET = 1,NFREQ
               ZI(LRESUI-1+MXRESF+IMET) = 0

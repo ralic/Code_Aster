@@ -1,6 +1,6 @@
       SUBROUTINE OP0100()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/11/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 20/11/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,13 +73,14 @@ C 1. PREALABLES
 C==============
 C
       CALL JEMARQ()
-      VCHAR  = '&&'//NOMPRO//'.CHARGES'
-      COURB  = '&&'//NOMPRO//'.COURB'
-      TRAV1='&&'//NOMPRO//'.TRAV1'
-      TRAV2='&&'//NOMPRO//'.TRAV2'
-      TRAV3='&&'//NOMPRO//'.TRAV3'
-      TRAV4='&&'//NOMPRO//'.TRAV4'
-      STOK4='&&'//NOMPRO//'.STOK4'
+      JNORD = 1
+      VCHAR = '&&'//NOMPRO//'.CHARGES'
+      COURB = '&&'//NOMPRO//'.COURB'
+      TRAV1 = '&&'//NOMPRO//'.TRAV1'
+      TRAV2 = '&&'//NOMPRO//'.TRAV2'
+      TRAV3 = '&&'//NOMPRO//'.TRAV3'
+      TRAV4 = '&&'//NOMPRO//'.TRAV4'
+      STOK4 = '&&'//NOMPRO//'.STOK4'
 C
 C     ===============================
 C       2. RECUPERATION DES OPERANDES
@@ -131,7 +132,7 @@ C
 
       CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',NDIM,K8B,IER)
       IF (.NOT.(NDIM.EQ.2.OR.NDIM.EQ.3)) CALL U2MESS('F','MODELISA2_6')
-      
+
 C     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
       NBMO1 = 2
       MOCLEF(1) = 'COMP_INCR'
@@ -141,29 +142,29 @@ C     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
         CALL GETFAC(MOCLEF(I),N1M)
         NT=MAX(NT,N1M)
 10    CONTINUE
-      
+
       IRET2 = 1
-      IF (NT .EQ. 0) THEN    
+      IF (NT .EQ. 0) THEN
         CALL RSEXCH(' ',RESUCO,'COMPORTEMENT',IORD,COMPOR,IRET)
-         
-C       CAS MECA_STATIQUE : LA CARTE DE COMPORTEMENT DANS RESUCO 
+
+C       CAS MECA_STATIQUE : LA CARTE DE COMPORTEMENT DANS RESUCO
 C       N'EXISTE PAS -> ON IMPOSE DANS CALC_G COMP_ELAS
         IF (IRET .NE. 0) THEN
           CALL NMDORC(MODELE,COMPOR,K24B)
           IRET2 = 0
         ENDIF
-      ELSE      
+      ELSE
         CALL NMDORC(MODELE,COMPOR,K24B)
       ENDIF
-      
-C     ON VERIFIE LA COHERENCE DE LOI DE COMPORTEMENT SI SNL      
+
+C     ON VERIFIE LA COHERENCE DE LOI DE COMPORTEMENT SI SNL
       IF (IRET2 .NE. 0) THEN
-        CALL GVERLC(RESUCO,COMPOR,IORD,INCR  ) 
+        CALL GVERLC(RESUCO,COMPOR,IORD,INCR  )
       ELSE
         INCR = .FALSE.
       ENDIF
-           
-      CALL JEVEUO(VCHAR,'L',ICHA)
+
+      CALL JEVEUO(VCHAR//'.LCHA','L',ICHA)
 
       LNCAS=.FALSE.
       LMELAS=.FALSE.
@@ -511,7 +512,7 @@ C       --------------------------------------------------------------
             CALL JERECU('V')
             IORD1 = ZI(IVEC-1+I)
             CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD1)
-            CALL JEVEUO(VCHAR,'L',ICHA)
+            CALL JEVEUO(VCHAR//'.LCHA','L',ICHA)
             CALL RSEXCH(' ',RESUCO,'DEPL',IORD1,DEPLA1,IRET)
             IF(LONVEC.EQ.1)THEN
               IORD2  = IORD1
@@ -623,7 +624,7 @@ C       -------------------------------
           ENDIF
 
           CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD)
-          CALL JEVEUO(VCHAR,'L',ICHA)
+          CALL JEVEUO(VCHAR//'.LCHA','L',ICHA)
           CALL RSEXCH('F',RESUCO,'DEPL',IORD,DEPLA,IRET)
 
           CALL CAKG3D(OPTION,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
@@ -707,7 +708,7 @@ C       -------------------------
           DO 342 I = 1,LONVEC
             IORD = ZI(IVEC-1+I)
             CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4B,RESUCO,IORD)
-            CALL JEVEUO(VCHAR,'L',ICHA)
+            CALL JEVEUO(VCHAR//'.LCHA','L',ICHA)
             CALL RSEXCH('F',RESUCO,'DEPL',IORD,DEPLA,IRET)
             CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8B)
             PULS = ZR(IPULS)
@@ -731,11 +732,11 @@ C
         IF (INCR) THEN
           LISOPT = '&&OP0100.LISOPT'
           NBROPT = 2
-          
+
           CALL WKVECT(LISOPT,'V V K16',NBROPT,JOPT)
           ZK16(JOPT) = 'VARI_ELNO'
           ZK16(JOPT+1) = 'EPSP_ELNO'
-          
+
           CALL CCBCOP(RESUCO,RESUC2,VECORD,LONVEC,LISOPT,NBROPT)
         ENDIF
 
@@ -758,9 +759,8 @@ C
             EXITIM = .TRUE.
           ENDIF
 C
-          CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,
-     &    RESUCO,IORD)
-          CALL JEVEUO(VCHAR,'L',ICHA)
+          CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD)
+          CALL JEVEUO(VCHAR//'.LCHA','L',ICHA)
           CALL RSEXCH('F',RESUCO,'DEPL',IORD,DEPLA,IRET)
           CALL RSEXCH(' ',RESUCO,'VITE',IORD,CHVITE,IRET)
           IF(IRET.NE.0) THEN
@@ -822,9 +822,9 @@ C
             CALL RSRUSD(RESUC2,ZI(JORDR))
             CALL DETRSD('RESULTAT',RESUC2)
           ENDIF
-          
+
           CALL JEDETR('&&MECALCG.VECTORDR')
-          CALL JEDETR('&&MECALG')   
+          CALL JEDETR('&&MECALG')
           CALL RSMENA(RESUCO)
         ENDIF
 

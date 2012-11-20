@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 25/09/2012   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 19/11/2012   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -644,6 +644,8 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   if RESULTAT != None:
     if args['NUME_ORDRE'] != None :
       mcORDR['NUME_ORDRE']=args['NUME_ORDRE']
+    elif args['NUME_MODE'] != None :
+      mcORDR['NUME_MODE']=args['NUME_MODE']
     elif args['LIST_ORDRE']  != None:
       mcORDR['LIST_ORDRE']=args['LIST_ORDRE']
     elif args['INST']  != None:

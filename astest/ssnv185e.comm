@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185e.para = tps_job 70 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,21 +158,34 @@ for i in range(0,nbc) :
 # SOLUTION ANALYTIQUE
 K1REF=1.
 
+VAL_CALC = [1.004702175212   ,
+            1.0004649587506  ,
+            1.0259390514398  ,
+            1.024031446614   ,
+            1.0110284954161  ,
+            1.0082841137781  ,
+            1.0084591357119  ,
+            1.0049756962677  ,
+            1.0068109486134  ,
+            1.0030713437598  ,
+            1.004558564649   ,
+            1.0003176428473  ]
+            
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[i*2+0], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.03, PRECISION=0.03,    #TODO vale_calc
+              PRECISION=0.03,    
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[i*2+1], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.03, PRECISION=0.03,    #TODO vale_calc
+              PRECISION=0.03,    
               REFERENCE='ANALYTIQUE');
 
 # -------------------------------------------------------------   

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319b.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,6 +187,10 @@ for i in range(1,NPS-1) :
 W=1000;
 sigma=1E6
 
+KIL_calc = [ 3.7940271283694E+07,  4.1939581591243E+07, 4.630956543046E+07 ]
+KIIL_calc = [-2164.5420169867, -4496.8420142253, -6289.2095475267 ]
+KIR_calc = [ 3.7877442071324E+07,  4.1570656732814E+07, 4.6728543982413E+07 ]
+KIIR_calc =[2369.3436135991, 4741.5249335086, 6513.8385289095 ]
 for i in range(1,NPS-1) :
    
    a=a0+da_fiss*(i-1)
@@ -203,40 +207,36 @@ for i in range(1,NPS-1) :
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K1',
-              TOLE_MACHINE=0.05,  #TODO vale_calc
               PRECISION=0.05,
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
-              VALE_CALC=KI_broek  )
+              VALE_CALC=KIL_calc[i-1]  )
 
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K2',
-              TOLE_MACHINE=TOL_K2,  #TODO vale_calc
               PRECISION=TOL_K2,
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              VALE_CALC=0.    )
+              VALE_CALC=KIIL_calc[i-1]  )
 
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K1',
-              TOLE_MACHINE=0.05,  #TODO vale_calc
               PRECISION=0.05,
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
-              VALE_CALC=KI_broek  )
+              VALE_CALC=KIR_calc[i-1]  )
 
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K2',
-              TOLE_MACHINE=TOL_K2,  #TODO vale_calc
               PRECISION=TOL_K2,
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              VALE_CALC=0.  )
+              VALE_CALC=KIIR_calc[i-1]  )
 
 
 #----------------------------------------------

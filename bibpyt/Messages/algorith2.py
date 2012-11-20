@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF algorith2 Messages  DATE 19/11/2012   AUTEUR DESROCHE X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,11 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
  L'état initial défini n'est pas plastiquement admissible pour le modèle LETK. 
  L'état initial de contraintes est erroné ou les propriétés matériaux ne sont pas adaptées au problème posé. 
  Le calcul s'arrête en erreur fatale par précautions. 
+"""),
+
+3 : _(u"""
+ REPERE='COQUE' ne traite que les champs aux éléments, pas les champs aux noeuds.
+ On arrête le calcul.
 """),
 
 6 : _(u"""

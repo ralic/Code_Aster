@@ -1,7 +1,7 @@
       SUBROUTINE OP0038()
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 20/11/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,12 +52,11 @@ C
       CALL INFMAJ()
 C               123456789012345678901234
       K24B   = '                        '
-C               12345678
       BLAN8  = '        '
+      KCHA   = '&&OP0038.CHARGES   '
 C
       BASE   = 'G'
       RUNDF  = R8VIDE()
-      KCHA   = '&&OP0038.CHARGES'
       PRESS  = ' '
       CHTIME = ' '
       EXITIM = .FALSE.
@@ -71,7 +70,7 @@ C
       CALL UTALRM('OFF', 'CALCULEL3_40')
       CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,BLAN8,1)
       CALL UTALRM('ON', 'CALCULEL3_40')
-      CALL JEVEUO(KCHA,'E',JCHA)
+      CALL JEVEUO(KCHA//'.LCHA','E',JCHA)
 
       CALL EXLIMA(' ',0,'G',MODELE,LIGREL)
 

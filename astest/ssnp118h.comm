@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/11/2012   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION INTERFACE 3D (HEXA20), LOIS CZM_OUV_MIX ET CZM_TAC_MIX
 # ssnp118h.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,11 +22,13 @@
 DEBUT(CODE=_F(NOM='SSNP118H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 tfin=10
+tfinc=9.00001
 nbpas=10
 Gc = 0.9
 Sc = 1.1
 young  = 0.5
 dc = 2*Gc/Sc
+cmupi = 10.
 
 MA=LIRE_MAILLAGE(FORMAT='MED')
 
@@ -92,7 +94,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_N=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250, DZ=0 ),
+    _F(MAILLE='DROITE', DX=cos(pi/6), DY= sin(pi/6)),
     )
   )
 
@@ -157,9 +159,8 @@ STAT_NON_LINE(reuse = U_OUV,
     SELECTION = 'RESIDU',
     TYPE = 'PRED_ELAS',
     MAILLE = 'CUBEDEG',
-    COEF_MULT = 10,
+    COEF_MULT = cmupi,
     ETA_PILO_R_MIN = 0.,
-    ETA_PILO_MAX = 1
     ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_OUV_MIX',
@@ -167,7 +168,7 @@ STAT_NON_LINE(reuse = U_OUV,
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_CUBE'),
           ),
-  INCREMENT  = _F(LIST_INST = L_INST),
+  INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = tfinc),
   CONVERGENCE = _F(
     RESI_REFE_RELA = 1.E-6,
     SIGM_REFE      = Sc,
@@ -223,9 +224,8 @@ STAT_NON_LINE(reuse = U_TAC,
     SELECTION = 'RESIDU',
     TYPE = 'PRED_ELAS',
     MAILLE = 'CUBEDEG',
-    COEF_MULT = 10,
+    COEF_MULT = cmupi,
     ETA_PILO_R_MIN = 0.,
-    ETA_PILO_MAX = 1
     ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_TAC_MIX',
@@ -233,7 +233,7 @@ STAT_NON_LINE(reuse = U_TAC,
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_CUBE'),
           ),
-  INCREMENT  = _F(LIST_INST = L_INST),
+  INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = tfinc),
   CONVERGENCE = _F(
     RESI_REFE_RELA = 1.E-6,
     SIGM_REFE      = Sc,
@@ -271,8 +271,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.829180921,
-           VALE_REFE=0.82918099999999995,
+           VALE_CALC=2.0729523025,
+           VALE_REFE=2.0729525,
            NOM_PARA='ETA_PILO',
            TABLE=TETA_OUV,
            FILTRE=_F(NOM_PARA='INST',
@@ -285,8 +285,8 @@ TEST_RESU(RESU=_F(GROUP_NO='TOUTSEUL',
                   RESULTAT=U_OUV,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC= 2.16506351E-08,
-                  VALE_REFE=2.1650600000000001E-08,),
+                  VALE_CALC= 8.66025404E-09,
+                  VALE_REFE= 8.66024E-09),
           )
 
 TEST_RESU(RESU=_F(INST=2.0000800000000001,
@@ -379,8 +379,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.829180921,
-           VALE_REFE=0.82918099999999995,
+           VALE_CALC=2.0729523025,
+           VALE_REFE=2.0729525,
            NOM_PARA='ETA_PILO',
            TABLE=TETA_TAC,
            FILTRE=_F(NOM_PARA='INST',
@@ -393,8 +393,8 @@ TEST_RESU(RESU=_F(GROUP_NO='TOUTSEUL',
                   RESULTAT=U_TAC,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC= 2.16506351E-08,
-                  VALE_REFE=2.1650600000000001E-08,),
+                  VALE_CALC= 8.66025404E-09,
+                  VALE_REFE= 8.66024E-09),
           )
 
 TEST_RESU(RESU=_F(INST=2.0000800000000001,

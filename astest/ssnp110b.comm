@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 # ssnp110b.para = tps_job 180 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,7 @@ IMPR_TABLE(TABLE=G_2,);
 # TEST
 TEST_TABLE(
            VALE_CALC=3.2555317317979999,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -147,7 +147,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=13.356972318693,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -156,7 +156,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=31.016676852305,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -165,7 +165,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=56.328224060880999,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -174,7 +174,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=85.845368296505995,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -183,7 +183,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=3.1736689255331001,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -192,7 +192,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=13.030305691554,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -201,7 +201,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=30.500113491006999,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -210,7 +210,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=55.902118446902001,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -219,7 +219,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=85.989043074850997,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -228,7 +228,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=3.1810884956539001,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -237,7 +237,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=13.066612876293,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -246,7 +246,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=30.674217498316001,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -255,7 +255,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=56.512443262292003,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -264,7 +264,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=87.473933571217003,
-           TOLE_MACHINE=1.E-3,
+           
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',

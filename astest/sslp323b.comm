@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE PROPAGATION DE FISSURE RADIALE DEBOUCHANTE DANS UN DISQUE EN ROTATION
 # sslp323b.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,6 +163,14 @@ F = [None]*5
 G = [None]*5
 K1REF = [None]*5
 
+VAL_CAL = [
+            3.2120105395368E+07 ,
+            3.2120105395368E+07 ,
+            5.2623466199978E+07 ,
+            5.2623466199978E+07 ,
+            7.9070323610778E+07 ,
+            7.9070323610778E+07 ]
+            
 for i in range(1,4) :
    F[i]=(1.122+0.14*(afiss[i]/D)-0.545*(afiss[i]/D)**2+0.405*(afiss[i]/D)**3)/(1-afiss[i]/D)**1.5
    G[i]=(0.187*(6-9*(afiss[i]/D)+5*(afiss[i]/D)**2)-7.35*(afiss[i]/D)**2*(1-afiss[i]/D)**4*(1-0.5*afiss[i]/D))/(1-afiss[i]/D)**1.5
@@ -171,20 +179,18 @@ for i in range(1,4) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=K1REF[i],
+              VALE_CALC=VAL_CAL[2*(i-1)+0],
               VALE_REFE=K1REF[i],
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.05,     #TODO vale_calc
               PRECISION=0.05,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=K1REF[i],
+              VALE_CALC=VAL_CAL[2*(i-1)+1],
               VALE_REFE=K1REF[i],
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.05,     #TODO vale_calc
               PRECISION=0.05,
               REFERENCE='ANALYTIQUE',);
 

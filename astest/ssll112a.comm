@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VOUTE CIRCULAIRE SOUS PRESSION UNIFORME ANCIEN SSLL401A
 # ssll112a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -95,14 +95,21 @@ CHARG1=AFFE_CHAR_MECA(MODELE=MO,
                                    DRX=0.0,),
                                 _F(NOEUD='N31',
                                    DY=0.0,
-                                   DZ=0.0,),),);
+                                   DZ=0.0,),),
+                     );
 #
 #
+# ON FAIT DEUX FOIS LE MEME CALCUL
+# UNE FOIS AVEC AFFE_CHAR_MECA_F/FORCE_POUTRE
+# ET UNE FOIS AVEC AFFE_CHAR_MECA/FORCE_POUTRE
 
-
-CHARG2=AFFE_CHAR_MECA_F(MODELE=MO,
+CHARG2_F=AFFE_CHAR_MECA_F(MODELE=MO,
                         FORCE_POUTRE=_F(TOUT='OUI',
                                         VY=F1,),);
+
+CHARG2_R=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_POUTRE=_F(TOUT='OUI',
+                                        VY=-100.0,),);
 #
 #
 
@@ -111,12 +118,29 @@ MEST1=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL,
                     EXCIT=(_F(CHARGE=CHARG1,),
-                           _F(CHARGE=CHARG2,),),);
+                           _F(CHARGE=CHARG2_F,),),);
 #
 #
 
 
 MEST1=CALC_CHAMP(reuse=MEST1,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'),RESULTAT=MEST1)
+
+
+
+#
+MEST2=MECA_STATIQUE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    EXCIT=(_F(CHARGE=CHARG1,),
+                           _F(CHARGE=CHARG2_R,),),);
+#
+#
+
+
+MEST2=CALC_CHAMP(reuse=MEST2,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'),RESULTAT=MEST2)
+
+#
+#
 
 #
 #
@@ -186,7 +210,73 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   MAILLE='S08',),
           )
 
+
+
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST2,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N01',
+                  NOM_CMP='VY',
+                  VALE_CALC= 5.31826697E-05,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=5.2999999999999998,
+                  MAILLE='S01',),
+          )
+
 #
+#
+
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST2,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N02',
+                  NOM_CMP='VY',
+                  VALE_CALC= 5.29777039E-05,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=5.2999999999999998,
+                  MAILLE='S01',),
+          )
+
+#
+#
+
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST2,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N11',
+                  NOM_CMP='N',
+                  VALE_CALC=-99.908563119,
+                  VALE_REFE=-100.0,
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  MAILLE='S11',),
+          )
+
+#
+#
+
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MEST2,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N08',
+                  NOM_CMP='MFZ',
+                  VALE_CALC=-3.92706983E-05,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-2,
+                  MAILLE='S08',),
+          )
+
 #
 
 

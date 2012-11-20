@@ -1,4 +1,4 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_VALIDATOR Noyau  DATE 19/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -252,7 +252,7 @@ class MinStr:
                        valeur, self.min, self.max))
 
     def __repr__(self):
-        return ufmt(_(u"TXM de longueur entre %s et %s", self.min, self.max))
+        return ufmt(_(u"TXM de longueur entre %s et %s"), self.min, self.max)
 
 class Valid(PProtocol):
    """

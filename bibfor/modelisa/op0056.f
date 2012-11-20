@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -783,7 +783,7 @@ C     ------ CARACTERISTIQUES THERMIQUES ------
         END IF
         DO 300 I = 1,31
           ZR(JOBTH-1+I) = QT(I)
-          ZR(JOBTC-1+I) = 0.D0
+          ZC(JOBTC-1+I) = DCMPLX(0.D0,0.D0)
   300   CONTINUE
       END IF
 

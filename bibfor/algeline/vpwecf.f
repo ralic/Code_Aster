@@ -2,9 +2,9 @@
      +                   RESUFK,LAMOR,KTYP,LNS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,6 +40,7 @@ C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
       UNDF = R8VIDE()
       INDF = ISNNEM()
+      CHA = UNDF
       ERRMOY = 0.D0
       IF (NFREQ.EQ.0) CALL ASSERT(.FALSE.)
       IF (RESUFK(NFREQ,2) .EQ. 'BATHE_WILSON') THEN

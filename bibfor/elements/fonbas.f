@@ -8,7 +8,7 @@
       CHARACTER*19     BASFON,BASLOC,FONTYP,LNNO,LTNO
       CHARACTER*24     FONFIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C
       REAL*8        XA, YA, ZA, XB, YB, ZB, XM, YM, ZM
       REAL*8        XAB, YAB, ZAB, XAM, YAM, ZAM, XNM, YNM, ZNM
       REAL*8        N(3), NM(3), VDIRA(3), VNORA(3), VDIRB(3), VNORB(3)
-      REAL*8        VDIRN(3), VNORN(3)
+      REAL*8        VDIRN(3), VNORN(3),R8PREM
       CHARACTER*8   K8B, LICMP(9), TYPFON
       CHARACTER*16  CASFON
       CHARACTER*19  CNSBAS, CNSLN, CNSLT
@@ -88,7 +88,7 @@ C       CAS QUADRATIQUE
         IF (TYPFON.EQ.'NOE3'.OR.TYPFON.EQ.'SEG3') THEN
           CASFON = 'QUADRATIQUE'
                NSEG = (NBNOFF-1)/2
-        ENDIF
+        ENDIF 
       ENDIF
 
 C     INITIALISATION DES CHAMPS SIMPLES DES LEVEL-SETS
@@ -156,7 +156,6 @@ C       CAS 3D : RECHERCHE DU PROJETE PUIS STOCKAGE DES VECTEURS
 
 C         RECHERCHE DU PROJETE DE INO SUR LE FOND DE FISSURE
 C         --------------------------------------------------
-
           DMIN = R8MAEM()
 
 C         BOUCLE SUR LES "SEGMENTS" DU FOND DE FISSURE
@@ -203,7 +202,7 @@ C           COORD DU PROJETE DE M SUR ISEG: N
 C           DISTANCE MN
             D = SQRT(XNM*XNM + YNM*YNM + ZNM*ZNM)
 
-            IF(D.LT.DMIN) THEN
+            IF (D.LT.(DMIN*(1-ABS(R8PREM())*100) )) THEN
               DMIN   = D
               SN     = S
               INDICA = INA
@@ -253,9 +252,9 @@ C         STOCKAGE DES LEVEL-SETS
 
 C       CAS NI 2D NI 3D
         ELSE
-
+        
           CALL ASSERT(.FALSE.)
-
+        
         ENDIF
 
  10   CONTINUE

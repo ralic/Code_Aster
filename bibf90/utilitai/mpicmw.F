@@ -1,6 +1,6 @@
       SUBROUTINE MPICMW( IEXC )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MPICMW UTILITAI  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MPICMW UTILITAI  DATE 19/11/2012   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -25,16 +25,14 @@ C RESPONSABLE COURTOIS M.COURTOIS
 !       UN PROCESSEUR A RENCONTRE UNE ERREUR, IL EMET SON MESSAGE
 !       ET ENVOIE L'INFO AU PROC #0.
 !-----------------------------------------------------------------------
-#ifdef _USE_MPI
+#if defined(_USE_MPI) && !defined(ASTER_DISABLE_MPI_CHECK)
 !
       INCLUDE 'mpif.h'
       INCLUDE 'aster_constant.h'
 !
       LOGICAL   GTSTAT
-      INTEGER*4 IERMPI, ISTAT, RANK, NBPRO4
-      INTEGER*4 MPST(MPI_STATUS_SIZE), REQ, TERM
+      INTEGER*4 IERMPI, RANK, NBPRO4
       INTEGER   IRET
-      DOUBLE PRECISION T0, TF
 !
       CALL MPI_COMM_RANK(MPI_COMM_WORLD, RANK, IERMPI)
       CALL MPIERR(IERMPI)

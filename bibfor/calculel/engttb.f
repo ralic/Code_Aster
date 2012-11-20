@@ -8,7 +8,7 @@
       CHARACTER*19 NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,9 +49,9 @@ C
       LG1 = LXLGUT( FORMR  )
       LG2 = LXLGUT( TYPTES )
       FORM1 = '(''            TYPE_TEST= '''''//TYPTES(1:LG2)//
-     +          ''''', VALE= '','//FORMR(1:LG1)//','' )'')'
+     +          ''''', VALE_CALC= '','//FORMR(1:LG1)//','' )'')'
       FORM2 = '(''            TYPE_TEST= '''''//TYPTES(1:LG2)//
-     +          ''''', VALE_I= '',I9,'' )'')'
+     +          ''''', VALE_CALC_I = '',I9,'' )'')'
 C
       CALL JEVEUO ( NOMSD//'.TBLP' , 'L', JTBLP )
       CALL JEVEUO ( NOMSD//'.TBNP' , 'L', JTBNP )
@@ -135,7 +135,6 @@ C
 C
  4010 FORMAT ('            CRITERE= ''ABSOLU'', ')
 C
- 4020 FORMAT ('            REFERENCE= ''NON_REGRESSION'', ',
-     +                    'PRECISION= ',A10,',')
+ 4020 FORMAT ('            TOLE_MACHINE= ',A10,',')
 C
       END

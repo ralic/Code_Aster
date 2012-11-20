@@ -1,4 +1,4 @@
-# MODIF  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC 3 DISQUES (CADYRO : DLRR08)
 # REFERENCE : M. LALANNE, G. FERRARIS -        RORORDYNAMIC, PREDICTION IN
 # ENGINEERING - pp 68-71
@@ -121,7 +121,7 @@ GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
 
 
                     
-X="""MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
                                     FREQ=(3.,3000.)));
@@ -187,7 +187,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=845.313831401,
                    VALE_REFE=846.01300000000003,),
                 ),
-          )"""
+          )
 
 OM=25000.*pi/30.
 
@@ -196,14 +196,14 @@ GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
 
 
 
-X="""MODEG=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+MODEG=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        MATR_AMOR=GYOM,
                        METHODE='SORENSEN',
                        VERI_MODE=_F(SEUIL=1.E-3),
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=1.,
-                                    NMAX_FREQ=16))"""
+                                    NMAX_FREQ=16))
 
 
 MODEZ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
@@ -216,7 +216,7 @@ MODEZ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
 
 
 
-X="""TEST_RESU(RESU=(
+TEST_RESU(RESU=(
                _F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
@@ -229,11 +229,17 @@ X="""TEST_RESU(RESU=(
                    RESULTAT=MODEG,
                    VALE_CALC=67.184414708,
                    VALE_REFE=67.209000000000003,),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEG,
+                   VALE_CALC=112.1061888258,
+                   VALE_REFE=112.106,),
                 _F(NUME_ORDRE=4,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEG,
-                   VALE_CALC=157.851924277,
+                   VALE_CALC=157.85192427664,
                    VALE_REFE=157.904,),
                 _F(NUME_ORDRE=5,
                    PARA='FREQ',
@@ -275,7 +281,7 @@ X="""TEST_RESU(RESU=(
                    VALE_REFE=715.02599999999995,
                    PRECISION=2.E-3,),
                 ),
-          )"""
+          )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -293,41 +299,48 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEZ,
+                   VALE_CALC=112.10649804334,
+                   VALE_REFE=112.106,
+                   TOLE_MACHINE=1.E-3),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODEZ,
                    VALE_CALC=157.851924815,
                    VALE_REFE=157.904,),
-                _F(NUME_ORDRE=4,
+                _F(NUME_ORDRE=5,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEZ,
                    VALE_CALC=193.547655166,
                    VALE_REFE=193.70599999999999,),
-                _F(NUME_ORDRE=5,
+                _F(NUME_ORDRE=6,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEZ,
                    VALE_CALC=249.799520798,
                    VALE_REFE=249.898,),
-                _F(NUME_ORDRE=7,
+                _F(NUME_ORDRE=8,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEZ,
                    VALE_CALC=407.137886989,
                    VALE_REFE=407.61900000000003,
                    PRECISION=2.E-3,),
-                _F(NUME_ORDRE=8,
+                _F(NUME_ORDRE=9,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEZ,
                    VALE_CALC=446.233754545,
                    VALE_REFE=446.62200000000001,),
-                _F(NUME_ORDRE=10,
+                _F(NUME_ORDRE=11,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEZ,
                    VALE_CALC=622.018803021,
                    VALE_REFE=622.654,
                    PRECISION=2.E-3,),
-                _F(NUME_ORDRE=11,
+                _F(NUME_ORDRE=12,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEZ,
@@ -337,7 +350,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-X="""PROJ_BASE(BASE=MODES,
+PROJ_BASE(BASE=MODES,
           STOCKAGE='PLEIN',
           MATR_ASSE_GENE=(_F(MATRICE=CO('MAGE'),
                              MATR_ASSE=MASSE,),
@@ -411,7 +424,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=715.02599999999995,
                    PRECISION=2.E-3,),
                 ),
-          )"""
+          )
 
 FIN()
 

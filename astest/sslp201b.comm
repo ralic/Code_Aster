@@ -1,4 +1,4 @@
-# MODIF  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN_SI
 # RESPONSABLE PELLET J.PELLET
 # sslp201b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -429,7 +429,7 @@ MSLIN=MECA_STATIQUE(MODELE=MO,
                     EXCIT=_F(CHARGE=CHMEC,
                              FONC_MULT=FO11,),
                     LIST_INST=LR1,
-                    SOLVEUR=_F(METHODE='MUMPS',),
+                    SOLVEUR=_F(METHODE='MULT_FRONT',),
                     );
 
 MSLIN=CALC_CHAMP(reuse=MSLIN,
@@ -674,7 +674,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 MSLI2=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CARA1,
-                    SOLVEUR=_F(METHODE='MUMPS',),
+                    SOLVEUR=_F(METHODE='MULT_FRONT',),
                     EXCIT=(_F(CHARGE=CHCI,
                               FONC_MULT=FO12,),
                            _F(CHARGE=CHMECF,
@@ -706,6 +706,7 @@ MSLI2=CALC_CHAMP(reuse =MSLI2,
               CRITERE='ABSOLU',
               PRECISION=0.001,
               DEFORMATION='EPSI_NOEU',CRITERES=('SIEQ_NOEU','EPEQ_NOEU'),CONTRAINTE='SIGM_NOEU');
+
 
 ENGENDRE_TEST(CO=MSLI2,);
 
@@ -848,11 +849,10 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=2.8755113435824E+04,
                    ),
                 _F(NUME_ORDRE=3,
-                   TYPE_TEST='SOMM_ABS',
+                   TYPE_TEST='SOMM',
                    RESULTAT=MSLI2,
                    NOM_CHAM='SIEQ_NOEU',
-                   VALE_CALC=1.0728506709542E+04,
-                   TOLE_MACHINE=1.E-4,      #TODO curieux
+                   VALE_CALC=4488.3660644595, # Voir issue19805
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
@@ -891,11 +891,10 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=1.7576991841968E+04,
                    ),
                 _F(NUME_ORDRE=3,
-                   TYPE_TEST='SOMM_ABS',
+                   TYPE_TEST='SOMM',
                    RESULTAT=MSLI2,
                    NOM_CHAM='EPEQ_NOEU',
-                   VALE_CALC=6.6976714324361E+03,
-                   TOLE_MACHINE=2.E-4,      #TODO curieux
+                   VALE_CALC= -874.80519865511 , # Voir issue19805
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',

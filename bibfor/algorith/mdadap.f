@@ -24,7 +24,7 @@ C
      &             DREDST(*),PREC,EPSI,DPLMOD(NBCHOC,NEQGEN,*),
      &             DPLREV(*),DPLRED(*),DREVST(*)
       REAL*8       DTI,DTMAX
-      REAL*8       DT,DTSTO,TCF,VROTAT
+      REAL*8       DTSTO,TCF,VROTAT
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*),VVAR
       CHARACTER*8  NOMRES,MONMOT
       CHARACTER*16 TYPBAS,METHOD
@@ -37,7 +37,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -343,7 +343,7 @@ C
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            0,FBID,FBID,0.D0,FBID,
-     &            1,0,DT,DTSTO,TCF,VROTAT,
+     &            1,0,DT2,DTSTO,TCF,VROTAT,
      &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
 C
@@ -574,7 +574,7 @@ C           LES DEUX LIGNES SUIVANTES SIMULENT LE WHILE - CONTINUE
             ENDIF
             IF (ERR .GT. 1.D0 .AND. NR .EQ. NRMAX) THEN
               VALR2(1) = TEMPS
-              VALR2(2) = DT
+              VALR2(2) = DT2
               CALL U2MESG('A','DYNAMIQUE_18',0,' ',1,NR,2,VALR2)
             ENDIF
 C

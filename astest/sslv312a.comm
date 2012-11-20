@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE  MURAKAMI 9.70 FISSURE CIRCULAIRE PERPENDICULAIRE A L'INTERFACE
 # sslv312a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,25 +157,25 @@ GLO2_LE5=CALC_G(  RESULTAT=CHAMDEPL,
 # ------------------------
 
 
-TEST_TABLE(TOLE_MACHINE=1.E-5,
+TEST_TABLE(
            PRECISION=1.E-2,
-           VALE_CALC= 1.1020043072586E-05,
+           VALE_CALC=1.1020081947644E-05,
            VALE_REFE=1.0934999999999999E-05,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=G0_C1,)
 
-TEST_TABLE(TOLE_MACHINE=1.E-4,      #TODO variabilite
+TEST_TABLE(
            PRECISION=1.E-2,
-           VALE_CALC= 1.1023066154712E-05,
+           VALE_CALC=1.1023046439459E-05,
            VALE_REFE=1.0934999999999999E-05,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=G0_C2,)
 
-TEST_TABLE(TOLE_MACHINE=2.E-3,      #TODO variabilite
+TEST_TABLE(
            PRECISION=0.040000000000000001,
-           VALE_CALC= 8.9596948398632E-06 ,
+           VALE_CALC=8.9753232791912E-06,
            VALE_REFE=9.1495999999999996E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -184,9 +184,9 @@ TEST_TABLE(TOLE_MACHINE=2.E-3,      #TODO variabilite
                      VALE_K='N186',),
            )
 
-TEST_TABLE(TOLE_MACHINE=8.E-4,      #TODO variabilite
+TEST_TABLE(
            PRECISION=0.059999999999999998,
-           VALE_CALC= 8.6711378579717E-06,
+           VALE_CALC=8.6656857832672E-06,
            VALE_REFE=9.1093999999999996E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -195,9 +195,9 @@ TEST_TABLE(TOLE_MACHINE=8.E-4,      #TODO variabilite
                      VALE_K='N182',),
            )
 
-TEST_TABLE(TOLE_MACHINE=1.E-5,
+TEST_TABLE(
            PRECISION=0.050000000000000003,
-           VALE_CALC= 8.625689254679E-06 ,
+           VALE_CALC=8.6261065907443E-06,
            VALE_REFE=8.8821999999999994E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -206,9 +206,9 @@ TEST_TABLE(TOLE_MACHINE=1.E-5,
                      VALE_K='N174',),
            )
 
-TEST_TABLE(TOLE_MACHINE=6.E-4,      #TODO variabilite
+TEST_TABLE(
            PRECISION=0.11,
-           VALE_CALC= 8.1094733973092E-06,
+           VALE_CALC=8.1103267875506E-06,
            VALE_REFE=8.9301999999999996E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -217,9 +217,9 @@ TEST_TABLE(TOLE_MACHINE=6.E-4,      #TODO variabilite
                      VALE_K='N155',),
            )
 
-TEST_TABLE(TOLE_MACHINE=6.E-4,      #TODO variabilite
+TEST_TABLE(
            PRECISION=0.070000000000000007,
-           VALE_CALC= 6.7439331105372E-06,
+           VALE_CALC=6.7427021097824E-06,
            VALE_REFE=7.1453E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -228,9 +228,9 @@ TEST_TABLE(TOLE_MACHINE=6.E-4,      #TODO variabilite
                      VALE_K='N121',),
            )
 
-TEST_TABLE(TOLE_MACHINE=2.E-3,      #TODO variabilite
+TEST_TABLE(
            PRECISION=0.040000000000000001,
-           VALE_CALC= 9.0010269846651E-06,
+           VALE_CALC=9.0139942312562E-06,
            VALE_REFE=9.1495999999999996E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -239,9 +239,9 @@ TEST_TABLE(TOLE_MACHINE=2.E-3,      #TODO variabilite
                      VALE_K='N186',),
            )
 
-TEST_TABLE(TOLE_MACHINE=5.E-4,      #TODO variabilite
+TEST_TABLE(
            PRECISION=0.059999999999999998,
-           VALE_CALC= 8.6665479210843E-06,
+           VALE_CALC=8.6622146367951E-06,
            VALE_REFE=9.1093999999999996E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -250,9 +250,9 @@ TEST_TABLE(TOLE_MACHINE=5.E-4,      #TODO variabilite
                      VALE_K='N182',),
            )
 
-TEST_TABLE(TOLE_MACHINE=1.E-4,      #TODO variabilite
+TEST_TABLE(
            PRECISION=0.050000000000000003,
-           VALE_CALC= 8.6446044567238E-06,
+           VALE_CALC=8.6442510896964E-06,
            VALE_REFE=8.8821999999999994E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -261,9 +261,9 @@ TEST_TABLE(TOLE_MACHINE=1.E-4,      #TODO variabilite
                      VALE_K='N174',),
            )
 
-TEST_TABLE(TOLE_MACHINE=6.E-4,      #TODO variabilite
+TEST_TABLE(
            PRECISION=0.10000000000000001,
-           VALE_CALC= 8.1231277005455E-06,
+           VALE_CALC=8.1240103760221E-06,
            VALE_REFE=8.9301999999999996E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -272,9 +272,9 @@ TEST_TABLE(TOLE_MACHINE=6.E-4,      #TODO variabilite
                      VALE_K='N155',),
            )
 
-TEST_TABLE(TOLE_MACHINE=6.E-4,      #TODO variabilite
+TEST_TABLE(
            PRECISION=0.070000000000000007,
-           VALE_CALC= 6.7510618703759E-06,
+           VALE_CALC=6.7501190262359E-06,
            VALE_REFE=7.1453E-06,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
@@ -285,3 +285,4 @@ TEST_TABLE(TOLE_MACHINE=6.E-4,      #TODO variabilite
 
 FIN()
 #
+

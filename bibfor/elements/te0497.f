@@ -1,7 +1,7 @@
       SUBROUTINE TE0497(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -219,7 +219,9 @@ C
       NBCMP  = ITAB(2)/NNO
       IF ( .NOT. PERMAN ) THEN
         CALL TECACH('ONN','PCONTNM',3,ITAB,IRET)
-        ISIENM   = ITAB(1)
+        ISIENM = ITAB(1)
+      ELSE
+        ISIENM = 1
       ENDIF
 C
 C 2.4. CARTES DE PESANTEUR ET ROTATION

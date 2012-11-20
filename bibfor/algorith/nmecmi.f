@@ -2,7 +2,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -256,9 +256,6 @@ C       -------------------------------------------
             IF (CPLAN) THEN
                PREC= CRIT(3)
                NITER=NINT(CRIT(1))
-               JPROL2 = JPROLP
-               JVALE2 = JVALEP
-               NBVAL2 = NBVALP
                PRECR = PREC * SIGY
 C
 C             CALCUL DE L'APPROXIMATION : DP SANS CONTRAINTE PLANE
@@ -267,6 +264,9 @@ C
                   DP0 = SIELEQ - SIGY - RPRIM * PM
                   DP0 = DP0 / (RPRIM+1.5D0*(DEUXMU+PRAG))
                ELSE
+                  JPROL2 = JPROLP
+                  JVALE2 = JVALEP
+                  NBVAL2 = NBVALP
                   CALL RCFON2('E',JPROLP,JVALEP,NBVALP,RBID,E,NU,
      &                        PM,RP,RPRIM,PRAG,SIELEQ,DP0)
                ENDIF

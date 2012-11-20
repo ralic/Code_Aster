@@ -1,5 +1,5 @@
-# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
-#  CAS_TEST  : SSNV104I
+# MODIF  DATE 19/11/2012   AUTEUR DESOZA T.DESOZA 
+#  CAS_TEST  : CONTACT DE DEUX SPHERES
 #  TITRE : CONTACT DE DEUX SPHERES
 # ssnv104i.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,10 +32,10 @@ DEBUT(CODE=_F(NOM='SSNV104I',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI();
 
-SSNV104I=LIRE_MAILLAGE();
+MAILLAGE=LIRE_MAILLAGE();
 
-SSNV104I=DEFI_GROUP(reuse =SSNV104I,
-                    MAILLAGE=SSNV104I,
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=(_F(OPTION='PLAN',
                                       NOM='LIM1',
                                       POINT=(0.0,0.0,0.0),
@@ -84,18 +84,18 @@ SSNV104I=DEFI_GROUP(reuse =SSNV104I,
 #
 
 
-MO=AFFE_MODELE(MAILLAGE=SSNV104I,
+MO=AFFE_MODELE(MAILLAGE=MAILLAGE,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
 
-SSNV104I=MODI_MAILLAGE(reuse =SSNV104I,
-                       MAILLAGE=SSNV104I,
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
                        ORIE_PEAU_3D=_F(GROUP_MA='SESC',),
                       );
 
-SSNV104I=MODI_MAILLAGE(reuse =SSNV104I,
-                       MAILLAGE=SSNV104I,
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
                        ORIE_PEAU_3D=_F(GROUP_MA='SMAI',),
                       );
 #_____________________________________________________________________
@@ -110,7 +110,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=2.E4,
                           NU=0.29999999999999999,
                           ALPHA=1.E-2,),);
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV104I,
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,),);
 #_____________________________________________________________________
@@ -134,11 +134,11 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 
 CHA2=DEFI_CONTACT(MODELE=MO,
                   FORMULATION = 'DISCRETE',
+                  LISSAGE='OUI',
                   RESI_GEOM=0.05,
                     ZONE=_F(GROUP_MA_MAIT='SMAI',
-                               GROUP_MA_ESCL='SESC',
-                               TOLE_PROJ_EXT = 0.01,
-                               ),);
+                            GROUP_MA_ESCL='SESC',
+                            ),);
 #_____________________________________________________________________
 #
 #                    DEFINITIONS DES FONCTIONS TEMPORELLES
@@ -205,18 +205,17 @@ TEST_RESU(CHAM_ELEM=_F(CRITERE='RELATIF',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='SIYY',
                        GROUP_NO='G1',
-                       PRECISION=0.070000000000000007,
+                       PRECISION=0.12,
                        MAILLE='M5884',
                        CHAM_GD=SIELNO,
-                       TOLE_MACHINE=1.E-3,      #TODO variabilite
-                       VALE_CALC=-2.98926838E+03,
+                       VALE_CALC=-3127.4064765192,
                        VALE_REFE=-2798.3000000000002,),
           )
 
 #_____________________________________________________________________
 #
-# TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
-# MODELISATION B
+# TEST DE COMPARAISON A UN AUTRE CALCUL ASTER
+# LA MODELISATION A SERT DE REFERENCE
 #_____________________________________________________________________
 #
 
@@ -225,91 +224,83 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
                         REFERENCE='AUTRE_ASTER',
                         NOM_CMP='SIYY',
                         GROUP_NO='G1',
-                        PRECISION=1.E-2,
                         MAILLE='M5884',
                         CHAM_GD=SIELNO,
-                        TOLE_MACHINE=1.E-3,      #TODO variabilite
-                        VALE_CALC=-2.98926838E+03,
-                        VALE_REFE=-2965.3000000000002,),
+                        VALE_CALC=-3127.4064765192,
+                        VALE_REFE=-3176.3351314503998,
+                        PRECISION=0.02),
                      _F(CRITERE='RELATIF',
                         REFERENCE='AUTRE_ASTER',
                         NOM_CMP='SIYY',
                         GROUP_NO='G1',
-                        PRECISION=1.E-2,
                         MAILLE='M5896',
                         CHAM_GD=SIELNO,
-                        TOLE_MACHINE=1.E-3,      #TODO variabilite
-                        VALE_CALC=-2.98964990E+03,
-                        VALE_REFE=-2965.3000000000002,),
+                        VALE_CALC=-3127.4003546594,
+                        VALE_REFE=-3176.3351314503998,
+                        PRECISION=0.02),
                      _F(CRITERE='RELATIF',
                         REFERENCE='AUTRE_ASTER',
                         NOM_CMP='SIYY',
                         GROUP_NO='G1',
-                        PRECISION=1.E-2,
                         MAILLE='M5908',
                         CHAM_GD=SIELNO,
-                        TOLE_MACHINE=1.E-3,      #TODO variabilite
-                        VALE_CALC=-2.98977788E+03,
-                        VALE_REFE=-2965.3000000000002,),
+                        VALE_CALC=-3127.3969710725,
+                        VALE_REFE=-3176.3351314503998,
+                        PRECISION=0.02),
                      _F(CRITERE='RELATIF',
                         REFERENCE='AUTRE_ASTER',
                         NOM_CMP='SIYY',
                         GROUP_NO='G1',
-                        PRECISION=1.E-2,
                         MAILLE='M5920',
                         CHAM_GD=SIELNO,
-                        TOLE_MACHINE=1.E-3,      #TODO variabilite
-                        VALE_CALC=-2.98976944E+03,
-                        VALE_REFE=-2965.3000000000002,),
+                        VALE_CALC=-3127.3955017378,
+                        VALE_REFE=-3176.3351314503998,
+                        PRECISION=0.02),
                      _F(CRITERE='RELATIF',
                         REFERENCE='AUTRE_ASTER',
                         NOM_CMP='SIYY',
                         GROUP_NO='G1',
-                        PRECISION=1.E-2,
                         MAILLE='M5932',
                         CHAM_GD=SIELNO,
-                        TOLE_MACHINE=1.E-3,      #TODO variabilite
-                        VALE_CALC=-2.98985414E+03,
-                        VALE_REFE=-2965.3000000000002,),
+                        VALE_CALC=-3127.395516217,
+                        VALE_REFE=-3176.3351314503998,
+                        PRECISION=0.02),
                      _F(CRITERE='RELATIF',
                         REFERENCE='AUTRE_ASTER',
                         NOM_CMP='SIYY',
                         GROUP_NO='G1',
-                        PRECISION=1.E-2,
                         MAILLE='M5944',
                         CHAM_GD=SIELNO,
-                        TOLE_MACHINE=1.E-3,      #TODO variabilite
-                        VALE_CALC=-2.99003794E+03,
-                        VALE_REFE=-2965.3000000000002,),
+                        VALE_CALC=-3127.3970194743,
+                        VALE_REFE=-3176.3351314503998,
+                        PRECISION=0.02),
                      _F(CRITERE='RELATIF',
                         REFERENCE='AUTRE_ASTER',
                         NOM_CMP='SIYY',
                         GROUP_NO='G1',
-                        PRECISION=1.E-2,
                         MAILLE='M5956',
                         CHAM_GD=SIELNO,
-                        TOLE_MACHINE=1.E-3,      #TODO variabilite
-                        VALE_CALC=-2.99021076E+03,
-                        VALE_REFE=-2965.3000000000002,),
+                        VALE_CALC=-3127.400431004,
+                        VALE_REFE=-3176.3351314503998,
+                        PRECISION=0.02),
                      _F(CRITERE='RELATIF',
                         REFERENCE='AUTRE_ASTER',
                         NOM_CMP='SIYY',
                         GROUP_NO='G1',
-                        PRECISION=1.E-2,
                         MAILLE='M5968',
                         CHAM_GD=SIELNO,
-                        TOLE_MACHINE=1.E-3,      #TODO variabilite
-                        VALE_CALC=-2.99045748E+03,
-                        VALE_REFE=-2965.3000000000002,),
+                        VALE_CALC=-3127.4065589806,
+                        VALE_REFE=-3176.3351314503998,
+                        PRECISION=0.02),
                      ),
           RESU=(_F(GROUP_NO='G1',
                    INST=1.0,
-                   REFERENCE='AUTRE_ASTER',
+                   REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=-3.1142099198E-18,
-                   VALE_REFE=-3.9399999999999998E-19,
+                   VALE_CALC=6.2045635134414E-19,
+                   VALE_REFE=0,
                    TOLE_MACHINE=1.E-10,
                    CRITERE='ABSOLU',
                    PRECISION=1.E-10,),
@@ -319,32 +310,29 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=-0.118894327,
-                   VALE_REFE=-0.11118,
+                   VALE_CALC=-0.11795800712507,
+                   VALE_REFE=-0.113431329,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=5.E-3,      #TODO variabilite
-                   PRECISION=0.08,),
+                   PRECISION=0.04,),
                 _F(GROUP_NO='HP',
                    INST=1.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-0.118904098,
-                   VALE_REFE=-0.11118,
+                   VALE_CALC=-0.11795787490681,
+                   VALE_REFE=-0.113431329,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=5.E-3,      #TODO variabilite
-                   PRECISION=0.08,),
+                   PRECISION=0.04,),
                 _F(GROUP_NO='H',
                    INST=1.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.164603736,
-                   VALE_REFE=-0.16299,
+                   VALE_CALC=-0.15986995495537,
+                   VALE_REFE=-0.162910000,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=8.E-3,      #TODO variabilite
                    PRECISION=0.02,),
                 _F(GROUP_NO='HP',
                    INST=1.0,
@@ -352,10 +340,9 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.164768087,
-                   VALE_REFE=-0.16299,
+                   VALE_CALC=-0.15986987379561,
+                   VALE_REFE=-0.162910000,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=0.02,      #TODO variabilite
                    PRECISION=0.02,),
                 _F(GROUP_NO='I',
                    INST=1.0,
@@ -363,46 +350,44 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=-0.186183161,
-                   VALE_REFE=-0.16844000000000001,
+                   VALE_CALC=-0.18355970408666,
+                   VALE_REFE=-0.178450517,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=5.E-3,      #TODO variabilite
-                   PRECISION=0.12,),
+                   PRECISION=0.03,),
                 _F(GROUP_NO='IP',
                    INST=1.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-0.186841725,
-                   VALE_REFE=-0.16844000000000001,
+                   VALE_CALC=-0.18355962802308,
+                   VALE_REFE=-0.178450517,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=5.E-3,      #TODO variabilite
-                   PRECISION=0.12,),
+                   PRECISION=0.03,),
                 _F(GROUP_NO='I',
                    INST=1.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.630987925,
-                   VALE_REFE=-0.62905,
+                   VALE_CALC=-0.63015368797783,
+                   VALE_REFE=-0.629660000,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=5.E-3,      #TODO variabilite
-                   PRECISION=5.0000000000000001E-3,),
+                   PRECISION=0.001,),
                 _F(GROUP_NO='IP',
                    INST=1.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.630119804,
-                   VALE_REFE=-0.62905,
+                   VALE_CALC=-0.63015365177587,
+                   VALE_REFE=-0.629660000,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=5.E-3,      #TODO variabilite
-                   PRECISION=5.0000000000000001E-3,),
+                   PRECISION=0.001,),
                 ),
           )
 
 FIN();
 #
+
+

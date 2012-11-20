@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/11/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -255,11 +255,14 @@ C====
 C 3. APPEL DE LA LECTURE AU FORMAT MED
 C====
 C
-       IF(TYCH(1:4).EQ.'ELGA')THEN
+      IF(TYCH(1:4).EQ.'ELGA')THEN
          CALL DISMOI('F','NB_MA_MAILLA',NOMAAS,'MAILLAGE',
      &                                            NBMA,K8B,IRET)
          CALL WKVECT('&&OP0150_NBPG_MAILLE','V V I',NBMA,JNBPGM)
          CALL WKVECT('&&OP0150_NBPG_MED','V V I',NBMA,JNBPMM)
+      ELSE
+         JNBPGM=1
+         JNBPMM=1
       ENDIF
 
       IF ( FORMAT.EQ.'MED' ) THEN

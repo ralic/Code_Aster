@@ -7,10 +7,10 @@
       CHARACTER*4   CTYP
       CHARACTER*8   MODELE,CARA,RESULT
       CHARACTER*24  MATE
-      CHARACTER*(*) KCHA
+      CHARACTER*19  KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 20/11/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -1,11 +1,10 @@
       SUBROUTINE TE0291(OPTION,NOMTE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +25,7 @@ C RESPONSABLE DELMAS J.DELMAS
 C
 C     BUT:
 C         CALCUL DE L'INDICATEUR D'ERREUR EN ENERGIE
-C         SUR UN ELEMENT 2D AVEC LA METHODE DE ZHU-ZIENKIEWICZ.
+C         SUR UN ELEMENT AVEC LA METHODE DE ZHU-ZIENKIEWICZ.
 C         OPTION : 'CALC_ESTI_ERRE'
 C
 C ......................................................................
@@ -36,11 +35,13 @@ C
 C
       INTEGER NNO,KP,NPG1,I,K,NNOS,JGANO,NDIM
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,NIV,NBCMP
-      INTEGER IBID,IERR,IMATE,ISIEF,ISIG,MATER
+      INTEGER IBID,IERR,IMATE,ISIGM,ISIGNO,MATER
 
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,VALRES(2)
-      REAL*8 SIG11,SIG22,SIG33,SIG12,SIG13,SIG23,R
-      REAL*8 E,NU,EEST,NOR,NORSIG,NU0,HE
+      REAL*8 SIGL11,SIGL22,SIGL33,SIGL12,SIGL13,SIGL23
+      REAL*8 SIGC11,SIGC22,SIGC33,SIGC12,SIGC13,SIGC23
+      REAL*8 ESIG11,ESIG22,ESIG33,ESIG12,ESIG13,ESIG23
+      REAL*8 E,NU,EEST,NOR,NORSIG,NU0,HE,R
 
       INTEGER ICODRE(2)
       CHARACTER*4 FAMI
@@ -59,8 +60,12 @@ C
       MATER = ZI(IMATE)
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
-      CALL JEVECH('PSIEF_R','L',ISIEF)
-      CALL JEVECH('PSIGMA','L',ISIG)
+
+C     CHAMP DE CONTRAINTE CALCULE
+      CALL JEVECH('PSIEF_R','L',ISIGM)
+C     CHAMP DE CONTRAINTE LISSE
+      CALL JEVECH('PSIGMA','L',ISIGNO)
+C
       CALL JEVECH('PERREUR','E',IERR)
 C
       NORSIG = 0.D0
@@ -90,20 +95,20 @@ C
            POIDS = POIDS*R
         ENDIF
 
-        SIG11 = 0.D0
-        SIG22 = 0.D0
-        SIG33 = 0.D0
-        SIG12 = 0.D0
-        SIG13 = 0.D0
-        SIG23 = 0.D0
+        SIGL11 = 0.D0
+        SIGL22 = 0.D0
+        SIGL33 = 0.D0
+        SIGL12 = 0.D0
+        SIGL13 = 0.D0
+        SIGL23 = 0.D0
         DO 102 I=1,NNO
-          SIG11 = SIG11 + ZR(ISIG-1+NBCMP*(I-1)+1) * ZR(IVF+K+I-1)
-          SIG22 = SIG22 + ZR(ISIG-1+NBCMP*(I-1)+2) * ZR(IVF+K+I-1)
-          SIG33 = SIG33 + ZR(ISIG-1+NBCMP*(I-1)+3) * ZR(IVF+K+I-1)
-          SIG12 = SIG12 + ZR(ISIG-1+NBCMP*(I-1)+4) * ZR(IVF+K+I-1)
+          SIGL11 = SIGL11 + ZR(ISIGNO-1+NBCMP*(I-1)+1) * ZR(IVF+K+I-1)
+          SIGL22 = SIGL22 + ZR(ISIGNO-1+NBCMP*(I-1)+2) * ZR(IVF+K+I-1)
+          SIGL33 = SIGL33 + ZR(ISIGNO-1+NBCMP*(I-1)+3) * ZR(IVF+K+I-1)
+          SIGL12 = SIGL12 + ZR(ISIGNO-1+NBCMP*(I-1)+4) * ZR(IVF+K+I-1)
           IF (NDIM.EQ.3) THEN
-            SIG13 = SIG13 + ZR(ISIG-1+NBCMP*(I-1)+5) * ZR(IVF+K+I-1)
-            SIG23 = SIG23 + ZR(ISIG-1+NBCMP*(I-1)+6) * ZR(IVF+K+I-1)
+            SIGL13 = SIGL13 + ZR(ISIGNO-1+NBCMP*(I-1)+5) * ZR(IVF+K+I-1)
+            SIGL23 = SIGL23 + ZR(ISIGNO-1+NBCMP*(I-1)+6) * ZR(IVF+K+I-1)
           ENDIF
 C
 102     CONTINUE
@@ -115,38 +120,51 @@ C
 C
 C    ESTIMATION DE L'ERREUR EN NORME DE L' ENERGIE
 C
+        SIGC11 = ZR(ISIGM-1+NBCMP*(KP-1)+1)
+        SIGC22 = ZR(ISIGM-1+NBCMP*(KP-1)+2)
+        SIGC33 = ZR(ISIGM-1+NBCMP*(KP-1)+3)
+        SIGC12 = ZR(ISIGM-1+NBCMP*(KP-1)+4)
+
+        ESIG11 = SIGL11-SIGC11
+        ESIG22 = SIGL22-SIGC22
+        ESIG33 = SIGL33-SIGC33
+        ESIG12 = SIGL12-SIGC12
+        
         IF (NDIM.EQ.2) THEN
-          EEST = (SIG11-ZR(ISIEF-1+NBCMP*(KP-1)+1))**2
-     &          +(SIG22-ZR(ISIEF-1+NBCMP*(KP-1)+2))**2
-     &          +(SIG33-ZR(ISIEF-1+NBCMP*(KP-1)+3))**2
-     &          +(1.D0+NU)*(SIG12-ZR(ISIEF-1+NBCMP*(KP-1)+4))**2
+          EEST = ESIG11**2+ESIG22**2+ESIG33**2
+     &         +2*(1.D0+NU)*(ESIG12)**2
+     &         -2*NU*ESIG11*ESIG22-2*NU*ESIG11*ESIG33-2*NU*ESIG22*ESIG33
           ZR(IERR) = ZR(IERR) + EEST * POIDS / E
 C
 C    NORME DE L' ENERGIE DE LA SOLUTION CALCULEE
 C
-        NOR    = ZR(ISIEF-1+NBCMP*(KP-1)+1)**2
-     &         + ZR(ISIEF-1+NBCMP*(KP-1)+2)**2
-     &         + ZR(ISIEF-1+NBCMP*(KP-1)+3)**2
-     &         +(1.D0+NU)*ZR(ISIEF-1+NBCMP*(KP-1)+4)**2
+        NOR    = SIGC11**2+SIGC22**2+SIGC33**2
+     &         +2*(1.D0+NU)*(SIGC12)**2
+     &         -2*NU*SIGC11*SIGC22-2*NU*SIGC11*SIGC33-2*NU*SIGC22*SIGC33
         NORSIG = NORSIG + NOR * POIDS / E
 C
         ELSE IF (NDIM.EQ.3) THEN
-          EEST = (SIG11-ZR(ISIEF-1+NBCMP*(KP-1)+1))**2
-     &          +(SIG22-ZR(ISIEF-1+NBCMP*(KP-1)+2))**2
-     &          +(SIG33-ZR(ISIEF-1+NBCMP*(KP-1)+3))**2
-     &          +(1.D0+NU)*(SIG12-ZR(ISIEF-1+NBCMP*(KP-1)+4))**2
-     &          +(1.D0+NU)*(SIG13-ZR(ISIEF-1+NBCMP*(KP-1)+5))**2
-     &          +(1.D0+NU)*(SIG23-ZR(ISIEF-1+NBCMP*(KP-1)+6))**2
+ 
+          SIGC13 = ZR(ISIGM-1+NBCMP*(KP-1)+5)
+          SIGC23 = ZR(ISIGM-1+NBCMP*(KP-1)+6)
+
+          ESIG13 = SIGL13-SIGC13
+          ESIG23 = SIGL23-SIGC23
+
+          EEST = ESIG11**2+ESIG22**2+ESIG33**2
+     &         +2*(1.D0+NU)*(ESIG12)**2
+     &         +2*(1.D0+NU)*(ESIG13)**2
+     &         +2*(1.D0+NU)*(ESIG23)**2
+     &         -2*NU*ESIG11*ESIG22-2*NU*ESIG11*ESIG33-2*NU*ESIG22*ESIG33
           ZR(IERR) = ZR(IERR) + EEST * POIDS / E
 C
 C    NORME DE L' ENERGIE DE LA SOLUTION CALCULEE
 C
-          NOR    = ZR(ISIEF-1+NBCMP*(KP-1)+1)**2
-     &           + ZR(ISIEF-1+NBCMP*(KP-1)+2)**2
-     &           + ZR(ISIEF-1+NBCMP*(KP-1)+3)**2
-     &           +(1.D0+NU)*ZR(ISIEF-1+NBCMP*(KP-1)+4)**2
-     &           +(1.D0+NU)*ZR(ISIEF-1+NBCMP*(KP-1)+5)**2
-     &           +(1.D0+NU)*ZR(ISIEF-1+NBCMP*(KP-1)+6)**2
+          NOR    = SIGC11**2+SIGC22**2+SIGC33**2
+     &         +2*(1.D0+NU)*(SIGC12)**2
+     &         +2*(1.D0+NU)*(SIGC13)**2
+     &         +2*(1.D0+NU)*(SIGC23)**2
+     &         -2*NU*SIGC11*SIGC22-2*NU*SIGC11*SIGC33-2*NU*SIGC22*SIGC33
           NORSIG = NORSIG + NOR * POIDS / E
         ELSE
            CALL ASSERT(.FALSE.)

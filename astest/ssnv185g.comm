@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185g.para = tps_job 310 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -271,21 +271,39 @@ IMPR_TABLE(TABLE=SIF[nbc]);
 
 GREF=0.
 
+VAL_CALC = [
+             6.5241019696576E-05   ,
+            -4.439670979599E-05   ,
+            -3.9344248502364E-04  ,
+            -4.9563268150417E-04  ,
+            1.6342977098349E-04   ,
+            3.8704687745745E-05   ,
+            1.1418925300431E-04   ,
+            -2.8921856750787E-06  ,
+            9.7970603460285E-05   ,
+            -1.6696243949948E-05  ,
+            6.5135591230797E-05   ,
+            -4.4276058373726E-05  ,
+            9.4271249129453E-05   ,
+            -6.2407169922344E-05  ]
+
 for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='G',
               TYPE_TEST='MAX',
-              VALE_CALC=GREF, VALE_REFE=GREF,
+              VALE_CALC=VAL_CALC[2*i+0], 
+              VALE_REFE=GREF,
               CRITERE='ABSOLU',
-              TOLE_MACHINE=0.0005, PRECISION=0.0005,
+              PRECISION=0.0005,
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='G',
               TYPE_TEST='MIN',
-              VALE_CALC=GREF, VALE_REFE=GREF,
+              VALE_CALC=VAL_CALC[2*i+1], 
+              VALE_REFE=GREF,
               CRITERE='ABSOLU',
-              TOLE_MACHINE=0.0005, PRECISION=0.0005,
+              PRECISION=0.0005,
               REFERENCE='ANALYTIQUE');
 
 
@@ -300,7 +318,7 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 
 IMPR_TABLE(TABLE = PK)
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=7.9470501282119E-08,
            
            NOM_PARA='G',
            TABLE=PK,

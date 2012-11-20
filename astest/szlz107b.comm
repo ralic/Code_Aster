@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 #
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE CONSTANTE
 # szlz107b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -25,6 +25,7 @@ DEBUT(  CODE=_F(  NOM = 'SZLZ107B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'
 ### ON VEUT RETROUVER LE MEME RESULTAT AVEC CALC_FATIGUE DE CAS-TEST SSLV135d
 SIGMXX=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
+# Partie monotone
 #                                   0     ,  0     ,
 #                                   0.25  ,  50    ,
 #                                   0.5   ,  100   ,
@@ -330,7 +331,7 @@ CRIT[12] =   FORMULE(
            VALE= '''EPSPAC'''
            )
 
-RESU = [7.5E-4, 8.75E-4, 200, 66.66666, 0.45, 0.173333,  200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.67423E-3]
+RESU = [7.5E-4, 7.625E-4, 200, 66.66666, 0.45, 0.17333333,  200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.6742346E-3]
 NPAR = ['DEPSPE', 'EPSPR1', 'SIGNM1', 'APHYDR', 'DENDIS','DENDIE', 'DSIGEQ','SIGPR1', 'EPSNM1','INVA2S','DSITRE','DEPTRE', 'EPSPAC' ]
 for i in range(NBPR) :
 #for i in range(5,6) :
@@ -371,7 +372,7 @@ for i in range(NBPR) :
     IMPR_TABLE(TABLE = FATN[i]) 
 
     TEST_TABLE(VALE_CALC=RESU[i],
-               TOLE_MACHINE=1.0000000000000001E-05,
+#               TOLE_MACHINE=1.0000000000000001E-05,
                NOM_PARA=NPAR[i],
                TABLE=FATN[i],)
 

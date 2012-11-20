@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
 # hsnv132a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,14 +178,14 @@ IMPR_TABLE(TABLE = PK)
 # Cas test de non regression sur K1
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=9.0328413451143E6,
-           TOLE_MACHINE=1.E-4,
+           
            NOM_PARA='K1',
            TABLE=TABSIF,
            )
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=8.4543655482163001E6,
-           TOLE_MACHINE=1.E-4,
+           
            NOM_PARA='K1',
            TABLE=PK,
            )
@@ -193,7 +193,7 @@ TEST_TABLE(CRITERE='RELATIF',
 # Cas test de non regression sur G
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=492.81784641923002,
-           TOLE_MACHINE=1.E-4,
+           
            NOM_PARA='G',
            TABLE=TABG,
            )

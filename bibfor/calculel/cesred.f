@@ -1,5 +1,5 @@
       SUBROUTINE CESRED(CES1Z,NBMA,LIMA,NBCMP,LICMP,BASE,CES2Z)
-C MODIF CALCULEL  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF CALCULEL  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,6 +38,7 @@ C NBMA    IN       I    : NOMBRE DE MAILLES DE LIMA
 C                         SI NBMA=0 : ON NE REDUIT PAS SUR LES MAILLES
 C LIMA    IN       L_I  : LISTE DES NUMEROS DE MAILLES SUR LESQUELLES
 C                         ON VEUT REDUIRE LE CHAM_ELEM_S
+C                         LES MAILLES TARDIVES (<0) SONT IGNOREES.
 C NBCMP   IN       I    : NOMBRE DE CMPS DE LICMP
 C                         SI NBCMP=0 : ON NE REDUIT PAS SUR LES CMPS
 C                         SI NBCMP<0 : ON ENLEVE DES CMPS A CES1Z
@@ -140,6 +141,8 @@ C     -----------------------------------------------------------
 C
       IF (NBMA.NE.0) THEN
          DO 10,KMA = 1,NBMA
+            CALL ASSERT(LIMA(KMA).LE.NBMAM)
+            IF (LIMA(KMA).LE.0) GOTO 10
             ZI(JNBPT-1+LIMA(KMA))=ZI(JCE1D-1+5+4*(LIMA(KMA)-1)+1)
             ZI(JNBSP-1+LIMA(KMA))=ZI(JCE1D-1+5+4*(LIMA(KMA)-1)+2)
             ZI(JNBCMP-1+LIMA(KMA))=MIN(ZI(JCE1D-1+5+4*(LIMA(KMA)-1)+3),
@@ -192,6 +195,7 @@ C     ------------------------------------------
 
       ELSE
         DO 40,KMA = 1,NBMA
+          IF (LIMA(KMA).LE.0) GOTO 40
           ZL(JEXMA-1+LIMA(KMA)) = .TRUE.
    40   CONTINUE
       END IF

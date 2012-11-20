@@ -1,4 +1,4 @@
-#@ MODIF calc_modal_ops Macro  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF calc_modal_ops Macro  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,7 +128,7 @@ def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISSEMENT,
                             STURM      =VERI_MODE['STURM'],
                             PREC_SHIFT =VERI_MODE['PREC_SHIFT'])
 
-  motscit['STOP_FREQ_VIDE'] = CALC_FREQ['STOP_FREQ_VIDE']
+  motscit['STOP_BANDE_VIDE'] = CALC_FREQ['STOP_BANDE_VIDE']
 
  
   if MODE_RIGIDE=='OUI':

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE PLANE SEMI-INFINIE
 # sslp114c.para = tps_job 120 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -208,10 +208,10 @@ def SIGMA(X,Y,IND,alphain) :
    
 
 #Definition des valeurs de reference pour les test de non-regression
-KI_nr       =[1.0000300917111,       1.0002465956454,      1.0002715716787,     1.0000020562816,     0.99997972157408]
-KII_nr      =[-1.0368264513655E-04, -4.5030256478202E-05, -1.4837478855274E-05, 7.3087656789106E-05, 4.0041668401666E-05]
-G_nr        =[1.0000718957718E-05,   1.000489030041E-05,   1.0005390362528E-05, 1.000015846203E-05,  9.9995309570879E-06]
-NormeL2_U_nr=[6.8327757467283E-10,   2.0924466972382E-10,  1.7512188786812E-10, 3.7275133543595E-10, 4.5174922170405E-10]
+KI_nr       =[1.0000300917114,       1.0002465859936,      1.0002715716787,     1.0000020562812,     0.99997971938253]
+KII_nr      =[-1.0368264507503E-04, -4.5025285578843E-05, -1.4836371681931E-05, 7.308765684341E-05, 4.0042730941732E-05]
+G_nr        =[1.0000718957723E-05,   1.0004890300412E-05,   1.0005390362528E-05, 1.0000158462024E-05,  9.9995309183114E-06]
+NormeL2_U_nr=[6.8327757468908E-10,   2.0922443805192E-10,  1.7515254905471E-10, 3.7275133574112E-10, 4.5174925537613E-10]
  
 #DEBUT BOUCLE ANGLES
 for K in range(len(alphaREF)):
@@ -374,55 +374,32 @@ for K in range(len(alphaREF)):
 
    TEST_TABLE(CRITERE='RELATIF',
               REFERENCE='ANALYTIQUE',
-              TOLE_MACHINE=1.E-3,
               PRECISION=1.E-3,
-              VALE_CALC=KI,
+              VALE_CALC=KI_nr[K],
               VALE_REFE=KI,
               NOM_PARA='K1',
               LEGENDE='alpha='+str(alphaREF[K]),
               TABLE=CH_G[K],)
 
-   TEST_TABLE(CRITERE='RELATIF',
-              VALE_CALC=KI_nr[K],
-              NOM_PARA='K1',
-              LEGENDE='alpha='+str(alphaREF[K]),
-              TABLE=CH_G[K],
-              )
-
    TEST_TABLE(CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE',
-              TOLE_MACHINE=1.E-3,
               PRECISION=1.E-3,
-              VALE_CALC=KII,
+              VALE_CALC=KII_nr[K],
               VALE_REFE=KII,
               NOM_PARA='K2',
               LEGENDE='alpha='+str(alphaREF[K]),
               TABLE=CH_G[K],)
 
-   TEST_TABLE(CRITERE='ABSOLU',
-              TOLE_MACHINE=1.E-3,
-              VALE_CALC=KII_nr[K],
-              NOM_PARA='K2',
-              LEGENDE='alpha='+str(alphaREF[K]),
-              TABLE=CH_G[K],
-              )
 
    TEST_TABLE(CRITERE='RELATIF',
               REFERENCE='ANALYTIQUE',
-              TOLE_MACHINE=1.E-3,
               PRECISION=1.E-3,
-              VALE_CALC=(1-nu**2.)/E*(KI**2.+KII**2.),
+              VALE_CALC=G_nr[K],
               VALE_REFE=(1-nu**2.)/E*(KI**2.+KII**2.),
               NOM_PARA='G',
               LEGENDE='alpha='+str(alphaREF[K]),
               TABLE=CH_G[K],)
 
-   TEST_TABLE(CRITERE='RELATIF',
-              VALE_CALC=G_nr[K],
-              NOM_PARA='G',
-              LEGENDE='alpha='+str(alphaREF[K]),
-              TABLE=CH_G[K],
-              )
 
 #TOLERANCE RELATIVE A LA NORME DU CHAMP DE DEPLACEMENT!
    NormeL2_U=7.72403392144e-06

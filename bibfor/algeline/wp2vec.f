@@ -1,18 +1,18 @@
       SUBROUTINE WP2VEC (APPR,OPT,NBFREQ,NBVECT,NEQ,SHIFT,YH,YB,VR,
-     +                   NLIVR,VPR,VPI,VECP,MXRESF,
-     +                   RESUFI,RESUFR,LAGR)
+     &                   NLIVR,VPR,VPI,VECP,MXRESF,RESUFI,RESUFR,LAGR,
+     &                   OMECOR)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*1   APPR
       CHARACTER*(*) OPT
-      INTEGER       NBFREQ,NBVECT,NEQ,LAGR(*),MXRESF,NLIVR
-      INTEGER       RESUFI(MXRESF,*)
+      INTEGER       NBFREQ,NBVECT,NEQ,LAGR(*),MXRESF,NLIVR,
+     &              RESUFI(MXRESF,*)
       COMPLEX*16    VECP(NEQ,*),SHIFT
-      REAL*8        RESUFR(MXRESF,*),YH(NEQ,*),YB(NEQ,*)
-      REAL*8        VPR(*),VPI(*),VR(NLIVR,*)
+      REAL*8        RESUFR(MXRESF,*),YH(NEQ,*),YB(NEQ,*),VPR(*),VPI(*),
+     &              VR(NLIVR,*),OMECOR
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,13 +53,15 @@ C IN  VR     : R : MODES DU PB REDUIT. C'EST L'EQUIVALENCE D'UNE
 C                  MATRICE COMPLEXE DE LONGUEUR NBVECT.
 C OUT VECP   : C : MODES DU PB QUADRATIQUE
 C OUT RESUFR : C : TABLEAU DE POST-TRAITEMENT
+C IN  OMECOR : R : "ZERO MODAL", SEUIL EN DECA DUQUEL DEUX MODES SONT
+C                  CONSIDERES COMME IDENTIQUES
 C     -----------------------------------------------------------------
 C
 C
 C     ------------------------------------------------------------------
-      REAL*8     RBID,SI,MOD2,A,B,NMABP,NMABM,AM,OM,R8PREM,
-     &           EPS,PREC,SEUILR,SEUILP,C1,C2,AUXRJ,SEUILC,
-     &           AUXIJ,AUXRK,AUXIK,A1,A2,B1,B2,D,C
+      REAL*8     RBID,SI,MOD2,A,B,NMABP,NMABM,AM,OM,
+     &           EPS,SEUILR,SEUILP,C1,AUXRJ,SEUILC,
+     &           AUXIJ,AUXRK,AUXIK
       INTEGER    I,J,K,AV1,AV2,AV,IADIND,NBFRGA,
      &           VALI(5),NBCMPP,NBCMPC,NBREEL,NBFR
       COMPLEX*16 DES,VPQ,MHU,VPP,VPM
@@ -91,13 +93,10 @@ C --- 1.1. PARTITION (OPERATEUR REEL)
       NBCMPC = 0
       NBREEL = 0
 
-C     PRECISION MACHINE COMME DANS ARPACK
-      PREC=(R8PREM()*0.5D0)**(2.0D+0/3.0D+0)
-C     SI IM(VP)<SEUILR, VP EST CONSIDEREE COMME REELLE
+C     SI IM(VP)<SEUILR: VP EST CONSIDEREE COMME REELLE
       SEUILR=1.D-7
-C     SI MAX(DELTA_RELATIF RE(VPJ-VPK), IDEM MIN(PARTIE REELLE,IMAG),
-C     VPK = CONJUGEE DE VPJ
-      SEUILP=1.D-6
+C     SI MODULE(VPK-VPJ) < SEUILP: VPK = CONJUGEE DE VPJ
+      SEUILP=OMECOR
 C     SEUIL POUR LE COUPLAGE HAUT-BAS DES VECTEURS PROPRES
       SEUILC=1.D-4
 
@@ -122,52 +121,16 @@ C     SEUIL POUR LE COUPLAGE HAUT-BAS DES VECTEURS PROPRES
                   AUXIK=VPI(K)
                   IF (ABS(AUXRK).LT.SEUILR) AUXRK=0.D0
                   IF (ABS(AUXIK).LT.SEUILR) AUXIK=0.D0
-                  C1=2.D0*SQRT((AUXRJ-AUXRK)**2+(AUXIJ+AUXIK)**2)
-                  C2=SQRT(AUXRJ**2+AUXRK**2+AUXIJ**2+AUXIK**2)
-                  IF (C2.LT.PREC) THEN
-                    C=C1
-                  ELSE
-                    C=C1/C2
-                  ENDIF
-                  A1=2.D0*SQRT((AUXRJ-AUXRK)**2)
-                  A2=SQRT(AUXRJ**2+AUXRK**2)
-                  IF (A2.LT.PREC) THEN
-                    A=A1
-                  ELSE
-                    A=A1/A2
-                  ENDIF
-                  B1=2.D0*SQRT((AUXIJ+AUXIK)**2)
-                  B2=SQRT(AUXIJ**2+AUXIK**2)
-                  IF (B2.LT.PREC) THEN
-                    B=B1
-                  ELSE
-                    B=B1/B2
-                  ENDIF
-                  D=A+B
-                  D=MIN(D,C)
-                  IF (D.LT.SEUILP) THEN
+                  C1=SQRT((AUXRJ-AUXRK)**2+(AUXIJ+AUXIK)**2)
+                  IF (C1.LT.SEUILP) THEN
                     LCONJ=.TRUE.
                   ELSE
                     LCONJ=.FALSE.
                   ENDIF
-C POUR DEBUG
-C                  IF (ABS(AUXIJ-3108*6.28D0).LT.100.d0) THEN
-C                  IF (J.EQ.19) THEN
-C                   WRITE(IFM,*)'J/K/A/B/C/D ',J,K,A,B,C,D
-C                   WRITE(IFM,*)'LCONJ/VPJ/VPK',LCONJ,AUXRJ,AUXIJ,
-C     &                         AUXRK,AUXIK
-C                  ENDIF
-C FIN DEBUG
                   IF ((ZI(IADIND+K-1).EQ.-2).AND.LCONJ.AND.
      &                (AUXIJ*AUXIK.LE.0.D0)) THEN
                       TROUVE = .TRUE.
                       NBCMPC = NBCMPC + 1
-C                 PB ALGORITHMIQUE, SANS DOUTE DES SEUILS A MODIFIER
-C                   IF (AUXIJ*AUXIK.GT.0.D0) THEN
-C                     WRITE(IFM,*)'J/K/A/B/C/D ',J,K,A,B,C,D
-C                     WRITE(IFM,*)'VPJ/VPK',AUXRJ,AUXIJ,AUXRK,AUXIK
-C                      CALL ASSERT(.FALSE.)
-C                    ENDIF
                       IF ( AUXIJ.GT.0.D0) THEN
                          ZI(IADIND + J-1) =  1
                          ZI(IADIND + K-1) = -1
@@ -178,7 +141,6 @@ C                    ENDIF
                    ELSE
                       K = K + 1
                    ENDIF
-C
                    GOTO 3
                 ENDIF
                 IF ( .NOT. TROUVE ) THEN
@@ -189,29 +151,29 @@ C
           ENDIF
 2     CONTINUE
 
-C
+
       IF ( ZI(IADIND + NBVECT-1) .EQ. -2) THEN
          ZI(IADIND + NBVECT-1) = 0
          NBCMPP                = NBCMPP +1
       ENDIF
-C
+
       IF ( NBCMPP .GT. 0 ) THEN
          VALI (1) = NBREEL
          VALI (2) = NBCMPC
          VALI (3) = NBCMPP
          CALL U2MESG('A', 'ALGELINE4_87',0,' ',3,VALI,0,0.D0)
       ENDIF
-C
+
       IF ( NBREEL .GT. 0 ) THEN
          VALI (1) = NBREEL
          VALI (2) = NBCMPC
          VALI (3) = NBCMPP
          CALL U2MESG('I', 'ALGELINE4_88',0,' ',3,VALI,0,0.D0)
       ENDIF
-C
+
 C --- 1.2. DETERMINATION DE NB FREQUENCES GARDEES
       NBFRGA =NBCMPC
-C
+
 C --- 1.3. ELIMINATION DES CONJUGUES (OPERATEUR REEL) -- COMPACTAGE --
       K = 1
       DO 4 J = 1, NBVECT
@@ -230,10 +192,10 @@ C --- 1.3. ELIMINATION DES CONJUGUES (OPERATEUR REEL) -- COMPACTAGE --
       NBFRGA=K-1
 C NBRE DE VP RECOMPACTEES
       NBFR=K-1
-C
+
 C     ---------- FIN DE PARTITION TEST ET ELIMINATION -----------------
 C     ----------    AU NIVEAU DE L' OPERATEUR REEL    -----------------
-C
+
 C --- 2. CALCUL DES SOLUTIONS PROPRES DU PB QUADRATIQUE ---
       IF ( OPT .EQ. 'CENTRE' ) THEN
          CALL WKVECT('&&WP2VEC.VEC.AUX.C1','V V C',NEQ,AV1)
@@ -283,9 +245,6 @@ C --- 2. CALCUL DES SOLUTIONS PROPRES DU PB QUADRATIQUE ---
                B = DIMAG(VPP)
                EPS=NMABP
             ENDIF
-C POUR DEBUG
-C            WRITE(6,*)'WP2VEC/VP/EPS',B/6.28,EPS
-C FIN DEBUG
             IF (EPS.GT.SEUILC) THEN
               ZI(IADIND + J-1)=0
               NBFRGA=NBFRGA-1
@@ -295,7 +254,7 @@ C FIN DEBUG
          VPI(J) = B
       ENDIF
 10    CONTINUE
-C
+
 C --- 1.3. ELIMINATION DES VALEURS FAUSSES -- RECOMPACTAGE --
       K = 1
       DO 44 J = 1, NBFR
@@ -322,7 +281,7 @@ C --- 3. SELECTION DES VALEURS PROPRES (PB QUADRATIQUE)
 21          CONTINUE
          ENDIF
 20    CONTINUE
-C
+
 C --- 4. PREPARATION DE RESUFR
        IF (NBFREQ.GT.NBFRGA) THEN
          VALI(1)=NBFREQ
@@ -339,7 +298,7 @@ C --- 4. PREPARATION DE RESUFR
 C --- 5. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-
       CALL WPORDO(1,SHIFT,VPR,VPI,VECP,NBFRGA,NEQ)
       CALL WPORDO(0,SHIFT,VPR,VPI,VECP,NBFREQ,NEQ)
-C
+
       DO 30 J = 1, NBFREQ
          AM          = VPR(J)*VPR(J)
          OM          = VPI(J)*VPI(J)
@@ -348,16 +307,13 @@ C
          RESUFR(J,3) = -VPR(J)/SQRT(OM + AM)
 30    CONTINUE
 
-C       NBVECT=NBFRGA
-C
 C --- 6. DESTRUCTION DES OJB TEMPORAIRES
-C
       IF ( OPT .EQ. 'CENTRE' ) THEN
          CALL JEDETR('&&WP2VEC.VEC.AUX.C1')
          CALL JEDETR('&&WP2VEC.VEC.AUX.C2')
          CALL JEDETR('&&WP2VEC.VEC.AUX.C ')
       ENDIF
       CALL JEDETR('&&WP2VEC.INDIC.PART.VP')
-C
+
       CALL JEDEMA()
       END

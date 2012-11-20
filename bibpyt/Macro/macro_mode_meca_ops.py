@@ -1,4 +1,4 @@
-#@ MODIF macro_mode_meca_ops Macro  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF macro_mode_meca_ops Macro  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,7 +113,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
                                 STURM      =motveri,
                                 PREC_SHIFT =VERI_MODE['PREC_SHIFT'])
 
-        motscit['STOP_FREQ_VIDE']=CALC_FREQ['STOP_FREQ_VIDE']
+        motscit['STOP_BANDE_VIDE']=CALC_FREQ['STOP_BANDE_VIDE']
 
         if METHODE=='TRI_DIAG':
            if args.has_key('NMAX_ITER_ORTHO'):
@@ -188,9 +188,9 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
                                              TOUT_ORDRE='OUI',) )
      # Sous-bande vide
      else:
-        if (CALC_FREQ['STOP_FREQ_VIDE'] == 'OUI'):
+        if (CALC_FREQ['STOP_BANDE_VIDE'] == 'OUI'):
            UTMESS('F', 'MODAL_6',vali=(i+1,))
-        elif (CALC_FREQ['STOP_FREQ_VIDE'] == 'NON'):
+        elif (CALC_FREQ['STOP_BANDE_VIDE'] == 'NON'):
            print 72*"-"
            UTMESS('I', 'MODAL_6',vali=(i+1,))
            print 72*"-"
@@ -252,9 +252,9 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
      nomres=EXTR_MODE(**motscles)
   else:
      print 72*"-"
-     if (CALC_FREQ['STOP_FREQ_VIDE'] == 'OUI'):
+     if (CALC_FREQ['STOP_BANDE_VIDE'] == 'OUI'):
         UTMESS('F', 'MODAL_8',valr=(lborne[0],lborne[nnfreq-1]))
-     elif (CALC_FREQ['STOP_FREQ_VIDE'] == 'NON'):
+     elif (CALC_FREQ['STOP_BANDE_VIDE'] == 'NON'):
         UTMESS('A', 'MODAL_8',valr=(lborne[0],lborne[nnfreq-1]))
      else:
         assert(False)

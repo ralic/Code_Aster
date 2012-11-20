@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,13 +30,13 @@ C ----------------------------------------------------------------------
       CHARACTER*10   FORMR,PRECI
       CHARACTER*19   NOMSD
       CHARACTER*24   NOMFI,OBJ
-      CHARACTER*100  FORM1
+      CHARACTER*140  FORM1
       INTEGER      IARG
 
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IALICO ,IALIOB ,IBID ,ICO ,IFIC ,IRET 
-      INTEGER LXLGUT ,N1 ,NBOBJ ,NBVAL ,NCO 
+      INTEGER I ,IALICO ,IALIOB ,IBID ,ICO ,IFIC ,IRET
+      INTEGER LXLGUT ,N1 ,NBOBJ ,NBVAL ,NCO
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -115,10 +115,11 @@ C    -----------------------------------------
           CALL TSTOBJ(OBJ,'NON',RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,
      &                IRET,NI)
           IF (IRET.EQ.0) THEN
-C             -- TEST_RESU/S_I(OU S_R) :
+C             -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
               IF ((TYPE.EQ.'R') .OR. (TYPE.EQ.'C')) THEN
-                FORM1 = '(''_F(NOM='''''',A24,'''''',S_R='','//FORMR//
-     +              ','',PRECISION='//PRECI(1:LXLGUT(PRECI))//'),'')'
+                FORM1 = '(''_F(NOM='''''',A24,'''''',VALE_CALC='','
+     +                //FORMR//','',TOLE_MACHINE='
+     +                //PRECI(1:LXLGUT(PRECI))//'),'')'
                 WRITE (IFIC,FORM1) OBJ,SOMMR
               ELSE IF (TYPE.EQ.'I') THEN
                 WRITE (IFIC,1003) OBJ,SOMMI
@@ -147,10 +148,11 @@ C    -----------------------------------------
             CALL TSTOBJ(OBJ,'NON',RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,
      &                  IRET,NI)
             IF (IRET.EQ.0) THEN
-C               -- TEST_RESU/S_I(OU S_R) :
+C               -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
                 IF ((TYPE.EQ.'R') .OR. (TYPE.EQ.'C')) THEN
-                  FORM1 = '(''_F(NOM='''''',A24,'''''',S_R='','//FORMR//
-     +                ','',PRECISION='//PRECI(1:LXLGUT(PRECI))//'),'')'
+                  FORM1 = '(''_F(NOM='''''',A24,'''''',VALE_CALC='','
+     +                 //FORMR// ','',TOLE_MACHINE='
+     +                 //PRECI(1:LXLGUT(PRECI))//'),'')'
                   WRITE (IFIC,FORM1) OBJ,SOMMR
                 ELSE IF (TYPE.EQ.'I') THEN
                   WRITE (IFIC,1003) OBJ,SOMMI
@@ -165,6 +167,7 @@ C
 C
       CALL JEDEMA()
 C
- 1003 FORMAT ('_F(NOM=''',A24,''',S_I=',I15,',PRECISION=0.,),')
+ 1003 FORMAT ('_F(NOM=''',A24,''',VALE_CALC_I=',I15,'
+     +       ,TOLE_MACHINE=0.,),')
 C
       END

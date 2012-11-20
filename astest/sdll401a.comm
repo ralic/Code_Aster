@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POUTRE SOUMISE A UNE FORCE SINUSOIDALE REPARTIE
 # sdll401a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,7 +22,8 @@
 # MODELISATION POU_D_T
 #======================================================================
 #
-DEBUT(CODE=_F(NOM='SDLL401A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
+DEBUT(CODE=_F(NOM='SDLL401A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),
+   IGNORE_ALARM='UTILITAI4_1');
 
 #
 MA=LIRE_MAILLAGE();
@@ -129,6 +130,9 @@ L_TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
 
 #
 fCOS = FORMULE(VALE='cos(INST) ',
+               NOM_PARA='INST',);
+
+fSIN = FORMULE(VALE='sin(INST) ',
                NOM_PARA='INST',);
 
 #
@@ -309,8 +313,7 @@ DYNP_F20=CALC_CHAMP(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL,
                     RESULTAT=DYNPOF20,
-                    EXCIT=_F(CHARGE=PONF20,
-                             FONC_MULT=fCOS,),
+                    EXCIT=_F(CHARGE=PONF20, FONC_MULT=fCOS,),
                     CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),);
 
 # VALIDATION DE CALC_CHAMP / EXCIT / COEF_MULT
@@ -319,8 +322,7 @@ POST_2=CALC_CHAMP(MODELE=MO,
                   CHAM_MATER=CHMAT,
                   CARA_ELEM=CAREL,
                   RESULTAT=DYNPOF20,
-                  EXCIT=_F(CHARGE=PONF20,
-                           COEF_MULT=fCOS(2./3.),),
+                  EXCIT=_F(CHARGE=PONF20, COEF_MULT=fCOS(2./3.),),
                   CONTRAINTE=('EFGE_ELNO',),);
 
 #
@@ -384,8 +386,7 @@ DYNP_M20=CALC_CHAMP(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL,
                     RESULTAT=DYNPOM20,
-                    EXCIT=_F(CHARGE=PONM20,
-                             FONC_MULT=fCOS,),
+                    EXCIT=_F(CHARGE=PONM20, FONC_MULT=fCOS,),
                     CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),);
 
 # VALIDATION DE CALC_CHAMP / EXCIT / COEF_MULT
@@ -394,8 +395,7 @@ POST_3=CALC_CHAMP(MODELE=MO,
                   CHAM_MATER=CHMAT,
                   CARA_ELEM=CAREL,
                   RESULTAT=DYNPOM20,
-                  EXCIT=_F(CHARGE=PONM20,
-                           COEF_MULT=fCOS(2./3.),),
+                  EXCIT=_F(CHARGE=PONM20, COEF_MULT=fCOS(2./3.),),
                   CONTRAINTE=('EFGE_ELNO',),);
 
 #

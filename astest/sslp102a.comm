@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE TAUX DE RESTITUTION D ENERGIE AVEC PREDEFORMATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,8 +179,8 @@ G4=CALC_G(        RESULTAT=RESU,
 
  
 TEST_TABLE(
-           VALE_CALC=0.17999999999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.18015297371831,
+           
            NOM_PARA='G',
            TABLE=G1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -188,8 +188,8 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.17999999999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.18012031028967,
+           
            NOM_PARA='G',
            TABLE=G2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -197,8 +197,8 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.17999999999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.18011043699373,
+           
            NOM_PARA='G',
            TABLE=G3,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -206,8 +206,8 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.17999999999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.18010917971263,
+           
            NOM_PARA='G',
            TABLE=G4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -216,3 +216,4 @@ TEST_TABLE(
 
 FIN( )
 #
+

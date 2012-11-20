@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -313,6 +313,38 @@ nb_fond = dict['NOMBRE'][0]
 n=len(RI)
 SIF = [None] * n * nb_fond
 
+VAL_CALC = [
+   1.8449826535502   ,
+   1.8509578028338   ,
+   1.8445036995889   ,
+   1.8490482176672   ,
+   1.8085961504964   ,
+   1.8145707321075   ,
+   1.8081282603387   ,
+   1.8126700322925   ,
+   1.7965393476221   ,
+   1.8025341581089   ,
+   1.7960665571968   ,
+   1.8006270600487   ,
+   1.8267894020233   ,
+   1.8327642674706   ,
+   1.8263159799638   ,
+   1.8308591249799   ,
+   1.8167060505562   ,
+   1.8226875643501   ,
+   1.8162328390415   ,
+   1.8207817700028   ,
+   1.8025677490592   ,
+   1.8085524451082   ,
+   1.8020974087677   ,
+   1.8066485461706   ,
+   1.9388372461096   ,
+   1.9557581756129   ,
+   1.9392292717864   ,
+   1.9530597304349   , ]
+
+ct = -1
+
 # pour toutes les couronnes d'integration, pour tous les fonds de fissure
 for i in range(n) :
 
@@ -344,11 +376,12 @@ for i in range(n) :
    for j in range(nb_fond) :
       k = i*nb_fond + j
       for itest in ltest :
+         ct = ct +1 
          TEST_TABLE(TABLE=SIF[k],
                     NOM_PARA='K1',
                     TYPE_TEST=itest,
-                    VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
-                    TOLE_MACHINE=0.03 , PRECISION=0.03 ,
+                    VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,    
+                    PRECISION=0.03 ,
                     REFERENCE='ANALYTIQUE')
 
 #------------------------------------------------------------------------
@@ -371,11 +404,12 @@ for j in range(nb_fond) :
    IMPR_TABLE(TABLE=PK[j])
 
    for itest in ltest :
+      ct = ct +1
       TEST_TABLE(TABLE=PK[j],
                  NOM_PARA='K1',
                  TYPE_TEST=itest,
-                 VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
-                 TOLE_MACHINE=0.12 , PRECISION=0.12 ,
+                 VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,    
+                 PRECISION=0.12 ,
                  REFERENCE='ANALYTIQUE')
         
 # -------------------------------------------------------------   

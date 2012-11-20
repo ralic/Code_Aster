@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 # RESPONSABLE CORUS M.CORUS
 # TITRE ANALYSE MODALE D'UNE PLAQUE APPUYEE SUR SES COINS : SOUS-STRUCTURATION
 # sdls122a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -331,7 +331,7 @@ RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
                                       STOP_ERREUR='NON',
                                       STURM='NON',
                                       SEUIL=9.9999999999999995E-01),
-                         STOP_FREQ_VIDE='NON',
+                         STOP_BANDE_VIDE='NON',
                         )
 
 #-- TEST DES RESULTATS
@@ -591,7 +591,7 @@ RESGEN2=MODE_ITER_SIMULT( MATR_RIGI=K_G2,
                                       STOP_ERREUR='NON',
                                       STURM='NON',
                                       SEUIL=9.9999999999999995E-01),
-                         STOP_FREQ_VIDE='NON',
+                         STOP_BANDE_VIDE='NON',
                         )
 
 #-- CALCUL DES INDICATEURS DE QUALITE

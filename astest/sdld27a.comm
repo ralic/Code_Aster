@@ -1,4 +1,4 @@
-# MODIF  DATE 13/11/2012   AUTEUR BRIE N.BRIE 
+# MODIF  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SYSTEME MASSE-RESSORT AVEC AMORTISSEUR VISQUEUX NONPROPORTIONNEL
 # sdld27a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,14 +95,6 @@ MODE_QZ=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,MATR_MASS=MATASSM,MATR_AMOR=MATASSC,
                           VERI_MODE=_F( SEUIL = 1.E-5))
 
 MODE_QZ=NORM_MODE(reuse=MODE_QZ,   MODE=MODE_QZ,   NORME='MASS_GENE' )
-
-# AVEC MODE_ITER_INV
-MODE_INV=MODE_ITER_INV(TYPE_RESU='GENERAL',
-                       MATR_A=MATASSR,
-                       MATR_B=MATASSM,
-                       MATR_C=MATASSC,
-                       CALC_CHAR_CRIT=_F( OPTION='SEPARE',
-                                          CHAR_CRIT=(4.e3, 2.e4),),)
 
 
 #-----------------------------------------------------------------------
@@ -1448,34 +1440,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DX',
                    PRECISION=1.E-2,),
                 ),
-          )
-
-
-# POUR MODE_ITER_INV
-# LE CALCUL EST FAIT AVEC TYPE_RESU='GENERAL', DONC LES VALEURS A TESTER
-# SONT LES MEMES QUE CELLES DONNEES PAR LES AUTRES CALCULS MODAUX, A UNE
-# CONVERSION PRES : FREQUENCE -> CHARGE CRITIQUE
-CC1 = (5.53 * 2 * math.pi)**2
-CC2 = (10.9 * 2 * math.pi)**2
-CC3 = (15.93 * 2 * math.pi)**2
-CC4 = (20.45 * 2 * math.pi)**2
-
-TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
-                   NUME_MODE=2,
-                   RESULTAT=MODE_INV,
-                   VALE_CALC=CC2,
-                   TOLE_MACHINE=5.E-3),
-                 _F(PARA='CHAR_CRIT',
-                   NUME_MODE=3,
-                   RESULTAT=MODE_INV,
-                   VALE_CALC=CC3,
-                   TOLE_MACHINE=5.E-3),
-                 _F(PARA='CHAR_CRIT',
-                   NUME_MODE=4,
-                   RESULTAT=MODE_INV,
-                   VALE_CALC=CC4,
-                   TOLE_MACHINE=5.E-3),
-               ),
           )
 
 

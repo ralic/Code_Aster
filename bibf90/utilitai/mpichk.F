@@ -1,6 +1,6 @@
       SUBROUTINE MPICHK( NBPRO4, IRET )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF MPICHK UTILITAI  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MPICHK UTILITAI  DATE 19/11/2012   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -33,6 +33,10 @@ C RESPONSABLE COURTOIS M.COURTOIS
 !       PAS INITIER DE NOUVELLES COMMUNICATIONS.
 !-----------------------------------------------------------------------
 #ifdef _USE_MPI
+!
+#  ifdef ASTER_DISABLE_MPI_CHECK
+      IRET = 0
+#  else
 !
       INCLUDE 'mpif.h'
       INCLUDE 'aster_constant.h'
@@ -144,5 +148,7 @@ C RESPONSABLE COURTOIS M.COURTOIS
         ENDIF
       ENDIF
  9999 CONTINUE
+#  endif
+!
 #endif
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185p.para = tps_job 270 mem_job 768Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,8 +183,8 @@ Gref = 8.26143E+02
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=826.736653199,
-           VALE_REFE=826.14300000000003,
+           VALE_CALC=826.73665276416,
+           VALE_REFE=826.73665276418,
            NOM_PARA='G',
            TYPE_TEST='MAX',
            TABLE=G1,)
@@ -239,37 +239,62 @@ for i in range(0,nbc) :
 
 # TEST PAR RAPPORT A LA MODELISATION O AVEC FISSURE MAILLEE
 
+VAL_CALC = [1.2996921883357E+07 ,
+            1.2985490477179E+07 ,
+            1.2996921883357E+07 ,
+            1.2985490477179E+07 ,
+            1.3006676259068E+07 ,
+            1.2995190722909E+07 ,
+            1.3006676259068E+07 ,
+            1.2995190722909E+07 ,
+            1.3001357032542E+07 ,
+            1.2989981365079E+07 ,
+            1.3001357032542E+07 ,
+            1.2989981365079E+07 ,
+            1.2998842406166E+07 ,
+            1.2987436674432E+07 ,
+            1.2998842406167E+07 ,
+            1.2987436674432E+07 ,
+            1.2998400266419E+07 ,
+            1.2986987439813E+07 ,
+            1.2998400266419E+07 ,
+            1.2986987439812E+07 ,
+            1.2996903040002E+07 ,
+            1.2985472462835E+07 ,
+            1.2996903040002E+07 ,
+            1.2985472462835E+07 ]
+            
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=1.23E+07, VALE_REFE=1.23E+07,  #TODO vale_calc
+              VALE_CALC=VAL_CALC[4*i+0], VALE_REFE=1.23E+07,  
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.06, PRECISION=0.06,
+              PRECISION=0.06,
               REFERENCE='AUTRE_ASTER',);
 
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=1.23E+07, VALE_REFE=1.23E+07,  #TODO vale_calc
+              VALE_CALC=VAL_CALC[4*i+1], VALE_REFE=1.23E+07,  
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.06, PRECISION=0.06,
+              PRECISION=0.06,
               REFERENCE='AUTRE_ASTER',);
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=1.23E+07, VALE_REFE=1.23E+07,  #TODO vale_calc
+              VALE_CALC=VAL_CALC[4*i+2], VALE_REFE=1.23E+07,  
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.06, PRECISION=0.06,
+              PRECISION=0.06,
               REFERENCE='AUTRE_ASTER',);
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=1.23E+07, VALE_REFE=1.23E+07,  #TODO vale_calc
+              VALE_CALC=VAL_CALC[4*i+3], VALE_REFE=1.23E+07,  
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.06, PRECISION=0.06,
+              PRECISION=0.06,
               REFERENCE='AUTRE_ASTER',);
 
 ##------------------------------------------------------------------------
@@ -287,8 +312,8 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE(
-           VALE_CALC=1.3416697060884001E7,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.3416086726783E+07,
+           
            NOM_PARA='K1',
            TABLE=PK,
            FILTRE=(_F(NOM_PARA='PT_FOND',

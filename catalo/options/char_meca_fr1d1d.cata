@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
 % RESPONSABLE DESROCHES
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -26,9 +26,12 @@ OPTION__
         PGEOMER  GEOM_R
         PCAGNPO  CAGNPO   << Champ de caractéristiques générales pour les poutres. Concept CARA_ELEM >>
         PCAORIE  CAORIE   << Champ de caractéristiques d'orientation. Concept CARA_ELEM >>
-        
+
         PFR1D1D  FORC_R
         PCAGEPO  CAGEPO   << Champ de caractéristiques des élements de poutre.Concept CARA_ELEM >>
+        PCAARPO  CAARPO
+       <<  PCAARPO : CARACTERISTIQUE DE POUTRE COURBE POU_C_T,
+        NECESSITE DE FOURNIR LE CONCEPT PRODUIT PAR AFFE_CARA_ELEM  >>
    OUT__
 PVECTUR VDEP_R RESL__
 

@@ -1,4 +1,4 @@
-      SUBROUTINE REGENE ( NOMRES, RESGEN )
+      SUBROUTINE REGENE ( NOMRES, RESGEN, PROFNO )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
 
@@ -6,7 +6,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,6 @@ C
 C
       IF ( TYPREP(1:9) .EQ. 'MODE_GENE' ) THEN
          CALL GETVID(' ','SQUELETTE',1,IARG,1,MAILSK,IBID)
-         PROFNO = NOMRES//'.PROFC.NUME'
          INDIRF = '&&REGEGL'//'.INDIR.SST'
 C
 C ------ VERIF SQUELETTE

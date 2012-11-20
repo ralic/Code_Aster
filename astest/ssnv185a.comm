@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -237,76 +237,125 @@ K1REF4I=5.99e6
 # AU POINT FINAL DU FOND DE FISSURE
 K1REF4F=4.52e6
 
+VAL_CALC = [  1.0514480546308E+07   ,
+              1.0514480391423E+07   ,
+              0.99998690646747      ,
+              0.99998690488054      ,
+              1.0514482438164E+07   ,
+              1.0514482283279E+07   ,
+              5.9900375379745E+06   ,
+              4.5244448273165E+06   ,
+              1.0498324215508E+07   ,
+              1.0498324051997E+07   ,
+              0.99827917453184      ,
+              0.99827916431404      ,
+              1.0498517267469E+07   ,
+              1.0498517103835E+07   ,
+              5.9827850802906E+06   ,
+              4.5157321079825E+06   ,
+              1.0509491702831E+07   ,
+              1.0509491549706E+07   ,
+              1.0001625894541       ,
+              1.0001625874183       ,
+              1.0509482717637E+07   ,
+              1.0509482564503E+07   ,
+              5.9878466751173E+06   ,
+              4.5216359700926E+06   ,
+              1.0511669166655E+07   ,
+              1.0511669012676E+07   ,
+              1.0000581142959       ,
+              1.0000581124807       ,
+              1.0511666247867E+07   ,
+              1.0511666093883E+07   ,
+              5.9888057607205E+06   ,
+              4.5228604144255E+06   ,
+              1.0512817598453E+07   ,
+              1.0512817444193E+07   ,
+              1.0000454674603       ,
+              1.0000454657267       ,
+              1.0512815864625E+07   ,
+              1.0512815710362E+07   ,
+              5.989307250338E+06    ,
+              4.5235085415527E+06   ,
+              1.0514457252612E+07   ,
+              1.0514457097782E+07   ,
+              0.99998123666540      ,
+              0.99998123507470      ,
+              1.0514459563251E+07   ,
+              1.0514459408421E+07   ,
+              5.9900341212632E+06   ,
+              4.524425369112E+06     ]
+              
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX', 
               FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
-              VALE_CALC=K1REF1, VALE_REFE=K1REF1,
+              VALE_CALC=VAL_CALC[i*8+0], VALE_REFE=K1REF1,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.065, PRECISION=0.065,   #TODO vale_calc
+              PRECISION=0.065,   
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN', 
               FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
-              VALE_CALC=K1REF1, VALE_REFE=K1REF1,
+              VALE_CALC=VAL_CALC[i*8+1], VALE_REFE=K1REF1,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.065, PRECISION=0.065,   #TODO vale_calc
+              PRECISION=0.065,   
               REFERENCE='ANALYTIQUE',);
               
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',               
               FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
-              VALE_CALC=K1REF2, VALE_REFE=K1REF2,
+              VALE_CALC=VAL_CALC[i*8+2], VALE_REFE=K1REF2,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.002, PRECISION=0.002,   #TODO vale_calc
+              PRECISION=0.002,   
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN', 
               FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
-              VALE_CALC=K1REF2, VALE_REFE=K1REF2,
+              VALE_CALC=VAL_CALC[i*8+3], VALE_REFE=K1REF2,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.002, PRECISION=0.002,   #TODO vale_calc
+              PRECISION=0.002,   
               REFERENCE='ANALYTIQUE',);           
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',               
               FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
-              VALE_CALC=K1REF1, VALE_REFE=K1REF1,
+              VALE_CALC=VAL_CALC[i*8+4], VALE_REFE=K1REF1,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.065, PRECISION=0.065,   #TODO vale_calc
+              PRECISION=0.065,   
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN', 
               FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
-              VALE_CALC=K1REF1, VALE_REFE=K1REF1,
+              VALE_CALC=VAL_CALC[i*8+5], VALE_REFE=K1REF1,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.065, PRECISION=0.065,   #TODO vale_calc
+              PRECISION=0.065,   
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF4[i],
               NOM_PARA='K1',
               FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=1,),
                      _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
-              VALE_CALC=K1REF4I,
+              VALE_CALC=VAL_CALC[i*8+6],
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.002,);
+              );
 
    TEST_TABLE(TABLE=SIF4[i],
               NOM_PARA='K1',
               FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=6,),
               _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
-              VALE_CALC=K1REF4F,
+              VALE_CALC=VAL_CALC[i*8+7],
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.002,);
+              );
 
 FIN();
 

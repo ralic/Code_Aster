@@ -1,4 +1,4 @@
-# MODIF  DATE 13/11/2012   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CALCUL MODAL POUTRE MULTIFIBRE AVEC GAUCHISSEMENT ET GYROSCOPIE
 # sdll123f.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,7 +140,7 @@ MODEQ=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_AMOR=GYOM,
                        METHODE='QZ',
                        TYPE_QZ='QZ_SIMPLE',
-                       CALC_FREQ=_F(NMAX_FREQ=106),
+                       CALC_FREQ=_F(NMAX_FREQ=106,SEUIL_FREQ=1.E-1),
                        VERI_MODE=_F(SEUIL=0.5),
                         )
 

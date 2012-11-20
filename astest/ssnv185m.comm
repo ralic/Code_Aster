@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185m.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -264,54 +264,90 @@ K3REF=1.
 
 prec_k3 = 0.03
 
+VAL_CALC = [0.012622699472484   ,
+            0.012622699472484   ,
+            -0.017747747250692  ,
+            -0.017747747250692  ,
+            1.0150833169217     ,
+            1.0150833169217     ,
+            0.012735433425542   ,
+            0.012735433425542   ,
+            -0.017795406165574  ,
+            -0.017795406165574  ,
+            1.0234773170499     ,
+            1.0234773170499     ,
+            0.012722015846956   ,
+            0.012722015846956   ,
+            -0.017790683310862  ,
+            -0.017790683310862  ,
+            1.0220719702275     ,
+            1.0220719702275     ,
+            0.012740813123414   ,
+            0.012740813123414   ,
+            -0.017757201394402  ,
+            -0.017757201394402  ,
+            1.019181105487      ,
+            1.019181105487      ,
+            0.012655804930642   ,
+            0.012655804930642   ,
+            -0.017762059270749  ,
+            -0.017762059270749  ,
+            1.0174128680237     ,
+            1.0174128680237     ,
+            0.012631410427937   ,
+            0.012631410427937   ,
+            -0.017742022573199  ,
+            -0.017742022573199  ,
+            1.0148620809815     ,
+            1.0148620809815]
 for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[6*i+0], VALE_REFE=K1REF,    
               CRITERE='ABSOLU',
-              TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
+              PRECISION=0.02,    
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[6*i+1], VALE_REFE=K1REF,    
               CRITERE='ABSOLU',
-              TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
+              PRECISION=0.02,    
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K2',
               TYPE_TEST='MAX',
-              VALE_CALC=K2REF, VALE_REFE=K2REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[6*i+2], VALE_REFE=K2REF,    
               CRITERE='ABSOLU',
-              TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
+              PRECISION=0.02,    
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K2',
               TYPE_TEST='MIN',
-              VALE_CALC=K2REF, VALE_REFE=K2REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[6*i+3], VALE_REFE=K2REF,    
               CRITERE='ABSOLU',
-              TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
+              PRECISION=0.02,    
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K3',
               TYPE_TEST='MAX',
-              VALE_CALC=K3REF, VALE_REFE=K3REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[6*i+4], VALE_REFE=K3REF,    
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec_k3, PRECISION=prec_k3,    #TODO vale_calc
+              PRECISION=prec_k3,    
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K3',
               TYPE_TEST='MIN',
-              VALE_CALC=K3REF, VALE_REFE=K3REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[6*i+5], VALE_REFE=K3REF,    
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec_k3, PRECISION=prec_k3,    #TODO vale_calc
+              PRECISION=prec_k3,    
               REFERENCE='ANALYTIQUE');
 
 

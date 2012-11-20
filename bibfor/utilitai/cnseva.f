@@ -1,6 +1,6 @@
       SUBROUTINE CNSEVA(CNSF,NPARA,LPARA,CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ------------------------------------------------------------------
       INTEGER JPD,JPC,JPV,JPL,JPK
       INTEGER JRD,JRC,JRV,JRL,JRK
       INTEGER NBNO,IB,K,INO,NCMP,NBPU,IER,NBPUMX
-      INTEGER K2,NCMP2,IPARA,JAD1
+      INTEGER K2,NCMP2,IPARA,JAD1,IBID,INDIK8
       PARAMETER (NBPUMX=50)
       CHARACTER*8 MA,NOMGDF,NOMGDR,FO,NOMPU(NBPUMX)
       CHARACTER*8 MA2,NOMGD2
@@ -140,7 +140,14 @@ C           -------------------------------------------------------
               DO 20,K2 = 1,NCMP2
                 IF (ZL(JPL-1+ (INO-1)*NCMP2+K2)) THEN
                   NBPU = NBPU + 1
-                  CALL ASSERT(NBPU.LE.NBPUMX)
+                  IF(NBPU.GT.NBPUMX) CALL U2MESS('F','CALCULEL2_66')
+
+C                 -- ON VERIFIE QU'UN MEME PARAMETRE N'EST PAS AJOUTE
+C                    PLUSIEURS FOIS:
+                  IBID=INDIK8(NOMPU,ZK8(JPC-1+K2),1,NBPU-1)
+                  IF(IBID.GT.0)
+     &                CALL U2MESK('F','CALCULEL2_78',1,ZK8(JPC-1+K2))
+
                   NOMPU(NBPU) = ZK8(JPC-1+K2)
                   VALPU(NBPU) = ZR(JPV-1+ (INO-1)*NCMP2+K2)
                 END IF

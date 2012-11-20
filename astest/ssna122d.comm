@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/11/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 2 PUNCH (ROUNDED EDGES)
 # ssna122d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,8 +120,10 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=CL,),
                          ),
                    CONTACT=Cont,
-                   COMP_ELAS=_F(RELATION='ELAS',
+                   COMP_ELAS=(_F(RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP',),
+                              _F(GROUP_MA=('Kp',),
+                                 RELATION='ELAS',),),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(SYME='OUI',),
@@ -145,8 +147,10 @@ RESUFr=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=CL,),
                          ),
                    CONTACT=ContFr,
-                   COMP_ELAS=_F(RELATION='ELAS',
+                   COMP_ELAS=(_F(RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP',),
+                              _F(GROUP_MA=('Kp',),
+                                 RELATION='ELAS',),),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(SYME='OUI',),

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE PROPAGATION D UNE FISSURE XFEM NON DEBOUCHANTE SOLLICITE EN MODE I
 # sslp318c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -185,6 +185,8 @@ for i in range(1,NPS-1) :
 
 W=1000;
 sigma=1E6
+KI_calc =[2.2914396426887E+07,2.5803538825151E+07, 2.8809311040717E+07  ]
+KII_calc =[7488.1641027817, 4193.0446903151, 5155.0379466034]
 
 for i in range(1,NPS-1) :
    
@@ -200,8 +202,7 @@ for i in range(1,NPS-1) :
 
    TEST_TABLE(REFERENCE='ANALYTIQUE',
               PRECISION=0.050000000000000003,
-              TOLE_MACHINE=0.050000000000000003,
-              VALE_CALC=KI_broek,
+              VALE_CALC=KI_calc[i-1],
               VALE_REFE=KI_broek,
               NOM_PARA='K1',
               TYPE_TEST='MAX',
@@ -210,13 +211,12 @@ for i in range(1,NPS-1) :
    TEST_TABLE(CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE',
               PRECISION=TOL_K2,
-              TOLE_MACHINE=TOL_K2,
-              VALE_CALC=0.,
+              VALE_CALC=KII_calc[i-1],
+              TOLE_MACHINE = 1.E-5,
               VALE_REFE=0.0,
               NOM_PARA='K2',
               TYPE_TEST='MAX',
               TABLE=SIF[i],)
-
 
 #----------------------------------------------
 #         EDITION DE FICHIERS MED

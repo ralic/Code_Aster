@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 # ssnp138c.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -114,6 +114,52 @@ SIF_1 = [None]*(nbc*nbcalc)
 SIF_2 = [None]*(nbc*nbcalc)
 TG_1 = [None]*(nbc*nbcalc)
 
+VAL_CALC = [
+            2.564182974093E+05   ,
+            2.564182974093E+05   ,
+            0.28487765407247     ,
+            -49.212124919092     ,
+            49.212124913156      ,
+            2.5622826105975E+05  ,
+            2.5622826105975E+05  ,
+            0.28340158704572     ,
+            -100.43951712528     ,
+            100.43951711944      ,
+            2.5708946597949E+05  ,
+            349.89035889757      ,
+            2.5708946597948E+05  ,
+            -349.890358892       ,
+            1.9330299218729E+05  ,
+            1.9315266784745E+05  ,
+            0.21393403182112     ,
+            1.0939145026066E+05  ,
+            1.0947033032502E+05  ,
+            1.9340465848241E+05  ,
+            1.9361280152432E+05  ,
+            0.21325649311301     ,
+            1.0952531101003E+05  ,
+            1.0963099331559E+05  ,
+            1.9351002002646E+05  ,
+            1.0955938432475E+05  ,
+            1.9274104070219E+05  ,
+           1.0814097516288E+05   ,
+           65177.077285727       ,
+           65291.316006342       ,
+           0.071687546307932     ,
+           1.1080149985994E+05   ,
+           1.110588097854E+05    ,
+           65102.233794336       ,
+           65183.547036071       ,
+           0.071275153567267     ,
+           1.1041454784957E+05   ,
+           1.1068628861294E+05   ,
+           64047.057848096       ,
+           1.1083161771838E+05   ,
+           64359.272762691       ,
+           1.0893526569851E+05   ,          
+          ]
+ct = -1 
+
 for i in range(nbcalc) :
 
    # on passe pas un string pour que l evaluation de la fonction se fasse a chaque pas
@@ -174,55 +220,65 @@ for i in range(nbcalc) :
       IMPR_TABLE(TABLE=SIF_1[k])
       IMPR_TABLE(TABLE=SIF_2[k])
       IMPR_TABLE(TABLE=TG_1[k])
-
+      
+      ct = ct+1
       TEST_TABLE(TABLE=SIF_1[k],
                  NOM_PARA='K1',
-                 VALE_CALC=K1REF, VALE_REFE=K1REF,
+                 VALE_CALC=VAL_CALC[ct], 
+                 VALE_REFE=K1REF,
                  CRITERE='RELATIF',
-                 TOLE_MACHINE=0.02, PRECISION=0.02, #TODO vale_calc
+                 PRECISION=0.02, 
                  REFERENCE='ANALYTIQUE')
-
+      ct = ct+1
       TEST_TABLE(TABLE=SIF_2[k],
                  NOM_PARA='K1',
-                 VALE_CALC=K1REF, VALE_REFE=K1REF,
+                 VALE_CALC=VAL_CALC[ct], 
+                 VALE_REFE=K1REF,
                  CRITERE='RELATIF',
-                 TOLE_MACHINE=0.02, PRECISION=0.02, #TODO vale_calc
+                 PRECISION=0.02, 
                  REFERENCE='ANALYTIQUE')
-
+      ct = ct+1
       TEST_TABLE(TABLE=TG_1[k],
                  NOM_PARA='G',
-                 VALE_CALC=GREF, VALE_REFE=GREF,
+                 VALE_CALC=VAL_CALC[ct],
+                 VALE_REFE=GREF,
                  CRITERE='RELATIF',
-                 TOLE_MACHINE=0.02, PRECISION=0.02, #TODO vale_calc
+                 PRECISION=0.02, 
                  REFERENCE='ANALYTIQUE')
 
       if K2REF != 0. :
+         ct = ct+1
          TEST_TABLE(TABLE=SIF_1[k],
                     NOM_PARA='K2',
-                    VALE_CALC=K2REF, VALE_REFE=K2REF,
+                    VALE_CALC=VAL_CALC[ct], 
+                    VALE_REFE=K2REF,
                     CRITERE='RELATIF',
-                    TOLE_MACHINE=0.03, PRECISION=0.03, #TODO vale_calc
+                    PRECISION=0.03, 
                     REFERENCE='ANALYTIQUE')
-
+         ct = ct+1
          TEST_TABLE(TABLE=SIF_2[k],
                     NOM_PARA='K2',
-                    VALE_CALC=K2REF, VALE_REFE=K2REF,
+                    VALE_CALC=VAL_CALC[ct], 
+                    VALE_REFE=K2REF,
                     CRITERE='RELATIF',
-                    TOLE_MACHINE=0.03, PRECISION=0.03, #TODO vale_calc
+                    PRECISION=0.03, 
                     REFERENCE='ANALYTIQUE')
       else :
+         ct = ct+1
          TEST_TABLE(TABLE=SIF_1[k],
                     NOM_PARA='K2',
-                    VALE_CALC=K2REF, VALE_REFE=K2REF,
+                    VALE_CALC=VAL_CALC[ct], 
+                    VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    TOLE_MACHINE=K1REF/1000., PRECISION=K1REF/1000., #TODO vale_calc
+                    PRECISION=K1REF/1000., 
                     REFERENCE='ANALYTIQUE')
-
+         ct = ct+1
          TEST_TABLE(TABLE=SIF_2[k],
                     NOM_PARA='K2',
-                    VALE_CALC=K2REF, VALE_REFE=K2REF,
+                    VALE_CALC=VAL_CALC[ct], 
+                    VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    TOLE_MACHINE=K1REF/1000., PRECISION=K1REF/1000., #TODO vale_calc
+                    PRECISION=K1REF/1000., 
                     REFERENCE='ANALYTIQUE')
 
    # K1 SUR LE 1er FOND 
@@ -236,26 +292,32 @@ for i in range(nbcalc) :
 
    IMPR_TABLE(TABLE = PK1[i])
 
+   ct = ct+1
    TEST_TABLE(TABLE=PK1[i],
               NOM_PARA='K1',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[ct], 
+              VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.02, PRECISION=0.02, #TODO vale_calc
+              PRECISION=0.02, 
               REFERENCE='ANALYTIQUE')
 
    if K2REF != 0. :
+      ct = ct+1
       TEST_TABLE(TABLE=PK1[i],
                  NOM_PARA='K2',
-                 VALE_CALC=K2REF, VALE_REFE=K2REF,
+                 VALE_CALC=VAL_CALC[ct], 
+                 VALE_REFE=K2REF,
                  CRITERE='RELATIF',
-                 TOLE_MACHINE=0.03, PRECISION=0.03, #TODO vale_calc
+                 PRECISION=0.03, 
                  REFERENCE='ANALYTIQUE')
    else :
+      ct = ct+1
       TEST_TABLE(TABLE=PK1[i],
                  NOM_PARA='K2',
-                 VALE_CALC=K2REF, VALE_REFE=K2REF,
+                 VALE_CALC=VAL_CALC[ct], 
+                 VALE_REFE=K2REF,
                  CRITERE='ABSOLU',
-                 TOLE_MACHINE=K1REF/500., PRECISION=K1REF/500., #TODO vale_calc
+                 PRECISION=K1REF/500., 
                  REFERENCE='ANALYTIQUE')
 
 
@@ -269,28 +331,33 @@ for i in range(nbcalc) :
                        )
 
    IMPR_TABLE(TABLE = PK2[i])
-
+   ct = ct+1
    TEST_TABLE(TABLE=PK2[i],
               NOM_PARA='K1',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[ct], 
+              VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.02, PRECISION=0.02, #TODO vale_calc
+              PRECISION=0.02, 
               REFERENCE='ANALYTIQUE');
 
    if K2REF != 0. :
+      ct = ct+1
       TEST_TABLE(TABLE=PK2[i],
                 NOM_PARA='K2',
-                VALE_CALC=K2REF, VALE_REFE=K2REF,
+                VALE_CALC=VAL_CALC[ct], 
+                VALE_REFE=K2REF,
                 CRITERE='RELATIF',
-                TOLE_MACHINE=0.03, PRECISION=0.03, #TODO vale_calc
+                PRECISION=0.03, 
                 REFERENCE='ANALYTIQUE')
 
    else :
+      ct = ct+1
       TEST_TABLE(TABLE=PK2[i],
                 NOM_PARA='K2',
-                VALE_CALC=K2REF, VALE_REFE=K2REF,
+                VALE_CALC=VAL_CALC[ct], 
+                VALE_REFE=K2REF,
                 CRITERE='ABSOLU',
-                TOLE_MACHINE=K1REF/500., PRECISION=K1REF/500., #TODO vale_calc
+                PRECISION=K1REF/500., 
                 REFERENCE='ANALYTIQUE')
 
 

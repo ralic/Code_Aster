@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 # ssnv185h.para = tps_job 130 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -237,21 +237,34 @@ for i in range(0,nbc) :
 K1_K2 = cos(ALPHA)/sin(ALPHA);
 BETAREF = 2*atan(0.25*(K1_K2-sqrt((K1_K2)**2.+8.))) ;
 
+VAL_CALC = [ -0.98243589435200  ,
+             -0.98309398477105  ,
+             -0.98229138333901  ,
+             -0.98295036174383  ,
+             -0.98191923043652  ,
+             -0.98258241935367  ,
+             -0.98241862588096  ,
+             -0.98307737592484  ,
+             -0.98135155770161  ,
+             -0.98202228723184  ,
+             -0.98167822080998  ,
+             -0.98234275397188  ]
+             
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='BETA',
               TYPE_TEST='MAX',
-              VALE_CALC=BETAREF, VALE_REFE=BETAREF,
+              VALE_CALC=VAL_CALC[2*i+0], VALE_REFE=BETAREF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.061, PRECISION=0.061,    #TODO vale_calc
+              PRECISION=0.061,    
               REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='BETA',
               TYPE_TEST='MIN',
-              VALE_CALC=BETAREF, VALE_REFE=BETAREF,
+              VALE_CALC=VAL_CALC[2*i+1], VALE_REFE=BETAREF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.061, PRECISION=0.061,    #TODO vale_calc
+              PRECISION=0.061,    
               REFERENCE='ANALYTIQUE');
 
 

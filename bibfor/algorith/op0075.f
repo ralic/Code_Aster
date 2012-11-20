@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,8 +40,8 @@ C
 C
 C     -----------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IR1 ,J ,J1REFE ,J2REFE ,J3REFE ,JREFN 
-      INTEGER N1 ,NBCHAM 
+      INTEGER IBID ,IR1 ,J ,J1REFE ,J2REFE ,J3REFE ,JREFN
+      INTEGER N1 ,NBCHAM
 C-----------------------------------------------------------------------
       DATA K8B/'        '/
       DATA PARAM/'MODELE','CHAMPMAT','CARAELEM'/
@@ -78,7 +78,8 @@ C --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
 C
 C --- CREATION DU .REFN DU PROFIL :
 C     ---------------------------
-      PROFNO=NOMRES//'.PROFC.NUME'
+      PROFNO = '&&OP0075'//'.PROFC.NUME'
+C
       CALL WKVECT(PROFNO(1:19)//'.REFN','V V K24',4,JREFN)
       ZK24(JREFN+1)='DEPL_R'
 C
@@ -131,7 +132,7 @@ C     --- CALCUL MODAL SANS SOUS-STRUCTURATION
 C
       ELSEIF (CONCEP(1:9).EQ.'MODE_GENE') THEN
 
-        CALL REGENE(NOMRES,RESIN)
+        CALL REGENE(NOMRES,RESIN,PROFNO)
 
       ELSEIF (CONCEP(1:9).EQ.'HARM_GENE') THEN
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR LADIER A.LADIER 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 1000 mem_job 512Mo ncpus 1 liste_test S
@@ -55,7 +55,8 @@ vari_cart_cc = [-PCO/2,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO] ;
 varico       = [ZERO,] ;
 
 
-DEBUT(CODE=_F(NOM='WDNP101A', NIV_PUB_WEB='INTERNET',),IGNORE_ALARM='CALCULEL4_9');
+DEBUT(CODE=_F(NOM='WDNP101A', NIV_PUB_WEB='INTERNET',),
+      IGNORE_ALARM='CALCULEL4_9',DEBUG=_F(SDVERI='OUI'));
 
 VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );
 DVISCOL  = DEFI_CONSTANTE(VALE=0.0   );
@@ -691,7 +692,7 @@ U9B=STAT_NON_LINE(MODELE=MOD[9],
                                GROUP_MA=('BAS',),
                                PARM_THETA=0.57,),
                                ),
-                 SOLVEUR=_F(RENUM='METIS',
+                 SOLVEUR=_F(RENUM='MD',
                             STOP_SINGULIER='NON',
                             METHODE='MULT_FRONT',
                             NPREC=15,
@@ -769,7 +770,7 @@ U9B=STAT_NON_LINE(reuse=U9B,
                                GROUP_MA=('BAS',),
                                PARM_THETA=0.57,),
                                ),
-                 SOLVEUR=_F(RENUM='METIS',
+                 SOLVEUR=_F(RENUM='MD',
                             STOP_SINGULIER='NON',
                             METHODE='MULT_FRONT',
                             NPREC=15,
@@ -1071,7 +1072,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.864944625363,
                         VALE_REFE=0.86580000000000001,
                         VALE_PARA=(0.02, 2.5),
                         REFERENCE='NON_DEFINI',
-                        TOLE_MACHINE=1.E-3,
+                        TOLE_MACHINE=2.E-3,
                         PRECISION=0.050000000000000003,
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SPOSCI,

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR LADIER A.LADIER 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB8 MAILLAGE REGULIER
 # ssls124a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
@@ -436,11 +436,20 @@ CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
                        FORCE_ARETE=_F(GROUP_MA='LI87',
                                       FZ=(F / b),),);
 
-RESU33=MECA_STATIQUE(MODELE=MODMEC33,
+LIST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1.,
+                                  NOMBRE=1,),);
+
+RESU33=STAT_NON_LINE(MODELE=MODMEC33,
                      CHAM_MATER=CHMAT33,
                      EXCIT=_F(CHARGE=CHARG33,),
-                     SOLVEUR=_F(METHODE='MULT_FRONT',
-                                NPREC=11,),);
+                     COMP_ELAS=(_F(RELATION='ELAS',),),
+                     INCREMENT=_F(LIST_INST=LIST,),
+                     SOLVEUR=_F(RENUM='MD',
+                                METHODE='MULT_FRONT',
+                                NPREC=11,),
+                                );
+
 Iy = ((((b * h) * h) * h) / 12.0);
 
 Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
@@ -452,7 +461,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.99486520E-03,
+                   VALE_CALC= 1.995000889244E-03,
                    VALE_REFE=Uz,
                    PRECISION=1.E-2,),
                 _F(NUME_ORDRE=1,
@@ -461,7 +470,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC= 1.99512188E-03,
+                   VALE_CALC= 1.9950011716167E-03,
                    VALE_REFE=Uz,
                    PRECISION=1.E-2,),
                 ),
@@ -499,11 +508,16 @@ CHARG34=AFFE_CHAR_MECA(MODELE=MODMEC34,
                        FORCE_ARETE=_F(GROUP_MA='LI87',
                                       FZ=(F / b),),);
 
-RESU34=MECA_STATIQUE(MODELE=MODMEC34,
+
+
+RESU34=STAT_NON_LINE(MODELE=MODMEC34,
                      CHAM_MATER=CHMAT34,
                      EXCIT=_F(CHARGE=CHARG34,),
+                     COMP_ELAS=(_F(RELATION='ELAS',),),
+                     INCREMENT=_F(LIST_INST=LIST,),
                      SOLVEUR=_F(METHODE='MULT_FRONT',
                                 NPREC=18,),);
+
 Iy = ((((b * h) * h) * h) / 12.0);
 
 Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
@@ -515,18 +529,16 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU34,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.015983761,
-                   VALE_REFE=0.015999999999999997,
-                   PRECISION=Uz,),
+                   VALE_CALC=0.015997489869418,
+                   VALE_REFE=Uz,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU34,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.015983758,
-                   VALE_REFE=Uz,
-                   PRECISION=0.010999999999999999,),
+                   VALE_CALC=0.015997489866280,
+                   VALE_REFE=Uz,),
                 ),
           )
 
@@ -562,11 +574,16 @@ CHARG35=AFFE_CHAR_MECA(MODELE=MODMEC35,
                        FORCE_ARETE=_F(GROUP_MA='LI87',
                                       FZ=(F / b),),);
 
-RESU35=MECA_STATIQUE(MODELE=MODMEC35,
+RESU35=STAT_NON_LINE(MODELE=MODMEC35,
                      CHAM_MATER=CHMAT35,
                      EXCIT=_F(CHARGE=CHARG35,),
+                     COMP_ELAS=(_F(RELATION='ELAS',),),
+                     INCREMENT=_F(LIST_INST=LIST,),
                      SOLVEUR=_F(METHODE='MULT_FRONT',
-                                NPREC=18,),);
+                                NPREC=18,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,),
+                     );
+
 Iy = ((((b * h) * h) * h) / 12.0);
 
 Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
@@ -578,18 +595,18 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU35,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.266472860,
-                   VALE_REFE=Uz,
-                   PRECISION=0.08,),
+                   VALE_CALC=0.24997066423888,
+                   TOLE_MACHINE=2.E-5,
+                   VALE_REFE=Uz,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU35,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.266486505,
-                   VALE_REFE=Uz,
-                   PRECISION=0.08,),
+                   VALE_CALC=0.24997065751681,
+                   TOLE_MACHINE=2.E-5,
+                   VALE_REFE=Uz,),
                 ),
           )
 

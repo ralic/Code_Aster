@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185o.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,35 +153,59 @@ for i in range(0,nbc) :
    IMPR_TABLE(TABLE=SIF2[i],);
 
 
+VAL_CALC =[ 1.2301906811032E+07  ,
+           1.2301906629807E+07  ,
+           1.2301906811032E+07  ,
+           1.2301906629807E+07  ,
+           1.2283004162767E+07  ,
+           1.2283003971452E+07  ,
+           1.2283004162767E+07  ,
+           1.2283003971452E+07  ,
+           1.229607004148E+07   ,
+           1.2296069862316E+07  ,
+           1.229607004148E+07   ,
+           1.2296069862316E+07  ,
+           1.2298617618325E+07  ,
+           1.2298617438161E+07  ,
+           1.2298617618325E+07  ,
+           1.2298617438161E+07  ,
+           1.2299961221146E+07  ,
+           1.2299961040653E+07  ,
+           1.2299961221146E+07  ,
+           1.2299961040653E+07  ,
+           1.2301879558893E+07  ,
+           1.2301879377733E+07  ,
+           1.2301879558893E+07  ,
+           1.2301879377733E+07  ]
 # TESTS DE NON REGRESSION
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',               
-              VALE_CALC=1.23E+07,
+              VALE_CALC=VAL_CALC[4*i+0],
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.003,);
+              );
 
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',               
-              VALE_CALC=1.23E+07,
+              VALE_CALC=VAL_CALC[4*i+1],
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.003,);
+              );
               
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',               
-              VALE_CALC=1.23E+07,
+              VALE_CALC=VAL_CALC[4*i+2],
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.003,);
+              );
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',               
-              VALE_CALC=1.23E+07,
+              VALE_CALC=VAL_CALC[4*i+3],
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.003,);           
+              );           
 
 
 FIN();

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+#& MODIF COMMANDE  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,16 +107,13 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45, sd_prod= mode_iter_simult_
 
 
          b_general        =BLOC(condition = "TYPE_RESU == 'GENERAL'",
-           MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,
-                                                 matr_asse_gene_r,matr_asse_gene_c,matr_asse_pres_r ) ),
+           MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
            MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
-           MATR_C          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
            ),
 
 
          b_flamb         =BLOC(condition = "TYPE_RESU == 'MODE_FLAMB'",
-           MATR_RIGI          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,
-                                                    matr_asse_gene_r,matr_asse_gene_c,matr_asse_pres_r ) ),
+           MATR_RIGI          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
            MATR_RIGI_GEOM     =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
          ),
 
@@ -165,7 +162,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45, sd_prod= mode_iter_simult_
                                  fr="Valeur limite admise pour l ereur a posteriori des modes" ),
            STURM           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
-         STOP_FREQ_VIDE  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+         STOP_BANDE_VIDE =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
 )  ;

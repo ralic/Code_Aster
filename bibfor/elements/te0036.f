@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/11/2012   AUTEUR MARTIN A.MARTIN 
+C MODIF ELEMENTS  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -288,10 +288,6 @@ C         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
      &            RB1,RB2,POIDS,RB3,RB4)
           ENDIF
 
-C MODIFIER LE JAC
-        IF (AXI) THEN
-          JAC= JAC * R
-        ENDIF
 C         COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
           CALL VECINI(NDIME,0.D0,GLOC)
           DO 210 J=1,NNO
@@ -318,6 +314,10 @@ C           CALL ELRFDF(ELREF,KSIG,NDIME*NNO,DFF1,IB1,IB2)
               DY = DY+DFF(1,I)*COORSE(NDIM*(I-1)+2)
  212        CONTINUE
             JAC=SQRT(DX*DX+DY*DY)
+C MODIFIER LE JAC
+            IF (AXI) THEN
+              JAC= JAC * R
+            ENDIF
             IF (ABS(JAC).GT.R8PREM()) THEN
               ND(1) = DY/JAC
               ND(2) = -DX/JAC

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316i.para = tps_job 300 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,6 +124,19 @@ ZERO=FORMULE(NOM_PARA='G',
 RI = 0.2
 RS = 0.8
 
+VAL_CALC = [5.5511151231258E-16 ,
+            2.2204460492503E-16 ,
+            -1.942890293094E-16 ,
+            -3.7470027081099E-16,       
+            -0.012300297933635  ,
+            -0.012300297933635  ,
+            -1.9704065257023E-04,
+            -1.9704065257141E-04,
+            -0.026798885037944  ,
+            -0.026798885037945  ,
+            -6.7212181053013E-03,
+            -6.7212181053014E-03 ]
+            
 for i in range(nbcalc) :
 
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS[i],INFO=1,);
@@ -243,40 +256,40 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=tol,    #TODO vale_calc
+               
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               VALE_CALC=0.0,
+               VALE_CALC=VAL_CALC[(i-1)*4+0],
                VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLSN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=tol,    #TODO vale_calc
+               
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               VALE_CALC=0.0,
+               VALE_CALC=VAL_CALC[(i-1)*4+1],
                VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLST[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=tol,    #TODO vale_calc
+               
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               VALE_CALC=0.0,
+               VALE_CALC=VAL_CALC[(i-1)*4+2],
                VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLST[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=tol,    #TODO vale_calc
+               
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               VALE_CALC=0.0,
+               VALE_CALC=VAL_CALC[(i-1)*4+3],
                VALE_REFE=0.0  )
 
 FIN();

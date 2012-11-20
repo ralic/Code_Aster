@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114b.para = tps_job 210 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,7 +176,7 @@ IMPR_TABLE(TABLE = T1_K)
 
 # TEST DE NON REGRESSION SUR LES 5 PREMIERS MODES
 Kg_ref = [4.77669E+09, 7.27092E+09, 5.88088E+10, -2.88868E+11, -8.14213E+10]
-Ku_ref = [5.42792E+09, 8.27594E+09, 6.68903E+10, -2.57285E+11, -9.27238E+10]
+Ku_ref = [5.42792E+09, 8.27594E+09, 6.68903E+10, -2.57285482E+11, -9.27238E+10]
 
 for i in range(0,5) :
    imode = i + 1
@@ -187,7 +187,6 @@ for i in range(0,5) :
                       _F(NOM_PARA = 'NUM_PT',
                          VALE_I = 3),),  
               VALE_CALC=Kg_ref[i],
-              TOLE_MACHINE=1E-5,
              );
              
    TEST_TABLE(TABLE=T1_K,
@@ -197,7 +196,7 @@ for i in range(0,5) :
                       _F(NOM_PARA = 'NUME_ORDRE',
                          VALE_I = imode),  ),
               VALE_CALC=Ku_ref[i],
-              TOLE_MACHINE=1.E-5,
+              
              );
 
 ##############################################
@@ -239,8 +238,8 @@ KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                               
 IMPR_TABLE(TABLE=KT2,TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 TEST_TABLE(
-           VALE_CALC=2.008970E6,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC = 2.00896610E6,
+           
            NOM_PARA='K1',
            TABLE=KT2,
            FILTRE=(_F(NOM_PARA='INST',

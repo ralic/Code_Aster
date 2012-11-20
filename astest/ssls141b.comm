@@ -1,0 +1,299 @@
+# MODIF  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# TITRE PLAQUE EN FLEXION ET CISAILLEMENT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ssls141b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+
+# PLAQUE RECTANGULAIRE
+# CALCUL : 2 COUCHES
+# SOLUTION ANALYTIQUE DE PLAQUE AVEC CT
+# MODELISATION DST
+# ------------------------------------------------
+#
+#                 MAILLES QUAD4
+#----------------------------------------------------------------------
+#POINTS:  A4                          A3
+#           -------------------------
+#           -                       -
+#           -                       -
+#           -                       -
+#           -                       -
+#           -------------------------
+#         A1                          A2
+#
+# ______________________________________________________________________
+
+DEBUT(CODE=_F(NOM='SSLS141B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+
+h = 0.8;     # epaisseur
+hs2 = h/2
+hs4 = h/4    # excentrement sup
+hs4m = -hs4  # excentrement inf
+E = 200000000000.0;
+Nu=0.0
+G = E/2/(1.0+Nu)
+
+# chargement
+frep = -1000.0;
+
+# solution analytique
+L=10.0
+b=5.0
+A = h*b
+I=b*h*h*h/12.0
+u_flex = frep*b*L*L*L/3/E/I
+k = 5./6. #coefficient de cisaillement
+u_cisa = frep*b*L/(G*A*k)
+u_l = u_flex + u_cisa
+T=frep
+M=-T*L
+# nombre de couches
+ncou = 2
+# sous-point pour la fibre neutre
+nssp_neutre = 2*ncou-(int(ncou)/2)
+# sous-point sur fibre sup
+nssp_sup = ncou*3
+#
+# calculs des resultats analytiques
+#
+# pour une maille pres du bord libre
+z3 = h/2.
+x1 = 9.5+1./(2*(3**0.5)) # abscisse point de gauss
+sixx1 = -z3*T*b/I*(L-x1)
+sixy1 = T*b/A*3/2
+# pour une maille pres du bord encastre
+x2 = 1./2.-1./(2*(3**0.5)) # abscisse point de gauss
+# print x2
+sixx2 = -z3*T*b/I*(L-x2)
+sixy2 = T*b/A*3/2
+#
+epxx2 = -z3*T*b/(E*I)*(L-x2)
+epxy2 = 0.5*T*b/(k*G*A)
+
+
+# Materiau
+# MATISO=DEFI_MATERIAU(ELAS_COQUE=_F(MEMB_L=E*h,
+                                   # MEMB_LT=0,
+                                   # MEMB_T=E*h,
+                                   # MEMB_G_LT=G*h,
+                                   # FLEX_L=E*h*h*h/12.0,
+                                   # FLEX_LT=0,
+                                   # FLEX_T=E*h*h*h/12.0,
+                                   # FLEX_G_LT=G*h*h*h/12.0,
+                                   # CISA_L=5.0/6.0*G*h,
+                                   # CISA_T=5.0/6.0*G*h,
+                                   # RHO=1000.0,
+                                   # ),);
+MATISO=DEFI_MATERIAU(ELAS=_F(E=E,
+                             NU=0.0,
+                             RHO=1000.0,),);
+# ______________________________________________________________________
+#
+#                         1 PLAQUE DST ( QUA4 )
+# ______________________________________________________________________
+MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
+
+MA1=DEFI_GROUP(reuse =MA1,
+               MAILLAGE=MA1,
+               CREA_GROUP_NO=(_F(GROUP_MA='PLAQ1',
+                                 NOM='PLAQ1',),
+                                 ),);
+
+MO2=AFFE_MODELE(MAILLAGE=MA1,
+                AFFE=_F(GROUP_MA=('PLAQ1','L12',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DST',),);
+
+
+EP2=AFFE_CARA_ELEM(MODELE=MO2,
+                   COQUE=(_F(GROUP_MA=('PLAQ1','L12'),
+                             EPAIS=h,
+                             ANGL_REP=(0.0,0.0,),
+                             INER_ROTA='OUI',
+                             COQUE_NCOU =ncou),
+                             ),);
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MA1,
+                     AFFE=(_F(GROUP_MA='PLAQ1',
+                              MATER=MATISO,),
+                              ),);
+
+CL2=AFFE_CHAR_MECA(MODELE=MO2,
+                     DDL_IMPO=(_F(GROUP_MA='L14',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),),
+                                     );
+
+CHME2A=AFFE_CHAR_MECA(MODELE=MO2,
+                      FORCE_ARETE=_F(GROUP_MA='L12',
+                                      FZ=frep),);
+
+
+RESU2A=MECA_STATIQUE(MODELE=MO2,
+                CHAM_MATER=CHMAT2,
+                CARA_ELEM=EP2,
+               EXCIT=(
+                      _F(CHARGE=CL2),
+                      _F(CHARGE=CHME2A),
+                      ),
+                      )
+
+RESU2A=CALC_CHAMP(reuse=RESU2A,
+                RESULTAT=RESU2A,
+                DEFORMATION = 'EPSI_ELGA',
+                CONTRAINTE='EFGE_ELNO',
+                      )
+
+RESU2A=CALC_CHAMP(reuse=RESU2A,
+                RESULTAT=RESU2A,
+                CONTRAINTE =('EFGE_NOEU'),
+                      )
+
+# TEST DEPLACEMENT EXTREMITE
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='DEPL',NUME_ORDRE=1,
+                     GROUP_NO='A3',PRECISION=0.001,
+                     VALE_REFE=u_l,NOM_CMP='DZ',
+                     VALE_CALC= -3.9212499999961E-05,
+                     REFERENCE='ANALYTIQUE',),);
+
+# TEST CONTRAINTE AXIALE SIXX A LA FIBRE NEUTRE (maille extremite)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
+                     MAILLE='M1',POINT=1,SOUS_POINT=nssp_neutre,PRECISION=1.0E-8,
+                     VALE_REFE=0.,NOM_CMP='SIXX',CRITERE='ABSOLU',
+                     VALE_CALC= 0.0E+00,
+                     REFERENCE='ANALYTIQUE',),);
+# TEST CONTRAINTE AXIALE SIXX A LA FIBRE EXTERIEUR (maille extremite)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
+                     MAILLE='M1',POINT=1,SOUS_POINT=nssp_sup,PRECISION=0.001,
+                     VALE_REFE=sixx1,NOM_CMP='SIXX',
+                     VALE_CALC=1981.170613172,
+                     REFERENCE='ANALYTIQUE',),);
+# TEST CONTRAINTE CISA SIXZ A LA FIBRE NEUTRE (maille extremite)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
+                     MAILLE='M1',POINT=1,SOUS_POINT=nssp_neutre,PRECISION=0.001,
+                     VALE_REFE=sixy1,NOM_CMP='SIXZ',
+                     VALE_CALC=-1875.0000000001,
+                     REFERENCE='ANALYTIQUE',),);
+# TEST CONTRAINTE CISA SIXZ A LA FIBRE EXTERIEURE (maille extremite)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
+                     MAILLE='M1',POINT=1,SOUS_POINT=nssp_sup,PRECISION=1.0E-8,
+                     VALE_REFE=0.0,NOM_CMP='SIXZ',CRITERE='ABSOLU',
+                     VALE_CALC=0.0E+00,
+                     REFERENCE='ANALYTIQUE',),);
+
+# TEST CONTRAINTE AXIALE SIXX A LA FIBRE NEUTRE (maille encastrement)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
+                     MAILLE='M50',POINT=2,SOUS_POINT=nssp_neutre,PRECISION=1.0E-8,
+                     VALE_REFE=0.,NOM_CMP='SIXX',CRITERE='ABSOLU',
+                     VALE_CALC= 0.0E+00  ,
+                     REFERENCE='ANALYTIQUE',),);
+# TEST CONTRAINTE AXIALE SIXX A LA FIBRE EXTERIEUR (maille encastrement)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
+                     MAILLE='M50',POINT=2,SOUS_POINT=nssp_sup,PRECISION=0.001,
+                     VALE_REFE=sixx2,NOM_CMP='SIXX',
+                     VALE_CALC=91768.829386711,
+                     REFERENCE='ANALYTIQUE',),);
+# TEST CONTRAINTE CISA SIXZ A LA FIBRE NEUTRE (maille encastrement)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
+                     MAILLE='M50',POINT=2,SOUS_POINT=nssp_neutre,PRECISION=0.001,
+                     VALE_REFE=sixy2,NOM_CMP='SIXZ',
+                     VALE_CALC=-1874.9999999961,
+                     REFERENCE='ANALYTIQUE',),);
+# TEST CONTRAINTE CISA SIXZ A LA FIBRE EXTERIEURE (maille encastrement)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
+                     MAILLE='M50',POINT=2,SOUS_POINT=nssp_sup,PRECISION=1.0E-8,
+                     VALE_REFE=0.0,NOM_CMP='SIXZ',CRITERE='ABSOLU',
+                     VALE_CALC=0.0E+00,
+                     REFERENCE='ANALYTIQUE',),);
+
+# TEST DEFORMATION AXIALE SIXX A LA FIBRE NEUTRE (maille encastrement)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
+                     MAILLE='M50',POINT=2,SOUS_POINT=nssp_neutre,PRECISION=1.0E-8,
+                     VALE_REFE=0.,NOM_CMP='EPXX',CRITERE='ABSOLU',
+                     VALE_CALC=0.0E+00 ,
+                     REFERENCE='ANALYTIQUE',),);
+# TEST DEFORMATION AXIALE SIXX A LA FIBRE EXTERIEUR (maille encastrement)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
+                     MAILLE='M50',POINT=2,SOUS_POINT=nssp_sup,PRECISION=0.001,
+                     VALE_REFE=epxx2,NOM_CMP='EPXX',
+                     VALE_CALC=4.5884414693356E-07   ,
+                     REFERENCE='ANALYTIQUE',),);
+# TEST DEFORMATION CISA SIXZ A LA FIBRE NEUTRE (maille encastrement)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
+                     MAILLE='M50',POINT=2,SOUS_POINT=nssp_neutre,PRECISION=0.001,
+                     VALE_REFE=epxy2,NOM_CMP='EPXZ',
+                     VALE_CALC=-7.4999999999845E-09  ,
+                     REFERENCE='ANALYTIQUE',),);
+# TEST DEFORMATION CISA SIXZ A LA FIBRE EXTERIEURE (maille encastrement)
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
+                     MAILLE='M50',POINT=2,SOUS_POINT=nssp_sup,PRECISION=0.001,
+                     VALE_REFE=epxy2,NOM_CMP='EPXZ',
+                     VALE_CALC=-7.4999999999845E-09  ,
+                     REFERENCE='ANALYTIQUE',),);
+
+#
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,PRECISION=0.001,
+                     GROUP_NO='A1',
+                     VALE_REFE=-1000.0,NOM_CMP='QX',
+                     VALE_CALC=-999.99999999758,
+                     REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,PRECISION=0.001,
+                     GROUP_NO='A1',
+                     VALE_REFE=10000.0,NOM_CMP='MXX',
+                     VALE_CALC=  9999.999999987,
+                     REFERENCE='ANALYTIQUE',),);
+
+#################################################################################################
+tb1  = CREA_TABLE (
+        RESU=_F(NOM_CMP=('SIXX','SIXY','SIXZ',),
+                NUME_ORDRE=(1,),
+                RESULTAT=RESU2A,
+                NOM_CHAM='SIEF_ELGA',
+                MAILLE='M1',
+                ),
+                              );
+IMPR_TABLE ( TABLE = tb1)
+
+tb2  = CREA_TABLE (
+        RESU=_F(NOM_CMP=('EPXX','EPXY','EPXZ',),
+                NUME_ORDRE=(1,),
+                RESULTAT=RESU2A,
+                NOM_CHAM='EPSI_ELGA',
+                MAILLE='M1',
+                ),
+                              );
+IMPR_TABLE ( TABLE = tb2)
+
+# chcek sur une maille pres du support
+
+tb3  = CREA_TABLE (
+        RESU=_F(NOM_CMP=('SIXX','SIXY','ESIZ',),
+                NUME_ORDRE=(1,),
+                RESULTAT=RESU2A,
+                NOM_CHAM='SIEF_ELGA',
+                MAILLE='M50',
+                ),
+                              );
+IMPR_TABLE ( TABLE = tb3)
+
+FIN();

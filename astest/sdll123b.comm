@@ -1,4 +1,4 @@
-# MODIF  DATE 13/11/2012   AUTEUR BRIE N.BRIE 
+# MODIF  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST INFORMATIQUE QZ ET SORENSEN NON SYMETRIQUES
 # sdll123b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -379,21 +379,6 @@ MQ_SOI=MODE_ITER_SIMULT( INFO=1,
                        APPROCHE='IMAG',),
                         )
 
-# POUR LE CALCUL AVEC TYPE_RESU='GENERAL', ON TRAVAILLE EN VALEURS PROPRES
-# BRUTES ET PAS EN FREQUENCES : IL Y A UNE CONVERSION VP=(2*PI*F)^2 A FAIRE
-vp_centre = (2*NP.math.pi * 1000.)**2
-MQ_SOI_G=MODE_ITER_SIMULT( TYPE_RESU='GENERAL',
-                       INFO=1,
-                       MATR_A=MATK1,
-                       MATR_B=MATM1,
-                       MATR_C=MATC1,
-                       METHODE='SORENSEN',
-                       CALC_CHAR_CRIT=_F(OPTION='CENTRE',
-                       CHAR_CRIT=vp_centre, NMAX_CHAR_CRIT=4,
-                       APPROCHE='IMAG',
-                       COEF_DIM_ESPACE=2),
-                        )
-
 # CALCUL VIA QZ
 MQ_QZ=MODE_ITER_SIMULT( INFO=1,
                        MATR_RIGI=MATK1,
@@ -607,28 +592,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    ),
                 ),
           )
-
-# TEST DU CALCUL MODAL AVEC TYPE_RESU='GENERAL' : IL FAUT CONVERTIR
-# LES FREQUENCES EN VALEURS PROPRES
-vp1 = (2*NP.math.pi * 494.02662017181001)**2
-vp3 = (2*NP.math.pi * 1073.20610571)**2
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   PARA='CHAR_CRIT',
-                   RESULTAT=MQ_SOI_G,
-                   VALE_CALC=vp1,
-                   
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=3,
-                   PARA='CHAR_CRIT',
-                   RESULTAT=MQ_SOI_G,
-                   VALE_CALC=vp3,
-                   
-                   CRITERE='RELATIF',
-                   ),
-                ),
-          )
-
 
 FIN()

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/09/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ CALC_MODAL=MACRO(nom="CALC_MODAL",
              NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 3,val_min=0 ),
              PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2,val_min=0.E+0 ),
              SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0 ),
-             STOP_FREQ_VIDE  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+             STOP_BANDE_VIDE =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
 
         VERI_MODE       =FACT(statut='d',min=0,

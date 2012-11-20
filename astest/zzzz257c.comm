@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -239,7 +239,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERZ1',
                   RESULTAT=RESU,
-                  VALE_CALC=2.2766563775709001E-3,
+                  VALE_CALC=2.5986990733259E-03,
                   CRITERE='RELATIF',
                   ),
           )
@@ -255,7 +255,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_ERZ1',
                   RESULTAT=RESUDUAL,
-                  VALE_CALC=55.578633368626001,
+                  VALE_CALC=61.881425806147,
                   CRITERE='RELATIF',
                   ),
           )
@@ -271,7 +271,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_QIZ1',
                   RESULTAT=RESU,
-                  VALE_CALC=2.2766563775709001E-3,
+                  VALE_CALC=2.5986990733259E-03,
                   CRITERE='RELATIF',
                   ),
           )

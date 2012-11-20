@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE PELLET J.PELLET
 # sslp200a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -999,16 +999,16 @@ TEST_RESU(RESU=(_F(INST=11.5,
                    VALE_CALC=3330.9454331163001,
                    ),
                 _F(INST=11.5,
-                   TYPE_TEST='SOMM_ABS',
+                   TYPE_TEST='SOMM',
                    RESULTAT=MSLI2,
                    NOM_CHAM='SIEQ_NOEU',
-                   VALE_CALC=2.2907077424918E4,
+                   VALE_CALC=12430.754643419,
                    ),
                 _F(INST=11.5,
-                   TYPE_TEST='SOMM_ABS',
+                   TYPE_TEST='SOMM',
                    RESULTAT=MSLI2,
                    NOM_CHAM='EPEQ_NOEU',
-                   VALE_CALC=7.2145266868439E+03,
+                   VALE_CALC=-389.55845846358,
                    ),
                 _F(INST=11.5,
                    TYPE_TEST='SOMM_ABS',

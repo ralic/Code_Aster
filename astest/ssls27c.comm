@@ -1,0 +1,202 @@
+# MODIF  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# TITRE PLAQUE MINCE VRILLEE OU FLECHIE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ssls27c.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+
+#CAS_TEST__: SSLS27C
+# SSLS27/C                    COMMANDES
+# PLAQUE MINCE VRILLEE OU FLECHIE
+# PLAQUE ABCD -- AD ENCASTRE -- FORCES EN B ET C -- 2 CAS DE CHARGE --
+# DIMENSION: 12*1*0.05 --  DECOUPAGE:12/4 --        REF: SFM.VPCS SSLS27
+# MODELISATION DKT: 65 NOEUDS -- 48 MAILLES QUAD4
+#======================================================================
+DEBUT( CODE=_F(  NOM = 'SSLS27C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+E=1.0E11
+
+NU=0.25
+
+H=5.E-2
+
+C_MEM=E * H / ( 1. - ( NU * NU ) )
+
+C_FLE=( E * H * H * H ) / ( 12. *  ( 1. - ( NU * NU ) ) )
+
+C_CIS=E * H / ( 1. + NU )
+
+C1111=C_MEM * 1.
+
+C1112=C_MEM * NU
+
+C2222=C_MEM * 1.
+
+C1212=C_MEM * ( 1. - NU ) / 2.
+
+D1111=C_FLE * 1.
+
+D1112=C_FLE * NU
+
+D2222=C_FLE * 1.
+
+D1212=C_FLE * ( 1. - NU ) / 2.
+
+G11=C_CIS * 5. / 12.
+
+G22=C_CIS * 5. / 12.
+
+MATER=DEFI_MATERIAU( ELAS_COQUE=_F(  MEMB_L = C1111,
+                                      MEMB_LT = C1112,
+                                      MEMB_T = C2222,
+                                      MEMB_G_LT = C1212,
+                                      FLEX_L = D1111,
+                                      FLEX_LT = D1112,
+                                      FLEX_T = D2222,
+                                      FLEX_G_LT = D1212,
+                                      CISA_L = G11,
+                                      CISA_T = G22) )
+
+MAILL=LIRE_MAILLAGE(FORMAT='MED',  )
+
+MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
+                         AFFE=_F(  TOUT = 'OUI', MATER = MATER) )
+
+MOD=AFFE_MODELE(  MAILLAGE=MAILL,
+                       AFFE=_F(  TOUT = 'OUI',     MODELISATION = 'DKT',
+                              PHENOMENE = 'MECANIQUE')  )
+
+CARAC=AFFE_CARA_ELEM(  MODELE=MOD,
+                          COQUE=_F(
+       GROUP_MA = 'TOUT',
+  EPAIS = H) )
+
+CHARG=AFFE_CHAR_MECA( MODELE=MOD,
+                          DDL_IMPO=_F(  GROUP_NO = ('AD',),
+                                     DX = 0.,  DY = 0.,  DZ = 0.,
+                                     DRX = 0.,  DRY = 0.,  DRZ = 0.) )
+
+# ---------------------------------------------------------------------
+# FORCES DE SENS OPPOSEES  PERPENDICULAIRES A LA PLAQUE
+
+CHARG1=AFFE_CHAR_MECA( MODELE=MOD,FORCE_NODALE=(
+              _F(  GROUP_NO = 'B',   FZ = -1.),
+                           _F(  GROUP_NO = 'C',   FZ = 1.))  )
+
+# ---------------------------------------------------------------------
+# FORCES DE MEME SENS PERPENDICULAIRES A LA PLAQUE
+#         S(FZ)=2
+
+CHARG2=AFFE_CHAR_MECA( MODELE=MOD,FORCE_NODALE=(
+              _F(  GROUP_NO = 'B',   FZ = 1.),
+                           _F(  GROUP_NO = 'C',   FZ = 1.))  )
+
+# ---------------------------------------------------------------------
+
+
+MAT=CALC_MATR_ELEM(   MODELE=MOD,           CHARGE=CHARG,
+                           CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARAC,
+                           OPTION='RIGI_MECA' )
+
+VEL=CALC_VECT_ELEM(  CHARGE=CHARG,   OPTION='CHAR_MECA' )
+
+VEL1=CALC_VECT_ELEM(  CHARGE=CHARG1,  OPTION='CHAR_MECA' )
+
+VEL2=CALC_VECT_ELEM(  CHARGE=CHARG2,  OPTION='CHAR_MECA' )
+
+NUD=NUME_DDL(  MATR_RIGI=MAT    )
+
+MATASS=ASSE_MATRICE(  MATR_ELEM=MAT,   NUME_DDL=NUD )
+
+MATASS=FACTORISER(reuse=MATASS,MATR_ASSE=MATASS )
+
+# ---------------------------------------------------------------------
+
+
+VECASS1=ASSE_VECTEUR( VECT_ELEM=( VEL,VEL1, ),   NUME_DDL=NUD )
+
+VECASS1=RESOUDRE(reuse=VECASS1, MATR=MATASS,     CHAM_NO=VECASS1  )
+
+# ---------------------------------------------------------------------
+
+
+VECASS2=ASSE_VECTEUR(  VECT_ELEM=( VEL,VEL2, ),   NUME_DDL=NUD )
+
+VECASS2=RESOUDRE(reuse=VECASS2, MATR=MATASS,     CHAM_NO=VECASS2  )
+
+# ---------------------------------------------------------------------
+
+
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='B',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=5.0000000000000001E-3,
+                      CHAM_GD=VECASS1,
+                      VALE_CALC=-3.5478485081955E-06,
+                      VALE_REFE=-3.5370000000000002E-06,),
+                   _F(GROUP_NO='E',
+                      CRITERE='ABSOLU',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999998E-13,
+                      CHAM_GD=VECASS1,
+                      VALE_CALC=9.7502172869113E-16,
+                      VALE_REFE=0.0,
+                      TOLE_MACHINE=9.9999999999999998E-13,),
+                   _F(GROUP_NO='C',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=5.0000000000000001E-3,
+                      CHAM_GD=VECASS1,
+                      VALE_CALC= 3.5478485101455E-06,
+                      VALE_REFE=3.5370000000000002E-06,),
+                   _F(GROUP_NO='B',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=1.E-2,
+                      CHAM_GD=VECASS2,
+                      VALE_CALC= 1.098125250426E-03,
+                      VALE_REFE=1.1058999999999999E-3,),
+                   _F(GROUP_NO='E',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=1.E-2,
+                      CHAM_GD=VECASS2,
+                      VALE_CALC= 1.0980968343845E-03,
+                      VALE_REFE=1.1058999999999999E-3,),
+                   _F(GROUP_NO='C',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=1.E-2,
+                      CHAM_GD=VECASS2,
+                      VALE_CALC= 1.098125250428E-03,
+                      VALE_REFE=1.1058999999999999E-3,),
+                   ),
+          )
+
+
+FIN()
+#

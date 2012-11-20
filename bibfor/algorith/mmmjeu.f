@@ -1,10 +1,10 @@
       SUBROUTINE MMMJEU(NDIM  ,JEUSUP,PRFUSU,NORM  ,GEOME ,
      &                  GEOMM ,DDEPLE,DDEPLM,MPROJT,JEU   ,
-     &                  DJEU  ,DJEUT ,TAU1  ,TAU2  ,GENE11,
-     &                  GENE21)
+     &                  DJEU  ,DJEUT ,IRESOG,TAU1  ,TAU2  ,
+     &                  GENE11,GENE21)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/11/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ C
       REAL*8  DDEPLE(3),DDEPLM(3)
       REAL*8  MPROJT(3,3)
       REAL*8  JEU,DJEU(3),DJEUT(3)
+      INTEGER IRESOG
       REAL*8  GENE11(3,3),GENE21(3,3)
 C
 C ----------------------------------------------------------------------
@@ -54,6 +55,13 @@ C IN  MPROJT : MATRICE DE PROJECTION TANGENTE
 C OUT JEU    : JEU NORMAL ACTUALISE
 C OUT DJEU   : INCREMENT DEPDEL DU JEU
 C OUT DJEUT  : INCREMENT DEPDEL DU JEU TANGENT
+C IN  IRESOG : ALGO. DE RESOLUTION POUR LA GEOMETRIE
+C              0 - POINT FIXE
+C              1 - NEWTON
+C IN  TAU1   : PREMIER VECTEUR TANGENT
+C IN  TAU2   : SECOND VECTEUR TANGENT
+C OUT GENE11 : MATRICE
+C OUT GENE21 : MATRICE
 C
 C ----------------------------------------------------------------------
 C
@@ -89,19 +97,26 @@ C
  25     CONTINUE
  20   CONTINUE
 C
-      IF ((1-JEU**2) .NE. 0.0D0) THEN
-        DO 24 I = 1 , NDIM
-          DO 26 J =1 , NDIM
-           GENE11(I,J) = GENE11(I,J)*JEU/(1-JEU**2)+
-     &                   TAU1(I)*TAU1(J)/(1-JEU**2)
+C --- MATRICE GENE11 ET GENE21
+C
+      IF (IRESOG.EQ.1) THEN
+         IF ((1.D0-JEU**2) .NE. 0.0D0) THEN
+           DO 24 I = 1 , NDIM
+             DO 26 J =1 , NDIM
+              GENE11(I,J) = GENE11(I,J)*JEU/(1.D0-JEU**2)+
+     &                      TAU1(I)*TAU1(J)/(1.D0-JEU**2)
 
-           GENE21(I,J) = GENE21(I,J)*JEU/(1-JEU**2)+
-     &                   TAU2(I)*TAU1(J)/(1-JEU**2)
-26        CONTINUE
-24      CONTINUE
+              GENE21(I,J) = GENE21(I,J)*JEU/(1.D0-JEU**2)+
+     &                      TAU2(I)*TAU1(J)/(1.D0-JEU**2)
+   26        CONTINUE
+   24      CONTINUE
+         ELSE
+           CALL MATINI( 3, 3,0.D0,GENE11)
+           CALL MATINI( 3, 3,0.D0,GENE21)
+         ENDIF
       ELSE
-        CALL MATINI( 3, 3,0.D0,GENE11)
-        CALL MATINI( 3, 3,0.D0,GENE21)
+         CALL MATINI( 3, 3,0.D0,GENE11)
+         CALL MATINI( 3, 3,0.D0,GENE21)
       ENDIF
 
       END

@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa Messages  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,8 @@ cata_msg = {
 """),
 
 11 : _(u"""
- noeud confondu avec l'origine
+ L'axe AXE est colinéaire à la normale de l'élément. On ne peut pas définir
+ l'orientation des armatures.
 """),
 
 12 : _(u"""

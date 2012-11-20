@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES : POUTRE 3D SOUS-STRUCTUREE
 # zzzz208b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -228,7 +228,7 @@ MODGEN=MODE_ITER_SIMULT(MATR_RIGI=KGEN,
                         NMAX_FREQ=5,),
                         VERI_MODE=_F(STOP_ERREUR='OUI',
                                      STURM='NON',),
-                        STOP_FREQ_VIDE='NON',);
+                        STOP_BANDE_VIDE='NON',);
 
 
 # expansion des modes generalises d'interface sur chaque sous-structure
@@ -299,7 +299,7 @@ MODGENR=MODE_ITER_SIMULT(MATR_RIGI=KGENR,
                         NMAX_FREQ=5,),
                         VERI_MODE=_F(STOP_ERREUR='OUI',
                                      STURM='NON',),
-                        STOP_FREQ_VIDE='NON',);
+                        STOP_BANDE_VIDE='NON',);
 
 
 
@@ -435,7 +435,7 @@ MODPYR=MODE_ITER_SIMULT(MATR_RIGI=KPYR,
                         NMAX_FREQ=5,),
                         VERI_MODE=_F(STOP_ERREUR='OUI',
                                      STURM='NON',),
-                        STOP_FREQ_VIDE='NON',);
+                        STOP_BANDE_VIDE='NON',);
 
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM, CHARGEMENTS VOLUMIQUES
 # ssnp138b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,6 +123,24 @@ GR  =[1.19751E-04 , 5.64356E-05]
 
 # K1 SUR LE FOND 2 (POST_K1_K2_K3) POUR LES DEUX ANGLES
 PK  =[5069.1186266214 , 2589.8601041307]
+
+VAL_CALC =  [
+       5013.5984820396       ,
+       5013.5861186662       ,
+       5013.5984820396       ,
+       5013.5861186662       ,
+       1.1975050593308E-04   ,
+       1.1975050593308E-04   ,
+       5069.1186266219       ,
+       5069.1186266219       ,
+       2456.5115458743       ,
+       2590.0301744021       ,
+       2456.5115458743       ,
+       2590.0301744021       ,
+       5.6435648377191E-05   ,
+       5.6435648377191E-05   ,
+       2589.860104126        ,
+       2589.860104126         ]
 
 SI1CH1 = [None]*(nbcalc)
 SI2CH1 = [None]*(nbcalc)
@@ -251,42 +269,42 @@ for i in range(nbcalc) :
 
   TEST_TABLE(TABLE=SI1CH1[i],
              NOM_PARA='K1',
-             VALE_CALC=K1_1[i],
+             VALE_CALC=VAL_CALC[8*i+0],
              CRITERE='RELATIF',
-             TOLE_MACHINE=1.e-3,);
+             );
 
   TEST_TABLE(TABLE=SI2CH1[i],
              NOM_PARA='K1',
-             VALE_CALC=K1_2[i],
+             VALE_CALC=VAL_CALC[8*i+1],
              CRITERE='RELATIF',
-             TOLE_MACHINE=1.e-3,);
+             );
 
 
   TEST_TABLE(TABLE=SI1CH2[i],
               NOM_PARA='K1',
-              VALE_CALC=K1_1[i],
+              VALE_CALC=VAL_CALC[8*i+2],
               CRITERE='RELATIF',
-              TOLE_MACHINE=1.e-3,);
+              );
 
   TEST_TABLE(TABLE=SI2CH2[i],
              NOM_PARA='K1',
-             VALE_CALC=K1_2[i],
+             VALE_CALC=VAL_CALC[8*i+3],
              CRITERE='RELATIF',
-             TOLE_MACHINE=1.e-3,);
+             );
 
   TEST_TABLE(TABLE=TG1CH1[i],
              NOM_PARA='G',
-             VALE_CALC=GR[i],  #TODO vale_calc
-             TOLE_MACHINE=1.e-3,
-             VALE_REFE=GR[i],
+             VALE_CALC=VAL_CALC[8*i+4],  
+             
+             VALE_REFE= GR[i],
              CRITERE='RELATIF',
              REFERENCE='AUTRE_ASTER',);
 
   TEST_TABLE(TABLE=TG1CH2[i],
              NOM_PARA='G',
-             VALE_CALC=GR[i],  #TODO vale_calc
-             TOLE_MACHINE=1.e-3,
-             VALE_REFE=GR[i],
+             VALE_CALC=VAL_CALC[8*i+5],  
+             
+             VALE_REFE= GR[i],
              CRITERE='RELATIF',
              REFERENCE='AUTRE_ASTER',);
 
@@ -317,15 +335,15 @@ for i in range(nbcalc) :
 
   TEST_TABLE(TABLE=PK1[i],
               NOM_PARA='K1',
-              VALE_CALC=PK[i],
+              VALE_CALC=VAL_CALC[8*i+6],
               CRITERE='RELATIF',
-              TOLE_MACHINE=1.E-3,
+              
               );
 
 
   TEST_TABLE(CRITERE='RELATIF',
-             VALE_CALC=PK[i],
-             TOLE_MACHINE=1.E-3,
+             VALE_CALC=VAL_CALC[8*i+7],
+             
              NOM_PARA='K1',
              TABLE=PK2[i],
              )

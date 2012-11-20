@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/11/2012   AUTEUR IDOUX L.IDOUX 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,11 +160,13 @@ C LORS DE L AJOUT DE VARIABLE INTERNE IL FAUT INCREMENTER ECR ET ECRP
 C
       NBSIG = 6
       Q4GG  = .FALSE.
+      CALL R8INIR(8,0.D0,SIG,1)
+      CALL R8INIR(8,0.D0,DSIG,1)
       IF(NOMTE(1:8).EQ.'MEQ4GG4 ' .OR.
      &   NOMTE(1:8).EQ.'MET3GG3 ' ) THEN
          Q4GG  = .TRUE.
          NBSIG = 8
-       ENDIF
+      ENDIF
 
       VECTEU = ((OPT.EQ.'FULL_MECA') .OR. (OPT.EQ.'RAPH_MECA'))
       MATRIC = ((OPT.EQ.'FULL_MECA') .OR. (OPT(1:9).EQ.'RIGI_MECA'))

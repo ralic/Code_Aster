@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/11/2012   AUTEUR IDOUX L.IDOUX 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE
 # sslv139a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,6 +109,8 @@ RESULT=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
                         NMAX_ITER_SOREN=20,
                         TYPE_RESU='MODE_FLAMB',
                         CALC_CHAR_CRIT=_F(OPTION='PLUS_PETITE',
+                                     PREC_SHIFT=0.03,
+                                     NMAX_ITER_SHIFT=6,
                                      NMAX_CHAR_CRIT=10,),
                         VERI_MODE=_F(SEUIL=1e-04,),);
 
@@ -118,6 +120,12 @@ MODE=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
                       MATR_MASS=MASSE,
                       METHODE='SORENSEN',
                       NMAX_ITER_SOREN=20,
+                      CALC_FREQ=_F(NMAX_FREQ=10,
+                                   PREC_SHIFT=0.03,
+                                   APPROCHE='REEL',
+                                   OPTION='PLUS_PETITE',
+                                   SEUIL_FREQ=1.E-2,
+                                   NMAX_ITER_SHIFT=6,),
                       VERI_MODE=_F(SEUIL=1e-04,),);
 
 
@@ -162,7 +170,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='TOTALE',
                    VALE_CALC=0.11414830611588,
                    VALE_REFE=0.1141482126501,
-                   TOLE_MACHINE=1.e-5,
+                   TOLE_MACHINE=2.e-5,
                    MAILLE='M10',),
                 _F(NUME_ORDRE=1,
                    REFERENCE='AUTRE_ASTER',
@@ -172,7 +180,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='TOTALE',
                    VALE_CALC=1.1613059633084E+09,
                    VALE_REFE=1.1612386752962999E9,
-                   TOLE_MACHINE=1.e-5,
+                   TOLE_MACHINE=2.e-5,
                    MAILLE='M10',),
                 _F(NUME_ORDRE=1,
                    REFERENCE='AUTRE_ASTER',
@@ -182,7 +190,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='TOTALE',
                    VALE_CALC=1.8163113000625E+09,
                    VALE_REFE=1.8163004696786001E9,
-                   TOLE_MACHINE=1.e-5,
+                   TOLE_MACHINE=2.e-5,
                    MAILLE='M6',),
                 ),
           )

@@ -1,7 +1,7 @@
       SUBROUTINE NMARCP(TYPOST,SDPOST,VECMOD,FREQR ,IMODE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,8 +46,8 @@ C
 C
 C
 C
-      INTEGER      IBID,NUMORD,NUMD2
-      CHARACTER*24 K24BID 
+      INTEGER      IBID,NUMORD
+      CHARACTER*24 K24BID
       REAL*8       R8BID,R8VIDE
 C
 C ----------------------------------------------------------------------
@@ -72,14 +72,9 @@ C
      &              IBID             ,R8BID ,VECMOD)
       ELSEIF ( TYPOST .EQ. 'STAB' ) THEN 
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'SOLU_FREQ_STAB',
-     &              IBID             ,FREQR ,K24BID) 
-        IF (NUMORD.LT.1) THEN
-          NUMD2 = NUMORD
-        ELSE
-          NUMD2 = 1
-        ENDIF    
+     &              IBID             ,FREQR ,K24BID)
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'SOLU_NUME_STAB',
-     &              NUMD2            ,R8BID ,K24BID)
+     &              NUMORD           ,R8BID ,K24BID)
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'SOLU_MODE_STAB',
      &              IBID             ,R8BID ,VECMOD)           
       ELSE

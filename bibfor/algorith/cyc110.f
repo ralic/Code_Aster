@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
 C
 C  BUT:  CREATION D'UN MAILLAGE SQUELETTE POUR LA SOUS-STRUCTURATION
 C        CYCLIQUE
@@ -68,6 +68,7 @@ C
 C-------TRAITEMENT DES MAILLES DONNEES EN ENTREE------------------------
 C
       NBMA = 0
+      LTNMMA = 1
       CALL GETVTX ( MOTFAC, MCMAIL, 1,IARG,0, K8BID, NBMA )
       IF (NBMA.LT.0) THEN
         NBMA = -NBMA

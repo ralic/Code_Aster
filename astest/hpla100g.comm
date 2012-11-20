@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100g.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,10 +36,6 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
          AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
                            MODELISATION = 'DKT'))
 
-CARE=AFFE_CARA_ELEM( MODELE=MO,
-                     COQUE=_F( GROUP_MA = 'TOUT',COQUE_NCOU=2,
-                               EPAIS = 1.0, ANGL_REP = (0.,0.,)) )
-
 MOTHER=AFFE_MODELE(  MAILLAGE=MA,
          AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'THERMIQUE',
                            MODELISATION = 'COQUE'))
@@ -52,7 +48,11 @@ MAT=DEFI_COMPOSITE(COUCHE=(
             _F(  EPAIS = 0.5,  MATER = MAT1,  ORIENTATION = 0.),
             _F(  EPAIS = 0.5,  MATER = MAT1,  ORIENTATION = 0.)) )
 
-MATHER=DEFI_MATERIAU(THER=_F( LAMBDA = 1.0, RHO_CP = 0.0) )
+MATHER1=DEFI_MATERIAU(THER_ORTH=_F( LAMBDA_L = 1.0, LAMBDA_T = 1.0, LAMBDA_N = 1.0, RHO_CP = 0.0) )
+
+MATHER=DEFI_COMPOSITE(COUCHE=(
+            _F(  EPAIS = 0.5,  MATER = MATHER1,  ORIENTATION = 0.),
+            _F(  EPAIS = 0.5,  MATER = MATHER1,  ORIENTATION = 0.)) )
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MAT))
@@ -60,10 +60,16 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MATHER))
 
-CARETHE=AFFE_CARA_ELEM(   MODELE=MOTHER,
-                           COQUE=_F(
-       GROUP_MA = 'TOUT',
-   EPAIS = 1.0)       )
+CARE=AFFE_CARA_ELEM(MODELE=MO,
+                    COQUE=_F(GROUP_MA='TOUT',
+                             COQUE_NCOU=2,
+                             EPAIS=1.0,
+                             ANGL_REP=(0.,0.,),),);
+
+CARETHE=AFFE_CARA_ELEM(MODELE=MOTHER,
+                       COQUE=_F(GROUP_MA='TOUT',
+                                COQUE_NCOU=2,
+                                EPAIS=1.0,),);
 
 CHTHE=AFFE_CHAR_THER(
             MODELE=MOTHER,
@@ -93,19 +99,15 @@ TEMPHOM=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                 VALE = 0.))
                 )
 
-TEMPLIN=THER_LINEAIRE(
-                  MODELE=MOTHER,
-              CHAM_MATER=CHMATHE,
-               CARA_ELEM=CARETHE,
-                  EXCIT=_F( CHARGE = CHTHE)
-                         )
+TEMPLIN=THER_LINEAIRE(MODELE=MOTHER,
+                      CHAM_MATER=CHMATHE,
+                      CARA_ELEM=CARETHE,
+                      EXCIT=_F( CHARGE = CHTHE),);
 
-TEMPLI2=THER_LINEAIRE(
-                  MODELE=MOTHER,
-              CHAM_MATER=CHMATHE,
-               CARA_ELEM=CARETHE,
-                  EXCIT=_F( CHARGE = CHTH2)
-                         )
+TEMPLI2=THER_LINEAIRE(MODELE=MOTHER,
+                      CHAM_MATER=CHMATHE,
+                      CARA_ELEM=CARETHE,
+                      EXCIT=_F( CHARGE = CHTH2),);
 
 CREA_RESU(reuse=TEMPLI2,  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                       NOM_CHAM='TEMP',

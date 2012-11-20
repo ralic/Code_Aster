@@ -1,4 +1,4 @@
-# MODIF  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -282,7 +282,7 @@ RESGEN=MODE_ITER_SIMULT( MATR_RIGI=RIGGEN,
                                       STOP_ERREUR='NON',
                                       STURM='NON',
                                       SEUIL=9.9999999999999995E-01),
-                         STOP_FREQ_VIDE='NON',
+                         STOP_BANDE_VIDE='NON',
                         )
 
 #

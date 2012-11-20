@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185d.para = tps_job 130 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,21 +146,34 @@ K1REF=-PRES*sqrt(pi*a)*fab
 
 prec = 0.03
 
+VAL_CALC = [1.0328891156786E+07 ,
+            1.0204697382544E+07 ,
+            1.0336078464517E+07 ,
+            1.0211885166996E+07 ,
+            1.0334436650484E+07 ,
+            1.0209874243343E+07 ,
+            1.0331418812195E+07 ,
+            1.020704302982E+07  ,
+            1.0330739654685E+07 ,
+            1.020642300281E+07  ,
+            1.0328872405126E+07 ,
+            1.0204676632155E+07 ]
+            
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[i*2+0], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec, PRECISION=prec,    #TODO vale_calc
+              PRECISION=prec,    
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[i*2+1], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec, PRECISION=prec,    #TODO vale_calc
+              PRECISION=prec,    
               REFERENCE='ANALYTIQUE',);
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS AVEC POST_K1_K2_K3
@@ -178,7 +191,7 @@ IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
-           VALE_CALC= 1.14018274E+07,
+           VALE_CALC= 1.1401827406434E+07,
            VALE_REFE=1.044773991882051E7,
            NOM_PARA='K1',
            TABLE=PK,

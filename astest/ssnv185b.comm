@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185b.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,37 +168,62 @@ if a==2 :
 else :
    prec=0.01
 
+VAL_CALC = [1.1108477442547E+07 ,
+            1.1098754633019E+07 ,
+            602.41166430594     ,
+            599.85557765217     ,
+            1.1116814321051E+07 ,
+            1.1107064569369E+07 ,
+            603.33676458511     ,
+            600.68125431338     ,
+            1.1112268060269E+07 ,
+            1.1102592933453E+07 ,
+            602.83032762143     ,
+            600.23993385588     ,
+            1.1110118834116E+07 ,
+            1.1100417994084E+07 ,
+            602.59352042261     ,
+            600.01994511197     ,
+            1.1109740981788E+07 ,
+            1.1100034066497E+07 ,
+            602.55120251387     ,
+            599.98368190119     ,
+            1.1108461335861E+07 ,
+            1.1098739233641E+07 ,
+            602.40989896494     ,
+            599.85393231401     ];
+
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*4+0], VALE_REFE=K1REF,    
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec, PRECISION=prec,    #TODO vale_calc
+              PRECISION=prec,    
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*4+1], VALE_REFE=K1REF,    
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec, PRECISION=prec,    #TODO vale_calc
+              PRECISION=prec,    
               REFERENCE='ANALYTIQUE',);
               
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='G_IRWIN',
               TYPE_TEST='MAX',
-              VALE_CALC=GREF, VALE_REFE=GREF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*4+2], VALE_REFE=GREF,    
               CRITERE='RELATIF',
-              TOLE_MACHINE=2.5*prec, PRECISION=2.5*prec,    #TODO vale_calc
+              PRECISION=2.5*prec,    
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='G_IRWIN',
               TYPE_TEST='MIN',
-              VALE_CALC=GREF, VALE_REFE=GREF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*4+3], VALE_REFE=GREF,    
               CRITERE='RELATIF',
-              TOLE_MACHINE=2.5*prec, PRECISION=2.5*prec,    #TODO vale_calc
+              PRECISION=2.5*prec,    
               REFERENCE='ANALYTIQUE',);
 
 GLeg=CALC_G(RESULTAT=RESU,
@@ -212,17 +237,19 @@ IMPR_TABLE(TABLE=GLeg)
 TEST_TABLE(TABLE=GLeg,
            NOM_PARA='G',
            TYPE_TEST='MAX',
-           VALE_CALC=GREF, VALE_REFE=GREF,    #TODO vale_calc
+           VALE_CALC=602.92418216993, 
+           VALE_REFE=GREF,    
            CRITERE='RELATIF',
-           TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
+           PRECISION=0.02,    
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=GLeg,
            NOM_PARA='G',
            TYPE_TEST='MIN',
-           VALE_CALC=GREF, VALE_REFE=GREF,    #TODO vale_calc
+           VALE_CALC=602.79485432092, 
+           VALE_REFE=GREF,    
            CRITERE='RELATIF',
-           TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
+           PRECISION=0.02,    
            REFERENCE='ANALYTIQUE',);
            
 GLagr=CALC_G(RESULTAT=RESU,
@@ -237,17 +264,19 @@ IMPR_TABLE(TABLE=GLagr)
 TEST_TABLE(TABLE=GLagr,
            NOM_PARA='G',
            TYPE_TEST='MAX',
-           VALE_CALC=GREF, VALE_REFE=GREF,    #TODO vale_calc
+           VALE_CALC=603.93711840023, 
+           VALE_REFE=GREF,    
            CRITERE='RELATIF',
-           TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
+           PRECISION=0.02,    
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=GLagr,
            NOM_PARA='G',
            TYPE_TEST='MIN',
-           VALE_CALC=GREF, VALE_REFE=GREF,    #TODO vale_calc
+           VALE_CALC=601.56534174494, 
+           VALE_REFE=GREF,    
            CRITERE='RELATIF',
-           TOLE_MACHINE=0.02, PRECISION=0.02,    #TODO vale_calc
+           PRECISION=0.02,    
            REFERENCE='ANALYTIQUE')
 
 #------------------------------------------------------------------------
@@ -268,8 +297,9 @@ TEST_TABLE( TABLE=PK,
             NOM_PARA='K1',
             FILTRE=_F(NOM_PARA = 'PT_FOND',  
                       VALE_I = 1,  ),
-            VALE_CALC=K1REF, VALE_REFE=K1REF,    #TODO vale_calc
-            TOLE_MACHINE=0.05, PRECISION=0.05,    #TODO vale_calc
+            VALE_CALC=1.1466816739358E+07, 
+            VALE_REFE=K1REF,    
+            PRECISION=0.05,    
             REFERENCE='ANALYTIQUE' )
 
 
@@ -299,7 +329,7 @@ TEST_TABLE(TABLE=TABDEP,
            TYPE_TEST='SOMM_ABS',
            VALE_CALC=DXREF,
            CRITERE='RELATIF',
-           TOLE_MACHINE=PREC,
+           
            )
 
 TEST_TABLE(TABLE=TABDEP,
@@ -307,7 +337,7 @@ TEST_TABLE(TABLE=TABDEP,
            TYPE_TEST='SOMM_ABS',
            VALE_CALC=DYREF,
            CRITERE='RELATIF',
-           TOLE_MACHINE=PREC,
+           
            )
 
 TEST_TABLE(TABLE=TABDEP,
@@ -315,7 +345,7 @@ TEST_TABLE(TABLE=TABDEP,
            TYPE_TEST='SOMM_ABS',
            VALE_CALC=DZREF,
            CRITERE='RELATIF',
-           TOLE_MACHINE=PREC,
+           
            )
 
 
@@ -348,8 +378,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_VISU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=5.9178358450956002E-4,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=5.0894436126433E-04,
+                   
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -357,8 +387,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_VISU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=1.6944743324555001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=1.694474332454,
+                   
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -366,8 +396,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_VISU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=1.2530880070065,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=1.2530880070064,
+                   
                    CRITERE='ABSOLU',
                    ),
                 ),

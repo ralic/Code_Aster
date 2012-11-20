@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185k.para = tps_job 100 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -214,38 +214,53 @@ if a==2 :
 else :
    prec=0.10
 
+VAL_CALC = [4.9296623536676E+06 ,
+            4.9035191423093E+06 ,
+            4.9461024853825E+06 ,
+            4.919876327435E+06  ,
+            4.9296281047996E+06 ,
+            4.9034849497204E+06 ,
+            4.9461025736702E+06 ,
+            4.919876472434E+06  ]
+ct = -1
 for i in range(0,nbc) :
+   ct = ct+1
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[ct], 
+              VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec, PRECISION=prec,    #TODO vale_calc
+              PRECISION=prec,    
               REFERENCE='ANALYTIQUE');
-
+   ct = ct+1
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[ct],
+              VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec, PRECISION=prec,    #TODO vale_calc
+              PRECISION=prec,    
               REFERENCE='ANALYTIQUE');
 
 for i in range(0,nbc) :
+   ct = ct+1
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[ct], 
+              VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec, PRECISION=prec,    #TODO vale_calc
+              PRECISION=prec,    
               REFERENCE='ANALYTIQUE');
-
+   ct = ct+1
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=K1REF, VALE_REFE=K1REF,
+              VALE_CALC=VAL_CALC[ct], 
+              VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              TOLE_MACHINE=prec, PRECISION=prec,    #TODO vale_calc
+              PRECISION=prec,    
               REFERENCE='ANALYTIQUE');
 
 # -------------------------------------------------------------

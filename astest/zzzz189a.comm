@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON
 # zzzz189a.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,7 +117,7 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
 
          # On calcule les angles de ANGL_REP pour obtenir le vecteur vecV
          alpha=NP.arctan2(vecX1[1],vecX1[0])*180./NP.pi
-         beta=NP.arctan2(vecV[2],norm(vecX1))*180./NP.pi
+         beta=-NP.arctan2(vecV[2],norm(vecX1))*180./NP.pi
 
          # Meme remarque que precedemment sur les listes Python
          nom_maille=nommai[ima-1]

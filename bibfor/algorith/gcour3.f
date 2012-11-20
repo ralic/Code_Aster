@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
       INTEGER           IERD,IMODU,NBRE,IRET,NUMA,NDIMTE,JGT
       INTEGER           NBNO,IFON,I,IDESC,IREFE,J,JRESU,K,JGTL
 C
-      REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1
+      REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1,R8PREM
       REAL*8            XIJ,YIJ,ZIJ,EPS,D, GRTX,GRTY,GRTZ
       REAL*8            XM,YM,ZM,XIM,YIM,ZIM,S,DMIN,SMIN,XN,YN,ZN
       REAL*8            RII,RSI,ALPHA,VALX,VALY,VALZ,NORM2,R8MAEM
@@ -239,7 +239,7 @@ C               COORD DE N
 C               DISTANCE MN
                 D = SQRT((XN-XM)*(XN-XM)+(YN-YM)*(YN-YM)+
      &                   (ZN-ZM)*(ZN-ZM))
-                IF(D.LT.DMIN) THEN
+                IF(D.LT. (DMIN*(1-ABS(R8PREM())*100))) THEN
                   DMIN = D
                   JMIN = J
                   SMIN = S
@@ -320,7 +320,7 @@ C                 CORRECTION DE LA DIRECTION A L ETREMITE
                       ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
                     ENDIF
                   ENDIF
-
+                  
                 ENDIF
               ENDIF
  500      CONTINUE

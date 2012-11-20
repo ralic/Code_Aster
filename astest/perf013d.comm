@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE MODES PROPRES D'UNE PLAQUE CARRE ENCASTREE SUR 2 BORDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,13 +65,14 @@ MODES=MODE_ITER_SIMULT(INFO=1,
                                    OPTION='BANDE',
                                    FREQ=(840.0,1600.0,),
                                    ),
-                      VERI_MODE=_F(),
+                      VERI_MODE=_F(SEUIL=1.E-5),
                       TYPE_RESU='DYNAMIQUE',
-                      SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
+                      SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE',),
                       METHODE='SORENSEN',
                       MATR_MASS=MASS,
                       MATR_RIGI=RIGI,
                       );
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   PARA='FREQ',

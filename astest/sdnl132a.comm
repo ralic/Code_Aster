@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
 DEBUT(CODE=_F(NOM='SDNL132A',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='ALGELINE3_66')
 # TITRE PENDULE RIGIDE AVEC CONTACT ET FROTTEMENT
@@ -106,7 +106,7 @@ mode=MODE_ITER_SIMULT(MATR_RIGI=K,
                                    PREC_SHIFT=0.005,
                                    SEUIL=1e-02,
                                    STURM='NON',),
-                      STOP_FREQ_VIDE='NON',);
+                      STOP_BANDE_VIDE='NON',);
 
 
 freq=DEFI_LIST_REEL(DEBUT=0.0,
@@ -440,9 +440,3 @@ IMPR_RESU(FORMAT='GMSH',
 
 
 FIN();
-
-
-
-
-
-
