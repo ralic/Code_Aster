@@ -5,7 +5,7 @@
       IMPLICIT  NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF POSTRELE  DATE 26/11/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,13 +49,11 @@ C
 C---------------------DESCRIPTION D' UNE FACE------------------------
 C
       INTEGER NUMS,ADRS,C
-      REAL*8  XD,YD,XF,YF,XI,YI
-      LOGICAL DROIT
+      REAL*8  XD,YD,XF,YF
 C
 C---------------------DESCRIPTION DE L' INTERSECTION AVEC UNE MAILLE--
 C
       REAL*8  ABS1,ABS2,ABR1,ABR2
-      REAL*8  ABS3,ABS4,ABR3,ABR4
       INTEGER NBPM,NBPF
 C
 C---------------------GESTION DE L' INTERSECTION---------------------
@@ -103,7 +101,6 @@ C
       F2EX   = 0
       F1     = 0
 C
-      DROIT  = .FALSE.
       ADANSM = .FALSE.
       BDANSM = .FALSE.
       ATROUV = .FALSE.
@@ -116,14 +113,8 @@ C
       ABS2 = 0.0D0
       ABR1 = 0.0D0
       ABR2 = 0.0D0
-      ABS3 = 0.0D0
-      ABS4 = 0.0D0
-      ABR3 = 0.0D0
-      ABR4 = 0.0D0
       XD   = 0.0D0
       YD   = 0.0D0
-      XI   = 0.0D0
-      YI   = 0.0D0
       XF   = 0.0D0
       YF   = 0.0D0
       XM   = 0.0D0
@@ -227,7 +218,7 @@ C
 C
             DO 110, I = 1, 4, 1
 C
-               ZL(ACOTDR + I-1) = .FALSE.
+               ZL(ACOTDR + I-1) = .TRUE.
 C
 110         CONTINUE
 C
@@ -276,87 +267,39 @@ C
                YD = YF
                XF = ZR(AXSOM + C)
                YF = ZR(AYSOM + C)
-               XI = ZR(AXINT + C-1)
-               YI = ZR(AYINT + C-1)
-C
-               CALL I2TYPF (EPSI,XD,YD,XI,YI,XF,YF,TYPM,DROIT)
-C
-               DROIT = .TRUE.
-C
-               ZL(ACOTDR + C-1) = DROIT
 C
 C-------------CALCUL DE L' INTERSECTION SEGMENT-COTE-----------------
 C-------------ET RANGEMENT DES RESULTAS ELEMENTAIRES-----------------
 C
-               IF ( DROIT ) THEN
 C
 C----------------------CAS D' UN COTE DROIT--------------------------
 C
-                  CALL I2IACS (EPSI,XC,YC,R,ALFINF,ALFSUP,XD,YD,XF,YF,
+               CALL I2IACS (EPSI,XC,YC,R,ALFINF,ALFSUP,XD,YD,XF,YF,
      &                         NBPF,ABS1,ABS2,ABR1,ABR2,ELIMIN)
 C
-                  IF ( .NOT. ELIMIN ) THEN
-C
-                     IF ( NBPF .GE. 1 ) THEN
-C
-                        CALL I2RGEL (EPSI,ABS1,ABR1,C,
-     &                               ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     &                               ZI(AF1LOC),ZI(AF2LOC),PT)
-C
-                     ENDIF
-C
-                     IF ( NBPF .EQ. 2 ) THEN
-C
-                        CALL I2RGEL (EPSI,ABS2,ABR2,C,
-     &                               ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     &                               ZI(AF1LOC),ZI(AF2LOC),PT)
-C
-                     ENDIF
-C
-                  ENDIF
-C
-               ELSE
-C
-C-------------------CAS D' UN COTE COURBE-----------------------------
-C
-                  CALL I2IACC (EPSI,XC,YC,R,ALFINF,ALFSUP,
-     &                         XD,YD,XI,YI,XF,YF,
-     &                         NBPF,ABS1,ABS2,ABS3,ABS4,
-     &                         ABR1,ABR2,ABR3,ABR4)
+               IF ( .NOT. ELIMIN ) THEN
 C
                   IF ( NBPF .GE. 1 ) THEN
 C
                      CALL I2RGEL (EPSI,ABS1,ABR1,C,
-     &                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     &                            ZI(AF1LOC),ZI(AF2LOC),PT)
+     &                               ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
+     &                               ZI(AF1LOC),ZI(AF2LOC),PT)
 C
                   ENDIF
 C
-                  IF ( NBPF .GE. 2 ) THEN
+                  IF ( NBPF .EQ. 2 ) THEN
 C
                      CALL I2RGEL (EPSI,ABS2,ABR2,C,
-     &                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     &                            ZI(AF1LOC),ZI(AF2LOC),PT)
-C
-                  ENDIF
-C
-                  IF ( NBPF .GE. 3 ) THEN
-C
-                     CALL I2RGEL (EPSI,ABS3,ABR3,C,
-     &                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     &                            ZI(AF1LOC),ZI(AF2LOC),PT)
-C
-                  ENDIF
-C
-                  IF ( NBPF .EQ. 4 ) THEN
-C
-                     CALL I2RGEL (EPSI,ABS4,ABR4,C,
-     &                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     &                            ZI(AF1LOC),ZI(AF2LOC),PT)
+     &                               ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
+     &                               ZI(AF1LOC),ZI(AF2LOC),PT)
 C
                   ENDIF
 C
                ENDIF
+C
+C
+C-------------------CAS D' UN COTE COURBE NON TRAITE (FICHE 19855)
+C
 C
 20          CONTINUE
 C
@@ -716,7 +659,6 @@ C
       ENDIF
 C
       NBSEG = ADRGT - 1
-C
 C
       CALL JEDETR('&INTERSLOC')
       CALL JEDETR('&INTERR1LOC')

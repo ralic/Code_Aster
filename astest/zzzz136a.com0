@@ -4181,5 +4181,67 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=0.5,),
            )
 
+#######################################################################
+#            III -  VALIDATION INTE_MAIL_3D                           #
+#######################################################################
+
+# ---------------------------------------------------------------------
+#  S5_G: CHEMIN P11 MILIEU MAILLE, REPERE GLOBAL
+
+
+TEST_TABLE(
+           VALE_CALC=-1.52941E-01,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXX',
+           TABLE=S5_G,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.23702E-01,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.69413E-01,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIYY',
+           TABLE=S5_G,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.23702E-01,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-3.46001E-01,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIZZ',
+           TABLE=S5_G,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.23702E-01,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2.38606E-01,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXY',
+           TABLE=S5_G,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.23702E-01,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-9.66706E-02,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIXZ',
+           TABLE=S5_G,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.23702E-01,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.35238E-03,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIYZ',
+           TABLE=S5_G,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.23702E-01,),
+           )
+
 FIN( )
 #

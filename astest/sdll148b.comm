@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DEFINITION D'UN INTER-SPECTRE D'EXCITATION ANALYTIQUE
 # sdll148b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE BODEL
+# RESPONSABLE ZENTNER
 
 
 DEBUT( CODE=_F( NOM = 'SDLL148B',NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -153,7 +153,7 @@ SPPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE1,
 # PAS POSSIBLE. ON SE BASE SUR DES VALEURS DE NON REGRESSION.
 vale_i=[1,1,2]
 vale_j=[1,2,2]
-#vale_refe=[0.110,-0.110+0.01534j,0.110]
+vale_reg = [1.09984189E-01, abs(-1.10368071E-01+1.533548686E-02j), 1.09586814E-01]
 #on prend la valeur absolue, les vecteurs propres sont definis a un coeff pres
 inter=abs(-0.110+0.01534j)
 vale_refe=[0.110,inter,0.110]
@@ -162,37 +162,28 @@ for ind in range(3):
         REP0=RECU_FONCTION(    INTE_SPEC=SPPROJ,
                                 NUME_ORDRE_I=vale_i[ind],
                       )
-        TEST_FONCTION(VALEUR=_F(VALE_CALC=vale_refe[ind],
-                                TOLE_MACHINE=1.E-2,   #TODO creer une liste vale_calc
-                                VALE_REFE=vale_refe[ind],
-                                VALE_PARA=1.0,
+        TEST_FONCTION(VALEUR=_F(FONCTION=REP0,
                                 REFERENCE='NON_DEFINI',
-                                PRECISION=1.E-2,
-                                FONCTION=REP0,
-                                ),
-                      )
+                                VALE_PARA=1.0,
+                                VALE_CALC=vale_reg[ind],
+                                VALE_REFE=vale_refe[ind],
+                                PRECISION=1.E-2,),)
 
     else:
         REP0=RECU_FONCTION(    INTE_SPEC=SPPROJ,
                                 NUME_ORDRE_I=vale_i[ind],
                                 NUME_ORDRE_J=vale_j[ind],
                       )
-        TEST_FONCTION( VALEUR=_F(  FONCTION = REP0,
-                                PRECISION=1.0E-2,
+        TEST_FONCTION(VALEUR=_F(FONCTION = REP0,
+                                REFERENCE='NON_DEFINI',
                                 VALE_PARA=1.0,
-                                VALE_ABS='OUI',
-                                VALE_CALC_C=vale_refe[ind],
-                                TOLE_MACHINE=1.E-2,   #TODO creer une liste vale_calc
+                                VALE_CALC_C=vale_reg[ind],
                                 VALE_REFE_C=vale_refe[ind],
-                                REFERENCE='NON_DEFINI'))
+                                PRECISION=1.0E-2,
+                                VALE_ABS='OUI',),)
 
-    DETRUIRE( CONCEPT = _F(NOM = (REP0,)))
+    DETRUIRE(CONCEPT=_F(NOM=REP0),
+             INFO=1)
 
 FIN( )
 #
-
-
-
-
-
-

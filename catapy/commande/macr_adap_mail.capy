@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 27/11/2012   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -212,7 +212,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                                 fr="Critère de raffinement.",
                                 ang="Refinement threshold.",
 #
-    regles=(UN_PARMI ( 'CRIT_RAFF_ABS', 'CRIT_RAFF_REL', 'CRIT_RAFF_PE' ),),
+    regles=(UN_PARMI ( 'CRIT_RAFF_ABS', 'CRIT_RAFF_REL', 'CRIT_RAFF_PE', 'CRIT_RAFF_MS' ),),
 #
     CRIT_RAFF_ABS = SIMP(statut='f',typ='R',
                          fr="Critère absolu",
@@ -223,6 +223,9 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
     CRIT_RAFF_PE  = SIMP(statut='f',typ='R',
                          fr="Pourcentage de mailles : fraction réelle entre 0. et 1.",
                          ang="Percentage of meshes: ratio between 0. and 1." ),
+    CRIT_RAFF_MS  = SIMP(statut='f',typ='R',
+                         fr="Critère absolu valant moyenne + n*sigma, n étant > 0",
+                         ang="Absolute threshold: mean + n*sigma, with n > 0" ),
   ) ,
 #
 # 5.2. Pour le deraffinement :
@@ -232,7 +235,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                                      fr="Critère de déraffinement.",
                                      ang="Unrefinement threshold.",
 #
-    regles=(UN_PARMI ( 'CRIT_DERA_ABS', 'CRIT_DERA_REL', 'CRIT_DERA_PE' ),),
+    regles=(UN_PARMI ( 'CRIT_DERA_ABS', 'CRIT_DERA_REL', 'CRIT_DERA_PE', 'CRIT_DERA_MS' ),),
 #
     CRIT_DERA_ABS = SIMP(statut='f',typ='R' ,
                          fr="Critère absolu",
@@ -243,6 +246,9 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
     CRIT_DERA_PE  = SIMP(statut='f',typ='R',
                          fr="Pourcentage de mailles : fraction réelle entre 0. et 1.",
                          ang="Percentage of meshes: ratio between 0. and 1." ),
+    CRIT_DERA_MS  = SIMP(statut='f',typ='R',
+                         fr="Critère absolu valant moyenne - n*sigma, n étant > 0",
+                         ang="Absolute threshold: mean - n*sigma, with n > 0" ),
   ) ,
 #
 # 6. Pour de l'adaptation par zone, définitions des zones
@@ -276,10 +282,6 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
               EXCLUS('Z_MINI','Z_CENTRE','HAUTEUR',),
               EXCLUS('X_MINI','RAYON',),
               EXCLUS('Z_MINI','RAYON',),
-              EXCLUS('X_MINI','X_CENTRE','RAYON_INT',),
-              EXCLUS('Z_MINI','X_CENTRE','RAYON_INT',),
-              EXCLUS('X_MINI','X_CENTRE','RAYON_EXT',),
-              EXCLUS('Z_MINI','X_CENTRE','RAYON_EXT',),
               EXCLUS('RAYON','RAYON_INT',),),
 #
 # 6.3. Une boite rectangulaire ou parallelepipedique
@@ -754,8 +756,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 15.3. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_4",
-                        into=("V10_4", "V10_N", "V10_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_5",
+                        into=("V10_5", "V10_N", "V10_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #

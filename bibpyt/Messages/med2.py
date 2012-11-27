@@ -1,8 +1,8 @@
-#@ MODIF med2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF med2 Messages  DATE 26/11/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -62,6 +62,17 @@ format MED.
 
 6 : _(u"""
     Les mots-clés %(k1)s et %(k2)s sont incompatibles.
+"""),
+
+7 : _(u"""
+  Il n'a pas été possible d'imprimer le champ %(k1)s en utilisant
+  IMPR_NOM_VARI='OUI'. Cela est dû au fait que certains comportements
+  dans votre modèle ne sont pas imprimables avec cette option.
+
+  -> Conseil :
+     - N'utilisez pas IMPR_NOM_VARI='OUI' pour imprimer ce champ,
+     - Demandez l'évolution pour que ces comportements soient
+       compatibles avec IMPR_NOM_VARI='OUI'.
 """),
 
 }

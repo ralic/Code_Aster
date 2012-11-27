@@ -1,0 +1,992 @@
+========================================================================
+Version 11.2.26 du : 28/11/2012
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR alarcon      ALARCON Albert         DATE 11/26/2012 - 11:31:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019981 DU 2012-11-22 12:57:07
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [sdlv125a] TEST_RESU perfectibles (lot VALE_CALC)
+FONCTIONNALITE
+   Fiche express répondant à issue19739 [TEST_RESU perfectibles (lot VALE_CALC)]
+   
+   La présente fiche concerne le cas-test sdlv125a.
+   
+   J'ai rajouté au cas-test une liste de vale_calc (reference sur aster4) et supprimé le
+   TOLE_MACHINE car les différences avec rocks et calibre7 sont infimes.
+   
+   Validation OK de sdlv125a sur aster4, rocks et calibre7 avec variabilité de l'ordre de
+   10E-13 / 10E-15 .
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdlv125a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR berro        BERRO Hassan           DATE 11/27/2012 - 10:54:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019978 DU 2012-11-22 08:27:19
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Variables non initialisees detectees a l'execution
+FONCTIONNALITE
+   . . . . . . . . . ********************
+   . . . . . . . . .* Résumé du problème *
+   . . . . . . . . . ********************
+   
+   Variables non initialisées détectées à l'exécution :
+   
+   . . . . . ---------------------------------------------
+   . . . . .| Variable | . . . . . Cas-tests. . . . . . . | 
+   . . . . . ---------------------------------------------
+   flust3.f.| .ILONGG. | sdll118a/b sdll119a/b sdll120a . |
+   cyc110.f.| .LTNMGR. | sdls01c. . . . . . . . . . . . . |
+   calcyc.f.| .LTLBID. | sdls04a/b sdlv301a/b . . . . . . |
+   . . . . . ---------------------------------------------
+   
+   
+   . . . . . . . . . ***********************************
+   . . . . . . . . .* Analyse du problème et correction *
+   . . . . . . . . . ***********************************
+   
+   Dans les trois cas, les variables sont des pointeurs JEVEUX, définis dans des blocs 
+   conditionnels. Les vecteurs JEVEUX sur lesquels ces variables non initialisées pointent 
+   sont passées en arguments à d'autres sous-routines.
+   
+   J'ai vérifié que dans toutes les sous-routines, on ne se sert pas de ces objets.
+   
+   Comme correction, j'initialise toujours ces pointeurs à 1.
+   
+   
+   . . . . . . . . . *********
+   . . . . . . . . .* Impacts *
+   . . . . . . . . . *********
+   
+   .FORTRAN : flust3.f cyc110.f calcyc.f [3]
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdll118a/b sdll119a/b sdll120a sdls01c sdls04a/b sdlv301a/b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 11/26/2012 - 01:01:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019986 DU 2012-11-23 12:16:32
+TYPE anomalie concernant Code_Aster (VERSION 11.4)
+TITRE
+    En NEW11.02.25, le cas-test sdll123c est NOOK sur toutes les plateformes
+FONCTIONNALITE
+   PROBLEME
+   ========
+       TEST_RESU NOOK sur les 2 calculs modaux QEP avec QZ du cas-test SDLL123c.
+   
+   ANALYSE
+   =======
+     Comme dans la fiche 17578, ces TEST_RESUs étaient faux et en contradiction d'ailleurs
+     avec les calculs précédents obtenus avec d'autres solveurs modaux: Sorensen ds ses
+     3 approches. 
+     Avec la méthode QZ, l'ancien tri de post-traitement modal a écarté le premier mode 
+     (qui a un "pouième près" n'est pas assez proche de son conjugué) et il n'a retenu que 
+     les modes à partir du 2nd. Avec la nouvelle variante du tri, le pb ne se pose plus.
+     QZ comme les 3 variantes de Sorensen trouve les bons résultats dés le 1er mode.
+    
+     Le fait d'améliorer le tri modal lors de la fiche 17578 a mis en lumière ce pb. Et
+     comme, lors de ma restitution, ce cas-test était déjà cassé, je l'avais évacué de mes
+     astouts de contrôle.
+   
+     J'en profite, après avoir tenter toutes les autres alternatives pour améliorer la 
+     qualité des résultats, pour enlever qqes alarmes en relevant les 
+     critères des résidus modaux (à des seuils encore acceptable, 1.E-4 ou 1.E-5).
+   
+   VALIDATION
+   ==========
+      Aster4, Rocks et C7.
+   
+   SOURCES RESTITUEES
+   ==================
+     TEST: sdll123c.comm et .com1.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    non-rxc3xa9gression
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR idoux        IDOUX Ludovic          DATE 27/11/2012 - 10:29:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019953 DU 2012-11-16 12:13:05
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TMA : Necs
+TITRE
+    FORC_NODA : Q4GG et BARRE en g�ometrie r�actualis�e
+FONCTIONNALITE
+   Probl�me :
+   ========
+   
+   Le calcul des champs FORC_NODA pour les �l�ments BARRE et Q4GG/DKTG ne prend pas en compte
+   la g�om�trie r�actualis�e.
+   
+   R�sultats faux :
+   ==============
+   
+   Les champs FORC_NODA et donc REAC_NODA pour les �l�ments BARRE avec DEFORMATION = PETIT_REAC et 
+   pour des mod�lisations Q4GG et DKTG avec DEFORMATION = GROT_GDEP et PETIT_REAC peuvent �tre faux 
+   car la matrice de passage local/global n'est pas la bonne.
+   Il n'y a cependant pas de r�sultats faux sur les d�placements et les contraintes car le calcul 
+   des forces internes est bien fait dans les options FULL_MECA et RAPH_MECA. L'erreur sur les 
+   forces internes est donc rectifi�e d�s la premi�re it�ration de NEWTON en correction.
+   
+   
+   Travail effectu�:
+   ================
+   
+   D�veloppement :
+   -------------
+   Dans les te0409 pour les Q4GG et te0156 pour les BARRE, on ajoute la prise en compte de la
+   g�om�trie r�actualis�e lors du calcul de la matrice de passage rep�re global -> rep�re local.
+   
+   Validation :
+   ----------
+   Ces �l�ments sont pr�sents dans le test plexu03b. Dans ce test les contraintes issues de
+   CALC_PRECONT sont envoy�es � EPX comme �tat initial.
+   A partir de ces contraintes EPX calcule les forces internes au temps 0.
+   On ajoutera alors � plexu03b un TEST_RESU sur les FORC_NODA en sortie de CALC_PRECONT avec
+   REFERENCE = SOURCE_EXTERNE.
+   
+   On profite de cette fiche pour corriger les tests plexu03b et plexu04a cass�s par la
+   restitution d'un correction dans EPX. Cela consiste � ajouter
+   GROT_GDEP et PETIT_REAC dans CALC_PRECONT et � modifier les valeurs de r�f�rences des
+   TEST_RESU. 
+   
+   Impact Doc:
+   ----------
+   V1.01.312 V5.06.109
+   
+   Sources modifi�es :
+   -----------------
+   
+   te0156.f te0409.f
+   gener_mebar1.cata gener_medktg1.cata
+   plexu03b.comm plexu04a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 10.0.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 11.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.312,V5.06.109
+VALIDATION
+    plexu03b
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 26/11/2012 - 18:51:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019996 DU 2012-11-26 14:20:14
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [FORUM] Temps perdu sur des alarmes non affichées
+FONCTIONNALITE
+   Dans l'étude fournie, une alarme est émise 266000 fois. Ce sont 
+   même deux alarmes car il y a l'alarme ELEMENTS4_80 (A+) avec à la 
+   suite l'alarme ELEMENTS4_82 (A).
+   
+   On émet ces alarmes dans deux commandes différentes POST_ELEM et 
+   MECA_STATIQUE.
+   
+   Temps (elapsed) en NEW10 :
+   * POST_ELEM : . . 3.29
+   * MECA_STATIQUE : 20.28
+   
+   Temps (elapsed) en NEW11 :
+   * POST_ELEM : . . 23.09
+   * MECA_STATIQUE : 69.38
+   
+   - On émet l'alarme au niveau de l'élément visiblement. On n'a sans 
+   doute pas le choix.
+   - On traite deux fois plus de messages en NEW11 qu'en NEW10.
+   - Le temps perdu est de 0.1 ms par message.
+   - Il est possible de mettre à jour le compteur d'alarme avant de 
+   mettre en forme le message et donc de sauter la mise en forme si on 
+   sait que le message ne sera pas affiché.
+   
+   On obtient alors les temps (elapsed) suivants :
+   * POST_ELEM : . . 2.55
+   * MECA_STATIQUE : 11.71
+   
+   
+   
+   réf. forum: http://www.code-aster.org/forum2/viewtopic.php?id=18388
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    étude fournie
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019960 DU 2012-11-19 13:47:02
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    [sdll148ab] TEST_RESU perfectibles (lot VALE_CALC)
+FONCTIONNALITE
+   On corrige les valeurs de non régression pour les tests sdll148a, sdll148b.
+   
+   Les valeurs obtenues sont les mêmes sur Rocks, Calibre7 et Aster4 (il suffit de 
+   mettre suffisamment de chiffres significatifs pour laisser TOLE_MACHINE à sa 
+   valeur par défaut).
+   
+   Soit pour la modélisation A :
+   vale_reg = [6.24897199E-02, -5.302983237E-02, 4.50020119E-02]
+   
+   et la modélisation B :
+   vale_reg = [1.09984189E-01, -1.10368071E-01+1.533548686E-02j, 1.09586814E-01]
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdll148a, sdll148b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 26/11/2012 - 12:49:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019959 DU 2012-11-19 13:34:55
+TYPE anomalie concernant Code_Aster (VERSION 11.2)
+TITRE
+    Couverture de code : ME#D_PLAN_SI / EPSG_ELGA et EPSG_ELNO
+FONCTIONNALITE
+   Problème :
+   ========
+   En version 11.2.24, la fiche 17780 implique une modification du test sslp200b. 
+   La couverture de code remonte alors le manque suivant : 
+   
+   &&CALCUL            ME#D_PLAN_SI        EPSG_ELGA
+   &&CALCUL            ME#D_PLAN_SI        EPSG_ELNO
+   
+   Correction :
+   ==========
+   Le calcul et les TEST_RESU liés à cette option ont été supprimés par erreur.
+   On les rétablit.
+   
+   Impact :
+   ======
+   sslp200b.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage de sslp200b sur toutes les plateformes
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019823 DU 2012-10-25 09:50:35
+TYPE aide utilisation concernant Code_Aster (VERSION 10.5)
+TITRE
+    Recuperation des SIGM_NOEU poutre poutres
+FONCTIONNALITE
+   Demande :
+   =======
+   Sur un modèle poutre de pont et un résultat de calcul issu de DYNA_LINE_TRAN en STA11, un
+   utilisateur souhaite afficher sous Paravis le déplacement du pont (déformée) en plaquant
+   dessus les contraintes. Pour cela, il a besoin des champ aux noeuds.
+   
+   Analyse :
+   =======
+   Pour les poutres, on peut calculer SIPO_ELNO, SIPO_NOEU et SIPM_ELNO.
+   SIPO pour contraintes dans la section de poutre décomposée en contributions de chaque
+   effort généralisé ;
+   SIPM pour contraintes maxi et mini dans la section de poutre à partir des efforts généralisés.
+   
+   Ainsi SIGM_NOEU n'est pas calculable sur les poutres.
+   
+   Calculer SIPM_ELNO n'a pa vraiment de sens dans la mesure où c'est un max et un min que
+   l'on voudrait moyenner sur un noeud commun à plusieurs éléments.
+   
+   Toutefois concernant la demande initiale (plaquer sur la déformée), il est possible de le
+   faire dans Paravis avec un champ ELNO.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019743 DU 2012-10-15 16:02:48
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    sdls118a: NOOK et variation selon les machines
+FONCTIONNALITE
+   J'ai modifié le test pour mettre au propre les valeurs de no-régression. Je propose de
+   restituer ce fichier.
+   
+   J'ai supprimé tous les TOLE_MACHINE et TOLERANCE puis ajouté ce qui était nécessaire
+   
+   Avec les nouvelles (bonnes ?) valeurs de non-régression on voit que seuls deux
+   TEST_FONCTION comporte des TOLE_MACHINE. De plus ces valeurs sont loin d'être négligeables
+   (1% et 6%). Ces valeurs ne sont nécessaires QUE pour Calibre7.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdls118a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 26/11/2012 - 16:26:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019990 DU 2012-11-23 14:53:11
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    TE plus appelables
+FONCTIONNALITE
+   Les TE 287, 381 et 554 ne sont plus appelables par le code.
+   
+   Les TE0287 et TE0381 correspondent à une option supprimée (RIGI_MECA_LAGR). Par contre le
+   TE0554 est une option qui existe encore (IMPE_ABSO) mais a été transformée en -1.
+   
+   ==> On supprime tout.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    s/o
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019898 DU 2012-11-09 09:57:47
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.02.22, les cas-tests perf010f, mumps05a et ssnv112d s’arrêtent en erreur fatale sur Aster4_MPI.
+FONCTIONNALITE
+   En NEW11.02.24, le cas-test mumps05a s’arrête en erreur fatale sur Aster4_MPI. 
+    
+   # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
+   
+   
+   Analyse
+   =======
+   
+   J'ai regardé un peu. C'est moi qui ai introduit ce test en 10.2.x.
+   Il comporte plusieurs modélisations identiques mais s'exécutant sur un nombre de
+   processeurs différents. Pour MUMPS : modélisation D (séquentielle) jusqu'à à H (sur 16
+   processeurs).
+   
+   Au moment de l'introduction, la modélisation F avait déjà du utiliser un PCENT_PIVOT
+   différent de la valeur par défaut. On l'avait réduit par la suite puis augmenté à nouveau
+   récemment.
+   
+   Pour moi c'est un "problème" côté MUMPS qui vient juste de l'heuristique pour déterminer à
+   priori la mémoire. L'estimation quand on tourne sur 4 procs (et en Out Of Core) n'est pas
+   très bonne alors qu'elle l'est sur 2 procs (modélisation E qui utilise PCENT_PIVOT par
+   défaut =20).
+   
+   Je propose de passer PCENT_PIVOT à 50.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    perf010f
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroche     DESROCHES Xavier       DATE 11/26/2012 - 06:46:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019924 DU 2012-11-13 10:31:48
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TMA : Phimeca
+TITRE
+    Rxc3xa9sultats faux dans POST_RELEVE_T avec un chemin crxc3xa9xc3xa9 par INTE_MAIL_2D
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   En testant INTE_MAIL_2D dans le cas-test zzzz136d avec DEFI_SEGMENT :
+   on définit un segment C1 qui longe le groupe de noeuds GEF.
+   
+   Puis on fait un POST_RELEVE_T avec ce segment (TB4).
+   
+   --->on n'obtient pas les mêmes résultats qu'avec le POST_RELEVE_T effectué avec le
+   groupe de noeuds GEF (TB3).
+   
+   
+   Explication:
+   ------------
+   Ce segment est en fait la limite entre 2 parties de la structure. Sur ce segment 
+   existent des noeuds en double. Il y a le groupe GEF dans une partie et le groupe GFE 
+   dans l'autre.
+   TB4 est le 'mixte' des 2 tableaux issus des POST_RELEVE_T avec GEF et avec GFE.
+   
+   Le problème vient du fait qu'INTE_MAIL_2D choisit des fois des mailles de la
+   partie 1 et d'autre fois dans la partie 2 pour construire le groupe de mailles .MAIL1 
+   de la SD.
+   .MAIL1 sert à retrouver les noeuds du segment dans POST_RELEVE_T.
+   Donc dans POST_RELEVE_T, on trouve alternativement des noeuds de la première partie et 
+   des noeuds de la deuxième.D'où le tableau "mixte" TB4.
+   
+   Il n'y a donc pas de résultats faux.
+   
+   
+   Tâche effectuée:
+   ----------------
+   Il a été convenu avec N.Tardieu d'ajouter une précision dans la doc de POST_RELEVE_T:
+   --> Si l'utilisateur veut réaliser un POST_RELEVE_T le long d'une zone avec des noeuds
+   doubles (ex: fissure), il est préférable qu'il utilise un groupe de noeuds plutôt qu'un
+   segment créé par INTE_MAIL_2D.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.81.21
+VALIDATION
+    sans
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019855 DU 2012-10-31 11:54:21
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TMA : Phimeca
+TITRE
+    Couverture de code suite fiche 15288
+FONCTIONNALITE
+   Objectif:
+   --------
+   Couvrir les routines i2chax, i2iacc, i2req3, i2req4, i3crtp et rvrccm
+   
+   Travail effectué:
+   -----------------
+   1/concernant rvrccm :
+   ---
+   rvrccm est appelé par rvaffm que si OPERATION!=MOYENNE,
+   Or, pour appeler rvaffm il faut OPERATION==MOYENNE.
+   --> cette routine a été supprimée
+   
+   2/concernant i3crtp:
+   ------
+   Pour rentrer dans cette routine, on a créé un segment avec INTE_MAIL_3D qui s’arrête au
+   centre d'une maille 3D dans le cas-test zzzz136a.
+   
+   3/concernant i2chax:
+   ------
+   Pour passer dans i2chax il faut que 2 segments aient une extrémité en commun 
+   appartenant à
+   une maille qui a une arête courbe.
+   On a ajouté dans le cas-test zzzz125a un appel à DEFI_SEGMENT de INTE_MAIL_2D 
+   définissant
+   2 segments qui se croisent dans une maille. On a modifié le maillage de zzzz125a pour
+   créer une arête courbe à cette maille.
+   
+   4/concernant i2iacc, i2req4, i2req3:
+   ------
+   chemin d'appel de ces routines: i2imac ->i2iacc -> i2req4 ->i2req3
+   
+   Depuis sa création, i2imac contient en dur DROIT='TRUE'.
+   Or, pour passer dans i2iacc il faut DROIT='FALSE'. Donc a priori ces routines n'ont 
+   jamais
+   été couvertes.
+   
+   On a essayé de supprimer la ligne DROIT='TRUE' pour voir ce que ça donne:
+   
+   On est passé dans les routines i2iacc->i2req4->i2req3 en créant un arc de cercle avec
+   DEFI_ARC de INTE_MAIL_2D qui passe par une maille avec une arête courbe.
+   Mais le test s'est arrêté en "floating point exception" dans i2req4 car on essayait de
+   calculer la racine carrée d'une valeur négative.
+   
+   Cette routine calcule les racines d'une équation de 4ème degré. Je l'ai testé sur des
+   équations dont je connaissais les racines et il s'est avéré que la routine ne renvoie 
+   rien
+   de bon.
+   -->cette routine n'est pas fiable. C'est peut être une des raisons pour lesquelles le
+   chemin i2iacc->i2req4->i2req3 ait été court-circuité dans i2imac.
+   
+   --> il a été convenu avec N.Tardieu de laisser DROIT='TRUE' dans i2imac et de supprimer
+   ces routines
+   
+   
+   ------
+   Impacts:
+   -------
+   
+   Fortran:
+   modification des routines : i2imac,rvaffm
+   suppression des routines : i2iacc, i2req4, i2req3 et rvrccm 
+   
+   Cas-tests :
+   zzzz125a.comm zzzz125a.datg zzzz125a.mgib
+   
+   zzzz136a.comm zzzz136a.com0
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz125a  zzzz136a
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 11/26/2012 - 06:46:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019989 DU 2012-11-23 13:30:08
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TMA : Phimeca
+TITRE
+    En NEW11.02.25, les cas-test ascou19a et sslp315a sont NOOK sur Rocks et les cas-test sslp318b sslp319b sslv315a sslv316f sont NOOK sur Calibre7
+FONCTIONNALITE
+   Problème:
+   ---------
+   En NEW11.02.25, les cas-test ascou19a et sslp315a sont NOOK sur Rocks et les cas-test
+   sslp318b sslp319b sslv315a sslv316f sont NOOK sur Calibre7.
+   
+   Proposition :
+   -------------
+   
+   - modifier les tolérances de ces tests de manière à les faire tourner régulièrement
+   - Xuan ajoute ces tests à la liste des tests à analyser dans issue19756
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage du test sur toutes les plate-formes
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019982 DU 2012-11-22 13:22:24
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TMA : Phimeca
+TITRE
+    routine i2req4
+FONCTIONNALITE
+   Lors de la résolution de la fiche issue19855 on demandait de couvrir la routine i2req4.
+   
+   On peut passer dans i2req4 en créant un arc de cercle avec DEFI_ARC
+   de INTE_MAIL_2D qui passe par une maille avec une arête courbe.
+   
+   En testant cette fonctionnalité avec le cas-test zzzz125a, le code s'est arrêté
+   en"floating point exception" dans i2req4. Cela est dû au fait qu'i2req4 essaie de calculer
+   la racine carrée d'une valeur négative.
+   
+   ---------
+   
+   Cette routine calcule les racines d'une équation de 4ème degré.
+   
+   J'ai voulu la tester sur des équations dont je connaissais les racines :
+    ->j'ai testé avec une équation dont les racines sont réelles:
+              résultat de i2req4: 2 racines sur 4  sont fausses
+    -> j'ai testé avec une équation dont 2 racines sont complexes:
+             résultat de i2req4: les 4 sont fausses.
+   
+   
+   Remarque:
+   ------------
+   chemin d'appel de i2req4:     i2imac -> si DROIT=FALSE : i2iacc  -> i2ireq4
+   
+   Or, depuis que i2imac a été créé, d'après l'historique, DROIT a toujours été mis par
+   défaut à TRUE.
+   
+   
+   --------> il a été convenu avec N.Tardieu de laisser en dur DROIT='TRUE' dans i2imac et de
+   supprimer les routines i2iacc, i2ireq4 et i2ireq3
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Sans objet
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 11/27/2012 - 01:21:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019972 DU 2012-11-21 09:54:09
+TYPE anomalie concernant Code_Aster (VERSION 11.2)
+TITRE
+    Affichage de la consommation  mxc3xa9moire entre commande  erronxc3xa9
+FONCTIONNALITE
+   Problème :
+   ----------
+   En version NEW11.2.25, la valeur de la consommation mémoire imprimée entre chaque commande
+   correspondant à la valeur "Optimum" était fausse (facteur 8 ou 4).
+   
+   Par exemple dans perf001a.mess : 
+   
+     
+    <I>       FIN D'EXECUTION LE : ME-21-NOVE-2012 01:42:57
+     # M?moire (Mo) :  1749.75 /   166.04 / 12671.27 /   577.82 (VmPeak / VmSize / Optimum /
+   Minimum)
+     # Fin commande No : 0010   user+syst:        0.03s (syst:        0.02s, elaps:        0.03s)
+     # ------------------------------------------------------------------------------------------
+   
+   Correction effectuée :
+   ----------------------
+   
+   La routine UTGTME utilise la variable MXDYN modifiée en NEW11.2.25 dans la routine JJALLS,
+   il faut enlever le facteur LOIS.
+   Après correction, les affichages dans perf001a.mess sont corrects:
+   
+      STATISTIQUES CONCERNANT L'ALLOCATION DYNAMIQUE :
+        TAILLE CUMULEE MAXIMUM            :                  1572  Mo.
+        TAILLE CUMULEE LIBEREE            :                  1361  Mo.
+        NOMBRE TOTAL D'ALLOCATIONS        :                208341
+        NOMBRE TOTAL DE LIBERATIONS       :                208341
+        APPELS AU MECANISME DE LIBERATION :                     8
+        TAILLE MEMOIRE CUMULEE RECUPEREE  :                  6352  Mo.
+        VOLUME DES LECTURES               :                     0  Mo.
+        VOLUME DES ECRITURES              :                  4095  Mo.
+     
+      MEMOIRE JEVEUX MINIMALE REQUISE POUR L'EXECUTION :     577.82 Mo
+        - IMPOSE DE NOMBREUX ACCES DISQUE
+        - RALENTIT LA VITESSE D'EXECUTION
+      MEMOIRE JEVEUX OPTIMALE REQUISE POUR L'EXECUTION :    1572.15 Mo
+        - LIMITE LES ACCES DISQUE
+        - AMELIORE LA VITESSE D'EXECUTION
+      MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS     :    1743.62 Mo
+        - COMPREND LA MEMOIRE CONSOMMEE PAR  JEVEUX, 
+          LE SUPERVISEUR PYTHON, LES LIBRAIRIES EXTERNES
+   
+    <I>       FIN D'EXECUTION LE : ME-21-NOVE-2012 10:50:54
+     # Mémoire (Mo) :  1743.62 /   241.54 /  1572.15 /   577.82 (VmPeak / VmSize / Optimum /
+   Minimum)
+     # Fin commande No : 0010   user+syst:        0.04s (syst:        0.01s, elaps:        0.04s)
+     # ------------------------------------------------------------------------------------------
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    perf001a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nicolas      NICOLAS Gérald        DATE 11/27/2012 - 09:34:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017255 DU 2011-07-05 12:21:50
+TYPE evolution concernant homard (VERSION )
+TITRE
+    HOMARD et TRIA7, QUAD9
+FONCTIONNALITE
+   La version 10.5 de HOMARD sait traiter les mailles de type TRIA7 et QUAD9.
+   Pour les HEXA27, le problème est plus compliqué du fait des tétraèdres et des pyramides
+   créés pour les transition de conformité : comment les enrichir ? Je propose de reporter
+   cette évolution quand le besoin sera exprimé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.01
+VALIDATION
+    zzzz319a
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019931 DU 2012-11-14 14:16:50
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    HOMARD et med 3.0.6
+FONCTIONNALITE
+   La version de HOMARD est désormais 10.5. Cette version utilise la librairie med 3.0.6.
+   D'un point de vue fonctionnel, deux nouveautés :
+   . les mailles de types TRIA7 et QUAD9 sont acceptées
+   . un nouveau mode de pilotage est introduit : le seuil de raffinement ou de déraffinement
+   est exprimé en fonction de la moyenne et de l'écart-type du champ (CRIT_RAFF_MS et
+   CRIT_DERA_MS). Voir le cas-test zzzz121f.
+   
+   Pour la version NEW10, HOMARD 10.1 est recréé en s'appuyant sur med 3.0.6, sans changer
+   les fonctionnalités.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.01,U7.03.02,V1.01.319,V1.01.121
+VALIDATION
+    zzzz319a,zzzz121a,zzzz121f
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 11/26/2012 - 11:12:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019932 DU 2012-11-14 14:16:32
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    floating point exception dans VISC_CIN1_CHAB
+FONCTIONNALITE
+   Problème :
+   =========
+   
+   erreur numérique dans la loi de comportement VISC_CIN2_CHAB.
+   
+   Explications :
+   ===============
+   
+   L'erreur est logique : le pas de temps devient nul, on a trop redécoupé
+    DT=  0.000000000000000E+000
+   du coup quand on veut calculer (dp/dt )**1/n, cela ne passe pas.
+   
+   Cela passe ne augmentant le nombre d'itérations internes (200)
+   
+   Je propose de ne rien corriger : en utilisant la méthode de Brent, au lieu de la sécante, :
+   SOLNL=STAT_NON_LINE(MODELE=TROISD,
+                       CHAM_MATER=MAT,
+                       EXCIT=_F(CHARGE=TR_CS,
+                                FONC_MULT=COEF,),
+                       COMP_INCR=_F(RELATION='VISC_CIN1_CHAB',ALGO_INTE='BRENT',
+                                    ITER_INTE_MAXI=20,),
+                       INCREMENT=_F(LIST_INST=LINST,),
+                       NEWTON=_F(PREDICTION='ELASTIQUE',REAC_ITER=1,
+                                 MATRICE='TANGENTE',),);
+   
+   le calcul passe sans problème en 11s sur ma machine ,sans augmenter ITER_INTE_MAXI (20)
+   
+   Vive Brent !!!!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    xc3xa9tude
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019894 DU 2012-11-08 16:33:09
+TYPE aide utilisation concernant Code_Aster (VERSION 10.5)
+TITRE
+    Alarme META_LEMA_ANI avec ASTER V 11.2.0
+FONCTIONNALITE
+   Probleme :
+   ============
+   
+   Avec la version ASTER V 11.2.0 j'obtiens quelque soit la valeur pour V1, une alarme qui
+   m'explique que je n'ai pas mis la bonne valeur ? alors que je n'avais pas d'alarme dans
+   les versions antérieures d'Aster (V 11.1.0 par ex). Ci-joint le fichier message.
+   
+   Explications:
+   =============
+   
+   Il ne s'agit pas d'une anomalie. L'alarme est pertinente (pour info elle a été ré-activée
+   en 10.3.9). L'alarme est en effet là pour prévenir l'utilisateur que les données risquent
+   d'être incohérentes. Dans le cas présent, pour la température, on a incompatibilité entre la
+   température initiale (à l'instant 0, 350°C) et la température de référence (TREF=BT=1200°C).
+   
+   Suivant ce que l'on veut modéliser, il faudrait soit prendre TREF=350°C, (situation
+   initiale sans contrainte) soit ajouter un instant préliminaire (-10 par exemple) qui
+   permet d'atteindre 350°C à partir d'un instant initial non contraint à 1200°C.
+   
+   En ce qui concerne les phases métallurgiques, il n'y a pas de problème avec le modèle
+   META_LEMA_ANI, car les déformations thermiques ne tiennent compte que de la température
+   (cf R4.04.05 page 9).
+   
+   En conclusion, l'alarme est justifiée, et il faut modifier le fichier de commandes pour
+   partir d'un état initial sans contrainte, (ou alors contraint mais équilibré, c'est à dire
+   résultant d'un calcul partant d'un instant antérieur))
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    etude
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 11/26/2012 - 04:21:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019988 DU 2012-11-23 13:17:06
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Bug impr_resu/format='med' - impr_nom_vari
+FONCTIONNALITE
+   Problème :
+   ----------
+   Pour la fiche issue19985, l'utilisateur a voulu utiliser IMPR_NOM_VARI mais il tombe sur
+   une erreur développeur.
+   
+   
+   Analyse :
+   ---------
+   En réalité, la routine IRVARI (qui réalise l'impression au format MED d'un cham_elem dans
+   le cas IMPR_NOM_VARI='OUI') n'est pas adaptée au cas des grandes déformations.
+   
+   En effet dans ce cas, il n'y a pas que les variables internes de la lois de comportement à
+   prendre en compte. Par exemple, GDEF_LOG rajoute 6 variables internes à celles déjà présentes.
+   
+   
+   Solution :
+   ----------
+   Il faut modifier IRVARI pour qu'elle prenne en compte ces éléments.
+   
+   Si toutefois, je n'ai pas traité tous les cas de figure, j'ajoute un test qui permet de
+   détecter qu'il y a un problème et dans ce cas, j'émets une alarme :
+   """
+    Il n'a pas été possible d'imprimer le champ %(k1)s en utilisant
+    IMPR_NOM_VARI='OUI'. Cela est dû au fait que certains comportements
+    dans votre modèle ne sont pas imprimables avec cette option.
+   
+    -> Conseil :
+       - N'utilisez pas IMPR_NOM_VARI='OUI' pour imprimer ce champ,
+       - Demandez l'évolution pour que ces comportements soient
+         compatibles avec IMPR_NOM_VARI='OUI'.
+   """
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    etude utilisateur
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF ascou19a                       ladier A.LADIER           357      2      1
+ CASTEST MODIF perf010f                       desoza T.DESOZA           141      2      2
+ CASTEST MODIF plexu03b                     cheignon E.CHEIGNON         297     60     14
+ CASTEST MODIF plexu04a                     cheignon E.CHEIGNON         690     45     77
+ CASTEST MODIF sdll123c                      boiteau O.BOITEAU          951     15     15
+ CASTEST MODIF sdll148a                     courtois M.COURTOIS         172      7     14
+ CASTEST MODIF sdll148b                     courtois M.COURTOIS         189     15     24
+ CASTEST MODIF sdls118a                       delmas J.DELMAS           539     31     37
+ CASTEST MODIF sdlv125a                      alarcon A.ALARCON          495      5      4
+ CASTEST MODIF sslp200b                       delmas J.DELMAS          1454     39      1
+ CASTEST MODIF sslp315a                       ladier A.LADIER           163      2      1
+ CASTEST MODIF sslp318b                       ladier A.LADIER           257      3      2
+ CASTEST MODIF sslp319b                       ladier A.LADIER           271      5      3
+ CASTEST MODIF sslv315a                       ladier A.LADIER           274      2      1
+ CASTEST MODIF sslv316f                       ladier A.LADIER           309      3      1
+ CASTEST MODIF zzzz121a                      nicolas G.NICOLAS          291      3      3
+ CASTEST MODIF zzzz121f                      nicolas G.NICOLAS          274      3      4
+ CASTEST MODIF zzzz125a                       ladier A.LADIER           112     30      1
+ CASTEST MODIF zzzz136a                       ladier A.LADIER          1876     25      1
+ CASTEST MODIF zzzz319a                      nicolas G.NICOLAS          254     96      8
+CATALOGU MODIF typelem/gener_me2db1         cheignon E.CHEIGNON         215      2      2
+CATALOGU MODIF typelem/gener_mebar1         cheignon E.CHEIGNON         228      3      2
+CATALOGU MODIF typelem/gener_medkg1         cheignon E.CHEIGNON         261      2      1
+CATALOPY MODIF commande/macr_adap_mail       nicolas G.NICOLAS          783     11      9
+CATALOPY MODIF commande/macr_info_mail       nicolas G.NICOLAS          140      3      3
+ FORTRAN MODIF algeline/flust3                 berro H.BERRO            542      8      1
+ FORTRAN MODIF algorith/calcyc                 berro H.BERRO            409      2      1
+ FORTRAN MODIF algorith/cyc110                 berro H.BERRO            350      3      2
+ FORTRAN MODIF elements/te0156              cheignon E.CHEIGNON         122     36      1
+ FORTRAN MODIF elements/te0409              cheignon E.CHEIGNON         357     32      2
+ FORTRAN MODIF jeveux/jjalls                lefebvre J-P.LEFEBVRE       182      2      2
+ FORTRAN MODIF postrele/i2imac                ladier A.LADIER           675      4     62
+ FORTRAN MODIF postrele/rvaffm                ladier A.LADIER           126      1      6
+ FORTRAN MODIF prepost/iremed               sellenet N.SELLENET         276      5      2
+ FORTRAN MODIF prepost/irvari               sellenet N.SELLENET         270     34      7
+ FORTRAN MODIF utilitai/utgtme              lefebvre J-P.LEFEBVRE       166      2      2
+ FORTRAN SUPPR elements/te0287                desoza T.DESOZA           267      0    267
+ FORTRAN SUPPR elements/te0381                desoza T.DESOZA           229      0    229
+ FORTRAN SUPPR elements/te0554                desoza T.DESOZA           139      0    139
+ FORTRAN SUPPR postrele/i2iacc                ladier A.LADIER           286      0    286
+ FORTRAN SUPPR postrele/i2req3                ladier A.LADIER           242      0    242
+ FORTRAN SUPPR postrele/i2req4                ladier A.LADIER           431      0    431
+ FORTRAN SUPPR postrele/rvrccm                ladier A.LADIER           238      0    238
+  PYTHON MODIF Macro/creation_donnees_homard    nicolas G.NICOLAS          755      4      2
+  PYTHON MODIF Messages/med2                sellenet N.SELLENET          78     13      2
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         788     38     19
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   39       16089       598     342      +256
+ SUPPR :    7        1832              1832     -1832
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   46       17921       598    2174     -1576 

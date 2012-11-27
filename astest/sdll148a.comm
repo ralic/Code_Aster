@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DEFINITION D'UN INTER-SPECTRE D'EXCITATION ANALYTIQUE
 # sdll148a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE BODEL
+# RESPONSABLE ZENTNER
 
 
 DEBUT( CODE=_F( NOM = 'SDLL148A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -135,7 +135,7 @@ SPPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE1,
 
 vale_i=[1,1,2]
 vale_j=[1,2,2]
-#vale_refe=[0.0625,-0.05305,0.04503]
+vale_reg = [6.24897199E-02, 5.302983237E-02, 4.50020119E-02]
 #on prend la valeur absolue, les vecteurs propres sont definis a un coeff pres
 inter = abs(-0.05305)
 vale_refe=[0.0625,inter,0.04503]
@@ -144,8 +144,7 @@ for ind in range(3):
         REP0=RECU_FONCTION(    INTE_SPEC=SPPROJ,
                                 NUME_ORDRE_I=vale_i[ind],
                       )
-        TEST_FONCTION(VALEUR=_F(VALE_CALC=vale_refe[ind],
-                                TOLE_MACHINE=1.E-3,  #TODO creer une liste vale_calc
+        TEST_FONCTION(VALEUR=_F(VALE_CALC=vale_reg[ind],
                                 VALE_REFE=vale_refe[ind],
                                 VALE_PARA=1.0,
                                 REFERENCE='ANALYTIQUE',
@@ -158,8 +157,7 @@ for ind in range(3):
                                 NUME_ORDRE_I=vale_i[ind],
                                 NUME_ORDRE_J=vale_j[ind],
                            )
-        TEST_FONCTION(VALEUR=_F(VALE_CALC_C=vale_refe[ind],
-                                TOLE_MACHINE=1.E-3,  #TODO creer une liste vale_calc
+        TEST_FONCTION(VALEUR=_F(VALE_CALC_C=vale_reg[ind],
                                 VALE_REFE_C=vale_refe[ind],
                                 VALE_PARA=1.0,
                                 REFERENCE='ANALYTIQUE',
@@ -168,12 +166,7 @@ for ind in range(3):
                                 FONCTION=REP0,),
                       )
 
-    DETRUIRE( CONCEPT = _F(NOM = (REP0,)))
+    DETRUIRE(CONCEPT=_F(NOM=REP0),
+             INFO=1)
 
 FIN( )
-
-
-
-
-
-

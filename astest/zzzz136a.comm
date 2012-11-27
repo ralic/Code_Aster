@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/11/2012   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION POST_RELEVE_T 3D EN DIFFERENTS REPERES
 # zzzz136a.para = tps_job 120 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,6 +82,12 @@ CHEM2=INTE_MAIL_3D(    MAILLAGE=MA,
 CHEM3=INTE_MAIL_3D(    MAILLAGE=MA,
                            DEFI_SEGMENT=_F(  GROUP_NO_ORIG = 'P11',
                                           GROUP_NO_EXTR = 'P12',     ),
+                                INFO=2
+                       )
+
+CHEM4=INTE_MAIL_3D(    MAILLAGE=MA,
+                           DEFI_SEGMENT=_F(  GROUP_NO_ORIG = 'P11',
+                                          EXTREMITE = (0.0910721,0.704324,1),),
                                 INFO=2
                        )
 
@@ -1847,6 +1853,24 @@ IMPR_TABLE(   TABLE=PRIN_P,
               NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'PRIN_1', 'PRIN_2', 'PRIN_3' )
              )
 
+#######################################################################
+#            III -  VALIDATION INTE_MAIL_3D                           #
+#######################################################################
+
+S5_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM4,
+                                    INTITULE = 'GLOBAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'GLOBAL',
+                                  ),
+          TITRE='S5_G: CHEMIN P11 MILIEU MAILLE, REPERE GLOBAL'
+                         )
+
+IMPR_TABLE(   TABLE=S5_G,
+   NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', )
+             )
 
 FIN( )
 #

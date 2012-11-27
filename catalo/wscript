@@ -87,7 +87,8 @@ def build_cata_ele(self, ojb, install_path):
     # generate the command file
     comm = bldnode.make_node('fort.1')
     content = os.linesep.join([
-        "DEBUT(CATALOGUE=_F(FICHIER='CATAELEM', UNITE=4), PAR_LOT='NON')",
+        "DEBUT(CATALOGUE=_F(FICHIER='CATAELEM', UNITE=4), ",
+        "      ERREUR=_F(ERREUR_F='ABORT'), PAR_LOT='NON')",
         "MAJ_CATA(ELEMENT=_F())",
         "FIN()", ""
     ])
@@ -149,6 +150,10 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     except Exception, err:
         Logs.warn('stdout: %s' % err.stdout)
         Logs.warn('stderr: %s' % err.stderr)
+        Logs.info('To run manually, set:')
+        Logs.info('BINDIR="%s"' % environ['BINDIR'])
+        Logs.info('PYTHONARCHDIR="%s"' % environ['PYTHONARCHDIR'])
+        Logs.info('and copy/paste the command line below:')
         raise
     # self.exec_command(cmds, env=environ)
 

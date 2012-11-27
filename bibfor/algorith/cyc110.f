@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 27/11/2012   AUTEUR BERRO H.BERRO 
 C
 C  BUT:  CREATION D'UN MAILLAGE SQUELETTE POUR LA SOUS-STRUCTURATION
 C        CYCLIQUE
@@ -78,7 +78,8 @@ C
 C
 C-------TRAITEMENT DES GROUPES DE MAILLES EN ENTREE---------------------
 C
-      NBUF =0
+      NBUF = 0
+      LTNMGR = 1
       CALL GETVTX ( MOTFAC, MCGRM, 1,IARG,0, K8BID, NBGR )
       IF (NBGR.LT.0) THEN
         NBGR = -NBGR

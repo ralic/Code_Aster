@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/11/2012   AUTEUR LADIER A.LADIER 
 # TITRE TEST DE LA COMMANDE INTE_MAIL_2D
 # zzzz125a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,6 +70,24 @@ C3=INTE_MAIL_2D(   MAILLAGE=MA,
                         INFO=2
                     )
 
+C4=INTE_MAIL_2D(   MAILLAGE=MA,
+                   DEFI_SEGMENT=(_F( EXTREMITE = (3.,2.),
+                                     NOEUD_ORIG = 'N146'),
+                                 _F( EXTREMITE = (3.,0.),
+                                     NOEUD_ORIG = 'N146'),
+                                ),
+                        INFO=2
+                    )
+
+T4=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'CH4',
+                                  CHEMIN = C4,
+                                  CHAM_GD = CHNO,
+                                  NOM_CMP = 'TEMP',
+                                  OPERATION = 'MOYENNE')
+                                )
+
+IMPR_TABLE(   TABLE=T4 )
+
 TEST_TABLE(
            VALE_CALC=100.0,
            TOLE_MACHINE=1.E-3,
@@ -77,6 +95,17 @@ TEST_TABLE(
            TABLE=T2,
            FILTRE=_F(NOM_PARA='QUANTITE',
                      VALE_K='MOMENT_0',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=100.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TEMP',
+           TABLE=T4,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                     VALE_K='MOMENT_0',),
+                   _F(NOM_PARA='SEGMENT',
+                     VALE_I=2,),),
            )
 
 FIN( )

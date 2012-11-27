@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 24/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 26/11/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,6 +137,7 @@ class MESSAGE_LOGGER(Singleton):
         c'est l'appelant qui devra s'en charger (dans le C a priori).
         'print_as' : cf. print_buffer_content.
         """
+        idmess  = idmess.strip()
         # le '+' n'a pas de sens pour les messages 'I'.
         if code == "I+":
             code = "I"
@@ -149,6 +150,10 @@ class MESSAGE_LOGGER(Singleton):
                 except:
                     # le formattage 'brut' échoue, on passera par une conversion complète
                     pass
+        if self._parent is None:
+            self.set_parent(idmess)
+        if not self.update_counter(code, idmess):
+            return
         # récupération du texte du message
         dictmess = self.get_message(code, idmess, valk, vali, valr, exc_num)
 
@@ -156,9 +161,9 @@ class MESSAGE_LOGGER(Singleton):
         self.add_to_buffer(dictmess)
 
         # si on n'attend pas une suite, ...
-        if len(code) < 2 or code[1] != '+':
-            # mise à jour des compteurs
-            self.update_counter()
+        if is_last_message(code):
+            # vérification des compteurs
+            self.check_limit()
 
             # on imprime le message en attente
             self.print_buffer_content(print_as, cc)
@@ -175,7 +180,6 @@ class MESSAGE_LOGGER(Singleton):
                 if exc_typ:
                     raise exc_typ(idmess, valk, vali, valr)
                 raise error(idmess, valk, vali, valr)
-
         return None
 
 
@@ -298,7 +302,12 @@ Exception : %s
         """Initialise le buffer.
         """
         self._buffer = []
+        self.set_parent(None)
 
+    def set_parent(self, idmess):
+        """Store the parent id of the current message"""
+        self._parent = idmess
+    
     def add_to_buffer(self, dictmess):
         """Ajoute le message décrit dans le buffer en vue d'une impression
         ultérieure.
@@ -440,31 +449,37 @@ Exception : %s
             self.add_to_buffer(dictmess)
         self.print_buffer_content()
 
-    def update_counter(self):
-        """Mise à jour des compteurs et réaction si besoin.
-        """
+    def update_counter(self, code, idmess):
+        """Mise à jour des compteurs.
+        Return True if everything is ok, False if the message will skipped."""
+        if code[0] == 'A':
+            parent = self._parent
+            if parent == idmess and self._hidden_alarm.get(idmess, 0) == 0:
+                self.count_alarm[idmess] = self.count_alarm.get(idmess, 0) + 1
+                self.count_alarm_tot[idmess] = self.count_alarm_tot.get(idmess, 0) + 1
+            if self.is_alarm_disabled(parent) \
+                or self.count_alarm.get(parent, 0) > self.nmax_alarm:
+                # ignorer l'alarme ou count_alarm > max, on passe
+                if is_last_message(code):
+                    self.set_parent(None)
+                return False
+        return True
+
+    def check_limit(self):
+        """Vérifications des compteurs et réaction si besoin."""
         code = self.get_current_code()[0]
+        idmess = self.get_current_id().strip()
         if   code == 'E':
             self.erreur_E = True
         elif code == 'F':
             self.erreur_E = False
-        elif code == 'A':
-            idmess = self.get_current_id().strip()
-            # nombre d'occurrence de cette alarme (sauf si cachee)
-            if self._hidden_alarm.get(idmess, 0) == 0:
-                self.count_alarm[idmess]     = self.count_alarm.get(idmess, 0) + 1
-                self.count_alarm_tot[idmess] = self.count_alarm_tot.get(idmess, 0) + 1
-
-            if self.is_alarm_disabled(idmess) or self.count_alarm[idmess] > self.nmax_alarm:
-                # ignorer l'alarme ou count_alarm > max, on vide le buffer
-                self.init_buffer()
-            elif self.count_alarm[idmess] == self.nmax_alarm:
-                # Pour mettre en relief le message CATAMESS_41, on le sépare
-                # de la dernière alarme
-                self.print_buffer_content()
-                dictmess = self.get_message(code, 'CATAMESS_41',
-                                        valk=idmess, vali=self.nmax_alarm)
-                self.add_to_buffer(dictmess)
+        elif code == 'A' and self.count_alarm.get(idmess, 0) == self.nmax_alarm:
+            # Pour mettre en relief le message CATAMESS_41, on le sépare
+            # de la dernière alarme
+            self.print_buffer_content()
+            dictmess = self.get_message(code, 'CATAMESS_41',
+                                    valk=idmess, vali=self.nmax_alarm)
+            self.add_to_buffer(dictmess)
 
     def check_counter(self, info_alarm=0, silent=0):
         """Méthode "jusqu'ici tout va bien" ! (Interface C : chkmsg)
@@ -651,6 +666,10 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
             return aster.onFatalError()
         else:
             return 'EXCEPTION'
+
+def is_last_message(code):
+    """Tell if a message 'code' is the last message or not."""
+    return len(code) < 2 or code[1] != '+'
 
 
 def raise_UTMESS(exc):

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 26/11/2012   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION D UNE FISSURE XFEM NON DEBOUCHANTE SOLLICITE EN MODE I
 # sslp318b.para = tps_job 250 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -222,7 +222,8 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              VALE_CALC= KII_calc[i-1],    )
+              VALE_CALC= KII_calc[i-1],
+              TOLE_MACHINE=1.2E-6    )
 
 
 #----------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF creation_donnees_homard Macro  DATE 11/04/2012   AUTEUR NICOLAS G.NICOLAS 
+#@ MODIF creation_donnees_homard Macro  DATE 27/11/2012   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 Cette classe crée le fichier de configuration permettant de lancer HOMARD
 depuis Code_Aster.
 """
-__revision__ = "V1.12"
+__revision__ = "V1.13"
 __all__ = [ ]
 
 import os
@@ -247,6 +247,7 @@ class creation_donnees_homard:
           d_aux["CRIT_RAFF_ABS"] = ("SeuilHau",   1)
           d_aux["CRIT_RAFF_REL"] = ("SeuilHRe", 100)
           d_aux["CRIT_RAFF_PE" ] = ("SeuilHPE", 100)
+          d_aux["CRIT_RAFF_MS"]  = ("SeuilHMS",   1)
           l_aux = d_aux.keys()
           for mot_cle in l_aux :
             if self.mots_cles[mot_cle] is not None :
@@ -261,6 +262,7 @@ class creation_donnees_homard:
           d_aux["CRIT_DERA_ABS"] = ("SeuilBas",   1)
           d_aux["CRIT_DERA_REL"] = ("SeuilBRe", 100)
           d_aux["CRIT_DERA_PE" ] = ("SeuilBPE", 100)
+          d_aux["CRIT_DERA_MS"]  = ("SeuilBMS",   1)
           l_aux = d_aux.keys()
           for mot_cle in l_aux :
             if self.mots_cles[mot_cle] is not None :
