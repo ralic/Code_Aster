@@ -1,8 +1,8 @@
-#@ MODIF ihm_parametres Stanley  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ihm_parametres Stanley  DATE 04/12/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,7 @@ class AFFICHAGE_PARAMETRES :
     Fenetre d'affichage et de modification des parametres.
   """
 
-  def __init__(self, master, dliste_section, dparam, para, aide, titre=_("Affichage"), largeur=800, hauteur=630):
+  def __init__(self, master, dliste_section, dparam, para, aide, titre=_(u"Affichage"), largeur=800, hauteur=630):
 
     self.master         = master
     self.dliste_section = dliste_section
@@ -170,14 +170,14 @@ class AFFICHAGE_PARAMETRES :
     self.case_aide = objets.CASE_TEXTE(frame=frame_3, x=10, y=30, h=hauteur_3-40, l=largeur_3-40, params=None, fonte=self.fonte)
 
     # Boutons
-    bullemsg = _("Annuler")
-    bouton_annuler = objets.BUTTON(frame_4, x=largeur_4*0.6, y=hauteur_4 - 50, txt=_("Annuler"), command=self.Quitter, width=10, fonte=self.fonte, background="grey", bulle=self.bulle, bullemsg=bullemsg)
+    bullemsg = _(u"Annuler")
+    bouton_annuler = objets.BUTTON(frame_4, x=largeur_4*0.6, y=hauteur_4 - 50, txt=_(u"Annuler"), command=self.Quitter, width=10, fonte=self.fonte, background="grey", bulle=self.bulle, bullemsg=bullemsg)
 
-    bullemsg = _("Valider les parametres et sortir")
-    bouton_ok      = objets.BUTTON(frame_5, x=largeur_5*0.1, y=hauteur_5 - 50, txt=_("OK"), command=self.Renvoi_Parametres, width=10, fonte=self.fonte, background="grey", bulle=self.bulle, bullemsg=bullemsg)
+    bullemsg = _(u"Valider les parametres et sortir")
+    bouton_ok      = objets.BUTTON(frame_5, x=largeur_5*0.1, y=hauteur_5 - 50, txt=_(u"OK"), command=self.Renvoi_Parametres, width=10, fonte=self.fonte, background="grey", bulle=self.bulle, bullemsg=bullemsg)
 
-#     bullemsg = _("")
-#     bouton_voir      = objets.BUTTON(frame_5, x=largeur_5*0.5, y=hauteur_5 - 50, txt=_("Voir"), command=self.Voir, width=10, fonte=self.fonte, background="grey", bulle=self.bulle, bullemsg=bullemsg)
+#     bullemsg = _(u"")
+#     bouton_voir      = objets.BUTTON(frame_5, x=largeur_5*0.5, y=hauteur_5 - 50, txt=_(u"Voir"), command=self.Voir, width=10, fonte=self.fonte, background="grey", bulle=self.bulle, bullemsg=bullemsg)
 
     # Affiche l'aide
     self.Raffraichir_Aide()
@@ -273,7 +273,7 @@ class AFFICHAGE_PARAMETRES :
 
   def Quitter(self):
 
-    reponse = tkMessageBox.askokcancel(_("Quitter"), _("Voulez-vous quitter ? Les paramètres modifiés seront perdus.") )
+    reponse = tkMessageBox.askokcancel(_(u"Quitter"), _(u"Voulez-vous quitter ? Les paramètres modifiés seront perdus.") )
     if   reponse == 1: reponse = True
     elif reponse == 0: reponse = False
     if not reponse: return

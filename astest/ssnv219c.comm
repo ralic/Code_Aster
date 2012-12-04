@@ -1,4 +1,4 @@
-# MODIF  DATE 12/11/2012   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 03/12/2012   AUTEUR TARDIEU N.TARDIEU 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219c.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -647,7 +647,7 @@ BIDONU_S=DEFI_FONCTION(NOM_PARA='INST',
                            1., PenteL2U_Surf));
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=3.5146549999999999,
-                        TOLE_MACHINE=1.5E-05,
+                        TOLE_MACHINE=4.E-05,
                         VALE_PARA=1.0,
                         FONCTION=BIDONU_S,
                         ),

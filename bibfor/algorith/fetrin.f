@@ -4,7 +4,7 @@
      &              IFIV,NBPROC,RANG,K24IRR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 03/12/2012   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -573,10 +573,14 @@ C----------------------------------------------------------------------
             ENDIF
 
 C POUR ECRITURE FICHIER (SI INFOFE(14:14)='T')
-            IF (OPTION.EQ.2)
-     &          CALL FETTSD(INFOFE,IDD,NBDDL,IBID,SDFETI,K24B,IDEEQ,
+            IF (OPTION.EQ.2) THEN
+                CALL FETTSD(INFOFE,IDD,NBDDL,IBID,SDFETI,K24B,IDEEQ,
      &                    IVALCS,IBID,IFM,LBID,IBID,IBID,IBID,K19B,
      &                    8,LBID)
+                CALL FETTSD(INFOFE,IDD,NBDDL,IBID,SDFETI,K24B,IDEEQ,
+     &                    IVALCS,IBID,IFM,LBID,IBID,IBID,IBID,K19B,
+     &                    11,LBID)
+            ENDIF
 C MONITORING
             IF (INFOFE(2:2).EQ.'T')
      &        CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMLS(1:19),1,' ')

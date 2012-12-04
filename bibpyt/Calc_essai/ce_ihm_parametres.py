@@ -1,4 +1,4 @@
-#@ MODIF ce_ihm_parametres Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF ce_ihm_parametres Calc_essai  DATE 04/12/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,7 +129,7 @@ class InterfaceParametres(Frame):
         """!Appelée par le gestionnaire de tab lors de l'affichage"""
 
         mdo = self.objects
-        mdo.recup_objects
+        mdo.recup_objects()
 
         self.menu_resu1.update( mdo.get_resultats_name(), self.var_resu1, self.visu1_changed )
         self.menu_resu2.update( mdo.get_resultats_name(), self.var_resu2, self.visu2_changed )
@@ -742,7 +742,6 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
                     'SALOME_HOST'      : self.machine_name,
                     'SALOME_PORT'      : self.salome_port,
                     'FICHIERS_SORTIE'  : [ './fort.%s' % unite ],
-                   #'SALOME_RUNAPPLI'  : '/local00/home/aster/outils/runSalomeScript',
                   }
 
         EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
@@ -780,10 +779,6 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         @type     visuType :     integer
         @param  visuType:      type de visualisation
         """
-
-        import shutil
-        shutil.copy(medFilePath,'/home/bodel/resu.med')
-        
         if self.param_visu.type_visu.get()=='mac' :
             script = './Python/Templates/salomeScriptMac.py'
         elif self.param_visu.type_visu.get()=='deformee' :
@@ -799,7 +794,6 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
                     'FICHIERS_ENTREE'  : [ medFilePath ],
                     'NOM_PARA'         : [ 'STUDY' ],
                     'VALE'             : [ self.study_name ],
-                   #'SALOME_RUNAPPLI'  : '/local00/home/aster/outils/runSalomeScript',
                   }
 
         EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
@@ -870,9 +864,6 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
         fw=open('fort.%s' %self.unite_logique, 'w')
         fw.write( str(table) )
         fw.close()
-
-        #import shutil
-        #shutil.copy('./fort.%s' %self.unite_logique,'/home/bodel/resu1')
 
         # recuperation des noms des etudes Salome ouvertes
         if not self.study_name:

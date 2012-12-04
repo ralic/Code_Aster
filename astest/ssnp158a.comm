@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/12/2012   AUTEUR TARDIEU N.TARDIEU 
 # TITRE ADAPTATION DE MAILLAGE EN NON-LINEAIRE
 # ssnp158a.para = tps_job 200 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP158A',NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON',DEBUG=_F(SDVERI='OUI'));
+# Pour des raisons de performances, on force SDVERI='NON'. 
+DEBUT(CODE=_F(NOM='SSNP158A',NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON',DEBUG=_F(SDVERI='NON'));
 
 NbIncr=20
 DT=10./NbIncr

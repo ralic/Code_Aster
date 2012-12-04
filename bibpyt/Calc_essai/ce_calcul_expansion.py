@@ -1,4 +1,4 @@
-#@ MODIF ce_calcul_expansion Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF ce_calcul_expansion Calc_essai  DATE 04/12/2012   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -331,12 +331,7 @@ def make_mesh_mac(nb_l,nb_c):
     f.writelines( ' FINSF\n')
     f.writelines( ' %\n')
     f.writelines( ' FIN\n')
-
-
     f.close()
-##    import shutil
-##    shutil.copy('./fort.%s'%unite,'/local00/home/D95272AA/maillage.mail')
-
     return unite
 
 

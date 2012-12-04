@@ -1,4 +1,4 @@
-#@ MODIF cata_ce Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF cata_ce Calc_essai  DATE 04/12/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -913,6 +913,17 @@ class CalcEssaiObjects:
         #        for etape in CONTEXT.get_current_step().jdc.etapes:
         #            if etape.nom == 'OBSERVATION':
         #                print etape.get_created_sd()[0].nom, etape.valeur
+
+        self.modeles = {}
+        self.mode_meca = {}
+        self.dyna_harmo = {}
+        self.matrices = {}
+        self.maillages = {}
+        self.cara_elem = {}
+        self.cham_mater = {}
+        self.inter_spec = {}
+        self.list_tempo = {}
+        self.nume_ddl = {}
 
         for i, v in ctx.items():
             if isinstance( v, modele_sdaster ):

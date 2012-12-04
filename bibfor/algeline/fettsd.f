@@ -2,7 +2,7 @@
      &                  IFETI,IFM,LPARA,ITPS,NIVMPI,RANG,CHSOL,OPTION,
      &                  LTEST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 03/12/2012   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C DECLARATION VARIABLES LOCALES
      &             J,COMPT,IRET5,IRET,IRET6,IFETJ,NBII,ITEST,IFETI1,
      &             INO,IFETN,IDEEQ,NEQUA,IADVAL,JSMDI,NSMDI,NBER,
      &             JSMHC,NZ,JCOL,NBMRMA,KTERM,ILIG,NBCHAR,
-     &             IFM18,ICMP,NBERM,NBMR,K,NEQ,L
+     &             IFM18,ICMP,NBERM,NBMR,K,NEQ,L,INO1
       INTEGER*4    NBI4
       REAL*8       RAUX,RBID,DII,DII2,DII3,TOL,ECARMI,ECARMA,ECARMO
       CHARACTER*8  NOMSD,K8BID
@@ -475,6 +475,39 @@ C-----------------------------
           WRITE(IFM18,*)I,INO,ICMP,ZR(IADVAL-1+I)
    91   CONTINUE
 C-----------------------------
+C ON ECRIT DANS IFM18 LA DESCRIPTION DES LAGRANGE D'INTERFACE
+C-----------------------------
+      ELSE IF ((INFOFE(14:14).EQ.'T').AND.(OPTION.EQ.11)) THEN
+        CALL JEVEUO(SDFETI(1:19)//'.FETI','L',IFETI1)
+        CALL JELIRA(SDFETI(1:19)//'.FETI','LONMAX',NBII,K8BID)
+        NBII=NBII/4
+        COMPT=0
+        DO 97 I=1,NEQUA
+          INO=ZI(IDEEQ+2*(I-1))
+          ICMP=ZI(IDEEQ+2*(I-1)+1)
+          DO 95 K=1,NBII
+            INO1=ZI(IFETI1+4*(K-1)-1+1)
+            IF (INO.EQ.INO1) THEN
+              COMPT=COMPT+1
+              GOTO 97
+            ENDIF
+   95     CONTINUE
+   97   CONTINUE
+        WRITE(IFM18,*)'LAGRANGE D''INTERFACE '//
+     &    ' I/    NUM_SD    /      NUM_DDL_LOCAL'
+        WRITE(IFM18,*)'NOMBRE DE TERMES ',COMPT
+        DO 93 I=1,NEQUA
+          INO=ZI(IDEEQ+2*(I-1))
+          ICMP=ZI(IDEEQ+2*(I-1)+1)
+          DO 94 K=1,NBII
+            INO1=ZI(IFETI1+4*(K-1)-1+1)
+            IF (INO.EQ.INO1) THEN
+              WRITE(IFM18,*) K, IDD, I
+              GOTO 93
+            ENDIF
+   94     CONTINUE
+   93   CONTINUE
+C-----------------------------
 C ON ECRIT DANS IFM18 LA SOLUTION GLOBALE
 C-----------------------------
       ELSE IF ((INFOFE(14:14).EQ.'T').AND.(OPTION.EQ.9)) THEN
@@ -501,7 +534,7 @@ C-----------------------------
           NEQ=NEQUA/NBMR
           K=1
           L=1
-          DO 94 I=1,NEQUA
+          DO 96 I=1,NEQUA
             INO=ZI(IDEEQ+2*(K-1))
             ICMP=ZI(IDEEQ+2*(K-1)+1)
             WRITE(IFM18,*)L,K,INO,ICMP,ZR(IADVAL-1+I)
@@ -511,7 +544,7 @@ C-----------------------------
               K=1
               L=L+1
             ENDIF
-   94     CONTINUE
+   96     CONTINUE
         ELSE
           WRITE(IFM18,*)'NOMBRE TOTAL DE TERMES ',0
         ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/11/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 03/12/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE
 # sslv139a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,7 +180,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='TOTALE',
                    VALE_CALC=1.1613059633084E+09,
                    VALE_REFE=1.1612386752962999E9,
-                   TOLE_MACHINE=2.e-5,
+                   TOLE_MACHINE=5.e-5,
                    MAILLE='M10',),
                 _F(NUME_ORDRE=1,
                    REFERENCE='AUTRE_ASTER',

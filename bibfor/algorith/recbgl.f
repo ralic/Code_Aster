@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 04/12/2012   AUTEUR SELLENET N.SELLENET 
 C
 C  BUT:  < RESTITUTION CRAIG-BAMPTON GLOBALE >
 C
@@ -168,6 +168,7 @@ C
       KBID = ' '
       CALL BMNODI(BASMOD,KBID,'       ',NUMG,NBDDR,ZI(LTORG),IBID)
 C
+      LTORA = 1
       IF (NBDAX.GT.0) THEN
         NOMVEC = '&&RECBGL.ORD.DEF.AX'
         CALL WKVECT(NOMVEC,'V V I',NBDAX,LTORA)

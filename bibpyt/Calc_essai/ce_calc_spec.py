@@ -1,4 +1,4 @@
-#@ MODIF ce_calc_spec Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF ce_calc_spec Calc_essai  DATE 04/12/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -289,6 +289,8 @@ class InterfaceCalcSpec(Frame):
         # 5 jaune       6 brun    7 gris    8 violet  9 cyan
         # 10 magenta    11 orange 12 marron 13 indigo 14 turquoise
         # 15 vert fonce
+        nbc = len(couleur)
+        l_coul = [couleur[i1 % nbc] for i1 in range(len(ind_v))]
 
         # selon le type de donnees extraites, parametres et legendes :
         data={'I':[self.Spec,'FONCTION_C','Fréquence','Hz','Inter-spectre','unite^2/Hz','Inter-spectre'],
@@ -299,7 +301,6 @@ class InterfaceCalcSpec(Frame):
                    'Fonction_temporelle']}
 
     
-        compt_coul=0
         courbes=[]
         legende=[]
         typ = type_res[0]
@@ -363,11 +364,10 @@ class InterfaceCalcSpec(Frame):
 
             legende.append(leg)
             courbes.append(sig)
-            compt_coul=compt_coul+1
 
-        self.param_visu.visu_courbe(absc, courbes, [couleur[i1] for i1 in range(len(ind_v))],
-                                    data[typ][6],legende,data[typ][2],data[typ][3],
-                                    data[typ][4],data[typ][5])
+        self.param_visu.visu_courbe(absc, courbes, l_coul,
+                                    data[typ][6], legende, data[typ][2], data[typ][3],
+                                    data[typ][4], data[typ][5])
 
 
     def calc_intespec(self) :
@@ -571,6 +571,7 @@ class InterfaceCalcSpec(Frame):
            DETRUIRE(CONCEPT=_F(NOM=(self.tab_temp.obj,)), INFO=1)
         if self.is_tab_frf :
            DETRUIRE(CONCEPT=_F(NOM=(self.FRF.obj,)), INFO=1)
+        self.refresh_ltab()
 
         ind_sel = self.list_ref.curselection()
         ind_tab = self.list_tab_cur

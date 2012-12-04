@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/12/2012   AUTEUR TARDIEU N.TARDIEU 
 # TITRE RECALAGE MODAL PAR DIAGONALISATION DES MATRICES GENERALISEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,10 +20,11 @@
 # sdls121d.para = tps_job 600 mem_job 512Mo ncpus 4 liste_test S
 import numpy as NP
 
+# Pour des raisons de performances, on force SDVERI='NON'. 
 DEBUT(CODE=_F(NOM='SDLS121D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
       PAR_LOT='NON',
       IGNORE_ALARM='SUPERVIS_1', #PAR_LOT = NON a cause de EXTR_TABLE
-      DEBUG=_F(SDVERI='OUI'));
+      DEBUG=_F(SDVERI='NON'));
 
 import numpy as NP
 

@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 04/12/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,6 +25,7 @@
 import sys
 import os
 from os import times
+import time
 
 # Modules Eficas
 from Noyau.N_utils import prbanner
@@ -133,11 +134,14 @@ class ETAPE:
              or self.jdc.impr_macro == 1
       # top départ du chrono de la commande
       etiq = self.nom
+      # id unique pour l'étape. L'attribut n'est pas déclaré dans l'__init__...
+      count = (self.icmd or 0)
+      self.id_timer = str(time.time() + count)
       if (isinstance(self.parent,MACRO_ETAPE)) or \
          (self.parent.nom=='INCLUDE'         ):
          etiq = ' . ' + etiq
       if voir:
-         self.jdc.timer.Start(id(self), name=etiq)
+         self.jdc.timer.Start(self.id_timer, name=etiq)
 
       # impression du fichier .code : compte rendu des commandes et
       # mots clés activés par l'ETAPE
@@ -183,7 +187,7 @@ class ETAPE:
       if not voir:
          return
       # stop pour la commande
-      cpu_user, cpu_syst, elapsed = self.jdc.timer.StopAndGet(id(self), hide=not voir)
+      cpu_user, cpu_syst, elapsed = self.jdc.timer.StopAndGet(self.id_timer, hide=not voir)
       if avec_temps and self.icmd is not None:
          rval, iret = aster_core.get_mem_stat('VMPEAK', 'VMSIZE', 'CMAX_JV', 'CMXU_JV')
          if iret == 0:

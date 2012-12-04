@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 29/10/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF salomeVisu Stanley  DATE 04/12/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -355,10 +355,6 @@ class COURBES( VISU ):
         """
         Lecture d'un fichier MED par le composant VISU de SALOME.
         """
-
-        import shutil
-        shutil.copy(datafile,'/home/bodel/resu2')
-
 
         dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeScript.py',
                     'SALOME_HOST'      : self.salome_host,

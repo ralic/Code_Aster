@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 12/11/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_engine Stanley  DATE 04/12/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -296,41 +296,41 @@ class PARAMETRES :
     dparam={
 
       # Mode graphique
-      'mode_graphique'        : { 'label': _("Mode"),                             'val': 'Gmsh/Xmgrace',     'type': 'liste',          'section': 'MODE_GRAPHIQUE',                                      'val_possible': ["Gmsh/Xmgrace", "Salome"],      'bulle': _("Mode graphique"), },
+      'mode_graphique'        : { 'label': _(u"Mode"),                             'val': 'Gmsh/Xmgrace',     'type': 'liste',          'section': 'MODE_GRAPHIQUE',                                      'val_possible': ["Gmsh/Xmgrace", "Salome"],      'bulle': _(u"Mode graphique"), },
 
       # Parametres IHM et Serveur Aster
-      'fonte'                 : { 'label': _("Fontes"),                           'val': 'arial 10 normal',  'type': 'liste',          'section': 'PARAMETRES',                                                                                           'bulle': _("Les fontes de l'application"), 'val_possible': liste_fontes, },
-      'grace'                 : { 'label': _("Xmgrace"),                          'val': 'xmgrace',          'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _("Serveur de calcul : Chemin vers l'application Xmgrace"), },
-      'smbclient'             : { 'label': _("Smbclient"),                        'val': 'smbclient',        'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Serveur de calcul : Chemin vers l'application Smbclient (pour Profil Windows)"), },
-      'gmsh'                  : { 'label': _("Gmsh"),                             'val': 'gmsh',             'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _("Serveur de calcul : Chemin vers l'application Gmsh"), },
+      'fonte'                 : { 'label': _(u"Fontes"),                           'val': 'arial 10 normal',  'type': 'liste',          'section': 'PARAMETRES',                                                                                           'bulle': _(u"Les fontes de l'application"), 'val_possible': liste_fontes, },
+      'grace'                 : { 'label': _(u"Xmgrace"),                          'val': 'xmgrace',          'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _(u"Serveur de calcul : Chemin vers l'application Xmgrace"), },
+      'smbclient'             : { 'label': _(u"Smbclient"),                        'val': 'smbclient',        'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Serveur de calcul : Chemin vers l'application Smbclient (pour Profil Windows)"), },
+      'gmsh'                  : { 'label': _(u"Gmsh"),                             'val': 'gmsh',             'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _(u"Serveur de calcul : Chemin vers l'application Gmsh"), },
 
       # Parametres Graphiques specifiques a Gmsh, Xmgrace, Salome
-      'TAILLE_MIN'            : { 'label': _("Gmsh : Taille minimale"),           'val': 0.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': '', },
-      'SHRINK'                : { 'label': _("Gmsh : Shrink"),                    'val': 1.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _("Parametre pour Gmsh : SHRINK\n\nFacteur de réduction homothétique permettant d'assurer la non interpénétration des mailles."), },
-      'SKIN'                  : { 'label': _("Gmsh : Affichage sur la peau"),     'val': 'non',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["oui", "non"],                  'bulle': _("Parametre pour Gmsh : affichage sur la peau uniquement."), },
-      'version_fichier_gmsh'  : { 'label': _("Gmsh : Version du fichier"),        'val': '1.2',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["1.0", "1.2"],                  'bulle': _("Parametre pour Gmsh : version du fichier resultat."), },
+      'TAILLE_MIN'            : { 'label': _(u"Gmsh : Taille minimale"),           'val': 0.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': '', },
+      'SHRINK'                : { 'label': _(u"Gmsh : Shrink"),                    'val': 1.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _(u"Parametre pour Gmsh : SHRINK\n\nFacteur de réduction homothétique permettant d'assurer la non interpénétration des mailles."), },
+      'SKIN'                  : { 'label': _(u"Gmsh : Affichage sur la peau"),     'val': 'non',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["oui", "non"],                  'bulle': _(u"Parametre pour Gmsh : affichage sur la peau uniquement."), },
+      'version_fichier_gmsh'  : { 'label': _(u"Gmsh : Version du fichier"),        'val': '1.2',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["1.0", "1.2"],                  'bulle': _(u"Parametre pour Gmsh : version du fichier resultat."), },
 
       # Parametres du Poste de travail de l'utilisateur, de la machine des Services Salome ou Gmsh
       'mode'                  : { 'label': _('Mode'),                             'val': 'LOCAL',            'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["LOCAL", "DISTANT", "WINDOWS"], 'bulle': '', },
-      'machine_visu'          : { 'label': _("Machine de visualisation"),         'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],      'bulle': _("Adresse du poste de travail"), },
+      'machine_visu'          : { 'label': _(u"Machine de visualisation"),         'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],      'bulle': _(u"Adresse du poste de travail"), },
 
-      'machine_gmsh'          : { 'label': _("Machine de Gmsh"),                  'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _("Machine hebergeant le service graphique Gmsh."), },
-      'machine_gmsh_login'    : { 'label': _("Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _("Login"), },
-      'machine_gmsh_exe'      : { 'label': _("Machine Gmsh : chemin vers gmsh"),  'val': 'gmsh',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _("Adresse du poste de travail"), },
+      'machine_gmsh'          : { 'label': _(u"Machine de Gmsh"),                  'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _(u"Machine hebergeant le service graphique Gmsh."), },
+      'machine_gmsh_login'    : { 'label': _(u"Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _(u"Login"), },
+      'machine_gmsh_exe'      : { 'label': _(u"Machine Gmsh : chemin vers gmsh"),  'val': 'gmsh',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _(u"Adresse du poste de travail"), },
 
-      'machine_salome'        : { 'label': _("Machine de Salome"),                'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['DISTANT'],                 'bulle': _("Machine hebergeant le service graphique Salome."), },
-      'machine_salome_login'  : { 'label': _("Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],   'mode': ['DISTANT'],                 'bulle': _("Login"), },
-      'machine_salome_port'   : { 'label': _("Port de Salome"),                   'val': '2810',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Port de Salome sur la machine hebergeant le service Salome."), },
-      'machine_salome_runscript' : { 'label': _("Lanceur runSalomeScript"),       'val': os.path.join(aster_core.get_option('repout'), 'runSalomeScript'),             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."), },
+      'machine_salome'        : { 'label': _(u"Machine de Salome"),                'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['DISTANT'],                 'bulle': _(u"Machine hebergeant le service graphique Salome."), },
+      'machine_salome_login'  : { 'label': _(u"Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],   'mode': ['DISTANT'],                 'bulle': _(u"Login"), },
+      'machine_salome_port'   : { 'label': _(u"Port de Salome"),                   'val': '2810',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Port de Salome sur la machine hebergeant le service Salome."), },
+      'machine_salome_runscript' : { 'label': _(u"Lanceur runSalomeScript"),       'val': os.path.join(aster_core.get_option('repout'), 'runSalomeScript'),             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."), },
 
-      'machine_win'           : { 'label': _("Machine Windows/Samba"),            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Machine hebergeant le partage Windows/Samba."), },
-      'partage_win_nom'       : { 'label': _("Nom de partage Windows/Samba"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Nom de partage Windows/Samba"), },
-      'partage_win_login'     : { 'label': _("Nom d'utilisateur du partage"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Partage Windows/Samba : nom d'utilisateur"), },
-      'partage_win_pass'      : { 'label': _("Mot de passe du partage"),          'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Partage Windows/Samba : mot de passe"), },
+      'machine_win'           : { 'label': _(u"Machine Windows/Samba"),            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Machine hebergeant le partage Windows/Samba."), },
+      'partage_win_nom'       : { 'label': _(u"Nom de partage Windows/Samba"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Nom de partage Windows/Samba"), },
+      'partage_win_login'     : { 'label': _(u"Nom d'utilisateur du partage"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Partage Windows/Samba : nom d'utilisateur"), },
+      'partage_win_pass'      : { 'label': _(u"Mot de passe du partage"),          'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Partage Windows/Samba : mot de passe"), },
 
-      'protocole'             : { 'label': _("Protocole reseau"),                 'val': 'rcp/rsh',          'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["rcp/rsh", "scp/ssh"], 'mode': ['DISTANT'], 'bulle': _("Protocole de transfert reseau. \nLes .rhosts ou clés SSH doivent etre à jours."), },
+      'protocole'             : { 'label': _(u"Protocole reseau"),                 'val': 'rcp/rsh',          'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["rcp/rsh", "scp/ssh"], 'mode': ['DISTANT'], 'bulle': _(u"Protocole de transfert reseau. \nLes .rhosts ou clés SSH doivent etre à jours."), },
 
-      'tmp'                   : { 'label': _("Repertoire temporaire"),            'val': '/tmp',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace', 'Salome'],   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Repertoire temporaire"), },
+      'tmp'                   : { 'label': _(u"Repertoire temporaire"),            'val': '/tmp',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace', 'Salome'],   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Repertoire temporaire"), },
 
            }
 
@@ -701,11 +701,11 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
     if res:
        self.Saved = True
-       txt = _("Nouveaux parametres sauvegardés dans : %s") % fichier
+       txt = _(u"Nouveaux parametres sauvegardés dans : %s") % fichier
        UTMESS('I','STANLEY_28',valk=[fichier])
        interface.ligne_etat.Affecter( txt )
     else:
-       txt =  _("Impossible de sauvegarder les parametres dans : %s") % fichier
+       txt =  _(u"Impossible de sauvegarder les parametres dans : %s") % fichier
        UTMESS('A','STANLEY_29',valk=[fichier])
        interface.ligne_etat.Affecter( txt )
 
@@ -720,7 +720,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
     '''
 
     if self.Saved == False:
-       reponse = tkMessageBox.askokcancel(_("Sauvegarde des parametres"), _("Les paramètres ont été modifiés. Voulez-vous les sauvegarder?") )
+       reponse = tkMessageBox.askokcancel(_(u"Sauvegarde des parametres"), _(u"Les paramètres ont été modifiés. Voulez-vous les sauvegarder?") )
        if   reponse == 1: reponse = True
        elif reponse == 0: reponse = False
        if reponse: self.Sauvegarder_Sous(interface)
@@ -1572,7 +1572,7 @@ class STANLEY:
           if not 'TOUT_ORDRE' in self.interface.ordre.courant:
              if len(self.interface.ordre.courant)==1:
                 liste = ['Animer', 'Ne pas animer']
-                options['animation_mode'] = SAISIE_MODE( liste, _("Animation") )
+                options['animation_mode'] = SAISIE_MODE( liste, _(u"Animation") )
 
     # Trace
     self.driver[self.selection.mode].Tracer(self.selection, options )
@@ -1632,7 +1632,7 @@ class STANLEY:
     self.parametres.Afficher_Config(self.interface)
 
     if self.parametres.change_fonte:
-       reponse = tkMessageBox.askokcancel(_("Changement des fontes"), _("Pour actualiser les fontes, il faut relancer l'IHM. Voulez-vous relancer Stanley ? Le fichier des paramètres sera modifiés.") )
+       reponse = tkMessageBox.askokcancel(_(u"Changement des fontes"), _(u"Pour actualiser les fontes, il faut relancer l'IHM. Voulez-vous relancer Stanley ? Le fichier des paramètres sera modifiés.") )
        if   reponse == 1: reponse = True
        elif reponse == 0: reponse = False
        if reponse:
@@ -1924,7 +1924,7 @@ class INTERFACE :
 
    # Boutons
     BOUTON(frame_boutons, 'PaleGreen1', 'TRACER'   , self.stan.Tracer,   x=2,y=0, fonte=fonte)
-    self.case_sur_deformee = CASE_A_COCHER(frame_boutons, x=2, y=0, txt=_("Sur déformée"), fonte=fonte)
+    self.case_sur_deformee = CASE_A_COCHER(frame_boutons, x=2, y=0, txt=_(u"Sur déformée"), fonte=fonte)
     BOUTON(frame_boutons, 'orange',     'CALCULER' , self.stan.Calculer, x=2,y=0, fonte=fonte)
     BOUTON(frame_boutons, 'skyblue',    'SELECTION', self.stan.Select,   x=2,y=0, fonte=fonte)
     BOUTON(frame_boutons, 'IndianRed1', 'SORTIR'   , self.stan.Quitter,  x=2,y=0, fonte=fonte)
@@ -1942,7 +1942,7 @@ class INTERFACE :
     global info
 
     tk = Tk.Tk()
-    tk.title = _("A propos de Stanley")
+    tk.title = _(u"A propos de Stanley")
 
     l = Tk.Label(tk,padx=15,pady=15,text=info)
     l.grid()
@@ -1973,7 +1973,7 @@ class INTERFACE :
       ['Coordonnees',3]]
     defaut = [[''],[0.,0.,0.]]
 
-    reponse = SAISIE(infos, _("Creation d'un point"), defaut, fonte=fonte)
+    reponse = SAISIE(infos, _(u"Creation d'un point"), defaut, fonte=fonte)
 
     nom = reponse[0][0]
     nom = nom[0:8]            # pas plus de 8 caracteres dans un GROUP_MA
@@ -2007,7 +2007,7 @@ class INTERFACE :
       ['Extremite (x,y,z)',3],
       ['Nombre de points',1]]
     defaut = [[''],[0.,0.,0.],[1.,0.,0.],[2]]
-    reponse = SAISIE(infos, _("Creation d'un chemin") , defaut, fonte=fonte)
+    reponse = SAISIE(infos, _(u"Creation d'un chemin") , defaut, fonte=fonte)
 
     nom = reponse[0][0]
     nom = nom[0:8]            # pas plus de 8 caracteres dans un GROUP_MA
@@ -3028,7 +3028,7 @@ class PRE_STANLEY :
     self.para = PARAMETRES()
 
     self.rootTk    = Tk.Tk()
-    self.rootTk.wm_title( _("PRE_STANLEY : choix des concepts") )
+    self.rootTk.wm_title( _(u"PRE_STANLEY : choix des concepts") )
 
     # Récupération des concepts Aster présents dans la base
     self.macro = CONTEXT.get_current_step()

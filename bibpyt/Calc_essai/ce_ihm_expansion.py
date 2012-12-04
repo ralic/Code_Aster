@@ -1,4 +1,4 @@
-#@ MODIF ce_ihm_expansion Calc_essai  DATE 06/11/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF ce_ihm_expansion Calc_essai  DATE 04/12/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,7 +112,7 @@ class InterfaceCorrelation(Frame):
             Permet de prendre en compte des nouveaux concepts
             et de les ajouter dans les MyMenu et cie..."""
         mdo = self.objects
-        mdo.recup_objects
+        mdo.recup_objects()
         # mise a jour des options des boutons : commande update de MyMenu :
         #les arguments sont, dans l'ordre : options, var, command
         self.menu_resu_num.update( mdo.get_mode_meca_name() , self.var_resu_num , self.num_changed )

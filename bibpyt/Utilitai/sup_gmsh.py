@@ -1,4 +1,4 @@
-#@ MODIF sup_gmsh Utilitai  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sup_gmsh Utilitai  DATE 04/12/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1339,7 +1339,7 @@ class Mesh :
       CREA_GROUP_MA = tuple(l_mcf),
       )
 
-    SMESH_02 = CREA_MAILLAGE(
+    _SMESH02 = CREA_MAILLAGE(
       MAILLAGE = MA,
       DETR_GROUP_MA = _F(GROUP_MA = tuple(l_gma)),
       )
@@ -1347,14 +1347,14 @@ class Mesh :
     DETRUIRE(CONCEPT = _F(NOM = MA), INFO=1)
 
     if CREA_GROUP_NO == 'OUI' :
-      DEFI_GROUP(reuse = SMESH_02,
-        MAILLAGE = SMESH_02,
+      DEFI_GROUP(reuse = _SMESH02,
+        MAILLAGE = _SMESH02,
         CREA_GROUP_NO = _F(TOUT_GROUP_MA = 'OUI'),
         )
 
     else :
 #    Traitement des GROUP_NO qui sont des points
-      info_gno = SMESH_02.LIST_GROUP_NO()
+      info_gno = _SMESH02.LIST_GROUP_NO()
       l_gno = []
       for gno in info_gno :
         if gno[1] == 1 : l_gno.append(gno[0])
@@ -1366,12 +1366,12 @@ class Mesh :
           l_gma.append(gma)
 
       if l_gma :
-        DEFI_GROUP(reuse = SMESH_02,
-          MAILLAGE = SMESH_02,
+        DEFI_GROUP(reuse = _SMESH02,
+          MAILLAGE = _SMESH02,
           CREA_GROUP_NO = _F(GROUP_MA = tuple(l_gma)),
           )
 
-    return SMESH_02
+    return _SMESH02
 
 
 
@@ -1396,7 +1396,7 @@ class Mesh :
 
     PRE_GMSH(UNITE_GMSH=UNITE_GMSH, UNITE_MAILLAGE=UNITE_MAILLAGE)
 
-    SMESH_00 = LIRE_MAILLAGE(UNITE = UNITE_MAILLAGE)
+    _SMESH00 = LIRE_MAILLAGE(UNITE = UNITE_MAILLAGE)
     DEFI_FICHIER(ACTION='LIBERER',UNITE = UNITE_GMSH)
     DEFI_FICHIER(ACTION='LIBERER',UNITE = UNITE_MAILLAGE)
 
@@ -1404,13 +1404,13 @@ class Mesh :
       raise Exception('The finite elements are already of second order')
 
     if MODI_QUAD == 'OUI' and self.order <> 2 :
-      SMESH_01 = CREA_MAILLAGE(
-        MAILLAGE = SMESH_00,
+      _SMESH01 = CREA_MAILLAGE(
+        MAILLAGE = _SMESH00,
         LINE_QUAD = _F(TOUT = 'OUI')
         )
-      DETRUIRE(CONCEPT=_F(NOM=SMESH_00), INFO=1)
-      SMESH_00 = SMESH_01
+      DETRUIRE(CONCEPT=_F(NOM=_SMESH00), INFO=1)
+      _SMESH00 = _SMESH01
 
-    SMESH_00 = self.Name(SMESH_00,CREA_GROUP_NO)
+    _SMESH00 = self.Name(_SMESH00,CREA_GROUP_NO)
 
-    return SMESH_00
+    return _SMESH00
