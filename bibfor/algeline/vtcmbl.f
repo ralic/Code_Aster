@@ -3,7 +3,7 @@ C     ------------------------------------------------------------------
 C     COMBINAISON LINEAIRE DE CHAM_NO OU DE CHAM_ELEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 06/12/2012   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,8 @@ C ON VERIFIE QUE TOUTE LES CHAM_NO DE LA LISTE SONT HOMOGENES
         ENDIF
 
         DO 10 ICMB=2,NBCMB
-          K24B=NOMCH(ICMB)(1:19)//REFE
+          CH19=NOMCH(ICMB)
+          K24B=CH19//REFE
           CALL JEEXIN(K24B,IRET)
           IF (IRET.NE.0) THEN
             CALL JELIRA(K24B,'LONMAX',NBREFE,K8B)

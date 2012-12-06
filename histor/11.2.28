@@ -1,0 +1,155 @@
+========================================================================
+Version 11.2.28 du : 07/12/2012
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 12/06/2012 - 01:40:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020051 DU 2012-12-05 09:28:56
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.2.27, fdlv102c plante sur Calibre7
+FONCTIONNALITE
+   Problème :
+   ----------
+   En NEW11.2.27, fdlv102c plante sur Calibre7 dans CALC_MATR_AJOU
+   
+   Solution :
+   ----------
+   Il s'agit d'un problème de problème de recopie de chaines de caractères qui est détecté
+   par Valgrind. Dans vtcmbl.f, on a les instructions
+   ----------------------------------
+   K24B=NOMCH(ICMB)(1:19)//REFE
+   CALL JEEXIN(K24B,IRET)
+   ----------------------------------
+   Or dans l'appelant, NOMCH est dimensionné à CHARACTER*8, d'où la recopie de valeurs
+   non-initialisées.
+   Je change par : 
+   ----------------------------------
+   CH19=NOMCH(ICMB)
+   K24B=CH19//REFE
+   CALL JEEXIN(K24B,IRET)
+   ----------------------------------
+   Ainsi, le test n'a plus aucune erreur dans Valgrind.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage du test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 12/06/2012 - 01:40:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020058 DU 2012-12-05 18:42:47
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.2.27, perf013e s'arrête en erreur <F> sur Aster4 MPI
+FONCTIONNALITE
+   Contexte
+   ========
+   
+   En 11.2.27, perf013e s'arrête en erreur <F> en version MPI sur Aster4.
+   
+      !----------------------------------------------------------------------------!
+      ! <A> <CALCULEL_58>                                                          !
+      !                                                                            !
+      ! Erreur lors de la fabrication d'un champ par éléments :                    !
+      !  Il manque la composante : COQ_NCOU  sur la maille : M14382                !
+      !  Champ : CAREL   .CANBSP                                                   !
+      !                                                                            !
+      ! Risques et conseils :                                                      !
+      !  Si cette erreur se produit lors de l'exécution de la commande PROJ_CHAMP, !
+      !  il est possible de poursuivre le calcul en choisissant PROL_ZERO='OUI'    !
+      !                                                                            !
+      !                                                                            !
+      ! Ceci est une alarme. Si vous ne comprenez pas le sens de cette             !
+      ! alarme, vous pouvez obtenir des résultats inattendus !                     !
+      !----------------------------------------------------------------------------!
+   
+   Analyse
+   =======
+   
+   Il y a plusieurs mystères autour de ce test :
+   
+   - Le plantage est actuellement reproductible en séquentiel bien que le test soit passé
+   correctement lors de la mise à jour en 11.2.27.
+   
+   - Il s'avère que le message d'erreur est tout à fait exact : le groupe de mailles ABCD que
+   l'on utilise pour affecter les caractéristiques élémentaires est incomplet. Il lui manque
+   4 mailles alors que le maillage n'a pas changé depuis la 11.1.5 !
+   
+   - Lancé avec le maillage de la modélisation C ou bien avec le maillage de la modélisation
+   E, le test s'exécute sans problème.
+   
+   
+   En dumpant le contenu du fichier MED pour la modélisation E en NEW11, on constate en effet
+   un maillage MED corrompu : 4 mailles pointent vers des familles (groupes) qui n'existent pas.
+   Il est impossible de savoir d'où vient cette corruption. Les hypothèses sont :
+   * d'Aster au moment de la création du maillage (réalisée par conversion d'un .mail)
+   ==> peu plausible car les .mail de la modélisation C et E sont identiques en 11.1 avant
+   conversion
+   * du changement de MED
+   ==> difficile à croire, car le changement était déjà fait la semaine dernière
+   
+   À noter que le maillage de la modélisation E en STA11 est OK : il ne présente pas la
+   corruption.
+   
+   Conclusion
+   ==========
+   
+   On suppose donc que le maillage a été corrompu entre le 21 juin 2012 date de dernière
+   modification du maillage en STA11 et aujourd'hui.
+   On remplace donc le maillage de la modélisation E par un nouveau maillage pour corriger le
+   problème.
+   
+   Remarque
+   ========
+   
+   Si le maillage est corrompu on peut se demander pourquoi MED ne nous arrête pas. Au
+   passage à MED3, Nicolas S. m'a précisé que certains codes retour ont du être ignorés car
+   renvoyant parfois des erreurs inavérées. On pourrait donc penser qu'en les réactivant on
+   détecterait l'erreur : je l'ai fait sans succès. MED permet de récupérer la liste des
+   numéros de familles de chaque maille, il ne vérifie sans doute pas si le numéro est licite.
+   Cela pose toutefois un problème car nous nous servons de ce numéro dans Aster pour savoir
+   si un élément appartient à un groupe ou pas (en supposant qu'il y a surjectivité). Dans le
+   cas de ce maillage corrompu, on n'affecte donc les mailles problématiques à aucun groupe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF perf013e                      tardieu N.TARDIEU           86      1      1
+ FORTRAN MODIF algeline/fettsd               tardieu N.TARDIEU          558      7      3
+ FORTRAN MODIF algeline/vtcmbl               tardieu N.TARDIEU          362      3      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    3        1006        11       6        +5
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    3        1006        11       6        +5 

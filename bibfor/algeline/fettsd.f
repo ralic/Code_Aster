@@ -2,7 +2,7 @@
      &                  IFETI,IFM,LPARA,ITPS,NIVMPI,RANG,CHSOL,OPTION,
      &                  LTEST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/12/2012   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 06/12/2012   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -485,27 +485,31 @@ C-----------------------------
         DO 97 I=1,NEQUA
           INO=ZI(IDEEQ+2*(I-1))
           ICMP=ZI(IDEEQ+2*(I-1)+1)
-          DO 95 K=1,NBII
-            INO1=ZI(IFETI1+4*(K-1)-1+1)
-            IF (INO.EQ.INO1) THEN
-              COMPT=COMPT+1
-              GOTO 97
-            ENDIF
-   95     CONTINUE
+          IF (ICMP.GT.0) THEN
+            DO 95 K=1,NBII
+              INO1=ZI(IFETI1+4*(K-1)-1+1)
+              IF (INO.EQ.INO1) THEN
+                COMPT=COMPT+1
+                GOTO 97
+              ENDIF
+   95       CONTINUE
+          ENDIF
    97   CONTINUE
         WRITE(IFM18,*)'LAGRANGE D''INTERFACE '//
-     &    ' I/    NUM_SD    /      NUM_DDL_LOCAL'
+     &    ' NOEUD_GLOBAL  /  NUM_SD  /  NUM_DDL_LOCAL / CMP'
         WRITE(IFM18,*)'NOMBRE DE TERMES ',COMPT
         DO 93 I=1,NEQUA
           INO=ZI(IDEEQ+2*(I-1))
           ICMP=ZI(IDEEQ+2*(I-1)+1)
-          DO 94 K=1,NBII
-            INO1=ZI(IFETI1+4*(K-1)-1+1)
-            IF (INO.EQ.INO1) THEN
-              WRITE(IFM18,*) K, IDD, I
-              GOTO 93
-            ENDIF
-   94     CONTINUE
+          IF (ICMP.GT.0) THEN
+            DO 94 K=1,NBII
+              INO1=ZI(IFETI1+4*(K-1)-1+1)
+              IF (INO.EQ.INO1) THEN
+                WRITE(IFM18,*) INO, IDD, I, ICMP
+                GOTO 93
+              ENDIF
+   94       CONTINUE
+          ENDIF
    93   CONTINUE
 C-----------------------------
 C ON ECRIT DANS IFM18 LA SOLUTION GLOBALE
