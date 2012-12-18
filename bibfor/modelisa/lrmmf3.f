@@ -8,7 +8,7 @@
      &                    VECGRM, NBCGRM, NBGRLO )
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,8 @@ C
       CHARACTER*80 KBID, NEWGRM
 C
       CHARACTER*2 SAUX02
-      CHARACTER*8 SAUX08, K8B
+      CHARACTER*8 SAUX08
+      CHARACTER*24 K24B,SAUX24
       CHARACTER*64 NOMFAM
       CHARACTER*80 VALK(4)
       CHARACTER*200 DESCAT(200)
@@ -256,22 +257,22 @@ C   2.0.2. --- SUPPRESSION DES CARACTERES INTERDITS (ACCENTS...)
               MI(1) = IAUX
               VALK(1) = NOMFAM(1:JAU2)
               VALK(2) = NOGRFA(IAUX)
-              VALK(3) = NEWGRM(1:8)
+              VALK(3) = NEWGRM(1:24)
               CALL U2MESG('A', 'MED_10', 3, VALK, 1, MI, 0, MR)
-              NOGRFA(IAUX) = NEWGRM(1:8)
+              NOGRFA(IAUX) = NEWGRM(1:24)
             ENDIF
 C
 C   2.0.3. --- CONTROLE QUE LA LONGUEUR <= 8
             JAUX = LXLGUT(NOGRFA(IAUX))
-            IF ( JAUX.GT.8 ) THEN
+            IF ( JAUX.GT.24 ) THEN
               JAU2 = LXLGUT(NOMFAM)
               MI(1) = IAUX
               VALK(1) = NOMFAM(1:JAU2)
               VALK(2) = NOGRFA(IAUX)
-              VALK(3) = NOGRFA(IAUX)(1:8)
+              VALK(3) = NOGRFA(IAUX)(1:24)
               CALL U2MESG('A', 'MED_7', 3, VALK, 1, MI, 0, MR)
 C
-C   2.0.4. --- CONTROLE QUE LE NOM EST NON VIDE
+C   2.0.3. --- CONTROLE QUE LE NOM EST NON VIDE
             ELSEIF(JAUX.EQ.0)THEN
               JAU2 = LXLGUT(NOMFAM)
               MI(1) = IAUX
@@ -350,7 +351,7 @@ C 2.4. ==> MEMORISATION DES NUMEROS DES ENTITES DE LA FAMILLE
 C
         IF ( NBENFA.GT.0 ) THEN
 C
-          CALL JUCROC ( NUMENT, SAUX08, RANGFA, NBENFA, ADNUME )
+          CALL JUCROC ( NUMENT, SAUX24, RANGFA, NBENFA, ADNUME )
           ADNUME = ADNUME - 1
           DO 24 , IAUX = 1 , NBENFA
             ZI(ADNUME+IAUX) = TABAUX(IAUX)
@@ -375,8 +376,8 @@ C
         IF ( NBENFA.GT.0 ) THEN
 C
           IAUX = MAX ( 1, NBATTR, NBGROU )
-          CALL JUCROC ( NOMGRO, SAUX08, RANGFA, IAUX, ADNOMG )
-          CALL JUCROC ( NUMGRO, SAUX08, RANGFA, IAUX, ADNUMG )
+          CALL JUCROC ( NOMGRO, SAUX24, RANGFA, IAUX, ADNOMG )
+          CALL JUCROC ( NUMGRO, SAUX24, RANGFA, IAUX, ADNUMG )
 C
           IF ( NUMFAM.GT.0 ) THEN
             SAUX02 = 'GN'
@@ -397,17 +398,17 @@ C
             ENDIF
 C
             DO 251 , IAUX = 1 , NBATTR
-              CALL CODENT (VAATFA(IAUX),'G',SAUX08)
+              CALL CODENT (VAATFA(IAUX),'G',SAUX24)
               IF ( VAATFA(IAUX).LT.0 ) THEN
-                SAUX08(3:8) = 'M'//SAUX08(2:6)
+                SAUX24(3:8) = 'M'//SAUX24(2:6)
               ELSE
-                SAUX08(3:8) = 'P'//SAUX08(1:5)
+                SAUX24(3:8) = 'P'//SAUX24(1:5)
               ENDIF
-              SAUX08(1:2) = SAUX02
-              ZK8(ADNOMG-1+IAUX) = SAUX08
+              SAUX24(1:2) = SAUX02
+              ZK24(ADNOMG-1+IAUX) = SAUX24
               ZI(ADNUMG-1+IAUX)  = JAUX
-              ZK80(JNOGRL-1+IAUX+NBGRLO) = SAUX08
-              ZK8(JNOGRC-1+IAUX+NBGRLO) = SAUX08
+              ZK80(JNOGRL-1+IAUX+NBGRLO) = SAUX24
+              ZK24(JNOGRC-1+IAUX+NBGRLO) = SAUX24
   251       CONTINUE
             NBGRLO = NBGRLO + NBATTR
 C
@@ -423,8 +424,8 @@ C
 C
             DO 252 , IAUX = 1 , NBGROU
 C
-               K8B = NOGRFA(IAUX)(1:8)
-               INOM = INDIK8 ( ZK8(ADNOMG), K8B, 1, IAUX )
+               K24B = NOGRFA(IAUX)(1:24)
+               INOM = INDIK8 ( ZK24(ADNOMG), K24B, 1, IAUX )
                IF ( INOM .NE. 0 ) THEN
                   IERR = .TRUE.
                   VALI = IAUX
@@ -433,13 +434,13 @@ C
                   VALK (2) = NOGRFA(IAUX)(1:ITMP)
                   ITMP = LXLGUT(NOGRFA(INOM))
                   VALK (3) = NOGRFA(INOM)(1:ITMP)
-                  VALK (4) = K8B
+                  VALK (4) = K24B
                   CALL U2MESG('E', 'MED_22',4,VALK,1,VALI,0,0.D0)
                ENDIF
-               ZK8(ADNOMG-1+IAUX) = K8B
+               ZK24(ADNOMG-1+IAUX) = K24B
                ZI(ADNUMG-1+IAUX) = JAUX
                ZK80(JNOGRL-1+IAUX+NBGRLO) = NOGRFA(IAUX)
-               ZK8(JNOGRC-1+IAUX+NBGRLO) = K8B
+               ZK24(JNOGRC-1+IAUX+NBGRLO) = K24B
   252       CONTINUE
             NBGRLO = NBGRLO + NBGROU
 C

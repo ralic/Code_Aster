@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,11 +46,11 @@ C-----------------------------------------------------------------------
       CHARACTER*1 K1BID
       CHARACTER*7 INCR,IELEM,IMODE
       CHARACTER*8 VETEL,NOMRES,LPAIN(3),LPAOUT(1),MODELE,MODMEC
-      CHARACTER*8 MOINT,GRMA,MAILLA,PARTIT
+      CHARACTER*8 MOINT,MAILLA,PARTIT
       CHARACTER*16 OPTION
       CHARACTER*19 NOMCHA,CHGEOM,MATAS,CHHARM
       CHARACTER*19 CHAMNO
-      CHARACTER*24 LIGRMO,LCHIN(3),LCHOUT(1),NOM
+      CHARACTER*24 LIGRMO,LCHIN(3),LCHOUT(1),NOM,GRMA
       LOGICAL YANG
       INTEGER      IARG
 
@@ -77,7 +77,7 @@ C-----------------------------------------------------------------------
           CALL JELIRA(MAILLA//'.GROUPEMA','NMAXOC',NBGMA,K1BID)
           DO 10 JGMA = 1,NBGMA
             CALL JENUNO(JEXNUM(MAILLA//'.GROUPEMA',JGMA),NOM)
-            IF (NOM(1:8).NE.GRMA) GO TO 10
+            IF (NOM.NE.GRMA) GO TO 10
             NOCCU = JGMA
    10     CONTINUE
 

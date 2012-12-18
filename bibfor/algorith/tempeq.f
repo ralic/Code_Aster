@@ -1,9 +1,9 @@
       SUBROUTINE TEMPEQ(Z,TDEQ,TFEQ,K,N,TEQ,DVTEQ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 17/12/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,7 @@ C ======================================================================
 
       IMPLICIT NONE
       REAL*8   Z,TDEQ,TFEQ,K,N,TEQ,DVTEQ
+      REAL*8   ZERO,R8PREM
 
 C............................................
 C CALCUL PHASE METALLURGIQUE POUR EDGAR
@@ -35,22 +36,17 @@ C IN   K    : PARAMETRE MATERIAU
 C IN   N    : PARAMETRE MATERIAU
 C OUT TEQ   : TEMPERATURE EQUIVALENTE
 C OUT DVTEQ : DERIVEE DE TEQ PAR RAPPORT A Z
-  
-      IF ((Z.GE.0.D0).AND.(Z.LE.0.99D0)) THEN
-        TEQ = LOG(1.D0/(1.D0-Z))
-        TEQ=TEQ**(1.D0/N)
-        TEQ=TEQ/K
-        TEQ=TEQ+TDEQ        
-        IF (Z.NE.0.D0) THEN
-          DVTEQ=LOG(1.D0/(1.D0-Z))
-          DVTEQ=DVTEQ**(1.D0/N)
-          DVTEQ=-DVTEQ/(K*N*(1.D0-Z)*LOG(1.D0-Z))
-        ELSE
-         DVTEQ=1000.D0
-        ENDIF
+
+      ZERO=R8PREM()
+      IF (Z .LE. ZERO) THEN
+        TEQ=TDEQ
+        DVTEQ=1000.D0
+      ELSEIF (Z .LE. 0.99D0) THEN
+        TEQ=TDEQ+(LOG(1.D0/(1.D0-Z)))**(1.D0/N)/K
+        DVTEQ=-(LOG(1.D0/(1.D0-Z)))**(1.D0/N)/(K*N*(1.D0-Z)*LOG(1.D0-Z))
       ELSE
         TEQ=TFEQ
-        DVTEQ=1000.D0
+        DVTEQ=-(LOG(100.D0))**(1.D0/N)/(K*N*(0.01D0)*LOG(0.01D0))
       ENDIF
-      
+
       END

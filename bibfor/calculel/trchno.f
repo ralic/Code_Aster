@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,12 +37,12 @@ C ----------------------------------------------------------------------
       CHARACTER*1  TYPRES
       CHARACTER*3  SSIGNE
       CHARACTER*4   TESTOK
-      CHARACTER*8  CRIT, NODDL, NOGRNO, NOMMA, TYPTES
+      CHARACTER*8  CRIT, NODDL, NOMMA, TYPTES
       CHARACTER*11 MOTCLE
       CHARACTER*19 CHAM19
       CHARACTER*16 TBTXT(2),TBREF(2)
-      CHARACTER*17 NONOEU
-      CHARACTER*24 TRAVR,TRAVI,TRAVC,TRAVRR,TRAVIR,TRAVCR
+      CHARACTER*33 NONOEU
+      CHARACTER*24 TRAVR,TRAVI,TRAVC,TRAVRR,TRAVIR,TRAVCR,NOGRNO
       CHARACTER*200 LIGN1,LIGN2
       INTEGER      IARG
       LOGICAL       LREF
@@ -260,7 +260,7 @@ C            RIEN A FAIRE.
               WRITE (IFIC,*) TESTOK
               GO TO 100
             END IF
-            NONOEU(10:17) = NOGRNO
+            NONOEU(10:33) = NOGRNO
           END IF
 
           IF (LREF) THEN

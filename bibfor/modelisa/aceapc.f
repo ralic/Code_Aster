@@ -6,7 +6,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C ----------------------------------------------------------------------
       INTEGER VALI
       REAL*8 XCEN(3),XTAN(3),X1(3),X2(3),XC1(3),XC2(3)
       REAL*8 ANGL(3),XM(3),V1(3),TM(3)
-      CHARACTER*8  CRIT, ZK8BID
+      CHARACTER*8  CRIT, ZK8BID, NOMAIL
       CHARACTER*16  MCLEPT(3), MCLEPC(3)
       CHARACTER*19 CARTAR
       CHARACTER*24 TMPNAR, TMPVAR, MLGGMA, MLGNMA, MLGCNX, MLGCOO
@@ -77,7 +77,7 @@ C --- CONSTRUCTION DES CARTES ET ALLOCATION
       MLGCOO = NOMA//'.COORDO    .VALE'
       CALL JEVEUO(MLGCOO,'L',JDCO)
 C
-      CALL WKVECT('&&TMPPOUTRE_COURBE','V V K8',LMAX,JDLS)
+      CALL WKVECT('&&TMPPOUTRE_COURBE','V V K24',LMAX,JDLS)
 C
       ZK8(JDCC)   = 'RCOURB'
       ZK8(JDCC+1) = 'ORIE_ARC'
@@ -107,9 +107,9 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CAARPO
          XSIZ = 1.D0
 C
          CALL GETVEM(NOMA,'GROUP_MA','DEFI_ARC','GROUP_MA',
-     &              IOC,IARG,LMAX,ZK8(JDLS),NG)
+     &              IOC,IARG,LMAX,ZK24(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','DEFI_ARC','MAILLE',
-     &            IOC,IARG,LMAX,ZK8(JDLS),NM)
+     &            IOC,IARG,LMAX,ZK24(JDLS),NM)
          CALL GETVR8('DEFI_ARC','RAYON',IOC,IARG,1,
      &               XRC      ,NR  )
          CALL GETVR8('DEFI_ARC','ORIE_ARC',IOC,IARG,1,
@@ -150,8 +150,8 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
 C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
             IF ( NC.EQ.0 .AND. NP.EQ.0 ) THEN
               DO 556 IGM=1,NG
-               CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'L',JDGM)
-               CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'LONUTI',
+               CALL JEVEUO(JEXNOM(MLGGMA,ZK24(JDLS-1+IGM)),'L',JDGM)
+               CALL JELIRA(JEXNOM(MLGGMA,ZK24(JDLS-1+IGM)),'LONUTI',
      &                     NMG,ZK8BID)
                  DO 576 IJM=1,NMG
                   IMG = ZI(JDGM+IJM-1)
@@ -162,7 +162,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
 556           CONTINUE
 
             ELSEIF ( NC.NE.0 .OR. NP.NE.0 ) THEN
-               CALL ACNOEX(NOMA,'GRMA',ZK8(JDLS),NG,NO1,NO2)
+               CALL ACNOEX(NOMA,'GRMA',ZK24(JDLS),NG,NO1,NO2)
                DO 32 I = 1 , 3
                   X1(I) = ZR(JDCO+(NO1-1)*3+I-1)
                   X2(I) = ZR(JDCO+(NO2-1)*3+I-1)
@@ -180,7 +180,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                   IF (ABS(XRC1-XRC2).GT.TOLE) THEN
                   IER = IER + 1
                      VALI = IOC
-                     VALK (1) = ZK8(JDLS)
+                     VALK (1) = ZK24(JDLS)
                   CALL U2MESG('E', 'MODELISA8_9',2,VALK,1,VALI,0,0.D0)
                   XRC1 = ZERO
                   ENDIF
@@ -194,11 +194,11 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      XC2(I)= X2(I) - XCEN(I)
 347               CONTINUE
                   CALL PROVEC(XC1,XC2,V1)
-                  CALL ACNOCE(NOMA,'GRMA',ZK8(JDLS),NG,ZR(JDCO),
+                  CALL ACNOCE(NOMA,'GRMA',ZK24(JDLS),NG,ZR(JDCO),
      &                           RR,XCEN,TOLE,V1,ISPV)
                   DO 557 IGM=1,NG
-                   CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'L',JDGM)
-                   CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'LONUTI',
+                   CALL JEVEUO(JEXNOM(MLGGMA,ZK24(JDLS-1+IGM)),'L',JDGM)
+                   CALL JELIRA(JEXNOM(MLGGMA,ZK24(JDLS-1+IGM)),'LONUTI',
      &                         NMG,ZK8BID)
                      DO 57 IJM=1,NMG
                       IMG = ZI(JDGM+IJM-1)
@@ -228,7 +228,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   IF (ABS(TX1-TX2).GT.TOLE) THEN
                      IER = IER + 1
                      VALI = IOC
-                     VALK (1) = ZK8(JDLS)
+                     VALK (1) = ZK24(JDLS)
                      VALK (2) = ' '
       CALL U2MESG('E', 'MODELISA8_10',2,VALK,1,VALI,0,0.D0)
                   ENDIF
@@ -253,11 +253,11 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      XC2(I)= X2(I) - XCEN(I)
 348               CONTINUE
                   CALL PROVEC(XC1,XC2,V1)
-                  CALL ACNOCE(NOMA,'LIMA',ZK8(JDLS),NM,ZR(JDCO),RR,
+                  CALL ACNOCE(NOMA,'LIMA',ZK24(JDLS),NM,ZR(JDCO),RR,
      &                  XCEN,TOLE,V1,ISPV)
                   DO 558 IGM=1,NG
-                   CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'L',JDGM)
-                   CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'LONUTI',
+                   CALL JEVEUO(JEXNOM(MLGGMA,ZK24(JDLS-1+IGM)),'L',JDGM)
+                   CALL JELIRA(JEXNOM(MLGGMA,ZK24(JDLS-1+IGM)),'LONUTI',
      &                         NMG,ZK8BID)
                      DO 58 IJM=1,NMG
                       IMG = ZI(JDGM+IJM-1)
@@ -289,12 +289,13 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
               DO 559 IJM=1,NM
                 ZR(JDVC)   = XRC
                 ZR(JDVC+1) = XANG * DGRD
-                CALL NOCART(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
+                NOMAIL = ZK24(JDLS-1+IJM)
+                CALL NOCART(CARTAR,3,' ','NOM',1,NOMAIL,
      &                           0,' ',8)
 559           CONTINUE
 
             ELSEIF ( NC.NE.0 .OR. NP.NE.0 ) THEN
-               CALL ACNOEX(NOMA,'LIMA',ZK8(JDLS),NM,NO1,NO2)
+               CALL ACNOEX(NOMA,'LIMA',ZK24(JDLS),NM,NO1,NO2)
                DO 42 I = 1 , 3
                   X1(I) = ZR(JDCO+(NO1-1)*3+I-1)
                   X2(I) = ZR(JDCO+(NO2-1)*3+I-1)
@@ -312,7 +313,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                   IF (ABS(XRC1-XRC2).GT.TOLE) THEN
                      IER = IER + 1
                      VALI = IOC
-                     VALK (1) = ZK8(JDLS)
+                     VALK (1) = ZK24(JDLS)
                      VALK (2) = ' '
       CALL U2MESG('E', 'MODELISA8_11',2,VALK,1,VALI,0,0.D0)
                      XRC1 = ZERO
@@ -326,11 +327,11 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      XC2(I)= X2(I) - XCEN(I)
 645               CONTINUE
                   CALL PROVEC(XC1,XC2,V1)
-                  CALL ACNOCE(NOMA,'LIMA',ZK8(JDLS),NM,ZR(JDCO),RR,
+                  CALL ACNOCE(NOMA,'LIMA',ZK24(JDLS),NM,ZR(JDCO),RR,
      &                        XCEN,TOLE,V1,ISPV)
 
                   DO 55 IJM=1,NM
-                     CALL JENONU(JEXNOM(MLGNMA,ZK8(JDLS-1+IJM)),NUMMAI)
+                     CALL JENONU(JEXNOM(MLGNMA,ZK24(JDLS-1+IJM)),NUMMAI)
                      CALL JEVEUO(JEXNUM(MLGCNX,NUMMAI),'L',JDNO)
                      NN1 = ZI(JDNO)
                      NN2 = ZI(JDNO+1)
@@ -341,7 +342,8 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                      ZR(JDVC)   = RR
                      ZR(JDVC+1) = ANGL(3) + PI
-                     CALL NOCART(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
+                     NOMAIL = ZK24(JDLS-1+IJM)
+                     CALL NOCART(CARTAR,3,' ','NOM',1,NOMAIL,
      &                           0,' ',8)
 55                CONTINUE
                ELSE
@@ -357,7 +359,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   IF (ABS(TX1-TX2).GT.TOLE) THEN
                      IER = IER + 1
                      VALI = IOC
-                     VALK (1) = ZK8(JDLS)
+                     VALK (1) = ZK24(JDLS)
                      VALK (2) = ' '
       CALL U2MESG('E', 'MODELISA8_10',2,VALK,1,VALI,0,0.D0)
                   ENDIF
@@ -379,11 +381,11 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      XC2(I)= X2(I) - XCEN(I)
 646               CONTINUE
                   CALL PROVEC(XC1,XC2,V1)
-                  CALL ACNOCE(NOMA,'LIMA',ZK8(JDLS),NM,ZR(JDCO),RR,
+                  CALL ACNOCE(NOMA,'LIMA',ZK24(JDLS),NM,ZR(JDCO),RR,
      &                        XCEN,TOLE,V1,ISPV)
 
                   DO 56 IJM=1,NM
-                     CALL JENONU(JEXNOM(MLGNMA,ZK8(JDLS-1+IJM)),NUMMAI)
+                     CALL JENONU(JEXNOM(MLGNMA,ZK24(JDLS-1+IJM)),NUMMAI)
                      CALL JEVEUO(JEXNUM(MLGCNX,NUMMAI),'L',JDNO)
                      NN1 = ZI(JDNO)
                      NN2 = ZI(JDNO+1)
@@ -394,7 +396,8 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      CALL ORIEN2 ( X1, X2, XCEN, ANGL )
                      ZR(JDVC)   = RR
                      ZR(JDVC+1) = ANGL(3) + PI
-                     CALL NOCART(CARTAR,3,' ','NOM',1,ZK8(JDLS-1+IJM),
+                     NOMAIL = ZK24(JDLS-1+IJM)
+                     CALL NOCART(CARTAR,3,' ','NOM',1,NOMAIL,
      &                           0,' ',8)
 56                CONTINUE
                ENDIF

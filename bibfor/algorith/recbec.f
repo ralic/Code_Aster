@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C
 C  BUT:  < RESTITUTION CRIAG-BAMPTON ECLATEE >
 C
@@ -67,6 +67,7 @@ C
       CALL JEMARQ()
 C
       DEPI = R8DEPI()
+      LTORA = 1
 C
 C----------------VERIFICATION DU TYPE DE STRUCTURE RESULTAT-------------
 C

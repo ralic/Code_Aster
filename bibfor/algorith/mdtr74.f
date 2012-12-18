@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -512,11 +512,11 @@ C
           CALL GETVTX ( 'CHOC', 'GROUP_MA', IOC,IARG,0, K8B, N2 )
           IF ( N2 .NE. 0 ) THEN
             NGR = -N2
-            CALL WKVECT('&&MDTR74.GROUP_MA','V V K8',NGR,JGR)
+            CALL WKVECT('&&MDTR74.GROUP_MA','V V K24',NGR,JGR)
             CALL GETVTX ('CHOC','GROUP_MA',IOC,IARG,NGR,
-     &                   ZK8(JGR), N2 )
+     &                   ZK24(JGR), N2 )
             DO 210 IG = 0, NGR-1
-              CALL JELIRA(JEXNOM(MAILLA//'.GROUPEMA',ZK8(JGR+IG)),
+              CALL JELIRA(JEXNOM(MAILLA//'.GROUPEMA',ZK24(JGR+IG)),
      &                                           'LONMAX',NBMG,K8B)
               NBCHOC = NBCHOC + NBMG
  210        CONTINUE

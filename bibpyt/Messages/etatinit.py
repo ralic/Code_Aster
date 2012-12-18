@@ -1,4 +1,4 @@
-#@ MODIF etatinit Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF etatinit Messages  DATE 17/12/2012   AUTEUR IDOUX L.IDOUX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,10 @@ cata_msg = {
 
 4 : _(u"""
  Il y a plusieurs instants dans la structure de données résultat de nom <%(k1)s> qui correspondent à celui spécifié sous ETAT_INIT/INIT.
+"""),
+
+5 : _(u"""
+ A l'instant initial, tous les termes du bilan d'énergie sont nuls bien qu'un état initial non vierge soit renseigné. Le bilan d'énergie indique la variation des différents termes d'énergie entre deux instants de calcul consécutifs ainsi que leur variation totale entre l'instant courant et l'instant initial.
 """),
 
 10 : _(u"""

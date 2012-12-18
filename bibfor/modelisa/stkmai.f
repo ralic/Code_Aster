@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,11 +41,11 @@ C
 
       CHARACTER*32 JEXNOM
         REAL*8          RV
-        CHARACTER*8     MCL(NBM),       NOMA,           NOM,      B8
+        CHARACTER*8     MCL(NBM),       NOMA,      B8
         INTEGER         DEBLIG,       FMT(NBM)
         CHARACTER*14    CNL
         CHARACTER*(*)   CV
-        CHARACTER*24    CNX,    TYP
+        CHARACTER*24    CNX,    TYP,           NOM
         SAVE B8
 C
 C-----------------------------------------------------------------------

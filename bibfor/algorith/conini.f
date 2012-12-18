@@ -1,7 +1,7 @@
       SUBROUTINE CONINI(MA,NOECON,MAICON,MARCON,NBMAR,NBNOE,NBMARC,
      &        NOMMAR,JMICOR,MBCOR,NOMTYR,NBGCO,IO8GCO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,13 +131,14 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     RECHERCHE D EXISTENCE DU GROUP_MA_FISSURE CONSIDERE
 C     ------------------------------------------------------------------
-            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IO8GCO+IGCO-1)),IGMA)
+            CALL JENONU(JEXNOM(MA//'.GROUPEMA',
+     &                  ZK24(IO8GCO+IGCO-1)),IGMA)
 C
             IF ( IGMA.EQ.0) THEN
 C     ------------------------------------------------------------------
 C     TRAITEMENT DU CAS DE NON-EXISTENCE
 C     ------------------------------------------------------------------
-               CALL U2MESK('I','ALGORITH2_26',1,ZK8(IO8GCO+IGCO-1))
+               CALL U2MESK('I','ALGORITH2_26',1,ZK24(IO8GCO+IGCO-1))
 C
             ELSE
 C     ------------------------------------------------------------------

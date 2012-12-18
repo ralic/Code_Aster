@@ -5,7 +5,7 @@
       CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8        MA1, MA2, MAG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +29,10 @@ C
 C-----------------------------------------------------------------------
 C
       CHARACTER*1  KKK
-      CHARACTER*8  CGPM1, CGPM2
       CHARACTER*8  KIND, K8B
-      CHARACTER*8  NOMA,NONO,NOGMA,NOGMAB,NOGNO,NOGNOB
+      CHARACTER*8  NOMA,NONO
       CHARACTER*19 COORDO,NOMT19
-      CHARACTER*24 PARA,VALK(2)
+      CHARACTER*24 PARA,VALK(2),CGPM1,CGPM2,NOGMA,NOGMAB,NOGNO,NOGNOB
       INTEGER      NBMA,NBM1,NBM2,NBNO,NBN1,NBN2,NBGMA,NBGM1,NBGM2
       INTEGER      NBNGM1,NBNGM2,NBNGM,NNO1,NNO2,IANODE,NNODIF
       INTEGER      I1,ICOMPT,INO,L1,L2,L3,I,N,NCOOR,K,IFM,NIV,J
@@ -454,8 +453,10 @@ CCC   ------------------------------------------------------------------
       ENDIF
 C
       IF ( NBGMA .GT. 0 ) THEN
-        CALL JECREC(MAG//'.GROUPEMA','G V I','NO',
-     &                               'DISPERSE','VARIABLE',NBGMA)
+        CALL JECREO(MAG//'.PTRNOMMAI','G N K24')
+        CALL JEECRA(MAG//'.PTRNOMMAI','NOMMAX',NBGMA,' ')
+        CALL JECREC(MAG//'.GROUPEMA','G V I','NO '//MAG//'.PTRNOMMAI',
+     &              'DISPERSE','VARIABLE',NBGMA)
         ICOMPT=0
         DO 71,I=1,NBGM1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPEMA',I),'L',IAGMA1)
@@ -567,8 +568,10 @@ CCC   ------------------------------------------------------------------
      &                            NBGN2,K8B)
       NBGNO = NBGN1 + NBGN2
       IF ( NBGNO .GT. 0 ) THEN
-        CALL JECREC(MAG//'.GROUPENO','G V I','NO',
-     &                               'DISPERSE','VARIABLE',NBGNO)
+        CALL JECREO(MAG//'.PTRNOMNOE','G N K24')
+        CALL JEECRA(MAG//'.PTRNOMNOE','NOMMAX',NBGNO,' ')
+        CALL JECREC(MAG//'.GROUPENO','G V I','NO '//MAG//'.PTRNOMNOE',
+     &              'DISPERSE','VARIABLE',NBGNO)
         DO 81,I=1,NBGN1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPENO',I),'L',IAGNO1)
           CALL JELIRA(JEXNUM(MA1//'.GROUPENO',I),'LONUTI',N,K8B)

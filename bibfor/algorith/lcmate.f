@@ -5,7 +5,7 @@
       IMPLICIT   NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C       ----------------------------------------------------------------
 C     SPECIFIQUE MONOCRISTAL
       INTEGER       NUMHSR(*),NBCOMM(*),NFS,NSG,NHSR
       REAL*8        HSR(*),TOUTMS(*)
-      CHARACTER*16  CPMONO(*)
+      CHARACTER*24  CPMONO(*)
 C       ----------------------------------------------------------------
 C
 C -     INITIALISATION DE MATERD ET MATERF A 0.

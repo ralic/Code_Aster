@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C     ----------
       CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*(*) NMPARZ,LOUEZ
       CHARACTER*8 NOMPAR,NOMMAI
+      CHARACTER*1 LOUE
       INTEGER ITAB
 C     -----------------------------------------------------------------
 C     ENTREES:
@@ -65,6 +66,9 @@ C     -----------------------------------------------------------------
 
 C DEB -----------------------------------------------------------------
       NOMPAR = NMPARZ
+      LOUE   = LOUEZ
+
+      CALL ASSERT(LOUE.EQ.'L' .OR. LOUE.EQ.'E')
 
 C     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
       CAPOIZ = CAPOIZ + 1
@@ -86,6 +90,16 @@ C     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
          CALL U2MESK('E','CALCULEL2_69', 2 ,VALK)
         CALL CONTEX(OPTION,' ')
       END IF
+
+C --- ON VERIFIE QUE LES PARAMETRE IN SONT EN LECTURE
+C     ET QUE LES PARAMETRES OUT SONT EN ECRITURE
+      IF (IPARG.GT.NPARIN .AND. LOUE.EQ.'L') THEN
+        WRITE(6,*)'PARAMETRE OUT EN LECTURE : ',NOMPAR
+        CALL ASSERT(.FALSE.)
+      ELSE IF (IPARG.LE.NPARIN .AND. LOUE.EQ.'E') THEN
+        WRITE(6,*)'PARAMETRE IN EN ECRITURE : ',NOMPAR
+        CALL ASSERT(.FALSE.)
+      ENDIF
 
       IACHLO=ZI(IAWLOC-1+3*(IPARG-1)+1)
       ILCHLO=ZI(IAWLOC-1+3*(IPARG-1)+2)
@@ -176,7 +190,7 @@ C     ----------------------------------------------------------
         DO 10,K = 1,LONCHL
           IF (.NOT.ZL(ILCHLO+DEBUGR-1+DECAEL-1+K)) THEN
             CALL TECAEL(IADZI,IAZK24)
-            NOMMAI=ZK24(IAZK24-1+3)
+            NOMMAI=ZK24(IAZK24-1+3)(1:8)
             VALK(1) = NOMPAR
             VALK(2) = OPTION
             VALK(3) = NOMTE

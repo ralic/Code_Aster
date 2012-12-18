@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -296,13 +296,13 @@ OPTION__
                                      DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
                                      CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     DDL_MECA PTHETAR
+                                     DDL_MECA PTHETAR  CFREQR   PPULPRO
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPINR
                                      DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
                                      CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                                     ZVARCPG  PVARCRR   DDL_MECA PTHETAR
+                                     ZVARCPG  PVARCRR  DDL_MECA PTHETAR  CFREQR   PPULPRO
                               OUT__  EKTHETA  PGTHETA
     CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
     CFL_XFEM            118   IN__   NGEOMER  PGEOMER
@@ -477,12 +477,6 @@ OPTION__
                               OUT__  EVOISIN  PVOISIN
     INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
-    K_G_MODA            461   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPINR
-                                     DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
-                                     N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
-                                     CFREQR   PPULPRO  CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR   DDL_MECA PTHETAR
-                              OUT__  EKTHETA  PGTHETA
     MASS_INER           65    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR

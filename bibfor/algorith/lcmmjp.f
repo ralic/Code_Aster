@@ -5,7 +5,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,8 @@ C DIMENSIONNEMENT DYNAMIQUE
       REAL*8 TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
       REAL*8 VIND(*),VINF(*),DF(9),YD(NR)
       CHARACTER*8     MOD
-      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*), OPTION
+      CHARACTER*16    COMP(*), OPTION
+      CHARACTER*24    CPMONO(5*NMAT+1)
       PARAMETER       ( UN   =  1.D0   )
       PARAMETER       ( ZERO =  0.D0   )
       COMMON /TDIM/ NDT,NDI

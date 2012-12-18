@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,6 +111,7 @@ MODE_LOCAL__
     ERICTRA  = RICE_TRA ELEM__         (TRIAX    RSR0     VOLU     NUMEMA   DEPSEQ   )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
+    CFREQR   = FREQ_R   ELEM__         (FREQ     )
     ESIGMNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -195,13 +196,13 @@ OPTION__
                                      DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
                                      CROTATR  PROTATR  ESIGMNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     DDL_MECA PTHETAR
+                                     DDL_MECA PTHETAR  CFREQR   PPULPRO
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPINR
                                      DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
                                      CROTATR  PROTATR  ESIGMNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                                     ZVARCPG  PVARCRR  DDL_MECA PTHETAR
+                                     ZVARCPG  PVARCRR  DDL_MECA PTHETAR  CFREQR   PPULPRO
                               OUT__  EKTHETA  PGTHETA
     CARA_GEOM           -1    IN__     OUT__  XXXXXX   XXXXXX
     CFL_XFEM            118   IN__   NGEOMER  PGEOMER

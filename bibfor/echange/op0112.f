@@ -1,6 +1,6 @@
       SUBROUTINE OP0112 ()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ECHANGE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ECHANGE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,9 +41,9 @@ C
       INTEGER          DDLFOR(3)
       CHARACTER*1      KBID
       CHARACTER*8      CHARG, MODELE, MA, MA1, MA2
-      CHARACTER*16     CORRES, NOMGMA, NOMGNO, NCMPGD(10), NOMCMP(3)
+      CHARACTER*16     CORRES, NCMPGD(10), NOMCMP(3)
       CHARACTER*19     CHNOS, CARTE
-      CHARACTER*24     LIEL, GRPMA, GRPNO
+      CHARACTER*24     LIEL, GRPMA, GRPNO, NOMGMA, NOMGNO
 C ======================================================================
 C ======================================================================
 C     COUPLAGE =>

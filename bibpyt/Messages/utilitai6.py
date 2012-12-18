@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai6 Messages  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,11 +231,6 @@ la variable %(k2)s est inconnue pour le type %(k3)s.
 89 : _(u"""
  erreur dans les données
  le paramètre  %(k1)s n'existe pas
-"""),
-
-90 : _(u"""
- erreur dans les données
- le paramètre %(k1)s n'est pas trouvé
 """),
 
 93 : _(u"""

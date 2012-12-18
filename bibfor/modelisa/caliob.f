@@ -7,7 +7,7 @@
       CHARACTER*8 CHARGE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C ---------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER I ,I1 ,IBID ,IER ,IGR ,IN ,INO
       INTEGER IOCC ,IRET ,J ,JCMU ,JCMUC ,JDDL ,JGR0
-      INTEGER JJJ ,JLISTE ,JNOMA ,K ,N ,N1 ,NA
+      INTEGER JJJ ,JLISTE ,JNOMA ,K ,N ,N1 ,NA, JLIST2
       INTEGER NBDDL ,NBEM ,NBET ,NBGM ,NBNO ,NDIM ,NDIMMO
       INTEGER NENT ,NG ,NGR ,NGRO ,NLIAI ,NNO
       REAL*8 BETA
@@ -130,26 +130,27 @@ C --- DANS TOUTES LES LIAISONS                            ---
         CALL U2MESK('F','MODELISA3_13',1,MOTFAC)
       END IF
       TRAV = '&&CALIOB.'//MOTFAC
-      CALL WKVECT(TRAV,'V V K8',NDIM,JJJ)
+      CALL WKVECT(TRAV,'V V K24',NDIM,JJJ)
 
       DO 40 IOCC = 1,NLIAI
-        CALL GETVTX(MOTFAC,MOGROU,IOCC,IARG,NDIM,ZK8(JJJ),NGR)
+        CALL GETVTX(MOTFAC,MOGROU,IOCC,IARG,NDIM,ZK24(JJJ),NGR)
         DO 20 IGR = 1,NGR
-          CALL JEEXIN(JEXNOM(GROUMA,ZK8(JJJ+IGR-1)),IRET)
+          CALL JEEXIN(JEXNOM(GROUMA,ZK24(JJJ+IGR-1)),IRET)
           IF (IRET.EQ.0) THEN
-             VALK(1) = ZK8(JJJ+IGR-1)
+             VALK(1) = ZK24(JJJ+IGR-1)
              VALK(2) = NOMA
              CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
           ELSE
-            CALL JELIRA(JEXNOM(GROUMA,ZK8(JJJ+IGR-1)),'LONUTI',N1,K1BID)
+            CALL JELIRA(JEXNOM(GROUMA,ZK24(JJJ+IGR-1)),
+     &                  'LONUTI',N1,K1BID)
           END IF
    20   CONTINUE
-        CALL GETVTX(MOTFAC,MOTCLE,IOCC,IARG,NDIM,ZK8(JJJ),NNO)
+        CALL GETVTX(MOTFAC,MOTCLE,IOCC,IARG,NDIM,ZK24(JJJ),NNO)
         DO 30 INO = 1,NNO
-          CALL JENONU(JEXNOM(NOEUMA,ZK8(JJJ+INO-1)),IRET)
+          CALL JENONU(JEXNOM(NOEUMA,ZK24(JJJ+INO-1)),IRET)
           IF (IRET.EQ.0) THEN
              VALK(1) = MOTCLE
-             VALK(2) = ZK8(JJJ+INO-1)
+             VALK(2) = ZK24(JJJ+INO-1)
              VALK(3) = NOMA
              CALL U2MESK('F','MODELISA2_96', 3 ,VALK)
           END IF
@@ -158,7 +159,8 @@ C --- DANS TOUTES LES LIAISONS                            ---
 
 C     ALLOCATION DE TABLEAUX DE TRAVAIL
 
-      CALL WKVECT('&&CALIOB.LISTE','V V K8',NDIM,JLISTE)
+      CALL WKVECT('&&CALIOB.LISTE','V V K24',NDIM,JLISTE)
+      CALL WKVECT('&&CALIOB.LIST2','V V K8',NDIM,JLIST2)
       CALL WKVECT('&&CALIOB.DDL  ','V V K8',NBDDL,JDDL)
       CALL WKVECT('&&CALIOB.COEMU','V V R',NBDDL,JCMU)
       CALL WKVECT('&&CALIOB.COEMUC','V V C',NBDDL,JCMUC)
@@ -229,14 +231,14 @@ C  --- MATRICE DE PASSAGE AU REPERE GLOBAL ---
 C ---   CAS DE GROUP_NO ---
 
           CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,IARG,0,
-     &                ZK8(JLISTE),NG)
+     &                ZK24(JLISTE),NG)
           IF (NG.NE.0) THEN
             NG = -NG
             CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,IARG,NG,
-     &                  ZK8(JLISTE),N)
+     &                  ZK24(JLISTE),N)
             DO 70 J = 1,NG
-              CALL JEVEUO(JEXNOM(GROUMA,ZK8(JLISTE-1+J)),'L',JGR0)
-              CALL JELIRA(JEXNOM(GROUMA,ZK8(JLISTE-1+J)),'LONUTI',N,
+              CALL JEVEUO(JEXNOM(GROUMA,ZK24(JLISTE-1+J)),'L',JGR0)
+              CALL JELIRA(JEXNOM(GROUMA,ZK24(JLISTE-1+J)),'LONUTI',N,
      &                    K1BID)
               DO 60 K = 1,N
                 IN = ZI(JGR0-1+K)
@@ -257,12 +259,12 @@ C --- ET AFFECTATION A LA LISTE DE RELATIONS ---
 C ---   CAS DE NOEUD ---
 
             CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,IARG,0,
-     &                  ZK8(JLISTE),
+     &                  ZK8(JLIST2),
      &                  NBNO)
             IF (NBNO.NE.0) THEN
               NBNO = -NBNO
               CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,IARG,NBNO,
-     &                    ZK8(JLISTE),N)
+     &                    ZK8(JLIST2),N)
 
               DO 80 K = 1,NBNO
 
@@ -270,7 +272,7 @@ C --- CREATION ET CALCUL DE LA RELATION      ---
 C --- ET AFFECTATION A LA LISTE DE RELATIONS ---
 
                 CALL AFRELA(ZR(JCMU),ZC(JCMUC),ZK8(JDDL),
-     &                      ZK8(JLISTE+K-1),NDIMMO,DIRECT,1,BETA,BETAC,
+     &                      ZK8(JLIST2+K-1),NDIMMO,DIRECT,1,BETA,BETAC,
      &                      KBETA,TYPCOE,FONREE,TYPLAG,0.D0,LISREL)
    80         CONTINUE
 

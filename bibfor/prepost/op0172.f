@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,13 +32,13 @@ C
       COMPLEX*16    C16B
       CHARACTER*3   REP
       CHARACTER*16  METHOD
-      CHARACTER*8   NOMNOE, NOMGR
+      CHARACTER*8   NOMNOE
       CHARACTER*8   K8B, RESU, MECA, MASSE, NOMA, AMOGEO(6), CTYPE
       CHARACTER*14  NUME
       CHARACTER*16  CONCEP, NOMCMD, VALEK(2)
       CHARACTER*19  ENERPO
       CHARACTER*24  NPRNO, REFD, DEEQ, NOMCH1, NOMOB1, NOMOB2
-      CHARACTER*24  MAGRNO, MANONO, MAGRMA, MANOMA
+      CHARACTER*24  MAGRNO, MANONO, MAGRMA, MANOMA, NOMGR
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -172,17 +172,17 @@ C        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
      &                   1,IARG,0,K8B,NBGR)
       IF ( NBGR.EQ.0 ) GOTO 114
       NBGR = -NBGR
-      CALL WKVECT ( '&&OP0172.GROUP_NO', 'V V K8', NBGR, IDGN )
+      CALL WKVECT ( '&&OP0172.GROUP_NO', 'V V K24', NBGR, IDGN )
       CALL GETVEM(NOMA,'GROUP_NO','ENER_SOL','GROUP_NO_RADIER',
-     &                  1,IARG,NBGR,ZK8(IDGN),NBV)
+     &                  1,IARG,NBGR,ZK24(IDGN),NBV)
 C
 C        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
-      CALL COMPNO ( NOMA, NBGR, ZK8(IDGN), NBNO )
+      CALL COMPNO ( NOMA, NBGR, ZK24(IDGN), NBNO )
       CALL WKVECT ( '&&OP0172.NOEUD', 'V V I', NBNO, IDNO )
       II = -1
       DO 20 I = 1,NBGR
-         CALL JELIRA(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'LONUTI',NB,K8B)
-         CALL JEVEUO(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'L',LDGN)
+         CALL JELIRA(JEXNOM(MAGRNO,ZK24(IDGN+I-1)),'LONUTI',NB,K8B)
+         CALL JEVEUO(JEXNOM(MAGRNO,ZK24(IDGN+I-1)),'L',LDGN)
          DO 22 IN = 0, NB-1
             II = II + 1
             ZI(IDNO+II) = ZI(LDGN+IN)
@@ -195,14 +195,14 @@ C        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
       IF ( NBGR.EQ.0 )
      & CALL U2MESS('F','PREPOST4_19')
       NBGR = -NBGR
-      CALL WKVECT ( '&&OP0172.GROUP_MA', 'V V K8', NBGR, IDGM )
+      CALL WKVECT ( '&&OP0172.GROUP_MA', 'V V K24', NBGR, IDGM )
       CALL WKVECT ( '&&OP0172.NOEUD', 'V V I', NBNOEU, IDNO )
       CALL WKVECT ( '&&OP0172.PARNO','V V I',NBNOEU,IDN2)
       CALL GETVEM(NOMA,'GROUP_MA','ENER_SOL','GROUP_MA_RADIER',
-     &                  1,IARG,NBGR,ZK8(IDGM),NBV)
+     &                  1,IARG,NBGR,ZK24(IDGM),NBV)
       DO 21 I = 1,NBGR
-         CALL JELIRA(JEXNOM(MAGRMA,ZK8(IDGM+I-1)),'LONUTI',NB,K8B)
-         CALL JEVEUO(JEXNOM(MAGRMA,ZK8(IDGM+I-1)),'L',LDGM)
+         CALL JELIRA(JEXNOM(MAGRMA,ZK24(IDGM+I-1)),'LONUTI',NB,K8B)
+         CALL JEVEUO(JEXNOM(MAGRMA,ZK24(IDGM+I-1)),'L',LDGM)
          DO 23 IN = 0,NB-1
            CALL JELIRA(JEXNUM(MANOMA,ZI(LDGM+IN)),'LONMAX',NM,K8B)
            CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
@@ -231,11 +231,11 @@ C        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
       IF ( NBGR.EQ.0 )
      & CALL U2MESS('F','PREPOST4_19')
       NBGR = -NBGR
-      CALL WKVECT ( '&&OP0172.GROUP_MA', 'V V K8', NBGR, IDGM )
+      CALL WKVECT ( '&&OP0172.GROUP_MA', 'V V K24', NBGR, IDGM )
       CALL WKVECT ( '&&OP0172.NOEUD', 'V V I', NBNOEU, IDNO )
       CALL GETVEM(NOMA,'GROUP_MA','ENER_SOL','GROUP_MA_RADIER',
-     &                  1,IARG,NBGR,ZK8(IDGM),NBV)
-      CALL RAIRE2(NOMA,RIGI,NBGR,ZK8(IDGM),NBNOEU,NBNO,ZI(IDNO),
+     &                  1,IARG,NBGR,ZK24(IDGM),NBV)
+      CALL RAIRE2(NOMA,RIGI,NBGR,ZK24(IDGM),NBNOEU,NBNO,ZI(IDNO),
      &            ZR(IRIGNO))
  112  CONTINUE
       IF (METHOD.NE.'RIGI_PARASOL'.OR.NCOMPO.NE.6) GOTO 113
@@ -352,9 +352,9 @@ C
       CALL GETVEM(NOMA,'GROUP_MA', 'AMOR_INTERNE','GROUP_MA',
      &                1,IARG,0,K8B,NBGA)
       NBGA= -NBGA
-      CALL WKVECT ('&&OP0172.GAMOR','V V K8',NBGA,IDGA)
+      CALL WKVECT ('&&OP0172.GAMOR','V V K24',NBGA,IDGA)
       CALL GETVEM(NOMA,'GROUP_MA','AMOR_INTERNE','GROUP_MA',
-     &               1,IARG,NBGA,ZK8(IDGA),NBG)
+     &               1,IARG,NBGA,ZK24(IDGA),NBG)
       CALL WKVECT ('&&OP0172.AMINT','V V R',NBGA,IDAM)
       CALL GETVR8 ( 'AMOR_INTERNE', 'AMOR_REDUIT', 1,IARG,0, R8B, NBA )
       NBA = -NBA
@@ -382,10 +382,11 @@ C
          DO 61 I = 1 , NBGA
 C
             VALEK(2) = 'LIEU'
-            CALL TBLIVA (ENERPO, 2, VALEK, IM, R8B, C16B, ZK8(IDGA+I-1),
-     &                   'RELA', 1.D-03, 'POUR_CENT',
-     &                           K8B, IBID, POUCEN , C16B, K8B, IRET )
-            IF (IRET.GE.2) CALL U2MESK('A','STBTRIAS_6',1,ZK8(IDGA+I-1))
+            CALL TBLIVA (ENERPO, 2, VALEK, IM, R8B, C16B,
+     &                   ZK24(IDGA+I-1),'RELA',1.D-03,'POUR_CENT',
+     &                   K8B, IBID, POUCEN , C16B, K8B, IRET )
+            IF (IRET.GE.2)
+     &        CALL U2MESK('A','STBTRIAS_6',1,ZK24(IDGA+I-1))
 C
             ZR(IAMOMO+IMOD-1) = ZR(IAMOMO+IMOD-1) +
      &                          1.0D-2*POUCEN*ZR(IDAM+I-1)

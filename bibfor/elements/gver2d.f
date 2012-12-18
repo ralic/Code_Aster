@@ -1,7 +1,7 @@
       SUBROUTINE GVER2D(NOMA,NOCC,MOTFAZ,NOMNO,NOEUD,RINF,
      &                  RSUP,MODULE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,18 +55,18 @@ C
       CHARACTER*(*)     MOTFAZ
       CHARACTER*8       NOMA,NOEUD,K8B,FOND,KFON
       CHARACTER*16      MOTFAC,NOMCMD,K16B
-      CHARACTER*24      TRAV
+      CHARACTER*24      TRAV,TRAV2
       CHARACTER*24      GRPNO,NOMNO,CHFOND
 C
       INTEGER           JJJ,NGRO,NENT,NSOM,IOCC,NOCC,NDIM,IADR,I,L,N1
-      INTEGER           IGR,NGR,NNO,IRET,NBM,N2,LNOFF,NUMFON,IBID
+      INTEGER           IGR,NGR,NNO,IRET,NBM,N2,LNOFF,NUMFON,IBID,JJJ2
 C
       REAL*8            RINF,RSUP,MODULE
 C
       CHARACTER*24 VALK(2)
       CHARACTER*8  K8BID
       CHARACTER*1 K1BID
-      INTEGER      IARG
+      INTEGER      IARG,LXLGUT,L2
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -76,6 +76,7 @@ C-----------------------------------------------------------------------
 
       MOTFAC = MOTFAZ
       L      = LEN(MOTFAC)
+      L2     = LXLGUT(MOTFAC)
 C OBJET DEFINISSANT LES GROUP_NO DU MAILLAGE
 C
       GRPNO = NOMA//'.GROUPENO'
@@ -101,7 +102,9 @@ C
 C ALLOCATION D'UN OBJET DE TRAVAIL
 C
        TRAV = '&&GVER2D.'//MOTFAC(1:L)
+       TRAV2 = '&&GVER2D.'//MOTFAC(1:L2)//'2'
        CALL WKVECT(TRAV,'V V K8',NDIM,JJJ)
+       CALL WKVECT(TRAV2,'V V K24',NDIM,JJJ2)
 C
       ENDIF
       IF (NOMCMD.EQ.'CALC_G') THEN
@@ -124,24 +127,24 @@ C
 C LE GROUP_NO DOIT APPARTENIR AU MAILLAGE
 C
            CALL GETVEM(NOMA,'GROUP_NO',MOTFAC(1:L),'GROUP_NO',
-     &                 IOCC,IARG,NDIM,ZK8(JJJ),NGR)
+     &                 IOCC,IARG,NDIM,ZK24(JJJ2),NGR)
 C
            DO 3 IGR=1,NGR
 C
-             CALL JEEXIN(JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),IRET)
+             CALL JEEXIN(JEXNOM(GRPNO,ZK24(JJJ2+IGR-1)),IRET)
 C
              IF(IRET.EQ.0) THEN
-                VALK(1) = ZK8(JJJ+IGR-1)
+                VALK(1) = ZK24(JJJ+IGR-1)
                 VALK(2) = NOMA
                 CALL U2MESK('F','RUPTURE1_8', 2 ,VALK)
              ELSE
 C
-              CALL JELIRA (JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),'LONUTI',
+              CALL JELIRA (JEXNOM(GRPNO,ZK24(JJJ2+IGR-1)),'LONUTI',
      &                     N1,K1BID)
               IF(N1.GT.1) THEN
                  CALL U2MESS('F','RUPTURE1_10')
               ELSE
-                CALL JEVEUO (JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),'L',IADR)
+                CALL JEVEUO (JEXNOM(GRPNO,ZK24(JJJ2+IGR-1)),'L',IADR)
                 CALL JENUNO(JEXNUM(NOMNO,ZI(IADR)),NOEUD)
               ENDIF
 C
@@ -199,7 +202,10 @@ C         A LA PLACE DU NOM DU NOEUD EN FOND DE FISSURE
 C
 C DESTRUCTION DE L'OBJET DE TRAVAIL
 C
-      IF(NOMCMD.NE.'CALC_G') CALL JEDETR(TRAV)
+      IF(NOMCMD.NE.'CALC_G') THEN
+        CALL JEDETR(TRAV)
+        CALL JEDETR(TRAV2)
+      ENDIF
 C
       CALL JEDEMA()
       END

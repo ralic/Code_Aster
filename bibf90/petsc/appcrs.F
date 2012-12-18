@@ -1,7 +1,7 @@
-      SUBROUTINE APPCRS(KPTSC)
+      SUBROUTINE APPCRS(KPTSC,LMD)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APPCRS PETSC  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF APPCRS PETSC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -21,6 +21,7 @@
 C RESPONSABLE DESOZA T.DESOZA
       INCLUDE 'jeveux.h'
       INTEGER KPTSC
+      LOGICAL LMD
 !----------------------------------------------------------------
 !
 !  CREATION DU PRECONDITIONNEUR PETSC (INSTANCE NUMERO KPTSC)
@@ -43,8 +44,8 @@ C RESPONSABLE DESOZA T.DESOZA
       PARAMETER   (NMXINS=5)
 !
 !     VARIABLES LOCALES
-      INTEGER RANG  ,NBPROC
-      INTEGER JSLVK ,JSLVR ,JSLVI
+      INTEGER RANG,NBPROC
+      INTEGER JSLVK,JSLVR,JSLVI,JNEQU,JNEQUL,JPRDDL,JCOLL,NLOC
       INTEGER NIREMP,NSMDI
 !
       CHARACTER*24 PRECON
@@ -59,7 +60,8 @@ C RESPONSABLE DESOZA T.DESOZA
       CHARACTER*14  NONUS(NMXINS)
       Mat              Ap(NMXINS)
       KSP              Kp(NMXINS)
-      COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
+      Vec              Bp(NMXINS),x
+      COMMON /SPETSC/ Ap,Kp,Bp,x,NOMATS,NOSOLS,NONUS
 !
 !     SUBROUTINES EXTERNES POUR L'UTILISATION DU
 !     PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
@@ -73,7 +75,7 @@ C RESPONSABLE DESOZA T.DESOZA
       COMMON /LDLTSP/xlocal,xscatt,xglobal,SPSOMU,SPMAT,SPSOLV
 !----------------------------------------------------------------
 !     Variables PETSc
-      PetscInt fill,ierr,neq
+      PetscInt fill,ierr,neq,ndprop
       PetscReal fillp
       Mat A
       KSP ksp,kspp
@@ -94,6 +96,8 @@ C RESPONSABLE DESOZA T.DESOZA
       PRECON = ZK24(JSLVK-1+2)
       FILLIN =   ZR(JSLVR-1+3)
       NIREMP =   ZI(JSLVI-1+4)
+!
+      IF (PRECON.EQ.'ML'.AND.LMD) CALL U2MESS('F','PETSC_19')
 !
       fill  = NIREMP
       fillp = FILLIN
@@ -140,14 +144,30 @@ C RESPONSABLE DESOZA T.DESOZA
       ELSEIF (PRECON.EQ.'LDLT_SP') THEN
 !        CREATION SOLVEUR BIDON SIMPLE PRECISION
          SPSOMU = ZK24(JSLVK-1+3)
-         CALL CRSMSP(SPSOMU,NOMAT,0)
+         CALL CRSMSP(SPSOMU,NOMAT,0,.TRUE.)
 !        CREATION DES VECTEURS TEMPORAIRES UTILISES DANS LDLT_SP
-         CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
-         neq=NSMDI
+         IF ( LMD ) THEN
+            CALL JEVEUO(NONU//'.NUME.NEQU','L',JNEQU)
+            CALL JEVEUO(NONU//'.NUML.NEQU','L',JNEQUL)
+            CALL JEVEUO(NONU//'.NUML.PDDL','L',JPRDDL)
+            NLOC=ZI(JNEQUL)
+            neq=ZI(JNEQU)
+            ndprop = 0
+            DO JCOLL = 0, NLOC-1
+               IF ( ZI(JPRDDL+JCOLL).EQ.RANG ) ndprop = ndprop+1
+            END DO
 !
-         CALL ASSERT(xlocal.EQ.0)
-         call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,neq,xlocal,
-     &                     ierr)
+            CALL ASSERT(xlocal.EQ.0)
+            call VecCreateMPI(PETSC_COMM_WORLD,ndprop,neq,
+     &                        xlocal,ierr)
+         ELSE
+            CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
+            neq=NSMDI
+!
+            CALL ASSERT(xlocal.EQ.0)
+            call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,neq,
+     &                        xlocal,ierr)
+         ENDIF
          CALL ASSERT(ierr.EQ.0)
 !
          CALL ASSERT(xscatt.EQ.0)

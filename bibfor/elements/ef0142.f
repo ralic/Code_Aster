@@ -4,7 +4,7 @@
       CHARACTER*16 NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,7 @@ C-----------------------------------------------------------------------
       REAL*8 ZERO,E,NU,RHO
       REAL*8 KLV(78),KLC(12,12)
       CHARACTER*24 SUROPT
-      INTEGER ICOMPO,ISDCOM,IRET
+      INTEGER IRET
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU','RHO'/
       DATA NOMREF/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
@@ -82,10 +82,6 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
           E=VALRES(1)
           NU=VALRES(2)
           RHO=VALRES(3)
-        ELSE
-C    --- RECUPERATION DU MATERIAU TORSION POUR ALPHA
-          CALL JEVECH('PCOMPOR','L',ICOMPO)
-          CALL JEVEUO(ZK16(ICOMPO-1+7),'L',ISDCOM)
         ENDIF
       ENDIF
 

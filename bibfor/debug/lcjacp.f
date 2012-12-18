@@ -5,7 +5,7 @@
      &                    DY,R,DRDY,VERJAC,DRDYB,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF DEBUG  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,8 @@ C     DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
       REAL*8 VALR(4),R8MIEM,MAXTGT,NORMD1,NORMD2,MAXERR
 
       CHARACTER*8     MOD
-      CHARACTER*16    LOI,CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*16    LOI,COMP(*)
+      CHARACTER*24    CPMONO(5*NMAT+1)
       CHARACTER*(*)   FAMI
       DATA IMPR/0/
 C ----------------------------------------------------------------------

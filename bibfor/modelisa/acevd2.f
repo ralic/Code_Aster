@@ -8,7 +8,7 @@
       CHARACTER*(*)     MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,19 +68,19 @@ C
          CALL JEVEUO(MODNEM,'L',JDNW)
          CALL WKVECT(TMPDIS,'V V I',NBMTRD,JDDI)
       ENDIF
-      CALL WKVECT('&&TMPDISCRET','V V K8',LMAX,JDLS)
+      CALL WKVECT('&&TMPDISCRET','V V K24',LMAX,JDLS)
 C
 C
 C --- BOUCLE SUR LES OCCURENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
          CALL GETVEM(NOMA,'GROUP_MA',MCF,'GROUP_MA',
-     &               IOC,IARG,LMAX,ZK8(JDLS),NG)
+     &               IOC,IARG,LMAX,ZK24(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE',MCF,'MAILLE',
-     &               IOC,IARG,LMAX,ZK8(JDLS),NM)
+     &               IOC,IARG,LMAX,ZK24(JDLS),NM)
          CALL GETVEM(NOMA,'GROUP_NO',MCF,'GROUP_NO',
-     &               IOC,IARG,LMAX,ZK8(JDLS),NJ)
+     &               IOC,IARG,LMAX,ZK24(JDLS),NJ)
          CALL GETVEM(NOMA,'NOEUD',MCF,'NOEUD',
-     &               IOC,IARG,LMAX,ZK8(JDLS),NN)
+     &               IOC,IARG,LMAX,ZK24(JDLS),NN)
          CALL GETVTX(MCF,'CARA'     ,IOC,IARG,NBCAR,CAR      ,NCAR)
 C
          IF (NCAR.GT.NCAR) CALL ASSERT(.FALSE.)
@@ -94,16 +94,16 @@ C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
          IF (NG.GT.0) THEN
             DO 38 II = 1 , NG
-               CALL JELIRA(JEXNOM(GRPMA,ZK8(JDLS+II-1)),'LONUTI',
+               CALL JELIRA(JEXNOM(GRPMA,ZK24(JDLS+II-1)),'LONUTI',
      &                     NBMA,K8B)
-               CALL JEVEUO(JEXNOM(GRPMA,ZK8(JDLS+II-1)),'L',IALIMA)
-               CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(IALIMA),NBMA,NDIM)
+               CALL JEVEUO(JEXNOM(GRPMA,ZK24(JDLS+II-1)),'L',IALIMA)
+               CALL ACEVTR(NOMA,NOMO,2,ZK24(1),ZI(IALIMA),NBMA,NDIM)
 38          CONTINUE
          ENDIF
 C
 C ---   "MAILLE" = TOUTES LES MAILLES  DE LA LISTE DE MAILLES
          IF (NM.GT.0) THEN
-            CALL ACEVTR(NOMA,NOMO,1,ZK8(JDLS),ZI(1),NM,NDIM)
+            CALL ACEVTR(NOMA,NOMO,1,ZK24(JDLS),ZI(1),NM,NDIM)
          ENDIF
 C
 C ---    SI DES MAILLES TARDIVES EXISTENT POUR CE MODELE :
@@ -112,22 +112,22 @@ C ---       "GROUP_NO" = TOUTES LES MAILLES TARDIVES  DE LA LISTE
 C                                                  DE GROUPES DE NOEUDS
             IF (NJ.GT.0) THEN
                DO 42 II = 1 , NJ
-                  CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+II-1)),'L',JDGN)
-                  CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+II-1)),'LONUTI',
+                  CALL JEVEUO(JEXNOM(MLGGNO,ZK24(JDLS+II-1)),'L',JDGN)
+                  CALL JELIRA(JEXNOM(MLGGNO,ZK24(JDLS+II-1)),'LONUTI',
      &                        NBNOGR,K1BID)
                   CALL CRLINU('NUM',MLGNNO,NBNOGR,ZI(JDGN),K8B,
      &                        NBMTRD,ZI(JDNW),ZI(JDDI),KK)
                   IF (KK.GT.0) THEN
-                     CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(JDDI),KK,NDIM)
+                     CALL ACEVTR(NOMA,NOMO,2,ZK24(1),ZI(JDDI),KK,NDIM)
                   ENDIF
 42             CONTINUE
             ENDIF
 C ---       "NOEUD" = TOUTES LES MAILLES TARDIVES  DE LA LISTE DE NOEUDS
             IF (NN.GT.0) THEN
-               CALL CRLINU('NOM', MLGNNO, NN, IBID, ZK8(JDLS),
+               CALL CRLINU('NOM', MLGNNO, NN, IBID, ZK24(JDLS),
      &                     NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                IF (KK.GT.0) THEN
-                  CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(JDDI),KK,NDIM)
+                  CALL ACEVTR(NOMA,NOMO,2,ZK24(1),ZI(JDDI),KK,NDIM)
                ENDIF
             ENDIF
          ENDIF

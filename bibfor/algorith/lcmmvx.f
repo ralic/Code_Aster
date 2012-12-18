@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C     ----------------------------------------------------------------
       REAL*8          MS(6),NG(3),Q(3,3),TIMED,TIMEF,LG(3),DEPSDT
       REAL*8          TAUS,DGAMMA,DALPHA,DP,EXPBP(NSG),DEPST(6)
       REAL*8          PGL(3,3),CRIT,SGNS,TOUTMS(NFS,NSG,6),GAMMAM
-      CHARACTER*16    CPMONO(5*NMAT+1)
+      CHARACTER*24    CPMONO(5*NMAT+1)
       CHARACTER*16    NOMFAM,NECOUL,NECRIS
       COMMON /DEPS6/DEPSDT
       INTEGER IRR,DECIRR,NBSYST,DECAL

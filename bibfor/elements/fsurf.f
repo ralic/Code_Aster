@@ -1,6 +1,6 @@
       SUBROUTINE FSURF(OPTION,NOMTE,XI,NB1,VECL,VECTPT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,8 +35,8 @@ C     REAL*8       VECTC(3),VECPTX(3,3)
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,IER ,INTSN ,IP ,ITEMPS ,J 
-      INTEGER JP ,JPRES ,K ,LZI ,LZR ,NB2 ,NPGSN 
+      INTEGER I ,I1 ,IER ,INTSN ,IP ,ITEMPS ,J
+      INTEGER JP ,JPRES ,K ,LZI ,LZR ,NB2 ,NPGSN
 
 C-----------------------------------------------------------------------
       CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ', LZI )
@@ -51,7 +51,7 @@ C
 C
 C --- CAS DES CHARGEMENTS DE FORME REEL
       IF (OPTION .EQ. 'CHAR_MECA_FRCO3D') THEN
-         CALL JEVECH ('PFRCO3D','E',JPRES)
+         CALL JEVECH ('PFRCO3D','L',JPRES)
          GLOBAL=ABS(ZR(JPRES-1+7)).LT.1.D-3
          IF (GLOBAL) THEN
             DO 20 J=1,NB1
@@ -80,8 +80,8 @@ C
 C
 C --- CAS DES CHARGEMENTS DE FORME FONCTION
       ELSE IF (OPTION .EQ. 'CHAR_MECA_FFCO3D') THEN
-         CALL JEVECH ('PFFCO3D', 'E', JPRES)
-         CALL JEVECH ('PTEMPSR', 'E', ITEMPS)
+         CALL JEVECH ('PFFCO3D', 'L', JPRES)
+         CALL JEVECH ('PTEMPSR', 'L', ITEMPS)
          VALPAR(4) = ZR(ITEMPS)
          NOMPAR(4) = 'INST'
          NOMPAR(1) = 'X'

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +25,8 @@ C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
       INTEGER       IFM,NIV
       INTEGER       IBID, N, NC, NG, INT, IND, NSST, IRET, JREFE1
-      CHARACTER*8   K8B,NOMA, SST, BASEMO, NOEUD, INTITU, NOGNO
-      CHARACTER*24 VALK
+      CHARACTER*8   K8B,NOMA, SST, BASEMO, NOEUD, INTITU
+      CHARACTER*24 VALK, NOGNO
       CHARACTER*16  PARAX,PARAY, NOMCMD, TYPCON
       CHARACTER*19  LISTR, NOMFON, RESU
       INTEGER      IARG

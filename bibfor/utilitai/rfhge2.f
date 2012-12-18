@@ -6,7 +6,7 @@
       CHARACTER*(*)       HARMGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,11 +30,11 @@ C     ------------------------------------------------------------------
       CHARACTER*1  TYPE
       CHARACTER*4  INTERP(2)
       CHARACTER*8  K8B, CRIT, NOEUD, CMP, NOMA, BASEMO
-      CHARACTER*8   NOGNO, MATPRO, INTRES
+      CHARACTER*8   MATPRO, INTRES
       CHARACTER*14 NUME
       CHARACTER*16 NOMCMD, TYPCON, NOMCHA, NOMSY
       CHARACTER*19 NOMFON, KNUME, KINST, RESU, MATRAS
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 NOGNO, VALK(2)
       COMPLEX*16   CREP
       INTEGER      IARG
 C     ------------------------------------------------------------------

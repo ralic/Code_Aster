@@ -6,7 +6,7 @@
       CHARACTER*(*)       MAILLA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,8 @@ C
       INTEGER LIMIT,LONG,NDETR,NUGR,IGMA,N1,IRET,NGRMA,IANUGR,IALIGR
       INTEGER I,JVG,JGG,NBMA,II,ADETR,NGRMAN
       CHARACTER*1   K1B
-      CHARACTER*8   MA,NOMG
+      CHARACTER*8   MA
+      CHARACTER*24  NOMG
       INTEGER      IARG
 C     ------------------------------------------------------------------
 
@@ -52,15 +53,15 @@ C     --------------------------------------------------------
       END IF
 
       CALL GETVEM(MA,'GROUP_MA','DETR_GROUP_MA','GROUP_MA',
-     &                1,IARG,0,ZK8(1),NDETR)
+     &                1,IARG,0,ZK24(1),NDETR)
 C     ----------------------------------------------------------
       IF (NDETR.LT.0) THEN
         NDETR=-NDETR
-        CALL WKVECT ('&&CMDGMA.LIGRMA_A_DETR','V V K8',NDETR,IALIGR)
+        CALL WKVECT ('&&CMDGMA.LIGRMA_A_DETR','V V K24',NDETR,IALIGR)
         CALL GETVEM(MA,'GROUP_MA','DETR_GROUP_MA','GROUP_MA',
-     &                  1,IARG,NDETR,ZK8(IALIGR),N1)
+     &                  1,IARG,NDETR,ZK24(IALIGR),N1)
         DO 2,IGMA=1,NDETR
-          CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIGR-1+IGMA)),NUGR)
+          CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIGR-1+IGMA)),NUGR)
           IF (NUGR.GT.0)  ZI(IANUGR-1+NUGR)=1
 2       CONTINUE
       END IF
@@ -76,11 +77,16 @@ C
 
       NGRMAN = NGRMA - ADETR
 
-      CALL JEDUPO(MA//'.GROUPEMA','V','&&CMDGMA.GROUPEMA',.FALSE.)
+      CALL CPCLMA(MA,'&&CMDGMA','GROUPEMA','V')
       CALL JEDETR(MA//'.GROUPEMA')
+      CALL JEDETR(MA//'.PTRNOMMAI')
 
-      IF (NGRMAN.GT.0) CALL JECREC(MA//'.GROUPEMA','G V I','NO',
+      IF (NGRMAN.GT.0) THEN
+        CALL JECREO(MA//'.PTRNOMMAI','G N K24')
+        CALL JEECRA(MA//'.PTRNOMMAI','NOMMAX',NGRMAN,' ')
+        CALL JECREC(MA//'.GROUPEMA','G V I','NO '//MA//'.PTRNOMMAI',
      &              'DISPERSE','VARIABLE',NGRMAN)
+      ENDIF
 
       DO 3, I=1,NGRMA
         CALL JEEXIN(JEXNUM('&&CMDGMA.GROUPEMA',I),IRET)

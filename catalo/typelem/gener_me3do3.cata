@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,6 +119,7 @@ MODE_LOCAL__
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     FIC3
                                         K1       K2       K3       BETA     )
     EGTHETA  = G        ELEM__         (GTHETA   )
+    CFREQR   = FREQ_R   ELEM__         (FREQ     )
     
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -135,36 +136,36 @@ OPTION__
                                      ZVARINO  PVARIPR  NDEPLAR  PVITESS  ESIGMPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
                               
-    CALC_G_F            27    IN__   NDEPLAR PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
-                                     NDEPLAR PDEPINR  NDEPLAR PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
+    CALC_G_F            27    IN__   NDEPLAR  PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
+                                     NDEPLAR  PDEPINR  NDEPLAR  PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
                                      ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                                     NDEPLAR PTHETAR  ZVARINO  PVARIPR  NDEPLAR PVITESS  ECONTPG  PCONTGR
+                                     NDEPLAR  PTHETAR  ZVARINO  PVARIPR  NDEPLAR  PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
                               
-    CALC_G_GLOB         27    IN__   NDEPLAR PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
-                                     NDEPLAR PDEPINR  NDEPLAR PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
+    CALC_G_GLOB         27    IN__   NDEPLAR  PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
+                                     NDEPLAR  PDEPINR  NDEPLAR PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
                                      ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   NDEPLAR PTHETAR
                                      ZVARINO  PVARIPR  NDEPLAR PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
-    CALC_G_GLOB_F       27    IN__   NDEPLAR PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
-                                     NDEPLAR PDEPINR  NDEPLAR PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
+    CALC_G_GLOB_F       27    IN__   NDEPLAR  PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
+                                     NDEPLAR  PDEPINR  NDEPLAR  PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
                                      ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                                     NDEPLAR PTHETAR  ZVARINO  PVARIPR  NDEPLAR PVITESS  ECONTPG  PCONTGR
+                                     NDEPLAR  PTHETAR  ZVARINO  PVARIPR  NDEPLAR  PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
-    CALC_K_G            295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   NDEPLAR PDEPINR
-                                     NDEPLAR PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
+    CALC_K_G            295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   NDEPLAR  PDEPINR
+                                     NDEPLAR  PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
                                      CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     NDEPLAR PTHETAR
+                                     NDEPLAR PTHETAR   CFREQR   PPULPRO
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   NDEPLAR PDEPINR
-                                     NDEPLAR PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
+                                     NDEPLAR  PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
                                      CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                                     ZVARCPG  PVARCRR   NDEPLAR PTHETAR
+                                     ZVARCPG  PVARCRR  NDEPLAR PTHETAR
                               OUT__  EKTHETA  PGTHETA                        
     CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_LIMITE         483   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR

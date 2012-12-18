@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -122,6 +122,7 @@ MODE_LOCAL__
     EGTHETA  = G        ELEM__         (GTHETA   )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    CFREQR   = FREQ_R   ELEM__         (FREQ     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -158,16 +159,16 @@ OPTION__
                                      NDEPLAR PTHETAR  ZVARINO  PVARIPR  NDEPLAR PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   NDEPLAR PDEPINR
-                                     NDEPLAR PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
+                                     NDEPLAR  PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
                                      CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     NDEPLAR PTHETAR
+                                     NDEPLAR PTHETAR   CFREQR   PPULPRO
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          295   IN__   N9NEUT_R PBASLOR  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   NDEPLAR PDEPINR
-                                     NDEPLAR PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
+                                     NDEPLAR  PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
                                      N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR
                                      CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                                     ZVARCPG  PVARCRR   NDEPLAR PTHETAR
+                                     ZVARCPG  PVARCRR  NDEPLAR PTHETAR   CFREQR   PPULPRO
                               OUT__  EKTHETA  PGTHETA 
     CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_LIMITE         483   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR

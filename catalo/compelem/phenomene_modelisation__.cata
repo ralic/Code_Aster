@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+%& MODIF COMPELEM  DATE 18/12/2012   AUTEUR KHAM M.KHAM 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1257,6 +1257,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6
               MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3
+              
+       MODELISATION__ 'D_PLAN_HM_SI'        DIM__ 2 2   CODE__ 'DM1'
+              ATTRIBUT__  THM=OUI  D_PLAN=OUI
+              MAILLE__ QUAD8     ELEMENT__ HM_DPQ8M
+              MAILLE__ TRIA6     ELEMENT__ HM_DPTR6M
+              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3
 
       MODELISATION__ 'D_PLAN_HS'        DIM__ 2 2   CODE__ 'DHA'
               ATTRIBUT__  THM=OUI  D_PLAN=OUI
@@ -1579,6 +1585,14 @@ PHENOMENE_MODELISATION__
               MAILLE__ TETRA10   ELEMENT__ HM_TETRA10
               MAILLE__ PENTA15   ELEMENT__ HM_PENTA15
               MAILLE__ HEXA20    ELEMENT__ HM_HEXA20
+              MAILLE__ QUAD8     ELEMENT__ HM_FACE8
+              MAILLE__ TRIA6     ELEMENT__ HM_FACE6
+              
+       MODELISATION__ '3D_HM_SI'            DIM__ 3 3   CODE__ '3M2'
+              ATTRIBUT__  THM=OUI
+              MAILLE__ TETRA10   ELEMENT__ HM_TETRA10M
+              MAILLE__ PENTA15   ELEMENT__ HM_PENTA15M
+              MAILLE__ HEXA20    ELEMENT__ HM_HEXA20M
               MAILLE__ QUAD8     ELEMENT__ HM_FACE8
               MAILLE__ TRIA6     ELEMENT__ HM_FACE6
 

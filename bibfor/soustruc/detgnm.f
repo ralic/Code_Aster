@@ -6,7 +6,7 @@
       CHARACTER*8 MA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF SOUSTRUC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,17 +35,20 @@ C
       INTEGER N1,IOCC,MAXVAL,NBVAL,JGMDET,IRET,NBTGP,NUMGM,NBGMDE
       INTEGER NBGP,NBMAGP,JGM,I,J,J1,J2,NGP,IG
       PARAMETER(NGP=2)
-      CHARACTER*8 K8B,KBID,NOMGP
-      CHARACTER*16 DETR(2),GROUP(2)
-      CHARACTER*24 GRP
+      CHARACTER*8 K8B,KBID
+      CHARACTER*16 DETR(2),GROUP(2),PTRN(2)
+      CHARACTER*24 GRP,GPPTNM,NOMGP
       INTEGER      IARG
       DATA DETR  / 'DETR_GROUP_MA','DETR_GROUP_NO'/
       DATA GROUP / '.GROUPEMA','.GROUPENO'/
+      DATA PTRN  / '.PTRNOMMAI','.PTRNOMNOE'/
 C
       CALL JEMARQ()
 C
       DO 100 IG = 1 , NGP
          CALL GETFAC(DETR(IG),N1)
+         GRP='&&DETGNM'//GROUP(IG)
+         GPPTNM = '&&DETGNM'//PTRN(IG)
          IF(N1.NE.0)THEN
             CALL JEEXIN(MA//GROUP(IG),IRET)
             IF(IRET.EQ.0) GOTO 100
@@ -58,13 +61,13 @@ C
                MAXVAL=0
                CALL GETVTX(DETR(IG),'NOM',IOCC,IARG,MAXVAL,K8B,NBVAL)
                NBVAL=-NBVAL
-               CALL WKVECT('&&DETGNM.GROUP_DETR','V V K8',NBVAL,
+               CALL WKVECT('&&DETGNM.GROUP_DETR','V V K24',NBVAL,
      &              JGMDET)
                CALL GETVTX(DETR(IG),'NOM',IOCC,IARG,NBVAL,
-     &              ZK8(JGMDET),IRET)
+     &              ZK24(JGMDET),IRET)
 C              ON RECUPERE LES NUMEROS DES GROUPES A DETRUIRE
                DO 15 I = 1 , NBVAL
-                  CALL JENONU(JEXNOM(MA//GROUP(IG),ZK8(JGMDET+I-1)),
+                  CALL JENONU(JEXNOM(MA//GROUP(IG),ZK24(JGMDET+I-1)),
      &                 NUMGM)
                   IF(NUMGM.NE.0)THEN
                      ZI(JGM+NUMGM-1)=NUMGM
@@ -80,13 +83,15 @@ C           ON COMPTE LE NOMBRE DE GROUPES A DETRUIRE
                ENDIF
  20         CONTINUE
 C           REACTUALISATION DE L'OBJET .GROUPEMA (OU .GROUPENO)
-            GRP='&&DETGNM.COLGROUP'
             NBGP=NBTGP-NBGMDE
             IF(NBGP.EQ.0)THEN
                CALL JEDETR(MA//GROUP(IG))
                GOTO 100
             ENDIF
-            CALL JECREC(GRP,'V V I','NO','DISPERSE','VARIABLE',NBGP)
+            CALL JECREO(GPPTNM,'V N K24')
+            CALL JEECRA(GPPTNM,'NOMMAX',NBGP,' ')
+            CALL JECREC(GRP,'V V I','NO '//GPPTNM,
+     &                  'DISPERSE','VARIABLE',NBGP)
             DO 25 I=1,NBTGP
                IF(ZI(JGM+I-1).EQ.0)THEN
                   CALL JENUNO(JEXNUM(MA//GROUP(IG),I),NOMGP)
@@ -104,12 +109,16 @@ C           REACTUALISATION DE L'OBJET .GROUPEMA (OU .GROUPENO)
                ENDIF
  25         CONTINUE
             CALL JEDETR(MA//GROUP(IG))
-            CALL JEDUPO(GRP,'G',MA//GROUP(IG),.FALSE.)
+            CALL JEDETR(MA//PTRN(IG))
+            CALL CPCLMA('&&DETGNM',MA,GROUP(IG)(2:9),'G')
          ENDIF
          CALL JEDETR('&&DETGNM.GROUP')
-         CALL JEDETR('&&DETGNM.COLGROUP')
+         CALL JEDETR(GRP)
+         CALL JEDETR(GPPTNM)
  100  CONTINUE
-
+C nsellenet
+      CALL UTIMSD(6,0,.TRUE.,.TRUE.,MA,1,' ')
+C nsellenet
 
       CALL JEDEMA()
 

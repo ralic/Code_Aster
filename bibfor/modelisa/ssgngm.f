@@ -6,7 +6,7 @@
       CHARACTER*8 NOMA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,9 +31,9 @@ C     IN: NOMA  : NOM DU MAILLAGE.
 C         IOCC  : NUMERO D'OCCURENCE DU MOT CLEF CREA_GROUP_NO
 C-----------------------------------------------------------------------
 
-      CHARACTER*8 K8B,NOMGNO,NOMGMA,KOUI
+      CHARACTER*8 K8B,KOUI
       CHARACTER*16 SELEC
-      CHARACTER*24 GRPMA,GRPNO
+      CHARACTER*24 GRPMA,GRPNO,NOMGNO,NOMGMA
       INTEGER      IARG
 
 C DEB-------------------------------------------------------------------
@@ -57,9 +57,9 @@ C     --------------------------
       CALL GETVTX('CREA_GROUP_NO','TOUT_GROUP_MA',IOCC,IARG,1,KOUI,N1)
       IF (N1.EQ.1) THEN
         CALL JELIRA(NOMA//'.GROUPEMA','NMAXOC',NBGMA,K8B)
-        CALL WKVECT('&&SSGNGM.LISTE_GMA','V V K8',NBGMA,IALGMA)
+        CALL WKVECT('&&SSGNGM.LISTE_GMA','V V K24',NBGMA,IALGMA)
         DO 10 I = 1,NBGMA
-          CALL JENUNO(JEXNUM(GRPMA,I),ZK8(IALGMA-1+I))
+          CALL JENUNO(JEXNUM(GRPMA,I),ZK24(IALGMA-1+I))
    10   CONTINUE
         IANGNO = IALGMA
 
@@ -70,26 +70,24 @@ C     ---------------------
 C      CRITERE DE SELECTION
         CALL GETVTX('CREA_GROUP_NO','CRIT_NOEUD',IOCC,IARG,1,SELEC,IBID)
         CALL GETVEM(NOMA,'GROUP_MA','CREA_GROUP_NO','GROUP_MA',IOCC,
-     &              IARG,0,
-     &              K8B,NB)
+     &              IARG,0,K8B,NB)
         CALL GETVTX('CREA_GROUP_NO','NOM',IOCC,IARG,0,K8B,NO)
         NBGMA = -NB
-        CALL WKVECT('&&SSGNGM.LISTE_GMA','V V K8',NBGMA,IALGMA)
+        CALL WKVECT('&&SSGNGM.LISTE_GMA','V V K24',NBGMA,IALGMA)
         CALL GETVEM(NOMA,'GROUP_MA','CREA_GROUP_NO','GROUP_MA',IOCC,
-     &              IARG,
-     &              NBGMA,ZK8(IALGMA),NB)
+     &              IARG,NBGMA,ZK24(IALGMA),NB)
         IF (NO.NE.0) THEN
           NBGNO = -NO
           IF (NBGNO.NE.NBGMA) CALL U2MESS('F','MODELISA7_8')
-          CALL WKVECT('&&SSGNGM.NOM_GNO','V V K8',NBGNO,IANGNO)
+          CALL WKVECT('&&SSGNGM.NOM_GNO','V V K24',NBGNO,IANGNO)
           CALL GETVTX('CREA_GROUP_NO','NOM',IOCC,IARG,NBGNO,
-     &                ZK8(IANGNO),NO)
+     &                ZK24(IANGNO),NO)
         ELSE
           IANGNO = IALGMA
         END IF
         IER = 0
         DO 20 I = 1,NBGMA
-          NOMGMA = ZK8(IALGMA-1+I)
+          NOMGMA = ZK24(IALGMA-1+I)
           CALL JEEXIN(JEXNOM(GRPMA,NOMGMA),IRET)
           IF (IRET.EQ.0) THEN
             IER = IER + 1
@@ -108,13 +106,13 @@ C ---------------------------------------------------------------------
 C     -- ON AJOUTE LES NOUVEAUX GROUPES:
 
       DO 30 I = 1,NBGMA
-        NOMGMA = ZK8(IALGMA-1+I)
+        NOMGMA = ZK24(IALGMA-1+I)
         CALL JELIRA(JEXNOM(GRPMA,NOMGMA),'LONUTI',NBMA,K8B)
         CALL JEVEUO(JEXNOM(GRPMA,NOMGMA),'L',IALIMA)
         CALL GMGNRE(NOMA,NBNOTO,ZI(JTRAV),ZI(IALIMA),NBMA,ZI(IALINO),
      &              ZI(IANBNO-1+I),SELEC)
 
-        NOMGNO = ZK8(IANGNO-1+I)
+        NOMGNO = ZK24(IANGNO-1+I)
         N1 = ZI(IANBNO-1+I)
         CALL JEEXIN(JEXNOM(GRPNO,NOMGNO),IRET)
         IF (IRET.GT.0) THEN

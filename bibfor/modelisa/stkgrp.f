@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,12 +40,12 @@ C
 
       CHARACTER*32 JEXNOM
       REAL*8          RV
-      CHARACTER*8     MCL(NBM),       NOMG,   NOM,    B8
+      CHARACTER*8     MCL(NBM),   NOM,    B8
       INTEGER         DEBLIG
       CHARACTER*14    CNL
       CHARACTER*(*)   CV
       CHARACTER*16    CMD
-      CHARACTER*24    GRN,    GRM,    GRP
+      CHARACTER*24    GRN,    GRM,    GRP,       NOMG
       SAVE B8
       COMMON          /OPMAIL/        CMD
 C-----------------------------------------------------------------------
@@ -85,7 +85,7 @@ C ----- LIRE ITEM SUIVANT =  NOM DU GROUPE ?
 
 C ----- LECTURE NOM DU GROUPE SI IL N Y A PAS D'ENTETE
         IF (NOMG.EQ.'INDEFINI') THEN
-          NOMG        = B8
+          NOMG        = ' '
           NOMG(1:IV)  = CV(1:IV)
           CALL TESFIN(ICL,IV,CV,IRTET)
           CALL ASSERT(IRTET.EQ.0)

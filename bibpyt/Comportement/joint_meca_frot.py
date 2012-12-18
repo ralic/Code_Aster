@@ -1,4 +1,4 @@
-#@ MODIF joint_meca_frot Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF joint_meca_frot Comportement  DATE 17/12/2012   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,12 +24,14 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'JOINT_MECA_FROT',
-   doc = """Loi elastoplastique de Mohr-Coulomb avec adhesion pour modélisation de joints dans les barrages""",
+   doc = """Loi elastoplastique de Mohr-Coulomb avec adhesion pour modélisation de joints dans les barrages.
+            Elle permet aussi de modéliser, avec les éléments  de joint hydro-mécaniques, un couplage entre 
+            la mécanique et l'écoulement de fluide dans la fissure """,
    num_lc         = 48,
-   nb_vari        = 9,
-   nom_vari       = ('LAMBDA','INDIPLAS','DEPPLAS1','DEPPLAS2','INDIOUV','SIGT','SAUT_N','SAUT_T1','SAUT_T2'),
+   nb_vari        = 18,
+   nom_vari       = ('LAMBDA','INDIPLAS','DEPPLAS1','DEPPLAS2','INDIOUV','SIGT','SAUT_N','SAUT_T1','SAUT_T2','EPAISSJO','SIGN_GLO','GRADP_X','GRADP_Y','GRADP_Z','FH_X','FH_Y','FH_Z','PRESF'),
    mc_mater       = ('JOINT_MECA_FROT'),
-   modelisation   = ('3D','PLAN','AXIS','ELEMJOINT'),
+   modelisation   = ('3D','PLAN','AXIS','ELEMJOINT','EJ_HYME'),
    deformation    = ('PETIT'),
    nom_varc       = ('TEMP'),
    algo_inte      = ('ANALYTIQUE'),

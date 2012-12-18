@@ -1,7 +1,7 @@
       SUBROUTINE OP0001()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,8 +56,7 @@ C
       INTEGER         NBVAL, IRET, INFMED
       CHARACTER*8     NOMU, TOTM, FMT, VERI
       CHARACTER*16    CONCEP
-      CHARACTER*24    COOVAL, COODSC, COOREF, GRPNOE, GRPMAI, CONNEX
-      CHARACTER*24    TITRE, NOMMAI, NOMNOE, TYPMAI
+      CHARACTER*24    COOVAL, CONNEX, TYPMAI
       CHARACTER*24    ADAPMA, VECGRM
       CHARACTER*64    NOMAMD
       REAL*8          DTOL
@@ -105,38 +104,16 @@ C
 
       ENDIF
 C
-C
-C     CONSTRUCTION DES NOMS JEVEUX POUR L OBJET-MAILLAGE
-C     --------------------------------------------------
-C
-C               123456789012345678901234
-      NOMMAI  = NOMU// '.NOMMAI         '
-      NOMNOE  = NOMU// '.NOMNOE         '
-      COOVAL  = NOMU// '.COORDO    .VALE'
-      COODSC  = NOMU// '.COORDO    .DESC'
-      COOREF  = NOMU// '.COORDO    .REFE'
-      GRPNOE  = NOMU// '.GROUPENO       '
-      GRPMAI  = NOMU// '.GROUPEMA       '
-      CONNEX  = NOMU// '.CONNEX         '
-      TITRE   = NOMU// '           .TITR'
-      TYPMAI  = NOMU// '.TYPMAIL        '
-      ADAPMA  = NOMU// '.ADAPTATION     '
-C
 C --- LECTURE DU MAILLAGE AU FORMAT ASTER :
 C     -----------------------------------
       IF ( FMT(1:5) .EQ. 'ASTER' ) THEN
-          CALL LRMAST ( NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
-     &                  GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
-     &                  IFM,IFL,NBNOEU,NBMAIL,NBCOOR )
+          CALL LRMAST ( NOMU,IFM,IFL,NBNOEU,NBMAIL,NBCOOR )
 C
 C --- LECTURE DU MAILLAGE AU FORMAT MED :
 C     ---------------------------------
       ELSEIF (FMT(1:3) .EQ. 'MED' ) THEN
-          CALL LRMHDF ( NOMAMD,
-     &                  NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
-     &                  GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,
-     &                  ADAPMA,IFM,IFL,NIV,INFMED,NBNOEU,NBMAIL,
-     &                  NBCOOR,VECGRM,NBCGRM)
+          CALL LRMHDF ( NOMAMD,NOMU,IFM,IFL,NIV,INFMED,NBNOEU,
+     &                  NBMAIL,NBCOOR,VECGRM,NBCGRM)
       ENDIF
 C
 C --- CALCUL D'UNE ABSCISSE CURVILIGNE SUR LE MAILLAGE :
@@ -150,7 +127,7 @@ C     ------------------------------------------------
           CALL GETVTX('ABSC_CURV','TOUT',1,IARG,1,TOTM,N1)
           IF(N1.NE.0) THEN
             ITOUT = 1
-            CALL ABSCUR(CONNEX,TYPMAI,COOVAL,NOMU,ITOUT)
+            CALL ABSCUR(NOMU,ITOUT)
 C
           ENDIF
         ELSE

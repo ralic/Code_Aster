@@ -14,7 +14,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,10 +51,10 @@ C-----------------------------------------------------------------------
       PARAMETER    ( NBCAR = 100 )
       CHARACTER*4  EXITUY
       CHARACTER*6  KIOC
-      CHARACTER*8  NOMU, NOMMAI, NOMNOE, CAR(NBCAR)
+      CHARACTER*8  NOMU, CAR(NBCAR)
       CHARACTER*16 CONCEP, CMD
       CHARACTER*24 MLGNMA, MLGNNO, MLGGNO, MLGGMA
-      CHARACTER*24 MODMAI, MODNEM, MODNOE
+      CHARACTER*24 MODMAI, MODNEM, MODNOE, NOMMAI, NOMNOE
       CHARACTER*1 K1BID
       INTEGER      IARG
 C     ------------------------------------------------------------------
@@ -87,7 +87,7 @@ C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ET MODELE
          CALL JEVEUO(MODNEM,'L',JDNW)
       ENDIF
 C
-      CALL WKVECT('&&TMPINC','V V K8',LMAX,JDLS)
+      CALL WKVECT('&&TMPINC','V V K24',LMAX,JDLS)
 C
       DO 10 MCL = 1 , NBMCF
         IF (MCL.EQ.12) GOTO 10
@@ -99,22 +99,22 @@ C
           NN = 0
           IF ( MCL.EQ.10 .OR. MCL.EQ.15 ) THEN
             CALL GETVEM(NOMA,'GROUP_MA_POI1',MCLF(MCL),
-     &                 'GROUP_MA_POI1',IOC,IARG,LMAX,ZK8(JDLS),NG)
+     &                 'GROUP_MA_POI1',IOC,IARG,LMAX,ZK24(JDLS),NG)
             IF ( NG .EQ. 0 ) THEN
               CALL GETVEM(NOMA,'GROUP_MA_SEG2',MCLF(MCL),
-     &                    'GROUP_MA_SEG2',IOC,IARG,LMAX,ZK8(JDLS),NG)
+     &                    'GROUP_MA_SEG2',IOC,IARG,LMAX,ZK24(JDLS),NG)
             ENDIF
           ELSE
             CALL GETVEM(NOMA,'GROUP_MA',MCLF(MCL),'GROUP_MA',
-     &                  IOC,IARG,LMAX,ZK8(JDLS),NG)
+     &                  IOC,IARG,LMAX,ZK24(JDLS),NG)
             CALL GETVEM(NOMA,'MAILLE',MCLF(MCL),'MAILLE',
-     &                  IOC,IARG,LMAX,ZK8(JDLS),NM)
+     &                  IOC,IARG,LMAX,ZK24(JDLS),NM)
           ENDIF
           IF ( MCL.EQ.3 .OR. MCL.EQ.4 .OR. MCL.EQ.13 ) THEN
             CALL GETVEM(NOMA,'GROUP_NO',MCLF(MCL),'GROUP_NO',
-     &                  IOC,IARG,LMAX,ZK8(JDLS),NJ)
+     &                  IOC,IARG,LMAX,ZK24(JDLS),NJ)
             CALL GETVEM(NOMA,'NOEUD',MCLF(MCL),'NOEUD',
-     &                  IOC,IARG,LMAX,ZK8(JDLS),NN)
+     &                  IOC,IARG,LMAX,ZK24(JDLS),NN)
           ELSEIF ((MCL.EQ.11).OR.(MCL.EQ.14)) THEN
             CALL GETVR8(MCLF(MCL),'AXE',IOC,IARG,0,R8B,NAXE)
           ENDIF
@@ -133,8 +133,8 @@ C ---     "GROUP_MA" = MAILLES DANS LA LISTE DES GROUPES DE MAILLES
             IF (MCL.EQ.11) LOCAGB = .TRUE.
             IF (MCL.EQ.14) LOCAMB = .TRUE.
             DO 34 I = 1 , NG
-              CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'L',JDGM)
-              CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONUTI',
+              CALL JEVEUO(JEXNOM(MLGGMA,ZK24(JDLS+I-1)),'L',JDGM)
+              CALL JELIRA(JEXNOM(MLGGMA,ZK24(JDLS+I-1)),'LONUTI',
      &                                              NBMAGR,K1BID)
               DO 36 J = 1,NBMAGR
                 NUMMAI = ZI(JDGM+J-1)
@@ -154,7 +154,7 @@ C ---     "MAILLE" = MAILLES DE LA LISTE DE MAILLES
             IF (MCL.EQ.11) LOCAGB = .TRUE.
             IF (MCL.EQ.14) LOCAMB = .TRUE.
             DO 46 I = 1 , NM
-              NOMMAI = ZK8(JDLS+I-1)
+              NOMMAI = ZK24(JDLS+I-1)
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUMMAI)
               NUTYEL = ZI(JDME+NUMMAI-1)
               IF (MCL.NE.4) ZI(JDLM+NUMMAI-1) = -MCL
@@ -170,8 +170,8 @@ C
 C ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
             IF (NJ.GT.0) THEN
               DO 48 I = 1 , NJ
-                CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'L',JDGN)
-                CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONUTI',
+                CALL JEVEUO(JEXNOM(MLGGNO,ZK24(JDLS+I-1)),'L',JDGN)
+                CALL JELIRA(JEXNOM(MLGGNO,ZK24(JDLS+I-1)),'LONUTI',
      &                                                NBNOGR,K1BID)
                 DO 50 J = 1,NBNOGR
                   NUMNOE = ZI(JDGN+J-1)
@@ -192,7 +192,7 @@ C
 C ---       "NOEUD" = MAILLES TARDIVES  DE LA LISTE DE NOEUDS
             IF (NN.GT.0) THEN
               DO 58 I = 1 , NN
-                NOMNOE = ZK8(JDLS+I-1)
+                NOMNOE = ZK24(JDLS+I-1)
                 CALL JENONU(JEXNOM(MLGNNO,NOMNOE),NUMNOE)
                 IF (MCL.NE.4) THEN
                   DO 60 K = 1 , NBMTRD

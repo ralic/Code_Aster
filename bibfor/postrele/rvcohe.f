@@ -7,7 +7,7 @@
       INTEGER                                     I, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF POSTRELE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,11 +40,11 @@ C OUT IER    : I : CODE RETOUR, 1 --> OK, 0 --> KO
 C     ------------------------------------------------------------------
 C
 C
-      CHARACTER*24 NCHEFF,NDESC,VALK(7)
+      CHARACTER*24 NCHEFF,NDESC,VALK(7),NOMGRN
       CHARACTER*19 NCHP19
       CHARACTER*16 NCHSYM,TRESU
       CHARACTER*15 NREPND
-      CHARACTER*8  NRESU,NOMCMP,NMAICH,NMAILI,NOMCRB,NOMGRN,NOMND
+      CHARACTER*8  NRESU,NOMCMP,NMAICH,NMAILI,NOMCRB,NOMND
       CHARACTER*4  DOCU
       INTEGER      ACHEFF,AMAICB,AGRPND,ALNEUD,ANUMCP,ANOMCP,NBCMP
       INTEGER      NBGRPN,NBNEUD,NBCRB,GREL,NBGREL,JCELD,AMOD,MOD
@@ -142,18 +142,18 @@ C           /* LE LIEU DU POST TRAITEMENT EST UNE COURBE */
          ELSE
 C           /* LE LIEU DU POST TRAITEMENT EST UN ENSMBLE DE NOEUDS */
 C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
-            CALL GETVTX('ACTION','GROUP_NO',I,IARG,0,ZK8,NBGRPN)
-            CALL GETVTX('ACTION','NOEUD'   ,I,IARG,0,ZK8,NBNEUD)
+            CALL GETVTX('ACTION','GROUP_NO',I,IARG,0,ZK8(1),NBGRPN)
+            CALL GETVTX('ACTION','NOEUD'   ,I,IARG,0,ZK8(1),NBNEUD)
             NBGRPN = -NBGRPN
             NBNEUD = -NBNEUD
             IF ( NBGRPN .NE. 0 ) THEN
-               CALL JECREO('&&OP0051.NOM.GRPN','V V K8')
+               CALL JECREO('&&OP0051.NOM.GRPN','V V K24')
                CALL JEECRA('&&OP0051.NOM.GRPN','LONMAX',NBGRPN,' ')
                CALL JEVEUO('&&OP0051.NOM.GRPN','E',AGRPND)
-              CALL GETVTX('ACTION','GROUP_NO',I,IARG,NBGRPN,
-     &                    ZK8(AGRPND),N1)
+               CALL GETVTX('ACTION','GROUP_NO',I,IARG,NBGRPN,
+     &                     ZK24(AGRPND),N1)
                DO 120, K = 1, NBGRPN, 1
-                  NOMGRN = ZK8(AGRPND + K-1)
+                  NOMGRN = ZK24(AGRPND + K-1)
                   CALL JENONU(JEXNOM(NMAICH//'.GROUPENO',NOMGRN),N1)
                   IF ( N1 .EQ. 0 ) THEN
                      CALL U2MESG('S','POSTRELE_50',1,NOMGRN,1,I,0,0.D0)

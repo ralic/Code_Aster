@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline5 Messages  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -423,4 +423,10 @@ Solveur GCPC :
 
   Conseil : augmentez la valeur du mot clé SOLVEUR/PCENT_PIVOT.
 """),
+
+77 : _(u"""
+L'option 'PLUS_GRANDE' n'est pas utilisable en présence d'une matrice d'amortissement,
+d'une matrice de rigidité complexe, ou de matrices non symétriques.
+"""),
+
 }

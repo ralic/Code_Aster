@@ -1,22 +1,22 @@
       SUBROUTINE NMTIME(SDTIME,PHASEZ,TIMERZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 17/12/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
@@ -25,13 +25,13 @@ C
       CHARACTER*24  SDTIME
       CHARACTER*(*) PHASEZ
       CHARACTER*(*) TIMERZ
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (UTILITAIRE)
 C
 C GESTION DES TIMERS
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -63,17 +63,17 @@ C
       INTEGER      JTPAS,JTITE,JTARC,JTPST
       CHARACTER*24 TIMDEB
       INTEGER      JTDEB
-      CHARACTER*24 TIMTM1,TIMTM2 
+      CHARACTER*24 TIMTM1,TIMTM2
       INTEGER      JTMP1,JTMP2
       CHARACTER*24 PHASE,TIMER
       REAL*8       TIME
-C      
+C
 C ----------------------------------------------------------------------
-C      
+C
       CALL JEMARQ()
-C    
+C
 C --- INITIALISATIONS
-C                
+C
       PHASE  = PHASEZ
       TIMER  = TIMERZ
 C
@@ -90,13 +90,13 @@ C
       CALL JEVEUO(TIMPAS,'E',JTPAS)
       CALL JEVEUO(TIMITE,'E',JTITE)
       CALL JEVEUO(TIMPST,'E',JTPST)
-      CALL JEVEUO(TIMARC,'E',JTARC)     
+      CALL JEVEUO(TIMARC,'E',JTARC)
 C
       TIMDEB = SDTIME(1:19)//'.TDEB'
-      CALL JEVEUO(TIMDEB,'E',JTDEB)    
+      CALL JEVEUO(TIMDEB,'E',JTDEB)
 C
 C --- INTERROGATION SD
-C         
+C
       IF (PHASE.EQ.'INI') THEN
 C
 C ----- INITIALISATIONS DES TIMERS
@@ -107,7 +107,7 @@ C
           CALL UTTCPU('CPU.NMTIME.ARC','INIT',' ')
           CALL UTTCPU('CPU.NMTIME.PST','INIT',' ')
           CALL UTTCPU('CPU.NMTIME.TM1','INIT',' ')
-          CALL UTTCPU('CPU.NMTIME.TM2','INIT',' ') 
+          CALL UTTCPU('CPU.NMTIME.TM2','INIT',' ')
           ZR(JTDEB+1-1) = 0.D0
           ZR(JTDEB+2-1) = 0.D0
           ZR(JTDEB+3-1) = 0.D0
@@ -116,26 +116,27 @@ C
           ZR(JTDEB+6-1) = 0.D0
         ELSEIF (TIMER.EQ.'POST_TRAITEMENT') THEN
           CALL UTTCPU('CPU.NMTIME.PST','INIT',' ')
-          ZR(JTDEB+4-1) = 0.D0 
-        ELSEIF ((TIMER.EQ.'FACTOR').OR.
+          ZR(JTDEB+4-1) = 0.D0
+        ELSEIF ((TIMER.EQ.'INTEGRATION').OR.
+     &          (TIMER.EQ.'FACTOR').OR.
+     &          (TIMER.EQ.'SECO_MEMB').OR.
+     &          (TIMER.EQ.'SOLVE').OR.
      &          (TIMER.EQ.'CONT_GEOM').OR.
      &          (TIMER.EQ.'CTCD_ALGO').OR.
-     &          (TIMER.EQ.'CTCC_MATR').OR.
-     &          (TIMER.EQ.'CTCC_CONT').OR.
-     &          (TIMER.EQ.'CTCC_FROT').OR. 
      &          (TIMER.EQ.'CTCC_PREP').OR.
-     &          (TIMER.EQ.'SECO_MEMB').OR.          
-     &          (TIMER.EQ.'INTEGRATION').OR.
-     &          (TIMER.EQ.'SOLVE')) THEN
+     &          (TIMER.EQ.'CTCC_MATR').OR.
+     &          (TIMER.EQ.'CTCC_VECT').OR.
+     &          (TIMER.EQ.'CTCC_CONT').OR.
+     &          (TIMER.EQ.'CTCC_FROT')) THEN
           CALL UTTCPU('CPU.NMTIME.TM1','INIT',' ')
           ZR(JTDEB+5-1) = 0.D0
         ELSEIF (TIMER.EQ.'ASSE_MATR') THEN
           CALL UTTCPU('CPU.NMTIME.TM2','INIT',' ')
-          ZR(JTDEB+6-1) = 0.D0                 
+          ZR(JTDEB+6-1) = 0.D0
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF 
-C 
+        ENDIF
+C
       ELSEIF (PHASE.EQ.'RUN') THEN
 C
 C ----- LANCEMENT DES TIMERS
@@ -147,24 +148,25 @@ C
         ELSEIF (TIMER.EQ.'ARC') THEN
           CALL UTTCPU('CPU.NMTIME.ARC','DEBUT',' ')
         ELSEIF (TIMER.EQ.'POST_TRAITEMENT') THEN
-          CALL UTTCPU('CPU.NMTIME.PST','DEBUT',' ')          
-        ELSEIF ((TIMER.EQ.'FACTOR').OR.
+          CALL UTTCPU('CPU.NMTIME.PST','DEBUT',' ')
+        ELSEIF ((TIMER.EQ.'INTEGRATION').OR.
+     &          (TIMER.EQ.'FACTOR').OR.
+     &          (TIMER.EQ.'SECO_MEMB').OR.
+     &          (TIMER.EQ.'SOLVE').OR.
      &          (TIMER.EQ.'CONT_GEOM').OR.
      &          (TIMER.EQ.'CTCD_ALGO').OR.
-     &          (TIMER.EQ.'CTCC_MATR').OR.
-     &          (TIMER.EQ.'CTCC_CONT').OR.
-     &          (TIMER.EQ.'CTCC_FROT').OR. 
      &          (TIMER.EQ.'CTCC_PREP').OR.
-     &          (TIMER.EQ.'SECO_MEMB').OR.          
-     &          (TIMER.EQ.'INTEGRATION').OR.
-     &          (TIMER.EQ.'SOLVE')) THEN
+     &          (TIMER.EQ.'CTCC_MATR').OR.
+     &          (TIMER.EQ.'CTCC_VECT').OR.
+     &          (TIMER.EQ.'CTCC_CONT').OR.
+     &          (TIMER.EQ.'CTCC_FROT')) THEN
           CALL UTTCPU('CPU.NMTIME.TM1','DEBUT',' ')
         ELSEIF (TIMER.EQ.'ASSE_MATR') THEN
-          CALL UTTCPU('CPU.NMTIME.TM2','DEBUT',' ')          
+          CALL UTTCPU('CPU.NMTIME.TM2','DEBUT',' ')
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-C               
+C
       ELSEIF (PHASE.EQ.'END') THEN
 C
 C ----- ARRET DES TIMERS
@@ -192,17 +194,18 @@ C
           CALL UTTCPR('CPU.NMTIME.PST',4,ZR(JTPST))
           TIME          = ZR(JTPST+3-1) - ZR(JTDEB+4-1)
           ZR(JTDEB+4-1) = ZR(JTPST+3-1)
-          CALL NMRTIM(SDTIME,TIMER ,TIME)          
-        ELSEIF ((TIMER.EQ.'FACTOR').OR.
+          CALL NMRTIM(SDTIME,TIMER ,TIME)
+        ELSEIF ((TIMER.EQ.'INTEGRATION').OR.
+     &          (TIMER.EQ.'FACTOR').OR.
+     &          (TIMER.EQ.'SECO_MEMB').OR.
+     &          (TIMER.EQ.'SOLVE').OR.
      &          (TIMER.EQ.'CONT_GEOM').OR.
      &          (TIMER.EQ.'CTCD_ALGO').OR.
-     &          (TIMER.EQ.'CTCC_MATR').OR.
-     &          (TIMER.EQ.'CTCC_CONT').OR.
-     &          (TIMER.EQ.'CTCC_FROT').OR. 
      &          (TIMER.EQ.'CTCC_PREP').OR.
-     &          (TIMER.EQ.'SECO_MEMB').OR.          
-     &          (TIMER.EQ.'INTEGRATION').OR.
-     &          (TIMER.EQ.'SOLVE')) THEN
+     &          (TIMER.EQ.'CTCC_MATR').OR.
+     &          (TIMER.EQ.'CTCC_VECT').OR.
+     &          (TIMER.EQ.'CTCC_CONT').OR.
+     &          (TIMER.EQ.'CTCC_FROT')) THEN
           CALL UTTCPU('CPU.NMTIME.TM1','FIN',' ')
           CALL UTTCPR('CPU.NMTIME.TM1',4,ZR(JTMP1))
           TIME          = ZR(JTMP1+3-1) - ZR(JTDEB+5-1)
@@ -216,10 +219,10 @@ C
           CALL NMRTIM(SDTIME,TIMER,TIME  )
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF  
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF    
+      ENDIF
 C
       CALL JEDEMA()
       END

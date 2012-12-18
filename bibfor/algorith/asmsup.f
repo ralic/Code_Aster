@@ -11,7 +11,7 @@
       CHARACTER*14      NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,11 @@ C     ------------------------------------------------------------------
      &             VALI(2)
       CHARACTER*1  K1B
       CHARACTER*4  CTYP, DIR(3)
-      CHARACTER*8  K8B, NOMA, GRNOEU, NOEU, NOMCMP(3)
+      CHARACTER*8  K8B, NOMA, NOEU, NOMCMP(3)
       CHARACTER*15 MOTFAC
       CHARACTER*16 NOMSY
       CHARACTER*19 CHAM19
-      CHARACTER*24 OBJ1, OBJ2, VALK(2)
+      CHARACTER*24 OBJ1, OBJ2, VALK(2), GRNOEU
       INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA  DIR / 'X' , 'Y' , 'Z' /
@@ -179,10 +179,11 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
               CALL GETVTX(MOTFAC,'GROUP_NO',IOC,IARG,0,K8B,N1)
               IF (N1.NE.0) THEN
                 NGR = -N1
-                CALL WKVECT('&&ASMSUP.GROUP_NO','V V K8',NGR,JGRN)
-                CALL GETVTX(MOTFAC,'GROUP_NO',IOC,IARG,NGR,ZK8(JGRN),N1)
+                CALL WKVECT('&&ASMSUP.GROUP_NO','V V K24',NGR,JGRN)
+                CALL GETVTX(MOTFAC,'GROUP_NO',IOC,
+     &                      IARG,NGR,ZK24(JGRN),N1)
                 DO 50 IGR = 1, NGR
-                  GRNOEU = ZK8(JGRN+IGR-1)
+                  GRNOEU = ZK24(JGRN+IGR-1)
                   CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
                   IF (IRET .EQ. 0) THEN
                     IER = IER + 1

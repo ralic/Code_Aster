@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,8 @@ C       ----------------------------------------------------------------
       REAL*8 VIND(*),DGDTAU,HSR(NSG,NSG),DGSDTS,DKSDTS,DGRDBS,DKSDBR
       REAL*8 DHDALR,HS,TAUR,DP,DY(*),MATERF(NMAT*2),DT,RP,DGDALR,DFDRR
       REAL*8 ALPHAM,DALPHA,ALPHAP,CRIT,DGAMMA,SGNS,GAMMAP,PETITH,SGNR
-      CHARACTER*16 NECOUL,CPMONO(5*NMAT+1)
+      CHARACTER*16 NECOUL
+      CHARACTER*24 CPMONO(5*NMAT+1)
       INTEGER IRR,DECIRR,NBSYST,DECAL
       COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C     ----------------------------------------------------------------

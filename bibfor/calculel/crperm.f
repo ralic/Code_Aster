@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,12 +34,11 @@ C
       REAL*8         INST1, TRAN(3), PREC
       REAL*8 VALR
       COMPLEX*16     CBID
-      CHARACTER*8    K8B, CRIT, RESU1, RESU2, RESU3, MA1, MA2,
-     &               GMA1, GMA2
+      CHARACTER*8    K8B, CRIT, RESU1, RESU2, RESU3, MA1, MA2
       CHARACTER*16   TYPRES, NOMCMD, CHAM(4), OPTION
       CHARACTER*24 VALK(2)
       CHARACTER*19   PRCHNO
-      CHARACTER*24   CH1, CH2, CHS1, CHS2, LINOEU,
+      CHARACTER*24   CH1, CH2, CHS1, CHS2, LINOEU, GMA1, GMA2,
      &               LIMA1, LIMA2, LIGREL, CHSI1(4), CHSI2(4)
       INTEGER      IARG
 C DEB ------------------------------------------------------------------

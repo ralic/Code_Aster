@@ -1,4 +1,4 @@
-# MODIF  DATE 03/12/2012   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES PAR RECOMBINAISON MODALE SUR UNE PLAQUE FISSUREE
 # sdls114a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,7 +151,7 @@ FF1=DEFI_FOND_FISS(MAILLAGE=M,
                    FOND_FISS=_F(GROUP_NO = 'PF',),
                   );
 
-GLMO1=CALC_G(OPTION='K_G_MODA',
+GLMO1=CALC_G(OPTION='CALC_K_G',
              RESULTAT=MODE,
              TOUT_MODE = 'OUI',
              THETA=_F(FOND_FISS=FF1,
@@ -179,8 +179,8 @@ IMPR_TABLE(TABLE=T1_K)
 
 
 # TEST DE NON REGRESSION SUR LES 5 PREMIERS MODES
-Kg_ref =[-1.9210656530516E+10, -1.1660157187863E+11, 8.0391929369706E+10, -1.188040192036E+11, 1.7229545354009E+11]
-Ku_ref =[-1.9038714866638E+10, -1.1555795319447E+11, 7.9672432337416E+10, -1.177406508046E+11, 1.7075333962439E+11]
+Kg_ref =[-1.9210656530516E+10, -1.1660157187863E+11, 8.0391912527133E+10, -1.1880390578447E+11, 1.7229518729345E+11]
+Ku_ref =[-1.9038714866638E+10, -1.1555795319447E+11, 7.9672432337416E+10, -1.177406508046E+11 , 1.7075333962439E+11]
 
 for i in range(0,5) :
    iord = i + 1
@@ -237,17 +237,17 @@ RESUDYNA = REST_GENE_PHYS(RESU_GENE = RES_DYNA,
                           NOM_CHAM=('DEPL','ACCE',)
                           );
 
-RESUDYNA =CALC_CHAMP(reuse =RESUDYNA ,
-                   MODELE=MO,
-                   CHAM_MATER=CM,
-                   CONTRAINTE=('SIEF_ELGA'),
-                   RESULTAT=RESUDYNA ,);
+RESUDYNA=CALC_CHAMP(reuse =RESUDYNA ,
+                    MODELE=MO,
+                    CHAM_MATER=CM,
+                    CONTRAINTE=('SIEF_ELGA'),
+                    RESULTAT=RESUDYNA ,);
 
-RESUDYNA =CALC_CHAMP(reuse =RESUDYNA ,
-                   MODELE=MO,
-                   CHAM_MATER=CM,
-                   RESULTAT=RESUDYNA ,
-                   FORCE='REAC_NODA',);
+RESUDYNA=CALC_CHAMP(reuse =RESUDYNA ,
+                    MODELE=MO,
+                    CHAM_MATER=CM,
+                    RESULTAT=RESUDYNA ,
+                    FORCE='REAC_NODA',);
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    K_MODAL = _F(TABL_K_MODA =GLMO1,
@@ -266,7 +266,7 @@ TEST_TABLE(
 
 ###TESTS INFORMATIQUES
 GLMO2=CALC_G(NUME_MODE = 1,
-             OPTION='K_G_MODA',
+             OPTION='CALC_K_G',
              RESULTAT=MODE,
              THETA=_F(FOND_FISS=FF1,
                       R_INF=5.E-6,
@@ -283,12 +283,14 @@ TEST_TABLE(
                      VALE_I=1,),
            )
 
-GLMO3=CALC_G(OPTION='K_G_MODA',
+GLMO3=CALC_G(OPTION='CALC_K_G',
              RESULTAT=MODE,
              FREQ = 3.46915E+03,
              PRECISION=1.E-3,
-             THETA=_F(THETA=THET1,
-                      FOND_FISS = FF1),);
+             THETA=_F(FOND_FISS=FF1,
+                      R_INF=5.E-6,
+                      R_SUP=5.E-5,
+                      DIRECTION = (-1.0, 0.0, 0.0),),);
 
 TEST_TABLE(
            VALE_CALC=-1.9210656530516E+10,

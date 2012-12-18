@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 28/08/2012   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF elements Messages  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -322,9 +322,6 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
  Le type des mailles des lèvres doit être quadrangle ou triangle.
 """),
 
-84 : _(u"""
-  %(k1)s CHAM_NO inexistant
-"""),
 
 87 : _(u"""
  Mauvaise définition de MP1 et MP2

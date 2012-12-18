@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -218,11 +218,12 @@ OPTION__
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            299   IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  DDL_MECA PTHETAR
+                                     ZVARCPG  PVARCRR  DDL_MECA PTHETAR  CFREQR   PPULPRO  CCOMPOR  PCOMPOR
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          299   IN__   DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  CFISSR   PFISSR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR  CFREQR   PPULPRO
+                                     CCOMPOR  PCOMPOR
                               OUT__  EKTHETA  PGTHETA
     CALC_NOEU_BORD      290   IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -380,10 +381,6 @@ OPTION__
                               OUT__  EVOISIN  PVOISIN
     INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
-    K_G_MODA            399   IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CPESANR  PPESANR  CFREQR   PPULPRO  CROTATR  PROTATR
-                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   DDL_MECA PTHETAR
-                              OUT__  EKTHETA  PGTHETA
     MASS_INER           285   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           82    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC

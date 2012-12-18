@@ -1,9 +1,9 @@
-      SUBROUTINE NMFI2D( NPG,LGPG,MATE,OPTION,GEOM,DEPLM,DDEPL,SIGMA,
-     &                   FINT,KTAN,VIM,VIP,TM,TP,CRIT,COMPOR,TYPMOD,
-     &                   CODRET)
+      SUBROUTINE NMFI2D( NPG,LGPG,MATE,OPTION,GEOM,DEPLM,DDEPL,
+     &                   SIGMO,SIGMA,FINT,KTAN,VIM,VIP,TM,TP,CRIT,
+     &                   COMPOR,TYPMOD,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 17/12/2012   AUTEUR LAVERNE J.LAVERNE 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,8 @@ C ======================================================================
       INCLUDE 'jeveux.h'
       INTEGER MATE,NPG,LGPG,CODRET
       REAL*8  GEOM(2,4),DEPLM(8),DDEPL(8),TM,TP
-      REAL*8  FINT(8),KTAN(8,8),SIGMA(6,NPG),VIM(LGPG,NPG),VIP(LGPG,NPG)
+      REAL*8  FINT(8),KTAN(8,8),SIGMO(6,NPG),SIGMA(6,NPG)
+      REAL*8  VIM(LGPG,NPG),VIP(LGPG,NPG)
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 OPTION, COMPOR(*)
 C-----------------------------------------------------------------------
@@ -116,7 +117,7 @@ C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP)
         CALL NMCOMP('RIGI',KPG,1,2,TYPMOD,MATE,COMPOR,CRIT,
      &              TM,TP,
      &              2,SUM,DSU,
-     &              1,RBID,VIM(1,KPG),
+     &              1,SIGMO(1,KPG),VIM(1,KPG),
      &              OPTION,
      &              ANGMAS,
      &              3,COOPG(1,KPG),

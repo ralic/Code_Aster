@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,8 +134,6 @@ C       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
 
  110  CONTINUE
 
-      IF (OPTION.EQ.'K_G_MODA') GOTO 9999
-
 C     ------------------------------------------------------------------
 C              CALCUL DE G, K1, K2, K3 SUR LES LEVRES
 C     ------------------------------------------------------------------
@@ -188,8 +186,8 @@ C     RÉCUPÉRATIONS DES DONNÉES SUR LA TOPOLOGIE DES FACETTES
       DO 40 I=1,5
         DO 41 J=1,3
           CFACE(I,J)=0
- 41     CONTINUE      
- 40   CONTINUE      
+ 41     CONTINUE
+ 40   CONTINUE
 
       DO 20 I=1,NFACE
         DO 21 J=1,NPTF

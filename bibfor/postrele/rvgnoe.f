@@ -9,7 +9,7 @@
       CHARACTER*24                           NLSTND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF POSTRELE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,8 @@ C
       INTEGER      ASGTU,I1,I2,JVALE,NY
       REAL*8       VECTY(3), TOLE
       CHARACTER*1  K1B
-      CHARACTER*8  COURBE, CRIT, NOMGRN
+      CHARACTER*8  COURBE, CRIT
+      CHARACTER*24 NOMGRN
       CHARACTER*15 NREPND
       CHARACTER*17 NREPGN
       INTEGER      IARG
@@ -64,18 +65,17 @@ C
 C --- RECUPERATION DES ENTITES
 C
       CALL GETVEM(NMAILA,'GROUP_NO',MCF,'GROUP_NO',
-     &                                  IOCC,IARG,0,ZK8,NBRGPN)
+     &            IOCC,IARG,0,ZK24(1),NBRGPN)
       CALL GETVEM(NMAILA,'NOEUD',MCF,'NOEUD',
-     &                                  IOCC,IARG,0,ZK8,NBNEUD)
+     &            IOCC,IARG,0,ZK8,NBNEUD)
       NBRGPN = -NBRGPN
       NBNEUD = -NBNEUD
       IF ( NBRGPN .NE. 0 ) THEN
-         CALL WKVECT('&OP0051.NOM.GRP.ND','V V K8',NBRGPN,AGRPN)
+         CALL WKVECT('&OP0051.NOM.GRP.ND','V V K24',NBRGPN,AGRPN)
          CALL GETVEM(NMAILA,'GROUP_NO',MCF,'GROUP_NO',
-     &                                    IOCC,IARG,NBRGPN,ZK8(AGRPN),
-     &                                    N1)
+     &               IOCC,IARG,NBRGPN,ZK24(AGRPN),N1)
          DO 10, I = 1, NBRGPN, 1
-            CALL JELIRA(JEXNOM(NREPGN,ZK8(AGRPN+I-1)),'LONUTI',N1,K1B)
+            CALL JELIRA(JEXNOM(NREPGN,ZK24(AGRPN+I-1)),'LONUTI',N1,K1B)
             NBTND = NBTND + N1
 10       CONTINUE
       ENDIF
@@ -100,7 +100,7 @@ C
       LIBRE = NBNEUD + 1
       IF ( NBRGPN .NE. 0 ) THEN
          DO 100, I = 1, NBRGPN, 1
-            NOMGRN = ZK8(AGRPN + I-1)
+            NOMGRN = ZK24(AGRPN + I-1)
             CALL JELIRA(JEXNOM(NREPGN,NOMGRN),'LONMAX',NBN,K1B)
             CALL JEVEUO(JEXNOM(NREPGN,NOMGRN),'L',AGNEUD)
             DO 110, J = 1, NBN, 1
@@ -167,7 +167,7 @@ C        VERIFICATIONS PRELIMINAIRES
      &      (NBNEUD.EQ.0.AND.NBRGPN.EQ.1)) THEN
           IERA = 0
           IF(NBRGPN.EQ.1) THEN
-            NOMGRN = ZK8(AGRPN + 1-1)
+            NOMGRN = ZK24(AGRPN + 1-1)
             CALL JELIRA(JEXNOM(NREPGN,NOMGRN),'LONMAX',NBN,K1B)
             IF(NBN.LT.2)  CALL U2MESS('F','POSTRELE_21')
           ENDIF

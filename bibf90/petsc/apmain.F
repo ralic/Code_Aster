@@ -2,7 +2,7 @@
      &                  IRET  )
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APMAIN PETSC  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF APMAIN PETSC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -60,24 +60,26 @@ C RESPONSABLE DESOZA T.DESOZA
       PARAMETER   (NMXINS=5)
 !
 !     VARIABLES LOCALES
-      INTEGER      IFM,NIV,NSMDI,IERD,IBID,NMAXIT,PTSERR
-      INTEGER      LMAT,IDVALC,JSLVI,JSLVK,JSLVR ,TBLOC
+      INTEGER      IFM,NIV,IERD,IBID,NMAXIT,PTSERR,JNEQU
+      INTEGER      LMAT,IDVALC,JSLVI,JSLVK,JSLVR
 !
       CHARACTER*24 PRECON
       CHARACTER*19 NOMAT,NOSOLV
       CHARACTER*14 NONU
-      CHARACTER*4  KBID
       CHARACTER*1  ROUC
 !
       REAL*8       DIVTOL,RESIPC
       COMPLEX*16   CBID
+!
+      LOGICAL      LMD
 !
 !     COMMUN DE SAUVEGARDE DES INSTANCES
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
       CHARACTER*14  NONUS(NMXINS)
       Mat              Ap(NMXINS)
       KSP              Kp(NMXINS)
-      COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
+      Vec              Bp(NMXINS),x
+      COMMON /SPETSC/ Ap,Kp,Bp,x,NOMATS,NOSOLS,NONUS
 !
 !     COMMUN POUR LE PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
       CHARACTER*19 SPSOMU,SPMAT,SPSOLV
@@ -87,12 +89,11 @@ C RESPONSABLE DESOZA T.DESOZA
 !----------------------------------------------------------------
 !     Variables PETSc
 !
-      PetscInt           ierr,neq,low,high,i
-      PetscInt           bs,maxits
+      PetscInt           ierr,neq,i
+      PetscInt           maxits
       PetscReal          rtol,atol,dtol
-      Vec                b,x,r,xgth
-      PetscScalar        XX(1),ires,fres
-      PetscOffset        xidx
+      Vec                r
+      PetscScalar        ires,fres
       VecScatter         ctx
       KSPConvergedReason indic
       Mat                A
@@ -110,18 +111,29 @@ C RESPONSABLE DESOZA T.DESOZA
       NOSOLV = NOSOLS(KPTSC)
       NONU   =  NONUS(KPTSC)
 
+      CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
+      LMD = ZK24(JSLVK-1+10)(1:3).EQ.'OUI'
+
       IF (ACTION.EQ.'PRERES') THEN
 !     ----------------------------
 
 !        1.1 CREATION ET PREALLOCATION DE LA MATRICE PETSc :
 !        ---------------------------------------------------
 
-         CALL APALLC(KPTSC)
+         IF ( LMD ) THEN
+           CALL APALMD(KPTSC)
+         ELSE
+           CALL APALMC(KPTSC)
+         ENDIF
 
 !        1.2 COPIE DE LA MATRICE ASTER VERS LA MATRICE PETSc :
 !        -----------------------------------------------------
 
-         CALL APMATR(KPTSC)
+         IF ( LMD ) THEN
+           CALL APMAMD(KPTSC)
+         ELSE
+           CALL APMAMC(KPTSC)
+         ENDIF
 
 !        1.3 ASSEMBLAGE DE LA MATRICE PETSc :
 !        ------------------------------------
@@ -172,33 +184,7 @@ C RESPONSABLE DESOZA T.DESOZA
 !        2.2 CREATION DU VECTEUR PETSc :
 !        -------------------------------
 
-         CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
-         neq=NSMDI
-
-!     -- TAILLE DES BLOCS
-         CALL APBLOC(NOMAT ,NOSOLV,TBLOC )
-         bs = ABS(TBLOC)
-
-         call VecCreate(PETSC_COMM_WORLD,b,ierr)
-         CALL ASSERT(ierr.EQ.0)
-         call VecSetBlockSize(b,bs,ierr)
-         CALL ASSERT(ierr.EQ.0)
-         call VecSetSizes(b,PETSC_DECIDE,neq,ierr)
-         CALL ASSERT(ierr.EQ.0)
-         call VecSetType(b,VECMPI,ierr)
-         CALL ASSERT(ierr.EQ.0)
-
-         call VecGetOwnershipRange(b,low,high,ierr)
-         CALL ASSERT(ierr.EQ.0)
-         call VecGetArray(b,XX,xidx,ierr)
-         CALL ASSERT(ierr.EQ.0)
-
-         DO i=1,high-low
-            XX(xidx+i)=RSOLU(low+i)
-         END DO
-
-         call VecRestoreArray(b,XX,xidx,ierr)
-         CALL ASSERT(ierr.EQ.0)
+         CALL APVSMB(KPTSC,LMD,RSOLU)
 
 !        2.3 PARAMETRES DU KSP :
 !        -----------------------
@@ -208,14 +194,14 @@ C RESPONSABLE DESOZA T.DESOZA
 !        2.3b CREATION DES PRECONDITIONNEURS RETARDES :
 !        ----------------------------------------------
 
-         CALL APPCRS(KPTSC)
+         CALL APPCRS(KPTSC,LMD)
 
 !        2.4 RESOLUTION :
 !        ----------------
 
-         call VecDuplicate(b,x,ierr)
+         call VecDuplicate(Bp(KPTSC),x,ierr)
          CALL ASSERT(ierr.EQ.0)
-         call KSPSolve(ksp,b,x,ierr)
+         call KSPSolve(ksp,Bp(KPTSC),x,ierr)
 
 !        2.5 DIAGNOSTIC :
 !        ----------------
@@ -286,13 +272,13 @@ C RESPONSABLE DESOZA T.DESOZA
             call MatMult(A,x,r,ierr)
             CALL ASSERT(ierr.EQ.0)
 !           r = b - Ax
-            call VecAYPX(r,-1.D0,b,ierr)
+            call VecAYPX(r,-1.D0,Bp(KPTSC),ierr)
             CALL ASSERT(ierr.EQ.0)
 !           fres = ||r||_2
             call VecNorm(r,NORM_2,fres,ierr)
             CALL ASSERT(ierr.EQ.0)
 !           ires = ||b||_2
-            call VecNorm(b,NORM_2,ires,ierr)
+            call VecNorm(Bp(KPTSC),NORM_2,ires,ierr)
             CALL ASSERT(ierr.EQ.0)
 !
             call VecDestroy(r,ierr)
@@ -309,43 +295,14 @@ C RESPONSABLE DESOZA T.DESOZA
 !        2.6 RECOPIE DE LA SOLUTION :
 !        ----------------------------
 
-!        -- RECONSTRUCTION DE LA LA SOLUTION SUR CHAQUE PROC
-
-         call VecScatterCreateToAll(x,ctx,xgth,ierr)
-         CALL ASSERT(ierr.EQ.0)
-         call VecScatterBegin(ctx,x,xgth,INSERT_VALUES,SCATTER_FORWARD,
-     &                        ierr)
-         CALL ASSERT(ierr.EQ.0)
-         call VecScatterEnd(ctx,x,xgth,INSERT_VALUES,SCATTER_FORWARD,
-     &                      ierr)
-         CALL ASSERT(ierr.EQ.0)
-         call VecScatterDestroy(ctx,ierr)
-         CALL ASSERT(ierr.EQ.0)
-
-!        -- RECOPIE DE DANS RSOLU
-         call VecGetArray(xgth,XX,xidx,ierr)
-         CALL ASSERT(ierr.EQ.0)
-
-         DO i=1,neq
-            RSOLU(i)=XX(xidx+i)
-         END DO
-
-         call VecRestoreArray(xgth,XX,xidx,ierr)
-         CALL ASSERT(ierr.EQ.0)
-
-!        -- NETTOYAGE
-         call VecDestroy(xgth,ierr)
-         CALL ASSERT(ierr.EQ.0)
-
-!        -- REMISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
-         CALL MRCONL('MULT',LMAT,0,'R',RSOLU,1)
+         CALL APSOLU(KPTSC,LMD,RSOLU)
 
 !         2.7 NETTOYAGE PETSc (VECTEURS) :
 !         --------------------------------
 
 !        -- EN CAS D'ERREUR DANS LES ITERATIONS DE KRYLOV ON SAUTE ICI
 999      CONTINUE
-         call VecDestroy(b,ierr)
+         call VecDestroy(Bp(KPTSC),ierr)
          CALL ASSERT(ierr.EQ.0)
          call VecDestroy(x,ierr)
          CALL ASSERT(ierr.EQ.0)
@@ -377,7 +334,6 @@ C RESPONSABLE DESOZA T.DESOZA
             CALL JEVEUO(NOSOLV//'.SLVI','E',JSLVI)
             ZI(JSLVI-1+5) = NMAXIT
          ENDIF
-
 
       ELSE IF (ACTION.EQ.'DETR_MAT') THEN
 !     -----------------------------------
@@ -417,8 +373,6 @@ C RESPONSABLE DESOZA T.DESOZA
       ELSE
           CALL ASSERT(.FALSE.)
       END IF
-
-
 
 !     -- ON REACTIVE LA LEVEE D'EXCEPTION
       CALL MATFPE(1)

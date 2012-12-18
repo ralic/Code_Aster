@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,14 +52,14 @@ C -----------------
       CHARACTER*8   AIRE, EFFNOR
       INTEGER       NBPAR,NBNOBI
       PARAMETER    (NBPAR=13)
-      CHARACTER*2   TYPPAR(NBPAR)
+      CHARACTER*3   TYPPAR(NBPAR)
       CHARACTER*24  NOMPAR(NBPAR)
       INTEGER      IARG
 C
       DATA          AIRE  /'A1      '/
       DATA          EFFNOR/'N       '/
       DATA          TYPPAR /'I ','K8','R ','R ','R ',
-     &                      'K8','K8','I ','I ','R ','K8','K8','K8'/
+     &                      'K8','K8','I ','I ','R ','K8','K24','K24'/
       DATA          NOMPAR /'NUME_CABLE              ',
      &                      'NOEUD_CABLE             ',
      &                      'ABSC_CURV               ',

@@ -1,8 +1,8 @@
-#@ MODIF mecanonline7 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline7 Messages  DATE 17/12/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@
 cata_msg = {
 
 1 : _(u"""
-  Temps CPU consommé dans ce pas de temps: %(k1)s.
+  Temps CPU consommé dans ce pas de temps  : %(k1)s
 """),
 
 2 : _(u"""    * Temps moyen par itération de Newton  : %(k1)s ( %(i1)d itérations     )"""),
@@ -37,7 +37,7 @@ cata_msg = {
 
 6 : _(u"""    * Temps autres opérations              : %(k1)s"""),
 
-7 : _(u"""    * Temps post-traitement (flambement)   : %(k1)s"""),
+7 : _(u"""    * Temps post-traitement                : %(k1)s"""),
 
 8 : _(u"""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
 
@@ -59,12 +59,14 @@ cata_msg = {
 
 24 : _(u"""    * Temps préparation données contact    : %(k1)s ( %(i1)d préparations   )"""),
 
+25 : _(u"""    * Temps construction vecteurs contact  : %(k1)s ( %(i1)d constructions  )"""),
+
 30 :_(u"""
-  Statistiques du contact dans ce pas de temps.
+  Statistiques du contact dans ce pas de temps
 """),
 
-31 : _(u"""    * Nombre de liaisons de contact        : %(i1)d"""),
+31 : _(u"""    * Nombre de liaisons de contact               : %(i1)d"""),
 
-32 : _(u"""    * Nombre de liaisons de frottement     : %(i1)d"""),
+32 : _(u"""    * Nombre de liaisons de frottement adhérentes : %(i1)d"""),
 
 }

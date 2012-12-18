@@ -1,4 +1,4 @@
-#@ MODIF calc_modal_ops Macro  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF calc_modal_ops Macro  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,7 +105,7 @@ def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISSEMENT,
   if CALC_FREQ['DIM_SOUS_ESPACE']: motscfa['DIM_SOUS_ESPACE']=CALC_FREQ['DIM_SOUS_ESPACE']
   if CALC_FREQ['COEF_DIM_ESPACE']: motscfa['COEF_DIM_ESPACE']=CALC_FREQ['COEF_DIM_ESPACE']
   
-  if CALC_FREQ['OPTION']=='PLUS_PETITE':
+  if CALC_FREQ['OPTION']==('PLUS_PETITE' or 'PLUS_GRANDE'):
      motscfa['NMAX_FREQ']=CALC_FREQ['NMAX_FREQ']
 
   if CALC_FREQ['OPTION']=='CENTRE':

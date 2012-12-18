@@ -1,4 +1,4 @@
-#@ MODIF petsc Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF petsc Messages  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,5 +147,11 @@ Solveur PETSc :
   Conseils :
   - ne mélangez pas des modélisations dans votre calcul
   - utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
+"""),
+
+19 : _(u"""
+Solveur PETSc :
+  La distribution de la matrice assemblée (MATR_DISTRIBUEE='OUI') n'est pas
+    compatible avec le préconditionneur 'ML'.
 """),
 }

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,14 +49,16 @@ C
       INCLUDE 'jeveux.h'
 
       CHARACTER*32 JEXNUM,JEXNOM
-      CHARACTER*8  NOMA,NOMGRP(*),CAELEM
+      CHARACTER*8  NOMA,CAELEM
       INTEGER      IAXE
       REAL*8       GEOM(9)
 C
       REAL*8       LONG
       CHARACTER*1  K1BID
-      CHARACTER*8  COQUEI,COQUEX,NOMCMP,K8BID
-      CHARACTER*24 GRPNO,GRPMA,COORNO,CARTE,CADESC,CAVALE
+      CHARACTER*8  NOMCMP,K8BID
+      CHARACTER*24 GRPMA,COORNO,CARTE,CADESC,CAVALE,NOMGRP(*)
+      CHARACTER*24 COQUEI,COQUEX
+      CHARACTER*32 GRPNO
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +34,8 @@ C     ------------------------------------------------------------------
       REAL*8 EPAIS
       CHARACTER*1 K1B
       CHARACTER*4 CDIM,REPK
-      CHARACTER*8 K8B,NOMAIN,NOMAOU,NEWMAI,NOGMA,PREFIX,MO,GEOFI
-      CHARACTER*8 NOMG,NOMORI,KNUME,PRFNO,PRFMA,PLAN,TRANS
+      CHARACTER*8 K8B,NOMAIN,NOMAOU,NEWMAI,PREFIX,MO,GEOFI
+      CHARACTER*8 NOMORI,KNUME,PRFNO,PRFMA,PLAN,TRANS
       CHARACTER*16 TYPCON,NOMCMD,OPTION,K16BID
       CHARACTER*16 MOTFAC,TYMOCL(NBMC),MOTCLE(NBMC)
       CHARACTER*19 TABLE,LIGREL,CHAM1
@@ -44,7 +44,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 NOMMAV,GRPMAV,TYPMAV,CONNEV,NODIMV,GRPNOV,NOMNOV,
      &             COOVAV,COODSV,COOREV
       CHARACTER*24 MOMANU,MOMANO,CRMANU,CRMANO,CRGRNU,CRGRNO,LISI,LISK
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 NOMG,VALK(2),NOGMA,GPPTNM,GPPTNN
       CHARACTER*24 PRFN1,PRFN2,NUME2,IADR,NUME1,MOMOTO,MOMUTO,PRFN
       INTEGER NN1,IAA,IAGMA,IATYMA,IERD,II,IMA,IN,INO,INUMOL,J,NFI
       INTEGER JCRGNO,JCRGNU,JCRMNO,JCRMNU,JGG,JLII,JLIK,JMAIL,JMOMTO
@@ -370,6 +370,8 @@ C ----------------------------------------------------------------------
       COOVAL=NOMAOU//'.COORDO    .VALE'
       COODSC=NOMAOU//'.COORDO    .DESC'
       COOREF=NOMAOU//'.COORDO    .REFE'
+      GPPTNM=NOMAOU//'.PTRNOMMAI'
+      GPPTNN=NOMAOU//'.PTRNOMNOE'
 
 
       CALL JEDUPO(NODIMV,'G',NODIME,.FALSE.)
@@ -880,7 +882,10 @@ C ----------------------------------------------------------------------
       ENDIF
       NBGRMN=NBGRMV+NBGRMA
       IF (NBGRMN.NE.0) THEN
-        CALL JECREC(GRPMAI,'G V I','NO','DISPERSE','VARIABLE',NBGRMN)
+        CALL JECREO(GPPTNM,'G N K24')
+        CALL JEECRA(GPPTNM,'NOMMAX',NBGRMN,' ')
+        CALL JECREC(GRPMAI,'G V I','NO '//GPPTNM,
+     &              'DISPERSE','VARIABLE',NBGRMN)
         DO 250 I=1,NBGRMV
           CALL JENUNO(JEXNUM(GRPMAV,I),NOMG)
           CALL JEEXIN(JEXNOM(GRPMAI,NOMG),IRET)
@@ -930,7 +935,10 @@ C ----------------------------------------------------------------------
         NBGRNO=0
       ELSE
         CALL JELIRA(GRPNOV,'NOMUTI',NBGRNO,K1B)
-        CALL JECREC(GRPNOE,'G V I','NO','DISPERSE','VARIABLE',NBGRNO)
+        CALL JECREO(GPPTNN,'G N K24')
+        CALL JEECRA(GPPTNN,'NOMMAX',NBGRNO,' ')
+        CALL JECREC(GRPNOE,'G V I','NO '//GPPTNN,
+     &              'DISPERSE','VARIABLE',NBGRNO)
         DO 290 I=1,NBGRNO
           CALL JENUNO(JEXNUM(GRPNOV,I),NOMG)
           CALL JEVEUO(JEXNUM(GRPNOV,I),'L',JVG)
@@ -967,16 +975,21 @@ C ----------------------------------------------------------------------
         IF (NBGRMA.NE.0) THEN
           CALL JEEXIN(GRPMAI,IRET)
           IF (IRET.EQ.0) THEN
-            CALL JECREC(GRPMAI,'G V I','NOM','DISPERSE','VARIABLE',
-     &                  NBGRMA)
+            CALL JECREO(GPPTNM,'G N K24')
+            CALL JEECRA(GPPTNM,'NOMMAX',NBGRMA,' ')
+            CALL JECREC(GRPMAI,'G V I','NO '//GPPTNM,
+     &                  'DISPERSE','VARIABLE',NBGRMA)
           ELSE
-            GRPMAV='&&OP0167.GROUP_MA'
+            GRPMAV='&&OP0167.GROUPEMA'
             CALL JELIRA(GRPMAI,'NOMUTI',NBGMA,K8B)
             NBGRMT=NBGMA+NBGRMA
-            CALL JEDUPO(GRPMAI,'V',GRPMAV,.FALSE.)
+            CALL CPCLMA(NOMAOU,'&&OP0167','GROUPEMA','V')
             CALL JEDETR(GRPMAI)
-            CALL JECREC(GRPMAI,'G V I','NOM','DISPERSE','VARIABLE',
-     &                  NBGRMT)
+            CALL JEDETR(GPPTNM)
+            CALL JECREO(GPPTNM,'G N K24')
+            CALL JEECRA(GPPTNM,'NOMMAX',NBGRMT,' ')
+            CALL JECREC(GRPMAI,'G V I','NO '//GPPTNM,
+     &                  'DISPERSE','VARIABLE',NBGRMT)
             DO 320 I=1,NBGMA
               CALL JENUNO(JEXNUM(GRPMAV,I),NOMG)
               CALL JEEXIN(JEXNOM(GRPMAI,NOMG),IRET)

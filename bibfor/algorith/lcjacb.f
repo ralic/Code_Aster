@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,8 @@ C
 
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
-        CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+        CHARACTER*16    COMP(*)
+        CHARACTER*24    CPMONO(5*NMAT+1)
 
 C       ----------------------------------------------------------------
 

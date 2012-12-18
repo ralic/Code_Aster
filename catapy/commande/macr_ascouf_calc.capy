@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE GALENNE E.GALENNE
+# RESPONSABLE GENIAUT S.GENIAUT
+
 def macr_ascouf_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS,RESU_THER,**args):
   self.type_sdprod(MODELE,modele_sdaster)
   if CHAM_MATER != None:self.type_sdprod(CHAM_MATER,cham_mater)

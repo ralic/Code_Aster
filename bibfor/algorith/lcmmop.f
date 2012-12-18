@@ -13,7 +13,7 @@ C     POUR GAGNER EN TEMPS CPU
       CHARACTER*(*)  FAMI
       CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,8 @@ C              3 variables Alpha, Gamma, P
 C   1 variable : indic
 C     ----------------------------------------------------------------
       CHARACTER*8 MOD
-      CHARACTER*16 NECOUL,NECRIS,NECRCI,CPMONO(5*NMAT+1)
+      CHARACTER*16 NECOUL,NECRIS,NECRCI
+      CHARACTER*24 CPMONO(5*NMAT+1)
       CHARACTER*16 LOCA
       REAL*8 VIS(3),DT,EVG(6),DL,DA,GAMMAS
       REAL*8 EVI(6),SIGG(6),RP,DEVG(6),FV

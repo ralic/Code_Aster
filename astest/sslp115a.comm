@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE DISQUE FISSURE EN PRESENCE DE CONTRAINTES INITIALES
 # sslp115a.para = tps_job 300 mem_job 640Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-DEBUT(CODE=_F(NOM='SSLP115A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NOM='SSLP115A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 
 #####################
@@ -219,35 +219,44 @@ RESUINI=CALC_CHAMP(reuse=RESUINI,
 
 ## Calcul de G en utilisant les couronnes precedemment definies (dans le calcul thermique)
 # et les differentes possibilites de l'etat initial.
-GINGA=CALC_G(THETA=_F(THETA=THETA1,FOND_FISS=FISS1,),
+GINGA=CALC_G(THETA=_F(THETA=THETA1,
+                      #FOND_FISS=FISS1,
+                      ),
              RESULTAT=RESUINI,
              INST=3,
              COMP_INCR=_F(RELATION='ELAS',
                           SIGM_INIT=SIEFELGA),
-             OPTION='CALC_G',);
+             OPTION='CALC_G')
 
 GINNO=CALC_G(THETA=_F(THETA=THETA20,
-                      FOND_FISS=FISS1,),
+#                      FOND_FISS=FISS1,
+                      ),
              RESULTAT=RESUINI,
              INST=3,
              COMP_INCR=_F(RELATION='ELAS',
                           SIGM_INIT=SIEFNOEU),
-             OPTION='CALC_G',);
+             OPTION='CALC_G')
 
 GINELNO=CALC_G(THETA=_F(THETA=THETAc2,
-                        FOND_FISS=FISS1,),
+                        #FOND_FISS=FISS1,
+                        ),
                RESULTAT=RESUINI,
                INST=3,
                COMP_INCR=_F(RELATION='ELAS',
                             SIGM_INIT=SIEFELNO),
-               OPTION='CALC_G',);
+               OPTION='CALC_G')
 
 GTHER=CALC_G(THETA=_F(THETA=THETAc2,
-                      FOND_FISS=FISS1,),
+                      #FOND_FISS=FISS1,
+                      ),
              RESULTAT=RESOUVFI,
              INST=1,
              COMP_INCR=_F(RELATION='ELAS',),
-             OPTION='CALC_G',);
+             OPTION='CALC_G')
+
+
+
+
 ## Impression des resultats
 TEST_TABLE(PRECISION=0.02,
            VALE_CALC=54.638386952673,
@@ -279,8 +288,7 @@ TEST_TABLE(PRECISION=0.02,
                      VALE=3,),
            )
 
-TEST_TABLE(
-           VALE_CALC=55.365086381667,
+TEST_TABLE(VALE_CALC=55.365086381667,
            NOM_PARA='G',
            TABLE=GTHER,
            FILTRE=_F(NOM_PARA='INST',

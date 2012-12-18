@@ -4,7 +4,7 @@
      &                  CONTM,DEFM,DDEFP,EPSM,MODF,
      &                  SIGF,VARIP,ISECAN,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/10/2012   AUTEUR HAMON F.HAMON 
+C MODIF ELEMENTS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,8 @@ C ======================================================================
       REAL*8   TEMPM,TEMPP,TREF,SIGX,EPSX,DEPSX,INSTAM,INSTAP
       REAL*8   CRIT(*),DEFAP(*),DEFAM(*)
 C
-      CHARACTER*16   OPTION,COMPOR(*)
+      CHARACTER*16   OPTION
+      CHARACTER*24   COMPOR(*)
 C --- ------------------------------------------------------------------
 C
 C        AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES

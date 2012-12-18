@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,9 +26,17 @@ il n'est donc pas possible d'identifier le GP critique dans cette étude.
 Augmentez le chargement.
 """),
 
+2: _(u"""
+Erreur dans la récupération de la dimension (du maillage ou du modèle).
+L'opérateur CALC_G ne fonctionne que pour des maillages et des modèles purement 2d ou 3d.
+Notamment, un mélange de dimensions n'est pas autorisé.
+Si le besoin est réel, faites une demande d'évolution auprès de l'équipe de développement.
+"""),
 
 3: _(u"""
-Création de la table  %(k1)s.
+Erreur utilisateur.
+Incohérence entre le mot-clé OPTION et la dimension du problème.
+L'option %(k1)s ne s'utilise qu'en 3d. Or le problème est 2d.
 """),
 
 4: _(u"""
@@ -188,12 +196,7 @@ inférieure et perpendiculaire au fond  %(k1)s.
 """),
 
 27: _(u"""
-Pour un résultat de type MODE_MECA,
-l'option de calcul doit être K_G_MODA.
--> Risque et Conseil :
-Veuillez fournir au mot-clé OPTION l'option K_G_MODA
-et vérifier que le concept fourni au mot-clé RESULTAT
-est de type MODE_MECA.
+Pour un résultat de type MODE_MECA, seule l'option CALC_K_G est disponible.
 """),
 
 28: _(u"""
@@ -391,6 +394,12 @@ Les options SEGM_DROI_ORDO et NOEUD_ORDO de l'opérateur
 DEFI_GROUP/CREA_GROUP_NO peuvent être utilisées.
 ."""),
 
+67 : _(u"""
+Les mots-clés LISSAGE_G et LISSAGE_THETA n'ont de sens que pour un calcul 3d local.
+Dans le cas présent, ils sont ignorés.
+-> Conseil pour ne plus avoir cette alarme :
+Supprimer les mots-clés LISSAGE_G et/ou LISSAGE_THETA.
+."""),
 
 68 : _(u"""
 Les mailles de FOND_INF et de FOND_SUP sont de type différent.
@@ -440,6 +449,11 @@ définies correspondent bien aux faces des éléments 2D qui s'appuient
 sur la lèvre.
 """),
 
+76: _(u"""
+Erreur utilisateur.
+Cette combinaison de lissage est interdite avec X-FEM.
+"""),
+
 78: _(u"""
 La tangente à l'origine n'est pas orthogonale à la normale :
    Normale aux lèvres de la fissure : %(r1)f %(r2)f %(r3)f
@@ -457,14 +471,6 @@ La tangente à l'extrémité n'est pas orthogonale à la normale :
 La tangente à l'extrémité est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale fournie. Vérifier les données.
 """),
-
-80: _(u"""
-Il ne faut donner la direction de propagation si le champ thêta est donné.
-
--> Conseil :
-Veuillez supprimer le mot-clé DIRECTION sous CALC_G/THETA.
-"""),
-
 
 81: _(u"""
 Il faut donner la direction de propagation en 2D
@@ -486,16 +492,9 @@ du fond de fissure (ici égal à %(i1)i) lorsque le lissage de G est de type
 LEGENDRE et le lissage de THETA de type LAGRANGE.
 """),
 
-85: _(u"""
-Le lissage de G doit être de type LEGENDRE si le lissage de THETA
-est de type LEGENDRE.
--> Risque et Conseil :
-Veuillez redéfinir le mot-clé LISSAGE_G.
-"""),
-
-87: _(u"""
-Si la méthode LAGRANGE_REGU est utilisée pour le lissage,
-alors le lissage de G et de thêta doivent être de type LAGRANGE_REGU.
+86: _(u"""
+Erreur utilisateur.
+Cette combinaison de lissage est interdite.
 """),
 
 88: _(u"""
@@ -536,7 +535,13 @@ Le mot-clef BORNES est obligatoire avec l'option  %(k1)s  !
 """),
 
 93: _(u"""
-Accès impossible au champ : %(k1)s pour le numéro d'ordre : %(i1)d
+Accès impossible au champ SIEF_ELGA pour le numéro d'ordre : %(i1)d.
+Or il est nécessaire de connaître SIEF_ELGA car vous avez activé le mot-clé 
+CALCUL_CONTRAINTE='NON'. Le calcul s'arrête.
+-> Conseils :
+- Vérifiez vote mise en données pour archiver SIEF_ELGA à tous les instants 
+demandés dans la commande CALC_G.
+- Ou bien supprimer CALCUL_CONTRAINTE='NON' de la commande CALC_G.
 """),
 
 94: _(u"""
@@ -550,12 +555,32 @@ Si la fissure n'est pas plane, on ne peut pas utiliser le mot-clé NORMALE
 dans DEFI_FOND_FISS: définissez la fissure à partir des mailles de ses lèvres.
 """),
 
-
-
-
+95: _(u"""
+Erreur utilisateur.
+Il y a incompatibilité entre le mot-clé FOND_FISS et le modèle %(k1)s associé
+à la structure de donnée RESULTAT. En effet, le modèle %(k1)s est un modèle X-FEM.
+-> Conseil :
+Lorsque le modèle est de type X-FEM il faut obligatoirement utiliser
+le mot-clé FISSURE de la commande CALC_G.
+"""),
 
 96: _(u"""
-Option non disponible actuellement.
+Erreur utilisateur.
+Il y a incompatibilité entre le mot-clé FISSURE et le modèle %(k1)s associé
+à la structure de donnée RESULTAT. En effet, le modèle %(k1)s est un modèle non X-FEM.
+-> Conseil :
+Veuillez utiliser les mots-clés FOND_FISS ou THETA ou revoir votre modèle.
+"""),
+
+97: _(u"""
+Erreur utilisateur.
+Il y a incompatibilité entre le mot-clé FISSURE et le modèle %(k2)s associé
+à la structure de donnée RESULTAT. En effet, la fissure %(k1)s n'est pas associée au 
+modèle %(k2)s.
+-> Conseils :
+  - Vérifier le mot-clé FISSURE,
+  - Vérifier le mot-clé RESULTAT,
+  - Vérifier la commande MODI_MODELE_XFEM qui a créé le modèle %(k2)s.
 """),
 
 99: _(u"""

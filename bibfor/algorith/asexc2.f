@@ -12,7 +12,7 @@
       LOGICAL          CORFRE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,9 +59,9 @@ C
 
       CHARACTER*1  K1B, DIR(3)
       CHARACTER*4  KNAT
-      CHARACTER*8  K8B, SPECT, NOEU, GRNOEU, NOMSP0(3), NOMPU(2)
+      CHARACTER*8  K8B, SPECT, NOEU, NOMSP0(3), NOMPU(2)
       CHARACTER*9  NIVEAU
-      CHARACTER*24 VALE, OBJ1, OBJ2, VALK(2)
+      CHARACTER*24 VALE, OBJ1, OBJ2, VALK(2), GRNOEU
       INTEGER      IARG
 C
 C     ------------------------------------------------------------------
@@ -198,11 +198,11 @@ C
                CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
      &                                     IOC,IARG,0,K8B,N1)
                NGR = -N1
-               CALL WKVECT('&&ASEXC2.GROUP_NO','V V K8',NGR,JGRN)
+               CALL WKVECT('&&ASEXC2.GROUP_NO','V V K24',NGR,JGRN)
                CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &                                     IOC,IARG,NGR,ZK8(JGRN),N1)
+     &                                     IOC,IARG,NGR,ZK24(JGRN),N1)
                DO 30 IGR = 1, NGR
-                  GRNOEU = ZK8(JGRN+IGR-1)
+                  GRNOEU = ZK24(JGRN+IGR-1)
                   CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
                   IF (IRET .EQ. 0) THEN
                      IER = IER + 1

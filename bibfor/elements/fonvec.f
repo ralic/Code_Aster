@@ -6,7 +6,7 @@
       CHARACTER*8         RESU, NOMA
       CHARACTER*19        CNXINV
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C
       INTEGER       NVEOR, NVEEX
       REAL*8        XPFI, XPFO, YPFI, YPFO, ZPFI, ZPFO, ZRBID
       REAL*8        DDOT, VALR(6), PS1, PS2, ZERO, R8PREM
-      CHARACTER*8   NOMGRP(2)
+      CHARACTER*24  NOMGRP(2)
       CHARACTER*24  GRPNOE, COOVAL
       INTEGER      IARG
 C     -----------------------------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med Messages  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,7 @@ cata_msg = {
 
 7 : _(u"""
   -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
-     est trop long. Il sera tronqué à 8 caractères.
+     est trop long. Il sera tronqué à 24 caractères.
      Le groupe "%(k2)s" est renommé en "%(k3)s".
 """),
 

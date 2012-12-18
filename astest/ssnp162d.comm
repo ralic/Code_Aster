@@ -1,0 +1,510 @@
+# MODIF  DATE 17/12/2012   AUTEUR LAVERNE J.LAVERNE 
+# TITRE TEST DE LA LOI JOINT_MECA_FROT SUR LES ELEMENTS DE JOINT QUAD4
+# ssnp162d.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNP162D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',IGNORE_ALARM=('MODELISA4_9'),DEBUG=_F(SDVERI='OUI'))
+# ON IGNORE LES ALARMES SUR LA MAILLE DE JOINT DEGENERE (AVEC DES NOEUDS CONFONDUS)
+
+# CALCUL 2D EN MODE I ET II POUR LE JOINT_MECA_FROT
+
+# INSTANT FINAL (IL FAUT AVOIR UN MULTIPLE DE 4)
+insfin=4*5
+
+# REGULARISATION NORMALE DE LA COURBE FORCE-DEPLACEMENT
+k_n=1.E12
+# REGULARISATION TANGENTIELLE DE LA COURBE FORCE-DEPLACEMENT
+k_t=2*k_n
+
+# COEFICIENT DE FROTTEMENT
+mu=0.5
+# ADHESION (RESISTANCE A LA TRACTION = ADHESION/MU)
+adhe=1.E5
+# ECROUISSAGE CINEMATIQUE (REGULARISATION DE LA PENTE DE GLISSEMENT)
+ecrouissage=k_t*1.E-6
+
+# PARAMETRES PHYSIQUES
+young=3.E10
+poiss=0.0
+
+# PARAMETRES D'AUTOMATISATION
+# RESISTANCE A LA TRACTION (VALEUR EFFECTIVE, CAR IL N'Y PAS DE RUPTURE)
+sigma_max=adhe/mu
+# PARAMETRE DE L'INCLINAISON DE JOINT (NE PAS MODIFIER, LIE AU MAILLAGE)
+angle=30./180*pi
+L_cube=1.
+# L'OUVERTURE ELASTIQUE DU JOINT + CUBE
+delta_elas = sigma_max/k_n + sigma_max*L_cube/young
+# L'OUVERTURE OU LE JOINT S'OUVRE COMPLETEMENT
+delta_endo = 2*delta_elas
+# FERMETURE DU JOINT (POUR LE TEST EN MODE1 et MODE2)
+delta_ferm=delta_elas/3.
+# L'OUVERTURE EN GLISSEMENT POUR LE TEST EN MODE2
+delta_max_tan=3*delta_elas
+
+MA=LIRE_MAILLAGE()
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(NOEUD=('NO2','NO4'),
+                                NOM='DROITE',),
+                              _F(NOEUD=('NO1','NO3'),
+                                NOM='GAUCHE',),
+                               ),);
+
+IMPR_RESU(FORMAT  = 'GMSH',RESU=_F(MAILLAGE=MA),UNITE=19)
+
+MO=AFFE_MODELE(
+
+                MAILLAGE=MA,
+                VERIF='MAILLE',
+
+                AFFE= (
+                _F(
+                   MAILLE = 'CUBE',
+                   PHENOMENE = 'MECANIQUE',
+                   MODELISATION = 'D_PLAN'
+                     ),
+                 _F(
+                   MAILLE = 'CUBEDEG',
+                   PHENOMENE = 'MECANIQUE',
+                   MODELISATION = 'PLAN_JOINT'
+                   )
+                 )
+              )
+
+
+# MATERIAU ELASTIQUE
+MAT_CUB=DEFI_MATERIAU(ELAS=_F(
+                              E   = young,
+                              NU  = poiss),)
+
+
+# MATERIAU JOINT MECANIQUE AVEC FROTTEMENT
+MAT_JF=DEFI_MATERIAU(
+                  JOINT_MECA_FROT=_F(K_N=k_n,
+                                     K_T=k_t,
+                                     PENA_TANG=ecrouissage,
+                                     MU=mu,
+                                     ADHESION=adhe,
+                                ),);
+
+
+
+CM_F=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=(
+                      _F(MAILLE='CUBE',MATER = MAT_CUB),
+                      _F(MAILLE='CUBEDEG',  MATER = MAT_JF))
+                 );
+
+# ENCASTREMENT D'UNE DES LEVRES DU JOINT
+LIAISON=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(MAILLE='GAUCHE2', DX=0, DY=0),
+    )
+  )
+
+###################################################################################
+#----------------------------------------------------------------------------------
+# CALCUL AVEC CHARGEMENT EN MODE I PURE (JOINT_MECA_RUPT,JOINT_MECA_FROT)
+#----------------------------------------------------------------------------------
+###################################################################################
+
+
+# CHARGEMENT MODE I PUR
+TRAC_1=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(MAILLE='DROITE', DX=cos(angle), DY= sin(angle)),
+    )
+  )
+
+# CREATION DE LISTE D'INSTANT
+L_INST=DEFI_LIST_REEL(VALE=range(insfin+1))
+
+# LISTE D'INSTANTS POUR LES TESTS DE RESULTATS
+linst=[0,insfin/4,insfin/2,3*insfin/4,insfin]
+FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
+                                        linst[1], delta_elas,              # TRACTION ELASTIQUE
+                                        linst[2], delta_endo,              # TRACTION JUSQU'A L'OUVERTURE COMPLETE
+                                        linst[3], -delta_ferm,             # DECHARGEMENT COMPRESSION
+                                        linst[4], 1E-10*delta_elas),       # TRACTION JUSQU'A POINT D'EQUILIBRE (QUASI)
+                  PROL_DROITE='LINEAIRE',);
+
+
+# CALCUL MECANIQUE AVEC FROTTEMENT (JOINT_MECA_FROT)
+U_F=STAT_NON_LINE(
+  SOLVEUR=_F(METHODE='MUMPS',),
+  MODELE     = MO,
+  CHAM_MATER = CM_F,
+  EXCIT      = (
+    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = TRAC_1, FONC_MULT = FCT),
+  ),
+  COMP_INCR  = (
+          _F(RELATION = 'JOINT_MECA_FROT',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             MAILLE = 'CUBE',),
+          ),
+  INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  )
+
+
+#----------------------------------------------------------------------------------
+# POST TRAITEMENT MODE I PURE (JOINT_MECA_FROT)
+#-----------------------------------------------------------------------------------
+
+# CALCUL DE LA FORCE NODALE
+U_F=CALC_CHAMP(reuse =U_F,
+            RESULTAT=U_F,
+            FORCE='FORC_NODA',
+            );
+# VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)
+TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='F_PILOTE',
+                               RESULTAT=U_F,
+                               NOM_CHAM='FORC_NODA',
+                               TOUT_ORDRE='OUI',
+                               GROUP_NO='DROITE',
+                               RESULTANTE=('DX','DY'),),);
+
+
+# PROJECTEUR SUR LA NORMALE
+PNOR = FORMULE(VALE='DX*cos(angle)+DY*sin(angle)',
+              NOM_PARA=('DX','DY',),);
+
+# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE LA FORCE NODALE
+TFORCE=CALC_TABLE(reuse =TFORCE,
+                  TABLE=TFORCE,
+                  ACTION=_F(OPERATION='OPER',
+                            FORMULE=PNOR,
+                            NOM_PARA='F_N',),);
+
+# DEPLACEMENT DU NOEUD EN_HAUT
+TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='DEPL',
+                              RESULTAT=U_F,
+                              NOM_CHAM='DEPL',
+                              TOUT_ORDRE='OUI',
+                              NOEUD='NO2',
+                              NOM_CMP=('DX','DY',),),);
+
+# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
+TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
+                    TABLE=TDELTA_N,
+                    ACTION=_F(OPERATION='OPER',
+                            FORMULE=PNOR,
+                            NOM_PARA='U_N',),);
+
+#----------------------------------------------------------------------------------
+# IMPRESSION DE RESULTAT CALCUL MODE I PURE (JOINT_MECA_FROT)
+#-----------------------------------------------------------------------------------
+
+
+
+# IMPRESSION LA FORCE NODALE NORMALE
+IMPR_TABLE(TABLE=TFORCE);
+
+# IMPRESSION DE L'OUVERTURE NORMALE
+IMPR_TABLE(TABLE=TDELTA_N);
+
+# LA MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
+FN=RECU_FONCTION(TABLE=TFORCE,
+                  PARA_X='INST',
+                  PARA_Y='F_N',);
+
+DN=RECU_FONCTION(TABLE=TDELTA_N,
+                  PARA_X='INST',
+                  PARA_Y='U_N',);
+
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=_F(FONC_X=DN,
+                        FONC_Y=FN,
+                        LEGENDE='Force Deplacement',),
+             );
+
+## EN MODE INTERACTIF SEULEMENT
+#IMPR_FONCTION(FORMAT='XMGRACE',
+#              PILOTE='INTERACTIF',
+#              COURBE=_F(FONC_X=DN,
+#                        FONC_Y=FN,
+#                        LEGENDE='F(U)',),
+#              LEGENDE_X='\\xd\\s\\0n',
+#              LEGENDE_Y='F\\sn',
+#              TITRE='mode I avec charge-decharge',
+#              );
+
+
+#----------------------------------------------------------------------------------
+# TESTS CALCUL MODE I PURE (JOINT_MECA_FROT)
+#-----------------------------------------------------------------------------------
+
+# COURBE FORCE-DEPLACEMENT JOINT+CUBE EST TESTEE :
+# VALEUR DE CHARGEMENT MAXIMALE  (sigma_max)
+# PLAFONNEMENT DE SIGMA_N
+# DECHARGE ELASTIQUE SIGMA(delta_ferm)=sigma_max/3
+# CHARGEMENT JUSQU'AU POINT D'EQUILIBRE
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=200000.0,
+                         VALE_REFE=sigma_max,
+                         VALE_PARA=linst[1],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      _F(VALE_CALC=200000.013733,
+                         VALE_REFE=sigma_max,
+                         VALE_PARA=linst[2],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      _F(VALE_CALC=1.37333333333e-05,
+                         VALE_REFE=delta_endo,
+                         VALE_PARA=linst[2],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=DN,),
+                      _F(VALE_CALC=-66666.6666667,
+                         VALE_REFE=-sigma_max/3.,
+                         VALE_PARA=linst[3],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      _F(VALE_CALC=1.99999946838e-05,
+                         VALE_REFE=sigma_max*1e-10,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=linst[4],
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=sigma_max*1e-10,
+                         NOM_PARA='INST',
+                         FONCTION=FN,),
+                      ),
+              )
+
+###################################################################################
+#----------------------------------------------------------------------------------
+# ALLER-ROUTOUR EN MODE II AVEC UNE FERMETURE PARTIELLE
+#----------------------------------------------------------------------------------
+###################################################################################
+
+
+# LIST D'INSTANTS POUR LES TESTS DE RESULTATS EN MODE2
+linst2=[0, insfin/4, insfin/2, 3*insfin/4, insfin]
+# CHARGEMENT MODE II EN MAINTENANT UNE OUVERTURE NORMALE PARTIELLE
+F2DX=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
+                                        linst2[1],-delta_max_tan*sin(angle),                        # GLISSEMENT TANGENTIEL
+                                        linst2[2],-delta_ferm*cos(angle)-delta_max_tan*sin(angle),  # FERMETURE NORMALE
+                                        linst2[3],-delta_ferm*cos(angle)+delta_max_tan*sin(angle),  # RETOUR GLISSEMENT TANGENTIEL
+                                        linst2[4],-delta_ferm*cos(angle)-delta_max_tan*sin(angle)   # REGLISSEMENT TANGENTIEL
+                                        ),
+                  PROL_DROITE='LINEAIRE',);
+F2DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
+                                        linst2[1], delta_max_tan*cos(angle),                        # GLISSEMENT TANGENTIEL
+                                        linst2[2],-delta_ferm*sin(angle)+delta_max_tan*cos(angle),  # FERMETURE NORMALE
+                                        linst2[3],-delta_ferm*sin(angle)-delta_max_tan*cos(angle),  # RETOUR GLISSEMENT TANGENTIEL
+                                        linst2[4],-delta_ferm*sin(angle)+delta_max_tan*cos(angle)   # REGLISSEMENT TANGENTIEL
+                                        ),
+                  PROL_DROITE='LINEAIRE',);
+
+TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
+                      DDL_IMPO=(_F(GROUP_NO='GAUCHE',
+                                    DX=F2DX,
+                                    DY=F2DY,),
+                                 ),
+                      );
+
+
+#--------------------------------------
+# CALCUL AVEC CHARGEMENT EN MODE II
+#--------------------------------------
+
+U_2=STAT_NON_LINE(
+  SOLVEUR=_F(METHODE='MUMPS',),
+  MODELE     = MO,
+  CHAM_MATER = CM_F,
+  EXCIT      = (
+    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = TRAC_2, ),
+  ),
+  COMP_INCR  = (
+          _F(RELATION = 'JOINT_MECA_FROT',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             MAILLE = 'CUBE',),
+          ),
+  INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  )
+
+
+
+#----------------------------------------------------------------------------------
+# POST TRAITEMENT MODE II (JOINT_MECA_FROT)
+#-----------------------------------------------------------------------------------
+
+# CALCUL DE L'OUVERTURE TANGENTIEL DU JOINT V8=DELTA_TANG A PARTIR DE CES VALEURS AUX POINTS GAUSSE
+U_2=CALC_CHAMP(reuse =U_2,
+              RESULTAT=U_2,
+               VARI_INTERNE=('VARI_ELNO'),
+              );
+# CALCUL DE L'OUVERTURE TANGENTIEL DU JOINT AUX NOEUDS
+U_2=CALC_CHAMP(reuse =U_2,
+            RESULTAT=U_2,
+            VARI_INTERNE='VARI_NOEU',
+            );
+# CALCUL DE LA FORCE NODALE
+U_2=CALC_CHAMP(reuse =U_2,
+            RESULTAT=U_2,
+            FORCE='FORC_NODA',
+            );
+# FORCE NODALE RESULTANTE  SELONS DIRECTIONS X ET Y : (F_X,F_Y)
+TFORCET=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='F_PILOTE',
+                               RESULTAT=U_2,
+                               NOM_CHAM='FORC_NODA',
+                               TOUT_ORDRE='OUI',
+                               GROUP_NO='GAUCHE',
+                               RESULTANTE=('DX','DY'),),);
+
+
+# IMPRESSION DU MODULE DE LA FORCE NODALE
+IMPR_TABLE(TABLE=TFORCET);
+
+
+
+# PROJECTEUR SUR LA DIRECTION TANGENTE
+PTAN = FORMULE(VALE='-DX*sin(angle)+DY*cos(angle)',
+              NOM_PARA=('DX','DY',),);
+
+# RAJOUT D'UNE COLOGNE DANS LE TABLEAU AVEC LA PARTIE TANGENTE DE LA FORCE NODALE
+TFORCET=CALC_TABLE(reuse =TFORCET,
+                  TABLE=TFORCET,
+                  ACTION=_F(OPERATION='OPER',
+                            FORMULE=PTAN,
+                            NOM_PARA='F_T',),);
+
+# DEPLACEMENT DU NOEUD DU HAUT
+TDEPLT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='DEPL',
+                              RESULTAT=U_2,
+                              NOM_CHAM='DEPL',
+                              TOUT_ORDRE='OUI',
+                              NOEUD='NO2',
+                              NOM_CMP=('DX','DY',),),);
+
+# OUVERTURE TANGENTIEL du JOINT
+TDELTA_T=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
+                              INTITULE='DELTA_T',
+                              RESULTAT=U_2,
+                              NOM_CHAM='VARI_NOEU',
+                              TOUT_ORDRE='OUI',
+                              GROUP_NO='GAUCHE',
+                              NOM_CMP='V8',),);
+
+# FILTRAGE JUSTE DE LA VALEUR MOYENNE
+TDELTA_T=CALC_TABLE(reuse =TDELTA_T,
+                 TABLE=TDELTA_T,
+                 ACTION=_F(OPERATION='FILTRE',
+                           NOM_PARA='QUANTITE',
+                           VALE_K='MOMENT_0',),);
+
+###################################################
+
+#-------------------------
+# TESTS CALCUL MODE II
+#-------------------------
+
+
+# IMPRESSION DU MODULE DE LA FORCE NODALE
+IMPR_TABLE(TABLE=TFORCET);
+
+
+# IMPRESSION DU DEPLACEMENT SELON X
+IMPR_TABLE(TABLE=TDEPLT,
+           NOM_PARA='DX',);
+
+
+# IMPRESSION DE DEPLACEMENTS NORMALS
+IMPR_TABLE(TABLE=TDELTA_T,
+           NOM_PARA='V8',
+           );
+
+
+# LA MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
+FT=RECU_FONCTION(TABLE=TFORCET,
+                  PARA_X='INST',
+                  PARA_Y='F_T',);
+
+DT=RECU_FONCTION(TABLE=TDELTA_T,
+                  PARA_X='INST',
+                  PARA_Y='V8',);
+
+
+## EN MODE INTERACTIF SEULEMENT
+#IMPR_FONCTION(FORMAT='XMGRACE',
+#              PILOTE='INTERACTIF',
+#              COURBE=_F(FONC_X=DT,
+#                        FONC_Y=FT,
+#                        LEGENDE='F(U)',),
+#              LEGENDE_X='\\xd\\s\\0t',
+#              LEGENDE_Y='F\\st',
+#              TITRE='mode II aller-retour du joint ferme',
+#              );
+
+
+# COURBE FORCE-DEPLACEMENT JOINT+CUBE EST TESTEE :
+# VALEUR DU PARAMETRE ADHESION
+# OUVERTURE TANGENTIELLE
+# GLISSEMENT SIGMA_T(delta_ferm,delta_max_tan)=k_n*delta_ferm*mu+adhe
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=100041.099959,
+                         VALE_REFE=adhe,
+                         VALE_PARA=linst2[1],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FT,),
+                      _F(VALE_CALC=2.06e-05,
+                         VALE_REFE=delta_max_tan,
+                         VALE_PARA=linst2[2],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=DT,),
+                      _F(VALE_CALC=-1244566.5998,
+                         VALE_REFE=-k_n*delta_ferm*mu-adhe,
+                         VALE_PARA=linst2[3],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FT,),
+                      _F(VALE_CALC=1244646.51058,
+                         VALE_REFE=k_n*delta_ferm*mu+adhe,
+                         VALE_PARA=linst2[4],
+                         REFERENCE='ANALYTIQUE',
+                         NOM_PARA='INST',
+                         FONCTION=FT,),
+                      ),
+              )
+
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_F,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
+
+FIN()

@@ -8,7 +8,7 @@
       REAL*8        PSIDE(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,19 +102,19 @@ C        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
      &           NUMEXI,IARG,0,KBID,NBGR)
          NBGR = - NBGR
          IF (NBGR.NE.0) THEN
-            CALL WKVECT('&&TRMULT.GROUP_NO','V V K8',NBGR,IDGN)
+            CALL WKVECT('&&TRMULT.GROUP_NO','V V K24',NBGR,IDGN)
             CALL GETVEM(MAILLA,'GROUP_NO','EXCIT','GROUP_NO',
-     &              NUMEXI,IARG,NBGR,ZK8(IDGN),NBV)
+     &              NUMEXI,IARG,NBGR,ZK24(IDGN),NBV)
 C           --- ECLATE LE GROUP_NO EN NOEUD ---
-            CALL COMPNO(MAILLA,NBGR,ZK8(IDGN),NBNO)
+            CALL COMPNO(MAILLA,NBGR,ZK24(IDGN),NBNO)
             CALL WKVECT('&&TRMULT.NOEUD','V V K8',NBNO,IDNO)
             MAGRNO = MAILLA//'.GROUPENO'
             MANONO = MAILLA//'.NOMNOE'
             II = -1
             DO 20 I = 1,NBGR
-               CALL JELIRA(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'LONUTI',
+               CALL JELIRA(JEXNOM(MAGRNO,ZK24(IDGN+I-1)),'LONUTI',
      &          NB,KBID)
-               CALL JEVEUO(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'L',LDGN)
+               CALL JEVEUO(JEXNOM(MAGRNO,ZK24(IDGN+I-1)),'L',LDGN)
                DO 22 IN = 0,NB-1
                   CALL JENUNO(JEXNUM(MANONO,ZI(LDGN+IN)),NOMNOE)
                   II = II + 1

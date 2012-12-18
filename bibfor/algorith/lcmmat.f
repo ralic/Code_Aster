@@ -3,7 +3,7 @@
      &   HSR,NFS,NSG,TOUTMS,VIND,IMPEXP)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21 CRS_1404
 C ======================================================================
@@ -72,7 +72,8 @@ C       ----------------------------------------------------------------
       CHARACTER*3     MATCST
       CHARACTER*(*)   FAMI
       CHARACTER*16    COMP(*),NMATER,NECOUL,NECRIS,NECRCI
-      CHARACTER*16    CPMONO(5*NMAT+1),PHENOM,NOMFAM
+      CHARACTER*16    PHENOM,NOMFAM
+      CHARACTER*24    CPMONO(5*NMAT+1)
       INTEGER I, IMAT, NBFSYS, IFA,J,DIMTMS,ITBINT
       INTEGER NBSYST,NBSYS
 C     ----------------------------------------------------------------

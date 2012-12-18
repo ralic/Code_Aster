@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMTA,        NOMPAR(*),          VK(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,6 @@ C ----------------------------------------------------------------------
       CHARACTER*8  K8B
       CHARACTER*19 NOMTAB
       CHARACTER*24 NOMJV, NOMJVL, INPAR, JNPAR
-      CHARACTER*24 VALK
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -270,8 +269,7 @@ C
                   GOTO 44
                ENDIF
  42         CONTINUE
-            VALK = JNPAR
-            CALL U2MESG('F', 'UTILITAI6_90',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('F','TABLE0_1',1,JNPAR)
  44         CONTINUE
  40      CONTINUE
 C

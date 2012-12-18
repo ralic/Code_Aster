@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF SOUSTRUC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,10 +35,10 @@ C     ------------------------------------------------------------------
 
       INTEGER       NALAR, NBMA
       CHARACTER*8  ALARM, TYPM, NDORIG, NDEXTR
-      CHARACTER*8  MA,NONO,NOGNO,NOGNO2,K8B,KPOS,NOM1
+      CHARACTER*8  MA,NONO,K8B,KPOS,NOM1
       CHARACTER*16 CONCEP,CMD,OPTION, MOTCLE, TYPMCL, MOTFAC
       CHARACTER*24 NOMNOE,GRPNOE,COOVAL,LISNO,MAFOUR
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(2),NOGNO,NOGNO2
       CHARACTER*80 CARD
       INTEGER      IARG
 C     ------------------------------------------------------------------
@@ -69,7 +69,7 @@ C     -----------------------------------
       CALL JELIRA(GRPNOE,'NMAXOC',NBGRMN,K8B)
       NBIS = NBGRMN
       NBK8 = NBGRMN
-      CALL WKVECT('&&SSCGNO.LIK8','V V K8',NBK8,IALIK8)
+      CALL WKVECT('&&SSCGNO.LIK8','V V K24',NBK8,IALIK8)
       CALL WKVECT('&&SSCGNO.LII1','V V I',NBIS,IALII1)
       CALL WKVECT('&&SSCGNO.LII2','V V I',NBIS,IALII2)
 
@@ -132,9 +132,9 @@ C ----- MOT CLEF "INTERSEC" :
 C       ---------------------
         IF (N3.GT.0) THEN
           CALL GETVEM(MA,'GROUP_NO',MOTFAC,'INTERSEC',IOCC,IARG,N3,
-     &                ZK8(IALIK8),NBID)
+     &                ZK24(IALIK8),NBID)
 
-          CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8)),IGN1)
+          CALL JENONU(JEXNOM(GRPNOE,ZK24(IALIK8)),IGN1)
           CALL JELIRA(JEXNUM(GRPNOE,IGN1),'LONUTI',ILI1,K8B)
           CALL JEVEUO(JEXNUM(GRPNOE,IGN1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
@@ -150,7 +150,7 @@ C       ---------------------
  30       CONTINUE
 
           DO 32,IGN = 2,N3
-            CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8-1+IGN)),IGN2)
+            CALL JENONU(JEXNOM(GRPNOE,ZK24(IALIK8-1+IGN)),IGN2)
             CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONUTI',ILI2,K8B)
             CALL JEVEUO(JEXNUM(GRPNOE,IGN2),'L',IAGM2)
             CALL UTLISI('INTER',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
@@ -184,9 +184,9 @@ C ----- MOT CLEF "UNION" :
 C       ------------------
         IF (N4.GT.0) THEN
           CALL GETVEM(MA,'GROUP_NO',MOTFAC,'UNION',IOCC,IARG,N4,
-     &                ZK8(IALIK8),NBID)
+     &                ZK24(IALIK8),NBID)
 
-          CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8)),IGN1)
+          CALL JENONU(JEXNOM(GRPNOE,ZK24(IALIK8)),IGN1)
           CALL JELIRA(JEXNUM(GRPNOE,IGN1),'LONUTI',ILI1,K8B)
           CALL JEVEUO(JEXNUM(GRPNOE,IGN1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
@@ -202,7 +202,7 @@ C       ------------------
  40       CONTINUE
 
           DO 42,IGN = 2,N4
-            CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8-1+IGN)),IGN2)
+            CALL JENONU(JEXNOM(GRPNOE,ZK24(IALIK8-1+IGN)),IGN2)
             CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONUTI',ILI2,K8B)
             CALL JEVEUO(JEXNUM(GRPNOE,IGN2),'L',IAGM2)
             CALL UTLISI('UNION',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
@@ -246,9 +246,9 @@ C ----- MOT CLEF "DIFFE" :
 C       ------------------
         IF (N5.GT.0) THEN
           CALL GETVEM(MA,'GROUP_NO',MOTFAC,'DIFFE',IOCC,IARG,N5,
-     &                ZK8(IALIK8),NBID)
+     &                ZK24(IALIK8),NBID)
 
-          CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8)),IGN1)
+          CALL JENONU(JEXNOM(GRPNOE,ZK24(IALIK8)),IGN1)
           CALL JELIRA(JEXNUM(GRPNOE,IGN1),'LONUTI',ILI1,K8B)
           CALL JEVEUO(JEXNUM(GRPNOE,IGN1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
@@ -264,7 +264,7 @@ C       ------------------
  50       CONTINUE
 
           DO 52,IGN = 2,N5
-            CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8-1+IGN)),IGN2)
+            CALL JENONU(JEXNOM(GRPNOE,ZK24(IALIK8-1+IGN)),IGN2)
             CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONUTI',ILI2,K8B)
             CALL JEVEUO(JEXNUM(GRPNOE,IGN2),'L',IAGM2)
             CALL UTLISI('DIFFE',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
@@ -483,18 +483,18 @@ C     --------------------------
      &    'NOMBRE  DE GROUPES DE NOEUDS CREES : ',NBGNAJ
 
         IF (NBOCC.GE.1) THEN
-          WRITE (IFM,'(/,15X,38(''-''),2(/,15X,A),/,15X,38(''-''))')
-     &      '! NOM DU GROUPE ! NBRE DE NOEUDS DU  !',
-     &      '!    NOEUDS     !      GROUPE_NO     !'
+          WRITE (IFM,'(/,15X,54(''-''),2(/,15X,A),/,15X,54(''-''))')
+     &      '!         NOM DU GROUPE         ! NBRE DE NOEUDS DU  !',
+     &      '!            NOEUDS             !      GROUPE_NO     !'
 
           DO 200 I = 1,NBGNAJ
             II = NBGNIN + I
             CALL JENUNO(JEXNUM(GRPNOE,II),NOGNO)
             CALL JELIRA(JEXNUM(GRPNOE,II),'LONUTI',NBNO,K8B)
-            WRITE (IFM,'(15X,A,2X,A8,5X,A,2X,I8,10X,A)') '!',NOGNO,'!',
+            WRITE (IFM,'(15X,A,2X,A24,5X,A,2X,I8,10X,A)') '!',NOGNO,'!',
      &        NBNO,'!'
  200      CONTINUE
-          WRITE (IFM,'(15X,38(''-''),/)')
+          WRITE (IFM,'(15X,54(''-''),/)')
         END IF
       END IF
 

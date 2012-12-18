@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 # sdls08a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -350,23 +350,23 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
 # TEST SUR IMPR_GENE
 #######################################################
 # Test de l'impression d'un vecteur generalise
-IMPR_GENE(UNITE=38,
+IMPR_GENE(UNITE=39,
           GENE=_F(RESU_GENE=FGEN,
                   TOUT_ORDRE='OUI',
                   TOUT_CMP_GENE='OUI',
                   TOUT_CHAM='OUI',),);
 
 # Test de l'impression d'un harm_gene
-IMPR_GENE(UNITE=38,
+IMPR_GENE(UNITE=39,
           GENE=_F(RESU_GENE=DYNGEN,
                   TOUT_ORDRE='OUI',
                   TOUT_CMP_GENE='OUI',
                   TOUT_CHAM='OUI',),);
 
 
-DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
+DEFI_FICHIER (ACTION='LIBERER',UNITE=39)
 
-TEST_FICHIER(FICHIER='fort.38',
+TEST_FICHIER(FICHIER='fort.39',
              NB_VALE=4590,
              VALE_CALC=7.46868879e+04,
              VALE_CALC_K='cfe7353c21c2df62cc82abeea68669f8',

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -153,13 +153,14 @@ OPTION__
                                      ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                                      NDEPLAR PTHETAR  ZVARINO  PVARIPR  NDEPLAR PVITESS  ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
-    CALC_K_G            299   IN__   NDEPLAR PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
+    CALC_K_G            299   IN__   NDEPLAR  PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  NDEPLAR PTHETAR
+                                     ZVARCPG  PVARCRR  NDEPLAR  PTHETAR  CFREQR   PPULPRO  CCOMPOR  PCOMPOR
                               OUT__  EKTHETA  PGTHETA
-    CALC_K_G_F          299   IN__   NDEPLAR PDEPLAR  CFORCEF  PFFVOLU  CFISSR   PFISSR   NGEOMER  PGEOMER
+    CALC_K_G_F          299   IN__   NDEPLAR  PDEPLAR  CFORCEF  PFFVOLU  CFISSR   PFISSR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  NDEPLAR PTHETAR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  NDEPLAR  PTHETAR  CFREQR   PPULPRO
+                                     CCOMPOR  PCOMPOR
                               OUT__  EKTHETA  PGTHETA   
     CHAR_LIMITE         482   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR
@@ -209,10 +210,6 @@ OPTION__
                               OUT__  EVOISIN  PVOISIN
     INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
-    K_G_MODA            399   IN__   NDEPLAR PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CPESANR  PPESANR  CFREQR   PPULPRO  CROTATR  PROTATR
-                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  NDEPLAR PTHETAR
-                              OUT__  EKTHETA  PGTHETA
     MASS_INER           -1    IN__    OUT__    XXXXXX   XXXXXX
     MASS_MECA           120   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR

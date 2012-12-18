@@ -1,4 +1,4 @@
-#@ MODIF N_GEOM Noyau  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_GEOM Noyau  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,7 +59,7 @@ class GEOM(ASSD):
    def __convert__(cls,valeur):
       if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 8:
          return valeur.strip()
-      raise ValueError(_(u'On attend une chaine de caractères (de longueur < 8).'))
+      raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 8).'))
    __convert__=classmethod(__convert__)
 
 class geom(GEOM):pass

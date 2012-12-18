@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,6 +148,7 @@ MODE_LOCAL__
 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
+    CFREQR   = FREQ_R   ELEM__         (FREQ     )
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -183,11 +184,12 @@ OPTION__
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            299   IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  DDL_MECA PTHETAR
+                                     ZVARCPG  PVARCRR  DDL_MECA PTHETAR  CFREQR   PPULPRO  CCOMPOR  PCOMPOR
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          299   IN__   DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  CFISSR   PFISSR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR   DDL_MECA PTHETAR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR  CFREQR   PPULPRO
+                                     CCOMPOR  PCOMPOR
                               OUT__  EKTHETA  PGTHETA
     CALC_NOEU_BORD      290   IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR

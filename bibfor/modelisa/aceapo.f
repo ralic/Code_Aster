@@ -10,7 +10,7 @@
       CHARACTER*(*)     MCLF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,10 +44,10 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
       CHARACTER*1  K1BID
       CHARACTER*6  KIOC
-      CHARACTER*8  K8B, NOMU, NOMMAI, FCX,NOMSEC
+      CHARACTER*8  K8B, NOMU, FCX,NOMSEC
       CHARACTER*16 K16B, SEC, CONCEP, CMD, VARSEC
       CHARACTER*19 CARTPO, CARTGE,CARTPF,TABCAR, NAPCIS, FONCIS
-      CHARACTER*24 TMPNPO ,TMPVPO ,TMPGEN ,TMPNGE,TMPVGE,TYPCA
+      CHARACTER*24 TMPNPO ,TMPVPO ,TMPGEN ,TMPNGE,TMPVGE,TYPCA,NOMMAI
       CHARACTER*24 TMPNPF ,TMPVPF ,TMPGEF, MODMAI, MLGGMA, MLGNMA
       CHARACTER*16 VMESSK(2)
       INTEGER      IARG
@@ -117,15 +117,15 @@ C --- CREATION D UN OBJET TAMPON (SURDIMENSIONNE A NBO*NPOUTR)  :
       CALL JEECRA(TMPGEN,'LONMAX',NBO,' ')
       CALL JECREC(TMPGEF,'V V K8','NO','CONTIG','CONSTANT',NPOUTR)
       CALL JEECRA(TMPGEF,'LONMAX',1,' ')
-      CALL WKVECT('&&ACEAPO.POUTRE','V V K8',LMAX,JDLS)
+      CALL WKVECT('&&ACEAPO.POUTRE','V V K24',LMAX,JDLS)
 C
 C --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
       DO 10 IOC = 1 , NBOCC
          CALL CODENT(IOC,'G',KIOC)
          CALL GETVEM(NOMA,'GROUP_MA','POUTRE','GROUP_MA',
-     &            IOC,IARG,LMAX,ZK8(JDLS),NG)
+     &            IOC,IARG,LMAX,ZK24(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','POUTRE','MAILLE',
-     &          IOC,IARG,LMAX,ZK8(JDLS),NM)
+     &          IOC,IARG,LMAX,ZK24(JDLS),NM)
          CALL GETVTX('POUTRE','SECTION',IOC,IARG,1,
      &               SEC       ,NSEC)
          CALL GETVTX('POUTRE','VARI_SECT',IOC,IARG,1,
@@ -248,8 +248,8 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DES
 C                                                    GROUPES DE MAILLES
          IF (NG.GT.0) THEN
             DO 40 I = 1 , NG
-               CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'L',JDGM)
-               CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONUTI',
+               CALL JEVEUO(JEXNOM(MLGGMA,ZK24(JDLS+I-1)),'L',JDGM)
+               CALL JELIRA(JEXNOM(MLGGMA,ZK24(JDLS+I-1)),'LONUTI',
      &                                                  NBMAGR,K1BID)
                DO 42 J = 1,NBMAGR
                   NUMMAI = ZI(JDGM+J-1)
@@ -276,7 +276,7 @@ C
 C ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
          IF (NM.GT.0) THEN
             DO 50 I = 1 , NM
-               NOMMAI = ZK8(JDLS+I-1)
+               NOMMAI = ZK24(JDLS+I-1)
                CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUMMAI)
                NUTYEL = ZI(JDME+NUMMAI-1)
                DO 52 J = 1 , NBEPO

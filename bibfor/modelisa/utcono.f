@@ -9,7 +9,7 @@
       CHARACTER*(*)       MCFAC, MOCLE(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C     ------------------------------------------------------------------
       REAL*8       R8B
       CHARACTER*8  K8B, NOEUD
       CHARACTER*16 CONCEP, CMD
-      CHARACTER*24 COORD, NOMNOE
+      CHARACTER*24 COORD, NOMNOE, NOEU2
       CHARACTER*24 VALK(3)
       INTEGER      IARG
 C     ------------------------------------------------------------------
@@ -90,7 +90,8 @@ C
        CALL GETVTX ( MCFAC, MOCLE(3), IOCC,IARG,1, K8B, N3 )
        IF ( N3 .NE. 0 ) THEN
           CALL GETVTX ( MCFAC, MOCLE(3), IOCC,IARG,1, NOEUD, N3 )
-          CALL UTNONO ( ' ', NOMAIL, 'NOEUD', NOEUD, K8B, IER )
+          NOEU2 = NOEUD
+          CALL UTNONO ( ' ', NOMAIL, 'NOEUD', NOEU2, K8B, IER )
           IF ( IER .EQ. 10 ) THEN
              CALL GETRES ( K8B, CONCEP, CMD )
              VALK (1) = MCFAC

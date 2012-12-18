@@ -1,5 +1,4 @@
-%& MODIF OPTIONS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
-% RESPONSABLE GENIAUT
+%& MODIF OPTIONS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +16,7 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
+% RESPONSABLE GENIAUT S.GENIAUT
 CALC_K_G_F
 OPTION__
    IN__
@@ -40,6 +40,7 @@ OPTION__
         PFISSR   FISS_R
         PBASLOR  NEUT_R
         PCOURB   NEUT_R
+        PPULPRO  FREQ_R
         PPINTTO  NEUT_R
         PCNSETO  NEUT_I
         PHEAVTO  NEUT_I

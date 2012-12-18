@@ -1,11 +1,8 @@
-      SUBROUTINE LRMHDF ( NOMAMD,
-     &                    NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
-     &                    GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,
-     &                    ADAPMA,IFM,NROFIC,NIVINF,INFMED,
+      SUBROUTINE LRMHDF ( NOMAMD,NOMU,IFM,NROFIC,NIVINF,INFMED,
      &                    NBNOEU, NBMAIL, NBCOOR, VECGRM, NBCGRM )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21
 C     LECTURE DU MAILLAGE - FORMAT MED/HDF
 C     -    -                       -   ---
 C-----------------------------------------------------------------------
@@ -46,10 +42,7 @@ C
       INTEGER IFM, NIVINF
       INTEGER NROFIC, INFMED, NBCGRM
       CHARACTER*(*) NOMAMD
-      CHARACTER*24 COOVAL, COODSC, COOREF, GRPNOE, GRPMAI, CONNEX
-      CHARACTER*24 TITRE,  NOMMAI, NOMNOE, TYPMAI, VECGRM
-      CHARACTER*24 ADAPMA
-      CHARACTER*64 VALK(2)
+      CHARACTER*24 VECGRM
       CHARACTER*8 NOMU
 C
 C     OUT
@@ -85,6 +78,9 @@ C
       CHARACTER*6 SAUX06
       CHARACTER*8 NOMTYP(NTYMAX)
       CHARACTER*8 SAUX08
+      CHARACTER*24 COOVAL,COODSC,COOREF,GRPNOE,GRPMAI,CONNEX
+      CHARACTER*24 TITRE,NOMMAI,NOMNOE,TYPMAI,ADAPMA,GPPTNN,GPPTNM
+      CHARACTER*64 VALK(2)
       CHARACTER*200 NOFIMD
       CHARACTER*255 KFIC
       CHARACTER*200 DESCFI
@@ -93,6 +89,11 @@ C
 C
 C     ------------------------------------------------------------------
       CALL JEMARQ ( )
+C
+      CALL SDMAIL(NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,
+     &            COOREF,GRPNOE,GPPTNN,GRPMAI,GPPTNM,
+     &            CONNEX,TITRE,TYPMAI,ADAPMA)
+C
       DESCFI=' '
 C
 C====
@@ -267,13 +268,10 @@ C====
 C
       SAUX06 = NOMPRO
 C
-      CALL LRMMFA ( FID, NOMAMD,
-     &              NBNOEU, NBMAIL,
-     &              GRPNOE, GRPMAI, NBGRNO, NBGRMA,
-     &              TYPGEO, NOMTYP, NMATYP,
-     &              SAUX06,
-     &              INFMED,
-     &              VECGRM, NBCGRM )
+      CALL LRMMFA ( FID,   NOMAMD,NBNOEU,NBMAIL,GRPNOE,
+     &              GPPTNN,GRPMAI,GPPTNM,NBGRNO,NBGRMA,
+     &              TYPGEO,NOMTYP,NMATYP,SAUX06,INFMED,
+     &              VECGRM,NBCGRM )
 C
 C====
 C 8. LES EQUIVALENCES

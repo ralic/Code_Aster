@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DE K1, K2 EN D_PLAN_INCO_ SUR UNE PLAQUE CIRCULAIRE
 # sslp103b.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,22 +126,24 @@ for i in range(2):
                         NEWTON     =_F ( REAC_INCR    = 1 ))
 
 
-   THETA[i]=CALC_THETA(    MODELE=MODP[i],
-                      THETA_2D=_F(  NOEUD = 'N1',
-                                 MODULE = 1.,
-                                 R_INF = 10.,
-                                 R_SUP = 20.),
+   THETA[i]=CALC_THETA(MODELE=MODP[i],
+                       THETA_2D=_F(NOEUD = 'N1',
+                                   MODULE = 1.,
+                                   R_INF = 10.,
+                                   R_SUP = 20.),
                        DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
 
-   GDP[i]=CALC_G(              RESULTAT=ELADP[i],
-                         INST = 1,
-                         THETA=_F(THETA=THETA[i]),)
+   GDP[i]=CALC_G(RESULTAT=ELADP[i],
+                 INST = 1,
+                 THETA=_F(THETA=THETA[i]))
 
-   K1K2[i]=CALC_G(            RESULTAT=ELADP[i],
-                         INST = 1,
-                          THETA=_F( THETA = THETA[i],
-                                    FOND_FISS=FOND),
-                          OPTION='CALC_K_G')
+   K1K2[i]=CALC_G(RESULTAT=ELADP[i],
+                  INST = 1,
+                  THETA=_F(FOND_FISS=FOND,
+                           DIRECTION=( 8.6602540379E-01, 0.5, 0.),
+                           R_INF = 10.,
+                           R_SUP = 20.),
+                  OPTION='CALC_K_G')
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G, K1 ET K2   EN DP

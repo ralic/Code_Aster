@@ -1,6 +1,6 @@
       SUBROUTINE RIGMI2(NOMA,NOGR,IFREQ,NFREQ,IFMIS,RIGMA,RIGMA2,RIGTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,8 @@ C ======================================================================
       CHARACTER*32 JEXNUM,JEXNOM
       INTEGER      IFMIS
       INTEGER      IFREQ, NFREQ
-      CHARACTER*8  NOMA, NOGR
+      CHARACTER*8  NOMA
+      CHARACTER*24 NOGR
       REAL*8       RIGMA(*), RIGMA2(*), RIGTO(*)
 C      REAL*8       FREQ, RIGMA(*), RIGTO(*)
 C     ------------------------------------------------------------------

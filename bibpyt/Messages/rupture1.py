@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 16/10/2012   AUTEUR LADIER A.LADIER 
+#@ MODIF rupture1 Messages  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,23 +28,9 @@ Veuillez utiliser une autre option de lissage
 (par exemple, le lissage 'LAGRANGE' pour le champ thêta)
 """),
 
-2: _(u"""
-Lorsque le modèle n'est pas de type X-FEM il n'est pas possible d'utiliser
-le mot-clé FISSURE de la commande CALC_G.
--> Risque et Conseil :
-Veuillez utiliser les mots-clés FOND_FISS ou THETA ou revoir votre modèle.
-"""),
-
-3: _(u"""
-Lorsque le modèle est de type X-FEM il faut obligatoirement utiliser
-le mot-clé FISSURE de la commande CALC_G.
-"""),
-
 4: _(u"""
 La commande CALC_G ne traite pas le cas des fonds doubles.
 """),
-
-
 
 6: _(u"""
 Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement être supérieur au rayon
@@ -99,10 +85,6 @@ On doit en avoir autant que de numéros d'ordre.
 Le résultat n'est pas un EVOL_NOLI.
 """),
 
-
-
-
-
 17: _(u"""
 L'association: lissage du champ THETA par les polynômes de Lagrange
                lissage de G autre que par des polynômes de Lagrange
@@ -111,7 +93,6 @@ n'est pas possible.
 Veuillez consulter la documentation U4.82.03 pour déterminer une
 association satisfaisante.
 """),
-
 
 20: _(u"""
 Votre étude comporte une charge de type PRE_EPSI. Ceci est incompatible
@@ -146,15 +127,11 @@ et AFFE_MATERIAU.
 
 26: _(u"""
 La masse volumique RHO n'a pas été définie.
--> Risque et Conseil :
-Pour l'option K_G_MODA, il est indispensable de fournir la masse volumique
-du matériau considéré. Veuillez revoir la mise en données de l'opérateur
-DEFI_MATERIAU.
-"""),
 
-27: _(u"""
-L'option est incompatible avec les comportements incrémentaux ainsi
-qu'avec la déformation GROT_GDEP.
+-> Risque et Conseil :
+Pour le calcul de l'option CALC_K_G avec un résultat de type MODE_MECA,
+il est indispensable de fournir la masse volumique du matériau considéré.
+La masse volumique doit être définie dans l'opérateur DEFI_MATERIAU.
 """),
 
 28: _(u"""
@@ -191,11 +168,6 @@ Vérifier le paramètre défini sous le mot clé NUME_FOND de POST_K1_K2_K3.
 La récupération des contraintes à partir de la SD Résultat n'est permise que si les fissures sont maillées.
 -> Risque et Conseil :
 Veillez à ne pas vous servir de FISSURE avec le mot-clé CALCUL_CONTRAINTE.
-"""),
-
-41: _(u"""
-On recalcule donc les champs de contraintes et d'énergie
-comme si vous aviez renseigné CALCUL_CONTRAINTE='OUI'.
 """),
 
 42: _(u"""

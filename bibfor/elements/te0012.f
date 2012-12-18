@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -279,7 +279,7 @@ C IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         ELSE
           CALL TECACH(STOPZ,'PDEPLAR',1,IDEPL,IRET)
           IF (IRET.EQ.0) THEN
-            CALL JEVECH('POMEGA2','E',IFREQ)
+            CALL JEVECH('POMEGA2','L',IFREQ)
             CALL JEVECH('PENERCR','E',IECIN)
             DO 261 K = 1,NVEC
               MATV(K) = 0.0D0

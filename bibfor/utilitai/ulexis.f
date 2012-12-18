@@ -3,9 +3,9 @@
       INTEGER       IUL , I , UNIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -32,6 +32,9 @@ C     ------------------------------------------------------------------
       INTEGER          FIRST, UNITFI(MXF) , NBFILE
       COMMON/ ASGFI1 / FIRST, UNITFI      , NBFILE
       COMMON/ ASGFI2 / NAMEFI,DDNAME,TYPEFI,ACCEFI,ETATFI,MODIFI
+      LOGICAL          FICEXI
+      CHARACTER*8      K8B
+      CHARACTER*255    NAMELL
 C     ------------------------------------------------------------------
 C
       ULEXIS = .FALSE.
@@ -43,6 +46,13 @@ C
             GOTO 12
          ENDIF
  10   CONTINUE
+      CALL CODENT(IUL,'G',K8B)
+      NAMELL = 'fort.'//K8B
+      INQUIRE(FILE=NAMELL,EXIST=FICEXI)
+      IF ( FICEXI ) THEN
+        CALL ULOPEN(IUL,' ',' ','A','O')
+        ULEXIS = .TRUE.
+      ENDIF
  12   CONTINUE
 C
       END

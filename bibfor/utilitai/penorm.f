@@ -4,7 +4,7 @@
       CHARACTER*8       MODELE
       CHARACTER*19      RESU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,14 +35,14 @@ C
       COMPLEX*16 C16B
       LOGICAL EXIORD,EXIGEO,EXITEN
       CHARACTER*4 TYCH,KI,EXIRDM
-      CHARACTER*8 MAILLA,K8B,RESUCO,CHAMG,NOPAR2,TYPMCL(1),TOUT,GROUMA
+      CHARACTER*8 MAILLA,K8B,RESUCO,CHAMG,NOPAR2,TYPMCL(1),TOUT
       CHARACTER*8 TMPRES,TYPPAR(NBPMAX),NOMGD,LPAIN(3),LPAWPG(1),CRIT
       CHARACTER*8 NOPAR,INFOMA,LPAOUT(1),TYNORM
       CHARACTER*19 KNUM,KINS,LISINS,CHAM2,CHAMTM,CELMOD,LIGREL
       CHARACTER*19 TMPCHA,CHAM1
       CHARACTER*16 OPTIO2,NOMCHA,VALK,NOMPAR(NBPMAX),MOCLES(1),OPTION
       CHARACTER*24 MESMAI,MESMAF,VALR,VALI,LCHIN(3),LCHWPG(1),LCHOUT(1)
-      CHARACTER*24  CHGEOM,COEFCA,VALK2(5)
+      CHARACTER*24  CHGEOM,COEFCA,VALK2(5),GROUMA
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
@@ -153,7 +153,7 @@ C     =======================
          TYPPAR(2) ='K16'
          TYPPAR(3) ='I'
          TYPPAR(4) ='R'
-         TYPPAR(5) ='K8'
+         TYPPAR(5) ='K24'
          TYPPAR(6) ='K8'
          TYPPAR(7) ='K8'
          TYPPAR(8) ='R'
@@ -168,7 +168,7 @@ C     =======================
          NOMPAR(5)='VALE_NORM'
 
          TYPPAR(1)='K8'
-         TYPPAR(2)='K8'
+         TYPPAR(2)='K24'
          TYPPAR(3)='K8'
          TYPPAR(4)='K8'
          TYPPAR(5)='R'
@@ -424,29 +424,29 @@ C      -- 4.8 SOMMATION DE LA NORME SUR LES ELEMENTS DESIRES --
 C      -- 4.9 ON REMPLIT LA TABLE --
 
           IF(NOMPAR(1).EQ.'RESULTAT')THEN
-            CALL WKVECT(VALK,'V V K16',4,JVALK)
-            ZK16(JVALK)  =RESUCO
-            ZK16(JVALK+1)=NOMCHA
-            ZK16(JVALK+2)=GROUMA
-            ZK16(JVALK+3)=INFOMA
-            ZK16(JVALK+4)=TYNORM
+            CALL WKVECT(VALK,'V V K24',4,JVALK)
+            ZK24(JVALK)  =RESUCO
+            ZK24(JVALK+1)=NOMCHA
+            ZK24(JVALK+2)=GROUMA
+            ZK24(JVALK+3)=INFOMA
+            ZK24(JVALK+4)=TYNORM
             CALL WKVECT(VALR,'V V R',2,JVALR)
             ZR(JVALR)=INST
             ZR(JVALR+1)=SQRT(VNORM(1))
             CALL WKVECT(VALI,'V V I',1,JVALI)
             ZI(JVALI)=NUMO
             CALL TBAJLI(RESU,NBPAR,NOMPAR,ZI(JVALI),ZR(JVALR),C16B,
-     &                ZK16(JVALK),0)
+     &                ZK24(JVALK),0)
           ELSE
-            CALL WKVECT(VALK,'V V K16',3,JVALK)
-            ZK16(JVALK)  =NOMCHA
-            ZK16(JVALK+1)=GROUMA
-            ZK16(JVALK+2)=INFOMA
-            ZK16(JVALK+3)=TYNORM
+            CALL WKVECT(VALK,'V V K24',3,JVALK)
+            ZK24(JVALK)  =NOMCHA
+            ZK24(JVALK+1)=GROUMA
+            ZK24(JVALK+2)=INFOMA
+            ZK24(JVALK+3)=TYNORM
             CALL WKVECT(VALR,'V V R',1,JVALR)
             ZR(JVALR)=SQRT(VNORM(1))
             CALL TBAJLI(RESU,NBPAR,NOMPAR,IBID,ZR(JVALR),C16B,
-     &                ZK16(JVALK),0)
+     &                ZK24(JVALK),0)
           ENDIF
 
 C      -- 4.10 NETTOYAGE POUR L'OCCURRENCE SUIVANTE --

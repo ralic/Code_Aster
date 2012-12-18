@@ -4,7 +4,7 @@
      &                    NEQ, NUMEDD, INCHAC, BASENO)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 17/12/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,12 +43,12 @@ C DECLARATION PARAMETRES D'APPELS
       REAL*8 FEXINI(*), FAMINI(*), FLIINI(*)
       CHARACTER*8 BASENO,RESULT
       CHARACTER*24 NUMEDD
-      LOGICAL LCREA
+      LOGICAL LCREA,LENER,LINFO
       INTEGER NUME
       INTEGER NEQ
       INTEGER INCHAC
       INTEGER IRE, IRET, JVALE
-      INTEGER NAI, NDI, NDY, NVI
+      INTEGER NAI, NDI, NDY, NVI, NOCC
       INTEGER IERR
       CHARACTER*8  REUSE
       CHARACTER*19  CHAMP, CHAM2
@@ -57,18 +57,27 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       LCREA = .TRUE.
+      LINFO = .FALSE.
 C
 C====
 C 2.  --- EST-ON EN REPRISE ? ---
 C====
 C
       CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,REUSE,NDY)
+      LENER=.FALSE.
+      CALL GETFAC('ENERGIE',NOCC)
+      IF (NOCC.GT.0) THEN
+        LENER = .TRUE.
+      ENDIF
 C
 C====
 C 3. EN REPRISE
 C====
 C
       IF ( NDY .NE. 0 ) THEN
+         IF (LENER) THEN
+           LINFO = .TRUE.
+         ENDIF
 C
 C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
          CALL RSEXCH(' ',REUSE,'DEPL',NUME,CHAMP,IRET)
@@ -126,6 +135,9 @@ C
          NUME = 0
          CALL GETVID('ETAT_INIT','DEPL',1,IARG,1,CHAMP,NDI)
          IF (NDI.GT.0) THEN
+            IF (LENER) THEN
+              LINFO = .TRUE.
+            ENDIF
             CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
             CHAM2 = BASENO//'.DEPINI'
@@ -139,6 +151,9 @@ C
 C
          CALL GETVID('ETAT_INIT','VITE',1,IARG,1,CHAMP,NVI)
          IF (NVI.GT.0) THEN
+            IF (LENER) THEN
+              LINFO = .TRUE.
+            ENDIF
             CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
             CHAM2 = BASENO//'.VITINI'
@@ -152,6 +167,9 @@ C
 
          CALL GETVID('ETAT_INIT','ACCE',1,IARG,1,CHAMP,NAI)
          IF (NAI.GT.0 ) THEN
+           IF (LENER) THEN
+             LINFO = .TRUE.
+           ENDIF
            CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
            INCHAC = 0
            CHAM2 = BASENO//'.ACCINI'
@@ -161,6 +179,10 @@ C
            CALL DCOPY(NEQ,ZR(JVALE),1,ACCINI,1)
          ENDIF
 C
+      ENDIF
+C
+      IF (LINFO) THEN
+        CALL U2MESS('I','ETATINIT_5')
       ENDIF
 C
       CALL JEDEMA()

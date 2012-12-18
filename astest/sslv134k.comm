@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL AXIS_INCO_ DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134k.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,7 +68,7 @@ MO = [None]*2
 SYME = [None]*2
 PRESS = [None]*2
 CHAMD = [None]*2
-THET1 = [None]*2
+THETA = [None]*2
 G0 = [None]*2
 GK0 = [None]*2
 
@@ -113,56 +113,54 @@ for i in range(2):
 
    CHAMD[i] =CALC_CHAMP(reuse=CHAMD[i],CONTRAINTE=('SIGM_ELNO'),RESULTAT=CHAMD[i])
 
-   THET1[i]=CALC_THETA(    MODELE=MO[i],
-                         THETA_2D=_F(  GROUP_NO = ('P0',),
-                                    MODULE = 1.,
-                                    R_INF = RINF,
-                                    R_SUP = RSUP),
-                         DIRECTION=(1., 0., 0.,)
-                     )
+   THETA[i]=CALC_THETA(MODELE=MO[i],
+                       THETA_2D=_F(GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = RINF,
+                                   R_SUP = RSUP),
+                       DIRECTION=(1., 0., 0.,)
+                       )
 
-   G0[i]=CALC_G        (       RESULTAT=CHAMD[i],
-                         INFO=2,
-                         INST = 1,
-                         THETA=_F(THETA=THET1[i]),
-                     )
+   G0[i]=CALC_G(RESULTAT=CHAMD[i],
+                INST = 1,
+                THETA=_F(THETA=THETA[i]),
+                )
 
 
-   GK0[i]=CALC_G(THETA=_F(FOND_FISS=FISS,THETA=THET1[i],),
-          RESULTAT=CHAMD[i],
-          INFO=2,
-          INST = 1,
-          OPTION='CALC_K_G',);
+   GK0[i]=CALC_G(THETA=_F(FOND_FISS=FISS,
+                          R_INF = RINF,
+                          R_SUP = RSUP,
+                          DIRECTION=(1., 0., 0.,),),
+                RESULTAT=CHAMD[i],
+                INST = 1,
+                OPTION='CALC_K_G')
 
    IMPR_TABLE(TABLE=GK0[i],),
 
-   TEST_TABLE(       TABLE=G0[i],
-                  NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                   VALE_CALC=23.59375195461,
-                   VALE_REFE=GREF,
-                   
-                 PRECISION=0.02        )
+   TEST_TABLE(TABLE=G0[i],
+              NOM_PARA='G',
+              REFERENCE='ANALYTIQUE',
+              VALE_CALC=23.59375195461,
+              VALE_REFE=GREF,
+              PRECISION=0.02)
 
-   TEST_TABLE(       TABLE=GK0[i],
-                  NOM_PARA='G',
-                   REFERENCE='ANALYTIQUE',
-                   VALE_CALC=11.796875977305,
-                   VALE_REFE=GLOC,
-                   
-                 PRECISION=0.02        )
+   TEST_TABLE(TABLE=GK0[i],
+              NOM_PARA='G',
+              REFERENCE='ANALYTIQUE',
+              VALE_CALC=11.796875977305,
+              VALE_REFE=GLOC,
+              PRECISION=0.02)
 
-   TEST_TABLE(       TABLE=GK0[i],
-                  NOM_PARA='K1',
-                   REFERENCE='ANALYTIQUE',
-                   VALE_CALC=1.64686397E+06,
-                   VALE_REFE=K1,
-                   PRECISION=0.035        )
+   TEST_TABLE(TABLE=GK0[i],
+              NOM_PARA='K1',
+              REFERENCE='ANALYTIQUE',
+              VALE_CALC=1.64686397E+06,
+              VALE_REFE=K1,
+              PRECISION=0.035)
 
-   TEST_TABLE(       TABLE=GK0[i],
-                  NOM_PARA='K1',
-                   VALE_CALC=1.64686397E+06,
-                      )
+   TEST_TABLE(TABLE=GK0[i],
+              NOM_PARA='K1',
+              VALE_CALC=1.64686397E+06)
 
 FIN()
 #

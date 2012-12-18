@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/09/2012   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE GALENNE E.GALENNE
+# RESPONSABLE GENIAUT S.GENIAUT
 CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
             fr="Calcul du taux de restitution d'énergie par la méthode theta en thermo-élasticité"
                         +" et les facteurs d'intensité de contraintes.",
@@ -29,8 +29,10 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
            FOND_FISS       =SIMP(statut='f',typ=fond_fiss,max=1),
            FISSURE         =SIMP(statut='f',position='global',typ=fiss_xfem,max=1),
            NB_POINT_FOND   =SIMP(statut='f',typ='I',val_min=2),
-           regles=(EXCLUS('FOND_FISS','FISSURE'),
-                 EXCLUS('FOND_FISS','NB_POINT_FOND'),),
+           regles=(
+                   EXCLUS('FOND_FISS','NB_POINT_FOND'),
+                   UN_PARMI('THETA','FOND_FISS','FISSURE')
+                   ),
           b_theta        =BLOC(condition="THETA == None",fr="calcul de theta",
             regles=(UN_PARMI('R_INF','R_INF_FO'),
                  PRESENT_PRESENT('R_INF','R_SUP'),
@@ -120,7 +122,6 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                                into=("CALC_G",
                                      "CALC_G_GLOB",
                                      "CALC_K_G",
-                                     "K_G_MODA",
                                      "G_MAX",
                                      "G_MAX_GLOB",
                                      "G_BILI",

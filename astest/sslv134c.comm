@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,37 +76,38 @@ FISS2=DEFI_FOND_FISS(MAILLAGE=MA,
 RSUP=0.25
 RINF=0.05
 
-THETA01=CALC_THETA(    MODELE=MO,
-                         THETA_2D=_F(  GROUP_NO = ('P0',),
-                                    MODULE = 1.,
-                                    R_INF = RINF,
-                                    R_SUP = RSUP),
-                         DIRECTION=(1., 0., 0.,)
-                     )
+THETA=CALC_THETA(MODELE=MO,
+                 THETA_2D=_F(GROUP_NO = ('P0',),
+                             MODULE = 1.,
+                             R_INF = RINF,
+                             R_SUP = RSUP),
+                 DIRECTION=(1., 0., 0.,)
+                 )
 
-G0=CALC_G        (       RESULTAT=CHAMDEPL,
-                         INFO=2,
-                         THETA=_F(THETA=THETA01),
-                     )
+G0=CALC_G(RESULTAT=CHAMDEPL,
+          THETA=_F(THETA=THETA),
+          INFO=2)
 
 
-GK0=CALC_G(THETA=_F(FOND_FISS=FISS,THETA=THETA01,),
-          RESULTAT=CHAMDEPL,
-          INFO=2,
-          OPTION='CALC_K_G',);
+GK0=CALC_G(RESULTAT=CHAMDEPL,
+           THETA=_F(FOND_FISS=FISS,
+                    R_INF = RINF,
+                    R_SUP = RSUP,
+                    DIRECTION=(1., 0., 0.),
+                    ),
+           OPTION='CALC_K_G')
 
-IMPR_TABLE(TABLE=GK0,),
+IMPR_TABLE(TABLE=GK0)
 
 # POST_K1_K2_K3
-
-TABL_K1=POST_K1_K2_K3(  MODELISATION='AXIS',
-                        RESULTAT=CHAMDEPL,
-                        FOND_FISS=FISS2,
-                        INFO=2,
-                        MATER=MAT,
+TABL_K1=POST_K1_K2_K3(MODELISATION='AXIS',
+                      RESULTAT=CHAMDEPL,
+                      FOND_FISS=FISS2,
+                      INFO=2,
+                      MATER=MAT,
                      )
 
-IMPR_TABLE( TABLE=TABL_K1 )
+IMPR_TABLE(TABLE=TABL_K1)
 
 
 # ---------------
@@ -116,7 +117,6 @@ K1=1.595769E6
 
 # POUR UN RADIAN
 GREF=23.17296
-
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.017999999999999999,
@@ -190,31 +190,29 @@ DEPL_ROT=MECA_STATIQUE(MODELE=MO,
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=DEPL_ROT));
 
-G1=CALC_G        (       OPTION='CALC_G',
-                         RESULTAT=DEPL_ROT,
-                         INFO=2,
-                         THETA=_F(THETA=THETA01,SYME='OUI'),
-                     )
+G1=CALC_G(RESULTAT=DEPL_ROT,
+          THETA=_F(THETA=THETA,
+                   SYME='OUI'),
+          )
 
-
-GK1=CALC_G(THETA=_F(FOND_FISS=FISS,THETA=THETA01,),
+GK1=CALC_G(THETA=_F(FOND_FISS=FISS,
+                    R_INF = RINF,
+                    R_SUP = RSUP,
+                    DIRECTION=(1., 0., 0.),
+                    ),
           RESULTAT=DEPL_ROT,
-          INFO=2,
-          OPTION='CALC_K_G',);
+          OPTION='CALC_K_G')
 
-IMPR_TABLE(TABLE=GK1,),
+IMPR_TABLE(TABLE=GK1)
 
 # POST_K1_K2_K3
-
-TABL_K2=POST_K1_K2_K3(  MODELISATION='AXIS',
-                        RESULTAT=DEPL_ROT,
-                        FOND_FISS=FISS2,
-                        INFO=2,
-                        MATER=MAT,
+TABL_K2=POST_K1_K2_K3(MODELISATION='AXIS',
+                      RESULTAT=DEPL_ROT,
+                      FOND_FISS=FISS2,
+                      MATER=MAT,
                      )
 
-IMPR_TABLE( TABLE=TABL_K2, ),
-
+IMPR_TABLE(TABLE=TABL_K2)
 
 FIN()
 #

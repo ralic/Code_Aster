@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES POUR UNE MODE PROPRE
 # sdls114c.para = tps_job 240 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,11 +32,9 @@ PRE_GIBI();
 
 M = LIRE_MAILLAGE();
 
-M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
-                     CREA_GROUP_NO=(_F(GROUP_MA = ('LIGSUP', 'LIGINF', 'SURF'),),
-#                                   _F(NOM = 'P2Bb', NOEUD = 'N3876'),
-                                   ),
-                 )
+M=DEFI_GROUP(reuse=M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=(_F(GROUP_MA = ('LIGSUP', 'LIGINF', 'SURF'),),),);
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -61,10 +59,8 @@ M=MODI_MAILLAGE(reuse =M,
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FORM_FISS ='SEGMENT',
                                  PFON_ORIG  =(0.051 ,0.05,0.0),
-                                 PFON_EXTR  =(0.025,0.05,0.0),
-                                 ),
+                                 PFON_EXTR  =(0.025,0.05,0.0),),
                     GROUP_MA_ENRI='SURF',
-#                    TYPE_ENRI_FOND='GEOMETRIQUE',
                     INFO=1,);
 
 
@@ -160,12 +156,7 @@ VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
 MODE=MODE_ITER_SIMULT(MATR_RIGI=RIG_ASS,
                       MATR_MASS=MA_ASS,
                       METHODE='SORENSEN',
-                      CALC_FREQ=_F(
-                                   NMAX_FREQ=n_mode,
-#                                    OPTION ='BANDE',
-#                                    FREQ = (1.5, 50.,)
-                                   ),
-                                   );
+                      CALC_FREQ=_F(NMAX_FREQ=n_mode,),);
 
 
 MODE=NORM_MODE(reuse=MODE,
@@ -173,7 +164,7 @@ MODE=NORM_MODE(reuse=MODE,
                NORME='MASS_GENE',);
 
 GLMO1 = CALC_G(  RESULTAT=MODE,
-                 OPTION='K_G_MODA',
+                 OPTION='CALC_K_G',
                  THETA=_F( FISSURE=FISS,
                                    R_INF=2.E-3,
                                    R_SUP=5.E-3,
@@ -194,21 +185,13 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='K1',
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                      VALE_I = 5),
-           VALE_CALC=2.0376592530301E+11,
-           VALE_REFE=2.03766E+11,
-           PRECISION=0.002,
-           REFERENCE = 'NON_DEFINI',
-          );
+           VALE_CALC=2.0376592530301E+11,);
 
 TEST_TABLE(TABLE=PK,
            NOM_PARA='G',
            FILTRE=_F(NOM_PARA = 'FREQ',
                      VALE = 4.30732E+04),
-           VALE_CALC=8.5271214586707E+10,
-           VALE_REFE=8.52712E+10,
-           PRECISION=0.002,
-           REFERENCE = 'NON_DEFINI',
-          );
+           VALE_CALC=8.5271214586707E+10,);
 
 ##############################################
 # CALCUL TRANSITOIRE EN COORDONNEES MODALES
@@ -251,20 +234,14 @@ KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    );
 IMPR_TABLE(TABLE=KT1)
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=2.E-3,
-           VALE_CALC= 2.41228995E+06,
-           VALE_REFE=2.415420E6,
+TEST_TABLE(VALE_CALC= 2.4122701831122E+06,
            NOM_PARA='K1',
            TABLE=KT1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.E-3,),
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=6.0000000000000001E-3,
-           VALE_CALC= 3.55325979E+05,
-           VALE_REFE=3.57437E5,
+TEST_TABLE(VALE_CALC= 3.5512616156007E+05,
            NOM_PARA='K2',
            TABLE=KT1,
            FILTRE=_F(NOM_PARA='INST',

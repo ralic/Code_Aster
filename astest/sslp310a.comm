@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE BIBLIO_18 FISSURE PRESSURISEE DANS UN DOMAINE PLAN ILLIMITE
 # sslp310a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,125 +150,96 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
                       )
 
-# DEFINITION DES CHAMPS THETA
-# ---------------------------
+# DEFINITION DES COURONNES POUR LES CHAMPS THETA
+# ----------------------------------------------
 
-# COURONNE 0 (TRIANGLES)
-# ----------------------
-THETA0=CALC_THETA(    MODELE=MO,
-                       DIRECTION=(1., 0., 0., ),
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.000,
-                                   R_SUP = 0.020)
-                     )
+C1 = 0.
+C2 = 0.02
+C3 = 0.04
+C4 = 0.06
+C5 = 0.08
 
-# COURONNE 1 (QUADRANGLES)
-# ------------------------
-THETA1=CALC_THETA(    MODELE=MO,
-                       DIRECTION=(1., 0., 0., ),
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.020,
-                                   R_SUP = 0.040)
-                     )
 
-# COURONNE 2 (QUADRANGLES)
-# ------------------------
-THETA2=CALC_THETA(    MODELE=MO,
-                       DIRECTION=(1., 0., 0., ),
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.040,
-                                   R_SUP = 0.060)
-                     )
-
-# COURONNE 3 (QUADRANGLES)
-# ------------------------
-THETA3=CALC_THETA(    MODELE=MO,
-                       DIRECTION=(1., 0., 0., ),
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 0.060,
-                                   R_SUP = 0.080)
-                     )
-
-# CALCUL DES G_THETA POUR LE CHAMP THETA0
+# CALCUL DES G_THETA POUR LA COURONNE 0
 # ---------------------------------------
 
-G_0=CALC_G(                 RESULTAT=RESU,
-                            NOM_CAS=('CH_UNI',
-                                     'CH_EXP5',
-                                     'CH_SINH1',
-                                     'CH_SINH5',
-                                     'CH_COSH1',
-                                     'CH_COSH5',
-                                     'CH_COS1',
-                                     'CH_COS5',
-                                    ),
-                            THETA=_F(THETA = THETA0,
-                                     FOND_FISS=FOND),
-                            OPTION='CALC_K_G'
+G_0=CALC_G(RESULTAT=RESU,
+           NOM_CAS=('CH_UNI',
+                    'CH_EXP5',
+                    'CH_SINH1',
+                    'CH_SINH5',
+                    'CH_COSH1',
+                    'CH_COSH5',
+                    'CH_COS1',
+                    'CH_COS5',
+                   ),
+           THETA=_F(FOND_FISS=FOND,
+                    R_INF = C1,
+                    R_SUP = C2,
+                    DIRECTION=(1., 0., 0., ),),
+           OPTION='CALC_K_G'
                         )
 
-G_EXP10=CALC_G(             RESULTAT=RESU,
-                            NOM_CAS='CH_EXP1',
-                            THETA=_F(
-                                      DIRECTION=(1., 0., 0., ),
-                                      R_INF = 0.000,
-                                      R_SUP = 0.020,
-                                      FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
+G_EXP10=CALC_G(RESULTAT=RESU,
+               NOM_CAS='CH_EXP1',
+               THETA=_F(
+                         DIRECTION=(1., 0., 0., ),
+                         R_INF = C1,
+                         R_SUP = C2,
+                         FOND_FISS=FOND),
+                OPTION='CALC_K_G'
                          )
 
 
-# CALCUL DES G_THETA POUR LE CHAMP THETA1
+# CALCUL DES G_THETA POUR LA COURONNE 1
 # ---------------------------------------
 
-G_1=CALC_G(                 RESULTAT=RESU,
-                            THETA=_F(THETA = THETA1,
-                                     FOND_FISS=FOND),
-                            OPTION='CALC_K_G'
-                        )
+G_1=CALC_G(RESULTAT=RESU,
+           THETA=_F(FOND_FISS=FOND,
+                    DIRECTION=(1., 0., 0., ),
+                    R_INF = C2,
+                    R_SUP = C3),
+           OPTION='CALC_K_G')
 
 
-# CALCUL DES G_THETA POUR LE CHAMP THETA2
+# CALCUL DES G_THETA POUR LA COURONNE 2
 # ---------------------------------------
 
-G_2=CALC_G(                 RESULTAT=RESU,
-                            THETA=_F(THETA = THETA2,
-                                      FOND_FISS=FOND,),
-                            OPTION='CALC_K_G'
-                        )
+G_2=CALC_G(RESULTAT=RESU,
+           THETA=_F(FOND_FISS=FOND,
+                    DIRECTION=(1., 0., 0., ),
+                    R_INF = C3,
+                    R_SUP = C4),
+           OPTION='CALC_K_G')
 
 
-# CALCUL DES G_THETA POUR LE CHAMP THETA3
+# CALCUL DES G_THETA POUR LA COURONNE 3
 # ---------------------------------------
 
-G_3=CALC_G(                 RESULTAT=RESU,
-                            NOM_CAS=('CH_UNI',
-                                     'CH_EXP1',
-                                     'CH_EXP5',
-                                     'CH_SINH1',
-                                     'CH_SINH5',
-                                     'CH_COSH1',
-                                     'CH_COSH5',
-                                     'CH_COS1',
-                                    ),
-                            THETA=_F(THETA = THETA3,
-                                     FOND_FISS=FOND),
-                            OPTION='CALC_K_G'
-                        )
+G_3=CALC_G(RESULTAT=RESU,
+           NOM_CAS=('CH_UNI',
+                    'CH_EXP1',
+                    'CH_EXP5',
+                    'CH_SINH1',
+                    'CH_SINH5',
+                    'CH_COSH1',
+                    'CH_COSH5',
+                    'CH_COS1',
+                   ),
+           THETA=_F(FOND_FISS=FOND,
+                    DIRECTION=(1., 0., 0., ),
+                    R_INF = C4,
+                    R_SUP = C5),
+           OPTION='CALC_K_G')
 
-G_COS53=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_COS5',
-                             THETA=_F(
-                                       DIRECTION=(1., 0., 0., ),
-                                       R_INF = 0.060,
-                                       R_SUP = 0.080,
-                                       FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                         )
+G_COS53=CALC_G(RESULTAT=RESU,
+               NOM_CAS='CH_COS5',
+               THETA=_F(FOND_FISS=FOND,
+                        DIRECTION=(1., 0., 0., ),
+                        R_INF = C4,
+                        R_SUP = C5),
+               OPTION='CALC_K_G')
+               
 # IMPRESSION DES RESULTATS COURONNE 0 (TRIANGLES)
 # -----------------------------------------------
 
@@ -1464,16 +1435,18 @@ RE_TMP=MECA_STATIQUE(   MODELE=MO,
                                 _F( CHARGE = CL))
                          )
 
-G_TMP=CALC_G(              RESULTAT=RE_TMP,
-                           THETA=_F(THETA = THETA0,
-                                     FOND_FISS=FOND),
-                           OPTION='CALC_K_G'
+G_TMP=CALC_G(RESULTAT=RE_TMP,
+             THETA=_F(FOND_FISS=FOND,
+                      DIRECTION=(1., 0., 0., ),
+                      R_INF = C1,
+                      R_SUP = C2,),
+             OPTION='CALC_K_G'
                           )
+
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=2.9234855308366,
            NOM_PARA='K1',
-           TABLE=G_TMP,
-           )
+           TABLE=G_TMP)
 
 FIN( )
 #

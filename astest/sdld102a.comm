@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -789,6 +789,69 @@ MODYNA=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
                         MATR_MASS=M_ASSE,
                         CALC_FREQ=_F(NMAX_FREQ=3,),);
 
+
+# TEST DE L'OPTION 'PLUS_GRANDE'
+MO_PG_SO=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
+                          MATR_MASS=M_ASSE,
+                          CALC_FREQ=_F(OPTION='PLUS_GRANDE',),);
+
+MO_PG_TD=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
+                          MATR_MASS=M_ASSE,
+                          METHODE='TRI_DIAG',
+                          CALC_FREQ=_F(OPTION='PLUS_GRANDE',),);
+
+MO_PG_JA=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
+                          MATR_MASS=M_ASSE,
+                          METHODE='JACOBI',
+                          CALC_FREQ=_F(OPTION='PLUS_GRANDE',),);
+
+MO_PG_QZ=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
+                          MATR_MASS=M_ASSE,
+                          METHODE='QZ',
+                          CALC_FREQ=_F(OPTION='PLUS_GRANDE',),);
+
+freq_propres = [1.21812E-01, 2.25079E-01, 2.94080E-01]
+
+TEST_RESU(RESU=(
+                _F(RESULTAT = MODYNA,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   NUME_ORDRE = 1,
+                   VALE_CALC = freq_propres[0]),
+                _F(RESULTAT = MODYNA,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   NUME_ORDRE = 2,
+                   VALE_CALC = freq_propres[1]),
+                _F(RESULTAT = MODYNA,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   NUME_ORDRE = 3,
+                   VALE_CALC = freq_propres[2]),
+               ),)
+
+TEST_RESU(RESU=(
+                _F(RESULTAT = MO_PG_SO,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   NUME_ORDRE = 1,
+                   VALE_CALC = freq_propres[2]),
+                _F(RESULTAT = MO_PG_TD,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   NUME_ORDRE = 1,
+                   VALE_CALC = freq_propres[2]),
+                _F(RESULTAT = MO_PG_JA,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   NUME_ORDRE = 1,
+                   VALE_CALC = freq_propres[2]),
+                _F(RESULTAT = MO_PG_QZ,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   NUME_ORDRE = 1,
+                   VALE_CALC = freq_propres[2]),
+               ),)
 
 #
 

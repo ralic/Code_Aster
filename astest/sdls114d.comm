@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES POUR UNE MODE PROPRE
 # sdls114d.para = tps_job 480 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -159,7 +159,7 @@ MODE=NORM_MODE(reuse=MODE,
                NORME='MASS_GENE',);
 
 
-GLMO1=CALC_G(OPTION='K_G_MODA',
+GLMO1=CALC_G(OPTION='CALC_K_G',
              RESULTAT=MODE,
              TOUT_MODE = 'OUI',
              THETA=_F( FISSURE=FF2,
@@ -212,7 +212,7 @@ IMPR_TABLE(TABLE=KT1, TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 
 
 ######################################################
-#VALEUR REFERENCE de K1 (K_G_MODA)
+#VALEUR REFERENCE de K1 (CALC_K_G)
 ######################################################
 
 # la reference est obtenue par fissure maillee (SDLS114B)

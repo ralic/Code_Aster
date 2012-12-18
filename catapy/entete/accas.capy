@@ -1,8 +1,8 @@
-#& MODIF ENTETE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF ENTETE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,8 +50,44 @@ JdC = JDC_CATA(code='ASTER',
                        A_CLASSER(('DEBUT', 'POURSUITE'), 'FIN')))
 
 # Types géométriques
-class no(GEOM): pass
-class grno(GEOM): pass
-class ma(GEOM): pass
-class grma(GEOM): pass
+class no(GEOM):
+    """
+    Classe servant à définir le nom d'un noeud dans le fichier de commande
+    En clair : un chaine de longueur 8.
+    """
+    pass
 
+class grno(GEOM):
+    """
+    Classe servant à définir le nom d'un groupe de noeuds dans le fichier de commande
+    En clair : un chaine de longueur 24.
+    """
+    def __convert__(cls,valeur):
+        """
+        Fonction de verification de la longueur de la chaine
+        """
+        if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
+            return valeur.strip()
+        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
+    __convert__ = classmethod(__convert__)
+
+class ma(GEOM):
+    """
+    Classe servant à définir le nom d'une maille dans le fichier de commande
+    En clair : un chaine de longueur 8.
+    """
+    pass
+
+class grma(GEOM):
+    """
+    Classe servant à définir le nom d'un groupe de mailles dans le fichier de commande
+    En clair : un chaine de longueur 24.
+    """
+    def __convert__(cls,valeur):
+        """
+        Fonction de verification de la longueur de la chaine
+        """
+        if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
+            return valeur.strip()
+        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
+    __convert__ = classmethod(__convert__)

@@ -7,7 +7,7 @@
       CHARACTER*(*)       MCFACT,       NOMAZ, NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,9 +34,9 @@ C
       PARAMETER     ( NBMC = 3 )
       LOGICAL       LNUME,LGRPMA
       CHARACTER*1   K1B
-      CHARACTER*8   NOMA, PRFM, NOMMAI, KNUME, GRPMA, K8B
+      CHARACTER*8   NOMA, PRFM, NOMMAI, KNUME, K8B
       CHARACTER*16  TYMOCL(NBMC), MOTCLE(NBMC)
-      CHARACTER*24  NOMAMA, NOMJV
+      CHARACTER*24  NOMAMA, NOMJV, GRPMA
       CHARACTER*24  VALK(3)
       INTEGER      IARG
 C     ------------------------------------------------------------------

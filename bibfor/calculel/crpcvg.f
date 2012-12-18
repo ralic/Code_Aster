@@ -6,11 +6,12 @@
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       REAL*8              TRAN(3), PREC
       INTEGER             LINOEU(*)
-      CHARACTER*8         MA1, MA2, GMA1, GMA2
+      CHARACTER*8         MA1, MA2
+      CHARACTER*24        GMA1, GMA2
       CHARACTER*(*)       LIMA1, LIMA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

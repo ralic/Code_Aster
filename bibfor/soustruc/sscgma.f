@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF SOUSTRUC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,10 +33,10 @@ C     ------------------------------------------------------------------
 
       CHARACTER*32 JEXNUM,JEXNOM
 
-      CHARACTER*8 MA,NOMA,NOGMA,KBID,NOGMA2,KPOS,NOM1,TOUT
+      CHARACTER*8 MA,NOMA,KBID,KPOS,NOM1,TOUT
       CHARACTER*8 ALARM,TYMA
       CHARACTER*16 CONCEP,CMD,OPTION
-      CHARACTER*24 LISMA
+      CHARACTER*24 LISMA,NOGMA,NOGMA2
       CHARACTER*24 VALK(2)
       CHARACTER*132 CARD
       INTEGER      IARG
@@ -64,7 +64,7 @@ C     -----------------------------------
       CALL JELIRA(MA//'.GROUPEMA','NMAXOC',NBGRMN,KBID)
       NBIS = NBGRMN
       NBK8 = NBGRMN
-      CALL WKVECT('&&SSCGMA.LIK8','V V K8',NBK8,IALIK8)
+      CALL WKVECT('&&SSCGMA.LIK8','V V K24',NBK8,IALIK8)
       CALL WKVECT('&&SSCGMA.LII1','V V I',NBIS,IALII1)
       CALL WKVECT('&&SSCGMA.LII2','V V I',NBIS,IALII2)
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMAT,KBID,IERD)
@@ -82,14 +82,12 @@ C     -----------------------------------
         ENDIF
 
         CALL GETVEM(MA,'MAILLE','CREA_GROUP_MA','MAILLE',IOCC,IARG,0,
-     &              KBID,
-     &              N2)
+     &              KBID,N2)
         CALL GETVTX('CREA_GROUP_MA','INTERSEC',IOCC,IARG,0,KBID,N3)
         CALL GETVTX('CREA_GROUP_MA','UNION',IOCC,IARG,0,KBID,N4)
         CALL GETVTX('CREA_GROUP_MA','DIFFE   ',IOCC,IARG,0,KBID,N5)
         CALL GETVEM(MA,'GROUP_MA','CREA_GROUP_MA','GROUP_MA',IOCC,IARG,
-     &              0,
-     &              KBID,N6)
+     &              0,KBID,N6)
         CALL GETVTX('CREA_GROUP_MA','OPTION',IOCC,IARG,0,OPTION,N7)
         CALL GETVTX('CREA_GROUP_MA','TOUT',IOCC,IARG,0,TOUT,N8)
         N2 = -N2
@@ -158,8 +156,7 @@ C       -- MOT CLEF GROUP_MA:
 C       ---------------------
         IF (N6.GT.0) THEN
           CALL GETVEM(MA,'GROUP_MA','CREA_GROUP_MA','GROUP_MA',IOCC,
-     &                IARG,1,
-     &                NOGMA2,NBID)
+     &                IARG,1,NOGMA2,NBID)
           CALL GETVTX('CREA_GROUP_MA','POSITION',IOCC,IARG,0,KPOS,N6B)
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',NOGMA2),IGM2)
           CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONUTI',ILI2,KBID)
@@ -205,15 +202,14 @@ C       -- MOT CLEF INTER:
 C       -------------------
         IF (N3.GT.0) THEN
           CALL GETVTX('CREA_GROUP_MA','INTERSEC',IOCC,IARG,N3,
-     &                ZK8(IALIK8),
-     &                NBID)
+     &                ZK24(IALIK8),NBID)
           DO 50,IGM = 1,N3
-            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
-            IF (IGM2.EQ.0) CALL U2MESK('F','SOUSTRUC_35',1,ZK8(IALIK8-1+
-     &                                   IGM))
+            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIK8-1+IGM)),IGM2)
+            IF (IGM2.EQ.0) CALL U2MESK('F','SOUSTRUC_35',1,
+     &                                 ZK24(IALIK8-1+IGM))
    50     CONTINUE
 
-          CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8)),IGM1)
+          CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIK8)),IGM1)
           CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM1),'LONUTI',ILI1,KBID)
           CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
@@ -229,7 +225,7 @@ C       -------------------
    60     CONTINUE
 
           DO 80,IGM = 2,N3
-            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
+            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIK8-1+IGM)),IGM2)
             CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONUTI',ILI2,KBID)
             CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM2),'L',IAGM2)
             CALL UTLISI('INTER',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
@@ -258,15 +254,15 @@ C       -------------------
 C       -- MOT CLEF UNION:
 C       -------------------
         IF (N4.GT.0) THEN
-          CALL GETVTX('CREA_GROUP_MA','UNION',IOCC,IARG,N4,ZK8(IALIK8),
+          CALL GETVTX('CREA_GROUP_MA','UNION',IOCC,IARG,N4,ZK24(IALIK8),
      &                NBID)
           DO 100,IGM = 1,N4
-            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
-            IF (IGM2.EQ.0) CALL U2MESK('F','SOUSTRUC_35',1,ZK8(IALIK8-1+
-     &                                   IGM))
+            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIK8-1+IGM)),IGM2)
+            IF (IGM2.EQ.0) CALL U2MESK('F','SOUSTRUC_35',1,
+     &                                 ZK24(IALIK8-1+IGM))
   100     CONTINUE
 
-          CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8)),IGM1)
+          CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIK8)),IGM1)
           CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM1),'LONUTI',ILI1,KBID)
           CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
@@ -282,7 +278,7 @@ C       -------------------
   110     CONTINUE
 
           DO 130,IGM = 2,N4
-            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
+            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIK8-1+IGM)),IGM2)
             CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONUTI',ILI2,KBID)
             CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM2),'L',IAGM2)
             CALL UTLISI('UNION',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
@@ -321,15 +317,15 @@ C       -------------------
 C       -- MOT CLEF DIFFE:
 C       -------------------
         IF (N5.GT.0) THEN
-          CALL GETVTX('CREA_GROUP_MA','DIFFE',IOCC,IARG,N5,ZK8(IALIK8),
-     &                NBID)
+          CALL GETVTX('CREA_GROUP_MA','DIFFE',IOCC,IARG,N5,
+     &                ZK24(IALIK8),NBID)
           DO 150,IGM = 1,N5
-            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
-            IF (IGM2.EQ.0) CALL U2MESK('F','SOUSTRUC_35',1,ZK8(IALIK8-1+
-     &                                   IGM))
+            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIK8-1+IGM)),IGM2)
+            IF (IGM2.EQ.0) CALL U2MESK('F','SOUSTRUC_35',1,
+     &                                 ZK24(IALIK8-1+IGM))
   150     CONTINUE
 
-          CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8)),IGM1)
+          CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIK8)),IGM1)
           CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM1),'LONUTI',ILI1,KBID)
           CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
@@ -345,7 +341,7 @@ C       -------------------
   160     CONTINUE
 
           DO 180,IGM = 2,N5
-            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
+            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK24(IALIK8-1+IGM)),IGM2)
             CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONUTI',ILI2,KBID)
             CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM2),'L',IAGM2)
             CALL UTLISI('DIFFE',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
@@ -465,7 +461,7 @@ C     --------------------------
         WRITE (IFM,'(/,/,A,I6,/,45(''=''))')
      &    'NOMBRE  DE GROUPES DE MAILLES CREES : ',NBGNAJ
 
-        WRITE (IFM,'(/,15X,38(''-''),2(/,15X,A),/,15X,38(''-''))')
+        WRITE (IFM,'(/,15X,54(''-''),2(/,15X,A),/,15X,54(''-''))')
      &    '! NOM DU GROUPE ! NBRE DE MAILLES DU !',
      &    '!    MAILLES    !     GROUPE_MA      !'
 
@@ -473,10 +469,10 @@ C     --------------------------
           II = NBGMIN + I
           CALL JENUNO(JEXNUM(MA//'.GROUPEMA',II),NOGMA)
           CALL JELIRA(JEXNUM(MA//'.GROUPEMA',II),'LONUTI',NBMA,KBID)
-          WRITE (IFM,'(15X,A,2X,A8,5X,A,2X,I8,10X,A)') '!',NOGMA,'!',
+          WRITE (IFM,'(15X,A,2X,A24,5X,A,2X,I8,10X,A)') '!',NOGMA,'!',
      &      NBMA,'!'
   220   CONTINUE
-        WRITE (IFM,'(15X,38(''-''),/)')
+        WRITE (IFM,'(15X,54(''-''),/)')
       END IF
 
 C     IMPRESSIONS NIVEAU 2

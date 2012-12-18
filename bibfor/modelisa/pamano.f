@@ -7,7 +7,7 @@
       CHARACTER*(*)     MOTFAZ, MOCLEZ, NOMAZ, LISTYZ, LISNOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,12 +132,12 @@ C              -----------------------------------------------------
          CALL GETVTX (MOTFAC,MOTCLE,IOCC,IARG,0,K8BID,NG)
          IF (NG.NE.0) THEN
              NG = -NG
-             CALL WKVECT ('&&PAMANO.TRAV','V V K8',NG,JJJ)
+             CALL WKVECT ('&&PAMANO.TRAV','V V K24',NG,JJJ)
              CALL GETVEM (NOMA,'GROUP_MA',
-     &                    MOTFAC,MOTCLE,IOCC,IARG,NG,ZK8(JJJ),NGR)
+     &                    MOTFAC,MOTCLE,IOCC,IARG,NG,ZK24(JJJ),NGR)
              DO 10 IGR = 1, NGR
-                CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'L',JGRO)
-                CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'LONUTI',
+                CALL JEVEUO (JEXNOM(GRMAMA,ZK24(JJJ+IGR-1)),'L',JGRO)
+                CALL JELIRA (JEXNOM(GRMAMA,ZK24(JJJ+IGR-1)),'LONUTI',
      &                      NBMAIL,K1BID)
                 DO 20 M = 1, NBMAIL
                   NUMAIL = ZI(JGRO-1+M)
@@ -154,7 +154,7 @@ C              -----------------------------------------------------
  22                 CONTINUE
                     IF (INDIC.EQ.0) THEN
                        VALK(1) = NOMAIL
-                       VALK(2) = ZK8(JJJ+IGR-1)
+                       VALK(2) = ZK24(JJJ+IGR-1)
                        VALK(3) = MOTCLE
                        CALL U2MESK('F','MODELISA6_17', 3 ,VALK)
                     ENDIF
@@ -225,11 +225,11 @@ C              ------------------------------------------------
          CALL GETVTX (MOTFAC,MOTCLE,IOCC,IARG,0,K8BID,NG)
          IF (NG.NE.0) THEN
              NG = -NG
-             CALL WKVECT ('&&PAMANO.TRAV','V V K8',NG,JJJ)
+             CALL WKVECT ('&&PAMANO.TRAV','V V K24',NG,JJJ)
              CALL GETVEM (NOMA,'GROUP_NO',
-     &                    MOTFAC,MOTCLE,IOCC,IARG,NG,ZK8(JJJ),NGR)
+     &                    MOTFAC,MOTCLE,IOCC,IARG,NG,ZK24(JJJ),NGR)
              DO 40 IGR = 1, NGR
-               CALL JELIRA (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'LONUTI',
+               CALL JELIRA (JEXNOM(GRNOMA,ZK24(JJJ+IGR-1)),'LONUTI',
      &                      N3,K1BID)
                IDIM3 = IDIM3 + N3
  40          CONTINUE
@@ -285,10 +285,10 @@ C
          CALL GETVTX (MOTFAC,MOTCLE,IOCC,IARG,0,K8BID,NG)
          IF (NG.NE.0) THEN
              NG = -NG
-             CALL GETVTX (MOTFAC,MOTCLE,IOCC,IARG,NG,ZK8(JJJ),NGR)
+             CALL GETVTX (MOTFAC,MOTCLE,IOCC,IARG,NG,ZK24(JJJ),NGR)
              DO 50 IGR = 1, NGR
-               CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'L',JGRO)
-               CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'LONUTI',
+               CALL JEVEUO (JEXNOM(GRMAMA,ZK24(JJJ+IGR-1)),'L',JGRO)
+               CALL JELIRA (JEXNOM(GRMAMA,ZK24(JJJ+IGR-1)),'LONUTI',
      &                      NBMAIL,K1BID)
                DO 60 M = 1, NBMAIL
                   NUMAIL = ZI(JGRO-1+M)
@@ -336,10 +336,10 @@ C
          CALL GETVTX (MOTFAC,MOTCLE,IOCC,IARG,0,K8BID,NG)
          IF (NG.NE.0) THEN
              NG = -NG
-             CALL GETVTX (MOTFAC,MOTCLE,IOCC,IARG,NG,ZK8(JJJ),NGR)
+             CALL GETVTX (MOTFAC,MOTCLE,IOCC,IARG,NG,ZK24(JJJ),NGR)
              DO 100 IGR = 1, NGR
-               CALL JEVEUO (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'L',JGRO)
-               CALL JELIRA (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'LONUTI',
+               CALL JEVEUO (JEXNOM(GRNOMA,ZK24(JJJ+IGR-1)),'L',JGRO)
+               CALL JELIRA (JEXNOM(GRNOMA,ZK24(JJJ+IGR-1)),'LONUTI',
      &                      N3,K1BID)
                DO 110 INO = 1, N3
                   IN = ZI(JGRO+INO-1)

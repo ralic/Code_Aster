@@ -7,7 +7,7 @@
       CHARACTER*19 EXCIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/11/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -268,13 +268,6 @@ C
          CALL JEVEUO(EXCIT(1:19)//'.INFC','L',JINFC)
          CALL JEVEUO(EXCIT(1:19)//'.FCHA','L',JFCHA)
          NCHASD = ZI(JINFC)
-      ELSE
-         VALK(1) = RESULT
-         IF ( NCHALU.EQ.0 ) THEN
-            CALL U2MESK('I','UTILITAI4_2',1,VALK)
-         ELSE
-            CALL U2MESK('I','UTILITAI4_1',1,VALK)
-         ENDIF
       ENDIF
 C
 C--- VERIFICATIONS DES CHARGEMENTS

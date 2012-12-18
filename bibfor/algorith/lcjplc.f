@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,8 @@ C       ----------------------------------------------------------------
       INTEGER         NBCOMM(NMAT,3)
       REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
       REAL*8  DRDY(NR,NR)
-      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*16    COMP(*)
+      CHARACTER*24    CPMONO(5*NMAT+1)
 C       ----------------------------------------------------------------
        IRET=0
          IF     ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN

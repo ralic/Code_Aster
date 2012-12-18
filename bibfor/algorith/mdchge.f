@@ -14,7 +14,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,11 +58,11 @@ C     ------------------------------------------------------------------
       REAL*8        KTANG, CTANG, K, COOR1(3), COOR2(3), XJEU, R8BID
       COMPLEX*16    CBID
       LOGICAL       LNOUE2
-      CHARACTER*8   KBID, NOMNO1, NOMNO2, NOMGR1, NOMGR2,
+      CHARACTER*8   KBID, NOMNO1, NOMNO2,
      &              SST1, SST2, MAYA1, MAYA2, REPERE, K8TYP
       CHARACTER*10  MOTFAC
       CHARACTER*14  NUME1, NUME2
-      CHARACTER*24  MDGENE, MDSSNO, REFO
+      CHARACTER*24  MDGENE, MDSSNO, REFO, NOMGR1, NOMGR2
       CHARACTER*24 VALK
       INTEGER      IARG
 C     ------------------------------------------------------------------

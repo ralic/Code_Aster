@@ -1,6 +1,6 @@
       SUBROUTINE CONORI(MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,18 +140,18 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     CREATION D UN TABLEAU DE TRAVAIL
 C     ------------------------------------------------------------------
-         CALL WKVECT('&&OP0154.NOGCO','V V K8',NBGCO,IO8GCO)
+         CALL WKVECT('&&OP0154.NOGCO','V V K24',NBGCO,IO8GCO)
 C     ------------------------------------------------------------------
 C     RECHERCHE DES NOMS DES GROUP_MA_FISSURE DANS .COMM
 C     ------------------------------------------------------------------
          CALL GETVEM(MA,'GROUP_MA','ORIE_FISSURE','GROUP_MA',
-     &                  IC,IARG,NBGCO,ZK8(IO8GCO),IDUM)
+     &                  IC,IARG,NBGCO,ZK24(IO8GCO),IDUM)
          IF (NIV.EQ.2) THEN
          WRITE(IFM,*) ' '
          WRITE(IFM,*) ' LA LISTE DES ORIE_FISSURE'
          WRITE(IFM,*) ' '
          DO 2 IGCO=1,NBGCO
-            WRITE(IFM,*) '   ORIE_FISSURE: ',ZK8(IO8GCO+IGCO-1)
+            WRITE(IFM,*) '   ORIE_FISSURE: ',ZK24(IO8GCO+IGCO-1)
 2        CONTINUE
          WRITE(IFM,*) ' '
          ENDIF
@@ -179,19 +179,20 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     RECHERCHE D EXISTENCE DU GROUP_MA_FISSURE CONSIDERE
 C     ------------------------------------------------------------------
-            CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IO8GCO+IGCO-1)),IGMA)
+            CALL JENONU(JEXNOM(MA//'.GROUPEMA',
+     &                  ZK24(IO8GCO+IGCO-1)),IGMA)
 C
             IF (NIV.EQ.2) THEN
             WRITE(IFM,*) ' '
             WRITE(IFM,*) ' TRAITEMENT DE ',
-     &                 ZK8(IO8GCO+IGCO-1)
+     &                 ZK24(IO8GCO+IGCO-1)
             WRITE(IFM,*) ' '
             ENDIF
             IF ( IGMA.EQ.0) THEN
 C     ------------------------------------------------------------------
 C     TRAITEMENT DU CAS DE NON-EXISTENCE
 C     ------------------------------------------------------------------
-               CALL U2MESK('I','ALGORITH2_26',1,ZK8(IO8GCO+IGCO-1))
+               CALL U2MESK('I','ALGORITH2_26',1,ZK24(IO8GCO+IGCO-1))
 C
             ELSE
 C     ------------------------------------------------------------------

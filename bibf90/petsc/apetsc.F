@@ -2,7 +2,7 @@
      &                  NBSOL ,ISTOP ,IRET  )
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSC PETSC  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETSC PETSC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -68,7 +68,7 @@
       PARAMETER   (NMXINS=5)
 !
 !     VARIABLES LOCALES
-      INTEGER      IPREM,K,IBID,IERD,NSMDI,KDEB
+      INTEGER      IPREM,K,IBID,IERD,NGLO,KDEB,JNEQU
       INTEGER      JREFA,JTRAV,KPTSC
       INTEGER*4    N4
 !
@@ -82,7 +82,8 @@
       CHARACTER*14 NONUS(NMXINS)
       Mat      Ap(NMXINS)
       KSP      Kp(NMXINS)
-      COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
+      Vec      Bp(NMXINS),x
+      COMMON /SPETSC/ Ap,Kp,Bp,x,NOMATS,NOSOLS,NONUS
 !
 !     COMMUN POUR LE PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
       CHARACTER*19 SPSOMU,SPMAT,SPSOLV
@@ -153,7 +154,8 @@
 !     ON TESTE LE NOM DE LA MATRICE, CELUI DU NUME_DDL,
 !     LA TAILLE DES MATRICES ASTER ET PETSC
       CALL DISMOI('F','NOM_NUME_DDL',MATAS,'MATR_ASSE',IBID,NU,IERD)
-      CALL JELIRA(NU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
+      CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
+      NGLO = ZI(JNEQU)
 
       KPTSC=1
       DO K=1,NMXINS
@@ -163,7 +165,7 @@
             CALL ASSERT(Ap(K).NE.0)
             call MatGetSize(Ap(K),m,n,ierr)
             CALL ASSERT(ierr.EQ.0)
-            IF (m.EQ.n .AND. NSMDI.EQ.n) THEN
+            IF (m.EQ.n .AND. NGLO.EQ.n) THEN
                KPTSC = K
                GOTO 1
             ENDIF
@@ -230,10 +232,10 @@
 !     -------------------
 
       IF (ACTION.EQ.'RESOUD') THEN
-         CALL WKVECT('&&APETSC.TRAVAIL','V V R',NSMDI,JTRAV)
-         N4 = NSMDI
+         CALL WKVECT('&&APETSC.TRAVAIL','V V R',NGLO,JTRAV)
+         N4 = NGLO
          DO K = 1,NBSOL
-            KDEB = (K-1)*NSMDI+1
+            KDEB = (K-1)*NGLO+1
             CALL DCOPY(N4,RSOLU(KDEB),1,ZR(JTRAV),1)
             CALL APMAIN(ACTION,KPTSC ,ZR(JTRAV),VCINE ,ISTOP ,
      &                  IRET  )

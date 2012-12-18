@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,18 +20,19 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE SELLENET N.SELLENET
 C     CREATION DES VECTEURS NOMS DE GROUPES DE MAILLES ET DE NOEUDS
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
       INTEGER         NGRP,   NUMGRP, JNOGRP, JLGGRP, NGRMAX, NBNUFA
       CHARACTER*(*)   NOMJNG, NOMJLG
-      CHARACTER*8     NOMGRP
+      CHARACTER*24    NOMGRP
       INTEGER            I, NUM
 C     ------------------------------------------------------------------
 C     SI CE NOM DE GROUPE EXISTE DEJA ON NE LE RESTOCKE PAS MAIS
 C     ON INCREMENTE DU NB NOEUDS/MAILLES DE LA FAMILLE OU IL APPARAIT
       DO 1 I = 1,NGRP
-          IF ( ZK8(JNOGRP+I-1) .EQ. NOMGRP ) THEN
+          IF ( ZK24(JNOGRP+I-1) .EQ. NOMGRP ) THEN
                ZI (JLGGRP+I-1) = ZI(JLGGRP+I-1) + NBNUFA
                GOTO 100
           ENDIF
@@ -54,7 +55,7 @@ C     ON AGRANDI NOMJNG + NOMJLG SI NECESSAIRE
           CALL JUVECA(NOMJLG,NGRMAX)
           CALL JEVEUO(NOMJLG,'E',JLGGRP)
       ENDIF
-      ZK8(JNOGRP+NUM-1) = NOMGRP
+      ZK24(JNOGRP+NUM-1) = NOMGRP
       ZI (JLGGRP+NUM-1) = NBNUFA
  100  CONTINUE
       END

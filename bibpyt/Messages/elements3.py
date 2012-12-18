@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements3 Messages  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -257,10 +257,6 @@ cata_msg = {
      compte correctement les grands déplacements et surtout les grandes
      rotations, il est recommandé d'utiliser DEFORMATION='GROT_GDEP'.
 
-"""),
-
-95 : _(u"""
-  Numéro de couche incorrect
 """),
 
 98 : _(u"""

@@ -7,7 +7,7 @@
       CHARACTER*(*)     NOMAZ,NOMOZ,MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,9 +43,9 @@ C
 C --- ------------------------------------------------------------------
 C
       CHARACTER*4    TYPE
-      CHARACTER*8    K8B,NOMU,NOMA,NOMO,NOMAIL,TYPEL,NOGRM
+      CHARACTER*8    K8B,NOMU,NOMA,NOMO,NOMAIL,TYPEL
       CHARACTER*16   CONCEP,CMD
-      CHARACTER*24   GRMAMA,MAILMA,CARA
+      CHARACTER*24   GRMAMA,MAILMA,CARA,NOGRM
       CHARACTER*24   VALK(4)
       INTEGER        IDTYMA,I3D,I2D,NDIM1,IOC,NC,NG,NM,NJ,NN,NSOM,NBMAIL
       INTEGER        N1,IMA,NBGRM,JGRM,IG,JMAIL,NUMA,NUTYMA,LMAX2
@@ -124,11 +124,11 @@ C
 C
          IF ( NG .NE. 0 ) THEN
             NBGRM = -NG
-            CALL WKVECT ( '&&ACEVDI.GROUP_MA', 'V V K8', NBGRM, JGRM )
+            CALL WKVECT ( '&&ACEVDI.GROUP_MA', 'V V K24', NBGRM, JGRM )
             CALL GETVTX (MCF,'GROUP_MA',IOC,IARG,NBGRM,
-     &                   ZK8(JGRM), N1 )
+     &                   ZK24(JGRM), N1 )
             DO 14 IG = 1, NBGRM
-               NOGRM = ZK8(JGRM+IG-1)
+               NOGRM = ZK24(JGRM+IG-1)
                CALL VERIMA(NOMA, NOGRM, 1, 'GROUP_MA')
                CALL JELIRA(JEXNOM(GRMAMA,NOGRM),'LONUTI',NBMAIL,K8B)
                CALL JEVEUO(JEXNOM(GRMAMA,NOGRM),'L',JMAIL)

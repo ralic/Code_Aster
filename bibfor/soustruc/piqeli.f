@@ -6,7 +6,7 @@
       CHARACTER*8         MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF SOUSTRUC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,7 +159,7 @@ C
  404        CONTINUE
 C
             CALL JELIRA (GRPNOE,'NOMUTI',NBGNO,K1BID)
-            CALL JEDUPO (GRPNOE,'V',GRPNOV,.FALSE.)
+            CALL CPCLMA (MAILLA,'&&PIQELI','GROUPENO','V')
             CALL JEDETR (GRPNOE)
             CALL JECREC(GRPNOE,'G V I','NOM','DISPERSE',
      &                 'VARIABLE',NBGNO)

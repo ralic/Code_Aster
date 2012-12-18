@@ -4,11 +4,12 @@ C
       INCLUDE 'jeveux.h'
 
       CHARACTER*32 JEXNOM
-      CHARACTER*8         NOMA, LIGRMA(*)
+      CHARACTER*8         NOMA
+      CHARACTER*24 LIGRMA(*)
       INTEGER             NBGMA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,8 +37,8 @@ C IN  : LIGRMA : LISTE DES NOMS DES GROUPES DE MAILLES.
 C-----------------------------------------------------------------------
 C
       CHARACTER*1   K1BID
-      CHARACTER*8   K8B, NOMGNO, NOMGMA
-      CHARACTER*24  GRPMA, GRPNO
+      CHARACTER*8   K8B
+      CHARACTER*24  GRPMA, GRPNO, NOMGMA, NOMGNO
 C DEB-------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------

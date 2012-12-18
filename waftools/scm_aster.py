@@ -69,10 +69,10 @@ def check_aster_version():
         ids = '+'.join([revid(p) for p in wctx.parents()])
         br = parent.branch()
         date = strftime('%d/%m/%Y', localtime(parent.date()[0]))
-        tag, chg = get_parent_info(parent, get_tag)
+        tag, chg = get_parent_info(parent, get_tag_in_branch)
         frbr, lvl = get_parent_info(parent, get_branch)
         loc = local_changes(ui, repo)
-        if tag:
+        if tag and version2tuple(tag) > vers:
             vers = version2tuple(tag)
     except ImportError:
         pass
@@ -120,6 +120,14 @@ def get_branch(ctx):
     """Return an official branch name"""
     BR = ('unstable', 'testing', 'stable-updates', 'stable')
     return ctx.branch() in BR and ctx.branch() or None
+
+def get_tag_in_branch(ctx):
+    """Return the tag in an official branch"""
+    branch = get_branch(ctx)
+    tag = get_tag(ctx)
+    if branch and tag:
+        return tag
+    return None
 
 def get_parent_info(ctx, get_info):
     """Return the first not None info found in 'ctx' or its parents."""

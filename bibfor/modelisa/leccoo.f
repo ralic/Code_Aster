@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,13 +38,13 @@ C                                                  OU ERREUR DETECTE)
 C       ----------------------------------------------------------------
 C
         REAL*8          RV
-        CHARACTER*8     MCL(NBM),NOM
+        CHARACTER*8     MCL(NBM)
         INTEGER         DIM(NBM),       NBT(NBM),       DEBLIG
         CHARACTER*14    CNL
         CHARACTER*16    CMD
         COMMON          /OPMAIL/        CMD
         CHARACTER*(*)   CV
-        CHARACTER*24 VALK(3)
+        CHARACTER*24 VALK(3),NOM
 C-----------------------------------------------------------------------
       INTEGER I ,ICL ,IER ,IFL ,IFM ,ILEC ,INOM 
       INTEGER IRTET ,IRTETI ,IUNIFI ,IV ,J ,NBG ,NBM 

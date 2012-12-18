@@ -6,7 +6,7 @@
 
       CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*19  CHAM19
-      CHARACTER*17  NONOEU
+      CHARACTER*33  NONOEU
       CHARACTER*8   NOCMP
       INTEGER       NBREF, REFI(NBREF), IFIC
       REAL*8        REFR(NBREF), EPSI
@@ -17,7 +17,7 @@
       LOGICAL       LLAB
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

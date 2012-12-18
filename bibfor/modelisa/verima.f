@@ -7,7 +7,7 @@
       CHARACTER*(*)    NOMZ, LIMANZ(LONLIM), TYPZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,8 +37,8 @@ C                       MAILLE OU NOEUD OU GROUP_NO OU GROUP_MA
 C ----------------------------------------------------------------------
 C
       INTEGER IGR,IRET,INO,IMA
-      CHARACTER*8   NOMA, LIMANO, TYPE
-      CHARACTER*24  NOEUMA, GRNOMA, MAILMA, GRMAMA
+      CHARACTER*8   NOMA, TYPE
+      CHARACTER*24  NOEUMA, GRNOMA, MAILMA, GRMAMA, LIMANO
       CHARACTER*24 VALK(2)
 C ----------------------------------------------------------------------
 C

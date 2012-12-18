@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/10/2012   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ELEMENTS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -270,8 +270,8 @@ C              BOUCLE SUR LES GROUPES DE FIBRE
                DO 100 IG=1,NBGF
                   NUGF=ZI(INBF+1+IG)
                   ICP=ISDCOM-1+(NUGF-1)*6
-                  READ(ZK16(ICP+6),'(I16)')NBFIG
-                  MATERI=ZK16(ICP+2)(1:8)
+                  READ(ZK24(ICP+6),'(I24)')NBFIG
+                  MATERI=ZK24(ICP+2)(1:8)
 C                 CALCUL DES CARACTERISTIQUES DU GROUPE ---
                   CALL PMFITG(NBFIG,NCARFI,ZR(IPOS),CASEC1)
 C                 ON MULTIPLIE PAR RHO (CONSTANT SUR LE GROUPE)

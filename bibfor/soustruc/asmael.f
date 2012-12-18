@@ -5,7 +5,7 @@
       CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*8        MA1, MA2, MAG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF SOUSTRUC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +29,8 @@ C
 C-----------------------------------------------------------------------
 C
       CHARACTER*8  KBID
-      CHARACTER*8  NOMA,NONO,NOSMA,NOGMA,NOGNO,NOMACR
-      CHARACTER*24 VALK(3)
+      CHARACTER*8  NOMA,NONO,NOSMA,NOMACR
+      CHARACTER*24 VALK(3),NOGMA,NOGNO
       REAL*8       X,Y,Z,DREFE,DIJ
 C     ------------------------------------------------------------------
 C
@@ -264,8 +264,10 @@ C     -----------------
      &                            NBGM2,KBID)
       NBGMA = NBGM1 + NBGM2
       IF ( NBGMA .GT. 0 ) THEN
-        CALL JECREC(MAG//'.GROUPEMA','G V I','NO',
-     &                               'DISPERSE','VARIABLE',NBGMA)
+        CALL JECREO(MAG//'.PTRNOMMAI','G N K24')
+        CALL JEECRA(MAG//'.PTRNOMMAI','NOMMAX',NBGMA,' ')
+        CALL JECREC(MAG//'.GROUPEMA','G V I','NO '//MAG//'.PTRNOMMAI',
+     &              'DISPERSE','VARIABLE',NBGMA)
         DO 31,I=1,NBGM1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPEMA',I),'L',IAGMA1)
           CALL JELIRA(JEXNUM(MA1//'.GROUPEMA',I),'LONUTI',N,KBID)
@@ -315,8 +317,10 @@ C     -----------------
      &                            NBGN2,KBID)
       NBGNO = NBGN1 + NBGN2
       IF ( NBGNO .GT. 0 ) THEN
-        CALL JECREC(MAG//'.GROUPENO','G V I','NO',
-     &                               'DISPERSE','VARIABLE',NBGNO)
+        CALL JECREO(MAG//'.PTRNOMNOE','G N K24')
+        CALL JEECRA(MAG//'.PTRNOMNOE','NOMMAX',NBGNO,' ')
+        CALL JECREC(MAG//'.GROUPENO','G V I','NO '//MAG//'.PTRNOMNOE',
+     &              'DISPERSE','VARIABLE',NBGNO)
         DO 33,I=1,NBGN1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPENO',I),'L',IAGNO1)
           CALL JELIRA(JEXNUM(MA1//'.GROUPENO',I),'LONUTI',N,KBID)

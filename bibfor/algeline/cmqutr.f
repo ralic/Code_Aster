@@ -9,7 +9,7 @@
       CHARACTER*(*)       BASZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,12 +38,12 @@ C     ------------------------------------------------------------------
       LOGICAL      LOGIC
       CHARACTER*1  K1B, BASE
       CHARACTER*24 VALK
-      CHARACTER*8  K8B, NOMG, TYPM, NIMA
+      CHARACTER*8  K8B, TYPM, NIMA
       CHARACTER*16 KNUME
       CHARACTER*24 NOMMAI, TYPMAI, CONNEX, NODIME, NOMNOE, GRPNOE,
-     &             COOVAL, COODSC, COOREF, GRPMAI
-      CHARACTER*24 TYPMAV, CONNEV, NODIMV, NOMNOV, GRPNOV,
-     &             COOVAV, COODSV, COOREV, NOMMAV, GRPMAV
+     &             COOVAL, COODSC, COOREF, GRPMAI, NOMG
+      CHARACTER*24 TYPMAV, CONNEV, NODIMV, NOMNOV, GRPNOV, GPPTNN,
+     &             COOVAV, COODSV, COOREV, NOMMAV, GRPMAV, GPPTNM
       INTEGER     VERSIO
       PARAMETER ( VERSIO = 1 )
 C  --- TABLEAU DE DECOUPAGE
@@ -186,7 +186,10 @@ C
       CALL JEEXIN ( GRPMAV, IGRMA )
       IF ( IGRMA .NE. 0 ) THEN
          CALL JELIRA ( GRPMAV, 'NOMUTI', NBGRM, K1B )
-         CALL JECREC ( GRPMAI, BASE//' V I', 'NO', 'DISPERSE',
+         GPPTNM = NOMAOU//'.PTRNOMMAI'
+         CALL JECREO ( GPPTNM, 'G N K24' )
+         CALL JEECRA ( GPPTNM, 'NOMMAX', NBGRM,' ' )
+         CALL JECREC ( GRPMAI, BASE//' V I', 'NO '//GPPTNM, 'DISPERSE',
      &                 'VARIABLE', NBGRM )
 C     --- BCLE SUR LES GROUP_MA DU MAILLAGE INITIAL
          DO 421 I = 1, NBGRM
@@ -337,8 +340,12 @@ C
       CALL JEEXIN ( GRPNOV, IRET )
       IF ( IRET .NE. 0 ) THEN
          CALL JELIRA ( GRPNOV, 'NOMUTI', NBGRNO, K1B )
-         CALL JECREC ( GRPNOE, BASE//' V I', 'NO', 'DISPERSE',
-     &                 'VARIABLE', NBGRNO )
+         GPPTNN = NOMAOU//'.PTRNOMNOE'
+         CALL JEDETR ( GPPTNN )
+         CALL JECREO ( GPPTNN, BASE//' N K24' )
+         CALL JEECRA ( GPPTNN, 'NOMMAX', NBGRNO,' ' )
+         CALL JECREC ( GRPNOE, BASE//' V I', 'NO '//GPPTNN,
+     &                 'DISPERSE', 'VARIABLE', NBGRNO )
          DO 20 I = 1,NBGRNO
             CALL JENUNO ( JEXNUM(GRPNOV,I), NOMG )
             CALL JEVEUO ( JEXNUM(GRPNOV,I), 'L', JVG )

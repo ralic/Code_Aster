@@ -1,7 +1,7 @@
       SUBROUTINE APPCPR(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APPCPR PETSC  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF APPCPR PETSC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -60,7 +60,8 @@ C RESPONSABLE DESOZA T.DESOZA
       CHARACTER*14  NONUS(NMXINS)
       Mat              Ap(NMXINS)
       KSP              Kp(NMXINS)
-      COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
+      Vec              Bp(NMXINS),x
+      COMMON /SPETSC/ Ap,Kp,Bp,x,NOMATS,NOSOLS,NONUS
 !
 !     SUBROUTINES EXTERNES POUR L'UTILISATION DU
 !     PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP

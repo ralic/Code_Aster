@@ -7,7 +7,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,10 @@ C-----------------------------------------------------------------------
       LOGICAL       REORIE, MCFL(NBT)
       COMPLEX*16    CBID
       CHARACTER*1   K1BID
-      CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, NOMMO, TYPEL
+      CHARACTER*8   K8B, MOT, NOMAIL, NOMMA, NOMMO, TYPEL
       CHARACTER*16  MCFT(NBT), MOTFAC, VALMC(4), TYPMC(4)
       CHARACTER*19  NOMT19, LIMAMO
-      CHARACTER*24  GRMAMA, MAILMA, PARA
+      CHARACTER*24  GRMAMA, MAILMA, PARA, NOGR
       CHARACTER*24  VALK(2)
       INTEGER      IARG
 C
@@ -170,12 +170,12 @@ C
             IF ( NBOBJ .EQ. 0 ) GOTO 210
 C
             NBOBJ = -NBOBJ
-            CALL WKVECT ( '&&CHVENO.OBJET', 'V V K8', NBOBJ,JGROUP)
+            CALL WKVECT ( '&&CHVENO.OBJET', 'V V K24', NBOBJ,JGROUP)
             CALL GETVEM ( NOMA, TYPMC(IC), MOTFAC, VALMC(IC),
-     &                       IOCC,IARG,NBOBJ, ZK8(JGROUP), NBOBJ )
+     &                       IOCC,IARG,NBOBJ, ZK24(JGROUP), NBOBJ )
             IF ( TYPMC(IC) .EQ. 'GROUP_MA' ) THEN
               DO 212  IOBJ = 1 , NBOBJ
-                NOGR = ZK8(JGROUP-1+IOBJ)
+                NOGR = ZK24(JGROUP-1+IOBJ)
                 IF (MOTFAC .EQ. 'ZONE') THEN
 C
 C ---             RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
@@ -289,7 +289,7 @@ C           ---------------
             ELSE
               CALL WKVECT('&&CHVENO.NUME_MAILLE','V V I',NBOBJ,JNMA)
               DO 216  IOBJ = 1 , NBOBJ
-                NOMAIL = ZK8(JGROUP-1+IOBJ)
+                NOMAIL = ZK24(JGROUP-1+IOBJ)
                 CALL JENONU(JEXNOM(NOMMA//'.NOMMAI',NOMAIL),NUMA)
                 ZI(JNMA+IOBJ-1) = NUMA
                 IF (MOTFAC .EQ. 'ZONE') THEN

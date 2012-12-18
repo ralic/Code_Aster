@@ -14,7 +14,7 @@
       CHARACTER*16        TYPNUM, TYPFRO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,10 +62,10 @@ C TOLE CRP_20
       REAL*8        ALPHA, BETA, AXE(3)
       COMPLEX*16    CBID
       LOGICAL       LNOUE2,MEMAIL
-      CHARACTER*8   KBID, REPERE, MAILLA, MAMAI, NOMNO1, NOMNO2,
-     &              NOMGR1, NOMGR2, K8TYP,K8BID
+      CHARACTER*8   KBID, REPERE, MAILLA, NOMNO1, NOMNO2,
+     &              K8TYP,K8BID
       CHARACTER*10  MOTFAC
-      CHARACTER*24  MDGENE, REFO
+      CHARACTER*24  MDGENE, REFO, NOMGR1, NOMGR2, MAMAI
       CHARACTER*24  VALK(2)
 C     ------------------------------------------------------------------
 C  COUPLAGE EDYOS
@@ -82,10 +82,9 @@ C     =================================
 
       INTEGER       DIMNAS
       PARAMETER     (DIMNAS=8)
-      CHARACTER*8   CNPAL(PALMAX)
 
       INTEGER       IADRK
-      CHARACTER*24  CPAL
+      CHARACTER*24  CPAL,CNPAL(PALMAX)
       INTEGER      IARG
 C
       CALL JEMARQ()
@@ -155,11 +154,11 @@ C
                LNOUE2 = .TRUE.
                NMLIAI = 0
                NGRM = -IBID
-               CALL WKVECT('&&MDCHST.GROUP_MA','V V K8',NGRM,JMAIL)
+               CALL WKVECT('&&MDCHST.GROUP_MA','V V K24',NGRM,JMAIL)
                CALL GETVEM ( MAILLA, 'GROUP_MA', MOTFAC, 'GROUP_MA',
-     &                                    IOC,IARG,NGRM,ZK8(JMAIL),IBID)
+     &                       IOC,IARG,NGRM,ZK24(JMAIL),IBID)
                DO 120 IG = 1, NGRM
-                  MAMAI = ZK8(JMAIL-1+IG)
+                  MAMAI = ZK24(JMAIL-1+IG)
                   CALL JELIRA(JEXNOM(MAILLA//'.GROUPEMA',MAMAI),
      &                                             'LONMAX',NMGR,KBID)
                  CALL JEVEUO(JEXNOM(MAILLA//'.GROUPEMA',MAMAI),'L',KMA)

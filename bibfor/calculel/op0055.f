@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,11 +117,11 @@ C
           N1 = -N1
           IF (N1.GT.0) THEN
             CALL WKVECT ('&&'//NOMPRO//'.'//MOTCL(IDONN),
-     &                     'V V K8', N1, IADR1)
+     &                     'V V K24', N1, IADR1)
             CALL GETVTX('FOND_FISS', MOTCL(IDONN), IOCC,IARG,N1,
-     &                     ZK8(IADR1),N2)
+     &                     ZK24(IADR1),N2)
             DO 111 IDON=1,N1
-              ENTNOM = ZK8(IADR1-1 + IDON)
+              ENTNOM = ZK24(IADR1-1 + IDON)
               CALL JENONU(JEXNOM(NOMA//ENTIT(IDONN),ENTNOM),IBID)
               IF (IBID.EQ.0) THEN
                 VALK(1) = ENTNOM

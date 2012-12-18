@@ -1,5 +1,4 @@
-%& MODIF OPTIONS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
-% RESPONSABLE GENIAUT
+%& MODIF OPTIONS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,39 +16,41 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
+% RESPONSABLE GENIAUT S.GENIAUT
 CALC_K_G
 OPTION__
    IN__
-         PGEOMER  GEOM_R
-         PDEPLAR  DEPL_R
-         PTHETAR  DEPL_R
-         PMATERC  ADRSJEVE
-         PVARCPR  VARI_R
-         PVARCRR  VARI_R
-         PFRVOLU  FORC_R
-         PFR1D2D  FORC_R
-         PFR2D3D  FORC_R
-         PPRESSR  PRES_R
-         PPESANR  PESA_R
-         PROTATR  ROTA_R
-         PEPSINR  EPSI_R
-         PCOMPOR  COMPOR
-         PSIGINR  SIEF_R
-         PDEPINR  DEPL_R
-         PFISSR   FISS_R
-         PBASLOR  NEUT_R
-         PCOURB   NEUT_R
-         PPINTTO  NEUT_R
-         PCNSETO  NEUT_I
-         PHEAVTO  NEUT_I
-         PLONCHA  NEUT_I
-         PLSN     NEUT_R
-         PLST     NEUT_R
-         PPINTER  NEUT_R
-         PAINTER  NEUT_R
-         PCFACE   NEUT_I
-         PLONGCO  NEUT_I
-         PPMILTO  NEUT_R
-         PBASECO  NEUT_R
+        PGEOMER  GEOM_R
+        PDEPLAR  DEPL_R
+        PTHETAR  DEPL_R
+        PMATERC  ADRSJEVE
+        PVARCPR  VARI_R
+        PVARCRR  VARI_R
+        PFRVOLU  FORC_R
+        PFR1D2D  FORC_R
+        PFR2D3D  FORC_R
+        PPRESSR  PRES_R
+        PPESANR  PESA_R
+        PROTATR  ROTA_R
+        PEPSINR  EPSI_R
+        PCOMPOR  COMPOR
+        PSIGINR  SIEF_R
+        PDEPINR  DEPL_R
+        PFISSR   FISS_R
+        PBASLOR  NEUT_R
+        PCOURB   NEUT_R
+        PPULPRO  FREQ_R
+        PPINTTO  NEUT_R
+        PCNSETO  NEUT_I
+        PHEAVTO  NEUT_I
+        PLONCHA  NEUT_I
+        PLSN     NEUT_R
+        PLST     NEUT_R
+        PPINTER  NEUT_R
+        PAINTER  NEUT_R
+        PCFACE   NEUT_I
+        PLONGCO  NEUT_I
+        PPMILTO  NEUT_R
+        PBASECO  NEUT_R
    OUT__
 PGTHETA G ELEM__

@@ -6,7 +6,7 @@
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IOC ,JDCC ,JDLS ,JDVC ,NA ,NCO
+      INTEGER I ,IOC ,JDCC ,JDLS ,JDVC ,NA ,NCO, JDLS2
       INTEGER NCR ,NEX ,NG ,NIN ,NK ,NM ,NV
 
       REAL*8 PI ,XINER
@@ -61,7 +61,8 @@ C
       CALL JEVEUO(TMPNCO,'E',JDCC)
       CALL JEVEUO(TMPVCO,'E',JDVC)
 C
-      CALL WKVECT('&&TMPCOQUE','V V K8',LMAX,JDLS)
+      CALL WKVECT('&&TMPCOQUE','V V K24',LMAX,JDLS)
+      CALL WKVECT('&&TMPCOQUE2','V V K8',LMAX,JDLS2)
 C
       ZK8(JDCC)   = 'EP'
       ZK8(JDCC+1) = 'ALPHA'
@@ -82,9 +83,9 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCO
          XINER  = 0.D0
          INERT = 'NON'
          CALL GETVEM(NOMA,'GROUP_MA','COQUE','GROUP_MA',
-     &                                IOC,IARG,LMAX,ZK8(JDLS),NG)
+     &                                IOC,IARG,LMAX,ZK24(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE',  'COQUE','MAILLE',
-     &                                IOC,IARG,LMAX,ZK8(JDLS),NM)
+     &                                IOC,IARG,LMAX,ZK8(JDLS2),NM)
          CALL GETVR8('COQUE','EPAIS',        IOC,IARG,1, EPA   , NV  )
          CALL GETVR8('COQUE','ANGL_REP',     IOC,IARG,2, ANG   , NA  )
          CALL GETVR8('COQUE','VECTEUR',      IOC,IARG,3, VECT  , NVEC)
@@ -114,19 +115,20 @@ C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
          IF (NG.GT.0) THEN
             DO 20 I = 1 , NG
-               CALL NOCART(CARTCO,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',8)
+               CALL NOCART(CARTCO,2,ZK24(JDLS+I-1),' ',0,' ',0,' ',8)
  20         CONTINUE
          ENDIF
 C
 C ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 C
          IF (NM.GT.0) THEN
-            CALL NOCART(CARTCO,3,' ','NOM',NM,ZK8(JDLS),0,' ',8)
+            CALL NOCART(CARTCO,3,' ','NOM',NM,ZK8(JDLS2),0,' ',8)
          ENDIF
 C
  10   CONTINUE
 C
       CALL JEDETR('&&TMPCOQUE')
+      CALL JEDETR('&&TMPCOQUE2')
       IF ((.NOT.LOCAGB).AND.(.NOT.LOCAMB)) THEN
          CALL JEDETR(TMPNCO)
          CALL JEDETR(TMPVCO)

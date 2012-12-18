@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE RECTANGULAIRE FINIE SOUMISE A FLEXION CISAILLANTE - EX SSNP310
 # ssnp110e.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,18 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP110E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNP110E',NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'),
+#      IGNORE_ALARM=('RUPTURE1_47','RUPTURE1_42'),
+      )
+
+# ALARMES EMISES PAR CE TEST : 
+# RUPTURE1_47 : CALC_G SUITE A UN SNL INCREMENTAL
+# RUPTURE1_42 : COMP DIFFERENT ENTRE SNL ET CALC_G
+# CES 2 ALARMES SONT JUSTIFIEES ICI CAR LE CHARGEMENT EST BIEN PROPORTIONNEL,
+# ON POURRAIT DONC LES IGNORER AVEC UN IGNORE_ALARM DANS DEBUT
+# MAIS POUR DES RAISONS PEDAGOGIQUES, ON PREFERE LES LAISSER DANS LE .MESS
+
 
 MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), )
 
@@ -98,9 +109,6 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
-                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
-                       SOLVEUR=_F(METHODE = 'MULT_FRONT'),
-                       ARCHIVAGE = _F(LIST_INST=L_INST,),
 
                      );
 
@@ -234,9 +242,6 @@ CHAMDEP2=STAT_NON_LINE( MODELE=MO,
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
-                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
-                       SOLVEUR=_F(METHODE = 'MULT_FRONT'),
-                       ARCHIVAGE = _F(LIST_INST=L_INST,),
 
                      );
 
@@ -369,9 +374,6 @@ CHAMDEP3=STAT_NON_LINE( MODELE=MO,
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
-                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
-                       SOLVEUR=_F(METHODE = 'MULT_FRONT'),
-                       ARCHIVAGE = _F(LIST_INST=L_INST,),
 
                      );
 
@@ -535,9 +537,6 @@ CHAMDEP4=STAT_NON_LINE( MODELE=MO,
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
-                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
-                       SOLVEUR=_F(METHODE = 'MULT_FRONT'),
-                       ARCHIVAGE = _F(LIST_INST=L_INST,),
 
                      );
 
@@ -667,9 +666,6 @@ CHAMDEP5=STAT_NON_LINE( MODELE=MO,
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
-                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
-                       SOLVEUR=_F(METHODE = 'MULT_FRONT'),
-                       ARCHIVAGE = _F(LIST_INST=L_INST,),
 
                      );
 
@@ -678,10 +674,11 @@ CHAMDEP5=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_5=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
-            RESULTAT=CHAMDEP5,
-            TOUT_ORDRE='OUI',
-            );
+G_0_5=CALC_G(THETA=_F(THETA=THETA0,SYME='OUI'),
+             RESULTAT=CHAMDEP5,
+            )
+
+IMPR_TABLE(TABLE=G_0_5)
 
 # TEST DE LA LOI DE COMPORTEMENT ELAS_VMIS_PUIS DANS CALC_G
 
@@ -787,100 +784,60 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 # ======================================================================
-# VALIDATION 2D DE "CALCUL_CONTRAINTE":
+# VALIDATION 2D DE "CALCUL_CONTRAINTE" (TEST INFORMATIQUE)
 
-G_0BIS=CALC_G( THETA=_F( THETA = THETA0, SYME='OUI'),
-            RESULTAT=CHAMDEP,
-            TOUT_ORDRE='OUI',
-#            CALCUL_CONTRAINTE='NON',
-            );
+# CALCUL AVEC UN COMPORTEMENT INCREMENTAL 
+RESUINCR=STAT_NON_LINE(MODELE=MO,
+                       CHAM_MATER=CHMAT5,
+                       EXCIT=(_F(CHARGE = CL),
+                              _F(CHARGE = CH,
+                                 FONC_MULT = RAMPE)),
+                       COMP_INCR=_F(RELATION = 'VMIS_ISOT_PUIS',
+                                    DEFORMATION = 'PETIT'),
+                       INCREMENT=_F(LIST_INST = L_INST,),
+                       NEWTON=_F(MATRICE = 'TANGENTE',
+                                 REAC_ITER = 1),
+                       )
 
-TEST_TABLE(
-           VALE_CALC=3.5947962514067,
-           
+# calcul INCR, post-traitement INCR -> GTP
+G_I_I=CALC_G(RESULTAT=RESUINCR,
+             THETA=_F(THETA = THETA0,
+                      SYME='OUI'))
+
+IMPR_TABLE(TABLE=G_I_I)
+
+# calcul Incr, post-traitement ELAS -> Genl
+G_I_E=CALC_G(RESULTAT=RESUINCR,
+             THETA=_F(THETA = THETA0,
+                      SYME='OUI'),
+             COMP_ELAS=_F(RELATION='ELAS_VMIS_PUIS'))
+
+IMPR_TABLE(TABLE=G_I_E)
+
+# calcul Incr, post-traitement ELAS, sans re-calcul des contraintes
+G_I_E2=CALC_G(RESULTAT=RESUINCR,
+              THETA=_F(THETA = THETA0,
+                       SYME='OUI'),
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_PUIS'),
+              CALCUL_CONTRAINTE='NON',)
+
+IMPR_TABLE(TABLE=G_I_E2)
+
+# test de G_I_E (non regression)
+TEST_TABLE(VALE_CALC=349.87259814109,
            NOM_PARA='G',
-           TABLE=G_0BIS,
+           TABLE=G_I_E,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1,),
+                     VALE_I=10,),
            )
 
-TEST_TABLE(
-           VALE_CALC=14.470868422635,
-           
+# test de G_I_E2 (par rapport a la valeur de G_I_E)
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.01,
+           VALE_REFE=349.87259814109,
+           VALE_CALC=346.7143732655,
            NOM_PARA='G',
-           TABLE=G_0BIS,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=2,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=32.883208951196004,
-           
-           NOM_PARA='G',
-           TABLE=G_0BIS,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=3,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=59.422747569594002,
-           
-           NOM_PARA='G',
-           TABLE=G_0BIS,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=4,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=94.500399710622006,
-           
-           NOM_PARA='G',
-           TABLE=G_0BIS,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=5,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=134.98261114275999,
-           
-           NOM_PARA='G',
-           TABLE=G_0BIS,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=6,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=178.95209819448999,
-           
-           NOM_PARA='G',
-           TABLE=G_0BIS,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=7,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=226.23585323115,
-           
-           NOM_PARA='G',
-           TABLE=G_0BIS,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=8,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=276.47167518088997,
-           
-           NOM_PARA='G',
-           TABLE=G_0BIS,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=9,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=329.60677792298998,
-           
-           NOM_PARA='G',
-           TABLE=G_0BIS,
+           TABLE=G_I_E2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=10,),
            )

@@ -2,7 +2,7 @@
      &                  SDDYNA,SDCRIQ,SDIETO,SOLALG,LACC0 ,
      &                  INSTIN)
 C
-C MODIF ALGORITH  DATE 05/11/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 17/12/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ C
       CHARACTER*19 SDDYNA,SDPILO
       CHARACTER*19 SOLALG(*)
       INTEGER      FONACT(*)
-      LOGICAL      LACC0
+      LOGICAL      LACC0,LENER
 C
 C ----------------------------------------------------------------------
 C
@@ -116,6 +116,7 @@ C
       LEXGE  = NDYNLO(SDDYNA,'EXPL_GENE')
       LREUSE = ISFONC(FONACT,'REUSE')
       LERRT  = ISFONC(FONACT,'ERRE_TEMPS_THM')
+      LENER  = ISFONC(FONACT,'ENERGIE')
 C
 C --- EXTRACTION VARIABLES CHAPEAUX
 C
@@ -143,6 +144,9 @@ C
       LEINIT = NOCC.GT.0
       IF (LEINIT) THEN
         CALL U2MESS('I','ETATINIT_10')
+        IF (LENER) THEN
+          CALL U2MESS('I','ETATINIT_5')
+        ENDIF
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<MECANONLINE> LECTURE ETAT INITIAL'
         ENDIF

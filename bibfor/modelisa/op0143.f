@@ -1,7 +1,7 @@
       SUBROUTINE OP0143()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -394,7 +394,7 @@ C
           CALL WKVECT(FSVI,'G V I' ,DIMVI,LFSVI)
           CALL WKVECT(FSVK,'G V K8',DIMVK,LFSVK)
           CALL WKVECT(FSVR,'G V R' ,DIMVR,LFSVR)
-          CALL WKVECT(FSGM,'G V K8',DIMGM,LFSGM)
+          CALL WKVECT(FSGM,'G V K24',DIMGM,LFSGM)
           IF (OCGRIL.NE.0) CALL WKVECT(FSGR,'G V R' ,DIMGR,LFSGR)
 C
 C --------3.2.RECUEIL DES INFORMATIONS COMMUNES AUX DEUX TYPES DE
@@ -496,7 +496,7 @@ C
                CALL GETVR8(NOMMCF,'RAYON_TUBE',IOCC,IARG,1,
      &                     ZR(LFSVR+IDECVR+IOCC-1),IBID)
                CALL GETVTX(NOMMCF,'GROUP_MA',IOCC,IARG,1,
-     &                     ZK8(LFSGM+IOCC-1),IBID)
+     &                     ZK24(LFSGM+IOCC-1),IBID)
                CALL GETVR8(NOMMCF,'COOR_TUBE',IOCC,IARG,NBCR,
      &                     ZR(LFSCR+IDECCR),IBID)
                IDECCR = IDECCR + NBCR
@@ -508,10 +508,10 @@ C
             CALL GETVID(NOMMCF,'CARA_ELEM',1,IARG,1,ZK8(LFSVK+2),IBID)
             IF (NBGRMA.NE.0) THEN
               CALL GETVTX(NOMMCF,'GROUP_MA',1,IARG,NBGRMA,
-     &                    ZK8(LFSGM),IBID)
+     &                    ZK24(LFSGM),IBID)
             ELSE
               CALL GETVTX(NOMMCF,'TRI_GROUP_MA',1,IARG,1,
-     &                    ZK8(LFSGM),IBID)
+     &                    ZK24(LFSGM),IBID)
             ENDIF
 C
           ENDIF
@@ -551,9 +551,9 @@ C
           CALL GETVR8(NOMMCF,'PDC_MOY_2',1,IARG,1,ZR(LFSVR+5),IBID)
           CALL GETVR8(NOMMCF,'PDC_DYN_2',1,IARG,1,ZR(LFSVR+6),IBID)
 C
-          CALL WKVECT(FSGM,'G V K8',2,LFSGM)
-          CALL GETVTX(NOMMCF,'GROUP_MA_INT',1,IARG,1,ZK8(LFSGM)  ,IBID)
-          CALL GETVTX(NOMMCF,'GROUP_MA_EXT',1,IARG,1,ZK8(LFSGM+1),IBID)
+          CALL WKVECT(FSGM,'G V K24',2,LFSGM)
+          CALL GETVTX(NOMMCF,'GROUP_MA_INT',1,IARG,1,ZK24(LFSGM)  ,IBID)
+          CALL GETVTX(NOMMCF,'GROUP_MA_EXT',1,IARG,1,ZK24(LFSGM+1),IBID)
 C
         ENDIF
 C=======================================================================

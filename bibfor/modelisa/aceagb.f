@@ -8,7 +8,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : LMAX   : LONGUEUR
 C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE GRILLE
       INTEGER      JDCC, JDVC, JDLS, IOC,  NG, NM, N1, N2, N3, N4, N5,
-     &             I, AXYZM, NBMAT, IER, NBMA,
+     &             I, AXYZM, NBMAT, IER, NBMA, JDLS2,
      &             IMA,NBNO, JNUMA, ADRM, NUMA, JGRMA, IGR,NBMAT0,
      &             NOE1,NOE2,NOE3
       REAL*8       ANG(2), SL,EZ,CTR,R8RDDG,
@@ -67,7 +67,8 @@ C
       CALL JEVEUO(TMPVGR,'E',JDVC)
       EPSI = 1.0D-6
 C
-      CALL WKVECT('&&TMPGRILLE','V V K8',LMAX,JDLS)
+      CALL WKVECT('&&TMPGRILLE','V V K24',LMAX,JDLS)
+      CALL WKVECT('&&TMPGRILLE2','V V K8',LMAX,JDLS2)
 C
       ZK8(JDCC  ) = 'SECT_L'
       ZK8(JDCC+1) = 'ALPHA'
@@ -85,9 +86,9 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTPF
          CTR    = 1.D-10
 C
          CALL GETVEM(NOMA,'GROUP_MA','GRILLE','GROUP_MA',
-     &           IOC,IARG,LMAX,ZK8(JDLS),NG)
+     &           IOC,IARG,LMAX,ZK24(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','GRILLE','MAILLE',
-     &         IOC,IARG,LMAX,ZK8(JDLS),NM)
+     &         IOC,IARG,LMAX,ZK8(JDLS2),NM)
 C
          CALL GETVR8('GRILLE','SECTION'      ,IOC,IARG,1 ,SL   ,N1)
          CALL GETVR8('GRILLE','ANGL_REP'     ,IOC,IARG,2 ,ANG  ,N2)
@@ -106,12 +107,12 @@ C
 C ---       "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE
             IF (NG.GT.0) THEN
                DO 20 I = 1 , NG
-                  CALL NOCART(CARTGR,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',5)
+                  CALL NOCART(CARTGR,2,ZK24(JDLS+I-1),' ',0,' ',0,' ',5)
 20             CONTINUE
             ENDIF
 C ---       "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
             IF (NM.GT.0) THEN
-               CALL NOCART(CARTGR,3,' ','NOM',NM,ZK8(JDLS),0,' ',5)
+               CALL NOCART(CARTGR,3,' ','NOM',NM,ZK8(JDLS2),0,' ',5)
             ENDIF
         ELSE
 C
@@ -119,10 +120,10 @@ C
                NBMAT = 0
                NUMA = -1
                DO 120 IGR = 0 , NG-1
-                  CALL JELIRA(JEXNOM(NOMAGR,ZK8(JDLS+IGR)),'LONMAX',
+                  CALL JELIRA(JEXNOM(NOMAGR,ZK24(JDLS+IGR)),'LONMAX',
      &                        NBMA,K8B)
                   NBMAT = NBMAT + NBMA
-                  CALL JEVEUO(JEXNOM(NOMAGR,ZK8(JDLS+IGR)),'L',JGRMA)
+                  CALL JEVEUO(JEXNOM(NOMAGR,ZK24(JDLS+IGR)),'L',JGRMA)
                   DO 122 IMA = 0 , NBMA-1
                      NUMA = NUMA + 1
                      ZI(JNUMA+NUMA) = ZI(JGRMA+IMA)
@@ -131,7 +132,7 @@ C
             ELSE
                NBMAT = NM
                DO 130 IMA = 0 , NM-1
-                  CALL JENONU(JEXNOM(NOMAMA,ZK8(JDLS+IMA)),
+                  CALL JENONU(JEXNOM(NOMAMA,ZK24(JDLS+IMA)),
      &                                      ZI(JNUMA+IMA))
 130            CONTINUE
             ENDIF
@@ -184,6 +185,7 @@ C
 C
       CALL JEDETR ('&&ACEAGB.NUME_MA' )
       CALL JEDETR('&&TMPGRILLE')
+      CALL JEDETR('&&TMPGRILLE2')
       IF (.NOT.LOCAMB) THEN
          CALL JEDETR(TMPNGR)
          CALL JEDETR(TMPVGR)

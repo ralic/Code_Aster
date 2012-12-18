@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 29/10/2012   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF sd_compor SD  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ from SD.sd_mater import sd_mater
 
 class sd_compor(AsBase):
     nomj = SDNom(fin=8)
-    CPRK = AsVK16()
+    CPRK = AsVK24()
     CPRI = AsVI()
     CPRR = Facultatif(AsVR())
 

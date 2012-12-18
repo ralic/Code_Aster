@@ -7,7 +7,7 @@
       CHARACTER*(*)     NOMCMP,MATRIC,MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,9 +38,9 @@ C                DDLSTA(I) = 1  MODE STATIQUE POUR LE DDL I
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       INTEGER      NEQ
-      CHARACTER*8  NOMMA, NOMGR, NOMNOE, KBID
+      CHARACTER*8  NOMMA, NOMNOE, KBID
       CHARACTER*14 NUME
-      CHARACTER*24 MANONO, MAGRNO, TEXTE, TEXT1, TEXT2, TEXT3
+      CHARACTER*24 MANONO, MAGRNO, TEXTE, TEXT1, TEXT2, TEXT3, NOMGR
       CHARACTER*24 VALK(4)
       INTEGER      IARG
 C     ------------------------------------------------------------------
@@ -123,15 +123,15 @@ C
      &          I,IARG,0,KBID,NBGR)
          IF (NBGR.NE.0) THEN
             NBGR = -NBGR
-            CALL WKVECT('&&MSTGET.GROUP_NO','V V K8',NBGR,IDGN)
+            CALL WKVECT('&&MSTGET.GROUP_NO','V V K24',NBGR,IDGN)
             CALL GETVEM(NOMMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &             I,IARG,NBGR,ZK8(IDGN),NI)
+     &             I,IARG,NBGR,ZK24(IDGN),NI)
 C           --- ECLATE LE GROUP_NO EN NOEUD ---
-            CALL COMPNO(NOMMA,NBGR,ZK8(IDGN),NNOE)
+            CALL COMPNO(NOMMA,NBGR,ZK24(IDGN),NNOE)
             CALL WKVECT('&&MSTGET.POSITION.NOEUD','V V K8',NNOE,JNOE)
             II = -1
             DO 18 ING = 1,NBGR
-               NOMGR = ZK8(IDGN+ING-1)
+               NOMGR = ZK24(IDGN+ING-1)
                CALL JELIRA(JEXNOM(MAGRNO,NOMGR),'LONUTI',NB,KBID)
                CALL JEVEUO(JEXNOM(MAGRNO,NOMGR),'L',LDGN)
                DO 20 IN = 0,NB-1

@@ -2,7 +2,7 @@
      &                  NOMA, CONNEC, TYMA, NGMA, GPMA)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,8 @@ C ======================================================================
 
       CHARACTER*32 JEXNOM
       INTEGER      MAINIT
-      CHARACTER*8  MAIN, GNO1, GNO2, PREFIX, NOMGMA
-      CHARACTER*24 NOMA, CONNEC, TYMA, NGMA, GPMA
+      CHARACTER*8  MAIN, PREFIX
+      CHARACTER*24 NOMA,CONNEC,TYMA,NGMA,GPMA,GNO1,GNO2,NOMGMA
 
 C ----------------------------------------------------------------------
 C           CREA_MAILLAGE : CREA_FISS
@@ -88,13 +88,13 @@ C - CREATION DES VECTEURS RESULTATS
       CALL WKVECT(NOMA  , 'V V K8', NBMAJO  , INOMA )
       CALL WKVECT(CONNEC, 'V V I' , NBMAJO*5, ICONNE)
       CALL WKVECT(TYMA  , 'V V I' , NBMAJO  , ITYMA )
-      CALL WKVECT(NGMA  , 'V V K8', 1       , INGMA )
+      CALL WKVECT(NGMA  , 'V V K24', 1      , INGMA )
       CALL WKVECT(GPMA  , 'V V I' , NBMAJO+1, IGPMA )
 
 
 C - NOM ET TAILLE DU NOUVEAU GROUP_MA
 
-      ZK8(INGMA) = NOMGMA
+      ZK24(INGMA)= NOMGMA
       ZI(IGPMA)  = NBMAJO
 
 

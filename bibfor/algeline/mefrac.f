@@ -5,10 +5,11 @@ C
 
       CHARACTER*32 JEXNUM
       INTEGER      NBGRMX,NBGRMA
-      CHARACTER*8  NOMCYL(*),MAILLA,NOMRAC
+      CHARACTER*8  MAILLA
+      CHARACTER*24 NOMCYL(*),NOMRAC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +44,7 @@ C OUT : NOMCYL : NOMS DES GROUPES DE MAILLES AVEC LA RACINE COMMUNE
 C                NOMRAC
 C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
-      CHARACTER*8  NOMGRI
+      CHARACTER*24 NOMGRI
 C     ------------------------------------------------------------------
 C
 C
@@ -146,7 +147,7 @@ C
       WRITE (IFM,*) '==============================================='
      &   ,'================================='
 C
- 6001 FORMAT (1X,6(2X,A8))
+ 6001 FORMAT (1X,6(2X,A24))
 C
 C
       CALL JEDEMA()

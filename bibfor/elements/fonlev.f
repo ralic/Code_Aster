@@ -6,7 +6,7 @@
       CHARACTER*8         RESU, NOMA
       INTEGER             NBNOFF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,13 +41,13 @@ C
       INTEGER       IGR, NGR, INO, I, J, K, IBID, K2, J2
       INTEGER       NBMAI, NENT, INDICE
       INTEGER       NN,COMPTA,NBMAS1,NBMAS2, NBMAL
-      INTEGER       IRET, IRET1,IRET2
+      INTEGER       IRET, IRET1,IRET2,JJJ2
       REAL*8        D, PREC, PRECR
       CHARACTER*4   TYPMA
       CHARACTER*6   NOMPRO
       CHARACTER*8   K8B, MAILLE, TYPE, NOEUG, TYPMCL(2),MOTCLE(2)
       CHARACTER*9   TYPLEV(2),MOTFAC, VALK(2)
-      CHARACTER*24  NOMOBJ, GROUMA, NOMMAI, CONEC, TRAV
+      CHARACTER*24  NOMOBJ, GROUMA, NOMMAI, CONEC, TRAV, TRAV2
       PARAMETER(PREC=1.D-1)
       INTEGER      IARG
 C     -----------------------------------------------------------------
@@ -81,10 +81,12 @@ C
 C       EVALUATION DU NOMBRE DE MAILLES ET CONSTRUCTION DU VECTEUR DE
 C       MAILLES DE TRAVAIL
 C
-        TRAV = '&&'//NOMPRO//'.'//MOTFAC
+        TRAV  = '&&'//NOMPRO//'.'//MOTFAC
+        TRAV2 = '&&'//NOMPRO//'.'//MOTFAC//'2'
         CALL RELIEM ( ' ', NOMA, 'NO_MAILLE', MOTFAC, 1, 2,
      &                  MOTCLE, TYPMCL, TRAV, NBMAL )
         IF (NBMAL .EQ. 0) GOTO 9999
+        CALL WKVECT(TRAV2,'V V K24',NBMAL,JJJ2)
         CALL JEVEUO(TRAV,'L',JJJ)
 C
 C     ------------------------------------------------------------------
@@ -92,7 +94,7 @@ C     VERIFICATION DE L'EXISTENCE DES GROUPES DE MAILLES RENSEIGNEES
 C     ET CALCUL DU NOMBRE TOTAL DE MAILLES
 C     ------------------------------------------------------------------
 C
-        CALL GETVTX(MOTFAC,'GROUP_MA',1,IARG,NBMAL,ZK8(JJJ),NGR)
+        CALL GETVTX(MOTFAC,'GROUP_MA',1,IARG,NBMAL,ZK24(JJJ2),NGR)
         CALL GETVTX(MOTFAC,'MAILLE',1,IARG,0,K8B,NENT)
 
 C
@@ -112,9 +114,9 @@ C       SI GROUP_MA
         IF (NENT.EQ.0) THEN
           DO 110 IGR = 1, NGR
 
-            CALL JELIRA (JEXNOM(GROUMA,ZK8(JJJ-1 + IGR)),'LONMAX',
+            CALL JELIRA (JEXNOM(GROUMA,ZK24(JJJ2-1 + IGR)),'LONMAX',
      &                             NBMAI,K8B)
-            CALL JEVEUO (JEXNOM(GROUMA,ZK8(JJJ-1 + IGR)),'L',JADR)
+            CALL JEVEUO (JEXNOM(GROUMA,ZK24(JJJ2-1 + IGR)),'L',JADR)
 C
 C
             DO 105 I = 1, NBMAI
@@ -252,6 +254,7 @@ C
 C --- DESTRUCTION DES OBJETS DE TRAVAIL
 C
         CALL JEDETR (TRAV)
+        CALL JEDETR (TRAV2)
 C
         CALL JEDETR('&&'//NOMPRO//'.MAIL')
 C

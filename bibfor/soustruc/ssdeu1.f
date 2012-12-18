@@ -1,6 +1,6 @@
       SUBROUTINE SSDEU1(MOTCLE,NOMA,NBNO,ILISTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF SOUSTRUC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,25 +98,23 @@ C     ---------------
      &            1,IARG,0,KBI81,N2)
       IF (N2.NE.0) THEN
          N3=-N2
-         IF (NDIM.LT.N3) THEN
-            CALL JEDETR('&&SSDEU1.WK1')
-            CALL WKVECT('&&SSDEU1.WK1','V V K8',2*N3,IAWK1)
-         END IF
+         CALL JEDETR('&&SSDEU1.WK1')
+         CALL WKVECT('&&SSDEU1.WK1','V V K24',2*N3,IAWK1)
          CALL GETVEM(NOMA,'GROUP_NO','EXTERIEUR','GROUP_NO',
-     &               1,IARG,N3,ZK8(IAWK1),IBID)
+     &               1,IARG,N3,ZK24(IAWK1),IBID)
          ICO=NBNO
          DO 101 I=1,N3
-            CALL JEEXIN(JEXNOM(NOMA//'.GROUPENO',ZK8(IAWK1-1+I)),IRET)
+            CALL JEEXIN(JEXNOM(NOMA//'.GROUPENO',ZK24(IAWK1-1+I)),IRET)
             IF (IRET.EQ.0) THEN
-               VALK(1) = ZK8(IAWK1-1+I)
+               VALK(1) = ZK24(IAWK1-1+I)
                VALK(2) = NOMA
                CALL U2MESK('F','SOUSTRUC_49', 2 ,VALK)
             ENDIF
-            CALL JELIRA(JEXNOM(NOMA//'.GROUPENO',ZK8(IAWK1-1+I)),
+            CALL JELIRA(JEXNOM(NOMA//'.GROUPENO',ZK24(IAWK1-1+I)),
      &                  'LONMAX',N4,KBID)
             NBNO= NBNO+N4
             IF (MOTCLE.EQ.'LISTE') THEN
-               CALL JEVEUO(JEXNOM(NOMA//'.GROUPENO',ZK8(IAWK1-1+I)),
+               CALL JEVEUO(JEXNOM(NOMA//'.GROUPENO',ZK24(IAWK1-1+I)),
      &                  'L',IAGPNO)
                DO 102 II=1,N4
                   ICO= ICO+1

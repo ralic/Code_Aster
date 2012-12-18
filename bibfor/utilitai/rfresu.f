@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,10 +27,10 @@ C     ------------------------------------------------------------------
       INTEGER NRES,IFM,NIV,NUSP,IARG
       REAL*8 EPSI
       CHARACTER*8 K8B,CRIT,MAILLE,NOMA,INTRES
-      CHARACTER*8 NOEUD,CMP,NOGMA,NOGNO,NOMGD
+      CHARACTER*8 NOEUD,CMP,NOMGD
       CHARACTER*16 NOMCMD,TYPCON,NOMCHA,NPRESU
       CHARACTER*19 NOMFON,CHAM19,RESU
-      CHARACTER*24 VALK(3)
+      CHARACTER*24 VALK(3),NOGMA,NOGNO
 
 C     ------------------------------------------------------------------
       CALL JEMARQ()

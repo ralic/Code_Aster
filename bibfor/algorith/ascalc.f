@@ -15,7 +15,7 @@
       LOGICAL       MONOAP, MUAPDE, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,11 +83,12 @@ C     ------------------------------------------------------------------
       LOGICAL       PRIM, SECON, GLOB
       CHARACTER*1   K1B
       CHARACTER*4   CTYP
-      CHARACTER*8   K8B, NUME, NOEU, NOMA, GRNOEU
+      CHARACTER*8   K8B, NUME, NOEU, NOMA
       CHARACTER*15  MOTFA1
       CHARACTER*16  NOMSY, NOMSY2, NOPARA(NBPARA)
       CHARACTER*19  KVEC, KVAL
       CHARACTER*24  KVX1, KVX2, KVE2, KVE3, KVE4, KVE5, OBJ1, OBJ2
+      CHARACTER*24  GRNOEU
       INTEGER      IARG
 C
       DATA  NOPARA /        'OMEGA2'          , 'MASS_GENE'       ,
@@ -162,11 +163,11 @@ C  ---- SI GROUP_APPUI EST PRESENT ----
      &                                   IOC,IARG,0,K8B,N1)
             IF (N1.NE.0) THEN
               NGR = -N1
-              CALL WKVECT('&&ASCALC.GROUP_NO','V V K8',NGR,JGRN)
+              CALL WKVECT('&&ASCALC.GROUP_NO','V V K24',NGR,JGRN)
               CALL GETVEM(NOMA,'GROUP_NO',MOTFA1,'GROUP_NO',
-     &                                   IOC,IARG,NGR,ZK8(JGRN),N1)
+     &                                   IOC,IARG,NGR,ZK24(JGRN),N1)
               DO 110 IGR = 1, NGR
-                GRNOEU = ZK8(JGRN+IGR-1)
+                GRNOEU = ZK24(JGRN+IGR-1)
                 CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
                 IF (IRET .EQ. 0) THEN
                    IER = IER + 1

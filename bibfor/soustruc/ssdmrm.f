@@ -1,6 +1,6 @@
       SUBROUTINE SSDMRM ( MAG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF SOUSTRUC  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,10 +36,10 @@ C     -- MODIFICATION DE L'OBJET .NOEUD_CONF CREE DANS SSDMRC
 C
 C ----------------------------------------------------------------------
 C INSPI SSDMRM  SSDMRG
-      CHARACTER*8  KBID,CRIT,NOMACR,MAL,NOSMA,NOGNOI,NOGNOJ
+      CHARACTER*8  KBID,CRIT,NOMACR,MAL,NOSMA
       REAL*8 PREC,DI,DJ
       CHARACTER*16 OPTION
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(2),NOGNOI,NOGNOJ
       INTEGER      IARG
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -67,7 +67,7 @@ C
       CALL JEVEUO(MAG//'.DIME_2','L',IADIM2)
       CALL JEVEUO(MAG//'.PARA_R','L',IAPARR)
       CALL WKVECT('&&SSDMRM.LIKM','V V K8',NBSMA,IALIKM)
-      CALL WKVECT('&&SSDMRM.LIKG','V V K8',NBSMA,IALIKG)
+      CALL WKVECT('&&SSDMRM.LIKG','V V K24',NBSMA,IALIKG)
 C
 C
 C     -- BOUCLE SUR LES OCCURENCES DU MOT-CLEF:
@@ -81,7 +81,7 @@ C     -------------------------------------------------------------
         CALL GETVTX('RECO_SUPER_MAILLE','SUPER_MAILLE',
      &               IOCC,IARG,NBSMA,ZK8(IALIKM),N1)
         CALL GETVTX('RECO_SUPER_MAILLE','GROUP_NO',IOCC,IARG,NBSMA,
-     &               ZK8(IALIKG),N2)
+     &               ZK24(IALIKG),N2)
         IF (N1.LT.0) CALL U2MESS('F','SOUSTRUC_64')
         IF (N1.NE.N2) CALL U2MESS('F','SOUSTRUC_65')
         IF (N1.LT.2) CALL U2MESS('F','SOUSTRUC_66')
@@ -97,7 +97,7 @@ C
 C
         DO 5, I=1,NBSMAR
           NOSMA= ZK8(IALIKM-1+I)
-          NOGNOI= ZK8(IALIKG-1+I)
+          NOGNOI= ZK24(IALIKG-1+I)
           CALL JENONU(JEXNOM(MAG//'.SUPMAIL',NOSMA),ISMAI)
           DI=ZR(IAPARR-1+14*(ISMAI-1)+13)
           NOMACR= ZK8(IAMACR-1+ISMAI)
@@ -121,7 +121,7 @@ C           POUR NE PAS LE DETRUIRE A CHAQUE FOIS, ON ALLOUE PLUS GRAND
      &                 ZI(IALIII),NBNORI,NBID)
           DO 6, J=I+1,NBSMAR
             NOSMA= ZK8(IALIKM-1+J)
-            NOGNOJ= ZK8(IALIKG-1+J)
+            NOGNOJ= ZK24(IALIKG-1+J)
             CALL JENONU(JEXNOM(MAG//'.SUPMAIL',NOSMA),ISMAJ)
             DJ=ZR(IAPARR-1+14*(ISMAJ-1)+13)
             NOMACR= ZK8(IAMACR-1+ISMAJ)

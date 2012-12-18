@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux Messages  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,10 +31,6 @@ Conseil :
 
 2 : _(u"""
  Pointeur de longueur externe interdit maintenant.
-"""),
-
-3 : _(u"""
- Pointeur de nom externe interdit maintenant.
 """),
 
 6 : _(u"""

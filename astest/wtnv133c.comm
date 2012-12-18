@@ -1,0 +1,668 @@
+# MODIF  DATE 18/12/2012   AUTEUR KHAM M.KHAM 
+#
+# TITRE    ESSAI TRIAXIAL NON DRAINE AVEC LA LOI DE HUJEUX
+# wtnv133c.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#                         SUR SABLE D'HOSTUN
+#          ===============================================
+
+
+DEBUT(CODE=_F(NOM='WTNV133C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+#PRE_GIBI();
+
+# proprietes hydrauliques
+poro = 0.425 ;  # porosite
+rhol = 1000. ;   # masse volumique du fluide
+kin  = 1.E-8 ;   # permeabilite intrinsinque
+k_w  = 1.E10 ;   # module de compressibilite de l'eau
+#UNSURK = 1/k_w ;
+UNSURK = 1.E-12 ;
+visco  = 0.001   ;
+dvisco = 0.0     ;
+k_int    = DEFI_CONSTANTE(VALE=kin)   ;
+viscoliq = DEFI_CONSTANTE(VALE=visco) ;
+dviscoli = DEFI_CONSTANTE(VALE=dvisco);
+
+
+# modules mecaniques [Pa]
+K = 516.2E6 ;
+G = 238.2E6 ;
+# =>
+YOUNG   = 9.*K*G /(3.*K+G)        ;
+POISSON = (3.*K-2.*G) /(6.*K+2.*G);
+
+degr  = pi /180.
+M     = sin(degr*31.)
+pcr   = 361.E5*exp(1.) /2.
+lambd = 0.1 /(1.-poro)
+kapa  = lambd /2.
+
+print 'young=',YOUNG,' /// nu=',POISSON
+
+# pression de preconsolidation [en Pa]
+PCR = -1.E6 ;
+PCO =  5.E4 ;
+
+
+#*******************************************************************
+#    MAILLAGE + MODELE
+#*******************************************************************
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', );
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT         = 'OUI',
+                           PHENOMENE    = 'MECANIQUE',
+                           MODELISATION = '3D_HM_SI'),
+                           INFO         = 2);
+
+MAILLAGE=MODI_MAILLAGE(reuse    = MAILLAGE,
+                       MAILLAGE = MAILLAGE,
+                       ORIE_PEAU_3D=
+                            _F(GROUP_MA=('DEVANT','DROIT','ARRIERE',
+                                         'GAUCHE','BAS','HAUT','APPUI',
+                                         'COTE')),
+                       INFO=1);
+
+
+#*******************************************************************
+#    INCREMENTS DE TEMPS
+#*******************************************************************
+TEMPS0=DEFI_LIST_REEL(DEBUT=-1.,
+                      INTERVALLE=(_F(JUSQU_A =  0., NOMBRE = 1),));
+
+TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A = 10., NOMBRE = 100),),);
+
+#*******************************************************************
+#    MATERIAU : SOL
+#*******************************************************************
+SOL0=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
+                  HUJEUX=_F(N        = 0.4,
+                            BETA     = 24.,
+                            D        = 2.5,
+                            B        = 0.2,
+                            PHI      = 33.,
+                            ANGDIL   = 33.,
+                            PCO      = -1.E6,
+                            PREF     = -1.E6,
+                            AMON     = 0.008,
+                            ACYC     = 0.0001,
+                            CMON     = 0.2,
+                            CCYC     = 0.1,
+                            RD_ELA   = 0.005,
+                            RI_ELA   = 0.001,
+                            RHYS     = 0.05,
+                            RMOB     = 0.9,
+                            XM       = 1.,
+                            RD_CYC   = 0.005,
+                            RI_CYC   = 0.001,
+                            DILA     = 1.0, ),
+                   COMP_THM='LIQU_SATU',
+                   THM_INIT=_F(PRE1 = 0.,
+                               PORO = poro),
+                   THM_DIFFU=_F(RHO       = rhol,
+                                BIOT_COEF = 1.,
+                                PESA_X    = 0.,
+                                PESA_Y    = 0.,
+                                PESA_Z    = 0.,
+                                PERM_IN   = k_int),
+                   THM_LIQU=_F(RHO         = rhol,
+                               UN_SUR_K    = UNSURK,
+                               VISC        = viscoliq,
+                               D_VISC_TEMP = dviscoli));
+
+CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL0));
+
+
+#****************************************************************
+#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
+#****************************************************************
+CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA='COTE',
+                                   PRES = 1.));
+
+CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA='APPUI',
+                                   PRES = 1.));
+
+CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
+                       FACE_IMPO=_F(GROUP_MA='APPUI',DZ = -1.));
+
+DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FACE_IMPO=(_F(GROUP_MA='BAS',   DZ = 0.),
+                                 _F(GROUP_MA='GAUCHE',DX = 0.),
+                                 _F(GROUP_MA='DEVANT',DY = 0.)));
+
+
+#*****************************************************************
+#    CHARGEMENT HYDRAULIQUE :
+#    TRIAXIAL NON DRAINE => FLUX NUL SUR TOUTES LES FACES
+#                           (realise par defaut)
+#*****************************************************************
+PRE0=AFFE_CHAR_MECA(MODELE=MODELE,
+                    DDL_IMPO=_F(GROUP_MA='ECHAN',PRE1 = 0.));
+
+
+COEF0=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=(-1.0, 0.0,
+                           0.0, PCO, ));
+
+# ---- premier chargement isotrope en elastique jusqu'a 50kPa
+U0M=STAT_NON_LINE(MODELE    = MODELE,
+                 CHAM_MATER = CHMAT0,
+                 EXCIT=(_F(CHARGE    = CHAR_U1,
+                           FONC_MULT = COEF0),
+                        _F(CHARGE    = CHAR_U2,
+                           FONC_MULT = COEF0),
+                        _F(CHARGE    = DEPL_1),
+                        _F(CHARGE    = PRE0)),
+                 COMP_INCR=_F(RELATION     = 'KIT_HM',
+                              RELATION_KIT = ('ELAS','LIQU_SATU','HYDR_UTIL')),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 50),
+                 INCREMENT=_F(LIST_INST = TEMPS0,
+                              INST_FIN  = 0.));
+
+SIG0=CREA_CHAMP(INFO=2,
+                TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='EXTR',
+                RESULTAT=U0M,
+                NOM_CHAM='SIEF_ELGA',
+                INST=0.0,);
+
+SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
+                  HUJEUX=_F(N        = 0.4,
+                            BETA     = 24.,
+                            D        = 2.5,
+                            B        = 0.2,
+                            PHI      = 33.,
+                            ANGDIL   = 33.,
+                            PCO      = -1.E6,
+                            PREF     = -1.E6,
+                            AMON     = 0.008,
+                            ACYC     = 0.0001,
+                            CMON     = 0.2,
+                            CCYC     = 0.1,
+                            RD_ELA   = 0.005,
+                            RI_ELA   = 0.001,
+                            RHYS     = 0.05,
+                            RMOB     = 0.9,
+                            XM       = 1.,
+                            RD_CYC   = 0.005,
+                            RI_CYC   = 0.001,
+                            DILA     = 1.0, ),
+                   COMP_THM='LIQU_SATU',
+                   THM_INIT=_F(PRE1 = 0.,
+                               PORO = poro),
+                   THM_DIFFU=_F(RHO       = rhol,
+                                BIOT_COEF = 1.,
+                                PESA_X    = 0.,
+                                PESA_Y    = 0.,
+                                PESA_Z    = 0.,
+                                PERM_IN   = k_int),
+                   THM_LIQU=_F(RHO         = rhol,
+                               UN_SUR_K    = UNSURK,
+                               VISC        = viscoliq,
+                               D_VISC_TEMP = dviscoli));
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL));
+
+COEF1=DEFI_FONCTION(NOM_PARA    = 'INST',
+                    PROL_DROITE = 'CONSTANT',
+                    VALE=( 0.0, PCO,
+                          10.0, PCO,));
+
+COEF3=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=( 0.0, 0.00,
+                          10.0, 0.02,));
+
+#***********************************************************************
+#    ESSAI TRIAXIAL NON DRAINE
+#***********************************************************************
+U1=STAT_NON_LINE(MODELE=MODELE,INFO=1,
+                 CHAM_MATER=CHMAT,
+                 EXCIT=(_F(CHARGE     = CHAR_U1,
+                           FONC_MULT  = COEF1),
+                        _F(CHARGE     = CHAR_U3,
+                           TYPE_CHARGE='DIDI',
+                           FONC_MULT  = COEF3),
+                        _F(CHARGE     = DEPL_1)),
+                 ETAT_INIT=_F(SIGM = SIG0,),
+                 COMP_INCR=_F(RELATION       = 'KIT_HM',
+                              RELATION_KIT   = ('HUJEUX',
+                                                'LIQU_SATU','HYDR_UTIL'),
+                              RESI_INTE_RELA = 1.E-8,
+                              ITER_INTE_PAS  = +3,
+                              ITER_INTE_MAXI = 20,),
+                 NEWTON=_F(MATRICE   = 'TANGENTE',
+                           REAC_ITER = 1),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                TYPE='PLATEAU',
+                                PLATEAU_ITER = 3,
+                                PLATEAU_RELA = 1E-2,
+                                ITER_GLOB_MAXI = 20),
+                 ARCHIVAGE=_F(LIST_INST    = TEMPS1,),
+                 INCREMENT=_F(LIST_INST    = TEMPS1,
+                              INST_INIT    = 0.0,
+
+                              INST_FIN     = 10.,
+                              ));
+
+#-------------------------
+#    TEST_RESU AU POINT C
+#-------------------------
+
+U1=CALC_CHAMP(reuse=U1,
+              CRITERES=('SIEQ_ELGA','SIEQ_ELNO','EPEQ_ELGA','EPEQ_ELNO'),
+              CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U1)
+
+
+U1=CALC_CHAMP(reuse      = U1,
+
+           CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',DEFORMATION='EPSI_NOEU',
+           RESULTAT   = U1);
+
+
+TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIGM_NOEU',
+                                GROUP_NO = 'C',
+                                RESULTAT = U1,
+                                NOM_CHAM = 'SIGM_NOEU',
+                                INVARIANT = 'OUI',
+                                OPERATION= 'EXTRACTION'));
+
+TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE= 'VARI_NOEU',
+                                GROUP_NO = 'C',
+                                RESULTAT = U1,
+                                NOM_CHAM = 'VARI_NOEU',
+                                NOM_CMP  = ('V1','V4','V8','V23','V32'),
+                                OPERATION= 'EXTRACTION'));
+
+
+TAB_EPZZ=POST_RELEVE_T(ACTION=_F(INTITULE = 'EPSI_NOEU',
+                                GROUP_NO = 'C',
+                                RESULTAT = U1,
+                                NOM_CHAM = 'EPSI_NOEU',
+                                NOM_CMP  = 'EPZZ',
+                                OPERATION= 'EXTRACTION'));
+
+
+TAB_SIG=CALC_TABLE(reuse=TAB_SIG,
+                   TABLE=TAB_SIG,
+                   ACTION=_F(OPERATION='COMB',
+                             TABLE=TAB_EPZZ,
+                             NOM_PARA='INST'));
+
+TAB_VARI=CALC_TABLE(reuse=TAB_VARI,
+                    TABLE=TAB_VARI,
+                    ACTION=_F(OPERATION='COMB',
+                              TABLE=TAB_EPZZ,
+                              NOM_PARA='INST'));
+
+
+IMPR_TABLE(TABLE=TAB_SIG);
+IMPR_TABLE(TABLE=TAB_VARI);
+# TEST DE LA NORME DU DEVIATEUR DES CONTRAINTES PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 3.15243390E+04,
+           VALE_REFE=31547,
+           NOM_PARA='VMIS',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.02,
+           VALE_CALC= 4.01279006E+04,
+           VALE_REFE=40129,
+           NOM_PARA='VMIS',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-2.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC= 5.19581973E+04,
+           VALE_REFE=51937,
+           NOM_PARA='VMIS',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-5.0000000000000001E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC= 6.83085114E+04,
+           VALE_REFE=68286,
+           NOM_PARA='VMIS',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC= 1.03179870E+05,
+           VALE_REFE=103161,
+           NOM_PARA='VMIS',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-0.02,),
+           )
+
+# TEST DE LA TRACE DE SIGMA PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=-1.38909698E+05,
+           VALE_REFE=-138887,
+           NOM_PARA='TRACE',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=-1.33818952E+05,
+           VALE_REFE=-133789,
+           NOM_PARA='TRACE',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-2.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=-1.24999035E+05,
+           VALE_REFE=-124952,
+           NOM_PARA='TRACE',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-5.0000000000000001E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=-1.36845736E+05,
+           VALE_REFE=-136801,
+           NOM_PARA='TRACE',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=-1.86017786E+05,
+           VALE_REFE=-185971,
+           NOM_PARA='TRACE',
+           TABLE=TAB_SIG,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-0.02,),
+           )
+
+# TEST DU COEF D ECROUISSAGE DEVIATOIRE PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=0.352343977,
+           VALE_REFE=0.35299999999999998,
+           NOM_PARA='V1',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.02,
+           VALE_CALC=0.450499615,
+           VALE_REFE=0.45100000000000001,
+           NOM_PARA='V1',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-2.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.593082005,
+           VALE_REFE=0.59299999999999997,
+           NOM_PARA='V1',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-5.0000000000000001E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.699375487,
+           VALE_REFE=0.69899999999999995,
+           NOM_PARA='V1',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.793701680,
+           VALE_REFE=0.79400000000000004,
+           NOM_PARA='V1',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-0.02,),
+           )
+
+# TEST DU COEF D ECROUISSAGE ISOTROPE PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.020000002,
+           VALE_REFE=0.02,
+           NOM_PARA='V4',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.024844122,
+           VALE_REFE=0.024799999999999999,
+           NOM_PARA='V4',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-0.02,),
+           )
+
+# TEST DU COEF D ECROUISSAGE ISOTROPE CYCLIQUE PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.02,
+           VALE_CALC= 1.48945871E-03,
+           VALE_REFE=1.49E-3,
+           NOM_PARA='V8',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.02,
+           VALE_CALC= 2.17271731E-03,
+           VALE_REFE=2.1800000000000001E-3,
+           NOM_PARA='V8',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-2.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.02,
+           VALE_CALC= 3.35576217E-03,
+           VALE_REFE=3.3600000000000001E-3,
+           NOM_PARA='V8',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-5.0000000000000001E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC= 1.68221725E-03,
+           VALE_REFE=1.6800000000000001E-3,
+           NOM_PARA='V8',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-2,),
+           )
+
+# TEST SUR LA DEFORMATION VOLUMIQUE PLASTIQUE AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.059999999999999998,
+           VALE_CALC=-2.41914072E-05,
+           VALE_REFE=-2.4199999999999999E-05,
+           NOM_PARA='V23',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=-3.56105174E-05,
+           VALE_REFE=-3.5500000000000002E-05,
+           NOM_PARA='V23',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-2.E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=-5.57841620E-05,
+           VALE_REFE=-5.5600000000000003E-05,
+           NOM_PARA='V23',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-5.0000000000000001E-3,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=-2.90087348E-05,
+           VALE_REFE=-2.8799999999999999E-05,
+           NOM_PARA='V23',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC= 7.00789792E-05,
+           VALE_REFE=7.3700000000000002E-05,
+           NOM_PARA='V23',
+           TABLE=TAB_VARI,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZ',
+                     VALE=-0.02,),
+           )
+
+FIN();

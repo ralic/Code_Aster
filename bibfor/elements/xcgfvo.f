@@ -8,7 +8,7 @@
       REAL*8       FNO(NDIM*NNOP),RHO
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/10/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,8 +58,7 @@ C     (VOIR CRS 1404)
 
 C     PARAMETRES DES FORCES VOLUMIQUES
       IF (OPTION.EQ.'CALC_G'.OR.
-     &    OPTION.EQ.'CALC_K_G' .OR.
-     &    OPTION.EQ.'K_G_MODA') THEN
+     &    OPTION.EQ.'CALC_K_G') THEN
         FONC=.FALSE.
         CALL JEVECH('PFRVOLU','L',IFORC)
       ELSEIF (OPTION.EQ.'CALC_G_F'.OR.
@@ -129,7 +128,7 @@ C     ------------------------------------------------------------------
         CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
         CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,1,' ',RBID,1,
      &              'RHO',RHO,ICODRE,1)
-          
+
         IF (IPESA.NE.0) THEN
           DO 60 INO=1,NNOP
             DO 61 J=1,NDIM

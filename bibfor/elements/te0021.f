@@ -1,6 +1,6 @@
       SUBROUTINE TE0021(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,8 +49,8 @@ C-----------------------------------------------------------------------
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
+      CALL JEVECH('PROTATR','L',IROTA)
       CALL JEVECH('PMATUUR','E',IMATUU)
-      CALL JEVECH('PROTATR','E',IROTA)
       FAMI='FPG1'
       KPG=1
       SPT=1

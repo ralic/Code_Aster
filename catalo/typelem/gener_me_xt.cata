@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -182,21 +182,6 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    CALC_K_G            297   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
-                                     CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
-                                     E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  EPRESNO  PPRESSR
-                                     E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
-                                     NFORCER  PFRVOLU  CPESANR  PPESANR  CROTATR  PROTATR  E63NEUTR PBASECO
-                              OUT__  EKTHETA  PGTHETA
-    CALC_K_G_F          297   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
-                                     CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
-                                     E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CPRESSF  PPRESSF
-                                     E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
-                                     CTEMPSR  PTEMPSR  CFORCEF  PFFVOLU  CPESANR  PPESANR  CROTATR  PROTATR
-                                     E63NEUTR PBASECO
-                              OUT__  EKTHETA  PGTHETA
     CALC_G              288   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
                                      CCOMPOR  PCOMPOR  E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
@@ -212,6 +197,22 @@ OPTION__
                                      CTEMPSR  PTEMPSR  E63NEUTR PBASECO  CFORCEF  PFFVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR
                               OUT__  EGTHETA  PGTHETA
+    CALC_K_G            297   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
+                                     CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
+                                     E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  EPRESNO  PPRESSR
+                                     E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
+                                     NFORCER  PFRVOLU  CPESANR  PPESANR  CROTATR  PROTATR  E63NEUTR PBASECO
+                                     CFREQR   PPULPRO
+                              OUT__  EKTHETA  PGTHETA
+    CALC_K_G_F          297   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
+                                     CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
+                                     E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CPRESSF  PPRESSF
+                                     E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
+                                     CTEMPSR  PTEMPSR  CFORCEF  PFFVOLU  CPESANR  PPESANR  CROTATR  PROTATR
+                                     E63NEUTR PBASECO  CFREQR   PPULPRO
+                              OUT__  EKTHETA  PGTHETA
     CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
     CFL_XFEM            118   IN__   NGEOMER  PGEOMER
                               OUT__  E1NEUTR  PLONCAR
@@ -270,13 +271,6 @@ OPTION__
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
     INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
-    K_G_MODA            297   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
-                                     CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E33NEUTR PPINTTO  E128NEUI PCNSETO
-                                     E32NEUTI PHEAVTO  E10NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  EPRESNO  PPRESSR
-                                     E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
-                                     NFORCER  PFRVOLU  CPESANR  PPESANR  CROTATR  PROTATR  CFREQR   PPULPRO
-                              OUT__  EKTHETA  PGTHETA
     MASS_INER           285   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           538   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  STANO_I  PSTANO

@@ -5,7 +5,7 @@
       CHARACTER*8       NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ------------------------------------------------------------------
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
 C-----------------------------------------------------------------------
-      INTEGER I ,IOC ,JDCC ,JDCCF ,JDLS ,JDVC ,JDVCF 
+      INTEGER I ,IOC ,JDCC ,JDCCF ,JDLS ,JDVC ,JDVCF, JDLS2
       INTEGER NFCX ,NG ,NM ,NT ,NV 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -57,7 +57,8 @@ C-----------------------------------------------------------------------
       CALL JEVEUO(TMPNCF,'E',JDCCF)
       CALL JEVEUO(TMPVCF,'E',JDVCF)
 C
-      CALL WKVECT('&&TMPCABLE','V V K8',LMAX,JDLS)
+      CALL WKVECT('&&TMPCABLE','V V K24',LMAX,JDLS)
+      CALL WKVECT('&&TMPCABLE2','V V K8',LMAX,JDLS2)
 C
       ZK8(JDCC)   = 'SECT'
       ZK8(JDCC+1) = 'TENS'
@@ -69,9 +70,9 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCA
       DO 10 IOC = 1 , NBOCC
          SCT = 0.D0
          CALL GETVEM(NOMA,'GROUP_MA','CABLE','GROUP_MA',
-     +           IOC,IARG,LMAX,ZK8(JDLS),NG)
+     +           IOC,IARG,LMAX,ZK24(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','CABLE','MAILLE',
-     +         IOC,IARG,LMAX,ZK8(JDLS),NM)
+     +         IOC,IARG,LMAX,ZK8(JDLS2),NM)
 
          CALL GETVR8('CABLE','SECTION' ,IOC,IARG,1,SCT,NV)
          IF (NV.EQ.0) THEN
@@ -88,21 +89,22 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCA
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
          IF (NG.GT.0) THEN
             DO 20 I = 1 , NG
-              CALL NOCART(CARTCA ,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',2)
-              CALL NOCART(CARTCF,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',1)
+              CALL NOCART(CARTCA ,2,ZK24(JDLS+I-1),' ',0,' ',0,' ',2)
+              CALL NOCART(CARTCF,2,ZK24(JDLS+I-1),' ',0,' ',0,' ',1)
  20         CONTINUE
          ENDIF
 C
 C -      "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 C
          IF (NM.GT.0) THEN
-            CALL NOCART(CARTCA ,3,' ','NOM',NM,ZK8(JDLS),0,' ',2)
-            CALL NOCART(CARTCF,3,' ','NOM',NM,ZK8(JDLS),0,' ',1)
+            CALL NOCART(CARTCA ,3,' ','NOM',NM,ZK8(JDLS2),0,' ',2)
+            CALL NOCART(CARTCF,3,' ','NOM',NM,ZK8(JDLS2),0,' ',1)
          ENDIF
 C
  10   CONTINUE
 C
       CALL JEDETR('&&TMPCABLE')
+      CALL JEDETR('&&TMPCABLE2')
       CALL JEDETR(TMPNCA)
       CALL JEDETR(TMPVCA)
 C

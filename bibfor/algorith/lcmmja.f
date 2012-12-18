@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C TOLE CRP_21
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,8 @@ C       ----------------------------------------------------------------
       REAL*8  DFPDS(3,3,3,3),YD(*),MSNST(3,3,NSG),FP(3,3)
       REAL*8  MRNR(3,3),DF(3,3),FE(3,3)
       REAL*8  DFPDBS(3,3,NSG),DFPDGA(3,3,NSG)
-      CHARACTER*16 NOMFAM,CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*16 NOMFAM,COMP(*)
+      CHARACTER*24 CPMONO(5*NMAT+1)
       CHARACTER*8     TYPMOD
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI

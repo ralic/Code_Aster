@@ -5,9 +5,9 @@
 C TOLE CRP_21 CRS_1404
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -56,7 +56,8 @@ C       ----------------------------------------------------------------
       REAL*8 DT,FKOOH(6,6),SIGF(6),TOLER,TAUS,DP,CRIT,SGNS,RP
       REAL*8 Q(3,3),MUS(6),NS(3),MS(3),DFPDGA(3,3,NSG)
       REAL*8 EXPBP(NSG),YD(*),MSNST(3,3,NSG),DALPHA,DGAMMA
-      CHARACTER*16 NOMFAM,CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*16 NOMFAM,COMP(*)
+      CHARACTER*24 CPMONO(5*NMAT+1)
 C     ----------------------------------------------------------------
 
 C     NSFA : debut de la famille IFA dans DY et YD, YF

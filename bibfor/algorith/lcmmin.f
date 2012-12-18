@@ -4,7 +4,7 @@
      &                      TIMED,TIMEF,VIND,SIGD,EPSTR )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_21
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
@@ -68,7 +68,8 @@ C     ----------------------------------------------------------------
       INTEGER         I ,NBFSYS,NBSYS,IS,NBCOMM(NMAT,3),IFA,NUMS
       REAL*8          EVP(6),FE(3,3),DF(3,3),FE1(3,3),FE1T(3,3)
       REAL*8          PGL(3,3),MS(6),NG(3),Q(3,3),LG(3),FETFE(3,3)
-      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*16    COMP(*)
+      CHARACTER*24    CPMONO(5*NMAT+1)
       CHARACTER*16    NOMFAM
       REAL*8          TIMED,TIMEF,VIND(*),SIGD(6),SIGDN(6)
 C

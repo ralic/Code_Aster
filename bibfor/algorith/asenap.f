@@ -6,7 +6,7 @@
       CHARACTER*8       MASSE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,17 +35,17 @@ C
 C     ------------------------------------------------------------------
 C IN  : MASSE  : MATRICE DE MASSE DE LA STRUCTURE
 C     ------------------------------------------------------------------
-      INTEGER      IBID, ICAS, IER, INO, IOCC, IRE1, IRE2, IREF, IRET,
+      INTEGER      IBID, ICAS, IER, INO, IOCC, IRE1, IREF, IRET,
      +             JCAS, JDGN, JDIR, JDREF,  JNO, JNOEU, JNREF, JREF,
      +             JSTA, JTYP, NBMC, NBNO, NBOCC, NC, NCAS, NOCAS, NS,
      +             NT, NUCAS, NX,   NY,   NZ
       REAL*8       DX, DY, DZ, EPSIMA, R8VIDE
       CHARACTER*4  CTYP
-      CHARACTER*8  K8B, RESU, NOMA, NOREF
+      CHARACTER*8  K8B, RESU, NOMA
       CHARACTER*8  KNUM, KDIR, STAT, MOTCLE(2), TYMOCL(2)
       CHARACTER*15 MOTFAC
       CHARACTER*16  CONCEP, NOMCMD,MESNOE
-      CHARACTER*24 OBJ1, OBJ2, VALK(2)
+      CHARACTER*24 OBJ2, VALK(2), NOREF
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
@@ -57,7 +57,6 @@ C
       CALL GETRES(RESU,CONCEP,NOMCMD)
 C
       CALL DISMOI('F','NOM_MAILLA',MASSE,'MATR_ASSE',IBID,NOMA,IRET)
-      OBJ1 = NOMA//'.GROUPENO'
       OBJ2 = NOMA//'.NOMNOE'
       IER = 0
 C
@@ -134,7 +133,7 @@ C VECTEUR MODE_STATIQUE
 C
 C VECTERUS RELATIFS AU NOEUD_REFE
 C
-      CALL WKVECT('&&ASENAP.NOREF','V V K8',NOCAS,JNREF)
+      CALL WKVECT('&&ASENAP.NOREF','V V K24',NOCAS,JNREF)
       CALL WKVECT('&&ASENAP.NREF','V V I',NOCAS,JREF)
       CALL WKVECT('&&ASENAP.DREF','V V R',3*NOCAS,JDREF)
 
@@ -176,20 +175,15 @@ C
          CALL GETVTX(MOTFAC,'NOEUD_REFE',ICAS,IARG,1,NOREF,IREF)
          IF (IREF.NE.0) THEN
            CALL JENONU(JEXNOM(OBJ2,NOREF),IRE1)
-           CALL JEEXIN(JEXNOM(OBJ1,NOREF),IRE2)
-           IF ((IRE1+IRE2).EQ.0) THEN
+           IF (IRE1.EQ.0) THEN
              IER = IER + 1
               VALK(1) = NOREF
               VALK(2) = NOMA
               CALL U2MESK('E','SEISME_1', 2 ,VALK)
              GOTO 9999
            ENDIF
-           IF (IRE2.NE.0) THEN
-             CALL JEVEUO(JEXNOM(OBJ1,NOREF),'L',JDGN)
-             CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN)),NOREF)
-           ENDIF
 
-          ZK8(JNREF+ICAS-1) = NOREF
+          ZK24(JNREF+ICAS-1) = NOREF
           ZI(JREF+ICAS-1)= 1
         ENDIF
 C -- STOCKAGE DES DIRECTIONS D''ANCRAGE

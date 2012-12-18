@@ -1,7 +1,9 @@
       SUBROUTINE TE0295(OPTION,NOMTE)
-
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,81 +20,63 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C      TOLE CRP_20
-
-      IMPLICIT NONE
-
+C
+C     BUT:
+C       CALCUL DES FACTEURS D'INTENSITÉ DES CONTRAINTES
+C       A PARTIR DE LA FORME BILINEAIRE SYMETRIQUE G ET
+C       DES DEPLACEMENTS SINGULIERS EN FOND DE FISSURE
+C      POUR LES ELEMENTS ISOPARAMETRIQUES 3D
+C
+C       OPTION : 'CALC_K_G'    (CHARGES REELLES)
+C                'CALC_K_G_F'  (CHARGES FONCTIONS)
+C
+C
 C ----------------------------------------------------------------------
-C FONCTION REALISEE:  CALCUL DES FACTEURS D'INTENSITÉS DE CONTRAINTES
-C                     A PARTIR DE LA FORME BILINEAIRE SYMETRIQUE G ET
-C                      DES DEPLACMENTS SINGULIERS EN FOND DE FISSURE
-
-C    - ARGUMENTS:
-C        DONNEES:      OPTION       -->  OPTION DE CALCUL
-C                      NOMTE        -->  NOM DU TYPE ELEMENT
-C.......................................................................
 C
       INCLUDE 'jeveux.h'
-
+C
       INTEGER ICODRE(3)
+      INTEGER CODRHO
+      INTEGER IPOIDS,IVF,IDFDE,NNO,KP,NPG,COMPT,IER, NNOS
+      INTEGER JGANO,ICOMP,IBALO,ICOUR
+      INTEGER IGEOM,ITHET, IFICG, IROTA,IPESA,IDEPL,IRET
+      INTEGER IMATE,IFORC,IFORF,ITEMPS,K,I,J,KK,L,NDIM,INO,IPULS
+      INTEGER JLSN,JLST,JTAB(7)
+
+C
+      REAL*8 R8PREM,R8BID
+      REAL*8 DFDI(60),F(3,3),EPS(6),FNO(81),E1(3),E2(3),E3(3)
+      REAL*8 DUDM(3,4),DFDM(3,4),DTDM(3,4),DER(4)
+      REAL*8 U1L(3),U2L(3),U3L(3), DFVDM(3,4)
+      REAL*8 DU1DM(3,4),DU2DM(3,4),DU3DM(3,4)
+      REAL*8 P(3,3),INVP(3,3)
+      REAL*8 COURB(3,3,3)
+      REAL*8 RHO,OM,OMO,RBID,E,NU,ALPHA,TREF
+      REAL*8 THET,TPG(27),TNO(20),TGDM(3),TTRG,LA,MU, KA
+      REAL*8 XG,YG,ZG,FF
+      REAL*8 C1,C2,C3, RG, PHIG
+      REAL*8 VALRES(3)
+      REAL*8 COEFF,COEFF3
+      REAL*8 GUV,GUV1,GUV2,GUV3,K1,K2,K3,G,POIDS
+      REAL*8 NORME,K3A,TTRGV,TGVDM(3)
+      REAL*8 VALPAR(4),LSNG,LSTG,PULS
+C
       CHARACTER*4  FAMI
       CHARACTER*8  NOMRES(3),NOMPAR(4)
-      CHARACTER*16 NOMTE,OPTION,PHENOM, COMPOR(4), VALK
+      CHARACTER*16 PHENOM,COMPOR(4)
 C
-      REAL*8   EPSI,R8PREM
-      REAL*8   DFDI(60),F(3,3),EPS(6),FNO(81),E1(3),E2(3),E3(3)
-      REAL*8   DUDM(3,4),DFDM(3,4),DTDM(3,4),DER(4)
-      REAL*8   U1L(3),U2L(3),U3L(3), DFVDM(3,4)
-      REAL*8   DU1DM(3,4),DU2DM(3,4),DU3DM(3,4)
-      REAL*8   P(3,3),INVP(3,3)
-      REAL*8   COURB(3,3,3)
-      REAL*8   RHO,OM,OMO,RBID,E,NU,ALPHA,TREF
-      REAL*8   THET,TG(27),TPN(20),TGDM(3),TTRG,LA,MU, KA
-      REAL*8   XG,YG,ZG,FF
-      REAL*8   C1,C2,C3, RG, PHIG
-      REAL*8   VALRES(3),DEVRES(3)
-      REAL*8   COEFF,COEFF3
-      REAL*8   GUV,GUV1,GUV2,GUV3,K1,K2,K3,G,POIDS
-      REAL*8   NORME,K3A,TTRGV,TGVDM(3)
-      REAL*8   VALPAR(4),LSNG,LSTG
+      LOGICAL LCOUR,LMODA,FONC,LPESA,LROTA
 C
-      INTEGER  IPOIDS,IVF,IDFDE,NNO,KP,NPG,COMPT,IER, NNOS
-      INTEGER  JGANO,IEPSR,ICOMP,ISIGI,IBALO,ICOUR
-      INTEGER  IGEOM,ITHET, IGTHET, IROTA,IPESA,IDEPL,IRET
-      INTEGER  IMATE,IFORC,IFORF,ITEMPS,K,I,J,KK,L,NDIM,INO
-      INTEGER   JLSN,JLST,IRET1,IRET2,TRIGI,TNOEU
-
-      LOGICAL   LCOUR,FONC
-
-
-C DEB ------------------------------------------------------------------
-
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      EPSI = R8PREM()
-
+C
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      CALL JEVECH('PTHETAR','L',ITHET)
-      G = 0.D0
-      K1= 0.D0
-      K2= 0.D0
-      K3= 0.D0
-      COEFF=1.D0
-      COEFF3=1.D0
-      CALL JEVECH('PGTHETA','E',IGTHET)
-
-C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
-      COMPT = 0
-      DO 10 I = 1,NNO
-        THET = 0.D0
-        DO 11 J = 1,NDIM
-          THET = THET + ABS(ZR(ITHET+NDIM*(I-1)+J-1))
- 11     CONTINUE
-        IF (THET.LT.EPSI) COMPT = COMPT + 1
- 10   CONTINUE
-      IF (COMPT.EQ.NNO) GOTO 9999
 C
-C RECUPERATION CHARGE, MATER...
+C --- RECUPERATION DES CHAMPS IN
+C
+      CALL JEVECH('PTHETAR','L',ITHET)
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -101,64 +85,95 @@ C RECUPERATION CHARGE, MATER...
       CALL JEVECH('PCOURB','L',ICOUR)
       CALL JEVECH('PLSN','L',JLSN)
       CALL JEVECH('PLST','L',JLST)
+C
+C --- RECUPERATION DU CHAMP OUT
+C
+      CALL JEVECH('PGTHETA','E',IFICG)
+C
+      G = 0.D0
+      K1 = 0.D0
+      K2 = 0.D0
+      K3 = 0.D0
+      COEFF = 1.D0
+      COEFF3 = 1.D0
+      NOMRES(1) = 'E'
+      NOMRES(2) = 'NU'
+      NOMRES(3) = 'ALPHA'
+C
+C --- PAS DE CALCUL DE G POUR LES ELEMENTS OU THETA EST NULLE
+C
+      COMPT = 0
+      DO 10 I = 1,NNO
+        THET = 0.D0
+        DO 11 J = 1,NDIM
+          THET = THET + ABS(ZR(ITHET+NDIM*(I-1)+J-1))
+ 11     CONTINUE
+        IF (THET.LT.R8PREM()) COMPT = COMPT + 1
+ 10   CONTINUE
+      IF (COMPT.EQ.NNO) GOTO 9999
 
+C
+C --- RECUPERATION DES FORCES
+C
       IF (OPTION.EQ.'CALC_K_G_F') THEN
         FONC = .TRUE.
         CALL JEVECH('PFFVOLU','L',IFORF)
         CALL JEVECH('PTEMPSR','L',ITEMPS)
         NOMPAR(1) = 'X'
         NOMPAR(2) = 'Y'
-        VALPAR(NDIM+1) = ZR(ITEMPS)
         IF (NDIM.EQ.2) THEN
           NOMPAR(3) = 'INST'
         ELSEIF (NDIM.EQ.3) THEN
           NOMPAR(3) = 'Z'
           NOMPAR(4) = 'INST'
         ENDIF
-        CALL TECACH('ONN','PEPSINF',1,IEPSR,IRET)
-      ELSE
+        VALPAR(NDIM+1) = ZR(ITEMPS)
+      ELSE IF (OPTION.EQ.'CALC_K_G') THEN
         FONC =.FALSE.
         CALL JEVECH('PFRVOLU','L',IFORC)
-        CALL TECACH('ONN','PEPSINR',1,IEPSR,IRET)
+      ELSE
+        CALL ASSERT(.FALSE.)
       ENDIF
-
+C
+      LPESA = .FALSE.
+      CALL TECACH('ONN','PPESANR',7,JTAB,IRET)
+      IPESA=JTAB(1)
+      IF (IRET.EQ.0) THEN
+        LPESA = .TRUE.
+      ENDIF
+C
+      LROTA = .FALSE.
+      CALL TECACH('ONN','PROTATR',7,JTAB,IRET)
+      IROTA=JTAB(1)
+      IF (IRET.EQ.0) THEN
+        LROTA = .TRUE.
+      ENDIF
+C
+C --- VERFICATION DU COMPORTEMENT
+C
       DO 20 I = 1,4
         COMPOR(I) = ZK16(ICOMP+I-1)
  20   CONTINUE
-
-
-       IF ((COMPOR(3) .EQ. 'GROT_GDEP')
-     &    .OR. (COMPOR(4) (1:9) .EQ. 'COMP_INCR')
-     &    .OR. (COMPOR(1) .NE. 'ELAS')) THEN
-       CALL U2MESS('F','RUPTURE1_24')
-       END IF
-
-      ISIGI=0
-      CALL TECACH('ONN','PPESANR',1,IPESA,IRET)
-      CALL TECACH('ONN','PROTATR',1,IROTA,IRET)
-      IF (.NOT.FONC) CALL TECACH('ONN','PSIGINR',1,ISIGI,IRET)
-      IF (ISIGI.NE.0) THEN
-        VALK='G_BILI'
-        CALL U2MESK('F','RUPTURE1_13',1,VALK)
+C
+      IF ((COMPOR(1).NE.'ELAS'     ) .OR.
+     &    (COMPOR(3).EQ.'GROT_GDEP') .OR.
+     &    (COMPOR(4).EQ.'COMP_INCR')) THEN
+         CALL U2MESS('F','RUPTURE1_24')
       END IF
-
-      NOMRES(1) = 'E'
-      NOMRES(2) = 'NU'
-      NOMRES(3) = 'ALPHA'
-
-      CALL RCVARC(' ','TEMP','REF','RIGI',1,1,TREF,TRIGI)
-      TNOEU=TRIGI
-      DO 645 KP = 1,NPG
-        CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TG(KP),IRET1)
-        TRIGI=TRIGI+IRET1
-  645 CONTINUE
-
-      DO 646 KP = 1,NNO
-        CALL RCVARC(' ','TEMP','+','NOEU',KP,1,TPN(KP),IRET2)
-        TNOEU=TNOEU+IRET2
-  646 CONTINUE
-
-C - RECUPERATION DES CHARGES ET DEFORMATIONS INITIALES ----------------
+C
+C --- RECUPERATION DE LA PULSATION
+C
+      LMODA = .FALSE.
+      CALL TECACH('ONN','PPULPRO',7,JTAB,IRET)
+        IPULS=JTAB(1)
+      IF (IRET.EQ.0) THEN
+        PULS = ZR(IPULS)
+        LMODA = .TRUE.
+      ELSE
+        PULS = 0.D0
+      ENDIF
+C
+C --- RECUPERATION DES CHARGES
 C
       IF (FONC) THEN
         DO 50 I = 1,NNO
@@ -172,55 +187,75 @@ C
  40       CONTINUE
  50     CONTINUE
       ELSE
-        DO 8000 I = 1,NNO
-          DO 6000 J = 1,NDIM
+        DO 80 I = 1,NNO
+          DO 60 J = 1,NDIM
             FNO(NDIM*(I-1)+J) = ZR(IFORC+NDIM*(I-1)+J-1)
- 6000     CONTINUE
- 8000   CONTINUE
-      END IF
-      IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
+ 60     CONTINUE
+ 80   CONTINUE
+      ENDIF
+C
+C --- RECUPERATION DE LA PESANTEUR ET DE LA ROTATION
+C
+      IF (LPESA.OR.LROTA) THEN
         CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
         CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
-     &              1,' ',RBID,1,'RHO',RHO,
-     &              ICODRE,1)
-        IF (IPESA.NE.0) THEN
-          DO 60 I=1,NNO
-            DO 61 J=1,NDIM
+     &              1,' ',RBID,1,'RHO',RHO,ICODRE,1)
+        IF (LPESA) THEN
+          DO 95 I=1,NNO
+            DO 90 J=1,NDIM
               KK = NDIM*(I-1)+J
               FNO(KK)=FNO(KK)+RHO*ZR(IPESA)*ZR(IPESA+J)
- 61         CONTINUE
- 60       CONTINUE
+90          CONTINUE
+95        CONTINUE
         ENDIF
-        IF (IROTA.NE.0) THEN
+
+        IF (LROTA) THEN
           OM = ZR(IROTA)
-          DO 70 I=1,NNO
+          DO 105 I=1,NNO
             OMO = 0.D0
-            DO 71 J=1,NDIM
+            DO 100 J=1,NDIM
               OMO = OMO + ZR(IROTA+J)* ZR(IGEOM+NDIM*(I-1)+J-1)
- 71        CONTINUE
-            DO 72 J=1,NDIM
+100         CONTINUE
+            DO 103 J=1,NDIM
               KK = NDIM*(I-1)+J
               FNO(KK)=FNO(KK)+RHO*OM*OM*(ZR(IGEOM+KK-1)-OMO*ZR(IROTA+J))
- 72         CONTINUE
- 70       CONTINUE
+103         CONTINUE
+105       CONTINUE
         ENDIF
       ENDIF
-
-
-C-----------------------------------------------------------------------
+C
+C --- RECUPERATION DE LA TEMPERATURE
+C
+      CALL RCVARC(' ','TEMP','REF','RIGI',1,1,TREF,IRET)
+      IF (IRET.NE.0) TREF = 0.D0
+      DO 645 KP = 1,NPG
+        CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TPG(KP),IRET)
+        IF (IRET.NE.0) TPG(KP) = 0.D0
+  645 CONTINUE
+C
+      DO 646 INO = 1,NNO
+        CALL RCVARC(' ','TEMP','+','NOEU',INO,1,TNO(INO),IRET)
+        IF (IRET.NE.0) TNO(INO) = 0.D0
+  646 CONTINUE
+C
+C ----------------------------------------------------------------------
+C
 C     BOUCLE SUR LES POINTS DE GAUSS
-      DO 100 KP=1,NPG
-
-        L  = (KP-1)*NNO
+C
+C ----------------------------------------------------------------------
+C
+      DO 800 KP = 1,NPG
+C
+        L = (KP-1) * NNO
         XG = 0.D0
         YG = 0.D0
         ZG = 0.D0
         LSNG=0.D0
         LSTG=0.D0
-        DO 110 I=1,3
+        DO 110 I = 1,3
           TGDM(I) = 0.D0
           TGVDM(I) = 0.D0
-          DO 111 J=1,4
+          DO 111 J = 1,4
             DUDM(I,J) = 0.D0
             DU1DM(I,J)= 0.D0
             DU2DM(I,J)= 0.D0
@@ -231,17 +266,18 @@ C     BOUCLE SUR LES POINTS DE GAUSS
  111      CONTINUE
  110    CONTINUE
 
-C   CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E) EN UN PT DE GAUSS
+C ----- CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E)
+C       EN UN PT DE GAUSS
 
         CALL NMGEOM (NDIM,NNO,.FALSE.,.FALSE.,ZR(IGEOM),KP,
      &               IPOIDS,IVF,IDFDE,
      &               ZR(IDEPL),.TRUE.,POIDS,DFDI,F,EPS,RBID)
+C
+C ----- CALCULS DES GRADIENTS DE U (DUDM),THETA (DTDM) ET FORCE(DFDM)
+C ----- DU GRADIENT DE TEMPERATURE AUX POINTS DE GAUSS (TGDM)
+C ----- ET LEVEL SETS
 
-C - CALCULS DES GRADIENTS DE U (DUDM),THETA (DTDM) ET FORCE(DFDM)
-C   DU GRADIENT DE TEMPERATURE AUX POINTS DE GAUSS (TGDM)
-C   ET LEVEL SETS
-
-        DO 120 I=1,NNO
+        DO 320 I=1,NNO
           DER(1) = DFDI(I)
           DER(2) = DFDI(I+NNO)
           DER(3) = DFDI(I+2*NNO)
@@ -250,40 +286,48 @@ C   ET LEVEL SETS
           XG = XG + ZR(IGEOM-1+NDIM*(I-1)+1)*DER(4)
           YG = YG + ZR(IGEOM-1+NDIM*(I-1)+2)*DER(4)
           ZG = ZG + ZR(IGEOM-1+NDIM*(I-1)+3)*DER(4)
-
+C
           LSNG = LSNG + ZR(JLSN-1+I) * DER(4)
           LSTG = LSTG + ZR(JLST-1+I) * DER(4)
-
-          IF (TNOEU.EQ.0) THEN
-            DO 121 J=1,NDIM
-              TGDM(J) = TGDM(J) + TPN(I)*DER(J)
-121         CONTINUE
-          ENDIF
-          DO 122 J=1,NDIM
-            DO 123 K=1,NDIM
+C
+          DO 310 J=1,NDIM
+            TGDM(J) = TGDM(J) + TNO(I) * DER(J)
+            DO 300 K=1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPL+NDIM*(I-1)+J-1)*DER(K)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+NDIM*(I-1)+J-1)*DER(K)
               DFDM(J,K) = DFDM(J,K) + FNO(NDIM*(I-1)+J)*DER(K)
-123       CONTINUE
+300         CONTINUE
             DUDM(J,4) = DUDM(J,4) + ZR(IDEPL+NDIM*(I-1)+J-1)*DER(4)
             DTDM(J,4) = DTDM(J,4) + ZR(ITHET+NDIM*(I-1)+J-1)*DER(4)
             DFDM(J,4) = DFDM(J,4) + FNO(NDIM*(I-1)+J)*DER(4)
-122       CONTINUE
-120     CONTINUE
-
-C       RECUPEATION DES DONNEES MATERIAUX
-        IF (TRIGI.EQ.0) THEN
-          TTRG = TG(KP) - TREF
-        ELSE
-          TTRG=0.D0
-        ENDIF
+310       CONTINUE
+320     CONTINUE
+C
+        TTRG = TPG(KP) - TREF
         TTRGV = 0.D0
-        CALL RCVAD2 (FAMI,KP,1,'+',ZI(IMATE),'ELAS',
-     &               3,NOMRES,VALRES,DEVRES,ICODRE)
+C
+        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
+C
+C ----- RECUPERATION DE E, NU ET ALPHA
+C
+        CALL RCVARC(' ','TEMP','+','RIGI',KP,1,R8BID,IRET)
+        CALL RCVALB (FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',0.D0,
+     &               3,NOMRES,VALRES,ICODRE,0)
+        CALL ASSERT(ICODRE(1)+ICODRE(2).EQ.0)
         IF (ICODRE(3).NE.0) THEN
-          VALRES(3)= 0.D0
-          DEVRES(3)= 0.D0
+          CALL ASSERT(IRET.NE.0)
+          VALRES(3) = 0.D0
         ENDIF
+C
+C ----- RECUPERATION DE RHO
+C
+        CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',0.D0,1,
+     &              'RHO',RHO,CODRHO,0)
+C
+        IF ((CODRHO.NE.0).AND. LMODA) THEN
+          CALL U2MESS('F','RUPTURE1_26')
+        ENDIF
+C
         E     = VALRES(1)
         NU    = VALRES(2)
         ALPHA = VALRES(3)
@@ -303,53 +347,12 @@ C       COEFF3=2.D0 * MU
         C1 = LA + 2.D0 * MU
         C2 = LA
         C3 = MU
-
-C       BASE LOCALE ASSOCIÉE AU POINT DE GAUSS KP
-C       (E1=GRLT,E2=GRLN,E3=E1^E2)
-        DO 124 I=1,3
-          E1(I)=0.D0
-          E2(I)=0.D0
-          DO 130 INO=1,NNO
-            FF=ZR(IVF-1+NNO*(KP-1)+INO)
-            E1(I) = E1(I)+ZR(IBALO-1+9*(INO-1)+I+3)* FF
-            E2(I) = E2(I)+ZR(IBALO-1+9*(INO-1)+I+6)* FF
- 130      CONTINUE
- 124    CONTINUE
-
-C       NORMALISATION DE LA BASE
-        CALL NORMEV(E1,NORME)
-        CALL NORMEV(E2,NORME)
-        CALL PROVEC(E1,E2,E3)
 C
-C       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-        DO 125 I=1,3
-          P(I,1)=E1(I)
-          P(I,2)=E2(I)
-          P(I,3)=E3(I)
- 125    CONTINUE
-
-C       CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
-        DO 126 I=1,3
-          DO 127 J=1,3
-            INVP(I,J)=P(J,I)
- 127      CONTINUE
- 126    CONTINUE
-
-C       RECUPERATION DU TENSEUR DE COURBURE
-        DO 128 I=1,3
-          DO 129 J=1,3
-            COURB(I,1,J)=ZR(ICOUR-1+3*(I-1)+J)
-            COURB(I,2,J)=ZR(ICOUR-1+3*(I+3-1)+J)
-            COURB(I,3,J)=ZR(ICOUR-1+3*(I+6-1)+J)
-
- 129      CONTINUE
- 128    CONTINUE
-C       PRISE EN COMPTE DE LA COURBURE
-        LCOUR=.TRUE.
-
-C       COORDONNÉES POLAIRES DU POINT
-        RG=SQRT(LSNG**2+LSTG**2)
-
+C ----- CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES
+C
+C       COORDONNEES POLAIRES DU POINT
+        RG = SQRT(LSNG**2+LSTG**2)
+C
         IF (RG.GT.R8PREM()) THEN
 C         LE POINT N'EST PAS SUR LE FOND DE FISSURE
           PHIG = SIGN(1.D0,LSNG) * ABS(ATAN2(LSNG,LSTG))
@@ -362,16 +365,45 @@ C         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
           IRET=0
         ENDIF
 C
-C       ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
-C       CAR ON SE TROUVE SUR LE FOND DE FISSURE
+C ----- ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
+C ----- CAR ON SE TROUVE SUR LE FOND DE FISSURE
         CALL ASSERT(IRET.NE.0)
-
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C       ------------------------------------------------
-C       CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES
-C       -----------------------------------------------------
-
-C       PRISE EN COMPTE DE LA COURBURE
+C
+C ----- BASE LOCALE ASSOCIÉE AU POINT DE GAUSS KP
+C       (E1=GRLT,E2=GRLN,E3=E1^E2)
+        DO 124 I=1,3
+          E1(I)=0.D0
+          E2(I)=0.D0
+          DO 125 INO=1,NNO
+            FF=ZR(IVF-1+NNO*(KP-1)+INO)
+            E1(I) = E1(I)+ZR(IBALO-1+9*(INO-1)+I+3)* FF
+            E2(I) = E2(I)+ZR(IBALO-1+9*(INO-1)+I+6)* FF
+ 125      CONTINUE
+ 124    CONTINUE
+C
+C       NORMALISATION DE LA BASE
+        CALL NORMEV(E1,NORME)
+        CALL NORMEV(E2,NORME)
+        CALL PROVEC(E1,E2,E3)
+C
+C ----- CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
+C
+        DO 120 I=1,3
+          P(I,1)=E1(I)
+          P(I,2)=E2(I)
+          P(I,3)=E3(I)
+ 120    CONTINUE
+C
+C ----- CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
+C
+        DO 130 I=1,3
+          DO 131 J=1,3
+            INVP(I,J)=P(J,I)
+ 131      CONTINUE
+ 130    CONTINUE
+C
+C       PRISE EN COMPTE DE LA COURBURE : OUI
+C
         LCOUR=.TRUE.
 C       RECUPERATION DU TENSEUR DE COURBURE
         CALL JEVECH('PCOURB','L',ICOUR)
@@ -383,51 +415,50 @@ C       RECUPERATION DU TENSEUR DE COURBURE
  501      CONTINUE
  500    CONTINUE
 
-
+C
         CALL CHAUXI(NDIM,MU,KA,RG,PHIG,INVP,LCOUR,COURB,
      &              DU1DM,DU2DM,DU3DM,U1L,U2L,U3L)
-
+C
 C-----------------------------------------------------------------------
-C       CALCUL DE G, K1, K2, K2 AU POINT DE GAUSS
+C       CALCUL DE G, K1, K2, K3 AU POINT DE GAUSS
 C-----------------------------------------------------------------------
-
+C
         GUV = 0.D0
         CALL GBIL3D(DUDM,DUDM,DTDM,DFDM,DFDM,TGDM,TGDM,
-     &              TTRG,TTRG,POIDS,C1,C2,C3,K3A,0.D0,0.D0,GUV)
+     &              TTRG,TTRG,POIDS,C1,C2,C3,K3A,RHO,PULS,GUV)
         G = G + GUV
 C
         GUV1 = 0.D0
         CALL GBIL3D(DUDM,DU1DM,DTDM,DFDM,DFVDM,TGDM,TGVDM,
-     &              TTRG,TTRGV,POIDS,C1,C2,C3,K3A,0.D0,0.D0,GUV1)
+     &              TTRG,TTRGV,POIDS,C1,C2,C3,K3A,RHO,PULS,GUV1)
         K1 = K1 + GUV1
 C
         GUV2 = 0.D0
         CALL GBIL3D(DUDM,DU2DM,DTDM,DFDM,DFVDM,TGDM,TGVDM,
-     &              TTRG,TTRGV,POIDS,C1,C2,C3,K3A,0.D0,0.D0,GUV2)
+     &              TTRG,TTRGV,POIDS,C1,C2,C3,K3A,RHO,PULS,GUV2)
         K2 = K2 + GUV2
 C
         GUV3 = 0.D0
         CALL GBIL3D(DUDM,DU3DM,DTDM,DFDM,DFVDM,TGDM,TGVDM,
-     &              TTRG,TTRGV,POIDS,C1,C2,C3,K3A,0.D0,0.D0,GUV3)
+     &              TTRG,TTRGV,POIDS,C1,C2,C3,K3A,RHO,PULS,GUV3)
         K3 = K3 + GUV3
-
-100   CONTINUE
-
-9999  CONTINUE
-
+C
+ 800  CONTINUE
+C
       K1 = K1 * COEFF
       K2 = K2 * COEFF
       K3 = K3 * COEFF3
 C
-      ZR(IGTHET)    = G
-      ZR(IGTHET+1) = K1 / SQRT(COEFF)
-      ZR(IGTHET+2) = K2 / SQRT(COEFF)
-      ZR(IGTHET+3) = K3 / SQRT(COEFF3)
-      ZR(IGTHET+4) = K1
-      ZR(IGTHET+5) = K2
-      ZR(IGTHET+6) = K3
-
+      ZR(IFICG)   = G
+      ZR(IFICG+1) = K1 / SQRT(COEFF)
+      ZR(IFICG+2) = K2 / SQRT(COEFF)
+      ZR(IFICG+3) = K3 / SQRT(COEFF3)
+      ZR(IFICG+4) = K1
+      ZR(IFICG+5) = K2
+      ZR(IFICG+6) = K3
+C
+ 9999 CONTINUE
+C
       CALL JEDEMA()
-
-C FIN ------------------------------------------------------------------
+C
       END

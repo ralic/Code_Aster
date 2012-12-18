@@ -1,7 +1,7 @@
-      SUBROUTINE ABSCUR(CONNEX,TYPMAI,COOVAL,NOMU,IT)
+      SUBROUTINE ABSCUR(NOMU,IT)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C-----------------------------------------------------------------------
 
       CHARACTER*32 JEXNUM
       CHARACTER*8  NOMU
-      CHARACTER*24 CONNEX, TYPMAI, COOVAL
 C-----------------------------------------------------------------------
 C     CALCUL D'UNE ABSCISSE CURVILIGNE POUR UN GROUPE DE MAILLES
 C     " TOUTES LES MAILLES DOIVENT ETRE DU TYPE 'POI1' OU 'SEG2' "
@@ -32,9 +31,6 @@ C
 C     ARGUMENTS EN ENTREE
 C     ------------------
 C
-C     CONNEX : NOM DE L'OBJET CONNECTIVITE
-C     TYPMAI : NOM CONTENANT LES TYPES DE MAILLES
-C     COOVAL : NOM DE L'OBJET CONTENANT LES COORDONNEES DES NOEUDS
 C     NOMU   : NOM DU MAILLAGE
 C     IT     : =1 CALCUL SUR L'ENSEMBLE DU MAILLAGE
 C
@@ -43,8 +39,10 @@ C     ---------
 C
 C     CREATION D'UNE CARTE: (APPEL A ALCART)
 C
-      CHARACTER*8        TYPM,K8BID
-      CHARACTER*24       NOMMAI,CONSEG,TYPSEG
+      CHARACTER*8  TYPM,K8BID
+      CHARACTER*24 CONSEG,TYPSEG
+      CHARACTER*24 NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,GRPNOE
+      CHARACTER*24 GPPTNN,GRPMAI,GPPTNM,CONNEX,TITRE,TYPMAI,ADAPMA
       INTEGER      PTCH,ADRM
 C
       CHARACTER*1 K1BID
@@ -61,6 +59,11 @@ C-----------------------------------------------------------------------
       REAL*8 Z2
 C-----------------------------------------------------------------------
       CALL JEMARQ()
+C
+      CALL SDMAIL(NOMU,  NOMMAI,NOMNOE,COOVAL,COODSC,
+     &            COOREF,GRPNOE,GPPTNN,GRPMAI,GPPTNM,
+     &            CONNEX,TITRE, TYPMAI,ADAPMA)
+C
       IF (IT.EQ.1) THEN
         NOMMAI = NOMU//'.NOMMAI'
         CALL JELIRA(NOMMAI,'NOMUTI',NBRMA,K1BID)

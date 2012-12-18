@@ -1,0 +1,2562 @@
+========================================================================
+Version 11.3.1 du : 19/12/2012
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR brie         BRIE Nicolas           DATE 12/17/2012 - 01:19:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019143 DU 2012-07-09 14:59:20
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MN03 - nouvelle option 'PLUS_GRANDE' dans MODE_ITER_SIMULT
+FONCTIONNALITE
+   1. Objectif
+   
+   Calculer les plus grandes fréquences propres d'une structure mécanique.
+   
+   --------------------------------------------
+   2. Développements
+   
+   Nouvelle option 'PLUS_GRANDE' dans les opérateurs MODE_ITER_SIMULT et CALC_MODAL.
+   Utilisable seulement en dynamique, pour un problème généralisé, avec matrices réelles
+   symétriques.
+   On se branche sur l'option 'PLUS_PETITE', mais en intervertissant de manière transparente
+   pour l'utilsateur, le rôle des matrices de raideur et de masse. On garde la mémoire de
+   l'utilisation de l'option 'PLUS_GRANDE' grâce à un indicateur logique.
+   Pour que ça marche, il faut transférer les Lagrande de la raideur vers la masse (via un
+   appel à la routine AJLAGR), et on supprime les Lagrange de la raideur initiale (appel à
+   MTCMBL aves les arguments 'LAGR',' ','ELIM=').
+   A la fin du calcul, si l'indicateur logique de 'PLUS_GRANDE' vaut TRUE, il faut convertir
+   les valeurs propres calculées par l'algortihme, en fréquences propres "physiques", en
+   appliquant la formule 1/(4*pi^2 * valeur_propre).
+   
+   --------------------------------------------
+   4. Validation
+   
+   - Enrichissement du cas-test SDLD02b, dans lequel il est possible de calculer toutes les
+   fréquences propres (il y a 8 DDL seulement). Testé avec MODE_ITER_SIMULT et un NMAX_FREQ
+   différent de la valeur par défaut.
+   - Enrichissement du cas-test SDLD102a, dans lequel il est possible de calculer toutes les
+   fréquences propres (il y a 3 DDL seulement). Testé avec MODE_ITER_SIMULT et un NMAX_FREQ
+   par défaut (1), et avec les différentes méthodes possibles ('SORENSE', 'TRI_DIAG',
+   JACOBI', 'QZ').
+   - Cas-test SDLL14 (modèle plus gros, de l'ordre de 1000 DDL) : ajout des modélisations D
+   et E. Dans la D, on calcule la plus grande fréquence propre avec CALC_MODAL, option
+   'PLUS_GRANDE'. Dans la E, on intervertit les rôles des matrices de raideur et de masse à
+   la main. On calcule alors avec l'option 'PLUS_PETITE' pour les deux cas
+   TYPE_RESU='GENERAL' et 'DYNAMIQUE', et il faut convertir la valeur renvoyée à la main. Rq
+   : dans ces deux nouvelles modélisations, on ajoute des IGNORE_ALARM liées au fait qu'au
+   coeur de l'algortihme, les valeurs propres sont très petites et très proches.
+   
+   --------------------------------------------
+   3. Impacts sur les sources
+   
+   - catalogue : mode_iter_simult.capy, calc_modal.capy
+   - fortran : op0045.f
+   - python : macro calc_modal_ops.py   et  messages algeline5.py (message 77 ajouté pour les
+   restrictions d'utilisation)
+   - cas-tests : sdld02b.comm, sdld102a.comm
+                 ensemble des fichiers sdll14d et sdll14e (.comm, .mmed, .para)
+   
+   --------------------------------------------
+   4. Impacts documentaires
+   
+   - documentation U des opérateurs MODE_ITER_SIMULT (U4.52.03) et CALC_MODAL (U4.52.10).
+   - documentation V du cas-test SDLL14 (V2.02.014).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.52.03, U4.52.10, V2.02.014
+VALIDATION
+    tous les cas-tests appelant MODE_ITER_SIMULT ou CALC_MODAL
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 17/12/2012 - 16:51:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020079 DU 2012-12-11 17:51:51
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    RUPT : Chantier CALC_G - A5 : Gestion de la table - partie 1/2
+FONCTIONNALITE
+   Demande :
+   =======
+   Améliorer la gestion de la table de sortie : la gestion des paramètres de la table doit
+   être revue afin de pouvoir facilement ajouter ou supprimer une colonne pour une ou toutes
+   les options, modifier l'ordre des colonnes
+   
+   Dans cette fiche, on ne s’intéresse qu'à la simplification de l'écriture de la table.
+   
+   Réalisation :
+   ===========
+   La difficulté dans l'écriture de la table est qu'il faut gérer quatre listes valeurs
+   (I,R,C et K) dans lesquels les valeurs sont écrites dans l'ordre. Mais la position dans
+   une liste pour une valeur à écrire n'est pas la même que la position du paramètre dans la
+   liste des nom de paramètres.
+   
+   Cela devient compliqué à gérer (et peu lisible) quand on doit différencier les cas
+   mode_meca, mult_elas ou encore xfem / fem.
+   
+   Pour simplifier les choses, on programme une routine à laquelle on donne le nom du
+   paramètre et la valeur. Elle trouve la bonne position dans la liste que l'on
+   donnera à tbajli. Ainsi, on peut ajouter une colonne ou modifier l'ordre des paramètres
+   dans la table sans modifier l'écriture dans la table.
+   
+   TBAJVA(TABLE,NBPARA,NOMPAR,VI,LIVI,VR,LIVR,VC,LIVC,VK,LIVK)
+   
+   Les routines chapeau pour n'appeler qu'un seul type :
+   TBAJVI(TABLE,NBPARA,NOMPAR,VI,LIVI)
+   TBAJVR(TABLE,NBPARA,NOMPAR,VR,LIVR)
+   TBAJVC(TABLE,NBPARA,NOMPAR,VC,LIVC)
+   TBAJVK(TABLE,NBPARA,NOMPAR,VK,LIVK)
+   
+   Exemple d'utilisation dans cakg3d :
+   
+         CALL TBAJVI(RESULT,NBPRUP,'NUME_FOND',NUMFON,LIVI)
+   
+         IF (LMELAS) THEN
+           CALL TBAJVI(RESULT,NBPRUP,'NUME_CAS',IORD,LIVI)
+           CALL TBAJVK(RESULT,NBPRUP,'NOM_CAS',NOMCAS,LIVK)
+         ELSE
+           CALL TBAJVI(RESULT,NBPRUP,'NUME_ORDRE',IORD,LIVI)
+           CALL TBAJVR(RESULT,NBPRUP,'INST',TIME,LIVR)
+         ENDIF
+   
+         DO 40 I = 1,NNOFF
+           CALL TBAJVI(RESULT,NBPRUP,'NUM_PT',I,LIVI)
+           CALL TBAJVR(RESULT,NBPRUP,'ABSC_CURV',ZR(IADABS-1+I),LIVR)
+           CALL TBAJVR(RESULT,NBPRUP,'K1',ZR(IADGKS-1+6*(I-1)+2),LIVR)
+           CALL TBAJVR(RESULT,NBPRUP,'K2',ZR(IADGKS-1+6*(I-1)+3),LIVR)
+           CALL TBAJVR(RESULT,NBPRUP,'K3',ZR(IADGKS-1+6*(I-1)+4),LIVR)
+           CALL TBAJVR(RESULT,NBPRUP,'G',ZR(IADGKS-1+6*(I-1)+1),LIVR)
+           CALL TBAJVR(RESULT,NBPRUP,'BETA',ZR(IADGKS-1+6*(I-1)+6),LIVR)
+           CALL TBAJVR(RESULT,NBPRUP,'G_IRWIN',ZR(IADGKS-1+6*(I-1)+5),LIVR)
+           CALL TBAJLI(RESULT,NBPRUP,NOPRUP,LIVI,LIVR,LIVC,LIVK,0)
+    40   CONTINUE
+   
+   Avec ces modifications il devient simple d'ajouter des colonnes dans la tables : il suffit
+   d'ajouter les appels à TBAJV* idoines.
+   
+   Impacts :
+   =======
+   cakg3d.f  mbilgl.f  mecalg.f  memokg.f  tbajva.f  tbajvk.f
+   cakgmo.f  mebilg.f  meficg.f  mmaxkl.f  tbajvc.f  tbajvr.f
+   cgcrtb.f  mecagl.f  memaxg.f  tbajli.f  tbajvi.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Liste des tests CALC_G
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019997 DU 2012-11-26 15:16:57
+TYPE express concernant Code_Aster (VERSION 11.2)
+TITRE
+    Verification supplementaire dans JEVECH
+FONCTIONNALITE
+   Problème :
+   ========
+   La routine JEVECH possède un argument qui permet de dire si le champ est en lecture ('L')
+   ou en écriture ('E').
+   Or cet argument n'est pas lu dans la routine.
+   
+   Il faut donc soit le supprimer soit le rendre utile.
+   
+   Correction :
+   ==========
+   On ajoute une vérification dans la routine à partir des informations déjà présente dans la
+   routine : le numéro du paramètre et le nombre de paramètres 'in'.
+   Si le numéro de paramètre est supérieur strictement au nombre de paramètre 'in' alors
+   c'est un paramètre 'out'.
+   
+   Avec cette nouvelle vérification, on doit corriger quelques appels.
+   
+   Impacts :
+   =======
+   ef0410.f  jevech.f  te0012.f  te0363.f  te0408.f  te0435.f  te0533.f
+   ef0415.f  mmtppe.f  te0021.f  te0366.f  te0431.f  te0461.f  te0534.f
+   fsurf.f   mmvppe.f  te0082.f  te0367.f  te0432.f  te0532.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage de la liste complete
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019992 DU 2012-11-23 18:03:41
+TYPE express concernant Code_Aster (VERSION 11.2)
+TITRE
+    RUPT : Scorie des options CALC_DGXXX
+FONCTIONNALITE
+   Problème :
+   ========
+   Suite à la résorption de la sensibilité, il reste des scories des options CALC_DGXXX dans
+   les routines cgcrtb.f mecalg.f.
+   
+   Correction :
+   ==========
+   On supprime les blocs incriminés.
+   
+   Impacts :
+   =======
+   cgcrtb.f mecalg.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste des tests CALC_G
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019980 DU 2012-11-22 12:32:39
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    RUPT : supprimer option K_G_MODA dans CALC_G
+FONCTIONNALITE
+   Demande :
+   =======
+   On souhaite supprimer l'option K_G_MODA car elle ne sert a rien.
+   En effet K_G_MODA = CALC_K_G avec un résultat modal.
+   
+   Il faut donc faire en sorte que CALC_K_G utilise une pulsation quand le résultat est un
+   mode_meca.
+   
+   Réalisation :
+   ===========
+   On supprime l'option K_G_MODA.
+   On passe désormais par les routines qui calculent CALC_K_G. Pour cela, on fait transiter
+   la pulsation.
+   Ainsi pour calculer CALC_K_G, on passe depuis l'op0100 par cakg2d (ajout) et cakg3d.
+   On uniformise également les te dans l'optique d'une éventuelle prochaine fusion.
+   
+   Impacts :
+   =======
+   CAPY:
+   calc_g.capy
+   
+   CATA:
+   calc_k_g.cata          gener_mecpl2_xhh.cata   gener_medpl2_xtc.cata
+   calc_k_g_f.cata        gener_mecpl2_xhhc.cata  gener_mepli2.cata
+   gener_me3d_2.cata      gener_mecpl2_xht.cata   gener_meplo2.cata
+   gener_me3d_3.cata      gener_mecpl2_xhtc.cata  gener_meplu2.cata
+   gener_me3di3.cata      gener_mecpl2_xt.cata    gener_me_xh.cata
+   gener_me3do3.cata      gener_mecpl2_xtc.cata   gener_me_xhc.cata
+   gener_me3du3.cata      gener_medpl1.cata       gener_me_xhh.cata
+   gener_meax_2.cata      gener_medpl2.cata       gener_me_xhhc.cata
+   gener_meax_2_xh.cata   gener_medpl2_xh.cata    gener_me_xht.cata
+   gener_meax_2_xht.cata  gener_medpl2_xhc.cata   gener_me_xhtc.cata
+   gener_meax_2_xt.cata   gener_medpl2_xhh.cata   gener_me_xt.cata
+   gener_meaxs2.cata      gener_medpl2_xhhc.cata  gener_me_xtc.cata
+   gener_mecpl2.cata      gener_medpl2_xht.cata   meca_hexs8.cata
+   gener_mecpl2_xh.cata   gener_medpl2_xhtc.cata  mecpqs4.cata
+   gener_mecpl2_xhc.cata  gener_medpl2_xt.cata    medpqs4.cata
+   
+   F:
+   cakg2d.f  cgcrtb.f  op0100.f  te0297.f  xcgfvo.f
+   cakg3d.f  mmaxkl.f  te0295.f  te0299.f
+   
+   PY:
+   rupture0.py  rupture1.py
+   
+   TESTS:
+   sdls114a.comm  sdls114b.comm  sdls114c.comm  sdls114d.comm
+   
+   UNIGEST:
+   k_g_moda.cata
+   te0399.f  te0461.f  cakgmo.f  meficg.f  memokg.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : d0.04.04 r7.02.05 u2.05.01 u4.82.03 u4.82.30 v2.03.114
+VALIDATION
+    passage des tests CALC_G
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 17/12/2012 - 16:51:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019186 DU 2012-07-17 08:07:36
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    RUPT : Chantier CALC_G - A1 : Automatiser les verifications
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Projet ANODE60, livrable 2.1a : Chantier de rénovation de CALC_G - Action 1
+   
+   Automatiser la phase de vérification de la cohérence entre les données. Cette étape est
+   actuellement réalisée par la routine op0100.f, mais de manière peu lisible. Il faudrait
+   distinguer clairement les différents modes de représentation de la fissure (maillée,
+   non-maillée), la manière dont le champ thêta est calculé et les différentes options de
+   CALC_G. Le but est de distinguer de manière automatique les configurations qui nécessitent
+   le mot-clé LISSAGE, celles qui autorisent une fissure non-maillée...
+   
+   
+   Analyse :
+   ---------
+   
+   Un état des lieux de op0100.f a été réalisé.
+   
+   1) Donnees
+   ==========
+   
+   OPTIONS
+   -------
+   
+   CALC_G      : calcul de G (en 2D ou 3D_local)
+   CALC_G_GLOB : calcul de G global (3D)
+   
+   CALC_K_G    : calcul de G et K (en 2D ou 3D_local)
+   K_G_MODA    : calcul de G et K (en 2D ou 3D_local) en modal
+   
+   G_BILI      : calcul de g(ui,uj) pour une serie de uk (en 2D ou 3D_local)
+   G_BILI_GLOB : calcul de g(ui,uj) pour une serie de uk global (3D)
+   
+   G_MAX       : maximisation de G (en 2D ou 3D_local)
+   G_MAX_GLOB  : maximisation de G global (3D)
+   
+   CALC_K_MAX  : maximisation de K1 (3D local)
+   
+   pas de doc R pour les max !!
+   
+   
+   
+   idee : supprimer option K_G_MODA car elle ne sert a rien 
+   K_G_MODA = CALC_K_G avec un resultat modal
+    
+   
+   
+   NDIM 
+   ----
+   
+   2 ou 3
+   
+   
+   Representation (maillage) de la fissure (MAIFIS)
+   -----------------------------------------------
+   
+   FEM ou X-FEM
+   
+   
+   type de fissure
+   ---------------
+   
+    collee ou decolle (entaille)
+   
+   
+   type de la sd resultat (RESTYP)
+   ------------------------
+   
+   
+   
+   
+   
+   2) Verifications
+   ================
+   
+   2.1 compatibilite 'de sens' entre OPTION et NDIM
+   ------------------------------------------------
+   
+   CALC_G       : 2 ou 3
+   CALC_G_GLOB  :      3
+   CALC_K_G     : 2 ou 3
+   K_G_MODA     : 2 ou 3
+   G_MAX        : 2 ou 3
+   G_MAX_GLOB   :      3
+   G_BILI       : 2 ou 3
+   G_BILI_GLOB  :      3
+   CALC_K_MAX   :      3
+   
+   conclusions : 
+   - si l'option se finit par GLOB alors 2d interdit
+   - si CALC_K_MAX alors 2d interdit
+   
+   
+   2.2 compatiblite entr RESTYP et OPTION
+   --------------------------------------
+   
+   si OPTION = K_G_MODA alors il faut obligatoirement RESTYP = MODE_MECA,
+   sinon Erreur Fatale
+   du coup, il y a redondance entre la donnee du resultat de type RESTYP et la donnee de K_G_MODA
+   K_G_MODA est l'extension de CALC_K_G en modal
+   cela permettrait de fusionner bon nombre de routines et te
+   
+   
+   2.3 definition des differents cas
+   ---------------------------------
+   
+   determination de TYPE_CAS = '2D' OU '3D_GLOBAL' OU '3D_LOCAL'
+   en fonction de OPTION et NDIM
+   
+   2D ou 3D_GLOBAL -> un seul champ theta
+   3D_LOCAL        -> plusieurs champs theta
+   
+                  2D       3D
+   CALC_G       : 2D     3D_LOCAL
+   CALC_G_GLOB  : 2D     3D_GLOBAL
+   CALC_K_G     : 2D     3D_LOCAL
+   K_G_MODA     : 2D     3D_LOCAL
+   G_MAX        : 2D     3D_LOCAL
+   G_MAX_GLOB   : 2D     3D_GLOBAL
+   G_BILI       : 2D     3D_LOCAL
+   G_BILI_GLOB  : 2D     3D_GLOBAL
+   CALC_K_MAX   : --     3D_LOCAL 
+   
+   conclusions:
+   - si NDIM=2 alors TYPE_CAS='2D'
+   s si NDIM=3 alors TYPE_CAS='3D_LOCAL', sauf si OPTION se finit par GLOB
+   
+   
+   2.4 compatibilite entre OPTION et EF
+   ------------------------------------
+   
+   EF = EF(NDIM,MAIFIS,modele)
+   
+   FEM : 
+   D_PLAN, C_PLAN, D_PLAN_INCO, D_PLAN_UP, _SI ?     CALC_G, CALC_K_G, G_MAX, G_BILI, K_G_MODA
+   AXIS, AXIS_INCO, AXIS_UP ?SI                      CALC_G, CALC_K_G, G_MAX, G_BILI, K_G_MODA
+   3D, 3D_INCO, 3D_INCO_UP                           CALC_G, CALC_K_G, G_MAX, G_BILI,
+   K_G_MODA et 
+                                                     CALC_G_GLOB, G_MAX_GLOB, G_BILI_GLOB,
+   CALC_K_MAX
+   
+   XFEM : 
+   D_PLAN, C_PLAN, D_PLAN_INCO, D_PLAN_UP, _SI ?     CALC_G, CALC_K_G, K_G_MODA (doc pas a jour)
+   AXIS, AXIS_INCO, AXIS_UP ?SI                      CALC_G, CALC_K_G, K_G_MODA (doc pas a jour)
+   3D, 3D_INCO, 3D_INCO_UP                           CALC_G, CALC_K_G, K_G_MODA et 
+                                                     CALC_K_MAX
+   
+   -> pour X-FEM, les options G_MAX, G_BILI, CALC_G_GLOB, G_MAX_GLOB, G_BILI_GLOB en sont pas
+   disponibles
+   
+   a blinder au niveau des catalogues
+   il y a en tout 251 cata gener* + qq uns a part
+   il existe 44 catalogues qui ont CALC_G, tous avec un vrai TE, sauf les SHB3 qui renvoient -1
+   il faut verifier que les bonnes options sont bien presentes pour les cata en question (+
+   quel TE)
+   pour tous les autres, il faut choisir Alarme ou Fatale (-1 ou -2)
+   
+   
+   FEM :
+   gener_medpl2.cata, gener_mecpl2.cata, 
+   
+   
+   2.4b compatibilite entre OPTION et entaille
+   -------------------------------------------
+   
+   on ne sait definir K que dans le cas d'une fissure avec levres parfaitement collees
+   Si THETA ou X-FEM, les levres sont toujours bien collees
+   Si FEM uniquement avec CONFIG_INIT='COLLEE'
+   
+   donc il faut verifier que 
+   si FEM et calcul de K (option CALC_K_G, K_G_MODA, CALC_K_MAX) alors on a bien
+   CONFIG_INIT='COLLEE'
+   (actuellement, c'est verifie que en 3D)
+   
+   
+   
+   2.5 compatiblite type de resultat du mot-cle EXICT
+   ---------------------------------------------------
+   
+   si RESTYP = DYNA_TRANS alors il faut obligatoirement EXCIT
+   si RESTYP n'est pas DYNA_TRANS et si EXCIT est present alors Alarme
+   
+   
+   
+   2.6 verif de la loi de comportement
+   -----------------------------------
+   
+   
+   2.7 traitement des MULT_ELAS
+   ----------------------------
+   
+   
+   2.8 verif CALCUL_CONTRAINTE
+   ----------------------------
+   
+   
+   2.9 verif definition du ou des champs THETA
+   -------------------------------------------
+   
+   dans le mot-cle facteur THETA (o) :
+   
+   on a le choix entre les mots-cles simples 
+   - THETA (f)     -> ITHETA
+   - FOND_FISS (f) -> IFOND
+   - FISSURE (f)   -> IFISS
+   avec les regles=(EXCLUS('FOND_FISS','FISSURE'),
+   
+   verification de FOND_FISS / FISSURE coherent avec le modele (FEM ou X-FEM)
+   
+   si FOND_FISS (IFOND) : verif que le fond n'est pas double (verif presence de .FOND.NOEU)
+   
+   virer le logical LLEVST (qui est maintenant = XFEM = IFISS)
+   
+   
+   En fait, la donnee de theta n'exclut pas forcement la donnee du fond !!!!
+   
+   FISSURE    :             OUI          NON
+   FOND_FISS  : OUI     impossible     theta (f)
+                NON   theta interdit   theta (o) (a confirmer...)
+   
+   il existe des tests qui donnent THETA et FOND_FISS, ils me font chier ces tests car ils
+   cassent ma regle
+   d'exclusion :    UN_PARMI('THETA','FOND_FISS','FISSURE')
+   
+   
+   liste de ces tests (obtenue par un astout avec juste calc_g.capy en surcharge) :
+   rappel : il y a 182 tests qui utilisent CALC_G
+   8 ont plantes
+   sslp103a sdls114a sslp115a hplp101a sslp103b sslp310a sslv134k      sslv134c
+   Attention, sslv134c (axi) si on vire FOND_FISS, en laissant THETA alors on plante dans
+   meficg (k_g en 2d-axi)
+   car on a besoin de .FOND.NOEUD -> le champ theta n'est pa utilise !?
+   donc desormais, CALC_K_G en 2D, on ne peut plus donner THETA
+   
+   a) si theta est fourni (ITHETA) :
+   ----------------------------------
+   
+   le champ theta provient soit 
+   
+   - de la commande CALC_THETA (sd_theta_geom) c'est quoi cette SD : sd_resultat particulier
+   je ne vois pas pourquoi on cree cette sd, alors qu'ensuite on va juste recuperer le
+   nume_ordre 0
+   si 3D, alors le champ theta a ete construit a partir d'un FOND_FISS
+   si 2D, alors le champ theta n'a pas ete construit a partir d'un FOND_FISS
+   
+   - de n'importe ou (cham_no_aster)
+   
+   comme il est impossible de remonter a la sd_fond_fiss (il est possible qu'elle n'existe pas)
+   alors on ne sait pas sur quelle quantite on calcule G.
+   si 3G_GLOBAL, c'est pas grave car la quantite est le fond au sens large
+   si 2D, on ne sait quel noeud corresppond au fond : on ne pourra pas l'afficher dans la table
+   
+   verif que si THETA alors cas n'est pas 3D_LOCAL
+   
+   b) si THETA n'est pas fourni
+   -----------------------------
+   
+   si 1 seul champ theta
+   on verifie qu'on a toutes les infos pour le calculer : DIRECTION ?
+   a ce niveau, il ne faut pas encore calculer le champ theta -> 
+   mettre gver2D, gveri3, gcou2d, gcour3, gimpt2,gverig et gcouro plus loin
+   
+   on peut aussi raisonner a l'envers :
+   si : LE champ theta peut etre fourni, ou calculable avec les mot-cles direction
+   si cas = 3D local : il y a plusieurs champs theta, automatiquement calcules a partir de
+   FOND_FISS/FISSURE, R_INF
+   
+   
+   2.10 verif lissage
+   ------------------
+   
+   le lissage n'a de sens qu'en 3D_LOCAL (donc ITHETA=0)
+   
+   verif que si cas 2D ou 3D_GLOBAL alors l'utilisateur ne doit pas avoir renseigne LISSAGE 
+   (attention, il est par defaut), cette verif est desormais posible.
+   
+   dans l'optique ou on supprime le cas LEG-LAG (cas mixte, qui etait uniq pour FEM)
+   
+   alors on a les 4 cas suivants : LISSAGE = LEGEDNRE, LAGRANGE, LAGRANGE_NO_NO ou LAGRANGE_REGU
+   pour ne rien perdre comme fonctionnalite, on peut rajouter MIXTE
+   
+   il n'y a pas d'autres verif a faire !!
+   toutes celles faites actuellement ne servent plus
+   la denomination du cas est bien plus facile -> suppression des logical THLAG2, GLAGR, THLAGR
+   
+   + verif de la compatibilite entre lissage et FEM/X-FEM
+   + verif de la compatibilite entre lissage et option locales
+   
+   2.11
+   ----
+   
+   
+   traitement de nume_fond (que X-FEM)
+   traitement de nb_point_fond (X-FEM)
+   
+   
+   3) calcul (ou pre-calcul, a voir) du ou des champs theta
+   ========================================================
+   
+   cas a 1 champ theta ( cas = 2D ou 3D global )
+   si theta est deja donne, c'est facile
+   si theta n'est pas donne alors appel gver2d et gcou2d (si 2D) ou gverig et gcouro  (si 3D)
+   
+   cas a plusieurs champ theta ( cas = 3D local )
+   theta ne peut pas etre donne
+   appel gveri3 et gcour3 (mieux fusionner les cas FEM et XFEM)
+   
+   
+   
+   
+   
+   
+   4) creation de la table
+   =======================
+   
+   
+   
+   5) calcul de l'option
+   =====================
+   
+   a l'heure actuelle : algo :
+   
+   lonvec est le nb de 'nume_ordre' ou nume_freq' dans la sd resultat
+   
+   si G_GILI ou G_BILI_GLOB ou G_MAX ou G_MAX_GLOB
+   
+       boucle i=1, lonvec
+           boucle j=1,I
+               call MBILGL (3D_local) ou MEBILG (2D / 3D_global)
+           fin boucle
+       fin boucle
+       si G_MAX
+          call MMAXGL (3D_local) ou MEMAXG (2D / 3D_global) 
+       finsi
+      
+   ou si 3D_LOCAL et CALC_K_G
+   
+       boucle i=1, lonvec
+          call CAKG3D
+       fin boucle
+   
+   ou si CALC_K_MAX
+   
+      call MMAXKL 
+         boucle i=1, lonvec
+            call CAKG3D
+         fin boucle
+         call CAKG3D
+   
+   ou si K_G_MODA
+   
+       boucle i=1, lonvec
+    si 2D fem   : call MEMOKG (on pourrait facilement appeler meficg a la place)
+    si 2D x-fem : call MEFICG
+    si 3D       : call CAKGMO (on pourrait facilement appeler cakg3d a la place)
+       fin boucle
+   
+   sinon (cad G, K_G en 2D, et DG)
+   
+       boucle i=1, lonvec
+           si CALC_G et 2D ou CALC_G_GLOB : call MECALG
+           si CALC_G et 3D_local          : call MECAGL
+           si CALC_K_G et 2D              : call MEFICG
+       fin boucle
+   
+   finsi
+   
+   
+   
+   
+   
+   
+   4) appels aux TE
+   ================
+   
+               3d_2     3d_3    2D    2D_1    XFEM
+   
+   CALC_G      280       27     96    282     288
+   CALC_K_G    311      295     299   300     297
+   K_G_MODA     --      461     399    --     297  rien sur les bords ?????
+   G_BILI      298       95
+   
+   
+   on devrait arriver a la situation suivante :
+                                     FEM_principal  FEM_bord   XFEM
+   CALC_G                             27               280      288
+   CALC_K_G / K_G_MODA / G_BILI      295               311      297
+   
+   
+   
+   
+   5) calcul de g(u,v)
+   ===================
+   
+   en 2D : gbilin.f
+   en 3D : gbil3d.f
+   
+   attention, gbil3d calcule g(u,v) sans aucune hypothese sur v
+   alors que dans gbilin, soit v = u (et CS=1), soit v=champ aux (et CS=0.5)
+   v ne peut pas etre quelconque
+   de plus, les arguments sont different, la maniere de recup E et NU aussi...
+   donc la fusion ne va pas etre facile facile !!
+   
+   
+   
+   Réalisation :
+   -------------
+   
+   La majeure partie de la lecture des paramètres d'entrée de CALC_G + vérifications est
+   désormais faite par la (nouvelle) routine cglect.f. Elle crée les objets ou variables 
+        - RESU, MODELE, NDIM
+        - OPTION, CAS
+        - TYPFIS, NOMFIS
+        - FONOEU, CHFOND, BASFON
+        - LNOFF
+        - LISS, NDEG
+   De nombreuses routines de lecture et verif sont créées :
+   CGVEDO : VERIFICATION DE LA COMPATIBILITE ENTRE NDIM ET OPTION
+   CGVECA : DETERMINATION DU CAS : 2D, 3D LOCAL OU 3D GLOBAL
+   CGTYFI : DETERMINATION DU TYPFIS = 'FONDFISS' OU 'FISSURE' OU 'THETA' ET RECUPERATION DE
+   LA SD POUR DECRIRE LE FOND DE FISSURE : NOMFIS
+   CGVEMF : VERIFICATION DE LA COMPATIBILITE ENTRE LA SD ASSOCIEE AU FOND DE FISSURE ET LE MODELE
+   CGVEFO : VERIFICATION DE LA COMPATIBILITE ENTRE OPTION ET TYPE DE FISSURE
+   CGVETH : VERIFICATION DES DONNEES RELATIVES AU(X) CHAMP(S) THETA
+   CGLEFF : LECTURE DE LA DESCRIPTION DU FOND DE FISSURE ET RECUPERATION DES OBJETS FONOEU,
+   CHFOND, BASFON + LNOFF
+   CGVELI : VERIFICATION DES DONNEES RELATIVES AU LISSAGE DETERMINATION DU LISSAGE (NOM
+   UNIQUE CONTRACTE) : LISS ET NDEG
+   CGLECO : LECTURE DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
+   CGLEMU : LECTURE DES INFORMATIONS RELATIVES AUX MULT_ELAS
+   CGLECC : LECTURE ET VERIFICATION RELATIVE AU MOT-CLE CALCUL_CONTRAINTE
+   
+   Chaque nouvelle routine peut être vue comme un "utilitaire" pour CALC_G, ces routines
+   ayant été pensées pour avoir des arguments d'entrée / sortie clairs et minimaux.
+   
+   De plus, on rajoute une routine utilitaire pour X-FEM : 
+   XVFIMO : RENVOIE .TRUE. SI LA FISSURE EST ASSOCIEE AU MODELE
+   D'ou impact doc D6.00.01
+   
+   Aucun impact sur la syntaxe, sauf la suivante :
+   On rajoute une règle dans calc_g.capy :                   
+   UN_PARMI('THETA','FOND_FISS','FISSURE')
+   C'est à dire que le fond de fissure doit etre au moins défini 
+   - soit par un champ theta calculée au préalable, 
+   - soit par une sd provenant de DEFI_FOND_FISS, 
+   - soit par une sd provenant de DEFI_FISS_XFEM.
+   D'ou impact doc U de CALC_G : U4.82.03
+   
+   Cela impacte qq cas-tests (mais pas leur docs) : 
+   hplp101a.comm  sslp103a.comm  sslp115a.comm  sslv134c.comm 
+   sdls114a.comm  sslp103b.comm  sslp310a.comm  sslv134k.comm
+   
+   On rajoute aussi quelques tests informatiques sur G dans 
+   ssnp110e.comm
+   (pas d'impact doc car tests uniquement informatiques)
+   mais cela ajoute 2 alarmes (appelées 2 fois chacune, donc 4 alarmes en plus)
+   Ces alarmes sont justifiées. Un commentaire est écrit en début du test.
+   Pour des raisons pédagogiques, je ne préfère pas les ignorer.
+   
+   Le nombre de ligne de op0100.f est passé de 840 à 600.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.03, D6.00.01
+VALIDATION
+    tests CALC_G
+NB_JOURS_TRAV  : 8.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019914 DU 2012-11-12 17:04:50
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    X-FEM : signe de K2 (le retour)
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Dans xprcyc, on modifie le signe de BETA si la base locale n'est pas directe en 2D.
+   
+   Ne peut-on pas le faire en amont ?
+   
+   En effet, dans la fiche issue18487 on avait corrigé le signe de K2 dans post_k1_k2_k3 car
+   la base locale issue de .BASEFOND n'est pas toujours directe en 2D.
+   En effet, le vecteur de direction est toujours dans le sens de la propagation.
+   le vecteur normal est toujours dans le sens de gradient de la level set normale.
+   Cette convention ne permet pas toujours de générer une base directe.
+   
+   
+   Solution : 
+   ----------
+   
+   Tout est normal en fait.
+   
+   Quelques explications sur ce changement de signe du BETA (local à xprcyc) :
+   
+   En 2D :
+   les valeurs de K1 et K2 en sortie de POST_K1_K2_K3 ou CALC_G sont exprimées dans la base
+   naturelle en fond de fissure : 
+   vecteur de direction e1 dans le sens de propagation
+   et vecteur e2 obtenu par rotation de 90° dans le sens direct : tel que e1 ^ e2 = (0, 0, 1)
+   Comme l'angle BETA est calculé à partir de K1 et K2, BETA est aussi liée à la bas
+   naturelle en fond de fissure.
+   Ce BETA a un vrai sens physique.
+   
+   Or la base locale (objet .BASEFOND) est calculée à partir des gradients des level sets.
+   Cette base n'est pas toujours identique à la base naturelle.
+   Plus précisément, le vecteur de direction de BASEFOND est bien égal à e1
+   Mais le vecteur normal de BASEFOND est égal à e2 ou -e2.
+   
+   Donc pour la mise à jour des level sets avec les méthodes Hamilton (SIMPLEXE, UPWIND,
+   GEOMETRIQUE), il est important d'avoir une cohérence entre les level sets et la base
+   naturelle.
+   Ainsi, si la base fournie par les level sets (BASEFOND) est différente de la base
+   naturelle (c-a-d ZLOC<0), alors on considère un angle BETA opposé, localement à propa_fiss
+   (puis propa_xfem) pour la mise à jour des level sets.
+   Mais cette variable locale BETA n'a plus de sens physique.
+   C'est donc tout à fait normal de faire ce changement de signe. Il faut donc conserver pour
+   les méthodes Hamilton cet modif d'angle.
+   En fait, il ne faudrait plus l'appeler BETA, car ce n'est pas l'angle de bifurcation au
+   sens naturel.
+   
+   En 3D, il n'y a pas de problème car la base naturelle dépend du sens du vecteur e3
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    neant
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020057 DU 2012-12-05 17:07:59
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    DISMOI pour savoir si une carte de comportement est ELAS, INCR ou MIXTE
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   On souhaite savoir si une carte de comportement est ELAS, INCR ou MIXTE (pour la rupture).
+   Actuellement, cette info est récupérée par la routine gverlc, mais cette routine fait
+   plein d'autres choses.
+   
+   
+   Solution :
+   ----------
+   
+   On récupère cette info par un dismoi.
+   nouveau type : COMPOR
+   question : 'ELAS_INCR'
+   renvoit un K qui vaut 'ELAS', 'INCR' ou 'MIXTE'
+   
+   Du coup, on l'utilise dans cgleco.f et on peut supprimer l'argument INCR de gverlc.f
+   
+   impact : 
+   dismoi.f
+   dismco.f
+   gverlc.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.07.05
+VALIDATION
+    tests calc_g
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020082 DU 2012-12-12 10:36:46
+TYPE express concernant Code_Aster (VERSION 11.4)
+TITRE
+    RUPT : changement responsables
+FONCTIONNALITE
+   Changement de resp sur les commandes suivantes :
+   
+   calc_g.capy:# RESPONSABLE GALENNE E.GALENNE
+   calc_theta.capy:# RESPONSABLE GALENNE E.GALENNE
+   defi_fond_fiss.capy:# RESPONSABLE GALENNE E.GALENNE
+   macr_ascouf_calc.capy:# RESPONSABLE GALENNE E.GALENNE
+   macr_ascouf_mail.capy:# RESPONSABLE GALENNE E.GALENNE
+   macr_aspic_calc.capy:# RESPONSABLE GALENNE E.GALENNE
+   macr_aspic_mail.capy:# RESPONSABLE GALENNE E.GALENNE
+   post_k1_k2_k3.capy:# RESPONSABLE GALENNE E.GALENNE
+   post_k_trans.capy:# RESPONSABLE GALENNE E.GALENNE
+   post_rccm.capy:# RESPONSABLE GALENNE E.GALENNE
+   propa_fiss.capy:# RESPONSABLE GALENNE E.GALENNE
+   
+   Galenne -> Geniaut
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    neant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 17/12/2012 - 14:36:12
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020052 DU 2012-12-05 09:29:30
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    L'alarme MECANONLINE2_93 rxc3xa9fxc3xa9rence un test n'existant pas
+FONCTIONNALITE
+   L'alarme MECANONLINE2_93 qui prévient l'utilisateur de contraintes incompatibles en
+   présence de variables de commandes référence le test FORMA09 qui est devenu FORMA30 (en 10
+   comme en 11).
+   La clé doc est bonne mais il faut corriger. C'est toujours dangereux de référencer des
+   tests dans un message mais ça se justifie ici compte tenu de l'importance de l'alarme.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    visuelle
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020050 DU 2012-12-05 08:34:45
+TYPE aide utilisation concernant Code_Aster (VERSION 10.5)
+TITRE
+    Calcul Thermoelastique avec Contact : erreur de contact Trop de rxc3xa9actualisation gxc3xa9omxc3xa9trique
+FONCTIONNALITE
+   Contexte
+   ========
+   
+   '''
+   Dans mon modèle de calcul thermoélastique en poursuite, j'ai une erreur de contact :
+   "Il y a trop de réactualisation géométrique. Le paramètre ITER_GEOM_MAXI est trop faible.
+   Votre maillage est incorrect ou le glissement relatif des deux surfaces est trop important".
+   
+   J'ai déjà augmenté le paramètre ITER_GEOM_MAXI à 30. Y-a-t-il un moyen de paramétrer
+   autrement le solveur pour une meilleure convergence ? Merci.
+   '''
+   
+   Réponse
+   =======
+   
+   On voit qu'effectivement le calcul semble cycler indéfiniment et que l'augmentation de
+   ITER_GEOM_MAXI ne viendra pas à bout du problème.
+   
+   Dans ce genre de situation, une solution est en général d'utiliser du lissage de normales
+   dans le contact comme conseillé dans la notice d'utilisation du contact (U2.04.04). C'est
+   d'autant plus efficace que le maillage est linéaire.
+   
+   Pour cela, il te faut ajouter le mot-clé LISSAGE dans la définition du contact.
+   
+   Retour utilisateur
+   ==================
+   
+   La lecture de la doc U2.04.04 et l'utilisation de lissage ont permis de poursuivre le calcul.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    nxc3xa9ant
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020001 DU 2012-11-26 16:09:54
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Mesures de temps de STAT_NON_LINE
+FONCTIONNALITE
+   Contexte
+   ========
+   
+   Le temps "Autres opérations" de STAT_NON_LINE dans des calculs de contact en formulation
+   continue est parfois élevé.
+   
+   Proposition
+   ===========
+   
+   Les assemblages de second membre du contact continu ne sont pas comptabilisés (NMFOCC).
+   D'autres assemblages de second membre classique ne le sont pas non plus (NMASSC/NMASSV).
+   Enfin la construction du ligrel de contact n'est pas comptabilisé en Newton généralisé
+   (MMBCLC).
+   ==> On comptabilise désormais ces temps (vecteur contact, second membre et préparation
+   contact continu)
+   
+   On propose aussi désormais de compter le temps de construction de VALE_CONT en
+   post-traitement.
+   
+   L'ordre d'affichage des temps mesurés peut être amélioré de façon à être plus séquentiel
+   (matrice, factorisation, second membre, résolution, contact).
+   
+   On supprime enfin l'affichage du nombre de liaisons de contact/frottement en fin de
+   transitoire car cela ne sert pas (c'est le nombre de liaisons du dernier pas).
+   
+   Validation
+   ==========
+   
+   Sur des calculs de formulation continue à grand nombre de degrés de liberté (PERF014), on
+   constate que le temps "autres opérations" est inférieur à 20 sec pour des calculs de plus
+   de 15 minutes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    visuelle
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018507 DU 2012-03-06 09:20:57
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Produire un nouveau cas-test de perf // avec contact
+FONCTIONNALITE
+   Contexte
+   ========
+   
+   Il n'y a aucun test de performances avec contact en parallèle.
+   
+   PERF014
+   =======
+   
+   On restitue 3 modélisations d'un nouveau cas-test (PERF014). Il s'agit d'un contact entre
+   2 poutres modélisées en 3D que l'on écrase sur une fondation rigide. La particularité du
+   test est de présenter un grand nombre de degrés de liberté de contact par rapport au
+   nombre total de degrés de liberté (autour de 10%).
+   
+   Il n'y a pas de frottement pour l'instant (car le système linéaire est alors mal
+   conditionné pour un solveur itératif) et la non-linéarité géométrique est négligée afin de
+   concentrer les coûts de calcul sur les calculs élémentaires (notamment ceux liés au
+   contact) et sur la résolution du système linéaire (et non sur l'appariement).
+   
+   Les 3 modélisations sont :
+   
+   * A : séquentiel, 46000 ddls, 4300 noeuds de contact
+   * B : 4 processeurs, 205000 ddls, 20500 noeuds de contact
+   * C : 8 processeurs, 320000 ddls, 32000 noeuds de contact
+   
+   Le solveur linéaire utilisé est PETSC (GMRES préconditionné par une factorisation complète
+   simple précision), par ailleurs le résidu linéaire est adapté par une méthode de
+   Newton-Krylov.
+   
+   Résultats
+   =========
+   
+   Modélisation A
+    * STAT_NON_LINE            :      88.91 :       3.22 :      92.13 :      92.45 *
+   # Mémoire (Mo) :   620.90 /   286.06 /   280.12 /    77.98 (VmPeak / VmSize / Optimum /
+   Minimum)
+   
+   Modélisation B
+    * STAT_NON_LINE            :     317.20 :      15.54 :     332.74 :     338.87 *
+   # Mémoire (Mo) :  1322.36 /   433.60 /   763.84 /   260.04 (VmPeak / VmSize / Optimum /
+   Minimum)
+   
+   Modélisation C
+    * STAT_NON_LINE            :     520.95 :      23.87 :     544.82 :     556.04 *
+   # Mémoire (Mo) :  1725.64 /   502.68 /  1112.65 /   390.09 (VmPeak / VmSize / Optimum /
+   Minimum)
+   
+   Ces résultats montrent un "scale-up" pas trop mauvais (le nombre de processeurs est
+   augmenté en même temps que la taille du système). Le goulet d'étranglement vient de la
+   factorisation simple précision. En effet la phase d'analyse de MUMPS qui pour l'instant
+   reste séquentielle prend beaucoup de temps sur les matrices issues de ce test (du même
+   ordre que la factorisation).
+   Sur les conseils d'Olivier B. j'ai essayé d'utiliser un autre renuméroteur que
+   METIS/SCOTCH, en l'occurrence 'QAMD'. Avec ce dernier le temps de la phase d'analyse est
+   considérablement réduit, la factorisation numérique est plus longue mais elle se
+   parallélise bien. On obtient alors de meilleurs performances au delà de 8 processeurs.
+   
+   Néanmoins on préfère attendre la prochaine version de MUMPS pour passer à l'analyse
+   parallèle que de remonter au niveau utilisateur le choix du renuméroteur de la facto.
+   simple précision. Un premier temps d'analyse parallèle avec la version actuelle de MUMPS
+   en utilisant Parmetis/PT-Scotch s'est avéré prometteur (même perf qu'avec QAMD sur 16
+   processeurs).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.311
+VALIDATION
+    perf014*
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR idoux        IDOUX Ludovic          DATE 12/17/2012 - 12:48:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019672 DU 2012-10-08 11:45:18
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Energie : en cas reprise, sommer avec le bilan prxc3xa9cxc3xa9dent
+FONCTIONNALITE
+   =========================
+   Proposition d'évolution :
+   =========================
+   
+   Aujourd'hui, si l'utilisateur fait une reprise d'un calcul transitoire où il calcule des
+   énergies, on ne prend pas en compte le bilan énergétique de l'état initial et on suppose
+   que l'on part d'un état vierge.
+   Or dans le cas, où on part d'un état initial contenu dans la SD résultat, on dispose des
+   informations nécessaires.
+   On propose d'évaluer la pertinence de cette demande.
+   
+   
+   
+   =========
+   Analyse :
+   =========
+   
+   Le constat est juste : le bilan d'energie est initialement nul, on ne calcule que des
+   increments d'energie entre deux états successifs. Dans le cas general, il est difficile
+   (impossible ?) d'initialiser le bilan d'energie de maniere pertinente. L'utilisateur peut
+   donner directement des champs initiaux de contraintes, qui correspondent a un etat
+   energetique different selon l'historique du chargement pour les lois non linéaires
+   (plasticite par exemple). 
+   De plus, l'utilisateur peut ne pas donner d'etat initial équilibre (c'est son droit). Il
+   faut donc faire des hypotheses pour equilibrer l'etat initial. 
+   Ceci nous amene a conclure que, dans le cas general, c'est impossible de proposer une
+   initialisation pertinente.
+   
+   Dans le cas particulier ou l'etat initial resulte d'un calcul precedent (SD resultat), on
+   sait que l'etat initial est equilibre et on dispose de toutes les informations pour donner
+   l'etat energetique initial. En particulier, on peut se servir de la table PARA_CALC dans
+   laquelle on stocke le bilan d'energie. Il suffit de recuperer le bilan d'energie au temps
+   adequat.
+   
+   Mais en fait, ce n'est pas si simple. issue19518 a consiste a introduire dans la table
+   PARA_CALC une colonne supplementaire "reuse". On fait en effet le constat que rien
+   n'interdit d'avoir plusieurs temps identiques, à force d'enrichir la SD Resultat. Pour
+   initialiser le bilan, il faut donc connaitre le temps a partir duquel on commence la
+   poursuite, mais egalement connaitre le n° de reuse qui differencie les eventuels
+   candidats. Cette derniere information est complexe a obtenir. La solution serait de
+   demander a l'utilisateur de la fournir lui-meme. 
+   
+   En conclusion, on peut realiser l'evolution dans le cadre d'un SD RESULTAT donnee en etat
+   initial, à condition que l'utilisateur demande l'initialisation du bilan (mot-clé
+   INITIALISATION = 'OUI') et donne le n° de reuse (NUME_REUSE = n). Il faut egalement qu'il
+   ait songe a demander la table PARA_CALC dans le calcul precedent.
+   
+   Cette façon de faire induit des differences de fonctionnalite selon la maniere de
+   renseigner l'etat initial, ce qui ne me plait guere. 
+   De plus, et surtout, je ne trouve pas que l'initialisation du bilan d'energie soit
+   vraiment necessaire. L'affichage est clair (on parle d'increment). L'information qui
+   m'interesse est de savoir d'ou vient l'energie et ou elle va. L'etat energetique initial
+   n'est pas tres interessant en soi (mis à part faire de la cosmétique).
+   
+   
+   
+   ============
+   Conclusion :
+   ============
+   
+   On ne réalise pas l'évolution demandée puisque l'intérêt est très faible et que la
+   programmation est très délicate. Par contre, on ajoute dans la doc R4.09.01 une remarque
+   qui précise que l'état énergétique initial n'est pas calculé et que le bilan d'énergie
+   s'interprète comme une variation d'énergie entre deux instants consécutifs.
+   
+   On émet également un message d'information dans le fichier message lorsqu'un état initial
+   est renseigné et que le calcul du bilan d'énergie est activé afin d'alerter l'utilisateur
+   sur le fait que l'état énergétique initial est nul :
+   
+   """""""""""""""""""""""
+    A l'instant initial, tous les termes du bilan d'énergie sont nuls bien qu'un état initial
+   non vierge soit renseigné. Le bilan d'énergie indique la variation des différents termes
+   d'énergie entre deux instants de calcul consécutifs ainsi que leur variation totale entre
+   l'instant courant et l'instant initial.
+   """""""""""""""""""""""
+   
+   
+   Impact :
+   etatinit.py
+   dltini.f
+   nmdoet.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R4.09.01
+VALIDATION
+    SDLD04A SSNV217A FDLV111A
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020033 DU 2012-12-03 11:33:39
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Performances en NEW11.2.26 : ssnv212a degradxc3xa9
+FONCTIONNALITE
+   ==========
+   Problème :
+   ==========
+   
+   Performances en NEW11.2.26 : ssnv212a degradé
+   
+   Ce test demande plus de temps CPU. La commande qui demande plus de temps est STAT_NON_LINE
+   +46,66 %
+   
+   =========
+   Analyse :
+   =========
+   
+   La modification réalisée dans issue19370 a porté sur le test :
+   
+   IF (S3(I).LE.0.) THEN
+   
+   en le remplaçant par celui-ci :
+   
+   IF S3(I) .LE. R8PREM()*E
+   
+   La notion de 0 numérique étant floue, la précédente écriture conduisait à une non
+   convergence du calcul pour le cas-test SSNV214A en couverture de code.
+   
+   La conséquence de cette modification se fait ressentir sur les perfs du cas-test SSNV212A,
+   avec une augmentation de 50 à 75s environ. J'ai pu vérifier qu'elle en est bien la cause
+   en remettant le test d'origine et en vérifiant que le temps de calcul repasse bien alors
+   aux alentours de 50s.
+   
+   La modification est légitime : S3 est une contrainte, et on considère qu'elle est nulle
+   tant qu'elle est
+   inférieure à la contrainte résultant d'une déformation de valeur R8PREM() (une sacrée
+   petite déformation). Cette modification a nettement amélioré la concordance des tableaux
+   de convergence entre l'exécutable standard et l'exécutable couverture de code. La
+   conséquence sur les perfs est regrettable mais secondaire. 
+   
+   Je propose donc de clore la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM Marc              DATE 12/18/2012 - 02:25:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019248 DU 2012-07-25 09:57:42
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    nouvelle modélisation sous-intégrée en hm
+FONCTIONNALITE
+   But:
+   Introduction d'une modélisation sous-intégrée pour des pbs hydromécaniques saturés. C'est un élément sous-
+   intégré en mécanique (par ex., 4PG pour un QUA8 et 3PG pour un TRIA6). L'intéret de cet élément est un gain 
+   en performance (en temps CPU) lorsqu'une loi de comportement "difficile à intégrer" (par ex. Hujeux) est 
+   utilisée, dans des problèmes dynamiques.
+   
+   Pour des pbs statiques, c'est la modélisation sélective _HMS qui doit être utilisée.
+   
+   Précautions d'utilisation:
+   - Le gain attendu et constaté lors des études sismiques sur des barrages est d'environ d'un facteur 2.
+   - Cependant, la modélisation sous-intégrée est moins précise que la modélisation standard (_HM).
+     Elle a notamment tendance à sur-estimer les valeurs d'accélération.
+   - Des mailles de forme triangulaire sont à préférer lors de l'utilisation de la modélisation _HM_SI,
+     car celles-ci la rendent plus stable (pas de mode de sablier, contrairement aux QUAD8).
+   
+   Modélisations:
+   D_PLAN_HM_SI, 3D_HM_SI
+   
+   Sources modifiées:
+   gener_medh22.cata
+   gener_me3h23.cata
+   
+   Cas-tests de validation:
+   - wdnp101c: colonne de sol sous séisme en 2D. Validation par rapport au même calcul en HM avec un maillage 
+   raffiné.
+   - wdnp101d: colonne de sol sous séisme en 3D.
+   - wtnp129c: barreau poroélastique saturé en 2D
+   - wtnv133c: triaxial non-drainé avec la loi de Hujeux (3D)
+   
+   Documentations:
+   - doc V des 4 tests
+   - doc U2.04.05 modèle THM
+   - doc U2.04.08 modélisation barrage
+   
+   V7.33.101, V7.32.129, V7.31.133, U2.04.05, U2.04.08
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.33.101, V7.32.129, V7.31.133, U2.04.05, U2.04.08
+VALIDATION
+    cas-tests
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR laverne      LAVERNE Jérôme       DATE 12/17/2012 - 05:06:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018694 DU 2012-04-12 15:08:36
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Couplage hydro-frottement pour les joints des barrages
+FONCTIONNALITE
+   Résumé :
+   --------
+   Dans le cadre d'un LP 2012 du projet ARISTHYD on réalise le couplage entre la loi de
+   frottement JOINT_MECA_FROT déjà existante et la prise en compte d'un écoulement de fluide.
+   Pour cela on réalisé le branchement entre les modélisations xxx_JOINT_HYME et la loi
+   JOINT_MECA_FROT.
+   
+   Impact sources :
+   ----------------
+   FORT : lcejmr.f, lcejfr.f, lc0048.f, nmfihm.f (prise en compte de la pression, calcul de
+   l'écoulement dans JOINT_MECA_FROT et harmonisation de la programmation avec la loi
+   JOINT_MECA_RUPT)
+   
+   CAPY : defi_materiau.capy (ajout des paramètres du fluide et des règles dans le matériau
+   JOINT_MECA_FROT)
+   
+   PY : joint_meca_frot.py (mise à jour des variables internes)
+   
+   TESTS : 
+     - réorganisation du test ssnp118 (voir aussi fiche 20023) : 
+       Les SSNP118M à SSNP118U sont supprimées et déplacées respectivement dans un nouveau
+   test SSNP162A à I
+     - AJOUT des modélisations SSNP162JKL pour valider les dvpt ci-dessus au niveau élémentaire.
+     - AJOUT des modélisations SSNP142GH pour valider les dvpt ci-dessus sur le pseudo-barrage.
+     - MODIF SSNP142CD pas liés au dvpt présent. On modifie juste les maillages pour tester
+   les lois sur des  
+       mailles HEXA et on ajoute une pression de fluide imposée à la main (PRES_FLUIDE), mise 
+       a jour des valeurs de non régression.
+   
+   UNIGEST : 
+      TESSUPPR SSNP118M à SSNP118U
+   
+   NB JOURS : JL 20, CK 20
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.03.118, V6.03.162, V6.03.142, R7.01.25, U4.51.11, U4.43.01
+VALIDATION
+    ssnp162JKL, ssnp142GH
+NB_JOURS_TRAV  : 40.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018842 DU 2012-05-10 15:28:22
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    JOINT_MECA_RUPT : Modification du comportement tangentiel
+FONCTIONNALITE
+   Résumé :
+   --------
+   A la demande du CIH, modification du comportement tangentiel de la loi JOINT_MECA_RUPT.
+   On impose un comportement incrémental en tangentiel qui permet de reproduire une évolution
+   plus physique du joint dans le cas de figure où l'on applique un cycle de chargement
+   traction - cisaillement - refermeture.
+   
+   Impact sources :
+   ----------------
+   
+   FORT : lc0045, lcejmr, nmfi2d, nmfi3d, nmfihm, te0201, te0206, te0322
+          mise a jour du comportement et descente du sigma à l'instant précédent du catalogue
+   EF au PG
+   
+   CATA : gener_mf2fi2, gener_mf3d_3, gener_ej2d_hm, gener_ej3d_hm
+          Ajout de l'argument PCONTMR (contrainte -) en entrée des options de calcul non
+   linéaires.
+   
+   TESTS : - ssnp162ABC (qui remplacent ssnp118MNO dans la fiche 18694) mise à jour de
+   quelques tests
+             analytiques par des valeurs de non régression
+           - ssnp143B réajustement d'une valeur de non régression qui donne une erreur de 10-4
+   
+   NB JOURS : 7 JL, 7 CK
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.25
+VALIDATION
+    SSNP162ABC et validation CIH
+NB_JOURS_TRAV  : 14.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 12/18/2012 - 12:47:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011838 DU 2008-03-14 09:49:57
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    SV03 - Extension de l'integration de PETSc
+FONCTIONNALITE
+   emande :
+   ---------
+   Le but de cette fiche est de rendre possible l'utilisation de la distribution de la
+   matrice avec le solveur PETSc.
+   
+   
+   Solution :
+   ----------
+   On rend PETSc compatible avec la distribution de la matrice. Comme la version déjà
+   existante pour MUMPS, on peut utiliser la dualisation ou l'élimination des conditions aux
+   limites dans MECA_STATIQUE, STAT_NON_LINE, DYNA_NON_LINE, THER_LINEAIRE et THER_NON_LINE.
+   
+   Aujourd'hui, les tests que j'ai menés montrent que les modifications réalisées marchent
+   avec les préconditionneurs BOOMER, JACOBI, SOR, LDLT_INC et LDLT_SP. Le préconditionneur
+   ML ne fonctionne pas.
+   
+   J'ai utilisé les mêmes hypothèses que dans la maquette de parallélisation complète de
+   Code_Aster, à savoir :
+   - un ddl local partagé sera possédé par le processeur de plus bas niveau,
+   - la mémoire à allouer par PETSc sera un peu surdimensionnée (dans un deuxième temps, on
+   pourra peut-être faire mieux mais pour le moment, je ne vois pas comment !).
+   
+   Voici quelques éléments chiffrés. Sur le cas CR-10.162 (que j'utilise dans tous mes CR)
+   sur 4 procs :
+   . . . . . . .| Min JEVEUX | Opt JEVEUX
+   -------------+------------+------------
+   Avant modifs | . 365,18 . | . 413,11
+   -------------+------------+------------
+   Après modifs | . 115,88 . | . 324,35
+   
+   
+   Détails :
+   ---------
+   Il est nécessaire de modifier le nume_ddl. En effet, il va manquer un certain nombre
+   d'informations pour PETSc. Les infos supplémentaires seront ajoutées dans le .NUML :
+   - un vecteur de numérotation globale de la matrice pour PETSc.
+   - un vecteur signalant la possession d'un ddl par le proc local,
+   - un vecteur détaillant le graph des communications,
+   - des vecteurs pour les raccords précisant les ddl partagés (nommés .NUML.1, .NUML.2 les
+   noms ne sont pas terribles mais je peux les changer).
+   
+   Les deux derniers items servent à réaliser des communications point à point.
+   
+   Au final, je fais 3 numérotations :
+   - une globale du problème côté Aster (en fait, celle déjà existante en sortie d'AFFE_MODELE),
+   - une locale du problème côté Aster,
+   - une globale de la matrice pour PETSc.
+   
+   Cela est dû au fait que PETSc souhaite que le processeur 0 possèdent les ddl de 0 à N, le
+   processeur 1 de N+1 à M, etc. En créant une numérotation propre à PETSc, j'évite que ce
+   solveur des communications qui seraient préjudiciables aux performances.
+   
+   
+   Sources impactés :
+   ------------------
+   Modifiés :
+   apalmd.F apetsc.F apksp.F apmain.F apmamd.F apmatr.F appcpr.F appcrs.F
+   crsvpe.f nugllo.f numer2.f preres.f resoud.f
+   
+   Ajoutés :
+   apalmc.F apmamc.F apsolu.F apvsmb.F mpippv.F
+   nugrco.f nupodd.f nurenu.f
+   
+   La routine MPIPPV est un utilitaire permettant de faire une communication point à point
+   d'un vecteur d'INTEGER*4, d'INTEGER ou de REAL*8.
+   
+   
+   Validation :
+   ------------
+   J'ajoute 1 test avec 2 modélisations : petsc02a et b. Le premier test utilise
+   AFFE_CHAR_CINE et le deuxième AFFE_CHAR_MECA.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U2.08.03 D6.00.01 V1.04.117
+VALIDATION
+    petsc02a et b
+NB_JOURS_TRAV  : 7.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019629 DU 2012-10-02 09:05:06
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Nom des champs dans la programmation de CALC_CHAMP
+FONCTIONNALITE
+   Demande :
+   ---------
+   Avec la coexistence de CALC_CHAMP et de CALC_ELEM, beaucoup de champs temporaires étaient
+   appelés &&MECALM.XXXXXX.
+   
+   Il faut renommer ces champs.
+   
+   
+   Solution :
+   ----------
+   Voici les champs créés :
+   - &&CCACCL.CHAM_SI2D : le champ produit est une réduction du champ de contraintes sur les
+   faces,
+   - &&CCACCL.PNONLIN : glute pour EFGE_ELNO (carte avec 0 ou 1),
+   - &&MECALC.NOVARI : carte de K24 avec NOM_VARI (VAEX_ELGA et VAEX_ELNO),
+   - &&MECALM.CHVAC2 : fabrication du champ de variable internes pour ENDO_ELGA à l'instant n-1,
+   - &&MECALM.CHVARC : fabrication du champ de variable internes à n,
+   - &&MECALM.CHVREF : fabrication du champ de variable internes références à n,
+   - &&MECALM.FREQ : carte de fréquence,
+   - &&MECALM.MASD : carte pour ECIN_ELEM (MASS_MECA_DIAG),
+   - &&MECALM.NUMC : ne sert à rien (à supprimer),
+   - &&MECALM.OMEGA2 : carte contenant omega^2,
+   - &&MECHTI.CH_INST_R : carte contenant l'instant,
+   - &&MEHARM.NUME_HARM : carte contenant le numéro de mode.
+   
+   Je déplace la création de ces champs dans CCPARA (sauf pour &&CCACCL.PNONLIN qui ne fait
+   pas qu'allouer une carte). Je remplace les &&* par &&CCPARA en changeant les noms de cette
+   manière :
+   .NOVARI    => .NOM_VARI
+   .CHVAC2    => .VARI_INT_NM1
+   .CHVARC    => .VARI_INT_N
+   .CHVREF    => .VARI_INT_REF
+   .MASD      => .MASS_MECA_D
+   .NUME_HARM => .NUME_MODE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020037 DU 2012-12-03 13:30:54
+TYPE aide utilisation concernant Code_Aster (VERSION 10.5)
+TITRE
+    Probleme de post traitement avec l'operateur CALC_CHAMP u4.81.04
+FONCTIONNALITE
+   Problème :
+   ----------
+   Suite une évolution de CALC_CHAMP, un message s'affiche lors de la réalisation d'un
+   post-traitement en NEW11. Il y a 3 semaines le post traitement fonctionnait correctement
+   sans afficher le message.
+   
+   Aujourd'hui en relançant les mêmes fichiers le message obtenu est le suivant :
+   "La récupération des chargements concernant le résultat trangen2 n'est actuellement pas
+   possible.Code_Aster ne peut donc pas vérifier la cohérence des chargements.
+   Si vous utilisez une commande avec une option qui nécessite la redéfinition des
+   chargements,il faut vérifier la cohérence des chargements."
+   
+   
+   Solution :
+   ----------
+   Pour résoudre la fiche issue18362, il a été décidé d'ajouter le message d'information
+   incriminé. Le "CALL U2MESK" a été ajouté dans la routine RSLESD (routine utilitaire des
+   SD). Donc à chaque fois que dans CALC_CHAMP on appelle cette routine (c'est à dire à
+   chaque appel à MEDOM2 soit pour chaque champs, à chaque numéro d'ordre) le message est émis.
+   
+   Avec autant d'émission, l'utilisateur est bien informé.
+   
+   Je propose de déplacer la vérification dans CCBCOP (routine chapeau de CALCOP). En faisant
+   ainsi, on n'a plus qu'une émission de message.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    etude utilisateur
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020046 DU 2012-12-04 14:57:53
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Localisations de PG dans un fichier MED issu d'EPX
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dans l'exemple joint la localisation de point de Gauss contenu dans le fichier MED (issu
+   d'EPX) n'est pas lu par Aster.
+   Voici le message d'alarme :
+   """
+    Absence de localisation de points de Gauss dans le fichier MED
+    pour l'élément de référence HE8.
+    On suppose que l'ordre des points de Gauss est celui de Code_Aster.
+   """
+   
+   
+   Solution :
+   ----------
+   A l'heure actuelle, LRVCPG se fonde sur l'ELREFE pour détermnier si une localisation MED
+   concerne un type de maille ou un autre.
+   
+   Il vaut mieux vérifier le type de maille plutôt que l'ELREFE (un peu comme la modification
+   réalisée pour la fiche issue19749).
+   
+   Avec ces modifs, on a une autre alarme nous informe que les points de Gauss d'Aster et
+   ceux du fichier relu ne sont pas les mêmes. Pour le coup, l'utilisateur doit vraiment être
+   prudent.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020055 DU 2012-12-05 13:35:24
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Variable non initialisee detectee a l'execution en NEW11.2.27
+FONCTIONNALITE
+   Problème :
+   ----------
+   Avec la version instrumentée avec l'option --check uninit, on détecte un problème dans la
+   routine RECBEC :
+   
+   sdls04a.o3961265:forrtl: severe (193): Run-Time Check Failure. The variable
+   'recbec_$LTORA' is 
+   being used without being defined.
+   
+   
+   Solution :
+   ----------
+   On initialise LTORA à 1.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020068 DU 2012-12-10 08:57:40
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [FORUM] Probleme CALC_CHAMP / CHAM_UTIL
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dans l'étude jointe à la fiche, on plante dans CALC_CHAMP / CHAM_UTIL.
+   
+   On cherche à évaluer la formule à partir de SIGM_ELNO qui existe déjà dans la SD. Or on
+   cherche à le recalculer. Comme on a fait un extraction par POST_CHAMP, DEPL n'est pas dans
+   la SD.
+   
+   
+   Solution :
+   ----------
+   C'est une confusion dans l'utilisation de RSEXCH pour CHAM_UTIL qui est à l'origine du bug.
+   
+   Dans RSEXCH, un champ n'existe pas quand le code retour est nul.
+   
+   Il faut donc modifier la routine CCLOPU pour tester correctement le code retour. Avec la
+   modification le test passe correctement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017686 DU 2011-10-11 08:24:35
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR10 Agrandir la taille des noms de groupes
+FONCTIONNALITE
+   Demande :
+   ---------
+   Le but de cette fiche est d'agrandir la taille des chaînes des noms de groupes de mailles
+   et de noeuds dans Aster.
+   
+   
+   Analyse :
+   ---------
+   On ne peut pas aller au delà de 24 caractères car il y a une limitation dans les routines
+   JEVEUX. On choisit donc cette longueur comme nouvelle longueur des chaînes des noms de
+   groupes de mailles et de noeuds.
+   
+   
+   Développements :
+   ----------------
+   Le développement consiste donc à modifier toutes les routines demandant au fichier de
+   commande GROUP_MA ou GROUP_NO ou celles accédant aux collections .GROUPEMA et .GROUPENO de
+   la sd_maillage.
+   
+   Dans le détail, on créé les collections .GROUPEMA et .GROUPENO en utilisant un pointeur de
+   nom externe. J'ai développé un utilitaire qui réalise la recopie de ces collections et qui
+   se substitue à JEDUPO.
+   
+   Question à l'EDA : ajoute-t-on un blindage pour empêcher la recopie de collections
+   s'appuyant sur des pointeurs de noms externes ? Cela me semblerait bien parce que quand on
+   ne fait pas ce qu'il faut, les plantages obtenus sont assez peu compréhensibles.
+   
+   A noter que l'opérateur DEFI_SQUELETTE utilise des noms de groupes de mailles pour créer
+   des noms d'objets JEVEUX. Quand les chaînes étaient de taille 8, ça ne posait pas de
+   problème. Maintenant avec une taille de 24, des problèmes peuvent apparaître. Je propose
+   d'émettre une fiche pour que faire évoluer la programmation de DEFI_SQUELETTE (pour qu'au
+   minimum, on blinde les endroits qui doivent être blindés).
+   
+   La sd_maillage est enrichie de 2 objets : .PTRNOMMAI et .PTRNOMNOE qui sont les pointeurs
+   de nom sur lesquels reposent respectivement .GROUPEMA et .GROUPENO.
+   
+   Au final cette évolution a été compliquée par les zones du code qui n'utilisent pas RELIEM
+   et qui font directement des manipulations sur les infos récupérées dans GROUP_MA ou
+   GROUP_NO. Sans cela les modifications auraient été limitées (RELIEM et les routines de
+   lecture et d'impression de maillage et de champs).
+   
+   On arrive au total à 354 routines fortran modifiées, accas.capy et quelques python.
+   
+   
+   Validation :
+   ------------
+   Liste complète sur aster4 et Calibre7.
+   
+   J'ajoute un test (petsc02a) qui permet de se rendre compte que les groupes à plus de 8
+   caractères sont bien relus. D'autre part, je modifie tpna01b qui avait déjà des noms de
+   groupes à plus de 8 caractères (hors-la-loi) dans son fichier MED.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Liste complete aster4+calibre7 + test unitaire
+NB_JOURS_TRAV  : 17.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020063 DU 2012-12-07 09:10:10
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [FORUM] IMPR_RESU sur UNITE!=8
+FONCTIONNALITE
+   Problème :
+   ----------
+   Lors de l'impression de résultats sur une unité logique différente de celle par défaut
+   (8), il arrive parfois qu'on obtienne que la dernière impression dans le fichier.
+   
+   
+   Analyse :
+   ---------
+   Dans le problème à l'origine de cette fiche, l'utilisateur fait un IMPR_TABLE sur l'unité
+   79 puis un IMPR_RESU sur cette même unité. Au final, il n'obtient que l'impression lié à
+   l'IMPR_RESU.
+   
+   Ce problème vient du fait que la commande python IMPR_TABLE créé le fichier et imprime
+   dedans mais n'en informe pas le fortran (et notamment celui d'IMPR_RESU).
+   
+   Quand l'impression se fait dans IMPR_RESU, l'unité logique 79 n'est pas déclarée. On ouvre
+   donc fort.79 en NEW et on écrase tout ce qu'il y avait dedans.
+   
+   
+   Solution :
+   ----------
+   Il faut faire en sorte que le fortran soit plus subtil. Si l'unité logique n'existe pas,
+   il faut quand même regarder si le fichier n'existe pas physiquement. S'il existe, on fait
+   un CALL ULOPEN en APPEND.
+   
+   En mettant en oeuvre cette modification minimale, on corrige le problème à l'origine de
+   cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sfayolle     FAYOLLE Sebastien      DATE 12/17/2012 - 12:52:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020077 DU 2012-12-11 14:23:40
+TYPE anomalie concernant Code_Aster (VERSION 11.3)
+TITRE
+    Rxc3xa9sultats douteux avec CALC_META
+FONCTIONNALITE
+   Problème
+   ~~~~~~~~~
+   
+   Les résultats obtenus par un utilisateur avec CALC_META et la loi META_ZIRC semblent douteux.
+   
+   Solutions
+   ~~~~~~~~~~
+   
+   Après étude, il semble que le problème ne vienne pas de CALC_META mais de l'utilisation de paramètres 
+   matériaux non appropriés. On modifie le source de :
+   _pour le mettre en cohérence avec la doc R notamment sur le calcul de T'eq (eq 3.2-5) pour le cas 
+   0.99<Z_beta<=1. 
+   _pour optimiser le calcul des résidus et des gradients dans la méthode de Newton-Raphson (eq 3.2-1 à 3.2-4)
+   _on ne travaille plus sur une chaîne de caractère pour savoir si on est dans une cinétique de chauffage ou 
+   de refroidissement mais sur un entier.
+   
+   Impacts sources :
+   ~~~~~~~~~~~~~~~~~~
+   
+   zedgar.f
+   zevolu.f
+   tempeq.f
+   
+   Impact doc :
+   ~~~~~~~~~~~~~
+   
+   R4.04.04 : On modifie l'équation 3.2-2 pour exprimer correctement la dérivée de la valeur absolue
+   
+   Validations :
+   ~~~~~~~~~~~~~~
+   
+   Astout sur les CALC_META avec META_ZIRC
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R4.04.04
+VALIDATION
+    cas test
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020066 DU 2012-12-07 14:52:23
+TYPE anomalie concernant Code_Aster (VERSION 11.3)
+TITRE
+    Problemes de convergence META_LEMA_ANI avec ASTER V 11.2.0 (2)
+FONCTIONNALITE
+   Problème :
+   ========
+   Dans l'étude jointe, suivant le nombre de pas de temps et les températures souhaitées, la
+   partie métallurgique de META_LEMA_ANI s'arrête avec le message suivant:
+   
+      !-------------------------------------------------------!
+      ! <EXCEPTION> <DVP_2>                                   !
+      !                                                       !
+      !    Erreur numérique (floating point exception).       !
+      !                                                       !
+      !                                                       !
+      !                                                       !
+      ! Il y a probablement une erreur dans la programmation. !
+      ! Veuillez contacter votre assistance technique.        !
+      !-------------------------------------------------------!
+   
+   Correction :
+   ==========
+   Le problème vient de la routine tempeq.f où l'on teste de manière maladroite un zéro. Ceci
+   amène a faire une division par zéro.
+   
+   On remplace dans un test de la routine 0.D0 par R8PREM.
+   
+   Impact :
+   ======
+   tempeq.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage de l'xc3xa9tude et des tests META_LEMA_ANI
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT perf014a                       desoza T.DESOZA           168    168      0
+ CASTEST AJOUT perf014b                       desoza T.DESOZA           166    166      0
+ CASTEST AJOUT perf014c                       desoza T.DESOZA           166    166      0
+ CASTEST AJOUT petsc02a                     sellenet N.SELLENET          70     70      0
+ CASTEST AJOUT petsc02b                     sellenet N.SELLENET          73     73      0
+ CASTEST AJOUT sdll14d                          brie N.BRIE             125    125      0
+ CASTEST AJOUT sdll14e                          brie N.BRIE             192    192      0
+ CASTEST AJOUT ssnp142g                      laverne J.LAVERNE          333    333      0
+ CASTEST AJOUT ssnp142h                      laverne J.LAVERNE          380    380      0
+ CASTEST AJOUT ssnp162a                      laverne J.LAVERNE          571    571      0
+ CASTEST AJOUT ssnp162b                      laverne J.LAVERNE          743    743      0
+ CASTEST AJOUT ssnp162c                      laverne J.LAVERNE          762    762      0
+ CASTEST AJOUT ssnp162d                      laverne J.LAVERNE          510    510      0
+ CASTEST AJOUT ssnp162e                      laverne J.LAVERNE          343    343      0
+ CASTEST AJOUT ssnp162f                      laverne J.LAVERNE          344    344      0
+ CASTEST AJOUT ssnp162g                      laverne J.LAVERNE          347    347      0
+ CASTEST AJOUT ssnp162h                      laverne J.LAVERNE          396    396      0
+ CASTEST AJOUT ssnp162i                      laverne J.LAVERNE          396    396      0
+ CASTEST AJOUT ssnp162j                      laverne J.LAVERNE          575    575      0
+ CASTEST AJOUT ssnp162k                      laverne J.LAVERNE          635    635      0
+ CASTEST AJOUT ssnp162l                      laverne J.LAVERNE          634    634      0
+ CASTEST AJOUT wdnp101c                         kham M.KHAM             971    971      0
+ CASTEST AJOUT wdnp101d                         kham M.KHAM             990    990      0
+ CASTEST AJOUT wtnp129c                         kham M.KHAM             473    473      0
+ CASTEST AJOUT wtnv133c                         kham M.KHAM             668    668      0
+ CASTEST MODIF hplp101a                       delmas J.DELMAS           430     48     41
+ CASTEST MODIF sdld02b                          brie N.BRIE            1159     83     11
+ CASTEST MODIF sdld102a                         brie N.BRIE            1024     64      1
+ CASTEST MODIF sdls08a                      sellenet N.SELLENET         377      5      5
+ CASTEST MODIF sdls114a                       delmas J.DELMAS           310     12     10
+ CASTEST MODIF sdls114b                       delmas J.DELMAS           255      7     10
+ CASTEST MODIF sdls114c                       delmas J.DELMAS           285     11     34
+ CASTEST MODIF sdls114d                       delmas J.DELMAS           304      3      3
+ CASTEST MODIF sslp103a                       delmas J.DELMAS           257     20     20
+ CASTEST MODIF sslp103b                       delmas J.DELMAS           194     10      8
+ CASTEST MODIF sslp115a                       delmas J.DELMAS           299     20     12
+ CASTEST MODIF sslp310a                       delmas J.DELMAS          1453     51     78
+ CASTEST MODIF sslv134c                       delmas J.DELMAS           219     28     30
+ CASTEST MODIF sslv134k                       delmas J.DELMAS           166     19     21
+ CASTEST MODIF ssnl130a                     sellenet N.SELLENET         215      1      1
+ CASTEST MODIF ssnp110e                       delmas J.DELMAS           850     61    104
+ CASTEST MODIF ssnp142c                      laverne J.LAVERNE          312     66     41
+ CASTEST MODIF ssnp142d                      laverne J.LAVERNE          255      7     35
+ CASTEST MODIF ssnp142f                      laverne J.LAVERNE          421      2      2
+ CASTEST MODIF ssnp143b                      laverne J.LAVERNE          331      6     12
+ CASTEST MODIF tpna01b                      sellenet N.SELLENET         282      5      5
+ CASTEST MODIF zzzz119a                     sellenet N.SELLENET          87      1      1
+ CASTEST SUPPR ssnp118m.comm                 laverne J.LAVERNE          553      0    553
+ CASTEST SUPPR ssnp118n.comm                 laverne J.LAVERNE          727      0    727
+ CASTEST SUPPR ssnp118o.comm                 laverne J.LAVERNE          746      0    746
+ CASTEST SUPPR ssnp118p.comm                 laverne J.LAVERNE          510      0    510
+ CASTEST SUPPR ssnp118q.comm                 laverne J.LAVERNE          345      0    345
+ CASTEST SUPPR ssnp118r.comm                 laverne J.LAVERNE          347      0    347
+ CASTEST SUPPR ssnp118s.comm                 laverne J.LAVERNE          349      0    349
+ CASTEST SUPPR ssnp118t.comm                 laverne J.LAVERNE          397      0    397
+ CASTEST SUPPR ssnp118u.comm                 laverne J.LAVERNE          397      0    397
+CATALOGU MODIF compelem/phenomene_modelisation__       kham M.KHAM            1949     15      1
+CATALOGU MODIF options/calc_k_g               delmas J.DELMAS            56      3      2
+CATALOGU MODIF options/calc_k_g_f             delmas J.DELMAS            57      3      2
+CATALOGU MODIF options/dege_elga            sellenet N.SELLENET          60      2      2
+CATALOGU MODIF options/dege_elno            sellenet N.SELLENET          55      2      2
+CATALOGU MODIF options/dera_elga            sellenet N.SELLENET          54      3      3
+CATALOGU MODIF options/ecin_elem            sellenet N.SELLENET          63      3      3
+CATALOGU MODIF options/efge_elno            sellenet N.SELLENET         105      4      4
+CATALOGU MODIF options/endo_elga            sellenet N.SELLENET          48      3      3
+CATALOGU MODIF options/enel_elem            sellenet N.SELLENET          46      3      3
+CATALOGU MODIF options/enel_elga            sellenet N.SELLENET          51      4      4
+CATALOGU MODIF options/epfp_elga            sellenet N.SELLENET          42      4      4
+CATALOGU MODIF options/epme_elga            sellenet N.SELLENET          45      4      4
+CATALOGU MODIF options/epmg_elga            sellenet N.SELLENET          43      4      4
+CATALOGU MODIF options/epot_elem            sellenet N.SELLENET          64      4      4
+CATALOGU MODIF options/epsg_elga            sellenet N.SELLENET          39      4      4
+CATALOGU MODIF options/epsi_elga            sellenet N.SELLENET          61      4      4
+CATALOGU MODIF options/epsi_elno            sellenet N.SELLENET          59      5      5
+CATALOGU MODIF options/epsp_elga            sellenet N.SELLENET          45      4      4
+CATALOGU MODIF options/epvc_elga            sellenet N.SELLENET          36      3      3
+CATALOGU MODIF options/ethe_elem            sellenet N.SELLENET          30      3      3
+CATALOGU MODIF options/flux_elga            sellenet N.SELLENET          47      4      4
+CATALOGU MODIF options/inte_elno            sellenet N.SELLENET          34      3      3
+CATALOGU MODIF options/sief_elga            sellenet N.SELLENET          96      5      5
+CATALOGU MODIF options/sief_elno            sellenet N.SELLENET          60      3      3
+CATALOGU MODIF options/sipm_elno            sellenet N.SELLENET          70      4      4
+CATALOGU MODIF options/sipo_elno            sellenet N.SELLENET          71      5      5
+CATALOGU MODIF options/siro_elem            sellenet N.SELLENET          32      2      2
+CATALOGU MODIF options/sour_elga            sellenet N.SELLENET          38      2      2
+CATALOGU MODIF options/strx_elga            sellenet N.SELLENET          51      3      3
+CATALOGU MODIF options/vaex_elga            sellenet N.SELLENET          33      3      3
+CATALOGU MODIF options/vaex_elno            sellenet N.SELLENET          33      3      3
+CATALOGU MODIF options/varc_elga            sellenet N.SELLENET          25      3      3
+CATALOGU MODIF typelem/gener_ej2d_hm         laverne J.LAVERNE          134      6      6
+CATALOGU MODIF typelem/gener_ej3d_hm         laverne J.LAVERNE          138      6      6
+CATALOGU MODIF typelem/gener_me3d_2           delmas J.DELMAS           192      4      3
+CATALOGU MODIF typelem/gener_me3d_3           delmas J.DELMAS           599      3      9
+CATALOGU MODIF typelem/gener_me3di3           delmas J.DELMAS           301      4      3
+CATALOGU MODIF typelem/gener_me3do3           delmas J.DELMAS           293      3      2
+CATALOGU MODIF typelem/gener_me3du3           delmas J.DELMAS           306      4      3
+CATALOGU MODIF typelem/gener_me3h23             kham M.KHAM             273     20      1
+CATALOGU MODIF typelem/gener_me_xh            delmas J.DELMAS           341     17     23
+CATALOGU MODIF typelem/gener_me_xhc           delmas J.DELMAS           348     18     16
+CATALOGU MODIF typelem/gener_me_xhh           delmas J.DELMAS           340     18     16
+CATALOGU MODIF typelem/gener_me_xhhc          delmas J.DELMAS           352     18     16
+CATALOGU MODIF typelem/gener_me_xht           delmas J.DELMAS           340     17     23
+CATALOGU MODIF typelem/gener_me_xhtc          delmas J.DELMAS           339     18     16
+CATALOGU MODIF typelem/gener_me_xt            delmas J.DELMAS           343     17     23
+CATALOGU MODIF typelem/gener_me_xtc           delmas J.DELMAS           334     18     16
+CATALOGU MODIF typelem/gener_meax_2           delmas J.DELMAS           467      5      3
+CATALOGU MODIF typelem/gener_meax_2_xh        delmas J.DELMAS           315      4      2
+CATALOGU MODIF typelem/gener_meax_2_xht       delmas J.DELMAS           320      3      2
+CATALOGU MODIF typelem/gener_meax_2_xt        delmas J.DELMAS           314      4      2
+CATALOGU MODIF typelem/gener_meaxs2           delmas J.DELMAS           417      1      1
+CATALOGU MODIF typelem/gener_mecpl2           delmas J.DELMAS           502      4      7
+CATALOGU MODIF typelem/gener_mecpl2_xh        delmas J.DELMAS           328      3     10
+CATALOGU MODIF typelem/gener_mecpl2_xhc       delmas J.DELMAS           332     15     13
+CATALOGU MODIF typelem/gener_mecpl2_xhh       delmas J.DELMAS           302      4      2
+CATALOGU MODIF typelem/gener_mecpl2_xhhc      delmas J.DELMAS           328      4      2
+CATALOGU MODIF typelem/gener_mecpl2_xht       delmas J.DELMAS           313      3      9
+CATALOGU MODIF typelem/gener_mecpl2_xhtc      delmas J.DELMAS           292     12     11
+CATALOGU MODIF typelem/gener_mecpl2_xt        delmas J.DELMAS           315      3      9
+CATALOGU MODIF typelem/gener_mecpl2_xtc       delmas J.DELMAS           287     12     11
+CATALOGU MODIF typelem/gener_medh22             kham M.KHAM             278     13      1
+CATALOGU MODIF typelem/gener_medpl1           delmas J.DELMAS           143      4      3
+CATALOGU MODIF typelem/gener_medpl2           delmas J.DELMAS           506      4      7
+CATALOGU MODIF typelem/gener_medpl2_xh        delmas J.DELMAS           321      4     10
+CATALOGU MODIF typelem/gener_medpl2_xhc       delmas J.DELMAS           330     12     10
+CATALOGU MODIF typelem/gener_medpl2_xhh       delmas J.DELMAS           303      4      2
+CATALOGU MODIF typelem/gener_medpl2_xhhc      delmas J.DELMAS           330      4      2
+CATALOGU MODIF typelem/gener_medpl2_xht       delmas J.DELMAS           308      3      9
+CATALOGU MODIF typelem/gener_medpl2_xhtc      delmas J.DELMAS           293     12     11
+CATALOGU MODIF typelem/gener_medpl2_xt        delmas J.DELMAS           309      3      9
+CATALOGU MODIF typelem/gener_medpl2_xtc       delmas J.DELMAS           286     12     11
+CATALOGU MODIF typelem/gener_mepli2           delmas J.DELMAS           260      4      7
+CATALOGU MODIF typelem/gener_meplo2           delmas J.DELMAS           245      4      7
+CATALOGU MODIF typelem/gener_meplu2           delmas J.DELMAS           273      4      7
+CATALOGU MODIF typelem/gener_mf2fi2          laverne J.LAVERNE          131      6      6
+CATALOGU MODIF typelem/gener_mf3d_3          laverne J.LAVERNE          130      6      6
+CATALOGU MODIF typelem/meca_hexs8             delmas J.DELMAS           455      4      3
+CATALOGU MODIF typelem/mecpqs4                delmas J.DELMAS           418      5      3
+CATALOGU MODIF typelem/medpqs4                delmas J.DELMAS           427      5      3
+CATALOGU SUPPR options/k_g_moda               delmas J.DELMAS            53      0     53
+CATALOPY MODIF commande/affe_modele             kham M.KHAM             286      3      1
+CATALOPY MODIF commande/calc_g                delmas J.DELMAS           153      6      5
+CATALOPY MODIF commande/calc_modal              brie N.BRIE             105     10      7
+CATALOPY MODIF commande/calc_theta            delmas J.DELMAS            60      3      2
+CATALOPY MODIF commande/defi_fond_fiss        delmas J.DELMAS           106      2      2
+CATALOPY MODIF commande/defi_materiau        laverne J.LAVERNE         3581     12      1
+CATALOPY MODIF commande/macr_ascouf_calc      delmas J.DELMAS           146      3      2
+CATALOPY MODIF commande/macr_ascouf_mail      delmas J.DELMAS           151      4      3
+CATALOPY MODIF commande/macr_aspic_calc       delmas J.DELMAS           158      2      2
+CATALOPY MODIF commande/macr_aspic_mail       delmas J.DELMAS            99      3      3
+CATALOPY MODIF commande/mode_iter_simult        brie N.BRIE             171      8      5
+CATALOPY MODIF commande/post_k1_k2_k3         delmas J.DELMAS           110      3      2
+CATALOPY MODIF commande/post_k_trans          delmas J.DELMAS            50      2      2
+CATALOPY MODIF commande/post_rccm             delmas J.DELMAS           280      4      3
+CATALOPY MODIF commande/propa_fiss            delmas J.DELMAS           155      2      3
+CATALOPY MODIF commun/c_solveur             sellenet N.SELLENET         467      2      1
+CATALOPY MODIF entete/accas                 sellenet N.SELLENET          93     43      7
+ FORTRAN AJOUT algorith/cgcrio                delmas J.DELMAS            51     51      0
+ FORTRAN AJOUT algorith/cglecc                delmas J.DELMAS            87     87      0
+ FORTRAN AJOUT algorith/cgleco                delmas J.DELMAS           121    121      0
+ FORTRAN AJOUT algorith/cglect                delmas J.DELMAS           100    100      0
+ FORTRAN AJOUT algorith/cgleff                delmas J.DELMAS           120    120      0
+ FORTRAN AJOUT algorith/cglemu                delmas J.DELMAS           113    113      0
+ FORTRAN AJOUT algorith/cgtyfi                delmas J.DELMAS            68     68      0
+ FORTRAN AJOUT algorith/cgveca                delmas J.DELMAS            55     55      0
+ FORTRAN AJOUT algorith/cgvedo                delmas J.DELMAS            65     65      0
+ FORTRAN AJOUT algorith/cgvefo                delmas J.DELMAS            78     78      0
+ FORTRAN AJOUT algorith/cgveli                delmas J.DELMAS           117    117      0
+ FORTRAN AJOUT algorith/cgvemf                delmas J.DELMAS            65     65      0
+ FORTRAN AJOUT algorith/cgverc                delmas J.DELMAS            59     59      0
+ FORTRAN AJOUT algorith/cgveth                delmas J.DELMAS            48     48      0
+ FORTRAN AJOUT algorith/xvfimo                delmas J.DELMAS            59     59      0
+ FORTRAN AJOUT assembla/nugrco              sellenet N.SELLENET         216    216      0
+ FORTRAN AJOUT assembla/nupodd              sellenet N.SELLENET         232    232      0
+ FORTRAN AJOUT assembla/nurenu              sellenet N.SELLENET         128    128      0
+ FORTRAN AJOUT calculel/cakg2d                delmas J.DELMAS           416    416      0
+ FORTRAN AJOUT calculel/ccvrch              sellenet N.SELLENET          49     49      0
+ FORTRAN AJOUT modelisa/cpclma              sellenet N.SELLENET          80     80      0
+ FORTRAN AJOUT modelisa/sdmail              sellenet N.SELLENET          48     48      0
+ FORTRAN AJOUT utilitai/dismco                delmas J.DELMAS           108    108      0
+ FORTRAN AJOUT utilitai/tbajva                delmas J.DELMAS           109    109      0
+ FORTRAN AJOUT utilitai/tbajvc                delmas J.DELMAS            48     48      0
+ FORTRAN AJOUT utilitai/tbajvi                delmas J.DELMAS            47     47      0
+ FORTRAN AJOUT utilitai/tbajvk                delmas J.DELMAS            47     47      0
+ FORTRAN AJOUT utilitai/tbajvr                delmas J.DELMAS            48     48      0
+ FORTRAN MODIF algeline/chcoma              sellenet N.SELLENET         159      3      3
+ FORTRAN MODIF algeline/cmcovo              sellenet N.SELLENET         603     13      5
+ FORTRAN MODIF algeline/cmcrea              sellenet N.SELLENET         334     12      8
+ FORTRAN MODIF algeline/cmdgma              sellenet N.SELLENET         114     14      8
+ FORTRAN MODIF algeline/cmfiss              sellenet N.SELLENET         145      5      5
+ FORTRAN MODIF algeline/cmqutr              sellenet N.SELLENET         383     15      8
+ FORTRAN MODIF algeline/crsmsp              sellenet N.SELLENET         118     13      4
+ FORTRAN MODIF algeline/crsvpe              sellenet N.SELLENET         145      2      2
+ FORTRAN MODIF algeline/deelpo              sellenet N.SELLENET         156      1      1
+ FORTRAN MODIF algeline/flust3              sellenet N.SELLENET         542     16     16
+ FORTRAN MODIF algeline/flust4              sellenet N.SELLENET         311      4      4
+ FORTRAN MODIF algeline/gcpc                sellenet N.SELLENET         265      2      2
+ FORTRAN MODIF algeline/geocoq              sellenet N.SELLENET         277      6      4
+ FORTRAN MODIF algeline/mefgmn              sellenet N.SELLENET          97      5      4
+ FORTRAN MODIF algeline/mefrac              sellenet N.SELLENET         154      5      4
+ FORTRAN MODIF algeline/modcoq              sellenet N.SELLENET         363      6      4
+ FORTRAN MODIF algeline/mstget              sellenet N.SELLENET         233      7      7
+ FORTRAN MODIF algeline/op0045                  brie N.BRIE            1285     57     17
+ FORTRAN MODIF algeline/op0167              sellenet N.SELLENET        1076     25     12
+ FORTRAN MODIF algeline/pcmump              sellenet N.SELLENET          91      2      2
+ FORTRAN MODIF algeline/preres              sellenet N.SELLENET         267      5      3
+ FORTRAN MODIF algeline/resoud              sellenet N.SELLENET         301      3      2
+ FORTRAN MODIF algeline/simult              sellenet N.SELLENET         128      6      6
+ FORTRAN MODIF algeline/trmult              sellenet N.SELLENET         176      6      6
+ FORTRAN MODIF algorith/ascalc              sellenet N.SELLENET         324      6      5
+ FORTRAN MODIF algorith/asecon              sellenet N.SELLENET         255      1      1
+ FORTRAN MODIF algorith/asefen              sellenet N.SELLENET         254      6      6
+ FORTRAN MODIF algorith/asenap              sellenet N.SELLENET         230      7     13
+ FORTRAN MODIF algorith/asexc2              sellenet N.SELLENET         349      6      6
+ FORTRAN MODIF algorith/asimpr              sellenet N.SELLENET         223      1      1
+ FORTRAN MODIF algorith/asmsup              sellenet N.SELLENET         220      7      6
+ FORTRAN MODIF algorith/cakg3d                delmas J.DELMAS           403     52     42
+ FORTRAN MODIF algorith/calcmm              sellenet N.SELLENET          97      4      3
+ FORTRAN MODIF algorith/calcms              sellenet N.SELLENET          86      4      3
+ FORTRAN MODIF algorith/chrpel              sellenet N.SELLENET        1030      3      3
+ FORTRAN MODIF algorith/cla110              sellenet N.SELLENET         573     22     19
+ FORTRAN MODIF algorith/comp81              sellenet N.SELLENET         359      3      2
+ FORTRAN MODIF algorith/compma              sellenet N.SELLENET          88      3      3
+ FORTRAN MODIF algorith/compno              sellenet N.SELLENET          86      3      3
+ FORTRAN MODIF algorith/conini              sellenet N.SELLENET         280      4      3
+ FORTRAN MODIF algorith/conori              sellenet N.SELLENET         404      8      7
+ FORTRAN MODIF algorith/crcmel              sellenet N.SELLENET         117      1      1
+ FORTRAN MODIF algorith/cyc110              sellenet N.SELLENET         353     11      8
+ FORTRAN MODIF algorith/defapp              sellenet N.SELLENET         170     11     10
+ FORTRAN MODIF algorith/defint              sellenet N.SELLENET         296      6      6
+ FORTRAN MODIF algorith/dltini                 idoux L.IDOUX            189     25      3
+ FORTRAN MODIF algorith/gerpas              sellenet N.SELLENET         167      3      2
+ FORTRAN MODIF algorith/gma110              sellenet N.SELLENET         154      4      3
+ FORTRAN MODIF algorith/lc0045               laverne J.LAVERNE           76      4      3
+ FORTRAN MODIF algorith/lc0048               laverne J.LAVERNE           76      8      9
+ FORTRAN MODIF algorith/lcafyd              sellenet N.SELLENET         157      3      2
+ FORTRAN MODIF algorith/lccnvx              sellenet N.SELLENET         103      2      2
+ FORTRAN MODIF algorith/lcdpec              sellenet N.SELLENET         286      3      2
+ FORTRAN MODIF algorith/lcdpeq              sellenet N.SELLENET         315      3      2
+ FORTRAN MODIF algorith/lcejfr               laverne J.LAVERNE          486    211     32
+ FORTRAN MODIF algorith/lcejmr               laverne J.LAVERNE          496     44     29
+ FORTRAN MODIF algorith/lcinit              sellenet N.SELLENET          94      3      2
+ FORTRAN MODIF algorith/lcjacb              sellenet N.SELLENET         104      3      2
+ FORTRAN MODIF algorith/lcjplc              sellenet N.SELLENET          69      3      2
+ FORTRAN MODIF algorith/lcmate              sellenet N.SELLENET         151      2      2
+ FORTRAN MODIF algorith/lcmmap              sellenet N.SELLENET         507      5      4
+ FORTRAN MODIF algorith/lcmmat              sellenet N.SELLENET         377      3      2
+ FORTRAN MODIF algorith/lcmmin              sellenet N.SELLENET         180      3      2
+ FORTRAN MODIF algorith/lcmmj1              sellenet N.SELLENET         138      2      2
+ FORTRAN MODIF algorith/lcmmj2              sellenet N.SELLENET          98      3      2
+ FORTRAN MODIF algorith/lcmmja              sellenet N.SELLENET         215      3      2
+ FORTRAN MODIF algorith/lcmmjb              sellenet N.SELLENET         101      2      2
+ FORTRAN MODIF algorith/lcmmjg              sellenet N.SELLENET          89      4      3
+ FORTRAN MODIF algorith/lcmmjp              sellenet N.SELLENET         142      3      2
+ FORTRAN MODIF algorith/lcmmjv              sellenet N.SELLENET          97      5      4
+ FORTRAN MODIF algorith/lcmmlc              sellenet N.SELLENET         132      2      2
+ FORTRAN MODIF algorith/lcmmon              sellenet N.SELLENET         190      3      2
+ FORTRAN MODIF algorith/lcmmop              sellenet N.SELLENET         347      3      2
+ FORTRAN MODIF algorith/lcmmre              sellenet N.SELLENET         172      3      2
+ FORTRAN MODIF algorith/lcmmvx              sellenet N.SELLENET         129      2      2
+ FORTRAN MODIF algorith/lcotan              sellenet N.SELLENET         181      3      2
+ FORTRAN MODIF algorith/lcplas              sellenet N.SELLENET         151      3      2
+ FORTRAN MODIF algorith/lcplnf              sellenet N.SELLENET          90      3      2
+ FORTRAN MODIF algorith/lcplnl              sellenet N.SELLENET         288      3      2
+ FORTRAN MODIF algorith/lcreli              sellenet N.SELLENET         211      3      2
+ FORTRAN MODIF algorith/lcresi              sellenet N.SELLENET          90      3      2
+ FORTRAN MODIF algorith/lcrkin              sellenet N.SELLENET         171      3      2
+ FORTRAN MODIF algorith/mdchge              sellenet N.SELLENET         228      3      3
+ FORTRAN MODIF algorith/mdchst              sellenet N.SELLENET         562      8      9
+ FORTRAN MODIF algorith/mdtr74              sellenet N.SELLENET         896      4      4
+ FORTRAN MODIF algorith/mgutdm              sellenet N.SELLENET         143      1      1
+ FORTRAN MODIF algorith/mmbclc                desoza T.DESOZA           142      4      1
+ FORTRAN MODIF algorith/mmusuc              sellenet N.SELLENET         196      1      1
+ FORTRAN MODIF algorith/mtdorc              sellenet N.SELLENET         128      1      1
+ FORTRAN MODIF algorith/nmassc                desoza T.DESOZA           161     11      4
+ FORTRAN MODIF algorith/nmassv                desoza T.DESOZA           287     12      4
+ FORTRAN MODIF algorith/nmchht                desoza T.DESOZA           213     13     13
+ FORTRAN MODIF algorith/nmcrst                desoza T.DESOZA            69      4      4
+ FORTRAN MODIF algorith/nmcrti                desoza T.DESOZA           105      2      2
+ FORTRAN MODIF algorith/nmdesc                desoza T.DESOZA           166      5      6
+ FORTRAN MODIF algorith/nmdocc              sellenet N.SELLENET         295      1      1
+ FORTRAN MODIF algorith/nmdoch              sellenet N.SELLENET         509      1      1
+ FORTRAN MODIF algorith/nmdocr              sellenet N.SELLENET         323      1      1
+ FORTRAN MODIF algorith/nmdoet                 idoux L.IDOUX            279      6      2
+ FORTRAN MODIF algorith/nmexso              sellenet N.SELLENET         273     14     14
+ FORTRAN MODIF algorith/nmfcon                desoza T.DESOZA            75      8      4
+ FORTRAN MODIF algorith/nmfcor                desoza T.DESOZA           223      5      4
+ FORTRAN MODIF algorith/nmfi2d               laverne J.LAVERNE          160      7      6
+ FORTRAN MODIF algorith/nmfi3d               laverne J.LAVERNE          188     19     11
+ FORTRAN MODIF algorith/nmfihm               laverne J.LAVERNE          302     18     15
+ FORTRAN MODIF algorith/nmfocc                desoza T.DESOZA           164     15      4
+ FORTRAN MODIF algorith/nmnewt                desoza T.DESOZA           377      5      4
+ FORTRAN MODIF algorith/nmpost                desoza T.DESOZA           157      4      1
+ FORTRAN MODIF algorith/nmprta                desoza T.DESOZA           209      3      2
+ FORTRAN MODIF algorith/nmrtim                desoza T.DESOZA           174     70     63
+ FORTRAN MODIF algorith/nmrvai                desoza T.DESOZA           240    122    113
+ FORTRAN MODIF algorith/nmstat                desoza T.DESOZA           424     96     95
+ FORTRAN MODIF algorith/nmtime                desoza T.DESOZA           228     22     19
+ FORTRAN MODIF algorith/nmtimr                desoza T.DESOZA           168     64     57
+ FORTRAN MODIF algorith/nmveei              sellenet N.SELLENET         424      2      2
+ FORTRAN MODIF algorith/nmvprk              sellenet N.SELLENET         216      3      2
+ FORTRAN MODIF algorith/nmxvec                desoza T.DESOZA           163      3      3
+ FORTRAN MODIF algorith/numer2              sellenet N.SELLENET         120      2      2
+ FORTRAN MODIF algorith/op0010              sellenet N.SELLENET         872      1      1
+ FORTRAN MODIF algorith/op0041              sellenet N.SELLENET         492      1      1
+ FORTRAN MODIF algorith/op0188              sellenet N.SELLENET         188      1      1
+ FORTRAN MODIF algorith/plasti              sellenet N.SELLENET         268      3      2
+ FORTRAN MODIF algorith/preflx              sellenet N.SELLENET         302      1      1
+ FORTRAN MODIF algorith/rdif01              sellenet N.SELLENET         105      3      2
+ FORTRAN MODIF algorith/rec110              sellenet N.SELLENET         447      3      3
+ FORTRAN MODIF algorith/recbec              sellenet N.SELLENET         334      2      1
+ FORTRAN MODIF algorith/recuma              sellenet N.SELLENET          97      3      3
+ FORTRAN MODIF algorith/recuno              sellenet N.SELLENET          98      3      3
+ FORTRAN MODIF algorith/rk21co              sellenet N.SELLENET         114      3      2
+ FORTRAN MODIF algorith/tempeq              sfayolle S.FAYOLLE           52     10     14
+ FORTRAN MODIF algorith/xmcart              sellenet N.SELLENET         405      1      1
+ FORTRAN MODIF algorith/xmtbca              sellenet N.SELLENET         237      1      1
+ FORTRAN MODIF algorith/xstama              sellenet N.SELLENET         170      1      1
+ FORTRAN MODIF algorith/zedgar              sfayolle S.FAYOLLE          303     17     19
+ FORTRAN MODIF algorith/zevolu              sfayolle S.FAYOLLE           69     11     11
+ FORTRAN MODIF assembla/nugllo              sellenet N.SELLENET         312      9      3
+ FORTRAN MODIF calculel/agcart              sellenet N.SELLENET         116      1      1
+ FORTRAN MODIF calculel/alcart              sellenet N.SELLENET         120      1      1
+ FORTRAN MODIF calculel/ccaccl              sellenet N.SELLENET         204     13     61
+ FORTRAN MODIF calculel/ccbcop              sellenet N.SELLENET         169      5      1
+ FORTRAN MODIF calculel/ccchel              sellenet N.SELLENET         117      5      4
+ FORTRAN MODIF calculel/cclopu              sellenet N.SELLENET         176      3      3
+ FORTRAN MODIF calculel/ccpara              sellenet N.SELLENET         151     64     19
+ FORTRAN MODIF calculel/cescar              sellenet N.SELLENET         298      1      1
+ FORTRAN MODIF calculel/cgcrtb                delmas J.DELMAS           261     53    149
+ FORTRAN MODIF calculel/crpcvg              sellenet N.SELLENET         152      3      2
+ FORTRAN MODIF calculel/crperm              sellenet N.SELLENET         220      3      4
+ FORTRAN MODIF calculel/etenc2              sellenet N.SELLENET         127      1      1
+ FORTRAN MODIF calculel/etenca              sellenet N.SELLENET         187      1      1
+ FORTRAN MODIF calculel/gverlc                delmas J.DELMAS           165      2     13
+ FORTRAN MODIF calculel/jevech                delmas J.DELMAS           222     16      2
+ FORTRAN MODIF calculel/mbilgl                delmas J.DELMAS           358     28     32
+ FORTRAN MODIF calculel/mebilg                delmas J.DELMAS           233     20     18
+ FORTRAN MODIF calculel/mecact              sellenet N.SELLENET         151      1      1
+ FORTRAN MODIF calculel/mecagl                delmas J.DELMAS           449     25     38
+ FORTRAN MODIF calculel/mecalc              sellenet N.SELLENET         395      1      2
+ FORTRAN MODIF calculel/mecalg                delmas J.DELMAS           368     21     24
+ FORTRAN MODIF calculel/melima              sellenet N.SELLENET          79      1      1
+ FORTRAN MODIF calculel/nocart              sellenet N.SELLENET         181      2      2
+ FORTRAN MODIF calculel/op0055              sellenet N.SELLENET         251      4      4
+ FORTRAN MODIF calculel/op0100                delmas J.DELMAS           555    224    508
+ FORTRAN MODIF calculel/pjecou              sellenet N.SELLENET         288      1      1
+ FORTRAN MODIF calculel/pjeftc              sellenet N.SELLENET          99      1      1
+ FORTRAN MODIF calculel/rdtmai              sellenet N.SELLENET         478      1      1
+ FORTRAN MODIF calculel/tecart              sellenet N.SELLENET          85      1      1
+ FORTRAN MODIF calculel/trchel              sellenet N.SELLENET         340      5      5
+ FORTRAN MODIF calculel/trchno              sellenet N.SELLENET         292      5      5
+ FORTRAN MODIF calculel/trresu              sellenet N.SELLENET         506      5      5
+ FORTRAN MODIF calculel/utestr              sellenet N.SELLENET         188      2      2
+ FORTRAN MODIF calculel/utnono              sellenet N.SELLENET         108      3      2
+ FORTRAN MODIF calculel/w175af              sellenet N.SELLENET         117      1      1
+ FORTRAN MODIF debug/lcjacp                 sellenet N.SELLENET         195      3      2
+ FORTRAN MODIF echange/op0111               sellenet N.SELLENET         288      3      3
+ FORTRAN MODIF echange/op0112               sellenet N.SELLENET         261      3      3
+ FORTRAN MODIF elements/cgnoor              sellenet N.SELLENET         338     10     10
+ FORTRAN MODIF elements/ef0142              sellenet N.SELLENET         108      2      6
+ FORTRAN MODIF elements/ef0410                delmas J.DELMAS            72      2      2
+ FORTRAN MODIF elements/ef0415                delmas J.DELMAS           182      2      2
+ FORTRAN MODIF elements/fetcrf              sellenet N.SELLENET        1576     53     53
+ FORTRAN MODIF elements/fonlev              sellenet N.SELLENET         321      9      6
+ FORTRAN MODIF elements/fonmai              sellenet N.SELLENET         192      6      6
+ FORTRAN MODIF elements/fonnoe              sellenet N.SELLENET         204      6      6
+ FORTRAN MODIF elements/fonvec              sellenet N.SELLENET         166      2      2
+ FORTRAN MODIF elements/fsurf                 delmas J.DELMAS           194      4      4
+ FORTRAN MODIF elements/gver2d              sellenet N.SELLENET         211     16     10
+ FORTRAN MODIF elements/gverig              sellenet N.SELLENET         323     13      9
+ FORTRAN MODIF elements/mmtppe                delmas J.DELMAS           188      3      3
+ FORTRAN MODIF elements/mmvppe                delmas J.DELMAS           195      3      3
+ FORTRAN MODIF elements/pmfcom              sellenet N.SELLENET         333      3      2
+ FORTRAN MODIF elements/pmfitx              sellenet N.SELLENET         133      4      4
+ FORTRAN MODIF elements/pmfmcf              sellenet N.SELLENET          71      4      3
+ FORTRAN MODIF elements/te0012                delmas J.DELMAS           311      2      2
+ FORTRAN MODIF elements/te0021                delmas J.DELMAS           117      2      2
+ FORTRAN MODIF elements/te0038              sellenet N.SELLENET         419      3      3
+ FORTRAN MODIF elements/te0082                delmas J.DELMAS           206      2      2
+ FORTRAN MODIF elements/te0150              sellenet N.SELLENET         455      2      2
+ FORTRAN MODIF elements/te0201               laverne J.LAVERNE          146     19     11
+ FORTRAN MODIF elements/te0206               laverne J.LAVERNE          114      6      5
+ FORTRAN MODIF elements/te0295                delmas J.DELMAS           464    253    222
+ FORTRAN MODIF elements/te0297                delmas J.DELMAS           221      1      3
+ FORTRAN MODIF elements/te0299                delmas J.DELMAS           444    235    158
+ FORTRAN MODIF elements/te0322               laverne J.LAVERNE          107      7      6
+ FORTRAN MODIF elements/te0363                delmas J.DELMAS           247      3      3
+ FORTRAN MODIF elements/te0366                delmas J.DELMAS           370      4      4
+ FORTRAN MODIF elements/te0367                delmas J.DELMAS           337      3      3
+ FORTRAN MODIF elements/te0408                delmas J.DELMAS           160      2      2
+ FORTRAN MODIF elements/te0415              sellenet N.SELLENET         205      4    142
+ FORTRAN MODIF elements/te0431                delmas J.DELMAS           241      4      4
+ FORTRAN MODIF elements/te0432                delmas J.DELMAS           271      4      4
+ FORTRAN MODIF elements/te0435                delmas J.DELMAS           231      2      3
+ FORTRAN MODIF elements/te0516              sellenet N.SELLENET         592      2      2
+ FORTRAN MODIF elements/te0532                delmas J.DELMAS           378      2      2
+ FORTRAN MODIF elements/te0533                delmas J.DELMAS           543      2      2
+ FORTRAN MODIF elements/te0534                delmas J.DELMAS           536      2      2
+ FORTRAN MODIF elements/te0535              sellenet N.SELLENET         321      3      3
+ FORTRAN MODIF elements/te0537              sellenet N.SELLENET         235      6      6
+ FORTRAN MODIF elements/xcgfvo                delmas J.DELMAS           159      2      3
+ FORTRAN MODIF jeveux/jecrec                sellenet N.SELLENET         268      1      2
+ FORTRAN MODIF jeveux/jeimhd                sellenet N.SELLENET         333      5      1
+ FORTRAN MODIF modelisa/abscur              sellenet N.SELLENET         244     10      7
+ FORTRAN MODIF modelisa/accep1              sellenet N.SELLENET         269      4      4
+ FORTRAN MODIF modelisa/aceaba              sellenet N.SELLENET         356     10      8
+ FORTRAN MODIF modelisa/aceaca              sellenet N.SELLENET         112     11      9
+ FORTRAN MODIF modelisa/aceaco              sellenet N.SELLENET         138      9      7
+ FORTRAN MODIF modelisa/aceadi              sellenet N.SELLENET         282     16     14
+ FORTRAN MODIF modelisa/aceagb              sellenet N.SELLENET         195     12     10
+ FORTRAN MODIF modelisa/aceama              sellenet N.SELLENET         146      9      7
+ FORTRAN MODIF modelisa/aceamb              sellenet N.SELLENET         183     12     10
+ FORTRAN MODIF modelisa/aceamr              sellenet N.SELLENET         318      9      8
+ FORTRAN MODIF modelisa/aceaor              sellenet N.SELLENET         357     14     14
+ FORTRAN MODIF modelisa/aceapc              sellenet N.SELLENET         421     29     26
+ FORTRAN MODIF modelisa/aceapf              sellenet N.SELLENET         116      9      7
+ FORTRAN MODIF modelisa/aceapo              sellenet N.SELLENET         467      9      9
+ FORTRAN MODIF modelisa/acearm              sellenet N.SELLENET         253      3      3
+ FORTRAN MODIF modelisa/acearp              sellenet N.SELLENET         541      9      8
+ FORTRAN MODIF modelisa/aceat3              sellenet N.SELLENET         320      1      1
+ FORTRAN MODIF modelisa/aceatu              sellenet N.SELLENET         302      3      3
+ FORTRAN MODIF modelisa/aceinc              sellenet N.SELLENET         279     16     16
+ FORTRAN MODIF modelisa/acevd2              sellenet N.SELLENET         140     15     15
+ FORTRAN MODIF modelisa/acevdi              sellenet N.SELLENET         157      6      6
+ FORTRAN MODIF modelisa/acevmr              sellenet N.SELLENET         105      7      7
+ FORTRAN MODIF modelisa/acevrm              sellenet N.SELLENET          70      2      2
+ FORTRAN MODIF modelisa/acevrp              sellenet N.SELLENET         104      7      7
+ FORTRAN MODIF modelisa/acnoce              sellenet N.SELLENET         198      4      3
+ FORTRAN MODIF modelisa/acnoex              sellenet N.SELLENET         115      4      3
+ FORTRAN MODIF modelisa/affdef              sellenet N.SELLENET         243      3      3
+ FORTRAN MODIF modelisa/affgen              sellenet N.SELLENET         286      2      3
+ FORTRAN MODIF modelisa/affpou              sellenet N.SELLENET         153      3      3
+ FORTRAN MODIF modelisa/aflrch              sellenet N.SELLENET         346      1      1
+ FORTRAN MODIF modelisa/asmaco              sellenet N.SELLENET         638      9      6
+ FORTRAN MODIF modelisa/asmasu              sellenet N.SELLENET         331      9      4
+ FORTRAN MODIF modelisa/cachei              sellenet N.SELLENET         195      1      1
+ FORTRAN MODIF modelisa/cachre              sellenet N.SELLENET         423      1      1
+ FORTRAN MODIF modelisa/caecha              sellenet N.SELLENET         206      1      1
+ FORTRAN MODIF modelisa/caechp              sellenet N.SELLENET         130      1      1
+ FORTRAN MODIF modelisa/caelec              sellenet N.SELLENET         141      1      1
+ FORTRAN MODIF modelisa/caflnl              sellenet N.SELLENET          94      1      1
+ FORTRAN MODIF modelisa/caflux              sellenet N.SELLENET         305      1      1
+ FORTRAN MODIF modelisa/cafond              sellenet N.SELLENET         210      1      1
+ FORTRAN MODIF modelisa/cafono              sellenet N.SELLENET         322      1      1
+ FORTRAN MODIF modelisa/cafotu              sellenet N.SELLENET         142      1      1
+ FORTRAN MODIF modelisa/cafthm              sellenet N.SELLENET         129      1      1
+ FORTRAN MODIF modelisa/cagrai              sellenet N.SELLENET         123      1      1
+ FORTRAN MODIF modelisa/caimpd              sellenet N.SELLENET          98      1      1
+ FORTRAN MODIF modelisa/caimpe              sellenet N.SELLENET         102      1      1
+ FORTRAN MODIF modelisa/calapl              sellenet N.SELLENET         171      1      1
+ FORTRAN MODIF modelisa/caliai              sellenet N.SELLENET         293     20     19
+ FORTRAN MODIF modelisa/caliob              sellenet N.SELLENET         302     20     18
+ FORTRAN MODIF modelisa/caonde              sellenet N.SELLENET          98      1      1
+ FORTRAN MODIF modelisa/capesa              sellenet N.SELLENET         128      1      1
+ FORTRAN MODIF modelisa/caprec              sellenet N.SELLENET         503      7      6
+ FORTRAN MODIF modelisa/capres              sellenet N.SELLENET         136      1      1
+ FORTRAN MODIF modelisa/carayo              sellenet N.SELLENET         120      1      1
+ FORTRAN MODIF modelisa/carbe3              sellenet N.SELLENET         586     10     10
+ FORTRAN MODIF modelisa/carota              sellenet N.SELLENET         152      1      1
+ FORTRAN MODIF modelisa/casonl              sellenet N.SELLENET          92      1      1
+ FORTRAN MODIF modelisa/casour              sellenet N.SELLENET         109      1      1
+ FORTRAN MODIF modelisa/caveis              sellenet N.SELLENET          82     10     10
+ FORTRAN MODIF modelisa/cavite              sellenet N.SELLENET         101      1      1
+ FORTRAN MODIF modelisa/cavitn              sellenet N.SELLENET          98      1      1
+ FORTRAN MODIF modelisa/cazocc              sellenet N.SELLENET         320      3      3
+ FORTRAN MODIF modelisa/cbondp              sellenet N.SELLENET         142      1      1
+ FORTRAN MODIF modelisa/cbsint              sellenet N.SELLENET          79      1      1
+ FORTRAN MODIF modelisa/chveno              sellenet N.SELLENET         382      7      7
+ FORTRAN MODIF modelisa/cmtref              sellenet N.SELLENET         209      1      1
+ FORTRAN MODIF modelisa/crlinu              sellenet N.SELLENET          54      1      1
+ FORTRAN MODIF modelisa/gfmacr              sellenet N.SELLENET         145      7      4
+ FORTRAN MODIF modelisa/gfmafi              sellenet N.SELLENET          95      3      2
+ FORTRAN MODIF modelisa/gfmagr              sellenet N.SELLENET          51      3      2
+ FORTRAN MODIF modelisa/gfmama              sellenet N.SELLENET          96      3      2
+ FORTRAN MODIF modelisa/immeca              sellenet N.SELLENET         519      3      3
+ FORTRAN MODIF modelisa/infoma              sellenet N.SELLENET         221      7      7
+ FORTRAN MODIF modelisa/ingrma              sellenet N.SELLENET          98      1      1
+ FORTRAN MODIF modelisa/leccoo              sellenet N.SELLENET         148      3      3
+ FORTRAN MODIF modelisa/lecgrp              sellenet N.SELLENET         149      3      3
+ FORTRAN MODIF modelisa/lecmai              sellenet N.SELLENET         134      3      2
+ FORTRAN MODIF modelisa/ligecp              sellenet N.SELLENET         100      1      1
+ FORTRAN MODIF modelisa/lirtet              sellenet N.SELLENET         157      3      2
+ FORTRAN MODIF modelisa/lrmast              sellenet N.SELLENET         714     31     26
+ FORTRAN MODIF modelisa/lrmgrp              sellenet N.SELLENET         261     22     15
+ FORTRAN MODIF modelisa/lrmhdf              sellenet N.SELLENET         309     15     17
+ FORTRAN MODIF modelisa/lrmmf1              sellenet N.SELLENET         200      5      5
+ FORTRAN MODIF modelisa/lrmmf3              sellenet N.SELLENET         463     23     22
+ FORTRAN MODIF modelisa/lrmmf4              sellenet N.SELLENET         197     12     12
+ FORTRAN MODIF modelisa/lrmmfa              sellenet N.SELLENET         284     11     14
+ FORTRAN MODIF modelisa/lrmngr              sellenet N.SELLENET          61      5      4
+ FORTRAN MODIF modelisa/malin1              sellenet N.SELLENET         221      8      8
+ FORTRAN MODIF modelisa/malino              sellenet N.SELLENET         267     14     14
+ FORTRAN MODIF modelisa/masrep              sellenet N.SELLENET         346      3      2
+ FORTRAN MODIF modelisa/mavegr              sellenet N.SELLENET         138     18      9
+ FORTRAN MODIF modelisa/op0001              sellenet N.SELLENET         174      6     29
+ FORTRAN MODIF modelisa/op0006              sellenet N.SELLENET         352      1      1
+ FORTRAN MODIF modelisa/op0018              sellenet N.SELLENET         606     16     16
+ FORTRAN MODIF modelisa/op0019              sellenet N.SELLENET         517      4      4
+ FORTRAN MODIF modelisa/op0119              sellenet N.SELLENET         328      6      6
+ FORTRAN MODIF modelisa/op0143              sellenet N.SELLENET         571      8      8
+ FORTRAN MODIF modelisa/op0180              sellenet N.SELLENET         366      3      3
+ FORTRAN MODIF modelisa/op5901              sellenet N.SELLENET         320      4      4
+ FORTRAN MODIF modelisa/op5902              sellenet N.SELLENET         289      8      8
+ FORTRAN MODIF modelisa/op5903              sellenet N.SELLENET         135     19     18
+ FORTRAN MODIF modelisa/orilgm              sellenet N.SELLENET         390      3      3
+ FORTRAN MODIF modelisa/orishb              sellenet N.SELLENET         226      1      1
+ FORTRAN MODIF modelisa/pacoa1              sellenet N.SELLENET         301      1      1
+ FORTRAN MODIF modelisa/palim3              sellenet N.SELLENET         134      3      3
+ FORTRAN MODIF modelisa/pamano              sellenet N.SELLENET         402     15     15
+ FORTRAN MODIF modelisa/pmfd00              sellenet N.SELLENET         289      4      4
+ FORTRAN MODIF modelisa/pmfd02              sellenet N.SELLENET         165      1      1
+ FORTRAN MODIF modelisa/raire2              sellenet N.SELLENET         279      3      2
+ FORTRAN MODIF modelisa/rairep              sellenet N.SELLENET         384      3      2
+ FORTRAN MODIF modelisa/rapo2d              sellenet N.SELLENET         502      1      1
+ FORTRAN MODIF modelisa/rapo3d              sellenet N.SELLENET         840      1      1
+ FORTRAN MODIF modelisa/rapoco              sellenet N.SELLENET         788      1      1
+ FORTRAN MODIF modelisa/rccomp              sellenet N.SELLENET         121      6      6
+ FORTRAN MODIF modelisa/rcmate              sellenet N.SELLENET          86      1      1
+ FORTRAN MODIF modelisa/reliem              sellenet N.SELLENET         375     15      4
+ FORTRAN MODIF modelisa/rigmi1              sellenet N.SELLENET         141      3      2
+ FORTRAN MODIF modelisa/rigmi2              sellenet N.SELLENET         192      3      2
+ FORTRAN MODIF modelisa/sigmca              sellenet N.SELLENET         112      1      1
+ FORTRAN MODIF modelisa/ssgngm              sellenet N.SELLENET         139     13     15
+ FORTRAN MODIF modelisa/stkcoo              sellenet N.SELLENET         133      3      3
+ FORTRAN MODIF modelisa/stkgrp              sellenet N.SELLENET         178      4      4
+ FORTRAN MODIF modelisa/stkmai              sellenet N.SELLENET         143      3      3
+ FORTRAN MODIF modelisa/tabchs              sellenet N.SELLENET         499      1      1
+ FORTRAN MODIF modelisa/topoca              sellenet N.SELLENET         482      4      4
+ FORTRAN MODIF modelisa/utcono              sellenet N.SELLENET         119      4      3
+ FORTRAN MODIF modelisa/verima              sellenet N.SELLENET         141      3      3
+ FORTRAN MODIF modelisa/vetyma              sellenet N.SELLENET         193      3      3
+ FORTRAN MODIF modelisa/xlenri              sellenet N.SELLENET          93      1      1
+ FORTRAN MODIF postrele/i2chem              sellenet N.SELLENET         369      9      9
+ FORTRAN MODIF postrele/rvcohe              sellenet N.SELLENET         181      8      8
+ FORTRAN MODIF postrele/rvgnoe              sellenet N.SELLENET         208      9      9
+ FORTRAN MODIF prepost/asceli               sellenet N.SELLENET         194      5      5
+ FORTRAN MODIF prepost/asctri               sellenet N.SELLENET         385     10     10
+ FORTRAN MODIF prepost/cm1518               sellenet N.SELLENET         213      3      3
+ FORTRAN MODIF prepost/cm2027               sellenet N.SELLENET         222      3      3
+ FORTRAN MODIF prepost/cmlqlq               sellenet N.SELLENET         213      3      3
+ FORTRAN MODIF prepost/cmqlno               sellenet N.SELLENET         168      8      4
+ FORTRAN MODIF prepost/cmqlql               sellenet N.SELLENET         141      2      2
+ FORTRAN MODIF prepost/coeelt               sellenet N.SELLENET         188      4      4
+ FORTRAN MODIF prepost/colelt               sellenet N.SELLENET         209      1      1
+ FORTRAN MODIF prepost/colneu               sellenet N.SELLENET         160      1      1
+ FORTRAN MODIF prepost/gmeelt               sellenet N.SELLENET         225      1      1
+ FORTRAN MODIF prepost/gmlelt               sellenet N.SELLENET         248      1      1
+ FORTRAN MODIF prepost/irmaca               sellenet N.SELLENET         619     28     27
+ FORTRAN MODIF prepost/irmail               sellenet N.SELLENET         250     11     11
+ FORTRAN MODIF prepost/irmama               sellenet N.SELLENET         121      1      1
+ FORTRAN MODIF prepost/irmare               sellenet N.SELLENET         195      3      2
+ FORTRAN MODIF prepost/irmasu               sellenet N.SELLENET         337      3      2
+ FORTRAN MODIF prepost/irmgms               sellenet N.SELLENET         277      6      6
+ FORTRAN MODIF prepost/irmhdf               sellenet N.SELLENET         308      4      3
+ FORTRAN MODIF prepost/irmmf1               sellenet N.SELLENET         202      3      2
+ FORTRAN MODIF prepost/irmmf2               sellenet N.SELLENET         375      3      2
+ FORTRAN MODIF prepost/irmmfa               sellenet N.SELLENET         206      3      2
+ FORTRAN MODIF prepost/irnono               sellenet N.SELLENET         130      1      1
+ FORTRAN MODIF prepost/irtopo               sellenet N.SELLENET         374     11     10
+ FORTRAN MODIF prepost/lrmpga               sellenet N.SELLENET         349      8      5
+ FORTRAN MODIF prepost/lrvcpg               sellenet N.SELLENET         254      6      5
+ FORTRAN MODIF prepost/nomgfa               sellenet N.SELLENET          61      7      9
+ FORTRAN MODIF prepost/op0172               sellenet N.SELLENET         481     21     20
+ FORTRAN MODIF prepost/op0187               sellenet N.SELLENET         143      3      2
+ FORTRAN MODIF prepost/op0196               sellenet N.SELLENET         213      6      6
+ FORTRAN MODIF prepost/prcoch               sellenet N.SELLENET         382      1      1
+ FORTRAN MODIF prepost/precou               sellenet N.SELLENET         115      1      1
+ FORTRAN MODIF prepost/pregms               sellenet N.SELLENET         160      1      1
+ FORTRAN MODIF prepost/xpoajm               sellenet N.SELLENET         200      1      1
+ FORTRAN MODIF prepost/xpoco1               sellenet N.SELLENET         145      3      2
+ FORTRAN MODIF prepost/xpocrf               sellenet N.SELLENET         204      3      3
+ FORTRAN MODIF prepost/xpodim               sellenet N.SELLENET         342      8      5
+ FORTRAN MODIF prepost/xpoini               sellenet N.SELLENET         149      3      3
+ FORTRAN MODIF prepost/xpomac               sellenet N.SELLENET         141      1      1
+ FORTRAN MODIF prepost/xpomax               sellenet N.SELLENET         582     10      6
+ FORTRAN MODIF prepost/xposep               sellenet N.SELLENET         207      1      1
+ FORTRAN MODIF soustruc/asmael              sellenet N.SELLENET         426      9      5
+ FORTRAN MODIF soustruc/detgnm              sellenet N.SELLENET         125     21     12
+ FORTRAN MODIF soustruc/op0104              sellenet N.SELLENET         175     29     11
+ FORTRAN MODIF soustruc/ordgmn              sellenet N.SELLENET          81      1      1
+ FORTRAN MODIF soustruc/piqeli              sellenet N.SELLENET         242      2      2
+ FORTRAN MODIF soustruc/piqini              sellenet N.SELLENET         202      1      1
+ FORTRAN MODIF soustruc/piquag              sellenet N.SELLENET         198      1      1
+ FORTRAN MODIF soustruc/sscgma              sellenet N.SELLENET         516     29     33
+ FORTRAN MODIF soustruc/sscgno              sellenet N.SELLENET         540     16     16
+ FORTRAN MODIF soustruc/ssdeu1              sellenet N.SELLENET         130      7      9
+ FORTRAN MODIF soustruc/ssdmgn              sellenet N.SELLENET         280      3      2
+ FORTRAN MODIF soustruc/ssdmrm              sellenet N.SELLENET         238      7      7
+ FORTRAN MODIF soustruc/ssdmte              sellenet N.SELLENET         253      1      1
+ FORTRAN MODIF soustruc/utreno              sellenet N.SELLENET          68      4      4
+ FORTRAN MODIF supervis/getvem              sellenet N.SELLENET          50      1      1
+ FORTRAN MODIF utilitai/acevtr              sellenet N.SELLENET          96      2      2
+ FORTRAN MODIF utilitai/caraff              sellenet N.SELLENET         151      1      1
+ FORTRAN MODIF utilitai/copisd              sellenet N.SELLENET         425      1      1
+ FORTRAN MODIF utilitai/creagm              sellenet N.SELLENET         186     21     13
+ FORTRAN MODIF utilitai/detlsp              sellenet N.SELLENET          66      2      2
+ FORTRAN MODIF utilitai/detrsd              sellenet N.SELLENET         673      3      1
+ FORTRAN MODIF utilitai/dismoi                delmas J.DELMAS           143      3      1
+ FORTRAN MODIF utilitai/fetskp              sellenet N.SELLENET         525      7      7
+ FORTRAN MODIF utilitai/grpdbl              sellenet N.SELLENET         158     24     10
+ FORTRAN MODIF utilitai/iredm1              sellenet N.SELLENET         498     35     35
+ FORTRAN MODIF utilitai/ligrma              sellenet N.SELLENET         100      1      1
+ FORTRAN MODIF utilitai/memaxg                delmas J.DELMAS           169      1      1
+ FORTRAN MODIF utilitai/mmaxkl                delmas J.DELMAS           314      9      5
+ FORTRAN MODIF utilitai/peaire              sellenet N.SELLENET          95      1      1
+ FORTRAN MODIF utilitai/pecag3              sellenet N.SELLENET         193      1      1
+ FORTRAN MODIF utilitai/pecage              sellenet N.SELLENET         191      1      1
+ FORTRAN MODIF utilitai/pecap1              sellenet N.SELLENET         324      1      1
+ FORTRAN MODIF utilitai/pecapo              sellenet N.SELLENET         377      3      3
+ FORTRAN MODIF utilitai/peecin              sellenet N.SELLENET         360      1      1
+ FORTRAN MODIF utilitai/peeint              sellenet N.SELLENET         313      1      1
+ FORTRAN MODIF utilitai/peepot              sellenet N.SELLENET         308      1      1
+ FORTRAN MODIF utilitai/peingl              sellenet N.SELLENET         725      1      1
+ FORTRAN MODIF utilitai/pemain              sellenet N.SELLENET         214      1      1
+ FORTRAN MODIF utilitai/pemima              sellenet N.SELLENET         204      1      1
+ FORTRAN MODIF utilitai/penorm              sellenet N.SELLENET         476     18     18
+ FORTRAN MODIF utilitai/peritr              sellenet N.SELLENET         387      1      1
+ FORTRAN MODIF utilitai/pevolu              sellenet N.SELLENET         427     17     17
+ FORTRAN MODIF utilitai/peweib              sellenet N.SELLENET         420      1      1
+ FORTRAN MODIF utilitai/rfhge2              sellenet N.SELLENET         230      3      3
+ FORTRAN MODIF utilitai/rfnoch              sellenet N.SELLENET          85      3      3
+ FORTRAN MODIF utilitai/rfrcha              sellenet N.SELLENET         166      3      2
+ FORTRAN MODIF utilitai/rfresu              sellenet N.SELLENET         122      3      3
+ FORTRAN MODIF utilitai/rfrgen              sellenet N.SELLENET         319      3      3
+ FORTRAN MODIF utilitai/rslesd              sellenet N.SELLENET         338      1      8
+ FORTRAN MODIF utilitai/tbajli                delmas J.DELMAS           279      2      4
+ FORTRAN MODIF utilitai/tbexve              sellenet N.SELLENET         173      1      1
+ FORTRAN MODIF utilitai/ulexis              sellenet N.SELLENET          58     12      2
+ FORTRAN SUPPR algorith/cakgmo                delmas J.DELMAS           294      0    294
+ FORTRAN SUPPR algorith/memokg                delmas J.DELMAS           228      0    228
+ FORTRAN SUPPR calculel/meficg                delmas J.DELMAS           435      0    435
+ FORTRAN SUPPR elements/gimpt2                delmas J.DELMAS           117      0    117
+ FORTRAN SUPPR elements/te0399                delmas J.DELMAS           265      0    265
+ FORTRAN SUPPR elements/te0461                delmas J.DELMAS           465      0    465
+FORTRAN90 AJOUT petsc/apalmc                 sellenet N.SELLENET         204    204      0
+FORTRAN90 AJOUT petsc/apalmd                 sellenet N.SELLENET         261    261      0
+FORTRAN90 AJOUT petsc/apmamc                 sellenet N.SELLENET         203    203      0
+FORTRAN90 AJOUT petsc/apmamd                 sellenet N.SELLENET         183    183      0
+FORTRAN90 AJOUT petsc/apsolu                 sellenet N.SELLENET         150    150      0
+FORTRAN90 AJOUT petsc/apvsmb                 sellenet N.SELLENET         145    145      0
+FORTRAN90 AJOUT utilitai/mpippv              sellenet N.SELLENET         134    134      0
+FORTRAN90 MODIF mumps/amumpc                 sellenet N.SELLENET         528      4      4
+FORTRAN90 MODIF mumps/amumpd                 sellenet N.SELLENET         527      4      4
+FORTRAN90 MODIF mumps/amumpm                 sellenet N.SELLENET         875     17      7
+FORTRAN90 MODIF mumps/amumps                 sellenet N.SELLENET         526      4      4
+FORTRAN90 MODIF mumps/amumpz                 sellenet N.SELLENET         528      4      4
+FORTRAN90 MODIF petsc/apetsc                 sellenet N.SELLENET         260     10      8
+FORTRAN90 MODIF petsc/apksp                  sellenet N.SELLENET         137      3      2
+FORTRAN90 MODIF petsc/apmain                 sellenet N.SELLENET         385     32     78
+FORTRAN90 MODIF petsc/appcpr                 sellenet N.SELLENET         233      3      2
+FORTRAN90 MODIF petsc/appcrs                 sellenet N.SELLENET         198     29      9
+FORTRAN90 SUPPR petsc/apmatr                 sellenet N.SELLENET         203      0    203
+  PYTHON MODIF Comportement/joint_meca_frot    laverne J.LAVERNE           41      7      5
+  PYTHON MODIF Macro/calc_modal_ops             brie N.BRIE             157      2      2
+  PYTHON MODIF Messages/algeline5               brie N.BRIE             432      7      1
+  PYTHON MODIF Messages/elements              delmas J.DELMAS           341      1      4
+  PYTHON MODIF Messages/elements3           sellenet N.SELLENET         270      1      5
+  PYTHON MODIF Messages/etatinit               idoux L.IDOUX             78      5      1
+  PYTHON MODIF Messages/jeveux              sellenet N.SELLENET         485      1      5
+  PYTHON MODIF Messages/mecanonline7          desoza T.DESOZA            72      8      6
+  PYTHON MODIF Messages/mecanonline8          desoza T.DESOZA            87     11     13
+  PYTHON MODIF Messages/med                 sellenet N.SELLENET         574      2      2
+  PYTHON MODIF Messages/med2                sellenet N.SELLENET          78      3      3
+  PYTHON MODIF Messages/petsc               sellenet N.SELLENET         157      7      1
+  PYTHON MODIF Messages/rupture0              delmas J.DELMAS           592     56     31
+  PYTHON MODIF Messages/rupture1              delmas J.DELMAS           338      5     33
+  PYTHON MODIF Messages/utilitai6             delmas J.DELMAS           250      1      6
+  PYTHON MODIF Noyau/N_GEOM                 sellenet N.SELLENET          66      2      2
+  PYTHON MODIF SD/sd_compor                 sellenet N.SELLENET         190      2      2
+  PYTHON MODIF SD/sd_gfibre                 sellenet N.SELLENET          54      3      3
+  PYTHON MODIF SD/sd_maillage               sellenet N.SELLENET         119      5      3
+  PYTHON MODIF SD/sd_squelette              sellenet N.SELLENET          61      2      2
+  PYTHON MODIF SD/sd_type_flui_stru         sellenet N.SELLENET         339      3      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   60       15093     15093            +15093
+ MODIF :  596      157261      5384    5098      +286
+ SUPPR :   17        6431              6431     -6431
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  673      178785     20477   11529     +8948 

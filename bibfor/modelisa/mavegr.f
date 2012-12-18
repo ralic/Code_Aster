@@ -6,7 +6,7 @@
       CHARACTER*8         NOMU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,16 +29,19 @@ C ----------------------------------------------------------------------
 C
       INTEGER       IRET, I, J, NBGRMA, NBGRMT, NBGRNO, NBGRNT, NBMA,
      &              NBNO, JVG, JGG
-      CHARACTER*8   K8B, NOMG, BLANC
-      CHARACTER*24  GRPNOE, GRPNOV, GRPMAI, GRPMAV
+      CHARACTER*8   K8B
+      CHARACTER*24  GRPNOE,GRPNOV,GRPMAI,GRPMAV,GPPTNN,GPPTNM
+      CHARACTER*24  NOMG,BLANC
 C ----------------------------------------------------------------------
       CALL JEMARQ()
 C
       GRPNOE =   NOMU//'.GROUPENO'
       GRPNOV = '&&MAVEGR.GROUPENO'
+      GPPTNN =   NOMU//'.PTRNOMNOE'
       GRPMAI =   NOMU//'.GROUPEMA'
       GRPMAV = '&&MAVEGR.GROUPEMA'
-      BLANC  = '        '
+      GPPTNM =   NOMU//'.PTRNOMMAI'
+      BLANC  = ' '
 C
 C --- TRAITEMENT DES GROUP_MA
 C
@@ -58,10 +61,13 @@ C
          IF ( NBGRMT .EQ. 0 ) THEN
             CALL JEDETR ( GRPMAI )
          ELSEIF ( NBGRMT .NE. NBGRMA ) THEN
-            CALL JEDUPO ( GRPMAI, 'V', GRPMAV, .FALSE. )
+            CALL CPCLMA ( NOMU, '&&MAVEGR', 'GROUPEMA', 'V')
             CALL JEDETR ( GRPMAI )
-            CALL JECREC ( GRPMAI, 'G V I', 'NOM', 'DISPERSE',
-     &                                     'VARIABLE', NBGRMT )
+            CALL JEDETR ( GPPTNM )
+            CALL JECREO ( GPPTNM, 'G N K24' )
+            CALL JEECRA ( GPPTNM, 'NOMMAX', NBGRMT, ' ' )
+            CALL JECREC ( GRPMAI, 'G V I', 'NO '//GPPTNM,
+     &                    'DISPERSE', 'VARIABLE', NBGRMT )
             DO 110 I = 1 , NBGRMA
                CALL JEEXIN ( JEXNUM ( GRPMAV, I ), IRET )
                IF (IRET.EQ.0) GOTO 110
@@ -100,10 +106,13 @@ C
          IF ( NBGRNT .EQ. 0 ) THEN
             CALL JEDETR ( GRPNOE )
          ELSEIF ( NBGRNT .NE. NBGRNO ) THEN
-            CALL JEDUPO ( GRPNOE, 'V', GRPNOV, .FALSE. )
+            CALL CPCLMA ( NOMU, '&&MAVEGR', 'GROUPENO', 'V')
             CALL JEDETR ( GRPNOE )
-            CALL JECREC ( GRPNOE, 'G V I', 'NOM', 'DISPERSE',
-     &                                     'VARIABLE', NBGRNT )
+            CALL JEDETR ( GPPTNN )
+            CALL JECREO ( GPPTNN, 'G N K24' )
+            CALL JEECRA ( GPPTNN, 'NOMMAX', NBGRNT, ' ' )
+            CALL JECREC ( GRPNOE, 'G V I', 'NO '//GPPTNN,
+     &                    'DISPERSE', 'VARIABLE', NBGRNT )
             DO 210 I = 1 , NBGRNO
                CALL JEEXIN ( JEXNUM ( GRPNOV, I ), IRET )
                IF (IRET.EQ.0) GOTO 210

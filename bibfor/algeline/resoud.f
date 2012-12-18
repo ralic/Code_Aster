@@ -3,7 +3,7 @@
      &                  CRITER,PREPOS,ISTOP ,IRET  )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,8 @@ C ----------------------------------------------------------------------
       METRES = ZK24(JSLVK)
       CALL ASSERT(METRES.NE.' ')
       IF (KMPIC.EQ.'NON') CALL ASSERT(METRES.EQ.'FETI' .OR.
-     &                                METRES.EQ.'MUMPS')
+     &                                METRES.EQ.'MUMPS'.OR.
+     &                                METRES.EQ.'PETSC')
 
 C     VERIFICATIONS ET INITIALISATIONS
       CALL ASSERT((ISTOP.EQ.0).OR.(ISTOP.EQ.2).OR.(ISTOP.EQ.-9999))

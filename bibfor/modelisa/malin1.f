@@ -6,7 +6,7 @@
       CHARACTER*(*)     MOTFAZ, CHARGZ, LISNOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,12 +96,12 @@ C        -------------------------------------------------------
       CALL GETVTX (MOTFAC,MOGRMA,IOCC,IARG,0,K8BID,NG)
       IF (NG.NE.0) THEN
           NG = -NG
-          CALL WKVECT ('&&MALIN1.TRAV1','V V K8',NG,JJJ1)
+          CALL WKVECT ('&&MALIN1.TRAV1','V V K24',NG,JJJ1)
           CALL GETVEM (NOMA,'GROUP_MA',
-     .                 MOTFAC,MOGRMA,IOCC,IARG,NG,ZK8(JJJ1),NGR)
+     .                 MOTFAC,MOGRMA,IOCC,IARG,NG,ZK24(JJJ1),NGR)
           DO 10 IGR = 1, NGR
-                CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ1+IGR-1)),'L',JGRO)
-                CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ1+IGR-1)),'LONUTI',
+                CALL JEVEUO (JEXNOM(GRMAMA,ZK24(JJJ1+IGR-1)),'L',JGRO)
+                CALL JELIRA (JEXNOM(GRMAMA,ZK24(JJJ1+IGR-1)),'LONUTI',
      +                      NBMAIL,K1BID)
                 DO 20 M = 1, NBMAIL
                   NUMAIL = ZI(JGRO-1+M)
@@ -146,10 +146,10 @@ C
       CALL GETVTX (MOTFAC,MOGRMA,IOCC,IARG,0,K8BID,NG)
       IF (NG.NE.0) THEN
           NG = -NG
-          CALL GETVTX (MOTFAC,MOGRMA,IOCC,IARG,NG,ZK8(JJJ1),NGR)
+          CALL GETVTX (MOTFAC,MOGRMA,IOCC,IARG,NG,ZK24(JJJ1),NGR)
           DO 40 IGR = 1, NGR
-               CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ1+IGR-1)),'L',JGRO)
-               CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ1+IGR-1)),'LONUTI',
+               CALL JEVEUO (JEXNOM(GRMAMA,ZK24(JJJ1+IGR-1)),'L',JGRO)
+               CALL JELIRA (JEXNOM(GRMAMA,ZK24(JJJ1+IGR-1)),'LONUTI',
      +                      NBMAIL,K1BID)
                DO 50 M = 1, NBMAIL
                   NUMAIL = ZI(JGRO-1+M)

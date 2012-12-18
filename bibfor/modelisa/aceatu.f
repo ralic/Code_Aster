@@ -8,7 +8,7 @@
       CHARACTER*8         NOMA, NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,9 +54,9 @@ C
       INTEGER      IER,NBMAIL
       REAL*8       VAL(3),EPSI
       CHARACTER*1  K1BID
-      CHARACTER*8  NOMU, CAR, NOMNOE, NOMLU, CRIT
+      CHARACTER*8  NOMU, CAR, NOMNOE, CRIT
       CHARACTER*16 CONCEP, CMD, NUNOEL
-      CHARACTER*24 MLGNMA, MLGNNO, MLGGNO,MLGCOO,MLGCNX,MODMAI
+      CHARACTER*24 MLGNMA,MLGNNO,MLGGNO,MLGCOO,MLGCNX,MODMAI,NOMLU
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C

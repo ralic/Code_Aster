@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 # hplp101a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,80 +157,83 @@ RESU=CREA_RESU(  OPERATION='AFFE',
                                 MODELE=MO,
                                 CHAM_MATER = CHMAT)     )
 
-FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
-                         FOND_FISS=_F( GROUP_NO = ('P0',)),
-                      )
+FOND=DEFI_FOND_FISS(MAILLAGE=MA,
+                    FOND_FISS=_F( GROUP_NO = ('P0',)),
+                    )
 
-THETA0=CALC_THETA(       MODELE=MO,
-                         THETA_2D=_F(  GROUP_NO = ('P0',),
-                                    MODULE = 1.,
-                                    R_INF = 3.75E-5,
-                                    R_SUP = 7.50E-5),
-                        DIRECTION=(1., 0., 0.,)
+THETA0=CALC_THETA(MODELE=MO,
+                  THETA_2D=_F(GROUP_NO = ('P0',),
+                              MODULE = 1.,
+                              R_INF = 3.75E-5,
+                              R_SUP = 7.50E-5),
+                  DIRECTION=(1., 0., 0.,)
                      )
 
-G00=CALC_G(        RESULTAT=RESU,
-                   THETA=_F(THETA=THETA0),
-                   EXCIT=_F(CHARGE=CH,),
-              )
+G00=CALC_G(RESULTAT=RESU,
+           THETA=_F(THETA=THETA0),
+           EXCIT=_F(CHARGE=CH,),
+           )
 
-GK00=CALC_G(          RESULTAT=RESU,
-                      THETA=_F(
-                          R_INF = 3.75E-5,
-                          R_SUP = 7.50E-5,
-                          DIRECTION=(1., 0., 0.,),
-                          FOND_FISS=FOND),
-                      EXCIT=_F(CHARGE=CH,),
-                      OPTION='CALC_K_G'
-              )
-
-#
-#
-#
-
-
-THETA01=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 7.50E-5,
-                                     R_SUP = 1.125E-4),
-                         DIRECTION=(1., 0., 0.,)
-                     )
-
-G01=CALC_G(          RESULTAT=RESU,
-                     THETA=_F(THETA=THETA01),
-                     EXCIT=_F(CHARGE=CH,),
-             )
-
-GK01=CALC_G(        RESULTAT=RESU,
-                    THETA=_F(THETA = THETA01,
-                             FOND_FISS=FOND),
-                    EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G'
-              )
-
-#
-#
-#
-
-THETA02=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 1.125E-4,
-                                     R_SUP = 1.500E-4),
-                         DIRECTION=(1., 0., 0.,)
-                     )
-
-#
-G02=CALC_G( RESULTAT=RESU,
-            THETA=_F(THETA=THETA02),
+GK00=CALC_G(RESULTAT=RESU,
+            THETA=_F(FOND_FISS=FOND,
+                     DIRECTION=(1., 0., 0.,),
+                     R_INF = 3.75E-5,
+                     R_SUP = 7.50E-5,),
             EXCIT=_F(CHARGE=CH,),
+            OPTION='CALC_K_G'
+           )
+
+#
+#
+#
+
+
+THETA01=CALC_THETA(MODELE=MO,
+                   THETA_2D=_F(GROUP_NO = ('P0',),
+                               MODULE = 1.,
+                               R_INF = 7.50E-5,
+                               R_SUP = 1.125E-4),
+                   DIRECTION=(1., 0., 0.,)
+                   )
+
+G01=CALC_G(RESULTAT=RESU,
+           THETA=_F(THETA=THETA01),
+           EXCIT=_F(CHARGE=CH,),
+          )
+
+GK01=CALC_G(RESULTAT=RESU,
+            THETA=_F(FOND_FISS=FOND,
+                     DIRECTION=(1., 0., 0.,),
+                     R_INF =  7.50E-5,
+                     R_SUP = 1.125E-4),
+            EXCIT=_F(CHARGE=CH,),
+            OPTION='CALC_K_G'
             )
 
 #
+#
+#
+
+THETA02=CALC_THETA(MODELE=MO,
+                   THETA_2D=_F(GROUP_NO = ('P0',),
+                               MODULE = 1.,
+                               R_INF = 1.125E-4,
+                               R_SUP = 1.500E-4),
+                   DIRECTION=(1., 0., 0.,)
+                   )
+
+#
+G02=CALC_G(RESULTAT=RESU,
+           THETA=_F(THETA=THETA02),
+           EXCIT=_F(CHARGE=CH,),
+           )
+
+#
 GK02=CALC_G(RESULTAT=RESU,
-            THETA=_F(THETA = THETA02,
-                     FOND_FISS=FOND),
+            THETA=_F(FOND_FISS=FOND,
+                     DIRECTION=(1., 0., 0.,),
+                     R_INF = 1.125E-4,
+                     R_SUP = 1.500E-4),
             EXCIT=_F(CHARGE=CH,),
             OPTION='CALC_K_G'
             )
@@ -240,84 +243,88 @@ GK02=CALC_G(RESULTAT=RESU,
 #
 
 
-THETA03=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 1.500E-4,
-                                     R_SUP = 1.875E-4),
-                         DIRECTION=(1., 0., 0.,)
+THETA03=CALC_THETA(MODELE=MO,
+                   THETA_2D=_F(GROUP_NO = ('P0',),
+                               MODULE = 1.,
+                               R_INF = 1.500E-4,
+                               R_SUP = 1.875E-4),
+                   DIRECTION=(1., 0., 0.,)
                      )
 
 #
-G03=CALC_G(        RESULTAT=RESU,
-                   THETA=_F(THETA=THETA03),
-                   EXCIT=_F(CHARGE=CH,),
+G03=CALC_G(RESULTAT=RESU,
+           THETA=_F(THETA=THETA03),
+           EXCIT=_F(CHARGE=CH,),
             )
 
 #
-GK03=CALC_G(        RESULTAT=RESU,
-                    THETA=_F(THETA = THETA03,
-                             FOND_FISS=FOND),
-                    EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G'
-              )
+GK03=CALC_G(RESULTAT=RESU,
+            THETA=_F(FOND_FISS=FOND,
+                     DIRECTION=(1., 0., 0.,),
+                     R_INF = 1.500E-4,
+                     R_SUP = 1.875E-4),
+            EXCIT=_F(CHARGE=CH,),
+            OPTION='CALC_K_G'
+            )
 
 #
 #
 #
 
 
-THETA04=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 1.875E-4,
-                                     R_SUP = 2.250E-4),
-                         DIRECTION=(1., 0., 0.,)
+THETA04=CALC_THETA(MODELE=MO,
+                   THETA_2D=_F(GROUP_NO = ('P0',),
+                               MODULE = 1.,
+                               R_INF = 1.875E-4,
+                               R_SUP = 2.250E-4),
+                   DIRECTION=(1., 0., 0.,)
                      )
 
 #
-G04=CALC_G(        RESULTAT=RESU,
-                   THETA=_F(THETA=THETA04),
-                   EXCIT=_F(CHARGE=CH,),
+G04=CALC_G(RESULTAT=RESU,
+           THETA=_F(THETA=THETA04),
+           EXCIT=_F(CHARGE=CH,),
             )
 
 #
-GK04=CALC_G(        RESULTAT=RESU,
-                    THETA=_F( THETA = THETA04,
-                                 FOND_FISS=FOND),
-                    EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G'
-              )
+GK04=CALC_G(RESULTAT=RESU,
+            THETA=_F(FOND_FISS=FOND,
+                     DIRECTION=(1., 0., 0.,),
+                     R_INF = 1.875E-4,
+                     R_SUP = 2.250E-4),
+            EXCIT=_F(CHARGE=CH,),
+            OPTION='CALC_K_G'
+            )
+
 
 #
 #
 #
 
 #
-THETA05=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 2.250E-4,
-                                     R_SUP = 3.000E-4),
-                         DIRECTION=(1., 0., 0.,)
+THETA05=CALC_THETA(MODELE=MO,
+                   THETA_2D=_F(GROUP_NO = ('P0',),
+                               MODULE = 1.,
+                               R_INF = 2.250E-4,
+                               R_SUP = 3.000E-4),
+                   DIRECTION=(1., 0., 0.,)
                      )
 
 #
-G05=CALC_G(        RESULTAT=RESU,
-                   THETA=_F(THETA=THETA05),
-                   EXCIT=_F(CHARGE=CH,),
+G05=CALC_G(RESULTAT=RESU,
+           THETA=_F(THETA=THETA05),
+           EXCIT=_F(CHARGE=CH,),
             )
 
 #
-GK05=CALC_G(        RESULTAT=RESU,
-                    THETA=_F(
-                                R_INF = 2.250E-4,
-                                R_SUP = 3.000E-4,
-                                DIRECTION=(1., 0., 0.,),
-                                FOND_FISS=FOND),
-                    EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G'
-              )
+GK05=CALC_G(RESULTAT=RESU,
+            THETA=_F(FOND_FISS=FOND,
+                     DIRECTION=(1., 0., 0.,),
+                     R_INF = 2.250E-4,
+                     R_SUP = 3.000E-4),
+            EXCIT=_F(CHARGE=CH,),
+            OPTION='CALC_K_G'
+            )
 
 #
 #

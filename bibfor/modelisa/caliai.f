@@ -7,7 +7,7 @@
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C        --------------------------------------------------
    10 CONTINUE
 
       TRAV = '&&CALIAI.'//MOTFAC
-      CALL WKVECT(TRAV,'V V K8',NDIM1,JJJ)
+      CALL WKVECT(TRAV,'V V K24',NDIM1,JJJ)
 
 
 C     -- CALCUL DE NDIM2 ET VERIFICATION DES NOEUDS ET GROUP_NO
@@ -102,26 +102,27 @@ C        RELATION LINEAIRE
 C        -------------------------------------------------------
       NDIM2 = NDIM1
       DO 40 IOCC = 1,NLIAI
-        CALL GETVTX(MOTFAC,MOGROU,IOCC,IARG,NDIM1,ZK8(JJJ),NGR)
+        CALL GETVTX(MOTFAC,MOGROU,IOCC,IARG,NDIM1,ZK24(JJJ),NGR)
         NBGT = 0
         DO 20 IGR = 1,NGR
-          CALL JEEXIN(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),IRET)
+          CALL JEEXIN(JEXNOM(GROUNO,ZK24(JJJ+IGR-1)),IRET)
           IF (IRET.EQ.0) THEN
-             VALK(1) = ZK8(JJJ+IGR-1)
+             VALK(1) = ZK24(JJJ+IGR-1)
              VALK(2) = NOMA
              CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
           ELSE
-            CALL JELIRA(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),'LONUTI',N1,K1BID)
+            CALL JELIRA(JEXNOM(GROUNO,ZK24(JJJ+IGR-1)),
+     &                  'LONUTI',N1,K1BID)
             NBGT = NBGT + N1
           END IF
    20   CONTINUE
         NDIM2 = MAX(NDIM2,NBGT)
-        CALL GETVTX(MOTFAC,MOTCLE,IOCC,IARG,NDIM1,ZK8(JJJ),NNO)
+        CALL GETVTX(MOTFAC,MOTCLE,IOCC,IARG,NDIM1,ZK24(JJJ),NNO)
         DO 30 INO = 1,NNO
-          CALL JENONU(JEXNOM(NOEUMA,ZK8(JJJ+INO-1)),IRET)
+          CALL JENONU(JEXNOM(NOEUMA,ZK24(JJJ+INO-1)),IRET)
           IF (IRET.EQ.0) THEN
              VALK(1) = MOTCLE
-             VALK(2) = ZK8(JJJ+INO-1)
+             VALK(2) = ZK24(JJJ+INO-1)
              VALK(3) = NOMA
              CALL U2MESK('F','MODELISA2_96', 3 ,VALK)
           END IF
@@ -130,7 +131,7 @@ C        -------------------------------------------------------
 
 C     -- ALLOCATION DE TABLEAUX DE TRAVAIL
 C    -------------------------------------
-      CALL WKVECT('&&CALIAI.LISTE1','V V K8',NDIM1,JLIST1)
+      CALL WKVECT('&&CALIAI.LISTE1','V V K24',NDIM1,JLIST1)
       CALL WKVECT('&&CALIAI.LISTE2','V V K8',NDIM2,JLIST2)
       CALL WKVECT('&&CALIAI.DDL  ','V V K8',NDIM2,JDDL)
       CALL WKVECT('&&CALIAI.COEMUR','V V R',NDIM2,JCMUR)
@@ -189,19 +190,19 @@ C       ------------------------------
 
 
         CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,IARG,0,
-     &              ZK8(JLIST1),
-     &              NG)
+     &              ZK24(JLIST1),NG)
         IF (NG.NE.0) THEN
 
 C           -- CAS DE GROUP_NO :
 C           --------------------
           NG = -NG
           CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',I,IARG,NG,
-     &                ZK8(JLIST1),N)
+     &                ZK24(JLIST1),N)
           INDNOE = 0
           DO 70 J = 1,NG
-            CALL JEVEUO(JEXNOM(GROUNO,ZK8(JLIST1-1+J)),'L',JGR0)
-            CALL JELIRA(JEXNOM(GROUNO,ZK8(JLIST1-1+J)),'LONUTI',N,K1BID)
+            CALL JEVEUO(JEXNOM(GROUNO,ZK24(JLIST1-1+J)),'L',JGR0)
+            CALL JELIRA(JEXNOM(GROUNO,ZK24(JLIST1-1+J)),
+     &                  'LONUTI',N,K1BID)
             DO 60 K = 1,N
               IN = ZI(JGR0-1+K)
               INDNOE = INDNOE + 1
@@ -237,15 +238,15 @@ C           AFFECTATION A LA LISTE DE RELATIONS
 
 C           CAS DE NOEUD :
 C           -------------
-          CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,IARG,0,ZK8(JLIST1),
+          CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,IARG,0,ZK8(JLIST2),
      &                NBNO)
           IF (NBNO.NE.0) THEN
             NBNO = -NBNO
             CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,IARG,NBNO,
-     &                  ZK8(JLIST1),N)
+     &                  ZK8(JLIST2),N)
             IF (TYPCO2.EQ.'FONC') THEN
               DO 100 K=1,N
-                CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(JLIST1-1+K)),IN)
+                CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(JLIST2-1+K)),IN)
                 VALPAR(1) = ZR(JCOOR-1+3*(IN-1)+1)
                 VALPAR(2) = ZR(JCOOR-1+3*(IN-1)+2)
                 VALPAR(3) = ZR(JCOOR-1+3*(IN-1)+3)
@@ -264,7 +265,7 @@ C              ------------------------------------------------
             VALI (2) = NBNO
             CALL U2MESG('F', 'MODELISA8_47',0,' ',2,VALI,0,0.D0)
           END IF
-          CALL AFRELA(ZR(JCMUR),ZC(JCMUC),ZK8(JDDL),ZK8(JLIST1),
+          CALL AFRELA(ZR(JCMUR),ZC(JCMUC),ZK8(JDDL),ZK8(JLIST2),
      &                ZI(JDIME),ZR(JDIREC),NBNO,BETA,BETAC,BETAF,TYPCOE,
      &                TYPVAL,TYPLAG,0.D0,LISREL)
         END IF

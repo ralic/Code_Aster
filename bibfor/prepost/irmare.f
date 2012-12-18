@@ -14,7 +14,7 @@ C
       LOGICAL      LMOD
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,8 +56,9 @@ C
 C     ------------------------------------------------------------------
 C ---------------------------------------------------------------------
 C
-      CHARACTER*8   NOMM,NOMGR,KBID
+      CHARACTER*8   NOMM,KBID
       CHARACTER*10  FORMAT
+      CHARACTER*24  NOMGR
       CHARACTER*50  FMT
 C
 C     ECRITURE DU TITRE

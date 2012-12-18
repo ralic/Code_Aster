@@ -5,7 +5,7 @@
      &                  SDNUME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 17/12/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,8 +143,8 @@ C
       CALL NMASSV('CNDIDO',
      &            MODELE,LISCHA,MATE  ,CARELE,COMPOR,
      &            NUMEDD,INSTAM,INSTAP,RESOCO,RESOCU,
-     &            SDDYNA,VALINC,COMREF,MATASS,VEDIDO,
-     &            CNDIDO)
+     &            SDDYNA,SDTIME,VALINC,COMREF,MATASS,
+     &            VEDIDO,CNDIDO)
       IF (LDIDI) THEN
         CALL NMCALV('CNDIDI',
      &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
@@ -154,8 +154,8 @@ C
         CALL NMASSV('CNDIDI',
      &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
      &              NUMEDD,INSTAM,INSTAP,RESOCO,RESOCU,
-     &              SDDYNA,VALINC,COMREF,MATASS,VEDIDI,
-     &              CNDIDI)
+     &              SDDYNA,SDTIME,VALINC,COMREF,MATASS,
+     &              VEDIDI,CNDIDI)
       ENDIF
 C
 C --- CHARGEMENTS FORCES DE LAPLACE
@@ -169,8 +169,8 @@ C
         CALL NMASSV('CNLAPL',
      &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
      &              NUMEDD,INSTAM,INSTAP,RESOCO,RESOCU,
-     &              SDDYNA,VALINC,COMREF,MATASS,VELAPL,
-     &              CNLAPL)
+     &              SDDYNA,SDTIME,VALINC,COMREF,MATASS,
+     &              VELAPL,CNLAPL)
       ENDIF
 C
 C --- CHARGEMENTS ONDE_PLANE
@@ -184,8 +184,8 @@ C
         CALL NMASSV('CNONDP',
      &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
      &              NUMEDD,INSTAM,INSTAP,RESOCO,RESOCU,
-     &              SDDYNA,VALINC,COMREF,MATASS,VEONDP,
-     &              CNONDP)
+     &              SDDYNA,SDTIME,VALINC,COMREF,MATASS,
+     &              VEONDP,CNONDP)
       ENDIF
 C
 C --- CHARGEMENTS MECANIQUES FIXES DONNES
@@ -198,16 +198,16 @@ C
       CALL NMASSV('CNFEDO',
      &            MODELE,LISCHA,MATE  ,CARELE,COMPOR,
      &            NUMEDD,INSTAM,INSTAP,RESOCO,RESOCU,
-     &            SDDYNA,VALINC,COMREF,MATASS,VEFEDO,
-     &            CNFEDO)
+     &            SDDYNA,SDTIME,VALINC,COMREF,MATASS,
+     &            VEFEDO,CNFEDO)
 C
 C --- CONDITIONS CINEMATIQUES IMPOSEES  (AFFE_CHAR_CINE)
 C
       CALL NMASSV('CNCINE',
      &            MODELE,LISCHA,MATE  ,CARELE,COMPOR,
      &            NUMEDD,INSTAM,INSTAP,RESOCO,RESOCU,
-     &            SDDYNA,VALINC,COMREF,MATASS,' '   ,
-     &            CNCINE)
+     &            SDDYNA,SDTIME,VALINC,COMREF,MATASS,
+     &            ' '   ,CNCINE)
 C
       CALL JEDEMA()
       END

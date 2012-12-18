@@ -13,7 +13,7 @@
       LOGICAL           MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,11 @@ C     ------------------------------------------------------------------
       REAL*8        DX, DY, DZ, R8B, XX1, XXX
       COMPLEX*16    CBID
       CHARACTER*1   K1BID
-      CHARACTER*8   K8B, NOEU, CMP, NOMCMP(3), NOMA, GRNOEU
+      CHARACTER*8   K8B, NOEU, CMP, NOMCMP(3), NOMA
       CHARACTER*8   NOEREF
       CHARACTER*16  MONACC
       CHARACTER*19  CHEXTR, MOTFAC
-      CHARACTER*24  OBJ1, OBJ2, VALK(2)
+      CHARACTER*24  OBJ1, OBJ2, VALK(2), GRNOEU
       INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
@@ -120,14 +120,14 @@ C
 
             CALL GETVTX(MOTFAC,'GROUP_NO',IOC,IARG,0,K8B,NG)
             NGR = -NG
-            CALL WKVECT('&&ASEFEN.GROUP_NO','V V K8',NGR,JGRN)
-            CALL GETVTX(MOTFAC,'GROUP_NO',IOC,IARG,NGR,ZK8(JGRN),NG)
+            CALL WKVECT('&&ASEFEN.GROUP_NO','V V K24',NGR,JGRN)
+            CALL GETVTX(MOTFAC,'GROUP_NO',IOC,IARG,NGR,ZK24(JGRN),NG)
             CALL GETVR8(MOTFAC,'DX',IOC,IARG,1,DX,NX)
             CALL GETVR8(MOTFAC,'DY',IOC,IARG,1,DY,NY)
             CALL GETVR8(MOTFAC,'DZ',IOC,IARG,1,DZ,NZ)
 
             DO 26 IGR = 1, NGR
-              GRNOEU = ZK8(JGRN+IGR-1)
+              GRNOEU = ZK24(JGRN+IGR-1)
               CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
               IF (IRET .EQ. 0) THEN
                 IER = IER + 1

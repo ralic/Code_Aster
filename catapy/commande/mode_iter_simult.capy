@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,20 +76,23 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45, sd_prod= mode_iter_simult_
            MATR_MASS          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
            MATR_AMOR          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
            CALC_FREQ       =FACT(statut='d',min=0,
-             OPTION      =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE","TOUT"),
+             OPTION      =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","PLUS_GRANDE","BANDE","CENTRE","TOUT"),
                                    fr="Choix de l option et par conséquent du shift du problème modal" ),
              b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",fr="Recherche des plus petites fréquences propres",
-               NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),
+               NMAX_FREQ       =SIMP(statut='f',typ='I',defaut=10,val_min=0 ),
+             ),
+             b_plus_grande =BLOC(condition = "OPTION == 'PLUS_GRANDE'",fr="Recherche des plus grandes fréquences propres",
+               NMAX_FREQ       =SIMP(statut='f',typ='I',defaut=1,val_min=0 ),
              ),
              b_centre       =BLOC(condition = "OPTION == 'CENTRE'",
-                                  fr="Recherche des valeurs propres les plus proches d'une valeur donnée",
+                                  fr="Recherche des fréquences propres les plus proches d'une valeur donnée",
                FREQ            =SIMP(statut='o',typ='R',
                                      fr="Fréquence autour de laquelle on cherche les fréquences propres"),
                AMOR_REDUIT     =SIMP(statut='f',typ='R',),
                NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),
              ),
              b_bande         =BLOC(condition = "(OPTION == 'BANDE')",
-                                   fr="Recherche des valeurs propres dans une bande donnée",
+                                   fr="Recherche des fréquences propres dans une bande donnée",
                FREQ            =SIMP(statut='o',typ='R',min=2,validators=NoRepeat(),max=2,
                                      fr="Valeur des deux fréquences délimitant la bande de recherche"),
                TABLE_FREQ      =SIMP(statut= 'f',typ=table_sdaster),

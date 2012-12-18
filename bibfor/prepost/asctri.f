@@ -7,7 +7,7 @@
       REAL*8              RM
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,20 +40,20 @@ C
      +              IRET4,IRET5
       REAL*8        X, Y, Z, XMIN, ZMAX, YMAX, PI, R8PI, R8MAEM, ZINF,
      +              ZSUP, RNORM, XOR, YOR, ZOR, XEX, YEX, ZEX
-      CHARACTER*8   K8B,  NOGRN1, NOGRN2, NOGRN3, NOGRN4, NOGRN5
-      CHARACTER*24  GRPNOE, COORD
+      CHARACTER*8   K8B
+      CHARACTER*24  GRPNOE,COORD,NOGRN1,NOGRN2,NOGRN3,NOGRN4,NOGRN5
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
 C
       PI = R8PI()
-      GRPNOE = MAILLA//'.GROUPENO       '
+      GRPNOE = MAILLA//'.GROUPENO'
       COORD  = MAILLA//'.COORDO    .VALE'
 C
       CALL JEVEUO (COORD,'E',ICOOR)
 C
-      NOGRN1 = 'P_AXE_1 '
-      NOGRN2 = 'P_AXE_2 '
+      NOGRN1 = 'P_AXE_1'
+      NOGRN2 = 'P_AXE_2'
       CALL JEEXIN ( JEXNOM(GRPNOE,NOGRN1), IRET1 )
       CALL JEEXIN ( JEXNOM(GRPNOE,NOGRN2), IRET2 )
 C
@@ -105,8 +105,8 @@ C
 C
       END IF
 C
-      NOGRN1 = 'NOLIG1 '
-      NOGRN2 = 'NOLIG2 '
+      NOGRN1 = 'NOLIG1'
+      NOGRN2 = 'NOLIG2'
       CALL JEEXIN ( JEXNOM(GRPNOE,NOGRN1), IRET1 )
       CALL JEEXIN ( JEXNOM(GRPNOE,NOGRN2), IRET2 )
 C
@@ -161,8 +161,8 @@ C
 C   TRI POINTS DES GRAND AXE
 C   GROUPES G_AXE_1 ET G_AXE_2
 C
-      NOGRN1 = 'G_AXE_1 '
-      NOGRN2 = 'G_AXE_2 '
+      NOGRN1 = 'G_AXE_1'
+      NOGRN2 = 'G_AXE_2'
       CALL JEEXIN ( JEXNOM(GRPNOE,NOGRN1), IRET1 )
       CALL JEEXIN ( JEXNOM(GRPNOE,NOGRN2), IRET2 )
 C

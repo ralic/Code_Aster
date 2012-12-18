@@ -1,4 +1,4 @@
-#@ MODIF med2 Messages  DATE 26/11/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med2 Messages  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,8 +23,8 @@ cata_msg = {
 
 1 : _(u"""
   -> Les groupes '%(k1)s' et '%(k2)s'
-     ont les mêmes huit premiers caractères, leur nom court est
-     donc '%(k3)s'.
+     ont les mêmes vingt quatre premiers caractères, leur nom
+     court est donc '%(k3)s'.
      Comme il n'est pas légitime dans le cas général que deux
      groupes aux noms initialement différents soient fusionnés,
      le calcul s'arrête.

@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,7 @@ C     POUR LCMATE (MONOCRISTAL)
       INTEGER       NBCOMM(1),NFS,NSG
       INTEGER       NUMHSR(1)
       REAL*8        TOUTMS(1),HSR(1)
-      CHARACTER*16  CPMONO(1)
+      CHARACTER*24  CPMONO(1)
 C
       COMMON /TDIM/   NDT  , NDI
       COMMON /METI/   METING

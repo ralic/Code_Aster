@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -247,6 +247,8 @@ C     ----------------------------------
         CALL JEDETR(MAILLA//'.DIME')
         CALL JEDETR(MAILLA//'.GROUPEMA')
         CALL JEDETR(MAILLA//'.GROUPENO')
+        CALL JEDETR(MAILLA//'.PTRNOMMAI')
+        CALL JEDETR(MAILLA//'.PTRNOMNOE')
         CALL JEDETR(MAILLA//'.NOMACR')
         CALL JEDETR(MAILLA//'.NOMMAI')
         CALL JEDETR(MAILLA//'.NOMNOE')

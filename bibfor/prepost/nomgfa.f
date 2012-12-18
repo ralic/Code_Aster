@@ -1,10 +1,10 @@
       SUBROUTINE NOMGFA ( NOGR, NBGR, DGF, NOGRF, NBGF )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
-C RESPONSABLE DURAND C.DURAND
+C MODIF PREPOST  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ C
       INTEGER NBGF, NBGR
       INTEGER DGF(*)
       CHARACTER*80 NOGRF(*)
-      CHARACTER*8  NOGR(NBGR)
+      CHARACTER*24 NOGR(NBGR)
 C
 C 0.2. ==> COMMUNS
 C
@@ -47,16 +47,14 @@ C
 C
 C     ------------------------------------------------------------------
 C
-C               123456789012345678901234567890123456
-      SAUX72 = '                                    '//
-     >         '                                    '
+      SAUX72 = ' '
 C
       NBGF = 0
       DO 10 , IAUX = 1,NBGR
         IF ( EXIGFA(DGF,IAUX) ) THEN
           NBGF = NBGF + 1
-          NOGRF(NBGF)(1:8) = NOGR(IAUX)
-          NOGRF(NBGF)(9:80) = SAUX72
+          NOGRF(NBGF)(1:24) = NOGR(IAUX)
+          NOGRF(NBGF)(25:80) = SAUX72
         ENDIF
   10  CONTINUE
 C

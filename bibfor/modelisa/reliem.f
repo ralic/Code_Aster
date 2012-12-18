@@ -10,7 +10,7 @@
       CHARACTER*(*) LITROZ,TYPEM,MOTFAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,9 +64,10 @@ C ----------------------------------------------------------------------
       INTEGER ITRNO,ITRMA,IMA,INO,NBMA,NBNO,NBNOMA,IMO,IER,JMODEL
       INTEGER LMA,LNO,ITBMA,ITBNO,IRET,INOEM,NTOU,K,IFM,NIV
       REAL*8  R8BID
-      CHARACTER*8 KARG,K8B,TYPE2,OUI,NOENT,NOMGD
+      CHARACTER*8 K8B,TYPE2,OUI,NOENT,NOMGD
       CHARACTER*16 MOTFAC,MOTCLE,TYPMCL,PHENOM
       CHARACTER*19 LIGREL
+      CHARACTER*24 KARG
       INTEGER      IARG
 C     ------------------------------------------------------------------
 
@@ -158,12 +159,22 @@ C        -----------------
         CALL GETVEM(MA,TYPMCL,MOTFAC,MOTCLE,IOCC,IARG,0,KARG,NEM)
         NEM = -NEM
         IF (NEM.EQ.0) GO TO 90
-        CALL WKVECT('&&RELIEM.NOM_EM','V V K8',NEM,INOEM)
-        CALL GETVEM(MA,TYPMCL,MOTFAC,MOTCLE,IOCC,IARG,NEM,ZK8(INOEM),
-     &              NEM)
+        IF ( MOTCLE(1:6).NE.'GROUP_' ) THEN
+          CALL WKVECT('&&RELIEM.NOM_EM','V V K8',NEM,INOEM)
+          CALL GETVEM(MA,TYPMCL,MOTFAC,MOTCLE,IOCC,IARG,NEM,
+     &                ZK8(INOEM),NEM)
+        ELSE
+          CALL WKVECT('&&RELIEM.NOM_EM','V V K24',NEM,INOEM)
+          CALL GETVEM(MA,TYPMCL,MOTFAC,MOTCLE,IOCC,IARG,NEM,
+     &                ZK24(INOEM),NEM)
+        ENDIF
 
         DO 80 IEM = 1,NEM
-          KARG = ZK8(INOEM-1+IEM)
+          IF ( MOTCLE(1:6).NE.'GROUP_' ) THEN
+            KARG = ZK8(INOEM-1+IEM)
+          ELSE
+            KARG = ZK24(INOEM-1+IEM)
+          ENDIF
 
           IF (TYPMCL.EQ.'MAILLE') THEN
             CALL JENONU(JEXNOM(MA//'.NOMMAI',KARG),IMA)

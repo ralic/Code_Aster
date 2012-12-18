@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/10/2012   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,6 +97,7 @@ MODE_LOCAL__
     ERICTRA  = RICE_TRA ELEM__         (TRIAX    RSR0     VOLU     NUMEMA   DEPSEQ   )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
+    CFREQR   = FREQ_R   ELEM__         (FREQ     )
     ESIGMPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY )
     ESIGMPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     QXX      QXY
@@ -165,11 +166,12 @@ OPTION__
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            299   IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR   DDL_MECA PTHETAR
+                                     ZVARCPG  PVARCRR  DDL_MECA PTHETAR  CFREQR   PPULPRO  CCOMPOR  PCOMPOR
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          299   IN__   DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  CFISSR   PFISSR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR   DDL_MECA PTHETAR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR  CFREQR   PPULPRO
+                                     CCOMPOR  PCOMPOR
                               OUT__  EKTHETA  PGTHETA
     CALC_NOEU_BORD      290   IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR

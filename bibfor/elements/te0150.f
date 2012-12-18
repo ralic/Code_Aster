@@ -4,7 +4,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C    --- RECUPERATION DU MATERIAU TORSION POUR ALPHA
             CALL JEVEUO(ZK16(ICOMPO-1+7),'L',ISDCOM)
             CALL JEVEUO(ZK16(ICOMPO-1+7)(1:8)//'.CPRI','L',ISICOM)
             NBGFMX=ZI(ISICOM+2)
-            MATERI=ZK16(ISDCOM+6*NBGFMX)(1:8)
+            MATERI=ZK24(ISDCOM+6*NBGFMX)(1:8)
          ELSE
             ITYPE=0
             A   = ZERO

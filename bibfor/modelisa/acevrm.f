@@ -1,6 +1,6 @@
       SUBROUTINE ACEVRM(NBOCC,NOMA,NOEMAX,NOEMAF,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C IN  : NOMA   : NOM DU MAILLAGE
 C OUT : NOEMAX : NOMBRE TOTAL DE NOEUDS MAX
 C ----------------------------------------------------------------------
       CHARACTER*24 MAGRMA
-      CHARACTER*8  NOGP, NOGL
+      CHARACTER*24 NOGP, NOGL
       CHARACTER*8  K8B
       INTEGER      IARG
 C-----------------------------------------------------------------------

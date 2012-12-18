@@ -7,7 +7,7 @@
       CHARACTER*8 NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF POSTRELE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +39,9 @@ C     ------------------------------------------------------------------
       REAL*8 EPSI
       LOGICAL OUVERT
       CHARACTER*1 K1B
-      CHARACTER*8 K8B,NOMCRB,TYPM,NOMGR,NOMMA,NOMSE,NOMM1,NOMM2,NOEUD
+      CHARACTER*8 K8B,NOMCRB,TYPM,NOMMA,NOMSE,NOMM1,NOMM2
       CHARACTER*16 TYPCRB,OPERA
-      CHARACTER*24 CONEC,TYPE,NOMMAI,NOMNOE
+      CHARACTER*24 CONEC,TYPE,NOMMAI,NOMNOE,NOEUD,NOMGR
       CHARACTER*24 GRPMAI,NCHMIN,NMAIL1,NMAIL2,NTPCRB,NNOMMA
       CHARACTER*24 VALK(7)
       INTEGER      IARG
@@ -100,11 +100,11 @@ C----------------------------------------------------------------------
         END IF
         IF (N2.NE.0) THEN
           N2 = -N2
-          CALL WKVECT('&&OP0050.GROUP_MA','V V K8',N2,JGRMA)
+          CALL WKVECT('&&OP0050.GROUP_MA','V V K24',N2,JGRMA)
           CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,IARG,N2,
-     &                ZK8(JGRMA),N2)
+     &                ZK24(JGRMA),N2)
           DO 30,IG = 1,N2,1
-            NOMGR = ZK8(JGRMA+IG-1)
+            NOMGR = ZK24(JGRMA+IG-1)
             CALL JENONU(JEXNOM(GRPMAI,NOMGR),EXISTE)
             IF (EXISTE.EQ.0) THEN
               IER = IER + 1
@@ -150,11 +150,11 @@ C----------------------------------------------------------------------
           CALL JEDETR('&&OP0050.MAILLE')
         ELSE
           N2 = -N2
-          CALL WKVECT('&&OP0050.GROUP_MA','V V K8',N2,JGRMA)
+          CALL WKVECT('&&OP0050.GROUP_MA','V V K24',N2,JGRMA)
           CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,IARG,N2,
-     &                ZK8(JGRMA),N2)
+     &                ZK24(JGRMA),N2)
           DO 70,IG = 1,N2,1
-            NOMGR = ZK8(JGRMA+IG-1)
+            NOMGR = ZK24(JGRMA+IG-1)
             CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONUTI',NBM,K1B)
             CALL JEVEUO(JEXNOM(GRPMAI,NOMGR),'L',JGRM2)
             DO 60,IM = 1,NBM,1

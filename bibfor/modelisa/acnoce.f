@@ -4,12 +4,13 @@
 
       CHARACTER*32 JEXNUM,JEXNOM
       REAL*8 COOR(*), XCEN(3), RC, TOLE, V1(3)
-      CHARACTER*8         NOMA, LISTE(*)
-      CHARACTER*4         TYPE
+      CHARACTER*8 NOMA
+      CHARACTER*24 LISTE(*)
+      CHARACTER*4 TYPE
       INTEGER NB, ISPV
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +35,7 @@ C     UTILISE PAR DEFI_ARC
 C ----------------------------------------------------------------------
 C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : TYPE   : 'TOUT', 'GRMA', 'LIMA'
-C IN  : LISTE  : VECTEUR DE K8( NB) : LISTE DES MAILLES OU GROUPES
+C IN  : LISTE  : VECTEUR DE K24( NB) : LISTE DES MAILLES OU GROUPES
 C IN  : NB     : DIMENSION DE LISTE
 C IN  : COOR   : NOEUD EXTREMITE DE L'ENSEMBLE DES MAILLES
 C IN  : RC     : RAYON DU CERCLE

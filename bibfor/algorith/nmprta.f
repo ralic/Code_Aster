@@ -6,7 +6,7 @@
      &                  SDDYNA,MEELEM,MEASSE,VEELEM,VEASSE,
      &                  SDNUME,LDCCVG,FACCVG,RESCVG,CODERE)
 C
-C MODIF ALGORITH  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 17/12/2012   AUTEUR DESOZA T.DESOZA 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -179,7 +179,8 @@ C
       IF (LELTC) THEN
         CALL NMFOCC('PREDICTION',
      &              MODELE,MATE  ,NUMEDD,FONACT,DEFICO,
-     &              RESOCO,SOLALG,VALINC,VEELEM,VEASSE)
+     &              RESOCO,SDSTAT,SDTIME,SOLALG,VALINC,
+     &              VEELEM,VEASSE)
       ENDIF
 C
 C --- CALCUL DU SECOND MEMBRE

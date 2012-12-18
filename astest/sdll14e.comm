@@ -1,0 +1,192 @@
+# MODIF  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
+# RESPONSABLE BRIE
+# TITRE  : MODES DE VIBRATION D'UN COUDE DE TUYAUTERIE MINCE
+# sdll14e.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test V
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#---------------------------------------------------------------------
+#  - ANALYSE DYNAMIQUE D'UNE TUYAUTERIE COMPORTANT UN COUDE
+#  - MODELISATION AVEC DES ELEMENTS 'TUYAU'
+#  - CALCUL DE LA PLUS GRANDE FREQUENCE PROPRE
+#    EN ECHANGEANT A LA MAIN LES ROLES DES MATRICES DE RIGIDITE ET MASSE
+#---------------------------------------------------------------------
+DEBUT( CODE=_F( NOM = 'SDLL14E',NIV_PUB_WEB='INTERNET'), PAR_LOT='NON',
+       IGNORE_ALARM=('SUPERVIS_1','ALGELINE3_58','ALGELINE4_68','ALGELINE5_15'),)
+
+#
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',   INFO=2)
+
+#
+MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,         MAILLAGE=MAILLAGE,CREA_GROUP_NO=(
+                          _F(  NOM = 'A',  NOEUD = 'NO23'),
+                          _F(  NOM = 'B',  NOEUD = 'NO2'),
+                          _F(  NOM = 'C',  NOEUD = 'NO40'),
+                          _F(  NOM = 'D',  NOEUD = 'NO1')))
+
+MODELE=AFFE_MODELE(   MAILLAGE=MAILLAGE,
+                            AFFE=_F( TOUT = 'OUI',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = 'TUYAU_3M')
+                     )
+
+#
+#---------------------------------------------------------------------
+#                        CARACTERISTIQUES ELEMENTAIRES
+#---------------------------------------------------------------------
+CARELEM=AFFE_CARA_ELEM(   MODELE=MODELE,
+                           POUTRE=_F( GROUP_MA = 'TOUT_ELE', 
+                                   SECTION = 'CERCLE',
+                                   CARA = ('R', 'EP',),
+                                   VALE = (0.010, 0.002,),
+                          MODI_METRIQUE = 'OUI'),
+                            ORIENTATION=_F( GROUP_NO = 'D',
+                                         CARA = 'GENE_TUYAU',
+                                         VALE = (0., 0., 1.,))
+                          )
+
+#
+#---------------------------------------------------------------------
+#                        CARACTERISTIQUES MATERIAUX
+#---------------------------------------------------------------------
+MATER=DEFI_MATERIAU(   ELAS=_F( E = 2.1E+11, NU = 0.3, RHO = 7800.))
+
+#  
+AFF_MAT=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,
+                               AFFE=_F( TOUT = 'OUI', MATER = MATER)
+                         )
+
+#
+#---------------------------------------------------------------------
+#                        CHARGEMENTS
+#---------------------------------------------------------------------
+COND_LIM=AFFE_CHAR_MECA(     MODELE=MODELE,DDL_IMPO=(
+                             _F( GROUP_NO = ('C', 'D',),
+                                      DX = 0., DY = 0., DZ = 0.,
+                                      DRX = 0., DRY = 0., DRZ = 0.,
+                                      UI2 = 0., VI2 = 0., WI2 = 0.,
+                                      UO2 = 0., VO2 = 0., WO2 = 0., 
+                                      UI3 = 0., VI3 = 0., WI3 = 0.,
+                                      UO3 = 0., VO3 = 0., WO3 = 0.,
+                                      WI1 = 0., WO1 = 0., WO = 0.),
+                             _F( GROUP_NO = 'B',
+                                      DX = 0., DZ = 0.),
+                             _F( GROUP_NO = 'A',
+                                      DY = 0., DZ = 0.))
+                          )
+
+#
+#---------------------------------------------------------------------
+#                        RESOLUTION
+#---------------------------------------------------------------------
+ASSEMBLAGE(        MODELE=MODELE,
+                      CARA_ELEM=CARELEM,
+                     CHAM_MATER=AFF_MAT,
+                         CHARGE=(COND_LIM,),
+                       NUME_DDL=CO("NU"),
+                        SOLVEUR=_F(  METHODE = 'LDLT'),MATR_ASSE=(
+                      _F(  MATRICE = CO("M"),  OPTION = 'MASS_MECA'),
+                      _F(  MATRICE = CO("K"),  OPTION = 'RIGI_MECA'),),
+                          TITRE='MAT_ASSE'
+                  )
+
+
+## CALCUL DE LA PLUS GRANDE FREQUENCE PROPRE
+
+# - avec un echange des matrices de raideur et masse fait par
+# l'utilisateur (en transferant au prealable les DDL de Lagrange de
+# la matrice de raideur vers celle de masse, grace a des combinaisons
+# lineaires de matrices)
+     # raideur + masse avec les Lagrange de la raideur
+K_PLUS_M=COMB_MATR_ASSE(COMB_R=(
+                                _F( MATR_ASSE = K , COEF_R = 1.),         
+                                _F( MATR_ASSE = M , COEF_R = 1.),
+                                ),
+                        );
+
+     # raideur sans ses Lagrange
+K_SL=COMB_MATR_ASSE(COMB_R=(
+                                _F( MATR_ASSE = K , COEF_R = 1.),
+                                ),
+                        SANS_CMP = 'LAGR',
+                        );
+
+     # masse avec les Lagrange de la raideur
+M_SL=COMB_MATR_ASSE(COMB_R=(
+                                _F( MATR_ASSE = K_PLUS_M , COEF_R = 1.),         
+                                _F( MATR_ASSE = K_SL , COEF_R = -1.),
+                                ),
+                        );
+
+MODE_PG=MODE_ITER_SIMULT(TYPE_RESU='GENERAL',
+                       MATR_A=M_SL,
+                       MATR_B=K_SL,
+                       METHODE='TRI_DIAG',
+                       CALC_CHAR_CRIT=_F(OPTION='PLUS_PETITE',
+                                         NMAX_CHAR_CRIT=1,),
+                       VERI_MODE=_F(STURM='NON',
+                                    STOP_ERREUR='NON'),);
+
+TA_FREQ = RECU_TABLE( CO=MODE_PG,
+                      NOM_PARA='CHAR_CRIT')
+FO_FREQ = RECU_FONCTION( TABLE=TA_FREQ,
+                         PARA_X='NUME_ORDRE',
+                         PARA_Y='CHAR_CRIT')
+f = FO_FREQ.Valeurs()[1][0] # extraction de la valeur propre contenue dans MODE_PG2
+from math import pi, sqrt
+f_max_systeme = 1. / (2*pi*sqrt(f) ) # conversion en valeur physique.
+# Cette valeur est la reference pour la modelisation SDLL14d.
+
+
+MODE_PG2=MODE_ITER_SIMULT(
+                       MATR_RIGI=M_SL,
+                       MATR_MASS=K_SL,
+                       METHODE='TRI_DIAG',
+                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                         NMAX_FREQ=1,),
+                       VERI_MODE=_F(STURM='NON',
+                                    STOP_ERREUR='NON'),);
+
+TA_FREQ2 = RECU_TABLE( CO=MODE_PG2,
+                      NOM_PARA='FREQ')
+FO_FREQ2 = RECU_FONCTION( TABLE=TA_FREQ2,
+                         PARA_X='NUME_ORDRE',
+                         PARA_Y='FREQ')
+f2 = FO_FREQ2.Valeurs()[1][0] # extraction de la valeur propre contenue dans MODE_PG2
+f_max_systeme2 = 1. / (4*pi**2*f2) # conversion en valeur physique.
+# Cette valeur est la reference pour la modelisation SDLL14d.
+# On doit avoir f_max_systeme = f_max_systeme2
+
+#---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+#---------------------------------------------------------------------
+TEST_RESU(RESU=(
+                _F(RESULTAT = MODE_PG,
+                   PARA = 'CHAR_CRIT',
+                   CRITERE = 'RELATIF',
+                   NUME_ORDRE = 1,
+                   VALE_CALC = 2.7194293382909E-13),
+                _F(RESULTAT = MODE_PG2,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   NUME_ORDRE = 1,
+                   VALE_CALC = 8.29964E-08),
+    ),)
+
+#
+FIN()
+#
