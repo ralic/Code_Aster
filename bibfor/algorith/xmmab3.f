@@ -1,11 +1,11 @@
-      SUBROUTINE XMMAB3(NDIM  ,NNO   ,NNOS  ,NNOL ,NNOF, PLA,
-     &                    IPGF,IVFF  ,FFC   ,FFP ,JAC   ,KNP,
-     &                    NFH   ,NOEUD ,SEUIL,TAU1,TAU2,MU,
-     &                    SINGU ,RR    ,IFA,CFACE,LACT,DDLS  ,DDLM  ,
-     &                    LPENAF,MMAT )
+      SUBROUTINE XMMAB3(NDIM  ,NNO   ,NNOS  ,NNOL ,PLA,
+     &                  FFC   ,FFP ,JAC   ,KNP,
+     &                  NFH   ,SEUIL,TAU1,TAU2,MU,
+     &                  SINGU ,RR ,LACT,DDLS  ,DDLM  ,
+     &                  MMAT )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,14 +25,12 @@ C ======================================================================
 C
 C TOLE CRP_21
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
-      INTEGER     NDIM,NNO,NNOS,NNOL,NNOF,IVFF,IPGF
-      INTEGER     NFH,DDLS,DDLM,CFACE(5,3),IFA
+      INTEGER     NDIM,NNO,NNOS,NNOL
+      INTEGER     NFH,DDLS,DDLM
       INTEGER     SINGU,PLA(27),LACT(8)
       REAL*8      MMAT(216,216)
       REAL*8      FFC(8),FFP(27),JAC,TAU1(3),TAU2(3)
       REAL*8      RR,SEUIL,KNP(3,3),MU
-      LOGICAL     NOEUD,LPENAF
 C ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
 C
 C --- CALCUL DE B, BT
@@ -64,11 +62,9 @@ C IN  CFACE  : CONNECTIVITÉ DES NOEUDS DES FACETTES
 C IN  LACT   : LISTE DES LAGRANGES ACTIFS
 C IN  DDLS   : NOMBRE DE DDL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
 C IN  DDLM   : NOMBRE DE DDL A CHAQUE NOEUD MILIEU
-C IN  LPENAF : INDICATEUR DE PENALISATION DU FROTTEMENT
 C I/O MMAT   : MATRICE ELEMENTAITRE DE CONTACT/FROTTEMENT
 C
 C
-
 C
       INTEGER I,J,K,L,JN,NLI,PLI
       REAL*8  FFI,TAUKNP(2,3)
@@ -82,14 +78,9 @@ C     II.3.1. CALCUL DE B ET DE BT
 
       DO 160 I = 1,NNOL
         PLI=PLA(I)
-        IF (NOEUD) THEN
-          FFI=FFC(I)
-          NLI=LACT(I)
-          IF (NLI.EQ.0) GOTO 160
-        ELSE
-          FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-          NLI=CFACE(IFA,I)
-        ENDIF
+        FFI=FFC(I)
+        NLI=LACT(I)
+        IF (NLI.EQ.0) GOTO 160
 
 C     CALCUL DE TAU.KN.P
       DO 161 J = 1,NDIM
@@ -115,11 +106,11 @@ C     CALCUL DE TAU.KN.P
             MMAT(PLI+K,JN+NDIM+L) =
      &      MMAT(PLI+K,JN+NDIM+L) +
      &      2.D0*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC
-            IF(.NOT.LPENAF)THEN
-              MMAT(JN+NDIM+L,PLI+K) =
-     &        MMAT(JN+NDIM+L,PLI+K) +
+
+            MMAT(JN+NDIM+L,PLI+K) =
+     &      MMAT(JN+NDIM+L,PLI+K) +
      &        2.D0*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC
-            ENDIF
+
 C
  167      CONTINUE
 C
@@ -129,11 +120,9 @@ C
      &      MMAT(PLI+K,JN+NDIM*(1+NFH)+L) +
      &      2.D0*RR*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC
 C
-            IF(.NOT.LPENAF)THEN
-              MMAT(JN+NDIM*(1+NFH)+L,PLI+K) =
-     &        MMAT(JN+NDIM*(1+NFH)+L,PLI+K) +
+            MMAT(JN+NDIM*(1+NFH)+L,PLI+K) =
+     &      MMAT(JN+NDIM*(1+NFH)+L,PLI+K) +
      &        2.D0*RR*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC
-            ENDIF
 C
  168      CONTINUE
  166    CONTINUE

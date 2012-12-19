@@ -1,7 +1,7 @@
       SUBROUTINE XMLIGR(NOMA  ,NOMO  ,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,21 +56,27 @@ C
       INTEGER IMOD,IATT(2),IMAIL(2),NNO(2),NDIM
       CHARACTER*24 TABFIN,NOSDCO
       CHARACTER*19 LIGRXF
-      CHARACTER*16 NOMTE,NOMTM,NOMTE2(NBTYP),MAIL3(2,4)
+      CHARACTER*16 NOMTE,NOMTM,NOMTE2(NBTYP),MAIL3(2,8)
       CHARACTER*8  K8BID
       CHARACTER*4  MODE(3)
-      CHARACTER*3  MAIL2(2,4)
-      CHARACTER*2  MAIL(2,4)
+      CHARACTER*3  MAIL2(2,8)
+      CHARACTER*2  MAIL(2,8)
       CHARACTER*1  ATTR(7)
 C
       DATA (MODE(K),K=1,3) /'MECP','MEDP','ME3D'/
       DATA (ATTR(K),K=1,7) /'H','C','T','2','3','4','H'/
-      DATA (MAIL(1,K),K=1,4) /'T3','Q4','T6','Q8'/
-      DATA (MAIL(2,K),K=1,4) /'T4','P6','H8',' '/
-      DATA (MAIL2(1,K),K=1,4) /'TR3','QU4','TR6','QU8'/
-      DATA (MAIL2(2,K),K=1,4) /'TE4','PE6','HE8',' '/
-      DATA (MAIL3(1,K),K=1,4) /'TRIA3','QUAD4','TRIA6','QUAD8'/
-      DATA (MAIL3(2,K),K=1,4) /'TETRA4','PENTA6','HEXA8',' '/
+      DATA (MAIL(1,K),K=1,8) /'T3','Q4','T6','Q8',
+     &                         ' ',' ',' ',' '/
+      DATA (MAIL(2,K),K=1,8) /'T4','P5','P6','H8',
+     &                        'TD','PT','PQ','HV'/
+      DATA (MAIL2(1,K),K=1,8) /'TR3','QU4','TR6','QU8',
+     &                         ' ',' ',' ',' '/
+      DATA (MAIL2(2,K),K=1,8) /'TE4','PY5','PE6','HE8',
+     &                         'T10','P13','P15','H20'/
+      DATA (MAIL3(1,K),K=1,8) /'TRIA3','QUAD4','TRIA6','QUAD8',
+     &                         ' ',' ',' ',' '/
+      DATA (MAIL3(2,K),K=1,8) /'TETRA4','PYRAM5','PENTA6','HEXA8',
+     &                         'TETRA10','PYRAM13','PENTA15','HEXA20'/
 
 C ----------------------------------------------------------------------
 C

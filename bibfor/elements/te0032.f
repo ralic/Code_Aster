@@ -4,7 +4,7 @@
 
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C DEB ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
 C
-      UNDEMI = 0.5 D0
+      UNDEMI = 0.5D0
       IPLAN  = 0
 C
       CALL JEVECH ('PGEOMER', 'L', JGEOM)

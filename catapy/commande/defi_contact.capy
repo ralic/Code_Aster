@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -537,14 +537,11 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
                                             ),
 
-                                       RELATION       = SIMP(statut='f',typ='TXM',defaut="NON",
-                                                             into=("CZM_EXP_REG","CZM_LIN_REG","NON"),),
-
                                        ALGO_LAGR      = SIMP(statut='f',typ='TXM',defaut="VERSION1",
                                                              into=("NON","VERSION1","VERSION2"),),
 
                                        ALGO_CONT      = SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                  into=("STANDARD","AVANCE","PENALISATION","CZM"),),
+                                                                  into=("STANDARD","PENALISATION","CZM"),),
 
                                        b_cont_nczm =BLOC(condition = "ALGO_CONT!='CZM'",
                                                 CONTACT_INIT   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
@@ -556,34 +553,27 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                 COEF_CONT    =SIMP(statut='f',typ='R',defaut=100.E+0),
                                                 ),
 
-                                       b_cont_avc=BLOC(condition = "ALGO_CONT == 'AVANCE' ",
-                                                 fr="Parametres du Lagrangien augmenté",
-                                                 COEF_REGU_CONT =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                 COEF_STAB_CONT =SIMP(statut='f',typ='R',defaut=0.E+0),
-                                                 COEF_PENA_CONT =SIMP(statut='f',typ='R',defaut=0.E+0),
-                                                 ),
-
                                        b_cont_pen=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
                                                  fr="Paramètre de la méthode pénalisée",
                                                  COEF_PENA_CONT =SIMP(statut='o',typ='R'),
                                                  ),
+
+                                       b_cont_czm=BLOC(condition = "ALGO_CONT == 'CZM'",
+                                                fr="Parametres de la formulation cohesive",
+                                                RELATION       = SIMP(statut='f',typ='TXM',defaut="NON",
+                                                                 into=("CZM_EXP_REG","CZM_LIN_REG","CZM_TAC_MIX","CZM_OUV_MIX","NON"),)
+                                                ),
 
                                        b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' and  ALGO_CONT != 'CZM' ",
                                                  fr="Paramètres du frottement",
                                                  COULOMB      =SIMP(statut='o',typ='R',),
                                                  SEUIL_INIT   =SIMP(statut='f',typ='R',defaut=0.E+0),
                                                  ALGO_FROT    =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                            into=("STANDARD","AVANCE","PENALISATION"),),
+                                                                            into=("STANDARD","PENALISATION"),),
 
                                                  b_frot_std=BLOC(condition = "ALGO_FROT == 'STANDARD' ",
                                                                   fr="Parametres de la formulation Lagrangienne",
                                                                   COEF_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                                  ),
-                                                 b_frot_avc=BLOC(condition = "ALGO_FROT == 'AVANCE' ",
-                                                                  fr="Parametres du Lagrangien augmenté",
-                                                                  COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                                  COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
-                                                                  COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
                                                                   ),
                                                  b_frot_pen=BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
                                                                   fr="Paramètre de la méthode pénalisée",

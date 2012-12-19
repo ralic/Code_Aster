@@ -1,0 +1,387 @@
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+# TITRE TEST DES ELEMENTS D'INTERFACE SUR UNE PLAQUE TROUEE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ssnp133i.para = tps_job 400 mem_job 512Mo ncpus 1 liste_test S
+
+DEBUT(CODE=_F( NOM = 'SSNP133I',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT = 'OUI')
+
+# NB DE PAS DE TEMPS DE CALCUL ET NOMBRE DE PAS DE TEMPS ARCHIVE
+tfin=149
+nbpas=tfin*2
+nbpas_arch = tfin
+c_mult_pilo = 10
+
+# DONNEES MATERIAU
+young = 30000.E6
+poiss = 0.2
+Gc = 200.
+Sc = 2.E5
+
+#--------------------------------------------------------------
+# MAILLAGE ET MODELE
+#--------------------------------------------------------------
+
+MA_0 = LIRE_MAILLAGE(FORMAT='MED')
+
+MA = CREA_MAILLAGE(MAILLAGE  = MA_0, LINE_QUAD = _F(TOUT='OUI')) 
+
+# on a modifie les groupes pour le maillage plein
+MA = DEFI_GROUP(reuse = MA,
+       MAILLAGE = MA,
+       CREA_GROUP_MA = (
+          _F(NOM = 'FACE_SUP', GROUP_MA = 'FACESUP'),
+          _F(NOM = 'FACE_INF', GROUP_MA = 'FACEINF'),          
+          _F(NOM = 'MATIERE' , GROUP_MA = 'TOUT'),                  
+       ),
+       CREA_GROUP_NO = (
+          _F(NOM = 'P_RIG', GROUP_NO = 'PRIG'),
+          _F(GROUP_MA = 'FACE_SUP'),   
+          _F(GROUP_MA = 'FACE_INF'),                
+          _F(NOM = 'N_INTER',GROUP_NO = 'INTER'), 
+          _F(NOM    = 'N_MIL',
+             OPTION = 'PLAN',
+             POINT = (0.,0.,),
+             VECT_NORMALE = (0.,1.,),
+             PRECISION = 0.01,
+             ),
+         )
+       );
+  
+# renumerotaion locale pas necessaire
+# en effet on ne sait plus reperer les elements d interface
+
+MO = AFFE_MODELE(
+       MAILLAGE = MA,
+       AFFE = (
+         _F(
+           GROUP_MA     = ('MATIERE'),
+           PHENOMENE    = 'MECANIQUE',
+           MODELISATION = 'D_PLAN' ),
+         _F(
+           GROUP_MA     = ('FACE_SUP','FACE_INF'),
+           PHENOMENE    = 'MECANIQUE',
+           MODELISATION = 'D_PLAN'),
+        ), )
+
+# le repere local avec angles nautiques n est plus necessaire
+# on met ici les commandes X-FEM
+
+LN = FORMULE(VALE='Y',
+             NOM_PARA=('X','Y',),);
+
+FISS=DEFI_FISS_XFEM(MODELE=MO,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
+                    GROUP_MA_ENRI='MATIERE',
+                    INFO=1,);
+
+# definition du groupe de mailles enrichies pour pilotage PRED_ELAS
+
+MA=DEFI_GROUP(reuse=MA,
+              MAILLAGE=MA,
+              INFO=2,
+              CREA_GROUP_MA=_F(FISSURE=FISS,
+                               NOM='TRAVERS',
+                               OPTION='FISS_XFEM',
+                               TYPE_GROUP='HEAVISIDE',),);
+
+# definition du contact : P2P1
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
+                         FISSURE=FISS,
+                         CONTACT='P2P1',                         
+                         );
+
+# on met un algo de type CZM
+CTXFEM = DEFI_CONTACT(
+            MODELE         = MODELEK,
+            FORMULATION    = 'XFEM',
+            FROTTEMENT     = 'SANS',
+            ZONE=(
+                  _F(INTEGRATION='GAUSS',
+                     ORDRE_INT=2,                                   
+                     ALGO_CONT='CZM',
+                     FISS_MAIT = FISS,
+                     ALGO_LAGR='VERSION2',
+                     RELATION='CZM_OUV_MIX',
+                     ),),);
+                     
+                                            
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',
+                      CONTACT_XFEM=CTXFEM,
+                      INFO=2,);
+
+#--------------------------------------------------------------
+# DEFINITION DES PARAMETRES MATERIAUX
+#--------------------------------------------------------------
+
+BETON = DEFI_MATERIAU(ELAS      = _F( E              = young,
+                                      NU             = poiss,
+                                         ),
+                     RUPT_FRAG = _F(
+                                    GC             = Gc,
+                                    SIGM_C         = Sc,
+                                    RIGI_GLIS      =100.0,
+                                    PENA_LAGR      =100.0,
+                                         ),
+                         )
+
+# on ajoute le modele enrichi pour la definition du materiau    
+CHMAT = AFFE_MATERIAU(
+          MAILLAGE = MA,
+          MODELE = MODELEK,
+          AFFE = _F(
+          GROUP_MA = 'MATIERE',
+          MATER    =  BETON
+          ))
+
+#--------------------------------------------------------------
+# DEFINITION DES CHARGEMENTS 
+#--------------------------------------------------------------
+
+# ON BLOQUE LES MOUVEMENTS DE CORPS RIGIDE DS LA DIRECTION X AU POINT P_RIG
+# attention modifer nom du modele
+RIGIDE = AFFE_CHAR_MECA(
+  MODELE   = MODELEK,
+  DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0.0)
+  ) 
+
+# la condition de symetrie change completement
+SYMETRIE = AFFE_CHAR_MECA(
+  MODELE        = MODELEK,
+  LIAISON_GROUP =_F(GROUP_NO_1 = 'N_MIL',
+                     GROUP_NO_2 = 'N_MIL',
+                     DDL_1 = 'DY',
+                     DDL_2 = 'DY',
+                     COEF_MULT_1 = 0.5,
+                     COEF_MULT_2 = 0.5,
+                     COEF_IMPO=0.,),
+  )
+    
+# EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE
+# on impose le symetrique sur la face inferieure
+# attention modifier nom du modele
+fyi=1.0
+TRACTION = AFFE_CHAR_MECA(
+  MODELE = MODELEK,
+  FORCE_CONTOUR = (_F(GROUP_MA = 'FACE_SUP', FY = fyi,),
+                   _F(GROUP_MA = 'FACE_INF', FY = -fyi,),),
+  )
+
+
+#--------------------------------------------------------------
+# REALISATION DU CALCUL
+#--------------------------------------------------------------
+
+# la definition des listes d instants et d'archivage est inchangee
+INSTANTS = DEFI_LIST_REEL(
+                          DEBUT = 0.,
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas), ), 
+                          )
+
+INS_ARCH = DEFI_LIST_REEL(
+                          DEBUT = 0.,
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch), ), 
+                          )
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
+                        ECHEC=_F(
+                  EVENEMENT     = 'ERREUR',
+                  ACTION        = 'AUTRE_PILOTAGE',
+                  SUBD_METHODE  = 'MANUEL',
+                  SUBD_PAS      = 2,
+                  SUBD_PAS_MINI = 1.E-8,
+                  SUBD_NIVEAU   = 10,
+                                 ),)
+
+# calcul
+EVOL = STAT_NON_LINE(INFO=1,
+  MODELE = MODELEK,
+  CHAM_MATER = CHMAT,
+  CONTACT = CTXFEM,
+  EXCIT = (
+    _F(CHARGE = RIGIDE),
+    _F(CHARGE = SYMETRIE),
+    _F(CHARGE = CHXFEM),
+    _F(CHARGE = TRACTION, 
+       TYPE_CHARGE = 'FIXE_PILO',
+      )),
+  COMP_INCR = (_F(RELATION = 'ELAS'      ,  GROUP_MA = 'MATIERE'),),
+  INCREMENT = _F(LIST_INST = DEFLIST,),
+  PILOTAGE  = _F (
+    TYPE           = 'PRED_ELAS',
+    SELECTION      = 'RESIDU',
+    GROUP_MA       = 'JOINT',
+    COEF_MULT      = c_mult_pilo,
+    ETA_PILO_MIN   = 0.01,
+    ETA_PILO_R_MIN = 0,
+    PROJ_BORNES    = 'OUI'
+    ),
+  NEWTON  = _F(
+    MATRICE   = 'TANGENTE',
+    REAC_ITER = 1,
+    ),
+#   CONVERGENCE = _F(
+#     RESI_REFE_RELA = 1.E-6,
+#     SIGM_REFE      = Sc,
+#     DEPL_REFE      = 2*Gc/Sc,
+#     ITER_GLOB_MAXI = 12,
+#     ),
+  CONVERGENCE = _F(
+    RESI_GLOB_RELA = 1.E-8,
+    ITER_GLOB_MAXI = 12,
+    ),
+  SOLVEUR    = _F(METHODE = 'MUMPS', NPREC=10),
+  ARCHIVAGE = _F(
+    LIST_INST      = INS_ARCH
+    )
+  ) 
+
+#--------------------------------------------------------------
+# POST-TRAITEMENT
+#--------------------------------------------------------------
+
+EVOL=CALC_CHAMP(reuse =EVOL,
+                RESULTAT=EVOL,
+                FORCE='FORC_NODA');
+
+FORCE = POST_RELEVE_T(
+                      ACTION = _F(
+                                  INTITULE   = 'FORCE',
+                                  OPERATION  = 'EXTRACTION',
+                                  RESULTANTE = 'DY',
+                                  RESULTAT   =  EVOL,
+                                  NOM_CHAM   = 'FORC_NODA',
+                                  GROUP_NO   = 'FACE_SUP',
+                                  
+                                 ),
+                     )
+
+TAB_U = POST_RELEVE_T(
+                      ACTION = _F(
+                                  INTITULE   = 'DEPL',
+                                  RESULTAT   = EVOL,
+                                  OPERATION  = 'EXTRACTION',
+                                  NOM_CHAM   = 'DEPL',
+                                  NOM_CMP    = 'DY',
+                                  GROUP_NO   = 'N_INTER',
+                                 ),
+                     )
+
+UY = RECU_FONCTION ( TABLE  = TAB_U,
+                     PARA_X = 'INST',
+                     PARA_Y = 'DY' 
+                   )
+
+FY = RECU_FONCTION ( TABLE  = FORCE,
+                     PARA_X = 'INST',
+                     PARA_Y = 'DY'
+                   )
+
+
+#--------------------------------------------------------------
+# TESTS SUR LA REPONSE GLOBALE
+#--------------------------------------------------------------
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 2.889030473528E-03,
+           VALE_REFE= 2.8872E-03,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 2.8593414992398E+07,
+           VALE_REFE= 2.8603E+07,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 6.4280128815484E-03,
+           VALE_REFE= 6.43269E-03,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=75,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 9.824563598453E+06,
+           VALE_REFE= 9.8916E+06,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           PRECISION=0.01,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=75,),
+           )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 7.8165934630859E-03,
+           VALE_REFE= 7.8109E-03,
+           NOM_PARA='DY',
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=100,),
+           )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 4.6694779340651E+06,
+           VALE_REFE= 4.7092E+06,
+           NOM_PARA='DY',
+           PRECISION=0.01,
+           TABLE=FORCE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=100,),
+           )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 0.022053060573647,
+           VALE_REFE= 2.2116E-02,
+           NOM_PARA='DY',
+           PRECISION=0.01,
+           TABLE=TAB_U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=140,),
+           )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_CALC= 6.1088066209655E+05,
+           VALE_REFE= 6.24908E+05,
+           NOM_PARA='DY',
+           TABLE=FORCE,
+           PRECISION=0.03,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=140,),
+           )
+
+
+#--------------------------------------------------------------
+IMPR_FONCTION(
+              FORMAT='TABLEAU',
+              COURBE=_F(FONC_X = UY,
+                        FONC_Y = FY,
+                       )
+             )
+
+IMPR_TABLE(TABLE=TAB_U)             
+IMPR_TABLE(TABLE=FORCE)             
+
+FIN()
+

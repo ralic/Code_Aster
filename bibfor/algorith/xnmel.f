@@ -18,7 +18,7 @@
        REAL*8       LST(NNOP),MATUU(*),SIG(*),BASLOC(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/10/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C----------------------------------------------------------------
       INTEGER       J,ISE,IN,INO,IDEBS,IDEBV
       INTEGER       IBID,IDECPG,NBSIG,IG,IFISS
       INTEGER       IRESE,NNO,FISNO(NNOP,NFISS),JTAB(2),NCOMP,IRET
-      LOGICAL       ISMALI
+      LOGICAL       ISELLI
 
       DATA    ELRESE /'SE2','TR3','TE4','SE3','TR6','TE4'/
       DATA    FAMI   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -105,7 +105,7 @@ C     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
       CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
 
 C     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
-      IF (.NOT.ISMALI(ELREFP).AND. NDIM.LE.2) THEN
+      IF (.NOT.ISELLI(ELREFP).AND. NDIM.LE.2) THEN
         IRESE=3
       ELSE
         IRESE=0
@@ -168,18 +168,18 @@ C       DEBUT DE LA ZONE MEMOIRE DE SIG ET VI CORRESPONDANTE
           CALL ASSERT(NBSIG.EQ.6)
           IF (OPTION.EQ.'RIGI_MECA') THEN
             CALL XNMEL3(POUM,ELREFP,NDIM,COORSE,
-     &                  IGEOM,HE,NFH,DDLC,
+     &                  IGEOM,HE,NFH,DDLC,DDLM,
      &                  NFE,BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,
-     &                  COMPOR,LGPG,R8BID,R8BID,LSN,LST,IDECPG,
-     &                  R8BID,R8BID,MATUU,R8BID,CODRET,NFISS,FISNO)
+     &                  COMPOR,LGPG,R8BID,IBID,LSN,LST,IDECPG,
+     &                  R8BID,R8BID,MATUU,IBID,CODRET,NFISS,FISNO)
           ELSEIF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &            OPTION(1:9).EQ.'FULL_MECA' .OR.
      &            OPTION(1:10).EQ.'RIGI_MECA_')  THEN
             CALL XNMEL3(POUM,ELREFP,NDIM,COORSE,
-     &                  IGEOM,HE,NFH,DDLC,
+     &                  IGEOM,HE,NFH,DDLC,DDLM,
      &                  NFE,BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,
-     &                  COMPOR,LGPG,CRIT,ZR(IDEPL),LSN,LST,IDECPG,
-     &                  SIG(IDEBS+1),VI(IDEBV+1),MATUU,ZR(IVECTU),
+     &                  COMPOR,LGPG,CRIT,IDEPL,LSN,LST,IDECPG,
+     &                  SIG(IDEBS+1),VI(IDEBV+1),MATUU,IVECTU,
      &                  CODRET,NFISS,FISNO)
           ENDIF
         ELSEIF (NDIM.EQ.2) THEN

@@ -8,7 +8,7 @@
 
       INTEGER NDIM
       REAL*8  NORM(3)
-      REAL*8  FFE(9),FFM(9)
+      REAL*8  FFE(20),FFM(20)
       REAL*8  JEU
       INTEGER JGEOM,JDEPDE,JDEPM,NDEPLE
       INTEGER JNNM(3),JNNE(3),JDDLE(2),JDDLM(2)
@@ -17,7 +17,7 @@
       LOGICAL LMULTI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

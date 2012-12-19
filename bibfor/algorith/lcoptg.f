@@ -1,6 +1,6 @@
        SUBROUTINE LCOPTG ( NMAT,MATER,NR,NVI,DRDY,DSDE ,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,11 +32,12 @@ C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT  , NDI
 C     ----------------------------------------------------------------
-      INTEGER         NMAT,NR,IRET,NDT,NDI,I,J,NVI,NORM
-      REAL*8          DRDY(NR,NR),DSDE(6,6),MATER(NMAT,2)
-      REAL*8          HOOK(6,6),Y0(6,6),Y1(6,NVI),Y2(NVI,6),Y3(NVI,NVI)
-      REAL*8          Y4(6,6),Y5(6,6),DET,R8PREM,MAXI,MINI
-      CHARACTER*4     CARGAU
+      INTEGER NMAT,NR,IRET,NDT,NDI,I,J,NVI,NORM
+      REAL*8  HOOK(6,6),DRDY(NR,NR),DSDE(6,6),MATER(NMAT,2)
+      REAL*8  Y0(NDT,NDT),Y1(NDT,NVI),Y2(NVI,NDT),Y3(NVI,NVI)
+      REAL*8  Y4(NDT,NDT),Y5(NDT,NDT),DET,R8PREM,MAXI,MINI
+      REAL*8  DSDEB(NDT,NDT)
+      CHARACTER*4 CARGAU
 C === =================================================================
 C --- RECHERCHE DU MAXIMUM DE DRDY
 C === =================================================================
@@ -66,24 +67,24 @@ C === =================================================================
 C === =================================================================
 C --- SEPARATION DES TERMES DU JACOBIEN
 C === =================================================================
-      DO 5 I = 1, 6
-        DO 6 J = 1, 6
+      DO 5 I = 1, NDT
+        DO 6 J = 1, NDT
           Y0(I,J) = DRDY(I,J)
  6      CONTINUE
  5    CONTINUE  
-      DO 51 I = 1, 6
+      DO 51 I = 1, NDT
         DO 61 J = 1, NVI
-          Y1(I,J) = DRDY(I,J+6)
+          Y1(I,J) = DRDY(I,J+NDT)
  61      CONTINUE
  51    CONTINUE  
       DO 52 I = 1, NVI
-        DO 62 J = 1, 6
-          Y2(I,J) = DRDY(I+6,J)
+        DO 62 J = 1, NDT
+          Y2(I,J) = DRDY(I+NDT,J)
  62      CONTINUE
  52    CONTINUE  
       DO 53 I = 1, NVI
         DO 63 J = 1, NVI
-          Y3(I,J) = DRDY(I+6,J+6)
+          Y3(I,J) = DRDY(I+NDT,J+NDT)
  63      CONTINUE
  53    CONTINUE  
 
@@ -101,27 +102,39 @@ C === =================================================================
 C --- CONSTRUCTION TENSEUR CONSTITUTIF TANGENT DSDE 
 C === =================================================================
 C     Y2=INVERSE(Y3)*Y2
-      CALL MGAUSS (CARGAU,Y3, Y2, NVI, NVI, 6, DET, IRET )
+      CALL MGAUSS (CARGAU,Y3, Y2, NVI, NVI, NDT, DET, IRET )
       IF(IRET.GT.1) THEN
          CALL LCEQMA(HOOK,DSDE)
          GOTO 9999
       ENDIF
 C --- PRODUIT DU TERME (Y3)^-1 * Y2 = Y4
-      CALL PROMAT(Y1,6,6,NVI,Y2,NVI,NVI,6,Y4)
+      CALL PROMAT(Y1,NDT,NDT,NVI,Y2,NVI,NVI,NDT,Y4)
 
 C --- DIFFERENCE DE MATRICE (DR1DY1 - Y4) = Y5
-      CALL LCDIMA(Y0,Y4,Y5)
+      DO 13 I=1,NDT
+         DO 14 J=1,NDT
+            Y5(I,J)=Y0(I,J)-Y4(I,J)
+ 14      CONTINUE
+ 13   CONTINUE
 
 C --- INVERSION DU TERME Y5
-      CALL LCINMA(0.D0,DSDE)
-      DO 8 I=1,6
-        DSDE(I,I) = 1.D0
+      CALL R8INIR(NDT*NDT,0.D0,DSDEB,1)
+      DO 8 I=1,NDT
+        DSDEB(I,I) = 1.D0
  8    CONTINUE
-      CALL MGAUSS(CARGAU,Y5, DSDE, 6, 6, 6, DET, IRET)
+      CALL MGAUSS(CARGAU,Y5, DSDEB, NDT, NDT, NDT, DET, IRET)
       
       IF(IRET.GT.1) THEN
          CALL LCEQMA(HOOK,DSDE)
+      ELSE
+         CALL R8INIR(36,0.D0,DSDE,1)
+         DO 12 I=1,NDT
+            DO 11 J=1,NDT
+               DSDE(I,J)=DSDEB(I,J)
+ 11         CONTINUE
+ 12      CONTINUE
+         
       ENDIF
-      
+
  9999 CONTINUE
       END

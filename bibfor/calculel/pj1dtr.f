@@ -8,7 +8,7 @@
       INTEGER NUTM1D(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C       ITR : SEG2 ASSOCIE A INO2
         ITR = ZI(I1COTR-1+INO2)
         IF (ITR.EQ.0) GO TO 20
 C       IMA1 : MAILLE DE M1 ASSOCIE AU SEG2 ITR
-        IMA 1= ZI(IATR3+3*(ITR-1)+3)
+        IMA1= ZI(IATR3+3*(ITR-1)+3)
 C       ITYPM : TYPE DE LA MAILLE IMA1
         ITYPM = ZI(IATYMA-1+IMA1)
         NUTM   = INDIIS(NUTM1D,ITYPM,1,3)

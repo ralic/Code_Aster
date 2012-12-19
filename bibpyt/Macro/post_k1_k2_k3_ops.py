@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -649,11 +649,11 @@ def get_resxfem(self,xcont,RESULTAT,MODELISATION,MODEL) :
       CREA_MAILLAGE    = self.get_cmd('CREA_MAILLAGE')
 
       iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
-      if xcont[0] == 0 :
+      if xcont[0] != 3 :
          __RESX = RESULTAT
 
 #     XFEM + contact : il faut reprojeter sur le maillage lineaire
-      elif xcont[0] != 0 :
+      elif xcont[0] == 3 :
          __mail1 = self.get_concept(nom_ma.strip())
          __mail2 = CREA_MAILLAGE(MAILLAGE = __mail1,
                                QUAD_LINE =_F(TOUT = 'OUI',),);
@@ -1868,7 +1868,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       Nbnofo = Nnoff
 
 #     menage du resultat projete si contact
-      if xcont[0] != 0 :
+      if xcont[0] == 3 :
          DETRUIRE(CONCEPT=_F(NOM=__RESX),INFO=1)
 
       affiche_xfem(self,INFO,Nnoff,VNOR,VDIR)

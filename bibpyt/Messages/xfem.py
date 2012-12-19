@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+#@ MODIF xfem Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,6 @@
 
 
 cata_msg={
-
 
 2: _(u"""
   -> Le calcul de la distance d'un noeud à l'ellipse n'a pas convergé
@@ -145,16 +144,6 @@ cata_msg={
 
 16: _(u"""
   -> Il n'y a aucun élément enrichi.
-  -> Risque & Conseil:
-     - Si vous souhaitez définir du contact sur les lèvres de la fissure, il est préférable
-       d'utiliser les modélisations 3D, C_PLAN ou D_PLAN afin de bénéficier des dernières
-       avancées concernant le contact avec X-FEM.
-     - Les modélisations 3D_XFEM_CONT, C_PLAN_XFEM_CONT ou D_PLAN_XFEM_CONT sont réservés à
-       l'ancienne formulation qui stocke des inconnues de contact aux arêtes.
-       Si vous souhaitez tout de même utiliser l'ancienne formulation, le maillage doit être
-       quadratique afin de stocker les inconnues de contact aux noeuds milieux. Le problème
-       sera alors traité avec une interpolation linéaire.
-     - Vous pouvez utilisez l'opérateur LINE_QUAD pour rendre le maillage quadratique.
 """),
 
 17: _(u"""
@@ -199,19 +188,6 @@ cata_msg={
 
 26: _(u"""
      Numéros des mailles de la zone fissure.
-"""),
-
-27: _(u"""
-     Si vous êtes en 3D pour l'approche de contact <<Grands glissements avec XFEM>>,
-     seule la formulation aux noeuds sommets est possible.
-     Vous pouvez activer cette formulation en commentant LINE_QUAD afin que les mailles
-     soient de type HEXA8, PENTA6, PYRAM5 ou TETRA4.
-"""),
-
-28: _(u"""
-     Pour un modèle XFEM avec contact utilisant l'approche Lagrange aux noeuds,
-     il est indispensable d'utiliser ALGO_LAG='VERSION1' ou 'VERSION2'. On
-     passe outre ALGO_LAG='NON' dans ce cas, et on utilise la version 2.
 """),
 
 29: _(u"""

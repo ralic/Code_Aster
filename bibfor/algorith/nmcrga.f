@@ -1,7 +1,7 @@
       SUBROUTINE NMCRGA(SDERRO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER      ZEVEN
-      PARAMETER   (ZEVEN = 32)
+      PARAMETER   (ZEVEN = 33)
       CHARACTER*16 NEVEN(ZEVEN)
       CHARACTER*8  NCRET(ZEVEN)
       INTEGER      VCRET(ZEVEN)
@@ -56,6 +56,7 @@ C
 C --- NOM DES EVENEMENTS
 C
       DATA NEVEN   /'ERRE_INTE','INTE_NPHY','DIVE_DEBO',
+     &              'INTE_BORN',
      &              'ERRE_PILO','CONV_PILO','ERRE_FACS',
      &              'ERRE_FACT','ERRE_CTD1','ERRE_CTD2',
      &              'ERRE_TIMN','ERRE_TIMP','ERRE_EXCP',
@@ -71,6 +72,7 @@ C
 C --- NOM DU CODE RETOUR ATTACHE A L'EVENEMENT
 C
       DATA NCRET   /'LDC','LDC','LDC',
+     &              'LDC',
      &              'PIL','PIL','FAC',
      &              'FAC','CTC','CTC',
      &              'XXX','XXX','XXX',
@@ -86,6 +88,7 @@ C
 C --- VALEUR DU CODE RETOUR CORRESPONDANT A CHAQUE EVENEMENT
 C
       DATA VCRET   / 1 , 2, 3,
+     &               4 ,
      &               1 , 2, 1,
      &               2 , 1, 2,
      &               99,99,99,
@@ -108,6 +111,7 @@ C ERRC_ : EVENEMENT A TRAITER A CONVERGENCE
 C CONV_ : EVENEMENT A TRAITER POUR DETERMINER LA CONVERGENCE
 C
       DATA TEVEN   /'ERRI_NEWT','ERRC_NEWT','CONV_NEWT',
+     &              'EVEN'     ,
      &              'ERRI_NEWT','CONV_CALC','ERRI_NEWT',
      &              'ERRI_NEWT','ERRI_NEWT','ERRI_NEWT',
      &              'ERRI_CALC','ERRI_CALC','ERRI_CALC',
@@ -123,6 +127,7 @@ C
 C --- FONCTIONNALITE ACTIVE SI NECESSAIRE POUR CONVERGENCE
 C
       DATA FEVEN   /' ',' '       ,' ',
+     &              ' ',
      &              ' ','PILOTAGE',' ',
      &              ' ',' '       ,' ',
      &              ' ',' '       ,' ',
@@ -139,6 +144,7 @@ C --- CODE DU MESSAGE A AFFICHER
 C
       DATA MEVEN /
      &        'MECANONLINE10_1' ,'MECANONLINE10_24',' ',
+     &        'MECANONLINE10_25',
      &        'MECANONLINE10_2' ,' '               ,'MECANONLINE10_6' ,
      &        'MECANONLINE10_6' ,'MECANONLINE10_4' ,'MECANONLINE10_4' ,
      &        'MECANONLINE10_7' ,'MECANONLINE10_5' ,'MECANONLINE10_8' ,

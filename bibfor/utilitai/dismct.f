@@ -1,6 +1,6 @@
       SUBROUTINE DISMCT(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C-----------------------------------------------------------------------
       INTEGER IANBNO ,ITYMA ,NBTYMA
 C-----------------------------------------------------------------------
       CALL JEMARQ()
+      CALL ASSERT(NOMOBZ.EQ.'&')
       REPK  = ' '
       REPI  = 0
       IERD = 0

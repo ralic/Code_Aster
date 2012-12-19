@@ -1,0 +1,263 @@
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+# TITRE FISSURATION INTERFACE 2D PLAN XFEM, LOIS CZM_OUV_MIX ET CZM_TAC_MIX
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ssnp118y.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+
+DEBUT(CODE=_F(NOM='SSNP118Y', NIV_PUB_WEB='INTERNET', VISU_EFICAS='OUI'), DEBUG=_F(SDVERI='OUI'))
+
+tfin=10
+nbpas=10
+Gc = 0.9
+Sc = 1.1
+young  = 0.5
+dc = 2*Gc/Sc
+
+MA=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,)
+
+MA=DEFI_GROUP(reuse=MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(
+                _F(GROUP_MA='GAUCHE',),
+                _F(GROUP_MA='DROITE',),
+              ),);
+
+# meme modelisation pour toutes les mailles
+MO=AFFE_MODELE(MAILLAGE=MA,
+               VERIF='MAILLE',
+               AFFE=
+                _F(GROUP_MA = ('G_CUBE','DROITE','GAUCHE'),
+                   PHENOMENE = 'MECANIQUE',
+                   MODELISATION = 'D_PLAN'),
+               );
+# angle en radian
+THETA = 30.*pi/180.
+
+# formule analytique pour la fissure
+LN = FORMULE(VALE='X*cos(THETA)+Y*sin(THETA)-0.4',
+             NOM_PARA=('X','Y',),);
+
+# definition de la fissure
+FISS=DEFI_FISS_XFEM(MODELE=MO,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
+                    GROUP_MA_ENRI='G_CUBE',
+                    INFO=1,);
+
+# enrichissement du modele avec contact P2P1
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
+                         FISSURE=FISS,
+                         CONTACT='P2P1',                         
+                         );
+
+# definition du contact avec loi cohesive
+CTXFEM = DEFI_CONTACT(
+            MODELE         = MODELEK,
+            FORMULATION    = 'XFEM',
+            FROTTEMENT     = 'SANS',
+            ZONE=(
+                  _F(INTEGRATION='GAUSS',
+                     ORDRE_INT=2,
+                     ALGO_CONT='CZM',
+                     FISS_MAIT = FISS,
+                     ALGO_LAGR='VERSION2',
+                     RELATION='CZM_TAC_MIX',),),);
+
+# affectation relation elimination ou inf-sup 
+# dues a enrichissement x-FEM
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',
+                      CONTACT_XFEM=CTXFEM,
+                      INFO=2,);
+
+# definition materiau inchangee
+MAT=DEFI_MATERIAU(
+     ELAS=_F(E =  young,
+             NU = 0.0),
+     RUPT_FRAG = _F(GC = Gc,
+                    SIGM_C = Sc,
+                    PENA_LAGR = 100.,
+                    RIGI_GLIS = 10.,),
+            );
+
+# affectation sur le modele enrichi
+CM=AFFE_MATERIAU(MAILLAGE=MA,
+                 MODELE=MODELEK,
+                 AFFE=_F(GROUP_MA = 'G_CUBE',
+                         MATER = MAT),
+                );
+
+# plus besoin d orientation par angles nautiques
+
+
+# liaison encastrement sur GROUP_MA
+LIAISON=AFFE_CHAR_MECA(
+  MODELE=MODELEK,
+  DDL_IMPO= (
+    _F(GROUP_NO='GAUCHE', DX=0., DY=0.),
+    _F(GROUP_NO='DROITE', DX=2.16506350946110, DY= 1.250),    
+    )
+  )
+
+L_INST=DEFI_LIST_REEL(
+     DEBUT   = -1.,
+     INTERVALLE=(
+       _F( JUSQU_A = 0,       NOMBRE = 1 ),
+      _F( JUSQU_A = 0.0001,  NOMBRE = 1 ),
+      _F( JUSQU_A = tfin,     NOMBRE = nbpas ),
+      )
+     )
+
+FCT = DEFI_FONCTION(
+   NOM_PARA = 'INST',
+   VALE     = (-1, 0, 0,  1.E-8),
+   PROL_DROITE = 'LINEAIRE'
+   )
+
+#----------------------------------------------------------------------------------
+# CALCUL AVEC CHARGEMENT EN MODE I AVEC LOI CZM_OUV_MIX
+#-----------------------------------------------------------------------------------
+
+U_OUV=STAT_NON_LINE(
+   MODELE     = MODELEK,
+   CHAM_MATER = CM,
+   CONTACT = CTXFEM,
+   EXCIT      = (
+     _F(CHARGE = LIAISON , FONC_MULT = FCT),
+     _F(CHARGE = CHXFEM,),
+   ),
+   COMP_ELAS  = _F(RELATION = 'ELAS', GROUP_MA = 'G_CUBE',),
+   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
+   CONVERGENCE= _F(RESI_GLOB_RELA=1.E-6,
+                   ITER_GLOB_MAXI=100,
+                   ARRET='OUI',),
+   SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=100,),
+   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+   )
+
+
+U_OUV = STAT_NON_LINE(
+   reuse = U_OUV,
+   ETAT_INIT  = _F(EVOL_NOLI = U_OUV),
+  MODELE = MODELEK,
+  CHAM_MATER = CM,
+  CONTACT = CTXFEM,
+  EXCIT = (
+    _F(CHARGE = LIAISON,TYPE_CHARGE='FIXE_PILO',),
+    _F(CHARGE = CHXFEM,),
+    ),
+   PILOTAGE   = _F(
+     SELECTION = 'RESIDU',
+     TYPE = 'PRED_ELAS',
+     GROUP_MA = 'PILOTE',
+     COEF_MULT = 10.,
+     ETA_PILO_R_MIN = 0.,
+     ),
+  COMP_ELAS =_F(RELATION = 'ELAS', GROUP_MA = 'G_CUBE'),
+  INCREMENT = _F(
+    LIST_INST    = L_INST,
+    INST_FIN     = tfin,
+    ),
+  ARCHIVAGE = _F(LIST_INST = L_INST,),
+  CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                 ITER_GLOB_MAXI=50,
+                 ARRET='OUI',),
+  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=100),
+  NEWTON  = _F(
+    MATRICE   = 'TANGENTE',
+    REAC_ITER = 1,
+    ),
+  )
+# --- TESTS MODE I AVEC CZM_OUV_MIX
+#
+FDX_OUV=RECU_FONCTION( RESULTAT=U_OUV,
+              NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL');
+              
+TDX_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FDX_OUV));
+
+FETA_OUV=RECU_FONCTION( RESULTAT=U_OUV,
+              NOM_PARA_RESU='ETA_PILOTAGE');
+              
+TETA_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FETA_OUV));
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.795229356,
+           VALE_REFE=1.79523E+00,
+           NOM_PARA='DX',
+           TABLE=TDX_OUV,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=4.0000600000000004,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=8.29181E-01,
+           VALE_REFE=8.29181E-01,
+           NOM_PARA='ETA_PILO',
+           TABLE=TETA_OUV,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=4.0000600000000004,),
+           )
+TEST_RESU(RESU=_F(INST=0,
+                  REFERENCE='ANALYTIQUE',
+                  GROUP_NO  = 'TOUTSEUL',
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=2.1650635094611E-08,
+                  VALE_REFE=2.16506E-08),
+          )
+
+TEST_RESU(RESU=_F(INST      = 2.00008E+00,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=7.37899E-01,
+                  VALE_REFE=7.37899E-01,
+                  MAILLE='M32',),
+          )
+
+# pas de maille cohesive donc suppression test sur cette maille
+
+TEST_RESU(RESU=_F(INST=9.00001,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N9',
+                  NOM_CMP='LAGS_C',
+                  VALE_CALC=0.347848803,
+                  VALE_REFE=0.34784900000000002,),
+          )
+          
+TEST_RESU(RESU=_F(INST=8.00002,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N9',
+                  NOM_CMP='LAGS_F1',
+                  VALE_CALC=-1.80080444E-15,
+                  VALE_REFE=0.0,
+                  CRITERE='ABSOLU',),
+          )
+
+# variables internes pas encore post-traitables avec X-FEM
+# voir xxmxme.f
+
+FIN()
+

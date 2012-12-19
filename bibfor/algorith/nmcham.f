@@ -1,9 +1,9 @@
       SUBROUTINE NMCHAM (FAMI,KPG,KSP,IMATE,COMPOR,
-     &                   MATEL,MAT,NBVAR,MEMO,VISC,COEF)
+     &                   MATEL,MAT,NBVAR,MEMO,VISC,IDELTA,COEF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,16 +32,16 @@ C     COMPOR    IN    K16  COMPOR(1) NOM DU COMPORTEMENT
 C     MAT       OUT   R    COEF MATERIAU
 C
 C ---- ARGUMENTS
-      INTEGER       IMATE,NBVAR,KPG,KSP,MEMO,VISC,IRET
+      INTEGER       IMATE,NBVAR,KPG,KSP,MEMO,VISC,IRET,IDELTA,NRAD
       CHARACTER*16  COMPOR(3)
-      REAL*8        MAT(16),MATEL(4)
+      REAL*8        MAT(18),MATEL(4)
       CHARACTER*(*) FAMI
 C ---- VARIABLES LOCALES
-      REAL*8      COEF,VALRES(10),C2INF,GAMM20
-      REAL*8      R0,RINF,B,CINF,K,W,GAMMA0
+      REAL*8      COEF,VALRES(12),C2INF,GAMM20,DELTA1,DELTA2
+      REAL*8      R0,RINF,B,CINF,K,W,GAMMA0,EPSI,R8PREM
       REAL*8      UN,AINF,KVI,VALDEN,UNSKVI
-      INTEGER ICODRE(10)
-      CHARACTER*8 NOMRES(10),NOMEMO(4)
+      INTEGER ICODRE(12)
+      CHARACTER*8 NOMRES(12),NOMEMO(4)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       NBVAR=0
@@ -49,9 +49,12 @@ C
          NBVAR=1
       ELSEIF ( COMPOR(1)(6:9) .EQ. 'CIN2' ) THEN
          NBVAR=2
+      ELSEIF ( COMPOR(1)(6:9) .EQ. 'MEMO' ) THEN
+         NBVAR=2
       ELSE
          CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
+      
       IF ( COMPOR(1)(1:4) .EQ. 'VMIS' ) THEN
          VISC=0
       ELSEIF ( COMPOR(1)(1:4) .EQ. 'VISC' ) THEN
@@ -59,12 +62,19 @@ C
       ELSE
          CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
-      IF ( COMPOR(1)(11:14) .EQ. 'CHAB' ) THEN
-         MEMO=0
-      ELSEIF ( COMPOR(1)(11:14) .EQ. 'MEMO' ) THEN
+      
+      MEMO=0
+      
+      IF ( COMPOR(1)(11:14) .EQ. 'MEMO' ) THEN
          MEMO=1
+      ELSEIF ( COMPOR(1)(6:9) .EQ. 'MEMO' ) THEN
+         MEMO=1
+      ENDIF
+      
+      IF ( COMPOR(1)(11:14) .EQ. 'NRAD' ) THEN
+         NRAD=1
       ELSE
-         CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
+         NRAD=0
       ENDIF
 C
 C --- INITIALISATIONS :
@@ -107,33 +117,72 @@ C     ===============================================
          NOMRES(7) = 'G1_0'
          NOMRES(9) = 'C2_I'
          NOMRES(10)= 'G2_0'
-
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CIN2_CHAB',0,' ',0.D0,
      &            10,NOMRES,VALRES,ICODRE,1)
       ENDIF
-       R0     = VALRES(1)
-       RINF   = VALRES(2)
-       B      = VALRES(3)
-       CINF   = VALRES(4)
-       K      = VALRES(5)
-       W      = VALRES(6)
-       GAMMA0 = VALRES(7)
-       AINF   = VALRES(8)
-       C2INF = 0.D0
-       GAMM20 = 0.D0
-       IF (NBVAR.EQ.2) THEN
-          C2INF  = VALRES(9)
-          GAMM20 = VALRES(10)
-       ENDIF
+      
+      R0     = VALRES(1)
+      RINF   = VALRES(2)
+      B      = VALRES(3)
+      CINF   = VALRES(4)
+      K      = VALRES(5)
+      W      = VALRES(6)
+      GAMMA0 = VALRES(7)
+      AINF   = VALRES(8)
+      C2INF = 0.D0
+      GAMM20 = 0.D0
+      IF (NBVAR.EQ.2) THEN
+         C2INF  = VALRES(9)
+         GAMM20 = VALRES(10)
+      ENDIF
 C
-       MAT(1) = R0
-       MAT(2) = RINF
-       MAT(3) = B
-       MAT(4) = CINF
-       MAT(5) = K
-       MAT(6) = W
-       MAT(7) = GAMMA0
-       MAT(8) = AINF
+      MAT(1) = R0
+      MAT(2) = RINF
+      MAT(3) = B
+      MAT(4) = CINF
+      MAT(5) = K
+      MAT(6) = W
+      MAT(7) = GAMMA0
+      MAT(8) = AINF
+      
+C     IDELTA : TYPE DE NON PROPORTIONNALITE
+      IF (NRAD.EQ.1) THEN
+         NOMRES(1) = 'DELTA1'
+         NOMRES(2) = 'DELTA2'
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CIN2_NRAD',0,' ',0.D0,
+     &            2,NOMRES,VALRES,ICODRE,1)
+         DELTA1 = VALRES(1)
+         DELTA2 = VALRES(2)
+         MAT(17) = DELTA1
+         MAT(18) = DELTA2
+         IDELTA=0
+         EPSI=R8PREM()
+         IF (ABS(DELTA1-1.D0).GT.EPSI) THEN
+            IF (ABS(DELTA2-1.D0).GT.EPSI) THEN
+               IDELTA=3
+            ELSE
+               IDELTA=1
+            ENDIF
+         ELSE
+            IF (ABS(DELTA2-1.D0).GT.EPSI) THEN
+               IDELTA=2
+            ENDIF
+         ENDIF
+C        UTILE POUR LE CAS DES FONCTIONS
+         IF ((DELTA1.GT.(1.D0+EPSI)).OR.(DELTA1.LT.-EPSI)) THEN
+            CALL U2MESR('F','COMPOR1_80',1,DELTA1)
+         ENDIF
+         IF ((DELTA2.GT.(1.D0+EPSI)).OR.(DELTA2.LT.-EPSI)) THEN
+            CALL U2MESR('F','COMPOR1_81',1,DELTA2)
+         ENDIF
+      ELSE
+         DELTA1 = 1.D0
+         DELTA2 = 1.D0
+         MAT(17) = DELTA1
+         MAT(18) = DELTA2
+      ENDIF
+      
+      
       IF (NBVAR.EQ.2) THEN
        MAT(9) = C2INF
        MAT(10) = GAMM20

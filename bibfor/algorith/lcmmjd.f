@@ -6,7 +6,7 @@
         REAL*8 TAUR,MATERF(NMAT*2),RR,DT,VIND(36),DY(12)
         REAL*8 DPDTAU,DPRDAS,HSR(NSG,NSG),HR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_21 CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,8 +48,8 @@ C     ----------------------------------------------------------------
       REAL*8 ALPHAP(12)
       INTEGER IFL,IS,NBSYS,IR,IRET,NUECOU,IEI,IU,I,IS3,IR3
       CHARACTER*16 K16B
-      INTEGER IRR,DECIRR,NBSYST,DECAL
-      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
 C     ----------------------------------------------------------------
 
       IFL=NBCOMM(IFA,1)+NMAT

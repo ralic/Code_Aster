@@ -1,8 +1,7 @@
       SUBROUTINE XMOINI(NH8,NH20,NP6,NP15,NP5,NP13,NT4,NT10,NCPQ4,NCPQ8,
      &                  NCPT3,NCPT6,NDPQ4,NDPQ8,NDPT3,NDPT6,NF4,NF8,NF3,
-     &                  NF6,NPF2,NPF3,NH8X,NP6X,NP5X,NT4X,NCPQ4X,NCPT3X,
-     &                  NDPQ4X,NDPT3X,
-     &                  NAXT3,NAXQ4,NAXQ8,NAXT6,NAX2,NAX3)
+     &                  NF6,NPF2,NPF3,NAXT3,NAXQ4,NAXQ8,NAXT6,NAX2,NAX3)
+
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
@@ -10,12 +9,11 @@
       INTEGER       NT4(14),NT10(7)
       INTEGER       NCPQ4(14),NCPQ8(7),NCPT3(14),NCPT6(7), NDPQ4(14)
       INTEGER       NDPQ8(7),NDPT3(14),NDPT6(7),NF4(11),NF8(7),NF3(11)
-      INTEGER       NF6(7),NPF2(11),NPF3(7),NH8X(7),NP6X(7),NP5X(7)
-      INTEGER       NT4X(7),NCPQ4X(7),NCPT3X(7),NDPQ4X(7),NDPT3X(7)
+      INTEGER       NF6(7),NPF2(11),NPF3(7)
       INTEGER       NAXT3(7),NAXQ4(7),NAXQ8(7),NAXT6(7),NAX2(7),NAX3(7)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,14 +72,6 @@ C
         NF6(I)=0
         NPF2(I)=0
         NPF3(I)=0
-        NH8X(I)=0
-        NP6X(I)=0
-        NP5X(I)=0
-        NT4X(I)=0
-        NCPQ4X(I)=0
-        NCPT3X(I)=0
-        NDPQ4X(I)=0
-        NDPT3X(I)=0
         NAXT3(I)=0
         NAXQ4(I)=0
         NAXQ8(I)=0

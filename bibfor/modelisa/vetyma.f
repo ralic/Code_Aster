@@ -1,6 +1,6 @@
       SUBROUTINE VETYMA(NOMA,LISTMA,NBMA,LISTGR,NBGR,OPTION,NDIM,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,8 +78,8 @@ C  MOT-CLE MAILLE
                    VALK(1) = LISTMZ
                    VALK(2) = OPTIOZ
                    CALL U2MESK('A','MODELISA7_86', 2 ,VALK)
-               ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'QUAD'.
-     &                          AND.TYPE(1:4).NE.'TRIA') THEN
+               ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'QUAD'
+     &                         .AND.TYPE(1:4).NE.'TRIA') THEN
                   NERR=NERR+1
                    VALK(1) = LISTMZ
                    VALK(2) = OPTIOZ
@@ -106,9 +106,9 @@ C  MOT-CLE GROUP_MA
                    VALK(1) = KIMA
                    VALK(2) = OPTIOZ
                    CALL U2MESK('A','MODELISA7_89', 2 ,VALK)
-               ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'QUAD'.
-     &                          AND.TYPE(1:4).NE.'TRIA'.
-     &                          AND.TYPE(1:3).NE.'SEG') THEN
+               ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'QUAD'
+     &                         .AND.TYPE(1:4).NE.'TRIA'
+     &                         .AND.TYPE(1:3).NE.'SEG') THEN
                   NERR=NERR+1
                    VALK(1) = KIMA
                    VALK(2) = OPTIOZ
@@ -133,16 +133,16 @@ C  MOT-CLE MAILLE
                IADTYP=IATYMA-1+IBID
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IADTYP)),TYPE)
                LISTMZ = LISTMA(I)
-               IF(NDIM.EQ.2.AND.TYPE(1:4).NE.'QUAD'.
-     &                      AND.TYPE(1:4).NE.'TRIA') THEN
+               IF(NDIM.EQ.2.AND.TYPE(1:4).NE.'QUAD'
+     &                     .AND.TYPE(1:4).NE.'TRIA') THEN
                   NERR=NERR+1
                    VALK(1) = LISTMZ
                    VALK(2) = OPTIOZ
                    CALL U2MESK('A','MODELISA7_87', 2 ,VALK)
-               ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'HEXA'.
-     &                          AND.TYPE(1:4).NE.'PENT'.
-     &                          AND.TYPE(1:4).NE.'PYRA'.
-     &                          AND.TYPE(1:4).NE.'TETR') THEN
+               ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'HEXA'
+     &                         .AND.TYPE(1:4).NE.'PENT'
+     &                         .AND.TYPE(1:4).NE.'PYRA'
+     &                         .AND.TYPE(1:4).NE.'TETR') THEN
                   NERR=NERR+1
                    VALK(1) = LISTMZ
                    VALK(2) = OPTIOZ
@@ -163,16 +163,16 @@ C  MOT-CLE GROUP_MA
                  CALL CODENT(IMA,'G',KIMA)
                  IADTYP=IATYMA-1+IMA
                  CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IADTYP)),TYPE)
-                 IF(NDIM.EQ.2.AND.TYPE(1:4).NE.'QUAD'.
-     &                        AND.TYPE(1:4).NE.'TRIA') THEN
+                 IF(NDIM.EQ.2.AND.TYPE(1:4).NE.'QUAD'
+     &                       .AND.TYPE(1:4).NE.'TRIA') THEN
                    NERR=NERR+1
                     VALK(1) = KIMA
                     VALK(2) = OPTIOZ
                     CALL U2MESK('A','MODELISA7_90', 2 ,VALK)
-                 ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'HEXA'.
-     &                            AND.TYPE(1:4).NE.'PENT'.
-     &                            AND.TYPE(1:4).NE.'PYRA'.
-     &                            AND.TYPE(1:4).NE.'TETR') THEN
+                 ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'HEXA'
+     &                           .AND.TYPE(1:4).NE.'PENT'
+     &                           .AND.TYPE(1:4).NE.'PYRA'
+     &                           .AND.TYPE(1:4).NE.'TETR') THEN
                     NERR=NERR+1
                      VALK(1) = KIMA
                      VALK(2) = OPTIOZ

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGELINE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,15 +72,14 @@ C
 C FONCTIONS EXTERNES
 C ------------------
       REAL*8        R8PI
-C     EXTERNAL      R8PI, R8PREM
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER IAMFR ,ICODIM ,ICOUPL ,IER ,IFREQI ,IGRAP ,IMIST 
-      INTEGER IMOD ,IND ,IPOIDS ,IV ,IWORK ,LFACT ,LFSIC 
-      INTEGER LMASG ,LWORK ,N1 ,NT ,NUMOD 
-      REAL*8 FI ,PHID ,PHIE ,PI ,RBID ,VLIM 
+      INTEGER IAMFR ,ICODIM ,ICOUPL ,IER ,IFREQI ,IGRAP ,IMIST
+      INTEGER IMOD ,IND ,IPOIDS ,IV ,IWORK ,LFACT ,LFSIC
+      INTEGER LMASG ,LWORK(1) ,N1 ,NT ,NUMOD
+      REAL*8 FI ,PHID ,PHIE(1) ,PI ,RBID ,VLIM
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -140,8 +139,8 @@ C
         CALL WKVECT('&&FLUST2.TEMP.POIDS','V V R',2*NBM,IPOIDS)
 C
         NT = 2
-        LWORK = 2*NT*NT + 10*NT + 2
-        CALL WKVECT('&&FLUST2.TEMP.WORK' ,'V V R',LWORK,IWORK )
+        LWORK(1) = 2*NT*NT + 10*NT + 2
+        CALL WKVECT('&&FLUST2.TEMP.WORK' ,'V V R',LWORK(1),IWORK )
 C
 C-------5.2.OPERATIONS SIMULTANEES :
 C           - RECUPERATION DES MASSES MODALES INITIALES
@@ -190,7 +189,7 @@ C
 C-------5.5.IMPRESSIONS DANS LE FICHIER RESULTAT SI DEMANDEES
 C
         IF (NIVPAR.EQ.1 .OR. NIVDEF.EQ.1) THEN
-          PHID = PHIE * (1172.D0/890.D0 - 1.D0)
+          PHID = PHIE(1) * (1172.D0/890.D0 - 1.D0)
           CARAC(1)=PHID
           CARAC(2)=0.D0
           CALCUL(1)=.TRUE.

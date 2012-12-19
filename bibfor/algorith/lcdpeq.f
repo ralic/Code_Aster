@@ -3,7 +3,7 @@
 
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,14 +48,14 @@ C     ----------------------------------------------------------------
       REAL*8  RHOSAT,PHISAT,DZ,ROLOOP(12),FIVOID(12),SDP
       CHARACTER*16 LOI,LOCA,COMP(*),NECOUL,NOMFAM
       CHARACTER*24 CPMONO(5*NMAT+1)
-      INTEGER IRR,DECIRR,NBSYST,DECAL
-      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
       DATA    ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 
       LOI  = COMP(1)
       IF (LOI(1:8).EQ.'MONOCRIS')  THEN
          NVI = NVI +3
-         IF (COMP(3)(1:4).EQ.'SIMO') THEN
+         IF (GDEF.EQ.1) THEN
             NVI=NVI+9
          ENDIF
       ENDIF
@@ -71,8 +71,8 @@ C        NSFV : debut de la famille IFA dans les variables internes
          DO 6 IFA=1,NBFSYS
             IFL=NBCOMM(IFA,1)
 C            NUECOU=NINT(MATERF(IFL,2))
-            NOMFAM=CPMONO(5*(IFA-1)+1)
-            NECOUL=CPMONO(5*(IFA-1)+3)
+            NOMFAM=CPMONO(5*(IFA-1)+1)(1:16)
+            NECOUL=CPMONO(5*(IFA-1)+3)(1:16)
             CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MUS,NG,LG,0,QM)
             IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
                CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,RHOIRR,1)
@@ -137,7 +137,7 @@ C        CISSIONS TAU_S
          NS=0
          DO 61 IFA=1,NBFSYS
             IFL=NBCOMM(IFA,1)
-            NOMFAM=CPMONO(5*(IFA-1)+1)
+            NOMFAM=CPMONO(5*(IFA-1)+1)(1:16)
             CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MUS,NG,LG,0,QM)
             DO 71 IS=1,NBSYS
 C              CALCUL DE LA SCISSION REDUITE =
@@ -154,7 +154,7 @@ C              TAU      : SCISSION REDUITE TAU=SIG:MUS
          CALL DCOPY(NS,TAU,1,VINF(INDTAU+1),1)
 
 
-         IF (COMP(3)(1:5).NE.'PETIT') THEN
+         IF (GDEF.EQ.1) THEN
 C           ICI CONTRAIREMENT A LCMMON, NVI EST LE NOMBRE TOTAL DE V.I
             CALL DCOPY(9,VINF(NVI-3-18+1 ),1,FP,1)
             CALL MATINV('S',3,FP,FPM,DETP)
@@ -198,7 +198,7 @@ C        V.I. 1 A 6 REPRÈSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
 C        LOCALISATION
 C        RECUPERATION DU NOMBRE DE PHASES
          NBPHAS=NBCOMM(1,1)
-         LOCA=CPMONO(1)
+         LOCA=CPMONO(1)(1:16)
 C        CALCUL DE  B
          DO 53 I=1,6
             GRANB(I)=0.D0
@@ -231,7 +231,7 @@ C        IRRADIATION
             NBFSYS=NBCOMM(INDPHA,1)
             INDCP=NBCOMM(1+IPHAS,2)
             DO 32 IFA=1,NBFSYS
-               NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
+               NECOUL=CPMONO(INDCP+5*(IFA-1)+3)(1:16)
 
                IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
                   NBSYS=12

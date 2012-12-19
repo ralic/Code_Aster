@@ -1,6 +1,6 @@
       SUBROUTINE OP0019()
 
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -287,7 +287,7 @@ C --- ------------------------------------------------------------------
 C --- VERIFICATION DE LA DIMENSION DES RAIDEURS REPARTIES
       LXRP = 0
       IF (NBOCC(10).NE.0) THEN
-         CALL ACEVRP(NBOCC(10),NOMA,LXRP,NOEMAF,IRET)
+         CALL ACEVRP(NBOCC(10),NOMA,LXRP,NOEMAF)
          LMAX = MAX(LMAX,LXRP)
       END IF
 
@@ -295,14 +295,14 @@ C --- ------------------------------------------------------------------
 C --- VERIFICATION DE LA DIMENSION DES RAIDEURS MISS
       LXRM = 0
       IF (NBOCC(12).NE.0) THEN
-         CALL ACEVRM(NBOCC(12),NOMA,LXRM,NOEMF2,IRET)
+         CALL ACEVRM(NBOCC(12),NOMA,LXRM,NOEMF2)
          LMAX = MAX(LMAX,LXRM)
       END IF
 C --- ------------------------------------------------------------------
 C --- VERIFICATION DE LA DIMENSION DES MASSES REPARTIES
       LXMR = 0
       IF (NBOCC(15).NE.0) THEN
-         CALL ACEVMR(NBOCC(15),NOMA,LXMR,NOEMF3,IRET)
+         CALL ACEVMR(NBOCC(15),NOMA,LXMR,NOEMF3)
          LMAX = MAX(LMAX,LXMR)
       END IF
 

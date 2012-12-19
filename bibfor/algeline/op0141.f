@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -394,8 +394,7 @@ C  POUR LA MATRICE GENERALISEE : Y1_W_Y2
 C  FIN TEST SUR TYPE DE VECTEURS (C/R)
 
       IF ( NIV .GE. 2 ) THEN
-        CALL TBIMPR(TABLE,'TABLEAU',IFM,3,ZK16(INOM),0,
-     &   ' ','1PE12.5','RI')
+        CALL TBIMPR(TABLE,'TABLEAU',IFM,3,ZK16(INOM),0,'1PE12.5')
         IF (NBPARA .EQ. 4) THEN
           WRITE(IFM,*) ' '
           WRITE(IFM,1000) ZK16(INOM+2)

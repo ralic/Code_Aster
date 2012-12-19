@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,8 +49,8 @@ C
       SAVE B8
       COMMON          /OPMAIL/        CMD
 C-----------------------------------------------------------------------
-      INTEGER I ,IADG ,ICL ,IFL ,IFM ,IFN ,IRET
-      INTEGER IRTET ,IRTETI ,IUNIFI ,IV ,NBITEM ,NBM ,NUM
+      INTEGER I ,IADG ,ICL ,IFL ,IFN ,IRET
+      INTEGER IRTET ,IRTETI ,IV ,NBITEM ,NBM ,NUM
       INTEGER NUMM ,NUMN
 C-----------------------------------------------------------------------
       DATA B8         /'        '/
@@ -58,7 +58,6 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       IRTETI = 0
 C
-        IFM = IUNIFI('MESSAGE')
 C
 C - ITEM = MOT CLE TYPE GROUPE ?
 C
@@ -81,7 +80,7 @@ C
 
 C ----- LIRE ITEM SUIVANT =  NOM DU GROUPE ?
         DEBLIG=0
-        CALL LIRTET(IFL,IFM,2,1,CNL,NOMG,ICL,IV,RV,CV,DEBLIG)
+        CALL LIRTET(IFL,2,1,CNL,NOMG,ICL,IV,RV,CV,DEBLIG)
 
 C ----- LECTURE NOM DU GROUPE SI IL N Y A PAS D'ENTETE
         IF (NOMG.EQ.'INDEFINI') THEN

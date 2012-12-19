@@ -1,7 +1,7 @@
       SUBROUTINE LCRKSG(COMP,NVI,VINF,FD,DF,NMAT,COEFL,SIGI)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,13 +36,15 @@ C     ----------------------------------------------------------------
       INTEGER NMAT,NVI
       REAL*8 HOOK(6,6),SIGI(6),FD(9),DF(9),COEFL(NMAT)
       REAL*8 VINF(*),FP(3,3),FPM(3,3),FE(3,3),DETP,F(3,3),EPSGL(6)
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
 C     ----------------------------------------------------------------
 
       LOI  = COMP(1)
 C     PAS DE CONTRAINTES PLANES NI DE 1D. 3D = D_PLAN = AXIS
       MOD='3D'
       IF (LOI(1:8).EQ.'MONOCRIS') THEN
-         IF (COMP(3)(1:4).EQ.'SIMO') THEN
+         IF (GDEF.EQ.1) THEN
 
 C           OPERATEUR D'ELASTICITE DE HOOKE
             IF (COEFL(NMAT).EQ.0) THEN

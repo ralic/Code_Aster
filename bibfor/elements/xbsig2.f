@@ -2,21 +2,22 @@
      &                  HE,NFH,DDLC,DDLM,NFE,
      &                  BASLOC,NNOP,NPG,SIGMA,COMPOR,
      &                  IDEPL,LSN,LST,NFISS,FISNO,
-     &                  IVECTU)
+     &                  CODOPT,IVECTU)
 
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*8   ELREFP,ELRESE
       REAL*8        COORSE(*)
-      INTEGER       NFH,DDLC,DDLM,NFE,IDEPL
+      INTEGER       NFH,DDLC,DDLM,NFE,IDEPL,CODOPT
       INTEGER       IGEOM,NDIM,NNOP,NPG,IVECTU,NFISS,FISNO(NNOP,NFISS)
       REAL*8        HE(NFISS)
-      REAL*8        BASLOC(6*NNOP),SIGMA(4,NPG),LSN(NNOP),LST(NNOP)
+      REAL*8        BASLOC(6*NNOP),LSN(NNOP),LST(NNOP)
       CHARACTER*16  COMPOR(4)
+      REAL*8        SIGMA((4-1)*CODOPT+1,(NPG-1)*CODOPT+1)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/11/2012   AUTEUR MARTIN A.MARTIN 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +54,7 @@ C IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ELEMENT
 C IN  SIGMA   : CONTRAINTES DE CAUCHY
 C IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 C IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
+C IN  CODOPT  : CODE DE L OPTION, 0:REFE_FOR_NODA, 1:FORC_NODA
 
 C OUT IVECTU  : ADRESSE DU VECTEUR BT.SIGMA
 C
@@ -218,17 +220,27 @@ C MODIFIER LE JAC
         IF (AXI) THEN
           JAC= JAC * R
         ENDIF
-        DO 1210 N=1,3
-          SIGN(N)   = SIGMA(N  ,KPG)
- 1210   CONTINUE
-        SIGN(4) = SIGMA(4,KPG)*RAC2
+        IF(CODOPT.EQ.1) THEN
+           DO 1210 N=1,3
+              SIGN(N)   = SIGMA(N  ,KPG)
+ 1210      CONTINUE
+           SIGN(4) = SIGMA(4,KPG)*RAC2
+        ENDIF
+C
         DO 130 N=1,NNOP
           CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
 
           DO 131 I=1,DDLD
             DO 132 M=1,4
-              ZR(IVECTU-1+NN+I)=
-     &        ZR(IVECTU-1+NN+I)+DEF(M,N,I)*SIGN(M)*JAC
+              IF(CODOPT.EQ.1) THEN
+                 ZR(IVECTU-1+NN+I)=
+     &           ZR(IVECTU-1+NN+I)+DEF(M,N,I)*SIGN(M)*JAC
+              ELSE IF(CODOPT.EQ.0) THEN
+                 ZR(IVECTU-1+NN+I)=
+     &           ZR(IVECTU-1+NN+I)+ABS(DEF(M,N,I)*SIGMA(1,1)*JAC)
+              ELSE
+                 CALL ASSERT(.FALSE.)
+              ENDIF
  132        CONTINUE
  131      CONTINUE
 

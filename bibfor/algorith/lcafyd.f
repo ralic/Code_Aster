@@ -3,7 +3,7 @@
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,8 +44,8 @@ C     ----------------------------------------------------------------
       CHARACTER*24    CPMONO(5*NMAT+1)
       CHARACTER*8     MOD
       COMMON /TDIM/   NDT  , NDI
-      INTEGER IRR,DECIRR,NBSYST,DECAL
-      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
       DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C     ----------------------------------------------------------------
 
@@ -81,7 +81,7 @@ C           AUTRES COMPORTEMENTS MONOCRISTALLINS
          ENDIF
          
 
-         IF (COMP(3)(1:5).NE.'PETIT') THEN
+         IF (GDEF.EQ.1) THEN
 C les 9 variables internes  de 6+3*ns+1 à 6+3*ns+9
 C REPRESENTENT FE - ID       
             CALL DCOPY(9,VIND(NVI-3-18+10),1,FE,1)

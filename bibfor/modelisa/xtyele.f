@@ -1,6 +1,6 @@
-      SUBROUTINE XTYELE(NOMA,MODELX,TRAV,NFISS,FISS,CONTAC,NDIM,LINTER)
+      SUBROUTINE XTYELE(NOMA,TRAV,NFISS,FISS,CONTAC,NDIM,LINTER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C TOLE CRS_1404
       INCLUDE 'jeveux.h'
 
       CHARACTER*32 JEXNUM,JEXATR
-      CHARACTER*8  NOMA,MODELX
+      CHARACTER*8  NOMA
       CHARACTER*24 TRAV
       INTEGER     NFISS
       CHARACTER*8  FISS(NFISS)
@@ -40,24 +40,22 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C
-C
       REAL*8      R8MAEM,R8PREM,MINLSN,MINLST,MAXLSN,LSN
       REAL*8      DDOT,LSNA,LSTA,LSNB,LSTB,LSTC
       REAL*8      A(NDIM),B(NDIM),AB(NDIM),C(NDIM),AC(NDIM)
       REAL*8      CMIN(NDIM),LONGAR,M(NDIM),PADIST,RBID
-      INTEGER     NMAENR,KK,JGRP,JCOOR,NBMA
+      INTEGER     NMAENR,KK,JGRP(4*NFISS),JCOOR,NBMA
       INTEGER     JLSN,JLST,JMASUP,JTMDIM,JTYPMA,JCONX1,JCONX2
       INTEGER     NBCOUP,NBCOU2,IBID,IFISS,ITYPMA,JTAB,JNBPT,JNBPT2
       INTEGER     NMASUP,NDIME,NBAR,NBHEAV,JSTNL(NFISS),JSTNV(NFISS)
-      INTEGER     INO,INO2,NNGL,NNOT(3),NNO,NNO2,IMA,IMA2
-      INTEGER     I,J,K
-      INTEGER     AR(12,3),IA,NUNOA,NUNOB,STNA,STNB
+      INTEGER     INO,INO2,NNGL,NNOT(3),NNO,NNO2,IMA,IMA2,IFIS
+      INTEGER     I,J,K,L,ICONT(NFISS),JCO2,JCONT(NFISS),NCONT
+      INTEGER     AR(12,3),IA,NUNOA,NUNOB,STNA,STNB,NMA,IMAE
       INTEGER     FA(6,4),IBID3(12,3),NBF,IFQ,CODRET,ILSN,ILST,IGEOM
       CHARACTER*2  CH2
       CHARACTER*8  TYPMA,K8BID,NOMAIL
-      CHARACTER*19 CLSN,CLST,CNXINV,CSTN(NFISS)
-      CHARACTER*24 GRP(3)
+      CHARACTER*19 CLSN,CLST,CNXINV,CSTN(NFISS),MAICON(NFISS)
+      CHARACTER*24 GRP(4*NFISS)
       LOGICAL     LCONT,ISMALI
 C
 C ----------------------------------------------------------------------
@@ -72,6 +70,7 @@ C
       DO 40 IFISS=1,NFISS
         CALL CODENT(IFISS,'G',CH2)
         CSTN(IFISS)='&&XTYELE.STN'//CH2
+        MAICON(IFISS)='&&XTYELE.CONT'//CH2
  40   CONTINUE
       CALL JEVEUO(NOMA(1:8)//'.COORDO    .VALE','L',JCOOR)
       CALL JEVEUO('&CATA.TM.TMDIM','L',JTMDIM)
@@ -95,30 +94,48 @@ C --- CORRESPOND AU NOMBRE DE SOUS POINTS POUR LA SD FISSNO
 C
 C --- BOUCLE SUR NOMBRE OCCURRENCES FISSURES
 C
-      DO 10 IFISS = 1,NFISS
-        CALL CNOCNS(FISS(IFISS)//'.LNNO','V',CLSN)
-        CALL CNOCNS(FISS(IFISS)//'.LTNO','V',CLST)
+      NCONT = 0
+      NMAENR = 0
+      DO 14 IFISS = 1,NFISS
         CALL CNOCNS(FISS(IFISS)//'.STNO','V',CSTN(IFISS))
-        CALL JEVEUO(CLSN//'.CNSV','L',JLSN)
-        CALL JEVEUO(CLST//'.CNSV','L',JLST)
         CALL JEVEUO(CSTN(IFISS)//'.CNSL','L',JSTNL(IFISS))
         CALL JEVEUO(CSTN(IFISS)//'.CNSV','L',JSTNV(IFISS))
-        GRP(1) = FISS(IFISS)//'.MAILFISS.HEAV'
-        GRP(2) = FISS(IFISS)//'.MAILFISS.CTIP'
-        GRP(3) = FISS(IFISS)//'.MAILFISS.HECT'
+        GRP(4*(IFISS-1)+1) = FISS(IFISS)//'.MAILFISS.HEAV'
+        GRP(4*(IFISS-1)+2) = FISS(IFISS)//'.MAILFISS.CTIP'
+        GRP(4*(IFISS-1)+3) = FISS(IFISS)//'.MAILFISS.HECT'
+        GRP(4*(IFISS-1)+4) = FISS(IFISS)//'.MAILFISS.CONT'
+        DO 11 L=1,3
+         CALL JEEXIN(GRP(4*(IFISS-1)+L),IRET)
+         IF (IRET.NE.0) THEN
+            CALL JELIRA(GRP(4*(IFISS-1)+L),'LONMAX',NMAENR,K8BID)
+            NCONT = NCONT + NMAENR 
+            CALL JEVEUO(GRP(4*(IFISS-1)+L),'L',JGRP(4*(IFISS-1)+L))
+         ENDIF
+11      CONTINUE
+        ICONT(IFISS)=0
+14    CONTINUE
+C
+      DO 15 IFISS=1,NFISS
+         CALL WKVECT(MAICON(IFISS),'V V I',NCONT,JCONT(IFISS))
+15    CONTINUE
+C
+      DO 10 IFISS=1,NFISS
+        CALL CNOCNS(FISS(IFISS)//'.LNNO','V',CLSN)
+        CALL CNOCNS(FISS(IFISS)//'.LTNO','V',CLST)
+        CALL JEVEUO(CLSN//'.CNSV','L',JLSN)
+        CALL JEVEUO(CLST//'.CNSV','L',JLST)
 C
 C --- BOUCLE SUR LES GRP
 C
         DO 20 KK = 1,3
-          CALL JEEXIN(GRP(KK),IRET)
+          CALL JEEXIN(GRP(4*(IFISS-1)+KK),IRET)
           IF (IRET.NE.0) THEN
-            CALL JEVEUO(GRP(KK),'L',JGRP)
-            CALL JELIRA(GRP(KK),'LONMAX',NMAENR,K8BID)
+            CALL JELIRA(GRP(4*(IFISS-1)+KK),'LONMAX',NMAENR,K8BID)
 C
 C --- BOUCLE SUR LES MAILLES DU GROUPE
 C
             DO 30 I = 1,NMAENR
-              IMA = ZI(JGRP-1+I)
+              IMA = ZI(JGRP(4*(IFISS-1)+KK)-1+I)
 C
               ZI(JNBPT-1+IMA) = ZI(JNBPT-1+IMA)+1
               ITYPMA=ZI(JTYPMA-1+IMA)
@@ -322,15 +339,42 @@ C ---  1 -> X-FEM AVEC CONTACT
 C ---  0 -> FEM SI LA COLONE 4 EST À 1,
 C           NON AFFECTÉ SI LA COLONE 4 EST À 0
 C
+              IF(NFISS.EQ.1) THEN
+                IF(LCONT) THEN
+                  ICONT(IFISS) = ICONT(IFISS)+1
+                  ZI(JCONT(IFISS)-1+ICONT(IFISS)) = IMA
+                 ENDIF
+              ELSE              
+                IF(LCONT.AND.ZI(JTAB-1+5*(IMA-1)+KK).LE.0) THEN
+                   DO 188 IFIS=1,NFISS
+                     DO 191 L=1,3
+C                      IF(L.EQ.2) GOTO 191
+                       CALL JEEXIN(GRP(4*(IFIS-1)+L),IRET)
+                       IF (IRET.NE.0) THEN
+                        CALL JELIRA(GRP(4*(IFIS-1)+L),
+     &                              'LONMAX',NMA,K8BID)
+                        DO 189 J=1,NMA
+                          IMAE = ZI(JGRP(4*(IFIS-1)+L)-1+J)
+                          IF(IMAE.EQ.IMA) THEN
+                             ICONT(IFIS) = ICONT(IFIS)+1
+                             ZI(JCONT(IFIS)-1+ICONT(IFIS)) = IMA
+                             GOTO 188
+                          ENDIF
+189                     CONTINUE
+                      ENDIF
+191                  CONTINUE
+188               CONTINUE                  
+                ENDIF
+              ENDIF
               IF (ZI(JTAB-1+5*(IMA-1)+4).EQ.1) THEN
-                IF (LCONT) THEN
+                IF (LCONT) THEN                  
                   ZI(JTAB-1+5*(IMA-1)+KK) = 1
                 ELSE
                   ZI(JTAB-1+5*(IMA-1)+KK) = -1
                 ENDIF
                 ZI(JTAB-1+5*(IMA-1)+4)  = 0
               ELSEIF (ZI(JTAB-1+5*(IMA-1)+4).EQ.0) THEN
-C --- SI LA MAILLE EST VUE UNE DEUXIEME FOIS,
+C --- SI LA MAILLE EST VUE UNE DEUXIEME FOIS (MULTIFISSURATION)
 C
                 IF (CONTAC.GT.1) CALL U2MESK('F','XFEM_43', 1 ,NOMAIL)
 C --- SI CONTACT AUTRE QUE P1P1
@@ -346,7 +390,8 @@ C --- CALCUL DU NOMBRE DE FONCTIONS HEAVISIDE
                 IF (NBHEAV.GT.4) CALL U2MESK('F','XFEM_40', 1 ,NOMAIL)
                 ZI(JNBPT2-1+IMA) = NBHEAV
                 IF (ZI(JTAB-1+5*(IMA-1)+1).GT.0.OR.LCONT) THEN
-C --- SI AU MOINS UNE DES 2 MAILLES A DU CONTACT
+C --- SI AU MOINS UNE DES 2 FISSURES A DU CONTACT
+C --- ALORS CONTACT POUR TOUTES LES FISSURES VUES PAR L ELEMENT
                   ZI(JTAB-1+5*(IMA-1)+KK) = NBHEAV
                 ELSE
                   ZI(JTAB-1+5*(IMA-1)+KK) = -1*NBHEAV
@@ -360,9 +405,17 @@ C --- SI AU MOINS UNE DES 2 MAILLES A DU CONTACT
  20     CONTINUE
         CALL JEDETR(CLSN)
         CALL JEDETR(CLST)
+C
  10   CONTINUE
 C
       DO 50 IFISS=1,NFISS
+        IF(ICONT(IFISS).GT.0) THEN
+          CALL WKVECT(GRP(4*(IFISS-1)+4),'G V I',ICONT(IFISS),JCO2)
+          DO 150 L = 1,ICONT(IFISS)
+            ZI(JCO2-1+L)=ZI(JCONT(IFISS)-1+L)
+150       CONTINUE
+        ENDIF
+        CALL JEDETR(MAICON(IFISS))
         CALL JEDETR(CSTN(IFISS))
  50   CONTINUE
 C

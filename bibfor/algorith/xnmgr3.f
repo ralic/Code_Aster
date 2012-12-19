@@ -1,11 +1,11 @@
-      SUBROUTINE  XNMGR3(ELREFP,NDIM,COORSE,IGEOM,HE,NFH,DDLC,NFE,
-     &                   INSTAM,INSTAP,DEPLP,SIGM,VIP,
+      SUBROUTINE  XNMGR3(ELREFP,NDIM,COORSE,IGEOM,HE,NFH,DDLC,DDLM,NFE,
+     &                   INSTAM,INSTAP,IDEPLP,SIGM,VIP,
      &                   BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,COMPOR,
-     &                   LGPG,CRIT,DEPLM,LSN,LST,IDECPG,NFISS,FISNO,
-     &                   SIGP,VI,MATUU,VECTU,CODRET)
+     &                   LGPG,CRIT,IDEPLM,LSN,LST,IDECPG,NFISS,FISNO,
+     &                   SIGP,VI,MATUU,IVECTU,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,14 +37,12 @@ C
       INCLUDE 'jeveux.h'
       INTEGER       NDIM,IGEOM,IMATE,LGPG,CODRET,NNOP,NPG,NFH,DDLC,NFE
       INTEGER       NFISS,FISNO(NNOP,NFISS),IDECPG
+      INTEGER       IDEPLM,IDEPLP,IVECTU
       CHARACTER*8   ELREFP,TYPMOD(*)
       CHARACTER*16  OPTION,COMPOR(4)
       REAL*8        BASLOC(9*NNOP),CRIT(3),HE(NFISS)
-      REAL*8        DEPLM(NDIM*(1+NFH+NFE)+DDLC,NNOP)
-      REAL*8        DEPLP(NDIM*(1+NFH+NFE)+DDLC,NNOP)
       REAL*8        LSN(NNOP),LST(NNOP),COORSE(*)
       REAL*8        VI(LGPG,NPG),VIP(LGPG,NPG),SIGP(6,NPG),MATUU(*)
-      REAL*8        VECTU(NDIM*(1+NFH+NFE)+DDLC,NNOP)
       REAL*8        INSTAM,INSTAP,SIGM(6,*),SIGN(6)
 
 C.......................................................................
@@ -83,8 +81,9 @@ C......................................................................
 C
 C
       INTEGER  KPG,KK,N,I,M,J,J1,KL,PQ,KKD,INO,IG,IRET,IJ
-      INTEGER  NNO,NNOS,NPGBIS,DDLT,DDLD,DDLDN,CPT,NDIMB
+      INTEGER  NNO,NNOS,NPGBIS,DDLS,DDLD,DDLDN,CPT,NDIMB
       INTEGER  JCOOPG,JDFD2,JGANO,IDFDE,IVF,IPOIDS
+      INTEGER  DDLM,IBID,MN,NN,NNOPS
       LOGICAL  GRDEPL,RESI,RIGI
       REAL*8   F(3,3),FM(3,3),FR(3,3),EPSM(6),EPSP(6),DEPS(6)
       REAL*8   DSIDEP(6,6),SIGMA(6),FTF,DETF
@@ -116,8 +115,9 @@ C     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
       DDLDN = DDLD/NDIM
 
 C     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
-      DDLT=DDLD+DDLC
-
+      DDLS=DDLD+DDLC
+      CALL ELREF4(' ','RIGI',IBID,IBID,NNOPS,
+     &          IBID,IBID,IBID,IBID,IBID)
 C - INITIALISATION
       GRDEPL  = COMPOR(3) .EQ. 'GROT_GDEP'
       RESI = OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL'
@@ -150,9 +150,10 @@ C       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
 
         IF (NFE.GT.0) THEN
 C             JUSTE POUR CALCULER LES FF
-          CALL REERE3(ELREFP,NNOP,IGEOM,XG,DEPLM,GRDEPL,NDIM,HE,
-     &                FISNO,NFISS,NFH,NFE,DDLT,FE,DGDGL,'NON',
-     &                XE,FF,DFDI,FM,EPSM,GRAD)
+          CALL REEREF(ELREFP,.FALSE.,NNOP,NNOPS,ZR(IGEOM),XG,IDEPLM,
+     &                GRDEPL,NDIM,HE,RBID,RBID,FISNO,NFISS,NFH,
+     &                NFE,DDLS,DDLM,FE,DGDGL,'NON',XE,FF,DFDI,
+     &                FM,EPSM,GRAD)
 C         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
           CALL VECINI(9,0.D0,BASLOG)
           LSNG = 0.D0
@@ -175,13 +176,15 @@ C
 C       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 C       ET CALCUL DE FF, DFDI, EPSM ET EPSP
 C       CALCUL EN T-
-        CALL REERE3(ELREFP,NNOP,IGEOM,XG,DEPLM,GRDEPL,NDIM,HE,
-     &              FISNO,NFISS,NFH,NFE,DDLT,FE,DGDGL,'OUI',
-     &              XE,FF,DFDI,FM,EPSM,GRAD)
+        CALL REEREF(ELREFP,.FALSE.,NNOP,NNOPS,ZR(IGEOM),XG,IDEPLM,
+     &              GRDEPL,NDIM,HE,RBID,RBID,FISNO,NFISS,NFH,
+     &              NFE,DDLS,DDLM,FE,DGDGL,'OUI',XE,FF,DFDI,FM,
+     &              EPSM,GRAD)
 C       CALCUL EN T+
-        CALL REERE3(ELREFP,NNOP,IGEOM,XG,DEPLP,GRDEPL,NDIM,HE,
-     &              FISNO,NFISS,NFH,NFE,DDLT,FE,DGDGL,'OUI',
-     &              XE,FF,DFDI,F,EPSP,GRAD)
+        CALL REEREF(ELREFP,.FALSE.,NNOP,NNOPS,ZR(IGEOM),XG,IDEPLP,
+     &              GRDEPL,NDIM,HE,RBID,RBID,FISNO,NFISS,NFH,
+     &              NFE,DDLS,DDLM,FE,DGDGL,'OUI',XE,FF,DFDI,F,
+     &              EPSP,GRAD)
 C - CALCUL DE DEPS POUR LDC
         DO 25 I = 1,6
           DEPS(I)=EPSP(I)-EPSM(I)
@@ -309,7 +312,9 @@ C - CALCUL DE LA MATRICE DE RIGIDITE
         IF (RIGI) THEN
 C          RIGIDITÉ GEOMETRIQUE
           DO 240 N=1,NNOP
+            CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
             DO 241 M=1,N
+              CALL INDENT(M,DDLS,DDLM,NNOPS,MN)
               DO 242 I=1,DDLDN
                 DO 243 J=1,DDLDN
                   TMP1 = 0.D0
@@ -342,9 +347,9 @@ C                STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                   ENDIF
                   IF (J.LE.J1) THEN
                     DO 244 IJ = 1,NDIM
-                      KKD = (DDLT*(N-1)+(I-1)*NDIM+IJ-1)
-     &                     * (DDLT*(N-1)+(I-1)*NDIM+IJ) /2
-                      KK = KKD + DDLT*(M-1)+(J-1)*NDIM+IJ
+                      KKD = (DDLS*(N-1)+(I-1)*NDIM+IJ-1)
+     &                     * (DDLS*(N-1)+(I-1)*NDIM+IJ) /2
+                      KK = KKD + DDLS*(M-1)+(J-1)*NDIM+IJ
                       MATUU(KK) = MATUU(KK) + TMP1*JAC
  244                CONTINUE
                   ENDIF
@@ -354,6 +359,7 @@ C                STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
  240      CONTINUE
 C          RIGIDITE ELASTIQUE
           DO 140 N=1,NNOP
+            CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
             DO 141 I=1,DDLD
               DO 142,KL=1,6
                 SIG(KL) = DEF(1,N,I)*DSIDEP(1,KL)
@@ -379,8 +385,8 @@ C                STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                     J1 = DDLD
                   ENDIF
                   IF (J.LE.J1) THEN
-                    KKD = (DDLT*(N-1)+I-1) * (DDLT*(N-1)+I) /2
-                    KK = KKD + DDLT*(M-1)+J
+                    KKD = (NN+I-1) * (NN+I) /2
+                    KK = KKD + MN+J
                     MATUU(KK) = MATUU(KK) + TMP2*JAC
                   END IF
  144            CONTINUE
@@ -393,11 +399,12 @@ C
 C - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
 C
         IF (RESI) THEN
-C
+          CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
           DO 180 N=1,NNOP
             DO 181 I=1,DDLD
               DO 182 KL=1,6
-                VECTU(I,N)=VECTU(I,N)+DEF(KL,N,I)*SIGMA(KL)*JAC
+                ZR(IVECTU-1+NN)=
+     &          ZR(IVECTU-1+NN)+DEF(KL,N,I)*SIGMA(KL)*JAC
  182          CONTINUE
  181        CONTINUE
  180      CONTINUE

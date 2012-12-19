@@ -1,7 +1,7 @@
       SUBROUTINE JJIMPO (UNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
-     &                   LT    , LONOI , MESS , PARM )
+     &                   LT, LONOI, MESS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C TOLE CRS_513
       INCLUDE 'jeveux_private.h'
       INTEGER            UNIT
       INTEGER            IADMI , IDECI , IDATOC        , LT , LONOI
-      CHARACTER*(*)      MESS  , PARM  , GENRI , TYPEI
+      CHARACTER*(*)      MESS  , GENRI , TYPEI
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR : IMPRIME UN SEGMENT DE VALEURS
 C
@@ -37,7 +37,6 @@ C IN  TYPEI  : TYPE DE L'OBJET
 C IN  LT     : LONGUEUR DU TYPE
 C IN  LONOI  : LONGEUR EN ENTIER DU SEGMENT
 C IN  MESS   : MESSAGE D'INFORMATION
-C IN  PARM   : ?
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER ICLS ,IDCO ,IDENOM ,IDOS ,IEP ,IES ,IPS
@@ -50,7 +49,7 @@ C-----------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C ----------------------------------------------------------------------
       CHARACTER*2      DN2

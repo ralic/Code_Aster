@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor1 Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -403,4 +403,11 @@ Le calcul de ENER_TOTALE  n'est pas possible avec DEFORMATION= %(k1)s.
 Le calcul de ETOT_ELGA  n'est pas possible avec DEFORMATION= %(k1)s.
 """),
 
+80 : _(u"""
+DELTA1 = %(r1)f doit toujours rester entre 0 et 1. 
+"""),
+
+81 : _(u"""
+DELTA2 = %(r1)f doit toujours rester entre 0 et 1.
+"""),
 }

@@ -1,7 +1,7 @@
       SUBROUTINE TE0367(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,9 +50,9 @@ C
       REAL*8       TAU1(3),TAU2(3),NORM(3)
       REAL*8       MPROJT(3,3)
       REAL*8       COORE(3),COORM(3),COORC(2)
-      REAL*8       FFE(8),FFM(8),FFC(8),DFFC(3,8)
+      REAL*8       FFE(20),FFM(20),FFC(8),DFFC(3,8)
       REAL*8       JACOBI,HPG
-      CHARACTER*8  TYPMAE,TYPMAM,TYPMAC,TYPMAI,TYPMEC
+      CHARACTER*8  ELREES,ELREMA,ELRECO,TYPMAI,TYPMEC
       INTEGER      INADH,NVIT,LACT(8),NLACT,NINTER
       REAL*8       GEOPI(9),DVITET(3)
       REAL*8       COEFFF,COEFCR,COEFFR,COEFFP
@@ -73,7 +73,7 @@ C
 C
 C --- INFOS SUR LA MAILLE DE CONTACT
 C
-      CALL XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
+      CALL XMELET(NOMTE , TYPMAI , ELREES ,ELREMA ,ELRECO  ,
      &                  NDIM  , NDDL   , NNE   , NNM  ,
      &                  NNC   , DDLE  , DDLM  ,
      &                  CONTAC, NDEPLE , NSINGE, NSINGM,NFHE,NFHM)
@@ -180,8 +180,8 @@ C
 C
 C --- FONCTIONS DE FORME
 C
-      CALL XTFORM(NDIM  ,TYPMAE,TYPMAM,TYPMAC,NDEPLE ,
-     &            NNM(1)   ,NNC   ,COORE ,COORM ,COORC ,
+      CALL XTFORM(NDIM  ,ELREES,ELREMA,ELRECO,NDEPLE ,
+     &            NNM(1),NNC   ,COORE ,COORM ,COORC ,
      &            FFE   ,FFM   ,DFFC  )
 C
 C --- FONCTION DE FORMES POUR LES LAGRANGIENS
@@ -192,18 +192,17 @@ C
         CALL XMOFFC(LACT,NLACT,NNC,FFE,FFC)
       ELSEIF (CONTAC.EQ.3) THEN
         NNC   = NNE(2)
-        CALL ELELIN(CONTAC,TYPMAE,TYPMEC,IBID,IBID)
+        CALL ELELIN(CONTAC,ELREES,TYPMEC,IBID,IBID)
         CALL ELRFVF(TYPMEC,COORE,NNC,FFEC,IBID)
         CALL XLACTI(TYPMAI,NINTER,JPCAI,LACT,NLACT)
         CALL XMOFFC(LACT,NLACT,NNC,FFEC,FFC)
       ELSE
-        CALL ELRFVF(TYPMAC,COORC,NNC,FFC,NNC)
-        NLACT=0
+        CALL ASSERT(CONTAC.EQ.0)
       ENDIF
 C
 C --- JACOBIEN POUR LE POINT DE CONTACT
 C
-      CALL XMMJAC(TYPMAC,GEOPI ,DFFC  ,JACOBI)
+      CALL XMMJAC(ELRECO,GEOPI ,DFFC  ,JACOBI)
 C
 C --- CALCUL DE LA NORMALE ET DES MATRICES DE PROJECTION
 C
@@ -275,7 +274,7 @@ C --- CALCUL DU VECTEUR - CAS SANS FROTTEMENT
 C
 
          CALL XMVEF0(NDIM  ,NNE ,NNC   ,NFAES ,
-     &                  JPCAI ,HPG   ,FFC   ,JACOBI,
+     &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCR,
      &                  LPENAC,DLAGRF,CFACE ,TYPMAI,
      &                  TAU1  ,TAU2  ,DDLE  ,CONTAC,
      &                  NFHE  ,LMULTI,ZI(JHEANO),VTMP  )
@@ -296,7 +295,16 @@ C
      &                TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
      &                NRESE ,COEFFP,LPENAF,DVITET)
 C
-C --- CALCUL DU JEU INUTILE
+C --- CALCUL DU JEU
+C
+          JEU = 0.D0
+          IF(NDIM.EQ.3.AND.CONTAC.EQ.3) THEN
+          CALL XMMJEU(NDIM  ,NNM,NNE,NDEPLE,
+     &                  NSINGE,NSINGM,FFE  ,FFM   ,NORM  ,
+     &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
+     &                  DDLE  ,DDLM  ,NFHE  ,NFHM  ,LMULTI,
+     &                  ZI(JHEAFA),JEU   )
+          ENDIF
 C
 C --- SI GLISSANT, NORMALISATION RESE
 C
@@ -307,9 +315,9 @@ C
           CALL XMVEF1(NDIM  ,NNE   ,NNM,NDEPLE ,
      &                  NNC,NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
      &                  FFM   ,JACOBI,JPCAI ,DLAGRC,DLAGRF,
-     &                  COEFFR,LPENAF,COEFFF,TAU1  ,
-     &                  TAU2  ,RESE  ,MPROJT ,
-     &                  TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,
+     &                  COEFFR,COEFFP,LPENAF,COEFFF,TAU1  ,
+     &                  TAU2  ,RESE  ,MPROJT ,COEFCR,COEFCP,
+     &                  JEU   ,TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,
      &                  NVIT  ,CONTAC,DDLE,DDLM,NFHE,VTMP  )
         ENDIF
       ELSE

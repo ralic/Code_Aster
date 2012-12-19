@@ -3,7 +3,7 @@
      &       ITMAX, TOLER,TIMED,TIMEF,YD,YF,DEPS,DY,R,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,8 @@ C
       CHARACTER*8  TYPMOD
       CHARACTER*16 COMP(*),NOMFAM
       CHARACTER*24 CPMONO(5*NMAT+1)
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
       COMMON /DEPS6/DEPSDT
@@ -90,19 +92,19 @@ C     INVERSE DE L'OPERATEUR D'ELASTICITE DE HOOKE
       CALL R8INIR(9,0.D0,GAMSNS,1)
       CALL LCEQVN(NDT,YF(1),SIGF)
       CALL R8INIR(6,0.D0,DEVI,1)
-      
-C     POUR DD_CC      
-      IF (COMP(3)(1:5).NE.'PETIT') THEN
+
+C     POUR DD_CC
+      IF (GDEF.EQ.1) THEN
          CALL LCGRLA (DEPS,DEPST)
          CALL DSCAL(3,SQRT(2.D0),DEPST(4),1)
       ELSE
          CALL DCOPY(6,DEPS,1,DEPST,1)
       ENDIF
       DEPSDT=SQRT(DDOT(6,DEPST,1,DEPST,1)/1.5D0)/DT
-      
+
       NBFSYS=NBCOMM(NMAT,2)
       IRET=0
-      
+
 
 C     NSFA : debut de la famille IFA dans DY et YD, YF
       NSFA=6
@@ -110,10 +112,10 @@ C     NSFV : debut de la famille IFA dans les variables internes
       NSFV=6
 
       DO 6 IFA=1,NBFSYS
-      
-         IFL=NBCOMM(IFA,1)           
+
+         IFL=NBCOMM(IFA,1)
          NUECOU=NINT(MATERF(NMAT+IFL))
-         NOMFAM=CPMONO(5*(IFA-1)+1)       
+         NOMFAM=CPMONO(5*(IFA-1)+1)(1:16)
 
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MUS,NG,LG,0,Q)
 
@@ -121,7 +123,7 @@ C     NSFV : debut de la famille IFA dans les variables internes
 C           CALCUL DE LA SCISSION REDUITE
             CALL CALTAU(COMP,IFA,IS,SIGF,FKOOH,NFS,NSG,TOUTMS,
      &                  TAUS,MUS,MSNS)
-C           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT            
+C           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT
             CALL LCMMLC(NMAT,NBCOMM,CPMONO,NFS,NSG,HSR,NSFV,NSFA,IFA,
      &      NBSYS,IS,DT,NVI,VIND,YD,DY,ITMAX,TOLER,MATERF,EXPBP,TAUS,
      &                  DALPHA,DGAMMA,DP,CRIT,SGNS,RP,IRET)
@@ -138,7 +140,7 @@ C           POUR LES LOIS DD_* ALPHA représente la variable principale
                R(NSFA+IS)=-(DGAMM1-DGAMMA)
             ENDIF
 
-            IF (COMP(3)(1:5).EQ.'PETIT') THEN
+            IF (GDEF.EQ.0) THEN
                CALL DAXPY(6,DGAMMA,MUS,1,DEVI,1)
             ELSE
                CALL DAXPY(9,DGAMMA,MSNS,1,GAMSNS,1)
@@ -150,15 +152,15 @@ C           POUR LES LOIS DD_* ALPHA représente la variable principale
 
   6   CONTINUE
 
-      IF (COMP(3)(1:5).NE.'PETIT') THEN
-         CALL CALCFE(NR,NDT,NVI,VIND,DEPS,GAMSNS,FE,FP,IRET)       
+      IF (GDEF.EQ.1) THEN
+         CALL CALCFE(NR,NDT,NVI,VIND,DEPS,GAMSNS,FE,FP,IRET)
          IF (IRET.GT.0) THEN
             GOTO 9999
          ENDIF
          CALL LCGRLA ( FE,EPSGL)
          CALL LCPRMV ( FKOOH,   SIGF  , H1SIGF )
          CALL LCDIVE ( EPSGL,   H1SIGF  , R(1) )
-      ELSE      
+      ELSE
          CALL LCEQVN ( NDT , YD(1)       , SIGD)
          CALL LCPRMV ( DKOOH,   SIGD  , EPSED )
          CALL LCDIVE ( DEPS ,   DEVI  , DEPSE )
@@ -167,6 +169,6 @@ C LA PREMIERE EQUATION EST  (HF-1)SIGF -(HD-1)SIGD -(DEPS-DEPSP)=0
          CALL LCPRMV ( FKOOH,   SIGF  , H1SIGF )
          CALL LCDIVE ( EPSEF,   H1SIGF  , R(1) )
       ENDIF
-      
+
 9999  CONTINUE
       END

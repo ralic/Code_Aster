@@ -1,14 +1,13 @@
-      SUBROUTINE CBSINT ( CHAR, NOMA, LIGRMO, NDIM, FONREE )
+      SUBROUTINE CBSINT ( CHAR, NOMA, LIGRMO, FONREE )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
 
-      INTEGER           NDIM
       CHARACTER*4       FONREE
       CHARACTER*8       CHAR, NOMA
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

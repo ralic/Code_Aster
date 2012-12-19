@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE BLOC DECOUPE PAR DEUX INTERFACES INTERSECTEES AVEC X-FEM
 # ssnv511f.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -285,7 +285,7 @@ DEPZON[4] = CALC_TABLE(TABLE = DEPPLY,
 #----------------------------------------------
 
 vale = [0,0,0,0,0]
-preci = 0.05
+preci = 0.06
 
 for i in [1,2,3,4]: #Boucle sur les zones
 

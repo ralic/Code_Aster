@@ -5,7 +5,7 @@
       CHARACTER*19 RESU,KDISC,KRANG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C-----------------------------------------------------------------------
       INTEGER I ,IBID ,IER ,IER1 ,IOCC ,IORD ,IRET
       INTEGER IVAL ,JBID ,JDISC ,JORDR ,JRANG ,L ,LACCR
       INTEGER LDISC ,LLI ,LT ,N ,NBI ,NBI2 ,NBDISC
-      INTEGER NBTROU ,NNO ,NTO ,NUTROU
+      INTEGER NBTROU ,NNO ,NTO ,NUTROU(1)
       REAL*8 EPSI ,RBID ,TUSR
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -156,7 +156,7 @@ C
           GO TO 70
         END IF
         DO 50 IORD = 0,NBI - 1
-          IF (NUTROU.EQ.ZI(JORDR+IORD)) GO TO 60
+          IF (NUTROU(1).EQ.ZI(JORDR+IORD)) GO TO 60
    50   CONTINUE
    60   CONTINUE
         ZI(JRANG+I) = IORD + 1
@@ -203,7 +203,7 @@ C
             GO TO 71
           END IF
           DO 51 IORD = 0,NBI - 1
-            IF (NUTROU.EQ.ZI(JORDR+IORD)) GO TO 61
+            IF (NUTROU(1).EQ.ZI(JORDR+IORD)) GO TO 61
    51     CONTINUE
    61     CONTINUE
           ZI(JRANG+I) = IORD + 1

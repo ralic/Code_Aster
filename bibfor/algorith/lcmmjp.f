@@ -5,7 +5,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,8 @@ C     ----------------------------------------------------------------
 C DIMENSIONNEMENT DYNAMIQUE
       REAL*8 DRDY(NR,NR),DSDE(6,*),KYL(6,6),DET,I6(6,6),ZINV(6,6)
       REAL*8 TOLER,MATER(*),YF(NR),DY(NR),UN,ZERO,TIMED,TIMEF,PGL(3,3)
-      REAL*8 Z0(6,6),Z1(6,(NR-NDT)),Z2((NR-NDT),6),Z3((NR-NDT),(NR-NDT))
+      REAL*8 Z0(6,6),Z1(6,(NR-NDT))
+      REAL*8 Z2((NR-NDT),6),Z3((NR-NDT),(NR-NDT))
       REAL*8 TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
       REAL*8 VIND(*),VINF(*),DF(9),YD(NR)
       CHARACTER*8     MOD
@@ -66,6 +67,8 @@ C DIMENSIONNEMENT DYNAMIQUE
       PARAMETER       ( UN   =  1.D0   )
       PARAMETER       ( ZERO =  0.D0   )
       COMMON /TDIM/ NDT,NDI
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
       DATA  I6        /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
      1                 ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
      2                 ZERO   , ZERO  , UN    , ZERO  ,ZERO  ,ZERO,
@@ -111,7 +114,8 @@ C - RECUPERER LES SOUS-MATRICES BLOC
          Z3(K,J)=DRDY(NDT+K,NDT+J)
  401   CONTINUE
 C     Z2=INVERSE(Z3)*Z2
-      CALL MGAUSS ('NCSP',Z3, Z2, NS, NS, 6, DET, IRET )
+C     CALL MGAUSS ('NCSP',Z3, Z2, NS, NS, 6, DET, IRET )
+      CALL MGAUSS ('NCWP',Z3, Z2, NS, NS, 6, DET, IRET )
       IF (IRET.GT.0) GOTO 9999
 
 C     KYL=Z1*INVERSE(Z3)*Z2
@@ -124,10 +128,11 @@ C     Z0=Z0+Z1*INVERSE(Z3)*Z2
  501  CONTINUE
  
       CALL DCOPY(36,I6,1,ZINV,1)
-      CALL MGAUSS ('NCSP',Z0, ZINV, 6, 6, 6, DET, IRET )
+C     CALL MGAUSS ('NCSP',Z0, ZINV, 6, 6, 6, DET, IRET )
+      CALL MGAUSS ('NCWP',Z0, ZINV, 6, 6, 6, DET, IRET )
       IF (IRET.GT.0) GOTO 9999
       
-      IF (COMP(3)(1:5).EQ.'PETIT') THEN
+      IF (GDEF.EQ.0) THEN
       
 C        DSDE = INVERSE(Z0-Z1*INVERSE(Z3)*Z2)
 

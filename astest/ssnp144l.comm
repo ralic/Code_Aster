@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144l.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -174,7 +174,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(METHODE='MUMPS',),
+                    SOLVEUR=_F(METHODE='MUMPS',
+                               NPREC=-1),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     INFO=1,);
 
@@ -201,7 +202,7 @@ UTOT1=STAT_NON_LINE(reuse =UTOT1,
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI',),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               NPREC=15,),
+                               NPREC=-1,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     INFO=1,);
 

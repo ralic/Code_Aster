@@ -7,7 +7,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C-----------------------------------------------------------------------
       INTEGER       IF1, IF2, IF3, IMF1, IMF2, IPRES, IDNOR, IDTAN
       INTEGER       NORIEN, NORIE1, NORIE2, JLIMA, NBMAMO
       INTEGER       UTMOTP
-      REAL*8        R8B, DNOR, R8PREM, ARMIN, PREC
+      REAL*8        R8B, DNOR, R8PREM
       INTEGER       GETEXM
       LOGICAL       REORIE, MCFL(NBT)
       COMPLEX*16    CBID
@@ -78,27 +78,6 @@ C
       GRMAMA = NOMMA//'.GROUPEMA'
       MAILMA = NOMMA//'.NOMMAI'
       LIMAMO = '&&CHVENO.MAIL_MODEL'
-C
-C --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
-C
-      CALL JEEXIN ( NOMMA//'           .LTNT', IRET )
-      IF ( IRET .NE. 0 ) THEN
-        CALL LTNOTB ( NOMMA , 'CARA_GEOM' , NOMT19 )
-        NBPAR = 0
-        PARA = 'AR_MIN                  '
-        CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, CBID, K8B,
-     &               K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
-     &               K8B, IRET )
-        IF ( IRET .EQ. 0 ) THEN
-          PREC = ARMIN*1.D-06
-        ELSEIF ( IRET .EQ. 1 ) THEN
-          PREC = 1.D-10
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
 C
       CALL GETVTX ( ' ', 'VERI_NORM', 0,IARG,1, MOT, N )
       IF ( MOT .EQ. 'NON' ) NBMFAC = 0
@@ -244,7 +223,7 @@ C
                       CALL JEVEUO(LIMAMO,'L',JLIMA)
                     ENDIF
                     CALL ORILMA ( NOMMA, NDIM, ZI(JGRO), NBMAIL, NORIE1,
-     &                        NTRAIT, REORIE, PREC, NBMAMO, ZI(JLIMA ) )
+     &                        NTRAIT, REORIE, NBMAMO, ZI(JLIMA ) )
                     CALL JEDETR(LIMAMO)
                   ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN
                     CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
@@ -266,7 +245,7 @@ C
                     CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,
      &                                                      NORIE1 )
                     CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO,
-     &                    NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID  )
+     &                    NORIE1, NTRAIT, REORIE, ZERO, IBID  )
                     CALL JEDETR('&&CHVENO.PRIN')
                     CALL JEDETR('&&CHVENO.BORD')
                   ENDIF
@@ -334,7 +313,7 @@ C
                       CALL JEVEUO(LIMAMO,'L',JLIMA)
                   ENDIF
                   CALL ORILMA ( NOMMA, NDIM, ZI(JNMA), NBOBJ, NORIE1,
-     &                         NTRAIT, REORIE, PREC, NBMAMO, ZI(JLIMA) )
+     &                         NTRAIT, REORIE, NBMAMO, ZI(JLIMA) )
                   CALL JEDETR(LIMAMO)
                 ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN
                   CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
@@ -355,7 +334,7 @@ C
  220              CONTINUE
                   CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE, NORIE1)
                   CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO,
-     &                  NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID  )
+     &                  NORIE1, NTRAIT, REORIE, ZERO, IBID  )
                   CALL JEDETR('&&CHVENO.PRIN')
                   CALL JEDETR('&&CHVENO.BORD')
                 ENDIF

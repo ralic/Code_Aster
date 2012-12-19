@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -307,7 +307,7 @@ C             RIEN A FAIRE.
           NL1 = LXLGUT(LIGN1(1:NL1-1))
           NL2 = LXLGUT(LIGN2)
           NL2 = LXLGUT(LIGN2(1:NL2-1))
-          WRITE (IFIC,*) LIGN1(1:NL1)
+          WRITE (IFIC,'(A)') LIGN1(1:NL1)
           WRITE (IFIC,*) LIGN2(1:NL2)
 
           IF (LREF) THEN

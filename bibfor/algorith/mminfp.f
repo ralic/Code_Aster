@@ -2,7 +2,7 @@
      &                  LREP   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C
 C
 C
 C
+      INTEGER      IRET
       INTEGER      CFDISI,IFORM,NZOCO
       INTEGER      CFMMVD,ZCMCF,ZMETH,ZTOLE,ZEXCL,ZDIRN,ZCMDF,ZCMXF
       CHARACTER*24 CARACF,CARADF,CARAXF,DIRNOR,METHCO
@@ -383,9 +384,18 @@ C
         ENDIF
 C
       ELSEIF (QUESTI.EQ.'ALGO_CONT') THEN
+       IF(IFORM.EQ.2) THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
         RREP(1) = ZR(JCMCF-1+ZCMCF*(IZONE-1)+3)
         IREP(1) = NINT(RREP(1))
+       ELSEIF(IFORM.EQ.3) THEN
+         CALL JEVEUO(CARAXF,'L',JCMXF)
+         RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+11-1)
+         IREP(1) = NINT(RREP(1))
+       ELSE
+         CALL ASSERT(.FALSE.)
+       ENDIF
+        
 
       ELSEIF (QUESTI.EQ.'ALGO_CONT_PENA') THEN
         IF (IFORM.EQ.2) THEN
@@ -397,7 +407,8 @@ C
           ENDIF
         ELSEIF (IFORM.EQ.3) THEN
           CALL JEVEUO(CARAXF,'L',JCMXF)
-          IF (NINT(ZR(JCMXF+ZCMXF*(IZONE-1)+17-1)).EQ.3) THEN
+          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+11-1)
+          IF (NINT(RREP(1)).EQ.2) THEN
             LREP(1) = .TRUE.
           ELSE
             LREP(1) = .FALSE.
@@ -405,9 +416,17 @@ C
         ENDIF
 C
       ELSEIF (QUESTI.EQ.'ALGO_FROT') THEN
+       IF(IFORM.EQ.2) THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
         RREP(1) = ZR(JCMCF-1+ZCMCF*(IZONE-1)+5)
         IREP(1) = NINT(RREP(1))
+       ELSEIF(IFORM.EQ.3) THEN
+        CALL JEVEUO(CARAXF,'L',JCMXF)
+        RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+13-1)
+        IREP(1) = NINT(RREP(1))        
+       ELSE
+         CALL ASSERT(.FALSE.)
+       ENDIF
 
       ELSEIF (QUESTI.EQ.'ALGO_FROT_PENA') THEN
         IF (IFORM.EQ.2) THEN
@@ -419,27 +438,12 @@ C
           ENDIF
         ELSEIF (IFORM.EQ.3) THEN
           CALL JEVEUO(CARAXF,'L',JCMXF)
-          IF (NINT(ZR(JCMXF+ZCMXF*(IZONE-1)+18-1)).EQ.3) THEN
+          RREP(1)=ZR(JCMXF+ZCMXF*(IZONE-1)+13-1)
+          IF (NINT(RREP(1)).EQ.2) THEN
             LREP(1) = .TRUE.
           ELSE
             LREP(1) = .FALSE.
           ENDIF
-        ENDIF
-C
-      ELSEIF (QUESTI.EQ.'COEF_AUGM_CONT') THEN
-        IF (IFORM.EQ.2) THEN
-          CALL JEVEUO(CARACF,'L',JCMCF)
-          RREP(1) = ZR(JCMCF-1+ZCMCF*(IZONE-1)+2)
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-C
-      ELSEIF (QUESTI.EQ.'COEF_AUGM_FROT') THEN
-        IF (IFORM.EQ.2) THEN
-          CALL JEVEUO(CARACF,'L',JCMCF)
-          RREP(1) = ZR(JCMCF-1+ZCMCF*(IZONE-1)+4)
-        ELSE
-          CALL ASSERT(.FALSE.)
         ENDIF
 C
 C ---- INTERROGATION CARAXF
@@ -448,18 +452,6 @@ C
         IF (IFORM.EQ.3) THEN
           CALL JEVEUO(CARAXF,'L',JCMXF)
           RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+16-1)
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-
-      ELSEIF (QUESTI.EQ.'CZM_FERMETURE') THEN
-        IF (IFORM.EQ.3) THEN
-          CALL JEVEUO(CARAXF,'L',JCMXF)
-          IF(ZR(JCMXF+ZCMXF*(IZONE-1)+17-1).EQ.4.D0) THEN
-            RREP(1) = 1.D0
-          ELSE
-            RREP(1) = 0.D0
-          ENDIF
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -475,13 +467,11 @@ C
       ELSEIF (QUESTI.EQ.'CONT_XFEM_CZM') THEN
         IF (IFORM.EQ.3) THEN
           CALL JEVEUO(CARAXF,'L',JCMXF)
-          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+16-1)
-          IF (NINT(RREP(1)).EQ.0) THEN
-            LREP(1) = .FALSE.
-          ELSEIF (NINT(RREP(1)).EQ.1.OR.NINT(RREP(1)).EQ.2) THEN
+          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+11-1)
+          IF (NINT(RREP(1)).EQ.3) THEN
             LREP(1) = .TRUE.
           ELSE
-            CALL ASSERT(.FALSE.)
+            LREP(1) = .FALSE.
           ENDIF
         ELSE
           CALL ASSERT(.FALSE.)
@@ -517,21 +507,6 @@ C
           CALL ASSERT(.FALSE.)
         ENDIF
 C
-      ELSEIF (QUESTI.EQ.'COEF_REGU_CONT') THEN
-        IF (IFORM.EQ.3) THEN
-          CALL JEVEUO(CARAXF,'L',JCMXF)
-          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+2-1)
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-C
-      ELSEIF (QUESTI.EQ.'COEF_REGU_FROT') THEN
-        IF (IFORM.EQ.3) THEN
-          CALL JEVEUO(CARAXF,'L',JCMXF)
-          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+3-1)
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
 C
       ELSEIF (QUESTI.EQ.'COEF_COULOMB') THEN
         IF (IFORM.EQ.2) THEN
@@ -543,6 +518,28 @@ C
         ELSEIF (IFORM.EQ.1) THEN
           CALL JEVEUO(CARADF,'L',JCMDF )
           RREP(1) = ZR(JCMDF+ZCMDF*(IZONE-1)+4-1)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+C
+      ELSEIF (QUESTI.EQ.'COEF_AUGM_CONT') THEN
+        IF (IFORM.EQ.2) THEN
+          CALL JEVEUO(CARACF,'L',JCMCF)
+          RREP(1) = ZR(JCMCF+ZCMCF*(IZONE-1)+2-1)
+        ELSEIF(IFORM.EQ.3) THEN
+          CALL JEVEUO(CARAXF,'L',JCMXF)
+          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+2-1)          
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+C
+      ELSEIF (QUESTI.EQ.'COEF_AUGM_FROT') THEN
+        IF (IFORM.EQ.2) THEN
+          CALL JEVEUO(CARACF,'L',JCMCF)
+          RREP(1) = ZR(JCMCF+ZCMCF*(IZONE-1)+4-1)
+        ELSEIF(IFORM.EQ.3) THEN
+          CALL JEVEUO(CARAXF,'L',JCMXF)
+          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+3-1)           
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -572,21 +569,6 @@ C
           CALL ASSERT(.FALSE.)
         ENDIF
 C
-      ELSEIF (QUESTI.EQ.'COEF_STAB_CONT') THEN
-        IF (IFORM.EQ.3) THEN
-          CALL JEVEUO(CARAXF,'L',JCMXF)
-          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+11-1)
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-C
-      ELSEIF (QUESTI.EQ.'COEF_STAB_FROT') THEN
-        IF (IFORM.EQ.3) THEN
-          CALL JEVEUO(CARAXF,'L',JCMXF)
-          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+13-1)
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
 C
       ELSEIF (QUESTI.EQ.'COEF_PENA_CONT') THEN
         IF (IFORM.EQ.3) THEN

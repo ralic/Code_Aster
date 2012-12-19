@@ -10,7 +10,7 @@
       COMPLEX*16 CVAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -171,7 +171,7 @@ C     ----------------------------
       TYSCA = TYPE(1:1)//K8ENT(1:3)
 
       CALL RSINDI(TYSCA,IAOBJ-1+IDEBU,IMAXI,JORDR,IVAL,RVAL,KVAL,CVAL,
-     &            EPSI,CRIT,NBORDR,NBTROU,NUTROU(1),NDIM)
+     &            EPSI,CRIT,NBORDR,NBTROU,NUTROU,NDIM)
 
    20 CONTINUE
       CALL JEDEMA()

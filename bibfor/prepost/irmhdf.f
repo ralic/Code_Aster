@@ -4,7 +4,7 @@
      &                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ C
       PARAMETER ( NOMPRO = 'IRMHDF' )
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 66)
+      PARAMETER (NTYMAX = 69)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
       INTEGER EDLECT
@@ -281,7 +281,7 @@ C====
 C 7. LES EQUIVALENCES
 C====
 C
-      CALL IRMMEQ ( FID, NOMAMD, INFMED )
+C     CALL IRMMEQ ()  ! NE FAIT RIEN ...
 C
 C====
 C 8. FERMETURE DU FICHIER MED

@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
+%& MODIF TYPELEM  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,9 +37,14 @@ MODE_LOCAL__
     CFLUXF   = FTHM_F   ELEM__         (PFLU1    PTHER    )
     EFLUXE   = FTHM_R   ELGA__ RIGI    (PFLU1    PTHER    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    NSIEF_R  = SIEF_R   ELNO__ DIFF__  
+    NSIEF_R  = SIEF_R   ELNO__ DIFF__
        EN1   (FH11X FH11Y FH11Z FH12X FH12Y FH12Z       )
        EN2   (      )
+    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    EPJSIGM  = SIEF_R   ELEM__         (SIG_NX   SIG_NY   SIG_NZ   SIG_N
+                                        SIG_TX   SIG_TY   SIG_TZ
+                                        SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1
+                                        SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2   )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     EFLHN    = FLHN_R   ELGA__ RIGI    (FH11     FH12     )
@@ -55,8 +60,10 @@ OPTION__
     CHAR_MECA_FLUX_R    466   IN__   EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG                              
+                              OUT__  EGGEOP_R PCOORPG
     FLHN_ELGA           493   IN__   NGEOMER  PGEOMER  NSIEF_R  PCONTR
-                              OUT__  EFLHN    PFLHN                              
+                              OUT__  EFLHN    PFLHN
     RIGI_MECA      -1    IN__   XXXXXX   XXXXXX
                          OUT__  XXXXXX   XXXXXX
+    SIRO_ELEM           411   IN__   ECONTNO  PSIG3D   NGEOMER  PGEOMER
+                              OUT__  EPJSIGM  PPJSIGM

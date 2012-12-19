@@ -1,8 +1,8 @@
       SUBROUTINE AVEPPR( NBORDR, VWORK, TDISP, KWORK, SOMMW, TSPAQ, I,
-     &                   NOMMAT, VEPPR, VSIPN )
+     &                   VEPPR, VSIPN )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C ======================================================================
 
       INTEGER    NBORDR, TDISP, KWORK, SOMMW, TSPAQ, I
       REAL*8     VWORK(TDISP), VEPPR(NBORDR), VSIPN(NBORDR)
-      CHARACTER*8   NOMMAT
 C ----------------------------------------------------------------------
 C BUT: CALCULER LA DEF PLAS PRINCIPALE ET CONT NOMRMALE ASSOCIE
 C ----------------------------------------------------------------------

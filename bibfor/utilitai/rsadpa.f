@@ -8,7 +8,7 @@
       CHARACTER*(*) NOMSD,LPARA(*),CTYPE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C     --- RECUPERATION DU NUMERO DE RANGEMENT ---
         IF (IPARA.EQ.0) THEN
           IFR = IUNIFI('RESULTAT')
           CALL DISMOI('F','TYPE_RESU',NOMSD,'RESULTAT',IBID,K16B,IER)
-          CALL JEIMPO(IFR,NOMS2//'.NOVA',' ',' ')
+          CALL JEIMPO(IFR,NOMS2//'.NOVA',' ')
           VALK (1) = NOMSD
           VALK (2) = PARAM
           VALK (3) = K16B

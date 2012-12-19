@@ -1,21 +1,21 @@
       SUBROUTINE JEDUPO(SCHIN, CLAOUT, SCHOUT, DUPCOL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT NONE
@@ -33,30 +33,30 @@ C IN  DUPCOL : .TRUE. DUPLIQUE LES OBJETS PARTAGEABLES D'UNE COLLECTION
 C              .FALSE. S'ARRETE SUR ERREUR
 C
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C-----------------------------------------------------------------------
-      INTEGER IADMI ,IADMO1 ,IADMO2 ,IADOUT ,IADYN ,IADZON ,IBACOL 
-      INTEGER IBAOUT ,IBIADD ,IBIADM ,IBIADO ,IBLONO ,IBMARO ,ICIN 
-      INTEGER ICOUT ,IDAT ,IDCOUT ,IDIN ,IDOUT ,IRET1 ,IRET2 
-      INTEGER IRET3 ,ISTA1 ,ISTA2 ,IXDESO ,IXIADD ,IXIADM ,IXIADO 
-      INTEGER IXLONO ,IXMARO ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD 
-      INTEGER JIADD ,JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ 
-      INTEGER JORIG ,JRNOM ,JTYPE ,K ,LONOI ,N ,NBL 
-      INTEGER NMAX 
+      INTEGER IADMI ,IADMO1 ,IADMO2 ,IADOUT ,IADYN ,IADZON ,IBACOL
+      INTEGER IBAOUT ,IBIADD ,IBIADM ,IBIADO ,IBLONO ,IBMARO ,ICIN
+      INTEGER ICOUT ,IDAT ,IDCOUT ,IDIN ,IDOUT ,IRET1 ,IRET2
+      INTEGER IRET3 ,ISTA1 ,ISTA2 ,IXDESO ,IXIADD ,IXIADM ,IXIADO
+      INTEGER IXLONO ,IXMARO ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD
+      INTEGER JIADD ,JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ
+      INTEGER JORIG ,JRNOM ,JTYPE ,K ,LONOI ,N ,NBL
+      INTEGER NMAX
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ISTAT
@@ -67,11 +67,11 @@ C
       COMMON /KNOMJE/  NOMEC
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
-     +               IDMARQ     , 
-     +               IDLONO     , IDNUM
+     &               IDMARQ     ,
+     &               IDLONO     , IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , 
-     +               IDLONO = 8 , IDNUM  = 10 )
+     &               IDMARQ = 4 ,
+     &               IDLONO = 8 , IDNUM  = 10 )
       INTEGER          IV(IDNUM)
       CHARACTER*8      CSUFFI(IDNUM)
 C ----------------------------------------------------------------------
@@ -82,9 +82,9 @@ C ----------------------------------------------------------------------
       REAL*8           VAL
       DATA             IV / 0 , 0 , 0 , 0 , 1 , 0 , 1 , 1 , 1 , 1  /
       DATA             CSUFFI / '$$DESO  ','$$IADD  ','$$IADM  ',
-     +                          '$$MARQ  ','$$NOM   ','        ',
-     +                          '$$LONG  ','$$LONO  ','$$LUTI  ',
-     +                          '$$NUM   ' /
+     &                          '$$MARQ  ','$$NOM   ','        ',
+     &                          '$$LONG  ','$$LONO  ','$$LUTI  ',
+     &                          '$$NUM   ' /
 C DEB ------------------------------------------------------------------
       KCLAS = CLAOUT
       ICOUT = INDEX ( CLASSE , KCLAS)
@@ -126,8 +126,8 @@ C
           ENDIF
         ENDIF
         CALL JJALLT (NBL,ICOUT,GENRI,TYPEI,LTYPI,'INIT',IADOUT,IADYN)
-        CALL JJECRS (IADOUT,IADYN,ICOUT,IDOUT,0,'E',
-     &               IMARQ(JMARQ(ICOUT)+2*IDOUT-1))
+        CALL JJECRS (IADOUT,ICOUT,IDOUT,0,'E',
+     &         IMARQ(JMARQ(ICOUT)+2*IDOUT-1))
         IADM(JIADM(ICOUT)+2*IDOUT-1) = IADOUT
         IADM(JIADM(ICOUT)+2*IDOUT  ) = IADYN
         IADMI = IADM(JIADM(ICIN)+2*IDIN-1)
@@ -213,8 +213,8 @@ C
                 IF( (K.EQ.1 .AND. IV(1).EQ.1 ) .OR. K .GT. 1) THEN
                   CALL JJALLT(NBL,ICOUT,GENRI,TYPEI,LTYPI,'INIT',IADOUT,
      &                        IADYN)
-                  CALL JJECRS(IADOUT,IADYN,ICOUT,IDOUT,0,'E',
-     &                        IMARQ(JMARQ(ICOUT)+2*IDOUT-1))
+                  CALL JJECRS(IADOUT,ICOUT,IDOUT,0,'E',
+     &                  IMARQ(JMARQ(ICOUT)+2*IDOUT-1))
                   IADM(JIADM(ICOUT)+2*IDOUT-1) = IADOUT
                   IADM(JIADM(ICOUT)+2*IDOUT  ) = IADYN
                 ENDIF
@@ -278,8 +278,8 @@ C
             ENDIF
             CALL JJALLT (NBL,ICOUT,GENRI,TYPEI,LTYPI,'INIT',IADOUT,
      &                   IADYN)
-            CALL JJECRS (IADOUT,IADYN,ICOUT,K,IDCOUT,'E',
-     &                   ISZON(JISZON+IBMARO-1+2*K-1))
+            CALL JJECRS (IADOUT,ICOUT,K,IDCOUT,'E',
+     &             ISZON(JISZON+IBMARO-1+2*K-1))
             ISZON(JISZON+IBIADO-1+2*K-1) = IADOUT
             ISZON(JISZON+IBIADO-1+2*K  ) = IADYN
             NUMEC=K

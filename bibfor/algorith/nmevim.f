@@ -1,7 +1,7 @@
       SUBROUTINE NMEVIM(SDIMPR,SDDISC,SDERRO,NOMBCL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/10/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,7 +44,7 @@ C               'INST' - BOUCLE SUR LES PAS DE TEMPS
 C
 C ----------------------------------------------------------------------
 C
-      LOGICAL      LACTI,CVBOUC,LERREI,LLIGN
+      LOGICAL      LACTI,CVBOUC,LERREI,LLIGN,LLDCBO
       INTEGER      IEVDAC
       REAL*8       R8BID
       INTEGER      IBID
@@ -62,10 +62,11 @@ C ----------------------------------------------------------------------
 C
       CALL NMLECV(SDERRO,NOMBCL,CVBOUC)
       CALL NMLTEV(SDERRO,'ERRI',NOMBCL,LERREI)
+      CALL NMERGE(SDERRO,'INTE_BORN',LLDCBO)
 C
 C --- DEVRA-T-ON AFFICHER UNE LIGNE DE SEPARATION ?
 C
-      LLIGN = (.NOT.CVBOUC.AND..NOT.LERREI)
+      LLIGN = (.NOT.CVBOUC.AND..NOT.LERREI.AND..NOT.LLDCBO)
 C
 C --- ACCES SDERRO
 C
@@ -118,6 +119,10 @@ C
               CALL U2MESS('I','MECANONLINE10_20')
             ELSEIF (MEVEN.EQ.'MECANONLINE10_24') THEN
               CALL U2MESS('I','MECANONLINE10_24')
+            ELSEIF (MEVEN.EQ.'MECANONLINE10_25') THEN
+              IF (CVBOUC.AND.NOMBCL.EQ.'NEWT') THEN
+                CALL U2MESS('A','MECANONLINE10_25')
+              ENDIF
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF

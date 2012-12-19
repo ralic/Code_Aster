@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 # ssnp110d.para = tps_job 400 mem_job 1280Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,10 +25,7 @@ DEBUT(CODE=_F( NOM = 'SSNP110D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 relation = 'VMIS_ISOT_LINE',
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED')
-
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('SURFTOT')));
+MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',)
 
 
 #----------------------------------------
@@ -67,7 +64,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURFTOT'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_XFEM_CONT',
+                              MODELISATION='C_PLAN',
                               ),
                            _F(GROUP_MA=('LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
@@ -83,7 +80,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     );
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         CONTACT='P1P1A',
+                         CONTACT='P1P1',
                          FISSURE=FISS,
                          INFO=1);
 
@@ -177,8 +174,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 # POST-TRAITEMENT : VISUALISATION DES DEPLACEMENTS
 #------------------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                       MODELE        = MODELEK)
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(TOUT='OUI',
@@ -186,8 +182,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               MODELISATION='C_PLAN')),
                               );  
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MODELE_VISU   = MOD_VISU,
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
                         )
 

@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 22/10/2012   AUTEUR IDOUX L.IDOUX 
+%& MODIF COMPELEM  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -2165,7 +2165,6 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        CPECO  : coefficient de pénalisation du contact, COEF_PENA_CONT
        CPEFR  : coefficient de pénalisation du frottement, COEF_PENA_CONT
        RELA   : gère l''activation des lois cohésives avec X-FEM
-       CZMFE  : activation de la loi cohesive en fermeture
 >>
     XCONTAC  = R      RHON     MU       RHOTK     INTEG    COECH    COSTCO   COSTFR
                       COPECO   COPEFR   RELA      CZMFE

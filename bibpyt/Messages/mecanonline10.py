@@ -1,4 +1,4 @@
-#@ MODIF mecanonline10 Messages  DATE 19/11/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline10 Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,6 +87,10 @@ cata_msg = {
 
 24 : _(u"""
  <Évènement> Valeur atteinte (DELTA_GRANDEUR).
+ """),
+
+25 : _(u"""
+ <Évènement> La loi de comportement est utilisée en dehors de son domaine de validité (VERI_BORNE).
  """),
 
 30 : _(u"""

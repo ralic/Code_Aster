@@ -1,7 +1,7 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,19 +31,19 @@ C IN  IVAL   : VALEUR EN ENTIER DE L'ATTRIBUT
 C IN  CVAL   : VALEUR EN CARACTERE DE L'ATTRIBUT
 C
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C     ------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADMI ,IADYN ,IBLONG ,IBLONO ,IBLUTI ,IC ,ID 
-      INTEGER IL0 ,IL1 ,IXLONO ,IXLUTI ,JCARA ,JDATE ,JDOCU 
-      INTEGER JGENR ,JHCOD ,JIADD ,JIADM ,JITAB ,JJPREM ,JLONG 
-      INTEGER JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE 
-      INTEGER LONGI ,LONGJ ,LONOI ,LONOJ ,LONOK ,LONT ,LONTI 
-      INTEGER LTYPI ,N ,NBL ,NHC ,NMAXI 
+      INTEGER IADMI ,IADYN ,IBLONG ,IBLONO ,IBLUTI ,IC ,ID
+      INTEGER IL0 ,IL1 ,IXLONO ,IXLUTI ,JCARA ,JDATE ,JDOCU
+      INTEGER JGENR ,JHCOD ,JIADD ,JIADM ,JITAB ,JJPREM ,JLONG
+      INTEGER JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE
+      INTEGER LONGI ,LONGJ ,LONOI ,LONOJ ,LONOK ,LONT ,LONTI
+      INTEGER LTYPI ,N ,NBL ,NHC ,NMAXI
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -71,7 +71,7 @@ C     ------------------------------------------------------------------
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C DEB ------------------------------------------------------------------
       REAL*8         R8BID
-C      
+C
       CATRLU = CATR
       NOML32 = NOMLU
       IRT = 0
@@ -172,8 +172,8 @@ C
      &                        ITAB,JTAB,IADMI,IADYN)
                   IADM(JIADM(IC)+2*ID-1) = IADMI
                   IADM(JIADM(IC)+2*ID  ) = IADYN
-                  CALL JJECRS(IADMI,IADYN,IC,ID,0,'E',
-     &                              IMARQ(JMARQ(IC)+2*ID-1))
+                  CALL JJECRS(IADMI,IC,ID,0,'E',
+     &                        IMARQ(JMARQ(IC)+2*ID-1))
                   NHC = JJPREM(IVAL,IRT)
                   JITAB = JISZON + IADMI - 1
                   ISZON(JITAB + ILOREP ) = NHC

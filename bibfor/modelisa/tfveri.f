@@ -1,7 +1,7 @@
-      SUBROUTINE TFVERI(CMD,NOMMCF,NBOCC,ITYPFL)
+      SUBROUTINE TFVERI(NOMMCF,NBOCC,ITYPFL)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,13 +24,12 @@ C-----------------------------------------------------------------------
 C     VERIFICATIONS DE PREMIER NIVEAU
 C     APPELANT : OP0143 , OPERATEUR DEFI_FLUI_STRU
 C-----------------------------------------------------------------------
-C  IN   : CMD    : NOM DE LA COMMANDE
 C  IN   : NOMMCF : NOM DU MOT-CLE FACTEUR UTILISE
 C  IN   : NBOCC  : NOMBRE D'OCCURENCES DU MOT-CLE FACTEUR UTILISE
 C  IN   : ITYPFL : INDICE CARACTERISTIQUE DE LA CONFIGURATION ETUDIEE
 C-----------------------------------------------------------------------
       INTEGER       ITYPFL
-      CHARACTER*16  CMD, NOMMCF
+      CHARACTER*16  NOMMCF
 C ----------------------------------------------------------------------
       INTEGER       COUNT1,COUNT2,COUNT3,COUNT4,COUNT5
       INTEGER       OCGRIL
@@ -51,14 +50,14 @@ C ----1.CAS D'UN FAISCEAU_TRANS
 C       -----------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER IANGL ,IBID ,ICAPA ,ICARA ,ICM ,ICMP ,ICOUP 
-      INTEGER IER2 ,IGRA2 ,IHY ,IHZ ,IOCC ,IPAS ,IPESAN 
-      INTEGER IR ,IRAYON ,IRHO ,IRHOE ,IRHOI ,IRUGO ,ITPAS 
-      INTEGER ITRES ,IVAPA ,IVECT ,IVISC ,JCOUP ,NBCOOR ,NBHY 
-      INTEGER NBHZ ,NBOCC ,NBR ,NBTUB ,NBTUB2 ,NBYC ,NBZC 
-      INTEGER NCARA ,NCM ,NCMP ,NCOUP ,NPAS ,NRHOE ,NRHOI 
-      INTEGER NTPAS ,NTRES ,NTYPG 
-      REAL*8 RBID 
+      INTEGER IANGL ,IBID ,ICAPA ,ICARA ,ICM ,ICMP ,ICOUP
+      INTEGER IER2 ,IGRA2 ,IHY ,IHZ ,IOCC ,IPAS ,IPESAN
+      INTEGER IR ,IRAYON ,IRHO ,IRHOE ,IRHOI ,IRUGO ,ITPAS
+      INTEGER ITRES ,IVAPA ,IVECT ,IVISC ,JCOUP ,NBCOOR ,NBHY
+      INTEGER NBHZ ,NBOCC ,NBR ,NBTUB ,NBTUB2 ,NBYC ,NBZC
+      INTEGER NCARA ,NCM ,NCMP ,NCOUP ,NPAS ,NRHOE ,NRHOI
+      INTEGER NTPAS ,NTRES ,NTYPG
+      REAL*8 RBID
 C-----------------------------------------------------------------------
       IF (ITYPFL.EQ.1) THEN
 C ---    VERIFICATION DE LA PRESENCE D AU MOINS UNE OCCURENCE DU
@@ -338,7 +337,7 @@ C
 C ------3.8.VERIFICATION DES DONNEES CARACTERISTIQUES DES GRILLES
 C
         IF (OCGRIL.NE.0) THEN
-           CALL TFVEGR(CMD,NOMMCF,OCGRIL)
+           CALL TFVEGR(NOMMCF,OCGRIL)
         ENDIF
 C
 C

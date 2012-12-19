@@ -8,7 +8,7 @@
       CHARACTER*19      RESU
       CHARACTER*24      CHAMGD
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -166,7 +166,7 @@ C         --- CALCUL ET STOCKAGE DES MINMAX : MOT-CLE 'TOUT'
      &                 CHAM,NBCMP,ZK8(JCMP),NUMO,INST,IOCC)
              ELSE
                  CALL  PEMAXN(RESU,NOMCHA,TOUT,TOUT,MODELE,
-     &                 CHAM,NBCMP,ZK8(JCMP),NUMO,INST,IOCC)
+     &                 CHAM,NBCMP,ZK8(JCMP),NUMO,INST)
              ENDIF
           ENDIF
 
@@ -187,7 +187,7 @@ C         --- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'GROUP_MA'
      &                       CHAM,NBCMP,ZK8(JCMP),NUMO,INST,IOCC)
              ELSE
                 CALL  PEMAXN(RESU,NOMCHA,GRPMA,ZK8(JGMA+IGM-1),MODELE,
-     &                       CHAM,NBCMP,ZK8(JCMP),NUMO,INST,IOCC)
+     &                       CHAM,NBCMP,ZK8(JCMP),NUMO,INST)
              ENDIF
  20         CONTINUE
             CALL JEDETR('&&PEMIMA_GMA')

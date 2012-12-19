@@ -1,6 +1,6 @@
-      SUBROUTINE JJLIRS(JADM,ICLAS,IDOS,IDCO,IUS,IST)
+      SUBROUTINE JJLIRS(JADM,ICLAS,IDOS,IUS,IST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,18 +27,17 @@ C
 C IN  JADM   : ADRESSE DU PREMIER MOT DU SEGMENT DE VALEUR
 C IN  ICLAS  : CLASSE DE L'OBJET JEVEUX
 C IN  IDOS   : IDENTIFICATEUR D'OBJET SIMPLE OU D'OBJET DE COLLECTION
-C IN  IDCO   : IDENTIFICATEUR DE COLLECTION
 C OUT IUS    : USAGE DU SEGMENT DE VALEUR
 C OUT IST    : STATUT DU SEGMENT DE VALEUR
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C ----------------------------------------------------------------------
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
 C DEB ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER ICLA2 ,IDATOC ,IDCO ,IDOS ,IS ,ISTA1 ,ISTA2 
+      INTEGER ICLA2 ,IDATOC ,IDOS ,IS ,ISTA1 ,ISTA2
 
 C-----------------------------------------------------------------------
       ISTA1  = ISZON(JISZON+JADM-1)

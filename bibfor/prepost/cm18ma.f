@@ -1,4 +1,4 @@
-      SUBROUTINE CM18MA(NBMATO, NBMA  , NBNO  , NBNOMI,
+      SUBROUTINE CM18MA(NBMATO, NBMA  , NBNO  ,
      &                  LIMA  , TYPEMA,CONNIZ, CONNOZ, NOFILS,
      &                  NBTYMA, NOMAST, REFTYP, NBREF, IMPMAI )
       IMPLICIT NONE
@@ -6,12 +6,11 @@
 
       CHARACTER*32 JEXNUM
       INTEGER       NBMATO, NBMA, NBNO, LIMA(NBMA), NBTYMA, NBREF(*),
-     &              NOFILS(3,*), TYPEMA(*), REFTYP(*), IMPMAI(*),
-     &              NBNOMI
+     &              NOFILS(3,*), TYPEMA(*), REFTYP(*), IMPMAI(*)
       CHARACTER*8   NOMAST(*)
       CHARACTER*(*) CONNIZ, CONNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +33,6 @@ C ----------------------------------------------------------------------
 C IN        NBMATO  NOMBRE TOTAL DE MAILLES DU MAILLAGE
 C IN        NBMA    NOMBRE DE MAILLES DE LA LISTE DES MAILLES A TRAITER
 C IN        NBNO    NOMBRE DE NOEUDS DU MAILLAGE INITIAL
-C IN        NBNOMI  NOMBRE DE NOEUDS AJOUTES
 C IN        LIMA    LISTE DES MAILLES A TRAITER
 C VAR       TYPEMA  LISTE DES TYPES DES MAILLES
 C IN        NDINIT  NUMERO INITIAL DES NOEUDS CREES
@@ -45,7 +43,7 @@ C ----------------------------------------------------------------------
 
 
       INTEGER      M, MA, TYMAIN, TYMAOU, NBNOIN, NBNOOU, N, JMAMO,
-     +             JPOSMA, JCONXI, JCONXO, IFM, NIV
+     &             JPOSMA, JCONXI, JCONXO, IFM, NIV
       CHARACTER*8  KBID
       CHARACTER*24 CONNEI, CONNEO, MAMO, POSMAI
 C ----------------------------------------------------------------------

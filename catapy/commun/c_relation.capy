@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,6 +121,7 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "META_V_INL_RE",
                                         "MONOCRISTAL",
                                         "MULTIFIBRE",
+                                        "NORTON",
                                         "NORTON_HOFF",
                                         "PINTO_MENEGOTTO",
                                         "POLYCRISTAL",
@@ -135,6 +136,8 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "VISC_CIN1_CHAB",
                                         "VISC_CIN2_CHAB",
                                         "VISC_CIN2_MEMO",
+                                        "VISC_CIN2_NRAD",
+                                        "VISC_MEMO_NRAD",
                                         "VISC_DRUC_PRAG",
                                         "VISC_IRRA_LOG",
                                         "VISC_ISOT_LINE",
@@ -144,6 +147,8 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "VMIS_CIN1_CHAB",
                                         "VMIS_CIN2_CHAB",
                                         "VMIS_CIN2_MEMO",
+                                        "VMIS_CIN2_NRAD",
+                                        "VMIS_MEMO_NRAD",
                                         "VMIS_CINE_LINE",
                                         "VMIS_ECMI_LINE",
                                         "VMIS_ECMI_TRAC",

@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,11 +148,11 @@ C         ================
 
 C --- DEFORMATION INITIALE ----
 
-         CALL CBCHEI ( CHAR, NOMA, LIGRMO, NDIM, FONREE )
+         CALL CBCHEI ( CHAR, NOMA, LIGRMO, FONREE )
 
 C --- PRE_SIGM----
 
-         CALL CBSINT ( CHAR, NOMA, LIGRMO, NDIM, FONREE )
+         CALL CBSINT ( CHAR, NOMA, LIGRMO, FONREE )
 
 C --- PRESSION ---
 

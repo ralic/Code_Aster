@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,6 +53,7 @@ MODE_LOCAL__
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
+    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     EPJSIGM  = SIEF_R   ELEM__         (SIG_NX   SIG_NY   SIG_NZ   SIG_N
                                         SIG_TX   SIG_TY   SIG_TZ
                                         SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1
@@ -79,7 +80,6 @@ MODE_LOCAL__
                                         Z        )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     FIC3
                                         K1       K2       K3       BETA     )

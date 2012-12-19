@@ -3,7 +3,7 @@
      &                  NNOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
       CHARACTER*24  NELIM
       INTEGER       JELIM
       INTEGER       JNBGD,JCMPG
-      INTEGER       EXIST
+      INTEGER       EXIST(1)
 C
 C ----------------------------------------------------------------------
 C
@@ -163,7 +163,7 @@ C
               CALL EXISCP(CMP,K8BLA,NOMO,
      &                    1,'NUM',K8BLA,NUMNO1,
      &                    EXIST)
-              IF (EXIST.EQ.0) THEN
+              IF (EXIST(1).EQ.0) THEN
                 NB = NB + 1
               ENDIF
    31       CONTINUE

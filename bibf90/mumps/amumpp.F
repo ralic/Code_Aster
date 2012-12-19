@@ -3,7 +3,7 @@
      &                  LPRECO)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF AMUMPP MUMPS  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 
@@ -21,29 +21,29 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ==================================================================
-C-----------------------------------------------------------------------
-C BUT : ROUTINE DE PRE/POST-TRAITEMENT DE LA SOLUTION ET DU
-C       SECOND MEMBRE POUR AMUMPS/C/D/Z
-C
-C IN  OPTION :   IN   : OPTION D'UTILISATION.
-C IN  NBSOL  :   IN   : NBRE DE SYSTEMES A RESOUDRE
-C IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
-C IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
-C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
-C IN  IMPR   :  K14   : FLAG POUR IMPRESSION MATRICE
-C IN  IFMUMP :   IN   : UNITE LOGIQUE POUR IMPRESSION FICHIER
-C IN  ELI2LG :  LOG   : LOGICAL POUR NE LAISSER QU'1 LAGRANGE ACTIF
-C I/O RSOLU  :    R   : EN ENTREE : SECONDS MEMBRES REELS
-C                     : EN SORTIE : SOLUTIONS
-C I/O CSOLU  :    C   : EN ENTREE : SECONDS MEMBRES COMPLEXES
-C                     : EN SORTIE : SOLUTIONS
-C IN  VCINE  :  K19   : NOM DU CHAM_NO DE CHARGEMENT CINEMATIQUE
-C IN  PREPOS :  LOG   : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
-C           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
-C           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
-C           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
-C IN  LPRECO :  LOG   : MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
-C-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+! BUT : ROUTINE DE PRE/POST-TRAITEMENT DE LA SOLUTION ET DU
+!       SECOND MEMBRE POUR AMUMPS/C/D/Z
+!
+! IN  OPTION :   IN   : OPTION D'UTILISATION.
+! IN  NBSOL  :   IN   : NBRE DE SYSTEMES A RESOUDRE
+! IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
+! IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
+! IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
+! IN  IMPR   :  K14   : FLAG POUR IMPRESSION MATRICE
+! IN  IFMUMP :   IN   : UNITE LOGIQUE POUR IMPRESSION FICHIER
+! IN  ELI2LG :  LOG   : LOGICAL POUR NE LAISSER QU'1 LAGRANGE ACTIF
+! I/O RSOLU  :    R   : EN ENTREE : SECONDS MEMBRES REELS
+!                     : EN SORTIE : SOLUTIONS
+! I/O CSOLU  :    C   : EN ENTREE : SECONDS MEMBRES COMPLEXES
+!                     : EN SORTIE : SOLUTIONS
+! IN  VCINE  :  K19   : NOM DU CHAM_NO DE CHARGEMENT CINEMATIQUE
+! IN  PREPOS :  LOG   : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
+!           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
+!           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
+!           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
+! IN  LPRECO :  LOG   : MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
+!-----------------------------------------------------------------------
 ! RESPONSABLE BOITEAU O.BOITEAU
 
       INTEGER      OPTION,NBSOL,KXMPS,IFMUMP
@@ -56,14 +56,14 @@ C-----------------------------------------------------------------------
 
 #ifdef _HAVE_MUMPS
 
-C============================================================
+!============================================================
       INCLUDE 'mpif.h'
       INCLUDE 'smumps_struc.h'
       INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
       INCLUDE 'jeveux.h'
-C============================================================
+!============================================================
       INTEGER    NICNTL
       PARAMETER (NICNTL=26)
       INTEGER    NMXINS
@@ -95,13 +95,13 @@ C============================================================
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 
-C-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
 
-C     ------------------------------------------------
-C     INITS
-C     ------------------------------------------------
+!     ------------------------------------------------
+!     INITS
+!     ------------------------------------------------
       RR4MAX=R4MAEM()
       IF (TYPE.EQ.'S') THEN
         SMPSK=>SMPS(KXMPS)
@@ -170,16 +170,16 @@ C     ------------------------------------------------
             ENDIF
          ENDIF
 
-C       ------------------------------------------------
-C        PRETRAITEMENTS ASTER DU/DES SECONDS MEMBRES :
-C       ------------------------------------------------
+!       ------------------------------------------------
+!        PRETRAITEMENTS ASTER DU/DES SECONDS MEMBRES :
+!       ------------------------------------------------
 
-C        --- PAS DE PRETRAITEMENT SI NON DEMANDE
+!        --- PAS DE PRETRAITEMENT SI NON DEMANDE
          IF (.NOT.LPRECO.AND.PREPOS) THEN
 
             IF (RANG.EQ.0) THEN
-C           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
-C           --- RANG 0 UNIQUEMENT
+!           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
+!           --- RANG 0 UNIQUEMENT
                IF (LTYPR) THEN
                   CALL MRCONL('MULT',LMAT,N,'R',RSOLU,NBSOL)
                ELSE
@@ -187,11 +187,11 @@ C           --- RANG 0 UNIQUEMENT
                ENDIF
             ENDIF
 
-C           --- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
+!           --- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
             CALL JEEXIN(VCIVAL,IERD)
             IF (IERD.NE.0) THEN
-C              --- ON RAZ RSOLU SUR LES RANGS > 0 POUR NE CUMULER QUE
-C              --- LA CONTRIBUTION DES CHARGES CINEMATIQUES EN DISTRIBUE
+!              --- ON RAZ RSOLU SUR LES RANGS > 0 POUR NE CUMULER QUE
+!              --- LA CONTRIBUTION DES CHARGES CINEMATIQUES EN DISTRIBUE
                IF (LDIST.AND.RANG.NE.0) THEN
                   DO I=1,NNBSOL
                      IF (LTYPR) THEN
@@ -217,8 +217,8 @@ C              --- LA CONTRIBUTION DES CHARGES CINEMATIQUES EN DISTRIBUE
                   ENDDO
                ENDIF
 
-C              --- REDUCTION DU SECOND MEMBRE AU PROC MAITRE EN DISTRIBUE
-C              --- POUR ETRE COHERENT AVEC LA MATRICE QUI CONTIENT DES N SUR LA DIAGONALE
+!              --- REDUCTION DU SECOND MEMBRE AU PROC MAITRE EN DISTRIBUE
+!              --- POUR ETRE COHERENT AVEC LA MATRICE QUI CONTIENT DES N SUR LA DIAGONALE
                IF (LDIST) THEN
                   IF (LTYPR) THEN
                      CALL MPICM1('REDUCE','R',NNBSOL,IBID,RSOLU)
@@ -231,7 +231,7 @@ C              --- POUR ETRE COHERENT AVEC LA MATRICE QUI CONTIENT DES N SUR LA 
 
          ENDIF
 
-C        --- COPIE DE RSOLU DANS %RHS:
+!        --- COPIE DE RSOLU DANS %RHS:
          IF (RANG.EQ.0) THEN
             IF (TYPE.EQ.'S') THEN
               DO I=1,NNBSOL
@@ -288,7 +288,7 @@ C        --- COPIE DE RSOLU DANS %RHS:
             ENDIF
           ENDIF
 
-C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
+!         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
           IF (IMPR(1:3).EQ.'OUI') THEN
             IF (RANG.EQ.0) THEN
               IF (TYPE.EQ.'S') THEN
@@ -320,9 +320,9 @@ C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
       ELSE IF (OPTION.EQ.2) THEN
 
 
-C       ------------------------------------------------
-C        POST-TRAITEMENTS ASTER DE LA SOLUTION :
-C       ------------------------------------------------
+!       ------------------------------------------------
+!        POST-TRAITEMENTS ASTER DE LA SOLUTION :
+!       ------------------------------------------------
         IF (RANG.EQ.0) THEN
           IF (TYPE.EQ.'S') THEN
             DO I=1,NNBSOL
@@ -345,12 +345,12 @@ C       ------------------------------------------------
           ENDIF
 
           IF (ELI2LG) THEN
-C           -- PRISE EN COMPTE DES LAGRANGES "2" :
-C           -- EN SORTIE DE RESOLUTION AVEC ELIM_LAGR2 ON A :
-C           -- LAGR1 = LAGR1 + LAGR2, ON DOIT RECTIFIER CELA :
-C           -- LAGR1 = LAGR1/2 PUIS LAGR2 = LAGR1
-C           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON
-C           -- BROADCAST LA SOLUTION APRES
+!           -- PRISE EN COMPTE DES LAGRANGES "2" :
+!           -- EN SORTIE DE RESOLUTION AVEC ELIM_LAGR2 ON A :
+!           -- LAGR1 = LAGR1 + LAGR2, ON DOIT RECTIFIER CELA :
+!           -- LAGR1 = LAGR1/2 PUIS LAGR2 = LAGR1
+!           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON
+!           -- BROADCAST LA SOLUTION APRES
             CALL JEVEUO(NONU//'.NUME.DELG','L',JDELG)
             CALL NUDLG2(NONU)
             CALL JEVEUO(NONU//'.NUME.DLG2','L',JDLG2)
@@ -377,8 +377,8 @@ C           -- BROADCAST LA SOLUTION APRES
             ENDIF
           ENDIF
 
-C         --- MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION :
-C         ON NE LE FAIT PAS SI NON DEMANDE
+!         --- MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION :
+!         ON NE LE FAIT PAS SI NON DEMANDE
           IF (.NOT.LPRECO.AND.PREPOS) THEN
             IF (LTYPR) THEN
               CALL MRCONL('MULT',LMAT,N,'R',RSOLU,NBSOL)
@@ -388,14 +388,14 @@ C         ON NE LE FAIT PAS SI NON DEMANDE
           ENDIF
         ENDIF
 
-C       -- BROADCAST DE SOLU A TOUS LES PROC
+!       -- BROADCAST DE SOLU A TOUS LES PROC
         IF (LTYPR) THEN
           CALL MPICM1('BCAST','R',NNBSOL,IBID,RSOLU)
         ELSE
           CALL MPICM1('BCAST','R',2*NNBSOL,IBID,CSOLU)
         ENDIF
 
-C       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
+!       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
         IF (IMPR(1:9).EQ.'OUI_SOLVE') THEN
           IF (RANG.EQ.0) THEN
             IF (LTYPR) THEN
@@ -411,9 +411,9 @@ C       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
           ENDIF
         ENDIF
       ELSE
-C       ------------------------------------------------
-C        MAUVAISE OPTION
-C       ------------------------------------------------
+!       ------------------------------------------------
+!        MAUVAISE OPTION
+!       ------------------------------------------------
         CALL ASSERT(.FALSE.)
       ENDIF
       CALL JEDEMA()

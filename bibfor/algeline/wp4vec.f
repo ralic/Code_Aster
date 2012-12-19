@@ -8,7 +8,7 @@
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C
 C
 C     ------------------------------------------------------------------
       REAL*8     AM,OM,NMABP,SEUILP,SEUILR,C1,AUXRJ,AUXIJ,AUXRK,AUXIK,
-     &           SEUILC,RBID,A,B
+     &           SEUILC,RBID
       INTEGER    I,J,K,AV1,AV2,IADIND,NBREEL,NBCMPP,NBCMPC,NBFRGA,
      &           VALI(5),IFM,NIV,NBFR
       LOGICAL    TROUVE,LCONJ

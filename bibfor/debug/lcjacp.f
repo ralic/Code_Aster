@@ -1,11 +1,11 @@
       SUBROUTINE LCJACP(FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,
      &                    NMAT,MATERD,MATERF,NR,NVI,
-     &                    TIMED,TIMEF, DEPS,EPSD,VIND,VINF,YD,YF,
+     &                    TIMED,TIMEF, DEPS,EPSD,VIND,VINF,YD,
      &                    COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,
-     &                    DY,R,DRDY,VERJAC,DRDYB,IRET)
+     &                    DY,R,DRDY,VERJAC,DRDYB,IRET,CRIT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF DEBUG  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,6 @@ C         SIGD   :  CONTRAINTE A T
 C         VIND   :  VARIABLES INTERNES A T
 C         VINF   :  VARIABLES INTERNES A T+DT
 C         YD     :  VARIABLES A T   = ( SIGD  VIND  (EPSD3)   )
-C         YF     :  VARIABLES A T+DT= ( SIGF  VINF  (EPSF3)   )
 C         COMP   :  COMPORTEMENT
 C         DY     :  INCREMENT DES VARIABLES = ( DSIG  DVIN  (DEPS3)  )
 C         R      :  VECTEUR RESIDU
@@ -67,10 +66,10 @@ C ----------------------------------------------------------------------
 
 C     DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
       REAL*8 DY(NR),R(NR),DRDYB(NR,NR),RINI(NR),DYINI(NR),RP(NR),RM(NR)
-      REAL*8 DRDY(NR,NR),YD(NR),YF(NR),DYM(NR),DYP(NR),YFP(NR),YFM(NR)
+      REAL*8 DRDY(NR,NR),YD(NR),DYM(NR),DYP(NR),YFP(NR),YFM(NR)
 
       REAL*8 MATERD(NMAT,2),MATERF(NMAT,2),PGL(3,3),EPS1,EPS2,EPS0
-      REAL*8 TOUTMS(NFS,NSG,6),HSR(NSG,NSG)
+      REAL*8 TOUTMS(NFS,NSG,6),HSR(NSG,NSG),CRIT(*)
       REAL*8 VALR(4),R8MIEM,MAXTGT,NORMD1,NORMD2,MAXERR
 
       CHARACTER*8     MOD
@@ -125,7 +124,7 @@ C ----------------------------------------------------------------------
          CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
      &           COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,
      &           VINF,ITMAX, TOLER,TIMED,TIMEF,YD,YFP,DEPS,EPSD,DYP,RP,
-     &              IRET )
+     &              IRET ,CRIT)
          IF (IRET.GT.0) THEN
             GOTO 9999
          ENDIF
@@ -139,7 +138,7 @@ C ----------------------------------------------------------------------
          CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
      &           COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,
      &           VINF,ITMAX, TOLER,TIMED,TIMEF,YD,YFM,DEPS,EPSD,DYM,RM,
-     &              IRET )
+     &              IRET ,CRIT)
          IF (IRET.GT.0) THEN
             GOTO 9999
          ENDIF

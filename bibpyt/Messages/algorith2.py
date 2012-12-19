@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 19/11/2012   AUTEUR DESROCHE X.DESROCHES 
+#@ MODIF algorith2 Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,8 +105,7 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 23 : _(u"""
- la maille doit être de type TETRA4, TETRA10, PYRAM5, PYRAM10, PENTA6, PENTA15, HEXA8 ou HEXA20.
- or la maille est de type :  %(k1)s .
+ Le type de maille %(k1)s n'est pas prévu.
 """),
 
 24 : _(u"""

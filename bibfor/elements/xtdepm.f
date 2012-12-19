@@ -4,7 +4,7 @@
      &                  DDEPLE,DDEPLM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C
       INTEGER NSINGE,NSINGM
       REAL*8  RRE,RRM
       INTEGER JDEPDE,NDEPLE,JDDLE(2),JDDLM(2)
-      REAL*8  FFM(9),FFE(9)
+      REAL*8  FFM(20),FFE(20)
       REAL*8  DDEPLE(3),DDEPLM(3)
 C
 C ----------------------------------------------------------------------

@@ -1,16 +1,16 @@
       SUBROUTINE ORVLSE ( NOMA, LISTMA, NBMAIL, NORIEN,
-     &                    VECT, NOEUD, PREC )
+     &                    VECT, NOEUD)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
 
       CHARACTER*32 JEXNUM,JEXATR
       INTEGER             LISTMA(*), NBMAIL, NOEUD, NORIEN
       CHARACTER*8         NOMA
-      REAL*8              VECT(*), PREC
+      REAL*8              VECT(*)
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,6 @@ C    NBMAIL         IN    I       NB DE MAILLES DE LA LISTE
 C    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 C    VECT           IN    R       VECTEUR DIRECTEUR
 C    NOEUD          IN    I       NOEUD D'ORIENTATION
-C    PREC           IN    R       PRECISION
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  VARIABLES LOCALES
       INTEGER       IDTYMA, NUTYMA, LORI, JORI, NORI, KORI, ILISTE

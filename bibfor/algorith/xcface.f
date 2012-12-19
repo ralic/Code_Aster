@@ -12,7 +12,7 @@
       CHARACTER*16  ENR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,11 +64,11 @@ C
       REAL*8          LSJA(NFISC+1),LSJB(NFISC+1),LSJC,BETA,R8PREM
       REAL*8          R8MAEM,MINLSN
       INTEGER         J,AR(12,3),NBAR,NA,NB,NC,INS
-      INTEGER         IA,I,IPT,IBID,PP,PD,NNO,K
+      INTEGER         IA,I,IPT,IBID,PP,PD,NNO,K,NNOS
       INTEGER         IADZI,IAZK24,NDIM,PTMAX
       CHARACTER*8     TYPMA,ELP
       INTEGER         ZXAIN,XXMMVD
-      LOGICAL         LLIN,ISMALI,LCONT,LAJPA,LAJPB,LAJPC
+      LOGICAL         LCONT,LAJPA,LAJPB,LAJPC
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -82,7 +82,7 @@ C   A IA=IN=0 POUR LES MAILLES DU FRONT
 
       ZXAIN = XXMMVD('ZXAIN')
       CALL ELREF1(ELP)
-      CALL ELREF4(' ','RIGI',NDIM,NNO,IBID,IBID,IBID,IBID,IBID,IBID)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,IBID,IBID,IBID,IBID,IBID)
 
       IF (NDIM .EQ. 3) THEN
          PTMAX=6
@@ -105,7 +105,6 @@ C     - ARETE VITALE                        (0 SI NON)
 
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)(1:8)
-      LLIN = ISMALI(TYPMA)
 
       IPT=0
 C       COMPTEUR DE POINT INTERSECTION = NOEUD SOMMENT
@@ -144,25 +143,24 @@ C
           IF (LSNA.EQ.0.D0.AND.LSTA.LE.PRE2) THEN
 C           ON AJOUTE A LA LISTE LE POINT A
             LAJPA = .TRUE.
-            IF (LCONT.AND.LLIN.AND.LSTA.GE.0.D0) NA=0
+            IF (LCONT.AND.LSTA.GE.0.D0) NA=0
           ENDIF
           IF (LSNB.EQ.0.D0.AND.LSTB.LE.PRE2) THEN
 C           ON AJOUTE A LA LISTE LE POINT B
             LAJPB = .TRUE.
-            IF (LCONT.AND.LLIN.AND.LSTB.GE.0.D0) NB=0
+            IF (LCONT.AND.LSTB.GE.0.D0) NB=0
           ENDIF
           IF (LSNA.NE.0.D0.AND.LSNB.NE.0.D0) THEN
-C           INTERPOLATION DES COORDONNEES DE C
             BETA = LSNA/(LSNB-LSNA)
             DO 120 I=1,NDIM
-              C(I)=A(I)-BETA*(B(I)-A(I))
- 120        CONTINUE
+               C(I)=A(I)-BETA*(B(I)-A(I))
+120         CONTINUE
 C           POSITION DU PT D'INTERSECTION SUR L'ARETE
             ALPHA=PADIST(NDIM,A,C)
             LSTC=LSTA-BETA*(LSTB-LSTA)
             IF (LSTC.LE.PREC) THEN
               LAJPC = .TRUE.
-              IF (LCONT.AND.LLIN.AND.LSTC.GE.0.D0) NC = 0
+              IF (LCONT.AND.LSTC.GE.0.D0) NC = 0
             ENDIF
           ENDIF
 C         MODIFICATION EN TENANT COMPTE DE LA LEVEL SET JONCTION
@@ -223,14 +221,14 @@ C
 C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS INTERSECTÉES
       IF (NFISC.GT.0) THEN
         CALL XCFACJ(PINTER,PTMAX,IPT,AINTER,LSN,IGEOM,NNO,NDIM,
-     &               NFISS,IFISS,FISCO,NFISC,LLIN,TYPMA)
+     &               NFISS,IFISS,FISCO,NFISC,TYPMA)
       ENDIF
 C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
       IF (ENR(2:2).EQ.'T'.OR.ENR(3:3).EQ.'T') THEN
-
-C       ON A DROIT A 1 POINT EN PLUS
+      
+C       ON A DROIT A 1 POINT EN PLUS      
         CALL XCFACF(PINTER,PTMAX+1,IPT,AINTER,LSN,LST,IGEOM,NNO,NDIM,
-     &                                                    LLIN,TYPMA)
+     &                                                        TYPMA)
       ENDIF
       NINTER=IPT
 
@@ -241,7 +239,6 @@ C                  (BOOK IV 09/09/04)
 
 C     CAS 3D
       IF (NDIM .EQ. 3) THEN
-
         IF (NINTER.LT.3) GOTO 500
 
         DO 200 I=1,5
@@ -439,16 +436,10 @@ C         NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
         ENDIF
 
       ELSE
-
 C       PROBLEME DE DIMENSION : NI 2D, NI 3D
         CALL ASSERT(NDIM.EQ.2 .OR. NDIM.EQ.3)
-
       ENDIF
-
       IF (NFISS.GT.1.AND.MINLSN.EQ.0) NFACE = 0
-
       IF (NFACE.EQ.0) NINTER = 0
-
-
       CALL JEDEMA()
       END

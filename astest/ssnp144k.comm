@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
 # ssnp144k.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -92,9 +92,8 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
             FORMULATION    = 'XFEM',
-            FROTTEMENT     = 'COULOMB',
+            FROTTEMENT     = 'SANS',
             ITER_CONT_MAXI=4,
-            ITER_FROT_MAXI=10,
             ZONE=(
                   _F(INTEGRATION='GAUSS',
                      ALGO_CONT='CZM',
@@ -143,11 +142,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=4.5,
                                      NOMBRE=2),
                                   _F(JUSQU_A=5.5,
-                                     NOMBRE=2),
-                                  _F(JUSQU_A=7,
                                      NOMBRE=10),
-                                  _F(JUSQU_A=9.5,
+                                  _F(JUSQU_A=7,
                                      NOMBRE=2),
+                                  _F(JUSQU_A=9.5,
+                                     NOMBRE=10),
                                   _F(JUSQU_A=12,
                                      NOMBRE=2),
                                   _F(JUSQU_A=15,

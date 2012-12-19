@@ -2,7 +2,7 @@
      $                   SEP, WORK, LWORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -201,12 +201,12 @@ C     .. LOCAL SCALARS ..
       REAL*8             EST, RNORM, SCALE
 C     ..
 C     .. LOCAL ARRAYS ..
-      REAL*8             RWORK
+      REAL*8             RWORK(1)
 C     ..
-C     .. EXTERNAL FUNCTIONS ..
+C
       LOGICAL            LSAME
       REAL*8             ZLANGE
-C     ..
+C
 C     .. EXECUTABLE STATEMENTS ..
 C
       CALL MATFPE(-1)
@@ -220,8 +220,8 @@ C
 C
 C     SET M TO THE NUMBER OF SELECTED EIGENVALUES.
 C
-      RWORK=0.D0
-      
+      RWORK(1)=0.D0
+
       M = 0
       DO 10 K = 1, N
          IF( SELECT( K ) )

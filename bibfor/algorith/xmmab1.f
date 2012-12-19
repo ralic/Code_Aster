@@ -1,14 +1,14 @@
       SUBROUTINE XMMAB1(NDIM  ,JNNE, NDEPLE  ,NNC   ,JNNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                  FFM   ,JACOBI,JPCAI ,LAMBDA,
-     &                  DVITET ,COEFFR,
+     &                  FFM   ,JACOBI,JPCAI ,LAMBDA,COEFCR,
+     &                  COEFCP, DVITET ,COEFFR,DLAGRF,JEU,
      &                  COEFFP,COEFFF,LPENAF,TAU1  ,TAU2  ,
-     &                  RESE  ,MPROJ ,TYPMAI,NSINGE,
+     &                  RESE  ,MPROJ ,NORM  ,TYPMAI,NSINGE,
      &                  NSINGM,RRE   ,RRM   ,NVIT  ,NCONTA,
      &                  JDDLE,JDDLM,NFHE,MMAT  )  
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,9 +31,10 @@ C
       INTEGER  NDIM,JNNE(3),NNC,JNNM(3),NFAES,JPCAI,CFACE(5,3)
       INTEGER  NSINGE,NSINGM,NCONTA,JDDLE(2),JDDLM(2)
       INTEGER  NVIT,NDEPLE,NFHE
-      REAL*8   HPG,FFC(8),FFE(8),FFM(8),JACOBI,DDOT
-      REAL*8   LAMBDA,COEFFF,COEFFR,COEFFP,RRE,RRM,DVITET(3)
+      REAL*8   HPG,FFC(8),FFE(20),FFM(20),JACOBI,NORM(3),COEFCP,DDOT
+      REAL*8   LAMBDA,COEFFF,COEFFR,COEFFP,RRE,RRM,COEFCR,DVITET(3)
       REAL*8   TAU1(3),TAU2(3),RESE(3),MMAT(336,336),MPROJ(3,3)
+      REAL*8   DLAGRF(2),JEU
       CHARACTER*8  TYPMAI
       LOGICAL  LPENAF
 C
@@ -82,7 +83,7 @@ C ----------------------------------------------------------------------
       INTEGER   I, J, K, L, M, II, JJ, INI, PLI,INJ, PLJ
       INTEGER   XOULA,JJN,IIN,DDLE
       INTEGER   NNE,NNES,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
-      REAL*8    E(3,3), A(3,3), MP, MB, MBT ,MM ,MMT
+      REAL*8    E(3,3), A(3,3), C(3,3),MP, MB, MBT ,MM ,MMT
       REAL*8    TT(3,3), V(2)
 C ----------------------------------------------------------------------
 C
@@ -140,8 +141,21 @@ C ---        GT SEMI MULTIPLICATEUR AUGMENTE FROTTEMENT
           A(3,I) = TAU2(K)*MPROJ(K,I) + A(3,I)
 7       CONTINUE
 6     CONTINUE
+C
+C --- C = (P_B)[P_TAU]*(N)
+C
+C --- C = GT TENSORIEL N
+      DO 8 I = 1,NDIM
+        DO 9 J = 1,NDIM
+          C(I,J) = A(1,I)*NORM(J)
+9       CONTINUE
+8     CONTINUE
 C ---- MP = MU*GN*WG*JAC
+      IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+      MP = (LAMBDA-COEFCR*JEU)*COEFFF*HPG*JACOBI
+      ELSE
       MP = LAMBDA*COEFFF*HPG*JACOBI
+      ENDIF
 C
       DDLE = DDLES*NNES+DDLEM*(NNE-NNES)
       IF (NNM.NE.0) THEN
@@ -155,14 +169,19 @@ C ROUTINE ADHERENTE, ON GARDE LA CONTRIBUTION A [A]
             MB  = 0.D0
             MBT = COEFFF*HPG*JACOBI*A(L,K)
           ELSE
-            IF(.NOT.LPENAF) MB = NVIT*MP*A(L,K)
+            IF(.NOT.LPENAF) THEN
+              IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+                MB = NVIT*JACOBI*HPG*A(L,K)
+              ELSE
+                MB = NVIT*MP*A(L,K)
+              ENDIF
+            ENDIF
             IF(LPENAF)      MB = 0.D0
             IF(.NOT.LPENAF) MBT = MP*A(L,K)
             IF(LPENAF)      MBT = 0.D0
           ENDIF
           DO 20 I = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,I,NFHE,PLI)
             II = PLI+L-1
             DO 30 J = 1,NDEPLE
               MM = MB *FFC(I)*FFE(J)
@@ -209,8 +228,13 @@ C
             MB  = -MP*COEFFP*E(L,K)
             MBT = -MP*COEFFP*E(L,K)
           ELSE
+            IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+            MB  = -MP*COEFFR*E(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+            MBT = -MP*COEFFR*E(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+            ELSE
             MB  = -MP*COEFFR*E(L,K)
             MBT = -MP*COEFFR*E(L,K)
+            ENDIF
           ENDIF
           DO 200 I = 1,NDEPLE
             DO 210 J = 1,NDEPLE
@@ -327,14 +351,19 @@ C
             MB  = 0.D0
             MBT = COEFFF*HPG*JACOBI*A(L,K)
           ELSE
-            IF(.NOT.LPENAF) MB = NVIT*MP*A(L,K)
+            IF(.NOT.LPENAF) THEN
+              IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+              MB = NVIT*JACOBI*HPG*A(L,K)
+              ELSE
+              MB = NVIT*MP*A(L,K)
+              ENDIF
+            ENDIF
             IF(LPENAF)      MB = 0.D0
             IF(.NOT.LPENAF) MBT = MP*A(L,K)
             IF(LPENAF)      MBT = 0.D0
           ENDIF
           DO 520 I = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,I,NFHE,PLI)
             II = PLI+L-1
             DO 530 J = 1,NDEPLE
 C --- BLOCS ES:CONT, CONT:ES
@@ -356,7 +385,11 @@ C
           IF(LPENAF) THEN
             MB  = -MP*COEFFP*E(L,K)
           ELSE
+            IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+            MB  = -MP*COEFFR*E(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+            ELSE
             MB  = -MP*COEFFR*E(L,K)
+            ENDIF
           ENDIF
           DO 620 I = 1,NDEPLE
             DO 630 J = 1,NDEPLE
@@ -379,10 +412,8 @@ C ---------------SEULEMENT EN METHODE PENALISEE-------------------------
         IF (NVIT.EQ.1) THEN
         DO 400 I = 1,NNC
          DO 410 J = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
-            INJ=XOULA(CFACE,NFAES,J,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INJ,NFHE,PLJ)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,I,NFHE,PLI)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,J,NFHE,PLJ)
             DO 420 L = 1,NDIM-1
               DO 430 K = 1,NDIM-1
                 II = PLI+L
@@ -400,17 +431,19 @@ C ------------- COUPLAGE MULTIPLICATEURS CONTACT-FROTTEMENT ------------
       IF (NVIT.EQ.1) THEN
         DO 800 I = 1,NNC
          DO 810 J = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
-            INJ=XOULA(CFACE,NFAES,J,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INJ,NFHE,PLJ)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,I,NFHE,PLI)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,J,NFHE,PLJ)
             DO 830 K = 1,NDIM-1
               II = PLI+K
               JJ = PLJ
               IF(LPENAF) THEN
                 MMAT(II,JJ) = 0.D0
               ELSE
+                IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+                MMAT(II,JJ) = 0.D0 
+                ELSE
                 MMAT(II,JJ) = -FFC(I)*FFC(J)*COEFFF*HPG*JACOBI*V(K)
+                ENDIF
               ENDIF
 830         CONTINUE
             

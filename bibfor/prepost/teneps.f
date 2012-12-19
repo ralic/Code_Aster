@@ -1,6 +1,6 @@
-      SUBROUTINE TENEPS( JRWORK,ADR, C1, C2, SIG,EPS,EPSE,EPSP  )
+      SUBROUTINE TENEPS( JRWORK,ADR, SIG,EPS,EPSE,EPSP  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
       INCLUDE 'jeveux.h'
 
       INTEGER      JRWORK, ADR
-      REAL*8       C1, C2, SIG(6), EPS(6),EPSE(6),EPSP(6)
+      REAL*8       SIG(6), EPS(6),EPSE(6),EPSP(6)
 
 
 C ---------------------------------------------------------------------
@@ -32,8 +32,6 @@ C ---------------------------------------------------------------------
 C ARGUMENTS:
 C    JRWORK : IN : ADRESSE DE VECTEUR DE TRAVAIL ACTUEL
 C    ARD    : IN : DECALGE DU NUMRO D'ORDE EN COURS
-C    C1     : IN : COEEFS D'ELASTICITE
-C    C2     : IN : COEEFS D'ELASTICITE
 C    SIG    : OUT : CONTRAINTE (6 COMPOSANTES)
 C    EPS    : OUT : DEFORMATION TOTALE (6 COMPOSANTES)
 C    EPSE   : OUT : DEFORMATION ELASTIQUE (6 COMPOSANTES)

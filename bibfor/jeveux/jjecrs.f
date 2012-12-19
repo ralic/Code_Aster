@@ -1,7 +1,7 @@
-      SUBROUTINE JJECRS ( IADMI, IADYN, ICLAS, IDOS, IDCO, CUS, JMARQ )
+      SUBROUTINE JJECRS ( IADMI, ICLAS, IDOS, IDCO, CUS, JMARQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C ----------------------------------------------------------------------
 C ACTUALISE LES ENTIERS ENCADRANT UN SEGMENT DE VALEURS
 C
 C IN  IADMI  : ADRESSE DU PREMIER MOT DU SEGMENT DE VALEUR
-C IN  IADYN  : ADRESSE DYNAMIQUE (SI DIFFERENTE DE 0)
 C IN  ICLAS  : CLASSE DE L'OBJET JEVEUX
 C IN  IDOS   : IDENTIFICATEUR D'OBJET SIMPLE OU D'OBJET DE COLLECTION
 C IN  IDCO   : IDENTIFICATEUR DE COLLECTION
@@ -34,7 +33,7 @@ C IN  CUS    : USAGE DU SEGMENT DE VALEUR EN ACCES U
 C OUT JMARQ  : JMARQ(1) MARQUE AFFECTEE AU SEGMENT DE VALEUR ASSOCIE
 C              JMARQ(2) ADRESSE DE L'OBJET DANS LE DESCRIPTEUR DESMA
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C ----------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
@@ -50,7 +49,7 @@ C ----------------------------------------------------------------------
       INTEGER          ISTA1,ISTA2,IS,KTEMPO(2)
 C DEB ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADMA ,IADRS ,IADYN ,K ,LSI
+      INTEGER IADMA ,IADRS ,K ,LSI
 C-----------------------------------------------------------------------
       ISTA1 = ISZON(JISZON+IADMI-1)
       IS    = JISZON+ISZON(JISZON+IADMI-4)
@@ -97,7 +96,7 @@ C
             LSI = LGD
             LGD = 2*LGD
             CALL JJALLS (LGD*LOIS,0,'V','I',LOIS,'INIT',IADMA,IADRS,
-     +                   KTEMPO(1) ,KTEMPO(2))
+     &                   KTEMPO(1) ,KTEMPO(2))
             ISZON(JISZON+KTEMPO(1)-1) = ISTAT(2)
             ISZON(JISZON+ISZON(JISZON+KTEMPO(1)-4)-4) = ISTAT(4)
             SVUSE = SVUSE + (ISZON(JISZON+KTEMPO(1)-4) - KTEMPO(1) + 4)

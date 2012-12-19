@@ -6,7 +6,7 @@
      &                    SDCARM, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C
       PARAMETER ( NOMPRO = 'IRCAME' )
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX=66)
+      PARAMETER (NTYMAX=69)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
       INTEGER EDNOEU

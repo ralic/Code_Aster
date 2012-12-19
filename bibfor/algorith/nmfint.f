@@ -4,7 +4,7 @@
      &                  VEFINT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,9 @@ C
 C --- CODE RETOUR ERREUR INTEGRATION LDC
 C
       IF (TABRET(0)) THEN
-        IF ( TABRET(3) ) THEN
+        IF ( TABRET(4) ) THEN
+          LDCCVG = 4
+        ELSEIF ( TABRET(3) ) THEN
           LDCCVG = 3
         ELSEIF ( TABRET(2) ) THEN
           LDCCVG = 2

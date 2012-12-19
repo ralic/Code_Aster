@@ -1,7 +1,7 @@
       SUBROUTINE OP0113()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,8 +105,6 @@ C
       CALL WKVECT(MODELX//'.XFEM_CONT'  ,'G V I'  ,1,JXC)
       IF (K8CONT.EQ.'P1P1') THEN
         ZI(JXC) = 1
-      ELSEIF (K8CONT.EQ.'P1P1A') THEN
-        ZI(JXC) = 2
       ELSEIF (K8CONT.EQ.'P2P1') THEN
         ZI(JXC) = 3
       ELSE
@@ -126,7 +124,7 @@ C ---------------------------------------------------------------------
 C     1)  REMPLISSAGE DE TAB : NBMA X 5 : GR1 | GR2 | GR3 | GR0 | ITYP
 C ---------------------------------------------------------------------
 C
-      CALL XTYELE(NOMA,MODELX,TRAV,NFISS,ZK8(JMOFIS),ZI(JXC),NDIM,
+      CALL XTYELE(NOMA,TRAV,NFISS,ZK8(JMOFIS),ZI(JXC),NDIM,
      &            LINTER)
 C
 C ---------------------------------------------------------------------

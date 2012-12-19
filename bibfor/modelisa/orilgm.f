@@ -22,7 +22,7 @@ C ======================================================================
       CHARACTER*32 JEXNOM
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -77,27 +77,6 @@ C --- RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
 C     ------------------------------------------
       NOMNOE = NOMA//'.NOMNOE'
       GRMAMA = NOMA//'.GROUPEMA'
-C
-C --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE :
-C     -------------------------------------------
-      CALL JEEXIN ( NOMA//'           .LTNT', IRET )
-      IF ( IRET .NE. 0 ) THEN
-         CALL LTNOTB ( NOMA , 'CARA_GEOM' , NOMT19 )
-         NBPAR = 0
-         PARA = 'AR_MIN                  '
-         CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, CBID, K8B,
-     &                K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
-     &                K8B, IRET )
-         IF ( IRET .EQ. 0 ) THEN
-            PREC = ARMIN*1.D-06
-         ELSEIF ( IRET .EQ. 1 ) THEN
-            PREC = 1.D-10
-         ELSE
-            CALL U2MESS('F','MODELISA2_13')
-         ENDIF
-      ELSE
-         CALL U2MESS('F','MODELISA3_18')
-      ENDIF
 C
 C --- RECUPERATION DE LA DIMENSION (2 OU 3) DU PROBLEME :
 C     -------------------------------------------------
@@ -178,7 +157,7 @@ C
             WRITE(IFM,1000) GMAT, NBMAIL
             NORIEN=0
             CALL ORILMA ( NOMA, NDIM,  ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
-     &                    REORIE, PREC, NBMASU, ZI(JMASU) )
+     &                    REORIE, NBMASU, ZI(JMASU) )
             NORIT = NORIT + NORIEN
             WRITE(IFM,1100) NORIEN
             IF (NTRAIT.NE.0) WRITE(IFM,1110) NTRAIT
@@ -250,7 +229,7 @@ C
             WRITE(IFM,1000) GMAT,  NBMAIL
             NORIEN=0
             CALL ORILMA ( NOMA, NDIM, ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
-     &                    REORIE, PREC, NBMAVO, ZI(JMAVO) )
+     &                    REORIE, NBMAVO, ZI(JMAVO) )
             NORIT = NORIT + NORIEN
             WRITE(IFM,1100) NORIEN
             IF (NTRAIT.NE.0) WRITE(IFM,1110) NTRAIT
@@ -299,8 +278,7 @@ C
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
                NORIEN=0
-               CALL ORVLMA ( NOMA, ZI(JGRO), NBMAIL, NORIEN,
-     &                                             VECT, NOEUD, PREC )
+               CALL ORVLMA(NOMA,ZI(JGRO),NBMAIL,NORIEN,VECT,NOEUD)
                NORIT = NORIT + NORIEN
                WRITE(IFM,1100) NORIEN
  310        CONTINUE
@@ -359,8 +337,7 @@ C
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
                NORIEN=0
-               CALL ORVLSE ( NOMA, ZI(JGRO), NBMAIL, NORIEN,
-     &                                             VECT, NOEUD, PREC )
+               CALL ORVLSE(NOMA,ZI(JGRO),NBMAIL,NORIEN,VECT,NOEUD)
                NORIT = NORIT + NORIEN
                WRITE(IFM,1100) NORIEN
  410        CONTINUE

@@ -1,15 +1,13 @@
-      SUBROUTINE I3IDKS(EPSI,K,DESC,DESCTM,SGT,ATRV,BTRV,CONEXK,COORDO,
-     +                  NBPT,LSTPT,FIND)
+      SUBROUTINE I3IDKS(EPSI,K,DESC,DESCTM,SGT,CONEXK,COORDO,NBPT,LSTPT)
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER K,DESC(*),DESCTM(*),CONEXK(*),NBPT,LSTPT(*)
       REAL*8  EPSI,SGT(*),COORDO(*)
-      LOGICAL FIND,ATRV,BTRV
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,9 +34,6 @@ C IN  DESCTM : I : -
 C IN  CONEXK : I : CONNECTIVITE DE LA MAILLE POINTEE
 C IN  COORDO : R : TABLE GLOBALE DES COORDONEES
 C IN  SGT    : R : COORDONNEES DES POINTS A ET B -
-C VAR ATRV   : L : INDICATEUR DE RENCONTRE DE A   !--> IE DESC_SGT
-C VAR BTRV   : L : INDICATEUR DE RENCONTRE DE B  -
-C VAR FIND   : L : INDICATEUR DE FIN DE REPERAGE NIVEAU OMEGA
 C OUT NBPT   : I : NOMBRE DE POINT TROUVE
 C            :   : CONVENTION NBPT = -2 <=> CARD(INTER) = INFINI
 C            :   : DANS CE CAS OUT = EXTREMITES
@@ -83,10 +78,10 @@ C-----------------------------------------------------------------------
          IF ( NONVID ) THEN
             IF ( NBNDF .EQ. 3 ) THEN
                CALL I3IFTS(EPSI,K,FACE,DESC,DESCTM,CONEXK,COORDO,SGT,
-     +                     NBPT,LSTPT,FINK)
+     &                     NBPT,LSTPT,FINK)
             ELSE IF ( NBNDF .EQ. 4 ) THEN
                CALL I3IFQS(EPSI,K,FACE,DESC,DESCTM,CONEXK,COORDO,SGT,
-     +                     ATRV,BTRV,NBPT,LSTPT,FINK,FIND)
+     &                     NBPT,LSTPT,FINK)
             ELSE
                VALI (1) = FACE
                VALI (2) = K

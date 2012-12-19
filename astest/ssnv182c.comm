@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182c.para = tps_job 100 mem_job 768Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,10 +23,7 @@
 DEBUT(CODE=_F(NOM='SSNV182C',
               NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
-
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                        LINE_QUAD=_F(GROUP_MA='VOL'));
+MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -36,7 +33,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOL'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT'),
+                              MODELISATION='3D'),
                            _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D')));
@@ -52,7 +49,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='P1P1A',
+                         CONTACT='P1P1',
                          INFO=1);
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -84,7 +81,7 @@ CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
 
 IMPR_RESU(FORMAT='IDEAS',
           UNITE=30,
-          RESU=_F(MAILLAGE=MAILLAG1,
+          RESU=_F(MAILLAGE=MAILLAG2,
                   CHAM_GD=CHLN));
 
 
@@ -216,8 +213,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
 # -------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                       MODELE        = MODELEK,
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
                        INFO          = 2)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -225,8 +221,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D'))
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MODELE_VISU   = MOD_VISU,
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
                         
                         INFO          = 2)

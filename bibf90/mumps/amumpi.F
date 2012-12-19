@@ -1,32 +1,32 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
-!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
-! ================================================================== 
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
-!                                                                    
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
-! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
-! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
-! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
-! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
-!                                                                    
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
-! ================================================================== 
-C--------------------------------------------------------------
-C BUT : ROUTINE DE PARAMETRAGE MUMPS POUR AMUMPS/C/D/Z
-C
-C IN  OPTION:   IN   : OPTION D'UTILISATION.
-C IN  LQUALI:  LOG   : LOGICAL EN CAS DE CRITERE DE QUALITE
-C IN  LDIST :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
-C IN  KXMPS :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
-C IN  TYPE  :   K1   : TYPE DU POINTEUR R OU C
-C---------------------------------------------------------------
+!           CONFIGURATION MANAGEMENT OF EDF VERSION
+!& MODIF AMUMPI MUMPS  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
+! ==================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+!
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ==================================================================
+!--------------------------------------------------------------
+! BUT : ROUTINE DE PARAMETRAGE MUMPS POUR AMUMPS/C/D/Z
+!
+! IN  OPTION:   IN   : OPTION D'UTILISATION.
+! IN  LQUALI:  LOG   : LOGICAL EN CAS DE CRITERE DE QUALITE
+! IN  LDIST :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
+! IN  KXMPS :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
+! IN  TYPE  :   K1   : TYPE DU POINTEUR R OU C
+!---------------------------------------------------------------
 ! RESPONSABLE BOITEAU O.BOITEAU
 
       INTEGER      KXMPS,OPTION
@@ -35,14 +35,14 @@ C---------------------------------------------------------------
 
 #ifdef _HAVE_MUMPS
 
-C============================================================
+!============================================================
       INCLUDE 'mpif.h'
       INCLUDE 'smumps_struc.h'
       INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
       INCLUDE 'jeveux.h'
-C============================================================
+!============================================================
       INTEGER    NICNTL,NCNTL
       PARAMETER (NICNTL=40,NCNTL=15)
       INTEGER    NMXINS
@@ -71,15 +71,15 @@ C============================================================
       COMMON /MUMPSD/ DMPS
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
-C=================================================================
+!=================================================================
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
 
-C       ------------------------------------------------
-C        INITS
-C       ------------------------------------------------
+!       ------------------------------------------------
+!        INITS
+!       ------------------------------------------------
       RR4MAX=R4MAEM()
-      
+
       IF (TYPE.EQ.'S') THEN
         SMPSK=>SMPS(KXMPS)
       ELSE IF (TYPE.EQ.'C') THEN
@@ -101,9 +101,9 @@ C       ------------------------------------------------
       CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
       NPREC=ZI(JSLVI)
 
-C       -----------------------------------------------------
-C        INITIALISATION SYM, PAR ET JOB POUR MUMPS (CREATION)
-C       -----------------------------------------------------
+!       -----------------------------------------------------
+!        INITIALISATION SYM, PAR ET JOB POUR MUMPS (CREATION)
+!       -----------------------------------------------------
       IF (OPTION.EQ.0) THEN
 
         IF (TYPE.EQ.'S') THEN
@@ -118,10 +118,10 @@ C       -----------------------------------------------------
           CALL ASSERT(.FALSE.)
         ENDIF
 
-C ---     ISYM = 0 => NON-SYMETRIQUE
-C ---     ISYM = 1 => SYMETRIQUE DEFINIE POSITIVE
-C ---     ISYM = 2 => SYMETRIQUE  GENERAL
-C ---     ISYMM DEDUIT DE LA MATRICE : NONSYM OU SYMGEN
+! ---     ISYM = 0 => NON-SYMETRIQUE
+! ---     ISYM = 1 => SYMETRIQUE DEFINIE POSITIVE
+! ---     ISYM = 2 => SYMETRIQUE  GENERAL
+! ---     ISYMM DEDUIT DE LA MATRICE : NONSYM OU SYMGEN
         TYPM=ZK24(JREFA-1+9)
         IF (TYPM.EQ.'MR') THEN
           ISYMM=0
@@ -131,8 +131,8 @@ C ---     ISYMM DEDUIT DE LA MATRICE : NONSYM OU SYMGEN
           CALL ASSERT(.FALSE.)
         ENDIF
 
-C ---     PRISE EN COMPTE DE LA VOLONTE DE L'UTILISATEUR
-C ---     => ISYMV
+! ---     PRISE EN COMPTE DE LA VOLONTE DE L'UTILISATEUR
+! ---     => ISYMV
         IF (ZK24(JSLVK-1+3).EQ.'NONSYM') THEN
           ISYMV=0
         ELSE IF (ZK24(JSLVK-1+3).EQ.'SYMDEF') THEN
@@ -145,9 +145,9 @@ C ---     => ISYMV
           CALL ASSERT(.FALSE.)
         ENDIF
 
-C ---     STRATEGIE PRUDENTE ET CONSERVATIVE
-C ---     SI AUTO: NONSYM OU SYMGEN SUIVANT LA STRUCTURE DE LA MATRICE
-C ---     SINON, ON APPLIQUE LE CHOIX DE L'UTILISATEUR
+! ---     STRATEGIE PRUDENTE ET CONSERVATIVE
+! ---     SI AUTO: NONSYM OU SYMGEN SUIVANT LA STRUCTURE DE LA MATRICE
+! ---     SINON, ON APPLIQUE LE CHOIX DE L'UTILISATEUR
         IF (ISYMV.EQ.-1) THEN
           ISYM=ISYMM
         ELSE IF (ISYMV.EQ.0) THEN
@@ -160,18 +160,18 @@ C ---     SINON, ON APPLIQUE LE CHOIX DE L'UTILISATEUR
           ENDIF
         ENDIF
 
-C ---     PARAMETRES D'INITIALISATION DE L'OCCURENCE MUMPS KXMPS
+! ---     PARAMETRES D'INITIALISATION DE L'OCCURENCE MUMPS KXMPS
         I4=ISYM
         IF (TYPE.EQ.'S') THEN
-          SMPSK%SYM = I4 
+          SMPSK%SYM = I4
           SMPSK%PAR = 1
           SMPSK%JOB = -1
         ELSE IF (TYPE.EQ.'C') THEN
-          CMPSK%SYM = I4 
+          CMPSK%SYM = I4
           CMPSK%PAR = 1
           CMPSK%JOB = -1
         ELSE IF (TYPE.EQ.'D') THEN
-          DMPSK%SYM = I4 
+          DMPSK%SYM = I4
           DMPSK%PAR = 1
           DMPSK%JOB = -1
         ELSE IF (TYPE.EQ.'Z') THEN
@@ -182,35 +182,35 @@ C ---     PARAMETRES D'INITIALISATION DE L'OCCURENCE MUMPS KXMPS
           CALL ASSERT(.FALSE.)
         ENDIF
 
-C       ------------------------------------------------------
-C        INITIALISATION ICNTL/CNTL POUR MUMPS (ANALYSE +FACTO)
-C       ------------------------------------------------------
+!       ------------------------------------------------------
+!        INITIALISATION ICNTL/CNTL POUR MUMPS (ANALYSE +FACTO)
+!       ------------------------------------------------------
       ELSE IF (OPTION.EQ.2) THEN
 
-C ---     INIT
+! ---     INIT
         DO I=1,NICNTL
           ICNTL(I)=0
         ENDDO
         DO I=1,NCNTL
           CNTL(I)=0.D0
         ENDDO
-        
-C ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
+
+! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
         CALL AMUMPU(3,TYPE,KXMPS,K12BID,IBID,LBID,KVERS)
-        
-C ---     MESSAGES/ALERTES MUMPS
+
+! ---     MESSAGES/ALERTES MUMPS
         ICNTL(1) = IFM
         ICNTL(2) = 0
         ICNTL(3) = 0
         ICNTL(4) = 1
         IF (NIV.GE.2) THEN
-C ---     ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS, 3 PUIS 4
+! ---     ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS, 3 PUIS 4
            ICNTL(3) = IFM
            ICNTL(4) = 2
         ENDIF
-C ---     FORMAT MATRICE
+! ---     FORMAT MATRICE
         ICNTL(5) = 0
-C ---     PRETRAITEMENTS (SCALING/PERMUTATION)
+! ---     PRETRAITEMENTS (SCALING/PERMUTATION)
         IF (ZK24(JSLVK-1+2).EQ.'SANS') THEN
           ICNTL(6) = 0
           ICNTL(8) = 0
@@ -223,7 +223,7 @@ C ---     PRETRAITEMENTS (SCALING/PERMUTATION)
           CALL ASSERT(.FALSE.)
         ENDIF
 
-C ---     RENUMEROTATION
+! ---     RENUMEROTATION
         IF (ZK24(JSLVK-1+4).EQ.'AMD') THEN
           ICNTL(7) = 0
         ELSE IF (ZK24(JSLVK-1+4).EQ.'AMF') THEN
@@ -242,31 +242,31 @@ C ---     RENUMEROTATION
           CALL ASSERT(.FALSE.)
         ENDIF
 
-C ---     INITIALISATION EN DUR (EN DOUBLONS VS CALL DMUMPS JOB=-1)
-C ---     MAIS ON NE SAIT JAMAIS AVEC LES EVOLUTIONS DES INITS DU PACKAGE
-C ---     ET CELA PERMET DE SURCHARGER PLUS RAPIDEMENT POUR TESTER
+! ---     INITIALISATION EN DUR (EN DOUBLONS VS CALL DMUMPS JOB=-1)
+! ---     MAIS ON NE SAIT JAMAIS AVEC LES EVOLUTIONS DES INITS DU PACKAGE
+! ---     ET CELA PERMET DE SURCHARGER PLUS RAPIDEMENT POUR TESTER
 
-C ---     TYPE DE RESOLUTION: A OU AT
+! ---     TYPE DE RESOLUTION: A OU AT
         ICNTL(9) = 1
 
-C ---     RAFFINEMENT ITERATIF ET ANALYSE QUALITE SOLUTION
-C ---     PARAMETRES ACTIVES JUSTE AVANT SOLVE VIA AMUMPI OPTION=3
+! ---     RAFFINEMENT ITERATIF ET ANALYSE QUALITE SOLUTION
+! ---     PARAMETRES ACTIVES JUSTE AVANT SOLVE VIA AMUMPI OPTION=3
         ICNTL(10)=0
         CNTL(2)=0.D0
         ICNTL(11)=0
 
-C ---     PARALLELISME INDUIT PAR SCALAPACK (VOIR NPREC PLUS BAS)
+! ---     PARALLELISME INDUIT PAR SCALAPACK (VOIR NPREC PLUS BAS)
         ICNTL(13) = 0
 
-C ---     MEMOIRE SUPPL. POUR PIVOTAGE (DEFAUT:20)
+! ---     MEMOIRE SUPPL. POUR PIVOTAGE (DEFAUT:20)
         ICNTL(14) = ZI(JSLVI-1+2)
 
-C ---     PAS UTILISES
+! ---     PAS UTILISES
         ICNTL(15)=0
         ICNTL(16)=0
         ICNTL(17)=0
 
-C --      DETECTION DE SINGULARITE/NOYAU  
+! --      DETECTION DE SINGULARITE/NOYAU
         ICNTL(25)=0
         IF (NPREC.GE.0) THEN
           ICNTL(13)=1
@@ -277,12 +277,12 @@ C --      DETECTION DE SINGULARITE/NOYAU
           ICNTL(24)=0
           CNTL(3)=0.D0
           CNTL(5)=0.D0
-        ENDIF     
-          
-C ---     PIVOTAGE STATIQUE DESACTIVE
+        ENDIF
+
+! ---     PIVOTAGE STATIQUE DESACTIVE
         CNTL(4)=-1.D0
 
-C ---     PARALLELISME/DISTRIBUTION SECOND MEMBRE/SOLUTION
+! ---     PARALLELISME/DISTRIBUTION SECOND MEMBRE/SOLUTION
         IF (LDIST) THEN
           ICNTL(18)=3
         ELSE
@@ -291,8 +291,8 @@ C ---     PARALLELISME/DISTRIBUTION SECOND MEMBRE/SOLUTION
         ICNTL(20)=0
         ICNTL(21)=0
 
-C ---     GESTION MEMOIRE MUMPS
-C ---     PARAMETRES ACTIVES APRES L'ANALYSE VIA AMUMPU OPTION=1
+! ---     GESTION MEMOIRE MUMPS
+! ---     PARAMETRES ACTIVES APRES L'ANALYSE VIA AMUMPU OPTION=1
 
         ICNTL(22)=-999
         ICNTL(23)=-999
@@ -306,41 +306,41 @@ C ---     PARAMETRES ACTIVES APRES L'ANALYSE VIA AMUMPU OPTION=1
           ZMPSK%OOC_TMPDIR='XXXX'
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF        
+        ENDIF
 
-C ---     COMPLEMENT DE SCHUR
+! ---     COMPLEMENT DE SCHUR
         ICNTL(19)=0
         ICNTL(26)=0
 
-C ---     PARAMETRE POUR RESOLUTIONS SIMULTANEES
+! ---     PARAMETRE POUR RESOLUTIONS SIMULTANEES
         ICNTL(27)=-8
- 
-C ---     ANALYSE SEQUENTIELLE
+
+! ---     ANALYSE SEQUENTIELLE
         ICNTL(28)=0
         ICNTL(29)=0
-        
-C ---     PAS DE CALCUL DE TERMES DE A-1
+
+! ---     PAS DE CALCUL DE TERMES DE A-1
         ICNTL(30)=0
-        
-C ---     ON GARDER LA FACTO EN MEMOIRE POUR LE SOLVE
+
+! ---     ON GARDER LA FACTO EN MEMOIRE POUR LE SOLVE
         ICNTL(31)=0
 
-C ---     NON UTILISE
+! ---     NON UTILISE
         ICNTL(32)=0
-                
-C ---     PAS DE CALCUL DU DETERMINANT
+
+! ---     PAS DE CALCUL DU DETERMINANT
         ICNTL(33)=0
 
-C ---     NON UTILISES
+! ---     NON UTILISES
         DO I=34,NICNTL
           ICNTL(I)=0
         ENDDO
         DO I=6,NCNTL
           CNTL(I)=0.D0
-        ENDDO     
+        ENDDO
 
-C ---   REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
-C ---   DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
+! ---   REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
+! ---   DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         IF (TYPE.EQ.'S') THEN
           DO I=1,NICNTL
             SMPSK%ICNTL(I)=ICNTL(I)
@@ -375,27 +375,27 @@ C ---   DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
             CALL ASSERT(.FALSE.)
         ENDIF
 
-C       ------------------------------------------------------
-C        INITIALISATION ICNTL/CNTL POUR MUMPS (SOLVE)
-C       ------------------------------------------------------
+!       ------------------------------------------------------
+!        INITIALISATION ICNTL/CNTL POUR MUMPS (SOLVE)
+!       ------------------------------------------------------
       ELSE IF (OPTION.EQ.3) THEN
-C ---   POUR CMD ECLATEE RESOUDRE PRINCIPALEMENT
+! ---   POUR CMD ECLATEE RESOUDRE PRINCIPALEMENT
 
-C ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
+! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
         CALL AMUMPU(3,TYPE,KXMPS,K12BID,IBID,LBID,KVERS)
 
-C ---     MESSAGE/ALERTES MUMPS
+! ---     MESSAGE/ALERTES MUMPS
         ICNTL(1) = IFM
         ICNTL(2) = 0
         ICNTL(3) = 0
         ICNTL(4) = 1
         IF (NIV.GE.2) THEN
-C ---     ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS, 3 PUIS 4
+! ---     ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS, 3 PUIS 4
            ICNTL(3) = IFM
            ICNTL(4) = 2
         ENDIF
 
-C ---     RAFFINEMENT ITERATIF ET ETUDE DE LA QUALITE
+! ---     RAFFINEMENT ITERATIF ET ETUDE DE LA QUALITE
         ICNTL(10)=0
         ICNTL(11)=0
         CNTL(2)=0.D0
@@ -445,10 +445,10 @@ C ---     RAFFINEMENT ITERATIF ET ETUDE DE LA QUALITE
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
- 
-C       ------------------------------------------------
-C        MAUVAISE OPTION
-C       ------------------------------------------------
+
+!       ------------------------------------------------
+!        MAUVAISE OPTION
+!       ------------------------------------------------
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

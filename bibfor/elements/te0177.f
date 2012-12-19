@@ -5,7 +5,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C
 C
       INTEGER        KP,I,J,K,IJ,IMATTT,IGEOM,IMATE
       INTEGER        NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
-      REAL*8         R8BID,CEL, DFDX(9),DFDY(9),POIDS,R
+      REAL*8         CEL, DFDX(9),DFDY(9),POIDS,R
       INTEGER    ICODRE
       COMPLEX*16     VALRES
       LOGICAL        LTEATT
@@ -45,7 +45,7 @@ C
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PMATTTC','E',IMATTT)
 C
-      CALL RCVALC(ZI(IMATE),'FLUIDE',0,' ',R8BID,1,'CELE_C',
+      CALL RCVALC(ZI(IMATE),'FLUIDE',1,'CELE_C',
      &                                     VALRES,ICODRE, 1 )
       CEL = DBLE( VALRES )
 C

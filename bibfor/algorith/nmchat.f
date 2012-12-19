@@ -1,9 +1,10 @@
       SUBROUTINE NMCHAT(MATEL,MAT,NBVAR,MEMO,VISC,PLAST,SIGMDV,DEPSDV,
-     &                  PM,DP,NDIMSI,DT,RPVP,QP,VIM,DSIDEP)
+     &      PM,DP,NDIMSI,DT,RPVP,QP,VIM,IDELTA,N1,N2,BETA1,BETA2,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C TOLE CRP_21
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,9 +23,11 @@ C RESPONSABLE PROIX J-M.PROIX
 C.======================================================================
       IMPLICIT NONE
 C ----ARGUMENTS
-      INTEGER   MEMO,VISC,NBVAR
+      INTEGER   MEMO,VISC,NBVAR,IDELTA
       REAL*8    MAT(*),MATEL(*),SIGMDV(6),DSIDEP(6,6),PLAST,DP,PM,RPVP
-      REAL*8    DEPSDV(6),VIM(*),DT,QP
+      REAL*8    DEPSDV(6),VIM(*),DT,QP,N1,N2,DELTA1,DELTA2,DN1,DN2
+      REAL*8    DBETA1,DBETA2,SIGMA(6),DSIGMA(6),SIGDSI,VBETA(6),DDOT
+      REAL*8    BETA1,BETA2
 C ----VARIABLES LOCALES
       REAL*8    E,NU,DEUXMU,SIGEDV(6),DSIDE(6,6),S(6),PDEV(6,6),RPVM
       REAL*8    R8PREM,ALFAM(6),ALFA2M(6),RAC2,MU,TROISK,R0,RINF,B,CINF
@@ -57,6 +60,8 @@ C ----VARIABLES LOCALES
          VALDEN= MAT(11)
          KVI   = MAT(12)
       ENDIF
+      DELTA1 = MAT(17)
+      DELTA2 = MAT(18)
 
       DO 140 I=1,NDIMSI
          SIGEDV(I) = SIGMDV(I) + DEUXMU * DEPSDV(I)
@@ -126,10 +131,10 @@ C
           ENDIF
           CP     = CINF * (1.D0 + (K-1.D0)*EXP(-W*PP))
           GAMMAP = GAMMA0 * (AINF + (1.D0-AINF)*EXP(-B*PP))
-          MP     = CP/(1.D0+GAMMAP*DP)
+          MP     = CP/(1.D0+GAMMAP*DP*DELTA1)
           C2P     = C2INF * (1.D0 + (K-1.D0)*EXP(-W*PP))
           GAMM2P = GAMM20 * (AINF + (1.D0-AINF)*EXP(-B*PP))
-          M2P     = C2P/(1.D0+GAMM2P*DP)
+          M2P     = C2P/(1.D0+GAMM2P*DP*DELTA2)
           IF (VISC.EQ.1) THEN
              VP     = KVI*((DP/DT)**(1.D0/VALDEN))
              CORR = DP/DT
@@ -139,7 +144,7 @@ C
              VP=0.D0
              DVP=0.D0
           ENDIF
-          DENOMI = RP + (3.D0*MU+MP+M2P)*DP + VP
+          DENOMI = RP + (3.D0*MU+MP*N1+M2P*N2)*DP + VP
           DGAMAP = -B*GAMMA0*(1.D0-AINF)*EXP(-B*PP)
           DCP    = -W*CINF*(K-1.D0)*EXP(-W*PP)
           IF (MEMO.EQ.0) THEN
@@ -152,34 +157,60 @@ C
              DRP=(GQP-RPM)/(1.D0+B*DP)-2.D0*MUMEM*(GQ0-GQMAX)*(QP-QM)
              DRP=B*DRP/(1.D0+B*DP)
           ENDIF
-          DMP    =  DCP/(1.D0+GAMMAP*DP)
-     &            - CP*(DGAMAP*DP+GAMMAP)/
-     &                 ((1.D0+GAMMAP*DP)*(1.D0+GAMMAP*DP))
+          DMP    =  DCP/(1.D0+GAMMAP*DP*DELTA1)
+     &            - CP*(DGAMAP*DP*DELTA1+GAMMAP*DELTA1)/
+     &                 (1.D0+GAMMAP*DP*DELTA1)**2
 C
           DGAM2P = -B*GAMM20*(1.D0-AINF)*EXP(-B*PP)
           DC2P    = -W*C2INF*(K-1.D0)*EXP(-W*PP)
-          DM2P    =  DC2P/(1.D0+GAMM2P*DP)
-     &            - C2P*(DGAM2P*DP+GAMM2P)/
-     &                 ((1.D0+GAMM2P*DP)*(1.D0+GAMM2P*DP))
+          DM2P    =  DC2P/(1.D0+GAMM2P*DP*DELTA2)
+     &            - C2P*(DGAM2P*DP*DELTA2+GAMM2P*DELTA2)/
+     &                 (1.D0+GAMM2P*DP*DELTA2)**2
 C
           AP     =  (RP+VP)/DENOMI
           EP     =  -MP
           E2P    = -M2P
           BP     = - 2.D0/3.D0*MP*(RP+VP)/DENOMI
           B2P     = - 2.D0/3.D0*M2P*(RP+VP)/DENOMI
-          DDENOM =  DRP + 3.D0*MU + MP +M2P + (DMP+DM2P)*DP + DVP
+          
+          SEQ = 0.D0
+          DO 200 I = 1, NDIMSI
+             S(I) = AP*SIGEDV(I)+BP*ALFAM(I)+B2P*ALFA2M(I)
+             SEQ  = SEQ + S(I)*S(I)
+             SIGMA(I) = SIGEDV(I)-(MP*ALFAM(I)+M2P*ALFA2M(I))/1.5D0
+             DSIGMA(I) = -(DMP*ALFAM(I)+DM2P*ALFA2M(I))/1.5D0
+ 200      CONTINUE
+          SEQ = SQRT(1.5D0*SEQ)
+          
+          IF (IDELTA.GT.0) THEN
+             SIGDSI=DDOT(NDIMSI,SIGMA,1,DSIGMA,1)
+             DO 201 I = 1, NDIMSI
+                VBETA(I)=(DSIGMA(I)-1.5D0*SIGDSI*SIGMA(I)/DENOMI**2)
+ 201         CONTINUE
+             VBETA(I)=VBETA(I)/DENOMI
+             DBETA1=DDOT(NDIMSI,ALFAM,1,VBETA,1)
+             DBETA2=DDOT(NDIMSI,ALFA2M,1,VBETA,1)
+ 
+             DN1=1.D0+GAMMAP*(DELTA1+DBETA1*(DELTA1-1.D0))
+             DN1=DN1+DGAMAP*(DELTA1*DP+BETA1*(DELTA1-1.D0))
+             DN1=(DN1-N1*(GAMMAP+DGAMAP*DP))/(1.D0+GAMMAP*DP)
+ 
+             DN2=1.D0+GAMM2P*(DELTA2+DBETA2*(DELTA2-1.D0))
+             DN2=DN2+DGAM2P*(DELTA2*DP+BETA2*(DELTA2-1.D0))
+             DN2=(DN2-N2*(GAMM2P+DGAM2P*DP))/(1.D0+GAMM2P*DP)
+          
+             DDENOM=DRP+3.D0*MU+MP*N1+M2P*N2+(DMP*N1+DM2P*N2)*DP+DVP
+     &              +DP*MP*DN1+DP*MP*DN2
+          ELSE
+             DDENOM=DRP+3.D0*MU+MP+M2P+(DMP+DM2P)*DP+DVP
+          ENDIF
+          
           IP     =  1.D0/DENOMI - DDENOM*DP/(DENOMI*DENOMI)
           DAP    = (DRP+DVP)/DENOMI - (RP+VP)*DDENOM/DENOMI/DENOMI
           DEP    =  -DMP
           DE2P=-DM2P
           DBP = -2.D0/3.D0*(DMP*AP+MP*DAP)
           DB2P = -2.D0/3.D0*(DM2P*AP+M2P*DAP)
-          SEQ = 0.D0
-          DO 200 I = 1, NDIMSI
-             S(I) = AP*SIGEDV(I)+BP*ALFAM(I)+B2P*ALFA2M(I)
-             SEQ  = SEQ + S(I)*S(I)
- 200      CONTINUE
-          SEQ = SQRT(1.5D0*SEQ)
           L1P = AP*AP/SEQ
           L2P = AP*BP/SEQ
           L22P = AP*B2P/SEQ

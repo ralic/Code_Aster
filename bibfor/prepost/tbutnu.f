@@ -9,7 +9,7 @@
       CHARACTER*(*)       NOMJV, NOMTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C        PAR DEFAUT, TOUT_INST
 C
 C
       INTEGER      IBID, NP, NC, N1, N2, JINSTD, JINST, JORDR, II,
-     +             NBVAL, NBTROU, NUTROU
+     +             NBVAL, NBTROU, NUTROU(1)
       REAL*8       DINST
       REAL*8 VALR
       COMPLEX*16   CBID
@@ -79,7 +79,7 @@ C
          DINST = ZR(JINST+II-1)
          CALL RSINDI('R8  ',JINSTD,1,JORDR,IBID,DINST,K8B,CBID,
      &               PREC,CRIT,NBVAL,NBTROU,NUTROU,1)
-         IF ( NBTROU .LT. 1 ) THEN
+         IF ( NBTROU.LT. 1 ) THEN
             VALR = DINST
             VALK = NOMTAB
             CALL U2MESG('F', 'PREPOST5_74',1,VALK,0,0,1,VALR)

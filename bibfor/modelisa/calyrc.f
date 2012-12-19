@@ -6,7 +6,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C-----------------------------------------------------------------------
       INTEGER ICOEF1,ICOEF2,ICOEF3,IAGNO3,NBNO3,NBMA3,IDMAI3
       LOGICAL LROTA,DNOR,LREORI
       REAL*8       BETA,COEF1,MROTA(3,3),ZERO,NORMAL(3)
-      REAL*8       R8B,PREC,ARMIN
+      REAL*8       R8B
       REAL*8       COEF11,COEF12,COEF3
       COMPLEX*16   CBID,BETAC
       CHARACTER*1  KB
@@ -118,27 +118,6 @@ C ----------------------------------------------------------------------
         LISTYP(9) = 'SEG3'
         LISTYP(10) = 'SEG4'
       END IF
-C
-C --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
-C
-      CALL JEEXIN ( NOMA//'           .LTNT', IRET )
-      IF ( IRET .NE. 0 ) THEN
-         CALL LTNOTB ( NOMA , 'CARA_GEOM' , NOMT19 )
-         NBPAR = 0
-         PARA = 'AR_MIN                  '
-         CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, CBID, K8B,
-     &                K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
-     &                K8B, IRET )
-          IF ( IRET .EQ. 0 ) THEN
-             PREC = ARMIN*1.D-06
-          ELSEIF ( IRET .EQ. 1 ) THEN
-             PREC = 1.D-10
-          ELSE
-             CALL U2MESS('F','MODELISA2_13')
-          ENDIF
-      ELSE
-         CALL U2MESS('F','MODELISA3_18')
-      ENDIF
 
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NNOMX,KB,IER)
       IDMAX = NNOMX + 3
@@ -218,7 +197,7 @@ C        ---------------------------------------------
 
           NORIEN = 0
           CALL ORILMA ( NOMA, NDIM, ZI(IDMAI3), NBMA3, NORIEN, NTRAIT,
-     &                  LREORI, PREC, NUL, IBID )
+     &                  LREORI, NUL, IBID )
           IF (NORIEN.NE.0) THEN
               CALL U2MESS('F','MODELISA3_19')
           END IF

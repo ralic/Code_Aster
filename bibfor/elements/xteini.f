@@ -9,7 +9,7 @@
       INTEGER        NFISS,CONTAC
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +46,8 @@ C     ------------------------------------------------------------------
 C
       INTEGER       NDIM,NNO,IBID,IER,NNOS
       INTEGER       DDLD,IADZI,IAZK24,JTAB(7),IRET
-      CHARACTER*8   ELREFP,ENR,LAG,TYPMA
-      LOGICAL       ISMALI
+      CHARACTER*8   ELREFP,ENR,TYPMA
+      LOGICAL       ISMALI,ISELLI
 C
 C ----------------------------------------------------------------------
 C
@@ -66,7 +66,6 @@ C
       CONTAC= 0
 C
       CALL TEATTR (NOMTE,'S','XFEM',ENR,IER)
-      CALL TEATTR (NOMTE,'C','XLAG',LAG,IER)
 C
 C --- DDL ENRICHISSEMENT : HEAVYSIDE, ENRICHIS (FOND)
 C
@@ -104,42 +103,23 @@ C
 C --- NOMBRE DE DDL AUX NOEUDS MILIEUX
 C
       CALL TECAEL(IADZI,IAZK24)
-      TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
+      TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)(1:8)
 C
       IF (IER.EQ.0) THEN
-        IF (LAG.EQ.'ARETE') THEN
-          DDLM=DDLC
-          CONTAC=2
-        ELSEIF (LAG(1:5).EQ.'NOEUD') THEN
-          IF (ISMALI(TYPMA)) THEN
-            CONTAC=1
-            DDLM=0
-          ELSE
-            IF (LAG.EQ.'NOEUD2') THEN
-              CONTAC=4
-              DDLM=DDLD+DDLC
-            ELSE
-              CONTAC=3
-              DDLM=DDLD
-            ENDIF
-          ENDIF
+        IF (ISMALI(TYPMA)) THEN
+          CONTAC=1
+          DDLM=0
+        ELSE
+          CONTAC=3
+          DDLM=DDLD
         ENDIF
       ELSE
-        IF(.NOT.ISMALI(ELREFP)) DDLM=DDLD
+        IF(.NOT.ISELLI(ELREFP)) DDLM=DDLD
       ENDIF
 C
 C --- NB DE NOEUDS MILIEUX
 C
-      IF (LAG.EQ.'ARETE') THEN
-        IF (NDIM .EQ. 3) THEN
-          NNOM=3*(NNOS/2)
-          IF (NNOS.EQ.5) NNOM=8
-        ELSE
-          NNOM=NNOS
-        ENDIF
-      ELSE
-        NNOM=NNO-NNOS
-      ENDIF
+      NNOM=NNO-NNOS
 C
 C --- NOMBRE DE DDLS (DEPL+CONTACT) SUR L'ELEMENT
 C

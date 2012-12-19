@@ -1,6 +1,6 @@
       SUBROUTINE JELIRA ( NOMLU , CATR , IVAL , CVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,19 +22,19 @@ C ======================================================================
       CHARACTER *(*)      NOMLU , CATR        , CVAL
       INTEGER                            IVAL
 C     ------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C     ------------------------------------------------------------------
       INTEGER          ISSTAT
       COMMON /ICONJE/  ISSTAT
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADMI ,IB ,IBACOL ,IBNUM ,IC ,ID ,IPGCEX 
-      INTEGER IS ,ISS ,IU ,IUU ,IVA ,IXDESO ,IXIADD 
-      INTEGER IXIADM ,IXLONG ,IXLONO ,IXLUTI ,IXNOM ,IXNUM ,JCARA 
-      INTEGER JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD ,JIADM ,JLONG 
-      INTEGER JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE 
-      INTEGER LTYPI ,N 
+      INTEGER IADMI ,IB ,IBACOL ,IBNUM ,IC ,ID ,IPGCEX
+      INTEGER IS ,ISS ,IU ,IUU ,IVA ,IXDESO ,IXIADD
+      INTEGER IXIADM ,IXLONG ,IXLONO ,IXLUTI ,IXNOM ,IXNUM ,JCARA
+      INTEGER JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD ,JIADM ,JLONG
+      INTEGER JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE
+      INTEGER LTYPI ,N
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -270,7 +270,7 @@ C
             IF (IADMI .EQ. 0 ) THEN
               CVA = 'X X'
             ELSE
-              CALL JJLIRS ( IADMI , IC , ID , 0 , IUU , ISS )
+              CALL JJLIRS ( IADMI , IC , ID , IUU , ISS )
               IU = IUU / ISSTAT
               IS = ISS / ISSTAT
               CVA = KSTAT(IU:IU)//' '//KSTAT(IS:IS)
@@ -280,7 +280,7 @@ C
             IB     = JISZON + IADM(JIADM(IC)+2*IXIADM-1) -1 + 2*IDATOC-1
             IADMI  = ISZON(IB)
             IF ( IADMI .NE. 0 ) THEN
-              CALL JJLIRS ( IADMI, IC, IDATOC, IDATCO, IUU, ISS)
+              CALL JJLIRS ( IADMI, IC, IDATOC, IUU, ISS)
               IU = IUU / ISSTAT
               IS = ISS / ISSTAT
               CVA = KSTAT(IU:IU)//' '//KSTAT(IS:IS)

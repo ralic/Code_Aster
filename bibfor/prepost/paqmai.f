@@ -2,7 +2,7 @@
      &                  GRDVIE, FORVIE,FORDEF, TYPCHA, PROAXE,
      &                  INSTIC,INSCRI,PREC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -580,8 +580,7 @@ C         ENDIF
          IF ( NOMCRI(1:11) .EQ. 'VMIS_TRESCA' ) THEN
             NOMOPT = 'DOMA_ELGA'
             CALL VAMPLI(ZR(JRWORK), TDISP, ZI(JNBPG), NBPGT, NBORDR,
-     &                  NMAINI, NBMAP, NUMPAQ, TSPAQ, NOMCRI,
-     &                  NOMMAI, NOMOPT, CESR)
+     &                  NMAINI, NBMAP,TSPAQ,NOMOPT,CESR)
             GOTO 200
          ENDIF
 

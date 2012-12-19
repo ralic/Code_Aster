@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE validation de la commande AFFE_CHAR_MECA / LIAISON_SOLIDE + TRAN + ANGL_NAUT
 # zzzz229a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -43,10 +43,20 @@
 
 
 DEBUT(  CODE=_F(NOM='ZZZZ229A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+
+# pour tester la commande COPIER/listr8_sdaster :
+XXX0=DEFI_LIST_REEL(VALE=(0.,),)
+LR8=COPIER(CONCEPT=XXX0)
+
+# pour tester la commande COPIER/maillage_sdaster :
+XXX1=LIRE_MAILLAGE(FORMAT='MED',)
+MA=COPIER(CONCEPT=XXX1)
+
 DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',))
 
-MO=AFFE_MODELE(MAILLAGE=MA, AFFE=_F( TOUT = 'OUI',  PHENOMENE = 'MECANIQUE', MODELISATION = 'D_PLAN') )
+# pour tester la commande COPIER/modele_sdaster :
+XXX2=AFFE_MODELE(MAILLAGE=MA, AFFE=_F( TOUT = 'OUI',  PHENOMENE = 'MECANIQUE', MODELISATION = 'D_PLAN') )
+MO=COPIER(CONCEPT=XXX2)
 
 MAT=DEFI_MATERIAU( ELAS=_F( E = 1.E+05,  NU = 0.3, RHO=9800.)  )
 CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,  AFFE=_F( TOUT = 'OUI', MATER = MAT) )
@@ -55,8 +65,12 @@ CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,  AFFE=_F( TOUT = 'OUI', MATER = MAT) )
 CHAR1=AFFE_CHAR_MECA( MODELE=MO, LIAISON_SOLIDE= _F(GROUP_MA = 'ABCD',
           CENTRE=(0,1), ANGL_NAUT=(90,), TRAN=(-1.,1.)))
 
-RESU0=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CHAM_MAT, EXCIT=( _F(CHARGE = CHAR1),), OPTION='SANS')
-#CALC_CHAMP(reuse=RESU0, RESULTAT=RESU0, OPTION='SIGM_ELNO')
+# pour tester la commande COPIER/evol_elas :
+XXX3=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=LR8,
+                    EXCIT=( _F(CHARGE = CHAR1),), OPTION='SANS')
+RESU0=COPIER(CONCEPT=XXX3)
+
+CALC_CHAMP(reuse=RESU0, RESULTAT=RESU0, CONTRAINTE='SIGM_ELNO')
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='C',
@@ -78,7 +92,52 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=2.0,),
           )
 
-#IMPR_RESU(RESU=_F(RESULTAT=RESU0))
-#IMPR_RESU(FORMAT='CASTEM',RESU=_F(RESULTAT=RESU0, MAILLAGE=MA)) # pour visualisation
+
+
+#--------------------------------------------------------------------------------------
+# pour tester la commande COPIER pour les types : fonction, nappe, et table
+# --------------------------------------------------------------------------------
+
+# type : fonction
+#----------------
+XXX4=DEFI_FONCTION( NOM_PARA='X', VALE=(  0.,   1., 10.,  2., ))
+
+TEST_FONCTION(VALEUR= _F(REFERENCE='ANALYTIQUE', VALE_REFE=1.5, VALE_CALC=1.5,
+                         FONCTION=XXX4, NOM_PARA=('X',), VALE_PARA=(5.)))
+
+FONC1=COPIER(CONCEPT=XXX4)
+TEST_FONCTION(VALEUR= _F(REFERENCE='ANALYTIQUE', VALE_REFE=1.5, VALE_CALC=1.5,
+                         FONCTION=FONC1, NOM_PARA=('X',), VALE_PARA=(5.)))
+
+# type : nappe
+#----------------
+XXX5=DEFI_NAPPE( NOM_PARA='X', PROL_DROITE='EXCLU', PROL_GAUCHE='EXCLU',
+                 PARA=(  0.5,   1., ), NOM_PARA_FONC='EPSI',
+                 DEFI_FONCTION=(
+                            _F(  PROL_DROITE = 'EXCLU', PROL_GAUCHE = 'EXCLU',
+                                 VALE = (  0.,   25., 10.,  525., )),
+                            _F(  PROL_DROITE = 'EXCLU', PROL_GAUCHE = 'EXCLU',
+                                 VALE = ( 0.,    50.,  10.,   550., ))),
+                 )
+
+TEST_FONCTION(VALEUR= _F( REFERENCE='ANALYTIQUE', VALE_REFE=287.5, VALE_CALC=287.5,
+                          FONCTION=XXX5, NOM_PARA=('X', 'EPSI'), VALE_PARA=(0.75, 5.)))
+
+NAP1=COPIER(CONCEPT=XXX5)
+TEST_FONCTION(VALEUR= _F( REFERENCE='ANALYTIQUE', VALE_REFE=287.5, VALE_CALC=287.5,
+                          FONCTION=NAP1, NOM_PARA=('X', 'EPSI'), VALE_PARA=(0.75, 5.)))
+
+# type : table
+#----------------
+XXX6=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL', NOEUD='N1', RESULTAT=RESU0,
+                           NOM_CHAM='DEPL',  NUME_ORDRE=1,
+                           TOUT_CMP='OUI', OPERATION='EXTRACTION',))
+
+TEST_TABLE(TABLE=XXX6, NOM_PARA='DX', VALE_CALC= -2.0,
+           FILTRE=_F(NOM_PARA='NOEUD', VALE_K='N1',))
+
+TAB1=COPIER(CONCEPT=XXX6)
+TEST_TABLE(TABLE=TAB1, NOM_PARA='DX', VALE_CALC= -2.0,
+           FILTRE=_F(NOM_PARA='NOEUD', VALE_K='N1',))
 
 FIN();

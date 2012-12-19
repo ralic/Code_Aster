@@ -7,7 +7,7 @@
       CHARACTER*16 COMPOR   
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,7 +55,7 @@ C
       INTEGER MXCMEL
       PARAMETER (MXCMEL=162)
 
-      INTEGER I,K,IGAU,ICINE,NBVAR,MEMO,VISC,IRADI
+      INTEGER I,K,IGAU,ICINE,NBVAR,MEMO,VISC,IRADI,IDELTA
 
       REAL*8 DSIGMA(MXCMEL),ZERO,DEUX,S1DSIG,NORM,DNORM,NORSIG,MATEL(20)
       REAL*8 ZERNOR,R8PREM,TENSM(6),TENSP(6),INDM,INDP,XM(6),XP(6)
@@ -167,7 +167,7 @@ C           CINEMATIQUE : LA NORMALE DEPEND DE SIG ET X
      &        .OR. (COMPOR.EQ.'VISC_CIN2_CHAB')
      &        .OR. (COMPOR.EQ.'VISC_CIN2_MEMO')) THEN
                CALL NMCHAM('RIGI',IGAU,1,IMATE,COMPOR,
-     &                MATEL,MAT,NBVAR,MEMO,VISC,COEF)
+     &                MATEL,MAT,NBVAR,MEMO,VISC,IDELTA,COEF)
 C              approximation : on supose C constant
                CINF   = MAT(4)/1.5D0
                INDM=VARI1((IGAU-1)*NVI+2)

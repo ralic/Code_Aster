@@ -3,7 +3,7 @@
      &                  FFC   ,NCONTA,NFHE  ,DLAGRF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,9 +80,7 @@ C --- LAGRANGES DE FROTTEMENT
 C
       DO 221 IDIM=2,NDIM
         DO 231 INO = 1,NNC
-          IN    = XOULA(CFACE ,NFACE ,INO   ,JPCAI ,
-     &                  TYPMAI,NCONTA)
-          CALL XPLMA2(NDIM  ,NN    ,NNS   ,NDDLS ,IN    ,NFHE  ,PL    )
+          CALL XPLMA2(NDIM  ,NN    ,NNS   ,NDDLS ,INO   ,NFHE  ,PL    )
           DLAGRF(IDIM-1) = DLAGRF(IDIM-1)+
      &          FFC(INO)*ZR(JDEPDE-1+PL+IDIM-1)
  231    CONTINUE

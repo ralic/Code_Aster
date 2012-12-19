@@ -1,9 +1,9 @@
         SUBROUTINE LECDBG(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NBG,
-     &  DIM,NOB,IER,IRTETI)
+     &  DIM,NOB,IRTETI)
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C       ----------------------------------------------------------------
 C       IN      IFL,ICL,IV,RV,CV,CNL = VOIR LIRITM
 C               MCL             = MOTS CLE TYPE DEBUG
 C               NBM             = NB DE MOTS CLES TYPE DEBUG
-C       OUT     IER             = 0 > LECTURE CORRECTE
 C                               = 1 > ERREUR EN LECTURE
 C               DIM             = NB DE NOMS LUS PAR MOT CLE DEBUG
 C               NOB             = NOMS LUS
@@ -47,7 +46,7 @@ C
         COMMON          /OPMAIL/        CMD
         SAVE B24
 C-----------------------------------------------------------------------
-      INTEGER I ,ICL ,IER ,IFL ,IFM ,IRTET ,IRTETI
+      INTEGER I ,ICL ,IFL ,IFM ,IRTET ,IRTETI
       INTEGER IUNIFI ,IV ,NBG ,NBM ,NUMTCL
 C-----------------------------------------------------------------------
         DATA B24        /'                        '/

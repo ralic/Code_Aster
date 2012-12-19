@@ -1,6 +1,6 @@
       SUBROUTINE JJLCHD (ID, IC, IDFIC, IDTS, NGRP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       INTEGER            ID, IC, IDFIC, IDTS
       CHARACTER*(*)      NGRP
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C ----------------------------------------------------------------------
       INTEGER          N
@@ -128,8 +128,8 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
 C --------- MISE EN MEMOIRE SANS LECTURE SUR FICHIER HDF
               CALL JJALLS(LONOI, IC, GENRI, TYPEI, LTYPI, 'INIT',
      &                    ITAB, JCTAB, IADMI, IADYN)
-              CALL JJECRS (IADMI,IADYN,IC,IX,0,'E',
-     &                     IMARQ(JMAR Q(IC)+2*IX-1))
+              CALL JJECRS (IADMI,IC,IX,0,'E',
+     &               IMARQ(JMARQ(IC)+2*IX-1))
             ELSE
 C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE SUR FICHIER HDF
               CALL JJLIHD (IDA,LON,LONOI,GENRI,TYPEI,LTYPI,IC,IX,
@@ -146,7 +146,7 @@ C-------- ON TRAITE UN REPERTOIRE DE NOMS
             IDT2=HDFOPD(IDFIC,NOMO,NREP(2))
             CALL JJALLS(LONOI,IC,GENRI,TYPEI,LTYPI,'INIT',ITAB,JCTAB,
      &                  IADMI,IADYN)
-            CALL JJECRS(IADMI,IADYN,IC,IX,0,'E',IMARQ(JMARQ(IC)+2*IX-1))
+            CALL JJECRS(IADMI,IC,IX,0,'E',IMARQ(JMARQ(IC)+2*IX-1))
             IRET=HDFTSD(IDT1,TYPEB,LTYPB,NBVAL)
             CALL ASSERT(IRET .EQ. 0)
             CALL JJHRSV(IDT1,NBVAL,IADMI)

@@ -2,39 +2,39 @@
       SUBROUTINE  AMUMPT(OPTION,KMONIT,TEMPS,RANG,NBPROC,KXMPS,
      &                   LQUALI,TYPE,IETDEB,IETRAT,RCTDEB,LDIST)
       IMPLICIT NONE
-!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 11/09/2012   AUTEUR BOITEAU O.BOITEAU 
-! ================================================================== 
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
-!                                                                    
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
-! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
-! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
-! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
-! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
-!                                                                    
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
-! ================================================================== 
-C--------------------------------------------------------------
-C BUT : ROUTINE DE MONITORING POUR AMUMPS/C/D/Z.
-C
-C IN  OPTION :   IN   : OPTION D'UTILISATION.
-C IN/OUT KMONIT: K24  : VECTEUR DE NOMS DES OBJ JEVEUX
-C IN/OUT TEMPS : R8   : VECTEUR POUR UTTCPU
-C IN     RANG  : IN   : RANG DU PROCESSEUR
-C IN     NBPROC: IN   : NBRE DE PROCESSEURS
-C IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
-C IN  LQUALI :  LOG   : LOGICAL EN CAS DE CRITERE DE QUALITE
-C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
-C IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
-C---------------------------------------------------------------
+!           CONFIGURATION MANAGEMENT OF EDF VERSION
+!& MODIF AMUMPT MUMPS  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
+! ==================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+!
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ==================================================================
+!--------------------------------------------------------------
+! BUT : ROUTINE DE MONITORING POUR AMUMPS/C/D/Z.
+!
+! IN  OPTION :   IN   : OPTION D'UTILISATION.
+! IN/OUT KMONIT: K24  : VECTEUR DE NOMS DES OBJ JEVEUX
+! IN/OUT TEMPS : R8   : VECTEUR POUR UTTCPU
+! IN     RANG  : IN   : RANG DU PROCESSEUR
+! IN     NBPROC: IN   : NBRE DE PROCESSEURS
+! IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
+! IN  LQUALI :  LOG   : LOGICAL EN CAS DE CRITERE DE QUALITE
+! IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
+! IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
+!---------------------------------------------------------------
 ! RESPONSABLE BOITEAU O.BOITEAU
- 
+
       INTEGER      OPTION,RANG,NBPROC,KXMPS,IETDEB,IETRAT
       CHARACTER*1  TYPE
       CHARACTER*24 KMONIT(12)
@@ -43,14 +43,14 @@ C---------------------------------------------------------------
 
 #ifdef _HAVE_MUMPS
 
-C============================================================
+!============================================================
       INCLUDE 'mpif.h'
       INCLUDE 'smumps_struc.h'
       INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
       INCLUDE 'jeveux.h'
-C============================================================
+!============================================================
       INTEGER    NMXINS
       PARAMETER (NMXINS=5)
       TYPE (SMUMPS_STRUC) , TARGET  :: SMPS(NMXINS)
@@ -78,19 +78,19 @@ C============================================================
       COMMON /MUMPSD/ DMPS
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
-      
+
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
-      
-C --- PARAMETRE POUR DEBUGGAGE
+
+! --- PARAMETRE POUR DEBUGGAGE
       LDEBUG=.TRUE.
       LDEBUG=.FALSE.
-      
-C       ------------------------------------------------
-C        INITS
-C       ------------------------------------------------
-C --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
-C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
+
+!       ------------------------------------------------
+!        INITS
+!       ------------------------------------------------
+! --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
+! --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
       IF (TYPE.EQ.'S') THEN
         SMPSK=>SMPS(KXMPS)
         N=SMPSK%N
@@ -139,11 +139,11 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         CALL ASSERT(.FALSE.)
       ENDIF
 
-C --- TEST POUR LIMITER LE MONITORING DES CMDES ECLATEES
-C     CAR LES OBJETS TEMPORAIRES DE MONITORING SONT EFFACES A CHAQUE
-C     FIN DE COMMANDE (NUM_DDL/FACTORISER/RESOUDRE)
-C --- ON N'AFFICHE LE MONITORING PROPRE A MUMPS QUE SI ON EST DS UNE
-C     COMMANDE AGREGEE ET SI INFO=2
+! --- TEST POUR LIMITER LE MONITORING DES CMDES ECLATEES
+!     CAR LES OBJETS TEMPORAIRES DE MONITORING SONT EFFACES A CHAQUE
+!     FIN DE COMMANDE (NUM_DDL/FACTORISER/RESOUDRE)
+! --- ON N'AFFICHE LE MONITORING PROPRE A MUMPS QUE SI ON EST DS UNE
+!     COMMANDE AGREGEE ET SI INFO=2
 
       CALL GETRES(K8BID,K16BID,NOMCMD)
       IF ((NOMCMD(1:8).EQ.'NUME_DDL').OR.(NOMCMD(1:10).EQ.'FACTORISER')
@@ -152,17 +152,17 @@ C     COMMANDE AGREGEE ET SI INFO=2
       ELSE
         LCMDE=.FALSE.
       ENDIF
-      
+
       IF ((.NOT.LCMDE).AND.(NIV.GE.2)) THEN
-C ---   VECTEURS DE MONITORING
+! ---   VECTEURS DE MONITORING
         KMONIT(1)='&MUMPS.INFO.MAILLE'
         KMONIT(2)='&MUMPS.INFO.MEMOIRE'
         KMONIT(9)='&MUMPS.NB.MAILLE'
         KMONIT(10)='&MUMPS.INFO.MEM.EIC'
         KMONIT(11)='&MUMPS.INFO.MEM.EOC'
-        KMONIT(12)='&MUMPS.INFO.MEM.USE'      
+        KMONIT(12)='&MUMPS.INFO.MEM.USE'
 
-C ---   TEST POUR EVITER LE MONITORING LORSQUE LDLT_SP EST UTILISE
+! ---   TEST POUR EVITER LE MONITORING LORSQUE LDLT_SP EST UTILISE
         CALL JEEXIN(KMONIT(1),IRET)
         IF (IRET.EQ.0) GOTO 999
 
@@ -172,12 +172,12 @@ C ---   TEST POUR EVITER LE MONITORING LORSQUE LDLT_SP EST UTILISE
         CALL JEVEUO(KMONIT(10),'E',MONIT(10))
         CALL JEVEUO(KMONIT(11),'E',MONIT(11))
         CALL JEVEUO(KMONIT(12),'E',MONIT(12))
-      ENDIF          
-C       ------------------------------------------------
-C       TRAITEMENTS PROPREMENT DIT
-C       ------------------------------------------------
+      ENDIF
+!       ------------------------------------------------
+!       TRAITEMENTS PROPREMENT DIT
+!       ------------------------------------------------
       IF (OPTION.EQ.0) THEN
-C --    ON NE FAIT RIEN DE PLUS !
+! --    ON NE FAIT RIEN DE PLUS !
       ELSE IF (OPTION.EQ.1) THEN
         IF (LDEBUG) THEN
           CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
@@ -196,7 +196,7 @@ C --    ON NE FAIT RIEN DE PLUS !
           CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
           CALL CPU_TIME(RCTDEB)
         ENDIF
-C       -- ON INTERROMPT LA MESURE CPU.RESO.4 PENDANT CPU.RESO.3 :
+!       -- ON INTERROMPT LA MESURE CPU.RESO.4 PENDANT CPU.RESO.3 :
         CALL UTTCPU('CPU.RESO.4','FIN',' ')
         CALL UTTCPU('CPU.RESO.3','DEBUT',' ')
 
@@ -278,11 +278,11 @@ C       -- ON INTERROMPT LA MESURE CPU.RESO.4 PENDANT CPU.RESO.3 :
      &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
         ENDIF
         IF ((NIV.GE.2).AND.(.NOT.LCMDE)) THEN
-C -- COMMUNICATION DES DONNEES DU MONITORING
+! -- COMMUNICATION DES DONNEES DU MONITORING
           CALL MPICM2('REDUCE',KMONIT(10))
           CALL MPICM2('REDUCE',KMONIT(11))
           CALL MPICM2('REDUCE',KMONIT(12))
-C -- AFFICHAGE
+! -- AFFICHAGE
           IF (RANG.EQ.0) THEN
             WRITE(IFM,*)
             WRITE(IFM,*)'*********************************************'
@@ -312,9 +312,9 @@ C -- AFFICHAGE
               IAUX2=IAUX2+ZI(MONIT(1)+K)
               IAUX3=IAUX3+ZI(MONIT(2)+K)
             ENDDO
-C -- EN CENTRALISE ON NE FAIT PAS LA SOMME
+! -- EN CENTRALISE ON NE FAIT PAS LA SOMME
             IF (.NOT.LDIST) IAUX1=IAUX1/NBPROC
-C
+!
             WRITE(IFM,*)'--------------------------------------------'
      &          //'---------------'
             WRITE(IFM,1003)IAUX1,IAUX2,IAUX3
@@ -323,51 +323,51 @@ C
               RMONIT(I)=0.D0
             ENDDO
 
-C -- MONITORING MEMOIRE
-C ---   ZI(ISIZEMU+RANG-1): TAILLE CUMULEE EN MO OBJETS MUMPS A,IRN...
-C ---   EXECMU:  TAILLE EN MO DE L'EXECUTABLE MUMPS
+! -- MONITORING MEMOIRE
+! ---   ZI(ISIZEMU+RANG-1): TAILLE CUMULEE EN MO OBJETS MUMPS A,IRN...
+! ---   EXECMU:  TAILLE EN MO DE L'EXECUTABLE MUMPS
             EXECMU=30
             KSIZEMU='&&TAILLE_OBJ_MUMPS'
             CALL JEVEUO(KSIZEMU,'L',ISIZEMU)
             KSIZEMU='&&TAILLE_OBJ_MUMPS'
-            IF (TYPE.EQ.'S') THEN             
+            IF (TYPE.EQ.'S') THEN
               IBID=SMPSK%ICNTL(22)
             ELSE IF (TYPE.EQ.'C') THEN
               IBID=CMPSK%ICNTL(22)
-            ELSE IF (TYPE.EQ.'D') THEN             
+            ELSE IF (TYPE.EQ.'D') THEN
               IBID=DMPSK%ICNTL(22)
             ELSE IF (TYPE.EQ.'Z') THEN
               IBID=ZMPSK%ICNTL(22)
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF
-            IF (IBID.EQ.0) THEN 
+            IF (IBID.EQ.0) THEN
               KTEMP='IN-CORE'
-            ELSE 
+            ELSE
               KTEMP='OUT-OF-CORE'
             ENDIF
-            WRITE(IFM,*)' MEMOIRE RAM ESTIMEE ET REQUISE 
+            WRITE(IFM,*)' MEMOIRE RAM ESTIMEE ET REQUISE
      &             EN MO(OBJETS MUMPS + EXECUTABLE)'
-            
+
             WRITE(IFM,*)'RANG ASTER : '//
-     &            'ESTIM IN-CORE | ESTIM OUT-OF-CORE | RESOL. '//KTEMP  
-             
-C           REAJUSTEMENT POUR TENIR COMPTE DE LA TAILLE DE L'EXECUTABLE
-C           ET DES OBJETS PRE-ALLOUES AVANT L'ANALYSE
+     &            'ESTIM IN-CORE | ESTIM OUT-OF-CORE | RESOL. '//KTEMP
+
+!           REAJUSTEMENT POUR TENIR COMPTE DE LA TAILLE DE L'EXECUTABLE
+!           ET DES OBJETS PRE-ALLOUES AVANT L'ANALYSE
             DO K=0,NBPROC-1
               ZI(MONIT(10)+K)=ZI(MONIT(10)+K)+EXECMU+ZI(ISIZEMU+K)
               ZI(MONIT(11)+K)=ZI(MONIT(11)+K)+EXECMU+ZI(ISIZEMU+K)
               ZI(MONIT(12)+K)=ZI(MONIT(12)+K)+EXECMU+ZI(ISIZEMU+K)
             ENDDO
-C           POUR LE CALCUL DES MOYENNES            
+!           POUR LE CALCUL DES MOYENNES
             RMONIT(1)=0.0
             RMONIT(2)=0.0
             RMONIT(3)=0.0
-C           POUR LE CALCUL DES MAX
+!           POUR LE CALCUL DES MAX
             RMONIT(4)=ZI(MONIT(10))
             RMONIT(5)=ZI(MONIT(11))
             RMONIT(6)=ZI(MONIT(12))
-C           POUR LES CALCULS DES MIN
+!           POUR LES CALCULS DES MIN
             RMONIT(7)=ZI(MONIT(10))
             RMONIT(8)=ZI(MONIT(11))
             RMONIT(9)=ZI(MONIT(12))
@@ -380,16 +380,16 @@ C           POUR LES CALCULS DES MIN
               IF (RMONIT(4) .GT. ZI(MONIT(10)+K))
      &               RMONIT(4)=ZI(MONIT(10)+K)
               IF (RMONIT(5) .GT. ZI(MONIT(11)+K))
-     &               RMONIT(5)=ZI(MONIT(11)+K)  
+     &               RMONIT(5)=ZI(MONIT(11)+K)
               IF (RMONIT(6) .GT. ZI(MONIT(12)+K))
      &               RMONIT(6)=ZI(MONIT(12)+K)
               IF (RMONIT(7) .LT. ZI(MONIT(10)+K))
      &               RMONIT(7)=ZI(MONIT(10)+K)
               IF (RMONIT(8) .LT. ZI(MONIT(11)+K))
-     &               RMONIT(8)=ZI(MONIT(11)+K)  
+     &               RMONIT(8)=ZI(MONIT(11)+K)
               IF (RMONIT(9) .LT. ZI(MONIT(12)+K))
      &               RMONIT(9)=ZI(MONIT(12)+K)
-                
+
             ENDDO
             RMONIT(1)=RMONIT(1)/NBPROC
             RMONIT(2)=RMONIT(2)/NBPROC
@@ -399,16 +399,16 @@ C           POUR LES CALCULS DES MIN
             WRITE(IFM,1007) RMONIT(1),RMONIT(2),RMONIT(3)
             WRITE(IFM,*)'------------------------------------------'//
      &            '-----------------------------------'
-   
+
             WRITE(IFM,1008) RMONIT(4),RMONIT(5),RMONIT(6)
             WRITE(IFM,*)'------------------------------------------'//
      &            '-----------------------------------'
-         
+
             WRITE(IFM,1009) RMONIT(7),RMONIT(8),RMONIT(9)
             WRITE(IFM,*)'------------------------------------------'//
      &            '-----------------------------------'
-                   
-      
+
+
             WRITE(IFM,*)'*********************************************'
      &                  //'*********************************'
  1001       FORMAT(' N ',I4,' :    ',I12,'    ',I12,'    ',I12)
@@ -428,7 +428,7 @@ C           POUR LES CALCULS DES MIN
      &              1PD10.2)
  1009       FORMAT('MAXIMUM :      ',1PD10.2,'      ',1PD10.2,'      ',
      &              1PD10.2)
-C FIN DU IF RANG
+! FIN DU IF RANG
           ENDIF
 
           DO I=1,NBPROC
@@ -436,12 +436,12 @@ C FIN DU IF RANG
             ZI(MONIT(2)+I-1)=0
             ZI(MONIT(10)+I-1)=0
             ZI(MONIT(11)+I-1)=0
-            ZI(MONIT(12)+I-1)=0             
+            ZI(MONIT(12)+I-1)=0
           ENDDO
-C FIN DU IF NIV + LCMDE
-        ENDIF 
+! FIN DU IF NIV + LCMDE
+        ENDIF
       ELSE
-C --- OPTION IMPREVUE
+! --- OPTION IMPREVUE
         CALL ASSERT(.FALSE.)
 
       ENDIF

@@ -1,7 +1,7 @@
       SUBROUTINE NMLERR(SDDISC,ACTION,INFZ,VALR,VALI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C
       CHARACTER*1   ACTION
       CHARACTER*(*) INFZ
       INTEGER       VALI
-      REAL*8        VALR(*)
+      REAL*8        VALR
 C
 C ----------------------------------------------------------------------
 C
@@ -53,7 +53,7 @@ C   8 INIT_NEWTON_KRYLOV   : RESIDU INITIAL POUR NEWTON KRYLOV
 C   9 ITER_NEWTON_KRYLOV   : RESIDU COURANT POUR NEWTON KRYLOV
 C  10 ITERSUP              : =3 ON AUTORISE DES ITERATIONS EN PLUS
 C
-C I/O VALR(*)   : REEL   A ECRIRE OU A LIRE
+C I/O VALR      : REEL   A ECRIRE OU A LIRE
 C     VALI      : ENTIER A ECRIRE OU A LIRE
 C
 C
@@ -95,21 +95,21 @@ C
         ENDIF
       ELSEIF (INFO.EQ.'PAS_MINI_ELAS') THEN
         IF (ACTION.EQ.'L') THEN
-          VALR(1)  = ZR(JIFCV+4-1)
+          VALR  = ZR(JIFCV+4-1)
         ELSEIF (ACTION.EQ.'E') THEN
-          ZR(JIFCV+4-1) = VALR(1)
+          ZR(JIFCV+4-1) = VALR
         ENDIF
       ELSEIF (INFO.EQ.'RESI_GLOB_RELA') THEN
         IF (ACTION.EQ.'L') THEN
-          VALR(1)  = ZR(JIFCV+5-1)
+          VALR  = ZR(JIFCV+5-1)
         ELSEIF (ACTION.EQ.'E') THEN
-          ZR(JIFCV+5-1) = VALR(1)
+          ZR(JIFCV+5-1) = VALR
         ENDIF
       ELSEIF (INFO.EQ.'RESI_GLOB_MAXI') THEN
         IF (ACTION.EQ.'L') THEN
-          VALR(1)  = ZR(JIFCV+6-1)
+          VALR  = ZR(JIFCV+6-1)
         ELSEIF (ACTION.EQ.'E') THEN
-          ZR(JIFCV+6-1) = VALR(1)
+          ZR(JIFCV+6-1) = VALR
         ENDIF
       ELSEIF (INFO.EQ.'TYPE_RESI') THEN
         IF (ACTION.EQ.'L') THEN
@@ -119,15 +119,15 @@ C
         ENDIF
       ELSEIF (INFO.EQ.'INIT_NEWTON_KRYLOV') THEN
         IF (ACTION.EQ.'L') THEN
-          VALR(1)  = ZR(JIFCV+8-1)
+          VALR  = ZR(JIFCV+8-1)
         ELSEIF (ACTION.EQ.'E') THEN
-          ZR(JIFCV+8-1) = VALR(1)
+          ZR(JIFCV+8-1) = VALR
         ENDIF
       ELSEIF (INFO.EQ.'ITER_NEWTON_KRYLOV') THEN
         IF (ACTION.EQ.'L') THEN
-          VALR(1)  = ZR(JIFCV+9-1)
+          VALR  = ZR(JIFCV+9-1)
         ELSEIF (ACTION.EQ.'E') THEN
-          ZR(JIFCV+9-1) = VALR(1)
+          ZR(JIFCV+9-1) = VALR
         ENDIF
       ELSEIF (INFO.EQ.'ITERSUP') THEN
         IF (ACTION.EQ.'L') THEN

@@ -1,0 +1,463 @@
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+# TITRE TEST VISC/VMIS_CIN2_NRAD ET VISC/VMIS_MEMO_NRAD
+# ssnd105d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSND105D',NIV_PUB_WEB='INTERNET',),
+              DEBUG=_F(SDVERI='NON')
+              )
+
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+CUBE=LIRE_MAILLAGE();
+
+MOD2D=AFFE_MODELE(MAILLAGE=CUBE,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='AXIS',),);
+R_0 = 35.0;
+
+Q_0 = 140.0;
+
+Q_M = 460.0;
+
+MU = 19.0;
+
+b = 12.0;
+
+ETA = 0.5;
+
+E = 145000.0;
+
+COMPOR1 = 'VISC_CIN2_NRAD';
+
+COMPOR2 = 'VISC_MEMO_NRAD';
+
+COMPOR3 = 'VMIS_CIN2_NRAD';
+
+COMPOR4 = 'VMIS_MEMO_NRAD';
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=200000.,
+                             NU=0.3,
+                             ALPHA=0.,),
+                     CIN2_CHAB=_F(R_0=R_0,
+                                  R_I=(R_0 + Q_0),
+                                  B=b,
+                                  C1_I=1950.,
+                                  C2_I=65000.,
+                                  G1_0=50.,
+                                  G2_0=1300.,),
+                     MEMO_ECRO=_F(
+                                  MU =MU,
+                                  Q_M=Q_M,
+                                  Q_0=Q_0,
+                                  ETA=ETA,
+                                 ),
+                     VISCOCHAB=_F(K_0=70.,
+                                  K=R_0,
+                                  N=24.,
+                                  B=b,
+                                  MU=MU,
+                                  Q_M=Q_M,
+                                  Q_0=Q_0,
+                                  ETA=ETA,
+                                  C1=1950.,
+                                  G1_0=50.,
+                                  C2=65000.,
+                                  G2_0=1300.,
+                                  ),
+                     LEMAITRE=_F(N=24.,
+                                 UN_SUR_K=0.0142857142857,),
+                     CIN2_NRAD=_F(DELTA1=0.5,
+                                  DELTA2=0.5,
+                                  ),
+
+                                 );
+
+MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
+                   AFFE=_F(MAILLE='MA1',
+                           MATER=ACIER2,),);
+
+COND_LIM=AFFE_CHAR_CINE(MODELE=MOD2D,
+                        MECA_IMPO=(_F(GROUP_NO='Y0',
+                                     DY=0.,),
+                                  _F(GROUP_NO='X0',
+                                     DX=0.,),),);
+T1 = 10.0;
+
+T2 = 11.0;
+
+SIGMAX = 220.0;
+
+
+TRAC=AFFE_CHAR_MECA(MODELE=MOD2D,
+                    PRES_REP=_F(GROUP_MA='Y1',
+                                PRES=SIGMAX,),);
+
+
+COEF_TR=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                            T1,1.0,
+                            T2,0.,
+                            ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(_F(JUSQU_A=T1,
+                                    NOMBRE=60,),
+                                 _F(JUSQU_A=T2,
+                                    NOMBRE=10,),),);
+
+# cycles en deformation imposee
+TINI = T2;
+
+DT = 5.0;
+
+EPSMAX = 0.005;
+
+EPSMIN = -0.005;
+
+NBCYCLE = 10;
+
+NPAS=250
+
+TFIN = ((TINI + (DT / 2.0)) + ((2.0 * DT) * NBCYCLE));
+
+epsmoy = 0.0;
+
+def epsimp(INST):
+    vit=(EPSMAX-EPSMIN)/DT
+    t1=INST-TINI
+    if t1 <= DT/2. :
+        epsi=vit*t1+epsmoy
+    else :
+        t2=t1-DT/2.
+        t3=t2 - 2*DT*int(t2/2/DT)
+        if t3 <= DT :
+            epsi = EPSMAX - vit*t3
+        else :
+            epsi = EPSMIN + vit*(t3-DT)
+    return epsi
+
+epsi = FORMULE(NOM_PARA='INST',VALE='epsimp(INST)');
+
+lisn=DEFI_LIST_REEL(DEBUT=TINI,
+                    INTERVALLE=_F(JUSQU_A=TFIN,
+                                  PAS=0.01,),);
+
+EPSIMP=CALC_FONC_INTERP(FONCTION=epsi,
+                        LIST_PARA=lisn,
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',);
+
+CHARG2=AFFE_CHAR_MECA_F(MODELE=MOD2D,
+                        DDL_IMPO=_F(GROUP_MA='Y1',
+                                    DY=EPSIMP,),);
+
+LINST2=DEFI_LIST_REEL(DEBUT=TINI,
+                      INTERVALLE=_F(JUSQU_A=TFIN,
+                                    NOMBRE=NPAS,
+                                    ),);
+
+
+LINSR=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST))
+                                    
+LINSTR=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST2))
+
+################
+# VISC_CIN2_NRAD
+################
+
+VCIN2NR=STAT_NON_LINE(MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=TRAC,FONC_MULT=COEF_TR,),),
+                       COMP_INCR=_F(ITER_INTE_MAXI=50,RELATION=COMPOR1,),
+                       INCREMENT=_F(LIST_INST=LINSR,),
+                       NEWTON=_F(PREDICTION='TANGENTE',REAC_ITER=1,),
+                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                       SUIVI_DDL=(_F(NOM_CMP    ='V1',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V2',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                                 ),
+                       );
+
+VCIN2NR=STAT_NON_LINE(reuse =VCIN2NR,ETAT_INIT=_F(EVOL_NOLI=VCIN2NR,),
+                       MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=CHARG2,TYPE_CHARGE='DIDI',),),
+                       COMP_INCR=_F(ITER_INTE_MAXI=50,RELATION=COMPOR1),                       
+                       INCREMENT=_F(LIST_INST=LINSTR),
+                       NEWTON=_F(PREDICTION='TANGENTE',REAC_ITER=1,),
+                       SUIVI_DDL=(_F(  NOM_CMP='V1',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    _F(NOM_CMP='V2',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    ),
+                      );
+
+
+################
+# VISC_MEMO_NRAD
+################
+
+VMEMONR=STAT_NON_LINE(MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=TRAC,FONC_MULT=COEF_TR,),),
+                       COMP_INCR=_F(ITER_INTE_MAXI=50,RELATION=COMPOR2,),
+                       INCREMENT=_F(LIST_INST=LINSR,),
+                       NEWTON=_F(PREDICTION='TANGENTE',REAC_ITER=1,),
+                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                       SUIVI_DDL=(_F(NOM_CMP    ='V1',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V2',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                                 ),
+                       );
+
+VMEMONR=STAT_NON_LINE(reuse =VMEMONR,ETAT_INIT=_F(EVOL_NOLI=VMEMONR,),
+                       MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=CHARG2,TYPE_CHARGE='DIDI',),),
+                       COMP_INCR=_F(ITER_INTE_MAXI=50,RELATION=COMPOR2),                       
+                       INCREMENT=_F(LIST_INST=LINSTR),
+                       NEWTON=_F(PREDICTION='TANGENTE',REAC_ITER=1,),
+                       SUIVI_DDL=(_F(  NOM_CMP='V1',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    _F(NOM_CMP='V2',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    ),
+                      );
+
+
+################
+# VMIS_CIN2_NRAD
+################
+
+PCIN2NR=STAT_NON_LINE(MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=TRAC,FONC_MULT=COEF_TR,),),
+                       COMP_INCR=_F(ITER_INTE_MAXI=50,RELATION=COMPOR3,),
+                       INCREMENT=_F(LIST_INST=LINSR,),
+                       NEWTON=_F(PREDICTION='TANGENTE',REAC_ITER=1,),
+                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                       SUIVI_DDL=(_F(NOM_CMP    ='V1',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V2',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                                 ),
+                       );
+
+PCIN2NR=STAT_NON_LINE(reuse =PCIN2NR,ETAT_INIT=_F(EVOL_NOLI=PCIN2NR,),
+                       MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=CHARG2,TYPE_CHARGE='DIDI',),),
+                       COMP_INCR=_F(ITER_INTE_MAXI=50,RELATION=COMPOR3),                       
+                       INCREMENT=_F(LIST_INST=LINSTR),
+                       NEWTON=_F(PREDICTION='TANGENTE',REAC_ITER=1,),
+                       SUIVI_DDL=(_F(  NOM_CMP='V1',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    _F(NOM_CMP='V2',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    ),
+                      );
+
+
+################
+# VMIS_MEMO_NRAD
+################
+
+PMEMONR=STAT_NON_LINE(MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=TRAC,FONC_MULT=COEF_TR,),),
+                       COMP_INCR=_F(ITER_INTE_MAXI=50,RELATION=COMPOR4,),
+                       INCREMENT=_F(LIST_INST=LINSR,),
+                       NEWTON=_F(PREDICTION='TANGENTE',REAC_ITER=1,),
+                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                       SUIVI_DDL=(_F(NOM_CMP    ='V1',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V2',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                                 ),
+                       );
+
+PMEMONR=STAT_NON_LINE(reuse =PMEMONR,ETAT_INIT=_F(EVOL_NOLI=PMEMONR,),
+                       MODELE=MOD2D,
+                       CHAM_MATER=MAT2,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=CHARG2,TYPE_CHARGE='DIDI',),),
+                       COMP_INCR=_F(ITER_INTE_MAXI=50,RELATION=COMPOR4),                       
+                       INCREMENT=_F(LIST_INST=LINSTR),
+                       NEWTON=_F(PREDICTION='TANGENTE',REAC_ITER=1,),
+                       SUIVI_DDL=(_F(  NOM_CMP='V1',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    _F(NOM_CMP='V2',
+                                       NOM_CHAM='VARI_ELGA',
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    ),
+                      );
+
+#################################
+# TEST_RESU
+#################################
+
+CALC_CHAMP(reuse=VCIN2NR,RESULTAT=VCIN2NR,DEFORMATION=('EPSI_ELGA'))
+CALC_CHAMP(reuse=VMEMONR,RESULTAT=VMEMONR,DEFORMATION=('EPSI_ELGA'))
+CALC_CHAMP(reuse=PCIN2NR,RESULTAT=PCIN2NR,DEFORMATION=('EPSI_ELGA'))
+CALC_CHAMP(reuse=PMEMONR,RESULTAT=PMEMONR,DEFORMATION=('EPSI_ELGA'))
+
+
+EVCIN2NR=RECU_FONCTION(RESULTAT=VCIN2NR,NOM_CHAM='EPSI_ELGA',NOM_CMP='EPYY',MAILLE='MA1',INTERPOL='LIN',POINT=1,);
+EVMEMONR=RECU_FONCTION(RESULTAT=VMEMONR,NOM_CHAM='EPSI_ELGA',NOM_CMP='EPYY',MAILLE='MA1',INTERPOL='LIN',POINT=1,);
+EPCIN2NR=RECU_FONCTION(RESULTAT=PCIN2NR,NOM_CHAM='EPSI_ELGA',NOM_CMP='EPYY',MAILLE='MA1',INTERPOL='LIN',POINT=1,);
+EPMEMONR=RECU_FONCTION(RESULTAT=PMEMONR,NOM_CHAM='EPSI_ELGA',NOM_CMP='EPYY',MAILLE='MA1',INTERPOL='LIN',POINT=1,);
+
+SVCIN2NR=RECU_FONCTION(RESULTAT=VCIN2NR,NOM_CHAM='SIEF_ELGA',NOM_CMP='SIYY',MAILLE='MA1',INTERPOL='LIN',POINT=1,);
+SVMEMONR=RECU_FONCTION(RESULTAT=VMEMONR,NOM_CHAM='SIEF_ELGA',NOM_CMP='SIYY',MAILLE='MA1',INTERPOL='LIN',POINT=1,);
+SPCIN2NR=RECU_FONCTION(RESULTAT=PCIN2NR,NOM_CHAM='SIEF_ELGA',NOM_CMP='SIYY',MAILLE='MA1',INTERPOL='LIN',POINT=1,);
+SPMEMONR=RECU_FONCTION(RESULTAT=PMEMONR,NOM_CHAM='SIEF_ELGA',NOM_CMP='SIYY',MAILLE='MA1',INTERPOL='LIN',POINT=1,);
+
+# reference SSND105C VISC_CIN2_MEMO 
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=369.6780888,
+                         VALE_REFE=369.67838,
+                         VALE_PARA=113.5,
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA='INST',
+                         FONCTION=SVMEMONR,),
+                      _F(VALE_CALC=-1.8773042E-02,
+                         VALE_REFE=-1.87730E-02,
+                         VALE_PARA=113.5,
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA='INST',
+                         FONCTION=EVMEMONR,),
+                      ),
+              )
+
+# test par rapport a ssnd105c VISC_CIN2_CHAB (pas d'effet de  memoire)
+TEST_FONCTION(VALEUR=(
+                      _F(VALE_CALC=-220.0,
+                         VALE_REFE=-220.0,
+                         VALE_PARA=10.0,
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA='INST',
+                         FONCTION=SVCIN2NR,),
+                      _F(VALE_CALC=269.6016073,
+                         VALE_REFE=2.69602E+02,
+                         VALE_PARA=113.5,
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA='INST',
+                         FONCTION=SVCIN2NR,),
+                      ),
+              )
+
+# non regression
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-220.0,
+                         VALE_PARA=10.0,
+                         NOM_PARA='INST',
+                         FONCTION=SPMEMONR,),
+                      _F(VALE_CALC=372.200,
+                         VALE_PARA=113.5,
+                         NOM_PARA='INST',
+                         FONCTION=SPMEMONR,),
+                      ),
+              )
+TEST_FONCTION(VALEUR=(
+                      _F(VALE_CALC=-220.0,
+                         VALE_PARA=10.0,
+                         NOM_PARA='INST',
+                         FONCTION=SPCIN2NR,),
+                      _F(VALE_CALC=225.254,
+                         VALE_PARA=113.5,
+                         NOM_PARA='INST',
+                         FONCTION=SPCIN2NR,),
+                      ),
+              )
+
+
+#################################
+# courbes
+#################################
+
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=(
+                      _F(FONC_X=EVCIN2NR,FONC_Y=SVCIN2NR,LEGENDE=COMPOR1,),
+                      _F(FONC_X=EVMEMONR,FONC_Y=SVMEMONR,LEGENDE=COMPOR2,),
+                      _F(FONC_X=EPCIN2NR,FONC_Y=SPCIN2NR,LEGENDE=COMPOR3,),
+                      _F(FONC_X=EPMEMONR,FONC_Y=SPMEMONR,LEGENDE=COMPOR4,),
+                     ),
+              LEGENDE_X='Deformation',
+              LEGENDE_Y='Contrainte (MPa)',);
+
+
+
+FIN();

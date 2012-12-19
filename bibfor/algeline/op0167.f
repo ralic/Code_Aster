@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -340,7 +340,7 @@ C ----------------------------------------------------------------------
         CALL RDTMAI(NOMAIN,NOMAOU,'G',NOMAOU//'.CRNO',
      &              NOMAOU//'.CRMA','G',0,0)
 C ---    VERIFICATIONS DU MAILLAGE
-        CALL CHCKMA(NOMAOU,NOMCMD,1.0D-03)
+        CALL CHCKMA(NOMAOU,1.0D-03)
         GOTO 350
 
       ENDIF

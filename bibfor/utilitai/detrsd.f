@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,15 +39,16 @@ C          'CHAM_NO'      'CHAM_ELEM'  'CARTE'
 C          'CHAMP' (CHAPEAU AUX CHAM_NO/CHAM_ELEM/CARTE/RESUELEM)
 C          'CHAMP_GD' (CHAPEAU DESUET AUX CHAM_NO/CHAM_ELEM/...)
 C          'RESULTAT'  'LIGREL'  'NUAGE'  'MAILLAGE' 'CRITERE'
+C          'LISTR8'    'LISTIS'
 C          (OU ' ' QUAND ON NE CONNAIT PAS LE TYPE).
-C          'LISTE_CHARGE' LISTE DES CHARGES
+C          'LISTE_CHARGE'
 C          'NUML_DDL'
 C       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A DETRUIRE
 C          NUME_DDL(K14),MATR_ASSE(K19),VECT_ASSE(K19)
-C          CHAMP(K19),MATR_ELEM(K8),VECT_ELEM(K8),VARI_COM(K14)
-C          DEFI_CONT(K16),RESO_CONT(K14),TABLE(K19)
-C          CHAM_NO(K19),CHAM_NO_S(K19),CHAM_ELEM(K19),CHAM_ELEM_S(K19)
-C          CRITERE(K19)
+C          CHAMP(K19), MATR_ELEM(K8), VECT_ELEM(K8), VARI_COM(K14)
+C          DEFI_CONT(K16), RESO_CONT(K14), TABLE(K19)
+C          CHAM_NO(K19), CHAM_NO_S(K19),CHAM_ELEM(K19),CHAM_ELEM_S(K19)
+C          CRITERE(K19), LISTE_RELA(K19), CABL_PRECONT(K8), ...
 
 C     RESULTAT:
 C     ON DETRUIT TOUS LES OBJETS JEVEUX CORRESPONDANT A CES CONCEPTS.
@@ -59,12 +60,12 @@ C ----------------------------------------------------------------------
       INTEGER IFETM,IFETN,IFETC,ITYOBJ,INOMSD,NBLG,NBPA,NBLP,N1
       INTEGER JLTNS
       CHARACTER*1 K1BID
-      CHARACTER*8 MAILLA,METRES,K8BID,PARTIT
+      CHARACTER*8 METRES,K8BID,K8
       CHARACTER*12 VGE
       CHARACTER*14 NU,COM
       CHARACTER*16 TYP2SD,CORRES
-      CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC,RESU
-      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19,MATEL,LISTE
+      CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,FNC,RESU
+      CHARACTER*19 LIGREL,NUAGE,LIGRET,MLTF,STOCK,K19,MATEL,LISTE
       CHARACTER*24 K24B,TYPOBJ,KNOMSD
       LOGICAL LFETI,LBID
 
@@ -80,32 +81,56 @@ C       TYPE_SD INCONNU => CALL JEDETC => COUT CPU IMPORTANT + DANGER
         CALL JEDETC(' ',NOMSD,1)
 
 C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'CABL_PRECONT') THEN
+C     ------------------------------------
+        K8 = NOMSD
+        CALL DETRS2('CARTE',K8//'.CHME.SIGIN')
+        CALL DETRS2('LISTE_RELA',K8//'.LIRELA')
+        CALL DETRS2('L_TABLE',K8)
+
+C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CHAM_NO_S') THEN
 C     ------------------------------------
-        CNS = NOMSD
-        CALL JEDETR(CNS//'.CNSD')
-        CALL JEDETR(CNS//'.CNSK')
-        CALL JEDETR(CNS//'.CNSC')
-        CALL JEDETR(CNS//'.CNSL')
-        CALL JEDETR(CNS//'.CNSV')
+        K19 = NOMSD
+        CALL JEDETR(K19//'.CNSD')
+        CALL JEDETR(K19//'.CNSK')
+        CALL JEDETR(K19//'.CNSC')
+        CALL JEDETR(K19//'.CNSL')
+        CALL JEDETR(K19//'.CNSV')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CHAM_ELEM_S') THEN
 C     --------------------------------------
-        CES = NOMSD
-        CALL JEDETR(CES//'.CESD')
-        CALL JEDETR(CES//'.CESK')
-        CALL JEDETR(CES//'.CESC')
-        CALL JEDETR(CES//'.CESL')
-        CALL JEDETR(CES//'.CESV')
+        K19 = NOMSD
+        CALL JEDETR(K19//'.CESD')
+        CALL JEDETR(K19//'.CESK')
+        CALL JEDETR(K19//'.CESC')
+        CALL JEDETR(K19//'.CESL')
+        CALL JEDETR(K19//'.CESV')
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'LISTE_RELA') THEN
+C     --------------------------------------
+        K19 = NOMSD
+        CALL JEDETR(K19//'.RLLA')
+        CALL JEDETR(K19//'.RLBE')
+        CALL JEDETR(K19//'.RLSU')
+        CALL JEDETR(K19//'.RLTC')
+        CALL JEDETR(K19//'.RLNO')
+        CALL JEDETR(K19//'.RLCO')
+        CALL JEDETR(K19//'.RLNT')
+        CALL JEDETR(K19//'.RLPO')
+        CALL JEDETR(K19//'.RLNR')
+        CALL JEDETR(K19//'.RLTV')
+        CALL JEDETR(K19//'.RLDD')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'PARTITION') THEN
 C     -------------------------------------------
-        PARTIT = NOMSD
-        CALL JEDETR(PARTIT//'.PRTI')
-        CALL JEDETR(PARTIT//'.PRTK')
-        CALL JEDETR(PARTIT//'.NUPROC.MAILLE')
+        K8 = NOMSD
+        CALL JEDETR(K8//'.PRTI')
+        CALL JEDETR(K8//'.PRTK')
+        CALL JEDETR(K8//'.NUPROC.MAILLE')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CORRESP_2_MAILLA') THEN
@@ -124,7 +149,7 @@ C     -------------------------------------------
         CALL JEDETR(CORRES//'.PJNG_I2')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYPESD.EQ.'CRITERE') THEN
+      ELSE IF (TYP2SD.EQ.'CRITERE') THEN
 C     -----------------------------------
         K19  = NOMSD
         CALL JEDETR(K19//'.CRTI')
@@ -132,7 +157,7 @@ C     -----------------------------------
         CALL JEDETR(K19//'.CRDE')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYPESD.EQ.'FONCTION') THEN
+      ELSE IF (TYP2SD.EQ.'FONCTION') THEN
 C     -----------------------------------
         FNC = NOMSD
         CALL JEDETR(FNC//'.PARA')
@@ -214,13 +239,13 @@ C     ----------------------------------
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'SQUELETTE') THEN
 C     ----------------------------------
-        MAILLA = NOMSD
-        CALL DETRS2('MAILLAGE',MAILLA)
-        CALL JEDETR(MAILLA//'.CORRES')
-        CALL JEDETR(MAILLA//'         .NOMSST')
-        CALL JEDETR(MAILLA//'.ANGL_NAUT')
-        CALL JEDETR(MAILLA//'.INV.SKELETON')
-        CALL JEDETR(MAILLA//'.TRANS')
+        K8 = NOMSD
+        CALL DETRS2('MAILLAGE',K8)
+        CALL JEDETR(K8//'.CORRES')
+        CALL JEDETR(K8//'         .NOMSST')
+        CALL JEDETR(K8//'.ANGL_NAUT')
+        CALL JEDETR(K8//'.INV.SKELETON')
+        CALL JEDETR(K8//'.TRANS')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'L_TABLE') THEN
@@ -239,23 +264,34 @@ C     ----------------------------------
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'MAILLAGE') THEN
 C     ----------------------------------
-        MAILLA = NOMSD
-        CALL DETRS2('CHAM_NO',MAILLA//'.COORDO')
-        CALL DETRS2('L_TABLE',MAILLA)
-        CALL JEDETR(MAILLA//'           .TITR')
-        CALL JEDETR(MAILLA//'.CONNEX')
-        CALL JEDETR(MAILLA//'.DIME')
-        CALL JEDETR(MAILLA//'.GROUPEMA')
-        CALL JEDETR(MAILLA//'.GROUPENO')
-        CALL JEDETR(MAILLA//'.PTRNOMMAI')
-        CALL JEDETR(MAILLA//'.PTRNOMNOE')
-        CALL JEDETR(MAILLA//'.NOMACR')
-        CALL JEDETR(MAILLA//'.NOMMAI')
-        CALL JEDETR(MAILLA//'.NOMNOE')
-        CALL JEDETR(MAILLA//'.PARA_R')
-        CALL JEDETR(MAILLA//'.SUPMAIL')
-        CALL JEDETR(MAILLA//'.TYPL')
-        CALL JEDETR(MAILLA//'.TYPMAIL')
+        K8 = NOMSD
+        CALL DETRS2('CHAM_NO',K8//'.COORDO')
+        CALL DETRS2('L_TABLE',K8)
+        CALL JEDETR(K8//'           .TITR')
+        CALL JEDETR(K8//'.CONNEX')
+        CALL JEDETR(K8//'.DIME')
+        CALL JEDETR(K8//'.GROUPEMA')
+        CALL JEDETR(K8//'.GROUPENO')
+        CALL JEDETR(K8//'.NOMACR')
+        CALL JEDETR(K8//'.NOMMAI')
+        CALL JEDETR(K8//'.NOMNOE')
+        CALL JEDETR(K8//'.PARA_R')
+        CALL JEDETR(K8//'.SUPMAIL')
+        CALL JEDETR(K8//'.TYPL')
+        CALL JEDETR(K8//'.TYPMAIL')
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'MODELE') THEN
+C     ----------------------------------
+        K8 = NOMSD
+        CALL DETRS2('LIGREL',K8//'.MODELE')
+        CALL DETRS2('L_TABLE',K8)
+
+        CALL JEDETR(K8//'           .TITR')
+        CALL JEDETR(K8//'.NOEUD')
+        CALL JEDETR(K8//'.MAILLE')
+        CALL JEDETR(K8//'.PARTIT')
+
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'NUAGE') THEN
@@ -390,13 +426,13 @@ C FETI OR NOT ?
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CHAM_NO') THEN
 C     ----------------------------------
-        CNO = NOMSD
+        K19 = NOMSD
 
-        CALL JEDETR(CNO//'.DESC')
-        CALL JEDETR(CNO//'.REFE')
-        CALL JEDETR(CNO//'.VALE')
+        CALL JEDETR(K19//'.DESC')
+        CALL JEDETR(K19//'.REFE')
+        CALL JEDETR(K19//'.VALE')
 C FETI OR NOT ?
-        K24B = CNO//'.FETC'
+        K24B = K19//'.FETC'
         CALL JEEXIN(K24B,IRET)
         IF (IRET.GT.0) THEN
           LFETI = .TRUE.
@@ -421,49 +457,49 @@ C FETI OR NOT ?
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CARTE') THEN
 C     ----------------------------------
-        CARTE = NOMSD
-        CALL JEDETR(CARTE//'.DESC')
-        CALL JEDETR(CARTE//'.VALE')
-        CALL JEDETR(CARTE//'.NOMA')
-        CALL JEDETR(CARTE//'.NOLI')
-        CALL JEDETR(CARTE//'.LIMA')
-        CALL JEDETR(CARTE//'.PTMA')
-        CALL JEDETR(CARTE//'.PTMS')
-        CALL JEDETR(CARTE//'.NCMP')
-        CALL JEDETR(CARTE//'.VALV')
+        K19 = NOMSD
+        CALL JEDETR(K19//'.DESC')
+        CALL JEDETR(K19//'.VALE')
+        CALL JEDETR(K19//'.NOMA')
+        CALL JEDETR(K19//'.NOLI')
+        CALL JEDETR(K19//'.LIMA')
+        CALL JEDETR(K19//'.PTMA')
+        CALL JEDETR(K19//'.PTMS')
+        CALL JEDETR(K19//'.NCMP')
+        CALL JEDETR(K19//'.VALV')
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'PROF_CHNO') THEN
 C     ------------------------------------
-        CNO = NOMSD
-        CALL JEDETR(CNO//'.DEEQ')
-        CALL JEDETR(CNO//'.LILI')
-        CALL JEDETR(CNO//'.NUEQ')
-        CALL JEDETR(CNO//'.PRNO')
+        K19 = NOMSD
+        CALL JEDETR(K19//'.DEEQ')
+        CALL JEDETR(K19//'.LILI')
+        CALL JEDETR(K19//'.NUEQ')
+        CALL JEDETR(K19//'.PRNO')
 
       ELSE IF (TYP2SD.EQ.'NUME_EQUA') THEN
 C     ------------------------------------
-        CNO = NOMSD
-        CALL DETRS2('PROF_CHNO',CNO)
-        CALL JEDETR(CNO//'.NEQU')
-        CALL JEDETR(CNO//'.REFN')
-        CALL JEDETR(CNO//'.DELG')
+        K19 = NOMSD
+        CALL DETRS2('PROF_CHNO',K19)
+        CALL JEDETR(K19//'.NEQU')
+        CALL JEDETR(K19//'.REFN')
+        CALL JEDETR(K19//'.DELG')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CHAM_ELEM') THEN
 C     ------------------------------------
-        CEL = NOMSD
-        CALL JEDETR(CEL//'.CELD')
-        CALL JEDETR(CEL//'.CELK')
-        CALL JEDETR(CEL//'.CELV')
+        K19 = NOMSD
+        CALL JEDETR(K19//'.CELD')
+        CALL JEDETR(K19//'.CELK')
+        CALL JEDETR(K19//'.CELV')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'RESUELEM') THEN
 C     ------------------------------------
-        CEL = NOMSD
-        CALL JEDETR(CEL//'.DESC')
-        CALL JEDETR(CEL//'.NOLI')
-        CALL JEDETR(CEL//'.RESL')
-        CALL JEDETR(CEL//'.RSVI')
+        K19 = NOMSD
+        CALL JEDETR(K19//'.DESC')
+        CALL JEDETR(K19//'.NOLI')
+        CALL JEDETR(K19//'.RESL')
+        CALL JEDETR(K19//'.RSVI')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'MLTF') THEN
@@ -655,8 +691,8 @@ C     -----------------------------------
         CALL JEDETR(RESU//'.FCHA')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'LISTR8') THEN
-C     -----------------------------------
+      ELSE IF (TYP2SD.EQ.'LISTR8'.OR.TYP2SD.EQ.'LISTIS') THEN
+C     --------------------------------------------------------
         LISTE = NOMSD
         CALL JEDETR(LISTE//'.LPAS')
         CALL JEDETR(LISTE//'.NBPA')

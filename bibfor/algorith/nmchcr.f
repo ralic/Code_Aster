@@ -1,7 +1,7 @@
       FUNCTION NMCHCR (DP)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,21 +61,18 @@ C    DT             IN    R       VALEUR DE L'INCREMENT DE TEMPS DELTAT
 C    F              OUT   R       VALEUR DU CRITERE DE PLASTICITE
 C                                 POUR LA VALEUR DP
 C
-C -----  ARGUMENTS
-      REAL*8 NMCHCR,DP
-          INTEGER             NDIMSI,NBVAR,VISC,MEMO
-           REAL*8      EPSPP(6),MAT(16),PM,SIGEDV(6),ALFAM(6),DEUXMU
-           REAL*8    EPSPM(6), F,ALFA2M(6),DT,RM,RP,QM,Q,KSIM(6),KSI(6)
-C -----  VARIABLES LOCALES
-           INTEGER     I
-           REAL*8      R0,RINF,B,CINF,K,W,GAMMA0,AINF,C2INF ,GAMM20
-           REAL*8      ZERO,UN,DEUX,TROIS,C2P,GAMM2P,M2P
-           REAL*8      PP,CP,GAMMAP,MP,RPPMDP,SEQ,S(6),R8MIEM,GRJEPS
-           REAL*8      MUMEM,VALDEN,KVI,ETAM,Q0MEM,QMMEM,DR,DEPSP(6)
-           REAL*8      CRITME,DQ,DKSI(6),GQ
-           REAL*8      DEPPEQ,RPP,COEF,DENOM,SDENOM(6)
-      COMMON/FCHAB/MAT,PM,SIGEDV,EPSPM,ALFAM,ALFA2M,DEUXMU,RM,RP,QM,Q,
-     &             KSIM,KSI,DT,  NDIMSI,NBVAR,VISC,MEMO
+      INTEGER NDIMSI,NBVAR,VISC,MEMO,I,IDELTA
+      REAL*8 NMCHCR,DP,CRITME,DQ,DKSI(6),GQ
+      REAL*8 EPSPP(6),MAT(18),PM,SIGEDV(6),ALFAM(6),DEUXMU
+      REAL*8 EPSPM(6), F,ALFA2M(6),DT,RM,RP,QM,Q,KSIM(6),KSI(6)
+      REAL*8 R0,RINF,B,CINF,K,W,GAMMA0,AINF,C2INF ,GAMM20
+      REAL*8 ZERO,UN,DEUX,TROIS,C2P,GAMM2P,M2P,DELTA1,DELTA2,N1,N2
+      REAL*8 PP,CP,GAMMAP,MP,RPPMDP,SEQ,S(6),R8MIEM,GRJEPS,DDOT,NORM(6)
+      REAL*8 MUMEM,VALDEN,KVI,ETAM,Q0MEM,QMMEM,DR,DEPSP(6)
+      REAL*8 RPP,COEF,DENOM,SDENOM(6),BETA1,BETA2
+      COMMON/FCHAB/MAT,PM,SIGEDV,EPSPM,ALFAM,ALFA2M,DEUXMU,RM,RP,
+     &    QM,Q,KSIM,KSI,DT,N1,N2,DEPSP,
+     &    BETA1,BETA2,NDIMSI,NBVAR,VISC,MEMO,IDELTA
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -109,6 +106,15 @@ C     --------------------------------------
          QMMEM=MAT(15)
          MUMEM=MAT(16)
       ENDIF
+      IF (IDELTA.GT.0) THEN
+         DELTA1 = MAT(17)
+         DELTA2 = MAT(18)
+      ELSE
+         DELTA1=1.D0
+         DELTA2=1.D0
+      ENDIF
+      BETA1=0.D0
+      BETA2=0.D0
 C
 C --- CALCUL DES DIFFERENTS TERMES INTERVENANT DANS LE CRITERE
 C --- DE PLASTICITE :
@@ -116,52 +122,69 @@ C     =============
       PP     = PM + DP
       CP     = CINF * (UN+(K-UN)*EXP(-W*PP))
       GAMMAP = GAMMA0 * (AINF + (UN-AINF)*EXP(-B*PP))
-      MP     = CP/(UN+GAMMAP*DP)
+      MP     = CP/(UN+GAMMAP*DP*DELTA1)
       IF (NBVAR.EQ.2) THEN
          C2P = C2INF  * (UN+(K-UN)*EXP(-W*PP))
          GAMM2P = GAMM20 * (AINF + (UN-AINF)*EXP(-B*PP))
-         M2P     = C2P/(UN+GAMM2P*DP)
+         M2P     = C2P/(UN+GAMM2P*DP*DELTA2)
        ELSE
          C2P=ZERO
          GAMM2P=ZERO
          M2P=ZERO
       ENDIF
 
+C CALCUL DE LA NORMALE
+      SEQ = ZERO
+      DO 10 I = 1, NDIMSI
+        IF (NBVAR.EQ.1) THEN
+            S(I) = SIGEDV(I) -DEUX/TROIS*MP*ALFAM(I)
+        ELSEIF (NBVAR.EQ.2) THEN
+            S(I) = SIGEDV(I) -DEUX/TROIS*MP*ALFAM(I)
+     &                       -DEUX/TROIS*M2P*ALFA2M(I)
+        ENDIF
+        SEQ  = SEQ + S(I)*S(I)
+  10  CONTINUE
+      SEQ = SQRT(TROIS/DEUX*SEQ)
+      DO 20 I=1,NDIMSI
+         NORM(I)=SQRT(1.5D0)*S(I)/SEQ
+  20  CONTINUE
+
+C     R(P) SANS EFFET DE MEMOIRE
+      IF (MEMO.EQ.0) THEN
+         RPP  = RINF + (R0-RINF)*EXP(-B*PP)
+      ENDIF
+
+      CALL DCOPY(NDIMSI,NORM,1,DEPSP,1)
+      CALL DSCAL(NDIMSI,DP*SQRT(1.5D0),DEPSP,1)
+      
       IF (MEMO.EQ.1) THEN
 
 C --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
-         DEPPEQ=0.D0
-         DO 120 I = 1, NDIMSI
-            DEPSP(I)=SIGEDV(I)
-     &            - (MP*ALFAM(I)-M2P*ALFA2M(I))/1.5D0
-            DEPPEQ=DEPPEQ+DEPSP(I)*DEPSP(I)
-  120    CONTINUE
-         DEPPEQ=SQRT(DEPPEQ*1.5D0)
-         DO 121 I = 1, NDIMSI
-            DEPSP(I)=1.5D0*DP*DEPSP(I)/DEPPEQ
-            EPSPP(I)=EPSPM(I)+DEPSP(I)
-  121    CONTINUE
+
+         CALL DCOPY(NDIMSI,EPSPM,1,EPSPP,1)
+         CALL DAXPY(NDIMSI,1.D0,DEPSP,1,EPSPP,1)
+  
          GRJEPS=0.0D0
-         DO 17 I=1,NDIMSI
+         DO 122 I=1,NDIMSI
              GRJEPS=GRJEPS+(EPSPP(I)-KSIM(I))**2
-   17    CONTINUE
+  122    CONTINUE
          GRJEPS=SQRT(GRJEPS*1.5D0)
          CRITME=GRJEPS/1.5D0-QM
          IF (CRITME.LE.0.0D0) THEN
             DQ=0.0D0
-            DO 18 I=1,NDIMSI
+            DO 123 I=1,NDIMSI
                DKSI(I)=0.0D0
-   18       CONTINUE
+  123       CONTINUE
          ELSE
             DQ=ETAM*CRITME
             COEF=ETAM*QM+DQ
-            DO 19 I=1,NDIMSI
+            DO 124 I=1,NDIMSI
                IF (COEF.GT.R8MIEM()) THEN
                   DKSI(I)=(1.D0-ETAM)*DQ*(EPSPP(I)-KSIM(I))/COEF
                ELSE
                   DKSI(I)=0.D0
                ENDIF
-   19       CONTINUE
+  124       CONTINUE
 C            test partie positive de <n:n*>. Utilité ?
 C            NNE=0.D0
 C            DO I=1,NDIMSI
@@ -176,39 +199,48 @@ C             ENDDO
 C            ENDIF
          ENDIF
          Q=QM+DQ
-         DO 21 I=1,NDIMSI
+         DO 125 I=1,NDIMSI
             KSI(I)=KSIM(I)+DKSI(I)
-   21    CONTINUE
+  125    CONTINUE
          GQ=QMMEM+(Q0MEM-QMMEM)*EXP(-2.D0*MUMEM*Q)
          DR=B*(GQ-RM)*DP/(1.D0+B*DP)
          RP = RM + DR
          RPP = R0 + RP
-      ELSEIF (MEMO.EQ.0) THEN
-         RPP     = RINF + (R0-RINF)*EXP(-B*PP)
       ENDIF
 
-      SEQ = ZERO
+      
+      N1=1.D0
+      N2=1.D0
+      IF (IDELTA.GT.0) THEN
+C        CALCUL DES BETA - N1, N2 - EFFET NON RADIAL
+         BETA1=DDOT(NDIMSI,ALFAM,1,NORM,1)/SQRT(1.5D0)
+         BETA2=DDOT(NDIMSI,ALFA2M,1,NORM,1)/SQRT(1.5D0)
+         IF ((IDELTA.EQ.1).OR.(IDELTA.EQ.3)) THEN
+            N1=(1.D0+GAMMAP*DELTA1*DP-GAMMAP*(1.D0-DELTA1)*BETA1)
+            N1=N1/(1.D0+GAMMAP*DP)
+         ENDIF
+         IF ((IDELTA.EQ.2).OR.(IDELTA.EQ.3)) THEN
+            N2=(1.D0+GAMM2P*DELTA2*DP-GAMM2P*(1.D0-DELTA2)*BETA2)
+            N2=N2/(1.D0+GAMM2P*DP)
+         ENDIF
+      ENDIF
+
+  
 C POUR NORMER L'EQUATION
       DENOM = ZERO
-C
-      DO 10 I = 1, NDIMSI
-C
+      DO 30 I = 1, NDIMSI
         IF (NBVAR.EQ.1) THEN
-            S(I) = SIGEDV(I) -DEUX/TROIS*MP*ALFAM(I)
             SDENOM(I) = SIGEDV(I) -DEUX/TROIS*CINF*ALFAM(I)
         ELSEIF (NBVAR.EQ.2) THEN
-            S(I) = SIGEDV(I) -DEUX/TROIS*MP*ALFAM(I)
-     &                       -DEUX/TROIS*M2P*ALFA2M(I)
             SDENOM(I) = SIGEDV(I) -DEUX/TROIS*CINF*ALFAM(I)
      &                            -DEUX/TROIS*C2INF*ALFA2M(I)
         ENDIF
-        SEQ  = SEQ + S(I)*S(I)
         DENOM=DENOM+SDENOM(I)*SDENOM(I)
-C
-  10  CONTINUE
-      SEQ = SQRT(TROIS/DEUX*SEQ)
+  30  CONTINUE
       DENOM = SQRT(TROIS/DEUX*DENOM)
-      RPPMDP = RPP + (TROIS/DEUX*DEUXMU+MP+M2P)*DP
+      
+      RPPMDP = RPP + (TROIS/DEUX*DEUXMU+MP*N1+M2P*N2)*DP
+      
       IF (VISC.EQ.1) THEN
          RPPMDP = RPPMDP + KVI*((DP/DT)**(UN/VALDEN))
       ENDIF
@@ -219,4 +251,5 @@ C
       ENDIF
 
       NMCHCR=-F
+      
       END

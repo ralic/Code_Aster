@@ -1,9 +1,9 @@
         SUBROUTINE LECTIT(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NBG,
-     +  DIM,NBT,IER,IRTETI)
+     +  DIM,NBT,IRTETI)
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,6 @@ C       IN      IFL,ICL,IV,RV,CV,CNL =  VOIR LIRITM
 C               MCL             = MOTS CLES TYPE TITRE
 C               NBG             = NIVEAU DEBUG
 C               NBM             = NB DE MOTS CLES TYPE TITRE
-C       OUT     IER             = 0 > LECTURE CORRECTE
 C                               = 1 > ERREUR EN LECTURE
 C               DIM             = DIMENSION  OBJET TITRE(NB LIGNES)
 C               NBT             = NB TOTAL DE LIGNES LUES(ICI NBT=DIM)
@@ -45,7 +44,7 @@ C
         COMMON          /OPMAIL/        NOP
         CHARACTER*80    LIG
 C-----------------------------------------------------------------------
-      INTEGER ICL ,IDEB ,IER ,IFL ,IFM ,IRTET ,IRTETI
+      INTEGER ICL ,IDEB ,IFL ,IFM ,IRTET ,IRTETI
       INTEGER IUNIFI ,IV ,NBG ,NBM
 C-----------------------------------------------------------------------
         IRTETI = 0

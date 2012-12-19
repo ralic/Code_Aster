@@ -5,7 +5,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,22 +40,31 @@ C......................................................................
 C
 
 
-      INTEGER      I,J,IBID,NFE,IER
+      INTEGER      I,J,IBID,NFE,IB,IRET
       INTEGER      NDIM,DDLC,DDLS,NDDL
       INTEGER      NNO,NNOS,NNOM,NNOF
       INTEGER      IPOIDS,IVF,IDFDE,JGANO,DDLM
       INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24
       INTEGER      NPG,NPGF,NPTF,INTEG,SINGU
       INTEGER      NINTER,NFACE,CFACE(5,3)
-      INTEGER      LACT(8),NLACT
-      INTEGER      JINDCO,JDONCO,JLSN,JLST,IGEOM,JPTINT
+      INTEGER      LACT(8),NLACT,NCOMPV
+      INTEGER      JDONCO,JLSN,JLST,IGEOM,JPTINT
       INTEGER      JAINT,JCFACE,JLONCH,JBASEC,ICOPIL,ICTAU
       INTEGER      IDEPL0,IDEPL1,IDEPLM,IDDEPL,JCOHES,IMATE
-      INTEGER      NFH,NFISS,CONTAC
-      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC
+      INTEGER      NFH,NFISS,CONTAC,JTAB(2)
+      CHARACTER*8  ELREF,TYPMA,FPG,ELC,ELREFC
       CHARACTER*16 ENR
       REAL*8       RELA
-      LOGICAL      NOEUD
+      
+      REAL*8       COHES,COPILO(5),DTAU,FFC(8),FFP(27)
+      REAL*8       LAMB(3),MAT3BD(3,3),MAT6BD(6,6)
+      REAL*8       JAC,MUD(3),MUP(3),R8VIDE,R3BD(3),MA3BD(3,3)
+      REAL*8       ND(3),R8BID,R6BID(6),RB,R3BID(3)
+      REAL*8       RR,RBID,SUD(3),SUD2D(2),SUDD(3),SUP(3)
+      REAL*8       SUP2D(2),SUPP(3),TAU1(3),TAU2(3),VIM(9)
+      INTEGER      IFA,IPGF,ISSPG,MATE,NNOL,NVEC,PLA(27)
+      CHARACTER*8  JOB
+      LOGICAL      LBID
 C......................................................................
       CALL JEMARQ()
 C
@@ -73,12 +82,8 @@ C
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
 C
-C------------RECUPERATION DU TYPE DE CONTACT----------------------------
-C
-      NOEUD=.FALSE.
-      CALL TEATTR (NOMTE,'C','XLAG',LAG,IER)
-      CALL ASSERT(IER.EQ.0)
-      IF (LAG(1:5).EQ.'NOEUD') NOEUD=.TRUE.
+C --- ROUTINE SPECIFIQUE P2P1
+C.
       CALL ELELIN(CONTAC,ELREF,ELREFC,IBID,IBID)
 C
 C-----------------------------------------------------------------------
@@ -90,7 +95,6 @@ C
       CALL JEVECH('PDDEPLR','L',IDDEPL)
       CALL JEVECH('PDEPL0R','L',IDEPL0)
       CALL JEVECH('PDEPL1R','L',IDEPL1)
-      CALL JEVECH('PINDCOI','L',JINDCO)
       CALL JEVECH('PDONCO','L',JDONCO)
       CALL JEVECH('PLSN','L',JLSN)
       CALL JEVECH('PLST','L',JLST)
@@ -100,6 +104,7 @@ C
       CALL JEVECH('PLONCHA','L',JLONCH)
       CALL JEVECH('PBASECO','L',JBASEC)
       CALL JEVECH('PCDTAU' ,'L',ICTAU)
+      DTAU = ZR(ICTAU)
 
       CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)
       IF (ENR.EQ.'XHC') THEN
@@ -108,10 +113,13 @@ C
         RELA=0.0D0
       ENDIF
 
-      IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
+      IF(RELA.NE.0.D0) THEN
         CALL JEVECH('PMATERC','L',IMATE)
         CALL JEVECH('PCOHES' ,'L',JCOHES)
+          CALL TECACH('OOO','PCOHES',2,JTAB,IRET)
+          NCOMPV = JTAB(2)
       ENDIF
+      MATE = ZI(IMATE)
 C
 C RECUPERATIONS DES DONNEES SUR LA TOPOLOGIE DES FACETTES
 C
@@ -145,17 +153,124 @@ C RECUPERATION DU NOMBRE DE POINTS DE GAUSS NPGF
 
 C
 C LISTE DES LAMBDAS ACTIFS
-      IF(NOEUD) CALL XLACTI(TYPMA,NINTER,JAINT,LACT,NLACT)
+C
+      CALL XMULCO(CONTAC,DDLC,DDLM,JAINT,1,
+     &            IBID,IB,LACT,.FALSE.,LBID,NDIM,NFE,
+     &            NFH,1,NINTER,NLACT,NNO,
+     &            NNOL,NNOM,NNOS,PLA,TYPMA)
 C
 C PARAMETRES EN SORTIE
+C
       CALL JEVECH('PCOPILO','E',ICOPIL)
+C
+C BOUCLE SUR LE NOMBRE DE FACETTES DE CONTACT
+C
+      DO 100 IFA=1,NFACE
+C
+         DO 110 IPGF=1,NPGF 
+C         INDICE DE CE POINT DE GAUSS DANS INDCO
+          ISSPG = NPGF*(IFA-1)+IPGF
+          COHES = ZR(JCOHES+NCOMPV*(ISSPG-1))
+          CALL XMPREP(CFACE ,CONTAC,ELREF ,ELREFC,ELC   ,
+     &                FFC   ,FFP   ,FPG   ,JAINT ,JBASEC,
+     &                JPTINT,IFA   ,IGEOM ,IPGF  ,JAC   ,
+     &                JLST  ,LACT  ,ND    ,NDIM  ,NINTER,
+     &                NLACT ,NNO   ,NNOS  ,NPTF  ,IBID  ,
+     &                RR    ,SINGU ,TAU1  ,TAU2)
+C
+C           INITIALISATION
+C
+            CALL VECINI(2,0.D0,SUP2D)
+            CALL VECINI(2,0.D0,SUD2D)
+            CALL VECINI(3,0.D0,MUP)
+            CALL VECINI(3,0.D0,MUD)
+            CALL VECINI(9,0.D0,VIM)
+            CALL VECINI(5,0.D0,COPILO)
+C
+C CODE ERREUR A UNDEF. UNE VALEUR INDIQUE UN PLANTAGE
+C
+            COPILO(5) = R8VIDE()
+C            
+C           SAUT PILOTE AU POINT DE GAUSS : SU(ETA) = SUPP + ETA * SUDD
+C           COMPOSANTE PILOTEE DU SAUT SUDD
+C           SAUT A T- SAUTM
+C           COMPOSANTE FIXE DU SAUT A ITERATION N+1 SUPP
+C
+            NVEC = 3
+            CALL XMMSA4(NDIM,NNO,NNOS,FFP,NDDL,NVEC,
+     &                 ZR(IDEPLM),ZR(IDDEPL),ZR(IDEPL0),NFH,
+     &                 SINGU,RR,DDLS,DDLM,SUPP)
+            NVEC = 1
+            CALL XMMSA4(NDIM,NNO,NNOS,FFP,NDDL,NVEC,
+     &                 ZR(IDEPL1),RB,RBID,NFH,
+     &                 SINGU,RR,DDLS,DDLM,SUDD)
+C
+            IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
+               JOB='SAUT_LOC'
+               CALL XMMSA2(NDIM ,IPGF  ,MATE  ,SUDD ,ND    ,
+     &                     TAU1 ,TAU2  ,RB    ,JOB  ,R8BID ,
+     &                     RBID ,MAT6BD,R6BID ,MAT3BD,R3BID,
+     &                     R3BD,MA3BD,SUD)
+     
+               CALL XMMSA2(NDIM ,IPGF  ,MATE  ,SUPP ,ND    ,
+     &                     TAU1 ,TAU2  ,RB    ,JOB  ,R8BID ,
+     &                     RBID ,MAT6BD,R6BID ,MAT3BD,R3BID,
+     &                     R3BD,MA3BD,SUP)
+C           APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE 
+C           A LA LOI DE COMPORTEMENT                         
+               IF (NDIM.EQ.2)     THEN
+                  SUP2D(1)=SUP(1)
+                  SUP2D(2)=SUP(2)
+                  SUD2D(1)=SUD(1)
+                  SUD2D(2)=SUD(2)
+                  CALL PIPEBA(NDIM,MATE,SUP2D,SUD2D,COHES,
+     &                  DTAU,COPILO)
+               ELSEIF (NDIM.EQ.3) THEN
+                  CALL PIPEBA(NDIM,MATE,SUP,SUD,COHES,
+     &                  DTAU,COPILO)
+               ENDIF
+            ELSE IF(RELA.EQ.3.D0.OR.RELA.EQ.4.D0) THEN
+C
+C ON RECUPERE LAMBDA FIXE PUIS PILOTE
+C
+               VIM(4) = COHES
+               NVEC = 3
+               CALL XXLAG3(FFC  ,IDEPLM,IDDEPL,IDEPL0,LACT,
+     &                     NDIM ,NNOL  ,PLA   ,MUP   ,NVEC)
+               NVEC = 1
+               CALL XXLAG3(FFC  ,IDEPL1,IBID  ,IB   ,LACT  ,
+     &                     NDIM ,NNOL  ,PLA   ,MUD  ,NVEC)
+C
+C ON RECUPERE [U] FIXE PUIS PILOTE
+C
+               JOB='SAUT_LOC'
+               CALL XMMSA5(NDIM ,IPGF  ,MATE ,SUDD ,R3BID ,
+     &                     ND   ,TAU1 ,TAU2  ,RB   ,JOB  ,
+     &                     RELA ,R8BID,MAT6BD,R6BID ,MAT3BD,
+     &                     SUD  ,RBID)
+               CALL XMMSA5(NDIM ,IPGF  ,MATE ,SUPP ,R3BID ,
+     &                     ND   ,TAU1 ,TAU2  ,RB    ,JOB  ,
+     &                     RELA ,R8BID,MAT6BD,R6BID ,MAT3BD,
+     &                     SUP  ,RBID)
+C
+C APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE LOI DE COMPORTEMENT
+C
+               IF(RELA.EQ.3.D0) THEN
+                  CALL PIPETC(MATE,SUP,SUD,MUP,MUD,
+     &                        VIM,DTAU,COPILO)
+               ELSE IF(RELA.EQ.4.D0) THEN
+                  CALL PIPEOU(MATE,SUP,SUD,MUP,MUD,
+     &                        VIM,DTAU,COPILO)
 
-      CALL PIPEFX(NNO   ,NNOS  ,NDIM  ,NPGF ,NPTF ,
-     &            NFH   ,NDDL  ,DDLM  ,SINGU,DDLS ,
-     &            FPG   ,ELREF ,ELREFC,ELC  ,CFACE,
-     &            NFACE ,JPTINT,IGEOM ,JLSN ,JLST ,
-     &            JBASEC,ZR(JCOHES),ZI(IMATE),ZR(IDEPLM),ZR(IDDEPL),
-     &            ZR(IDEPL0),ZR(IDEPL1),ZR(ICTAU),ZI(JINDCO),ZR(ICOPIL))
+               ENDIF
+            ENDIF
+C
+            DO 120 I=1,5
+               ZR(ICOPIL-1+5*(ISSPG-1)+I) = COPILO(I)
+120         CONTINUE
+C
+110      CONTINUE
+100   CONTINUE
 C
       CALL JEDEMA()
       END

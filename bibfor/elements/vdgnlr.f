@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION , NOMTE
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,7 @@ C
 C
 C---- DECLARATIONS LOCALES
 C
-      INTEGER I  ,  J  
+      INTEGER I  ,  J
       INTEGER IN
       INTEGER      JD
       INTEGER II , JJ
@@ -70,7 +70,7 @@ C---- DECLARATIONS STANDARDS
 C
       INTEGER      IGEOM , ICONTP , IMATUN , IVECTU , IVARIP
       INTEGER      LZI , LZR , JCARA
-      INTEGER      NB1 , NB2  , NBPAR 
+      INTEGER      NB1 , NB2  , NBPAR
       INTEGER      IINSTM , IINSTP , JMATE
       REAL*8         DDOT
       REAL*8        VALPAR , EPSTHE
@@ -130,7 +130,7 @@ C
 C
       REAL * 8 THETA ( 3 ) , THETAN
       REAL * 8 TMOIN1 ( 3 , 3 )  , TM1T ( 3 , 3 )
-      REAL * 8 TERM   ( 3 ) 
+      REAL * 8 TERM   ( 3 )
 C
 C DEB
 C
@@ -898,7 +898,7 @@ C
 C
 C++++ MATRICE ELASTIQUE
 C
-      KNN = 0. D0
+      KNN = 0.D0
 C
       END IF
 C

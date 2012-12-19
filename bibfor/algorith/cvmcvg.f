@@ -4,7 +4,7 @@ C TOLE CRS_505 CRS_507
       IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,14 +51,14 @@ C       ----------------------------------------------------------------
 C       ----------------------------------------------------------------
         REAL*8          TOLIM, DPLIM
 C-----------------------------------------------------------------------
-      INTEGER I ,IRTETI 
+      INTEGER I ,IRTETI
 C-----------------------------------------------------------------------
         PARAMETER       ( DPLIM = 1.D-10 )
         PARAMETER       ( TOLIM = 1.D-3  )
 C
         INTEGER         NDT ,     NDI,   VALI
         INTEGER         ITSUP,    NDP
-        REAL*8          TER(100), ERR
+        REAL*8          TER(100), ERR(1)
         REAL*8          DER(10),  DP,    VALR
         CHARACTER*10    CDP,      CTOL,  CITER, CINTG
         CHARACTER*24 VALK(2)
@@ -87,7 +87,7 @@ C        CALL LCVERR ( DY, DDY, NR, 2, ERR  )
 C        PRINT *," --- ITERATION ",ITER," ERREUR 2= ",ERR
         CALL LCVERR ( DY, DDY, NR, 1, ERR  )
 C        PRINT *," --- ITERATION ",ITER," ERREUR 1= ",ERR
-        TER(ITER) = ERR
+        TER(ITER) = ERR(1)
 C
 C -     CAS DE DP NEGATIF
 C       -----------------
@@ -96,7 +96,7 @@ C
 C
 C -             SI -DP < 1.D-10 ET ERR < TOLER
 C
-                IF ( ABS(DP) .LT. DPLIM .AND. ERR .LT. TOLER ) THEN
+                IF ( ABS(DP) .LT. DPLIM .AND. ERR(1) .LT. TOLER ) THEN
                 CALL CODREE(ABS(DP),'E',CDP)
                 CALL U2MESK('A','ALGORITH2_54',1,CDP)
                 IRTETI = 0
@@ -180,7 +180,7 @@ C
 C
 C -             CONVERGENCE
 C
-                IF ( ERR .LE. TOLER ) THEN
+                IF ( ERR(1) .LE. TOLER ) THEN
                 IRTETI = 0
                 GOTO 9999
                 ELSE
@@ -198,7 +198,7 @@ C
 C
 C -             NON CONVERGENCE ET ITMAX ATTEINT
 C
-                IF ( ERR .GT. TOLER ) THEN
+                IF ( ERR(1) .GT. TOLER ) THEN
 C
 C -               ITER >= 6
 C
@@ -218,13 +218,13 @@ C
      &                   ( DER(1)      .LT. DER(2)      .AND.
      &                     DER(2)      .LT. DER(3)      .AND.
      &                     DER(3)      .LT. DER(4)      .AND.
-     &                     DER(4)      .LT. DER(5)          )  )  THEN
+     &                     DER(4)      .LT. DER(5)        ))  THEN
 C
                     ITSUP = ITSUP + 1
 C
 C -                     SI ERR < TOLIM ET DP < DPLIM , ON ACCEPTE
 C
-                        IF ( ERR .LT. TOLIM .AND. DP .LT. DPLIM ) THEN
+                        IF ( ERR(1).LT.TOLIM.AND.DP.LT.DPLIM ) THEN
                         IRTETI = 0
                         GOTO 9999
 C

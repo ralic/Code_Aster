@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185g.para = tps_job 310 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,16 +33,13 @@ h = 15.
 #                MAILLAGE : hexa_5_31_51.mgib
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
-MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG1,COPIE=_F());
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG2,COPIE=_F());
 
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                    MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL'));
-
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA='VOL'));
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -56,7 +53,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOL'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT'),
+                              MODELISATION='3D'),
                            _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D')));
@@ -76,7 +73,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='P1P1A',
+                         CONTACT='P1P1',
                          INFO=1);
 
 
@@ -86,7 +83,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       ZONE=(
                             _F(
                                FISS_MAIT    = FISS,
-                               ALGO_LAGR    = 'NON',
+                               ALGO_LAGR    = 'VERSION2',
                                INTEGRATION  = 'GAUSS',
                                CONTACT_INIT = 'OUI',
                              ),
@@ -170,16 +167,29 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                    INFO=1);
 
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
+
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
+                       PREF_GROUP_CO = 'NFISSU',
+                       INFO          = 2)
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),)
+
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        INFO          = 2)
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : RECUPERATION DES PRESSIONS DE CONTACT
 #------------------------------------------------------------------------
 
-# table des pressions de contact suivant y, en x=0
 TABLAG0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                               NOEUD=('NS14287','NS14290','NS14293','NS14296','NS14299',
-                                      'NS14302','NS14305','NS14308','NS14311','NS14314',
-                                      'NS14317','NS14320','NS14323','NS14326','NS14329','NS14332'),
-                               RESULTAT=UTOT1,
+                               GROUP_NO='NFISSU',
+                               RESULTAT=RES_XFEM,
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='LAGS_C',
@@ -187,21 +197,20 @@ TABLAG0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 
 # table des pressions de contact suivant y, en x=1
 TABLAG1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                               NOEUD=('NS13875','NS13880','NS13885','NS13890','NS13895',
-                                      'NS13900','NS13905','NS13910','NS13915','NS13920',
-                                      'NS13925','NS13930','NS13935','NS13940','NS13945','NS13950'),
-                               RESULTAT=UTOT1,
+                               GROUP_NO='NFISSU',
+                               RESULTAT=RES_XFEM,
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='LAGS_C',
                                OPERATION='EXTRACTION'));
+
 
 LAGREF=-PRES
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.040000000000000001,
-           VALE_CALC=-9.63048107E+05,
+           VALE_CALC=-9.7352670700939E+05,
            VALE_REFE=-1.E6,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MAX',
@@ -210,7 +219,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.040000000000000001,
-           VALE_CALC=-1.02337037E+06,
+           VALE_CALC=-1.0126241158818E+06,
            VALE_REFE=-1.E6,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
@@ -219,7 +228,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.040000000000000001,
-           VALE_CALC=-9.86686349E+05,
+           VALE_CALC=-9.7352670700939E+05,
            VALE_REFE=-1.E6,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MAX',
@@ -228,7 +237,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.040000000000000001,
-           VALE_CALC=-1.00270881E+06,
+           VALE_CALC=-1.0126241158818E+06,
            VALE_REFE=-1.E6,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
@@ -272,20 +281,20 @@ IMPR_TABLE(TABLE=SIF[nbc]);
 GREF=0.
 
 VAL_CALC = [
-             6.5241019696576E-05   ,
-            -4.439670979599E-05   ,
-            -3.9344248502364E-04  ,
-            -4.9563268150417E-04  ,
-            1.6342977098349E-04   ,
-            3.8704687745745E-05   ,
-            1.1418925300431E-04   ,
-            -2.8921856750787E-06  ,
-            9.7970603460285E-05   ,
-            -1.6696243949948E-05  ,
-            6.5135591230797E-05   ,
-            -4.4276058373726E-05  ,
-            9.4271249129453E-05   ,
-            -6.2407169922344E-05  ]
+             1.2270955559978E-05   ,
+            -7.9960858192849E-06   ,
+            -4.3191561880221E-04  ,
+            -4.4530615683399E-04  ,
+            1.056338190605E-04   ,
+            8.3015899541847E-05   ,
+            5.8731788275358E-05   ,
+            3.7479317563377E-05  ,
+            4.3391910050858E-05   ,
+            2.2563894813746E-05  ,
+            1.3201870563841E-05   ,
+            -7.0823804776241E-06  ,
+            1.7564911384259E-05   ,
+            -1.0936839589793E-05  ]
 
 for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
@@ -325,24 +334,5 @@ TEST_TABLE(CRITERE='ABSOLU',
            FILTRE=_F(NOM_PARA='PT_FOND',
                      VALE_I=1,),
            )
-
-# -------------------------------------------------------------
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
-# -------------------------------------------------------------
-
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                       MODELE        = MODELEK,
-                       INFO          = 2)
-
-MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                     AFFE=_F(TOUT='OUI',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='3D'))
-
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT1,
-
-                        INFO          = 2)
 
 FIN();

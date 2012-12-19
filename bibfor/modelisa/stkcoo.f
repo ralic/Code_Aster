@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,14 +46,13 @@ C
         CHARACTER*24    COO,    NNO, NOM
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IAD ,ICL ,IDEC ,IFL ,IFM ,IRET
-      INTEGER IRTET ,IRTETI ,IUNIFI ,IV ,NBM ,NUM ,NUMTCL
+      INTEGER I ,IAD ,ICL ,IDEC ,IFL ,IRET
+      INTEGER IRTET ,IRTETI ,IV ,NBM ,NUM ,NUMTCL
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IRTETI = 0
 C
-        IFM = IUNIFI('MESSAGE')
 C
 C - ITEM = MOTS CLES  TYPE COORDONNEES ?
 C
@@ -71,7 +70,7 @@ C
 C - LECTURE DE L'ENTETE
 C
         DEBLIG=0
-        CALL LIRTET(IFL,IFM,2,0,CNL,NOM,ICL,IV,RV,CV,DEBLIG)
+        CALL LIRTET(IFL,2,0,CNL,NOM,ICL,IV,RV,CV,DEBLIG)
         GO TO 9
 C
 C - LIRE ITEM SUIVANT =  NOM DU NOEUD ?

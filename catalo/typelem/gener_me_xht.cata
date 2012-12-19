@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,37 +65,6 @@ ENTETE__ ELEMENT__ MECA_XHT_TETRA10    MAILLE__ TETRA10
    ELREFE__  TE4       GAUSS__  XINT=FPG15   NOEU=NOEU
    ATTRIBUT__  XFEM=XHT
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8   9  10
-ENTETE__ ELEMENT__ MECA_XHT_HE20_X      MAILLE__ HEXA20
-   ELREFE__  HE8       GAUSS__  RIGI=FPG8    MASS=FPG8  NOEU=NOEU   XFEM=XFEM480 FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
-   ELREFE__  H20       GAUSS__  NOEU=NOEU
-   ELREFE__  TE4       GAUSS__  XINT=FPG15   NOEU=NOEU
-   ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6    FPG7=FPG7  XCON=FPG12 SIMP=SIMP
-   ATTRIBUT__  XFEM=XHT
-   ENS_NOEUD__  EN2     =     9  10  11  12  13  14  15  16  17  18  19  20
-   ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8
-ENTETE__ ELEMENT__ MECA_XHT_PE15_X      MAILLE__ PENTA15
-   ELREFE__  PE6       GAUSS__  RIGI=FPG6    MASS=FPG6  NOEU=NOEU   XFEM=XFEM240 FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
-   ELREFE__  P15       GAUSS__  NOEU=NOEU
-   ELREFE__  TE4       GAUSS__  XINT=FPG15   NOEU=NOEU
-   ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6    FPG7=FPG7  XCON=FPG12 SIMP=SIMP
-   ATTRIBUT__  XFEM=XHT
-   ENS_NOEUD__  EN2     =     7   8   9  10  11  12  13  14  15
-   ENS_NOEUD__  EN1     =     1   2   3   4   5   6
-ENTETE__ ELEMENT__ MECA_XHT_PY13_X      MAILLE__ PYRAM13
-   ELREFE__  PY5       GAUSS__  RIGI=FPG27   MASS=FPG27  NOEU=NOEU   XFEM=XFEM180 FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
-   ELREFE__  P13       GAUSS__  NOEU=NOEU
-   ELREFE__  TE4       GAUSS__  XINT=FPG15   NOEU=NOEU
-   ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6    FPG7=FPG7  XCON=FPG12 SIMP=SIMP
-   ATTRIBUT__  XFEM=XHT
-   ENS_NOEUD__  EN2     =     6   7   8   9  10  11  12  13
-   ENS_NOEUD__  EN1     =     1   2   3   4   5
-ENTETE__ ELEMENT__ MECA_XHT_TE10_X      MAILLE__ TETRA10
-   ELREFE__  TE4       GAUSS__  RIGI=FPG1    MASS=FPG1  NOEU=NOEU   XINT=FPG15 XFEM=XFEM90 FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
-   ELREFE__  T10       GAUSS__  NOEU=NOEU
-   ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6    FPG7=FPG7  XCON=FPG12 SIMP=SIMP
-   ATTRIBUT__  XFEM=XHT
-   ENS_NOEUD__  EN2     =     5   6   7   8   9  10
-   ENS_NOEUD__  EN1     =     1   2   3   4
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     ENORME   = NEUT_R   ELEM__         (X1       )
@@ -123,7 +92,6 @@ MODE_LOCAL__
                                  EN1   (DX      DY      DZ      H1X      H1Y      H1Z
                                         E1X      E1Y      E1Z      E2X      E2Y      E2Z
                                         E3X      E3Y      E3Z      E4X      E4Y      E4Z      )
-                                 EN2   (  )
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )

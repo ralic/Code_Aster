@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa8 Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -337,25 +337,15 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 """),
 
 93 : _(u"""
-
- évaluation impossible  d une fonction matériau - on déborde a gauche  pour la température
+ évaluation impossible  d'une fonction matériau - on déborde à gauche  pour la température
  TEMP : %(r1)f
 """),
 
 94 : _(u"""
-
- évaluation impossible  d une fonction matériau - on déborde a droite  pour la température
+ évaluation impossible  d'une fonction matériau - on déborde à droite  pour la température
  TEMP : %(r1)f
 """),
 
-98 : _(u"""
- il manque le paramètre  %(k1)s dans la table %(k2)s
- .sa présence est indispensable a la  création du champ nodal. %(k3)s
-"""),
 
-99 : _(u"""
- le paramètre  %(k1)s ne doit pas apparaître dans la  table %(k2)s
- pour la création d'un champ nodal. %(k3)s
-"""),
 
 }

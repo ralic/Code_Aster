@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
 # ssnp144b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -84,16 +84,12 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
             FORMULATION    = 'XFEM',
-            FROTTEMENT     = 'COULOMB',
+            FROTTEMENT     = 'SANS',
             ITER_CONT_MAXI=4,
-            ITER_FROT_MAXI=10,
             ZONE=(
                   _F(INTEGRATION='GAUSS',
                      ORDRE_INT=2,
-                     COULOMB=1.0,
-                     COEF_CONT=100.,
-                     COEF_FROT=1000.,
-                     CONTACT_INIT='NON',
+                     ALGO_CONT='CZM',
                      FISS_MAIT = FISS,
                      ALGO_LAGR='VERSION2',
                      RELATION='CZM_EXP_REG')));
@@ -279,6 +275,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI'),
                     SOLVEUR=_F(METHODE='MUMPS',
+                    NPREC=-1,
    ),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                     INFO=1);
@@ -308,6 +305,7 @@ for i in range(1,nbc) :
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI'),
                     SOLVEUR=_F(METHODE='MUMPS',
+                               NPREC=-1,
    ),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                     INFO=1);

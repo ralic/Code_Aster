@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209b.para = tps_job 500 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,12 +173,10 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                INTEGRATION    = 'NOEUD',
                                CONTACT_INIT   = 'OUI',
                                COULOMB        = 1.0,
-                               ALGO_CONT      = 'AVANCE',
-                               COEF_REGU_CONT = 100.,
-                               COEF_STAB_CONT = 100000.,
-                               ALGO_FROT      = 'AVANCE',
-                               COEF_REGU_FROT = 100.,
-                               COEF_STAB_FROT = 100000.,
+                               ALGO_CONT      = 'STANDARD',
+                               COEF_CONT      = 10000.,
+                               ALGO_FROT      = 'STANDARD',
+                               COEF_FROT      = 10000.,
                                ALGO_LAGR      = 'VERSION2',
                              ),
                          ),

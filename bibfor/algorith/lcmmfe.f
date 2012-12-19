@@ -9,11 +9,11 @@
       REAL*8 C,K,N,FTAU,CRIT,A,D
       REAL*8 GAMMAP,R8MIEM,PTIT,CISA2
       CHARACTER*16 NECOUL
-      INTEGER IRR,DECIRR,NUMS,DECAL
-      COMMON/POLYCR/IRR,DECIRR,NUMS,DECAL
+      INTEGER IRR,DECIRR,NUMS,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NUMS,DECAL,GDEF
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/09/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,6 @@ C      IF (NECOUL.EQ.'MONO_VISC1') THEN
           N=COEFT(IFL+1)
           K=COEFT(IFL+2)
           C=COEFT(IFL+3)
-
           FTAU=TAUS-C*ALPHAP
           IF (ABS(FTAU).LT.PTIT) THEN
              SGNS=1.D0

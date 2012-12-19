@@ -1,7 +1,7 @@
        SUBROUTINE TE0366(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,14 +50,14 @@ C
       REAL*8       MMAT(N,N),TAU1(3),TAU2(3),NORM(3)
       REAL*8       MPROJT(3,3)
       REAL*8       COORE(3),COORM(3),COORC(2)
-      REAL*8       FFE(8),FFM(8),FFC(8),DFFC(2,8)
+      REAL*8       FFE(20),FFM(20),FFC(8),DFFC(2,8)       
       REAL*8       JACOBI,HPG
-      CHARACTER*8  TYPMAE,TYPMAM,TYPMAC,TYPMAI,TYPMEC
+      CHARACTER*8  ELREES,ELREMA,ELRECO,TYPMAI,TYPMEC
       INTEGER      INADH,NVIT,LACT(8),NLACT,NINTER
       REAL*8       GEOPI(9),DVITET(3)
       REAL*8       COEFFF,COEFCR,COEFFR,COEFFP
       REAL*8       COEFCP,RESE(3),NRESE
-      REAL*8       RRE,RRM,R8BID
+      REAL*8       RRE,RRM,JEU,R8BID
       REAL*8       DDEPLE(3),DDEPLM(3),DLAGRC,DLAGRF(2)
       LOGICAL      LPENAF,LESCLX,LMAITX,LCONTX,LPENAC
       INTEGER      CONTAC,IBID,NPTE
@@ -70,7 +70,7 @@ C
 C
 C --- INFOS SUR LA MAILLE DE CONTACT
 C
-      CALL XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
+      CALL XMELET(NOMTE , TYPMAI , ELREES ,ELREMA ,ELRECO  ,
      &                  NDIM  , NDDL   , NNE   , NNM  ,
      &                  NNC   , DDLE  , DDLM  ,
      &                  CONTAC, NDEPLE , NSINGE, NSINGM,NFHE,NFHM)
@@ -87,6 +87,7 @@ C
       CALL VECINI(3  ,0.D0  ,DDEPLE)
       CALL VECINI(3  ,0.D0  ,DDEPLM)
       DLAGRC = 0.D0
+      JEU    = 0.D0
 C
 C --- RECUPERATION DES DONNEES DE LA CARTE CONTACT 'POINT' (VOIR MMCART)
 C
@@ -175,7 +176,7 @@ C
 C
 C --- FONCTIONS DE FORME
 C
-      CALL XTFORM(NDIM  ,TYPMAE,TYPMAM,TYPMAC, NDEPLE  ,
+      CALL XTFORM(NDIM  ,ELREES,ELREMA,ELRECO, NDEPLE  ,
      &            NNM(1)   ,NNC   ,COORE ,COORM ,COORC ,
      &            FFE   ,FFM   ,DFFC  )
 C
@@ -190,18 +191,17 @@ C
         CALL XMOFFC(LACT,NLACT,NNC,FFE,FFC)
       ELSEIF (CONTAC.EQ.3) THEN
         NNC   = NNE(2)
-        CALL ELELIN(CONTAC,TYPMAE,TYPMEC,IBID,IBID)
+        CALL ELELIN(CONTAC,ELREES,TYPMEC,IBID,IBID)
         CALL ELRFVF(TYPMEC,COORE,NNC,FFEC,IBID)
         CALL XLACTI(TYPMAI,NINTER,JPCAI,LACT,NLACT)
         CALL XMOFFC(LACT,NLACT,NNC,FFEC,FFC)
       ELSE
-        CALL ELRFVF(TYPMAC,COORC,NNC,FFC,NNC)
-        NLACT=0
+        CALL ASSERT(CONTAC.EQ.0)
       ENDIF
 C
 C --- JACOBIEN POUR LE POINT DE CONTACT
 C
-      CALL XMMJAC(TYPMAC,GEOPI ,DFFC  ,JACOBI)
+      CALL XMMJAC(ELRECO,GEOPI ,DFFC  ,JACOBI)
 C
 C --- CALCUL DE LA NORMALE ET DES MATRICES DE PROJECTION
 C
@@ -261,12 +261,11 @@ C
 C
 C --- CALCUL DE LA MATRICE F - CAS SANS FROTTEMENT
 C
-
             CALL XMMAB0(NDIM  ,NNC   ,NNE  ,NFAES ,
-     &                  JPCAI ,HPG   ,FFC   ,JACOBI,
+     &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCR,
      &                  LPENAC,TYPMAI,CFACE ,TAU1  ,
      &                  TAU2  ,DDLE,CONTAC,
-     &                  NFHE,LMULTI,ZI(JHEANO),MMAT  )
+     &                  NFHE,LMULTI,ZI(JHEANO),MMAT  )     
           ENDIF
         ELSE IF (INDCO.EQ.1) THEN
 C
@@ -289,7 +288,18 @@ C
      &                TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
      &                NRESE ,COEFFP,LPENAF,DVITET)
 C
-C --- CALCUL DU JEU INUTILE
+C --- CALCUL DU JEU
+C
+          JEU =0.D0
+          IF(NDIM.EQ.3.AND.CONTAC.EQ.3) THEN
+          CALL XMMJEU(NDIM  ,NNM,NNE,NDEPLE,
+     &                  NSINGE,NSINGM,FFE   ,FFM   ,NORM  ,
+     &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
+     &                  DDLE  ,DDLM  ,NFHE  ,NFHM  ,LMULTI,
+     &                  ZI(JHEAFA),JEU   )
+          ENDIF
+
+
 C
           IF (INADH.EQ.1) THEN
 C
@@ -297,14 +307,14 @@ C --- CALCUL DE B, BT, BU - CAS ADHERENT
 C
             CALL XMMAB1(NDIM  ,NNE,NDEPLE,NNC   ,NNM   ,
      &                  NFAES ,CFACE ,HPG ,FFC ,FFE ,
-     &                  FFM   ,JACOBI,JPCAI ,DLAGRC,
-     &                  DVITET   ,COEFFR,
+     &                  FFM   ,JACOBI,JPCAI ,DLAGRC,COEFCR,
+     &                  COEFCP,DVITET   ,COEFFR,DLAGRF,JEU,
      &                  COEFFP,COEFFF,LPENAF,TAU1  ,TAU2  ,
-     &                  RESE  ,MPROJT,TYPMAI,NSINGE,
+     &                  RESE  ,MPROJT,NORM  ,TYPMAI,NSINGE,
      &                  NSINGM,RRE   ,RRM   ,NVIT  ,CONTAC,
-     &                  DDLE,DDLM,NFHE,MMAT  )
-
-
+     &                  DDLE,DDLM,NFHE,MMAT  )     
+     
+     
 C
           ELSE IF (INADH.EQ.0) THEN
 C
@@ -312,12 +322,12 @@ C --- CALCUL DE B, BT, BU, F - CAS GLISSANT
 C
             CALL XMMAB2(NDIM  ,NNE,NDEPLE,NNC   ,NNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                  FFM   ,JACOBI,JPCAI, DLAGRC,
-     &                  COEFFR,
+     &                  FFM   ,JACOBI,JPCAI, DLAGRC,COEFCR,
+     &                  COEFCP,COEFFR,DLAGRF,JEU,
      &                  COEFFP,LPENAF,COEFFF,TAU1  ,TAU2  ,
-     &                  RESE  ,NRESE ,MPROJT,TYPMAI,
+     &                  RESE  ,NRESE ,MPROJT,NORM  ,TYPMAI,
      &                  NSINGE,NSINGM,RRE,RRM,NVIT,CONTAC,
-     &                  DDLE,DDLM,NFHE,MMAT  )
+     &                  DDLE,DDLM,NFHE,MMAT  )     
           END IF
         ELSE
           CALL ASSERT(.FALSE.)

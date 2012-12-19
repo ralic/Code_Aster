@@ -1,7 +1,7 @@
       SUBROUTINE ACGRDO(JVECTN, JVECTU, JVECTV, NBORDR,ORDINI, KWORK,
      &                  SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,JDTAUM,
      &                  JRESUN,NOMMET,NOMMAT,NOMCRI,VALA,COEFPA,
-     &                  NOMFOR,GRDVIE,FORVIE,POST,VALPAR, VRESU)
+     &                  NOMFOR,GRDVIE,FORVIE,VALPAR, VRESU)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
 
@@ -9,11 +9,10 @@
       INTEGER    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG, JDTAUM,JRESUN
       CHARACTER*16  NOMMET, NOMCRI, NOMFOR,FORVIE
       CHARACTER*8   NOMMAT,GRDVIE
-      LOGICAL    POST
       REAL*8     VRESU(24),VALPAR(22),VALA,COEFPA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +85,7 @@ C23456
       REAL*8     SIG(6),EPS(6), EPSE(6), EPSP(6),VEPSP(6)
       REAL*8     EPSL(6), EPSEL(6), EPSPL(6),EQEPSP, JACAUX(3)
       REAL*8     VSIG(6), SIGL(6), EQSIG, VSIGE, EQUI(17)
-      REAL*8     R8MAEM, PHYMIN, C1, C2, RBID(6), VEPSPE , LCIV2E
+      REAL*8     R8MAEM, PHYMIN,RBID(6), VEPSPE , LCIV2E
       REAL*8     NM1X, NM1Y, NM1Z, BR(6),VECPRO(3,3),VALPRO(3)
       REAL*8     EPRMAX, EPRMIN, SIGNM1, TOL, TOLDYN, AR(6)
       REAL*8     FXM, FYM, FZM, SINM1M, SOMDEF, R8PREM
@@ -253,7 +252,7 @@ C   EPSE : DEFORMATION ELASTIQUE
 C   EPSP : DEFORMATION PLASTIQUE
 
 
-         CALL TENEPS( JRWORK,ADR, C1, C2, SIG, EPS, EPSE, EPSP)
+         CALL TENEPS( JRWORK,ADR, SIG, EPS, EPSE, EPSP)
 
 C ---------------------------------------------------------------
 C ON CALCULE PHYDRM QU'UNE FOIS, LA PRESSION HYDROSTATIQUE
@@ -286,8 +285,8 @@ C POUR LE CRIETRE MANSON_COFF
             DO 11 L = J, ORDFIN
                ADRL = (L-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
-               CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         RBID,RBID, RBID, EPSPL)
+               CALL TENEPS(JRWORK,ADRL,
+     &                   RBID,RBID, RBID, EPSPL)
 
                DO 12 K = 1, 6
                   VEPSP(K)= EPSP(K) - EPSPL(K)
@@ -349,12 +348,12 @@ C CALCNORM = vect_F.vect_n
 
 
             ENDIF
-            
+
 
             IF (EPRMIN .GT. VALPRO(1)) THEN
                EPRMIN = VALPRO(1)
             ENDIF
-            
+
             IF (ETREMA .LT. (VALPRO(1)-VALPRO(3))) THEN
                ETREMA = (VALPRO(1)-VALPRO(3))
             ENDIF
@@ -376,8 +375,8 @@ C
             IF (J .LT. ORDFIN) THEN
                ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
-               CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         SIGL,EPSL, EPSEL, EPSPL)
+               CALL TENEPS(JRWORK,ADRL,
+     &                   SIGL,EPSL, EPSEL, EPSPL)
 
                CALL LCDEVI(SIGL, DSIGL)
                CALL LCDEVI(EPSEL, DEPSL)
@@ -405,8 +404,8 @@ C
             IF (J .LT. ORDFIN) THEN
                ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
-               CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         SIGL,EPSL, EPSEL, EPSPL)
+               CALL TENEPS(JRWORK,ADRL,
+     &                   SIGL,EPSL, EPSEL, EPSPL)
 
                SOMDEN = 0.D0
                DO 33 I = 1, 6
@@ -430,8 +429,8 @@ C POUR LE CRIETRE MANSON_COFF
             DO 21 L = J, ORDFIN
                ADRL = (L-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
-               CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         SIGL,RBID, RBID, RBID)
+               CALL TENEPS(JRWORK,ADRL,
+     &                   SIGL,RBID, RBID, RBID)
 
                DO 22 I = 1, 6
                   VSIG(I)= SIG(I) - SIGL(I)
@@ -513,8 +512,8 @@ C CALCULER CONTRAINTES PRINCIPALES MAX ET LA TRACTION DE CE PLAN
             DO 41 L = J, ORDFIN
                ADRL = (L-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
-               CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         RBID,EPSL, EPSEL, EPSPL)
+               CALL TENEPS(JRWORK,ADRL,
+     &                   RBID,EPSL, EPSEL, EPSPL)
 
                DO 42 I = 1, 6
                   VEPS(I)= EPS(I) - EPSL(I)
@@ -535,8 +534,8 @@ C CALCULER DEFORMATION PLASTIQUE ACCUMULEE
             IF (J .LT. ORDFIN) THEN
                ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
-               CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         SIGL,EPSL, EPSEL, EPSPL)
+               CALL TENEPS(JRWORK,ADRL,
+     &                   SIGL,EPSL, EPSEL, EPSPL)
 
                SOMDEF = 0.D0
                DO 43 K=1,6
@@ -564,7 +563,7 @@ C CALCULER LE RAYON DE SPHERE CIRCONCRITE
 
             ADR = (J-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
-            CALL TENEPS( JRWORK,ADR, C1, C2, SIG, EPS, EPSE, EPSP)
+            CALL TENEPS( JRWORK,ADR, SIG, EPS, EPSE, EPSP)
 
             DO 17 K= 1, 6
                SIGM((J-1)*6+ K) = SIG(K)
@@ -602,8 +601,8 @@ C
       IF (PLCICR) THEN
 
            CALL ACMATA ( JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
-     &                SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,
-     &                JDTAUM,JRESUN, NOMMET, NOMMAT, RESUPC)
+     &                    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,
+     &                    JDTAUM,JRESUN, NOMMET, RESUPC)
 
            DO 110 K = 1,2
               DTAUM(K) =    RESUPC(1+(K-1)*11)

@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF modelisa Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -347,9 +347,9 @@ cata_msg = {
  section "cercle", VARI_SECT "constant" la caractéristique "r" est obligatoire
 """),
 
-67 : _(u"""
- erreur de programmation
-"""),
+
+
+
 
 69 : _(u"""
  occurrence  %(k1)s de "barre" (maille  %(k2)s ) écrasement d un type de géométrie de section par un autre

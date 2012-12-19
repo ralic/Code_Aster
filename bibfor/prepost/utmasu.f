@@ -13,7 +13,7 @@ C RESPONSABLE PELLET J.PELLET
       LOGICAL COINCE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,7 +132,7 @@ C                 D'UNE MAILLE
                IM1 = ZI(JM3D+IMA-1)
                NNOE1 = ZI(P2+IM1) - ZI(P2-1+IM1)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPE)
-               CALL ORIEM0 (KDIM,TYPE,MAIL,COOR,ZI(P1+ZI(P2+IM1-1)-1),
+               CALL ORIEM0 (KDIM,TYPE,COOR,ZI(P1+ZI(P2+IM1-1)-1),
      &              NNOE1, ZI(P1+ZI(P2+IM2-1)-1), NNOEM, LISNOE, NNOE,
      &              IPOS, INDMAI )
                IF ( IPOS .EQ. 0)THEN

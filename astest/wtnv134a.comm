@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI
 # wtnv134a.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
@@ -187,6 +187,7 @@ U0M=STAT_NON_LINE(MODELE    = MODELE,
                  INCREMENT=_F(LIST_INST = TEMPS0,
                               INST_FIN  = 0.));
 
+
 SIG0=CREA_CHAMP(INFO=1,
                 TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
@@ -288,21 +289,26 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  ARCHIVAGE=_F(LIST_INST    = TEMPS1,),
                  INCREMENT=_F(LIST_INST    = DEFLIST,
                               INST_INIT    = 0.0,
-                              INST_FIN     = 55.00),
+                              INST_FIN     = 55.0),
                  RECH_LINEAIRE=_F(ITER_LINE_MAXI = 3),);
+
+
+U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U1)
+U1=CALC_CHAMP(reuse= U1, CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU',VARI_INTERNE='VARI_NOEU', RESULTAT= U1);
+
+
+#-------------------------------------------
+#    VALIDATION DE SIRO_ELEM AVEC KIT_HM :
+#--------------------------------------------
+CALC_CHAMP(reuse=U1,RESULTAT=U1,GROUP_MA='DEVANT',CONTRAINTE=('SIRO_ELEM'))
+#IMPR_RESU(RESU=_F(RESULTAT=U1, NOM_CHAM='SIRO_ELEM'))
+TEST_RESU(RESU=_F( RESULTAT=U1, NOM_CHAM='SIRO_ELEM',MAILLE='M5',NOM_CMP='SIG_NY', INST=4.0, VALE_CALC=3.18420319529844E+04, ))
+
 
 
 #-------------------------
 #    TEST_RESU AU POINT C
 #-------------------------
-U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U1)
-
-
-U1=CALC_CHAMP(reuse      = U1,
-
-           CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU',VARI_INTERNE='VARI_NOEU',
-           RESULTAT   = U1);
-
 
 TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIGM_NOEU',
                                 GROUP_NO = 'C',

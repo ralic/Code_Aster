@@ -13,7 +13,7 @@
       CHARACTER*24 NKCHA,NKCMP,MESMAI,NIVAL,NRVAL,NIORD
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -206,6 +206,7 @@ C                   SOIT NK LE NOMBRE DE CARACTERES DE LA TABLE
                     ENDIF
                     IF(TYCH.EQ.'ELNO')THEN
                        NK=NK+1
+                       NI=NI+1
                     ELSEIF(TYCH.EQ.'ELGA')THEN
                        NI=NI+2
                     ENDIF
@@ -248,6 +249,10 @@ C                   ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
                     IF(TYCH.EQ.'ELGA')THEN
                         ZI(JI+KK)=IPT
                         KK=KK+1
+                        ZI(JI+KK)=ISPT
+                        KK=KK+1
+                    ENDIF
+                    IF(TYCH.EQ.'ELNO')THEN
                         ZI(JI+KK)=ISPT
                         KK=KK+1
                     ENDIF
@@ -304,9 +309,9 @@ C                   TABLEAU DES NOMS DE PARAMETRES DE LA TABLE
                     ELSEIF(TYCH.EQ.'ELGA')THEN
                        ZK16(JPARAK+KK)='POINT'
                        KK=KK+1
-                       ZK16(JPARAK+KK)='SOUS_POINT'
-                       KK=KK+1
                     ENDIF
+                    ZK16(JPARAK+KK)='SOUS_POINT'
+                    KK=KK+1
                     ZK16(JPARAK+KK)='COOR_X'
                     KK=KK+1
                     IF(NDIM.GE.2)THEN

@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF modelisa9 Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,23 +20,36 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
-
 1 : _(u"""
-Erreur utilisateur :
-   Il manque le paramètre  %(k1)s dans la table %(k2)s.
-   Sa présence est indispensable à la  création d'un champ élémentaire. %(k3)s
+Erreur utilisateur dans la commande CREA_CHAMP / EXTR / TABLE :
+   Dans la table %(k1)s, pour créer un champ de type %(k2)s,
+   certains paramètres sont obligatoires et d'autres sont interdits :
+
+     NOEU :
+       obligatoire : NOEUD
+       interdit    : MAILLE, POINT, SOUS_POINT
+     ELGA :
+       obligatoire : MAILLE, POINT
+       interdit    : NOEUD
+     ELNO :
+       obligatoire : MAILLE, NOEUD (ou POINT)
+     ELEM :
+       obligatoire : MAILLE
+       interdit    : NOEUD, POINT
 """),
 
 2 : _(u"""
-Erreur utilisateur :
-   Le paramètre  %(k1)s de la table %(k2)s
-   est interdit pour la  création d'un  champ élémentaire constant. %(k3)s
-"""),
+ Erreur utilisateur dans la commande CREA_CHAMP / EXTR / TABLE  :
+   Les paramètres de la table doivent être :
+     - soit : MAILLE, NOEUD, POINT, SOUS_POINT
+     - soit le nom d'une composante de la grandeur.
 
-3 : _(u"""
-Erreur utilisateur :
-   Il manque le paramètre  %(k1)s dans la table %(k2)s.
-   Sa présence est indispensable à la  création d'un champ  %(k3)s
+   L'une (au moins) des valeurs de la liste : %(ktout)s
+   n'est pas le nom d'une composante de la grandeur.
+
+ Conseil :
+   Si la table fournie provient de la commande CREA_TABLE / RESU, il faut probablement
+   utiliser la commande CALC_TABLE + OPERATION='EXTR' pour éliminer les colonnes RESULTAT, NUME_ORDRE, ....
 """),
 
 
@@ -48,23 +61,21 @@ Erreur utilisateur :
 5 : _(u"""
  Erreur utilisateur :
    On cherche à créer un CHAM_ELEM / ELNO à partir d'une table (%(k1)s).
-   La maille  %(k2)s a %(i2)d noeuds mais dans la table, une ligne concerne le noeud numéro %(i1)d
+   La maille  %(k2)s a %(i2)d noeuds mais dans la table,
+   une ligne concerne un noeud "impossible" :
+   noeud de numéro local  %(i1)d  ou noeud de nom %(k3)s
 """),
 
 6 : _(u"""
 Erreur utilisateur :
    Plusieurs valeurs dans la table %(k1)s pour :
    Maille: %(k2)s
-   Point : %(i1)d
+   Point : %(i1)d  ou Noeud : %(k3)s
    Sous-point : %(i2)d
 """),
 
-7 : _(u"""
-Erreur utilisateur :
-   Plusieurs valeurs dans la table %(k1)s pour :
-   Maille: %(k2)s
-   Sous-point : %(i1)d
-"""),
+
+
 
 8 : _(u"""
 Erreur :
@@ -173,14 +184,9 @@ Conseil :
  erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d
 """),
 
-33 : _(u"""
-Erreur utilisateur (création d'un CHAM_ELEM à partir d'une table):
-   Le numéro du point ou du sous-point est en dehors des limites autorisées
-   Table : %(k1)s
-   Maille: %(k2)s
-   Point : %(i1)d
-   Sous-point : %(i2)d
-"""),
+
+
+
 
 35 : _(u"""
  il y a  %(i1)d  valeurs pour le mot clé  ANGL_NAUT il en faut  %(i2)d

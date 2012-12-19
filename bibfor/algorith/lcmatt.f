@@ -2,7 +2,7 @@
      1                    COEFEL,COEFPL,TYPMA, NDT,NDI,NR,NVI )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,11 +42,23 @@ C     ----------------------------------------------------------------
       CHARACTER*(*) FAMI,POUM
       CHARACTER*16  LOI,COMP(*)
       CHARACTER*8   MOD,TYPMA
+      CHARACTER*11    METING
+      COMMON /METI/   METING
 C     ----------------------------------------------------------------
 C
 C -   NB DE COMPOSANTES DES TENSEURS
 C
-      NDT = 6
+      IF (METING(1:11).EQ.'RUNGE_KUTTA') THEN
+         NDT = 6
+      ELSE IF (MOD(1:2).EQ.'3D') THEN
+         NDT = 6
+      ELSE IF (MOD(1:6).EQ.'D_PLAN'.OR.MOD(1:4).EQ.'AXIS') THEN
+         NDT = 4
+      ELSE IF (MOD(1:6).EQ.'C_PLAN') THEN
+         NDT = 4
+      ELSE
+         CALL ASSERT( .FALSE. )               
+      ENDIF
       NDI = 3
       TYPMA = 'COHERENT'
       LOI = COMP(1)
@@ -54,6 +66,8 @@ C
       IF  ( LOI(1:8) .EQ. 'HAYHURST' ) THEN
          CALL HAYMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,POUM,
      1                 COEFEL,COEFPL,NVI)
+      ELSEIF  ( LOI .EQ. 'NORTON' ) THEN
+         CALL MATNOR ( FAMI,KPG,KSP,IMAT,NMAT,POUM,COEFEL,COEFPL,NVI)
       ELSE
          CALL ASSERT( .FALSE. )      
       ENDIF

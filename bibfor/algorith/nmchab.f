@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,127 +23,78 @@ C RESPONSABLE PROIX J.M.PROIX
 C.======================================================================
       IMPLICIT NONE
 C
-C      NMCHAB   -- INTEGRATION DU MODELE DE COMPORTEMENT ELASTOPLASTIQUE
-C                  DE CHABOCHE A ECROUISSAGE CINEMATIQUE NON LINEAIRE
-C                  ET ISOTROPE ET EFFET DE MEMOIRE.
-C                  CE MODELE COMPORTE UNE OU DEUX VARIABLES CINEMATIQUES
-C                  CE MODELE EST INTEGRE PAR LA RESOLUTION D'UNE
-C                  SEULE EQUATION SCALAIRE NON LINEAIRE EN P.
+C     INTEGRATION LOCALE DES LOIS DE COMPORTEMENT DE CHABOCHE 
+C          RELATIONS : 'VMIS_CIN1_CHAB' 'VMIS_CIN2_CHAB'
+C          RELATIONS : 'VISC_CIN1_CHAB' 'VISC_CIN2_CHAB'
+C          RELATIONS : 'VMIS_CIN2_MEMO' 'VISC_CIN2_MEMO'
 C
-C   ARGUMENT        E/S  TYPE         ROLE
-C    NDIM           IN    I       DIMENSION DE L'ESPACE (2 OU 3)
-C    TYPMOD(*)      IN    K8      TYPMOD(1) EST LE TYPE DE MODELISATION
-C                                 3D, D_PLAN, AXIS OU C_PLAN
-C                                 TYPMOD(2) = 'INCO' POUR LES
-C                                 MATERIAUX INCOMPRESSIBLES
-C    IMATE          IN    I       ADRESSE DU MATERIAU CODE
-C    COMPOR(3)      IN    K16     COMPOR(1) EST LE NOM DE LA RELATION
-C                                 DE COMPORTEMENT
-C                                 COMPOR(2) EST LE NOMBRE DE VARIABLES
-C                                 INTERNES PAR POINT D'INTEGRATION
-C                                 COMPOR(3) EST UN K16 DESIGNANT
-C                                 UNE HYPOTHESE SUR LES DEFORMATIONS
-C    CRIT(6)        IN    R       TABLEAU DE CRITERES LOCAUX
-C                                 DE CONVERGENCE :
-C                                 CRIT(1) : NOMBRE D'ITERATIONS
-C                                 MAXIMUM A LA CONVERGENCE
-C                                 CRIT(2) : TYPE DE JACOBIEN
-C                                 A L'INSTANT T+DT
-C                                  SI CRIT(2) = 0 ON A UNE FORMULATION
-C                                  EN VITESSE ET LA MATRICE EST
-C                                  SYMETRIQUE
-C                                  SI CRIT(2) = 1 ON A UNE FORMULATION
-C                                  INCREMENTALE ET LA MATRICE EST
-C                                  NON SYMETRIQUE
-C                                 CRIT(3) EST LA VALEUR DE TOLERANCE
-C                                 DE CONVERGENCE
-C                                 CRIT(4) EST LE NOMBRE D'INCREMENTS
-C                                 POUR LE REDECOUPAGE LOCAL DU PAS DE
-C                                 TEMPS
-C                                  SI CRIT(4) = -1, 0 OU 1 , IL N'Y A
-C                                  PAS DE REDECOUPAGE
-C                                 CRIT(5) EST LE TYPE D'INTEGRATION
-C                                 LOCALE POUR LA LOI DE COMPORTEMENT
-C                                   SI CRIT(5) = 0 , L'INTEGRATION
-C                                   EST EULER IMPLICITE
-C                                   SI CRIT(5) = 1 , ON FAIT UNE
-C    INSTAM         IN    R       INSTANT DU CALCUL PRECEDENT
-C    INSTAP         IN    R       INSTANT DU CALCUL
-C    DEPS(6)        IN    R       INCREMENT DE DEFORMATIONS, I.E.
-C                                 IL S'AGIT DE B.DELTA_U
-C    SIGM(6)        IN    R       CONTRAINTES A L'INSTANT DU CALCUL
-C                                 PRECEDENT
-C    VIM(2+6*NBVAR) IN    R       VARIABLES INTERNES A L'INSTANT DU
-C                                 CALCUL PRECEDENT
-C                                 VIM(1) = DEFORMATION PLASTIQUE
-C                                          CUMULEE
-C                                 VIM(2) = 1 SI LE POINT D'INTEGRATION
-C                                            COURANT KVIIT 'PLASTIQUE'
-C                                        = 0 SINON
-C                                 VIM(3->8)  VARIABLES INTERNES ALPHA-
-C    OPTION         IN   K16      OPTION DE CALCUL :
-C                                   SI = 'RIGI_MECA_TANG'
-C                                     CETTE OPTION SERT LORS DE LA
-C                                     PREDICTION, LES VARIABLES
-C                                     INTERNES NE SONT PAS CALCULEES
-C                                   SI = 'FULL_MECA'
-C                                     ON REACTUALISE LA MATRICE TANGENTE
-C                                     A CHAQUE ITERATION ET ON MET A
-C                                     JOUR LES CONTRAINTES ET LES
-C                                     VARIABLES INTERNES
-C                                   SI = 'RAPH_MECA'
-C                                     ON NE REACTUALISE LA MATRICE PAS
-C                                     TANGENTE, ON MET A JOUR LES
-C                                     CONTRAINTES ET LES VARIABLES
-C    SIGP(6)        OUT   R       CONTRAINTES A L'INSTANT ACTUEL
-C    VIP(2+6*NBVAR) OUT   R       VARIABLES INTERNES A L'INSTANT ACTUEL
-C                                 VIP(1) = DEFORMATION PLASTIQUE
-C                                          CUMULEE
-C                                 VIP(2) = 1 SI LE POINT D'INTEGRATION
-C                                            COURANT EST 'PLASTIQUE'
-C                                        = 0 SINON
-C                                 VIP(3->8)  VARIABLES INTERNES ALPHA+
-C    DSIDEP(6,6)    OUT   R       MATRICE DE COMPORTEMENT TANGENTE
+C     ARGUMENTS :
+C       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C       IN      KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
+C       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
+C       IN      TYPMOD  TYPE DE MODELISATION
+C               IMATE   ADRESSE DU MATERIAU CODE
+C               COMPOR  COMPORTEMENT DE L ELEMENT
+C                       COMPOR(1) = RELATION DE COMPORTEMENT
+C                       COMPOR(2) = NB DE VARIABLES INTERNES
+C                       COMPOR(3) = TYPE DE DEFORMATION
+C               CRIT    CRITERES  LOCAUX, EN PARTICULIER
+C                       CRIT(1) = NOMBRE D ITERATIONS MAXI A CONVERGENCE
+C                                 (ITER_INTE_MAXI == ITECREL)
+C                       CRIT(3) = VALEUR DE LA TOLERANCE DE CONVERGENCE
+C                                 (RESI_INTE_RELA == RESCREL)
+C               INSTAM  INSTANT T
+C               INSTAP  INSTANT T+DT
+C               DEPS    INCREMENT DE DEFORMATION TOTALE
+C               SIGM    CONTRAINTE A T
+C               VIM     VARIABLES INTERNES A T    + INDICATEUR ETAT T
+C    ATTENTION  VIM     VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
+C               OPTION     OPTION DE CALCUL A FAIRE
+C                             'RIGI_MECA_TANG'> DSIDEP(T)
+C                             'FULL_MECA'     > DSIDEP(T+DT) , SIG(T+DT)
+C                             'RAPH_MECA'     > SIG(T+DT)
+C       OUT     SIGP    CONTRAINTE A T+DT
+C               VIP     VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
+C               DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
+C               IRET    CODE RETOUR DE  L'INTEGRATION DE LA LDC
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ABSENCE DE CONVERGENCE 
 C
 C               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 C               -----------------------------------------------------
 C
-C    IRET           OUT   I    CODE RETOUR DE  L'INTEGRATION DE LA LDC
-C                              IRET=0 => PAS DE PROBLEME
-C                              IRET=1 => ABSENCE DE CONVERGENCE DANS
-C                                        LORS DE L'INTEGRATION DE LA
-C                                        LOI VISC_CINX_CHAB
-C
       INTEGER KPG,KSP,NDIM,IMATE,NBVAR,IRET
-      REAL*8 DEPSTH(6),PM,C2INF,GAMM20,M2P,DENOMI
+      REAL*8 DEPSTH(6),PM,C2INF,GAMM20
       REAL*8 PLAST,DEPSMO,SIGMMO,E,NU,TROISK,DEPS(6),DEUXMU
-      REAL*8 RP,RPM,SIELEQ,SEUIL,DP,CM,AINF,CP,RPVM,RPVP
+      REAL*8 RPM,SIELEQ,SEUIL,DP,CM,AINF,CP,RPVM,RPVP
       REAL*8 COEF,SIGEDV(6),KRON(6),DEPSDV(6),EPSPM(6)
       REAL*8 SIGMDV(6),SIGPDV(6),EM,NUM,KSIP(6),QP
       REAL*8 TROIKM,DEUMUM,SIGMP(6),SIGEL(6),PP,EPSPP(6)
-      REAL*8 UN,RAC2,C2P,RADI,MP,GAMMA0,GAMMAP
-      REAL*8 R0,RINF,B,CINF,K,W,MAT(16),C2M,GAMM2P
-      REAL*8 DEPSP(6),ALFAM(6),ALFA(6),DALFA(6)
-      REAL*8 SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
+      REAL*8 UN,RAC2,C2P,RADI,GAMMA0,GAMMAP,DELTA1,DELTA2
+      REAL*8 R0,RINF,B,CINF,K,W,MAT(18),C2M,GAMM2P,UNRAC2
+      REAL*8 DEPSP(6),ALFAM(6),ALFA(6),DALFA(6),N1,N2
+      REAL*8 SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6),TRACE
       REAL*8 ALFA2M(6),ALFA2(6),DALFA2(6),MATEL(4),XM(6),XP(6)
-      REAL*8 DT,KVI,VALDEN,KSIM(6),QM,CRIT(10),INSTAM,INSTAP
+      REAL*8 DT,KSIM(6),QM,CRIT(10),INSTAM,INSTAP,BETA1,BETA2
       CHARACTER*(*) FAMI
       CHARACTER*8   TYPMOD(*)
       CHARACTER*16  COMPOR(3),OPTION
       COMMON/FCHAB/MAT,PM,SIGEDV,EPSPM,ALFAM,ALFA2M,DEUXMU,RPVM,RPVP,
-     &             QM,QP,KSIM,KSIP,DT,  NDIMSI,NBVAR,VISC,MEMO
-      INTEGER NDIMSI,I,NITER,VISC,MEMO
+     &    QM,QP,KSIM,KSIP,DT,N1,N2,DEPSP,
+     &    BETA1,BETA2,NDIMSI,NBVAR,VISC,MEMO,IDELTA
+      INTEGER NDIMSI,I,NITER,VISC,MEMO,IDELTA
       DATA    KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C=======================================================================
 C
       IRET=0
       CALL NMCHAM(FAMI,KPG,KSP,IMATE,COMPOR,
-     &            MATEL,MAT,NBVAR,MEMO,VISC,COEF)
-
+     &            MATEL,MAT,NBVAR,MEMO,VISC,IDELTA,COEF)
+     
 C     NBVARI=2+6*NBVAR+MEMO*14
       UN     = 1.0D0
       RAC2   = SQRT(2.D0)
+      UNRAC2 = 1.D0/SQRT(2.D0)
       EM     = MATEL(1)
       NUM    = MATEL(2)
       DEUMUM = EM/(UN+NUM)
@@ -162,19 +113,22 @@ C     NBVARI=2+6*NBVAR+MEMO*14
       AINF   = MAT(8)
       C2INF  = MAT(9)
       GAMM20 = MAT(10)
-      IF (VISC.EQ.1) THEN
-         VALDEN= MAT(11)
-         KVI   = MAT(12)
+      IF (IDELTA.GT.0.D0) THEN
+         DELTA1 = MAT(17)
+         DELTA2 = MAT(18)
       ELSE
-         VALDEN=UN
-         KVI=0.D0
+         DELTA1=1.D0
+         DELTA2=1.D0
       ENDIF
-C
+      N1=1.D0
+      N2=1.D0
+      
 C --- INITIALISATIONS :
 C     ===============
-C
+
       NDIMSI = 2*NDIM
       DP     = 0.D0
+      CALL R8INIR(6,0.D0,DEPSP,1)
       SEUIL  = 0.D0
       DT = INSTAP - INSTAM
       PM    = VIM(1)
@@ -192,88 +146,44 @@ C
          CALL R8INIR(6,0.D0,EPSPP,1)
          CALL DCOPY(NDIMSI,VIM(17),1,KSIM,1)
          CALL DCOPY(NDIMSI,VIM(23),1,EPSPM,1)
+         QP=QM
+         CALL DCOPY(NDIMSI,KSIM,1,KSIP,1)
+         RPVP  = RPVM
       ENDIF
       CM     = CINF  * (UN + (K-UN)*EXP(-W*PM))
       C2M    = C2INF * (UN + (K-UN)*EXP(-W*PM))
 C
-C --- MISE AU FORMAT DES CONTRAINTES DE RAPPEL :
 C     ========================================
-      DO 10 I=1,3
-        ALFAM(I) = VIM(I+2)
-        IF (NBVAR.EQ.2) THEN
-          ALFA2M(I) = VIM(I+8)
-        ELSE
-          ALFA2M(I)=0.D0
-        ENDIF
-  10  CONTINUE
-      DO 20 I=4,NDIMSI
-        ALFAM(I) = VIM(I+2)*RAC2
-        IF (NBVAR.EQ.2) THEN
-           ALFA2M(I) = VIM(I+8)*RAC2
-        ELSE
-          ALFA2M(I)=0.D0
-        ENDIF
-  20  CONTINUE
+      CALL DCOPY(NDIMSI,VIM(3),1,ALFAM,1)
+      CALL DSCAL(NDIMSI-3,RAC2,ALFAM(4),1)
+      IF (NBVAR.EQ.2) THEN
+         CALL DCOPY(NDIMSI,VIM(9),1,ALFA2M,1)
+         CALL DSCAL(NDIMSI-3,RAC2,ALFA2M(4),1)
+      ELSE
+         CALL R8INIR(6,0.D0,ALFA2M,1)
+      ENDIF
 C
 C --- CALCUL DE DEPSMO ET DEPSDV :
 C     ==========================
       DEPSMO = 0.D0
-C
-C ---   DEPSTH = B*DELTA _U - DELTA_EPS_THERMIQUE :
-C       -----------------------------------------
-      DO 30 I=1,3
-        DEPSTH(I)   = DEPS(I) - COEF
-        DEPSMO      = DEPSMO  + DEPSTH(I)
- 30   CONTINUE
-C
-      DEPSMO = DEPSMO/3.D0
-C
-      DO 40 I=4,NDIMSI
-        DEPSTH(I) = DEPS(I)
- 40   CONTINUE
-C
-C ---   DEPSDV = DEV DEPS = DEV (B*DELTA _U - DELTA_EPS_THERMIQUE) :
-C       ----------------------------------------------------------
-      DO 50 I=1,NDIMSI
-        DEPSDV(I)   = DEPSTH(I) - DEPSMO * KRON(I)
- 50   CONTINUE
-C
-C --- CALCUL DE SIGMP :
-C     ===============
-      SIGMMO = 0.D0
-C
-      DO 60 I =1,3
-        SIGMMO = SIGMMO + SIGM(I)
- 60   CONTINUE
-C
-      SIGMMO = SIGMMO/3.D0
-C
-C ---   SIGMP = (MU/MU-)*DEV SIGMA- + (K/K-)*1/3*TR(SIG-) :
+      CALL DCOPY(NDIMSI,DEPS,1,DEPSTH,1)
+      CALL DAXPY(3,-COEF,KRON,1,DEPSTH,1)
+      DEPSMO=TRACE(3,DEPSTH)/3.D0
+      CALL DCOPY(NDIMSI,DEPSTH,1,DEPSDV,1)
+      CALL DAXPY(3,-DEPSMO,KRON,1,DEPSDV,1)
+
 C       -------------------------------------------------
+      SIGMMO=TRACE(3,SIGM)/3.D0
       DO 70 I=1,NDIMSI
         SIGMP(I)= DEUXMU/DEUMUM*(SIGM(I)-SIGMMO*KRON(I)) +
      &            TROISK/TROIKM*SIGMMO*KRON(I)
 70    CONTINUE
+C     SIGMMO A PU CHANGER A CAUSE DE TROISK/TROIKM
+      SIGMMO=TRACE(3,SIGMP)/3.D0
 
-C
-C --- CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ ET SEUIL :
+C --- CALCUL DU SEUIL :
 C     ================================================
-      SIGMMO = 0.D0
-C
-      DO 80 I =1,3
-        SIGMMO = SIGMMO + SIGMP(I)
- 80   CONTINUE
-C
-      SIGMMO = SIGMMO/3.D0
       SIELEQ = 0.D0
-C
-C ---   SIGMDV = DEV ((MU/MU-)*DEV SIGMA- + (K/K-)*1/3*TR(SIG-))
-C ---   SIGEL  = DEV ((MU/MU-)*DEV SIGMA- + (K/K-)*1/3*TR(SIG-))
-C ---          + 2*MU*DEV DELTA_EPS - 2/3*C*ALFA-
-C ---   DEV SE = SIGEL
-C ---   SIELEQ = J2(DEV SE) = SE_EQ
-C ---   SEUIL   = SE_EQ - RP :
-C       --------------------
       DO 90 I = 1,NDIMSI
         SIGMDV(I) = SIGMP(I)- SIGMMO*KRON(I)
         SIGEDV(I) = SIGMDV(I) + DEUXMU * DEPSDV(I)
@@ -282,17 +192,8 @@ C       --------------------
  90   CONTINUE
       SIELEQ     = SQRT(1.5D0*SIELEQ)
       SEUIL      = SIELEQ - RPM
-C     INITIALISATIONS
-      DP    = 0.D0
-      IF (MEMO.EQ.1) THEN
-         QP=QM
-         DO 104 I = 1,NDIMSI
-            KSIP(I)=KSIM(I)
- 104     CONTINUE
-         RPVP  = RPVM
-      ENDIF
-C
-C --- CALCUL DE SIGP,SIGPDV,VIP,DP,RP :
+
+C --- CALCUL DE SIGP,VIP
 C     ===============================
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &     OPTION(1:9) .EQ. 'FULL_MECA'     ) THEN
@@ -303,7 +204,6 @@ C       ------------
             PLAST = 0.D0
             DP    = 0.D0
          ELSE
-C
 C ---       DETERMINATION DE DP SOLUTION D'UNE EQUATION NON LINEAIRE
             CALL NMCHDP(CRIT,SEUIL,DP,IRET,NITER)
             IF (IRET.GT.0) GOTO 9999
@@ -311,59 +211,31 @@ C ---       DETERMINATION DE DP SOLUTION D'UNE EQUATION NON LINEAIRE
          ENDIF
 C
          PP     = PM + DP
-         IF (MEMO.EQ.0) THEN
-             RP     = RINF + (R0-RINF)*EXP(-B*PP)
-         ELSEIF (MEMO.EQ.1) THEN
-             RP    = RPVP + R0
-         ENDIF
-         CP     = CINF * (UN + (K-UN)*EXP(-W*PP))
-         C2P    = C2INF * (UN + (K-UN)*EXP(-W*PP))
          GAMMAP = GAMMA0 * (AINF + (UN-AINF)*EXP(-B*PP))
          GAMM2P = GAMM20 * (AINF + (UN-AINF)*EXP(-B*PP))
-         MP     = CP/(UN+GAMMAP*DP)
-         M2P     = C2P/(UN+GAMM2P*DP)
-         DENOMI=RP+(1.5D0*DEUXMU+MP+M2P)*DP
-         IF (VISC.EQ.1) THEN
-            DENOMI = DENOMI + KVI*((DP/DT)**(UN/VALDEN))
+         
+         IF (MEMO.EQ.1) THEN
+            CALL DCOPY(NDIMSI,EPSPM,1,EPSPP,1)
+            CALL DAXPY(NDIMSI,1.D0,DEPSP,1,EPSPP,1)
          ENDIF
-C
-C ---   REACTUALISATION DE SIGEL A CAUSE DE CP :
-C       --------------------------------------
-         DO 100 I = 1,NDIMSI
-           SIGEL(I)  = SIGEDV(I)-CP*ALFAM(I)/1.5D0-C2P*ALFA2M(I)/1.5D0
- 100     CONTINUE
-C
-C ---   DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES :
-C       --------------------------------------------------------
-         DO 120 I = 1, NDIMSI
-           DEPSP(I) =  UN/DENOMI*(  1.5D0*DP*SIGEDV(I)
-     &                   - MP*DP*ALFAM(I)- M2P*DP*ALFA2M(I))
-            IF (MEMO.EQ.1) THEN
-               EPSPP(I)=EPSPM(I)+DEPSP(I)
-            ENDIF
-  120    CONTINUE
-C
+
          DO 110 I = 1, NDIMSI
            IF (CINF.NE.0.D0) THEN
-              DALFA(I) = (DEPSP(I)-GAMMAP*DP*ALFAM(I))/(UN+GAMMAP*DP)
+              DALFA(I) = (N1*DEPSP(I)-GAMMAP*DELTA1*DP*ALFAM(I))
+              DALFA(I) = DALFA(I)/(UN+GAMMAP*DELTA1*DP)
            ELSE
               DALFA(I)=0.D0
            ENDIF
            IF (NBVAR.EQ.2) THEN
               IF (C2INF.NE.0.D0) THEN
-             DALFA2(I) = (DEPSP(I)-GAMM2P*DP*ALFA2M(I))/(UN+GAMM2P*DP)
+                 DALFA2(I) = (N2*DEPSP(I)-GAMM2P*DELTA2*DP*ALFA2M(I))
+                 DALFA2(I) = DALFA2(I) /(UN+GAMM2P*DELTA2*DP)
               ELSE
                  DALFA2(I)=0.D0
               ENDIF
            ENDIF
   110    CONTINUE
 C
-C ---     CALCUL DES CONTRAINTES SIGP A L'INSTANT ACTUEL :
-C ---     SIGEDV =   DEV ((MU/MU-)*DEV SIGMA-  + 2*MU*DEV DELTA_EPS
-C ---     SIGPDV =       (MU/MU-)*DEV SIGMA-  +
-C ---                    2*MU*(DEV DELTA_EPS - DELTA_EPS_PLAST)
-C ---     SIGP =  SIGPDV + 1/3*TR(SIG- + 3K*DELTA_EPS) :
-C         --------------------------------------------
          DO 130 I = 1,NDIMSI
             ALFA(I)   = ALFAM(I)  + DALFA(I)
             IF (NBVAR.EQ.2) THEN
@@ -374,53 +246,40 @@ C         --------------------------------------------
  130     CONTINUE
 C
       ENDIF
-C
-C ---- CALCUL DE LA MATRICE DE COMPORTEMENT TANGENTE COHERENTE
-C ---  DSIDEP(6,6) :
-C      ===========
+
+C ---- CALCUL DE LA MATRICE DE COMPORTEMENT TANGENTE COHERENTE DSIDEP
       IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG'.OR.
      &     OPTION(1:9)  .EQ. 'FULL_MECA'         ) THEN
-         CALL NMCHAT(MATEL,MAT,NBVAR,MEMO,VISC,PLAST,SIGMDV,DEPSDV,
-     &               PM,DP,NDIMSI,DT,RPVP,QP,VIM,DSIDEP)
+      CALL NMCHAT(MATEL,MAT,NBVAR,MEMO,VISC,PLAST,SIGMDV,DEPSDV,PM,DP,
+     &            NDIMSI,DT,RPVP,QP,VIM,IDELTA,N1,N2,BETA1,BETA2,DSIDEP)
 C
       ENDIF
 
-C --- MISE AU FORMAT DES CONTRAINTES DE RAPPEL :
 C     ========================================
       IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA')     THEN
          VIP(1)=PP
          VIP(2)=NITER
-         DO 280 I = 1, 3
-           VIP(I+2) = ALFA(I)
-  280    CONTINUE
-         DO 290 I=4,NDIMSI
-            VIP(I+2) = ALFA(I)/RAC2
-  290    CONTINUE
+         CALL DCOPY(NDIMSI,ALFA,1,VIP(3),1)
+         CALL DSCAL(NDIMSI-3,UNRAC2,VIP(6),1)
          IF (NBVAR.EQ.2) THEN
-            DO 281 I = 1, 3
-               VIP(I+8) = ALFA2(I)
-  281       CONTINUE
-            DO 291 I=4,NDIMSI
-               VIP(I+8) = ALFA2(I)/RAC2
-  291       CONTINUE
+            CALL DCOPY(NDIMSI,ALFA2,1,VIP(9),1)
+            CALL DSCAL(NDIMSI-3,UNRAC2,VIP(12),1)
          ENDIF
          IF (MEMO.EQ.1) THEN
             VIP(15)=RPVP
             VIP(16)=QP
-            DO 102 I=1,NDIMSI
-               VIP(16+I)=KSIP(I)
-  102       CONTINUE
-            DO 105 I=1,NDIMSI
-               VIP(22+I)=EPSPP(I)
-  105       CONTINUE
+            CALL DCOPY(NDIMSI,KSIP,1,VIP(17),1)
+            CALL DCOPY(NDIMSI,EPSPP,1,VIP(23),1)
          ENDIF
       ENDIF
 
 C     Critere de radialite
       IF (OPTION(1:9).NE.'RIGI_MECA') THEN
          IF (CRIT(10).GT.0.D0) THEN
-C           CALCUL DE X1, X2
+C           CALCUL DE X1, X2         
+            CP  =CINF * (UN + (K-UN)*EXP(-W*PP))
+            C2P =C2INF *(UN + (K-UN)*EXP(-W*PP))
             CALL DCOPY(NDIMSI,ALFAM,1,XM,1)
             CALL DCOPY(NDIMSI,ALFA, 1,XP,1)
             CALL DSCAL(NDIMSI,CM/1.5D0,XM,1)

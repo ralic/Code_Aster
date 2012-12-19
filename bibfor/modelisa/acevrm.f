@@ -1,6 +1,6 @@
-      SUBROUTINE ACEVRM(NBOCC,NOMA,NOEMAX,NOEMAF,IER)
+      SUBROUTINE ACEVRM(NBOCC,NOMA,NOEMAX,NOEMAF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
       INCLUDE 'jeveux.h'
 
       CHARACTER*32 JEXNOM
-      INTEGER      NBOCC,NOEMAX,IER
+      INTEGER      NBOCC,NOEMAX
       CHARACTER*8  NOMA
 C ----------------------------------------------------------------------
 C     AFFE_CARA_ELEM

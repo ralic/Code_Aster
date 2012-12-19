@@ -1,6 +1,6 @@
-      SUBROUTINE JEPRAT ( UNIT , NOMLU , CIDATR , PARM , MESS )
+      SUBROUTINE JEPRAT ( UNIT , NOMLU , CIDATR , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT NONE
       INCLUDE 'jeveux_private.h'
       INTEGER             UNIT
-      CHARACTER *(*)     NOMLU , CIDATR , PARM , MESS
+      CHARACTER *(*)     NOMLU , CIDATR , MESS
 C ----------------------------------------------------------------------
 C ROUTINE D'IMPRESSION DES OBJETS SYSTEME OU DES OBJETS ATTRIBUT DE
 C COLLECTION
@@ -29,20 +29,19 @@ C
 C IN  UNIT  : UNITE LOGIQUE D'IMPRESSION
 C IN  NOMLU : NOM DE L'OBJET A IMPRIMER OU NOM DE CLASSE
 C IN  CIDATR: NOM DE L'ATTRIBUT
-C IN  PARM  : PARAMETRE D'IMPRESSION (NON IMPLEMENTE)
 C IN  MESS  : MESSAGE UTILISATEUR
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C     -----------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADMEX ,IADMI ,IBATR ,IDATR ,IDECI ,IPGCEX ,IRET2 
-      INTEGER IXATR ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD 
-      INTEGER JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG 
-      INTEGER JRNOM ,JTYPE ,K ,N 
+      INTEGER IADMEX ,IADMI ,IBATR ,IDATR ,IDECI ,IPGCEX ,IRET2
+      INTEGER IXATR ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD
+      INTEGER JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG
+      INTEGER JRNOM ,JTYPE ,K ,N
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -105,7 +104,7 @@ C
               LTYPI = LTYP ( JLTYP(ICLAS) + IDATR )
               LONOI = LONO ( JLONO(ICLAS) + IDATR ) * LTYPI
               CALL JJIMPO ( UNIT,IADMI, IDECI, 0, GENRI, TYPEI, LTYPI,
-     &                      LONOI , MESS , PARM)
+     &                      LONOI , MESS)
               GO TO 10
            ENDIF
  1      CONTINUE
@@ -142,7 +141,7 @@ C
           ENDIF
           IDECI = 0
           CALL JJIMPO(UNIT,IADMI, IDECI, 0, GENRI, TYPEI, LTYPI, LONOI,
-     &                MESS , PARM)
+     &                MESS)
           IF ( IADMEX .EQ. 0 ) THEN
             CALL JJLIDE ( 'JEIMPO' , NOML32(1:24)//NOM , 1 )
             IPGC = IPGCEX
@@ -174,7 +173,7 @@ C
              LTYPI = LTYP( JLTYP(ICLACO) + IXATR )
              LONOI = LONO( JLONO(ICLACO) + IXATR ) * LTYPI
              CALL JJIMPO(UNIT,IBATR,IDECI,0,GENRI,TYPEI,LTYPI,LONOI,
-     &                   MESS , PARM)
+     &                   MESS)
           ENDIF
         ENDIF
         IF ( LCOL ) THEN

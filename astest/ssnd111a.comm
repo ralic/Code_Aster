@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION EFFET DE MEMOIRE VISC_CIN2_MEMO
 # ssnd111a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -257,18 +257,18 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.8111399999999999E-3,
 # test de VISC_CIN2_MEMO
 
 # reference= VISCOCHAB explicite = SIDOLO
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.00179820874103,
-                        VALE_REFE=1.8111399999999999E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.798124E-3,
+                        VALE_REFE=1.81114E-3,
                         VALE_PARA=40.5,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=8.9999999999999993E-3,
+                        PRECISION=9.E-3,
                         NOM_PARA='INST',
                         FONCTION=qvm,),
               )
 
 # reference= VISCOCHAB explicite = SIDOLO
-TEST_FONCTION(VALEUR=_F(VALE_CALC=224.034341177,
-                        VALE_REFE=224.30987999999999,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=224.0339686,
+                        VALE_REFE=224.30988,
                         VALE_PARA=39.75,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=2.E-3,

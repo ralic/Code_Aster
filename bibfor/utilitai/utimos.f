@@ -1,6 +1,6 @@
       SUBROUTINE UTIMOS(UNIT,OBIN,LATTR,LCONT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C DEB-------------------------------------------------------------------
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IRET 
+      INTEGER IRET
 C-----------------------------------------------------------------------
       OB1 = OBIN
 C
@@ -55,7 +55,7 @@ C
       END IF
 C
       IF (LCONT) THEN
-         CALL JEIMPO(UNIT,OB1,' ',' ')
+         CALL JEIMPO(UNIT,OB1,' ')
       END IF
 C
  9999 CONTINUE

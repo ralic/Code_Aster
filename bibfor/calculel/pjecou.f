@@ -1,6 +1,6 @@
       SUBROUTINE PJECOU(MA1, MA2, NOMGMA, NOMGNO, CORRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C     ==================================
 
 C     CALCUL DES FONCTIONS DE FORMES DES NOEUDS DU MAILLAGE 2
 C     =======================================================
-      FLAG = 0.D0
+      FLAG = 0
       DO 10 INOG2 = 1, NBNOG2
 
         INO2 = ZI(IALIN2-1+INOG2)

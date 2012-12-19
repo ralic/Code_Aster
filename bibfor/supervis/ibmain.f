@@ -3,7 +3,7 @@
       LOGICAL             LLDBG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
       INTEGER         IFV
       COMMON /CXSU00/ LDBG , IFV
 C     ------------------------------------------------------------------
-      EXTERNAL LXDELI
 C     ------------------------------------------------------------------
       INTEGER     ISSUIV, IRET
 C
@@ -40,7 +39,7 @@ C     --- BUFFERISATION EN CAS DE SUIVI INTERACTIF
       ENDIF
 C
 C     --- INITIALISATION DE L'ANALYSEUR LEXICAL ET DE L'UNITE DE LECTURE
-      CALL LXINIT( LXDELI )
+      CALL LXINIT()
 C
 C     --- INITIALISATION DE L"INTERCEPTION DE CERTAINS SIGNAUX
       CALL INISIG()

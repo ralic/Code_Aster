@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF POSTRELE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,8 +156,8 @@ C-----------------------------------------------------------------------
 10    CONTINUE
       IF ( .NOT. FINI ) THEN
          MAILLE = TETE
-         CALL I3IDKS(EPSI,MAILLE,DESC,DESCTM,SGT,ATRV,BTRV,
-     +               CONEX(VLC(MAILLE)),COORDO,NBPT,ZI(ALSTPT),FIND)
+         CALL I3IDKS(EPSI,MAILLE,DESC,DESCTM,SGT,
+     +               CONEX(VLC(MAILLE)),COORDO,NBPT,ZI(ALSTPT))
          IF ( ABS(NBPT) .GT. 0 ) THEN
             CALL I3TRIP(ZI(ALSTPT),ABS(NBPT))
             J1     = ZI(ZI(ALSTPT+6-1)+1-1)

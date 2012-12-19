@@ -1,11 +1,10 @@
       SUBROUTINE       CONARE(TYPMA,AR,NBAR)
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
       INTEGER          AR(12,3),NBAR
       CHARACTER*8      TYPMA
-
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2012   AUTEUR MARTIN A.MARTIN 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +25,7 @@ C                       RENVOIE LA MATRICE DE CONNECTIVITÉ DES
 C                       ARETES D'UNE MAILLE DE TYPE TYPMA
 C
 C    ENTREE :
-C              TYPMA : TYPE DE LA MAILLE
+C              TYPMA : TYPE DE LA MAILLE (TYPE_MAILLE)
 C
 C    SORTIE :
 C              AR   : MATRICE DE CONNECTIVITÉ DES ARETES
@@ -35,9 +34,7 @@ C......................................................................
 C
       INTEGER       I,J
 C......................................................................
-
-      CALL JEMARQ()
-
+C
       DO 100 I=1,12
         DO 110 J=1,3
           AR(I,J)=0
@@ -71,7 +68,7 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA8
         AR(11,2)=7
         AR(12,1)=4
         AR(12,2)=8
-      ELSEIF (TYPMA.EQ.'HEXA20') THEN   
+      ELSEIF (TYPMA.EQ.'HEXA20') THEN
         NBAR=12
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA20
         AR(1,1)=1
@@ -108,8 +105,8 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA20
         AR(11,2)=7
         AR(11,3)=15
         AR(12,1)=4
-        AR(12,2)=8 
-        AR(12,3)=16    
+        AR(12,2)=8
+        AR(12,3)=16
       ELSEIF (TYPMA.EQ.'PENTA6') THEN
         NBAR=9
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
@@ -206,7 +203,7 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
         AR(7,3)=12
         AR(8,1)=4
         AR(8,2)=5
-        AR(8,3)=13    
+        AR(8,3)=13
       ELSEIF (TYPMA.EQ.'TETRA4') THEN
         NBAR=6
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
@@ -254,7 +251,7 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD4
         AR(3,2)=4
         AR(4,1)=4
         AR(4,2)=1
-      ELSEIF (TYPMA.EQ.'QUAD8' .OR. TYPMA.EQ.'QU8') THEN
+      ELSEIF (TYPMA.EQ.'QUAD8') THEN
         NBAR=4
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD8
         AR(1,1)=1
@@ -278,7 +275,7 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA3
         AR(2,2)=3
         AR(3,1)=3
         AR(3,2)=1
-      ELSEIF (TYPMA.EQ.'TRIA6' .OR. TYPMA.EQ.'TR6') THEN
+      ELSEIF (TYPMA.EQ.'TRIA6') THEN
         NBAR=3
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA6
         AR(1,1)=1
@@ -295,7 +292,7 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA6
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE SEG2
         AR(1,1)=1
         AR(1,2)=2
-      ELSEIF (TYPMA.EQ.'SEG3' .OR. TYPMA.EQ.'SE3') THEN
+      ELSEIF (TYPMA.EQ.'SEG3') THEN
         NBAR=1
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE SEG3
         AR(1,1)=1
@@ -306,6 +303,5 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE SEG3
       ELSE
         CALL U2MESK('F','ALGORITH2_23',1,TYPMA)
       ENDIF
-
-      CALL JEDEMA()
+C
       END

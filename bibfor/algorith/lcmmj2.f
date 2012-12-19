@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,10 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J.M.PROIX
 C TOLE CRS_1404
-C       MONOCRISTAL : DERIVEES DES TERMES UTILES POUR LE CALCUL  
+C       MONOCRISTAL : DERIVEES DES TERMES UTILES POUR LE CALCUL
 C                    DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY
 C                    cf. R5.03.11, COMPO DD_KR
-C       IN  
+C       IN
 C           TAUR   :  SCISSION REDUITE SYSTEME IR
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           CPMONO :  NOM DES COMPORTEMENTS
@@ -56,20 +56,20 @@ C       ----------------------------------------------------------------
       REAL*8 ALPHAM,DALPHA,ALPHAP,CRIT,DGAMMA,SGNS,GAMMAP,PETITH,SGNR
       CHARACTER*16 NECOUL
       CHARACTER*24 CPMONO(5*NMAT+1)
-      INTEGER IRR,DECIRR,NBSYST,DECAL
-      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
 C     ----------------------------------------------------------------
 
       IRET=0
-      
+
       DGSDTS=0.D0
       DKSDTS=0.D0
       DGRDBS=0.D0
       DKSDBR=0.D0
-      
+
       NUVR=NSFA+IR
       NUVI=NSFV+3*(IR-1)
-      NECOUL=CPMONO(5*(IFA-1)+3)
+      NECOUL=CPMONO(5*(IFA-1)+3)(1:16)
       ALPHAM=VIND(NUVI+1)
       GAMMAP=VIND(NUVI+2)
       ALPHAP=ALPHAM+DY(NUVR)

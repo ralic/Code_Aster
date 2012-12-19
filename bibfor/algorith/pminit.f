@@ -3,10 +3,10 @@
      &                  IROTA ,EPSM  ,SIGM  ,VIM   ,VIP   ,VR,
      &                  DEFIMP,COEF  ,INDIMP,FONIMP,CIMPO ,
      &                  KEL   ,SDDISC,PARCRI,PRED  ,MATREL,IMPTGT,
-     &                  OPTION, NOMVI, NBVITA, NBVRCM)
+     &                  OPTION, NOMVI, NBVITA, NBVRCM,SDERRO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,10 +72,11 @@ C
       CHARACTER*8  FONEPS(6),FONSIG(6),TYPPAR(*),VALEF,NOMVI(*)
       CHARACTER*16 OPTION,NOMPAR(*),PREDIC,MATRIC,FORTAB
       CHARACTER*19 LISINS,SDDISC,SOLVEU
+      CHARACTER*24 SDERRO
       REAL*8       INSTAM,ANG(7),SIGM(6),EPSM(9),VALE,RAC2
       REAL*8       VIM(NBVARI),VIP(NBVARI),VR(*),DIINST
       REAL*8       SIGI,REP(7),R8DGRD,KEL(6,6),CIMPO(6,12)
-      REAL*8       ANGD(3),ANG1,PGL(3,3),XYZGAU(3),COEF,INSTIN
+      REAL*8       ANGD(3),ANG1(1),PGL(3,3),XYZGAU(3),COEF,INSTIN
       REAL*8       PARCRI(*),PARCON(9),ANGEUL(3),ID(9),DSIDEP(36)
       REAL*8       SIGINI(6),EPSINI(6),R8VIDE
       INTEGER      IARG
@@ -218,16 +219,16 @@ C     ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
       CALL R8INIR(NBVARI,0.D0, VIP, 1)
       IROTA=0
 C     ANGLE DE ROTATION
-      CALL GETVR8(' ','ANGLE',1,IARG,1,ANG1,N1)
-      IF ((N1.NE.0).AND.(ANG1.NE.0.D0)) THEN
+      CALL GETVR8(' ','ANGLE',1,IARG,1,ANG1(1),N1)
+      IF ((N1.NE.0).AND.(ANG1(1).NE.0.D0)) THEN
 C        VERIFS
          IROTA=1
          CALL R8INIR(9,0.D0, PGL, 1)
-         CALL DSCAL(1,R8DGRD(),ANG1,1)
-         PGL(1,1)=COS(ANG1)
-         PGL(2,2)=COS(ANG1)
-         PGL(1,2)=SIN(ANG1)
-         PGL(2,1)=-SIN(ANG1)
+         CALL DSCAL(1,R8DGRD(),ANG1(1),1)
+         PGL(1,1)=COS(ANG1(1))
+         PGL(2,2)=COS(ANG1(1))
+         PGL(1,2)=SIN(ANG1(1))
+         PGL(2,1)=-SIN(ANG1(1))
          PGL(3,3)=1.D0
 C VOIR GENERALISATION A 3 ANGLES AVEC CALL MATROT
       ENDIF
@@ -408,6 +409,13 @@ C     ----------------------------------------
       CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LISINS,N1)
       INSTIN = R8VIDE()
       CALL NMCRLI(INSTIN,LISINS,SDDISC)
+C     ----------------------------------------
+C     CREATION SD ERREUR
+C     ----------------------------------------
+
+      CALL NMCRGA(SDERRO)
+
+
 C     ----------------------------------------
 C     LECTURE DE NEWTON
 C     ----------------------------------------

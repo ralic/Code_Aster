@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,15 +49,14 @@ C
         SAVE B8
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IADC ,IADT ,ICL ,IFL ,IFM ,IRET
-      INTEGER IRTET ,IRTETI ,IUNIFI ,IV ,NBM ,NUME ,NUMN
+      INTEGER I ,IADC ,IADT ,ICL ,IFL ,IRET
+      INTEGER IRTET ,IRTETI ,IV ,NBM ,NUME ,NUMN
       INTEGER NUMTCL
 C-----------------------------------------------------------------------
         DATA B8         /'        '/
       CALL JEMARQ()
         IRTETI = 0
 C
-        IFM = IUNIFI('MESSAGE')
 C
 C - ITEM = MOT CLE  TYPE MAILLE ?
 C
@@ -77,7 +76,7 @@ C
 C - LECTURE DE L'ENTETE
 C
         DEBLIG=0
-        CALL LIRTET(IFL,IFM,2,0,CNL,NOM,ICL,IV,RV,CV,DEBLIG)
+        CALL LIRTET(IFL,2,0,CNL,NOM,ICL,IV,RV,CV,DEBLIG)
         GO TO 9
 C
 C - LIRE ITEM SUIVANT = NOM DE MAILLE ?

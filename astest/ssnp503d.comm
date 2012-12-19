@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503d.para = tps_job 60 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,17 +25,8 @@
 
 DEBUT(CODE=_F(NOM='SSNP503D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
-typma=2
-
-if (typma==1):
-  MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
-  Y=3
-
-if (typma==2):
-  MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
-  MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA='SURF'));
-  Y=2.5
+MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
+Y=3
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -48,7 +39,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_XFEM_CONT')));             
+                              MODELISATION='C_PLAN')));
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-2.5');
 
@@ -64,7 +55,7 @@ FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
-                         CONTACT='P1P1A',
+                         CONTACT='P1P1',
                          INFO=1);
 
                          
@@ -174,7 +165,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                     RESI_GLOB_MAXI=1E-06)),
                     NEWTON=_F(REAC_ITER=1),
                     SOLVEUR=_F(METHODE='MUMPS',
-   ),
+                               NPREC=-1,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                     INFO=1);
 

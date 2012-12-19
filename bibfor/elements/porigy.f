@@ -8,7 +8,7 @@
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,6 @@ C     --- POUTRE DROITE A SECTION VARIABLE (TYPE 1 OU 2) ---
          ALFAZ2 = ZR(LSECT2+5)
          XJX2 = ZR(LSECT2+8)
 C     ---- MOYENNAGE -------------------------------------
-         LSECT=(LSECT+LSECT2)/DEUX
          A=(A+A2)/DEUX
          XIY=(XIY+XIY2)/DEUX
          XIZ=(XIZ+XIZ2)/DEUX

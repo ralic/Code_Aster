@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -98,23 +98,8 @@ ENTETE__ ELEMENT__ MECPT3HQ4H_XH           MAILLE__ TR3QU4
    ENS_NOEUD__  EN2   =  4  5  6   7
    ENS_NOEUD__  EN1   =  1  2  3
 
-
-ENTETE__ ELEMENT__ MECPQ8HQ4H_XH           MAILLE__ QU8QU4
-   ELREFE__  QU8     GAUSS__  NOEU=NOEU
-   ELREFE__  QU4     GAUSS__  NOEU=NOEU
-   ELREFE__  SE2     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H    XFEM_M=H
-   ENS_NOEUD__  EN2   =  9  10  11  12
-   ENS_NOEUD__  EN6   =  5  6   7   8
-   ENS_NOEUD__  EN1   =  1  2   3   4
-ENTETE__ ELEMENT__ MECPT6HT3H_XH           MAILLE__ TR6TR3
-   ELREFE__  TR6     GAUSS__  NOEU=NOEU
-   ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ELREFE__  SE2     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H    XFEM_M=H
-   ENS_NOEUD__  EN2   =  7  8  9
-   ENS_NOEUD__  EN6   =  4  5  6
-   ENS_NOEUD__  EN1   =  1  2  3
+% ici on a resorbe l ancienne formulation
+% fin de la resorbtion
 
 ENTETE__ ELEMENT__ MECPQ8HQ8H_XH           MAILLE__ QU8QU8
    ELREFE__  QU8     GAUSS__  NOEU=NOEU
@@ -139,7 +124,6 @@ MODE_LOCAL__
                                          LAGS_C   LAGS_F1  )
                                  EN4    (DX      DY      H1X      H1Y      E1X      E1Y    )
                                  EN5    (E1X      E1Y      LAGS_C   LAGS_F1  )
-                                 EN6    (LAGS_C   LAGS_F1  )
 
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
 

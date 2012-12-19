@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -407,7 +407,7 @@ C
 C
       IF(IMPR.GE.2) THEN
         IFM = IUNIFI('MESSAGE')
-        CALL JEIMPO(IFM,'&&OP0151.DOMMAGE',' ','DOMMAGE')
+        CALL JEIMPO(IFM,'&&OP0151.DOMMAGE','DOMMAGE')
       ENDIF
 C
 C ---------------------------------------------------------------------

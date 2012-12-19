@@ -6,7 +6,7 @@
       CHARACTER*(*) NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C         LES NUMEROS D'ORDRE SONT CROISSANTS DANS .ORDR
       IRANG=0
       DEBUT = 0
       FIN   = NBORDR-1
-      MAXIT = 1+LOG(1.D0*NBORDR+1.D0)/LOG(2.D0)
+      MAXIT = INT(1+LOG(1.D0*NBORDR+1.D0)/LOG(2.D0))
       DO 10 I = 1,MAXIT
         DIFF = (FIN-DEBUT)/2
         MILIEU = DEBUT+DIFF

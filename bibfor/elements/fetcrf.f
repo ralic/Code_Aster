@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C DECLARATION VARIABLES LOCALES
 C CORPS DU PROGRAMME
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
 
 C**********************************************************************
 C INITIALISATIONS
@@ -224,7 +224,7 @@ C     STOCKAGE DES ADRESSES DES .FETA DE CHAQUE SD
       CALL WKVECT('&&FETCRF.ADR_FETA','V V I',NBSD,IAFETA)
 C     VECTEUR DES DDL CUMULES DE CHAQUE SD
       CALL WKVECT('&&FETCRF.L_K      ','V V I',NBSD,IALSK)
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
 
 C***********************************************************************
 C BOUCLE 1 SUR LES SOUS-DOMAINES POUR DETERMINER:
@@ -264,7 +264,7 @@ C     NUMERO DE LA SD POUR UN NOEUD DONNE
       CALL WKVECT('&&FETCRF.L_NO_GMA ','V V I',NB,LINOMA)
 C     INDICE DANS CETTE SD POUR UN NOEUD DONNE
       CALL WKVECT('&&FETCRF.L_NO_POS ','V V I',NB,IALSPO)
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
 
 C**********************************************************************
 C BOUCLE 2 SUR LES SOUS-DOMAINES POUR DETERMINER:
@@ -314,7 +314,7 @@ C       VECTEUR DE CORRESPONDANCE NOEUD -> POSITION DANS SD: ZI(IALSPO)
   222 CONTINUE
       CALL JEDETR('&&FETCRF.TMP')
       CALL JEDETR('&&FETCRF.TRAV')
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
 
 C***********************************************************************
 C BOUCLE 3 SUR LES SOUS-DOMAINES POUR REMPLIR .FETA
@@ -396,7 +396,7 @@ C         MAILLE DU MODELE ?
    94 CONTINUE
       IF (NBER.GT.0) CALL U2MESI('F','ELEMENTS5_29',1,NBER)
       CALL JEDETR('&&FETCRF.TESTMA ')
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
       IF (NIV.GE.4)
      &  CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMSDA,1,'G')
 
@@ -500,7 +500,7 @@ C     LES COUPLES (SD1,SD2)
 C     VECTEURS DES TRIPLETS (NOEUDS INTERFACE,SD1,SD2)
       CALL WKVECT('&&FETCRF.LST_TRI  ','V V I',3*NB+3,IALSTR)
 
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
 
 C***********************************************************************
 C DOUBLE BOUCLE 4 SUR LES NOEUDS AVEC LEUR MULTIPLICITE POUR FINIR DE
@@ -543,7 +543,7 @@ C           ON INCREMENTE LE NOMBRE DE NOEUDS TROUVES
 
    29   CONTINUE
    28 CONTINUE
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
       IF (NIV.GE.4)
      &  CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMSDB,1,'G')
 
@@ -605,7 +605,7 @@ C     NB NOEUDS INTERFACE (EN COMPTANT LEUR MULTIPLICITE)
         WRITE(IFM,*) '-------------------------------------'
         WRITE(IFM,*) ' '
       ENDIF
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
 
 C***********************************************************************
 C REMPLISSAGE EFFECTIF DE .FETI ET .FETJ
@@ -637,7 +637,7 @@ C       VALEUR DES SDS
 C     ON STOCKE LE NB DE DDL TOTAL DES NOEUDS D'INTERFACE
       NBDDLI=K
 
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
       IF (NIV.GE.4) THEN
         CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMSDI,1,'G')
         CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMSDJ,1,'G')
@@ -717,7 +717,7 @@ C***** ON CONSTRUIT EFFECTIVEMENT .FETG
 C FIN BOUCLE SUR LES SD
   51  CONTINUE
       CALL JEDETR('&&FETCRF.LST_FETG ')
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
       IF (NIV.GE.4)
      &  CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMSDG,1,'G')
 
@@ -760,7 +760,7 @@ C       PREMIERE PASSE : CALCUL DU NB TOTAL DE MAILLES TARDIVES
         IF (NIV.GE.4) WRITE(IFM,*) 'NBRE MAILLES TARDIVES:', NBMATA
       ENDIF
 
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
 
 C **** IF SUR LES CHARGES A MAILLES TARDIVES
       IF ( (NBCHAR.GE.1).AND.(NBMATA.GT.0) ) THEN
@@ -1058,7 +1058,7 @@ C***********************************************************************
         ENDIF
 C **** FIN IF SUR LES CHARGES A MAILLES TARDIVES
       ENDIF
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
 C***********************************************************************
 C ETAPE 11 CREATION .FDIM
 C***********************************************************************
@@ -1070,7 +1070,7 @@ C***********************************************************************
       ZI(JADR+3)=NBDDLI
       ZI(JADR+4)=NBNOTO
 
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
       IF (NIV.GE.4)
      &  CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMSDM,1,'G')
 C***********************************************************************
@@ -1094,7 +1094,7 @@ C     DES NOEUDS TARDIFS
   701   CONTINUE
       ENDIF
 
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
       IF (NIV.GE.4)
      &  CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMSDH,1,'G')
 C***********************************************************************
@@ -1236,7 +1236,7 @@ C             ADDR COURANTE POUR FLIM/ISD INCREMENTEE DE 1
 
 C     FIN DE CREATION DE FLII, FLIM ET FLIN, IF (NBNOTA.GT.0)
       ENDIF
-      IF (NIV.GE.3) CALL JXVERI(' ')
+      IF (NIV.GE.3) CALL JXVERI()
       IF (NIV.GE.4) THEN
         CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMSLN,1,'G')
         CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMSLI,1,'G')

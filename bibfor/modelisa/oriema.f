@@ -1,15 +1,15 @@
       SUBROUTINE ORIEMA ( NOMAIL, TPMAIL, NBNMAI, LNMAIL,
-     &                    TYP3D, NBNM3D, LNM3D,
+     &                    TYP3D, LNM3D,
      &                    NDIM, COOR, REORIE, NORIEN, IFM, NIV )
       IMPLICIT   NONE
-      INTEGER             NBNMAI, LNMAIL(*), NBNM3D, LNM3D(*), NDIM,
+      INTEGER             NBNMAI, LNMAIL(*), LNM3D(*), NDIM,
      &                    NORIEN, IFM, NIV
       REAL*8              COOR(*)
       LOGICAL             REORIE
       CHARACTER*8         NOMAIL, TPMAIL, TYP3D
       CHARACTER*24 VALK(2)
 C.======================================================================
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -2,7 +2,7 @@
      &                    NVI,SIGD,SIGF,VIND,VINF,NBPHAS,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,8 +47,8 @@ C     ----------------------------------------------------------------
       CHARACTER*24 CPMONO(5*NMAT+1)
       CHARACTER*8  MOD
       COMMON/TDIM/ NDT,NDI
-      INTEGER IRR,DECIRR,NBSYST,DECAL
-      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
       PARAMETER (MAXDOM=0.99D0)
       DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C     ----------------------------------------------------------------
@@ -113,7 +113,7 @@ C     COMPTAGE
       NBSYST=0
       DECAL=0
       IF (LOI(1:8).EQ.'MONOCRIS')  THEN
-         IF (COMP(3)(1:4).EQ.'SIMO') THEN
+         IF (GDEF.EQ.1) THEN
             IF (OPT.NE.'RAPH_MECA') THEN
                CALL U2MESS('F','ALGORITH8_91')
             ENDIF

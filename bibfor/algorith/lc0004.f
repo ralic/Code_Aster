@@ -14,7 +14,7 @@ C
 C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,50 +33,48 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J-M.PROIX
 C ======================================================================
-C.......................................................................
 C
-C     BUT: LOIS DE COMPORTEMENT DE CHABOCHE 
+C     INTEGRATION LOCALE DES LOIS DE COMPORTEMENT DE CHABOCHE 
 C          RELATIONS : 'VMIS_CIN1_CHAB' 'VMIS_CIN2_CHAB'
 C          RELATIONS : 'VISC_CIN1_CHAB' 'VISC_CIN2_CHAB'
 C          RELATIONS : 'VMIS_CIN2_MEMO' 'VISC_CIN2_MEMO'
 C
+C     ARGUMENTS :
 C       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 C       IN      KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 C       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
-C       IN      TYPMOD  : TYPE DE MODELISATION
-C               IMATE    ADRESSE DU MATERIAU CODE
-C               COMPOR    COMPORTEMENT DE L ELEMENT
-C                     COMPOR(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
-C                     COMPOR(2) = NB DE VARIABLES INTERNES
-C                     COMPOR(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
-C               CRIT    CRITERES  LOCAUX
+C       IN      TYPMOD  TYPE DE MODELISATION
+C               IMATE   ADRESSE DU MATERIAU CODE
+C               COMPOR  COMPORTEMENT DE L ELEMENT
+C                       COMPOR(1) = RELATION DE COMPORTEMENT 
+C                       COMPOR(2) = NB DE VARIABLES INTERNES
+C                       COMPOR(3) = TYPE DE DEFORMATION 
+C               CRIT    CRITERES  LOCAUX, EN PARTICULIER
 C                       CRIT(1) = NOMBRE D ITERATIONS MAXI A CONVERGENCE
 C                                 (ITER_INTE_MAXI == ITECREL)
-C                       CRIT(2) = TYPE DE JACOBIEN A T+DT
-C                                 (TYPE_MATR_COMP == MACOMP)
-C                                 0 = EN VITESSE     > SYMETRIQUE
-C                                 1 = EN INCREMENTAL > NON-SYMETRIQUE
 C                       CRIT(3) = VALEUR DE LA TOLERANCE DE CONVERGENCE
 C                                 (RESI_INTE_RELA == RESCREL)
-C                       CRIT(5) = NOMBRE D'INCREMENTS POUR LE
-C                                 REDECOUPAGE LOCAL DU PAS DE TEMPS
-C                                 (ITER_INTE_PAS == ITEDEC)
-C                                 0 = PAS DE REDECOUPAGE
-C                                 N = NOMBRE DE PALIERS
-C               INSTAM   INSTANT T
-C               INSTAP   INSTANT T+DT
-C               DEPS   INCREMENT DE DEFORMATION TOTALE
+C               INSTAM  INSTANT T
+C               INSTAP  INSTANT T+DT
+C               DEPS    INCREMENT DE DEFORMATION TOTALE
 C               SIGM    CONTRAINTE A T
-C               VIM    VARIABLES INTERNES A T    + INDICATEUR ETAT T
-C    ATTENTION  VIM    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
+C               VIM     VARIABLES INTERNES A T    + INDICATEUR ETAT T
+C    ATTENTION  VIM     VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
 C               OPTION     OPTION DE CALCUL A FAIRE
 C                             'RIGI_MECA_TANG'> DSIDEP(T)
 C                             'FULL_MECA'     > DSIDEP(T+DT) , SIG(T+DT)
 C                             'RAPH_MECA'     > SIG(T+DT)
 C       OUT     SIGP    CONTRAINTE A T+DT
-C               VIP    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
-C               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
-
+C               VIP     VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
+C               DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
+C               IRET    CODE RETOUR DE  L'INTEGRATION DE LA LDC
+C                              IRET=0 => PAS DE PROBLEME
+C                              IRET=1 => ABSENCE DE CONVERGENCE 
+C
+C               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
+C               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
+C               -----------------------------------------------------
+C
 
 
       CALL NMCHAB (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,

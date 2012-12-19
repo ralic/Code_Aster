@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,8 +163,8 @@ C
 C     --  CALCUL DE DEPSTH ET EPSDTH
 C     --------------------------------
 
-        IF (((IISNAN(TEMPM).GT.0).OR.(IISNAN(TREF).GT.0)).
-     &     AND.(MATERF(3,1).NE.0.D0)) THEN
+        IF (((IISNAN(TEMPM).GT.0).OR.(IISNAN(TREF).GT.0))
+     &     .AND.(MATERF(3,1).NE.0.D0)) THEN
           CALL U2MESS('F','CALCULEL_15')
         ELSEIF (MATERF(3,1).EQ.0.D0) THEN
           EPSTHE = 0.D0

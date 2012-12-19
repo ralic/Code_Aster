@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C TOLE CRP_21
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,49 +44,51 @@ C           HSR    :  MATRICE D'INTERACTION
 C           NR     :  DIMENSION DECLAREE DRDY
 C           NVI    :  NOMBRE DE VARIABLES INTERNES
 C           VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT
-C           DF     :  Increment de Gradient de deformation 
-C           YD     :  VARIABLES A T  
-C           YF     :  VARIABLES A T + DT  
-C           DY     :  SOLUTION           
+C           DF     :  Increment de Gradient de deformation
+C           YD     :  VARIABLES A T
+C           YF     :  VARIABLES A T + DT
+C           DY     :  SOLUTION
 C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C           IRET   :  CODE RETOUR
 C       ----------------------------------------------------------------
       INTEGER NMAT,NR,NBFSYS,NDT,NDI,NSFA,NSFV,NBSYS,IS,IR
       INTEGER NBCOMM(NMAT,3),IFA,I,J,K,L,IRET,IFL,ITMAX,NUVR,NUVS
-      INTEGER NUECOU,IND(3,3),NVI,NFS,NSG
+      INTEGER NUECOU,IND(3,3),NVI,NFS,NSG,IEXP
       REAL*8  VIND(*),YF(*),DY(*),DRDY(NR,NR),MATERF(NMAT*2)
       REAL*8  PGL(3,3),TOUTMS(NFS,NSG,6),HSR(NSG,NSG),GAMSNS(3,3)
       REAL*8  TIMED, TIMEF, MSDGDT(6,6),DT,FKOOH(6,6),SIGF(6)
       REAL*8  TOLER,DGSDTS,DKSDTS,DGRDBS,DKRDBS,TAUS,TAUR,MSNS(3,3)
       REAL*8  Q(3,3),MUS(6),NS(3),MS(3),MUR(6),DTODS(3,3)
       REAL*8  DFPDS(3,3,3,3),YD(*),MSNST(3,3,NSG),FP(3,3)
-      REAL*8  MRNR(3,3),DF(3,3),FE(3,3)
+      REAL*8  MRNR(3,3),DF(3,3),FE(3,3),EXPBP(NSG)
       REAL*8  DFPDBS(3,3,NSG),DFPDGA(3,3,NSG)
       CHARACTER*16 NOMFAM,COMP(*)
       CHARACTER*24 CPMONO(5*NMAT+1)
       CHARACTER*8     TYPMOD
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
 C     ----------------------------------------------------------------
       DATA IND/1,4,5,4,2,6,5,6,3/
 C     ----------------------------------------------------------------
 
       IRET=0
       DT=TIMEF-TIMED
-      
+
       CALL R8INIR ( NR*NR, 0.D0 , DRDY, 1 )
       CALL R8INIR ( 36, 0.D0 , MSDGDT, 1 )
-      
+
       CALL LCEQVN(NDT,YF(1),SIGF)
-      
-C     Inverse de la matrice de Hooke      
+
+C     Inverse de la matrice de Hooke
       IF (MATERF(NMAT).EQ.0) THEN
          CALL LCOPIL  ( 'ISOTROPE' , TYPMOD , MATERF(1) , FKOOH )
       ELSEIF (MATERF(NMAT).EQ.1) THEN
          CALL LCOPIL  ( 'ORTHOTRO' , TYPMOD , MATERF(1) , FKOOH )
       ENDIF
 
-      IF (COMP(3)(1:5).NE.'PETIT') THEN
+      IF (GDEF.EQ.1) THEN
          CALL R8INIR ( 81, 0.D0 , DFPDS, 1 )
          CALL R8INIR ( 3*3*NSG, 0.D0 , DFPDBS, 1 )
 C        calcul de DFPDGA : dFp / dGamma_S pour tous les systemes S
@@ -94,7 +96,7 @@ C        calcul de DFPDGA : dFp / dGamma_S pour tous les systemes S
      &               ITMAX,TOLER,MATERF,SIGF,FKOOH,NFS,NSG,TOUTMS,PGL,
      &               MSNST,GAMSNS,DFPDGA,IRET)
       ENDIF
-      
+
 C     NSFA : debut de la famille IFA dans DY et YD, YF
       NSFA=6
 C     NSFV : debut de la famille IFA dans les variables internes
@@ -103,35 +105,37 @@ C     LE NUMERO GLOBAL DU SYSTEME IS DANS Y EST NUVS
       NBFSYS=NBCOMM(NMAT,2)
 
       DO 6 IFA=1,NBFSYS
-      
-         NOMFAM=CPMONO(5*(IFA-1)+1)
+
+         NOMFAM=CPMONO(5*(IFA-1)+1)(1:16)
          IFL=NBCOMM(IFA,1)
          NUECOU=NINT(MATERF(NMAT+IFL))
 
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MUS,NS,MS,0,Q)
 
          DO 7 IS=1,NBSYS
-         
+
 C           calcul de Tau_s HPP ou GDEF
 
             CALL CALTAU(COMP,IFA,IS,SIGF,FKOOH,NFS,NSG,TOUTMS,
      &                  TAUS,MUS,MSNS)
-            
+
             NUVS=NSFA+IS
-            
-C           CALCUL DES DERIVEES : 
-C           DGSDTS=dGamma_S/dTau_S,  DKSDTS=dK_s/dTau_S, 
+
+C           CALCUL DES DERIVEES :
+C           DGSDTS=dGamma_S/dTau_S,  DKSDTS=dK_s/dTau_S,
 C           DGRDBS=dGamma_R/dBeta_S, DKRDBS=dK_S/dBeta_R
 
-            CALL LCMMJB( TAUS,TAUS,MATERF,CPMONO,IFA,NMAT,NBCOMM,DT,
-     &       NUECOU,NSFV,NSFA,IS,IS,NBSYS,NFS,NSG,HSR,VIND,DY,ITMAX,
-     &            TOLER,DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
-C           ici  DGRDBS,DKRDBS sont inutiles    
+            IEXP=0
+            IF (IS.EQ.1) IEXP=1
+            CALL LCMMJB(TAUS,MATERF,CPMONO,IFA,NMAT,NBCOMM,DT,
+     &      NUECOU,NSFV,NSFA,IS,IS,NBSYS,NFS,NSG,HSR,VIND,DY,IEXP,EXPBP,
+     &            ITMAX,TOLER,DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
+C           ici  DGRDBS,DKRDBS sont inutiles
             IF (IRET.GT.0)  GOTO 9999
 
             IF (ABS(DGSDTS).GT.0.D0) THEN
-C              Cas ou Delta-Gamma_S est non nul           
-               IF (COMP(3)(1:5).EQ.'PETIT') THEN
+C              Cas ou Delta-Gamma_S est non nul
+               IF (GDEF.EQ.0) THEN
 C                 dR1/dS
                   DO 1002 I=1,6
                   DO 1002 J=1,6
@@ -156,7 +160,7 @@ C                 dR2/dS
                   DO 30 J=1,3
                      DRDY(NUVS,IND(I,J))=-DKSDTS*DTODS(I,J)
  30               CONTINUE
- 
+
                ENDIF
             ENDIF
 
@@ -170,14 +174,14 @@ C------------------------
 
                NUVR=NSFA+IR
 
-               CALL LCMMJB(TAUR,TAUS,MATERF,CPMONO,IFA,NMAT,NBCOMM,DT,
+               CALL LCMMJB(TAUR,MATERF,CPMONO,IFA,NMAT,NBCOMM,DT,
      &             NUECOU,NSFV,NSFA,IR,IS,NBSYS,NFS,NSG,HSR,VIND,DY,
-     &             ITMAX,TOLER,DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
-C              ici DGSDTS,DKSDTS sont inutiles    
+     &          IEXP,EXPBP,ITMAX,TOLER,DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
+C              ici DGSDTS,DKSDTS sont inutiles
                IF (IRET.GT.0)  GOTO 9999
-               
+
                IF (ABS(DGRDBS).GT.0.D0) THEN
-                  IF (COMP(3)(1:5).EQ.'PETIT') THEN
+                  IF (GDEF.EQ.0) THEN
 C                    terme dR1/dAlpha_s
                      DO 193 I=1,6
                         DRDY(I,NUVS)=DRDY(I,NUVS)+MUR(I)*DGRDBS
@@ -192,23 +196,23 @@ C                    terme dR1/dAlpha_s
 C                 terme dR2r/dGammas
                   DRDY(NUVR,NUVS)=-DKRDBS
                ENDIF
-               
+
   22        CONTINUE
-  
+
             DRDY(NUVS,NUVS)=DRDY(NUVS,NUVS)+1.D0
-            
+
   7     CONTINUE
-  
+
         NSFA=NSFA+NBSYS
         NSFV=NSFV+NBSYS*3
 
   6   CONTINUE
 
-      IF (COMP(3)(1:5).NE.'PETIT') THEN
+      IF (GDEF.EQ.1) THEN
          CALL CALCFE(NR,NDT,NVI,VIND,DF,GAMSNS,FE,FP,IRET)
          CALL CALDFE(DF,NR,NVI,VIND,DFPDS,FE,DFPDBS,MSDGDT,DRDY)
       ENDIF
-      
+
       CALL LCSOMA(MSDGDT, FKOOH, MSDGDT)
       CALL LCICMA(MSDGDT, 6,6,NDT,NDT,1,1,DRDY,NR,NR,1,1)
 9999  CONTINUE

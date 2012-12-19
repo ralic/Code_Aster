@@ -8,7 +8,7 @@
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,20 +86,19 @@ C         dF/dTau
 
           IF (CRIT.GT.0.D0) THEN
              DGDTAU=(N*DT/(K**N))*(CRIT**(N-1))
+             DGDAL=-C*DGDTAU
+             DFDR=-SGNS*DGDTAU
           ELSE
              DGDTAU=0.D0
+             DGDAL=0.D0
+             DFDR=0.D0
           ENDIF
 
-C         DGDAL
-          DGDAL=-C*DGDTAU
-
-C         DFDR
           IF (ABS(FTAU).LE.R8MIEM()) THEN
              SGNS=1.D0
           ELSE
              SGNS=FTAU/ABS(FTAU)
           ENDIF
-          DFDR=-SGNS*DGDTAU
 
 C      IF (NECOUL.EQ.'MONO_VISC2') THEN
       ELSEIF (NUECOU.EQ.2) THEN

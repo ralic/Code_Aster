@@ -5,7 +5,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,6 @@ C.......................................................................
 
 C-----------------------------------------------------------------------
       INTEGER L ,NDI ,NDIM ,NNOS
-      REAL*8 R8BID
 C-----------------------------------------------------------------------
       CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       NDI = NNO* (NNO+1)/2
@@ -52,7 +51,7 @@ C-----------------------------------------------------------------------
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PMATTTC','E',IMATTT)
 
-      CALL RCVALC(ZI(IMATE),'FLUIDE',0,' ',R8BID,1,'CELE_C',VALRES,
+      CALL RCVALC(ZI(IMATE),'FLUIDE',1,'CELE_C',VALRES,
      &            ICODRE,1)
       CEL = DBLE(VALRES)
 

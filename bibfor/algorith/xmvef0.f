@@ -1,11 +1,11 @@
       SUBROUTINE XMVEF0(NDIM  ,JNNE ,NNC   ,NFAES ,
-     &                  JPCAI ,HPG   ,FFC   ,JACOBI,
+     &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCR,
      &                  LPENAC,DLAGRF,CFACE ,TYPMAI,
      &                  TAU1  ,TAU2  ,JDDLE ,NCONTA,
      &                  NFHE  ,LMULTI,HEAVNO,VTMP  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C TOLE CRP_21
 C
       IMPLICIT NONE
       INTEGER  NDIM,NNC,JNNE(3),NFAES,JPCAI,CFACE(5,3),JDDLE(2)
-      REAL*8   HPG,FFC(8),JACOBI
+      REAL*8   HPG,FFC(9),JACOBI,COEFCR
       REAL*8   DLAGRF(2)
       REAL*8   TAU1(3),TAU2(3)
       REAL*8   VTMP(336)
@@ -83,8 +83,7 @@ C
 C --------------------- CALCUL DE {L3_FROT}----------------------------
 C
       DO 500 I=1,NNC
-        IN=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-        CALL XPLMA2(NDIM,NNE,NNES,DDLES,IN,NFHE,PL)
+        CALL XPLMA2(NDIM,NNE,NNES,DDLES,I,NFHE,PL)
         IF (LMULTI) PL = PL + (HEAVNO(I)-1)*NDIM
         DO 600 L=1,NDIM-1
           II = PL+L

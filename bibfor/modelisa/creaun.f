@@ -3,7 +3,7 @@
      &                  MULTCU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C
        CHARACTER*24   NOEUCU,NOEUMA
        CHARACTER*24   VALK(2)
        INTEGER        JNOEU,JINDIR
-       INTEGER        NUMND,EXIST,NBSUP
+       INTEGER        NUMND,EXIST(1),NBSUP
        INTEGER        NBNO,NBCMP
        INTEGER        JDEBCP,JDEBND
        CHARACTER*8    CMP,K8BLA,NOMNO
@@ -147,7 +147,7 @@ C
             CALL EXISCP(CMP   ,K8BLA ,NOMO  ,1     ,'NUM' ,
      &                  K8BLA ,NUMND ,EXIST )
 
-            IF (EXIST.EQ.1) THEN
+            IF (EXIST(1).EQ.1) THEN
               IF (NIV.GE.2) THEN
                 CALL JENUNO(JEXNUM(NOEUMA,NUMND),NOMNO)
                 VALK (1) = NOMNO

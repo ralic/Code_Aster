@@ -1,24 +1,22 @@
-       SUBROUTINE XMVCO1(NDIM,NNO,NNOL,NNOF,
-     &                  SIGMA,PLA,IPGF,IVFF,IFA,CFACE,LACT ,
+       SUBROUTINE XMVCO1(NDIM,NNO,NNOL,
+     &                  SIGMA,PLA,LACT ,
      &                  DTANG,NFH,DDLS,JAC,FFC,FFP,
-     &                  SINGU,RR,NOEUD,CSTACO,ND,TAU1,TAU2,
+     &                  SINGU,RR,CSTACO,ND,TAU1,TAU2,
      &                  VTMP)
 
 
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
-      INTEGER     NDIM,NNO,NNOL,NNOF
-      INTEGER     NFH,DDLS,PLA(27),LACT(8),CFACE(5,3)
-      INTEGER     SINGU,IPGF,IVFF,IFA
+      INTEGER     NDIM,NNO,NNOL
+      INTEGER     NFH,DDLS,PLA(27),LACT(8)
+      INTEGER     SINGU
       REAL*8      VTMP(400),SIGMA(6)
       REAL*8      FFP(27),JAC
-
+      
       REAL*8      DTANG(3),ND(3),TAU1(3),TAU2(3)
       REAL*8      RR,FFC(8),CSTACO
-      LOGICAL     NOEUD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +70,8 @@ C
       SQRTAN=DTANG(1)**2+DTANG(2)**2+DTANG(3)**2
       IF(SQRTAN.GT.EPS) SQTTAN=SQRT(SQRTAN)
       IF(SQTTAN.GT.EPS) THEN
-         DO 110 I=1,NDIM
-            TAU(I)=DTANG(I)/SQTTAN
+        DO 110 I=1,NDIM
+           TAU(I)=DTANG(I)/SQTTAN
 110      CONTINUE
       ENDIF
 
@@ -107,14 +105,9 @@ C
 
       DO 460 I = 1,NNOL
          PLI=PLA(I)
-         IF (NOEUD) THEN
-            FFI=FFC(I)
-            NLI=LACT(I)
-            IF (NLI.EQ.0) GOTO 460
-         ELSE
-             FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-             NLI=CFACE(IFA,I)
-         ENDIF
+         FFI=FFC(I)
+         NLI=LACT(I)
+         IF (NLI.EQ.0) GOTO 460
          TTX(1)=DDOT(NDIM,TAU1,1,TAU,1)
          IF (NDIM .EQ.3) TTX(2)=DDOT(NDIM,TAU2,
      &                               1,TAU,1)
@@ -126,14 +119,9 @@ C
 
        DO 470 I = 1,NNOL
           PLI=PLA(I)
-          IF (NOEUD) THEN
-             FFI=FFC(I)
-             NLI=LACT(I)
-             IF (NLI.EQ.0) GOTO 470
-          ELSE
-             FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-             NLI=CFACE(IFA,I)
-          ENDIF
+          FFI=FFC(I)
+          NLI=LACT(I)
+          IF (NLI.EQ.0) GOTO 470
           DO 475 K = 1, NDIM
               VTMP(PLI) = VTMP(PLI) +
      &          SIGMA(1)*ND(K)*ND(K)*FFI*JAC/CSTACO

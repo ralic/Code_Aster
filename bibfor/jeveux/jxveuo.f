@@ -1,6 +1,6 @@
       SUBROUTINE JXVEUO (CEL , ITAB , INAT , JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C IN  ITAB   : TABLEAU PAR RAPPORT AUQUEL L'ADRESSE EST CALCULEE
 C IN  INAT   : TYPE D'OBJET 1:OS, 2:CO, 3:OC
 C OUT JITAB  : ADRESSE PAR RAPPORT A ITAB
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -65,7 +65,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ           ,              IDLONG     ,
-     &               IDLONO     , IDLUTI     
+     &               IDLONO     , IDLUTI
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
      &               IDMARQ = 4  ,              IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9  )
@@ -171,8 +171,8 @@ C
           ENDIF
           IADM( JIADM(IC) + 2*IXDESO-1 ) = IADMI
           IADM( JIADM(IC) + 2*IXDESO   ) = IADYN
-          CALL JJECRS (IADMI,IADYN,IC,IXDESO,0,CEL,
-     &                 IMARQ(JMARQ(IC)+2*IXDESO-1))
+          CALL JJECRS (IADMI,IC,IXDESO,0,CEL,
+     &           IMARQ(JMARQ(IC)+2*IXDESO-1))
         ENDIF
       GOTO 99
 C
@@ -232,7 +232,7 @@ C
 C
 C ----- SEGMENT EN MEMOIRE
 C
-        CALL JJLIRS ( IADMI, IC, IDOS, IDCO, IUSA, ISTA )
+        CALL JJLIRS ( IADMI, IC, IDOS, IUSA, ISTA )
         LDEPS = .FALSE.
         IF ( IUSA .NE. ISTAT(2) ) LDEPS = .TRUE.
         CALL JXLOCS (ITAB,GENRI,LTYPI,LONOI,IADMI,LDEPS,JITAB)
@@ -243,14 +243,14 @@ C
         ISZON ( JISZON + IBIADM - 1 + 2*IDATOC   ) = IADYN
         ISZON ( JISZON + IBIADD - 1 + 2*IDATOC-1 ) = IADDI(1)
         ISZON ( JISZON + IBIADD - 1 + 2*IDATOC   ) = IADDI(2)
-        CALL JJECRS (IADMI, IADYN, IC, IDOS, IDCO, CEL,
-     &               ISZON (JISZON+IBMARQ-1+2*IDATOC-1))
+        CALL JJECRS (IADMI,IC, IDOS, IDCO, CEL,
+     &           ISZON (JISZON+IBMARQ-1+2*IDATOC-1))
       ELSE
         IADM( JIADM(IC) + 2*IXDESO-1 ) = IADMI
         IADM( JIADM(IC) + 2*IXDESO   ) = IADYN
         IADD( JIADD(IC) + 2*IXDESO-1 ) = IADDI(1)
         IADD( JIADD(IC) + 2*IXDESO   ) = IADDI(2)
-        CALL JJECRS(IADMI,IADYN,IC,IDOS,0,CEL,IMARQ(JMARQ(IC)+2*IDOS-1))
+        CALL JJECRS(IADMI,IC,IDOS,0,CEL,IMARQ(JMARQ(IC)+2*IDOS-1))
       ENDIF
 C FIN ------------------------------------------------------------------
       END

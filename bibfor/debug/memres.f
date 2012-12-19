@@ -4,7 +4,7 @@
       REAL*8 TMAX,PREC
 C TOLE CRS_505 CRP_4
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF DEBUG  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C-------------------------------------------------------------
       NBFREE=0
       IBID=0
       IDEP=0
-      INCR=PREC*1024*1024/LOISEM()/2
+      INCR=INT(PREC*1024*1024/LOISEM()/2)
 
 
    10 CONTINUE

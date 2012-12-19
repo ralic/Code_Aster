@@ -5,7 +5,7 @@
       CHARACTER*(*) FORM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,41 +79,41 @@ C       ----------------
           ENDIF
 
 
-          TITRE='Caractéristiques générales des barres'
+          TITRE='Caracteristiques generales des barres'
           CALL W039C1(CARELE//'.CARGENBA',IFI,FORM,LIGREL,TITRE)
-          TITRE='Caractéristiques géom. des barres'
+          TITRE='Caracteristiques geom. des barres'
           CALL W039C1(CARELE//'.CARGEOBA',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Caractéristiques générales des poutres'
+          TITRE='Caracteristiques generales des poutres'
           CALL W039C1(CARELE//'.CARGENPO',IFI,FORM,LIGREL,TITRE)
-          TITRE='Caractéristiques géom. des poutres'
+          TITRE='Caracteristiques geom. des poutres'
           CALL W039C1(CARELE//'.CARGEOPO',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Caractéristiques des cables'
+          TITRE='Caracteristiques des cables'
           CALL W039C1(CARELE//'.CARCABLE',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Caractéristiques des poutres courbes'
+          TITRE='Caracteristiques des poutres courbes'
           CALL W039C1(CARELE//'.CARARCPO',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Caractéristiques des poutres "fluides"'
+          TITRE='Caracteristiques des poutres "fluides"'
           CALL W039C1(CARELE//'.CARPOUFL',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Caractéristiques des éléments discrets K_*'
+          TITRE='Caracteristiques des elements discrets K_*'
           CALL W039C1(CARELE//'.CARDISCK',IFI,FORM,LIGREL,TITRE)
           CALL W039C1(CARELE//'.CARDNSCK',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Caractéristiques des éléments discrets M_*'
+          TITRE='Caracteristiques des elements discrets M_*'
           CALL W039C1(CARELE//'.CARDISCM',IFI,FORM,LIGREL,TITRE)
           CALL W039C1(CARELE//'.CARDNSCM',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Caractéristiques des éléments discrets A_*'
+          TITRE='Caracteristiques des elements discrets A_*'
           CALL W039C1(CARELE//'.CARDISCA',IFI,FORM,LIGREL,TITRE)
           CALL W039C1(CARELE//'.CARDNSCA',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Caractéristiques géom. des coques'
+          TITRE='Caracteristiques geom. des coques'
           CALL W039C1(CARELE//'.CARCOQUE',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Orientation des éléments 2D et 3D'
+          TITRE='Orientation des elements 2D et 3D'
           CALL W039C1(CARELE//'.CARMASSI',IFI,FORM,LIGREL,TITRE)
 
           TITRE='Orientation des coques et des poutres'
@@ -160,16 +160,16 @@ C       ----------------
           TITRE='Chargement de forces surfaciques en 3D'
           CALL W039C1(CHARGE//'.CHME.F2D3D',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Chargement de forces linéiques en 3D'
+          TITRE='Chargement de forces lineiques en 3D'
           CALL W039C1(CHARGE//'.CHME.F1D3D',IFI,FORM,LIGREL,TITRE)
 
           TITRE='Chargement de forces surfaciques en 2D'
           CALL W039C1(CHARGE//'.CHME.F2D2D',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Chargement de forces linéiques en 2D'
+          TITRE='Chargement de forces lineiques en 2D'
           CALL W039C1(CHARGE//'.CHME.F1D2D',IFI,FORM,LIGREL,TITRE)
 
-          TITRE='Chargement de forces réparties pour les coques'
+          TITRE='Chargement de forces reparties pour les coques'
           CALL W039C1(CHARGE//'.CHME.FCO3D',IFI,FORM,LIGREL,TITRE)
           CALL W039C1(CHARGE//'.CHME.FCO2D',IFI,FORM,LIGREL,TITRE)
 

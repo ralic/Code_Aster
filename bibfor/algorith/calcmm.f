@@ -7,7 +7,7 @@
         CHARACTER*24 CPMONO(5*NMAT+1)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,8 @@ C     ----------------------------------------------------------------
       CHARACTER*16 NOMFAM
       REAL*8 MS(6),NG(3),Q(3,3),LG(3),IDEN(3,3)
       INTEGER NBFSYS,I,IFA,NBSYS,IS,J,IR
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
       DATA IDEN/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C     ----------------------------------------------------------------
 
@@ -54,7 +56,7 @@ C         CALCUL DES TENSEURS MS POUR GAGNER DU TEMPS
       ENDIF
       IR=0
      
-      IF (COMP(3)(1:5).NE.'PETIT') THEN
+      IF (GDEF.EQ.1) THEN
 C  EN VUE D'OPTIMISER, STOCKER LG ET NG
          IR=0
          DO 12 IFA=1,NBFSYS

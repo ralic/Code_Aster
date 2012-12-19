@@ -1,6 +1,6 @@
       SUBROUTINE SSDEGE(NOMU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +39,9 @@ C
 C ----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER IAEXTE ,IALINO ,IAPRNM ,IAREFM ,IBI ,IBID ,IEC 
-      INTEGER IER ,II ,INO ,JDESM ,JVARM ,N1 ,NBC 
-      INTEGER NBEC ,NBNOTO ,NCH ,NCHAR ,NVALAP 
+      INTEGER IAEXTE ,IALINO ,IAPRNM ,IAREFM ,IBI ,IBID(1),IEC
+      INTEGER IER ,II ,INO ,JDESM ,JVARM ,N1 ,NBC
+      INTEGER NBEC ,NBNOTO ,NCH ,NCHAR ,NVALAP
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETVID('DEFINITION','CHAR_MACR_ELEM',1,IARG,0,KBI81,N1)

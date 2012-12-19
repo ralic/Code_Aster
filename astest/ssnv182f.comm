@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTENT AVEC XFEM
 # ssnv182f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,10 +21,7 @@
 
 DEBUT(CODE=_F(NOM='SSNV182F', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
-
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                        LINE_QUAD=_F(GROUP_MA='SURF'));
+MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -34,7 +31,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM_CONT'),
+                              MODELISATION='D_PLAN'),
                            _F(GROUP_MA=('LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN')));
@@ -50,7 +47,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
  
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='P1P1A',
+                         CONTACT='P1P1',
                          INFO=1); 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -71,7 +68,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_CONT    = 100.,
                                ALGO_FROT    = 'STANDARD',
                                COEF_FROT    = 1000.,                                   
-                               ALGO_LAGR    = 'NON',
+                               ALGO_LAGR    = 'VERSION2',
                              ), 
                          ),
                    );
@@ -126,28 +123,6 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                    INFO=1);
 
-
-LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                           # maillage 20_20
-                             NOEUD=('N261','NS222','NS223','NS224',
-                             'NS259','NS260','NS261','NS298','NS299',
-                             'NS335','NS336','NS337','NS372','NS373',
-                             'NS374','NS411','NS448','NS449','NS485',
-                             'NS486','NS487','NS522','NS523',
-                             'NS524','NS561','NS562','NS598',
-                             'NS599','NS600','NS636','NS638'),
-                             RESULTAT=UTOT1,
-                             NOM_CHAM='DEPL',
-                             NUME_ORDRE=2,
-                             NOM_CMP=('LAGS_C','LAGS_F1'),
-                             OPERATION='EXTRACTION'));
-
-
-IMPR_TABLE(TABLE=LAG,
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.5',
-           IMPR_FONCTION='NON');
-
 LAREF=-.05*3./4.
 LA1REF=-1./(3.**.5)
 
@@ -156,7 +131,7 @@ LA1REF=-1./(3.**.5)
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
                        INFO          = 2)
 
@@ -165,12 +140,20 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN')) 
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+RES_XFEM=POST_CHAM_XFEM(
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
                         
                         INFO          = 2)
  
+LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                            GROUP_NO='NFISSU',
+                             RESULTAT=RES_XFEM,
+                             NOM_CHAM='DEPL',
+                             NUME_ORDRE=2,
+                             NOM_CMP=('LAGS_C','LAGS_F1',),
+                             OPERATION='EXTRACTION',),);
+
 IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,
                                             NOM_CHAM='DEPL',
                                             TYPE_CHAM='VECT_3D',
@@ -210,7 +193,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-4,
-           VALE_CALC=-0.577352645,
+           VALE_CALC= -0.57735109107595,
            VALE_REFE=-0.57735026918962584,
            NOM_PARA='LAGS_F1',
            TYPE_TEST='MIN',

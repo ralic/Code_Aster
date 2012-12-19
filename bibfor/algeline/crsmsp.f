@@ -1,6 +1,6 @@
-      SUBROUTINE CRSMSP(SOLVBZ,MATASZ,PCPIV,LPETSC)
+      SUBROUTINE CRSMSP(SOLVBZ,MATASZ,PCPIV )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C ======================================================================
       INCLUDE 'jeveux.h'
       CHARACTER*(*) SOLVBZ,MATASZ
       INTEGER       PCPIV
-      LOGICAL       LPETSC
 C-----------------------------------------------------------------------
 C     CREATION D'UNE SD SOLVEUR MUMPS SIMPLE PRECISION UTILISEE COMME
 C     PRECONDITIONNEUR
@@ -30,15 +29,13 @@ C-----------------------------------------------------------------------
 C IN  K*  SOLVBZ    : NOM DE LA SD SOLVEUR MUMPS BIDON
 C IN  K*  MATASZ    : MATRICE DU SYSTEME
 C IN  I   PCPIV     : VALEUR DE PCENT_PIVOT
-C IN  L   LPETSC    : BOOLEEN QUI INDIQUE SI LE SOLVEUR CHAPEAU
-C                     EST PETSC
 C-----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       INTEGER      SDSOLV,ZSLVK ,ZSLVR ,ZSLVI
       INTEGER      JSLVK ,JSLVR ,JSLVI ,IBID  ,IRET
       CHARACTER*19 MATASS,SOLVBD
-      CHARACTER*8  SYMK,KMATD
+      CHARACTER*8  SYMK  ,KMATD
       CHARACTER*3  SYME
 C----------------------------------------------------------------------
       CALL JEMARQ()
@@ -90,12 +87,7 @@ C     PRECONDITIONNEUR
 C     MEMOIRE_MUMPS
       ZK24(JSLVK-1+9)  = 'IN_CORE'
 C     MATR_DISTRIBUEE
-      IF ( KMATD.EQ.'OUI' ) THEN
-        ZK24(JSLVK-1+10) = 'OUI'
-        IF (LPETSC) ZK24(JSLVK-1+10) = 'OUI_PETSC'
-      ELSE
-        ZK24(JSLVK-1+10) = KMATD
-      ENDIF
+      ZK24(JSLVK-1+10) = KMATD
 C     POSTTRAITEMENTS
       ZK24(JSLVK-1+11) = 'SANS'
       ZK24(JSLVK-1+12) = 'XXXX'

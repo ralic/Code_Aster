@@ -2,9 +2,10 @@
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
+C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,13 +26,15 @@ C RESPONSABLE PELLET J.PELLET
 
 C   BUT:
 C   DUPLIQUER UNE STRUCTURE DE DONNEES SOUS UN AUTRE NOM.
-C   (SI SD2 EXISTE DEJA, ON L'ECRASE)
+C   (SI SD2 EXISTE DEJA, ON LA DETRUIT AVANT DE LA RECREER)
 
 C     IN:
 C     TYPESD  : TYPE DE LA SD A DUPPLIQUER
-C               ' '(INCONNU)      'CHAMP' (OU 'CHAMP_GD')
+C               ' ' (INCONNU)
+C               'CHAMP' (OU 'CHAMP_GD')
 C               'FONCTION'  (POUR FONCTIONS ET NAPPES)
 C               'CORRESP_2_MAILLA'
+C               'LISTR8'          'LISTIS'
 C               'CHAM_NO_S'       'CHAM_ELEM_S'
 C               'VARI_COM'        'TABLE'
 C               'RESULTAT'        'NUME_DDL'
@@ -50,13 +53,13 @@ C-----------------------------------------------------------------------
 
       INTEGER       IRET, I, NBTU, JLTN1, JLTN2,IDD,NBSD,ILIMPI
       CHARACTER*1   BAS2
-      CHARACTER*8   K8B, MAIL1, MAIL2
+      CHARACTER*8   K8B, K81, K82
       CHARACTER*12  K121, K122
       CHARACTER*14  COM1, COM2, NU1, NU2
       CHARACTER*16  TYP2SD, CORR1, CORR2
       CHARACTER*19  CH1, CH2, SDR1, K191, K192
       CHARACTER*24  MASFE1,MASFE2,X1,X2
-      INTEGER       IFETM1,IFETM2
+      INTEGER       IFETM1,IFETM2,J1,IEXI
       LOGICAL       LFETI
 
 
@@ -119,6 +122,24 @@ C     -----------------------------------
         CALL JEDUP1(K191//'.SLVR',BAS2,K192//'.SLVR')
 
 C ----------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'LISTE_RELA') THEN
+C     -------------------------------------
+        K191 = SD1
+        K192 = SD2
+
+        CALL JEDUP1(K191//'.RLLA',BAS2,K192//'.RLLA')
+        CALL JEDUP1(K191//'.RLBE',BAS2,K192//'.RLBE')
+        CALL JEDUP1(K191//'.RLSU',BAS2,K192//'.RLSU')
+        CALL JEDUP1(K191//'.RLTC',BAS2,K192//'.RLTC')
+        CALL JEDUP1(K191//'.RLNO',BAS2,K192//'.RLNO')
+        CALL JEDUP1(K191//'.RLCO',BAS2,K192//'.RLCO')
+        CALL JEDUP1(K191//'.RLNT',BAS2,K192//'.RLNT')
+        CALL JEDUP1(K191//'.RLPO',BAS2,K192//'.RLPO')
+        CALL JEDUP1(K191//'.RLNR',BAS2,K192//'.RLNR')
+        CALL JEDUP1(K191//'.RLTV',BAS2,K192//'.RLTV')
+        CALL JEDUP1(K191//'.RLDD',BAS2,K192//'.RLDD')
+
+C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'FONCTION') THEN
 C     -----------------------------------
         K191 = SD1
@@ -126,6 +147,17 @@ C     -----------------------------------
 
         CALL JEDUP1(K191//'.PARA',BAS2,K192//'.PARA')
         CALL JEDUP1(K191//'.PROL',BAS2,K192//'.PROL')
+        CALL JEDUP1(K191//'.VALE',BAS2,K192//'.VALE')
+
+C ----------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'LISTR8'.OR.TYPESD.EQ.'LISTIS') THEN
+C     --------------------------------------------------
+        K191 = SD1
+        K192 = SD2
+
+        CALL JEDUP1(K191//'.LPAS',BAS2,K192//'.LPAS')
+        CALL JEDUP1(K191//'.NBPA',BAS2,K192//'.NBPA')
+        CALL JEDUP1(K191//'.BINT',BAS2,K192//'.BINT')
         CALL JEDUP1(K191//'.VALE',BAS2,K192//'.VALE')
 
 C ----------------------------------------------------------------------
@@ -308,18 +340,27 @@ C     -----------------------------------
         CALL JEDUP1(K191//'.SSSA',BAS2,K192//'.SSSA')
 
 C ----------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'CABL_PRECONT') THEN
+C     -----------------------------------
+        K81 = SD1
+        K82 = SD2
+        CALL COPICH(BAS2,K81//'.CHME.SIGIN',K82//'.CHME.SIGIN')
+        CALL COPIS2('LISTE_RELA',BAS2,K81//'.LIRELA',K82//'.LIRELA')
+        CALL COPIS2('L_TABLE',BAS2,K81,K82)
+
+C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'SQUELETTE') THEN
 C     -----------------------------------
-        MAIL1 = SD1
-        MAIL2 = SD2
-        CALL COPIS2('MAILLAGE',BAS2,MAIL1,MAIL2)
+        K81 = SD1
+        K82 = SD2
+        CALL COPIS2('MAILLAGE',BAS2,K81,K82)
 C
-        CALL JEDUP1(MAIL1//'.CORRES',BAS2,MAIL2//'.CORRES')
-        CALL JEDUP1(MAIL1//'.INV.SKELETON',BAS2,MAIL2//'.INV.SKELETON')
-        CALL JEDUP1(MAIL1//'         .NOMSST',BAS2,
-     &              MAIL2//'         .NOMSST')
-        CALL JEDUP1(MAIL1//'.ANGL_NAUT',BAS2,MAIL2//'.ANGL_NAUT')
-        CALL JEDUP1(MAIL1//'.TRANS',BAS2,MAIL2//'.TRANS')
+        CALL JEDUP1(K81//'.CORRES',BAS2,K82//'.CORRES')
+        CALL JEDUP1(K81//'.INV.SKELETON',BAS2,K82//'.INV.SKELETON')
+        CALL JEDUP1(K81//'         .NOMSST',BAS2,
+     &              K82//'         .NOMSST')
+        CALL JEDUP1(K81//'.ANGL_NAUT',BAS2,K82//'.ANGL_NAUT')
+        CALL JEDUP1(K81//'.TRANS',BAS2,K82//'.TRANS')
 
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'L_TABLE') THEN
@@ -351,30 +392,57 @@ C
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'MAILLAGE') THEN
 C     -----------------------------------
-        MAIL1 = SD1
-        MAIL2 = SD2
-        CALL COPICH(BAS2,MAIL1//'.COORDO',MAIL2//'.COORDO')
-        CALL COPICH(BAS2,MAIL1//'.ABS_CURV',MAIL2//'.ABS_CURV')
-C
-        CALL JEDUP1(MAIL1//'.DIME',BAS2,MAIL2//'.DIME')
-        CALL JEDUP1(MAIL1//'.NOMNOE',BAS2,MAIL2//'.NOMNOE')
-        CALL JEDUP1(MAIL1//'.GROUPENO',BAS2,MAIL2//'.GROUPENO')
-        CALL JEDUP1(MAIL1//'.NOMMAI',BAS2,MAIL2//'.NOMMAI')
-        CALL JEDUP1(MAIL1//'.TYPMAIL',BAS2,MAIL2//'.TYPMAIL')
-        CALL JEDUP1(MAIL1//'.CONNEX',BAS2,MAIL2//'.CONNEX')
-        CALL JEDUP1(MAIL1//'.GROUPEMA',BAS2,MAIL2//'.GROUPEMA')
-        CALL JEDUP1(MAIL1//'.NOMACR',BAS2,MAIL2//'.NOMACR')
-        CALL JEDUP1(MAIL1//'.PARA_R',BAS2,MAIL2//'.PARA_R')
-        CALL JEDUP1(MAIL1//'.SUPMAIL',BAS2,MAIL2//'.SUPMAIL')
-        CALL JEDUP1(MAIL1//'.TYPL',BAS2,MAIL2//'.TYPL')
-        CALL JEDUP1(MAIL1//'.TITR',BAS2,MAIL2//'.TITR')
-C
-        CALL COPIS2('L_TABLE',BAS2,MAIL1,MAIL2)
-        CALL JEDUP1(MAIL1//'           .TITR',BAS2,
-     &              MAIL2//'           .TITR')
+        K81 = SD1
+        K82 = SD2
+        CALL COPICH(BAS2,K81//'.COORDO',K82//'.COORDO')
+        CALL COPICH(BAS2,K81//'.ABS_CURV',K82//'.ABS_CURV')
+C       -- LES 2 CHAMPS COPIES DOIVENT S'APPUYER
+C          SUR LE NOUVEAU MAILLAGE :
+        CALL JEVEUO(K82//'.COORDO    .REFE','E',J1)
+        ZK24(J1-1+1)=K82
+        CALL JEEXIN(K82//'.ABS_CURV  .NOMA',IEXI)
+        IF (IEXI.GT.0) THEN
+          CALL JEVEUO(K82//'.ABS_CURV  .NOMA','E',J1)
+          ZK8(J1-1+1)=K82
+        ENDIF
 
-C       -- OBJETS QUE JE NE CONNAIS PAS !! (JP) :
-        CALL JEDUP1(MAIL1//'.ADAPTATION',BAS2,MAIL2//'.ADAPTATION')
+C
+        CALL JEDUP1(K81//'.ADAPTATION',BAS2,K82//'.ADAPTATION')
+        CALL JEDUP1(K81//'.DIME',BAS2,K82//'.DIME')
+        CALL JEDUP1(K81//'.NOMNOE',BAS2,K82//'.NOMNOE')
+        CALL JEDUP1(K81//'.GROUPENO',BAS2,K82//'.GROUPENO')
+        CALL JEDUP1(K81//'.NOMMAI',BAS2,K82//'.NOMMAI')
+        CALL JEDUP1(K81//'.TYPMAIL',BAS2,K82//'.TYPMAIL')
+        CALL JEDUP1(K81//'.CONNEX',BAS2,K82//'.CONNEX')
+        CALL JEDUP1(K81//'.GROUPEMA',BAS2,K82//'.GROUPEMA')
+        CALL JEDUP1(K81//'.NOMACR',BAS2,K82//'.NOMACR')
+        CALL JEDUP1(K81//'.PARA_R',BAS2,K82//'.PARA_R')
+        CALL JEDUP1(K81//'.SUPMAIL',BAS2,K82//'.SUPMAIL')
+        CALL JEDUP1(K81//'.TYPL',BAS2,K82//'.TYPL')
+        CALL JEDUP1(K81//'.TITR',BAS2,K82//'.TITR')
+C
+        CALL COPIS2('L_TABLE',BAS2,K81,K82)
+        CALL JEDUP1(K81//'           .TITR',BAS2,
+     &              K82//'           .TITR')
+
+C ----------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'MODELE') THEN
+C     -----------------------------------
+        K81 = SD1
+        K82 = SD2
+        CALL COPIS2('LIGREL',BAS2,K81//'.MODELE',K82//'.MODELE')
+        CALL COPIS2('L_TABLE',BAS2,K81,K82)
+
+        CALL JEDUP1(K81//'.NOEUD',BAS2,K82//'.NOEUD')
+        CALL JEDUP1(K81//'.MAILLE',BAS2,K82//'.MAILLE')
+        CALL JEDUP1(K81//'.PARTIT',BAS2,K82//'.PARTIT')
+
+C       -- IL FAUT METTRE A JOUR LGRF(2):
+        CALL JEEXIN(K82//'.MODELE    .LGRF',IEXI)
+        IF (IEXI.GT.0) THEN
+          CALL JEVEUO(K82//'.MODELE    .LGRF','E',J1)
+          ZK8(J1-1+2)=K82
+        ENDIF
 
 
 C ----------------------------------------------------------------------

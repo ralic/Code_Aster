@@ -1,17 +1,15 @@
-      SUBROUTINE XMVEC3(NNOL,NNOF,PLA,IPGF,IVFF,
-     &                  FFC,REAC,JAC,NOEUD,CSTACO,
+      SUBROUTINE XMVEC3(NNOL,PLA,
+     &                  FFC,REAC,JAC,CSTACO,
      &                  VTMP )
 
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
-      INTEGER     NNOL,NNOF
-      INTEGER     IVFF,IPGF,PLA(27)
+      INTEGER     NNOL
+      INTEGER     PLA(27)
       REAL*8      VTMP(400),CSTACO
       REAL*8      FFC(8),JAC,REAC
-      LOGICAL     NOEUD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,11 +79,7 @@ C
       DO 130 I = 1,NNOL
 
         PLI=PLA(I)
-        IF (NOEUD) THEN
-          FFI=FFC(I)
-        ELSE
-          FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-        ENDIF
+        FFI=FFC(I)
 
         VTMP(PLI) = VTMP(PLI) - REAC*FFI*JAC/CSTACO
  130  CONTINUE

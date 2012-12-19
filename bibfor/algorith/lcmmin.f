@@ -4,7 +4,7 @@
      &                      TIMED,TIMEF,VIND,SIGD,EPSTR )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_21
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
@@ -72,6 +72,8 @@ C     ----------------------------------------------------------------
       CHARACTER*24    CPMONO(5*NMAT+1)
       CHARACTER*16    NOMFAM
       REAL*8          TIMED,TIMEF,VIND(*),SIGD(6),SIGDN(6)
+      INTEGER IRR,DECIRR,NBSYST,DECAL,GDEF
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL,GDEF
 C
 C - SOLUTION INITIALE = NUL
 C
@@ -106,7 +108,7 @@ C
             CALL LCOPLI ( 'ORTHOTRO' , MOD , MATERF(1,1) , HOOK )
          ENDIF
 C        GDEF : INITIALISATION PAR FET.DFT.DF.FE
-         IF (COMP(3)(1:5).NE.'PETIT') THEN
+         IF (GDEF.EQ.1) THEN
             CALL DCOPY(9,VIND(NVI-3-18+10),1,FE,1)
             CALL DCOPY(9,DEPS,1,DF,1)
             CALL PMAT(3,DF,FE,FE1)

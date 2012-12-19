@@ -3,7 +3,7 @@
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,13 +114,6 @@ C         -- ON CREE LA SD_INFO_CHARGE :
           CALL JEVEUO(EXCIT//'.LCHA','E',JLCHA)
           CALL JEVEUO(EXCIT//'.FCHA','E',JFCHA)
           CALL GETVID('AFFE','CHARGE',IOCC,IARG,NCHAR,ZK24(JLCHA),N1)
-          IF (.FALSE.) THEN
-            NOMFCT='&&CRTYPE.CONST1'
-            CALL FOCSTE(NOMFCT,'TOUTRESU',1.D0,'G')
-            DO 99,I=1,NCHAR
-              ZK24(JFCHA-1+I)=NOMFCT
- 99         CONTINUE
-          ENDIF
         ENDIF
 
         CALL GETVID('AFFE','CHAM_GD',IOCC,IARG,1,CHAMP,N1)

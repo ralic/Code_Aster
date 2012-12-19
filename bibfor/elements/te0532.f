@@ -5,7 +5,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,39 +36,39 @@ C           ---> NOMTE  : NOM DU TYPE ELEMENT
 C
 C......................................................................
 
-
-      INTEGER      I,J,IFA,IPGF,ISSPG,NI,PLI
+      INTEGER     ALGOCR,I,J,IFA,IPGF,ISSPG
       INTEGER      JINDCO,JDONCO,JLST,IPOIDS,IVF,IDFDE,JGANO,IGEOM
       INTEGER      IDEPL,JPTINT,JAINT,JCFACE,JLONCH,JGLISS
-      INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,JOUT1,JOUT2
+      INTEGER     IVFF,IADZI,IAZK24,IBID,IB,JOUT1,JOUT2
       INTEGER      JOUT3,JMEMCO,NDIM,NFH,DDLC,DDLS,DDLM
-      INTEGER      NPG,NPGF,XOULA,INCOCA,INTEG,NFE,NINTER,NNOF
-      INTEGER      NFACE,CFACE(5,3)
-      INTEGER      NNO,NNOS,NNOM,NNOL,PLA(27),LACT(8),NLACT
-      INTEGER      IER,CONTAC,JBASEC,NPTF,NDDL,NVEC,NFISS,JFISNO
-      INTEGER      IMATE,SINGU,JCOHES,JCOHEO,JHEANO,IFISS,JHEAFA,NCOMPH
+      INTEGER     NPG,NPGF,INCOCA,NFE,NINTER,NNOF
+      INTEGER     INDCO,GLISS,MEMCO,NFACE,CFACE(5,3)
+      INTEGER     NNO,NNOS,NNOM,NNOL,PLA(27),LACT(8),NLACT,NVEC
+      INTEGER     CONTAC,JBASEC,NDDL,NFISS,JFISNO
+      INTEGER     JMATE,SINGU,JCOHES,JCOHEO,JHEANO,IFISS,JHEAFA,NCOMPH
       INTEGER      JTAB(2),IRET,NCOMPD,NCOMPP,NCOMPA,NCOMPB,NCOMPC
-      INTEGER      IBASEC,IPTINT,IAINT,KPG,SPT
-      INTEGER ICODRE(3)
-      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC,NOMRES(3),JOB
+      INTEGER     NBSPG,NSPFIS,NVIT,NCOMPV
+      INTEGER     ICODRE(3),NPTF,KSP,SPT
+      CHARACTER*8     ELREF,TYPMA,ELREFC,JOB
+      CHARACTER*8 ELC,FPG
       CHARACTER*8  FAMI,POUM
       CHARACTER*9  PHEN
-      CHARACTER*16 ENR
-      REAL*8       FFPC(27),DFBID(27,3),CZMFE
-      REAL*8       FFI,REAC,FFP(27),FFC(8),LC
-      REAL*8       PREC,ND(3),DN,SAUT(3),LAMBDA,LST,R,RR,G(3),RBID
-      REAL*8       ALPHA0,P(3,3),PP(3,3),DSIDEP(6,6),TAU1(3)
-      REAL*8       TAU2(3),ALPHA,DNOR(3),DTANG(3),AM3(3),SIGMA(6)
-      REAL*8       VALRES(3),RELA,RHON,R8PREM
+      REAL*8     FFPC(27),RELA,R8PREM,EPS
+      REAL*8     REAC,FFP(27),FFC(8),LC,R3BID(3),JAC
+      REAL*8     PREC,ND(3),DN,SAUT(3),RR,RBID,R3BD(3)
+      REAL*8     COEFCP,COEFFP,COEFCR,COEFFR,R6BID(6)
+      REAL*8     P(3,3),PP(3,3),DSIDEP(6,6),TAU1(3),LAMB(3)
+      REAL*8     TAU2(3),ALPHA(3),DNOR(3),DTANG(3),AM3(3),SIGMA(6)
+      REAL*8     VALRES(3),COHES(3),MAT3BD(3,3),MAT6BD(6,6)
       PARAMETER    (PREC=1.D-16)
-      LOGICAL      IMPRIM,NOEUD
-      DATA         NOMRES /'GC','SIGM_C','PENA_ADH'/
+      LOGICAL     IMPRIM,LBID
 C......................................................................
 
       CALL JEMARQ()
 
       IMPRIM=.FALSE.
       INCOCA=0
+      NBSPG=0
       CALL VECINI(27,0.D0,FFPC)
       CALL VECINI(27,0.D0,FFP)
       CALL VECINI(8,0.D0,FFC)
@@ -85,11 +85,8 @@ C
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
 C
-C     RECUPERATION DU TYPE DE CONTACT
-      NOEUD=.FALSE.
-      CALL TEATTR (NOMTE,'C','XLAG',LAG,IER)
-      CALL ASSERT(IER.EQ.0)
-      IF (LAG(1:5).EQ.'NOEUD') NOEUD=.TRUE.
+C --- ROUTINE SPECIFIQUE P2P1
+C.
       CALL ELELIN(CONTAC,ELREF,ELREFC,IBID,IBID)
 
 C     RECUPERATION DES ENTRÉES / SORTIE
@@ -130,245 +127,186 @@ C     DIMENSSION DES GRANDEURS DANS LA CARTE
       CALL JEVECH('PINCOCA','E',JOUT1)
       CALL JEVECH('PINDCOO','E',JOUT2)
       CALL JEVECH('PINDMEM','E',JOUT3)
-
-      CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)
 C
 C --- BOUCLE SUR LES FISSURES
 C
       DO 90 IFISS = 1,NFISS
-      IF (ENR.EQ.'XHC') THEN
-        RELA   = ZR(JDONCO-1+(IFISS-1)*NCOMPD+10)
-        CZMFE  = ZR(JDONCO-1+(IFISS-1)*NCOMPD+11)
-      ELSE
-        RELA  = 0.0D0
-        CZMFE = 0.D0
-      ENDIF
-      IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
-        CALL JEVECH('PMATERC','L',IMATE)
-        IMATE = IMATE + 60*(IFISS-1)
+C
+C --- RECUPERATION DIVERSES DONNEES CONTACT
+C
+         CALL XDOCON(ALGOCR,IBID  ,CFACE ,CONTAC,COEFCP,
+     &               COEFFP,COEFCR,COEFFR,ELC   ,FPG   ,
+     &               IFISS ,IVFF  ,JCFACE,JDONCO,JLONCH,
+     &               RBID  ,NSPFIS,NCOMPD,NDIM  ,NFACE ,
+     &               NINTER,NNOF  ,NOMTE ,NPGF  ,NPTF  ,
+     &               RELA)
+        IF(NINTER.EQ.0) GOTO 91
+C
+C --- RECUPERATION MATERIAU ET VARIABLES INTERNES COHESIF
+C
+        IF(ALGOCR.EQ.3) THEN
+          CALL JEVECH('PMATERC','L',JMATE)
         CALL JEVECH('PCOHES' ,'L',JCOHES)
         CALL JEVECH('PCOHESO' ,'E',JCOHEO)
-      ENDIF
-C     RÉCUPÉRATIONS DES DONNÉES SUR LE CONTACT ET
-C     SUR LA TOPOLOGIE DES FACETTES
-      NINTER=ZI(JLONCH+3*(IFISS-1)-1+1)
-      IF (NINTER.EQ.0) GOTO 90
-      NFACE=ZI(JLONCH+3*(IFISS-1)-1+2)
-      NPTF=ZI(JLONCH+3*(IFISS-1)-1+3)
-      RHON   = ZR(JDONCO-1+(IFISS-1)*NCOMPD+1)
-
-        DO 15 I=1,NFACE
-          DO 16 J=1,NPTF
-            CFACE(I,J)=ZI(JCFACE-1+NCOMPC*(IFISS-1)+NPTF*(I-1)+J)
-16        CONTINUE
-15      CONTINUE
-        IBASEC = JBASEC + NCOMPB*(IFISS-1)
-        IPTINT = JPTINT + NCOMPP*(IFISS-1)
-        IAINT  = JAINT + NCOMPA*(IFISS-1)
-C
-C       SCHEMA D'INTEGRATION NUMERIQUE ET ELEM DE REFERENCE DE CONTACT
-        INTEG = NINT(ZR(JDONCO+(IFISS-1)*NCOMPD-1+4))
-        CALL XMINTE(NDIM,INTEG,FPG)
-        IF (NDIM .EQ. 3) THEN
-          ELC='TR3'
-        ELSEIF (NDIM.EQ.2) THEN
-          IF(CONTAC.LE.2) THEN
-            ELC='SE2'
-          ELSE
-            ELC='SE3'
-          ENDIF
+          CALL TECACH('OOO','PCOHES',2,JTAB,IRET)
+          NCOMPV = JTAB(2)
         ENDIF
 C
-        CALL ELREF4(ELC,FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,IDFDEF,IBID)
-C
-C       VALEUR INITIALE DE LA VARIABLE INTERNE
-C       DEFINITIONS DIFFERENTES SELON LA LOI COHESIVE
-        FAMI='FPG1'
-        KPG=1
-        SPT=1
-        POUM='+'
-        IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
-          PHEN = 'RUPT_FRAG'
-          CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ',PHEN,0,' ',0.D0,3,
-     &              NOMRES,VALRES,ICODRE, 1)
-          IF(RELA.EQ.1.D0) LC=VALRES(1)/VALRES(2)
-          IF(RELA.EQ.2.D0) LC=2.D0*VALRES(1)/VALRES(2)
-          ALPHA0=VALRES(3)*LC
-        ENDIF
-
 C       IMPRESSION (1ERE PARTIE)
+C
         IF (IMPRIM) THEN
           WRITE(6,*)' '
           WRITE(6,697)
  697      FORMAT(4X,'I_IN',7X,'DN',11X,'REAC',7X,'I_OUT')
         ENDIF
 C
-C       LISTES DES LAMBDAS ACTIFS PAR FACETTE
+C --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
 C
-        IF(NOEUD) CALL XLACTI(TYPMA,NINTER,IAINT,LACT,NLACT)
-
-C       BOUCLE SUR LES FACETTES
+        CALL XMULCO(CONTAC,DDLC,DDLM,JAINT,IFISS,
+     &              JHEANO,IBID,LACT,.FALSE.,LBID,NDIM,NFE,
+     &              NFH,NFISS,NINTER,NLACT,NNO,
+     &              NNOL,NNOM,NNOS,PLA,TYPMA)
+C
+C --- BOUCLE SUR LES FACETTES
+C
         DO 100 IFA=1,NFACE
-
-C          NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
-          IF (NOEUD) THEN
-            IF (CONTAC.EQ.1 .OR. CONTAC.EQ.4) NNOL=NNO
-            IF (CONTAC.EQ.3) NNOL=NNOS
-            DO 13 I=1,NNO
-              CALL XPLMAT(NDIM,NFH,NFE,DDLC,DDLM,NNO,NNOM,I,PLI)
-              IF (NFISS.EQ.1) THEN
-                PLA(I) = PLI
-              ELSE
-                PLA(I) = PLI+NDIM*(ZI(JHEANO-1+(I-1)*NFISS+IFISS)-1)
-              ENDIF
- 13         CONTINUE
-          ELSE
-            NNOL=NNOF
-            DO 14 I=1,NNOF
-C             XOULA  : RENVOIE LE NUMERO DU NOEUD PORTANT CE LAMBDA
-              NI=XOULA(CFACE,IFA,I,JAINT,TYPMA,CONTAC)
-C             PLACE DU LAMBDA DANS LA MATRICE
-              CALL XPLMAT(NDIM,NFH,NFE,DDLC,DDLM,NNO,NNOM,NI,PLI)
-              PLA(I)=PLI
- 14         CONTINUE
-          ENDIF
-
-C         BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
+C
+C --- BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
+C
           DO 110 IPGF=1,NPGF
 C
-C            INDICE DE CE POINT DE GAUSS DANS INDCO
-             ISSPG=NPGF*(IFA-1)+IPGF
+C --- RECUPERATION DES STATUTS POUR LE POINT DE GAUSS
 C
-C            CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
-C            ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
-C            ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
-             IF (NDIM.EQ.3) THEN
-               CALL XJACFF(ELREF,ELREFC,ELC,NDIM,FPG,IPTINT,IFA,
-     &          CFACE,IPGF,NNO,IGEOM,IBASEC,G,RBID,FFP,FFPC,
-     &          DFBID,ND,TAU1,TAU2)
-             ELSEIF (NDIM.EQ.2) THEN
-               CALL XJACF2(ELREF,ELREFC,ELC,NDIM,FPG,IPTINT,IFA,
-     &               CFACE,NPTF,IPGF,NNO,IGEOM,IBASEC,G,
-     &               RBID,FFP,FFPC,DFBID,ND,TAU1)
-             ENDIF
-
-C            CALCUL DES FONCTIONS DE FORMES DE CONTACT
-C            DANS LE CAS LINEAIRE
-             IF (CONTAC.EQ.1) THEN
-               CALL XMOFFC(LACT,NLACT,NNO,FFP,FFC)
-             ELSEIF (CONTAC.EQ.3) THEN
-               CALL XMOFFC(LACT,NLACT,NNOS,FFPC,FFC)
-             ELSEIF (CONTAC.EQ.4) THEN
-               CALL XMOFFC(LACT,NLACT,NNO,FFP,FFC)
-             ENDIF
+          ISSPG = NPGF*(IFA-1)+IPGF
+          INDCO = ZI(JINDCO-1+NBSPG+ISSPG)
              DN = 0.D0
-             LST=0.D0
-             REAC = 0.D0
-             IF (SINGU.EQ.1) THEN
-               DO 112 I=1,NNO
-                 LST=LST+ZR(JLST-1+I)*FFP(I)
-112            CONTINUE
-               R=ABS(LST)
-               RR=SQRT(R)
+          IF(ALGOCR.EQ.3) THEN
+            DO 2 I=1,NCOMPV
+              COHES(I) = ZR(JCOHES+NCOMPV*(NBSPG+ISSPG-1)-1+I)
+2           CONTINUE
              ENDIF
+C
+C --- PREPARATION DU CALCUL
+C
+          CALL XMPREP(CFACE ,CONTAC,ELREF ,ELREFC,ELC   ,
+     &                FFC   ,FFP   ,FPG   ,JAINT ,JBASEC,
+     &                JPTINT,IFA   ,IGEOM ,IPGF  ,JAC   ,
+     &                JLST  ,LACT  ,ND    ,NDIM  ,NINTER,
+     &                NLACT ,NNO   ,NNOS  ,NPTF  ,NVIT  ,
+     &                RR    ,SINGU ,TAU1  ,TAU2)
+C
 C            CALCUL COMPOSANTE NORMALE SAUT DE DEPLACEMENT
+C
              NVEC=1
              CALL XMMSA3(NDIM,NNO,NNOS,FFP,NDDL,NVEC,ZR(IDEPL),
      &           ZR(IDEPL),ZR(IDEPL),NFH,SINGU,RR,DDLS,DDLM,
-     &                   JFISNO,NFISS,IFISS,JHEAFA,NCOMPH,IFA,
-     &           SAUT)
-
-             IF(CZMFE.EQ.1.D0) THEN
-               ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 0
-               ZI(JOUT3-1+60*(IFISS-1)+ISSPG) = 0
-             ELSE
+     &           JFISNO,NFISS,IFISS,JHEAFA,NCOMPH,IFA,SAUT)
+C
+             IF(ALGOCR.EQ.1.OR.ALGOCR.EQ.2) THEN
+               GLISS = ZI(JGLISS-1+NBSPG+ISSPG)
+               MEMCO = ZI(JMEMCO-1+NBSPG+ISSPG)             
                DO 143 J = 1,NDIM
                  DN = DN + SAUT(J)*ND(J)
  143           CONTINUE
+               NVEC = 1
+               CALL XXLAGM(FFC   ,IDEPL ,IBID ,
+     &                     LACT  ,NDIM  ,
+     &                     NNOL  ,PLA   ,REAC  ,R3BID,
+     &                     TAU1  ,TAU2,NVEC)
 
-C              CALCUL DE LA REACTION A PARTIR DES LAMBDA DE DEPPLU
-               DO 150 I = 1,NNOL
-                 PLI=PLA(I)
-                 IF (NOEUD) THEN
-                   FFI=FFC(I)
-                 ELSE
-                   FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-                 ENDIF
-                 LAMBDA = ZR(IDEPL-1+PLI)
-                 REAC = REAC + FFI * LAMBDA
- 150           CONTINUE
-
-               IF (ZI(JINDCO-1+60*(IFISS-1)+ISSPG).EQ.0) THEN
+               IF (INDCO.EQ.0) THEN
 
 C              ON REGARDE LA DISTANCE DN DES POINTS SUPPOSÉS
 C              NON CONTACTANTS :
 C              INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
 
                  IF (DN.GT.PREC) THEN
-                   ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 1
-                   ZI(JOUT3-1+60*(IFISS-1)+ISSPG) = 1
+                   ZI(JOUT2-1+NBSPG+ISSPG) = 1
+                   ZI(JOUT3-1+NBSPG+ISSPG) = 1
                    INCOCA = 1
                  ELSE
-                   ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 0
+                   ZI(JOUT2-1+NBSPG+ISSPG) = 0
                  END IF
 C
 C                ON REGARDE LA REACTION POUR LES POINTS
 C                SUPPOSES CONTACTANT :
-               ELSE IF (ZI(JINDCO-1+60*(IFISS-1)+ISSPG).EQ.1) THEN
-                 IF ((REAC-RHON*DN).GT.R8PREM()) THEN
+               ELSE IF (INDCO.EQ.1) THEN
+                 IF (REAC.GT.-1.D-3) THEN
 C                  SI GLISSIERE=OUI ET IL Y A EU DU CONTACT DEJA SUR CE
 C                  POINT (MEMCON=1), ALORS ON FORCE LE CONTACT
-                  IF ((ZI(JGLISS-1+60*(IFISS-1)+ISSPG).EQ.1).AND.
-     &            (ZI(JMEMCO-1+60*(IFISS-1)+ISSPG).EQ.1)) THEN
-                    ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 1
-                    ZI(JOUT3-1+60*(IFISS-1)+ISSPG) = 1
-                  ELSE IF (ZI(JGLISS-1+60*(IFISS-1)+ISSPG).EQ.0) THEN
-                    ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 0
+                  IF ((GLISS.EQ.1).AND.
+     &                (MEMCO.EQ.1)) THEN
+                    ZI(JOUT2-1+NBSPG+ISSPG) = 1
+                    ZI(JOUT3-1+NBSPG+ISSPG) = 1
+                  ELSE IF (GLISS.EQ.0) THEN
+                    ZI(JOUT2-1+NBSPG+ISSPG) = 0
                     INCOCA = 1
                   ENDIF
                 ELSE
-                  ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 1
-                  ZI(JOUT3-1+60*(IFISS-1)+ISSPG) = 1
+                  ZI(JOUT2-1+NBSPG+ISSPG) = 1
+                  ZI(JOUT3-1+NBSPG+ISSPG) = 1
                 ENDIF
 C
                ELSE
 C                SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1:
 C                PROBLEME DE STATUT DE CONTACT.
-                 CALL ASSERT(ZI(JINDCO-1+60*(IFISS-1)+ISSPG).EQ.0
-     &                   .OR.ZI(JINDCO-1+60*(IFISS-1)+ISSPG).EQ.1)
+                 CALL ASSERT(INDCO.EQ.0.OR.INDCO.EQ.1)
                END IF
 C
 C           IMPRESSION (2EME PARTIE)
                IF (IMPRIM) THEN
-                 WRITE(6,698)ZI(JINDCO-1+60*(IFISS-1)+ISSPG),DN,REAC,
-     &                        ZI(JOUT2-1+60*(IFISS-1)+ISSPG)
+                 WRITE(6,698)INDCO,DN,REAC,
+     &                        ZI(JOUT2-1+NBSPG+ISSPG)
  698             FORMAT(5X,I1,4X,1PE12.5,4X,1PE12.5,4X,I1)
                ENDIF
-
-             ENDIF
-
-             IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
+C
+             ELSE IF(ALGOCR.EQ.3) THEN
 C
 C              CALCUL SAUT DE DEPLACEMENT EQUIVALENT
-               JOB='SAUT_EQ'
-               CALL XMMSA2(NDIM  ,IPGF  ,ZI(IMATE),SAUT  ,ND   ,
-     &                    TAU1 ,TAU2  ,ZR(JCOHES-1+60*(IFISS-1)+ISSPG),
+               IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
+               JOB='ACTU_VI'
+               CALL XMMSA2(NDIM  ,IPGF  ,ZI(JMATE),SAUT  ,ND   ,
+     &                    TAU1 ,TAU2  ,COHES,
      &                    JOB  ,RELA,
      &                    ALPHA,DSIDEP,SIGMA       ,PP   ,DNOR,
      &                    DTANG,P   ,AM3)
-C
-C              ACTUALISATION VARIABLE INTERNE
-               IF (ALPHA.GT.ZR(JCOHES-1+60*(IFISS-1)+ISSPG)) THEN
-                 ZR(JCOHEO-1+60*(IFISS-1)+ISSPG)=ALPHA
-                 IF(ALPHA.LT.ALPHA0) ZR(JCOHEO-1+60*(IFISS-1)+ISSPG)=0
-               ELSE IF (ALPHA.LE.ZR(JCOHES-1+60*(IFISS-1)+ISSPG)) THEN
-                 ZR(JCOHEO-1+60*(IFISS-1)+ISSPG)=
-     &                                   ZR(JCOHES-1+60*(IFISS-1)+ISSPG)
+               ELSEIF(RELA.EQ.3.D0.OR.RELA.EQ.4.D0) THEN
+C NOUVEAUTE, IL FAUT RENSEIGNER LAMBDA
+               NVEC = 1
+               CALL XXLAG2(FFC   ,IDEPL ,IBID  ,LACT  ,NDIM  ,
+     &                     NNOL  ,PLA   ,LAMB  ,NVEC)
+               JOB='ACTU_VI'
+               CALL XMMSA5(NDIM ,IPGF  ,ZI(JMATE) ,SAUT ,LAMB ,
+     &                     ND   ,TAU1 ,TAU2  ,COHES ,JOB  ,
+     &                     RELA ,ALPHA,MAT6BD,R6BID ,MAT3BD,
+     &                     R3BD ,RBID)
                ENDIF
+C
+C --- ACTUALISATION VARIABLE INTERNE
+C
+          IF(ALGOCR.EQ.3) THEN
+            DO 3 I=1,NCOMPV
+             ZR(JCOHEO+NCOMPV*(NBSPG+ISSPG-1)-1+I) = ALPHA(I)
+3           CONTINUE
+            EPS = R8PREM()
+            CALL ASSERT((ALPHA(1)+EPS).GE.COHES(1))
+          ENDIF
+C
+C CHAMPS LIES AU CONTACT INUTILES POUR LE COHESIF
+C
+               ZI(JOUT2-1+NBSPG+ISSPG) = 0
+               ZI(JOUT3-1+NBSPG+ISSPG) = 0
+               INCOCA = 0
              ENDIF
 
 110       CONTINUE
 100     CONTINUE
+        NBSPG  = NBSPG  + NSPFIS
+91      CONTINUE
+        JBASEC = JBASEC + NCOMPB
+        JPTINT = JPTINT + NCOMPP
+        JAINT  = JAINT  + NCOMPA
+        JCFACE = JCFACE + NCOMPC
  90   CONTINUE
 
 C     ENREGISTREMENT DES CHAMPS DE SORTIE

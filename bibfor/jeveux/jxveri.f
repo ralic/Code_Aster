@@ -1,6 +1,6 @@
-      SUBROUTINE JXVERI( CMESS )
+      SUBROUTINE JXVERI()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,12 +19,11 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux_private.h'
-      CHARACTER*(*)   CMESS
 C ----------------------------------------------------------------------
 C VERIFIE L'INTEGRITE DU CHAINAGE AVANT DES SEGMENTS DE VALEURS ET DE LA
 C ZONE MEMOIRE UTILISEE
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C ----------------------------------------------------------------------
       INTEGER          ISSTAT
@@ -41,12 +40,12 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)

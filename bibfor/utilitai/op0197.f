@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C     ------------------------------------------------------------------
      &             CHCOP1,CHCOP2
       CHARACTER*16 OPTCAL(2), METHOD, NOMCMD, NOMRC, CONCEP, PARCAL(2),
      &             NOPARR(NBPARR), NOPARK(NBPARK), NOPARS(NBPARS),
-     &             NOPART(NBPART), K16BID
+     &             NOPART(NBPART)
       CHARACTER*19 NOMRES
       CHARACTER*24 COLLEC, MATE ,NOOBJ
       INTEGER      NBRESU, IFM, N1, NIV, ITEMP, ICHMAT, IRESU, IMOD,
@@ -598,7 +598,7 @@ C
       CALL U2MESG('I', 'UTILITAI6_56',0,' ',1,VALII,1,VALRR)
 C
       CALL TBIMPR ( TAPAIT, 'EXCEL', IFM, NTPSI+2, ZK16(INOPA),
-     &              0, K16BID, '1PE12.5', ' ')
+     &              0,'1PE12.5')
 C
       CALL JEDEMA()
       END

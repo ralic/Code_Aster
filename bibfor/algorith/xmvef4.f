@@ -1,6 +1,6 @@
-      SUBROUTINE XMVEF4(NDIM,NNOL,NNOF,PLA,IPGF,IVFF,
-     &                  FFC,REAC12,JAC,NOEUD,
-     &                  TAU1,TAU2,CFACE,IFA,LACT,
+      SUBROUTINE XMVEF4(NDIM,NNOL,PLA,
+     &                  FFC,REAC12,JAC,
+     &                  TAU1,TAU2,LACT,
      &                  VTMP )
 
       IMPLICIT NONE
@@ -12,7 +12,7 @@
       LOGICAL     NOEUD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,14 +82,9 @@ C
       CALL VECINI(3,0.D0,TT)
       DO 165 I = 1,NNOL
         PLI=PLA(I)
-        IF (NOEUD) THEN
-          FFI=FFC(I)
-          NLI=LACT(I)
-          IF (NLI.EQ.0) GOTO 165
-        ELSE
-          FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-          NLI=CFACE(IFA,I)
-        ENDIF
+        FFI=FFC(I)
+        NLI=LACT(I)
+        IF (NLI.EQ.0) GOTO 165
 
         TT(1)=DDOT(NDIM,TAU1(1),1,REAC12,1)
         IF (NDIM .EQ.3) TT(2)=DDOT(NDIM,TAU2(1),1,REAC12,1)

@@ -7,7 +7,7 @@ C
       CHARACTER*64 NOCHMD
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/10/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +42,7 @@ C
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 66)
+      PARAMETER (NTYMAX = 69)
       INTEGER EDCONN
       PARAMETER (EDCONN=1)
       INTEGER EDMAIL
@@ -76,7 +76,7 @@ C
      &              'TE4TE4  ','QU8QU8  ','TR6TR6  ','SE2TR3  ',
      &              'SE2TR6  ','SE2QU4  ','SE2QU8  ','SE2QU9  ',
      &              'SE3TR3  ','SE3TR6  ','SE3QU4  ','SE3QU8  ',
-     &              'SE3QU9  '/
+     &              'SE3QU9  ','H20H20  ','P15P15  ','T10T10  '/
 C
       DATA NUMMED  /1,         102,       0,         103,
      &              0,         0,
@@ -95,7 +95,7 @@ C
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
-     &              0/
+     &              0,         0,         0,         0/
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()

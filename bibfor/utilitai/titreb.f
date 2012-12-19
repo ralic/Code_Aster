@@ -6,7 +6,7 @@
       INTEGER       ILIGD,ICOLD,NBTITR,ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -149,7 +149,7 @@ C        --- 'RESULTAT' ---
 C
 C        --- 'TYPE' ---
    50    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) GOTO 9001
@@ -170,7 +170,7 @@ C        --- CODE --- (SUPPRIME)
 C
 C        --- TITRE_MAILLAGE ---
    80    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
@@ -210,7 +210,7 @@ C        --- RETOUR A LA LIGNE ---
 C
 C        --- NB_ELEM  ---
   110    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
@@ -230,7 +230,7 @@ C        --- NB_ELEM  ---
 C
 C        --- NB_NOEUD ---
   120    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
@@ -250,7 +250,7 @@ C        --- NB_NOEUD ---
 C
 C        --- PHENOMENE ---
   130    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
@@ -269,7 +269,7 @@ C        --- PHENOMENE ---
 C
 C        --- DIMENSION GEOMETRIE ---
   140    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
@@ -288,7 +288,7 @@ C        --- DIMENSION GEOMETRIE ---
 C
 C        --- NOMBRE D'EQUATIONS ---
   150    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
@@ -301,7 +301,7 @@ C        --- NOMBRE D'EQUATIONS ---
 C
 C        --- LOCALISATION POUR UN CHAM_ELEM ---
   160    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL DISMOI('C','TYPE_CHAMP',PARA(1),'CHAMP',IBID,
      &                  CBID,IERD)
@@ -322,7 +322,7 @@ C        --- LOCALISATION POUR UN CHAM_ELEM ---
 C
 C        --- NOM SYMBOLIQUE POUR UN CHAMP D'UN RESULTAT ---
   170    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID)
             CGEN = K16BID
@@ -331,7 +331,7 @@ C        --- NOM SYMBOLIQUE POUR UN CHAMP D'UN RESULTAT ---
 C
 C        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
   180    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID)
             CALL CODENT(IBID,'G',CGEN(1:16))
@@ -340,7 +340,7 @@ C        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
 C
 C        --- ACCES ---
   190    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL RSNOPA(PARA(1)(1:8),0,'&&TITREB.NOM_ACCE',NBACCE,NBPA)
             CALL JEEXIN('&&TITREB.NOM_ACCE',IRET)
@@ -464,7 +464,7 @@ C                   K80
 C
 C        --- VALEUR PARAMETRE ---
   200    CONTINUE
-            CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
+            CALL TITREC(DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             IDEB = 1
             DO 210 IUTI = 1,2

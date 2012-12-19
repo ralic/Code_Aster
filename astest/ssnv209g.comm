@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209g.para = tps_job 1000 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,10 +37,10 @@ DEBUT( CODE=_F(  NOM = 'SSNV209G',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CALCULEL
 #                MAILLAGE
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
+MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
 
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                    MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO= (_F(GROUP_MA='VOLU'),
                                     _F(GROUP_MA='LIG3'),
                                     _F(GROUP_MA='SUR1',
@@ -74,9 +74,6 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                     ),
                     INFO=1);
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('VOLU')));
-
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=(_F(NOM='NFISSU',
@@ -105,7 +102,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='3D'),
                            _F(GROUP_MA=('VOLU'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT'),
+                              MODELISATION='3D'),
                            _F(GROUP_MA=('SUR2'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D'),
@@ -124,7 +121,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='P1P1A',
+                         CONTACT='P1P1',
                          INFO=1,
                          );
 
@@ -179,7 +176,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_CONT      = 100.,
                                ALGO_FROT      = 'STANDARD',
                                COEF_FROT      = 100.,                                  
-                               ALGO_LAGR      = 'NON',
+                               ALGO_LAGR      = 'VERSION2',
                              ), 
                          ),
                    );
@@ -261,7 +258,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 #             POST-TRAITEMENT POUR LA VISUALISATION
 #-----------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK)
 
 MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
@@ -304,7 +301,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              PHENOMENE='MECANIQUE',
                              MODELISATION='3D'))
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+RES_XFEM=POST_CHAM_XFEM(
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
                         )

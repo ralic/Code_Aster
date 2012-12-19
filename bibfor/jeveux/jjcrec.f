@@ -1,6 +1,6 @@
       SUBROUTINE JJCREC ( ICL , IDA , GENRI , TYPEI , NB , IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,14 +32,14 @@ C IN  TYPEI : TYPE DE L'OS
 C IN  NB    : LONGEUR EN MOTS DU SEGMENT DE VALEUR ASSOCIE
 C OUT IADMI : ADRESSE DU SEGMENT DE VALEUR DANS ISZON
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C
 C-----------------------------------------------------------------------
-      INTEGER IADYN ,IV ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD 
-      INTEGER JIADD ,JIADM ,JJPREM ,JLONG ,JLONO ,JLTYP ,JLUTI 
-      INTEGER JMARQ ,JORIG ,JRNOM ,JTYPE ,L ,LONOI ,N 
-      INTEGER NBL ,NHC 
+      INTEGER IADYN ,IV ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD
+      INTEGER JIADD ,JIADM ,JJPREM ,JLONG ,JLONO ,JLTYP ,JLUTI
+      INTEGER JMARQ ,JORIG ,JRNOM ,JTYPE ,L ,LONOI ,N
+      INTEGER NBL ,NHC
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -114,7 +114,7 @@ C DEB ------------------------------------------------------------------
         CALL JJALLT(NBL,ICL,GENRI,TYPEI,IV,'INIT',IADMI,IADYN)
         IADM(JIADM (ICL) + 2*IDA-1 ) = IADMI
         IADM(JIADM (ICL) + 2*IDA   ) = IADYN
-        CALL JJECRS(IADMI,IADYN,ICL,IDA,0,'E',IMARQ(JMARQ(ICL)+2*IDA-1))
+        CALL JJECRS(IADMI,ICL,IDA,0,'E',IMARQ(JMARQ(ICL)+2*IDA-1))
         IF ( GENRI .EQ. 'N' ) THEN
           NHC = JJPREM(NB,IRT)
           ISZON(JISZON + IADMI - 1 + ILOREP ) = NHC

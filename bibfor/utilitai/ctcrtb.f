@@ -8,7 +8,7 @@
       CHARACTER*24 NKCHA,NKCMP
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,13 +49,15 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
+      CALL ASSERT(TYCH.EQ.'ELGA'.OR.TYCH.EQ.'ELNO'.OR.TYCH.EQ.'NOEU')
 C
 C --- 0. INITIALISATION
 C     -----------------
       CHAMNS='&&CTCRTB.CHAM_NO_S'
       CHAMES='&&CTCRTB.CHAM_EL_S'
       CALL JEVEUO(NKCMP,'L',JCMP)
-C
+
+
 C     ----------------------------------------------------
 C --- 1. DETERMINATION DU NOMBRE DE PARAMETRES DE LA TABLE
 C     ----------------------------------------------------
@@ -73,15 +75,17 @@ C     ----------------------------------------------------
         KK=KK+1
       ENDIF
 
-      IF(TYCH(1:2).EQ.'EL')THEN
+      IF(TYCH.EQ.'NOEU')THEN
+C        -- NOEUD
          KK=KK+1
-      ENDIF
-      IF(TYCH.EQ.'ELNO' .OR. TYCH.EQ.'NOEU')THEN
-         KK=KK+1
-      ELSEIF(TYCH.EQ.'ELGA')THEN
-         KK=KK+2
       ENDIF
 
+      IF(TYCH(1:2).EQ.'EL')THEN
+C        -- MAILLE + NOEUD + SOUS_POINT
+         KK=KK+3
+      ENDIF
+
+C     -- COOR_X, ...
       KK=KK+1
       IF(NDIM.GE.2)THEN
          KK=KK+1
@@ -89,6 +93,8 @@ C     ----------------------------------------------------
       IF(NDIM.EQ.3)THEN
          KK=KK+1
       ENDIF
+
+C     -- CMPS :
       N=NBCMP
       CALL JEVEUO(NKCHA,'L',JKCHA)
       DO 60 I=1,NBVAL
@@ -173,6 +179,9 @@ C     ------------------------------------------------------------------
          ZK16(JPARAK+KK)='POINT'
          ZK8(JTYPEK+KK)='I'
          KK=KK+1
+      ENDIF
+      IF(TYCH(1:2).EQ.'EL')THEN
+C        -- TOUS LES CHAMPS ELXX PEUVENT AVOIR DES SOUS_POINT :
          ZK16(JPARAK+KK)='SOUS_POINT'
          ZK8(JTYPEK+KK)='I'
          KK=KK+1

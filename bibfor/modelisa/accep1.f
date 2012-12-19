@@ -1,8 +1,8 @@
-      SUBROUTINE ACCEP1(NOMRES,MODMEC,LIGRMO,NBM,DIR,YANG)
+      SUBROUTINE ACCEP1(MODMEC,LIGRMO,NBM,DIR,YANG)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C-----------------------------------------------------------------------
       COMPLEX*16 CBID
       CHARACTER*1 K1BID
       CHARACTER*7 INCR,IELEM,IMODE
-      CHARACTER*8 VETEL,NOMRES,LPAIN(3),LPAOUT(1),MODELE,MODMEC
+      CHARACTER*8 VETEL,LPAIN(3),LPAOUT(1),MODELE,MODMEC,GRMA8
       CHARACTER*8 MOINT,MAILLA,PARTIT
       CHARACTER*16 OPTION
       CHARACTER*19 NOMCHA,CHGEOM,MATAS,CHHARM
@@ -58,7 +58,6 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       OPTION = 'ACCEPTANCE'
-      INCR = 'BID'
       CALL GETVID(' ','MODELE_INTERFACE',0,IARG,1,MOINT,NI)
       IF (NI.LE.0) THEN
         CALL JEVEUO(MODMEC//'           .REFD','L',IREFE)
@@ -74,6 +73,9 @@ C-----------------------------------------------------------------------
         IF (NMA.LE.0) THEN
           LIGRMO = ZK24(INOLI)
         ELSE
+          IF (GRMA(9:24).NE.' ') WRITE(6,*) 'DEBUG GRMA= >',GRMA,'<'
+          CALL ASSERT(GRMA(9:24).EQ.' ')
+          GRMA8=GRMA(1:8)
           CALL JELIRA(MAILLA//'.GROUPEMA','NMAXOC',NBGMA,K1BID)
           DO 10 JGMA = 1,NBGMA
             CALL JENUNO(JEXNUM(MAILLA//'.GROUPEMA',JGMA),NOM)
@@ -88,15 +90,15 @@ C-----------------------------------------------------------------------
 
 C CREATION D UN .LIEL BASE SUR LE GROUP-MA UTILISATEUR
 
-          CALL JECREC(GRMA//'.MODELE    .LIEL',
+          CALL JECREC(GRMA8//'.MODELE    .LIEL',
      &                'G V                                          I',
      &                'NU','CONTIG','VARIABLE',NBLIEL)
-          CALL JEECRA(GRMA//'.MODELE    .LIEL','LONT',NBLIEL,' ')
-          CALL JEVEUO(GRMA//'.MODELE    .LIEL','E',JDLI)
-          CALL JECROC(JEXNUM(GRMA//'.MODELE    .LIEL',1))
-          CALL JEECRA(JEXNUM(GRMA//'.MODELE    .LIEL',1),'LONMAX',
+          CALL JEECRA(GRMA8//'.MODELE    .LIEL','LONT',NBLIEL,' ')
+          CALL JEVEUO(GRMA8//'.MODELE    .LIEL','E',JDLI)
+          CALL JECROC(JEXNUM(GRMA8//'.MODELE    .LIEL',1))
+          CALL JEECRA(JEXNUM(GRMA8//'.MODELE    .LIEL',1),'LONMAX',
      &                NBELMA+1,' ')
-          CALL JEVEUO(JEXNUM(GRMA//'.MODELE    .LIEL',1),'E',INWMOD)
+          CALL JEVEUO(JEXNUM(GRMA8//'.MODELE    .LIEL',1),'E',INWMOD)
 
           DO 40 JLIEL = 1,NBLIEL
             CALL JEVEUO(JEXNUM(ZK24(INOLI) (1:19)//'.LIEL',JLIEL),'L',
@@ -113,27 +115,27 @@ C CREATION D UN .LIEL BASE SUR LE GROUP-MA UTILISATEUR
    40     CONTINUE
           ZI(INWMOD+NBELMA+1-1) = ZI(ILIEL+NBELMA+1-1)
           IF (TEMOIN.EQ.0) CALL U2MESS('F','MODELISA_5')
-          CALL WKVECT(GRMA//'.MODELE    .LGRF','V V K8',2,JLGRF)
+          CALL WKVECT(GRMA8//'.MODELE    .LGRF','V V K8',2,JLGRF)
           ZK8(JLGRF) = MAILLA
           CALL JEVEUO(ZK24(INOLI) (1:8)//'.MODELE    .NBNO','L',IVRAI)
-          CALL WKVECT(GRMA//'.MODELE    .NBNO','V V I',1,JNBNO)
+          CALL WKVECT(GRMA8//'.MODELE    .NBNO','V V I',1,JNBNO)
           ZI(JNBNO) = ZI(IVRAI)
           CALL JEVEUO(ZK24(INOLI) (1:8)//'.MAILLE','L',IMAIL)
           CALL JELIRA(ZK24(INOLI) (1:8)//'.MAILLE','LONMAX',NBMAIL,
      &                K1BID)
-          CALL WKVECT(GRMA//'.MAILLE','V V I',NBMAIL,JMAIL)
+          CALL WKVECT(GRMA8//'.MAILLE','V V I',NBMAIL,JMAIL)
           DO 50 J = 1,NBMAIL
             ZI(JMAIL+J-1) = ZI(IMAIL+J-1)
    50     CONTINUE
           CALL JEVEUO(ZK24(INOLI) (1:8)//'.MODELE    .PRNM','L',IPRNM)
           CALL JELIRA(ZK24(INOLI) (1:8)//'.MODELE    .PRNM','LONMAX',
      &                NBPRNM,K1BID)
-          CALL WKVECT(GRMA//'.MODELE    .PRNM','V V I',NBPRNM,JPRNM)
+          CALL WKVECT(GRMA8//'.MODELE    .PRNM','V V I',NBPRNM,JPRNM)
           DO 60 J = 1,NBPRNM
             ZI(JPRNM+J-1) = ZI(IPRNM+J-1)
    60     CONTINUE
-          LIGRMO = GRMA//'.MODELE'
-          MODELE = GRMA
+          LIGRMO = GRMA8//'.MODELE'
+          MODELE = GRMA8
         END IF
       ELSE
         LIGRMO = MOINT//'.MODELE'
@@ -160,7 +162,7 @@ C RECHERCHE SI UN CHAMNO A ETE DONNE
 C BOUCLE SUR LES MODES FORMATIONS DES VECTEURS ELEMENTAIRES
       DO 70 I = 1,NBM
         CALL CODENT(I,'D0',INCR)
-        VETEL = '&&V.M'//INCR
+        VETEL = '&&V.M'//INCR(5:7)
         LCHOUT(1) = VETEL//'.VE000'
         IF (NCHAM.EQ.0) THEN
           CALL RSEXCH(' ',MODMEC,'DEPL',I,NOMCHA,IRET)

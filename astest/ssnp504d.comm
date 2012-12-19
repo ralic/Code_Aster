@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504d.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,15 +24,7 @@
 
 DEBUT(CODE=_F(NOM='SSNP504D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
-typma=2
-
-if (typma==1):
-  MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
-
-if (typma==2):
-  MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
-  MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA='SURF'));
+MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                   MAILLAGE=MAILLAG2,
@@ -60,7 +52,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_XFEM_CONT')));       
+                              MODELISATION='C_PLAN')));       
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.24*X-2.125');
                     
@@ -77,7 +69,7 @@ FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
-                         CONTACT='P1P1A',
+                         CONTACT='P1P1',
                          INFO=1);
                          
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -192,11 +184,7 @@ vale = [[0.0,-5.6047280890127E+04,-5.3536786328800E+04,-4.4909070491740E+04,0.0]
         [0.0,0.0,-1.7966653849833E+05,-1.4075454525010E+05,0.0],
         [0.0,0.0,-3.4348433995141E+05,-1.9708554106779E+05,0.0]]
         
-if (typma==1):
-  noeud = ['N45','N230','N249','N268','N83']
-
-if (typma==2):
-  noeud = ['NS283','NS321','NS362','NS403','NS444']
+noeud = ['N43','N228','N247','N266','N81']
 
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',

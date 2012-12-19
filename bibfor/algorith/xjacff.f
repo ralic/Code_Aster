@@ -11,7 +11,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/11/2012   AUTEUR MARTIN A.MARTIN 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C
       REAL*8          RBID,XG(2),KSIG(2),DDOT
       REAL*8          FF(27),RBID1(3),RBID2(3)
       REAL*8          GRLT(3),NORM2,PS,ND1(3)
-      INTEGER         IBID,NBNOMX,NNOC
+      INTEGER         IBID,NBNOMX,NNOC,NNOS
       INTEGER         J,K,NNOF,IPOIDF,IVFF,IDFDEF,NDIMF
       CHARACTER*8     K8BID
       INTEGER         DDLH,NFE,DDLS,DDLM
@@ -72,10 +72,9 @@ C ----------------------------------------------------------------------
       CALL JEMARQ()
 
       CALL ELREF4(ELC,FPG,NDIMF,NNOF,IBID,IBID,IPOIDF,IVFF,
-     &                                             IDFDEF,IBID)
+     &                                         IDFDEF,IBID)
 
       AXI = LTEATT(' ','AXIS','OUI')
-
       CALL ASSERT(NNOF.EQ.3)
       CALL ASSERT(NDIM.EQ.3)
 
@@ -167,8 +166,8 @@ C         ESSAI AVEC LE PROJETE DE OY
       IF (NDIM .EQ. 3) THEN
        CALL PROVEC(ND1,TAU1,TAU2)
       ENDIF
-
-      CALL REEREF(ELREFP,AXI,NNO,NNO,ZR(IGEOM),G,0,.FALSE.,
+      CALL ELELIN(3,ELREFP,K8BID,IBID,NNOS)
+      CALL REEREF(ELREFP,AXI,NNO,NNOS,ZR(IGEOM),G,0,.FALSE.,
      &             NDIM,HE, RBID, RBID,
      &             IBID,IBID,DDLH,NFE,DDLS,DDLM,FE,DGDGL,'DFF',
      &             XE,FFP,DFDI,F,EPS,GRAD)

@@ -1,5 +1,5 @@
       SUBROUTINE XCFACF(PTINT,PTMAX,IPT,AINTER,LSN,LST,IGEOM,NNO,NDIM,
-     &                                                      LLIN,TYPMA)
+     &                                                      TYPMA)
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
@@ -8,7 +8,7 @@
       CHARACTER*8   TYPMA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,16 +51,13 @@ C
       CHARACTER*8   ELREF
       REAL*8        R8MAEM,RBID,MAXLSN,MINLSN,MAXLST,MINLST
       REAL*8        R8PREM,A(3),B(3),C(3)
-      REAL*8        LONCAR,PADIST,DMIN,DIST,DST
+      REAL*8        LONCAR,PADIST,DST
       REAL*8        M(3)
-      INTEGER       I,NBF,IBID,IFQ,J,JMIN,CODRET
+      INTEGER       I,NBF,IBID,IFQ,J,CODRET
       INTEGER       FA(6,4),IBID3(12,3)
-      INTEGER       ZXAIN,XXMMVD
-      LOGICAL       LLIN
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-      ZXAIN = XXMMVD('ZXAIN')
       CALL ELREF1(ELREF)
 
 C     INITIALISATION DES MIN ET MAX
@@ -110,64 +107,10 @@ C       LONGUEUR CARACTERISTIQUE
 
 C       ON AJOUTE A LA LISTE LE POINT M
 
-        IF (LLIN) THEN
           CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,IBID,M,LONCAR,AINTER,0,0,
      &                0.D0)
-        ELSE
-          CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,IBID,M,LONCAR,AINTER,-1,-1,
-     &                0.D0)
-        ENDIF
 
  200  CONTINUE
-
-      IF (.NOT.LLIN) THEN
-
-C     POUR UN RACCORD CONTACT (BOOK VI 17/03/2006) ANCIEN SHEMAS
-C     ON MET LES LAMBDAS DU FOND EGAUX AU LAMBDA NODAL LE PLUS PROCHE
-        DO 300 I=1,IPT
-
-C         ON SE RESTREINT AUX LAMBDA DU FOND
-          IF (AINTER(ZXAIN*(I-1)+1).NE.-1.D0) GOTO 300
-
-C         RECHERCHE DU LAMBDA NODAL LE PLUS PROCHE
-          DMIN=R8MAEM()
-          DO 310 J=1,IPT
-            IF (J.EQ.I) GOTO 310
-            IF (AINTER(ZXAIN*(J-1)+1).EQ.-1.D0 .OR.
-     &          AINTER(ZXAIN*(J-1)+2).EQ.-1.D0 )  GOTO 310
-            DIST=PADIST(NDIM,PTINT(NDIM*(I-1)+1),
-     &                  PTINT(NDIM*(J-1)+1))
-            IF (DIST.LE.DMIN) THEN
-               DMIN=DIST
-               JMIN=J
-            ENDIF
- 310      CONTINUE
-
-C       COPIE DU VECTEUR AINTER
-C       MAIS ON LAISSE UNE INDIC -1 POUR POUVOIR ENCORE RECONNAITRE
-C       UN POINT DU FOND
-          IF (AINTER(ZXAIN*(JMIN-1)+1).GT.0)
-     &        AINTER(ZXAIN*(I-1)+1) = AINTER(ZXAIN*(JMIN-1)+1)
-
-          IF (AINTER(ZXAIN*(JMIN-1)+2).GT.0)
-     &        AINTER(ZXAIN*(I-1)+2) = AINTER(ZXAIN*(JMIN-1)+2)
-
-          AINTER(ZXAIN*(I-1)+3) = AINTER(ZXAIN*(JMIN-1)+3)
-          AINTER(ZXAIN*(I-1)+4) = AINTER(ZXAIN*(JMIN-1)+4)
-
- 300    CONTINUE
-
-C --------------------------- FIN -------------------------------------
-
-C      ON SUPPRIME LES -1 RESTANT
-        DO 400 I=1,IPT
-          DO 410 J=1,2
-            IF (AINTER(ZXAIN*(I-1)+J).EQ.-1.D0) THEN
-                AINTER(ZXAIN*(I-1)+J)=0.D0
-            ENDIF
- 410      CONTINUE
- 400    CONTINUE
-      ENDIF
 
  9999 CONTINUE
       CALL JEDEMA()

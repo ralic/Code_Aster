@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,19 +46,6 @@ ENTETE__ ELEMENT__ MEAXQU8_XH      MAILLE__ QUAD8
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
    ATTRIBUT__  XFEM=XH
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8
-ENTETE__ ELEMENT__ MEAXTR6_XH_X    MAILLE__ TRIA6
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3  XINT=FPG12 GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
-   ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
-   ATTRIBUT__  XFEM=XH
-   ENS_NOEUD__  EN2     =     4   5   6
-   ENS_NOEUD__  EN1     =     1   2   3
-ENTETE__ ELEMENT__ MEAXQU8_XH_X    MAILLE__ QUAD8
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3  XINT=FPG12 GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU
-   ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
-   ATTRIBUT__  XFEM=XH
-   ENS_NOEUD__  EN2     =     5   6   7   8
-   ENS_NOEUD__  EN1     =     1   2   3   4
 
 MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
@@ -81,7 +68,6 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1   (DX       DY       H1X      H1Y      )
-                                 EN2   (         )
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E3NEUTI  = NEUT_I   ELEM__         (X[3]     )

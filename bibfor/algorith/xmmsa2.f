@@ -7,12 +7,12 @@
       INTEGER     NDIM,IPGF,IMATE
       REAL*8      SAUT(3),AM(3),PP(3,3),DSIDEP(6,6)
       REAL*8      TAU1(3),TAU2(3),ND(3)
-      REAL*8      ALPHA,P(3,3)
-      REAL*8      DTANG(3),DNOR(3),COHES,RELA
+      REAL*8      ALPHA(3),P(3,3)
+      REAL*8      DTANG(3),DNOR(3),COHES(3),RELA
       CHARACTER*8 JOB
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C
 C
       INTEGER      I,K
 
-      REAL*8       VIM(9),VIP(9)
+      REAL*8       VIM(9),VIP(9),JEU
       REAL*8       AM2D(2),DAM2D(2),DSID2D(6,6),DAM(3)
       REAL*8       SIGMA(6),SQRNOR,SQRTAN,R8PREM,EPS
 
@@ -102,21 +102,21 @@ C
         AM(3) = AM(3) - DTANG(I)*TAU2(I)
  218  CONTINUE
 C
-C --- CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT ALPHA
-C
-      SQRTAN=0.D0
-      DO 214 I=2,NDIM
-         SQRTAN=SQRTAN+AM(I)**2
-214   CONTINUE
-      EPS=R8PREM()
-      SQRNOR=(MAX(AM(1),EPS))**2
-      ALPHA = SQRT(SQRNOR+SQRTAN)
-C
 C --- CALCUL VECTEUR ET MATRICE TANGENTE EN BASE LOCALE
 C
-      IF(JOB.NE.'SAUT_EQ') THEN
-         VIM(1)=COHES
-         OPTION='FULL_MECA'
+      IF(JOB.NE.'SAUT_LOC') THEN
+         VIM(1)=COHES(1)
+         VIM(2)=COHES(2)
+C
+C PREDICTION: COHES(3)=1 ; CORRECTION: COHES(3)=2
+C
+         IF(COHES(3).EQ.1.D0) THEN
+           OPTION='RIGI_MECA_TANG'
+         ELSE IF(COHES(3).EQ.2.D0) THEN
+           OPTION='FULL_MECA'
+         ELSE
+           OPTION='FULL_MECA'
+         ENDIF
 C
 C VIM = VARIABLES INTERNES UTILISEES DANS LCEJEX
 C.............VIM(1): SEUIL, PLUS GRANDE NORME DU SAUT
@@ -139,12 +139,28 @@ C
            DSIDEP(2,2)=DSID2D(2,2)
          ELSE IF (NDIM.EQ.3) THEN
            IF(RELA.EQ.1.D0) THEN
-             CALL LCEJEX('RIGI',IPGF,1,3,IMATE,OPTION,
+             CALL LCEJEX('RIGI',IPGF,1,NDIM,IMATE,OPTION,
      &                    AM,DAM,SIGMA,DSIDEP,VIM,VIP)
            ELSE IF(RELA.EQ.2.D0) THEN
-             CALL LCEJLI('RIGI',IPGF,1,3,IMATE,OPTION,
+             CALL LCEJLI('RIGI',IPGF,1,NDIM,IMATE,OPTION,
      &                    AM,DAM,SIGMA,DSIDEP,VIM,VIP)
            ENDIF
+         ENDIF
+C
+         ALPHA(1) = VIP(1) 
+         ALPHA(2) = VIP(2)
+         EPS = 1.D-4 
+         IF(ALPHA(1).LE.(COHES(1)*(1.D0+EPS))) ALPHA(2)=0.D0
+C        IF(ALPHA(1).GT.1.01*COHES(1)) THEN
+C            ALPHA(2)=1.D0
+C        ELSE
+C            ALPHA(2)=0.D0
+C         ENDIF
+          
+         IF(JOB.EQ.'ACTU_VI') THEN
+            ALPHA(3) = 1.D0
+         ELSE IF(JOB.EQ.'MATRICE') THEN
+            ALPHA(3) = 2.D0
          ENDIF
 C
       ENDIF

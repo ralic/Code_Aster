@@ -5,7 +5,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C ----------------------------------------------------------------------
       REAL*8   VTAN1(3),VTAN2(3),VT1(3),VT2(3),VNO(3)
       REAL*8   V1(3),V2(3),VTMP(3),VTMP2(3)
       REAL*8   SIGG(3,3),MLG(3,3),MTMP(3,3),SIGL(3,3),MGL(3,3),DET
-      REAL*8   DFF(162)
+      REAL*8   DFF(162),X1
 
       CHARACTER*8 ELREFE
       PARAMETER(PREC=1.0D-10)
@@ -167,6 +167,12 @@ C --- CALCUL DES OPTIONS : SIRO_ELEM_SIT1 & SIRO_ELEM_SIT2
 C        DETERMINATION DES 2 MODES PROPRES TELS QUE SIXT2=SIYT1=0
       DELTA=(SIGL(1,1)+SIGL(2,2))**2 -
      &       4.D0*(SIGL(1,1)*SIGL(2,2)-SIGL(1,2)*SIGL(2,1))
+      X1= (SIGL(1,1)+SIGL(2,2))**2
+      IF (ABS(DELTA).LE.X1*PREC) DELTA=0.D0
+      IF (DELTA.LT.0.D0) THEN
+         WRITE(6,*) 'DEBUG DELTA=',DELTA
+         WRITE(6,*) 'DEBUG SIGL=',SIGL
+      ENDIF
       CALL ASSERT(DELTA.GE.0.D0)
       L1=(SIGL(1,1)+SIGL(2,2)-SQRT(DELTA))/2
       L2=(SIGL(1,1)+SIGL(2,2)+SQRT(DELTA))/2

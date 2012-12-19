@@ -1,12 +1,12 @@
         SUBROUTINE LCRESI( FAMI, KPG, KSP, LOI, TYPMOD, IMAT, NMAT,
      3                     MATERD, MATERF, COMP, NBCOMM, CPMONO,
      1         PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,VINF,ITMAX, TOLER,
-     &   TIMED, TIMEF, YD,YF, DEPS, EPSD, DY, R, IRET )
+     &   TIMED, TIMEF, YD,YF, DEPS, EPSD, DY, R, IRET ,CRIT)
         IMPLICIT   NONE
 C TOLE CRP_21
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
         REAL*8          DEPS(6)  , EPSD(6), VIND(*), TOLER
         REAL*8          R(*) , YD(*) ,  YF(*), DY(*),VINF(*)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-        REAL*8          TIMED, TIMEF
+        REAL*8          TIMED, TIMEF, CRIT(*)
         CHARACTER*8     TYPMOD
         CHARACTER*16    LOI
         REAL*8 TOUTMS(NFS,NSG,6), HSR(NSG,NSG)
@@ -83,7 +83,7 @@ C
      &                 NVI,VIND,VINF,YD,YF,DEPS,NR,R )
       ELSE         
          CALL LCRESA(FAMI,KPG,KSP,TYPMOD,IMAT,NMAT,MATERD,MATERF,
-     &               COMP,NR,NVI,TIMED,TIMEF,DEPS,EPSD,YF,DY,R,IRET)
+     &          COMP,NR,NVI,TIMED,TIMEF,DEPS,EPSD,YF,DY,R,IRET,YD,CRIT)
      
       ENDIF
 

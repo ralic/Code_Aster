@@ -1,5 +1,5 @@
       SUBROUTINE ORILMA ( NOMA, NDIM, LISTMA, NBMAIL, NORIEN, NTRAIT,
-     &                    REORIE, PREC, NBMAVO, MAILVO )
+     &                    REORIE, NBMAVO, MAILVO )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
 
@@ -8,10 +8,9 @@
      &                    NBMAVO, MAILVO(*)
       CHARACTER*8         NOMA
       LOGICAL             REORIE
-      REAL*8              PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +45,6 @@ C                                 A REORIENTER
 C    NBMAIL         IN    I       NB DE MAILLES DE LA LISTE
 C    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 C    REORIE         IN    L       INDIQUE SI L'ON DOIT APPELER ORIEMA
-C    PREC           IN    R       (INUTILISE)
 C    MAILVO         IN    I       SI ORIE_PEAU_3D ("GROUP_MA_VOLU")
 C                                   = LISTE DES MAILLES VOLUMIQUES
 C                                     UTILES A LA REORIENTATION
@@ -58,7 +56,7 @@ C    NBMAVO         IN    I       NB DE MAILLES DE MAILVO
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  VARIABLES LOCALES
       INTEGER       IFM, NIV, IMA, NUMA, NUTYMA,
-     &              NBNMAI, NUMA3D, NBNM3D, NORIEM, NORIEG
+     &              NBNMAI, NUMA3D, NORIEM, NORIEG
       INTEGER       JTYMA, JCOOR,  P1, P2, JNBN, JDNO,
      &              JNOM, JTYP, JM3D, JDESM, JDES3D
       LOGICAL       DIME1, DIME2
@@ -155,12 +153,11 @@ C
             NTRAIT = NTRAIT + 1
             GOTO 100
          ENDIF
-         NBNM3D = ZI(P2+NUMA3D+1-1) - ZI(P2+NUMA3D-1)
          JDES3D = ZI(P2+NUMA3D-1)
          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(JTYMA+NUMA3D-1)),TYP3D)
 C
          CALL ORIEMA ( NOMAIL, TPMAIL, NBNMAI, ZI(P1+JDESM-1),
-     &                 TYP3D, NBNM3D, ZI(P1+JDES3D-1),
+     &                 TYP3D, ZI(P1+JDES3D-1),
      &                 NDIM, ZR(JCOOR), REORIE, NORIEM, IFM, NIV )
 C
           NORIEG = NORIEG + NORIEM

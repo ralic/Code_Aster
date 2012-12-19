@@ -2,9 +2,9 @@
      &                  HPG   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,10 +38,10 @@ C
 C
 C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
 C IN  TYPI   : TYPE D'INTEGRATION
-C                1 'AUTO'    (ON CHOISIT LE SCHEMA LE PLUS ADAPTE)
-C               X2 'GAUSS'   (X EST LE DEGRE DES POLYNOMES DE LEGENDRE)
-C               Y3 'SIMPSON' (Y EST LE NOMBRE DE SUBDIVISIONS)
-C		          Z4 'NCOTES'  (Z EST LE DEGRE DU POLYNOME INTERPOLATEUR)
+C     1 'AUTO'    (ON CHOISIT LE SCHEMA LE PLUS ADAPTE)
+C    X2 'GAUSS'   (X EST LE DEGRE DES POLYNOMES DE LEGENDRE)
+C    Y3 'SIMPSON' (Y EST LE NOMBRE DE SUBDIVISIONS)
+C    Z4 'NCOTES'  (Z EST LE DEGRE DU POLYNOME INTERPOLATEUR)
 C IN  NORD   : NUMERO DU POINT D'INTEGRATION
 C OUT XPG    : COORDONNEE X DU POINT D'INTEGRATION
 C OUT YPG    : COORDONNEE Y DU POINT D'INTEGRATION
@@ -679,17 +679,17 @@ C
 C
 C TRIANGLES
 C
-C EXEMPLE D'ORDRE 4         NUMEROTATION            POIDS (X90)
+C EXEMPLE D'ORDRE 4   NUMEROTATION            POIDS (X90)
 C
-C                           15                      0
-C                           | \                     | \
-C                           10  14                  4   4
-C                           |     \                 |     \
-C                           6   9   13             -1   8  -1
-C                           |         \             |         \
-C                           3   5   8   12          4   8   8   4
-C                           |             \         |             \
-C                           1---2---4---7--11       0---4-(-1)--4---0
+C                     15                      0
+C                     | \                     | \
+C                     10  14                  4   4
+C                     |     \                 |     \
+C                     6   9   13             -1   8  -1
+C                     |         \             |         \
+C                     3   5   8   12          4   8   8   4
+C                     |             \         |             \
+C                     1---2---4---7--11       0---4-(-1)--4---0
 C
 C      DEGRE       | 3 | 4 | 5 | 6 | 7 | 8 |
 C -----------------+---+---+---+---+---+---+
@@ -723,17 +723,18 @@ C
 C
 C QUADRANGLES
 C
-C EXEMPLE D'ORDRE 4           NUMEROTATION           POIDS (X2025)
+C EXEMPLE D'ORDRE 4
+C    NUMEROTATION           POIDS (X2025)
 C
-C                          21--22--23--24--25    49--224--84-224--49
-C                           |               |     |               |
-C                          16  17  18  19  20   224	1024 384 1024 224
-C                           |               |     |               |
-C                          11  12  13  14  15    84	384  144 384  84
-C                           |               |     |               |
-C                           6   7   8   9  10   224	1024 384 1024 224
-C                           |               |     |               |
-C                           1---2---3---4---5    49--224--84-224--49
+C    21--22--23--24--25    49--224--84-224--49
+C     |               |     |               |
+C    16  17  18  19  20   224 1024 384 1024 224
+C     |               |     |               |
+C    11  12  13  14  15    84 384  144 384  84
+C     |               |     |               |
+C     6   7   8   9  10   224 1024 384 1024 224
+C     |               |     |               |
+C     1---2---3---4---5    49--224--84-224--49
 C
 C      DEGRE       | 3 | 4 | 5 | 6 | 7 | 8 |
 C -----------------+---+---+---+---+---+---+

@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 15/10/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF sd_xfem SD  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,6 +70,7 @@ class sd_fiss_xfem(AsBase):
     MAILFISS_HEAV  = Facultatif(AsVI(SDNom(nomj='.MAILFISS.HEAV')))
     MAILFISS_HECT  = Facultatif(AsVI(SDNom(nomj='.MAILFISS.HECT')))
     MAILFISS_MAFOND= Facultatif(AsVI(SDNom(nomj='.MAILFISS.MAFOND')))
+    MAILFISS_CONT  = Facultatif(AsVI(SDNom(nomj='.MAILFISS.CONT')))
 
 # I.3) objets relatifs a la propagation
 
@@ -82,10 +83,7 @@ class sd_fiss_xfem(AsBase):
 
 # I.4) objets relatifs au contact
 
-    BASCO  = Facultatif(sd_cham_no())
-    LISCO  = Facultatif(AsVR(SDNom(nomj='.LISCO')))
     LISEQ  = Facultatif(AsVI(SDNom(nomj='.LISEQ')))
-    LISRL  = Facultatif(AsVI(SDNom(nomj='.LISRL')))
     LISEQ_LAGR  = Facultatif(AsVI(SDNom(nomj='.LISEQ_LAGR')))
     CNCTE  = Facultatif(AsVI(SDNom(nomj='.CNCTE')))
     
@@ -102,7 +100,6 @@ class sd_fiss_xfem(AsBase):
         sdu_ensemble((self.FONDFISS, self.FONDMULT, self.BASEFOND))
 
         # si ....
-        sdu_ensemble((self.LISRL, self.LISCO))
         sdu_ensemble((self.PRO_MES_EL.CELD, self.PRO_NORMAL.CELD))
         sdu_ensemble((self.PRO_RAYON_TORE, self.PRO_NOEUD_TORE))
         sdu_ensemble((self.GRILLE_MODELE, self.GRILLE_LNNO.DESC, self.GRILLE_GRLNNO.DESC))

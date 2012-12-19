@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 # ssnv186l.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,11 +130,28 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    INFO=1);
 
 
+# -------------------------------------------------------------   
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
+# -------------------------------------------------------------   
+
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
+                       PREF_GROUP_CO = 'NFISSU',
+                       INFO          = 2)
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),) 
+
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        INFO          = 2)
+ 
 
 
 LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                             GROUP_NO='VOL',
-                             RESULTAT=UTOT1,
+                             GROUP_NO='NFISSU',
+                             RESULTAT=RES_XFEM,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=1,
                              NOM_CMP=('LAGS_C'),
@@ -152,6 +169,7 @@ TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=-9.52509484E+06,
            VALE_REFE=-9.528440E6,
            NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
            TABLE=LAG,
            FILTRE=(_F(CRIT_COMP='EQ',
                       NOM_PARA='COOR_X',
@@ -161,7 +179,7 @@ TEST_TABLE(CRITERE='RELATIF',
                       VALE=10.0,),
                    _F(CRIT_COMP='EQ',
                       NOM_PARA='COOR_Z',
-                      VALE=17.0,),
+                      VALE=17.5,),
                    ),
            )
 
@@ -172,6 +190,7 @@ TEST_TABLE(CRITERE='RELATIF',
            VALE_REFE=-9.528440E6,
            NOM_PARA='LAGS_C',
            TABLE=LAG,
+           TYPE_TEST='MIN',
            FILTRE=(_F(CRIT_COMP='EQ',
                       NOM_PARA='COOR_X',
                       VALE=0.0,),
@@ -180,28 +199,8 @@ TEST_TABLE(CRITERE='RELATIF',
                       VALE=10.0,),
                    _F(CRIT_COMP='EQ',
                       NOM_PARA='COOR_Z',
-                      VALE=18.0,),
+                      VALE=17.5),
                    ),
            )
-
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
-
-MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
-                       INFO          = 2)
-
-MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                     AFFE=_F(TOUT='OUI',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='3D')) 
-
-RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT1,
-                        
-                        INFO          = 2)
- 
-#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
-
 
 FIN();

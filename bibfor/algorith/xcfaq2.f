@@ -9,7 +9,7 @@
       REAL*8        PTINT(*),AINTER(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
       INTEGER         IADZI,IAZK24,NDIM,PTMAX
       INTEGER         ZXAIN,XXMMVD
       INTEGER         INM,INC,NM,NBNOMX
-      LOGICAL         LLIN,ISMALI,CUT
+      LOGICAL         ISMALI,ISELLI,CUT
       CHARACTER*8     TYPMA,ELP,ELC
 
       PARAMETER       (PTMAX=3, ELC='SE3',NBNOMX=27)
@@ -66,7 +66,6 @@ C --------------------------------------------------------------------
 C     PREC PERMET D'EVITER LES ERREURS DE PRECISION CONDUISANT
 C     A IA=IN=0 POUR LES MAILLES DU FRONT
       PREC = 1000*R8PREM()
-
       ZXAIN = XXMMVD('ZXAIN')
       CALL ELREF1(ELP)
       CALL ELREF4(' ','RIGI',NDIM,NNO,IBID,IBID,IBID,IBID,IBID,IBID)
@@ -84,26 +83,7 @@ C     - POSITION DU PT SUR L'ARETE          (0 SI C'EST UN NOEUD SOMMET)
 C     - ARETE VITALE                        (0 SI NON)
 
       CALL TECAEL(IADZI,IAZK24)
-      TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
-      IF (ISMALI(TYPMA)) THEN
-        LLIN = .TRUE.
-      ELSE
-        IF (ISMALI(ELP)) THEN
-          LLIN = .FALSE.
-        ELSEIF (.NOT.ISMALI(ELP)) THEN
-          LLIN = .TRUE.
-        ENDIF
-      ENDIF
-
-C     ATTENTION : POUR LES ELEMENTS QUADRATIQUES 3D
-C     PAS DE CONTACT CAR CES ELEMENTS NE PORTENT PAS DE DDLS LSGS_C...
-C     ILS FAUT DONC LES REPERER, ALORS NINTER = -1 (CA SERT DANS XDELCO)
-      IF (ELP.EQ.'H20'.OR.ELP.EQ.'P15'.OR.ELP.EQ.'T10') THEN
-        NINTER=-1
-        NFACE=0
-        GOTO 999
-      ENDIF
-
+      TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)(1:8)
 
 C     L'ELEMENT EST IL TRAVERSE PAR LA FISSURE?
       CUT=.FALSE.
@@ -119,7 +99,6 @@ C     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
         I=I+1
         GO TO 1
       END IF
-
       IPT=0
 C     COMPTEUR DE POINT INTERSECTION = NOEUD SOMMET
       INS=0
@@ -142,7 +121,6 @@ C       NUM NO DE L'ELEMENT
         LSTA=ZR(JLST-1+NA)
         LSTB=ZR(JLST-1+NB)
         LSTM=ZR(JLST-1+NM)
-
         DO 110 I=1,NDIM
           A(I)=ZR(IGEOM-1+NDIM*(NA-1)+I)
           B(I)=ZR(IGEOM-1+NDIM*(NB-1)+I)
@@ -161,7 +139,7 @@ C       NUM NO DE L'ELEMENT
         IF ((LSNA*LSNB).LE.0.D0) THEN
           IF ((LSNA.EQ.0.D0).AND.(LSTA.LE.PREC)) THEN
 C           ON AJOUTE A LA LISTE LE POINT A
-            IF (LSTA.GE.0.D0.AND.LLIN) THEN
+            IF (LSTA.GE.0.D0) THEN
               CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INS,A,LONGAR,AINTER,0,0,
      &                    0.D0)
             ELSE
@@ -171,7 +149,7 @@ C           ON AJOUTE A LA LISTE LE POINT A
           ENDIF
           IF (LSNB.EQ.0.D0.AND.LSTB.LE.PREC) THEN
 C           ON AJOUTE A LA LISTE LE POINT B
-            IF (LSTB.GE.0.D0.AND.LLIN) THEN
+            IF (LSTB.GE.0.D0) THEN
               CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INS,B,LONGAR,AINTER,0,0,
      &                    0.D0)
             ELSE
@@ -183,7 +161,7 @@ C           ON AJOUTE A LA LISTE LE POINT B
           IF (LSNM.EQ.0.D0.AND.LSTM.LE.PREC) THEN
 C           ON AJOUTE A LA LISTE LE POINT M
             ALPHA=PADIST(NDIM,A,M)
-            IF (LSTM.GE.0.D0.AND.LLIN) THEN
+            IF (LSTM.GE.0.D0) THEN
               CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INM,M,LONGAR,AINTER,0,0,
      &                    0.D0)
             ELSE
@@ -214,7 +192,7 @@ C          CALCUL DES FF DU SE3 (REEREF N'ACCEPTE PAS NDIM=2 & NNO=3)
             CALL ELRFVF(ELC,KSIC(1),NBNOMX,FF,IBID)
             LSTC=FF(1)*LSTB+FF(2)*LSTA+FF(3)*LSTM
             IF (LSTC.LE.PREC) THEN
-              IF (LSTC.GE.0.D0.AND.LLIN) THEN
+              IF (LSTC.GE.0.D0) THEN
                 CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INC,C,LONGAR,AINTER,0,
      &                      0,0.D0)
               ELSE
@@ -230,7 +208,7 @@ C          CALCUL DES FF DU SE3 (REEREF N'ACCEPTE PAS NDIM=2 & NNO=3)
 
 C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
       CALL XCFACF(PTINT,PTMAX,IPT,AINTER,ZR(JLSN),ZR(JLST),IGEOM,
-     &                                       NNO,NDIM,LLIN,TYPMA)
+     &                                       NNO,NDIM,TYPMA)
 
       NINTER=INS+INC
       NBTOT=NINTER+INM

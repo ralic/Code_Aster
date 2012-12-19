@@ -3,7 +3,7 @@
 C-----------------------------------------------------------------------
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2012   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,10 +64,6 @@ C     %------------------%
       INTEGER REDEM
       REAL*8  BETA,CSTA
 
-C     %--------------------%
-C     | DECLARATION JEVEUX |
-C     %--------------------%
-
 
 C     %------------------------%
 C     | LOCAL SCALARS & ARRAYS |
@@ -85,15 +81,15 @@ C     %------------------------%
 C
       CALL INFNIV(IFM,NIV)
 C
-      CALL WKVECT('&&INESTA.VECT.TEM1','V V R',
+      CALL WKVECT('&&UNISTA.VECT.TEM1','V V R',
      &             LDV,VECTT)
-      CALL WKVECT('&&INESTA.VECT.TEM2','V V R',
+      CALL WKVECT('&&UNISTA.VECT.TEM2','V V R',
      &             LDV,XSOL)
-      CALL WKVECT('&&INESTA.VECT.TEM3','V V R',
+      CALL WKVECT('&&UNISTA.VECT.TEM3','V V R',
      &             LDV,VECT2)
-      CALL WKVECT('&&INESTA.VECT.TEM4','V V R',
+      CALL WKVECT('&&UNISTA.VECT.TEM4','V V R',
      &             LDH*LDH,Q)
-      CALL WKVECT('&&INESTA.VECT.TEM5','V V R',
+      CALL WKVECT('&&UNISTA.VECT.TEM5','V V R',
      &             LDH*LDH,B)
 C
       CALL R8INIR(LDV,0.D0,ZR(VECTT),1)
@@ -119,7 +115,7 @@ C
 C     MISE EN PLACE SHIFT POUR VALEUR NEGATIVE
 C
         GAMA = ABS(BETA)+1.D0
-C	
+C
         DO 10 I = 1,LDH
           DO 20 J = 1,LDH
             ZR(Q+(J-1)*LDH+I-1) = -H(I,J)
@@ -239,28 +235,17 @@ C
   300 CONTINUE
 
       REDEM = REDEM +1
-C
-C ----------------------------------------------
-C
-C      CALL JEDEMA()
-C
-C 9000 FORMAT ('MAX_KINV',10X,I20,/)
-C 9050 FORMAT ('VALEUR_PROPRE_DECALAGE',10X,I20,/)
-C 9060 FORMAT ('MIN_K_CONTRAINT',10X,I20,/)
+
  9070 FORMAT (72(' '))
  9080 FORMAT (72('-'))
 C
 C ----------------------------------------------
 C
 C --- MENAGE
-      CALL JEDETR('&&INESTA.VECT.TEM1')
-      CALL JEDETR('&&INESTA.VECT.TEM2')
-      CALL JEDETR('&&INESTA.VECT.TEM3')
-      CALL JEDETR('&&INESTA.VECT.TEM4')
-      CALL JEDETR('&&INESTA.VECT.TEM5')
-C
-C     %---------------%
-C     | END OF PROSTA |
-C     %---------------%
+      CALL JEDETR('&&UNISTA.VECT.TEM1')
+      CALL JEDETR('&&UNISTA.VECT.TEM2')
+      CALL JEDETR('&&UNISTA.VECT.TEM3')
+      CALL JEDETR('&&UNISTA.VECT.TEM4')
+      CALL JEDETR('&&UNISTA.VECT.TEM5')
 
       END

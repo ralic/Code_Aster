@@ -1,6 +1,6 @@
       SUBROUTINE TLDLG2(LMAT,NPREC,NMRIG,VEMRIG,FETI,VEINPN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -345,7 +345,7 @@ C          LES DDLS DUALISES SONT MIS A 0. (ALPHA*0=0 !)
 
 C       -- 3. IMPRESSION EVENTUELLE DES MODES DE CORPS RIGIDES :
 C       ----------------------------------------------------------
-      IF (.FALSE.) THEN
+      IF (LFETI .AND. (INFOFE(6:6).EQ.'X')) THEN
         CHSOLU='&&TLDLG2.CHSOLU'
         CALL VTCREM(CHSOLU,NOMA19,'V','R')
         CALL JEVEUO(CHSOLU//'.VALE','E',JVALE)
@@ -363,7 +363,7 @@ C       ----------------------------------------------------------
 
 C       -- 4. VERIFICATION EVENTUELLE DES MODES DE CORPS RIGIDES :
 C       ----------------------------------------------------------
-      IF (.FALSE.) THEN
+      IF (LFETI .AND. (INFOFE(6:6).EQ.'X')) THEN
         IF (NMRIG.NE.0) THEN
           WRITE (IFM,*)'<TLDLG2> MOYENNE DES TERMES DIAGONAUX ',
      &      MOYDIA/NEQ

@@ -1,11 +1,11 @@
-      SUBROUTINE TITREC(DEMON,DONNEE,ILIGD,ICOLD,NBTITR,MXPARA,
+      SUBROUTINE TITREC(DONNEE,ILIGD,ICOLD,NBTITR,MXPARA,
      &                                                     PARA,NBPARA)
       IMPLICIT NONE
-      CHARACTER*(*)     DEMON,DONNEE(*),                   PARA(*)
+      CHARACTER*(*)     DONNEE(*),                   PARA(*)
       INTEGER                        ILIGD,ICOLD,NBTITR,MXPARA, NBPARA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,6 @@ CCC            CALL LXCAPS(PARA(NBPARA))
             GOTO 12
          ELSEIF (ICLASS .EQ. 5 .AND. CVAL(1:1) .EQ. ')' ) THEN
             IF ( NBPARA .NE. MXPARA ) THEN
-CCC  NOMBRE D ARGUMENTS INCORRECT POUR LE DEMON
                NBPARA = 0
             ENDIF
             GOTO 20

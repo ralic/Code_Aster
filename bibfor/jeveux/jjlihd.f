@@ -1,7 +1,7 @@
       SUBROUTINE JJLIHD (IDTS,NBVAL,LONOI,GENRI,TYPEI,LTYPI,
      &                   IC,IDO,IDC,JMARQ,IADMI,IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ C ======================================================================
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INCLUDE 'jeveux_private.h'
-      INTEGER            IDTS,NBVAL,LONOI,LTYPI,IC,IDO,IDC,IADMI,JMARQ
+      INTEGER      IDTS,NBVAL,LONOI,LTYPI,IC,IDO,IDC,IADMI,JMARQ(1)
       CHARACTER*(*)      GENRI,TYPEI
 C ----------------------------------------------------------------------
 C RELIT UN SEGMENT DE VALEURS DANS UN FICHIER HDF EN FONCTION DU TYPE
@@ -47,18 +47,19 @@ C OUT IADYN  : ADRESSE DYNAMIQUE DU SEGMENT DE VALEURS
 C ----------------------------------------------------------------------
 C
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-      REAL *8          SVUSE,SMXUSE   
-      COMMON /STATJE/  SVUSE,SMXUSE  
+      REAL *8          SVUSE,SMXUSE
+      COMMON /STATJE/  SVUSE,SMXUSE
       CHARACTER*1      TYPEB
       INTEGER          HDFRSV,HDFTSD,ICONV,IADYN,KDYN
       INTEGER          IRET,JADR,KITAB,NBV,IR,LON,KADM,K,LV,LTYPB
-      INTEGER         IZR,IZC,IZL,IZK8,IZK16,IZK24,IZK32,IZK80,IZI4
+      INTEGER         IZR(1),IZC(1),IZL(1),IZK8(1),IZK16(1)
+      INTEGER         IZK24(1),IZK32(1),IZK80(1),IZI4(1)
       EQUIVALENCE    (IZR,ZR),(IZC,ZC),(IZL,ZL),(IZK8,ZK8),(IZK16,ZK16),
      &               (IZK24,ZK24),(IZK32,ZK32),(IZK80,ZK80),(IZI4,ZI4)
 C DEB ------------------------------------------------------------------
@@ -102,7 +103,7 @@ C DEB ------------------------------------------------------------------
         CALL JJALLS(LONOI,IC,GENRI,TYPEI,LTYPI,'INIT',IZL,JADR,IADMI,
      &              IADYN)
       ENDIF
-      CALL JJECRS (IADMI,IADYN,IC,IDO,IDC,'E',JMARQ)
+      CALL JJECRS (IADMI,IC,IDO,IDC,'E',JMARQ)
       IF ( TYPEI .EQ. 'I' ) THEN
         ICONV = 1
         IRET = HDFTSD(IDTS,TYPEB,LTYPB,LV)

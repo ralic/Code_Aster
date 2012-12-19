@@ -1,20 +1,16 @@
-      SUBROUTINE XMMAB6(NDIM  ,NNOL ,NNOF, PLA,
-     &                  IPGF,IVFF  ,FFC   ,JAC  ,
-     &                  NOEUD ,TAU1,TAU2,
-     &                  IFA,CFACE,LACT ,
-     &                  MMAT )
+      SUBROUTINE XMMAB6(NDIM  ,NNOL ,PLA,
+     &                  FFC   ,JAC  ,
+     &                  TAU1,TAU2,
+     &                  LACT ,MMAT )
 
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
-      INTEGER     NDIM,NNOL,NNOF,IVFF,IPGF
-      INTEGER     CFACE(5,3),IFA
+      INTEGER     NDIM,NNOL
       INTEGER     PLA(27),LACT(8)
       REAL*8      MMAT(216,216)
       REAL*8      FFC(8),JAC,TAU1(3),TAU2(3)
-      LOGICAL     NOEUD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,25 +63,15 @@ C ----------------------------------------------------------------------
 
       DO 150 I = 1,NNOL
         PLI=PLA(I)
-        IF (NOEUD) THEN
-          FFI=FFC(I)
-          NLI=LACT(I)
-          IF (NLI.EQ.0) GOTO 150
-        ELSE
-          FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-          NLI=CFACE(IFA,I)
-        ENDIF
+        FFI=FFC(I)
+        NLI=LACT(I)
+        IF (NLI.EQ.0) GOTO 150
 
         DO 151 J = 1,NNOL
           PLJ=PLA(J)
-          IF (NOEUD) THEN
-            FFJ=FFC(J)
-            NLJ=LACT(J)
-            IF (NLJ.EQ.0) GOTO 151
-          ELSE
-            FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
-            NLJ=CFACE(IFA,J)
-          ENDIF
+          FFJ=FFC(J)
+          NLJ=LACT(J)
+          IF (NLJ.EQ.0) GOTO 151
 C
 C --- MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
 C

@@ -1,10 +1,11 @@
-      SUBROUTINE XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
+      SUBROUTINE XMELET(NOMTE , TYPMAI , ELREES ,ELREMA ,ELRECO  ,
      &                  NDIM  , NDDL   , JNNE   , JNNM  ,
      &                  NNC   , JDDLE  , JDDLM  ,
      &                  NCONTA, NDEPLE , NSINGE, NSINGM,NFHE,NFHM)
 
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +27,7 @@ C
       INCLUDE 'jeveux.h'
 
       CHARACTER*16 NOMTE
-      CHARACTER*8  TYPMAI,TYPMAE,TYPMAM,TYPMAC
+      CHARACTER*8  TYPMAI,ELREES,ELREMA,ELRECO
       INTEGER      NDIM,NDDL,NNC
       INTEGER      NSINGE,NSINGM,NCONTA
       INTEGER      JNNE(3), JNNM(3),NDEPLE
@@ -47,9 +48,9 @@ C
 C
 C IN  NOMTE  : NOM DU TE DE L'ELEMENT DE CONTACT EN JEU
 C OUT TYPMAI : NOM DE LA MAILLE ESCLAVE D'ORIGINE
-C OUT TYPMAE : NOM DE LA MAILLE ESCLAVE
-C OUT TYPMAM : NOM DE LA MAILLE MAITRE
-C OUT TYPMAC : NOM DE LA MAILLE DE CONTACT
+C OUT ELREES : ELREFE DE LA MAILLE ESCLAVE
+C OUT ELREMA : ELREFE DE LA MAILLE MAITRE
+C OUT ELRECO : ELREFE DE LA MAILLE DE CONTACT
 C OUT NDIM   : DIMENSION DE LA MAILLE DE CONTACT
 C OUT NDDL   : NOMBRE TOTAL DE DEGRES DE LIBERTE DE LA MAILLE DE CONTACT
 C OUT JNNE   : MAILLE ESCL : (1) NB NDS
@@ -78,7 +79,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 LIELRF(10)
       INTEGER     NTROU, ILIE, NDIMD, NNOD, NNOSD, IBID , IER, I
       INTEGER     IADZI,IAZK24
-      LOGICAL     ISMALI
+      LOGICAL     ISMALI,ISELLI
 C
 C ----------------------------------------------------------------------
 C
@@ -90,6 +91,9 @@ C
       IF (ELREFP .EQ. 'QU8') TYPMAI = 'QUAD8'
       IF (ELREFP .EQ. 'TR3') TYPMAI = 'TRIA3'
       IF (ELREFP .EQ. 'TR6') TYPMAI = 'TRIA6'
+      IF (ELREFP .EQ. 'H20') TYPMAI = 'HEXA20'
+      IF (ELREFP .EQ. 'P15') TYPMAI = 'PENTA15'
+      IF (ELREFP .EQ. 'T10') TYPMAI = 'TETRA10'
 C
       CALL TEATTR (NOMTE,'S','XFEM_E',ENRE,IER)
       CALL TEATTR (NOMTE,'S','XFEM_M',ENRM,IER)
@@ -149,21 +153,21 @@ C
          JNNE(1)= NNOD
          JNNE(2)= NNOSD
          JNNE(3)= NNOD - NNOSD
-         TYPMAE = LIELRF(ILIE)
+         ELREES = LIELRF(ILIE)
         ENDIF
 C
         IF ( ILIE.EQ.2 .AND. NTROU.EQ.3 ) THEN
          JNNM(1) = NNOD
          JNNM(2) = NNOSD
          JNNM(3) = NNOD - NNOSD
-         TYPMAM  = LIELRF(ILIE)
+         ELREMA  = LIELRF(ILIE)
         ENDIF
 C
         IF ( ILIE.EQ.2 .AND. NTROU.EQ.2 ) THEN
          JNNM(1)  = JNNE(1)
-         TYPMAM = TYPMAE
+         ELREMA = ELREES
          NNC  = NNOD
-         TYPMAC = LIELRF(ILIE)
+         ELRECO = LIELRF(ILIE)
          JNNM(1)= JNNE(1)
          JNNM(2)= JNNE(2)
          JNNM(3)= JNNE(3)
@@ -171,20 +175,20 @@ C
 C
         IF ( ILIE.EQ.3 .AND. NTROU.EQ.3 ) THEN
          NNC  = NNOD
-         TYPMAC = LIELRF(ILIE)
+         ELRECO = LIELRF(ILIE)
         ENDIF
  190  CONTINUE
 C
       CALL TECAEL(IADZI,IAZK24)
-      TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
+      TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)(1:8)
       IF (TYPMA(1:2).EQ.TYPMA(4:5)) THEN
-        TYPMAE = TYPMAM
+        ELREES = ELREMA
       ENDIF
 C
       IF (ENRE.EQ.'T') THEN
         JNNM(1)  = 0
         JNNM(2)  = 0
-        TYPMAM = '  '
+        ELREMA = '  '
       ENDIF
 C
 C --- RECUPERATION DU TYPE DE CONTACT
@@ -193,7 +197,7 @@ C
       IF (ISMALI(TYPMAI)) THEN
         NCONTA=1
       ELSE
-        IF(ISMALI(TYPMAM)) THEN
+        IF(ISELLI(ELREMA)) THEN
           NCONTA=2
         ELSE
           NCONTA=3
@@ -224,7 +228,7 @@ C
         JDDLM(2)  = 0
       ELSE
         JDDLM(1)  = NDIM *(1+NFHM+NSINGM)
-        IF (.NOT.ISMALI(TYPMAM)) JDDLM(2)  = JDDLM(1)
+        IF (.NOT.ISELLI(ELREMA)) JDDLM(2)  = JDDLM(1)
       ENDIF
 C
 C --- CALCUL DU NOMBRE TOTAL DE DDL

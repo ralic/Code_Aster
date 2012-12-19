@@ -1,14 +1,14 @@
       SUBROUTINE XMMAB2(NDIM  ,JNNE,NDEPLE,NNC   ,JNNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                  FFM   ,JACOBI,JPCAI, LAMBDA,
-     &                  COEFFR,
+     &                  FFM   ,JACOBI,JPCAI, LAMBDA,COEFCR,
+     &                  COEFCP,COEFFR,DLAGRF,JEU,
      &                  COEFFP,LPENAF,COEFFF,TAU1  ,TAU2  ,
-     &                  RESE  ,NRESE ,MPROJ ,TYPMAI,
+     &                  RESE  ,NRESE ,MPROJ ,NORM  ,TYPMAI,
      &                  NSINGE,NSINGM,RRE   ,RRM   ,NVIT  ,
-     &                  NCONTA,JDDLE,JDDLM,NFHE,MMAT  )
+     &                  NCONTA,JDDLE,JDDLM,NFHE,MMAT  )   
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,9 +31,10 @@ C
       INTEGER  NDIM,NNC,JNNE(3),JNNM(3),NFAES,JPCAI,CFACE(5,3)
       INTEGER  NSINGE,NSINGM,NFHE
       INTEGER  NVIT,NCONTA,NDEPLE,JDDLE(2),JDDLM(2)
-      REAL*8   HPG,FFC(8),FFE(8),FFM(8),JACOBI
-      REAL*8   LAMBDA,COEFFF,COEFFR,RRE,RRM,COEFFP
+      REAL*8   HPG,FFC(8),FFE(20),FFM(20),JACOBI,NORM(3),COEFCP
+      REAL*8   LAMBDA,COEFFF,COEFFR,RRE,RRM,COEFCR,COEFFP,DLAGRF(2)
       REAL*8   TAU1(3),TAU2(3),RESE(3),NRESE,MMAT(336,336),MPROJ(3,3)
+      REAL*8   JEU
       CHARACTER*8  TYPMAI
       LOGICAL  LPENAF
 C
@@ -43,7 +44,6 @@ C ROUTINE CONTACT (METHODE XFEMGG - CALCUL ELEM.)
 C
 C CALCUL DE B ET DE BT POUR LE CONTACT METHODE CONTINUE
 C SANS ADHERENCE
-C
 C
 C ----------------------------------------------------------------------
 C
@@ -88,8 +88,8 @@ C
       INTEGER   I,J,K,L,M,II,JJ,INI,INJ,PLI,PLJ,XOULA,IIN,JJN,DDLE
       INTEGER   NNE,NNES,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
       REAL*8    C1(3),C2(3),C3(3),D1(3),D2(3),D3(3),H1(3),H2(3)
-      REAL*8    G(3,3),D(3,3),B(3,3),R(3,3),MP,MB,MBT,MM,MMT
-      REAL*8    TT(3,3)
+      REAL*8    G(3,3),D(3,3),B(3,3),C(3,3),R(3,3),MP,MB,MBT,MM,MMT
+      REAL*8    F(3,3),TT(3,3),DDOT
 C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
@@ -159,6 +159,14 @@ C
 25      CONTINUE
 24    CONTINUE
 C
+C --- C = (P_B)[P_TAU]*(N)
+C
+      DO 8 I = 1,NDIM
+        DO 9 J = 1,NDIM
+          C(I,J) = B(1,I)*NORM(J)
+9       CONTINUE
+8     CONTINUE
+C
 C --- R = [TAU1,TAU2][ID-K][TAU1,TAU2]
 C
       DO 857 K = 1,NDIM
@@ -177,7 +185,11 @@ C
         TT(2,2) = TAU2(I)*TAU2(I) + TT(2,2)
 301   CONTINUE
 C
+      IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+      MP = (LAMBDA-COEFCR*JEU)*COEFFF*HPG*JACOBI
+      ELSE
       MP = LAMBDA*COEFFF*HPG*JACOBI
+      ENDIF
 
       DDLE = DDLES*NNES+DDLEM*(NNE-NNES)
 
@@ -190,16 +202,25 @@ C
           IF (L.EQ.1) THEN
 C SUPPRESSION DU TERME EN AT DANS LE CAS DU GLISSEMENT
             MB  = 0.D0
+            IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+               MBT = COEFFF*HPG*JACOBI*B(L,K)
+            ELSE
             MBT = 0.D0
+            ENDIF
           ELSE
-            IF(.NOT.LPENAF) MB  = NVIT*MP*B(L,K)
+            IF(.NOT.LPENAF) THEN
+                 IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+                   MB  = NVIT*HPG*JACOBI*B(L,K)
+                  ELSE
+                   MB  = NVIT*MP*B(L,K)
+                 ENDIF
+            ENDIF
             IF(LPENAF)      MB  = 0.D0
             IF(.NOT.LPENAF) MBT = MP*B(L,K)
             IF(LPENAF)      MBT = 0.D0
           ENDIF
           DO 20 I = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,I,NFHE,PLI)
             II = PLI+L-1
             DO 30 J = 1,NDEPLE
 C --- BLOCS ES:CONT, CONT:ES
@@ -247,8 +268,13 @@ C
             MB  = -MP*COEFFP*D(L,K)
             MBT = -MP*COEFFP*D(L,K)
           ELSE
+            IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+            MB  = -MP*COEFFR*D(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+            MBT = -MP*COEFFR*D(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+            ELSE
             MB  = -MP*COEFFR*D(L,K)
             MBT = -MP*COEFFR*D(L,K)
+            ENDIF
           ENDIF
           DO 200 I = 1,NDEPLE
             DO 210 J = 1,NDEPLE
@@ -357,23 +383,31 @@ C --- BLOCS MA:MA
 100   CONTINUE
 C
       ELSE
-C
 C --------------------- CALCUL DE [A] ET [B] -----------------------
 C
       DO 550 L = 1,NDIM
         DO 510 K = 1,NDIM
           IF (L.EQ.1) THEN
             MB  = 0.D0
+            IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+            MBT = COEFFF*HPG*JACOBI*B(L,K) 
+            ELSE
             MBT = 0.D0
+            ENDIF
           ELSE
-            IF(.NOT.LPENAF)MB  = NVIT*MP*B(L,K)
+            IF(.NOT.LPENAF) THEN
+            IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+            MB  = NVIT*HPG*JACOBI*B(L,K)
+            ELSE
+            MB  = NVIT*MP*B(L,K)
+            ENDIF
+            ENDIF
             IF(LPENAF)     MB = 0.D0
             IF(.NOT.LPENAF) MBT = MP*B(L,K)
             IF(LPENAF)      MBT = 0.D0
           ENDIF
           DO 520 I = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,I,NFHE,PLI)
             II = PLI+L-1
             DO 530 J = 1,NDEPLE
 C --- BLOCS ES:CONT, CONT:ES
@@ -395,7 +429,11 @@ C
           IF(LPENAF) THEN
             MB  = -MP*COEFFP*D(L,K)
           ELSE
+            IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+            MB  = -MP*COEFFR*D(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+            ELSE
             MB  = -MP*COEFFR*D(L,K)
+            ENDIF
           ENDIF
           DO 620 I = 1,NDEPLE
             DO 630 J = 1,NDEPLE
@@ -417,10 +455,8 @@ C
       IF (NVIT.EQ.1) THEN
       DO 400 I = 1,NNC
         DO 410 J = 1,NNC
-          INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
-          CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
-          INJ=XOULA(CFACE,NFAES,J,JPCAI,TYPMAI,NCONTA)
-          CALL XPLMA2(NDIM,NNE,NNES,DDLES,INJ,NFHE,PLJ)
+          CALL XPLMA2(NDIM,NNE,NNES,DDLES,I,NFHE,PLI)
+          CALL XPLMA2(NDIM,NNE,NNES,DDLES,J,NFHE,PLJ)
           DO 420 L = 1,NDIM-1
             DO 430 K = 1,NDIM-1
               II = PLI+K
@@ -428,12 +464,36 @@ C
               IF(LPENAF) THEN
                 MMAT(II,JJ) = HPG*JACOBI*FFC(I)*FFC(J)*TT(K,L)
               ELSE
+                IF(NCONTA.EQ.3.AND.NDIM.EQ.3) THEN
+                MMAT(II,JJ) = JACOBI*HPG*FFC(I)*FFC(J)*R(K,L)/COEFFR
+                ELSE
                 MMAT(II,JJ) = MP*FFC(I)*FFC(J)*R(K,L)/COEFFR
+                ENDIF
               ENDIF
 430         CONTINUE
 420       CONTINUE
 410     CONTINUE
 400   CONTINUE
       ENDIF
+C ------------------- CALCUL DE [E] ------------------------------------
 C
+C ------------- COUPLAGE MULTIPLICATEURS CONTACT-FROTTEMENT ------------
+      IF (NVIT.EQ.1) THEN
+        DO 800 I = 1,NNC
+         DO 810 J = 1,NNC
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,I,NFHE,PLI)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,J,NFHE,PLJ)
+            DO 830 K = 1,NDIM-1
+              II = PLI+K
+              JJ = PLJ
+              IF(LPENAF) THEN
+                MMAT(II,JJ) = 0.D0
+              ELSE
+                MMAT(II,JJ) = 0.D0
+              ENDIF
+830         CONTINUE
+            
+810       CONTINUE
+800     CONTINUE
+      ENDIF
       END

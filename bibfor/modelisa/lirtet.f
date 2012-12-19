@@ -1,8 +1,8 @@
-        SUBROUTINE LIRTET(IFL,IFM,ILEC,INOM,CNL,NOM,ICL,IV,RV,CV,DEBLIG)
+        SUBROUTINE LIRTET(IFL,ILEC,INOM,CNL,NOM,ICL,IV,RV,CV,DEBLIG)
       IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,6 @@ C ======================================================================
 C       ----------------------------------------------------------------
 C       BUT: SAUT D'UNE EVENTUELLE ENTETE AVEC LECTURE DE "NOM="
 C       IN: IFL : FICHIER OU ON LIT
-C          IFM : FICHIER MESSAGES
 C          ILEC: 1=> PREMIERE LECTURE, 2=> SECONDE LECTURE
 C          INOM: 1=> LECTURE DU NOM,   0=> NOM IGNORE
 C          CNL : NUMERO DE LA LIGNE DANS UNE CHAINE
@@ -46,7 +45,7 @@ C
       LOGICAL LNOM,LENT
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,ICL ,IFL ,IFM ,ILEC ,INOM ,IV
+      INTEGER I ,ICL ,IFL ,ILEC ,INOM ,IV
       INTEGER LCV ,NBIGNO
 C-----------------------------------------------------------------------
       LNOM=.FALSE.

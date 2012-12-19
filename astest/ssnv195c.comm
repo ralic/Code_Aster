@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv195c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,14 +88,10 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL'),   
                     );
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAGE,
-                       LINE_QUAD=_F(GROUP_MA='VOL'),
-);
-                       
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(GROUP_MA=('VOL'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D_XFEM_CONT'),
+                            MODELISATION='3D'),
                      );        
 
 PENTE1=0.57735
@@ -122,7 +118,7 @@ FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
-                         CONTACT='P1P1A',                         
+                         CONTACT='P1P1',                         
                         );
                         
 
@@ -163,7 +159,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
                             RHO=7800.0));
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOL'),
                                 MATER=ACIER,
@@ -220,7 +216,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAGE,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
                        INFO          = 2)
 
@@ -229,7 +225,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D')) 
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
+RES_XFEM=POST_CHAM_XFEM(
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
                         

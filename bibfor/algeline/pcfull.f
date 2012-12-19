@@ -1,6 +1,6 @@
       SUBROUTINE PCFULL(N,ICPL,ICPC,ICPD,ICPLP,ICPCP,IND,LCA,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,9 +105,9 @@ C=======================================================================
 C     INITIALISATION DU TABLEAU INDIC
 C     -------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IC1 ,IC2 ,IER ,ISTOP ,J ,JJ 
-      INTEGER K ,K1 ,K2 ,KP1 ,KP2 ,L ,LCA 
-      INTEGER N ,NCREMX ,NZERO 
+      INTEGER I ,IC1 ,IC2 ,IER ,ISTOP ,J ,JJ
+      INTEGER K ,K1 ,K2 ,KP1 ,KP2 ,L ,LCA
+      INTEGER N ,NCREMX ,NZERO
 C-----------------------------------------------------------------------
       DO 10 I=1,N
         IND(I)=0
@@ -264,6 +264,4 @@ C     NZERO=TAILLE MAT INI. + TAILLE MAT REMPLIE
       IER=NZERO
   140 CONTINUE
 
- 9000 FORMAT (' NIVEAU',I4,' REMPLISSAGE INTERMEDIAIRE',/,'ARRET DES C',
-     &       'ALCULS PLACE MEMOIRE',I12,' INSUFFISANTE  LIGNE ',I9)
       END

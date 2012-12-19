@@ -1,6 +1,6 @@
       SUBROUTINE JJALLC ( ICLASI , IDATCI , CEL , IBACOL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,14 +22,14 @@ C ======================================================================
       INTEGER             ICLASI , IDATCI ,       IBACOL
       CHARACTER*(*)                         CEL
 C ----------------------------------------------------------------------
-      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON 
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADML ,IADYN ,IC ,ICEL ,ID ,IPGCEX ,IS 
-      INTEGER IX ,JCARA ,JCTAB ,JDATE ,JDOCU ,JGENR ,JHCOD 
-      INTEGER JIADD ,JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ 
-      INTEGER JORIG ,JRNOM ,JTYPE ,K ,N 
+      INTEGER IADML ,IADYN ,IC ,ICEL ,ID ,IPGCEX ,IS
+      INTEGER IX ,JCARA ,JCTAB ,JDATE ,JDOCU ,JGENR ,JHCOD
+      INTEGER JIADD ,JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ
+      INTEGER JORIG ,JRNOM ,JTYPE ,K ,N
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -95,7 +95,7 @@ C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
         ENDIF
       ENDIF
       IBACOL = IADMI
-      CALL JJECRS (IADMI, IADYN,IC, ID, 0, CEL, IMARQ(JMARQ(IC)+2*ID-1))
+      CALL JJECRS (IADMI,IC, ID, 0, CEL, IMARQ(JMARQ(IC)+2*ID-1))
  100  CONTINUE
 C
       DO 20 K = 2,IDNUM
@@ -146,7 +146,7 @@ C --------- MISE EN MEMOIRE SANS LECTURE DISQUE
      &         .AND.  RNOM(JRNOM(IC)+IX)(25:26) .NE. '$$'    ) THEN
             IPGC   = -1
           ENDIF
-          CALL JJECRS (IADMI,IADYN,IC,IX,0,CEL,IMARQ(JMARQ(IC)+2*IX-1))
+          CALL JJECRS (IADMI,IC,IX,0,CEL,IMARQ(JMARQ(IC)+2*IX-1))
           IPGC = IPGCEX
         ENDIF
  20   CONTINUE
@@ -158,7 +158,7 @@ C
         IADMI  = IADM ( JIADM(IC) + 2*IX-1 )
         IADYN  = IADM ( JIADM(IC) + 2*IX  )
         IF ( IADMI .NE. 0 ) THEN
-          CALL JJECRS (IADMI,IADYN,IC,IX,0,CEL,IMARQ(JMARQ(IC)+2*IX-1))
+          CALL JJECRS (IADMI,IC,IX,0,CEL,IMARQ(JMARQ(IC)+2*IX-1))
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------

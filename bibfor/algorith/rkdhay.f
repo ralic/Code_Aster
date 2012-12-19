@@ -1,7 +1,7 @@
         SUBROUTINE RKDHAY(MOD,NVI,VINI,COEFT,NMAT,SIGI,DVIN,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C     ----------------------------------------------------------------
 C
       INTEGER IRET,ITENS,NDI,NMAT,NVI,NDT,NDIM
 C
-      REAL*8 COEFT(NMAT),VINI(NVI),DVIN(NVI), SMX(6), SIGI(6)
+      REAL*8 COEFT(NMAT),VINI(NVI),DVIN(NVI), SMX(6), SIGI(*)
       REAL*8 ECROU(2), H,   DMG,  DMGMI
       REAL*8 DEVI(6),DEVCUM,   DECROU(2), DDMG, DDMGMI
       REAL*8 ZE, TD, SINN, GRJ0
@@ -62,6 +62,10 @@ C
          NDIM=3
       ELSE
          NDIM=2
+         SMX(5)=0.D0
+         SMX(6)=0.D0
+         DEVI(5)=0.D0
+         DEVI(6)=0.D0
       ENDIF
       IRET=0
       RMIN=R8MIEM()
@@ -94,7 +98,7 @@ C
       H=ECROU(1)+ECROU(2)
 
 C----------------------------------------------------------------
-      CALL DCOPY(6,SIGI,1,SMX,1)      
+      CALL DCOPY(NDT,SIGI,1,SMX,1)      
 C
 C------------CALCUL DES INVARIANTS DE CONTRAINTE  -------
 C     attention FGEQUI ne prend pas en compte les SQRT(2)
@@ -113,7 +117,7 @@ C     on retablit le tenseur
          SEQUI=GRJ1
       ENDIF
 C------------ CALCUL DU TENSEUR DEVIATORIQUE DES CONTRAINTES ---
-      DO 10 ITENS=1,6
+      DO 10 ITENS=1,NDT
         IF (ITENS.LE.3) SMX(ITENS)=SMX(ITENS)-GRJ1/3.D0
    10 CONTINUE
 C
@@ -124,7 +128,9 @@ C----- EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 C----- CUMULEE
 C
       TERME1=(GRJ2V*(1-H))/(PK*(1-DMGMI)*(1-DMG))
-      IF (ABS(TERME1).LT.SHMAX) THEN
+      IF (GRJ2V .LE. EPSI) THEN
+         DEVCUM=ZE
+      ELSEIF (ABS(TERME1).LT.SHMAX) THEN
          DEVCUM=EPS0*(SINH(TERME1))
       ELSE
          IRET=1
@@ -166,13 +172,13 @@ C
 C------ EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 C
       IF (GRJ2V .LE. EPSI) THEN
-        DO 33 ITENS=1,6
-          DEVI(ITENS)=ZE
-   33   CONTINUE
+         DO 33 ITENS=1,NDT
+           DEVI(ITENS)=ZE
+   33    CONTINUE
       ELSE   
-      DO 12 ITENS=1,6
-        DEVI(ITENS)=TD*DEVCUM*SMX(ITENS)/GRJ2V
-   12 CONTINUE
+         DO 12 ITENS=1,NDT
+           DEVI(ITENS)=TD*DEVCUM*SMX(ITENS)/GRJ2V
+   12    CONTINUE
       ENDIF
 C
 C --    DERIVEES DES VARIABLES INTERNES

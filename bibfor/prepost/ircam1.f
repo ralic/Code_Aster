@@ -7,7 +7,7 @@
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
 C
       INCLUDE 'jeveux.h'
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 66)
+      PARAMETER (NTYMAX = 69)
 C
 C 0.1. ==> ARGUMENTS
 C

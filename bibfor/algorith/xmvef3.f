@@ -1,21 +1,18 @@
-      SUBROUTINE XMVEF3(NDIM  ,NNOL ,NNOF,PLA,
-     &                    IPGF,IVFF  ,FFC ,REAC12,PB,JAC,
-     &                    NOEUD ,SEUIL,TAU1,TAU2,
-     &                    IFA,CFACE,LACT,
-     &                    CPENFR,CSTAFR,MU ,LPENAF,
-     &                    VTMP )
+      SUBROUTINE XMVEF3(NDIM  ,NNOL ,PLA,
+     &                  FFC ,REAC12,PB,JAC,
+     &                  SEUIL,TAU1,TAU2,
+     &                  LACT,
+     &                  CSTAFR,MU ,VTMP )
 
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
-      INTEGER     NDIM,NNOL,NNOF,IVFF,IPGF,PLA(27)
-      INTEGER     CFACE(5,3),IFA,LACT(8)
+      INTEGER     NDIM,NNOL,PLA(27)
+      INTEGER     LACT(8)
       REAL*8      VTMP(400),TAU1(3),TAU2(3)
       REAL*8      FFC(8),JAC,PB(3),REAC12(3)
-      REAL*8      CPENFR,CSTAFR,SEUIL,MU
-      LOGICAL     NOEUD,LPENAF
+      REAL*8      CSTAFR,SEUIL,MU
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,8 +62,7 @@ C IN  LACT   : LISTE DES LAGRANGES ACTIFS
 C IN  DDLS   : NOMBRE DE DDL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
 C IN  DDLM   : NOMBRE DE DDL A CHAQUE NOEUD MILIEU
 C IN  RHOTK  :
-C IN  CSTAFR : COEFFICIENTS DE STABILISATION DU FROTTEMENT
-C IN  CPENFR : COEFFICIENTS DE PENALISATION DU FROTTEMENT
+C IN  CSTAFR : COEF AUGMENTATION OU PENALISATION
 C IN  LPENAF : INDICATEUR DE PENALISATION DU FROTTEMENT
 C IN  P      :
 C OUT ADHER  :
@@ -85,21 +81,15 @@ C
 C ----------------------------------------------------------------------
 C
 C --- CALCUL DE REAC12-PBOUL
-      IF (LPENAF) CSTAFR=CPENFR
       DO 180 I=1,NDIM
         RPB(I)=REAC12(I)-PB(I)
  180  CONTINUE
 C
        DO 194 I = 1,NNOL
          PLI=PLA(I)
-         IF (NOEUD) THEN
-           FFI=FFC(I)
-           NLI=LACT(I)
-           IF (NLI.EQ.0) GOTO 194
-         ELSE
-           FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-           NLI=CFACE(IFA,I)
-         ENDIF
+         FFI=FFC(I)
+         NLI=LACT(I)
+         IF (NLI.EQ.0) GOTO 194
 C
          METR(1)=DDOT(NDIM,TAU1(1),1,RPB,1)
          IF(NDIM.EQ.3) METR(2)=DDOT(NDIM,TAU2(1),1,RPB,1)

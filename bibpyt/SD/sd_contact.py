@@ -1,4 +1,4 @@
-#@ MODIF sd_contact SD  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sd_contact SD  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ class sd_contact(AsBase):
     zcmdf = 6
     zcmcf = 16
     zexcl = 3
-    zcmxf = 18
+    zcmxf = 16
     zmesx = 5
 
 #--------------------------------------------------------------------------------------------------#
@@ -261,7 +261,6 @@ class sd_contact(AsBase):
     CARAXF = Facultatif(AsVR  (SDNom(nomj='.CONTACT.CARAXF')))
     XFIMAI = Facultatif(AsVK8 (SDNom(nomj='.CONTACT.XFIMAI')))
     XNRELL = Facultatif(AsVK24(SDNom(nomj='.CONTACT.XNRELL')))
-    XNBASC = Facultatif(AsVK24(SDNom(nomj='.CONTACT.XNBASC')))
 
 #   Objet spécifique grands glissements
     MAESCX = Facultatif(AsVI  (SDNom(nomj='.CONTACT.MAESCX')))
@@ -277,7 +276,6 @@ class sd_contact(AsBase):
         assert self.CARAXF.lonmax == self.zcmxf*nzoco
         assert self.XFIMAI.lonmax == nzoco
         assert self.XNRELL.exists
-        assert self.XNBASC.exists
         paraci = self.PARACI.get()
         if (paraci[0]!=0) :
           assert self.MAESCX.lonuti == self.zmesx*ntmae
@@ -300,17 +298,5 @@ class sd_contact(AsBase):
           if (nom[8:14]!='.LISEQ'):
             oo  = AsObject(SDNom(nomj=nom,debut=0),genr='V', xous='S', type=Parmi('I','R'))
             oo.check(checker)
-
-    def check_char_contact_xfem_XNBASC(self, checker):
-        if not self.formulation_xfem() : return
-        # glute en attendant que sd_fiss_xfem soit OK
-        return True
-        lnom  = self.XNBASC.get()
-        nbnom = self.XNBASC.lonuti
-        for k in range(nbnom) :
-          nom = lnom[k]
-          if not nom.strip(): continue
-          sd2 = sd_champ(nom)
-          sd2.check(checker)
 
 #--------------------------------------------------------------------------------------------------#
