@@ -50,7 +50,7 @@ def check_aster_version():
     """
     properties = osp.join('bibpyt', 'Accas', 'properties.py')
     d = {}
-    vers, ids, br, date, frbr, chg, loc = [None] * 7
+    vers, ids, br, date, frbr, chg, loc = ['?'] * 7
     try:
         execfile(properties, d)
         vers = version2tuple(d['version'])

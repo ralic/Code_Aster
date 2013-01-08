@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 07/01/2013   AUTEUR CHEIGNON E.CHEIGNON 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,6 +44,7 @@ MODE_LOCAL__
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
+    EENEDNO  = ENER_R   ELEM__         (TOTALE   TRAC_COM TORSION  FLEX_Y   FLEX_Z   )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EPXX     GAXY     GAXZ     GAT      KY       KZ       )
     EDEFGPG  = EPSI_R   ELGA__ RIGI    (EPXX     GAXY     GAXZ     GAT      KY       KZ       )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     )
@@ -202,7 +203,10 @@ OPTION__
                               OUT__  EDFEQPG  PDEFOEQ
     EPEQ_ELNO           335   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
-     EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPOT_ELEM           151   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR ENBSP_I  PNBSP_I
+                                     ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
+                              OUT__  EENEDNO  PENERDR
     EPSI_ELGA           537   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
                                      ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC

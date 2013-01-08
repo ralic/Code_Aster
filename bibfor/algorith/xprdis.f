@@ -6,9 +6,9 @@
       REAL*8       DIST,TOL,LCMIN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -114,19 +114,11 @@ C           COORD PT I, ET J
             XI1 = ZR(JFONR-1+4*(J-1)+1)
             YI1 = ZR(JFONR-1+4*(J-1)+2)
             ZI1 = ZR(JFONR-1+4*(J-1)+3)
-            IF(J.LT.NBPTFR) THEN
-               XJ1 = ZR(JFONR-1+4*(J-1+1)+1)
-               YJ1 = ZR(JFONR-1+4*(J-1+1)+2)
-               ZJ1 = ZR(JFONR-1+4*(J-1+1)+3)
-            ELSE
-C              THIS IS ESSENTIAL FOR A CLOSED CRACK FRONT! IF THE LAST
-C              POINT OF THE FRONT IS NOT CONNECTED TO THE FIRST ONE,
-C              THE CRACK FRONT IS OPEN AND WRONG DISTANCES ARE
-C              CALCULATED!
-               XJ1 = ZR(JFONR-1+4*(1-1)+1)
-               YJ1 = ZR(JFONR-1+4*(1-1)+2)
-               ZJ1 = ZR(JFONR-1+4*(1-1)+3)
-            ENDIF
+
+            XJ1 = ZR(JFONR-1+4*(J-1+1)+1)
+            YJ1 = ZR(JFONR-1+4*(J-1+1)+2)
+            ZJ1 = ZR(JFONR-1+4*(J-1+1)+3)
+
 C           VECTEUR IJ ET IM
             XIJ = XJ1-XI1
             YIJ = YJ1-YI1

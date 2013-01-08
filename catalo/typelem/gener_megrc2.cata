@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 07/01/2013   AUTEUR CHEIGNON E.CHEIGNON 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,6 +26,7 @@ ENTETE__ ELEMENT__ MEGCQU4          MAILLE__ QUAD4
 
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
+    EGGEMA_R = GEOM_R   ELGA__ MATER   (X        Y        Z        )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCACOQU  = CACOQU   ELEM__         (SECT_L   ALPHA    BETA     DIST_N   CTOR     )
@@ -59,6 +60,9 @@ MODE_LOCAL__
     ENBSP_I  = NBSP_I   ELEM__         (GRI_NCOU )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    EMNEUT_R = NEUT_R   ELGA__ MATER   (X[1]     )
+    ETEMPMA  = TEMP_R   ELGA__ MATER   (TEMP     )
+    EHYDRMA  = HYDR_R   ELGA__ MATER   (HYDR     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EGAMIMA  = SPMX_R   ELGA__ RIGI    (VAL      NUCOU    NUSECT    NUFIBR   POSIC    POSIS    )
@@ -92,6 +96,8 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER   CCACOQU  PCACOQU
                               OUT__  EGGEOP_R PCOORPG
+    COOR_ELGA_MATER     462   IN__   NGEOMER  PGEOMER   CCACOQU  PCACOQU
+                              OUT__  EGGEMA_R PCOOPGM
     DEGE_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     ECIN_ELEM           432   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_MECA PDEPLAR
                                      ZVARCPG  PVARCPR  COMEG2R  POMEGA2  DDL_MECA PVITESR
@@ -123,7 +129,9 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
-    INIT_VARC           99    IN__  
+    INI_SP_MATER        99    IN__
+                              OUT__  EMNEUT_R PNEUMAT  ETEMPMA  PTEMMAT  EHYDRMA  PHYDMAT
+    INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           433   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  EMASSINE PMASSINE
@@ -180,7 +188,7 @@ OPTION__
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
-    MINMAX_SP           99    IN__  
+    MINMAX_SP           99    IN__
                               OUT__  EGAMIMA  PGAMIMA
                                      ENOMIMA  PNOMIMA
     TOU_INI_ELEM        99    IN__

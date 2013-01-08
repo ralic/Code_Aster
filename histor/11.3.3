@@ -1,0 +1,1022 @@
+========================================================================
+Version 11.3.3 du : 09/01/2013
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 01/08/2013 - 08:12:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019913 DU 2012-11-12 16:12:24
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    Suite 19856
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Suite à l'issue 19856, on a laissé des LCOMEL dimensionnés à 5 au lieu de 10
+   
+   
+   Solution
+   ========
+   
+   Corrigé depuis
+   On classe sans suite
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019694 DU 2012-10-10 09:52:35
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MN06 - STAT_NON_LINE : affichage de la cause de sous-decoupage du pas de temps
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Depuis qq version, la cause de sous-decoupage du pas de temps (pilotage, DIVE_RESI...)
+   n'est plus affichée dans STAT_NON_LINE en INFO=1.
+   
+   Bonus track: 
+   Des utilisateurs aimeraient connaitre, par exemple en cas d'échec d'intégration de la loi
+   de comportement, le point de Gauss our la maille où celaz s'est produit. Est-ce possible
+   de l'imprimer ?
+   
+   Solution
+   ========
+   
+   Le premier point a été corrigé par la fiche issue19729
+   Pour la deuxième question, il faudrait sortir un nouveau champ en plus du code-retour, ce
+   qui me parait être une évolution un peu lourde.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019109 DU 2012-07-04 08:05:08
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+    CTC1 - Newton gxc3xa9nxc3xa9ralisxc3xa9 dans doc U2 du contact
+FONCTIONNALITE
+   Suite à l'introduction du Newton généralisé, petit impact doc fait dans U2.04.04
+   Un ajout a également été fait par TdS concernant la méthode de dynamique lente.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U2.04.04
+VALIDATION
+    nxc3xa9ant
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011128 DU 2007-07-20 08:05:57
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    DEF8 - Fonction des iterations de Newton
+FONCTIONNALITE
+   Demande
+   =======
+   
+   Lorsque l'on a du contact, l'algorithme est activé pour toutes les itérations de Newton.
+   Cela veut dire qu'après la prédiction Aster essaye de vérifier le contact. Si cette phase
+   de prédiction n'est pas très bonne, on peut perdre beaucoup de temps CPU à essayer de
+   vérifier le contact sur une solution que l'on sait n'être pas très bonne.
+   Il faudrait pouvoir indiquer à Aster le fait que la résolution du contact est une fonction
+   des itérations de Newton.
+   
+   Une idée :
+   |  REAC_ITER    = fonction( Newton )
+   |  NB_REAC_GEOM = fonction( Newton )
+   Pour GCP :
+   |  RESI_ABSO    = fonction( Newton )
+   
+   Réponse
+   =======
+   
+   C'est un chantier d'ampleur que l'on devait étudier en 2012/2013 dans MNAM, dans le cadre
+   de l'action sur les gabarits de calcul. 
+   Il a été décidé d'arrêter ce chantier (COPIL MNAM 2012)
+   Je classe donc la fiche sans suite
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011132 DU 2007-07-23 07:36:46
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    DEF8 - Fonctions encore plus evoluees
+FONCTIONNALITE
+   Demande
+   =======
+   
+   Le but est d'ajouter de nouveaux paramètres aux fonctions, pour pouvoir contrôler les calculs.
+   Les paramètres :
+   |   INST : le temps (existe déjà)
+   |   ITNW : les itérations de Newton à l'instant INST
+   |   RSGR : RESI_GLOB_RELA à l'itération ITNW
+   |   RSGM : RESI_GLOB_MAXI à l'itération ITNW
+   |   ....
+   Tout cela dans le but de pouvoir définir des fonctions qui vont permettre de paramétrer le
+   calcul (cf fiche 11128, par exemple le contact).
+   
+   Pour être complet il faudrait que les fonctions puissent renvoyer des chaînes de
+   caractères. Par exemple on pourrait définir une fonction qui :
+   |  pour INST dans [ 0, t1[ renvoie 'ELASTIQUE'
+   |  pour INST dans [t1, t2[ renvoie 'TANGENTE'
+   |  pour ITNW  = 0 renvoie 'ELASTIQUE'
+   |  pour ITNW > n et RSGR > x, modifie une option, une méthode ou change
+   |               un paramètre de convergence.
+   |  ....
+   
+   Les mots clefs NEWTON/PREDICTION, NEWTON/MATRICE, CONTACT/REAC_ITER CONTACT/NB_REAC_GEOM,
+   CONTACT/RECH_LINEAIRE, CONTACT/REAC_GEOM  ... pourront être affectée par ces fonctions.
+   Aux développeurs de définir les mots clefs qui peuvent évoluer au cours du calcul.
+   
+   Problème pour certaines options : Dans le cas d'un STAT_NON_LINE, avec
+   NEWTON/MATRICE='TANGENTE' on peut préciser également REAC_INCR, REAC_ITER, par contre avec
+   NEWTON/MATRICE='ELASTIQUE' ces valeurs n'existent pas. Donc si on fait
+   NEWTON/MATRICE=MaFonction, il est impossible au superviseur de contrôler les valeurs, et
+   de vérifier la cohérence de certaines données utilisateur.
+   Une Solution : Définir une option NEWTON_F ou tous les mots clefs doivent être affectées
+   par des fonctions ou des constantes.
+   
+   Si dans les arguments d'une fonction on peut également envisager de passer un concept de
+   type table, on pourrait faire en sorte que la table d'un concept evol_noli soit accessible
+   aux fonctions.
+   
+   Réponse
+   =======
+   
+   C'est un chantier d'ampleur que l'on devait étudier en 2012/2013 dans MNAM, dans le cadre
+   de l'action sur les gabarits de calcul. 
+   Il a été décidé d'arrêter ce chantier (COPIL MNAM 2012)
+   Je classe donc la fiche sans suite (comme issue11128)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009464 DU 2006-02-16 10:35:38
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+    MN10 - Mise xc3xa0 jour de la doc. D
+FONCTIONNALITE
+   La doc D sur la mise en œuvre de STAT_NON_LINE D9.05.01 est mise à jour. 
+   
+   Cette documentation prend en compte aussi la dynamique (DYNA_NON_LINE) et les objets
+   génériques de type ARCHIVAGE (utilisés dans THER_NON_LINE).
+   
+   Entrée ce jour dans l'appli documentaire, elle est découpée en plusieurs parties.
+   
+   L'opérateur op0070.f est constitué de plusieurs parties :
+   1. Lecture des données ;
+   2. Initialisation des données ;
+   3. Construction et résolution d'un système linéaire
+   4. Mise-à-jour des champs ;
+   5. Archivage des résultats, post-traitements ;
+   Le tout étant encapsulé dans trois niveaux de boucle: pas de temps, boucles de point fixe
+   (pour le contact) et itérations de Newton avec une gestion de type évènementielle.
+   Ce document propose la description de ces différentes zones de l'opérateur, en insistant
+   particulièrement sur le coté structurant des SD (§2), des évènements (§3.3) et sur
+   l'algorithme général, boucle par boucle (§4).
+   
+   Il reste à compléter:
+   - les informations sur la recherche linéaire
+   - les informations sur le pilotage
+   - les algorithmes et inorganisation du contact/frottement dans op0070.f
+   
+   Ceci Clot le livrable MN10 de SIMUMECA
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : D9.05.01
+VALIDATION
+    nxc3xa9ant
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 07/01/2013 - 11:50:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017376 DU 2011-08-04 08:43:22
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Necs
+TITRE
+    OPTION EPOT_ELEM pour les POU_D_EM
+FONCTIONNALITE
+   But de la fiche :
+   =================
+   D�velopper l'option EPOT_ELEM pour tous les types de poutres pour lesquels cette option
+   n'est pas encore disponible � l'exception de POU_D_T_GD.
+   
+   Travail effectu� :
+   ==================
+   Developpement de l'option EPOT_ELEM pour les POU_D_EM, les POU_D_TG et les POU_D_TGM.
+   Pour cela on a suivi ce qui �tait fait pour les autres types de poutres. Concr�tement,
+   il s'agissait de brancher dans te0151 les routines de calcul de matrice de rigidit� pour
+   ces types de poutres.
+   Sources impact�es : peepot.ff te0151.f
+                       epot_elem.cata gener_mepdg1.cata gener_mepmf1.cata gener_mepmf2.cata
+   
+   
+   Validation:
+   Pour valider ces d�veloppements, on a cr�er un test pour chaque mod�lisation.
+   A chaque fois on valide � partir de formules analytiques simples que l'�nergie calcul�e
+   est bien celle attendue apr�s un calcul statique lin�aire et un calcul modal.
+   
+   Calcul statique:
+   Une poutre encastr�e en une de ses extr�mit�s et soumise � une force concentr�e � l'autre
+   extr�mit� permet de calculer simplement l'�nergie potentielle � partir de la charge
+   appliqu�e et des d�placements donn�s par Aster.
+   
+   Calcul modal:
+   Partant du m�me mod�le, le calcul de l'�nergie cin�tique sera valid� avec des formules
+   analytiques prenant en compte les fr�quences propres calcul�es par Aster.
+   
+   Nouveaux tests : zzzz330a zzzz330b zzzz330c
+   
+   Documentation :
+   ===============
+   V1.01.330
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V1.01.330
+VALIDATION
+    zzzz330
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019816 DU 2012-10-24 15:06:17
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Necs
+TITRE
+    GRILLE EXCENTREE : Affectation des variables de commandes aux sous-points
+FONCTIONNALITE
+   Demande :
+   =========
+   La fiche issue10202 traitait de l'affectation des variables de commandes aux sous-points
+   pour les �l�ments : POU_D_EM, POU_D_TGM, DKT (QUA4, TRI3)
+   
+   Faire la m�me chose pour les GRILLE_EXCENTREE (QUA4, TRI3). Utiliser le m�me "te" que pour
+   les DKT : Doc + cas tests
+   
+   
+   Travail effectu� :
+   ==================
+   On cr�e l'option COOR_ELGA_MATER pour les GRILLE_EXCENTREE dans te0462.f (m�me te**** que
+   les DKT).
+   Sources modifi�es : te0462.f, gener_megrc2.cata 
+   
+   Les tests zzzz318e pour les grilles QUAD4 et zzzz318f pour les grilles TRIA3 sont ajout�s.
+   
+   Impact doc : V1.01.318 : ajout des deux mod�lisations.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V1.01.318
+VALIDATION
+    zzzz318e et f
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 01/07/2013 - 05:26:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019598 DU 2012-09-27 08:22:18
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    X-FEM : taille des mailles en fond de fissure calculee par DEFI_FISS_XFEM
+FONCTIONNALITE
+   Objectif :
+   ----------
+   
+   Dans le même esprit que la fiche issue17633, on souhaite calculer la taille des mailles en
+   fond de fissure pour des fissures X-FEM.
+   
+   
+   Réalisation :
+   -------------
+   
+   
+   On crée une nouvelle routine nommée xtailm, pour réaliser les calculs des tailles de mailles.
+   
+   Dans xptfon :
+       - dans la boucle sur les mailles connectées au fond: IMA=1,NMAFON
+        -->dès qu'on détecte un nouveau point du fond:
+             on calcule la 'taille de maille' maximale de la maille IMA
+             suivant VECDIR (VECDIR est en fait calculé dans xptfon)
+           et on la stocke dans un vecteur "FOND_TAILLE_R"
+             
+        -->si on détecte un point déjà trouvé:
+             on calcule la 'taille de maille' maximale de la maille IMA
+             suivant VECDIR 
+          et on la compare à la valeur stockée dans "FOND_TAILLE_R"
+          => si elle est plus grande: on remplace la valeur dans "FOND_TAILLE_R"
+             sinon: on ne fait rien
+   
+   ".FOND_TAILLE_R" sera ensuite ordonné dans xcrff comme le sont .BASEFOND et .FONDFISS
+   
+   L'objet .FOND.TAILLE_R est donc le même que celui de la sd fond_fiss.
+   
+   Cette fiche est validée par la fiche issue19599
+   
+   
+   Impacts:
+   --------
+   F:
+   création routine xtailm
+   xptfon
+   xlmail
+   xffcr
+   xoriff
+   xenrch
+   
+   PY:
+   sd_xfem
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : d4.10.02
+VALIDATION
+    tests x-fem
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019599 DU 2012-09-27 08:28:38
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    RUPT : mots-cle R_INF et R_SUP de CALC_G
+FONCTIONNALITE
+   Objectif :
+   ----------
+   
+   Dans le même esprit que la fiche issue14538 qui a permis de rendre facultative sous
+   certaines conditions le mot-clé ABS_CURV_MAXI de POST_K1_K2_K3 en FEM, on souhaiterait
+   rendre facultatif les mot-clé R_INF et R_SUP de CALC_G (FEM + X-FEM) et de CALC_THETA,
+   option THETA_3D (FEM).
+   
+   
+   Réalisation :
+   -------------
+   
+   Si hk est la taille des mailles au point k du fond de fissure récupérée dans la
+   sd_fond_fiss ou sd_fiss_xfem (issue19598) et que l'on note h = max(hk) alors on prend
+   R_INF = 2.h
+   R_SUP = 4.h
+   
+   On émet une Info pour avertir l'utilisateur des valeurs de R_INF et R_SUP.
+   
+   """
+   Le paramètre R_INF automatiquement choisi vaut : (val) 
+   Le paramètre R_SUP automatiquement choisi vaut : (val) 
+   """
+   
+   On émet une alarme s'il a trop de différence dans la taille des mailles.
+   On prend un facteur 2 : c-a-d si max(taille_maille) > 2 * min(taille_maille) l'alarme
+   suivante s'affiche (voir celle pour POST_K1_K2_K3).
+   
+   
+   Il avait été convenu de :
+   - ne pas modifier les macro appelant CALC_G et CALC_THETA
+   - d'émettre une erreur fatale si on est dans le cas FEM et que l'objet .FOND.TAILLE_R n'a
+   pas été calculé par DEFI_FOND_FISS (configuration décollée) sans
+   R_INF(ou R_INF_FO) et R_SUP(ou R_SUP_FO)
+   - d'émettre une erreur fatale dans gver2d.f si on a R_INF_FO et R_SUP_FO dans CALC_G
+   
+   
+   Validation :
+   ------------
+   
+   Les développements sont validés dans un premier temps par les cas-tests ssnv185c et
+   sslv134a.
+   Une validation plus complète (systématique) sera réalisée dans la fiche issue19886.
+   
+   
+   Impacts :
+   ---------
+   F:
+   gver2d
+   gveri3
+   gverig
+   op0054
+   op0100
+   
+   CAPY:
+   calc_g
+   calc_theta
+   
+   PY:
+   rupture1
+   
+   CAS-TESTS:
+   ssnv185c sslv134a
+   
+   docs:
+   u4.82.03 u4.82.02
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.82.03, u4.82.02, u2.05.01
+VALIDATION
+    ssnv185c sslv134a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019656 DU 2012-10-05 09:30:19
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TMA : Phimeca
+TITRE
+    X-FEM : bug dans le calcul du Keq dans PROPA_FISS
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   La fiche issue15214 avait pour but de corriger la formule donnant le Keq en fonction de G
+   dans PROPA_FISS.
+   
+   Cette correction n'a pas été faite pour la méthode MAILLAGE.
+   
+   Le nombre de cycles est donc faux si le coefficient de Poisson est différent de 0: par
+   exemple si nu=0,3, alors on comment une erreur d'environ 5% sur le Keq. Si le coefficient
+   m de la loi de Paris vaut 3, cela représente une erreur de 15% sur le nombre de cycles. Ce
+   qui est très faible par rapport aux incertitudes de ce genre de calcul.
+   
+   Solution :
+   ----------
+   
+   Ce bug est résolu avec la fiche issue19572.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019251 DU 2012-07-26 11:10:39
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    X-FEM : traitement correct des fonds fermes
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Physiquement, un fond est dit "fermé" si la fissure ne débouche pas (par ex. cas d'une
+   fissure circulaire noyée dans un domaine).
+   
+   Dans Aster, les fissures maillées dites fermées ont la particularité que le 1er noeud du
+   fond = le dernier noeud du fond.
+   
+   Les fissures x-fem, même si elles ne débouchent pas (physiquement fermées) ne sont jamais
+   traitées dans aster comme des fissure fermées, cad que le 1er point du fond != du dernier.
+   
+   L'idée de la fiche est de traiter les fissures non-débouchantes X-FEM comme les fissures
+   non-débouchantes FEM : en ayant 1er point = dernier point.
+   
+   
+   Réalisation :
+   -------------
+   
+   - Ajout du premier point en dernière position dans les vecteurs .FONDFISS et
+   .BASEFOND dans le cas d'un fond fermé.
+   
+   - Ajout d'une requête DISMOI pour connaitre le type de fond en XFEM et FEM
+   
+   - Appel à dismoi pour connaitre le type de fond de fissure dans op0100
+   
+   IMPACTS:
+   --------
+   
+   F :
+   dismff
+   dismxf
+   op0100
+   foninf
+   op0055
+   xffcr
+   xoriff
+   op0041
+   xenrch
+   xffext
+   xprdis
+   
+   dommages collatéraux (changement du type de la variable TYPFON dans op55):
+   fonnoe fonmai fonnof dfflon
+   
+   PY:
+   post_k1_k2_k3_ops
+   xfem
+   
+   doc:
+   d4.10.02 sd_fiss_xfem
+   d4.10.01 sd_fond_fiss
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : d4.10.02, d4.10.01
+VALIDATION
+    cas-tests defi_fiss_xfem
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019448 DU 2012-09-07 14:39:34
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    X-FEM : blinder la definition de plusieurs fonds fermes au sein de DEFI_FISS_XFEM
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   A ce jour, rien n'interdit d'avoir une level set qui définit plusieurs fonds de fissure
+   fermés (par exemple plusieurs fissures de type "penny-shaped"). De ce fait, un appel à
+   DEFI_FISS_XFEM pourraient alors définir plusieurs fissures.
+   
+   Or la règle dit que chaque fissure doit être définie dans un DEFI_FISS_XFEM différent.
+   
+   Il faudrait interdire cette possibilité et obliger l'utilisateur à définir une seule
+   fissure par DEFI_FISS_XFEM.
+   
+   
+   Solution :
+   ----------
+   
+   On rajoute des vérifications dans DEFI_FISS_XFEM pour que l'utilisateur ne puisse pas
+   définir :
+   (a) plusieurs fonds fermés
+   (b) ou un fond fermé + un ou plusieurs fonds ouverts
+   
+   Ajout des messages d'erreur dans xoriff :
+   
+   (a) : XFEM_20
+   "Vous avez défini plus d'un fond fermé lors d'un appel à DEFI_FISS_XFEM.
+   Conseil:
+   Veuillez définir chacun des fonds dans des DEFI_FISS_XFEM différents. "
+   
+   (b) : XFEM_21
+   "Vous avez défini au moins un fond ouvert et un fond fermé lors d'un appel à DEFI_FISS_XFEM.
+   Conseil:
+   Veuillez définir chacun des fonds dans des DEFI_FISS_XFEM différents. "
+   
+   
+   Impacts :
+   
+   F
+   xoriff
+   xffext
+   dismxf
+   op0041
+   
+   PY
+   xfem
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.08
+VALIDATION
+    tests persos
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019242 DU 2012-07-24 15:44:01
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    X-FEM : arret propre en cas de fissure sur le bord
+FONCTIONNALITE
+   Objectif :
+   ----------
+   
+   Comme DEFI_FISS_XFEM ne sert plus que pour les fissures X-FEM (17365), on souhaite
+   détecter et s'arrêter proprement dans le cas où la fissure coïncide avec un bord de la
+   structure
+   
+   
+   Réalisation :
+   -------------
+   
+   Le calcul du nb de mailles où lsn change de signe est fait dans xmafis.f -> NMAFIS.
+   
+   On émet une erreur fatale XFEM_57 juste après CALL XMAFIS si NMAFIS est nul.
+   
+   Voici le nouveau contenu du message XFEM_57 :
+   
+   """La fissure (ou l'interface) définie dans DEFI_FISS_XFEM ne coupe aucune des mailles du
+   maillage. La fissure (ou l'interface) se trouve donc en dehors de la structure ou bien
+   coincide avec un bord de la structure. Cela est interdit. Il y a probablement une erreur
+   de mise en données. 
+   
+   Conseils: 
+    vérifier la cohérence entre la définition de la géométrie de la fissure et le maillage."""
+   
+   
+   Impacts :
+   ---------
+   
+   F :
+   xenrch
+   
+   PY :
+   xfem
+   
+   Doc :
+   U4.82.08 defi_fiss_xfem
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.82.08
+VALIDATION
+    test perso
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019572 DU 2012-09-24 15:47:37
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    X-FEM : PROPA_FISS, methode MAILLAGE : appels a POST_RUPTURE
+FONCTIONNALITE
+   Cette fiche fait partie de la fiche "chapeau" issue15522 "X-FEM : uniformisation des
+   méthodes de PROPA_FISS"
+   
+   Elle traite de la méthode MAILLAGE.
+   
+   Réalisation :
+   ------------
+   
+   -Remplacement dans PROPA_FISS pour la méthode MAILLAGE certains calculs de
+   grandeurs (deltaKeq, comptages des cycles, calcul de l'angle beta, calcul de la loi de
+   paris) par des appels à POST_RUPTURE.
+   -'ménage' dans le code concernant la méthode MAILLAGE (suppression de variables
+   inutiles, petites simplifications)
+   
+   ->conséquence: 
+   -suppression du coefficient N (de la loi de Paris) dans propa_fiss.capy, des cas-tests et
+   la doc.
+   -plus de possibilité de traiter plusieurs instants de calcul
+   -PT_FOND est changé par NUM_PT en sortie de post_k1_k2_k3
+   
+   
+   Impacts:
+   --------
+   PY:
+   propa_fiss_ops
+   xfem2
+   post_rupture_ops
+   post_k1_k2_k3_ops
+   
+   CAPY:
+   propa_fiss
+   
+   cas-tests:
+   ---------
+   sslp315a
+   sslp315b
+   sslp319c
+   sslp319d
+   sslp320a
+   sslp321a
+   sslp322a
+   sslv314b
+   sslv314c
+   sslv315b
+   sslv315c
+   sslv319a
+   sslv320d
+   zzzz255c
+   
+   +cas-tests où on a modifié PT_FOND par NUM_PT:
+   sslv134h
+   sslv154b
+   ssnv185b
+   ssnv185c
+   ssnv185d
+   ssnv185f
+   ssnv185g
+   ssnv185n
+   ssnv185p
+   ssnv185r
+   
+   DOCS:
+   -----
+   u4.82.11 propa_fiss
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.82.11
+VALIDATION
+    sslp315a sslp315b sslp319c sslp319d sslp320a sslp321a sslp322a sslv314b sslv314c sslv315b sslv315c sslv319a sslv320d zzzz255c
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019238 DU 2012-07-24 13:57:03
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    X-FEM : fusion des routines 2d et 3d appelees par les TE
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Le TE0539 (options full_meca, raph_meca et rigi_meca_tang pour les éléments X-FEM)
+   appelle les routines xnmel.f, xnmpl.f, xnmgr.f
+   (comp_elas, comp_incr et comp_incr + grot_gdep).
+   
+   Chacune de ces 3 routines appellent ensuite des routines 2d/3d selon le cas :
+   xnmel2.f, xnmpl2.f, xnmgr2.f
+   xnmel3.f, xnmpl3.f, xnmgr3.f
+   
+   
+   Le te0542 (forc_noda pour les éléments X-FEM) 
+   appelle xbsig, qui appelle xbsig2.f et xbsig3.f
+   
+   Pour des raisons de maintenance logicielle, on souhaite fusionner certaines routines.
+   
+   
+   Réalisation :
+   -------------
+   
+   Les routines suivantes ont été fusionnées :
+   xnmel2.f & xnmel3.f -> xxnmel.f
+   xnmpl2.f & xnmpl3.f -> xxnmpl.f
+   xnmgr2.f & xnmgr3.f -> xxnmgr.f
+   xbsig2.f & xbsig3.f -> xxbsig.f
+   
+   
+   Impacts :
+   ---------
+   
+   suppression de  xnmel2 xnmel3 xnmpl2 xnmpl3 xnmgr2 xnmgr3 xbsig2 xbsig3
+   création de     xxnmel xxnmpl xxnmgr xxbsig
+   modification de xnmel xnmpl xnmgr xbsig
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas-tests defi_fiss_xfem
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR michel       MICHEL-PONNELLE Sylvie   DATE 01/07/2013 - 05:26:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020088 DU 2012-12-13 12:56:22
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TMA : Phimeca
+TITRE
+    CALC_PRECONT : erreur dans le traitement des mots clxc3xa9s CABLE_BP et CABLE_BP_INACTIF
+FONCTIONNALITE
+   Suite signalement hotline, problème constaté par GDS :
+   
+   Si on fournit une liste en tant qu'argument au mot clé CABLE_BP de CALC_PRECONT, on a une
+   erreur 
+   au traitement. Ce qui n'est pas le cas si on fournit un tuple.
+   
+   Par exemple dans ssnv164b :
+   uuu=[CAB_BP1, CAB_BP2]
+   RES1 =  CALC_PRECONT( ... CABLE_BP   =uuu, ...)
+   
+   Alors qu'avec un tuple uuu=(CAB_BP1, CAB_BP2), cela fonctionne.
+   
+   Solution : 
+   
+   Il faut intervenir dans calc_precont_ops.py en versions 10 et 11. Et remplacer les lignes 
+   suivantes :
+   if type(CABLE_BP) is not types.TupleType:
+   if type(CABLE_BP_INACTIF) is not types.TupleType:
+   
+   par :
+   
+   if type(CABLE_BP) not in (types.TupleType,types.ListType):
+   if type(CABLE_BP_INACTIF) not in (types.TupleType,types.ListType):
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test perso
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 01/07/2013 - 10:47:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020128 DU 2012-12-20 16:01:42
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.02, le cas-test ssnv225b est NOOK sur Aster4, Rocks et Calibre7.
+FONCTIONNALITE
+   En NEW11.03.02, le cas-test ssnv225b est NOOK sur toutes les plate-formes
+   
+   Ceci est une conséquence de la restitution en NEW11.3.2 : de légères modifications ont été
+   effectuées sur l'intégration implicite.
+   
+   Le test est réparé, avec maintenant des tests de comparaison à la modélisation  A. On en
+   profite pour corriger un défaut d'initialisation dans la routine rkdhay.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v6.04.225
+VALIDATION
+    ssnv225b
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 01/07/2013 - 10:47:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020121 DU 2012-12-20 14:38:13
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.01, le cas-test sslv104a s'arrete en erreur fatale sur Aster4, Rocks et Calibre7.
+FONCTIONNALITE
+   Problème :
+   ----------
+   En NEW11.03.01, le cas-test sslv104a s'arrete en erreur fatale sur Rocks, Aster4 et Calibre7.
+   
+   
+   Analyse :
+   ---------
+   Le problème vient de ma correction de la fiche issue20068. Il me semblait que CCLOPU
+   utilisait mal RSEXCH.
+   
+   En effet dans cette routine, on cherche à savoir si un champ qui sera utilisé pour les
+   calculs de CHAM_UTIL est présent dans la sd.
+   
+   En réalité, c'est le diagnostic de RSEXCH qui était faux à cause d'une mauvaise
+   utilisation due à CCLOPU.
+   
+   Dans CCLOPU, on déclare la chaîne CHEXTR en sortie de RSEXCH comme un CHARACTER*16 (au
+   lieu de 24).
+   
+   Dans RSEXCH, avant de faire un EXISD sur le champ demandé, on recopie le nom obtenu à
+   l'aide de RSUTCH (qui est un CHARACTER*24) dans CHEXTR (qui est un CHARACTER*16). On
+   tronque donc la chaîne et EXISD donne un mauvais diagnostic d'existence du champ.
+   
+   
+   Solution :
+   ----------
+   Dans CCLOPU, il faut déclarer la chaîne de sortie de RSEXCH comme un CHARACTER*24. Avec ce
+   correctif, sslv104a fonctionne correctement ainsi que le problème traité dans issue20068.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv104a et test unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT zzzz318e                     cheignon E.CHEIGNON         382    382      0
+ CASTEST AJOUT zzzz318f                     cheignon E.CHEIGNON         382    382      0
+ CASTEST AJOUT zzzz330a                     cheignon E.CHEIGNON         192    192      0
+ CASTEST AJOUT zzzz330b                     cheignon E.CHEIGNON         178    178      0
+ CASTEST AJOUT zzzz330c                     cheignon E.CHEIGNON         202    202      0
+ CASTEST MODIF sslp315a                       ladier A.LADIER           163      3      3
+ CASTEST MODIF sslp315b                       ladier A.LADIER           164      3      3
+ CASTEST MODIF sslp319c                       ladier A.LADIER           290      5      3
+ CASTEST MODIF sslp319d                       ladier A.LADIER           284      2      3
+ CASTEST MODIF sslp320a                       ladier A.LADIER           249      3      3
+ CASTEST MODIF sslp321a                       ladier A.LADIER           220      3      3
+ CASTEST MODIF sslp322a                       ladier A.LADIER           213      3      3
+ CASTEST MODIF sslv134a                       ladier A.LADIER           411     31      8
+ CASTEST MODIF sslv134h                       ladier A.LADIER           278      5      5
+ CASTEST MODIF sslv154b                       ladier A.LADIER           252      3      3
+ CASTEST MODIF sslv314b                       ladier A.LADIER           220      3      3
+ CASTEST MODIF sslv314c                       ladier A.LADIER           193      3      3
+ CASTEST MODIF sslv315b                       ladier A.LADIER           247      3      3
+ CASTEST MODIF sslv315c                       ladier A.LADIER           219      3      3
+ CASTEST MODIF sslv319a                       ladier A.LADIER           533      3      4
+ CASTEST MODIF sslv320d                       ladier A.LADIER           377      2      4
+ CASTEST MODIF ssnv185b                       ladier A.LADIER           406      3      3
+ CASTEST MODIF ssnv185c                       ladier A.LADIER           555     31      3
+ CASTEST MODIF ssnv185d                       ladier A.LADIER           294      3      3
+ CASTEST MODIF ssnv185f                       ladier A.LADIER           248      3      3
+ CASTEST MODIF ssnv185g                       ladier A.LADIER           338      3      3
+ CASTEST MODIF ssnv185n                       ladier A.LADIER           378      3      3
+ CASTEST MODIF ssnv185p                       ladier A.LADIER           422      3      3
+ CASTEST MODIF ssnv185r                       ladier A.LADIER           248      3      3
+ CASTEST MODIF ssnv225b                        proix J-M.PROIX          215     24     14
+ CASTEST MODIF zzzz255c                       ladier A.LADIER           153      2      3
+CATALOGU MODIF options/epot_elem            cheignon E.CHEIGNON          67      5      2
+CATALOGU MODIF typelem/gener_megrc2         cheignon E.CHEIGNON         200     10      2
+CATALOGU MODIF typelem/gener_mepdg1         cheignon E.CHEIGNON         276      6      3
+CATALOGU MODIF typelem/gener_mepmf1         cheignon E.CHEIGNON         319      7      3
+CATALOGU MODIF typelem/gener_mepmf2         cheignon E.CHEIGNON         304      6      3
+CATALOPY MODIF commande/calc_g                ladier A.LADIER           152      3      4
+CATALOPY MODIF commande/calc_theta            ladier A.LADIER            59      2      3
+CATALOPY MODIF commande/propa_fiss            ladier A.LADIER           150     11     16
+ FORTRAN AJOUT algorith/xtailm                ladier A.LADIER            78     78      0
+ FORTRAN AJOUT algorith/xxnmel                ladier A.LADIER           513    513      0
+ FORTRAN AJOUT algorith/xxnmgr                ladier A.LADIER           447    447      0
+ FORTRAN AJOUT algorith/xxnmpl                ladier A.LADIER           435    435      0
+ FORTRAN AJOUT elements/xxbsig                ladier A.LADIER           300    300      0
+ FORTRAN MODIF algorith/cglect                ladier A.LADIER           104     10      6
+ FORTRAN MODIF algorith/cgleff                ladier A.LADIER           140     28      8
+ FORTRAN MODIF algorith/dfflon                ladier A.LADIER           114      3      4
+ FORTRAN MODIF algorith/gveri3                ladier A.LADIER           180     36     17
+ FORTRAN MODIF algorith/op0041                ladier A.LADIER           492      4      4
+ FORTRAN MODIF algorith/rkdhay                 proix J-M.PROIX          201      7      5
+ FORTRAN MODIF algorith/xenrch                ladier A.LADIER           348     23     22
+ FORTRAN MODIF algorith/xffcr                 ladier A.LADIER            96     40     12
+ FORTRAN MODIF algorith/xffext                ladier A.LADIER           104      8      9
+ FORTRAN MODIF algorith/xnmel                 ladier A.LADIER           197      6     23
+ FORTRAN MODIF algorith/xnmgr                 ladier A.LADIER           180      5     14
+ FORTRAN MODIF algorith/xnmpl                 ladier A.LADIER           183      5     14
+ FORTRAN MODIF algorith/xoriff                ladier A.LADIER           193     29     14
+ FORTRAN MODIF algorith/xprdis                ladier A.LADIER           200      4     12
+ FORTRAN MODIF algorith/xptfon                ladier A.LADIER           345     15      5
+ FORTRAN MODIF calculel/cclopu              sellenet N.SELLENET         177      6      5
+ FORTRAN MODIF calculel/op0054                ladier A.LADIER           193      9      7
+ FORTRAN MODIF calculel/op0055                ladier A.LADIER           255     10      6
+ FORTRAN MODIF calculel/op0100                ladier A.LADIER           559     17     13
+ FORTRAN MODIF elements/foninf                ladier A.LADIER            63      9      5
+ FORTRAN MODIF elements/fonmai                ladier A.LADIER           191      3      4
+ FORTRAN MODIF elements/fonnoe                ladier A.LADIER           204      4      4
+ FORTRAN MODIF elements/fonnof                ladier A.LADIER           348      3      4
+ FORTRAN MODIF elements/gver2d                ladier A.LADIER           231     30     10
+ FORTRAN MODIF elements/gverig                ladier A.LADIER           346     50     27
+ FORTRAN MODIF elements/te0151              cheignon E.CHEIGNON         315     41     13
+ FORTRAN MODIF elements/te0462              cheignon E.CHEIGNON         136     21     10
+ FORTRAN MODIF elements/xbsig                 ladier A.LADIER           157      7     15
+ FORTRAN MODIF modelisa/xlmail                ladier A.LADIER           152     15     10
+ FORTRAN MODIF utilitai/dismff                ladier A.LADIER            77      7      2
+ FORTRAN MODIF utilitai/dismxf                ladier A.LADIER            90      7      2
+ FORTRAN MODIF utilitai/peepot              cheignon E.CHEIGNON         309      5      4
+ FORTRAN SUPPR algorith/xnmel2                ladier A.LADIER           466      0    466
+ FORTRAN SUPPR algorith/xnmel3                ladier A.LADIER           418      0    418
+ FORTRAN SUPPR algorith/xnmgr2                ladier A.LADIER           406      0    406
+ FORTRAN SUPPR algorith/xnmgr3                ladier A.LADIER           430      0    430
+ FORTRAN SUPPR algorith/xnmpl2                ladier A.LADIER           403      0    403
+ FORTRAN SUPPR algorith/xnmpl3                ladier A.LADIER           373      0    373
+  PYTHON MODIF Macro/calc_precont_ops         ladier A.LADIER           428      5      4
+  PYTHON MODIF Macro/post_k1_k2_k3_ops        ladier A.LADIER          2031     17     17
+  PYTHON MODIF Macro/post_rupture_ops         ladier A.LADIER           817     30     28
+  PYTHON MODIF Macro/propa_fiss_ops           ladier A.LADIER          1113    134    249
+  PYTHON MODIF Messages/mecanonline2           abbas M.ABBAS            105      7     11
+  PYTHON MODIF Messages/rupture1              ladier A.LADIER           360     34     12
+  PYTHON MODIF Messages/xfem2                 ladier A.LADIER           599      9      2
+  PYTHON MODIF Messages/xfem                  ladier A.LADIER           472     26     10
+  PYTHON MODIF SD/sd_fond_fiss                ladier A.LADIER            53      3      3
+  PYTHON MODIF SD/sd_xfem                     ladier A.LADIER           152      3      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   10        3109      3109             +3109
+ MODIF :   76       22107       941     782      +159
+ SUPPR :    6        2496              2496     -2496
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   92       27712      4050    3278      +772 

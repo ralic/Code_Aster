@@ -1,4 +1,4 @@
-#@ MODIF properties Accas  DATE 20/12/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF properties Accas  DATE 09/01/2013   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE D6BHHHH J-P.LEFEBVRE
 # ======================================================================
@@ -19,8 +19,8 @@
 # ======================================================================
 #     IDENTIFICATION DE LA VERSION
 #----------------------------------------------------------------------
-version = "11.3.2"
-date = "20/12/2012"
+version = "11.3.3"
+date = "09/01/2013"
 exploit = False
 
 parentid, branch, from_branch = ['?'] * 3

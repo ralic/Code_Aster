@@ -1,0 +1,178 @@
+# MODIF  DATE 07/01/2013   AUTEUR CHEIGNON E.CHEIGNON 
+# TITRE  VALIDATION DU CALCUL DE L'ENERGIE POTENTIELLE POUR LES POUTRES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# zzzz330b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+
+DEBUT(CODE=_F(NOM='ZZZZ330B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# lecture maillage lineique
+MAPOU=LIRE_MAILLAGE(UNITE=20,);
+
+
+
+MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
+                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_TG',),);
+
+
+
+POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,
+# caracteristiques des sections, orientations et rigidite de torsion
+           POUTRE=_F(GROUP_MA=('POUTRE'),
+                     SECTION='GENERALE',
+                     CARA=('A','IY','IZ','JX','AY','AZ',),
+                     VALE=(4.50e-2,4.61625E-04,1.60375E-04,9.77e-5,1.,1.),
+                     PREC_AIRE    = 0.1/1000.,
+                     PREC_INERTIE = 0.1/1000.,
+                     ),
+           ORIENTATION=_F(GROUP_MA=('POUTRE'),
+                          CARA='ANGL_VRIL', VALE=0.0,),
+
+                  )
+
+# LES MATERIAUX
+BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10,
+                            NU=0.25,
+                            RHO=9167.0,),);
+
+#
+# LES CHAMPS DE MATERIAUX
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
+                    AFFE=_F(TOUT='OUI', MATER=(BETON)),
+                         );
+
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
+                        DDL_IMPO=(_F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,  DRX=0.0, DRY = 0.0, DRZ=0.0,),
+                                  ),)
+
+CHARGT=AFFE_CHAR_MECA(MODELE=MOPOU,
+                      FORCE_NODALE=_F(GROUP_NO='B', FZ=1.E4,),);
+
+# RESOLUTION DU PROBLEME ELASTIQUE
+U1=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
+             #    SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',STOP_SINGULIER='OUI',),
+                  EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),);
+
+
+# CALCUL DE L'ENERGIE POTENTIELLE
+
+
+EPOT=POST_ELEM(MODELE=MOPOU,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM =POUCA,
+                   ENER_POT  =_F(TOUT='OUI'),
+                   RESULTAT  = U1,
+                   )
+
+IMPR_TABLE(TABLE=EPOT)
+
+IMPR_RESU(RESU = _F(RESULTAT = U1, NOM_CHAM = 'DEPL'))
+
+TEST_RESU(RESU=(
+               _F( RESULTAT=U1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   GROUP_NO='B',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.045269315822728,
+                   ),
+                )
+         )
+# Epot = 1/2 DZ_B * FZ_B
+
+TEST_TABLE(
+      TABLE=EPOT,
+      FILTRE=(
+         _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I=  1),
+      ),
+      NOM_PARA='TOTALE',
+      VALE_CALC=226.34657911364,
+      VALE_REFE=226.34657911364002,
+      REFERENCE='ANALYTIQUE',PRECISION=1.E-6)
+
+MASSELE=CALC_MATR_ELEM(CARA_ELEM=POUCA,
+                            INST=0.0,
+                            OPTION='MASS_MECA',
+                            MODELE=MOPOU,
+                            CHAM_MATER=CHMAT,
+                            CHARGE = BLOQUAGE,
+                            );
+        #  -------------                  -----------------
+RIGIELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                            MODE_FOURIER=0,
+                            INST=0.0,
+                            CARA_ELEM=POUCA,
+                            MODELE=MOPOU,
+                            CHAM_MATER=CHMAT,
+                            CHARGE = BLOQUAGE,
+                            );
+        #  -------------                  -----------------
+NUM=NUME_DDL(#RENUM='METIS',
+                   MATR_RIGI=RIGIELE,
+                     );
+        #  -------------                  -----------------
+MASS=ASSE_MATRICE(NUME_DDL=NUM,
+                          MATR_ELEM=MASSELE,
+                          );
+        #  -------------                  -----------------
+KASS=ASSE_MATRICE(NUME_DDL=NUM,
+                          MATR_ELEM=RIGIELE,
+                          );
+
+
+MODES = MODE_ITER_SIMULT(MATR_RIGI=KASS,
+                         MATR_MASS=MASS,
+                         CALC_FREQ=_F(NMAX_FREQ=10,),
+                              );
+MODES=NORM_MODE(reuse =MODES,
+               MODE=MODES,
+               NORME='MASS_GENE',)
+# E = 2*(pi*f)^2
+EPOT2=POST_ELEM(MODELE=MOPOU,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM =POUCA,
+                   ENER_POT  =_F(TOUT='OUI'),
+                   RESULTAT  = MODES,
+                   )
+
+IMPR_TABLE(TABLE=EPOT2)
+
+TEST_TABLE(
+      TABLE=EPOT2,
+      FILTRE=(
+         _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I=  7),
+      ),
+      NOM_PARA='FREQ',
+      VALE_CALC=69.796351994907,
+      )
+
+TEST_TABLE(
+      TABLE=EPOT2,
+      FILTRE=(
+         _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I=  7),
+      ),
+      NOM_PARA='TOTALE',
+      VALE_CALC=96160.162695954,
+      VALE_REFE=96160.162695954816,
+      REFERENCE='ANALYTIQUE',PRECISION=1.E-6)
+
+
+
+
+
+FIN();

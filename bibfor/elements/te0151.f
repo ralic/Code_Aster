@@ -1,7 +1,7 @@
       SUBROUTINE TE0151 ( OPTION , NOMTE )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C ======================================================================
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 07/01/2013   AUTEUR CHEIGNON E.CHEIGNON 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -37,15 +37,15 @@ C        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IF ,IRET ,ISTRUC ,ITYPE ,JDEPL ,JENDE 
-      INTEGER JFREQ ,JMASD ,JVITE ,KANL ,LMATER ,LORIEN ,LRCOU 
-      INTEGER LSECT ,LSECT2 ,LX ,NBPAR ,NBRES ,NC ,NNO 
-      INTEGER NPG 
-      REAL*8 A ,A2 ,ALFAY ,ALFAY2 ,ALFAZ ,ALFAZ2 ,ANG 
-      REAL*8 ANGARC ,ANGS2 ,DEUX ,E ,ENERTH ,EY ,EZ 
-      REAL*8 G ,RAD ,RHO ,UN ,VALPAR ,X2IY ,X2IZ 
-      REAL*8 XFL ,XFLY ,XFLZ ,XIY ,XIY2 ,XIZ ,XIZ2 
-      REAL*8 XJX ,XJX2 ,XL ,XNU ,ZERO 
+      INTEGER I ,IF ,IRET ,ISTRUC ,ITYPE ,JDEPL ,JENDE
+      INTEGER JFREQ ,JMASD ,JVITE ,KANL ,LMATER ,LORIEN ,LRCOU
+      INTEGER LSECT ,LSECT2 ,LX ,NBPAR ,NBRES ,NC ,NNO
+      INTEGER NPG
+      REAL*8 A ,A2 ,ALFAY ,ALFAY2 ,ALFAZ ,ALFAZ2 ,ANG
+      REAL*8 ANGARC ,ANGS2 ,DEUX ,E ,ENERTH ,EY ,EZ
+      REAL*8 G ,RAD ,RHO ,UN ,VALPAR ,X2IY ,X2IZ
+      REAL*8 XFL ,XFLY ,XFLZ ,XIY ,XIY2 ,XIZ ,XIZ2
+      REAL*8 XJX ,XJX2 ,XL ,XNU ,ZERO,XIG
 C-----------------------------------------------------------------------
       PARAMETER    (             NBRES = 3 )
       REAL*8              VALRES(NBRES)
@@ -54,9 +54,9 @@ C-----------------------------------------------------------------------
       CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR,NOMRES(NBRES),NOMAIL,FAMIL,POUM
       CHARACTER*16 CH16
-      REAL*8       UL(12), UG(12), PGL(3,3), KLC(12,12), KLV(78)
+      REAL*8       UL(14), UG(14), PGL(3,3), KLC(14,14), KLV(105)
       REAL*8       PGL1(3,3), PGL2(3,3), EPSTHE
-      INTEGER      IADZI,IAZK24,KPG,SPT
+      INTEGER      IADZI,IAZK24,KPG,SPT,NKLV
 C     ------------------------------------------------------------------
       DATA NOMRES / 'E' , 'NU' , 'RHO' /
 C     ------------------------------------------------------------------
@@ -73,7 +73,8 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 C
       FAMI = 'RIGI'
       NPG = 3
-      IF (NOMTE.EQ.'MECA_POU_C_T') NPG = 2
+      IF ((NOMTE.EQ.'MECA_POU_C_T').OR.
+     &    (NOMTE.EQ.'MECA_POU_D_EM')) NPG = 2
 C
       CALL MOYTEM(FAMI,NPG,1,'+',VALPAR,IRET)
       CALL VERIFM(FAMI,NPG,1,'+',ZI(LMATER),'ELAS',1,EPSTHE,IRET)
@@ -98,27 +99,31 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
       CALL JEVECH ('PCAGNPO', 'L',LSECT)
       LSECT = LSECT-1
       ITYPE =  NINT(ZR(LSECT+23))
+
+      IF (NOMTE.NE.'MECA_POU_D_EM')THEN
 C
-C     --- SECTION INITIALE ---
-      A     =  ZR(LSECT+ 1)
-      XIY   =  ZR(LSECT+ 2)
-      XIZ   =  ZR(LSECT+ 3)
-      ALFAY =  ZR(LSECT+ 4)
-      ALFAZ =  ZR(LSECT+ 5)
-C     EY    = -ZR(LSECT+ 6)
-C     EZ    = -ZR(LSECT+ 7)
-      XJX   =  ZR(LSECT+ 8)
+C       --- SECTION INITIALE ---
+        A     =  ZR(LSECT+ 1)
+        XIY   =  ZR(LSECT+ 2)
+        XIZ   =  ZR(LSECT+ 3)
+        ALFAY =  ZR(LSECT+ 4)
+        ALFAZ =  ZR(LSECT+ 5)
+C       EY    = -ZR(LSECT+ 6)
+C       EZ    = -ZR(LSECT+ 7)
+        XJX   =  ZR(LSECT+ 8)
+        XIG = ZR(LSECT+12)
 C
-C     --- SECTION FINALE ---
-      LSECT2 = LSECT + 11
-      A2     = ZR(LSECT2+ 1)
-      XIY2   = ZR(LSECT2+ 2)
-      XIZ2   = ZR(LSECT2+ 3)
-      ALFAY2 = ZR(LSECT2+ 4)
-      ALFAZ2 = ZR(LSECT2+ 5)
-      EY     = -(ZR(LSECT+6)+ZR(LSECT2+6))/DEUX
-      EZ     = -(ZR(LSECT+7)+ZR(LSECT2+7))/DEUX
-      XJX2   = ZR(LSECT2+ 8)
+C       --- SECTION FINALE ---
+        LSECT2 = LSECT + 11
+        A2     = ZR(LSECT2+ 1)
+        XIY2   = ZR(LSECT2+ 2)
+        XIZ2   = ZR(LSECT2+ 3)
+        ALFAY2 = ZR(LSECT2+ 4)
+        ALFAZ2 = ZR(LSECT2+ 5)
+        EY     = -(ZR(LSECT+6)+ZR(LSECT2+6))/DEUX
+        EZ     = -(ZR(LSECT+7)+ZR(LSECT2+7))/DEUX
+        XJX2   = ZR(LSECT2+ 8)
+      ENDIF
 C
 C     --- RECUPERATION DES ORIENTATIONS ---
       CALL JEVECH ('PCAORIE', 'L',LORIEN)
@@ -128,9 +133,10 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       LX = LX - 1
       XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2
      &  + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
-      IF( XL .EQ. ZERO ) THEN
-        CALL TECAEL(IADZI,IAZK24)
+      CALL TECAEL(IADZI,IAZK24)
         NOMAIL = ZK24(IAZK24-1+3)(1:8)
+      IF( XL .EQ. ZERO ) THEN
+
         CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 C
@@ -144,11 +150,23 @@ C        --- POUTRE DROITE D'EULER A 6 DDL ---
          ALFAY2 = ZERO
          ALFAZ2 = ZERO
          CALL MATROT ( ZR(LORIEN) , PGL )
+      ELSEIF (NOMTE.EQ.'MECA_POU_D_EM') THEN
+         ISTRUC = 1
+         NNO = 2
+         NC  = 6
+         CALL MATROT(ZR(LORIEN),PGL)
       ELSEIF ( NOMTE .EQ. 'MECA_POU_D_T' ) THEN
 C        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
          ISTRUC = 1
          NNO = 2
          NC  = 6
+         CALL MATROT ( ZR(LORIEN) , PGL )
+      ELSEIF ( NOMTE .EQ. 'MECA_POU_D_TG' .OR.
+     &         NOMTE .EQ. 'MECA_POU_D_TGM' ) THEN
+C        --- POUTRE DROITE DE TIMOSKENKO A 7 DDL ---
+         ISTRUC = 1
+         NNO = 2
+         NC  = 7
          CALL MATROT ( ZR(LORIEN) , PGL )
       ELSEIF ( NOMTE .EQ. 'MECA_POU_C_T' ) THEN
 C        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
@@ -179,10 +197,12 @@ C        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
          CH16 = NOMTE
          CALL U2MESK('F','ELEMENTS2_42',1,CH16)
       ENDIF
+
+      NKLV = 2*NC*(2*NC+1)/2
 C
       IF (OPTION.NE.'ECIN_ELEM') THEN
         CALL JEVECH ('PDEPLAR', 'L', JDEPL)
-        DO 20 I = 1,12
+        DO 20 I = 1,2*NC
           UG(I) = ZR(JDEPL+I-1)
  20     CONTINUE
       ELSE
@@ -192,13 +212,13 @@ C
         CALL TECACH(STOPZ,'PVITESR',1,JVITE,IRET)
 C IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         IF (IRET.EQ.0) THEN
-          DO 21 I = 1,12
+          DO 21 I = 1,2*NC
             UG(I) = ZR(JVITE+I-1)
  21       CONTINUE
         ELSE
           CALL TECACH(STOPZ,'PDEPLAR',1,JDEPL,IRET)
           IF (IRET.EQ.0) THEN
-            DO 22 I = 1,12
+            DO 22 I = 1,2*NC
               UG(I) = ZR(JDEPL+I-1)
  22         CONTINUE
           ELSE
@@ -224,8 +244,16 @@ C
 C        --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE
          IF ( ITYPE .EQ. 0 ) THEN
 C           --- POUTRE DROITE A SECTION CONSTANTE ---
-            CALL PTKA01(KLV,E,A,XL,XIY,XIZ,XJX,
+            IF (NOMTE.EQ.'MECA_POU_D_EM') THEN
+               CALL PMFRIG(NOMTE,ZI(LMATER),KLV)
+            ELSEIF (NOMTE.EQ.'MECA_POU_D_TG'.OR.
+     &              NOMTE.EQ.'MECA_POU_D_TGM') THEN
+                CALL PTKA21(KLV,E,A,XL,XIY,XIZ,XJX,
+     &                      XIG,G,ALFAY,ALFAZ,EY,EZ)
+            ELSE
+                CALL PTKA01(KLV,E,A,XL,XIY,XIZ,XJX,
      &                      G,ALFAY,ALFAZ,EY,EZ,ISTRUC)
+            ENDIF
          ELSE IF ( ITYPE .EQ. 1 .OR. ITYPE .EQ. 2 ) THEN
 C           --- POUTRE DROITE A SECTION VARIABLE (TYPE 1 OU 2) ---
             CALL PTKA02(ITYPE,KLV,E,A,A2,XL,
@@ -238,12 +266,12 @@ C           --- POUTRE COURBE A SECTION CONSTANTE ---
          ENDIF
 C
 C        ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
-         CALL VECMA  (KLV,78,KLC,12)
+         CALL VECMA  (KLV,NKLV,KLC,2*NC)
 C        --- ENERGIE DE DEFORMATION
          IF = 1
-         CALL PTENPO(12,UL,KLC,ZR(JENDE),ITYPE,IF)
+         CALL PTENPO(NC*2,UL,KLC,ZR(JENDE),ITYPE,IF)
          IF (EPSTHE.NE.ZERO) THEN
-           CALL PTENTH(UL,XL,EPSTHE,12,KLC,ITYPE,ENERTH)
+           CALL PTENTH(UL,XL,EPSTHE,2*NC,KLC,ITYPE,ENERTH)
            ZR(JENDE) = ZR(JENDE) - ENERTH
          ENDIF
 C

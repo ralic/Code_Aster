@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,11 +30,11 @@ C
       CHARACTER*32 JEXNOM
       INTEGER       IADR1,IFM,NIV
       INTEGER       NBOCC, NBNOFF
-      INTEGER       IBAS, IBID, IOCC, IDON, IDONN, NDONN
+      INTEGER       IBAS, IBID, IOCC, IDON, IDONN, IFONOE, NDONN
       INTEGER       IRET1, IRET2, IRET, IRETS
       INTEGER       N1, N2
-      CHARACTER*6   K6B, TYPFON, NOMPRO
-      CHARACTER*8   K8B, RESU, NOMA, ENTNOM
+      CHARACTER*6   K6B, NOMPRO
+      CHARACTER*8   K8B, RESU, NOMA, ENTNOM, TYPFON
       CHARACTER*9   ENTIT(8)
       CHARACTER*13  MOTCL(8)
       CHARACTER*16  TYPRES, OPER
@@ -197,6 +197,10 @@ C     ----------------------------------------
       CALL JEEXIN(RESU//'.FOND.NOEU',IRET)
       IF (IRET.NE.0) THEN
         FONOEU = RESU//'.FOND.NOEU'
+        CALL JEVEUO(FONOEU,'L',IFONOE)
+        IF (TYPFON.EQ.'FERME')THEN
+           CALL ASSERT(ZK8(IFONOE+1-1).EQ.ZK8(IFONOE+NBNOFF-1))
+        ENDIF
       ELSE
         FONOEU = RESU//'.FOND_SUP.NOEU'
       ENDIF
@@ -237,7 +241,7 @@ C     ---------------------------------------------------------------
 C     STOCKAGE D'INFOS UTILES DANS LA SD EN SORTIE
 C     ---------------------------------------------------------------
 C
-      CALL FONINF(RESU)
+      CALL FONINF(RESU,TYPFON)
 
 C     ---------------------------------------------------------------
 C     IMPRESSIONS SI INFO=2

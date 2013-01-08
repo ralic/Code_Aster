@@ -1,8 +1,8 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -118,10 +118,7 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para) :
    DETRUIRE(CONCEPT=_F(NOM=tabout),INFO=1)
    
    # Recuperation des points
-   if 'FISSURE' in extrtabout.values().keys():
-     points_expand    = extrtabout.values()['PT_FOND']
-   else: 
-     points_expand    = extrtabout.values()['NUM_PT']
+   points_expand    = extrtabout.values()['NUM_PT']
    # Recuperation des abscisses
    abscisses_expand  = extrtabout.values()['ABSC_CURV']
    # Recuperation des instants
@@ -171,7 +168,7 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para) :
                                PARA='NUME_FOND'),
                             _F(LISTE_R=extrtabout.values()[type_para], 
                                PARA=type_para),
-                             _F(LISTE_I=extrtabout.values()['PT_FOND'], 
+                             _F(LISTE_I=extrtabout.values()['NUM_PT'], 
                                PARA='NUM_PT'),
                              _F(LISTE_R=extrtabout.values()['ABSC_CURV'], 
                                PARA='ABSC_CURV'),
@@ -341,7 +338,7 @@ def get_noeud_a_calculer(Lnoff,ndim,FOND_FISS,MAILLAGE,EnumTypes,args) :
 #---------------------------------------------------------------------------------------------------------------
 
 def get_coor_libre(self,Lnoff,RESULTAT,ndim):
-         """ retourne les coordonnes des noeuds de FOND_FISS en dictionnaire"""
+         """ retourne les coordonnees des noeuds de FOND_FISS en dictionnaire"""
 
          import numpy as NP
          from Accas import _F
@@ -686,11 +683,14 @@ def get_coor_xfem(args,FISSURE,ndim):
       Basefo = FISSURE.sdj.BASEFOND.get()
       NB_POINT_FOND = args['NB_POINT_FOND']
 
+#     Traitement des fonds fermés
+      TypeFond = FISSURE.sdj.INFO.get()[2]
+
 #     Traitement du cas fond multiple
       Fissmult = FISSURE.sdj.FONDMULT.get()
       Nbfiss = len(Fissmult)/2
       Numfiss = args['NUME_FOND']
-      if  Numfiss <= Nbfiss and Nbfiss > 1 :
+      if Numfiss <= Nbfiss and (Nbfiss > 1 or TypeFond=='FERME'):
          Ptinit = Fissmult[2*(Numfiss-1)]
          Ptfin = Fissmult[2*(Numfiss-1)+1]
          Listfo2 = Listfo[((Ptinit-1)*4):(Ptfin*4)]
@@ -791,7 +791,7 @@ def affiche_xfem(self,INFO,Nnoff,VNOR,VDIR) :
 
       if INFO==2 :
          mcfact=[]
-         mcfact.append(_F(PARA='PT_FOND',LISTE_I=range(Nnoff)))
+         mcfact.append(_F(PARA='NUM_PT',LISTE_I=range(Nnoff)))
          mcfact.append(_F(PARA='VN_X'   ,LISTE_R=[VNOR[i][0] for i in xrange(Nnoff)]))
          mcfact.append(_F(PARA='VN_Y'   ,LISTE_R=[VNOR[i][1] for i in xrange(Nnoff)]))
          mcfact.append(_F(PARA='VN_Z'   ,LISTE_R=[VNOR[i][2] for i in xrange(Nnoff)]))
@@ -1430,7 +1430,6 @@ def get_erreur(self,ndim,__tabi,type_para) :
       
       if   ('NOEUD_FOND' in __tabi.EXTR_TABLE().para) : params = params + ('NOEUD_FOND',)
       if   ('NUM_PT'     in __tabi.EXTR_TABLE().para) : params = params + ('NUM_PT',)
-      if   ('PT_FOND'     in __tabi.EXTR_TABLE().para) : params = params + ('PT_FOND',)
 
       if   ('ABSC_CURV'  in __tabi.EXTR_TABLE().para) : params = params + ('ABSC_CURV',)
 
@@ -1477,12 +1476,12 @@ def get_tabout(self,kg,args,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,i
       if FISSURE and MODELISATION=='3D':
          mcfact.append(_F(PARA='FISSURE',LISTE_K=[FISSURE.nom,]*3))
          mcfact.append(_F(PARA='NUME_FOND',LISTE_I=[args['NUME_FOND'],]*3))
-         mcfact.append(_F(PARA='PT_FOND',LISTE_I=[ino+1,]*3))
+         mcfact.append(_F(PARA='NUM_PT',LISTE_I=[ino+1,]*3))
          mcfact.append(_F(PARA='ABSC_CURV',LISTE_R=[absfon[ino],]*3))
 
       if FISSURE  and MODELISATION!='3D' and Nnoff!=1 :
          mcfact.append(_F(PARA='FISSURE',LISTE_K=[FISSURE.nom,]*3))
-         mcfact.append(_F(PARA='PT_FOND',LISTE_I=[ino+1,]*3))
+         mcfact.append(_F(PARA='NUM_PT',LISTE_I=[ino+1,]*3))
 
       mcfact.append(_F(PARA='METHODE',LISTE_I=(1,2,3)))
       mcfact.append(_F(PARA='K1_MAX' ,LISTE_R=kg[0].tolist() ))
@@ -1516,7 +1515,7 @@ def get_tabout(self,kg,args,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,i
          if not FISSURE and MODELISATION=='3D' :
             npara.append('NOEUD_FOND')
          elif FISSURE and MODELISATION=='3D' :
-            npara.append('PT_FOND')
+            npara.append('NUM_PT')
 
          get_erreur(self,ndim,__tabi,type_para)
          tabout=CALC_TABLE(reuse = tabout,
@@ -1756,11 +1755,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
       if not ABSC_CURV_MAXI :
          list_tail = FOND_FISS.sdj.FOND_TAILLE_R.get()
-         hmax = max(list_tail)*4
+         tailmax = max(list_tail)
+         hmax = tailmax*4
          UTMESS('I','RUPTURE0_32',valr=hmax)
-         hmin = min(list_tail)*4
-         if hmax>2*hmin :
-            UTMESS('A','RUPTURE0_17',valr=[hmin,hmax])        
+         tailmin = min(list_tail)
+         if tailmax>2*tailmin :
+            UTMESS('A','RUPTURE0_17',valr=[tailmin,tailmax])        
       else:
          hmax = ABSC_CURV_MAXI      
 

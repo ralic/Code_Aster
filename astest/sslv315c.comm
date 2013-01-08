@@ -1,9 +1,9 @@
-# MODIF  DATE 29/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv315c.para = tps_job 260 mem_job 768Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -150,7 +150,7 @@ for i in range(nbcalc) :
             DA_MAX=0.4,
             INFO=2,
             LOI_PROPA = _F(LOI='PARIS',
-                           M=1,N=1,C=1,
+                           M=1,C=1,
                            MATER=ACIER,   ),
             COMP_LINE=_F(COEF_MULT_MINI=0.,
                          COEF_MULT_MAXI=1.,

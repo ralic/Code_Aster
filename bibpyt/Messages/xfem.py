@@ -1,8 +1,8 @@
-#@ MODIF xfem Messages  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF xfem Messages  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -158,6 +158,20 @@ cata_msg={
 19: _(u"""
      Il y a %(i1)d mailles dans la zone fissure.
 """),
+
+20: _(u"""
+     Vous avez défini plus d'un fond fermé lors d'un appel à DEFI_FISS_XFEM.
+     Conseil:
+     Veuillez définir chacun des fonds dans des DEFI_FISS_XFEM différents.
+"""),
+
+21: _(u"""
+     Vous avez défini au moins un fond ouvert et un fond fermé lors d'un appel à 
+     DEFI_FISS_XFEM.
+     Conseil:
+     Veuillez définir chacun des fonds dans des DEFI_FISS_XFEM différents.
+"""),
+
 
 
 23: _(u"""
@@ -337,9 +351,12 @@ cata_msg={
 """),
 
 57: _(u"""
-  -> Aucune maille de fissure n'a été trouvée.
-  -> Risque & Conseil :
-     Suite des calculs risquée.
+  -> La fissure (ou l'interface) définie dans DEFI_FISS_XFEM ne coupe aucune des mailles
+     du maillage. La fissure (ou l'interface) se trouve donc en dehors de la structure ou
+     bien coïncide avec un bord de la structure. Cela est interdit. Il y a probablement
+     une erreur de mise en données.
+  -> Conseil :
+     Vérifier la cohérence entre la définition de la géométrie de la fissure et le maillage.
 """),
 
 58: _(u"""
@@ -445,11 +462,10 @@ cata_msg={
 """),
 
 70: _(u"""
-  -> Un élément convexe a été détecté. Cela peut-être dû à l'imposition de DTAN sur les bords.
-     Ceci pourrait être une source d'erreur lors du calcul des level-sets avec DEFI_FISS_XFEM.
-
-  -> Pour éviter ce problème, DAMAX a été diminué de %(r1)f à %(r2)f. Le nombre de cycles a donc
-     été modifié : NBCYCL = %(r3)f
+  -> Un élément convexe a été détecté sur le fond de la fissure %(k1)s. PROPA_FISS ne sait
+     pas traiter ce cas. Le calcul de propagation ne peut se poursuivre.
+  -> Conseil:
+     Veuillez revoir la définition de votre fissure.
 
 """),
 

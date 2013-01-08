@@ -1,8 +1,8 @@
-#@ MODIF rupture1 Messages  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF rupture1 Messages  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,11 @@ Veuillez utiliser une autre option de lissage
 La commande CALC_G ne traite pas le cas des fonds doubles.
 """),
 
+5: _(u"""
+Le paramètre R_INF automatiquement choisi vaut %(r1)f.
+Le paramètre R_SUP automatiquement choisi vaut %(r2)f.
+"""),
+
 6: _(u"""
 Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement être supérieur au rayon
 R_INF (respectivement R_INF_FO).
@@ -40,10 +45,10 @@ Veuillez revoir votre mise en données.
 """),
 
 7: _(u"""
-Problème dans RINF et RSUP.
+Il n'est pas possible de calculer automatiquement R_INF et R_SUP en cas
+de modélisation FEM avec une fissure en configuration décollée.
 -> Risque et Conseil :
-Veuillez revoir les valeurs fournies aux mots-clés R_INF ou R_INF_FO
-ou R_SUP ou R_SUP_FO.
+Veuillez indiquer les mots-clés R_INF et R_SUP (ou R_INF_FO et R_SUP_FO).
 """),
 
 8: _(u"""
@@ -85,6 +90,22 @@ On doit en avoir autant que de numéros d'ordre.
 Le résultat n'est pas un EVOL_NOLI.
 """),
 
+16: _(u"""
+La différence entre la taille maximale et la taille minimale des mailles connectées aux
+noeuds du fond de fissure est importante.
+La taille minimale vaut : %(r1)f
+La taille maximale vaut : %(r2)f
+-> Risque et Conseil :
+Il a été choisi de multiplier par quatre la taille maximale des mailles connectées aux
+noeuds du fond de fissure pour calculer le paramètre R_SUP et par deux, pour calculer
+le paramètre R_INF. Or, si ces tailles sont importantes, vous risquez de post-traiter
+vos résultats sur une zone trop grande autour du fond de fissure et d'obtenir des
+valeurs de taux de restitution d'énergie et de facteurs d'intensité moins précises.
+Vérifiez que les valeurs de R_INF et de R_SUP calculées sont licites.
+Sinon, veuillez spécifier directement les valeurs de R_INF et de R_SUP ou bien revoir
+le maillage de manière à rendre les mailles proches du fond de fissure de taille homogène.
+"""),
+
 17: _(u"""
 L'association: lissage du champ THETA par les polynômes de Lagrange
                lissage de G autre que par des polynômes de Lagrange
@@ -93,6 +114,14 @@ n'est pas possible.
 Veuillez consulter la documentation U4.82.03 pour déterminer une
 association satisfaisante.
 """),
+
+18: _(u"""
+Les mots-clés R_INF_FO et R_SUP_FO ne peuvent être employés dans le cas 2D.
+-> Risque et Conseil :
+Veuillez les remplacer par R_INF ou R_SUP, ou bien ne rien indiquer afin que les rayons
+de la couronne soient calculés avec les données du maillage.
+"""),
+
 
 20: _(u"""
 Votre étude comporte une charge de type PRE_EPSI. Ceci est incompatible
@@ -236,13 +265,6 @@ Si votre chargement n'est pas monotone proportionnel, il faut renseigner, dans C
 l'option COMP_INCR, RELATION=VMIS_XXX, et dans ce cas vous calculerez GTP (modèle en cours de validation).
 """),
 
-49: _(u"""
-Le facteur d'intensité des contraintes K1 est négatif sur certains des noeuds du fond
-de fissure : le calcul de propagation est impossible.
--> Risque et Conseil :
-Vérifier les paramètres du calcul de K1 (rayons des couronnes ou abscisse curviligne
-maximale, type de lissage, ...).
-"""),
 
 50: _(u"""
 La définition d'une loi de propagation (mot clé facteur LOI_PROPA) est obligatoire pour

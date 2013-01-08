@@ -1,8 +1,8 @@
-#@ MODIF xfem2 Messages  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
+#@ MODIF xfem2 Messages  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -255,6 +255,13 @@ cata_msg = {
      Dans le cas de tableau contenant un seul résultat, on se place dans
      l'hypothèse de rapport de charge égal à zéro (R=0).
   """),
+
+70 : _(u"""
+  -> La macro-commande PROPA_FISS ne peut traiter qu'un seul instant de calcul.
+  -> Risque & Conseil:
+     Veuillez vérifier que les tableaux des facteurs d'intensité de contraintes
+     donnés dans l'opérateur PROPA_FISS ne contiennent qu'un seul instant.
+"""),
 
 71 : _(u"""
      Un tableau doit être donné pour chaque fissure du modèle.

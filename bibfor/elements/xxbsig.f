@@ -1,0 +1,300 @@
+      SUBROUTINE XXBSIG(ELREFP,ELRESE,NDIM,COORSE,IGEOM,
+     &                  HE,NFH,DDLC,DDLM,NFE,
+     &                  BASLOC,NNOP,NPG,SIGMA,COMPOR,
+     &                  IDEPL,LSN,LST,NFISS,FISNO,
+     &                  CODOPT,IVECTU)
+
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+      INTEGER       DDLC,DDLM,FISNO(NNOP,NFISS)
+      INTEGER       CODOPT,IDEPL,IGEOM,IVECTU
+      INTEGER       NDIM,NFE,NFH,NFISS,NNOP,NPG
+      REAL*8        BASLOC(3*NDIM*NNOP),COORSE(*),HE(NFISS)
+      REAL*8        LSN(NNOP),LST(NNOP)
+      REAL*8        SIGMA(CODOPT*(2*NDIM-1)+1,CODOPT*(NPG-1)+1)
+      CHARACTER*8   ELREFP,ELRESE
+      CHARACTER*16  COMPOR(4)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE GENIAUT S.GENIAUT
+C TOLE CRP_21 CRS_1404
+C
+C.......................................................................
+C
+C     BUT:  CALCUL  DU PRODUIT BT. SIGMA SUR UN SOUS-ELEMENT X-FEM
+C.......................................................................
+C
+C IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
+C IN  NDIM    : DIMENSION DE L'ESPACE
+C IN  COORSE  : COORDONNÉES DES SOMMETS DU SOUS-ÉLÉMENT
+C IN  IGEOM   : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
+C IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
+C IN  NFH     : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
+C IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
+C IN  DDLM    : NOMBRE DE DDL PAR NOEUD MILIEU (EN 2D)
+C IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+C IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE
+C IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
+C IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ÉLÉMENT
+C IN  SIGMA   : CONTRAINTES DE CAUCHY
+C IN  COMPOR  : COMPORTEMENT
+C IN  IDEPL   : ADRESSE DU DEPLACEMENT A PARTIR DE LA CONF DE REF
+C IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
+C IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
+C IN  CODOPT  : CODE DE L OPTION, 0:REFE_FORC_NODA, 1:FORC_NODA
+
+C OUT IVECTU  : ADRESSE DU VECTEUR BT.SIGMA
+C
+C......................................................................
+      INTEGER  KPG,I,IG,N,NN,M
+      INTEGER  DDLD,DDLS,NNO,NNOPS,NNOS,NPGBIS,CPT,IRET
+      INTEGER  IBID,IDFDE,IPOIDS,IVF,JCOOPG,JDFD2,JGANO
+      REAL*8   XG(NDIM),XE(NDIM),FF(NNOP),JAC,LSNG,LSTG
+      REAL*8   RBID,RBID4(4),RBID6(6),RBID10(10),RBID33(3,3)
+      REAL*8   DFDI(NNOP,NDIM),F(3,3),FE(4),BASLOG(3*NDIM)
+      REAL*8   DGDGL(4,3)
+      REAL*8   DEF(6,NNOP,NDIM*(1+NFH+NFE)),SIGN(2*NDIM)
+      REAL*8   R
+      LOGICAL  GRDEPL,AXI,LTEATT
+C
+      REAL*8   RAC2
+      DATA     RAC2 / 1.4142135623731D0 /
+C--------------------------------------------------------------------
+C
+C     ATTENTION, EN 3D, ZR(IDEPL) ET ZR(VECTU) SONT DIMENSIONNÉS DE
+C     TELLE SORTE QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES
+C     NOEUDS MILIEU
+C
+C     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+      DDLD = NDIM*(1+NFH+NFE)
+C
+C     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+      DDLS = DDLD+DDLC
+C
+C     MODELE H.P.P ou GROT_GDEP ?
+      GRDEPL = COMPOR(3) .EQ. 'GROT_GDEP'
+C
+C     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
+      CALL ELREF4(' ','RIGI',IBID,IBID,NNOPS,IBID,IBID,IBID,IBID,IBID)
+C
+      IF (NDIM.EQ.2) THEN
+        AXI = LTEATT(' ','AXIS','OUI')
+      ELSEIF (NDIM.EQ.3) THEN
+        AXI = .FALSE.
+      ENDIF
+C     ADRESSE DES COORD DU SOUS ELT EN QUESTION
+      CALL ELREF5(ELRESE,'XINT',NDIM,NNO,NNOS,NPGBIS,IPOIDS,JCOOPG,IVF,
+     &            IDFDE,JDFD2,JGANO)
+C
+      CALL ASSERT(NPG.EQ.NPGBIS)
+C
+C-----------------------------------------------------------------------
+C     BOUCLE SUR LES POINTS DE GAUSS
+      DO 1000 KPG=1,NPG
+
+C       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+        CALL VECINI(NDIM,0.D0,XG)
+        DO 100 I=1,NDIM
+          DO 101 N=1,NNO
+           XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+N)*COORSE(NDIM*(N-1)+I)
+ 101      CONTINUE
+ 100    CONTINUE
+C
+C       JUSTE POUR CALCULER LES FF
+C
+        CALL REEREF(ELREFP,AXI,NNOP,NNOPS,ZR(IGEOM),XG,IDEPL,
+     &              GRDEPL,NDIM,HE,R,RBID,FISNO,NFISS,NFH,NFE,DDLS,
+     &              DDLM,FE,DGDGL,'NON',XE,FF,DFDI,F,RBID6,RBID33)
+C
+
+        IF (NFE.GT.0) THEN
+C         BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
+          CALL VECINI(3*NDIM,0.D0,BASLOG)
+          LSNG = 0.D0
+          LSTG = 0.D0
+          DO 110 N=1,NNOP
+            LSNG = LSNG + LSN(N) * FF(N)
+            LSTG = LSTG + LST(N) * FF(N)
+            DO 111 I=1,3*NDIM
+              BASLOG(I) = BASLOG(I) + BASLOC(3*NDIM*(N-1)+I) * FF(N)
+ 111        CONTINUE
+ 110      CONTINUE
+C
+C         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+          IF (NDIM.EQ.2) THEN
+            CALL XCALF2(HE,LSNG,LSTG,BASLOG,FE,DGDGL,IRET)
+          ELSEIF (NDIM.EQ.3) THEN
+            CALL XCALFE(HE,LSNG,LSTG,BASLOG,FE,DGDGL,IRET)
+          ENDIF
+
+C         PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
+C         CAR ON SE TROUVE SUR LE FOND DE FISSURE
+          CALL ASSERT(IRET.NE.0)
+C
+        ENDIF
+C
+C -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
+        IF (AXI) THEN
+          R  = 0.D0
+          DO 120 N=1,NNOP
+            R  = R  + FF(N)*ZR(IGEOM-1+2*(N-1)+1)
+120       CONTINUE
+
+          CALL ASSERT(R.GT.0D0)
+C          ATTENTION : LE POIDS N'EST PAS X R
+C          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
+        ENDIF
+
+C       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
+C       ET CALCUL DE FF, DFDI, ET EPS
+        CALL REEREF(ELREFP,AXI,NNOP,NNOPS,ZR(IGEOM),XG,IDEPL,
+     &              GRDEPL,NDIM,HE,R,RBID,FISNO,NFISS,NFH,NFE,DDLS,
+     &              DDLM,FE,DGDGL,'OUI',XE,FF,DFDI,F,RBID6,RBID33)
+
+C - CALCUL DES ELEMENTS GEOMETRIQUES
+
+C
+C      CALCUL DES PRODUITS SYMETR. DE F PAR N,
+        DO 140 N=1,NNOP
+          CPT = 0
+C         FONCTIONS DE FORME CLASSIQUES
+          DO 141 I=1,NDIM
+            CPT = CPT+1
+            DEF(1,N,I) =  F(I,1)*DFDI(N,1)
+            DEF(2,N,I) =  F(I,2)*DFDI(N,2)
+            DEF(3,N,I) =  0.D0
+            DEF(4,N,I) = (F(I,1)*DFDI(N,2) + F(I,2)*DFDI(N,1))/RAC2
+            IF (NDIM.EQ.3) THEN
+              DEF(3,N,I) =  F(I,3)*DFDI(N,3)
+              DEF(5,N,I) = (F(I,1)*DFDI(N,3) + F(I,3)*DFDI(N,1))/RAC2
+              DEF(6,N,I) = (F(I,2)*DFDI(N,3) + F(I,3)*DFDI(N,2))/RAC2
+            ENDIF
+ 141      CONTINUE
+
+C         TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
+          IF (AXI) THEN
+            DEF(3,N,1) = F(3,3) * FF(N)/R
+          ENDIF
+
+C         ENRICHISSEMENT PAR HEAVYSIDE
+          DO 142 IG=1,NFH
+            DO 143 I=1,NDIM
+              CPT = CPT+1
+              DO 144 M=1,2*NDIM
+                DEF(M,N,CPT) =  DEF(M,N,I) * HE(FISNO(N,IG))
+ 144          CONTINUE
+              IF (NDIM.EQ.2) THEN
+                DEF(3,N,CPT) =  0.D0
+              ENDIF
+ 143        CONTINUE
+
+C   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*IG
+            IF (AXI) THEN
+              DEF(3,N,1+NDIM*IG) = F(3,3) * FF(N)/R * HE(FISNO(N,IG))
+            ENDIF
+
+ 142      CONTINUE
+C
+C         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
+          DO 145 IG=1,NFE
+            DO 146 I=1,NDIM
+              CPT=CPT+1
+              DEF(1,N,CPT) =
+     &           F(I,1)* (DFDI(N,1) * FE(IG) + FF(N)*DGDGL(IG,1))
+
+              DEF(2,N,CPT) =
+     &           F(I,2)* (DFDI(N,2) * FE(IG) + FF(N)*DGDGL(IG,2))
+
+              DEF(3,N,CPT) =  0.D0
+
+              DEF(4,N,CPT) =
+     &         ( F(I,1)* (DFDI(N,2)*FE(IG)+FF(N)*DGDGL(IG,2))
+     &         + F(I,2)* (DFDI(N,1)*FE(IG)+FF(N)*DGDGL(IG,1)) )/RAC2
+
+              IF (NDIM.EQ.3) THEN
+                DEF(3,N,CPT) =
+     &             F(I,3)* (DFDI(N,3) * FE(IG) + FF(N)*DGDGL(IG,3))
+                DEF(5,N,CPT) =
+     &           ( F(I,1)* (DFDI(N,3)*FE(IG)+FF(N)*DGDGL(IG,3))
+     &           + F(I,3)* (DFDI(N,1)*FE(IG)+FF(N)*DGDGL(IG,1)) )/RAC2
+                DEF(6,N,CPT) =
+     &           ( F(I,3)* (DFDI(N,2)*FE(IG)+FF(N)*DGDGL(IG,2))
+     &           + F(I,2)* (DFDI(N,3)*FE(IG)+FF(N)*DGDGL(IG,3)) )/RAC2
+              ENDIF
+ 146        CONTINUE
+
+C   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*(NFH+IG)
+            IF (AXI) THEN
+              DEF(3,N,1+NDIM*(NFH+IG)) = F(3,3) * FF(N)/R * FE(IG)
+            ENDIF
+
+ 145      CONTINUE
+
+          CALL ASSERT(CPT.EQ.DDLD)
+
+ 140    CONTINUE
+C
+C       CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
+C       AVEC LES COORDONNEES DU SOUS-ELEMENT
+        IF (NDIM.EQ.2) THEN
+          CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,COORSE,RBID10,RBID10,JAC)
+        ELSEIF (NDIM.EQ.3) THEN
+          CALL DFDM3D(NNO,KPG,IPOIDS,IDFDE,COORSE,RBID4,RBID4,RBID4,JAC)
+        ENDIF
+
+C       MODIFICATION DU JACOBIEN SI AXI
+        IF (AXI) THEN
+          JAC = JAC * R
+        ENDIF
+
+        IF(CODOPT.EQ.1) THEN
+          DO 150 N=1,3
+            SIGN(N) = SIGMA(N ,KPG)
+ 150      CONTINUE
+          SIGN(4) = SIGMA(4,KPG) * RAC2
+          IF (NDIM.EQ.3) THEN
+            SIGN(5) = SIGMA(5,KPG) * RAC2
+            SIGN(6) = SIGMA(6,KPG) * RAC2
+          ENDIF
+        ENDIF
+
+        DO 160 N=1,NNOP
+          CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
+C
+          DO 161 I=1,DDLD
+            DO 162 M=1,2*NDIM
+              IF(CODOPT.EQ.1) THEN
+                ZR(IVECTU-1+NN+I)=
+     &          ZR(IVECTU-1+NN+I) + DEF(M,N,I)*SIGN(M)*JAC
+              ELSE IF(CODOPT.EQ.0) THEN
+                ZR(IVECTU-1+NN+I)=
+     &          ZR(IVECTU-1+NN+I) + ABS(DEF(M,N,I)*SIGMA(1,1)*JAC)
+              ELSE
+                CALL ASSERT(.FALSE.)
+              ENDIF
+ 162        CONTINUE
+ 161      CONTINUE
+
+ 160    CONTINUE
+
+
+ 1000 CONTINUE
+
+      END

@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 07/01/2013   AUTEUR CHEIGNON E.CHEIGNON 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +49,7 @@ MODE_LOCAL__
                                         GRX      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
+    EENEDNO  = ENER_R   ELEM__         (TOTALE   TRAC_COM TORSION  FLEX_Y   FLEX_Z   )
     CEPSINR  = EPSI_R   ELEM__         (EPX      KY       KZ       )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EPXX     GAXY     GAXZ     GAT      KY       KZ
                                         GAX      )
@@ -173,7 +174,9 @@ OPTION__
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
     ENEL_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
+    EPOT_ELEM           151   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                              OUT__  EENEDNO  PENERDR
     FORC_NODA           347   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR

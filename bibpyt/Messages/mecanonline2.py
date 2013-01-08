@@ -1,8 +1,8 @@
-#@ MODIF mecanonline2 Messages  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF mecanonline2 Messages  DATE 08/01/2013   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -55,17 +55,13 @@ cata_msg = {
 """),
 
 93 : _(u"""
-  -> Risque & Conseil :  dans le cas d'une résolution incrémentale, 
-     on ne considère que la variation des variables de commande entre
-     l'instant précédent et l'instant actuel.
-     On  ne prend donc pas en compte d'éventuelles contraintes incompatibles
-     dues à ces variables de commande initiales. 
+  -> Risque et conseils : dans le cas d'une résolution incrémentale, on ne considère que la variation des variables de commande entre l'instant précédent et l'instant actuel.
+     On ne prend donc pas en compte d'éventuelles contraintes incompatibles dues à ces variables de commande initiales.
      Pour tenir compte de ces contraintes vous pouvez :
-     - partir d'un instant fictif antérieur où toutes les variables de 
-       commande sont nulles ou égales aux valeurs de référence
+     - partir d'un instant fictif antérieur où toutes les variables de commande sont nulles ou égales aux valeurs de référence
      - choisir des valeurs de référence adaptées
-     Pour plus d'informations, voir la documentation de STAT_NON_LINE 
-     (U4.51.03) mot-clé EXCIT, et le test FORMA09 (V7.20.101).
+
+     Pour plus d'informations, consultez la documentation de STAT_NON_LINE (U4.51.03) mot-clé EXCIT et le test FORMA30 (V7.20.101).
 """),
 
 94 : _(u"""

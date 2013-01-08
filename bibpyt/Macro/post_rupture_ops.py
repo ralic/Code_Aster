@@ -1,8 +1,8 @@
-#@ MODIF post_rupture_ops Macro  DATE 16/10/2012   AUTEUR LADIER A.LADIER 
+#@ MODIF post_rupture_ops Macro  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -138,7 +138,8 @@ def caract_mater(self,mater):
       if cmpt[:4]=='ELAS' :
          phenom=cmpt
          break
-   if phenom==None : UTMESS('F','RUPTURE0_5')      
+   if phenom==None :
+     UTMESS('F','RUPTURE0_5')      
 
    compor = sd_compor1('%-8s.%s' % (mater.nom, phenom))
    valk = [s.strip() for s in compor.VALK.get()]
@@ -447,20 +448,30 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
          # creation d'une table vide (en fait qui contient juste une ligne qui sera supprimee en fin)
          tabout=CREA_TABLE(LISTE=_F(LISTE_I=(0,),PARA='&BIDON&'))
 
-         if 'NUME_FOND' in tabin.para :
-           contenu_nume_fond = tabin.NUME_FOND.values()
-           nume_fond = list(set(contenu_nume_fond))
-         else :
-           nume_fond = [1]
+         __COPIE_TABIN = CALC_TABLE(TABLE = TABIN,
+                                 ACTION =_F(OPERATION='EXTR',
+                                 NOM_PARA=tabin.para))
+         
+         if 'NUME_FOND' not in tabin.para :
+           __COPIE_TABIN = CALC_TABLE(TABLE = __COPIE_TABIN,
+                          ACTION =_F(OPERATION='AJOUT_COLONNE',
+                          VALE=1,
+                          NOM_PARA='NUME_FOND'))
+         if 'NUM_PT' not in tabin.para :
+           __COPIE_TABIN = CALC_TABLE(TABLE = __COPIE_TABIN,
+                                      ACTION =_F(OPERATION='AJOUT_COLONNE',
+                                      VALE=1,
+                                      NOM_PARA='NUM_PT'))         
+
+         tabin = __COPIE_TABIN.EXTR_TABLE()
+         contenu_nume_fond = tabin.NUME_FOND.values()
+         nume_fond = list(set(contenu_nume_fond))
 
          for j,fond_j in enumerate(nume_fond):
 
            # récupération du num_pt maximale pour le fond 'fond_j'
-           if 'NUME_FOND' in tabin.para :
-             tab_fond_j = tabin.NUME_FOND==fond_j
-             nbpt = max(tab_fond_j.NUM_PT.values())
-           else :
-             nbpt = max(tabin.NUM_PT.values())
+           tab_fond_j = tabin.NUME_FOND==fond_j
+           nbpt=max(tab_fond_j.NUM_PT.values())
 
            # si on effectue le comptage sur plusieurs quantités,
            # il faut qu'elles aient le meme nombre de cycles
@@ -476,8 +487,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
              __TABC=[None]*nq
              for i,q in enumerate(list_q):
 
-               if 'NUME_FOND' in tabin.para :
-                 __EVOLQ=RECU_FONCTION(TABLE=TABIN,
+               __EVOLQ=RECU_FONCTION(TABLE=__COPIE_TABIN,
                                      PARA_X='INST',
                                      PARA_Y=q,
                                      FILTRE=(_F(NOM_PARA='NUM_PT',
@@ -487,15 +497,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                                                CRIT_COMP='EQ',
                                                VALE_I=fond_j),
                                              ),
-                                     )
-
-               else :
-                 __EVOLQ=RECU_FONCTION(TABLE=TABIN,
-                                     PARA_X='INST',
-                                     PARA_Y=q,
-                                     FILTRE=_F(NOM_PARA='NUM_PT',
-                                               CRIT_COMP='EQ',
-                                               VALE_I=numpt),
                                      )
 
                __TABC[i]=POST_FATIGUE(CHARGEMENT='UNIAXIAL',
@@ -525,26 +526,27 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
 
              # on complete la table avec le point du fond
-             __TABC[0]=CALC_TABLE(reuse=__TABC[0],
-                                 TABLE=__TABC[0],
-                                 ACTION=_F(OPERATION='AJOUT_COLONNE',
-                                           VALE=numpt,
-                                           NOM_PARA='NUM_PT'),)
+             if 'NUM_PT' in tabin.para :
+               __TABC[0]=CALC_TABLE(reuse=__TABC[0],
+                                    TABLE=__TABC[0],
+                                    ACTION=_F(OPERATION='AJOUT_COLONNE',
+                                              VALE=numpt,
+                                              NOM_PARA='NUM_PT'),)
 
              # on complete la table avec le numero du fond
              if 'NUME_FOND' in tabin.para :
                __TABC[0]=CALC_TABLE(reuse=__TABC[0],
-                                   TABLE=__TABC[0],
-                                   ACTION=_F(OPERATION='AJOUT_COLONNE',
-                                           VALE=fond_j,
-                                           NOM_PARA='NUME_FOND'),)
+                                    TABLE=__TABC[0],
+                                    ACTION=_F(OPERATION='AJOUT_COLONNE',
+                                              VALE=fond_j,
+                                              NOM_PARA='NUME_FOND'),)
 
              # on complete la table avec les parametres auxiliaires
              tab_tmp = tabin.NUM_PT==numpt
              tab_tmp = tab_tmp.values()
              for para in l_para_aux :
               # on prend la 1ere valeur (pour bien faire, il faudrait verifier que toutes
-              # les valeurs sont bien identiques
+              # les valeurs sont bien identiques)
                vale= tab_tmp[para][0]
                __TABC[0]=CALC_TABLE(reuse=__TABC[0],
                                     TABLE=__TABC[0],
@@ -563,6 +565,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                            TITRE=tabout.nom,
                            ACTION=_F(OPERATION='SUPPRIME',NOM_PARA='&BIDON&'))
 
+         DETRUIRE(CONCEPT=_F(NOM=__COPIE_TABIN),INFO=1)
    #-----------------------------------------------------------------------
    if OPERATION == 'LOI_PROPA' :
 
@@ -603,18 +606,17 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
       l_para_deja = set( ['CYCLE' , q ])
       l_para  = list(l_para_tout - l_para_deja)
 
-      if 'NUME_FOND' in tabin.para :
-        contenu_nume_fond = tabin.NUME_FOND.values()
-        nume_fond = list(set(contenu_nume_fond))
-      else :
-        nume_fond = [1]
+      if 'NUME_FOND' not in tabin.para :
+        tabin['NUME_FOND']=[1]*len(tabin)
+      if 'NUM_PT' not in tabin.para :
+        tabin['NUM_PT']=[1]*len(tabin)
+      contenu_nume_fond = tabin.NUME_FOND.values()
+      nume_fond = list(set(contenu_nume_fond))
+
 
       for i,fond_i in enumerate(nume_fond):
 
-        if 'NUME_FOND' in tabin.para :
-          tab_fond_i = tabin.NUME_FOND==fond_i
-        else :
-          tab_fond_i = tabin
+        tab_fond_i = tabin.NUME_FOND==fond_i
 
         # récupération du num_pt maximale pour le fond 'fond_i'
         nbpt = max(tab_fond_i.NUM_PT.values())

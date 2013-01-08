@@ -1,10 +1,10 @@
-      SUBROUTINE GVERI3(CHFOND,LNOFF,THLAGR,THLAG2,NDEG,
+      SUBROUTINE GVERI3(CHFOND,TAILLR,CONFIG,LNOFF,THLAGR,THLAG2,NDEG,
      &                  TRAV1,TRAV2,TRAV3)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ C ======================================================================
 C
 C     ------------------------------------------------------------------
 C
-C FONCTION REALISEE:     DANS LE CADRE DE X-FEM
+C FONCTION REALISEE:     DANS LE CADRE DE X-FEM et FEM
 C
 C     - METHODES THETA_LAGRANGE,THETA_LAGRANGE_REGU
 C
@@ -39,6 +39,8 @@ C
 C     ------------------------------------------------------------------
 C ENTREE:
 C        CHFOND : NOMS DES NOEUDS
+C        TAILLR : TAILLES DE MAILLES CONNECTEES AUX NOEUDS
+C        CONFIG : CONFIGURATION DE LA FISSURE EN FEM
 C        LNOFF  : NOMBRE DE NOEUD DE GAMM0
 C        THLAGR : SI THETA_LAGRANGE  THLAGR = .TRUE.
 C        THLAG2 : SI THETA_LAGRANGE_REGU  THLAG2 = .TRUE.
@@ -51,13 +53,15 @@ C        MODULE(THETA) ( OBJET TRAV3 )
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
-      CHARACTER*24      TRAV0,TRAV1,TRAV2,TRAV3,CHFOND,ABSGAM
-      CHARACTER*8       NOMPAR(1),RINFF,RSUPF
+      CHARACTER*24      TRAV0,TRAV1,TRAV2,TRAV3,CHFOND,ABSGAM,TAILLR
+      CHARACTER*8       CONFIG,NOMPAR(1),RINFF,RSUPF
 C
       INTEGER           LNOFF,NDEG,NBRE,NR,NRF,NBPAR,I,J
       INTEGER           IADRT0,IADRT1,IADRT2,IADRT3,IFON,IADABS,IER
+      INTEGER           IATMNO
 C
-      REAL*8            RINF,RSUP,XL,VALPAR(1),VALRES
+      REAL*8            MAXTAI,MINTAI,RINF,RSUP,XL,VALPAR(1),VALRES
+      REAL*8            VALR(2)
 C
       LOGICAL           THLAGR,THLAG2
 C
@@ -91,6 +95,25 @@ C
       ENDIF
       CALL GETVID ('THETA', 'R_INF_FO', 1,IARG, 1,RINFF, NRF)
       CALL GETVID ('THETA', 'R_SUP_FO', 1,IARG, 1,RSUPF, NRF)
+C     RECUPERATION DE RINF ET DE RSUP DANS LA SD FOND_FISS
+      IF(NR.EQ.0.AND.NRF.EQ.0)THEN
+        IF(CONFIG.EQ.'DECOLLEE') CALL U2MESS('F','RUPTURE1_7')
+        CALL JEVEUO ( TAILLR, 'L', IATMNO )
+        MAXTAI = 0.D0
+        MINTAI = ZR(IATMNO)
+        DO 1 J=1,LNOFF
+          MAXTAI = MAX(MAXTAI,ZR(IATMNO-1+J))
+          MINTAI = MIN(MINTAI,ZR(IATMNO-1+J))
+1       CONTINUE
+        RINF = 2*MAXTAI
+        RSUP = 4*MAXTAI
+        VALR(1) = RINF
+        VALR(2) = RSUP
+        CALL U2MESR('I','RUPTURE1_5',2,VALR)
+        VALR(1) = MINTAI
+        VALR(2) = MAXTAI
+        IF(MAXTAI.GT.2*MINTAI)CALL U2MESR('A','RUPTURE1_16',2,VALR)
+      ENDIF
 C
       CALL JEVEUO(CHFOND,'L',IFON)
       ABSGAM='&&GVERI3.TEMP     .ABSCU'
@@ -106,10 +129,7 @@ C METHODE THETA_LEGENDRE
 C
          DO 50 J=1,LNOFF
               ZK8(IADRT0 + J - 1) = 'PTFONFIS'
-              IF (NR.NE.0) THEN
-                ZR(IADRT1 + J - 1) = RINF
-                ZR(IADRT2 + J - 1) = RSUP
-              ELSE IF (NRF.NE.0) THEN
+              IF (NRF.NE.0) THEN
                  NBPAR = 1
                  NOMPAR(1) = 'ABSC'
                  VALPAR(1) = ZR(IADABS + J - 1)
@@ -120,9 +140,10 @@ C
                  IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
                     CALL U2MESS('F','RUPTURE1_6')
                  ENDIF
-             ELSE
-                CALL U2MESS('F','RUPTURE1_7')
-             ENDIF
+              ELSE
+                ZR(IADRT1 + J - 1) = RINF
+                ZR(IADRT2 + J - 1) = RSUP
+              ENDIF
 50       CONTINUE
 C
          CALL GLEGEN(NBRE,LNOFF,XL,ABSGAM,ZR(IADRT3))
@@ -133,10 +154,7 @@ C METHODES THETA_LAGRANGE,THETA_LAGRANGE_REGU
 C
          DO 60 J=1,LNOFF
               ZK8(IADRT0 + J - 1) = 'PTFONFIS'
-              IF (NR.NE.0) THEN
-                ZR(IADRT1 + J - 1) = RINF
-                ZR(IADRT2 + J - 1) = RSUP
-              ELSE IF (NRF.NE.0) THEN
+              IF (NRF.NE.0) THEN
                  NBPAR = 1
                  NOMPAR(1) = 'ABSC'
                  VALPAR(1) = ZR(IADABS + J - 1)
@@ -147,9 +165,10 @@ C
                  IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
                     CALL U2MESS('F','RUPTURE1_6')
                  ENDIF
-             ELSE
-                CALL U2MESS('F','RUPTURE1_7')
-             ENDIF
+              ELSE
+                ZR(IADRT1 + J - 1) = RINF
+                ZR(IADRT2 + J - 1) = RSUP
+              ENDIF
 60       CONTINUE
 C
       ENDIF

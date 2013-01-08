@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,6 @@ CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,reentrant='n',
          THETA_3D        =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_NO','NOEUD'),
                    UN_PARMI('MODULE','MODULE_FO'),
-                   ENSEMBLE('MODULE','R_INF','R_SUP'),
                    ENSEMBLE('MODULE_FO','R_INF_FO','R_SUP_FO'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
