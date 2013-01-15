@@ -1,9 +1,9 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,7 +71,8 @@ C =====================================================================
             IF (ALIAS8(3:5).EQ.'AH2')THEN
                MOD(1:4) = 'AXIS'
             ELSE IF ((ALIAS8(3:5).EQ.'DH2').OR.
-     &               (ALIAS8(3:5).EQ.'DR1'))THEN
+     &               (ALIAS8(3:5).EQ.'DR1').OR.
+     &               (ALIAS8(3:5).EQ.'DM1')) THEN
                MOD(1:6) = 'D_PLAN'
             ELSE
 C =====================================================================
@@ -96,7 +97,7 @@ C --- DANS LE CADRE THM ON FAIT UN TECACH PLUTOT QU'UN JEVECH POUR ----
 C --- RECUPERER EGALEMENT LA DIMENSION DU VECTEUR QUI DIFFERE SUIVANT -
 C --- LA MODELISATION THM ---------------------------------------------
 C =====================================================================
-            CALL TECACH('OOO','PCONTPR',3,TABTHM,IRET)
+            CALL TECACH('OOO','PCONTPR','L',3,TABTHM,IRET)
             ICONTP = TABTHM(1)
             DIMMAX = TABTHM(2)
             NPGU   = TABTHM(3)

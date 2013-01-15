@@ -1,17 +1,15 @@
-      SUBROUTINE ACEAMB ( NOMU, NOMA, LMAX, LOCACO, LOCAGB, NBOCC )
+      SUBROUTINE ACEAMB(NOMU, NOMA, LMAX, NBOCC)
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
-
-      CHARACTER*32 JEXNUM,JEXNOM
-      INTEGER             LMAX, NBOCC
-      LOGICAL             LOCACO, LOCAGB
-      CHARACTER*8         NOMU, NOMA
+C
+      CHARACTER*32   JEXNUM,JEXNOM
+      INTEGER        LMAX, NBOCC
+      CHARACTER*8    NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,24 +25,28 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
-C     AFFE_CARA_ELEM
+C                          AFFE_CARA_ELEM
+C
 C     AFFECTATION DES CARACTERISTIQUES POUR LE MOT CLE "MEMBRANE"
+C
 C ----------------------------------------------------------------------
-C IN  : NOMU   : NOM UTILISATEUR DE LA COMMANDE
-C IN  : NOMA   : NOM DU MAILLAGE
-C IN  : LMAX   : LONGUEUR
-C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE MEMBRANE
-      INTEGER      JDCC, JDVC, JDLS, IOC,  NG, NM, N1, N2,
-     &             I, AXYZM, NUNOE, NBMAT, IER, NBMA, JDLS2,
-     &             IMA, NBNO, JNUMA, ADRM, NUMA, JGRMA, IGR,NBMAT0,
-     &             NOE1,NOE2,NOE3
-      REAL*8       ANG(2), R8RDDG,
-     &             AXEY(3), XNORM, EPSI, AXEX(3), VECNOR(3),
-     &             VN1N2(3),VN1N3(3)
-      CHARACTER*8  K8B
-      CHARACTER*19 CARTGR
-      CHARACTER*24 TMPNGR, TMPVGR, NOMAGR, NOMAMA, CONNEX
-      INTEGER      IARG
+C  IN
+C     NOMU   : NOM UTILISATEUR DE LA COMMANDE
+C     NOMA   : NOM DU MAILLAGE
+C     LMAX   : LONGUEUR
+C     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE MEMBRANE
+C ----------------------------------------------------------------------
+      INTEGER        JDCC,JDVC,JDLS,IOC,NG,NM,N1,N2,IRET,JDLS2
+      INTEGER        I, AXYZM,  NBMAT, IER, NBMA
+      INTEGER        IMA, NBNO, JNUMA, ADRM, NUMA, JGRMA, IGR,NBMAT0
+      INTEGER        NOE1,NOE2,NOE3, IARG
+      REAL*8         ANG(2), R8RDDG
+      REAL*8         AXEY(3), XNORM, EPSI, AXEX(3), VECNOR(3)
+      REAL*8         VN1N2(3),VN1N3(3)
+      CHARACTER*8    K8B
+      CHARACTER*19   CARTGR
+      CHARACTER*24   TMPNGR, TMPVGR, NOMAGR, NOMAMA, CONNEX
+      CHARACTER*32   KJEXN
 C     ------------------------------------------------------------------
       CALL JEMARQ( )
 C
@@ -57,23 +59,22 @@ C
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CARTGR = NOMU//'.CARCOQUE'
-      TMPNGR = CARTGR//'.NCMP'
-      TMPVGR = CARTGR//'.VALV'
-C
-      IF ((.NOT.LOCACO).AND.(.NOT.LOCAGB)) THEN
+C     SI LA CARTE N'EXISTE PAS
+      CALL EXISD('CARTE',CARTGR,IRET)
+      IF ( IRET.EQ.0 ) THEN
          CALL ALCART('G',CARTGR,NOMA,'CACOQU')
       ENDIF
-
+      TMPNGR = CARTGR//'.NCMP'
+      TMPVGR = CARTGR//'.VALV'
       CALL JEVEUO(TMPNGR,'E',JDCC)
       CALL JEVEUO(TMPVGR,'E',JDVC)
       EPSI = 1.0D-6
 C
-      CALL WKVECT('&&TMPMEMBRANE','V V K24',LMAX,JDLS)
-      CALL WKVECT('&&TMPMEMBRANE2','V V K8',LMAX,JDLS2)
+      CALL WKVECT('&&TMPMEMBRANE', 'V V K24',LMAX,JDLS)
+      CALL WKVECT('&&TMPMEMBRANE2','V V K8', LMAX,JDLS2)
 C
       ZK8(JDCC  ) = 'ALPHA'
       ZK8(JDCC+1) = 'BETA'
-C
 C
 C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTPF
       DO 10 IOC = 1 , NBOCC
@@ -81,16 +82,14 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTPF
          ANG(2) = 0.0D0
 C
          CALL GETVEM(NOMA,'GROUP_MA','MEMBRANE','GROUP_MA',
-     &           IOC,IARG,LMAX,ZK24(JDLS),NG)
+     &               IOC,IARG,LMAX,ZK24(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','MEMBRANE','MAILLE',
-     &         IOC,IARG,LMAX,ZK8(JDLS2),NM)
+     &               IOC,IARG,LMAX,ZK8(JDLS2),NM)
 C
          CALL GETVR8('MEMBRANE','ANGL_REP' ,IOC,IARG,2 ,ANG  ,N1)
-        CALL GETVR8('MEMBRANE','AXE'      ,IOC,IARG,3 ,AXEY, N2 )
-C
+         CALL GETVR8('MEMBRANE','AXE'      ,IOC,IARG,3 ,AXEY, N2)
          ZR(JDVC  ) = ANG(1)
          ZR(JDVC+1) = ANG(2)
-C
          IF ( N2 .EQ. 0 ) THEN
 C ---       "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE
             IF (NG.GT.0) THEN
@@ -108,10 +107,10 @@ C
                NBMAT = 0
                NUMA = -1
                DO 120 IGR = 0 , NG-1
-                  CALL JELIRA(JEXNOM(NOMAGR,ZK24(JDLS+IGR)),'LONMAX',
-     &                     NBMA,K8B)
+                  KJEXN = JEXNOM(NOMAGR,ZK24(JDLS+IGR))
+                  CALL JELIRA(KJEXN,'LONMAX',NBMA,K8B)
+                  CALL JEVEUO(KJEXN,'L',JGRMA)
                   NBMAT = NBMAT + NBMA
-                  CALL JEVEUO(JEXNOM(NOMAGR,ZK24(JDLS+IGR)),'L',JGRMA)
                   DO 122 IMA = 0 , NBMA-1
                      NUMA = NUMA + 1
                      ZI(JNUMA+NUMA) = ZI(JGRMA+IMA)
@@ -120,8 +119,8 @@ C
             ELSE
                NBMAT = NM
                DO 130 IMA = 0 , NM-1
-                  CALL JENONU(JEXNOM(NOMAMA,ZK8(JDLS2+IMA)),
-     &                               ZI(JNUMA+IMA))
+                  KJEXN = JEXNOM(NOMAMA,ZK8(JDLS2+IMA))
+                  CALL JENONU(KJEXN,ZI(JNUMA+IMA))
 130            CONTINUE
             ENDIF
 
@@ -134,43 +133,34 @@ C
                NUMA = ZI(JNUMA+IMA-1)
                CALL JELIRA (JEXNUM(CONNEX,NUMA),'LONMAX',NBNO,K8B)
                CALL JEVEUO (JEXNUM(CONNEX,NUMA),'L',ADRM)
-
-C            CALCUL DE LA NORMALE : VECTEUR Z LOCAL
-             NOE1 = ZI(ADRM+1-1)
-             NOE2 = ZI(ADRM+2-1)
-             NOE3 = ZI(ADRM+3-1)
-             DO 202 I = 1 , 3
-                VN1N2(I)=ZR(AXYZM+3*(NOE2-1)+I-1)
-     &                  -ZR(AXYZM+3*(NOE1-1)+I-1)
-                VN1N3(I)=ZR(AXYZM+3*(NOE3-1)+I-1)
-     &                  -ZR(AXYZM+3*(NOE1-1)+I-1)
+C              CALCUL DE LA NORMALE : VECTEUR Z LOCAL
+               NOE1 = ZI(ADRM+1-1)
+               NOE2 = ZI(ADRM+2-1)
+               NOE3 = ZI(ADRM+3-1)
+               DO 202 I = 1 , 3
+                  VN1N2(I) = ZR(AXYZM+3*(NOE2-1)+I-1) -
+     &                       ZR(AXYZM+3*(NOE1-1)+I-1)
+                  VN1N3(I) = ZR(AXYZM+3*(NOE3-1)+I-1) -
+     &                       ZR(AXYZM+3*(NOE1-1)+I-1)
 202            CONTINUE
-             VECNOR(1) = VN1N2(2)*VN1N3(3) - VN1N2(3)*VN1N3(2)
-             VECNOR(2) = VN1N2(3)*VN1N3(1) - VN1N2(1)*VN1N3(3)
-             VECNOR(3) = VN1N2(1)*VN1N3(2) - VN1N2(2)*VN1N3(1)
-             CALL NORMEV(VECNOR,XNORM)
-
-C            CALCUL DE LA DIRECTION DES ARMATURES : XLOCAL
-
-             AXEX(1) = AXEY(2)*VECNOR(3) - AXEY(3)*VECNOR(2)
-             AXEX(2) = AXEY(3)*VECNOR(1) - AXEY(1)*VECNOR(3)
-             AXEX(3) = AXEY(1)*VECNOR(2) - AXEY(2)*VECNOR(1)
-             CALL NORMEV(AXEX,XNORM)
-
+               VECNOR(1) = VN1N2(2)*VN1N3(3) - VN1N2(3)*VN1N3(2)
+               VECNOR(2) = VN1N2(3)*VN1N3(1) - VN1N2(1)*VN1N3(3)
+               VECNOR(3) = VN1N2(1)*VN1N3(2) - VN1N2(2)*VN1N3(1)
+               CALL NORMEV(VECNOR,XNORM)
+C              CALCUL DE LA DIRECTION DES ARMATURES : XLOCAL
+               AXEX(1) = AXEY(2)*VECNOR(3) - AXEY(3)*VECNOR(2)
+               AXEX(2) = AXEY(3)*VECNOR(1) - AXEY(1)*VECNOR(3)
+               AXEX(3) = AXEY(1)*VECNOR(2) - AXEY(2)*VECNOR(1)
+               CALL NORMEV(AXEX,XNORM)
                IF ( XNORM .LT. EPSI ) THEN
-               CALL U2MESS('F','MODELISA_11')
+                  CALL U2MESS('F','MODELISA_11')
                ENDIF
-
-             CALL ANGVX ( AXEX, ANG(1), ANG(2) )
-
-C
+               CALL ANGVX ( AXEX, ANG(1), ANG(2) )
                ZR(JDVC)   = ANG(1) * R8RDDG()
                ZR(JDVC+1) = ANG(2) * R8RDDG()
                CALL NOCART(CARTGR,3,' ','NUM',1,K8B,NUMA,' ',2)
-C
 200         CONTINUE
          ENDIF
-C
 10    CONTINUE
 C
       CALL JEDETR ('&&ACEAMB.NUME_MA' )

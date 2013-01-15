@@ -1,9 +1,9 @@
       SUBROUTINE LKRESI(TYPMOD,NMAT,MATERF,TIMED,TIMEF,  
      &                   NVI,VIND,VINF,YD,YF,DEPS,NR,R)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/01/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -51,7 +51,7 @@ C
         REAL*8          DSDENL(6,6),KK,MU,DHDS(6),DS2HDS(6)
         REAL*8          PARAEP(3), VARPL(4),DFDSP(6),LKBPRI,BPRIMP
         REAL*8          VECNP(6),GP(6),DEVGII,DEUX,TROIS,DEPSE(6)
-        REAL*8          DSIGE(6),SIGDT(6),SIGFT(6),DEPST(6)
+        REAL*8          DSIGE(6),SIGDT(6),SIGFT(6),DEPST(6),LAMGD2
         PARAMETER       (ZERO  =  0.D0 )
         PARAMETER       (DEUX  =  2.D0 )
         PARAMETER       (TROIS =  3.D0 )
@@ -130,6 +130,17 @@ C ----------------------------------------------------------------------
 C --- II) - BUT : CALCUL DE LA DEFORMATION PLASTIQUE -DEPSP- ET DU 
 C ---       PARAMETRE D ECROUISSAGE PLASTIQUE -DGAMP-
 C ----------------------------------------------------------------------
+C --- II-2-B-2) INDICATEUR CONTRACTANCE OU DILATANCE -> VARV = 0 OU 1
+C --- II-2-B-2)-1) CALCUL POSITION YF PAR RAPPORT SEUIL VISQUEUX MAX
+        CALL LKCRIV(XIVMAX,I1,DEVSIG,VINT,NMAT,MATERF,UCRIV,SEUIVM)
+
+C --- II-2-B-2)-2) TEST SUR SEUIL >0 OU <0 POUR DEFINIR VARV
+        IF(SEUIVM.LE.ZERO)THEN
+          VARV = 0
+        ELSE
+          VARV = 1
+        ENDIF
+
 C --- II-1) CALCUL FONCTION SEUIL PLASTIQUE EN YF
         SEUILP = ZERO
         CALL LKCRIP(I1,DEVSIG,VINT,NMAT,MATERF,UCRIP,SEUILP)
@@ -141,17 +152,6 @@ C --- II-2-B-1) INDICATEUR ANGLE DE DILATANCE PLASTIQUE PSI -> 0 OU 1
             VAL = 0
           ELSE
             VAL = 1
-          ENDIF
-
-C --- II-2-B-2) INDICATEUR CONTRACTANCE OU DILATANCE -> VARV = 0 OU 1
-C --- II-2-B-2)-1) CALCUL POSITION YF PAR RAPPORT SEUIL VISQUEUX MAX
-          CALL LKCRIV(XIVMAX,I1,DEVSIG,VINT,NMAT,MATERF,UCRIV,SEUIVM)
-
-C --- II-2-B-2)-2) TEST SUR SEUIL >0 OU <0 POUR DEFINIR VARV
-          IF(SEUIVM.LE.ZERO)THEN
-            VARV = 0
-          ELSE
-            VARV = 1
           ENDIF
 
 C --- II-2-B-3) CALCUL DE DF/DSIG 
@@ -204,7 +204,7 @@ C ----------------------------------------------------------------------
 C --- IV) CONDITION DE KUHN-TUCKER : -FP = 0 OU -DLAM = 0 
 C ----------------------------------------------------------------------
 C --- APPLICATION DE LA CONDITION DE KHUN-TUCKER SUR R(NDT+1)
-        IF((SEUILP.LT.ZERO).AND.(VINF(7).EQ.ZERO))THEN
+        IF(VINF(7).EQ.ZERO)THEN
           R(NDT+1) = -YF(NDT+1)
         ELSE
           R(NDT+1) = -SEUILP/MU
@@ -213,13 +213,12 @@ C ----------------------------------------------------------------------
 C --- V) EVOLUTION DE XIP : 
 C ---    XIPD - XIPF + DLAM*G_II*SQRT(2/3)(+ DGAMVP) = 0
 C ----------------------------------------------------------------------
+        LAMGD2 = MAX(ZERO,YF(NDT+1)*DEVGII*SQRT(DEUX/TROIS))
+
         IF(VARV.EQ.0)THEN
-          R(NDT+2) = YD(NDT+2)-YF(NDT+2)+
-     &               YF(NDT+1)*DEVGII*SQRT(DEUX/TROIS)
+          R(NDT+2) = YD(NDT+2)-YF(NDT+2)+LAMGD2
         ELSE
-          R(NDT+2) = YD(NDT+2)-YF(NDT+2)+
-     &               YF(NDT+1)*DEVGII*SQRT(DEUX/TROIS)+
-     &               DGAMV
+          R(NDT+2) = YD(NDT+2)-YF(NDT+2)+LAMGD2+DGAMV
         ENDIF
 C ----------------------------------------------------------------------
 C --- VI) EVOLUTION DE XIVP : 

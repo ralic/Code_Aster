@@ -1,9 +1,9 @@
       SUBROUTINE LKIJAC (MOD,NMAT,MATERF,TIMED,TIMEF,YF,DEPS,NR,NVI,
      &                   VIND,VINF,YD,DY,DRDY,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/09/2012   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 14/01/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,16 +26,16 @@ C     CALCUL DU JACOBIEN DE LETK = DRDY(DY)
 C     IN  MOD    :  TYPE DE MODELISATION
 C         NMAT   :  DIMENSION MATER
 C         MATERF :  COEFFICIENTS MATERIAU A T+DT
-C         YF	 :  VARIABLES A T + DT =  ( SIGF DLAMBDA XI_P XI_VP)
+C         YF     :  VARIABLES A T + DT =  ( SIGF DLAMBDA XI_P XI_VP)
 C         DEPS   :  INCREMENT DE DEFORMATION
 C         TIMED  :  INSTANT  T
 C         TIMEF  :  INSTANT  T+DT
-C         NR	 :  DIMENSION DECLAREE DRDY
-C         NVI	 :  NOMBRE DE VARIABLES INTERNES
+C         NR     :  DIMENSION DECLAREE DRDY
+C         NVI    :  NOMBRE DE VARIABLES INTERNES
 C         VIND   :  VARIABLE INTERNES A T
 C         VINF   :  VARIABLE INTERNES A T+DT
-C         YD	 :  VARIABLES A T  = ( SIGD  0 XI_P XI_VP) A T
-C         DY	 :  SOLUTION	   = ( DSIG  DLAMBDA  DXI_P DXI_VP )
+C         YD     :  VARIABLES A T  = ( SIGD  0 XI_P XI_VP) A T
+C         DY     :  SOLUTION = ( DSIG  DLAMBDA  DXI_P DXI_VP )
 C     OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C         IRET   :  CODE RETOUR
 C     --------------------------------------------------------------
@@ -150,6 +150,16 @@ C ------------------------------------------------------------------
 C --- B-1) CALCUL FONCTION SEUIL PLASTIQUE EN YF
       SEUILP = ZERO
       CALL LKCRIP(I1,DEVSIG,VINT,NMAT,MATERF,UCRIP,SEUILP)
+C --- B-1-B-2) INDICATEUR CONTRACTANCE OU DILATANCE -> VARV = 0 OU 1
+C --- B-1-B-2)-1) CALCUL POSITION YF PAR RAPPORT SEUIL VISQUEUX MAX
+      SEUIVM = ZERO
+      CALL LKCRIV(XIVMAX,I1,DEVSIG,VINT,NMAT,MATERF,UCRIM,SEUIVM)
+C --- B-1-B-2)-2) TEST SUR SEUIL >0 OU <0 POUR DEFINIR VARV
+      IF(SEUIVM.LE.ZERO)THEN
+        VARV = 0
+      ELSE
+        VARV = 1
+      ENDIF
 C --- B-2)SI SEUILP >= 0 ALORS PLASTICITE A PRENDRE EN COMPTE 
       IF((SEUILP.GE.ZERO).OR.(VINF(7).GT.ZERO))THEN
 C --- B-2-B-1) INDICATEUR ANGLE DE DILATANCE PLASTIQUE PSI -> 0 OU 1
@@ -157,16 +167,6 @@ C --- B-2-B-1) INDICATEUR ANGLE DE DILATANCE PLASTIQUE PSI -> 0 OU 1
           VALP = 0
         ELSE
           VALP = 1
-        ENDIF
-C --- B-2-B-2) INDICATEUR CONTRACTANCE OU DILATANCE -> VARV = 0 OU 1
-C --- B-2-B-2)-1) CALCUL POSITION YF PAR RAPPORT SEUIL VISQUEUX MAX
-        SEUIVM = ZERO
-        CALL LKCRIV(XIVMAX,I1,DEVSIG,VINT,NMAT,MATERF,UCRIM,SEUIVM)
-C --- B-2-B-2)-2) TEST SUR SEUIL >0 OU <0 POUR DEFINIR VARV
-        IF(SEUIVM.LE.ZERO)THEN
-          VARV = 0
-        ELSE
-          VARV = 1
         ENDIF
 C --- B-2-B-3) CALCUL DE DF/DSIG 
         CALL LKVARP(VINT, NMAT, MATERF, PARAEP)
@@ -272,10 +272,16 @@ C --- ASSEMBLAGE FINAL
 C ------------------------------------------------------------------
 C --- I.2 CALCUL DE DR1DY2 -> Y2 = DLAMBDA
 C ------------------------------------------------------------------
-      CALL LCPRMV(DSDENL,GP,VETEMP)
-      DO 180 I = 1, NDT 
-        DRDY(I,NDT+1) = VETEMP(I)/MU
- 180  CONTINUE
+      IF(VINF(7).EQ.ZERO)THEN
+        DO 175 I = 1, NDT 
+          DRDY(I,NDT+1) = ZERO
+ 175    CONTINUE
+      ELSE
+        CALL LCPRMV(DSDENL,GP,VETEMP)
+        DO 180 I = 1, NDT 
+          DRDY(I,NDT+1) = VETEMP(I)/MU
+ 180    CONTINUE
+      ENDIF
 C ------------------------------------------------------------------
 C --- I.3 CALCUL DE DR1DY3 -> Y3 = XIP
 C ------------------------------------------------------------------
@@ -335,7 +341,7 @@ C ##################################################################
 C --- CALCUL DE DR2/DY                        
 C ##################################################################
 C --- APPLICATION DE LA CONDITION DE KHUN-TUCKER SUR R(NDT+1)
-      IF((SEUILP.LT.ZERO).AND.(VINF(7).EQ.ZERO))THEN
+      IF(VINF(7).EQ.ZERO)THEN
 C ------------------------------------------------------------------
 C --- II.1 CALCUL DE DR2DY1 -> Y1 = SIGMA
 C ------------------------------------------------------------------
@@ -424,13 +430,18 @@ C --- CONSTRUCTION DE D(DEVGII)/DSIGMA
 C ------------------------------------------------------------------
 C --- III.2 CALCUL DE DR3DY2 -> Y2 = DLAMBDA
 C ------------------------------------------------------------------
-      DRDY(NDT+2,NDT+1) = -DEVGII*SQRT(DEUX/TROIS)
+C --- APPLICATION DE LA CONDITION DE KHUN-TUCKER SUR R(NDT+1)
+      IF(VINF(7).EQ.ZERO)THEN
+        DRDY(NDT+2,NDT+1) = ZERO
+      ELSE
+        DRDY(NDT+2,NDT+1) = -DEVGII*SQRT(DEUX/TROIS)
+      ENDIF
 C ------------------------------------------------------------------
 C --- III.3 CALCUL DE DR3DY3 -> Y3 = XIP
 C ------------------------------------------------------------------
       CALL LCPRMV(DSDSIG,DGPDXI,DGTPDX)
       CALL LCPRSC(DEVGP,DGTPDX,DGIPDX)
-      IF((SEUILP.GE.ZERO).OR.(VINF(7).GT.ZERO))THEN
+      IF(VINF(7).GT.ZERO)THEN
         DRDY(NDT+2,NDT+2)= UN - DLAMBD*SQRT(DEUX/TROIS)
      &                     *DGIPDX/DEVGII
       ELSE
@@ -440,18 +451,14 @@ C ------------------------------------------------------------------
 C --- III.4 CALCUL DE DR3DY4 -> Y4 = XIVP
 C ------------------------------------------------------------------
 C --- TEST POUR SAVOIR SI ON EST EN BUTEE SUR XIVP
-      IF(ABS(DXIV-DGAMV).LT.R8PREM())THEN
-        CALL LCPRMV(DSDSIG,DGVDXI,DGTVDX)
-        CALL LCPRSC(DEVGV,DGTVDX,DGIVDX)
-        IF(VARV.EQ.0)THEN
-          DRDY(NDT+2,NDT+3)= ZERO
-        ELSE
-          DRDY(NDT+2,NDT+3)= -(DPHIDX*DEVGIV+PHIV*DGIVDX/DEVGIV)
+      CALL LCPRMV(DSDSIG,DGVDXI,DGTVDX)
+      CALL LCPRSC(DEVGV,DGTVDX,DGIVDX)
+      IF(VARV.EQ.0)THEN
+        DRDY(NDT+2,NDT+3)= ZERO
+      ELSE
+        DRDY(NDT+2,NDT+3)= -(DPHIDX*DEVGIV+PHIV*DGIVDX/DEVGIV)
      &                       *SQRT(DEUX/TROIS)*DT
-        ENDIF
-       ELSE       
-         DRDY(NDT+2,NDT+3)= ZERO
-       ENDIF
+      ENDIF
 C ##################################################################
 C --- CALCUL DE DR4/DY                        
 C ##################################################################

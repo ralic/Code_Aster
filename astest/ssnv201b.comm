@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE BLOC AVEC INTERFACE EN CONTACT GLISSIERE AVEC X-FEM
 # ssnv201b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -222,6 +222,33 @@ precisionzp = [1.0E-11,1.0E-11,1.0E-3]
 precisionym = [1.0E-16,1.0E-15,1.0E-6]
 precisionyp = [1.0E-16,1.0E-15,1.0E-3]
 
+VALE_CALC=[
+ -4.336808689942E-19,
+ 9.7578195523695E-19,
+ 1.0E-03,
+ 1.0E-03,
+ 5.2337249054236E-19,
+ 9.0960163284873E-19,
+ -1.2128224025625E-18,
+ -7.5388850656877E-19,
+ -4.9999999999876E-04,
+ -4.9999999999784E-04,
+ -4.9999999999929E-04,
+ -4.9999999999791E-04,
+ -2.4822441285394E-18,
+ 2.4591536579731E-16,
+ -4.7237067242575E-17,
+ 2.8815061904446E-16,
+ 4.9960407203742E-04,
+ 5.003040455442E-04,
+ 4.9960435554364E-04,
+ 5.0030420013866E-04,
+ -4.4827162037393E-07,
+ -3.9123935688005E-07,
+ 1.0003911189062E-03,
+ 1.0004481636208E-03,
+]
+
 for i in [1,2,3]: #Boucle sur les increments 
   DEP[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                  GROUP_NO=('NFISSU'),
@@ -257,65 +284,65 @@ for i in [1,2,3]: #Boucle sur les increments
   TEST_TABLE(TABLE=DEPM[i],
              NOM_PARA='DZ',
              TYPE_TEST='MIN',
-             VALE_CALC=valezm[i-1], VALE_REFE=valezm[i-1],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*8+0], VALE_REFE=valezm[i-1],
              CRITERE=criterezm[i-1],
-             TOLE_MACHINE=precisionzm[i-1], PRECISION=precisionzm[i-1],    #TODO vale_calc
+             PRECISION=precisionzm[i-1], 
              REFERENCE='ANALYTIQUE');
 
   TEST_TABLE(TABLE=DEPM[i],
              NOM_PARA='DZ',
              TYPE_TEST='MAX',
-             VALE_CALC=valezm[i-1], VALE_REFE=valezm[i-1],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*8+1], VALE_REFE=valezm[i-1],
              CRITERE=criterezm[i-1],
-             TOLE_MACHINE=precisionzm[i-1], PRECISION=precisionzm[i-1],    #TODO vale_calc
+             PRECISION=precisionzm[i-1], 
              REFERENCE='ANALYTIQUE');
 
   TEST_TABLE(TABLE=DEPP[i],
              NOM_PARA='DZ',
              TYPE_TEST='MIN',
-             VALE_CALC=valezp[i-1], VALE_REFE=valezp[i-1],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*8+2], VALE_REFE=valezp[i-1],
              CRITERE=criterezp[i-1],
-             TOLE_MACHINE=precisionzp[i-1], PRECISION=precisionzp[i-1],    #TODO vale_calc
+             PRECISION=precisionzp[i-1], 
              REFERENCE='ANALYTIQUE');
 
   TEST_TABLE(TABLE=DEPP[i],
              NOM_PARA='DZ',
              TYPE_TEST='MAX',
-             VALE_CALC=valezp[i-1], VALE_REFE=valezp[i-1],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*8+3], VALE_REFE=valezp[i-1],
              CRITERE=criterezp[i-1],
-             TOLE_MACHINE=precisionzp[i-1], PRECISION=precisionzp[i-1],    #TODO vale_calc
+             PRECISION=precisionzp[i-1], 
              REFERENCE='ANALYTIQUE');
              
   TEST_TABLE(TABLE=DEPM[i],
              NOM_PARA='DY',
              TYPE_TEST='MIN',
-             VALE_CALC=valeym[i-1], VALE_REFE=valeym[i-1],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*8+4], VALE_REFE=valeym[i-1],
              CRITERE=critereym[i-1],
-             TOLE_MACHINE=precisionym[i-1], PRECISION=precisionym[i-1],    #TODO vale_calc
+             PRECISION=precisionym[i-1], 
              REFERENCE='ANALYTIQUE');
 
   TEST_TABLE(TABLE=DEPM[i],
              NOM_PARA='DY',
              TYPE_TEST='MAX',
-             VALE_CALC=valeym[i-1], VALE_REFE=valeym[i-1],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*8+5], VALE_REFE=valeym[i-1],
              CRITERE=critereym[i-1],
-             TOLE_MACHINE=precisionym[i-1], PRECISION=precisionym[i-1],    #TODO vale_calc
+             PRECISION=precisionym[i-1], 
              REFERENCE='ANALYTIQUE');
              
   TEST_TABLE(TABLE=DEPP[i],
              NOM_PARA='DY',
              TYPE_TEST='MIN',
-             VALE_CALC=valeyp[i-1], VALE_REFE=valeyp[i-1],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*8+6], VALE_REFE=valeyp[i-1],
              CRITERE=critereyp[i-1],
-             TOLE_MACHINE=precisionyp[i-1], PRECISION=precisionyp[i-1],    #TODO vale_calc
+             PRECISION=precisionyp[i-1], 
              REFERENCE='ANALYTIQUE');
 
   TEST_TABLE(TABLE=DEPP[i],
              NOM_PARA='DY',
              TYPE_TEST='MAX',
-             VALE_CALC=valeyp[i-1], VALE_REFE=valeyp[i-1],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*8+7], VALE_REFE=valeyp[i-1],
              CRITERE=critereyp[i-1],
-             TOLE_MACHINE=precisionyp[i-1], PRECISION=precisionyp[i-1],    #TODO vale_calc
+             PRECISION=precisionyp[i-1], 
              REFERENCE='ANALYTIQUE');
 
 

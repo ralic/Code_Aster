@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504b.para = tps_job 300 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -198,6 +198,29 @@ vale = [[0.0,-6.3355791974025E+04,-6.0652835573768E+04,-5.0757742731615E+04,0.0]
         [0.0,0.0,-2.0163277761773E+05,-1.5784446601920E+05,0.0],
         [0.0,0.0,-3.7985867300987E+05,-2.2011906876467E+05,0.0]]
 
+VALE_CALC=[
+ [0.0,
+ -61740.442120067,
+ -60998.979956569,
+ -51944.825894008,
+ 0.0,],
+ [0.0,
+ -1.7714724210263E+05,
+ -1.273878664422E+05,
+ -1.0536327544685E+05,
+ 0.0,],
+ [0.0,
+ 0.0,
+ -1.9592486074811E+05,
+ -1.5480704491919E+05,
+ 0.0,],
+ [0.0,
+ 0.0,
+ -3.722419774727E+05,
+ -2.2652295565224E+05,
+ 0.0,],
+]
+
 if (typma==1):
   noeud = ['N43','N228','N247','N266','N81']
 
@@ -234,9 +257,9 @@ for i in [1,2,3,4]: #Boucle sur les increments
         critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
-                 VALE_CALC=vale[i-1][j], VALE_REFE=vale[i-1][j],    #TODO vale_calc
+                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j], TOLE_MACHINE=6.E-05,
                  CRITERE=critere,
-                 TOLE_MACHINE=precision, PRECISION=precision,
+                 PRECISION=precision, 
                  REFERENCE='AUTRE_ASTER',
                  FILTRE=(_F(NOM_PARA='NOEUD',
                            CRIT_COMP='EQ',

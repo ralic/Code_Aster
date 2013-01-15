@@ -1,12 +1,12 @@
         SUBROUTINE LCCONV ( LOI,  YD,DY, DDY,  NR, ITMAX, TOLER, ITER,
      &          INTG, NMAT, MATER, R, RINI,EPSTR,TYPESS, ESSAI,
-     &          ICOMP, IRET)
+     &          ICOMP, NVI, VINF, IRET)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/01/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,16 +45,19 @@ C         NR     :  DIMENSION DY DDY
 C         DY     :  VECTEUR SOLUTION = ( DSIG DVIN (DEPS3) )
 C         DDY    :  VECTEUR CORRECTION SUR LA SOLUTION
 C         ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
+C         NVI    :  NOMBRE DE VARIABLES INTERNES 
+C         VINF   :  VARIABLES INTERNES A L'INSTANT T+DT
 C
 C     OUT IRET = 0:  CONVERGENCE
 C         IRET = 1:  ITERATION SUIVANTE
 C         IRET = 2:  RE-INTEGRATION
 C         IRET = 3:  REDECOUPAGE DU PAS DE TEMPS
+C         (VINF) UNIQUEMENT POUR LETK  - ETAT PLASTIQUE DESACTIVE?
 C     ----------------------------------------------------------------
       INTEGER         TYPESS, ITMAX,  ITER,   INTG, NR,  ICOMP
-      INTEGER         IRET, NMAT
+      INTEGER         IRET, NMAT, NVI
       REAL*8          TOLER,ESSAI, DDY(*), DY(*),R(*),RINI(*),YD(*)
-      REAL*8          MATER(NMAT,2), EPSTR(6)
+      REAL*8          MATER(NMAT,2), EPSTR(6),VINF(NVI)
       CHARACTER*16    LOI
 C     ----------------------------------------------------------------
 C
@@ -79,7 +82,7 @@ C
      
       ELSEIF ( LOI(1:4) .EQ. 'LETK' ) THEN
 
-         CALL LKICVG (NR,ITMAX,TOLER,ITER,R,IRET)
+         CALL LKICVG (NR,ITMAX,TOLER,ITER,R,NVI,VINF,DY,IRET)
      
       ELSE
 

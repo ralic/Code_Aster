@@ -1,9 +1,9 @@
-#@ MODIF algeline5 Messages  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
+#@ MODIF algeline5 Messages  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,7 +76,7 @@ cata_msg={
 """),
 
 15: _(u"""
-   pour le concept  %(k1)s  le mode numéro  %(i1)d
+   pour le concept  %(k1)s, le mode numéro  %(i1)d
 """),
 
 16: _(u"""
@@ -88,56 +88,40 @@ cata_msg={
 """),
 
 18: _(u"""
-  A une norme d'erreur de  %(r1)f  supérieure au seuil admis  %(r2)f
-
-  Conseil:
-  Si vous utilisez l'opérateur MODE_ITER_SIMULT + METHODE= 'TRI_DIAG' ou 'SORENSEN' vous
-  pouvez améliorer cette norme :
-    - en augmentant la valeur de COEF_DIM_ESPACE (par défaut valeur 4 pour TRI_DIAG
-      et 2 pour SORENSEN),
-    - en réduire le nombre de valeurs propres recherchées (NMAX_FREQ ou taille de
-      la BANDE).
-  Si vous utilisez l'opérateur MODE_ITER_INV vous pouvez améliorer cette norme :
-    - en augmentant les nombres d'itérations des algorithmes (CALC_FREQ +
-      NMAX_ITER_SEPARE/AJUSTE et/ou CALC_MODE + NMAX_ITER),
-    - en augmentant la précision requise (CALC_FREQ + PREC_SEPARE/AJUSTE et/ou CALC_MODE + PREC),
-    - en changeant d'algorithme (CALC_FREQ + OPTION et/ou CALC_MODE + OPTION).
+  a une norme d'erreur de  %(r1)f  supérieure au seuil admis  %(r2)f.
 """),
 
-19: _(u"""
-   pour le concept  %(k1)s  le mode numéro  %(i1)d
-"""),
+
 
 20: _(u"""
-  de fréquence  %(r1)f
-  est en dehors de l'intervalle de recherche : %(r2)f
-  ,  %(r3)f
+  est en dehors de l'intervalle de recherche : [ %(r2)f,  %(r3)f ].
 """),
 
-21: _(u"""
-  de charge critique  %(r1)f
-  est en dehors de l'intervalle de recherche : %(r2)f
-  ,  %(r3)f
-"""),
+
 
 23: _(u"""
-   pour le concept  %(k1)s
+   pour le concept  %(k1)s,
 """),
 
 24: _(u"""
-  dans l'intervalle  ( %(r1)f  ,  %(r2)f )
-  il y a théoriquement  %(i1)d fréquence(s)
-  et on en a calculé  %(i2)d
+  dans l'intervalle [%(r1)f  ,  %(r2)f]
+  il y a théoriquement  %(i1)d fréquence(s) propres()
+  et on en a calculé  %(i2)d.
 """),
 
 25: _(u"""
-  dans l'intervalle  ( %(r1)f  ,  %(r2)f )
+  dans l'intervalle [%(r1)f  ,  %(r2)f]
   il y a théoriquement  %(i1)d charge(s) critique(s)
-  et on en a calculé  %(i2)d
+  et on en a calculé  %(i2)d.
+"""),
+
+26: _(u"""
+ Ce problème peut apparaître lorsqu'il y a des modes multiples (structure avec symétries)
+ ou une forte densité modale.
 """),
 
 27: _(u"""
- la valeur du SHIFT %(r1)f  est une fréquence propre
+ La valeur du SHIFT %(r1)f coïncide avec une fréquence propre.
 """),
 
 28: _(u"""
@@ -258,12 +242,12 @@ cata_msg={
 """),
 
 51: _(u"""
- La valeur propre numéro  %(i1)d a une partie imaginaire non nulle
+ La valeur propre numéro  %(i1)d a une partie imaginaire non nulle.
  partie réelle     = %(r1)f
  partie imaginaire = %(r2)f
 
  Ce phénomène numérique est fréquent sur les premières valeurs propres
- lorsque le spectre recherche est très étendu (en pulsation)
+ lorsque le spectre recherché est très étendu.
 """),
 
 52: _(u"""
@@ -297,7 +281,8 @@ cata_msg={
 """),
 
 58: _(u"""
-    La masse du modèle est nulle. On ne peut normer par rapport a la masse.
+    La masse du modèle est nulle.
+    On ne peut donc pas normer par rapport à la masse.
 """),
 
 59: _(u"""
@@ -311,120 +296,171 @@ cata_msg={
 """),
 
 60: _(u"""
-    Méthode QZ dans MODE_ITER_SIMULT: La variante QR ne fonctionne qu'avec une
-    matrice A symétrique réelle et B symétrique réelle définie positive !
-    Donc elle n'accepte pas le flambement, les Lagrange de AFFE_CHAR_MECA,
-    une matrice de rigidité/de masse complexe ou non symétrique, ainsi que les
-    problèmes modaux quadratiques.
+    La variante 'QZ_QR' de la méthode 'QZ' ne fonctionne qu'avec une matrice %(k1)s symétrique réelle
+    et %(k2)s symétrique réelle définie positive. Donc elle ne traite pas les problèmes de flambement,
+    les Lagrange issus de AFFE_CHAR_MECA, des matrices complexes ou non symétriques,
+    ni les problèmes modaux quadratiques.
 """),
+
 61: _(u"""
-    Méthode QZ dans MODE_ITER_SIMULT: propriété spectrale non respectée sur la
-    valeur propre n %(i1)d !. On a pas |alpha| < ||A|| et |bêta| < ||B||
-                     |alpha|=%(r1)f, ||A||=%(r2)f
-                     | bêta|=%(r3)f, ||B||=%(r4)f
+    Méthode 'QZ' : propriété spectrale non respectée sur la valeur propre numéro %(i1)d.
+    Les relations |alpha| < ||A|| et |bêta| < ||B|| ne sont pas vérifiées :
+          |alpha|=%(r1)f,  ||A||=%(r2)f
+          |bêta| =%(r3)f,  ||B||=%(r4)f
 """),
+
 62: _(u"""
     Méthode QZ dans MODE_ITER_SIMULT: On trouve un nombre de valeurs propres
     %(i1)d différent du nombre de ddls physiques actifs %(i2)d !
 """),
+
 63: _(u"""
     Méthode QZ dans MODE_ITER_SIMULT + OPTION='BANDE': On trouve un nombre de
     valeurs propres %(i1)d différent du nombre de valeurs propres détectées
     dans la bande %(i2)d !
 """),
+
 64: _(u"""
-    Problème modal quadratique et méthode de JACOBI sont incompatible !
-    Essayer plutôt la méthode de SORENSEN (METHODE='SORENSEN').
+    La méthode de 'JACOBI' n'est pas utilisable pour un problème modal quadratique
+    (présence d'une matrice %(k1)s).
+
+    Conseil :
+    Utiliser la méthode 'SORENSEN' ou 'TRI_DIAG'.
 """),
+
 65: _(u"""
-    L'option de calcul 'TOUT' n'est licite qu'avec METHODE='QZ'!
+    L'option de calcul 'TOUT' (sous le mot-clé facteur %(k1)s)
+    est licite seulement avec METHODE='QZ'.
 """),
+
 66: _(u"""
     Méthode QZ dans MODE_ITER_SIMULT : On souhaite un nombre de valeurs
     propres %(i1)d supérieur au nombre de valeurs propres détectées %(i2)d !
 """),
-67: _(u"""
-    Attention on souhaite un nombre de valeurs propres NMAX_FREQ=%(i1)d supérieur
-    au nombre de valeurs propres détectées NUM=%(i2)d !
-    Pour poursuivre le calcul on impose NMAX_FREQ=NUM.
-    Sans doute est-ce du, soit:
-     -à un mauvais tri dans les valeurs propres complexes conjuguées.
-      Contacter l'équipe de développement.
-     -à une mauvaise convergence de la méthode. Regarder les paramètres permettant
-      d'améliorer celle-ci.
-     -à une action incomplète du SHIFT. En diminuant la valeur de l'option CENTRE
-      (FREQ) et en augmentant le nombre de valeurs propres retenues (NMAX_FREQ) on
-      peut souvent capter tous les couples (lambda,conjugué(lambda)) souhaités.
-      Sinon utiliser METHODE='QZ' pour les problèmes de petites tailles (<500 ddls).
-"""),
+
+
+
 68: _(u"""
-    Méthode QZ dans MODE_ITER_SIMULT: erreur LAPACK %(i1)d !
+    Méthode 'QZ' dans MODE_ITER_SIMULT: erreur LAPACK %(i1)d !
 """),
+
 69: _(u"""
-    Matrices de raideur, de masse et/ou d'amortissement non symétrique(s) dans
-    MODE_ITER_SIMULT. Pour l'instant, seules les méthodes QZ et SORENSEN
-    acceptent ce type de matrice.
-    La méthode QZ est à réserver aux petits problèmes modaux (centaines de ddls)
-    dont on souhaite connaître une grosse partie du spectre.
+    Au moins une des matrices est non symétrique.
+    Pour l'instant, seules les méthodes 'SORENSEN' et 'QZ' peuvent traiter le cas de
+    matrices non symétriques.
+
+    Conseils :
+    - Si le problème modal est de petite taille (quelques centaines de DDL),
+      utiliser la méthode 'QZ'.
+    - Sinon, utiliser 'SORENSEN'.
 """),
+
 70: _(u"""
-    Matrices de  raideur, de masse et/ou d'amortissement non symétrique(s) dans
-    MODE_ITER_SIMULT avec,une matrice de raideur complexe.
-    Pour l'instant, ce cas n'a pas été pris en compte.
+    Au moins une des matrices est non symétrique, et la matrice %(k1)s est complexe.
+    Pour l'instant, ce cas n'a pas été développé dans le code.
 """),
+
 71: _(u"""
-    Cette fonctionnalité requiert un solveur linéaire permettant de détecter les
-    éventuelles singularités des matrices.
-    Conseil:
-    ========
-    Changer de solveur linéaire (mot-clé SOLVEUR), utiliser MULT_FRONT ou MUMPS.
+    Cette fonctionnalité requiert un solveur linéaire permettant de
+    détecter les éventuelles singularités des matrices.
+
+    Conseil :
+    changer de solveur linéaire : sous le mot-clé facteur SOLVEUR,
+    utiliser 'MULT_FRONT' ou 'MUMPS'.
 """),
+
 73: _(u"""
-    On a besoin d'effectuer un calcul de déterminant. Pour l'instant, seuls les
-    solveurs linéaires directs 'MULT_FRONT', 'LDLT' et MUMPS (à partir de la 4.10.0)
-    peuvent faire ce type de calcul.
-    
-    Conseils: 
-     - Vous pouvez changer le paramétrage du mot-clé SOLVEUR/METHODE pour prendre
-      en compte un de ces solveurs.
-     - De préférence utilisez 'MUMPS' (à partir de la 4.10.0) qui est souvent le
-      plus efficace sur de gros problèmes et/ou des problèmes difficiles (X-FEM, 
-      incompressible, THM...).
+    On a besoin d'effectuer un calcul de déterminant.
+    Pour l'instant seuls les solveurs linéaires directs 'MULT_FRONT', 'LDLT'
+    et MUMPS (à partir de la version 4.10.0) peuvent effectuer ce type de calcul.
+
+    Conseil :
+    Choisir un de ces deux solveurs (mot-clé METHODE sous le mot-clé facteur SOLVEUR).
+    De préférence, utiliser 'MUMPS' (à partir de la version 4.10.0) qui est souvent
+    le plus efficace pour des gros problèmes et/ou des problèmes difficiles
+    (X-FEM, incompressibilité, THM, ...).
 """),
+
 74: _(u"""
-    Lors d'un calcul modal (MODE_ITER_SIMULT/INV, CRIT_FLAMB...) utilisant le
-    solveur linéaire MUMPS (SOLVEUR/METHODE='MUMPS'), il ne faut pas débrancher
-    la détection de singularité.
-    Conseil:
-    ========
-    Relancer le calcul avec SOLVEUR/NPREC>0 (par exemple 8).
+    Lors d'un calcul modal utilisant le solveur linéaire MUMPS (METHODE='MUMPS' sous le mot-clé facteur SOLVEUR),
+    il ne faut pas débrancher la détection de singularité.
+
+    Conseil :
+    Relancer le calcul avec NPREC > 0 (par exemple 8) sous le mot-clé facteur SOLVEUR.
 """),
+
 75: _(u"""
-    Le solveur modal utilisé par MODE_ITER_SIMULT n'a pas réussi à capturer tous
-    les modes propres souhaités avec le niveau de convergence requis.
+    Le solveur modal n'a pas réussi à capturer tous les modes propres souhaités
+    avec le niveau de convergence requis.
 
-    Conseil:
-    =======
-    Relancer le calcul en tenant compte des précisions du message précédent.
-    Pour améliorer la convergence des algorithmes modaux vous pouvez par exemple:
-       - Diminuer le nombre de modes recherchés à chaque fois en découpant votre
-         calcul modal en plusieurs bande (à la main ou via MACRO_MODE_MECA). Cela
-         améliore aussi souvent grandement les performances des calculs.
-       - Avec la méthode de SORENSEN, augmenter la taille de l'espace de projection
-         (DIM_SOUS_ESPACE/COEF_DIM_ESPACE) ou jouer sur les paramètres numériques
-          qui pilote la convergence (PREC_SOREN et NMAX_ITER_SOREN).
-       - Avec la méthode QZ, diminuer NMAX_FREQ ou changer de variante (TYPE_QZ).
-
+    Conseils :
+    Pour améliorer la convergence des algorithmes modaux vous pouvez par exemple :
+     - Diminuer le nombre de modes recherchés à chaque fois en découpant votre calcul modal en plusieurs bandes
+       (avec l'opérateur MACRO_MODE_MECA, ou à la main).
+       Cela améliore aussi souvent grandement les performances des calculs.
+     - Avec la méthode de 'SORENSEN', augmenter la taille de l'espace de projection (DIM_SOUS_ESPACE/COEF_DIM_ESPACE)
+       ou jouer sur les paramètres numériques qui pilotent la convergence (PREC_SOREN et NMAX_ITER_SOREN).
+     - Avec la méthode 'QZ', diminuer NMAX_FREQ ou changer de variante (mot-clé TYPE_QZ).
+     Si vous voulez tout de même utiliser les modes ainsi calculés (à vos risques et périls),
+     relancer le calcul en augmentant la valeur du seuil de convergence (mot-clé SEUIL)
+     ou en utilisant l'option STOP_ERREUR='NON' sous le mot-clé facteur VERI_MODE.
 """),
 
 76 : _(u"""
-Solveur GCPC :
-  La création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire.
+   Solveur GCPC :
+   la création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire.
 
-  Conseil : augmentez la valeur du mot clé SOLVEUR/PCENT_PIVOT.
+   Conseil :
+   augmenter la valeur du paramètre PCENT_PIVOT sous le mot-clé facteur SOLVEUR.
 """),
 
 77 : _(u"""
+Conseils :
+Si vous utilisez METHODE='SORENSEN' ou 'TRI_DIAG' ou 'JACOBI', vous pouvez améliorer cette norme :
+ - en augmentant la valeur de COEF_DIM_ESPACE (la valeur par défaut est 4 pour 'TRI_DIAG' et 2 pour 'SORENSEN' et 'JACOBI'),
+ - en réduisant le nombre de valeurs propres recherchées (%(k1)s ou taille de la BANDE).
+"""),
+
+78 : _(u"""
+Conseils :
+Vous pouvez améliorer cette norme :
+ - en augmentant les nombres d'itérations des algorithmes
+    (paramètres NMAX_ITER_SEPARE/AJUSTE sous le mot-clé facteur %(k1)s
+     et/ou paramètre NMAX_ITER sous le mot-clé facteur CALC_MODE),
+ - en augmentant la précision requise
+    (paramètres PREC_SEPARE/PREC_AJUSTE sous le mot-clé facteur %(k1)s
+     et/ou paramètre PREC sous le mot-clé facteur CALC_MODE),
+ - en changeant d'algorithme
+    (mot-clé OPTION sous le mot-clé facteur %(k1)s
+     et/ou mot-clé OPTION sous le mot-clé facteur CALC_MODE).
+"""),
+
+79: _(u"""
+    On souhaite un nombre de valeurs propres NMAX_%(k1)s=%(i1)d
+    supérieur au nombre de valeurs propres détectées NUM=%(i2)d !
+"""),
+
+80: _(u"""
+    Pour poursuivre le calcul, on impose NMAX_%(k1)s=NUM.
+"""),
+
+81: _(u"""
+    Ce problème peut être dû :
+    - à un mauvais tri dans les valeurs propres complexes conjuguées.
+      Contacter l'équipe de développement.
+
+    - à une mauvaise convergence de la méthode.
+      Regarder les paramètres permettant d'améliorer celle-ci.
+
+    - à une action incomplète du SHIFT.
+      En diminuant la valeur %(k1)s de l'option 'CENTRE'
+      et en augmentant le nombre de valeurs propres retenues (NMAX_%(k1)s),
+      on peut souvent capter tous les couples (lambda,conjugué(lambda)) souhaités.
+   
+    Sinon utiliser METHODE='QZ' pour les problèmes de petites tailles (<500 ddls).
+"""),
+
+82 : _(u"""
 L'option 'PLUS_GRANDE' n'est pas utilisable en présence d'une matrice d'amortissement,
 d'une matrice de rigidité complexe, ou de matrices non symétriques.
 """),

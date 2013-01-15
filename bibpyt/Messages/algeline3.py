@@ -1,8 +1,8 @@
-#@ MODIF algeline3 Messages  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF algeline3 Messages  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -176,8 +176,7 @@ MULT_FRONT factorise une Matrice Généralisée.
 On a détecté l'existence d'au moins une liaison entre degré de liberté.
 On ne renumérote pas car les degrés de liberté sont a priori compris entre  Lagrange1 et Lagrange2 .
 
-Conseil
--------
+Conseil :
   En cas d'arrêt ultérieur avec MATRICE singulière, il faudra changer de SOLVEUR (MUMPS par exemple).
  """),
 
@@ -219,13 +218,16 @@ La méthode de résolution:  %(k1)s  est inconnue. on attend LDLT,GCPC, MULT_FRONT
 """),
 
 46: _(u"""
-Recherche de corps rigide : pour l'instant proscrite avec matrice non-symétrique
+La matrice %(k1)s est non symétrique.
+Pour l'instant, la recherche des modes de corps rigide n'a pas été développée
+pour une matrice non symétrique.
 """),
 
 47: _(u"""
-Recherche de corps rigide : pour l'instant proscrite avec matrice complexe
+La matrice %(k1)s est complexe.
+Pour l'instant, la recherche des modes de corps rigide n'a pas été développée
+pour une matrice complexe.
 """),
-
 
 48: _(u"""
 Cet opérateur a besoin du "procédé de STURM" pour tester la validité de modes propres ou
@@ -234,9 +236,11 @@ ne fonctionne, pour l'instant, que sur des matrices réelles et symétriques.
   --> La matrice utilisée ici, %(k1)s ne répond pas a ces critères !
 """),
 
-
 49: _(u"""
-Attention : plus de six modes de corps rigides détectés
+Attention : plus de six modes de corps rigide ont été détectés.
+
+--> Conseil :
+Si vous pensez avoir une seule structure dans le modèle, cela peut provenir de noeud(s) orphelin(s). Dans ce cas, vérifiez le maillage.
 """),
 
 50: _(u"""
@@ -300,85 +304,19 @@ Le concept MODE "%(k1)s" a été créé avec les matrices
 
 63: _(u"""
 Le système à résoudre n'a pas de DDL actif.
+
+Conseil :
+vérifier que les DDL ne sont pas tous encastrés.
 """),
 
 64: _(u"""
 On trouve plus de 9999 valeurs propres dans la bande demandée
 """),
-65: _(u"""
-  Le shift=%(r1)g
-  utilisé pour construire la matrice dynamique est une valeur propre !
-  Avec l'option 'CENTRE', ce shift vaut FREQ (ou CHAR_CRIT),
-  Avec l'option 'BANDE', c'est le milieu de la bande sélectionnée,
-  Avec l'option 'PLUS_PETITE' ou 'TOUT', il prend la valeur 0.
-  
-  Malgré la stratégie de décalage du shift, cette matrice dynamique reste
-  numériquement singulière.
-  
-  -> Risque :
-  Cette matrice étant abondamment utilisée pour résoudre des systèmes linéaires à chaque
-  itération du processus modal, cette quasi singularité peut fausser les résultats
-  (mauvais conditionnement matriciel).
 
-  -> Conseils :
-  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
-  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et SEUIL_FREQ) pour
-  vérifiez qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
 
-  Vous pouvez aussi décalez la valeur du shift pour évitez cette fréquence.
-  L'option 'BANDE' est plutôt conseillée. En cas de shift nul (et donc de matrice de
-  raideur suspectée d'être singulière), vous pouvez utilisez une borne légèrement
-  négative.
-  A défaut, si vous n'arrivez pas a capter tous les modes rigides, essayer la méthode
-  TRI_DIAG avec OPTION='MODE_RIGIDE'.
-"""),
-66: _(u"""
-  Cette borne minimale de la bande de fréquences est une valeur propre !
-  Malgré la stratégie de décalage, la matrice dynamique reste numériquement
-  singulière.
-  
-  -> Risque :
-  Le test de Sturm qui sert à évaluer le nombre de modes présents dans l'intervalle
-  peut être faussé.
 
-  -> Conseils :
-  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
-  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et SEUIL_FREQ) pour
-  vérifiez qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
-  
-  Si il ne s'agit pas d'un test de vérification ('VERIFICATION A POSTERIORI DES MODES'),
-  vous pouvez aussi relancez un autre calcul en décalant les bornes de l'intervalle
-  pour évitez cette fréquence.
-"""),
 
-67: _(u"""
-  Cette borne maximale de la bande de fréquences est une valeur propre !
-  Malgré la stratégie de décalage, la matrice dynamique reste numériquement
-  singulière.
-  
-  -> Risque :
-  Le test de Sturm qui sert à évaluer le nombre de modes présents dans l'intervalle
-  peut être faussé.
 
-  -> Conseils :
-  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
-  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et SEUIL_FREQ) pour
-  vérifiez qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
-  
-  Si il ne s'agit pas d'un test de vérification ('VERIFICATION A POSTERIORI DES MODES'),
-  vous pouvez aussi relancez un autre calcul en décalant les bornes de l'intervalle
-  pour évitez cette fréquence.
-"""),
-
-68: _(u"""
-  La borne inférieure de l'intervalle a été décalée plusieurs fois car elle est trop proche
-  d'une valeur propre. Du fait de ces décalages, elle est devenue plus grande que la borne
-  supérieure !
-
-  -> Conseils :
-  Relancez votre calcul en espaçant suffisamment les bornes des intervalles (en tenant compte
-  des valeurs des paramètres de décalage NMAX_ITER_SHIFT et PREC_SHIFT).
-"""),
 
 69: _(u"""
 Option  %(k1)s non reconnue.
@@ -405,7 +343,10 @@ Problème interne LAPACK
 """),
 
 75: _(u"""
-Problème construction vecteur initial --> si possible diminuer NMAX_FREQ
+Problème de construction du vecteur initial.
+
+Conseil :
+si possible, diminuer NMAX_FREQ (ou NMAX_CHAR_CRIT selon le type d'étude).
 """),
 
 76: _(u"""
@@ -417,8 +358,11 @@ Problème interne LAPACK, routine FTREVC (vecteurs propres)
 """),
 
 78: _(u"""
-Aucune valeur propre à la précision requise
- --> augmenter PREC_SOREN ou NMAX_ITER_SOREN ou augmenter DIM_SOUS_ESPACE
+Aucune valeur propre à la précision requise.
+
+Conseils :
+augmenter PREC_SOREN ou NMAX_ITER_SOREN
+ou augmenter DIM_SOUS_ESPACE.
 """),
 
 79: _(u"""
@@ -432,40 +376,74 @@ MODE à créer avant appel à VPSTOR
 """),
 
 81: _(u"""
-"%(k1)s" argument du mot clé "OPTION" pour le calcul des fréquences est invalide.
+  Le shift=%(r1)g
+  utilisé pour construire la matrice dynamique coïncide avec une valeur propre !
+  Avec l'option 'CENTRE', ce shift vaut %(k1)s,
+  Avec l'option 'BANDE', c'est le milieu de la bande sélectionnée,
+  Avec l'option 'PLUS_PETITE' ou 'TOUT', il prend la valeur 0.
+  
+  Malgré la stratégie de décalage du shift, cette matrice dynamique reste
+  numériquement singulière.
+  
+  -> Risque :
+  Cette matrice étant abondamment utilisée pour résoudre des systèmes linéaires
+  à chaque itération du processus modal, cette quasi singularité peut fausser les résultats
+  (mauvais conditionnement matriciel).
+
+  -> Conseils :
+  La structure analysée présente probablement des modes de corps rigide.
+  
+    * si aucun mode de corps rigide n'était attendu :
+  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
+  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et %(k2)s)
+  pour vérifier qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
+  Si c'est une singularité, vérifiez la mise en donnée du problème :
+  conditions aux limites, maillage (présence de noeuds / mailles orphelin(e)s), unités, ...
+
+   * si ces modes étaient attendus et que vous ne voulez pas les calculer :
+  Utilisez l'option 'BANDE' avec une borne inférieure suffisamment positive (par exemple 1.e-1).
+   * si ces modes étaient attendus et que vous voulez les calculer :
+  - utilisez l'option 'BANDE' avec une borne inférieure légèrement négative (par exemple -1.e-1).
+  - utilisez la méthode 'TRI_DIAG' avec OPTION='MODE_RIGIDE'.
 """),
 
 82: _(u"""
-Pour l'option "BANDE" il faut exactement 2 fréquences.
+  Cette borne minimale de la bande de recherche est une valeur propre !
 """),
 
 83: _(u"""
-Fréquence min. supérieure ou égale à la fréquence max.
+  Cette borne maximale de la bande de recherche est une valeur propre !
 """),
 
 84: _(u"""
-Pour l'option "CENTRE" il faut exactement une fréquence.
+  Malgré la stratégie de décalage, la matrice dynamique reste numériquement
+  singulière.
+  
+  -> Risque :
+  Le test de Sturm qui sert à évaluer le nombre de modes présents dans l'intervalle
+  peut être faussé.
+
+  -> Conseils :
+  Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
+  ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et %(k1)s) pour
+  vérifiez qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
+  
+  S'il ne s'agit pas d'un test de vérification ('VERIFICATION A POSTERIORI DES MODES'),
+  vous pouvez aussi relancer un autre calcul en décalant les bornes de l'intervalle de
+  recherche pour éviter cette fréquence.
 """),
 
 85: _(u"""
-Pour les options  "PLUS_PETITE" et "TOUT" les fréquences de "FREQ" sont ignorées.
+  La borne inférieure de l'intervalle a été décalée plusieurs fois car elle est trop proche
+  d'une valeur propre. En raison de ces décalages, elle est devenue plus grande que la borne
+  supérieure !
+
+  -> Conseils :
+  Relancez votre calcul en espaçant suffisamment les bornes de l'intervalle (en tenant compte
+  des valeurs des paramètres de décalage NMAX_ITER_SHIFT et PREC_SHIFT).
 """),
 
-86: _(u"""
-Pour l'option  "BANDE" il faut exactement 2 charges critiques.
-"""),
 
-87: _(u"""
-Charge critique min. plus  grande ou égale a la charge critique max.
-"""),
-
-88: _(u"""
-Pour l'option  "CENTRE" il faut exactement une charge critique.
-"""),
-
-89: _(u"""
-Pour l'option  "PLUS_PETITE" et "TOUT" les charges critiques de "CHAR_CRIT" sont ignorées.
-"""),
 
 90: _(u"""
 Objet .REFE/.REFA/.CELK inexistant.

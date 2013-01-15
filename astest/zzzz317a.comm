@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE GENERATION DE SIGNAUX SISMIQUES
 # zzzz317a.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -43,7 +43,7 @@ arias =0.05#(en g)
 ecart=1.0/9.81 #(en g)
 pga=0.2  #(en g)
 #
-#Attention: ces valeurs sont les moyennes utilises pour la simulation
+#Attention: ces valeurs sont les moyennes utilisees pour la simulation
 # - on peut faire des tests de non regression pour une realisation
 # - on teste les moyennes pour le cas TYPE=   "CONST"
 #
@@ -109,7 +109,7 @@ RMS1b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1b))
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
            VALE_CALC=0.958941395,
-           VALE_REFE=1.0,
+           VALE_REFE=ecart*9.81,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS1b,)
 
@@ -206,7 +206,7 @@ IMPR_TABLE (TABLE=RMS2a,  UNITE=8,);
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
            VALE_CALC=1.036018599,
-           VALE_REFE=1.0,
+           VALE_REFE=ecart*9.81,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS2a,)
 
@@ -348,7 +348,7 @@ ecart0=0.174711603824  # valeur theorique de la DSP cible
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
            VALE_CALC=0.176141884,
-           VALE_REFE=0.174711603824,
+           VALE_REFE=ecart0,
            NOM_PARA='ECART',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',

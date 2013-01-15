@@ -1,8 +1,8 @@
-#@ MODIF algeline2 Messages  DATE 29/10/2012   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline2 Messages  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,7 +102,8 @@ cata_msg = {
 """),
 
 17 : _(u"""
- Au moins une fréquence calculée extérieure à la bande demandée
+ Au moins une valeur propre calculée est en dehors de la bande demandée.
+ Ces valeurs propres extérieures n'apparaîtront pas dans le résultat de l'opérateur.
 """),
 
 18 : _(u"""
@@ -120,17 +121,9 @@ cata_msg = {
 21 : _(u"""
  L'argument de "BLOC_FIN" doit être strictement positif
 """),
-22 : _(u"""
- Opérateur INFO_MODE:
- On a rencontré un problème lors de la lecture des caractéristiques de la zone de
- l'axe réel ou du plan complexe que vous vouliez calibrer.
- 
- --> Conseil:
- Vérifiez si vous traitez un problème quadratique ou un généralisé avec matrice non symétrique
- ou complexe, que vous avez bien paramétré les mots-clés RAYON et CENTRE_CONTOUR.
- Dans le cas contraire, ce sont les mots-clés FREQ ou CHAR_CRIT qu'il faut valoriser (avec
- au moins deux valeurs).
-"""),
+
+
+
 23 : _(u"""
  On a rencontré un problème à la lecture de la table %(k1)s.
  
@@ -188,126 +181,101 @@ cata_msg = {
  les "MATR_ASSE" %(k1)s "  et  " %(k2)s "  ne sont pas combinables.
 """),
 
-29 : _(u"""
- Les fréquences ou les charges critiques renseignées dans les mots-clés de cet opérateur
- doivent être dans l'ordre strictement croissant.
- 
- --> Conseil:
- Vérifiez la liste de valeurs fournie au mot-clé: FREQ ou CHAR_CRIT.
-"""),
 
-30 : _(u"""
- les matrices  " %(k1)s "  et  " %(k2)s "  n'ont pas le même domaine de définition.
-"""),
+
 
 31 : _(u"""
- Opérateur INFO_MODE + TYPE_MODE='GENERAL'.
+ Cas TYPE_MODE='GENERAL'.
  Compte-tenu des propriétés des matrices fournies (type, symétrie), on bascule automatiquement
- en mode de fonctionnement: %(k1)s.
+ en mode de fonctionnement : %(k1)s.
 """),
 
 33 : _(u"""
- type de mode inconnu:  %(k1)s
+ Type de mode inconnu :  %(k1)s.
+ Les modes donnés en entrée doivent être de type MODE_MECA, MODE_MECA_C OU MODE_FLAMB.
 """),
 
 34 : _(u"""
- il n'est pas permis de modifier un objet père
+ Il n'est pas permis de modifier un objet père
 """),
 
 35 : _(u"""
- mode non calculé à partir de matrices assemblées
+ Mode non calculé à partir de matrices assemblées
 """),
 
 36 : _(u"""
- normalisation impossible, le point n'est pas présent dans le modèle.
+ Normalisation impossible, le noeud n'est pas présent dans le modèle.
 """),
 
 37 : _(u"""
- normalisation impossible, la composante n'est pas présente dans le modèle.
+ Normalisation impossible, la composante n'est pas présente dans le modèle.
 """),
 
 38 : _(u"""
- il manque des paramètres entiers
+ Il manque des paramètres de type entier.
 """),
 
 39 : _(u"""
- il manque des paramètres réels
+ Il manque des paramètres de type réel.
 """),
 
 40 : _(u"""
- manque des paramètres caractères
+ IL manque des paramètres de type caractère.
 """),
 
 41 : _(u"""
- normalisation impossible,  aucune composante n'est présente dans le modèle.
+ Normalisation impossible : aucune composante n'est présente dans le modèle.
 """),
 
-42 : _(u"""
- normalisation impossible, le noeud n'est pas présent dans le modèle.
-"""),
+
 
 43 : _(u"""
- on ne tient pas compte du mot-clé facteur "MODE_SIGNE" pour des "MODE_MECA_C"
+ on ne tient pas compte du mot-clé facteur MODE_SIGNE pour une base modale de type MODE_MECA_C.
 """),
 
 44 : _(u"""
  " %(k1)s "  type de mode non traité
 """),
 
-45 : _(u"""
- calcul de flambement et absence du mot-clé CHAR_CRIT ne sont pas compatibles
-"""),
+
 
 46 : _(u"""
- calcul de flambement et matrice d'amortissement ne sont pas compatibles
+ Le calcul de flambement ne peut pas être mené pour un problème avec une matrice %(k1)s complexe.
 """),
 
-47 : _(u"""
- le nombre de fréquences demandées est incorrect.
-"""),
 
-48 : _(u"""
- NMAX_ITER_AJUSTE ou NMAX_ITER_SEPARE est négatif
-"""),
 
-49 : _(u"""
- NMAX_ITER est négatif
-"""),
 
-50 : _(u"""
- PREC_AJUSTE ou PREC_SEPARE est irréaliste
-"""),
 
-51 : _(u"""
- PREC est irréaliste (inférieure a 1.e-70)
-"""),
 
 52 : _(u"""
- pas de valeur donnée, séparation impossible
+ Avec l'option %(k1)s, il faut au moins deux valeurs sous le mot-clé %(k2)s.
 """),
 
-53 : _(u"""
- une seule valeur donnée, séparation impossible
-"""),
 
-54 : _(u"""
- la suite des valeurs données n'est pas croissante
-"""),
+
+
 
 55 : _(u"""
- mot-clé AMOR_REDUIT impossible pour cas généralisé.
+ Pour un problème généralisé, le mot-clé AMOR_REDUIT ne peut pas être utilisé.
 """),
 
 56 : _(u"""
- mot-clé AMOR_REDUIT impossible si option différente de PROCHE
+ Pour un problème quadratique, si le mot-clé AMOR_REDUIT est présent,
+ seule l'option 'PROCHE' est utilisable.
 """),
 
 57 : _(u"""
- nombre différent d'arguments entre les mots-clés AMOR_REDUIT et FREQ
+ Le mot-clé AMOR_REDUIT étant présent, le nombre de valeurs renseignées sous ce mot-clé
+ doit être le même que celui sous le mot-clé FREQ.
 """),
 
 58 : _(u"""
- les matrices " %(k1)s " et  " %(k2)s "  sont incompatibles entre elles
+ Les matrices "%(k1)s" et "%(k2)s" ne sont pas compatibles entre elles.
+ 
+ --> Conseil : vérifier la manière dont elles sont construites
+ (elles doivent notamment reposer sur le même maillage, être calculées avec les mêmes conditions aux limites,
+ avoir la même numérotation de DDL, avoir les mêmes propriétés de (non) symétrie, ...).
 """),
 
 59 : _(u"""
@@ -315,61 +283,75 @@ cata_msg = {
 """),
 
 62 : _(u"""
- pas de valeurs propres dans la bande de calcul,  le concept ne peut être créé dans ces conditions.
+ pas de valeurs propres dans la bande de calcul, le concept ne peut donc pas être créé.
 """),
 
-63 : _(u"""
- " %(k1)s "   option inconnue.
-"""),
+
 
 64 : _(u"""
- le nombre PARAM_ORTHO_SOREN n'est pas valide.
+ La valeur de PARAM_ORTHO_SOREN n'est pas valide.
+ Elle doit être dans l'intervalle [1,2*epsilon ; 0,83-epsilon]
+ où epsilon est la précision machine.
 """),
 
 65 : _(u"""
- détection des modes de corps rigide n'est utilisée qu'avec TRI_DIAG
+ La détection des modes de corps rigide (demandée avec OPTION='MODE_RIGIDE')
+ est utilisable uniquement avec la méthode 'TRI_DIAG'.
 """),
 
 66 : _(u"""
- option bande non autorisée pour un problème avec amortissement
+ L'option 'BANDE' n'est pas autorisée pour un problème avec amortissement
+ (%(k1)s complexe et/ou présence du mot-clé %(k2)s).
+ 
+ -> Conseil :
+ utiliser l'option 'CENTRE'.
 """),
 
 67 : _(u"""
- approche imaginaire ou complexe et fréquence nulle incompatible
+ L'approche imaginaire ou complexe n'est pas compatible avec une borne inférieure nulle de l'intervalle de recherche
+ (par exemple, si l'option 'PLUS_PETITE' est utilisée, c'est le cas).
 """),
 
 68 : _(u"""
-  option modes de corps rigide non utilisée avec amortissement
+ La détection des modes de corps rigide (OPTION='MODE_RIGIDE') n'est pas utilisable pour un problème avec amortissement
+ (%(k1)s complexe, et/ou présence du mot-clé %(k2)s).
 """),
 
 69 : _(u"""
- pour le problème généralisé ou quadratique complexe on utilise seulement
- METHODE='SORENSEN' ou 'QZ'
+ Pour un problème avec matrice complexe,
+ seules les méthodes 'SORENSEN' et 'QZ' sont utilisables.
 """),
 
 70 : _(u"""
- problème complexe et fréquence nulle incompatible
+ Pour un problème avec matrice complexe, le calcul ne peut pas être fait si la borne inférieure de l'intervalle de recherche est nulle
+ (par exemple, si l'option 'PLUS_PETITE' est utilisée, c'est le cas ; conseil : utiliser l'option 'CENTRE').
 """),
 
 71 : _(u"""
- calcul quadratique par la méthode de SORENSEN et fréquence nulle incompatible
+ Pour un problème quadratique, la méthode de 'SORENSEN' n'est pas utilisable si la borne inférieure de l'intervalle de recherche est nulle
+ (par exemple, si l'option 'PLUS_PETITE' est utilisée, c'est le cas ; conseil : utiliser l'option 'CENTRE').
 """),
 
 72 : _(u"""
- la dimension du sous espace de travail est inférieure au nombre de modes rigides
+ La dimension du sous-espace de travail (mot-clé DIM_SOUS_ESPACE)
+ est inférieure au nombre de modes de corps rigide.
 """),
 
 73 : _(u"""
- Attention : pour l'instant, il n'y a pas de vérification de type STURM
- (comptage du bon nombre des valeurs propres calculées) lorsqu'on est
- dans le plan complexe :
-            modal généralisé avec K complexe,
-            modal généralisé avec K et/ou M non symétrique(s),
-            modal quadratique.
-"""),
+ Attention : pour l'instant, il n'y a pas de vérification de type STURM (comptage du bon nombre des valeurs propres calculées)
+ lorsqu'on est dans le plan complexe :
+       problème modal généralisé avec %(k1)s complexe,
+    ou problème modal généralisé avec matrice(s) non symétrique(s),
+    ou problème modal quadratique (présence du mot-clé %(k2)s).
+   """),
 
 74 : _(u"""
-  erreur de vérification
+ Erreur de vérification des modes calculés : au moins un des critères de validation renseignés sous le mot-clé facteur VERI_MODE n'est pas respecté.
+ 
+ Conseils :
+ Si vous voulez tout de même utiliser les modes calculés (à vos risques et périls !), relancez le calcul en modifiant les mots-clés situés sous le mot-clé facteur VERI_MODE,
+   - soit en utilisant des valeurs moins contraignantes sur les critères de qualité,
+   - soit en utilisant l'option STOP_ERREUR='NON'.
 """),
 
 75 : _(u"""

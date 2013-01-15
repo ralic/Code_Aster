@@ -5,9 +5,9 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,7 +100,7 @@ C      --------------------------------------------------
 
 C ---- RECUPERATION DE L'INSTANT DE CALCUL :
 C      -----------------------------------
-      CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+      CALL TECACH('ONN','PTEMPSR','L',1,ITEMPS,IRET)
       IF (ITEMPS.NE.0) THEN
           INSTAN = ZR(ITEMPS)
       ENDIF
@@ -108,7 +108,7 @@ C
 C ---- RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES PLANES :
 C      ---------------------------------------------------------------
       IF (LTEATT(' ','C_PLAN','OUI')) THEN
-      CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
+      CALL TECACH('NNN','PCOMPOR','L',1,ICOMPO,IRET)
         IF (ICOMPO.NE.0) THEN
           COMPOR = ZK16(ICOMPO)
           IF (COMPOR.NE.'ELAS'.AND.COMPOR.NE.'                ') THEN

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,13 +46,13 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
 
              OPTION          =SIMP(statut='f',typ='TXM',defaut="AJUSTE",into=("SEPARE","AJUSTE","PROCHE"),
                                    fr="Choix de l option pour estimer les valeurs propres"  ),
-             FREQ            =SIMP(statut='o',typ='R',max='**'),
+             FREQ            =SIMP(statut='o',typ='R',max='**',validators=[OrdList('croissant'),NoRepeat()],),
              AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
              NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 0,val_min=0 ),
-             NMAX_ITER_SEPARE=SIMP(statut='f',typ='I' ,defaut= 30,val_min=0 ),
-             PREC_SEPARE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=0.E+0 ),
-             NMAX_ITER_AJUSTE=SIMP(statut='f',typ='I',defaut= 15,val_min=0 ),
-             PREC_AJUSTE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=0.E+0 ),
+             NMAX_ITER_SEPARE=SIMP(statut='f',typ='I' ,defaut= 30,val_min=1 ),
+             PREC_SEPARE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=1.E-70 ),
+             NMAX_ITER_AJUSTE=SIMP(statut='f',typ='I',defaut= 15,val_min=1 ),
+             PREC_AJUSTE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=1.E-70 ),
 
              NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 3,val_min=0 ),
              PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2,val_min=0.E+0, ),
@@ -74,12 +74,12 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
 
              OPTION          =SIMP(statut='f',typ='TXM',defaut="AJUSTE",into=("SEPARE","AJUSTE","PROCHE"),
                                  fr="Choix de l option pour estimer les valeurs propres"  ),
-             CHAR_CRIT       =SIMP(statut='o',typ='R',validators=NoRepeat(),max='**' ),
+             CHAR_CRIT       =SIMP(statut='o',typ='R',max='**',validators=[OrdList('croissant'),NoRepeat()] ),
              NMAX_CHAR_CRIT  =SIMP(statut='f',typ='I',defaut= 0,val_min=0 ),
-             NMAX_ITER_SEPARE=SIMP(statut='f',typ='I',defaut= 30,val_min=0 ),
-             PREC_SEPARE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=0.E+0, ),
-             NMAX_ITER_AJUSTE=SIMP(statut='f',typ='I',defaut= 15 ),
-             PREC_AJUSTE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=0.E+0, ),
+             NMAX_ITER_SEPARE=SIMP(statut='f',typ='I',defaut= 30,val_min=1 ),
+             PREC_SEPARE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=1.E-70 ),
+             NMAX_ITER_AJUSTE=SIMP(statut='f',typ='I',defaut= 15,val_min=1 ),
+             PREC_AJUSTE     =SIMP(statut='f',typ='R',defaut= 1.E-4,val_min=1.E-70 ),
 
              NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 3,val_min=0 ),
              PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2,val_min=0.E+0, ),
@@ -94,8 +94,8 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
 
          CALC_MODE       =FACT(statut='d',min=0,fr="Choix des paramètres pour le calcul des vecteurs propres",
            OPTION          =SIMP(statut='f',typ='TXM',defaut="DIRECT",into=("DIRECT","RAYLEIGH") ),
-           PREC            =SIMP(statut='f',typ='R',defaut= 1.E-5,val_min=0.E+0,fr="Précision de convergence" ),
-           NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 30,val_min=0 ),
+           PREC            =SIMP(statut='f',typ='R',defaut= 1.E-5,val_min=1.E-70,fr="Précision de convergence" ),
+           NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 30,val_min=1 ),
          ),
          VERI_MODE       =FACT(statut='d',min=0,
            STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),

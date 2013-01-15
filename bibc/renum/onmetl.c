@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF onmetl renum  DATE 08/10/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF onmetl renum  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -18,6 +18,7 @@
 /* ================================================================== */
 
 #include "aster.h"
+#include "aster_fort.h"
 
 #ifdef _HAVE_METIS
 #include "metis.h"
@@ -26,9 +27,9 @@
 
 void DEFPPPPPPPPPPPPP(ONMETL,onmetl, nbnd,nadj,
                         xadjd, adjncy,
-               		   invpnd,permnd,supnd, parent,
-	      nbsn,nbops,fctnzs, lgind, 
-	      niv)
+                       invpnd,permnd,supnd, parent,
+          nbsn,nbops,fctnzs, lgind, 
+          niv)
      INTEGER4 *nbnd,*nadj,  *xadjd, *adjncy;
      INTEGER4 *invpnd, *permnd,*supnd, *parent,*nbsn;
      DOUBLE *nbops;
@@ -112,7 +113,7 @@ lgind  : longueur de tableaux de pointeurs
    stoptimer(IOTmr); 
    starttimer(SMBTmr); 
    ret = ComputeFillInL(&graph, iperm,parent,
-		  supnd,&graph.nvtxs,nbsn,nbops,lgind,fctnzs);
+          supnd,&graph.nvtxs,nbsn,nbops,lgind,fctnzs);
    stoptimer(SMBTmr); 
 
    stoptimer(TOTALTmr); 
@@ -137,7 +138,7 @@ lgind  : longueur de tableaux de pointeurs
      } 
     for(kkk=0;kkk<graph.nvtxs;kkk++)
       { invpnd[kkk]+=1;
-	permnd[kkk]+=1;
+    permnd[kkk]+=1;
       }
    }
     GKfree(&graph.xadj, &graph.adjncy, &perm, &iperm, LTERM); 
@@ -271,7 +272,7 @@ int ReadGraphL(GraphType *graph, int *nbnd,int *nadj,int *xadjd,int *adjnci, int
  * This function sets up data structures for fill-in computations 
  **************************************************************************/ 
 int ComputeFillInL(GraphType *graph, idxtype *iperm,idxtype *parent,
-		    idxtype *supnd,int *neq,int *nbsn,double *opc,int *lgindd,int *maxlnz)
+            idxtype *supnd,int *neq,int *nbsn,double *opc,int *lgindd,int *maxlnz)
  { 
    int i, j, k, nvtxs, maxsub,lgind;
    idxtype *xadj, *adjncy; 
@@ -378,7 +379,7 @@ int ComputeFillInL(GraphType *graph, idxtype *iperm,idxtype *parent,
  * 
  *******************************************************************/ 
  int smbfctl(int neqns, idxtype *xadj, idxtype *adjncy, idxtype *perm, idxtype *invp, idxtype *xlnz,  
-	     int *maxlnz, idxtype *xnzsub, idxtype *nzsub, int *maxsub,idxtype *supnd,idxtype *parsnode,int *nbsn,int *lgin,double *opc)
+         int *maxlnz, idxtype *xnzsub, idxtype *nzsub, int *maxsub,idxtype *supnd,idxtype *parsnode,int *nbsn,int *lgin,double *opc)
  { 
    /* Local variables */ 
    int snode,node, rchm, mrgk, lmax, i, j, k, m, nabor, nzbeg, nzend;

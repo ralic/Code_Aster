@@ -1,8 +1,8 @@
-#@ MODIF mac3coeur_coeur Mac3coeur  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF mac3coeur_coeur Mac3coeur  DATE 14/01/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -48,9 +48,10 @@ class Coeur(object):
         #---fleche des ressorts de maintien à la fermeture de la cuve
         'flechResMaint',
         #---Dimensions de la cavité entre PIC (ou FSC) et PSC
-        'Hcav0','Hcav1','Hcav2','Hcav3','Hcav4',
+        'Hcav1centre','Hcav2centre','Hcav3centre','Hcav4centre',
+        'Hcav1periph','Hcav2periph','Hcav3periph','Hcav4periph',
         #Températures caractérisitiques
-        'TP_REF','ARRET_FR','ARRET_CH','TINFCUVE','TSUPCUVE','TENVELOP','TP_TG1','TP_TG2',
+        'TP_REF','ARRET_FR','ARRET_CH','TINFCUVE','TSUPCUVE','TENVELOP','TP_TG1','TP_TG2','TXX1','TXX2','TXX3','TXX4',
         # paramètres de l'interpolation linéaire
         #du coefficient de dilatation des internes de cuve
         'ALPH1','ALPH2',
@@ -872,7 +873,7 @@ class Coeur(object):
         XX4 = XX1 + self.LONCR ;
 
         _F_CR3 = DEFI_FONCTION( NOM_PARA = 'X', NOM_RESU    = 'TEMP', PROL_DROITE = 'LINEAIRE', PROL_GAUCHE = 'LINEAIRE',
-                                    VALE     = ( XX1, 300., XX2, 330., XX3, 365., XX4, 340.),);
+                                    VALE     = ( XX1, self.TXX1, XX2, self.TXX2, XX3, self.TXX3, XX4, self.TXX4),);
 
         ######################################################
         #   EVOLUTION DE LA TEMPERATURE DANS LES TUBES-GUIDE #
@@ -972,17 +973,20 @@ class Coeur(object):
         mtmp = (_F(GROUP_MA = 'DIL', MATER = ac.mate.mate['DIL'],),)
         mcf.extend(mtmp)
         return mcf
+        
 
     def dilatation_cuve(self,MODEL,MAILL):
         """Retourne les déplacements imposés aux noeuds modélisant les internes de cuves
         (supports inférieur (PIC ou FSC), supérieur (PSC) et cloisons)
-        et traduisant la dilatation thermique"""
+        et traduisant les dilatations thermiques des internes et leurs deformations de natures mecaniques"""
         from Accas import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         FORMULE = self.macro.get_cmd('FORMULE')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
         RECU_TABLE = self.macro.get_cmd('RECU_TABLE')
-                
+        
+        # definition des evolutions de températures
+        # sur la PIC/FSC, la PSC et l'enveloppe
         _TEMPPIC=DEFI_FONCTION(NOM_PARA='INST',
                               NOM_RESU='TEMP',
                               VALE=( -2.0,   self.TP_REF,
@@ -1044,7 +1048,8 @@ class Coeur(object):
         ALPHPIC='(%(ALPH1local)e*' + _TEMPPIC.nom + '(INST) + %(ALPH2local)e)'
         ALPHPSC='(%(ALPH1local)e*' + _TEMPPSC.nom + '(INST) + %(ALPH2local)e)'
 
-        #coordonnees centre cuve
+        # Donnees geometriques
+        # coordonnees centre cuve
         _TABG = RECU_TABLE(CO        = MAILL,
                         NOM_TABLE = 'CARA_GEOM',)
         xmin = _TABG['X_MIN',1]
@@ -1054,8 +1059,14 @@ class Coeur(object):
         zmin = _TABG['Z_MIN',1]
         zmax = _TABG['Z_MAX',1]        
         Y0 = (ymin + ymax) / 2.
-        Z0 = (zmin + zmax) / 2.        
+        Z0 = (zmin + zmax) / 2.
+        # rayon de la PSC
+        Rpsc = (ymax - ymin) / 2.        
         
+        #---------------------------------------------------------------
+        #--                  Dilatations radiales                     --
+        #--      du cloisonnement, de la PIC/FSC, et de la PSC        --
+        #---------------------------------------------------------------
         L='(sqrt( ((Y-%(Y0)f)**2)+ ((Z-%(Z0)f)**2)))'
         epsilon=1.E-6
         # on rentre un epsilon pour le cas où L=0 (assemblage central)
@@ -1067,8 +1078,7 @@ class Coeur(object):
         f_DthZ=Dcth+'*'+SINTE
         _DthY=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthY%locals())
         _DthZ=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZ%locals())
-        
-        
+                
         Dthpic=L+' * '+ALPHPIC+' * (' + _TEMPPIC.nom + '(INST)-%(TP_REFlocal)f) '
         f_DthYpic=Dthpic+'*'+COSTE
         f_DthZpic=Dthpic+'*'+SINTE
@@ -1081,30 +1091,62 @@ class Coeur(object):
         _DthYpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthYpsc%locals())
         _DthZpsc=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthZpsc%locals())
         
+        #---------------------------------------------------------------
+        #--                  Deplacements verticaux                   --
+        #--                      de la PIC/FSC                        --
+        #---------------------------------------------------------------
         # le déplacement de la PIC est égal à la différence de hauteur de cavité
         # (entre l'instant "cuve fermée à 20C"et l'instant considéré)
         # 
-        _DthXpic=DEFI_FONCTION(NOM_PARA='INST',
+        # centre du coeur
+        _DthXpicCentre=DEFI_FONCTION(NOM_PARA='INST',
                               VALE=( -2.0,   0.,
                                  -1.0,   0.,                                 
                                  self.temps_simu['T0'],   0.,
-                                 self.temps_simu['T1'],   self.Hcav1 - self.Hcav1 ,
-                                 self.temps_simu['T2'],   self.Hcav1 - self.Hcav2 ,
-                                 self.temps_simu['T3'],   self.Hcav1 - self.Hcav3 ,
-                                 self.temps_simu['T4'],   self.Hcav1 - self.Hcav4 ,
-                                 self.temps_simu['T5'],   self.Hcav1 - self.Hcav4 ,
-                                 self.temps_simu['T6'],   self.Hcav1 - self.Hcav3 ,
-                                 self.temps_simu['T7'],   self.Hcav1 - self.Hcav2 ,
-                                 self.temps_simu['T8'],   self.Hcav1 - self.Hcav1 ,
+                                 self.temps_simu['T1'],   self.Hcav1centre - self.Hcav1centre ,
+                                 self.temps_simu['T2'],   self.Hcav1centre - self.Hcav2centre ,
+                                 self.temps_simu['T3'],   self.Hcav1centre - self.Hcav3centre ,
+                                 self.temps_simu['T4'],   self.Hcav1centre - self.Hcav4centre ,
+                                 self.temps_simu['T5'],   self.Hcav1centre - self.Hcav4centre ,
+                                 self.temps_simu['T6'],   self.Hcav1centre - self.Hcav3centre ,
+                                 self.temps_simu['T7'],   self.Hcav1centre - self.Hcav2centre ,
+                                 self.temps_simu['T8'],   self.Hcav1centre - self.Hcav1centre ,
+                                 self.temps_simu['T9'],   0.,),
+                              PROL_DROITE='CONSTANT',
+                              PROL_GAUCHE='CONSTANT',);
+        # peripherie du coeur
+        _DthXpicPeriph=DEFI_FONCTION(NOM_PARA='INST',
+                              VALE=( -2.0,   0.,
+                                 -1.0,   0.,                                 
+                                 self.temps_simu['T0'],   0.,
+                                 self.temps_simu['T1'],   self.Hcav1periph - self.Hcav1periph ,
+                                 self.temps_simu['T2'],   self.Hcav1periph - self.Hcav2periph ,
+                                 self.temps_simu['T3'],   self.Hcav1periph - self.Hcav3periph ,
+                                 self.temps_simu['T4'],   self.Hcav1periph - self.Hcav4periph ,
+                                 self.temps_simu['T5'],   self.Hcav1periph - self.Hcav4periph ,
+                                 self.temps_simu['T6'],   self.Hcav1periph - self.Hcav3periph ,
+                                 self.temps_simu['T7'],   self.Hcav1periph - self.Hcav2periph ,
+                                 self.temps_simu['T8'],   self.Hcav1periph - self.Hcav1periph ,
                                  self.temps_simu['T9'],   0.,),
                               PROL_DROITE='CONSTANT',
                               PROL_GAUCHE='CONSTANT',);
 
+        f_DthXpic='( (' + _DthXpicPeriph.nom + '(INST) -'  +_DthXpicCentre.nom + '(INST) ) /(%(Rpsc)f)**2   )*(' +  L + ')**2   +'  +_DthXpicCentre.nom +'(INST)'
+        _DthXpic=FORMULE(NOM_PARA=('X','Y','Z','INST'),VALE=f_DthXpic%locals())
+
+
+        #---------------------------------------------------------------
+        #--                Deplacements  verticaux                    --
+        #--               des noeuds du cloisonnement                 --
+        #---------------------------------------------------------------
         XINFCUVElocal=self.XINFCUVE
         XSUPCUVElocal=self.XSUPCUVE
-        f_DthX='(-1.*'  +_DthXpic.nom + '(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +'  +_DthXpic.nom + '(INST))'
+        f_DthX='(-1.*'  +_DthXpicPeriph.nom + '(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +'  +_DthXpicPeriph.nom + '(INST))'
         _DthX=FORMULE(NOM_PARA=('X','INST'),VALE=f_DthX%locals())
         
+        #---------------------------------------------------------------
+        #--                  chargement resultant                     --
+        #---------------------------------------------------------------
         _dilatation = AFFE_CHAR_MECA_F( MODELE   = MODEL,
                                    DDL_IMPO = (
                                                 _F(GROUP_NO = 'FIX',              DX=_DthXpic,  DY=_DthYpic,  DZ=_DthZpic ),
@@ -1112,6 +1154,7 @@ class Coeur(object):
                                                 _F(GROUP_NO = 'P_CUV',            DX=_DthX,   DY=_DthY,     DZ=_DthZ ),),); 
         
         return _dilatation
+        
 
 class CoeurFactory(Mac3Factory):
     """Classe pour construire les objets Coeur."""

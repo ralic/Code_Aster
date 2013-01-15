@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE BLOC DECOUPE PAR UNE FISSURE VERTICALE SE BRANCHANT ENTRE 2 FISSURES HORIZONTALES AVEC X-FEM
 # ssnv512h.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -340,6 +340,33 @@ DEPZON[4] = CALC_TABLE(TABLE = DEPMLY,
 vale = [0,0,0,0,0]
 preci = 0.05
 
+VALE_CALC=[
+ 8.3486666369213E-18,
+ 0.019590371531998,
+ 2.0859513425503E-04,
+ 0.040298236355015,
+ -5.4554287078968E-04,
+ 9.8265633637324E-03,
+ 1.3388995209608E-17,
+ 0.030419386523618,
+ 0.030361017086311,
+ 0.032586266138699,
+ -8.5983504000772E-05,
+ 0.012052034219862,
+ 9.8143291567489E-03,
+ 0.029341646136762,
+ 2.1585608373914E-04,
+ 0.040277514555636,
+ -5.3216529578073E-04,
+ 9.829525790525E-03,
+ 3.4634388684313E-18,
+ 0.030081172732921,
+ 8.5879390125959E-03,
+ 0.010573023839878,
+ -3.1780113895538E-04,
+ 6.0664459633379E-03,
+]
+
 for i in [1,2,3,4]: #Boucle sur les zones
 
   IMPR_TABLE(TABLE=DEPZON[i]);
@@ -347,44 +374,44 @@ for i in [1,2,3,4]: #Boucle sur les zones
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX-DX',
              TYPE_TEST='MIN',
-             VALE_CALC=vale[i], VALE_REFE=vale[i],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*6+0], VALE_REFE=vale[i],
              CRITERE='ABSOLU',
-             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
+             PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX-DX',
              TYPE_TEST='MAX',
-             VALE_CALC=vale[i], VALE_REFE=vale[i],    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*6+1], VALE_REFE=vale[i],
              CRITERE='ABSOLU',
-             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
+             PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY-DY',
              TYPE_TEST='MIN',
-             VALE_CALC=0, VALE_REFE=0,    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*6+2], VALE_REFE=0,
              CRITERE='ABSOLU',
-             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
+             PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY-DY',
              TYPE_TEST='MAX',
-             VALE_CALC=0, VALE_REFE=0,    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*6+3], VALE_REFE=0,
              CRITERE='ABSOLU',
-             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
+             PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DZ',
              TYPE_TEST='MIN',
-             VALE_CALC=0, VALE_REFE=0,    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*6+4], VALE_REFE=0,
              CRITERE='ABSOLU',
-             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
+             PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DZ',
              TYPE_TEST='MAX',
-             VALE_CALC=0, VALE_REFE=0,    #TODO vale_calc
+             VALE_CALC=VALE_CALC[(i-1)*6+5], VALE_REFE=0,
              CRITERE='ABSOLU',
-             TOLE_MACHINE=preci, PRECISION=preci,    #TODO vale_calc
+             PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
 
 FIN();

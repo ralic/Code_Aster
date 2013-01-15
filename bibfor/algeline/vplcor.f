@@ -7,9 +7,9 @@
       REAL*8   SIGNES(NBVECT),VECT(NEQ,NBVECT),PKX(NEQ,NBVECT),PLX(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,6 @@ C
 C
 C     -----------------------------------------------------------------
       INTEGER     IEQ, ITO
-      INTEGER VALI(2)
       REAL*8      COEF, XIKXI, XJKXI, XJKXIS
 C     -----------------------------------------------------------------
 C
@@ -91,9 +90,7 @@ C
   60                  CONTINUE
                       XJKXI = XJKXIS
                    ELSE
-                      VALI (1) = IORTHO
-                      VALI (2) = IORTHO
-      CALL U2MESG('A', 'ALGELINE4_76',0,' ',2,VALI,0,0.D0)
+                      CALL U2MESI('A', 'ALGELINE4_76',1,IORTHO)
                       GOTO 100
                    ENDIF
 C

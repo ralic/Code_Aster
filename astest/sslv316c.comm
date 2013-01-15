@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316c.para = tps_job 700 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -197,6 +197,18 @@ FOND=[None]*nbcalc
 TABLSN=[None]*nbcalc
 TABLST=[None]*nbcalc
 
+VALE_CALC=[1.8041124150159E-16,
+ -3.4694469519536E-16,
+ 1.8043431119257E-03,
+ 1.8043431116201E-03,
+ 1.3571022489363E-04,
+ 1.357102248898E-04,
+ -4.7632761026863E-03,
+ -4.7632761030732E-03,
+ 4.7044665481218E-04,
+ 4.6963179106625E-04,
+ 2.4885629741322E-03,
+ 2.4032399881628E-03,]
 
 # VERIFICATION DE LA POSITION DU CHAQUE FOND DE FISSURE CALCULE
 for i in range(1,nbcalc) :
@@ -246,40 +258,37 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=tol,    #TODO vale_calc
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               VALE_CALC=0.0,
+               VALE_CALC=VALE_CALC[(i-1)*4],
                VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLSN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=tol,    #TODO vale_calc
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               VALE_CALC=0.0,
+               VALE_CALC=VALE_CALC[(i-1)*4+1],
                VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLST[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=tol,    #TODO vale_calc
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               VALE_CALC=0.0,
+               VALE_CALC=VALE_CALC[(i-1)*4+2],
+               TOLE_MACHINE=5.E-06,
                VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLST[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=tol,    #TODO vale_calc
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               VALE_CALC=0.0,
+               VALE_CALC=VALE_CALC[(i-1)*4+3],
                VALE_REFE=0.0  )
 
 #----------------------------------------------

@@ -7,9 +7,9 @@
       REAL*8            FR(*),AM(*),OMECOR,ERNORM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,6 @@ C     ------------------------------------------------------------------
 C
 C
 C     ------------------------------------------------------------------
-      CHARACTER*24 VALK(2)
       REAL*8       ANORM1, ANORM2, XSEUIL
       REAL*8 VALR
       REAL*8       DEPI, R8DEPI, ISIG,FREQOM
@@ -80,10 +79,8 @@ C
         AMI = AM(I)
         IF ( ABS(AMI) .EQ. 1.D0) THEN
           ERNORM(I)= 1.D+70
-          VALK (1) = ' '
-          VALK (2) = ' '
           VALR = 1.0D70
-          CALL U2MESG('A', 'ALGELINE4_74',2,VALK,0,0,1,VALR)
+          CALL U2MESR('A', 'ALGELINE4_74',1,VALR)
         ELSE
           FRI = FREQOM(FR(I))*DEPI
           ISIG=-SIGN(1.D0,AMI)

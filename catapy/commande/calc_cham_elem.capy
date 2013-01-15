@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE ASSIRE A.ASSIRE
+# RESPONSABLE DELMAS J.DELMAS
 
 CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
                     fr="Calculer un champ élémentaire en thermique et en accoustique à partir de champs déjà calculés",
@@ -30,19 +30,13 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
 
-         EXCIT           =FACT(statut='f',max='**',
-               regles=(EXCLUS('FONC_MULT','COEF_MULT', ),),
-               CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou)),
-               FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-               COEF_MULT       =SIMP(statut='f',typ='R'), ),
-
          INST            =SIMP(statut='f',typ='R',defaut= 0.E+0),
          ACCE            =SIMP(statut='f',typ=cham_no_sdaster),
          MODE_FOURIER    =SIMP(statut='f',typ='I',),
 
          OPTION          =SIMP(statut='o',typ='TXM',
                                into=("FLUX_ELGA","FLUX_ELNO",
-                                     "PRAC_ELNO",
+                                                 "PRAC_ELNO",
                                      "COOR_ELGA"), ),
 
          b_thermique  =BLOC(condition="OPTION in ('FLUX_ELNO','FLUX_ELGA',)",

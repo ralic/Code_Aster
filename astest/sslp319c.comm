@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -236,8 +236,21 @@ for i in range(1,NPS-1) :
 
 W=1000;
 
+VALE_CALC=[3.7940271283694E+07,
+ -2164.5420169867,
+ 3.7877442071324E+07,
+ 2369.3436135991,
+ 4.1939582448825E+07,
+ -1554.0030721181,
+ 4.1570657225784E+07,
+ 1535.6759407329,
+ 4.6309569842113E+07,
+ -1222.8092975576,
+ 4.6728544832144E+07,
+ 1168.5335135232,]
+
 for i in range(1,NPS-1) :
-   
+
    a=a0+da_fiss*(i-1)
 #  VALEUR ANALYTIQUE DE KI (BROEK)
    Y=1.99+0.76*a/W-8.48*(a/W)**2+27.36*(a/W)**3;
@@ -252,39 +265,37 @@ for i in range(1,NPS-1) :
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K1',
-              TOLE_MACHINE=0.05,  #TODO vale_calc
               PRECISION=0.05,
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
-              VALE_CALC=KI_broek  )
+              VALE_CALC=VALE_CALC[(i-1)*4]  )
 
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K2',
-              TOLE_MACHINE=TOL_K2,  #TODO vale_calc
               PRECISION=TOL_K2,
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              VALE_CALC=0.    )
+              TOLE_MACHINE=6E-05,
+              VALE_CALC=VALE_CALC[(i-1)*4+1]    )
 
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K1',
-              TOLE_MACHINE=0.05,  #TODO vale_calc
               PRECISION=0.05,
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
-              VALE_CALC=KI_broek  )
+              VALE_CALC=VALE_CALC[(i-1)*4+2]  )
 
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K2',
-              TOLE_MACHINE=TOL_K2,  #TODO vale_calc
               PRECISION=TOL_K2,
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              VALE_CALC=0.  )
+              TOLE_MACHINE=6.E-05,
+              VALE_CALC=VALE_CALC[(i-1)*4+3]  )
 
 FIN();

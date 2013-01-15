@@ -1,8 +1,8 @@
       SUBROUTINE TE0500(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -112,7 +112,7 @@ C =====================================================================
 C =====================================================================
 C 2. RECUPERATION DES PARAMETRES TEMPORELS
 C =====================================================================
-      CALL TECACH('ONN','PTEMPSR',1,ITAB,IRET)
+      CALL TECACH('ONN','PTEMPSR','L',1,ITAB,IRET)
       IF ( IRET.EQ.0 ) THEN
         TIME = ZR(ITAB(1))
       ELSE
@@ -133,7 +133,7 @@ C
 C 3.3 CONTRAINTES ( T- ET T+ )
 C
       CALL JEVECH('PCONTGM','L',ISIGAM)
-      CALL TECACH('ONN','PCONTGP',3,ITAB,IRET)
+      CALL TECACH('ONN','PCONTGP','L',3,ITAB,IRET)
 C
       ISIGAP = ITAB(1)
       NBCMP  = ITAB(2)/NPI

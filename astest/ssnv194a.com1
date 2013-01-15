@@ -2,7 +2,9 @@ POURSUITE(CODE=_F(NOM='SSNV194A'),);
 
 NB_GRAINS=10
 
+#####################################################################
 # Calcul des min et max 
+#####################################################################
 
 
 CUBE=DEFI_GROUP(reuse =CUBE,
@@ -13,8 +15,6 @@ MAX_SI=POST_ELEM(
                    MINMAX=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
                                 TOUT='OUI',RESULTAT=SOLNL,))
-
-IMPR_TABLE(TABLE=MAX_SI)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=221.570236990,
@@ -33,7 +33,6 @@ VIMAX=CREA_CHAMP( OPERATION='EXTR',
                    TYPE_RESU='VALE',
                  ) ;
 
-IMPR_RESU(RESU=_F(CHAM_GD=VIMAX,VALE_MAX='OUI',VALE_MIN='OUI'))
 
 MAX_VI=POST_ELEM(  
                    MINMAX=_F(NOM_CHAM='VARI_ELGA',
@@ -41,7 +40,6 @@ MAX_VI=POST_ELEM(
                                 NOM_CMP=('V1','V2','V3'),
                                 TOUT='OUI'),)
 
-IMPR_TABLE(TABLE=MAX_VI)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC= 9.33308081E-04,
@@ -53,8 +51,6 @@ MAX_EP=POST_ELEM(
                    MINMAX=_F(NOM_CHAM='EPSP_ELGA',RESULTAT=SOLNL,
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 GROUP_MA='ALL'),)
-
-IMPR_TABLE(TABLE=MAX_EP)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC= 9.33308081E-04,
@@ -99,48 +95,30 @@ TEST_TABLE(
            TABLE=MAX_DE2,
            )
 
-IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ'),))
+# IMPR_TABLE(TABLE=MAX_SI)
+# IMPR_TABLE(TABLE=MAX_VI)
+# IMPR_TABLE(TABLE=MAX_EP)
+# IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ'),))
+# IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIXX','SIYY','SIZZ')))
+# IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='EPSP_ELGA',NOM_CMP=('EPXX','EPYY','EPZZ'),))
+# IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='VARI_ELGA',NOM_CMP=('V1','V2','V3'),))
 
-IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIXX','SIYY','SIZZ')))
 
-IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='EPSP_ELGA',NOM_CMP=('EPXX','EPYY','EPZZ'),))
-
-IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='VARI_ELGA',NOM_CMP=('V1','V2','V3'),))
-
-
+#####################################################################
 # Calcul des moyennes 
+#####################################################################
 
 INT_SI=POST_ELEM(  RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
                                 TOUT='OUI'),)
 
-IMPR_TABLE(TABLE=INT_SI)
 
 INT_EP=POST_ELEM(  RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='EPSP_ELGA',
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 TOUT='OUI'),)
 
-IMPR_TABLE(TABLE=INT_EP)
-
-# --------  VALIDATION DE POST_ELEM/MINMAX  CHAM_NO  ---------------- #
-'''
-MAX_DE=POST_ELEM(  
-                   MINMAX=_F(NOM_CHAM='DEPL',RESULTAT=SOLNL,
-                                NOM_CMP=('DX','DY','DZ'),
-                                TOUT='OUI'),)
-
-IMPR_TABLE(TABLE=MAX_DE)
-
-
-TEST_TABLE(TABLE=MAX_DE,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=TFIN,),
-           NOM_PARA='MAX_DZ',
-           VALE=5.00000E-03,
-           REFERENCE='AUTRE_ASTER',);
-'''
 # --------  VALIDATION DE POST_ELEM/INTEGRALE  CHAM_NO  -------------- #
 
 INT1EPX=POST_ELEM(  RESULTAT=SOLNL,
@@ -218,7 +196,42 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            NOM_PARA='INTE_EPXX',
            TABLE=INT2EPX,)
 
+# correction AL 20129
+INT3EPX=POST_ELEM(  RESULTAT=SOLNL,
+                    INTEGRALE=(_F(NOM_CHAM='EPSP_ELGA',
+                                NOM_CMP=('EPXX'),
+                                TOUT='OUI'),
+                              _F(NOM_CHAM='EPSP_ELNO',
+                                NOM_CMP=('EPXX'),
+                                TOUT='OUI'),
+                              _F(NOM_CHAM='EPSP_NOEU',
+                                NOM_CMP=('EPXX'),
+                                TOUT='OUI'),),)
+
+# IMPR_TABLE(TABLE=INT_SI)
+# IMPR_TABLE(TABLE=INT_EP)
+
+# --------  VALIDATION DE POST_ELEM/INTEGRALE SUR N GROUPES correction issue20129
+
+ng=10
+prefix='GM'
+intesig = {}
+intesig['INTEGRALE'] = []			 
+for IP in range (ng):
+   intesig['INTEGRALE'].append(_F(NOM_CHAM='SIEF_ELGA', NOM_CMP=('SIXX','SIYY','SIZZ'),
+                                                       GROUP_MA=prefix+str(IP+1)))
+
+INSIG=POST_ELEM(MODELE=TROISD,RESULTAT=SOLNL, **intesig);
+
+# la table contient tous les instants et tous les grains
+
+IMPR_TABLE(TABLE=INSIG)
+
+
+
+########################################################################
 # ---------  VALIDATION DE POST_ELEM/VOLUMOGRAMME   ------------------ #
+########################################################################
 
 
 # --- CHAMP NOEU ---
@@ -333,6 +346,18 @@ VEPXX=POST_ELEM(MODELE=TROISD,
                                  NOM_CMP=('EPXX'),
                                  TOUT='OUI'),),)
 
+VEPXX2=POST_ELEM(MODELE=TROISD,
+                RESULTAT=SOLNL,
+                NUME_ORDRE=10,
+                VOLUMOGRAMME=(_F(NOM_CHAM='EPSP_ELGA',
+                                 NOM_CMP=('EPXX'),
+                                 TOUT='OUI'),
+                              _F(NOM_CHAM='EPSP_ELNO',
+                                 NOM_CMP=('EPXX'),
+                                 TOUT='OUI'),
+                              _F(NOM_CHAM='EPSP_NOEU',
+                                 NOM_CMP=('EPXX'),
+                                 TOUT='OUI'),),)
 TEST_TABLE(
            VALE_CALC=32.5959,
            TOLE_MACHINE=1.E-3,
@@ -393,7 +418,24 @@ TEST_TABLE(
                    ),
            )
 
+# --------  VALIDATION DE POST_ELEM/VOLUMOGRAMME SUR N GROUPES correction issue20129
+
+ng=10
+prefix='GM'
+intesig = {}
+intesig['VOLUMOGRAMME'] = []			 
+for IP in range (ng):
+   intesig['VOLUMOGRAMME'].append(_F(NOM_CHAM='EPSP_ELGA', NOM_CMP=('EPXX'),
+                                                       GROUP_MA=prefix+str(IP+1)))
+
+VEPXX3=POST_ELEM(MODELE=TROISD,RESULTAT=SOLNL, **intesig);
+
+# la table contient tous les instants et tous les grains
+
+IMPR_TABLE(TABLE=VEPXX3)
 # -------------------------------------------------------------------- #
+
+########################################################################
 
 
 INS=[None]*NB_GRAINS

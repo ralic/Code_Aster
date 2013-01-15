@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,9 +55,7 @@ MODE_LOCAL__
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
                                         XXXX2    KIT[9])
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIGN    SITX     SITY      CONT_X   CONT_Y   CONT_Z)
-    ECONTNO  = SIEF_R   ELNO__ DIFF__
-                                 EN1   ()
-                                 EN2   (SIGN    SITX     SITY      CONT_X   CONT_Y   CONT_Z)
+    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIGN     SITX    SITY      CONT_X   CONT_Y   CONT_Z)
     ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1       A2       A3       ETA      )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
@@ -81,10 +79,7 @@ MODE_LOCAL__
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
-    ZVARINO  = VARI_R   ELNO__ DIFF__
-                                 EN1   ()
-                                 EN2   (VARI)
-
+    ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
@@ -157,3 +152,7 @@ OPTION__
     TOU_INI_ELNO        99    IN__  
                               OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
                                      ECONTNO  PSIEF_R  ZVARINO  PVARI_R
+    VARI_ELNO           122   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+                              OUT__  ZVARINO  PVARINR
+    SIEF_ELNO           122   IN__   ECONTPG  PCONTRR
+                              OUT__  ECONTNO  PSIEFNOR

@@ -4,9 +4,9 @@
      &   TYPRES, NBLAGR, SOLVEU, NBRSSA, PRECSH)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,13 +58,13 @@ C
       REAL*8        VPINF,VPMAX,OMEMIN,OMEMAX,SEUIL,PRECDC,OMECOR,
      &              CHARGE(NFREQ),FREQ(NFREQ),ERR(NFREQ),PRECSH
       CHARACTER*1   CTY
-      CHARACTER*16  K16B
+      CHARACTER*16  K16B, NOMCMD
       CHARACTER*19  SOLVEU
       CHARACTER*24  VALK
       CHARACTER*(*) MODE,OPTION,TYPRES
 
 C     ------------------------------------------------------------------
-      REAL*8  ZMIN,ZMAX,FREQOM,OMEGA2,OMEGA,VALR(3),RBID,DET(2)
+      REAL*8  ZMIN,ZMAX,FREQOM,OMEGA2,OMEGA,VALR(2),RBID,DET(2)
       INTEGER IFM,NIV,IFREQ,NFREQT,VALI(2),IDET(2)
 C     ------------------------------------------------------------------
       IER    = 0
@@ -88,17 +88,30 @@ C     ------------------------------------------------------------------
                IER = IER + 1
                VALK = MODE
                VALI (1) = IPOS(IFREQ)
-      CALL U2MESG(CTY//'+','ALGELINE5_15',1,VALK,1,VALI,0,0.D0)
+               CALL U2MESG(CTY//'+','ALGELINE5_15',1,VALK,1,VALI,0,0.D0)
                IF (TYPRES .EQ. 'DYNAMIQUE' ) THEN
                  VALR (1) = FREQ(IFREQ)
-                 CALL U2MESG(CTY//'+','ALGELINE5_16',0,' ',0,0,1,VALR)
+                 CALL U2MESR(CTY//'+','ALGELINE5_16',1,VALR)
                ELSE
                  VALR (1) = CHARGE(IFREQ)
-                 CALL U2MESG(CTY//'+','ALGELINE5_17',0,' ',0,0,1,VALR)
+                 CALL U2MESR(CTY//'+','ALGELINE5_17',1,VALR)
                ENDIF
               VALR (1) = ERR(IFREQ)
               VALR (2) = SEUIL
-              CALL U2MESG(CTY,'ALGELINE5_18',0,' ',0,0,2,VALR)
+              CALL U2MESR(CTY//'+','ALGELINE5_18',2,VALR)
+
+              CALL GETRES(K16B, K16B, NOMCMD)
+              IF (TYPRES .EQ. 'DYNAMIQUE')  THEN
+                VALK = 'FREQ'
+              ELSE
+                VALK = 'CHAR_CRIT'
+              ENDIF
+              IF (NOMCMD(1:16) .EQ. 'MODE_ITER_SIMULT')  THEN
+                CALL U2MESK(CTY,'ALGELINE5_77',1,'NMAX_'//VALK)
+              ELSE
+                CALL U2MESK(CTY,'ALGELINE5_78',1,'CALC_'//VALK)
+              ENDIF
+
             ENDIF
  100     CONTINUE
       ENDIF
@@ -120,19 +133,20 @@ C     ------------------------------------------------------------------
                IER = IER + 1
                VALK = MODE
                VALI (1) = IPOS(IFREQ)
-      CALL U2MESG(CTY//'+','ALGELINE5_19',1,VALK,1,VALI,0,0.D0)
+               CALL U2MESG(CTY//'+','ALGELINE5_15',1,VALK,1,VALI,0,0.D0)
                IF (TYPRES .EQ. 'DYNAMIQUE' ) THEN
                  VALR (1) = FREQ(IFREQ)
-                 VALR (2) = FREQOM(OMEMIN)
-                 VALR (3) = FREQOM(OMEMAX)
-                 CALL U2MESR(CTY//'+','ALGELINE5_20',3,VALR)
+                 CALL U2MESR(CTY//'+','ALGELINE5_16',1,VALR(1))
+                 VALR (1) = FREQOM(OMEMIN)
+                 VALR (2) = FREQOM(OMEMAX)
+                 CALL U2MESR(CTY,'ALGELINE5_20',2,VALR)
                ELSE
                  VALR (1) = CHARGE(IFREQ)
-                 VALR (2) = OMEMIN
-                 VALR (3) = OMEMAX
-                 CALL U2MESR(CTY//'+','ALGELINE5_21',3,VALR)
+                 CALL U2MESR(CTY//'+','ALGELINE5_17',1,VALR(1))
+                 VALR (1) = OMEMIN
+                 VALR (2) = OMEMAX
+                 CALL U2MESR(CTY,'ALGELINE5_20',2,VALR)
                ENDIF
-               CALL U2MESS(CTY,'VIDE_1')
             ENDIF
  210     CONTINUE
       ENDIF
@@ -156,7 +170,7 @@ C --- (SI MUMPS)
          IF (NFREQT.NE.NFREQ) THEN
            IER = IER + 1
            VALK = MODE
-           CALL U2MESG(CTY//'+','ALGELINE5_23',1,VALK,0,0,0,0.D0)
+           CALL U2MESK(CTY//'+','ALGELINE5_23',1,VALK)
            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
              VALR (1) = FREQOM(VPINF)
              VALR (2) = FREQOM(VPMAX)
@@ -170,7 +184,7 @@ C --- (SI MUMPS)
              VALI (2) = NFREQ
              CALL U2MESG(CTY//'+','ALGELINE5_25',0,' ',2,VALI,2,VALR)
            ENDIF
-           CALL U2MESS(CTY,'VIDE_1')
+           CALL U2MESS(CTY,'ALGELINE5_26')
          ELSE
            IF (NIV.GE.1) THEN
              IF (TYPRES .EQ. 'DYNAMIQUE') THEN

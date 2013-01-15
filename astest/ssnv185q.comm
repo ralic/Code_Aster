@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185q.para = tps_job 100 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -188,6 +188,13 @@ coef1 = [None]*5
 fab = [None]*5
 K1REF = [None]*5
 
+VALE_CALC=[
+ 1.034561082876E+07,
+ 1.034561082876E+07,
+ 1.2746368455337E+07,
+ 1.2746368455337E+07,
+]
+
 for i in range(1,3) :
    coef1[i]=(pi*afiss[i-1])/(2.*b)
    fab[i]=sqrt(tan(coef1[i])/coef1[i])*(0.752+0.37*(1.-sin(coef1[i]))**3+2.02*afiss[i-1]/b)/cos(coef1[i])
@@ -196,17 +203,17 @@ for i in range(1,3) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=K1REF[i], VALE_REFE=K1REF[i],    #TODO vale_calc
+              VALE_CALC=VALE_CALC[(i-1)*2+0], VALE_REFE=K1REF[i], TOLE_MACHINE=2.E-05,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.05, PRECISION=0.05,
+              PRECISION=0.05, 
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=K1REF[i], VALE_REFE=K1REF[i],    #TODO vale_calc
+              VALE_CALC=VALE_CALC[(i-1)*2+1], VALE_REFE=K1REF[i], TOLE_MACHINE=2.E-05,
               CRITERE='RELATIF',
-              TOLE_MACHINE=0.05, PRECISION=0.05,
+              PRECISION=0.05, 
               REFERENCE='ANALYTIQUE',);
 
 #----------------------------------------------

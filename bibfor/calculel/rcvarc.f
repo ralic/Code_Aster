@@ -1,10 +1,10 @@
       SUBROUTINE RCVARC(ARRET,NOVRC,POUM,FAMI,KPG,KSP,VALVRC,IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -139,9 +139,9 @@ C     ------------------------------------------------------------
       IF (POUM.EQ.'-' .OR. (POUM.EQ.'+' .AND. IREDEC.EQ.1)) THEN
         IF (IEL.NE.KM) THEN
           IF (ARRET.NE.' ') THEN
-            CALL TECACH ('OOO','PVARCMR',7,ITABM,IBID)
+            CALL TECACH ('OOO','PVARCMR','L',7,ITABM,IBID)
           ELSE
-            CALL TECACH ('NNN','PVARCMR',7,ITABM,IRET)
+            CALL TECACH ('NNN','PVARCMR','L',7,ITABM,IRET)
             IF (IRET.NE.0) GOTO 9998
           ENDIF
           KM=IEL
@@ -151,9 +151,9 @@ C     ------------------------------------------------------------
       IF (POUM.EQ.'+' .OR. (POUM.EQ.'-' .AND. IREDEC.EQ.1)) THEN
         IF (IEL.NE.KP) THEN
           IF (ARRET.NE.' ') THEN
-            CALL TECACH ('OOO','PVARCPR',7,ITABP,IBID)
+            CALL TECACH ('OOO','PVARCPR','L',7,ITABP,IBID)
           ELSE
-            CALL TECACH ('NNN','PVARCPR',7,ITABP,IRET)
+            CALL TECACH ('NNN','PVARCPR','L',7,ITABP,IRET)
             IF (IRET.NE.0) GOTO 9998
           ENDIF
           KP=IEL
@@ -163,9 +163,9 @@ C     ------------------------------------------------------------
       IF (POUM.EQ.'REF') THEN
         IF (IEL.NE.KR) THEN
           IF (ARRET.NE.' ') THEN
-            CALL TECACH ('OOO','PVARCRR',7,ITABR,IBID)
+            CALL TECACH ('OOO','PVARCRR','L',7,ITABR,IBID)
           ELSE
-            CALL TECACH ('NNN','PVARCRR',7,ITABR,IRET)
+            CALL TECACH ('NNN','PVARCRR','L',7,ITABR,IRET)
             IF (IRET.NE.0) GOTO 9998
           ENDIF
           KR=IEL

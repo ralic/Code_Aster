@@ -8,9 +8,9 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,8 +47,6 @@ C IN  FCORIG : R8 : FREQUENCE MODE DE CORPS RIGIDE
 C OUT ERNORM : R8 : TABLEAU DES NORMES D'ERREUR
 C     ------------------------------------------------------------------
 C
-      CHARACTER*24 VALK(2)
-C
 C     ------------------------------------------------------------------
       REAL*8       XSEUIL
       REAL*8 VALR
@@ -80,10 +78,8 @@ C
         FRI = FR(I)
         IF ( ABS(AMI) .EQ. 1.D0) THEN
           ERNORM(I)= 1.D+70
-          VALK (1) = ' '
-          VALK (2) = ' '
           VALR = 1.0D70
-          CALL U2MESG('A', 'ALGELINE4_74',2,VALK,0,0,1,VALR)
+          CALL U2MESR('A', 'ALGELINE4_74',1,VALR)
         ELSE
           FREQ2=DCMPLX(FRI,AMI*FRI*2.D0)
           CALL MCMULT('ZERO',LRAIDE,VECP(IVEC),ZC(IAUX1),1,.FALSE.)

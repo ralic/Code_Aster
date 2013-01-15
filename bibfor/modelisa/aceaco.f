@@ -1,14 +1,15 @@
-      SUBROUTINE ACEACO ( NOMU,NOMA,LMAX,LOCAGB,LOCAMB,NBOCC)
+      SUBROUTINE ACEACO(NOMU, NOMA, LMAX, LOCAGB, LOCAMB, NBOCC)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+C
       INTEGER             LMAX,NBOCC
       LOGICAL             LOCAGB,LOCAMB
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,46 +25,45 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
-C     AFFE_CARA_ELEM
-C     AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT COQUE
-C ----------------------------------------------------------------------
-C IN  : NOMU   : NOM UTILISATEUR DE LA COMMANDE
-C IN  : NOMA   : NOM DU MAILLAGE
-C IN  : LMAX   : LONGUEUR
-C IN  : NOCACO : NOMBRE
-C IN  : NMTGCO : NOMBRE
-C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE COQUE
-C ----------------------------------------------------------------------
-      INTEGER      NVEC
-      REAL*8       ANG(2), EPA, KAPPA, CORREC, RIGI, EXCENT
-      REAL*8       VECT(3),R8PI
-      CHARACTER*8  INERT, KORREC
-      CHARACTER*19 CARTCO
-      CHARACTER*24 TMPNCO, TMPVCO
-      INTEGER      IARG
-C     ------------------------------------------------------------------
+C                          AFFE_CARA_ELEM
 C
-C-----------------------------------------------------------------------
-      INTEGER I ,IOC ,JDCC ,JDLS ,JDVC ,NA ,NCO, JDLS2
-      INTEGER NCR ,NEX ,NG ,NIN ,NK ,NM ,NV
-
-      REAL*8 PI ,XINER
+C     AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT COQUE
+C
+C ----------------------------------------------------------------------
+C  IN
+C     NOMU   : NOM UTILISATEUR DE LA COMMANDE
+C     NOMA   : NOM DU MAILLAGE
+C     LMAX   : NOMBRE MAXIMUM DE MAILLE AFFECTEES PAR AFFE_CARA_ELEM
+C     LOCAGB : EXISTANCE DE GRILLE
+C     LOCAMB : EXISTANCE DE MEMBRANE
+C     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE COQUE
+C ----------------------------------------------------------------------
+      INTEGER      NVEC,IARG,I,IOC,JDCC,JDLS,JDVC,JDCCF,JDVCF,JDLS2
+      INTEGER      NA,NCO,NCR,NEX,NG,NIN,NK,NM,NV,NVF,NEXF
+      INTEGER      IRET
+      LOGICAL      LCARTF
+      REAL*8       ANG(2), EPA, KAPPA, CORREC, RIGI, EXCENT
+      REAL*8       VECT(3), R8PI, PI,XINER
+      CHARACTER*8  INERT, KORREC, EPAF, EXCF
+      CHARACTER*19 CARTCO,CARTCF
+      CHARACTER*24 TMPNCO, TMPVCO, TMPNCF, TMPVCF
 C-----------------------------------------------------------------------
       PI=R8PI()
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CALL JEMARQ()
+C
+C     CARTE POUR LES VALEURS REELLES
       CARTCO = NOMU//'.CARCOQUE'
+      CALL EXISD('CARTE',CARTCO,IRET)
+      IF ( IRET.EQ.0 ) THEN
+         CALL ALCART('G',CARTCO,NOMA,'CACOQU')
+      ENDIF
       TMPNCO = CARTCO//'.NCMP'
       TMPVCO = CARTCO//'.VALV'
-C
-      CALL ALCART('G',CARTCO,NOMA,'CACOQU')
       CALL JEVEUO(TMPNCO,'E',JDCC)
       CALL JEVEUO(TMPVCO,'E',JDVC)
-C
-      CALL WKVECT('&&TMPCOQUE','V V K24',LMAX,JDLS)
-      CALL WKVECT('&&TMPCOQUE2','V V K8',LMAX,JDLS2)
-C
+C     LES NOMS DES GRANDEURS REELLES
       ZK8(JDCC)   = 'EP'
       ZK8(JDCC+1) = 'ALPHA'
       ZK8(JDCC+2) = 'BETA'
@@ -73,7 +73,44 @@ C
       ZK8(JDCC+6) = 'EXCENT'
       ZK8(JDCC+7) = 'INERTIE'
 C
-C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCO
+C     CARTE POUR LES FONCTIONS
+      CARTCF = NOMU//'.CARCOQUF'
+      CALL EXISD('CARTE',CARTCF,IRET)
+      LCARTF = .FALSE.
+      IF ( IRET.EQ.0 ) THEN
+C ------ DOIT-ON CREER LA CARTE DE FONCTION
+         DO 100 IOC = 1 , NBOCC
+            CALL GETVID('COQUE','EPAIS_FO',       IOC,IARG,1,EPAF,NVF)
+            CALL GETVID('COQUE','EXCENTREMENT_FO',IOC,IARG,1,EXCF,NEXF)
+            IF ( NVF+NEXF.NE.0 ) THEN
+               LCARTF = .TRUE.
+               GOTO 110
+            ENDIF
+100      CONTINUE
+110      CONTINUE
+C
+C        CARTE POUR LES NOMS DES FONCTIONS
+         IF ( LCARTF ) THEN
+            CALL ALCART('V',CARTCF,NOMA,'CACOQUF')
+         ENDIF
+      ELSE
+         LCARTF = .TRUE.
+      ENDIF
+C     SI LA CARTE EXISTE
+      IF ( LCARTF ) THEN
+         TMPNCF = CARTCF//'.NCMP'
+         TMPVCF = CARTCF//'.VALV'
+         CALL JEVEUO(TMPNCF,'E',JDCCF)
+         CALL JEVEUO(TMPVCF,'E',JDVCF)
+C        LES NOMS DES FONCTIONS
+         ZK8(JDCCF)  = 'EP'
+         ZK8(JDCCF+1)= 'EXCENT'
+      ENDIF
+C
+      CALL WKVECT('&&TMPCOQUE', 'V V K24',LMAX,JDLS)
+      CALL WKVECT('&&TMPCOQUE2','V V K8', LMAX,JDLS2)
+C
+C --- LECTURE DES VALEURS ET AFFECTATION DANS : CARTCO OU CARTCF
       DO 10 IOC = 1 , NBOCC
          ANG(1) = 0.D0
          ANG(2) = 0.D0
@@ -83,19 +120,29 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCO
          XINER  = 0.D0
          INERT = 'NON'
          CALL GETVEM(NOMA,'GROUP_MA','COQUE','GROUP_MA',
-     &                                IOC,IARG,LMAX,ZK24(JDLS),NG)
+     &               IOC,IARG,LMAX,ZK24(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE',  'COQUE','MAILLE',
-     &                                IOC,IARG,LMAX,ZK8(JDLS2),NM)
-         CALL GETVR8('COQUE','EPAIS',        IOC,IARG,1, EPA   , NV  )
-         CALL GETVR8('COQUE','ANGL_REP',     IOC,IARG,2, ANG   , NA  )
-         CALL GETVR8('COQUE','VECTEUR',      IOC,IARG,3, VECT  , NVEC)
-         CALL GETVR8('COQUE','A_CIS',        IOC,IARG,1, KAPPA , NK  )
-         CALL GETVTX('COQUE','MODI_METRIQUE',IOC,IARG,1, KORREC, NCO )
-         CALL GETVR8('COQUE','COEF_RIGI_DRZ',IOC,IARG,1, RIGI  , NCR )
-         CALL GETVR8('COQUE','EXCENTREMENT', IOC,IARG,1, EXCENT, NEX )
-         CALL GETVTX('COQUE','INER_ROTA',    IOC,IARG,1, INERT , NIN )
-
-         ZR(JDVC)   =  EPA
+     &               IOC,IARG,LMAX,ZK8(JDLS2),NM)
+         CALL GETVR8('COQUE','EPAIS',          IOC,IARG,1,EPA   ,NV  )
+         CALL GETVID('COQUE','EPAIS_FO',       IOC,IARG,1,EPAF  ,NVF )
+         CALL GETVR8('COQUE','ANGL_REP',       IOC,IARG,2,ANG   ,NA  )
+         CALL GETVR8('COQUE','VECTEUR',        IOC,IARG,3,VECT  ,NVEC)
+         CALL GETVR8('COQUE','A_CIS',          IOC,IARG,1,KAPPA ,NK  )
+         CALL GETVTX('COQUE','MODI_METRIQUE',  IOC,IARG,1,KORREC,NCO )
+         CALL GETVR8('COQUE','COEF_RIGI_DRZ',  IOC,IARG,1,RIGI  ,NCR )
+         CALL GETVR8('COQUE','EXCENTREMENT',   IOC,IARG,1,EXCENT,NEX )
+         CALL GETVID('COQUE','EXCENTREMENT_FO',IOC,IARG,1,EXCF  ,NEXF)
+         CALL GETVTX('COQUE','INER_ROTA',      IOC,IARG,1,INERT ,NIN )
+C        EPAIS EST OBLIGATOIRE : ASSERT SI PAS LA
+         IF     (NV  .NE. 0) THEN
+            ZR(JDVC)   =  EPA
+            IF ( LCARTF ) ZK8(JDVCF) =  '&&ACEACO'
+         ELSEIF (NVF .NE. 0) THEN
+            ZR(JDVC)   =  0.0D0
+            IF ( LCARTF ) ZK8(JDVCF) =  EPAF
+         ELSE
+            CALL ASSERT(.FALSE.)
+         ENDIF
          ZR(JDVC+1) =  ANG(1)
          ZR(JDVC+2) = -ANG(2)
          IF (NVEC.NE.0) THEN
@@ -107,8 +154,15 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCO
          IF (KORREC.EQ.'OUI') CORREC=1.D0
          ZR(JDVC+4) = CORREC
          ZR(JDVC+5) = RIGI
-         ZR(JDVC+6) = EXCENT
-         IF ( NEX.NE.0 .AND. NIN.EQ.0)  INERT = 'OUI'
+C
+         ZR(JDVC+6)  = EXCENT
+         IF ( LCARTF ) ZK8(JDVCF+1)= '&&ACEACO'
+         IF (NEXF .NE. 0) THEN
+            ZR(JDVC+6)  = 0.0D0
+            IF ( LCARTF ) ZK8(JDVCF+1)= EXCF
+         ENDIF
+C
+         IF ( (NEX+NEXF).NE.0 .AND. NIN.EQ.0)  INERT = 'OUI'
          IF (INERT.EQ.'OUI') XINER=1.D0
          ZR(JDVC+7) = XINER
 C
@@ -116,22 +170,34 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
          IF (NG.GT.0) THEN
             DO 20 I = 1 , NG
                CALL NOCART(CARTCO,2,ZK24(JDLS+I-1),' ',0,' ',0,' ',8)
- 20         CONTINUE
+20          CONTINUE
+            IF ( LCARTF ) THEN
+               DO 25 I = 1 , NG
+                  CALL NOCART(CARTCF,2,ZK24(JDLS+I-1),' ',0,' ',0,' ',2)
+25             CONTINUE
+            ENDIF
          ENDIF
 C
 C ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
-C
          IF (NM.GT.0) THEN
             CALL NOCART(CARTCO,3,' ','NOM',NM,ZK8(JDLS2),0,' ',8)
+            IF ( LCARTF ) THEN
+               CALL NOCART(CARTCF,3,' ','NOM',NM,ZK8(JDLS2),0,' ',2)
+            ENDIF
          ENDIF
 C
- 10   CONTINUE
+10    CONTINUE
 C
       CALL JEDETR('&&TMPCOQUE')
       CALL JEDETR('&&TMPCOQUE2')
+C     SI NI GRILLE NI MEMBRANE
       IF ((.NOT.LOCAGB).AND.(.NOT.LOCAMB)) THEN
          CALL JEDETR(TMPNCO)
          CALL JEDETR(TMPVCO)
+         IF ( LCARTF ) THEN
+            CALL JEDETR(TMPNCF)
+            CALL JEDETR(TMPVCF)
+         ENDIF
       ENDIF
 C
       CALL JEDEMA()

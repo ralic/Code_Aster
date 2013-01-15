@@ -7,9 +7,9 @@
 
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +36,7 @@ C ......................................................................
       CHARACTER*8 NOMMAI
 C     ------------------------------------------------------------------
 
-      CALL TECACH('OON',PARAM,8,ITAB,IRET)
+      CALL TECACH('OON',PARAM,'L',8,ITAB,IRET)
       CALL ASSERT(IRET.EQ.0.OR.IRET.EQ.3)
 
       IF(IRET.EQ.0) THEN

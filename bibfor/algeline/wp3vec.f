@@ -10,9 +10,9 @@
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/11/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -59,10 +59,12 @@ C     ------------------------------------------------------------------
      &           EPS,SEUILR,SEUILP,C1,AUXRJ,SEUILC,
      &           AUXIJ,AUXRK,AUXIK
       INTEGER    I,J,K,AV1,AV2,IADIND,NBREEL,NBCMPP,NBCMPC,NBFRGA,
-     &           VALI(5),NBFR
+     &           VALI(5),NBFR,IBID
       COMPLEX*16 DES,VPQ,MHU,VPP,VPM
       LOGICAL    TROUVE,LCONJ
       CHARACTER*1 KMSG
+      CHARACTER*16 VALK, TYPRES
+
 C     -----------------------------------------------------------------
       CALL JEMARQ()
       SI    = DIMAG(SHIFT)
@@ -155,14 +157,14 @@ C     SEUIL POUR LE COUPLAGE HAUT-BAS DES VECTEURS PROPRES
          VALI (1) = NBREEL
          VALI (2) = NBCMPC
          VALI (3) = NBCMPP
-         CALL U2MESG('A', 'ALGELINE4_87',0,' ',3,VALI,0,0.D0)
+         CALL U2MESI('A', 'ALGELINE4_87',3,VALI)
       ENDIF
 
       IF ( NBREEL .GT. 0 ) THEN
          VALI (1) = NBREEL
          VALI (2) = NBCMPC
          VALI (3) = NBCMPP
-         CALL U2MESG('I', 'ALGELINE4_88',0,' ',3,VALI,0,0.D0)
+         CALL U2MESI('I', 'ALGELINE4_88',3,VALI)
       ENDIF
 
 C --- 1.2. DETERMINATION DE NB FREQUENCES GARDEES
@@ -291,7 +293,12 @@ C --- 4. PREPARATION DE RESUFR
          ELSE
            KMSG='A'
          ENDIF
-         CALL U2MESG(KMSG,'ALGELINE5_67',0,' ',2,VALI,0,RBID)
+         CALL GETVTX(' ','TYPE_RESU',1,IBID,1,TYPRES,IBID)
+         VALK='FREQ'
+         IF (TYPRES .NE. 'DYNAMIQUE') VALK='CHAR_CRIT'
+         CALL U2MESG(KMSG//'+','ALGELINE5_79',1,VALK,2,VALI,0,0.D0)
+         IF (KMSG .EQ. 'A') CALL U2MESK(KMSG//'+','ALGELINE5_80',1,VALK)
+         CALL U2MESK(KMSG,'ALGELINE5_81',1,VALK)
        ENDIF  
 
 C --- 5. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-

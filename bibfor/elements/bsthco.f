@@ -6,9 +6,9 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -107,7 +107,7 @@ C     -----------------------------
 C
 C --- RECUPERATION DE LA CARTE DE COMPORTEMENT :
 C     ----------------------------------------
-      CALL TECACH ('NNN','PCOMPOR',8,ITAB,IRET)
+      CALL TECACH ('NNN','PCOMPOR','L',8,ITAB,IRET)
       ICOMPO = ITAB(1)
       IF ( ICOMPO .EQ. 0 ) THEN
          NBCOU = 1

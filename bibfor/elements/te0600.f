@@ -5,10 +5,10 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE GRANET S.GRANET
 C =====================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -313,8 +313,8 @@ C --- SI LES TEMPS PLUS ET MOINS SONT PRESENTS -------------------------
 C --- C EST QUE L ON APPELLE DEPUIS STAT NON LINE ET -------------------
 C --- ALORS LES TERMES DEPENDANT DE DT SONT EVALUES --------------------
 C ======================================================================
-        CALL TECACH('ONN','PINSTMR ',1,IINSTM,IRETM)
-        CALL TECACH('ONN','PINSTPR ',1,IINSTP,IRETP)
+        CALL TECACH('ONN','PINSTMR','L',1,IINSTM,IRETM)
+        CALL TECACH('ONN','PINSTPR','L',1,IINSTP,IRETP)
         IF (IRETM.EQ.0 .AND. IRETP.EQ.0) THEN
            DT = ZR(IINSTP) - ZR(IINSTM)
            FNOEVO = .TRUE.
@@ -386,7 +386,7 @@ C ======================================================================
          CALL JEVECH('PCOMPOR','L',ICOMPO)
          READ (ZK16(ICOMPO+1),'(I16)') NCMP
          READ (ZK16(ICOMPO-1+7+9+4),'(I16)') NVIM
-         CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
+         CALL TECACH('OON','PVARIGR','L',7,JTAB,IRET)
 
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185c.para = tps_job 550 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -322,17 +322,17 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[i*8+0], VALE_REFE=K1REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*8+0], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.04,    #TODO vale_calc
+              PRECISION=0.04,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=VAL_CALC[i*8+1], VALE_REFE=K1REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*8+1], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.04,    #TODO vale_calc
+              PRECISION=0.04,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF1_R[i],
@@ -352,33 +352,33 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX', 
-              VALE_CALC=VAL_CALC[i*8+4], VALE_REFE=K1REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*8+4], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.04,    #TODO vale_calc
+              PRECISION=0.04,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',  
-              VALE_CALC=VAL_CALC[i*8+5], VALE_REFE=K1REF,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*8+5], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.04,    #TODO vale_calc
+              PRECISION=0.04,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=6),
-              VALE_CALC=VAL_CALC[i*8+6], VALE_REFE=K1REF4I,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*8+6], VALE_REFE=K1REF4I,
               CRITERE='RELATIF',
-              PRECISION=0.04,    #TODO vale_calc
+              PRECISION=0.04,
               REFERENCE='AUTRE_ASTER',);
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1,),
-              VALE_CALC=VAL_CALC[i*8+7], VALE_REFE=K1REF4F,    #TODO vale_calc
+              VALE_CALC=VAL_CALC[i*8+7], VALE_REFE=K1REF4F,
               CRITERE='RELATIF',
-              PRECISION=0.05,    #TODO vale_calc
+              PRECISION=0.05,
               REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(CRITERE='RELATIF',

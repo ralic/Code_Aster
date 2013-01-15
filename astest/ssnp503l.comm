@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503l.para = tps_job 950 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -203,6 +203,24 @@ vale = [[0.0,-7.2384991E+03,-6.4285635E+03,-5.4975876E+03,-9.8231384E+02],
         [0.0,0.0,-1.9277375E+04,-1.6785053E+04,-1.5709230E+03],
         [0.0,0.0,-4.4286909E+04,-2.2460135E+04,-3.1664811E+03]]
 
+VALE_CALC=[
+[ 0.0E+00,
+ -6799.6891594867,
+ -6295.093624428,
+ -5780.0935740893,],
+[ 0.0E+00,
+ -21393.072109814,
+ -12426.367926563,
+ -11621.59990419,],
+[ 0.0E+00,
+ 0.0E+00,
+ -18749.4496052,
+ -17438.670260395,],
+[ 0.0E+00,
+ 0.0E+00,
+ -35901.767605083,
+ -23123.718055005,],
+]
 
 noeud= ['NM33','NM394','NM842','NM1290','NM1738']
 for i in [1,2,3,4]: #Boucle sur les increments
@@ -242,9 +260,9 @@ for i in [1,2,3,4]: #Boucle sur les increments
         critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
-                 VALE_CALC=vale[i-1][j], VALE_REFE=vale[i-1][j],
+                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j],
                  CRITERE=critere,
-                 TOLE_MACHINE=precision, PRECISION=precision,   #TODO vale_calc
+                 PRECISION=precision, 
                  REFERENCE='AUTRE_ASTER',
                  FILTRE=(_F(NOM_PARA='COOR_X',
                            CRIT_COMP='EQ',

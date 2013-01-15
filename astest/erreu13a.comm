@@ -1,0 +1,253 @@
+# MODIF  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
+# TITRE VALIDATION DE VERI_BORNE
+# erreu13a.para = tps_job 60 mem_job 512Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ERREU13A',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='NON'),
+      ERREUR=_F(ERREUR_F='EXCEPTION',),
+      IGNORE_ALARM='SUPERVIS_1',
+      PAR_LOT='NON')
+# ALARME 'SUPERVIS_1' : PAR_LOT='NON' necessaire pour verifier l'emission
+# d'une alarme
+
+# donnes similaires a hsnv125g
+MA=LIRE_MAILLAGE();
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION=('3D','3D_SI',),),);
+#################################
+##CARACTERISTIQUES MECANIQUES ##
+#################################
+
+
+Y_F = FORMULE(VALE='2.E5 - (1.E5*((TEMP - 100.)/960.)**2)',
+              NOM_PARA='TEMP',);
+
+AL_F = FORMULE(VALE='1.E-5 + (1.E-5  * ((TEMP - 100.)/960.) ** 4)',
+               NOM_PARA='TEMP',);
+
+POISS=DEFI_CONSTANTE(VALE=0.3,);
+
+SIGY=DEFI_CONSTANTE(VALE=200.0,);
+
+K_F = FORMULE(VALE='(4900./(4200.*TEMP-3.*TEMP*TEMP))',
+              NOM_PARA='TEMP',);
+
+N_F = FORMULE(VALE='(7. - (TEMP - 100.) / 160.)',
+              NOM_PARA='TEMP',);
+
+Q=DEFI_CONSTANTE(VALE=-100.,);
+
+B=DEFI_CONSTANTE(VALE=20.,);
+
+C_F = FORMULE(VALE='(1.E6 - (98500. * (TEMP - 100.) / 96.))',
+              NOM_PARA='TEMP',);
+
+D_F = FORMULE(VALE='(5000. - 5. * (TEMP - 100.) )',
+              NOM_PARA='TEMP',);
+
+TEMPE1=DEFI_LIST_REEL(DEBUT=20.,
+                      INTERVALLE=_F(JUSQU_A=1060.,
+                                    NOMBRE=1040,),);
+
+YOUN=CALC_FONC_INTERP(FONCTION=Y_F,
+                      LIST_PARA=TEMPE1,
+                      NOM_PARA='TEMP',);
+
+ALPH=CALC_FONC_INTERP(FONCTION=AL_F,
+                      LIST_PARA=TEMPE1,
+                      NOM_PARA='TEMP',);
+
+K_T=CALC_FONC_INTERP(FONCTION=K_F,
+                     LIST_PARA=TEMPE1,
+                     NOM_PARA='TEMP',);
+
+N_T=CALC_FONC_INTERP(FONCTION=N_F,
+                     LIST_PARA=TEMPE1,
+                     NOM_PARA='TEMP',);
+
+C_T=CALC_FONC_INTERP(FONCTION=C_F,
+                     LIST_PARA=TEMPE1,
+                     NOM_PARA='TEMP',);
+
+D_T=CALC_FONC_INTERP(FONCTION=D_F,
+                     LIST_PARA=TEMPE1,
+                     NOM_PARA='TEMP',);
+
+UN=DEFI_CONSTANTE(VALE=1.0,);
+
+DEUX=DEFI_CONSTANTE(VALE=2.0,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+CENT=DEFI_CONSTANTE(VALE=100.0,);
+
+MAT=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
+                             NU=POISS,
+                             TEMP_DEF_ALPHA=20.0,
+                             ALPHA=ALPH,),
+                    VERI_BORNE=_F(EPSI_MAXI=0.01,
+                                  VEPS_MAXI=10.,
+                                  TEMP_MAXI=1000.,TEMP_MINI=-10.,
+                                 ),
+                  CIN1_CHAB_FO=_F(R_0=SIGY,
+                                  R_I=CENT,
+                                  B=B,
+                                  C_I=C_T,
+                                  K=UN,
+                                  W=ZERO,
+                                  G_0=D_T,
+                                  A_I=UN,),
+                  LEMAITRE_FO=_F(N=N_T,
+                                 UN_SUR_K=K_T,
+                                 UN_SUR_M=ZERO,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+NPAS = 10;
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=-1.,
+                      INTERVALLE=(_F(JUSQU_A=0.,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=1.,
+                                     NOMBRE=NPAS,),
+                                  _F(JUSQU_A=61.,
+                                     NOMBRE=NPAS,),
+                                     ),);
+
+P_PLUS=DEFI_FONCTION(NOM_PARA='INST',VALE=(-1.,0.,
+                           0.,0.,
+                           1.,100.,
+                           61.,100.,
+                           ),);
+
+P_MOINS=DEFI_FONCTION(NOM_PARA='INST',VALE=(-1.,0.,
+                            0.,0.,
+                            1.,-100.,
+                            61.,-100.,
+                            ),);
+
+DY1 = -0.0208;
+
+DY2 = -0.0008;
+
+DEP_Y=DEFI_FONCTION(NOM_PARA='INST',VALE=(-1.,0.,
+                          0.,DY1,
+                          1.,DY1,
+                          61.,DY2,
+                          ),);
+
+TEMP_CY=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(-1.,20.,
+                            0.,1060.,
+                            1.,1060.,
+                            61.,100.,
+                            ),);
+#################
+##CHARGEMENTS ##
+#################
+#### CYCLES
+CH_CY=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                 OPERATION='AFFE',
+                 MAILLAGE=MA,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE_F=TEMP_CY,),);
+
+T_CY=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=_F(CHAM_GD=CH_CY,
+                       LIST_INST=L_INST,),);
+
+CHA1=AFFE_CHAR_MECA_F(MODELE=MO,
+                      FORCE_FACE=(_F(MAILLE='GAUCHE',
+                                     FY=P_MOINS,),
+                                  _F(MAILLE='DROITE',
+                                     FY=P_PLUS,),
+                                  _F(MAILLE='HAUT',
+                                     FX=P_PLUS,),
+                                  _F(MAILLE='BAS',
+                                     FX=P_MOINS,),),);
+
+CHA2=AFFE_CHAR_MECA_F(MODELE=MO,
+                      FACE_IMPO=_F(MAILLE='GAUCHE',
+                                   DX=DEP_Y,),);
+
+CHA4=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(NOEUD='NO4',
+                                 DX=0.,
+                                 DY=0.,),
+                              _F(NOEUD='NO8',
+                                 DX=0.,
+                                 DY=0.,
+                                 DZ=0.,),
+                              _F(NOEUD='NO2',
+                                 DX=0.,),
+                              _F(NOEUD='NO6',
+                                 DX=0.,),),);
+
+CHMTM=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),
+                    AFFE_VARC=_F(TOUT='OUI',
+                                 EVOL=T_CY,
+                                 NOM_VARC='TEMP',
+                                 NOM_CHAM='TEMP',
+                                 VALE_REF=20.,),);
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMTM,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA4,),),
+                   COMP_INCR=_F(RELATION='VISC_CIN1_CHAB',
+                                ),
+                   INCREMENT=_F(LIST_INST=L_INST,
+                                ),
+                   NEWTON=_F(REAC_ITER=1,),
+                                  );
+
+# on souhaite verifier que l'alarme MECANONLINE10_25 a ete emise
+from Utilitai.Utmess import MessageLog
+infos = MessageLog.get_info_alarm()
+emit = [alr[0] for alr in infos if alr[0] == 'MECANONLINE10_25']
+is_ok = len(emit) > 0
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  '),
+                       _F(PARA='BOOLEEN',LISTE_I=int(is_ok))))
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
+FIN()
+
+

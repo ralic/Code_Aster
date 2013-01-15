@@ -5,9 +5,9 @@
       CHARACTER*16 NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,6 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-C ======================================================================
 C ======================================================================
 C     EFGE_ELNO
 C ----------------------------------------------------------------------
@@ -142,7 +141,7 @@ C          CALCUL DES EFFORTS GENERALISES A PARTIR DES CONTRAINTES
         NC=6
         CALL JEVECH('PGEOMER','L',IGEOM)
 
-        CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
+        CALL TECACH('OON','PCONTRR','L',7,JTAB,IRET)
         NBSP=JTAB(7)
         IF (NBSP.NE.NBFIB) CALL U2MESS('F','ELEMENTS_4')
         CALL JEVECH('PSTRXRR','L',ISTRXR)

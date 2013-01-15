@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 14/01/2013   AUTEUR TARDIEU N.TARDIEU 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 # ssnv115a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,202 +19,180 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV115A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV115A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED', )
+M=LIRE_MAILLAGE(FORMAT='MED',
+                VERI_MAIL=_F(VERIF='OUI',),);
 
-M=DEFI_GROUP(reuse=M,  MAILLAGE=M,
-        CREA_GROUP_NO=_F( TOUT_GROUP_MA = 'OUI'))
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
-MO=AFFE_MODELE(    MAILLAGE=M,
-   AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'D_PLAN'))
+MO=AFFE_MODELE(MAILLAGE=M,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='D_PLAN',),);
 
-ACIER=DEFI_MATERIAU(       ELAS=_F( E = 2000., NU = 0.3),
-           ECRO_LINE=_F( D_SIGM_EPSI = 200., SY = 100.) )
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2000.,
+                            NU=0.3,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=200.,
+                                 SY=100.,),);
 
-CM=AFFE_MATERIAU(   MAILLAGE=M,  AFFE=_F( TOUT = 'OUI',MATER = ACIER))
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=ACIER,),);
 
-CH_LIM=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
-           _F( GROUP_NO = 'BOUT1',  DX = 0.),
-           _F( GROUP_NO = 'PO',     DY = 0.))
-           )
+CH_LIM=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=(_F(GROUP_NO='BOUT1',
+                                   DX=0.,),
+                                _F(GROUP_NO='PO',
+                                   DY=0.,),),);
 
-CH_FO=AFFE_CHAR_MECA(    MODELE=MO,
-           FORCE_CONTOUR=_F( GROUP_MA = 'BOUT2',   FX = 100.)
-           )
+CH_FO=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_CONTOUR=_F(GROUP_MA='BOUT2',
+                                      FX=100.,),);
 
-RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
-           PROL_GAUCHE='LINEAIRE',  PROL_DROITE='LINEAIRE',
-           VALE=(0.0,0.0,1.0,1.0,))
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),
+                    PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
-              INTERVALLE=_F( JUSQU_A = 1.0,      NOMBRE = 10)
-           )
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=10,),);
 
 # STAT_NON_LINE 'VMIS'
-
 #---------------------
 
+U2=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CM,
+                 EXCIT=(_F(CHARGE=CH_FO,
+                           FONC_MULT=RAMPE,),
+                        _F(CHARGE=CH_LIM,),),
+                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 INCREMENT=_F(LIST_INST=L_INST,
+                              NUME_INST_FIN=5,),
+                 METHODE='NEWTON_KRYLOV',
+                 RECH_LINEAIRE=_F(),
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=4,),
+                 SOLVEUR=_F(METHODE='GCPC',),);
 
-U2=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = CH_FO,
-                FONC_MULT = RAMPE), _F(
-                CHARGE = CH_LIM)),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_LINE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                NUME_INST_FIN = 5),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 2),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6,)
-              )
-
-U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
-
+U2=CALC_CHAMP(reuse =U2,
+              RESULTAT=U2,
+              CONTRAINTE='SIGM_ELNO',
+              VARI_INTERNE='VARI_ELNO',);
 
 #==============================================================
 # POUR TESTER L'IMPRESSION DU RESULTAT AUX POINTS DE GAUSS:
 # ----------------------------------------------------------
 
+MACR_ECLA_PG(RESU_INIT=U2,
+             MODELE_INIT=MO,
+             NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),
+             RESULTAT=CO('U2B'),
+             MAILLAGE=CO('MA2'),);
 
-#MA2=CREA_MAILLAGE(  MAILLAGE=M,
-#        ECLA_PG=_F( MODELE = MO,  SHRINK = 0.90)
-#                       )
-#
-#
 
-#U2B=CREA_RESU( OPERATION='ECLA_PG', TYPE_RESU='EVOL_NOLI',
-#            ECLA_PG=_F(  MODELE_INIT = MO,
-#                      RESU_INIT = U2,
-#                      MAILLAGE = MA2,
-#                      NOM_CHAM = ('SIEF_ELGA','VARI_ELGA',))
-#                 )
-
-MACR_ECLA_PG(RESULTAT = CO('U2B'),
-             MAILLAGE = CO('MA2'),
-             RESU_INIT = U2,
-             MODELE_INIT = MO,
-             NOM_CHAM = ('SIEF_ELGA','VARI_ELGA'),);
-
-#
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=U2B,
+TEST_RESU(RESU=(_F(RESULTAT=U2B,
+                   NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
-                   VALE_CALC=4.8662129934030003E4,
-                   TOLE_MACHINE=1.E-3,),
-                _F(NUME_ORDRE=5,
                    TYPE_TEST='SOMM_ABS',
-                   RESULTAT=U2B,
+                   TOLE_MACHINE=0.001,
+                   VALE_CALC=48662.129934,),
+                _F(RESULTAT=U2B,
+                   NUME_ORDRE=5,
                    NOM_CHAM='SIEF_ELGA',
-                   VALE_CALC=2.6564696943360002E5,
-                   TOLE_MACHINE=1.E-3,),
-                _F(NUME_ORDRE=5,
                    TYPE_TEST='SOMM_ABS',
-                   RESULTAT=U2B,
+                   TOLE_MACHINE=0.001,
+                   VALE_CALC=265646.969434,),
+                _F(RESULTAT=U2B,
+                   NUME_ORDRE=5,
                    NOM_CHAM='VARI_ELGA',
-                   VALE_CALC=572.49254143004998,
-                   TOLE_MACHINE=1.E-3,),
-                ),
-          )
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=0.001,
+                   VALE_CALC=572.49254143,),),);
 
 #==============================================================
 # IMPRESSION DU RESULTAT SUR UN BOUT DU MAILLAGE
 # ----------------------------------------------------------
 
-MA3=CREA_MAILLAGE( MAILLAGE=M,
-                   ECLA_PG=_F( MODELE = MO,
-                               SHRINK = 0.90,
-                               GROUP_MA='EXTR1',
-                               TAILLE_MIN = 0.1,
-                              )
-                  )
+MA3=CREA_MAILLAGE(MAILLAGE=M,
+                  ECLA_PG=_F(MODELE=MO,
+                             GROUP_MA='EXTR1',
+                             SHRINK=0.90,
+                             TAILLE_MIN=0.1,),);
 
-#
 
-U3B=CREA_RESU( OPERATION='ECLA_PG', TYPE_RESU='EVOL_NOLI',
-            ECLA_PG=_F( MODELE_INIT = MO,
-                        RESU_INIT = U2,
-                        MAILLAGE = MA3,
-                        GROUP_MA='EXTR1',
-                        NOM_CHAM = ('SIEF_ELGA','VARI_ELGA',))
-                 )
-#
+U3B=CREA_RESU(OPERATION='ECLA_PG',
+              TYPE_RESU='EVOL_NOLI',
+              ECLA_PG=_F(NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),
+                         MODELE_INIT=MO,
+                         GROUP_MA='EXTR1',
+                         RESU_INIT=U2,
+                         MAILLAGE=MA3,),);
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=U3B,
+
+TEST_RESU(RESU=(_F(RESULTAT=U3B,
+                   NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
-                   VALE_CALC=465.5,
-                   TOLE_MACHINE=1.E-3,),
-                _F(NUME_ORDRE=5,
                    TYPE_TEST='SOMM_ABS',
-                   RESULTAT=U3B,
+                   TOLE_MACHINE=0.001,
+                   VALE_CALC=465.5,),
+                _F(RESULTAT=U3B,
+                   NUME_ORDRE=5,
                    NOM_CHAM='SIEF_ELGA',
-                   VALE_CALC=2327.5,
-                   TOLE_MACHINE=1.E-3,),
-                _F(NUME_ORDRE=5,
                    TYPE_TEST='SOMM_ABS',
-                   RESULTAT=U3B,
+                   TOLE_MACHINE=0.001,
+                   VALE_CALC=2327.5,),
+                _F(RESULTAT=U3B,
+                   NUME_ORDRE=5,
                    NOM_CHAM='VARI_ELGA',
-                   VALE_CALC=0.0,
+                   TYPE_TEST='SOMM_ABS',
                    CRITERE='ABSOLU',
-                   ),
-                ),
-          )
+                   VALE_CALC=0.0,),),);
 
 #==============================================================
 
-U2=STAT_NON_LINE( reuse=U2,
-                            MODELE=MO,
-                        CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = CH_FO,
-                FONC_MULT = RAMPE), _F(
-                CHARGE = CH_LIM)),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_LINE'),
-                         ETAT_INIT=_F(
-                EVOL_NOLI = U2,
-                NUME_ORDRE = 5),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                NUME_INST_FIN = 10),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 2),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6)
-              )
+U2=STAT_NON_LINE(reuse =U2,
+                 MODELE=MO,
+                 CHAM_MATER=CM,
+                 EXCIT=(_F(CHARGE=CH_FO,
+                           FONC_MULT=RAMPE,),
+                        _F(CHARGE=CH_LIM,),),
+                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 ETAT_INIT=_F(EVOL_NOLI=U2,
+                              NUME_ORDRE=5,),
+                 INCREMENT=_F(LIST_INST=L_INST,
+                              NUME_INST_FIN=10,),
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=2,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,),);
 
-U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2,NUME_ORDRE=(6,7,8,9,10))
+U2=CALC_CHAMP(reuse =U2,
+              RESULTAT=U2,
+              NUME_ORDRE=(6,7,8,9,10,),
+              CONTRAINTE='SIGM_ELNO',
+              VARI_INTERNE='VARI_ELNO',);
 
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=10,
-                   RESULTAT=U2,
+TEST_RESU(RESU=(_F(RESULTAT=U2,
+                   NUME_ORDRE=10,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N249',
                    NOM_CMP='SIXX',
-                   VALE_CALC=98.453000000000003,
-                   TOLE_MACHINE=1.E-3,
-                   MAILLE='M1',),
-                _F(NUME_ORDRE=10,
-                   RESULTAT=U2,
+                   MAILLE='M1',
+                   NOEUD='N249',
+                   TOLE_MACHINE=0.001,
+                   VALE_CALC=98.453,),
+                _F(RESULTAT=U2,
+                   NUME_ORDRE=10,
                    NOM_CHAM='VARI_ELNO',
-                   NOEUD='N226',
                    NOM_CMP='V1',
-                   VALE_CALC=0.1787,
-                   TOLE_MACHINE=1.E-3,
-                   MAILLE='M13',),
-                ),
-          )
+                   MAILLE='M13',
+                   NOEUD='N226',
+                   TOLE_MACHINE=0.001,
+                   VALE_CALC=0.1787,),),);
 
-FIN()
-#
+FIN();

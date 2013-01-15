@@ -3,9 +3,9 @@
       INCLUDE 'jeveux.h'
       CHARACTER*16 OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -88,7 +88,7 @@ C     ------------------------------------------------
 
 C     -- CONTRAINTES DANS LES COUCHES :
 C     ----------------------------------
-      CALL TECACH('OOO','PSIEFR',7,ITAB,IRET)
+      CALL TECACH('OOO','PSIEFR','L',7,ITAB,IRET)
       JSIGM=ITAB(1)
       NPG=ITAB(3)
       NBSP=ITAB(7)
@@ -99,7 +99,7 @@ C     ----------------------------------
 
 C     -- CALCUL DES EFFORTS PAR INTEGRATION DANS L'EPAISSEUR :
 C     --------------------------------------------------------
-      CALL TECACH('OOO','PEFGER',7,ITAB,IRET)
+      CALL TECACH('OOO','PEFGER','E',7,ITAB,IRET)
       JEFF=ITAB(1)
       CALL ASSERT(ITAB(2).EQ.NBEFF*NPG)
 

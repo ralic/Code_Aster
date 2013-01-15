@@ -1,8 +1,8 @@
-#@ MODIF algeline4 Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF algeline4 Messages  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,14 +97,12 @@ Risques & conseils :
 """),
 
 10 : _(u"""
- Votre problème modal n'est pas un problème généralisé à matrices réelles symétriques.
- Il comporte des matrices non symétriques et/ou complexes, ou bien il s'agit d'un problème
- quadratique. Son spectre n'est pas uniquement restreint à l'axe réel. Il représente une
- zone du plan complexe.
- Il en résulte des incompatibilités avec votre paramétrage car vous avez sélectionné votre
- zone de vérification de spectre sous forme de bande (TYPE_RESU='DYNAMIQUE'/'FLAMBEMENT'),
- il faut relancer votre calcul en spécifiant votre zone de vérification via les paramètres
- du mot-clé TYPE_RESU='MODE_COMPLEXE'.
+ Votre problème modal n'est pas un problème généralisé à matrices réelles symétriques :
+ il comporte des matrices non symétriques et/ou complexes, ou bien il s'agit d'un problème quadratique.
+ Son spectre n'est donc pas uniquement restreint à l'axe réel, il représente une zone du plan complexe.
+ 
+ Conseil :
+ Il faut donc relancer votre calcul avec le mot-clé TYPE_RESU='MODE_COMPLEXE' et les opérandes associées.
 """),
 
 11 : _(u"""
@@ -119,8 +117,7 @@ Risques & conseils :
  L'algorithme APM a atteint le nombre maximal de discrétisations du contour,
  c'est à dire %(i1)d, sans convergence du procédé.
 
- Conseils:
- ========
+ Conseils :
  Vous pouvez:
   - Changer les dimensions du contour de manière à réduire son périmètre,
   - Changer sa localisation. Il passe peut-être très près de valeurs propres
@@ -131,8 +128,7 @@ Risques & conseils :
  L'algorithme APM a atteint son nombre maximal d'itérations, c'est à dire %(i1)d,
  sans convergence du procédé.
 
- Conseils:
- ========
+ Conseils :
   Vous pouvez:
   - Augmenter ce nombre maximal d'itérations via le paramètre NMAX_ITER_CONTOUR,
   - Augmenter la discrétisation initiale du contour via NBPOINT_CONTOUR,
@@ -143,15 +139,14 @@ Risques & conseils :
 
 15 : _(u"""
  L'algorithme APM avec le calcul du polynôme caractéristique via une factorisation
- LDLT a un problème numérique: le point de vérification (%(r1)f,%(r2)f)
+ LDLT a un problème numérique: le point de vérification (%(r1)f +i*%(r2)f)
  est très proche d'une valeur propre ou le solveur linéaire a eu un problème.
 
- Conseils:
- ========
-  Vous pouvez:
-  - Augmenter les dimensions du contour pour englober cette valeur propre,
-  - Changer la discrétisation du contour (plus risqué).
-  - Changer le paramétrage du solveur linéaire ou de solveur linéaire (expert).
+ Conseils :
+ Vous pouvez:
+ - Augmenter les dimensions du contour pour englober cette valeur propre,
+ - Changer la discrétisation du contour (plus risqué).
+ - Changer le paramétrage du solveur linéaire, ou le solveur linéaire lui-même (expert).
 """),
 
 17: _(u"""
@@ -161,14 +156,15 @@ Risques & conseils :
    - les problèmes quadratiques,
    - les matrices généralisées.
 
- Conseil:
- ========
+ Conseil :
  Vous pouvez utiliser l'autre variante de la méthode 'APM' via le paramétrage
  COMPTAGE/POLYNOME_CHARAC='LDLT'.
 """),
 
 19 : _(u"""
- Matrice masse non définie, il faudrait essayer l'autre algorithme de résolution.
+ Matrice de masse non définie.
+ 
+ Conseil : essayer un autre algorithme de résolution.
 """),
 
 20: _(u"""
@@ -189,8 +185,7 @@ Risques & conseils :
  L'algorithme APM a convergé sur un nombre de fréquences aberrant !
 
  Conseils:
- ========
-  Vous pouvez:
+ Vous pouvez:
   - Augmenter la discrétisation initiale du contour via NBPOINT_CONTOUR,
   - Changer les dimensions du contour de manière à réduire son périmètre,
   - Changer sa localisation. Il passe peut-être très près de valeurs propres
@@ -234,6 +229,22 @@ Risques & conseils :
  appel erroné :
  code retour de RSEXCH : %(i1)d
  Problème CHAM_NO %(k1)s
+"""),
+
+39 : _(u"""
+ Au moins une des matrices est non symétrique.
+ Dans ce cas, l'option 'BANDE' n'est pas utilisable.
+"""),
+
+40 : _(u"""
+ Au moins une des matrices est non symétrique.
+ Dans ce cas, la détection des modes de corps rigide (OPTION='MODE_RIGIDE')
+ n'est pas utilisable.
+"""),
+
+41 : _(u"""
+ Au moins une des matrices est non symétrique.
+ Dans ce cas, le calcul de flambement ne peut pas être mené.
 """),
 
 42 : _(u"""
@@ -292,33 +303,29 @@ Risques & conseils :
 """),
 
 65 : _(u"""
- on a la  %(i1)d -ème fréquence du système réduit  est complexe =  %(r1)f
-  et partie_imaginaire/réelle =  %(r2)f
-"""),
+ La  %(i1)d -ème valeur propre du système réduit est complexe.
+ Partie imaginaire =  %(r1)f
+ et partie imaginaire / partie réelle =  %(r2)f
+ """),
 
 66 : _(u"""
  la valeur propre est :   %(r1)f
 """),
 
-68: _(u"""
- la valeur propre est :   %(r1)f
-"""),
+
+
 
 74 : _(u"""
- calcul d'erreur modale :
- une valeur propre réelle est détectée %(k1)s à partir du couple (fréquence, amortissement réduit)
- on ne peut plus la reconstruire %(k2)s
- par convention l'erreur modale est fixée à : %(r1)f
+ Calcul d'erreur modale :
+ une valeur propre réelle est détectée à partir du couple (fréquence, amortissement réduit).
+ On ne peut plus la reconstruire.
+ Par convention l'erreur modale est fixée à : %(r1)f.
 """),
 
-75 : _(u"""
- problème généralisé complexe
- amortissement (réduit) de décalage supérieur en valeur absolue à  %(r1)f
- on le ramène à la valeur :  %(r2)f
-"""),
+
 
 76 : _(u"""
- la réorthogonalisation diverge après  %(i1)d  itération(s)   %(i2)d
+ la réorthogonalisation diverge après  %(i1)d  itération(s).
 """),
 
 77 : _(u"""
@@ -335,21 +342,13 @@ Risques & conseils :
 
 
 
-
-
 82 : _(u"""
  incohérence de certains paramètres modaux propres à ARPACK
  numéro d'erreur  %(i1)d
 """),
 
-83 : _(u"""
- nombre de valeurs propres convergées  %(i1)d < nombre de fréquences demandées  %(i2)d
- erreur ARPACK numéro :  %(i3)d
- --> le calcul continue, la prochaine fois
- -->   augmenter DIM_SOUS_ESPACE =  %(i4)d
- -->   ou NMAX_ITER_SOREN =  %(i5)d
- -->   ou PREC_SOREN =  %(r1)f
-"""),
+
+
 
 85 : _(u"""
  appel erroné mode numéro %(i1)d position modale %(i2)d
@@ -378,16 +377,21 @@ Risques & conseils :
  valeur(s) propre(s) complexe(s) sans conjuguée :  %(i3)d
 """),
 
+93 : _(u"""
+ Problème généralisé complexe.
+"""),
+
 94 : _(u"""
- problème quadratique complexe
- amortissement (réduit) de décalage supérieur en valeur absolue à  %(r1)f
- on le ramène à la valeur :  %(r2)f
+ Problème quadratique complexe.
 """),
 
 95 : _(u"""
- problème quadratique
- amortissement (réduit) de décalage supérieur en valeur absolue à  %(r1)f
- on le ramène à la valeur :  %(r2)f
+ Problème quadratique.
+"""),
+
+96 : _(u"""
+ Amortissement (réduit) de décalage supérieur en valeur absolue à %(r1)f.
+ On le ramène à la valeur : %(r2)f.
 """),
 
 98 : _(u"""

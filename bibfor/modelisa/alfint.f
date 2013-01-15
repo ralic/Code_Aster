@@ -1,9 +1,9 @@
       SUBROUTINE ALFINT (CHMATZ, IMATE, NOMMAZ, TDEF, NOPARZ, NUMMAT,
      &                    PREC, CH19)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,22 +76,21 @@ C     ---------------
       NOMMAT = NOMMAZ
       NOPARA = NOPARZ
       UNDEMI = 0.5D0
-
+C
       CALL GETRES(K8B,K8B,NOMCMD)
 C     EN THERMIQUE ON N A PAS BESOIN DE CALCULER ALPHA=F(T)
       IF (NOMCMD(1:5).EQ.'THER_') GOTO 9999
-
-
+C
 C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE (TREF):
 C     ---------------------------------------------------
-
+C
 C     -- NOUVELLE SYNTAXE : AFFE_MATERIAU/AFFE_VARC/TEMP
       CALL JEVEUO (CHMAT//'.CHAMP_MAT .DESC', 'L', JDESC )
       CALL JEVEUO (CHMAT//'.CHAMP_MAT .VALE', 'L', JVALE )
       IGD = ZI(JDESC-1+1)
       CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',IGD),NOMGD)
-      CALL ASSERT(NOMGD.EQ.'NEUT_F')
-      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP','NEUT_F'),'LONMAX',NCMP,
+      CALL ASSERT(NOMGD.EQ.'NOMMATER')
+      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP','NOMMATER'),'LONMAX',NCMP,
      &            K8B)
       CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NBEC,K8B,IER)
       NGDMAX=ZI(JDESC-1+2)
@@ -107,14 +106,12 @@ C     TREF EST SUR LE 1ER ENTIER CODE :
       IF (KTREF.EQ.'NAN') GOTO 9998
 
       READ (KTREF,'(F8.2)') TREF
-
-
 C
 C --- RECUPERATION DU NOM DU PHENOMENE ASSOCIE AU MATERIAU :
 C     ----------------------------------------------------
       CALL JEVEUT(NOMMAT//'.MATERIAU.NOMRC','L',JNOMRC)
       PHENOM = ZK16(JNOMRC+NUMMAT-1)(1:10)
-
+C
 C --- CREATION DE LA NOUVELLE FONCTION DEVANT CONTENIR LES VALEURS
 C --- INTERPOLEES DE ALPHA :
 C --- LE NOM DE CETTE NOUVELLE FONCTION EST DEFINI DE LA MANIERE
@@ -122,26 +119,22 @@ C --- SUIVANTE : NOM_NOUVEAU = &&NOM_ANCIEN(1:2)//00NUMMAT :
 C     ----------------------------------------------------
       CALL GCNCON ( '.' , CHWORK )
       CHWORK = '&&'//CHWORK(3:8)
-
+C
 C --- CREATION DE LA NOUVELLE FONCTION CHWORK PAR RECOPIE DE CH19
 C --- SUR LA VOLATILE :
-C     ---------------
       CALL GETTCO(CH19,TYPRES)
       IF (TYPRES.EQ.'FORMULE') THEN
           CALL U2MESS('F','MODELISA2_1')
       ENDIF
       CALL COPISD ( 'FONCTION', 'V', CH19, CHWORK )
-
+C
 C --- RECUPERATION DU NOMBRE DE POINTS DEFINISSANT LA FONCTION :
-C     --------------------------------------------------------
       CALL JELIRA(CHWORK(1:19)//'.VALE', 'LONMAX', NBPTS, K8B)
-
+C
 C --- NOMBRE DE POINTS DE LA FONCTION :
-C     -------------------------------
       NBPTS = NBPTS/2
-
+C
 C     -- SI LA FONCTION N'A QU'UN POINT :
-C     -----------------------------------
       IF (NBPTS.EQ.1) THEN
          CALL JEVEUO(CHWORK(1:19)//'.PROL', 'L', JPROL)
 C        -- SI LA FONCTION EST UNE CONSTANTE, ON NE FAIT RIEN :
@@ -155,25 +148,20 @@ C        -- SINON ON ARRETE TOUT :
            CALL U2MESK('F','MODELISA2_42',1,CH19(1:8))
          ENDIF
       ENDIF
-
+C
 C --- CALCUL DE ALPHA A LA TEMPERATURE DE REFERENCE :
-C     ---------------------------------------------
       CALL RCVALE(NOMMAT, PHENOM, 1, 'TEMP    ', TREF, 1, NOPARA,
      &            ALFREF, ICODRE, 2)
-
 C
 C --- RECUPERATION DU .VALE DE LA FONCTION DESTINEE A CONTENIR LES
 C --- VALEURS DE ALPHA INTERPOLEES :
-C     ----------------------------
       CALL JEVEUO(CHWORK(1:19)//'.VALE', 'E', IDVALW)
 C
 C --- RECUPERATION DU .VALE DE LA FONCTION CONTENANT LES
 C --- VALEURS INITIALES DE ALPHA  :
-C     --------------------------
       CALL JEVEUO(CH19(1:19)//'.VALE', 'L', IDVALE)
 C
 C --- CALCUL DES ALPHA INTERPOLES :
-C     ---------------------------
       DO 10 I = 1, NBPTS
 C
         ALPHAI = ZR(IDVALE+I+NBPTS-1)
@@ -182,22 +170,17 @@ C
 C --- DANS LE CAS OU ABS(TI-TREF) > PREC :
 C --- ALPHA_NEW(TI) = (ALPHA(TI)*(TI-TDEF) - ALPHA(TREF)*(TREF-TDEF))
 C ---                 /(TI-TREF)   :
-C                    -----------
         IF (ABS(TI-TREF).GE.PREC) THEN
 C
            ZR(IDVALW+I+NBPTS-1) = (ALPHAI*(TI-TDEF)- ALFREF*(TREF-TDEF))
      &                           /(TI-TREF)
-C
 C --- DANS LE CAS OU ABS(TI-TREF) < PREC :
 C --- IL FAUT D'ABORD CALCULER LA DERIVEE DE ALPHA PAR RAPPORT
 C --- A LA TEMPERATURE EN TREF : D(ALPHA)/DT( TREF) :
-C     --------------------------------------------
         ELSE
-C
 C ---   DANS LE CAS OU I > 1 ET I < NBPTS :
 C ---   D(ALPHA)/DT( TREF) = 0.5*((ALPHA(TI+1)-ALPHA(TREF))/(TI+1-TREF)
 C ---                            +(ALPHA(TREF)-ALPHA(TI-1))/(TREF-TI-1))
-C                                 -------------------------------------
           IF (I.GT.1.AND.I.LT.NBPTS) THEN
 C
              TIM1     = ZR(IDVALE+I-1-1)
@@ -212,7 +195,6 @@ C
 C
 C ---   DANS LE CAS OU I = NBPTS :
 C ---   D(ALPHA)/DT( TREF) = (ALPHA(TREF)-ALPHA(TI-1))/(TREF-TI-1) :
-C       ----------------------------------------------------------
           ELSEIF (I.EQ.NBPTS) THEN
 C
              TIM1     = ZR(IDVALE+I-1-1)
@@ -223,7 +205,6 @@ C
 C
 C ---   DANS LE CAS OU I = 1 :
 C ---   D(ALPHA)/DT( TREF) = (ALPHA(TI+1)-ALPHA(TREF))/(TI+1-TREF) :
-C       ----------------------------------------------------------
           ELSEIF (I.EQ.1) THEN
 C
              TIP1     = ZR(IDVALE+I+1-1)
@@ -233,11 +214,9 @@ C
              DALREF   = (ALFIP1-ALFREF)/(TIP1-TREF)
 C
           ENDIF
-C
 C ---   DANS CE CAS OU ABS(TI-TREF) < PREC , ON A :
 C ---   ALPHA_NEW(TI) = ALPHA_NEW(TREF)
 C ---   ET ALPHA_NEW(TREF) = D(ALPHA)/DT (TREF)*(TREF-TDEF)+ALPHA(TREF):
-C       --------------------------------------------------------------
            ZR(IDVALW+I+NBPTS-1) = DALREF*(TREF-TDEF) + ALFREF
 C
         ENDIF
@@ -246,16 +225,14 @@ C
 C
 C --- ON REMPLACE LA FONCTION EN ENTREE CH19 PAR LA FONCTION
 C --- DE TRAVAIL CONTENANT LES VALEURS DE ALPHA INTERPOLEES CHWORK :
-C     ------------------------------------------------------------
       CH19 = CHWORK
-
+C
       GO TO 9999
 C     -- SECTION "ERREUR":
 9998  CONTINUE
       VALK(1)=CHMAT
       VALK(2)=NOMMAT
       CALL U2MESK('F','CALCULEL6_1',2,VALK)
-
-
+C
 9999  CONTINUE
       END

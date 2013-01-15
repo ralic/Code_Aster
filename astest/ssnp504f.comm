@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504f.para = tps_job 500 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -184,6 +184,29 @@ if (typma==1):
 if (typma==2):
   noeud = ['NS412','NS469','NS530','NS591','NS652']
 
+VALE_CALC=[
+ [0.0,
+ -63325.334426595,
+ -60857.078715767,
+ -51239.370007317,
+ 0.0,],
+ [0.0,
+ -4.2235753464271E+05,
+ -1.2693769339661E+05,
+ -1.0562151852272E+05,
+ 7.7305760250165E-03,],
+ [0.0,
+ 0.0,
+ -2.0889880944728E+05,
+ -1.6361620109069E+05,
+ 0.012415268445366,],
+ [0.0,
+ 0.0,
+ -9.2300587654567E+05,
+ -2.2995553492733E+05,
+ 0.0,],
+]
+
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                          GROUP_NO=('NFISSU'),
@@ -216,9 +239,9 @@ for i in [1,2,3,4]: #Boucle sur les increments
       if ((i==4) and (j==3)): precision = 12.E-2
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
-                 VALE_CALC=vale[i-1][j], VALE_REFE=vale[i-1][j],    #TODO vale_calc
+                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j], TOLE_MACHINE=2.E-06,
                  CRITERE=critere,
-                 TOLE_MACHINE=precision, PRECISION=precision,
+                 PRECISION=precision, 
                  REFERENCE='AUTRE_ASTER',
                  FILTRE=(_F(NOM_PARA='NOEUD',
                            CRIT_COMP='EQ',

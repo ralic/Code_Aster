@@ -5,9 +5,9 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -111,12 +111,12 @@ C     --------------------------------------
             CALL JEVECH('PGEOMER','L',IGEOM)
 
             IF(OPTION.EQ.'FORC_NODA') THEN
-               CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
+               CALL TECACH('OON','PCONTMR','L',7,JTAB,IRET)
                NBSP=JTAB(7)
                IF (NBSP.NE.NBFIB) CALL U2MESS('F','ELEMENTS_4')
                CALL JEVECH ( 'PSTRXMR','L',ISTRXR)
             ELSE
-               CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
+               CALL TECACH('OON','PCONTRR','L',7,JTAB,IRET)
                NBSP=JTAB(7)
                IF (NBSP.NE.NBFIB) CALL U2MESS('F','ELEMENTS_4')
                CALL JEVECH ( 'PSTRXRR','L',ISTRXR)
@@ -171,7 +171,7 @@ C           --- POUR CALCULER LA MATRICE DE PASSAGE
             CALL JEVECH('PGEOMER','L',IGEOM)
 
             IF ( REACTU ) THEN
-               CALL TECACH('ONN','PDEPLMR',1,IDEPLM,IRET)
+               CALL TECACH('ONN','PDEPLMR','L',1,IDEPLM,IRET)
                IF ( IRET .NE. 0 ) THEN
                   DO 100 I = 1,14
                      UTG(I) = 0.D0
@@ -181,7 +181,7 @@ C           --- POUR CALCULER LA MATRICE DE PASSAGE
                      UTG(I) = ZR(IDEPLM-1+I)
 102               CONTINUE
                ENDIF
-               CALL TECACH('ONN','PDEPLPR',1,IDEPLP,IRET)
+               CALL TECACH('ONN','PDEPLPR','L',1,IDEPLP,IRET)
                IF ( IRET .EQ. 0 ) THEN
                   DO 104 I = 1,14
                      UTG(I) = UTG(I) + ZR(IDEPLP-1+I)

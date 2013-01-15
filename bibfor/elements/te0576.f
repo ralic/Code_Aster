@@ -5,9 +5,9 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/11/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -115,12 +115,12 @@ C        -------------------------------------------------------------
 
 C ----    RECUPERATION DE L'INSTANT DE CALCUL
 C         -----------------------------------
-         CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+         CALL TECACH('ONN','PTEMPSR','L',1,ITEMPS,IRET)
          IF (ITEMPS.NE.0)  INSTAN = ZR(ITEMPS)
 
 C ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 C        N'EXISTE PAS EN LINEAIRE
-         CALL TECACH('ONN','PVARIGR',7,JTAB,IRET)
+         CALL TECACH('ONN','PVARIGR','L',7,JTAB,IRET)
          IF (IRET.EQ.0) THEN
             IDVARI=JTAB(1)
             NBVARI = MAX(JTAB(6),1)*JTAB(7)
@@ -133,7 +133,7 @@ C        N'EXISTE PAS EN LINEAIRE
 
 C ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 C     N'EXISTE PAS EN LINEAIRE
-      CALL TECACH('NNN','PCOMPOR',7,JTAB,IRET)
+      CALL TECACH('NNN','PCOMPOR','L',7,JTAB,IRET)
       COMPOR(1)='ELAS'
       COMPOR(2)=' '
       COMPOR(3)='PETIT'
@@ -168,7 +168,7 @@ C        --------------------------------------------------------
 C ---    RECUPERATION EVENTUELLE DU CHAMP DE DEPLACEMENT A
 C ---    L'INSTANT PRECEDENT :
 C        -------------------
-         CALL TECACH('NNN','PDEPLM',1,IDEPLM,IRET)
+         CALL TECACH('NNN','PDEPLM','L',1,IDEPLM,IRET)
          IF (IDEPLM.NE.0) THEN
            CALL JEVECH('PDEPLM','L',IDEPMM)
          END IF
@@ -181,7 +181,7 @@ C        -------------------
 C ---    RECUPERATION EVENTUELLE DU CHAMP DE CONTRAINTES A
 C ---    L'INSTANT PRECEDENT :
 C        -------------------
-         CALL TECACH('NNN','PCONTMR',1,IDSIGM,IRET)
+         CALL TECACH('NNN','PCONTMR','L',1,IDSIGM,IRET)
          IF (IDSIGM.NE.0) THEN
            CALL JEVECH('PCONTMR','L',IDSIGM)
          END IF

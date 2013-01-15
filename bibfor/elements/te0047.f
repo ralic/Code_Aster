@@ -6,9 +6,9 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -251,7 +251,7 @@ C ======================================================================
 C   ORIENTATION DE L'ELEMENT ET DEPLACEMENTS DANS LES REPERES G ET L
 C ======================================================================
 C --- RECUPERATION DES ORIENTATIONS (ANGLES NAUTIQUES -> VECTEUR ANG)
-      CALL TECACH ( 'ONN','PCAORIE', 1, LORIEN ,IRET)
+      CALL TECACH ( 'ONN','PCAORIE','L', 1, LORIEN ,IRET)
       IF ( IRET .NE. 0 ) THEN
          MESSAK(1) = NOMTE
          MESSAK(2) = OPTION
@@ -762,7 +762,7 @@ C        IREP = 1 = MATRICE EN REPERE GLOBAL ==> PASSER EN LOCAL ---
             VARMO(I) = ZR(IVARIM+I-1)
 30       CONTINUE
          CALL JEVECH('PINSTPR','L',JINST)
-         CALL TECACH('ONN','PVITPLU',1,IVITP,IRET)
+         CALL TECACH('ONN','PVITPLU','L',1,IVITP,IRET)
          IF (IRET.EQ.0) THEN
             IF (NDIM.EQ.3) THEN
                CALL UTPVGL(NNO,NC,PGL,ZR(IVITP),DVL)
@@ -774,7 +774,7 @@ C        IREP = 1 = MATRICE EN REPERE GLOBAL ==> PASSER EN LOCAL ---
                DVL(I) = 0.D0
 40          CONTINUE
          END IF
-         CALL TECACH('ONN','PDEPENT',1,IDEPEN,IRET)
+         CALL TECACH('ONN','PDEPENT','L',1,IDEPEN,IRET)
          IF (IRET.EQ.0) THEN
             IF (NDIM.EQ.3) THEN
                CALL UTPVGL(NNO,NC,PGL,ZR(IDEPEN),DPE)
@@ -786,7 +786,7 @@ C        IREP = 1 = MATRICE EN REPERE GLOBAL ==> PASSER EN LOCAL ---
                DPE(I) = 0.D0
 50          CONTINUE
          END IF
-         CALL TECACH('ONN','PVITENT',1,IVITEN,IRET)
+         CALL TECACH('ONN','PVITENT','L',1,IVITEN,IRET)
          IF (IRET.EQ.0) THEN
             IF (NDIM.EQ.3) THEN
                CALL UTPVGL(NNO,NC,PGL,ZR(IVITEN),DVE)

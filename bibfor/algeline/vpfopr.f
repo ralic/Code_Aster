@@ -3,9 +3,9 @@
      &                   PRECSH, NBRSSA, NBLAGR, SOLVEU, DET, IDET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGELINE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,6 +20,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
+C
 C     DETERMINATION DE SHIFT(S), D'UNE MATRICE SHIFTEE, DE SA FACTORISEE
 C     DU NBRE DE PIVOTS NEGATIFS (POUR TEST DE STURM) VOIRE DU NBRE
 C     DE FREQ DANS UNE BANDE.
@@ -108,7 +110,7 @@ C PARAMETRES D'APPEL
 C VARIABLES LOCALES
       CHARACTER*1  TYPEP
       CHARACTER*8  K8BID
-      CHARACTER*16 CH16
+      CHARACTER*16 CH16,VALK(3)
       INTEGER      NIV,IFM,NBESSA,IER,NBFMIN,NBFMAX,IBID,IBANDE
       REAL*8       VALR,OMGMIN,OMGMAX,OMGSHI,FREQOM,RBID,PREC,OMGDEC
       LOGICAL      CALDET,LDYNA      
@@ -138,10 +140,16 @@ C MAUVAISE VALEUR DE OPTION
       ELSE
         CALDET=.FALSE.
       ENDIF
+      VALK(1)='FREQ'
+      VALK(2)='SEUIL_FREQ'
+      VALK(3)='MATR_RIGI'
       IF (TYPRES.EQ.'DYNAMIQUE') THEN
         LDYNA=.TRUE.
       ELSE
         LDYNA=.FALSE.
+        VALK(1)='CHAR_CRIT'
+        VALK(2)='SEUIL_CHAR_CRIT'
+        IF (TYPRES.EQ.'GENERAL')  VALK(3)='MATR_A'
       ENDIF
       IF (OPTION(1:5).NE.'STURM') THEN
         IF (OPTION(1:5).EQ.'BANDE') THEN
@@ -150,6 +158,7 @@ C MAUVAISE VALEUR DE OPTION
           WRITE(IFM,900)OPTION
         ENDIF
       ENDIF
+
 C     ------------------------------------------------------------------
 C     ------------------------ OPTION CENTRE ---------------------------
 C     ------------------------------------------------------------------
@@ -197,7 +206,7 @@ C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
             ELSE
               VALR=OMGSHI
             ENDIF
-            CALL U2MESG('F', 'ALGELINE3_65',0,' ',0,0,1,VALR)
+            CALL U2MESG('F', 'ALGELINE3_81',3,VALK,0,0,1,VALR)
           ENDIF
 
         ENDIF
@@ -254,12 +263,13 @@ C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
               ENDIF
               GOTO 21
             ELSE
-              CALL U2MESS('A','ALGELINE3_66')
+              CALL U2MESS('A+','ALGELINE3_82')
+              CALL U2MESK('A','ALGELINE3_84',1,VALK(2))
             ENDIF
           ENDIF
         ENDIF
         OMEMIN=OMGMIN
-        IF (OMEMIN.GE.OMEMAX) CALL U2MESS('F','ALGELINE3_68')
+        IF (OMEMIN.GE.OMEMAX) CALL U2MESS('F','ALGELINE3_85')
 
         OMGMAX=OMEMAX
         IF (OPTION.NE.'BANDEA') THEN
@@ -296,7 +306,8 @@ C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
               ENDIF
               GOTO 22
             ELSE
-              CALL U2MESS('A','ALGELINE3_67')
+              CALL U2MESS('A+','ALGELINE3_83')
+              CALL U2MESK('A','ALGELINE3_84',1,VALK(2))
             ENDIF
           ENDIF
         ENDIF
@@ -355,7 +366,7 @@ C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
               ELSE
                 VALR=OMGSHI
               ENDIF
-              CALL U2MESG('F', 'ALGELINE3_65',0,' ',0,0,1,VALR)
+              CALL U2MESG('F', 'ALGELINE3_81',3,VALK,0,0,1,VALR)
             ENDIF
           ENDIF
         ENDIF
@@ -419,7 +430,7 @@ C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
             ELSE
               VALR=OMGSHI
             ENDIF
-            CALL U2MESG('F', 'ALGELINE3_65',0,' ',0,0,1,VALR)
+            CALL U2MESG('F', 'ALGELINE3_81',3,VALK,0,0,1,VALR)
           ENDIF
         ENDIF
         OMESHI=OMGSHI
@@ -434,7 +445,6 @@ C --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
 C     ------------------------------------------------------------------
 C     ------------------------ OPTION NON CONNUE -----------------------
 C     ------------------------------------------------------------------
-
       ELSE
         CH16=OPTION
         CALL U2MESK('F','ALGELINE3_69',1,CH16)

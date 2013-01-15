@@ -1,0 +1,94 @@
+      SUBROUTINE W039C4(CARTE,IFI,FORM)
+      IMPLICIT   NONE
+C
+      CHARACTER*(*)  CARTE,FORM
+      INTEGER        IFI
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C ----------------------------------------------------------------------
+C
+C                  IMPRIMER UNE "CARTE" AU FORMAT MED
+C
+C     * FORMAT MED
+C     * LA CARTE DOIT EXISTER
+C     * LA CARTE NE DOIT CONTENIR QUE DES REELS
+C     * TOUTES LES COMPOSANTES SONT IMPRIMEES (NON AFFECTEES ==> 0)
+C
+C ----------------------------------------------------------------------
+C
+      INCLUDE 'jeveux.h'
+      CHARACTER*32   JEXNUM
+C
+      INTEGER        IRET,IBID,NUGD
+      INTEGER        JCESK,JCESD,JCESC,JCESV,JCESL,JDESC
+      CHARACTER*8    TYPECH,TSCA,NOMGD,K8BID
+      CHARACTER*19   CART1,CHELS1
+      CHARACTER*64   NOMMED
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- SI CE N'EST PAS AU FORMAT MED
+      IF (FORM.NE.'MED') GOTO 9999
+C --- SI LA CARTE N'EXISTE PAS
+      CALL EXISD('CARTE',CARTE,IRET)
+      IF (IRET.EQ.0) GOTO 9999
+C
+      CART1=CARTE
+C --- QUE DES REELS
+      CALL JEVEUO(CART1//'.DESC','L',JDESC)
+      NUGD  = ZI(JDESC)
+      CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',NUGD),NOMGD)
+      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
+      CALL ASSERT( TSCA.EQ.'R' )
+C
+C --- ON TRANSFORME LA CARTE EN UN CHAM_ELEM_S
+      CHELS1='&&W039C4.CHELS1'
+      CALL CARCES(CART1,'ELEM',' ','V',CHELS1,'A',IRET)
+C
+C --- POUR AVOIR UN NOM MED PROCHE DE CELUI DE LA CARTE.
+C        PAS DE '_' DEJA UTILISE PAR W039C1
+      NOMMED      = CARTE
+      NOMMED(9:9) = '#'
+      TYPECH      = 'ELEM'
+C
+C --- ON RECUPERE LES OBJETS
+      CALL JEVEUO(CHELS1//'.CESK', 'L', JCESK)
+      CALL JEVEUO(CHELS1//'.CESD', 'L', JCESD)
+      CALL JEVEUO(CHELS1//'.CESC', 'L', JCESC)
+      CALL JEVEUO(CHELS1//'.CESV', 'L', JCESV)
+      CALL JEVEUO(CHELS1//'.CESL', 'L', JCESL)
+C
+C --- ECRITURE DES CHAMPS AU FORMAT MED
+      K8BID = ' '
+      CALL IRCAME(IFI, NOMMED, CHELS1, TYPECH, K8BID,
+     &            0, K8BID, K8BID, K8BID,
+     &            0, 0.0D0, 0,
+     &            JCESK, JCESD, JCESC, JCESV, JCESL,
+     &            0, 0,
+     &            K8BID, IRET)
+C
+      CALL ASSERT(IRET.EQ.0)
+C
+      CALL DETRSD('CHAM_ELEM_S',CHELS1)
+C
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

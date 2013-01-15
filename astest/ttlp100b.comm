@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE ECHANGE_PAROI EN THERMIQUE NON LINEAIRE TRANSITOIRE
 # ttlp100b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -176,24 +176,32 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N46',
                       NOM_CMP='TEMP',
                       CHAM_GD=TSTAT,
                       VALE_CALC=133.22147651006711,
+                      REFERENCE='ANALYTIQUE',
+                      VALE_REFE=TINTG(0.2475,),
                       ),
                    _F(NOEUD='N3',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       CHAM_GD=TSTAT,
                       VALE_CALC=166.44295302013421,
+                      REFERENCE='ANALYTIQUE',
+                      VALE_REFE=TINTG(0.495,),
                       ),
                    _F(NOEUD='N15',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       CHAM_GD=TSTAT,
                       VALE_CALC=233.55704697986579,
+                      REFERENCE='ANALYTIQUE',
+                      VALE_REFE=TINTD(0.505,),
                       ),
                    _F(NOEUD='N92',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       CHAM_GD=TSTAT,
                       VALE_CALC=266.77852348993287,
+                      REFERENCE='ANALYTIQUE',
+                      VALE_REFE=TINTD(0.7525,),
                       ),
                    ),
           )

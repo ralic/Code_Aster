@@ -6,9 +6,9 @@
       CHARACTER*8 CHMAT,NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,12 +41,11 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-
+C
       CARCM1 = CHMAT//'.CHAMP_MAT'
       CARCM2 = CHMAT//'.CHAMP_MA2'
       CARTRF = CHMAT//'.TEMP    .1'
-
-
+C
 C     1) IL N'Y A RIEN LIEU DE FAIRE S'IL N'Y A PAS DE AFFE_VARC/'TEMP':
 C     ------------------------------------------------------------------
       CALL JEEXIN(CARTRF//'.DESC',IRET)
@@ -54,8 +53,7 @@ C     ------------------------------------------------------------------
       CALL DISMOI('F','NB_MA_MAILLA',NOMAIL,'MAILLAGE',NBMA,K8B,IRET)
       IF (NBMA.EQ.0) GOTO 50
       CALL WKVECT('&&CMTREF.LISMAIL','V V I',NBMA,JLINT)
-
-
+C
 C     2) MISE EN MEMOIRE DES OBJETS DE CARCM1 ET CARTRF :
 C     ---------------------------------------------------------------
       CALL JEVEUO(CARCM1//'.DESC','L',JDCM1)
@@ -63,10 +61,10 @@ C     ---------------------------------------------------------------
       NBCM1 = ZI(JDCM1-1+3)
       IGD = ZI(JDCM1-1+1)
       CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',IGD),NOMGD)
-      CALL ASSERT(NOMGD.EQ.'NEUT_F')
+      CALL ASSERT(NOMGD.EQ.'NOMMATER')
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',NCCM1,K8B)
       CALL ASSERT(NCCM1.GE.30)
-
+C
       CALL JEVEUO(CARTRF//'.DESC','L',JDTRF)
       CALL JEVEUO(CARTRF//'.VALE','L',JVTRF)
       NBTRF = ZI(JDTRF-1+3)
@@ -74,23 +72,19 @@ C     ---------------------------------------------------------------
       CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',IGD),NOMGD)
       CALL ASSERT(NOMGD.EQ.'NEUT_R')
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',NCTRF,K8B)
-
-
-
+C
 C     3) ALLOCATION DE CARCM2 :
 C     ---------------------------------------------------------------
-      CALL ALCART('V',CARCM2,NOMAIL,'NEUT_F')
+      CALL ALCART('V',CARCM2,NOMAIL,'NOMMATER')
       CALL JEVEUO(CARCM2//'.NCMP','E',JNCMP)
       CALL JEVEUO(CARCM2//'.VALV','E',JVALV)
-
-
+C
 C     4) REMPLISSAGE DE CARCM2 :
 C     ---------------------------------------------------------------
       DO 40,KCM1 = 1,NBCM1
         CODCM1 = ZI(JDCM1-1+3+2* (KCM1-1)+1)
         CALL ASSERT(CODCM1.EQ.1 .OR. CODCM1.EQ.3)
         NUCM1 = ZI(JDCM1-1+3+2* (KCM1-1)+2)
-
 C        -- ON STOCKE LES NOMS DES MATERIAUX AFFECTES (28 MAX) :
         ICO = 0
         NOCP='X'
@@ -107,8 +101,6 @@ C        -- ON STOCKE LES NOMS DES MATERIAUX AFFECTES (28 MAX) :
         ZK8(JNCMP-1+NM+1) = 'X29'
         ZK8(JVALV-1+NM+1) = 'TREF=>'
         ZK8(JNCMP-1+NM+2) = 'X30'
-
-
 C        -- LISTE DES MAILLES CONCERNEES PAR KCM1 :
         IF (CODCM1.EQ.3) THEN
            CALL JEVEUO(JEXNUM(CARCM1//'.LIMA',NUCM1),'L',JLCM1)
@@ -117,7 +109,6 @@ C        -- LISTE DES MAILLES CONCERNEES PAR KCM1 :
           JLCM1 = 1
           NCM1 = 0
         ENDIF
-
 C       -- POUR NE PAS PERDRE LES MAILLES QUI NE SONT
 C          CONCERNEES PAR AUCUN KTRF :
         ZK8(JVALV-1+NM+2) = 'NAN'
@@ -128,8 +119,7 @@ C          CONCERNEES PAR AUCUN KTRF :
           CALL NOCART(CARCM2,3,K8B,'NUM',NCM1,K8B,ZI(JLCM1),' ',
      &                NM+2)
         ENDIF
-
-
+C
         DO 30,KTRF = 1,NBTRF
           CODTRF = ZI(JDTRF-1+3+2* (KTRF-1)+1)
           CALL ASSERT(CODTRF.EQ.1 .OR. CODTRF.EQ.3)
@@ -145,7 +135,6 @@ C          CONCERNEES PAR AUCUN KTRF :
             WRITE (KTREF,'(F8.2)') TREF
           ENDIF
           ZK8(JVALV-1+NM+2) = KTREF
-
 C           -- LISTE DES MAILLES CONCERNEES PAR KTRF :
           IF (CODTRF.EQ.3) THEN
             CALL JEVEUO(JEXNUM(CARTRF//'.LIMA',NUTRF),'L',JLTRF)
@@ -154,7 +143,6 @@ C           -- LISTE DES MAILLES CONCERNEES PAR KTRF :
             JLTRF = 1
             NTRF = 0
           ENDIF
-
 C           -- CALCUL DE LA LISTE DES MAILLES CONCERNEES PAR KCM1/KTRF:
           CALL CMTRF2(CODCM1,CODTRF,NCM1,ZI(JLCM1),NTRF,ZI(JLTRF),
      &                NBMA,CODINT,ZI(JLINT),NINTER)
@@ -168,12 +156,10 @@ C           -- CALCUL DE LA LISTE DES MAILLES CONCERNEES PAR KCM1/KTRF:
             CALL NOCART(CARCM2,3,K8B,'NUM',NINTER,K8B,ZI(JLINT),' ',
      &                  NM+2)
           ENDIF
-
-
+C
    30   CONTINUE
    40 CONTINUE
-
-
+C
 C     5) RECOPIE DE CARCM2 DANS CARCM1 :
 C     ---------------------------------------------------------------
 C     -- DANS RCMACO/ALFINT, ON BOUCLE SUR TOUTES LES "ZONES" DE LA
@@ -184,7 +170,7 @@ C        SI ON NE VEUT PAS SE PLANTER DANS ALFINT, IL FAUT RETIRER LES
 C        ZONES "NAN" INUTILEMENT AJOUTEES.
 C        POUR CELA, ON APPELLE TECART :
       CALL TECART(CARCM2)
-
+C
       DBG=.FALSE.
       IF (DBG) THEN
          CALL UTIMSD(6,2,.FALSE.,.TRUE.,CARCM1,1,' ')
@@ -197,13 +183,11 @@ C        POUR CELA, ON APPELLE TECART :
       CALL DETRSD('CHAMP',CARCM1)
       CALL COPISD('CHAMP','G',CARCM2,CARCM1)
       CALL DETRSD('CHAMP',CARCM2)
-
-
+C
 C     6) MENAGE :
 C     ---------------------------------------------------------------
       CALL JEDETR('&&CMTREF.LISMAIL')
-
-
+C
    50 CONTINUE
       CALL JEDEMA()
       END

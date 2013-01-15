@@ -1,8 +1,8 @@
-%& MODIF COMPELEM  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,79 +65,43 @@ GRANDEUR_SIMPLE__
     CACABL   = R    SECT     TENS
 
 <<  CACOQU  Type:R  Caractéristiques des coques
-       EP  : épaisseur de la coque
-       SECT_L : somme des sections d'armatures dans la direction 1
-       C :
-       ALPHA : 1er angle de définition de l'axe de référence dans le plan
-       transverse
-       BETA  : 2ème angle de définition de l'axe de référence dans le plan
-       transverse
-       Ces deux angles définissent par rapport au repère de référence le
-       vecteur a projeter sur le plan tangent de l'élément afin d'y définir
-       le repère (T,N,L). La direction L est perpendiculaire au plan tangent
-       KAPPA : coefficient de cisaillement transverse
-       C_METR : coefficient de modification métrique pour l'élément coque
-       X : 1er coordonnée d'un point de l'axe de référence
-       Y : 2ème coordonnée d'un point de l'axe de référence
-       Z : 3ème coordonnée d'un point de l'axe de référence
-       PAS_T : dimension dans la direction T de la cellule rectangulaire de
-       référence
-       PAS_N : dimension dans la direction N de la cellule rectangulaire de
-       référence
-       COEF_ECH : coefficient d'échelle permettant de transformer la cellule
-       de référence en la cellule réelle de périodicité
-       K_DRL : rigidité locale de rotation suivant la direction L appliquée
-       en un noeud
-       K_DRT : rigidité locale de rotation suivant la direction T appliquée
-       en un noeud
-       K_DRN : rigidité locale de rotation suivant la direction N appliquée
-       en un noeud
-       KT_DL : rigidité différentielle de translation suivant la direction L
-       appliquée a une liaison entre deux noeuds situés dans la direction T
-       KT_DT : rigidité différentielle de translation suivant la direction T
-       appliquée a une liaison entre deux noeuds situés dans la direction T
-       KT_DN : rigidité différentielle de translation suivant la direction N
-       appliquée a une liaison entre deux noeuds situés dans la direction T
-       KT_DRL : rigidité différentielle de rotation suivant la direction L
-       appliquée a une liaison entre deux noeuds situés dans la direction T
-       KT_DRT : rigidité différentielle de rotation suivant la direction T
-       appliquée a une liaison entre deux noeuds situés dans la direction T
-       KT_DRN : rigidité différentielle de rotation suivant la direction N
-       appliquée a une liaison entre deux noeuds situés dans la direction T
-       KN_DL : rigidité différentielle de translation suivant la direction L
-       appliquée a une liaison entre deux noeuds situés dans la direction N
-       KN_DT : rigidité différentielle de translation suivant la direction T
-       appliquée a une liaison entre deux noeuds situés dans la direction N
-       KN_DN : rigidité différentielle de rotation suivant la direction N
-       appliquée a une liaison entre deux noeuds situés dans la direction N
-       KN_DRL : rigidité différentielle de rotation suivant la direction L
-       appliquée a une liaison entre deux noeuds situés dans la direction N
-       KN_DRT : rigidité différentielle de translation suivant la direction T
-       appliquée a une liaison entre deux noeuds situés dans la direction N
-       KN_DRN : rigidité différentielle de rotation suivant la direction N
-       appliquée a une liaison entre deux noeuds situés dans la direction N
-       DIST_N : excentrement de la nappe d'armatures par rapport a la maille
-       support
-       CTOR : constante multiplicative de la rigidité en rotation associée
-       a la direction perpendiculaire au plan tangent de l'élément
-       EXCENT : excentrement du feuillet moyen
+       EP      : épaisseur de la coque
+       SECT_L  : somme des sections d'armatures dans la direction L
+       ALPHA   : 1er angle de l'axe de référence dans le plan transverse
+       BETA    : 2ème angle de l'axe de référence dans le plan transverse
+                 Ces deux angles définissent par rapport au repère de référence
+                 le vecteur a projeter sur le plan tangent de l'élément afin
+                 d'y définir le repère (T,N,L).
+                 La direction L est perpendiculaire au plan tangent.
+       KAPPA   : coefficient de cisaillement transverse
+       C_METR  : coefficient de modification métrique pour l'élément coque
+       DIST_N  : excentrement de la nappe d'armatures vs la maille support
+       CTOR    : constante multiplicative de la rigidite en rotation associee a
+                 la direction perpendiculaire au plan tangent de l'élément
+       EXCENT  : excentrement du feuillet moyen
        INERTIE : prise en compte de l'inertie de rotation
 >>
-    CACOQU   = R    EP       SECT_L   C        ALPHA    BETA     KAPPA    C_METR   X
-                    Y        Z        PAS_T    PAS_N    COEF_ECH K_DRL    K_DRT    K_DRN
-                    KT_DL    KT_DT    KT_DN    KT_DRL   KT_DRT   KT_DRN   KN_DL    KN_DT
-                    KN_DN    KN_DRL   KN_DRT   KN_DRN   DIST_N   CTOR     EXCENT   INERTIE
+    CACOQU   = R     EP       SECT_L   ALPHA    BETA     KAPPA    C_METR
+                     DIST_N   CTOR     EXCENT   INERTIE
+
+<<  CACOQUF  Type:K8  Caractéristiques des coques qui dépendent d'une fonction
+       EP      : épaisseur de la coque
+       SECT_L  : somme des sections d'armatures dans la direction L
+       DIST_N  : excentrement de la nappe d'armatures vs la maille support
+       EXCENT  : excentrement du feuillet moyen
+>>
+    CACOQUF  = K8    EP       SECT_L  DIST_N    EXCENT
+
 
 <<  CACO3D  Type:R  Une "CARACTERISTIQUE" des éléments de COQUE_3D
        CRF : coefficient de rotation fictive
 >>
     CACO3D   = R    CRF
 
-<<  CAFI_R  Type:R
-       R :
-       XG :
-       YG :
-       AIRE :
+<<  CAFI_R  Type:R Caractéristiques des fibres dans le repère local de la poutre
+       XG   : coordonnée du centre de gravité de la fibre
+       YG   : coordonnée du centre de gravité de la fibre
+       AIRE : aire de lafibre
 >>
     CAFI_R   = R    XG       YG       AIRE
 
@@ -1358,24 +1322,33 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
     NBSP_I   = I    NBFIBR   COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC  NBGRFI    NUG1
                     NUG2     NUG3     NUG4     NUG5     NUG6     NUG7     NUG8    NUG9
                     NUG10
-
+%
+%
+<<  NOMMATER Type:K8 Nom des matériaux codés
+       X(1)  : nom du matériau 1
+       ...
+       X(28) : nom du matériau 28
+       X(29) : Toujours egal a 'TREF=>'
+       X(30) : valeur de TREF (reel code dans un K8)
+>>
+    NOMMATER   = K8   X[30]
+%
+%
 <<  NEUT_F Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
        nombreuses grandeurs sans grand intéret.
-       X(1) : composante 1
-       X(2) : composante 2
+       X(1)  : composante 1
        ...
-       X(30) : composante 30
+       X(90) : composante 90   !!! meme nombre d'entiers codes que NEUT_R
 >>
-    NEUT_F   = K8   X[30]
+    NEUT_F   = K8   X[90]
 
 <<  NEUT_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
        nombreuses grandeurs sans grand intéret.
-       X(1) : composante 1
-       X(2) : composante 2
+       X(1)   : composante 1
        ...
        X(360) : composante 360
 >>
@@ -1385,12 +1358,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
        nombreuses grandeurs sans grand intéret.
-       Z(1) : composante 1
-       Z(2) : composante 2
+       Z(1)  : composante 1
        ...
        Z(24) : composante 24
 >>
-
     NEUT_K8 = K8    Z[24]
 
 <<  NEUT_K16 Type:K16 Grandeur ''neutre'' de type K16
@@ -1398,35 +1369,32 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
        nombreuses grandeurs sans grand intéret.
        Z(1)  : composante 1
-       Z(2)  : composante 2
        ...
        Z(24) : composante 24
 >>
     NEUT_K16 = K16  Z[24]
 
-<<  NEUT_K24 Type:K24 Grandeur ''neutre'' de type K24. Cette grandeur
-    est utilisée en général pour transmettre des noms d'objets JEVEUX.
-    La signification des composantes varie d'une option a l'autre. Cette
-    grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
-    nombreuses grandeurs sans grand intéret.
+<<  NEUT_K24 Type:K24 Grandeur ''neutre'' de type K24.
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
+       nombreuses grandeurs sans grand intéret.
        Z(1)  : composante 1
-       Z(2)  : composante 2
        ...
        Z(24) : composante 24
 >>
-
     NEUT_K24 = K24  Z[24]
 
-<<  NEUT_R Type:R Grandeur ''neutre'' de type réel (voir NEUT_K24 )
-       X(1) : composante 1
-       X(2) : composante 2
-       X(3) : composante 3
-       X(4) : composante 4
-       X(5) : composante 5
+<<  NEUT_R Type:R Grandeur ''neutre'' de type réel
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
+       nombreuses grandeurs sans grand intéret.
+       X(1)  : composante 1
        ...
+       X(90) : composante 90
 >>
     NEUT_R   = R    X[90]
-
+%
+%
 <<  NUMC_I Type:I Pour les coques multi-couches
        NUMC : Numéro de la couche
        ORDO : Niveau de la couche (SUP=1, MOY=0, INF=-1)

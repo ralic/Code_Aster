@@ -20,7 +20,7 @@ C ======================================================================
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 07/01/2013   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -209,14 +209,14 @@ C
         STOPZ(1)='O'
         STOPZ(2)='N'
         STOPZ(3)='O'
-        CALL TECACH(STOPZ,'PVITESR',1,JVITE,IRET)
+        CALL TECACH(STOPZ,'PVITESR','L',1,JVITE,IRET)
 C IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         IF (IRET.EQ.0) THEN
           DO 21 I = 1,2*NC
             UG(I) = ZR(JVITE+I-1)
  21       CONTINUE
         ELSE
-          CALL TECACH(STOPZ,'PDEPLAR',1,JDEPL,IRET)
+          CALL TECACH(STOPZ,'PDEPLAR','L',1,JDEPL,IRET)
           IF (IRET.EQ.0) THEN
             DO 22 I = 1,2*NC
               UG(I) = ZR(JDEPL+I-1)

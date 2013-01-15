@@ -1,8 +1,8 @@
-        SUBROUTINE LKICVG(NR,ITMAX,TOLER,ITER,R,IRTET)
+        SUBROUTINE LKICVG(NR,ITMAX,TOLER,ITER,R,NVI,VINF,DY,IRTET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/01/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,18 +28,23 @@ C           TOLER  :  TOLERANCE A CONVERGENCE
 C           ITER   :  NUMERO ITERATION COURANTE
 C           NR     :  DIMENSION R
 C           R      :  RESIDU DU SYSTEME NL A L'ITERATION COURANTE
+C           NVI    :  NOMBRE DE VARIABLES INTERNES 
+C           VINF   :  VARIABLES INTERNES A L'INSTANT T+DT
+C           DY     :  SOLUTION DU SYSTEME NL A L'INSTANT T+DT
 C
-C       OUT IRET = 0:  CONVERGENCE
-C           IRET = 1:  ITERATION SUIVANTE
-C           IRET = 2:  RE-INTEGRATION
-C           IRET = 3:  REDECOUPAGE DU PAS DE TEMPS
+C       OUT IRET = 0  :  CONVERGENCE
+C           IRET = 1  :  ITERATION SUIVANTE
+C           IRET = 2  :  RE-INTEGRATION
+C           IRET = 3  :  REDECOUPAGE DU PAS DE TEMPS
+C           VINF(7)   :  SI ETAT PLASTIQUE NON VERIFIE - VINF(7)=0
+C           DY(NDT+1) :  SI ETAT PLASTIQUE NON VERIFIE - DY(NDT+1)=0
 C     ------------------------------------------------------------------
         IMPLICIT NONE
 C     ------------------------------------------------------------------
         COMMON /TDIM/   NDT ,NDI
 C     ------------------------------------------------------------------
-        INTEGER         NR,ITMAX,ITER,IRTET,NDT,NDI
-        REAL*8          TOLER,R(NR)
+        INTEGER         NR,ITMAX,ITER,IRTET,NDT,NDI,NVI
+        REAL*8          TOLER,R(NR),VINF(NVI),DY(NR)
 C
         INTEGER         I
         REAL*8          ER,ZERO
@@ -58,8 +63,18 @@ C === =================================================================
 C --- TEST DE CONVERGENCE PAR RAPPORT A TOLER
 C === =================================================================
       IF ( ER .LT. TOLER ) THEN
-         IRTET = 0
-         GOTO 9999
+        IF((DY(NDT+1).GE.ZERO).AND.(VINF(7).GT.ZERO))THEN
+          IRTET = 0           
+        ELSEIF(VINF(7).EQ.ZERO)THEN
+          IRTET = 0           
+        ELSE
+          IRTET     = 2
+          VINF(7)   = ZERO
+          DO 20 I = 1, NR
+            DY(I) = ZERO
+  20      CONTINUE
+        ENDIF
+        GOTO 9999
       ENDIF
 
 C === ==================================================================

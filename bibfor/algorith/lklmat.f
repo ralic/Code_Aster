@@ -8,9 +8,9 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 14/01/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,14 +56,15 @@ C --- : INDAL  : INDICATEUR SUR ALPHA
 C =================================================================
       INTEGER         II,INDAL
       REAL*8          E, NU, MU, K
-      REAL*8          UN, DEUX, TROIS
-      REAL*8          MU0V, XI0V, S0
+      REAL*8          ZERO, UN, DEUX, TROIS
+      REAL*8          MU0V, XI0V, S0, A0, VAR1, VAR2
       REAL*8          MPIC, APIC, SIGMP1, SIGC, ME, AE, COHERE
       INTEGER CERR(32)
       CHARACTER*8     NOMC(32)
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
 C =================================================================
+      PARAMETER       ( ZERO   =  0.0D0  )
       PARAMETER       ( UN     =  1.0D0  )
       PARAMETER       ( DEUX   =  2.0D0  )
       PARAMETER       ( TROIS  =  3.0D0  )
@@ -135,7 +136,14 @@ C =================================================================
       MU0V   = MATERD(24,2)
       XI0V   = MATERD(25,2)
       S0     = MATERD(11,2)
-      IF ((MU0V.GT.XI0V).AND.((UN/S0).GT.((UN+MU0V)/(MU0V-XI0V)))) THEN
+      A0     = MATERD(8,2)
+      IF (S0.EQ.ZERO) CALL U2MESS('F','COMPOR1_26')
+      IF (MU0V.EQ.XI0V) CALL U2MESS('F','COMPOR1_26')
+
+      VAR1   = UN/(S0**A0)
+      VAR2   = (UN+MU0V)/(MU0V-XI0V)
+
+      IF ((MU0V.GT.XI0V).AND.(VAR1).GT.(VAR2)) THEN
          CALL U2MESS('F','COMPOR1_26')
       ENDIF
 C =================================================================

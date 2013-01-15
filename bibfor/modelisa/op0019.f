@@ -1,9 +1,9 @@
       SUBROUTINE OP0019()
 
-C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -128,6 +128,8 @@ C        NOMEL3 : GRILLE(6) MEMBRANE(4)
       DATA NBMCLE /  2,2,4,4,2,2,2,2,2,1,2,0,4,2,1/
 C --- ------------------------------------------------------------------
       CALL JEMARQ()
+C     CALL ONERRF('ABORT', K16BID, IRET)
+
       IRET=0
 C --- ------------------------------------------------------------------
 C --- INITIALISATION DE  NOMELE
@@ -298,6 +300,7 @@ C --- VERIFICATION DE LA DIMENSION DES RAIDEURS MISS
          CALL ACEVRM(NBOCC(12),NOMA,LXRM,NOEMF2)
          LMAX = MAX(LMAX,LXRM)
       END IF
+
 C --- ------------------------------------------------------------------
 C --- VERIFICATION DE LA DIMENSION DES MASSES REPARTIES
       LXMR = 0
@@ -459,7 +462,7 @@ C --- AFFECTATION DES MATRICES AUX RAIDEURS REPARTIES
 C --- ------------------------------------------------------------------
 C --- AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "GRILLE"
       IF (NBOCC(11).NE.0) THEN
-         CALL ACEAGB(NOMU,NOMA,LMAX,LOCACO,LOCAMB,NBOCC(11))
+         CALL ACEAGB(NOMU,NOMA,LMAX,LOCAMB,NBOCC(11))
       END IF
 
 C --- ------------------------------------------------------------------
@@ -471,7 +474,7 @@ C --- AFFECTATION DES MATRICES AUX RAIDEURS MISS
 C --- ------------------------------------------------------------------
 C --- AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "MEMBRANE"
       IF (NBOCC(14).NE.0) THEN
-         CALL ACEAMB(NOMU,NOMA,LMAX,LOCACO,LOCAGB,NBOCC(14))
+         CALL ACEAMB(NOMU,NOMA,LMAX,NBOCC(14))
       END IF
 C --- ------------------------------------------------------------------
 C --- AFFECTATION DES MATRICES AUX MASSES REPARTIES
@@ -482,8 +485,7 @@ C --- AFFECTATION DES MATRICES AUX MASSES REPARTIES
 C --- ------------------------------------------------------------------
 C --- COMPACTAGE DE LA CARTE : '.CVENTCXF'
       IF (NBCART.GT.0) THEN
-C        -- TECART N'EST PAS APPELE POUR UNE SURCHARGE "FINE" MAIS
-C           POUR LE COMPACTAGE
+C        PAS APPELE POUR UNE SURCHARGE "FINE" MAIS POUR LE COMPACTAGE
          CALL TECART(CARTCF)
 C        DESTRUCTION DES CHAMPS
          TMPNCF = CARTCF//'.NCMP'
@@ -492,6 +494,11 @@ C        DESTRUCTION DES CHAMPS
          CALL JEDETR(TMPNCF)
       END IF
 
+C     POUR LES COQUES, GRILLES IL PEUT EXISTER UNE CARTE FONCTION
+C     IL FAUT L'EVALUER ET METTRE LE RESULTAT DANS LA CARTE DES REELS
+      IF ( (NBOCC(2).NE.0).OR.(NBOCC(11).NE.0) ) THEN
+         CALL COQUCF(NOMU)
+      ENDIF
 C --- ------------------------------------------------------------------
 C --- TRAITEMENT DES MOTS CLES
 C           MULTIFIBRE  /  GEOM_FIBRE

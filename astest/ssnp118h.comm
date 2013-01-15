@@ -1,9 +1,9 @@
-# MODIF  DATE 19/11/2012   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 # TITRE FISSURATION INTERFACE 3D (HEXA20), LOIS CZM_OUV_MIX ET CZM_TAC_MIX
 # ssnp118h.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -180,7 +180,21 @@ STAT_NON_LINE(reuse = U_OUV,
   ARCHIVAGE  = _F(LIST_INST = L_INST)
   )
 
+# INTERPOLATION NODALE DES CHAMPS AUX PG  
+U_OUV=CALC_CHAMP(reuse = U_OUV,
+                 RESULTAT = U_OUV,
+                 VARI_INTERNE='VARI_ELNO',
+                 CONTRAINTE='SIEF_ELNO',
+                 MAILLE='CUBEDEG'
+                );
 
+U_OUV=CALC_CHAMP(
+                 reuse = U_OUV,
+                 RESULTAT = U_OUV,
+                 VARI_INTERNE='VARI_NOEU',
+                 CONTRAINTE='SIEF_NOEU',
+                 MAILLE='CUBEDEG'
+                 );
 
 #----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE I AVEC LOI CZM_TAC_MIX
@@ -245,7 +259,21 @@ STAT_NON_LINE(reuse = U_TAC,
   ARCHIVAGE  = _F(LIST_INST = L_INST)
   )
 
+# INTERPOLATION NODALE DES CHAMPS AUX PG  
+U_TAC=CALC_CHAMP(reuse =U_TAC,
+                 RESULTAT=U_TAC,
+                 VARI_INTERNE='VARI_ELNO',
+                 CONTRAINTE='SIEF_ELNO',
+                 MAILLE='CUBEDEG'
+                );
 
+U_TAC=CALC_CHAMP(
+                 reuse =U_TAC,
+                 RESULTAT=U_TAC,
+                 VARI_INTERNE='VARI_NOEU',
+                 CONTRAINTE='SIEF_NOEU',
+                 MAILLE='CUBEDEG'
+                 );
 
 #----------------------------------------------------------------------------------
 # TESTS CALCUL MODE I AVEC LOI CZM_OUV_MIX
@@ -354,6 +382,31 @@ TEST_RESU(RESU=_F(INST=7.0000299999999998,
                   VALE_REFE=0.70000300000000004,
                   MAILLE='CUBEDEG',),
           )
+          
+# TESTS DES INTERPOLATIONS AUX NOEUDS
+TEST_RESU(RESU=_F(INST=9.0000099999999996,
+                  REFERENCE='ANALYTIQUE',
+                  NOEUD='NS19',
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CMP='SIGN',
+                  VALE_CALC=0.347848803,
+                  VALE_REFE=0.34784900000000002,
+                  MAILLE='CUBEDEG',),
+          )
+          
+
+TEST_RESU(RESU=_F(INST=7.0000299999999998,
+                  REFERENCE='ANALYTIQUE',
+                  NOEUD='NO1',
+                  RESULTAT=U_OUV,
+                  NOM_CHAM='VARI_NOEU',
+                  NOM_CMP='V4',
+                  VALE_CALC=0.700003000,
+                  VALE_REFE=0.70000300000000004,
+                  MAILLE='CUBEDEG',),
+          )
+
 
 #----------------------------------------------------------------------------------
 # TESTS CALCUL MODE I AVEC LOI CZM_TAC_MIX

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE CONTACT-FROTTANT EN GRANDS GLISSEMENTS
 # ssnp503c.para = tps_job 60 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -126,6 +126,29 @@ vale = [[0.0,-7.1041387832239E+03,-5.5751916294848E+03,-5.6055420096676E+03,-3.6
         [0.0,0.0,-1.9485288504693E+04,-1.6399582621920E+04,-1.0605892575698E+04],
         [0.0,0.0,-1.7065781429260E+04,-2.0872173661117E+04,-1.6114705916606E+04]]
 
+VALE_CALC=[
+[ 0.0E+00,
+ -7104.1368312898,
+ -5575.1848247128,
+ -5605.5478359152,
+ -3692.0563694138,],
+[ 0.0E+00,
+ -9170.9019144522,
+ -11435.767369646,
+ -10391.774853701,
+ -7767.2828824004,],
+[ 0.0E+00,
+ 0.0E+00,
+ -19485.663258293,
+ -16400.190522674,
+ -10606.240076165,],
+[ 0.0E+00,
+ 0.0E+00,
+ -17067.339592334,
+ -20872.912034934,
+ -16115.227041187,],
+]
+
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                          GROUP_NO=('L13N'),
@@ -151,9 +174,9 @@ for i in [1,2,3,4]: #Boucle sur les increments
         critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
-                 VALE_CALC=vale[i-1] [j], VALE_REFE=vale[i-1] [j],
+                 VALE_CALC=VALE_CALC[i-1] [j], VALE_REFE=vale[i-1] [j],
                  CRITERE=critere,
-                 TOLE_MACHINE=precision, PRECISION=precision,   #TODO vale_calc
+                 PRECISION=precision, 
                  REFERENCE='AUTRE_ASTER',
                  FILTRE=_F(NOM_PARA='COOR_X',
                            CRIT_COMP='EQ',

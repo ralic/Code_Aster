@@ -3,9 +3,9 @@
      &   PRECDC, METHOD, OMECOR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/09/2012   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -132,7 +132,7 @@ C
                 IF (TOLE .LT. PRECDC) THEN
                     CALL U2MESS('A','ALGELINE3_58')
                    VALR = FREQOM(VPINF2)
-                    CALL U2MESG('A', 'ALGELINE4_66',0,' ',0,0,1,VALR)
+                    CALL U2MESR('A', 'ALGELINE4_66',1,VALR)
                     VPINF = VPINF * (1.D0 - SIGN(PRECDC,VPINF))
                 ENDIF
              ELSE
@@ -140,7 +140,7 @@ C
                 IF (TOLE .LT. PRECDC) THEN
                   CALL U2MESS('A','ALGELINE3_58')
                    VALR = FREQOM(VPINF2)
-                 CALL U2MESG('A', 'ALGELINE4_66',0,' ',0,0,1,VALR)
+                 CALL U2MESR('A', 'ALGELINE4_66',1,VALR)
                  VPINF = VPINF * (1.D0 - SIGN(PRECDC,VPINF))
                 ENDIF
              ENDIF
@@ -161,7 +161,7 @@ C
                IF (TOLE .LT. PRECDC) THEN
                   CALL U2MESS('A','ALGELINE3_58')
                    VALR = FREQOM(VPMAX2)
-                  CALL U2MESG('A', 'ALGELINE4_68',0,' ',0,0,1,VALR)
+                  CALL U2MESR('A', 'ALGELINE4_66',1,VALR)
                   VPMAX = VPMAX * (1.D0 + SIGN(PRECDC,VPMAX))
                ENDIF
             ELSE
@@ -169,7 +169,7 @@ C
                IF (TOLE .LT. PRECDC) THEN
                    CALL U2MESS('A','ALGELINE3_58')
                    VALR = FREQOM(VPMAX2)
-                   CALL U2MESG('A', 'ALGELINE4_68',0,' ',0,0,1,VALR)
+                   CALL U2MESR('A', 'ALGELINE4_66',1,VALR)
                    VPMAX = VPMAX * (1.D0 + SIGN(PRECDC,VPMAX))
                ENDIF
             ENDIF

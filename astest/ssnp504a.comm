@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504a.para = tps_job 90 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -135,6 +135,29 @@ vale = [[0.0,-6.3355791974025E+04,-6.0652835573768E+04,-5.0757742731615E+04,0.0]
         [0.0,0.0,-2.0163277761773E+05,-1.5784446601920E+05,0.0],
         [0.0,0.0,-3.7985867300987E+05,-2.2011906876467E+05,0.0]]
 
+VALE_CALC=[
+ [0.0,
+ -63355.859811974,
+ -60652.897226059,
+ -50757.789817004,
+ 0.0,],
+ [0.0,
+ -1.8113412695769E+05,
+ -1.2484579493149E+05,
+ -1.0310922568345E+05,
+ 0.0,],
+ [0.0,
+ 0.0,
+ -2.0178246972408E+05,
+ -1.5795451930304E+05,
+ 0.0,],
+ [0.0,
+ 0.0,
+ -3.8025255345516E+05,
+ -2.2034562733908E+05,
+ 0.0,],
+]
+
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                          GROUP_NO=('L13N'),
@@ -160,9 +183,9 @@ for i in [1,2,3,4]: #Boucle sur les increments
         critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
-                 VALE_CALC=vale[i-1][j], VALE_REFE=vale[i-1][j],
+                 VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j],
                  CRITERE=critere,
-                 TOLE_MACHINE=precision, PRECISION=precision,   #TODO vale_calc
+                 PRECISION=precision, 
                  REFERENCE='AUTRE_ASTER',
                  FILTRE=_F(NOM_PARA='COOR_X',
                            CRIT_COMP='EQ',

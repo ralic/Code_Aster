@@ -4,10 +4,10 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -180,7 +180,7 @@ C
      &     OPTION .EQ. 'CHAR_MECA_SR1D1D' ) THEN
 C          ------------------------------
 C        POUR LE CAS DU VENT
-         CALL TECACH('NNN','PVITER',1,LFORC,IRET)
+         CALL TECACH('NNN','PVITER','L',1,LFORC,IRET)
          IF ( LFORC .NE. 0 ) THEN
            IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
 C OPTION NON PROGRAMMEE
@@ -201,7 +201,7 @@ C              ------------------------------
          CALL JEVECH('PFF1D1D','L',LFORC)
          NORMAL = ZK8(LFORC+3) .EQ. 'VENT'
          GLOBAL = ZK8(LFORC+3) .EQ. 'GLOBAL'
-         CALL TECACH ( 'NNN', 'PTEMPSR', 1, ITEMPS,IRET )
+         CALL TECACH ( 'NNN', 'PTEMPSR','L', 1, ITEMPS,IRET )
          IF ( ITEMPS .NE. 0 ) THEN
             VALPA1(4) = ZR(ITEMPS)
             VALPA2(4) = ZR(ITEMPS)
@@ -372,7 +372,7 @@ C          NORME DE LA VITESSE PERPENDICULAIRE
            VALPAV(1) = SQRT( VITE2 )
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-             CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
+             CALL TECACH('ONN','PVENTCX','L',1,IFCX,IRET)
              IF ( IRET .NE. 0 ) GOTO  999
              IF ( ZK8(IFCX)(1:1) .EQ. '.' ) GOTO  999
              CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)
@@ -393,7 +393,7 @@ C          NORME DE LA VITESSE PERPENDICULAIRE
            VALPAV(1) = SQRT( VITE2 )
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-             CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
+             CALL TECACH('ONN','PVENTCX','L',1,IFCX,IRET)
              IF ( IRET .NE. 0 ) GOTO  999
              IF ( ZK8(IFCX)(1:1) .EQ. '.' ) GOTO  999
              CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)
@@ -471,7 +471,7 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
      &               0,' ',R8BID,1,'E',E,
      &               CODRES,1)
 
-        CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+        CALL TECACH('ONN','PTEMPSR','L',1,ITEMPS,IRET)
         IF (ITEMPS.NE.0) THEN
           INSTAN = ZR(ITEMPS)
         ELSE
@@ -538,7 +538,7 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
-         CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+         CALL TECACH('ONN','PTEMPSR','L',1,ITEMPS,IRET)
          IF (ITEMPS.NE.0) THEN
          INSTAN = ZR(ITEMPS)
          ELSE

@@ -1,9 +1,9 @@
       SUBROUTINE AMUMPU(OPTION,TYPE,KXMPS,USERSM,NPREC,LRESOL,KVERS)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPU MUMPS  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPU MUMPS  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -18,43 +18,43 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ==================================================================
-C--------------------------------------------------------------
-C BUT : UTILITAIRE POUR LES TRAITEMENTS CONNEXES LORS DU LANCEMENT
-C       DES DIFFERENTES ETAPES DE MUMPS.
-C
-C OPTION=1 GESTION DE LA STRATEGIE MEMOIRE MUMPS (APRES ANALYSE)
-C       CETTE ROUTINE DOIT ETRE APPELLEE ENTRE LA PHASE D'ANALYSE ET
-C       CELLE DE FACTORISATION NUMERIQUE
-C OPTION=2 DETECTION DES SINGULARITES (APRES FACTO) ET STOCKAGE DE CES
-C          INFOS DS L'OBJET JEVEUX '&&AMUMP.PIVNUL' (V V I DIM=N+2)
-C
-C OPTION=3 RECUPERE LE NUMERO DE VERSION (OCCURENCE MUMPS EXISTE DEJA)
-C OPTION=31 IDEM MAIS ON CREE UNE OCCURENCE MUMPS TEMPORAIRE. OPERATION
-C    UN PEU COUTEUSE A NE FAIRE QU'UNE FOIS PAR OPERATEUR(SD_SOLVEUR).
-C DANS CES DEUX MODES, ON CONTROLE LE CARACTERE LICITE DU NUMERO DE
-C VERSIONS: 4.9.2 OU 4.10.0 SINON UTMESS_F
-C
-C OPTION=4 RECUPERE LE DETERMINANT ET ON LE STOCKE DS L'OBJET JEVEUX
-C          '&&AMUMP.DETERMINANT' (V V R DIM=3)
-C
-C IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS XMPS
-C                       (INUTILE POUR OPTION=31)
-C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
-C
-C SI OPTION=1
-C IN  USERSM :   K8   : STRATEGIE MEMOIRE DE L'UTILISATEUR
-C                 (INFORMATION SOUVENT ISSUE DE SD_SOLVEUR.SLVK(8))
-C SI OPTION=2
-C IN  NPREC  :   IN   : NBRE DE DIGITS POUR DETECTION DE SINGULARITE
-C IN LRESOL  :  LOG   : .TRUE. SI ON FAIT LE SOLVE, .FALSE. SINON
-C
-C SI OPTION=3 OU 31
-C OUT KVERS  :  K24   : NUMERO DE VERSION DE MUMPS LICITE
-C
-C SI OPTION=4
-C RAS
-C---------------------------------------------------------------
-C RESPONSABLE BOITEAU O.BOITEAU
+!--------------------------------------------------------------
+! BUT : UTILITAIRE POUR LES TRAITEMENTS CONNEXES LORS DU LANCEMENT
+!       DES DIFFERENTES ETAPES DE MUMPS.
+!
+! OPTION=1 GESTION DE LA STRATEGIE MEMOIRE MUMPS (APRES ANALYSE)
+!       CETTE ROUTINE DOIT ETRE APPELLEE ENTRE LA PHASE D'ANALYSE ET
+!       CELLE DE FACTORISATION NUMERIQUE
+! OPTION=2 DETECTION DES SINGULARITES (APRES FACTO) ET STOCKAGE DE CES
+!          INFOS DS L'OBJET JEVEUX '&&AMUMP.PIVNUL' (V V I DIM=N+2)
+!
+! OPTION=3 RECUPERE LE NUMERO DE VERSION (OCCURENCE MUMPS EXISTE DEJA)
+! OPTION=31 IDEM MAIS ON CREE UNE OCCURENCE MUMPS TEMPORAIRE. OPERATION
+!    UN PEU COUTEUSE A NE FAIRE QU'UNE FOIS PAR OPERATEUR(SD_SOLVEUR).
+! DANS CES DEUX MODES, ON CONTROLE LE CARACTERE LICITE DU NUMERO DE
+! VERSIONS: 4.9.2 OU 4.10.0 SINON UTMESS_F
+!
+! OPTION=4 RECUPERE LE DETERMINANT ET ON LE STOCKE DS L'OBJET JEVEUX
+!          '&&AMUMP.DETERMINANT' (V V R DIM=3)
+!
+! IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS XMPS
+!                       (INUTILE POUR OPTION=31)
+! IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
+!
+! SI OPTION=1
+! IN  USERSM :   K8   : STRATEGIE MEMOIRE DE L'UTILISATEUR
+!                 (INFORMATION SOUVENT ISSUE DE SD_SOLVEUR.SLVK(8))
+! SI OPTION=2
+! IN  NPREC  :   IN   : NBRE DE DIGITS POUR DETECTION DE SINGULARITE
+! IN LRESOL  :  LOG   : .TRUE. SI ON FAIT LE SOLVE, .FALSE. SINON
+!
+! SI OPTION=3 OU 31
+! OUT KVERS  :  K24   : NUMERO DE VERSION DE MUMPS LICITE
+!
+! SI OPTION=4
+! RAS
+!---------------------------------------------------------------
+! RESPONSABLE BOITEAU O.BOITEAU
 
       INTEGER      OPTION,KXMPS,NPREC
       CHARACTER*1  TYPE
@@ -64,14 +64,14 @@ C RESPONSABLE BOITEAU O.BOITEAU
 
 #ifdef _HAVE_MUMPS
 
-C============================================================
+!============================================================
       INCLUDE 'mpif.h'
       INCLUDE 'smumps_struc.h'
       INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
       INCLUDE 'jeveux.h'
-C============================================================
+!============================================================
       INTEGER    NMXINS
       PARAMETER (NMXINS=5)
       TYPE (SMUMPS_STRUC) , TARGET  :: SMPS(NMXINS)
@@ -111,12 +111,12 @@ c      INTEGER*4     getpid
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
 
-C       ------------------------------------------------
-C ---   INITS
-C       ------------------------------------------------
+!       ------------------------------------------------
+! ---   INITS
+!       ------------------------------------------------
       NVERS(1:80)=''
       IF (OPTION.NE.31) THEN
-C --- OCCURENCE DE MUMPS EXISTE DEJA DS UN VECTEUR XMPS
+! --- OCCURENCE DE MUMPS EXISTE DEJA DS UN VECTEUR XMPS
         SELECT CASE(TYPE)
         CASE ('S')
           SMPSK=>SMPS(KXMPS)
@@ -150,7 +150,7 @@ C --- OCCURENCE DE MUMPS EXISTE DEJA DS UN VECTEUR XMPS
           CALL ASSERT(.FALSE.)
         END SELECT
       ELSE
-C ---- ON CREE PUIS DETRUIT UNE OCCURENCE MUMPS TEMPORAIRE
+! ---- ON CREE PUIS DETRUIT UNE OCCURENCE MUMPS TEMPORAIRE
         KXMPS=1
         SELECT CASE(TYPE)
         CASE ('S')
@@ -198,12 +198,12 @@ C ---- ON CREE PUIS DETRUIT UNE OCCURENCE MUMPS TEMPORAIRE
         END SELECT
       ENDIF
 
-C       ------------------------------------------------
-C ---   GESTION STRATEGIE MEMOIRE MUMPS (APRES ANALYSE)
-C       ------------------------------------------------
+!       ------------------------------------------------
+! ---   GESTION STRATEGIE MEMOIRE MUMPS (APRES ANALYSE)
+!       ------------------------------------------------
       IF (OPTION.EQ.1) THEN
 
-C ---   INITS. PROPRE A L'OPTION
+! ---   INITS. PROPRE A L'OPTION
         SELECT CASE(TYPE)
         CASE ('S')
           INFO16=SMPSK%INFOG(16)
@@ -228,8 +228,8 @@ C ---   INITS. PROPRE A L'OPTION
           INFO3=INFO3/(1024*1024*NBPROC)
         ENDIF
 
-C ---   NSIZEMA: TAILLE CUMULEE EN MO DES OBJETS MUMPS A,IRN,RHS..
-C ---   EXECMU:  TAILLE EN MO DE L'EXECUTABLE MUMPS
+! ---   NSIZEMA: TAILLE CUMULEE EN MO DES OBJETS MUMPS A,IRN,RHS..
+! ---   EXECMU:  TAILLE EN MO DE L'EXECUTABLE MUMPS
         EXECMU=30
         KSIZEMU='&&TAILLE_OBJ_MUMPS'
         CALL JEVEUO(KSIZEMU,'L',ISIZEMU)
@@ -239,26 +239,26 @@ C ---   EXECMU:  TAILLE EN MO DE L'EXECUTABLE MUMPS
           IF (NSIZEMU.GT.NSIZEMA) NSIZEMA=NSIZEMU
         ENDDO
 
-C ---   MARGES POUR LES ESTIMATIONS (EN %) DE MUMPS IC ET OOC PLUS
-C ---   CORRECTION POUR PRENDRE EN COMPTE MAX(A/IRN/JCN,PROC) ET
-C ---   EXECUTABLE MUMPS.
+! ---   MARGES POUR LES ESTIMATIONS (EN %) DE MUMPS IC ET OOC PLUS
+! ---   CORRECTION POUR PRENDRE EN COMPTE MAX(A/IRN/JCN,PROC) ET
+! ---   EXECUTABLE MUMPS.
         IF (LPARA) THEN
-C ---     MARGE DU AU PARALLELISME
+! ---     MARGE DU AU PARALLELISME
           ICOEFM=30
         ELSE
-C ---     MARGE DU AU SEQUENTIEL
+! ---     MARGE DU AU SEQUENTIEL
           ICOEFM=10
         ENDIF
-C ---   MARGE POUR LES TRES PETITS CAS
+! ---   MARGE POUR LES TRES PETITS CAS
         IF (N.LT.100) ICOEFM=50
 
-C ---   CONSOS MUMPS IC ET OOC MAX SUR TOUS LES PROCS
+! ---   CONSOS MUMPS IC ET OOC MAX SUR TOUS LES PROCS
         INFO16=INT(INFO16*((ICOEFM+100)*1.D0/100.D0))+NSIZEMA+EXECMU
         INFO26=INT(INFO26*((ICOEFM+100)*1.D0/100.D0))+NSIZEMA+EXECMU
-C ---
-C ---   TMAX: MAX DE LA RAM DISPO =
-C ---       MEM_JOB - COURANT_JEVEUX - RELIQUAT (PYTHON, EXEC ASTER...)
-C ---
+! ---
+! ---   TMAX: MAX DE LA RAM DISPO =
+! ---       MEM_JOB - COURANT_JEVEUX - RELIQUAT (PYTHON, EXEC ASTER...)
+! ---
         TMAX=-999
         RVAL1=-999
         RVAL2=-999
@@ -270,12 +270,12 @@ C ---
         ICN22=-999
         ICN23=-999
 
-C ---   SI LA MESURE DE VMPEAK N'EST PAS DISPO, ON A MOINS CONFIANCE
-C ---   DANS LA MESURE DE TMAX. DU COUP CERTAINS MSGS NE SONT PAS
-C ---   AFFICHES.
-C ---   SI GESTION_MEMOIRE='AUTO', ON BASCULE AUTOMATIQUEMENT
-C ---   EN MODE OOC
-C ---   SI GESTION_MEMOIRE='EVAL', ON ALERTE L'UTILISATEUR
+! ---   SI LA MESURE DE VMPEAK N'EST PAS DISPO, ON A MOINS CONFIANCE
+! ---   DANS LA MESURE DE TMAX. DU COUP CERTAINS MSGS NE SONT PAS
+! ---   AFFICHES.
+! ---   SI GESTION_MEMOIRE='AUTO', ON BASCULE AUTOMATIQUEMENT
+! ---   EN MODE OOC
+! ---   SI GESTION_MEMOIRE='EVAL', ON ALERTE L'UTILISATEUR
 
         LPB1=.FALSE.
         CALL UTGTME(1,'VMPEAK  ',RVAL,IRET)
@@ -304,9 +304,9 @@ C ---   SI GESTION_MEMOIRE='EVAL', ON ALERTE L'UTILISATEUR
 
         SELECT CASE(USERSM)
         CASE('IN_CORE')
-C --------------
-C ---   IN-CORE
-C --------------
+! --------------
+! ---   IN-CORE
+! --------------
           ICN22=0
           ICN23=0
           IF ((TMAX.LT.INFO16).AND.(LPEAK)) THEN
@@ -316,9 +316,9 @@ C --------------
             CALL U2MESI('A','FACTOR_74',3,VALI)
           ENDIF
         CASE ('OUT_OF_CORE')
-C ------------------
-C ---   OUT-OF-CORE
-C-------------------
+! ------------------
+! ---   OUT-OF-CORE
+!-------------------
           ICN22=1
           ICN23=0
           IF ((TMAX.LT.INFO26).AND.(LPEAK)) THEN
@@ -328,10 +328,10 @@ C-------------------
             CALL U2MESI('A','FACTOR_75',3,VALI)
           ENDIF
         CASE ('AUTO')
-C -----------------------------------------------------------------
-C ----- STRATEGIE DECIDEE EN FONCTION DES CAPACITES MACHINES ET DES
-C ----- CONSOMMATIONS REQUISES PAR MUMPS
-C -----------------------------------------------------------------
+! -----------------------------------------------------------------
+! ----- STRATEGIE DECIDEE EN FONCTION DES CAPACITES MACHINES ET DES
+! ----- CONSOMMATIONS REQUISES PAR MUMPS
+! -----------------------------------------------------------------
           IF (TMAX.GE.INFO16) THEN
             ICN22=0
             ICN23=MAX(INT(0.95*TMAX),INFO16)-(NSIZEMA+EXECMU)
@@ -369,9 +369,9 @@ C -----------------------------------------------------------------
             ENDIF
           ENDIF
         CASE ('EVAL')
-C --------------------------------------------------
-C ---   OPTION DE PRE-EVALUATION DES CONSOS MEMOIRE
-C --------------------------------------------------
+! --------------------------------------------------
+! ---   OPTION DE PRE-EVALUATION DES CONSOS MEMOIRE
+! --------------------------------------------------
           ICN22=-1
           ICN23=-1
           K8TAB(1)='CUSE_JV'
@@ -390,12 +390,12 @@ C --------------------------------------------------
         CASE DEFAULT
           CALL ASSERT(.FALSE.)
         END SELECT
-C --- CORRECTIF POUR BENEFICIER DES BOUCLES DE RATTRAPAGE SI VMPEAK
-C --- NON EVALUABLE ET GESTION_MEMOIRE='AUTO'
+! --- CORRECTIF POUR BENEFICIER DES BOUCLES DE RATTRAPAGE SI VMPEAK
+! --- NON EVALUABLE ET GESTION_MEMOIRE='AUTO'
         IF (LPB1) USERSM='AUTO'
 
-C ---  MODIFICATION DU PARAMETRAGE MUMPS POUR LA SUITE DU PROCESSUS
-C ---- (FACTORISATION NUMERIQUE + SOLVE)
+! ---  MODIFICATION DU PARAMETRAGE MUMPS POUR LA SUITE DU PROCESSUS
+! ---- (FACTORISATION NUMERIQUE + SOLVE)
         SELECT CASE(TYPE)
         CASE ('S')
           SMPSK%ICNTL(22)=ICN22
@@ -416,13 +416,13 @@ C ---- (FACTORISATION NUMERIQUE + SOLVE)
         END SELECT
 
         IF (NIV.GE.2) THEN
-C ---  NIVEAU DEVELOPPEUR
-C ---  AFFICHAGE DE CONTROLE POUR DIAGNOSTIC MEMOIRE FIN
-C ---  RECUPERATION DE L'AFFICHAGE DES CONSOS SYSTEMES
-C ---  (VMPEAK, VMSIZE, VMDATA) + FREE DS LE FICHIER FORT.11
-C ---  SI ON DECOMMENTARISE LES LIGNES 'CALL SYSTEM()' + 'GETPID'
+! ---  NIVEAU DEVELOPPEUR
+! ---  AFFICHAGE DE CONTROLE POUR DIAGNOSTIC MEMOIRE FIN
+! ---  RECUPERATION DE L'AFFICHAGE DES CONSOS SYSTEMES
+! ---  (VMPEAK, VMSIZE, VMDATA) + FREE DS LE FICHIER FORT.11
+! ---  SI ON DECOMMENTARISE LES LIGNES 'CALL SYSTEM()' + 'GETPID'
           PID=0
-C          PID=getpid()
+!          PID=getpid()
           IF ( ABS(PID) < 10 ) THEN
             FSTRING = 'I1'
           ELSEIF ( PID < 100 ) THEN
@@ -439,10 +439,10 @@ C          PID=getpid()
             WRITE(6,*)'READ_VMPEAK : PB FORMAT CHOICE !'
           ENDIF
           WRITE(STRPID,'('//FSTRING//')')PID
-C          str=""
-C          str="/proc/"//trim(adjustl(strpid))//"/status"
-C          CALL SYSTEM("cat "//str//" > fort.11")
-C          CALL SYSTEM('free -m >> fort.11')
+!          str=""
+!          str="/proc/"//trim(adjustl(strpid))//"/status"
+!          CALL SYSTEM("cat "//str//" > fort.11")
+!          CALL SYSTEM('free -m >> fort.11')
           WRITE(IFM,*)
           WRITE(IFM,*)'*********************************************'
           WRITE(IFM,*)'<AMUMPU> GESTION MEMOIRE USERSM/ICN22/ICN23: ',
@@ -457,12 +457,12 @@ C          CALL SYSTEM('free -m >> fort.11')
           WRITE(IFM,*)'*********************************************'
         ENDIF
 
-C       ------------------------------------------------
-C ---   DETECTION DES SINGULARITES (APRES FACTO)
-C       ------------------------------------------------
+!       ------------------------------------------------
+! ---   DETECTION DES SINGULARITES (APRES FACTO)
+!       ------------------------------------------------
       ELSE IF (OPTION.EQ.2) THEN
 
-C ---   INITS. PROPRE A L'OPTION
+! ---   INITS. PROPRE A L'OPTION
         SELECT CASE(TYPE)
         CASE ('S')
           INFO28=SMPSK%INFOG(28)
@@ -486,20 +486,20 @@ C ---   INITS. PROPRE A L'OPTION
           ELSE
             CALL WKVECT(KPIV,'V V I',N+2,IPIV)
             IF (LRESOL) THEN
-C ---   KPIV(1)= NOMBRE DE PIVOTS QUASI NULS (TOUS LE PROCS)
+! ---   KPIV(1)= NOMBRE DE PIVOTS QUASI NULS (TOUS LE PROCS)
               IF (INFO28.GT.N) THEN
                 CALL ASSERT(.FALSE.)
               ELSE
                 ZI(IPIV)=INFO28
               ENDIF
-C ---   KPIV(2)= NOMBRE DE PIVOTS NEGATIFS (TOUS LE PROCS)
+! ---   KPIV(2)= NOMBRE DE PIVOTS NEGATIFS (TOUS LE PROCS)
               IF (INFO12.GT.N) THEN
                 CALL ASSERT(.FALSE.)
               ELSE
                 ZI(IPIV+1)=INFO12
               ENDIF
               IF (RANG.EQ.0) THEN
-C ---   KPIV(3..) LES PIVOTS QUASI NULS (ONLY PROC 0)
+! ---   KPIV(3..) LES PIVOTS QUASI NULS (ONLY PROC 0)
                 SELECT CASE(TYPE)
                 CASE ('S')
                   DO I=1,INFO28
@@ -519,11 +519,11 @@ C ---   KPIV(3..) LES PIVOTS QUASI NULS (ONLY PROC 0)
                   ENDDO
                 END SELECT
               ENDIF
-C ---   BCAST POUR COMMUNIQUER L'INFO AUX AUTRES PROCS
+! ---   BCAST POUR COMMUNIQUER L'INFO AUX AUTRES PROCS
               CALL MPICM2('BCAST',KPIV)
             ENDIF
           ENDIF
-C ---  AFFICHAGE DE CONTROLE
+! ---  AFFICHAGE DE CONTROLE
           IF (NIV.GE.2) THEN
             WRITE(IFM,*)
             WRITE(IFM,*)'*********************************************'
@@ -534,9 +534,9 @@ C ---  AFFICHAGE DE CONTROLE
 
         ENDIF
 
-C       ------------------------------------------------
-C ---   NUMERO DE VERSION DE MUMPS (DETECTION ET CONTROLE)
-C       ------------------------------------------------
+!       ------------------------------------------------
+! ---   NUMERO DE VERSION DE MUMPS (DETECTION ET CONTROLE)
+!       ------------------------------------------------
       ELSE IF ((OPTION.EQ.3).OR.(OPTION.EQ.31)) THEN
 
         KVERS=''
@@ -547,12 +547,12 @@ C       ------------------------------------------------
           CALL U2MESK('F','FACTOR_72',1,KVERS)
         END SELECT
 
-C       ------------------------------------------------
-C ---   CALCUL DE DETERMINANT (APRES FACTO)
-C       ------------------------------------------------
+!       ------------------------------------------------
+! ---   CALCUL DE DETERMINANT (APRES FACTO)
+!       ------------------------------------------------
       ELSE IF (OPTION.EQ.4) THEN
 
-C ---   INITS. PROPRE A L'OPTION
+! ---   INITS. PROPRE A L'OPTION
         SELECT CASE(TYPE)
         CASE ('S')
           RINF12=SMPSK%RINFOG(12)
@@ -583,15 +583,15 @@ C ---   INITS. PROPRE A L'OPTION
           ELSE
             CALL WKVECT(KPIV,'V V R',3,IPIV)
           ENDIF
-C --- ON STOCKE LE CALCUL DU DET: MANTISSE * (2**EXP)
-C --- MANTISSE=DCMPLX(RINF12,RINF13)
-C --- EXP     =INFO34
+! --- ON STOCKE LE CALCUL DU DET: MANTISSE * (2**EXP)
+! --- MANTISSE=DCMPLX(RINF12,RINF13)
+! --- EXP     =INFO34
           ZR(IPIV)  =RINF12
           ZR(IPIV+1)=RINF13
           ZR(IPIV+2)=INFO34
         ENDIF
 
-C --- CASE SUR LA VARIABLE OPTION
+! --- CASE SUR LA VARIABLE OPTION
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

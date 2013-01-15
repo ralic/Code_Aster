@@ -1,9 +1,9 @@
       SUBROUTINE EF0039(NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/10/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,14 +27,14 @@ C     ------------------------------------------------------------------
       INTEGER ITAB(2),IEFFO,N1,I,IRET,ICONTG
 C     ------------------------------------------------------------------
 
-      CALL TECACH('OOO','PEFFORR',2,ITAB,IRET)
+      CALL TECACH('OOO','PEFFORR','E',2,ITAB,IRET)
       IEFFO=ITAB(1)
       N1=ITAB(2)
 
-        CALL JEVECH('PEFFORR','E',IEFFO)
-        CALL JEVECH('PCONTRR','L',ICONTG)
-        DO 70 I=1,N1
-          ZR(IEFFO-1+I)=ZR(ICONTG-1+I)
-   70   CONTINUE
+      CALL JEVECH('PCONTRR','L',ICONTG)
+      
+      DO 70 I=1,N1
+        ZR(IEFFO-1+I)=ZR(ICONTG-1+I)
+70    CONTINUE
 
       END

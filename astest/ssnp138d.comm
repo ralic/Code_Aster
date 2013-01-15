@@ -1,10 +1,10 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 # ssnp138d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -193,7 +193,7 @@ for i in range(nbcalc) :
                  NOM_PARA='K1',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
                  CRITERE='RELATIF',
-                  PRECISION=0.005, #TODO vale_calc
+                  PRECISION=0.005,
                  REFERENCE='ANALYTIQUE')
       
       ct = ct +1
@@ -201,14 +201,14 @@ for i in range(nbcalc) :
                  NOM_PARA='K1',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
                  CRITERE='RELATIF',
-                  PRECISION=0.005, #TODO vale_calc
+                  PRECISION=0.005,
                  REFERENCE='ANALYTIQUE')
       ct = ct +1
       TEST_TABLE(TABLE=TG_1[k],
                  NOM_PARA='G',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=GREF,
                  CRITERE='RELATIF',
-                  PRECISION=0.04, #TODO vale_calc
+                  PRECISION=0.04,
                  REFERENCE='ANALYTIQUE')
 
       if K2REF != 0. :
@@ -217,7 +217,7 @@ for i in range(nbcalc) :
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='RELATIF',
-                     PRECISION=0.03, #TODO vale_calc
+                     PRECISION=0.03,
                     REFERENCE='ANALYTIQUE')
          
          ct = ct +1
@@ -225,7 +225,7 @@ for i in range(nbcalc) :
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='RELATIF',
-                     PRECISION=0.03, #TODO vale_calc
+                     PRECISION=0.03,
                     REFERENCE='ANALYTIQUE')
       else :
          ct = ct +1
@@ -233,7 +233,7 @@ for i in range(nbcalc) :
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                     PRECISION=K1REF/1000., #TODO vale_calc
+                     PRECISION=K1REF/1000.,
                     REFERENCE='ANALYTIQUE')
 
          ct = ct +1
@@ -241,7 +241,7 @@ for i in range(nbcalc) :
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    PRECISION=K1REF/1000., #TODO vale_calc
+                    PRECISION=K1REF/1000.,
                     REFERENCE='ANALYTIQUE')
 
    # K1 SUR LE 1er FOND
@@ -260,7 +260,7 @@ for i in range(nbcalc) :
               NOM_PARA='K1',
               VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-               PRECISION=0.06, #TODO vale_calc
+               PRECISION=0.06,
               REFERENCE='ANALYTIQUE')
 
    if K2REF != 0. :
@@ -269,7 +269,7 @@ for i in range(nbcalc) :
                  NOM_PARA='K2',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                  CRITERE='RELATIF',
-                  PRECISION=0.06, #TODO vale_calc
+                  PRECISION=0.06,
                  REFERENCE='ANALYTIQUE')
    else :
       ct = ct +1
@@ -277,7 +277,7 @@ for i in range(nbcalc) :
                  NOM_PARA='K2',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                  CRITERE='ABSOLU',
-                 PRECISION=K1REF/500., #TODO vale_calc
+                 PRECISION=K1REF/500.,
                  REFERENCE='ANALYTIQUE')
 
 
@@ -297,7 +297,7 @@ for i in range(nbcalc) :
               NOM_PARA='K1',
               VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-               PRECISION=0.06, #TODO vale_calc
+               PRECISION=0.06,
               REFERENCE='ANALYTIQUE');
 
    if K2REF != 0. :
@@ -306,7 +306,7 @@ for i in range(nbcalc) :
                 NOM_PARA='K2',
                 VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                 CRITERE='RELATIF',
-                 PRECISION=0.06, #TODO vale_calc
+                 PRECISION=0.06,
                 REFERENCE='ANALYTIQUE')
 
    else :
@@ -315,7 +315,7 @@ for i in range(nbcalc) :
                 NOM_PARA='K2',
                 VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                 CRITERE='ABSOLU',
-                 PRECISION=K1REF/500., #TODO vale_calc
+                 PRECISION=K1REF/500.,
                 REFERENCE='ANALYTIQUE')
 
 

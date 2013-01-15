@@ -1,8 +1,8 @@
-#@ MODIF sd_cham_mater SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_cham_mater SD  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -129,7 +129,7 @@ class sd_cham_mater(AsBase):
         desc=self.CHAMP_MAT.DESC.get()
         numgd    =desc[0]
         n_gd_edit=desc[2]
-        assert sdu_nom_gd(numgd) == 'NEUT_F', (desc,sdu_nom_gd(numgd))
+        assert sdu_nom_gd(numgd) == 'NOMMATER', (desc,sdu_nom_gd(numgd))
         ncmp_max=len(sdu_licmp_gd(numgd))
         assert ncmp_max==30 , ncmp_max
 

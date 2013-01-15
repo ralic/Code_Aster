@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 20/11/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#& MODIF COMMANDE  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -120,17 +120,22 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
 #  ============================================================================
    COQUE                = FACT(statut='f',max='**',
       regles               = (UN_PARMI('MAILLE','GROUP_MA' ),
-                              PRESENT_PRESENT( 'EXCENTREMENT','INER_ROTA' ),
-                              EXCLUS('ANGL_REP','VECTEUR'),),
+                              EXCLUS('ANGL_REP','VECTEUR'),
+                              PRESENT_PRESENT( 'EXCENTREMENT',   'INER_ROTA' ),
+                              PRESENT_PRESENT( 'EXCENTREMENT_FO','INER_ROTA' ),
+                              UN_PARMI('EPAIS','EPAIS_FO' ),
+                              EXCLUS('EXCENTREMENT','EXCENTREMENT_FO'),),
       MAILLE               = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
       GROUP_MA             = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-      EPAIS                = SIMP(statut='o',typ='R' ),
+      EPAIS                = SIMP(statut='f',typ='R' ),
+      EPAIS_FO             = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
       ANGL_REP             = SIMP(statut='f',typ='R',min=2,max=2),
       VECTEUR              = SIMP(statut='f',typ='R',min=3,max=3),
       A_CIS                = SIMP(statut='f',typ='R',defaut= 0.8333333E0),
       COEF_RIGI_DRZ        = SIMP(statut='f',typ='R',defaut= 1.0E-5 ),
       COQUE_NCOU           = SIMP(statut='f',typ='I',defaut= 1 ),
       EXCENTREMENT         = SIMP(statut='f',typ='R' ),
+      EXCENTREMENT_FO      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
       INER_ROTA            = SIMP(statut='f',typ='TXM',into=("OUI",) ),
       MODI_METRIQUE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
    ),
@@ -513,12 +518,15 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
    GRILLE               = FACT(statut='f',max='**',
       regles               = (UN_PARMI('MAILLE','GROUP_MA'),
                               EXCLUS('ANGL_REP','AXE'),
-                              ),
+                              UN_PARMI('SECTION','SECTION_FO' ),
+                              EXCLUS('EXCENTREMENT','EXCENTREMENT_FO'), ),
       MAILLE               = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
       GROUP_MA             = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-      SECTION              = SIMP(statut='o',typ='R'),
+      SECTION              = SIMP(statut='f',typ='R'),
+      SECTION_FO           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
       ANGL_REP             = SIMP(statut='f',typ='R',max=2),
       EXCENTREMENT         = SIMP(statut='f',typ='R'),
+      EXCENTREMENT_FO      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
       AXE                  = SIMP(statut='f',typ='R',max='**'),
       COEF_RIGI_DRZ        = SIMP(statut='f',typ='R',defaut= 1.0E-10 ),
       GRILLE_NCOU          = SIMP(statut='f',typ='I',defaut= 1,),

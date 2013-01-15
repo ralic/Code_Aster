@@ -1,8 +1,8 @@
-#@ MODIF calculel2 Messages  DATE 19/11/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,12 +48,16 @@ Conseil :
 """),
 
 5: _(u"""
-Erreur utilisateur dans CREA_RESU :
-  Quand on utilise la commande CREA_RESU avec le mot clé AFFE / CHAM_GD et que le
-  champ est un champ de fonctions (de la géométrie et/ou du temps), il faut que la grandeur
-  associée à ce champ soit TEMP_F, DEPL_F, PRES_F ou FORC_F.
+Erreur dans CREA_RESU :
+  Quand on utilise la commande CREA_RESU avec le mot clé AFFE / CHAM_GD, les
+  composantes du champ de fonctions %(k2)s (de la géométrie et/ou du temps),
+  doivent être au même rang que celles du champ de réels %(k1)s.
+Incohérence dans les grandeurs %(k1)s et %(k2)s :
+  Le rang de la composante %(k3)s de %(k1)s correspond
+  au rang de la composante %(k4)s de %(k2)s.
 
-  Ici, la grandeur est : %(k1)s
+Conseil :
+  Si nécessaire, il faut demander une évolution du code.
 """),
 
 6: _(u"""
@@ -448,11 +452,24 @@ Conseil :
   on peut voir leur contenu avec le mot clé INFO=2.
 """),
 
+79: _(u"""
+Erreur dans CREA_RESU :
+  Quand on utilise la commande CREA_RESU / EVOL_VARC avec le mot clé AFFE / CHAM_GD et
+  que le champ de fonctions est %(k2)s_F (de la géométrie et/ou du temps),
+  NOM_CHAM doit être %(k2)s et pas %(k1)s.
+"""),
 
+80: _(u"""
+Erreur dans CREA_RESU :
+  Quand on utilise la commande CREA_RESU avec le mot clé AFFE / CHAM_GD :
+  le champ de fonctions %(k2)s doit avoir le même nombre d'entier codés que le
+  champ de réels %(k1)s.
+    %(k2)s : %(i2)d entier codé
+    %(k1)s : %(i1)d entier codé
 
-
-
-
+Conseil :
+  Si nécessaire, il faut demander une évolution du code.
+"""),
 
 81: _(u"""
  pas de champ de géométrie
@@ -488,9 +505,15 @@ Conseil :
 
 """),
 
+90: _(u"""
+Erreur dans CREA_RESU :
+  Quand on utilise la commande CREA_RESU avec le mot clé AFFE / CHAM_GD et que
+  le champ de fonctions est %(k2)s_F (de la géométrie et/ou du temps),
+  le champ de réels doit être %(k1)s_R.
 
-
-
+Conseil :
+  Vérifier la construction du champ de fonctions est %(k2)s_F
+"""),
 
 92: _(u"""
  votre chargement contient plus d'une charge répartie

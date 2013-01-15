@@ -4,9 +4,9 @@
       CHARACTER*8         CHMAT, NOMAIL, NOMODE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,25 +25,24 @@ C
 C  IN : CHMAT  : CHAMP MATERIAU PRODUIT
 C  IN : NOMAIL : NOM DU MAILLAGE
 C ----------------------------------------------------------------------
-C ----------------------------------------------------------------------
 C
-      INTEGER IBID, NOCC, I, NM, NT, JNCMP, JVALV, NBMA,JMAIL,IER,NBCMP
-      CHARACTER*4   OUI ,NOCP
-      CHARACTER*8   K8B, NOMMAT, TYPMCL(2)
-      CHARACTER*16  MOTCLE(2)
-      CHARACTER*24  CHAMAT, MESMAI
-      INTEGER      IARG
+      INTEGER        IBID,NOCC,I,NM,NT,JNCMP,JVALV,NBMA,JMAIL,IER,NBCMP
+      INTEGER        IARG
+      CHARACTER*4    OUI ,NOCP
+      CHARACTER*8    K8B, NOMMAT, TYPMCL(2)
+      CHARACTER*16   MOTCLE(2)
+      CHARACTER*24   CHAMAT, MESMAI
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CHAMAT = CHMAT//'.CHAMP_MAT'
 C
-      CALL ALCART ( 'G', CHAMAT, NOMAIL, 'NEUT_F')
+      CALL ALCART ( 'G', CHAMAT, NOMAIL, 'NOMMATER')
       CALL JEVEUO ( CHAMAT(1:19)//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CHAMAT(1:19)//'.VALV', 'E', JVALV )
       NOCP = 'X'
 C
-      CALL DISMOI('F','NB_CMP_MAX','NEUT_F','GRANDEUR',NBCMP,K8B,IER)
+      CALL DISMOI('F','NB_CMP_MAX','NOMMATER','GRANDEUR',NBCMP,K8B,IER)
 C
       DO 5 I=1,NBCMP
         CALL CODENT(I,'G',NOCP(2:4))
@@ -78,9 +77,9 @@ C
             ENDIF
          ENDIF
  10   CONTINUE
-
+C
       CALL JEDETR ( CHAMAT(1:19)//'.VALV' )
       CALL JEDETR ( CHAMAT(1:19)//'.NCMP' )
-
+C
       CALL JEDEMA()
       END

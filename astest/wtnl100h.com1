@@ -1,0 +1,121 @@
+# AJOUT
+# TITRE CONSOLIDATION TERZAGHI 2D Q8
+##################################
+# TEST DES INDICATEURS D'ERREUR HM
+##################################
+#
+# LE CALCUL EST REALISE EN 2 PASSES.
+# INTERET : VALIDATION DU CALCUL D'INDICATEUR EN POURSUITE
+#
+# ON NE FAIT PAS D'ADAPTATION DE MAILLAGE CAR ASTER NE POURRAIT
+# PAS REDEMARRER LE CALCUL SUR UN NOUVEAU MAILLAGE
+#
+# 2eme PASSE
+#
+
+POURSUITE(CODE=_F(NOM='WTNL100H',),
+          DEBUG=_F(SDVERI='OUI',),);
+
+RESU[nbadap]=STAT_NON_LINE(reuse =RESU[nbadap],
+                           MODELE=MODE[nbadap],
+                           CHAM_MATER=CHMAT[nbadap],
+                           EXCIT=_F(CHARGE=CHAR[nbadap],),
+                           COMP_INCR=_F(RELATION='KIT_HM',
+                                        RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
+                                        PARM_THETA=0.56999999999999995,),
+                           ETAT_INIT=_F(EVOL_NOLI=RESU[nbadap],),
+                           INCREMENT=_F(LIST_INST=LI,
+                                        INST_INIT = T1_FIN,
+                                        INST_FIN = T2_FIN,),
+                           CRIT_QUALITE = _F(ERRE_TEMPS_THM='OUI',),
+                           NEWTON=_F(MATRICE='TANGENTE',
+                                     REAC_ITER=10,),
+                           CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                           SOLVEUR=_F(METHODE='LDLT',),);
+
+RESU[nbadap]=CALC_CHAMP(reuse=RESU[nbadap],RESULTAT=RESU[nbadap],LIST_INST=LI2_BIS,CONTRAINTE=('SIEF_ELNO'))
+
+
+RESU[nbadap]=CALC_ERREUR(reuse =RESU[nbadap],
+                         RESULTAT=RESU[nbadap],
+                         LIST_INST=LI2_BIS,
+                         OPTION=('ERME_ELEM','ERME_ELNO',),);
+
+RESU[nbadap]=CALC_ERREUR(reuse =RESU[nbadap],
+                         RESULTAT=RESU[nbadap],
+                         INST=T2_FIN,
+                         OPTION='ERME_NOEU',);
+
+TEST_RESU(RESU=(_F(GROUP_NO='NO_TEST',
+                   INST=500.0,
+                   RESULTAT=RESU_2,
+                   NOM_CHAM='ERME_NOEU',
+                   NOM_CMP='ESTERG1',
+                   VALE_CALC=6.8893166260541E-03,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(PARA='ERRE_TPS_GLOB',
+                   INST=500.0,
+                   RESULTAT=RESU_2,
+                   VALE_CALC=0.098463357386231,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+
+#  le meme calcul en 1 seul coup
+
+RESU_TOT=STAT_NON_LINE(MODELE=MODE[nbadap],
+                       CHAM_MATER=CHMAT[nbadap],
+                       EXCIT=_F(CHARGE=CHAR[nbadap],),
+                       COMP_INCR=_F(RELATION='KIT_HM',
+                                    RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
+                                    PARM_THETA=0.56999999999999995,),
+                       INCREMENT=_F(LIST_INST=LI,
+                                    INST_INIT = 0.0,
+                                    INST_FIN = T2_FIN,),
+                       CRIT_QUALITE = _F(ERRE_TEMPS_THM='OUI',),
+                       NEWTON=_F(MATRICE='TANGENTE',
+                                 REAC_ITER=10,),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                       SOLVEUR=_F(METHODE='LDLT',),);
+
+####dico = RESU_TOT.LIST_PARA()
+
+####print dico['ERRE_TPS_LOC']
+
+####print dico['ERRE_TPS_GLOB']
+####print "Derniere valeur de ERRE_TPS_GLOB = ", dico['ERRE_TPS_GLOB'][-1]
+
+RESU_TOT=CALC_ERREUR(reuse =RESU_TOT,
+                     RESULTAT=RESU_TOT,
+                     LIST_INST=LI,
+                     OPTION=('ERME_ELEM','ERME_ELNO',),);
+
+RESU_TOT=CALC_ERREUR(reuse =RESU_TOT,
+                     RESULTAT=RESU_TOT,
+                     INST=T2_FIN,
+                     OPTION='ERME_NOEU',);
+
+TEST_RESU(RESU=(_F(GROUP_NO='NO_TEST',
+                   INST=500.0,
+                   RESULTAT=RESU_TOT,
+                   NOM_CHAM='ERME_NOEU',
+                   NOM_CMP='ESTERG1',
+                   VALE_CALC=6.8893166260542E-03,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                _F(PARA='ERRE_TPS_GLOB',
+                   INST=500.0,
+                   RESULTAT=RESU_TOT,
+                   VALE_CALC=0.098463357386231,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+
+FIN();
