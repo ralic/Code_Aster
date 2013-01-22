@@ -1,0 +1,257 @@
+# MODIF  DATE 22/01/2013   AUTEUR SFAYOLLE S.FAYOLLE 
+# TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (AXIS_INCO_LOG)
+# hsnv100t.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE SFAYOLLE S.FAYOLLE
+
+DEBUT(CODE=_F(NOM='HSNV100T',
+              NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'));
+
+#......................................................................
+# CAS TEST THERMOPLASTICITE ELEMENTAIRE
+#......................................................................
+# DEFINITION DES CARACTERISTIQUES DU MATERIAU
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED');
+
+#
+# DONNEES DE MODELISATION
+
+FCT1=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.200E-2,400.,
+                         0.400E-2,500.,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE');
+
+#
+
+FCT2=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.100E-2,200.,
+                         0.300E-2,300.,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE');
+
+#
+
+CTRACB=DEFI_NAPPE(NOM_PARA='TEMP',
+                  PARA=(0.,50.),
+                  FONCTION=(FCT1,FCT2),
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE');
+
+#
+# MATERIAU ISOTROPE
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=200.E+3,
+                          NU=.3,
+                          ALPHA=10.0E-6),
+                  TRACTION=_F(SIGM=CTRACB),
+                  THER=_F(LAMBDA=1.0E-3,
+                          RHO_CP=0.0E-3));
+
+#
+
+CM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MAT));
+
+#
+
+T0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+              OPERATION='AFFE',
+              MAILLAGE=MAIL,
+              AFFE=_F(TOUT='OUI',
+                      NOM_CMP='TEMP',
+                      VALE=0.0));
+
+L_REEL=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=66.666E0,
+                                     NOMBRE=1),
+                                  _F(JUSQU_A=80.000E0,
+                                     NOMBRE=2),
+                                  _F(JUSQU_A=90.000E0,
+                                     NOMBRE=2)));
+
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                   LIST_INST=L_REEL),
+                      ECHEC=_F(SUBD_METHODE='MANUEL'));
+
+#
+
+TIMPVAR=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.E0,0.E0,
+                            100.E0,100.E0,
+                            ));
+
+#
+
+MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='THERMIQUE',
+                           MODELISATION='AXIS'));
+
+#
+
+MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='AXIS_INCO_LOG'));
+
+#
+
+CHTHER=AFFE_CHAR_THER_F(MODELE=MOTHER,
+                        TEMP_IMPO=(_F(GROUP_NO='GRNO1',
+                                      TEMP=TIMPVAR),
+                                   _F(GROUP_NO='GRNO2',
+                                      TEMP=TIMPVAR),
+                                   _F(GROUP_NO='GRNO3',
+                                      TEMP=TIMPVAR),
+                                   _F(GROUP_NO='GRNO4',
+                                      TEMP=TIMPVAR)));
+
+#
+
+TEMPE=THER_LINEAIRE(MODELE=MOTHER,
+                    CHAM_MATER=CM,
+                    EXCIT=_F(CHARGE=CHTHER),
+                    INCREMENT=_F(LIST_INST=L_REEL),
+                    ETAT_INIT=_F(CHAM_NO=T0));
+
+CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
+                      DDL_IMPO=(_F(GROUP_NO='GRNO1',
+                                   DY=0.),
+                                _F(GROUP_NO='GRNO3',
+                                   DY=0.)));
+
+CTM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MAT),
+                  AFFE_VARC=_F(TOUT='OUI',
+                               NOM_VARC='TEMP',
+                               EVOL=TEMPE,
+                               NOM_CHAM='TEMP',
+                               VALE_REF=0.));
+
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CTM,
+                EXCIT=_F(CHARGE=CHMECA),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
+                             DEFORMATION='GDEF_LOG',
+                             ),
+                INCREMENT=_F(LIST_INST=L_INST),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+                SOLVEUR=_F(METHODE='MUMPS',
+   NPREC=-1));
+
+U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+
+#
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=5,
+                   GROUP_NO='A',
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=90.0,
+                   TOLE_MACHINE=1.E-3,),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 8.6703366569106E-04,
+                   VALE_REFE=8.6666E-4,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=0.5E-3,
+                   MAILLE='M5',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=U,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-133.10109310639,
+                   VALE_REFE=-133.333,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.E-3,
+                   MAILLE='M5',),
+                _F(NUME_ORDRE=3,
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N4',
+                   NOM_CMP='EPZZ',
+                   VALE_CALC= 1.1006052233727E-03,
+                   VALE_REFE=1.1E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-3,
+                   MAILLE='M5',),
+                _F(NUME_ORDRE=3,
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N4',
+                   NOM_CMP='V1',
+                   VALE_CALC= 3.000000007638E-04,
+                   VALE_REFE=3.E-4,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.0E-6,
+                   MAILLE='M5',),
+                _F(NUME_ORDRE=3,
+                   RESULTAT=U,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N4',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-99.780241570794,
+                   VALE_REFE=-100.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=2.5E-3,
+                   MAILLE='M5',),
+                _F(NUME_ORDRE=5,
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='EPZZ',
+                   VALE_CALC= 1.2758131586796E-03,
+                   VALE_REFE=1.275E-3,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-3,
+                   MAILLE='M5',),
+                _F(NUME_ORDRE=5,
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='V1',
+                   VALE_CALC= 5.2500000032244E-04,
+                   VALE_REFE=5.25E-4,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=1.E-6,
+                   MAILLE='M5',),
+                _F(NUME_ORDRE=5,
+                   RESULTAT=U,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-74.808993530428,
+                   VALE_REFE=-75.0,
+                   REFERENCE='NON_DEFINI',
+                   PRECISION=3.E-3,
+                   MAILLE='M5',),
+                ),
+          )
+
+#
+
+FIN();
+
+#

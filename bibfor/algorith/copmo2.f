@@ -1,14 +1,11 @@
-      SUBROUTINE COPMO2 ( BASEMO, NEQ, NU, NBMODE, BMODAL )
+      SUBROUTINE COPMO2 (IBID)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      INTEGER             NEQ, NBMODE
-      REAL*8              BMODAL(NEQ*NBMODE)
-      CHARACTER*8         BASEMO
-      CHARACTER*14        NU
+      INTEGER IBID
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 22/01/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,75 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
-C
-C     FONCTION  :
-C     RECOPIE DES MODES PROPRES CONTENU DANS LE CONCEPT MODE_MECA
-C     DANS UN VECTEUR DE TRAVAIL AVEC NUMEROTATION DIFFERENTE
-C
-C
+C ROUTINE A SUPPRIMER, SUITE AU CHANTIER DE COPMO*
 C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C        NOM        MODE                    ROLE
-C  ________________ ____ ______________________________________________
-C                         VARIABLES DU SYSTEME DYNAMIQUE MODAL
-C  ________________ ____ ______________________________________________
-C    BASEMO         <--   NOM DU CONCEPT MODE_MECA
-C    NEQ            <--   DIMENSION DU SYSTEME ASSEMBLE
-C    NBMODE         <--   NB DE MODES DU CONCEPT MODE_MECA
-C    BMODAL          -->  VECTEUR CONTENANT LES MODES
-C-----------------------------------------------------------------------
-
-      INTEGER       IBID, IDDEEQ, I, IRET, JREF, JVAL
-      CHARACTER*8   NOMA, MAILLA, TYP1
-      CHARACTER*14  NU2
-      CHARACTER*24  CREFE(2), CHAMP, NOMCHA
-      CHARACTER*24 VALK(4)
-C-----------------------------------------------------------------------
-C
-      CALL JEMARQ()
-C
-      CALL JEVEUO ( NU//'.NUME.DEEQ', 'L', IDDEEQ )
-      CALL DISMOI('F','NOM_MAILLA',NU,'NUME_DDL',IBID,MAILLA,IRET)
-C
-      DO 10 I = 1,NBMODE
-
-         CALL RSEXCH('F',BASEMO, 'DEPL', I, NOMCHA, IRET )
-         CALL JEVEUO ( NOMCHA(1:19)//'.REFE', 'L', JREF )
-         NOMA = ZK24(JREF)(1:8)
-         NU2  = ZK24(JREF+1)(1:14)
-         CALL JELIBE(NOMCHA(1:19)//'.REFE')
-
-C ------ TEST COMPARANT NOMA A MAILLAGE(NU)
-         IF (NOMA.NE.MAILLA) THEN
-            VALK (1) = NU
-            VALK (2) = MAILLA
-            VALK (3) = NU2
-            VALK (4) = NOMA
-            CALL U2MESG('F', 'ALGORITH12_62',4,VALK,0,0,0,0.D0)
-         ENDIF
-
-         IF ( NU .NE. NU2 ) THEN
-            CALL JELIRA ( NOMCHA(1:19)//'.VALE', 'TYPE'  , IBID, TYP1 )
-            CREFE(1) = NOMA
-            CREFE(2) = NU
-            CREFE(2)(15:19)='.NUME'
-            CHAMP = '&&COPMO2.CHAMP'
-            CALL VTCREA ( CHAMP, CREFE, 'V', TYP1, NEQ )
-            CALL VTCOPY ( NOMCHA, CHAMP)
-            CALL JEVEUO ( CHAMP(1:19)//'.VALE', 'L', JVAL )
-            CALL DCOPY ( NEQ, ZR(JVAL), 1, BMODAL((I-1)*NEQ+1), 1 )
-            CALL DETRSD ( 'CHAM_NO', CHAMP )
-         ELSE
-            CALL JEVEUO ( NOMCHA(1:19)//'.VALE', 'L', JVAL )
-            CALL DCOPY ( NEQ,ZR(JVAL), 1, BMODAL((I-1)*NEQ+1), 1 )
-            CALL JELIBE ( NOMCHA(1:19)//'.VALE' )
-         ENDIF
-
-         CALL ZERLAG ( BMODAL((I-1)*NEQ+1), NEQ, ZI(IDDEEQ) )
-
-   10 CONTINUE
-
-      CALL JEDEMA()
+      IBID = IBID-1
       END

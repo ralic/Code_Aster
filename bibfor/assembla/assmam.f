@@ -15,10 +15,10 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ASSEMBLA  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -204,7 +204,7 @@ C ------------------------------------------------------------------
       CALL ASSERT(N1.EQ.4)
       CALL JEVEUO(NUDEV//'.NUME.REFN','L',JREFN)
       METHOD=ZK24(JREFN+2)
-      SDFETI=ZK24(JREFN+3)
+      SDFETI=ZK24(JREFN+3)(1:19)
       LFETI=.FALSE.
       LFETIC=.FALSE.
       NBSD=0
@@ -360,8 +360,8 @@ C             -- MATR_ASSE MAITRE LIEE AU DOMAINE GLOBAL
               NU14=NUDEV
             ELSE
 C             -- MATR_ASSE ESCLAVE LIEE AU SOUS-DOMAINE IDD
-              MAT19=ZK24(JFETM+IDD-1)
-              NU14=ZK24(JFETN+IDD-1)
+              MAT19=ZK24(JFETM+IDD-1)(1:19)
+              NU14=ZK24(JFETN+IDD-1)(1:14)
             ENDIF
             CALL JEVEUO(MAT19//'.REFA','L',JREFA)
             CALL ASSERT(ZK24(JREFA-1+2)(1:14).EQ.NU14)
@@ -436,8 +436,8 @@ C         -------------------------------------
             MAT19=MATDEV
             NU14=NUDEV
           ELSE
-            MAT19=ZK24(JFETM+IDD-1)
-            NU14=ZK24(JFETN+IDD-1)
+            MAT19=ZK24(JFETM+IDD-1)(1:19)
+            NU14=ZK24(JFETN+IDD-1)(1:14)
           ENDIF
 
           IF ((.NOT.LFETI) .OR. (IDD.GT.0)) THEN
@@ -459,11 +459,11 @@ C             -- SI SOUS-DOMAINE FETI NOUVEAU
               CALL GCNCON('.',KNUMER)
               KNUMER(1:1)='F'
               ZK24(JFETM+IDD-1)=MATDEV(1:11)//KNUMER
-              MAT19=ZK24(JFETM+IDD-1)
+              MAT19=ZK24(JFETM+IDD-1)(1:19)
             ENDIF
             CALL JEVEUO(NU14//'.NUME.REFN','L',JREFN)
             METHOD=ZK24(JREFN+2)
-            SDFETI=ZK24(JREFN+3)
+            SDFETI=ZK24(JREFN+3)(1:19)
           ENDIF
 
 C         -- CREATION ET REMPLISSAGE DE .REFA
@@ -543,7 +543,7 @@ C         3. BOUCLE SUR LES MATR_ELEM
 C         =============================
           DO 90 IMAT=1,NBMAT
             C1=LICOEF(IMAT)
-            MATEL=ZK24(ILIMAT+IMAT-1)
+            MATEL=ZK24(ILIMAT+IMAT-1)(1:19)
             CALL DISMOI('F','NOM_MODELE',MATEL,'MATR_ELEM',IBID,MO2,
      &                  IERD)
             CALL DISMOI('F','SUR_OPTION',MATEL,'MATR_ELEM',IBID,OPTIO,
@@ -574,7 +574,7 @@ C           -------------------------------------------
 C           BOUCLE SUR LES RESU_ELEM
 C           ==========================
             DO 70 IRESU=1,NBRESU
-              RESU=ZK24(JLRES+IRESU-1)
+              RESU=ZK24(JLRES+IRESU-1)(1:19)
               CALL JEEXIN(RESU//'.DESC',IER)
               IF (IER.EQ.0)GOTO 70
 
@@ -598,14 +598,14 @@ C             -- PARFOIS, CERTAINS RESUELEM SONT == 0.
 
 C             -- NOM DU LIGREL
               CALL JEVEUO(RESU//'.NOLI','L',IAD)
-              LIGRE1=ZK24(IAD)
+              LIGRE1=ZK24(IAD)(1:19)
 
               CALL DISMOI('F','EXI_VF',LIGRE1,'LIGREL',IBID,EXIVF,IERD)
               IF (EXIVF.EQ.'OUI') THEN
                 CALL ASSERT(.NOT.LMASYM)
                 CALL JEVEUO(LIGRE1//'.REPE','L',JREPE)
                 CALL JEVEUO(LIGRE1//'.NVGE','L',JNVGE)
-                VGE=ZK16(JNVGE-1+1)
+                VGE=ZK16(JNVGE-1+1)(1:12)
                 CALL JEVEUO(VGE//'.PTVOIS','L',JPTVOI)
                 CALL JEVEUO(VGE//'.ELVOIS','L',JELVOI)
               ENDIF
@@ -627,7 +627,7 @@ C                 CONTINUE 1ERE PASSE
                   CALL JEVEUO(NOMLOG,'L',IFEL1)
                   LLICH=.TRUE.
                   LLIMO=.FALSE.
-                  LIGRE2=ZK24(IFEL1-1+IDD)
+                  LIGRE2=ZK24(IFEL1-1+IDD)(1:19)
                   IF (LIGRE2.EQ.' ') THEN
 C                   LIGREL NE CONCERNANT PAS LE SOUS-DOMAINE IDD
                     GOTO 70

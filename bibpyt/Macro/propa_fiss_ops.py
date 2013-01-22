@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF propa_fiss_ops Macro  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -192,36 +192,6 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
       VPVNi[k+3] = tp[k]
    return VPVNi
 
-def recup_Elas(LOI):
-      from SD.sd_mater     import sd_compor1
-      if LOI == None :
-         UTMESS('F','RUPTURE1_50')
-      dLoi=LOI[0].cree_dict_valeurs(LOI[0].mc_liste)
-      mat = dLoi['MATER']
-      matph = mat.sdj.NOMRC.get()
-      phenom=None
-      for cmpt in matph :
-         if cmpt[:4]=='ELAS' :
-            phenom=cmpt
-            break
-      if phenom==None : UTMESS('F','RUPTURE0_5')
-      compor = sd_compor1('%-8s.%s' % (mat.nom, phenom))
-      valk = [s.strip() for s in compor.VALK.get()]
-      valr = compor.VALR.get()
-      dicmat=dict(zip(valk,valr))
-      if dicmat.has_key('TEMP_DEF')  :
-        nompar = ('TEMP',)
-        valpar = (dicmat['TEMP_DEF'],)
-        UTMESS('A','XFEM2_85',valr=valpar)
-        nomres=['E','NU']
-        valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,2)
-        e  = valres[0]
-        nu = valres[1]
-      else :
-        e  = dicmat['E']
-        nu = dicmat['NU']
-      return e,nu,dLoi
-
 def nom_points_fonds(n_taille):
    """
    Construction des noms des points en fond de fissure
@@ -264,109 +234,75 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   ier=0
 #------------------------------------------------------------------
   # On importe les definitions des commandes a utiliser dans la macro
-  ASSE_MAILLAGE         =self.get_cmd('ASSE_MAILLAGE'  )
+  ASSE_MAILLAGE    =self.get_cmd('ASSE_MAILLAGE'  )
   LIRE_MAILLAGE    =self.get_cmd('LIRE_MAILLAGE'  )
-  DEFI_FICHIER = self.get_cmd('DEFI_FICHIER'  )
-  DEFI_GROUP = self.get_cmd('DEFI_GROUP'  )
-  CREA_TABLE    =self.get_cmd('CREA_TABLE'  )
-  CALC_TABLE    =self.get_cmd('CALC_TABLE'  )
-  PROPA_XFEM = self.get_cmd('PROPA_XFEM'  )
-  DEFI_FISS_XFEM = self.get_cmd('DEFI_FISS_XFEM'  )
+  DEFI_FICHIER     = self.get_cmd('DEFI_FICHIER'  )
+  DEFI_GROUP       = self.get_cmd('DEFI_GROUP'  )
+  CALC_TABLE       = self.get_cmd('CALC_TABLE'  )
+  PROPA_XFEM       = self.get_cmd('PROPA_XFEM'  )
   MODI_MODELE_XFEM = self.get_cmd('MODI_MODELE_XFEM'  )
-  POST_RUPTURE = self.get_cmd('POST_RUPTURE'  )
-  DETRUIRE = self.get_cmd('DETRUIRE'  )
+  POST_RUPTURE     = self.get_cmd('POST_RUPTURE'  )
+  DETRUIRE         = self.get_cmd('DETRUIRE'  )
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
+  # parametre
+  eps = 1e-15
+
+  try :
+     TEST_MAIL = args['TEST_MAIL']
+  except KeyError: 
+     TEST_MAIL = None
 
 #------------------------------------------------------------------
 # CAS 1 : METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE'
+#         TEST_MAIL = 'OUI'
 #
 
-  if (METHODE_PROPA == 'SIMPLEXE') or (METHODE_PROPA == 'UPWIND') or (METHODE_PROPA == 'GEOMETRIQUE'):
+  if (((METHODE_PROPA == 'SIMPLEXE') or (METHODE_PROPA == 'UPWIND') or (METHODE_PROPA == 'GEOMETRIQUE'))
+     and TEST_MAIL == 'OUI'):
 
-    TEST_MAIL=args['TEST_MAIL']
-
-    if (TEST_MAIL == 'NON' ) :
-      LOI= args['LOI_PROPA']
-      e,nu,dLoi = recup_Elas(LOI)
-
-# Construction catalogue PROPA_XFEM
-      dLoix = {}
-      dLoix['LOI'] = 'PARIS'
-      dLoix['E'] = e
-      dLoix['NU'] = nu
-      dLoix['C'] = dLoi['C']
-      dLoix['M'] = dLoi['M']
-      dLoix['N'] = dLoi['N']
-
-    # Retreive all the parameters of PROPA_FISS
-    mcsimp = {}
-    mcsimp['MODELE'] =  args['MODELE']
-    mcsimp['RAYON'] =  args['RAYON']
-    mcsimp['DA_MAX'] =  args['DA_MAX']
-    mcsimp['TEST_MAIL']=TEST_MAIL
-    mcsimp['ZONE_MAJ']=args['ZONE_MAJ']
-    if mcsimp['ZONE_MAJ'] == 'TORE' :
-       if args['RAYON_TORE']!=None :
-          mcsimp['RAYON_TORE']=args['RAYON_TORE']
-    Fissures = args['FISSURE']
-
-#   Build the list for the PROPA_XFEM operateur
-    Table = []
-    GrilleAux = []
-    FissAct = []
-    FissNou = []
-    NbPointFond = []
-
-    for Fiss in Fissures :
-        FissAct.append(Fiss['FISS_ACTUELLE'])
-        FissNou.append(Fiss['FISS_PROPAGEE'])
-        if TEST_MAIL == 'NON':
-            Table.append(Fiss['TABLE'])
-            if Fiss['NB_POINT_FOND']!=None :
-               if isinstance(Fiss['NB_POINT_FOND'],int) :
-                  NbPointFond.append(Fiss['NB_POINT_FOND'])
-               else :
-                  for nbptfo in range(0,len(Fiss['NB_POINT_FOND'])) :
-                      NbPointFond.append(Fiss['NB_POINT_FOND'][nbptfo])
-            else :
-               NbPointFond.append(-1)
-
-    mcsimp['LISTE_FISS'] = FissAct
-
-    if TEST_MAIL == 'NON':
-       mcsimp['TABLE'] = Table
-       mcsimp['NB_POINT_FOND'] = NbPointFond
-       mcsimp['LOI_PROPA'      ] =dLoix
-
-       COMP_LINE = args['COMP_LINE']
-       if  COMP_LINE !=None :
-           dcomp=COMP_LINE[0].cree_dict_valeurs(COMP_LINE[0].mc_liste)
-           mcsimp  ['COMP_LINE'      ] =dcomp
-
-    if TEST_MAIL == 'NON' :
-#      Ok. It's time for propagation! Let's call PROPA_XFEM for each
-#      propagating crack.
-       for NumFiss in range(0,len(FissAct)) :
-           mcsimp['FISS_PROP'] = FissAct[NumFiss]
-           self.DeclareOut('nomfiss',FissNou[NumFiss])
-           nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
-
-    else :
 #      Ok. I should make several crack propagation and check for the
 #      distance between each propagated front and the corresponding one
 #      at the beginning of the propagation.
        UTMESS('A','XFEM2_60')
+
+       Fissures = args['FISSURE']
+       Nbfissure = len(Fissures)
+       Damax = args['DA_MAX']
+
+       print '-------------------------------------------'
+       print 'NOMBRE DE FISSURES A TRAITER : ',Nbfissure
+       for numfis,Fiss in enumerate(Fissures) :
+         print 'FISSURE ',numfis+1,'  : ',Fiss['FISS_ACTUELLE'].get_name()
+       print '-------------------------------------------'
+
+# Recuperation des donnees
+       mcsimp = {}
+       mcsimp['MODELE']    = args['MODELE']
+       mcsimp['RAYON']     = args['RAYON']
+       mcsimp['DA_MAX']    = args['DA_MAX']
+       mcsimp['TEST_MAIL'] = TEST_MAIL
+       mcsimp['ZONE_MAJ']  = args['ZONE_MAJ']
+       mcsimp['TOLERANCE'] = args['TOLERANCE']
+       if mcsimp['ZONE_MAJ'] == 'TORE' :
+         if args['RAYON_TORE']!=None :
+           mcsimp['RAYON_TORE']=args['RAYON_TORE']
+
+       FissAct = [Fiss['FISS_ACTUELLE'] for Fiss in Fissures]
+
+       mcsimp['LISTE_FISS']  = FissAct
+       mcsimp['NB_CYCLES']   = 1
+       mcsimp['DA_FISS']     = Damax
+
        StepTot = args['ITERATIONS']
        __Fis = [None]*(StepTot*len(FissAct))
        __Mod = [None]*StepTot
-       mcsimp['TOLERANCE'] = args['TOLERANCE']
-       fiss = FissAct[0]
-       import aster
-       iret,ibid,mod_fiss = aster.dismoi('F','NOM_MODELE',fiss.nom,'FISS_XFEM')
-       mod_fiss=mod_fiss.strip()
-       MOD_FISS = self.get_concept(mod_fiss)
+
+       iret,ibid,mod_fiss = aster.dismoi('F','NOM_MODELE',FissAct[0].nom,'FISS_XFEM')
+       MOD_FISS = self.get_concept(mod_fiss.strip())
+
+       FissNou=[Fiss['FISS_PROPAGEE'] for Fiss in Fissures]
 
        for NumStep in range(0,StepTot) :
 
@@ -378,19 +314,32 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
            ListeFiss = []
            mcsimp['DISTANCE'] = args['DA_MAX']*(NumStep+1)
 
-           for NumFiss in range(0,len(FissAct)) :
+           for numfis in range(0,len(FissAct)) :
               if NumStep==0 :
-                 mcsimp['FISS_PROP'] = FissAct[NumFiss]
+                 fiss =  FissAct[numfis]
               else :
                  mcsimp['MODELE'] = __Mod[NumStep-1]
-                 mcsimp['FISS_PROP'] = __Fis[(NumStep-1)*len(FissAct)+NumFiss]
-              mcsimp['FISS_INITIALE'] = FissAct[NumFiss]
+                 fiss = __Fis[(NumStep-1)*len(FissAct)+numfis]
+
+              mcsimp['FISS_INITIALE'] = FissAct[numfis]
+
+              mcsimp['FISS_PROP'] = fiss
+
+              Coorfo = fiss.sdj.FONDFISS.get()
+              nb_pt_fiss = len(Coorfo)/4
+
+              TABLE_BETA = nb_pt_fiss * [0.]
+              TABLE_VIT  = nb_pt_fiss * [Damax]
+
+              mcsimp['ANGLE']   = TABLE_BETA
+              mcsimp['VITESSE'] = TABLE_VIT
+
               if NumStep==StepTot-1 :
-                 self.DeclareOut('nomfiss',FissNou[NumFiss])
+                 self.DeclareOut('nomfiss',FissNou[numfis])
                  nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
               else:
-                 __Fis[NumFiss+NumStep*len(FissAct)] = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
-                 ListeFiss.append(__Fis[NumFiss+NumStep*len(FissAct)])
+                 __Fis[numfis+NumStep*len(FissAct)] = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
+                 ListeFiss.append(__Fis[numfis+NumStep*len(FissAct)])
 
            if NumStep<StepTot-1 :
               aster.affiche('MESSAGE',' ------------------------')
@@ -402,32 +351,17 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               aster.affiche('MESSAGE',' ------------------------')
               aster.affiche('MESSAGE',' ')
 
+######## 
+######## CALCULS ET RECUPERATION DES PARAMETRES POUR LA PROPAGATION
+######## 
 
-#------------------------------------------------------------------
-# CAS 2 : METHODE_PROPA = 'MAILLAGE'
+# CAS 2: METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE' ET TEST_MAIL = 'NON'
+# CAS 3: METHODE_PROPA = 'MAILLAGE'
 #
+  if (TEST_MAIL == 'NON' ) or METHODE_PROPA == 'MAILLAGE' :
 
-  if METHODE_PROPA == 'MAILLAGE' :
-    Fissures =  args['FISSURE']
-
-    LOI_PROPA = args['LOI_PROPA']
-    if LOI_PROPA != None :
-      coef_M =  LOI_PROPA['M']
-      coef_C =  LOI_PROPA['C']
-      MATER  =  LOI_PROPA['MATER']
-
-    it = args['ITERATION']
-    Damax =  args['DA_MAX']
-    COMP_LINE = args['COMP_LINE']
-
-    Nbfissure=len(Fissures)
-    mm = [None]*Nbfissure
-    __MMX = [None]*Nbfissure
-
-    tab_BETA = [None]*Nbfissure
-    tab_DELTA_A = [None]*Nbfissure
-
-    __TAB_CUMUL = [None]*Nbfissure
+    Fissures = args['FISSURE']
+    Nbfissure = len(Fissures)
 
     print '-------------------------------------------'
     print 'NOMBRE DE FISSURES A TRAITER : ',Nbfissure
@@ -436,28 +370,48 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       numfis=numfis+1
     print '-------------------------------------------'
 
-# PREMIERE BOUCLE SUR LES FISSURES :
+# Recuperation des donnees
+
+    LOI_PROPA = args['LOI_PROPA']
+    coef_M =  LOI_PROPA['M']
+    coef_C =  LOI_PROPA['C']
+    MATER  =  LOI_PROPA['MATER']
+
+    Damax         = args['DA_MAX']
+    COMP_LINE     = args['COMP_LINE']
+    CRITERE_ANGLE = args['CRIT_ANGL_BIFURCATION']
+
+# Initialisations
+    tab_BETA   = [None]*Nbfissure
+    tab_VIT    = [None]*Nbfissure
+
+    TABLE_BETA = [None]*Nbfissure
+    TABLE_VIT  = [None]*Nbfissure
+
+    Vmfiss = {}
+
+    __TAB_CUMUL = [None]*Nbfissure
+
     for numfis, Fiss in enumerate(Fissures) :
-      fiss0 =    Fiss['FISS_ACTUELLE']
-      MAIL_FISS1 =  Fiss['MAIL_ACTUEL']
-      dime= MAIL_FISS1.sdj.DIME.get()[5]
+
+      fiss0 = Fiss['FISS_ACTUELLE']
 
 # Recuperation des K et de G
       SIF = Fiss['TABLE']
-      __tabp = SIF.EXTR_TABLE()
+      __tabsif = SIF.EXTR_TABLE()
 
-      if (('K1' or 'G') not in __tabp.para) :
-         UTMESS('F','RUPTURE1_44')
+      if (('K1' or 'G' or 'K2') not in __tabsif.para) :
+        UTMESS('F','RUPTURE1_44')
 
-      __tab1 = __tabp.values()
+      __table = __tabsif.values()
 
-      if (min(__tab1['G']) < 0.) :
-           UTMESS('F','RUPTURE1_46')
+      if (min(__table['G']) < 0.) :
+        UTMESS('F','RUPTURE1_46')
 
 # Verification que le calcul porte sur seulement un instant
-      if 'INST' in __tabp.para :
-        inst_tab=__tabp['INST'].values()['INST']
-        l_inst_tab=set(inst_tab)
+      if 'INST' in __tabsif.para :
+        inst_tab = __tabsif['INST'].values()['INST']
+        l_inst_tab = set(inst_tab)
         if len(l_inst_tab) > 1 :
           UTMESS('F','XFEM2_70',valk = fiss0.get_name())
 
@@ -465,24 +419,33 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       Fondmult = fiss0.sdj.FONDMULT.get()
       Nbfond = len(Fondmult)/2
 
-      if 'NUME_FOND' in __tabp.para and max(__tab1['NUME_FOND']) != Nbfond:
-         UTMESS('F','XFEM_42',valk = fiss0.get_name())
+      if (('NUME_FOND' in __tabsif.para and 
+          (max(__table['NUME_FOND']) != Nbfond or len(set(__table['NUME_FOND']))!= Nbfond))
+       or ('NUME_FOND' not in __tabsif.para and Nbfond != 1 )):
+         UTMESS('A','XFEM_42',valk = fiss0.get_name())
 
 # Calcul des angles de bifurcation, des avancees et du nombre de cycles
 
-#       copie de SIF
+#     copie de SIF
       __COPIE_SIF = CALC_TABLE(TABLE = SIF,
                                ACTION =_F(OPERATION='EXTR',
-                               NOM_PARA=__tabp.para))
+                               NOM_PARA=__tabsif.para))
 
-#       beta
-      __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
-                                 reuse=__COPIE_SIF,
-                                 OPERATION='ANGLE_BIFURCATION',
-                                 CRITERE='SITT_MAX',
-                                 NOM_PARA='BETA_SITT_MAX',)
+#     beta
+      if not 'BETA' in __tabsif.para and CRITERE_ANGLE == 'ANGLE_IMPO':
+        UTMESS('F','XFEM2_19',valk = fiss0.get_name())
 
-#       Keq
+      if CRITERE_ANGLE != 'ANGLE_IMPO':
+        if 'BETA' in __tabsif.para :
+          UTMESS('A','XFEM2_18',valk = fiss0.get_name())
+
+        __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
+                                   reuse=__COPIE_SIF,
+                                   OPERATION='ANGLE_BIFURCATION',
+                                   CRITERE=CRITERE_ANGLE,
+                                   NOM_PARA='ANGLE_BETA')
+
+#     Keq
       __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
                                  reuse=__COPIE_SIF,
                                  OPERATION='K_EQ',
@@ -490,403 +453,570 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                                  NOM_PARA='K_EQ',
                                  MATER=MATER)
 
-#       DKeq
+#     DKeq
       CMIN = COMP_LINE['COEF_MULT_MINI']
       CMAX = COMP_LINE['COEF_MULT_MAXI']
 
-      __TAB_DKEQ_DA=POST_RUPTURE(TABLE=__COPIE_SIF,
+      __TAB_DKEQ_VIT=POST_RUPTURE(TABLE=__COPIE_SIF,
                                  OPERATION='COMPTAGE_CYCLES',
                                  NOM_PARA=('K_EQ'),
                                  COMPTAGE='UNITAIRE',
                                  COEF_MULT_MINI=CMIN,
                                  COEF_MULT_MAXI=CMAX)
-       
-#       Da
-      __TAB_DKEQ_DA=POST_RUPTURE(TABLE=__TAB_DKEQ_DA,
-                                 reuse=__TAB_DKEQ_DA,
-                                 OPERATION='LOI_PROPA',
-                                 LOI='PARIS',
-                                 C=coef_C,
-                                 M=coef_M)
 
-#       somme Da
-      __TAB_CUMUL[numfis]=POST_RUPTURE(TABLE=__TAB_DKEQ_DA,
+#     Da/Dt
+      __TAB_DKEQ_VIT=POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
+                                  reuse=__TAB_DKEQ_VIT,
+                                  OPERATION='LOI_PROPA',
+                                  LOI='PARIS',
+                                  C=coef_C,
+                                  M=coef_M)
+
+#     somme Da/Dt
+      __TAB_CUMUL[numfis]=POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
                                        OPERATION='CUMUL_CYCLES')
 
       tab_cumul = __TAB_CUMUL[numfis].EXTR_TABLE()
 
-      if ('ABSC_CURV' in tab_cumul.para):
-        absc = tab_cumul.ABSC_CURV.values()
-      else :
-        absc = [0.]*len(tab_cumul)
+#     recuperation des vitesses Da/Dt et des angles de bifurcation beta
+      table_vit = tab_cumul.DELTA_A.values()
 
-      table_beta = tab_cumul.BETA_SITT_MAX.values()
-      table_delta_a = tab_cumul.DELTA_A.values()
+      if CRITERE_ANGLE != 'ANGLE_IMPO' :
+        table_temp = tab_cumul.ANGLE_BETA.values()
+        table_beta = [table_temp[i]*pi/180. for i in range(len(table_temp))]
+      else :
+        table_beta = __tabsif.BETA.values()
+
       n = len(table_beta)
-       
+
+#     vitesse maximale de la fissure numfis
+      Vmfiss[numfis] = max(table_vit)
+
       tab_BETA[numfis] = {}
-      tab_DELTA_A[numfis] = {}
+      tab_VIT[numfis]  = {}
 
-      if 'NUME_FOND' in tab_cumul.para:
-        tab_nume_fond=tab_cumul.NUME_FOND.values()
-        list_nume_fond=list(set(tab_nume_fond))
+#     Stockage de Da/Dt et de beta
+      # Si METHODE_PROPA !='MAILLAGE'
+      if TEST_MAIL == 'NON':
 
-        for fond_i in list_nume_fond :
-          tab_BETA[numfis][fond_i]=[[absc[i],table_beta[i]*pi/180.] for i in range(n) if tab_nume_fond[i]==fond_i]
-          tab_DELTA_A[numfis][fond_i]=[[absc[i],table_delta_a[i]] for i in range(n) if tab_nume_fond[i]==fond_i]
+        if not 'K3' in __tabsif.para and Fiss['NB_POINT_FOND']!=None :
+          UTMESS('A','XFEM2_73')
+          Fiss['NB_POINT_FOND']=None
+
+#       Stockage de Da/Dt et de beta en fonction de l'abscisse curviligne
+#       pour permettre ensuite de trouver ces parametres aux points "physiques" 
+#       par interpolation lineaire
+        if Fiss['NB_POINT_FOND']!=None :
+
+          if ('ABSC_CURV' in tab_cumul.para) :
+            absc = tab_cumul.ABSC_CURV.values()
+            presence_colonne_absc = True
+          else :
+#           si la colonne ABSC_CURV n'existe pas, les abscisses curvilignes
+#           sont recalculees plus tard
+            absc = [0.]*len(tab_cumul)
+            presence_colonne_absc = False
+
+          if 'NUME_FOND' in tab_cumul.para :
+#             cas d'un fond multiple
+            tab_nume_fond=tab_cumul.NUME_FOND.values()
+            list_nume_fond=list(set(tab_nume_fond))
+
+            for fond_i in list_nume_fond :
+              tab_BETA[numfis][fond_i]=[[absc[j],table_beta[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+              tab_VIT[numfis][fond_i]=[[absc[j],table_vit[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+
+          else :
+#             cas d'un fond unique
+            tab_BETA[numfis][1] = [[absc[j],table_beta[j]] for j in range(n)]
+            tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)]
+        else :
+          TABLE_BETA[numfis] = table_beta
+          TABLE_VIT[numfis]  = table_vit
+
+      # Si METHODE_PROPA=='MAILLAGE'
       else :
-        tab_BETA[numfis][1] = [[absc[i],table_beta[i]*pi/180.] for i in range(n)]
-        tab_DELTA_A[numfis][1] = [[absc[i],table_delta_a[i]] for i in range(n)]         
+        if ('ABSC_CURV' in tab_cumul.para) :
+          absc = tab_cumul.ABSC_CURV.values()
+        else :
+          # si modele 3D: il faut necessairement la colonne 'ABSC_CURV'
+          if 'K3' in tab_cumul.para :
+            UTMESS('F','XFEM2_20')            
+          else :
+            absc = [0.]*len(tab_cumul)
+      
+        if 'NUME_FOND' in tab_cumul.para :
+#           cas d'un fond multiple
+          tab_nume_fond  = tab_cumul.NUME_FOND.values()
+          list_nume_fond = list(set(tab_nume_fond))
 
-      DETRUIRE(CONCEPT=_F(NOM=__TAB_DKEQ_DA),INFO=1)
+          for fond_i in list_nume_fond :
+            tab_BETA[numfis][fond_i]=[[absc[j],table_beta[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+            tab_VIT[numfis][fond_i]=[[absc[j],table_vit[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+        else :
+#           cas d'un fond unique
+          tab_BETA[numfis][1]= [[absc[j],table_beta[j]] for j in range(n)]
+          tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)] 
+
+      DETRUIRE(CONCEPT=_F(NOM=__TAB_DKEQ_VIT),INFO=1)
       DETRUIRE(CONCEPT=_F(NOM=__COPIE_SIF),INFO=1)   
 
+#   verification que la vitesse maximale est superieure a 0
+    if max(Vmfiss.values())<eps :
+      UTMESS('F','XFEM2_74')
 
-# CALCUL DU NOMBRE DE CYCLES EQUIVALENTS
+#     CALCUL DU NOMBRE DE CYCLES EQUIVALENTS
     __TAB_PILO=POST_RUPTURE(OPERATION='PILO_PROPA',
-                            TABLE=[__TAB_CUMUL[i] for i in range(Nbfissure)],
-                            DELTA_A_MAX = Damax)
+                           TABLE=[__TAB_CUMUL[i] for i in range(Nbfissure)],
+                           DELTA_A_MAX = Damax)
 
     NBCYCLE =__TAB_PILO.EXTR_TABLE().DELTA_CYCLE.values()[0]
-    
+
     DETRUIRE(CONCEPT=_F(NOM=__TAB_PILO),INFO=1)
 
-    print 'AVANCE MAXIMALE DU FOND DE FISSURE',Damax
-    print 'NOMBRE DE CYCLES DE FATIGUE',NBCYCLE
+########
+######## PROPAGATION
+########
+
+# CAS 2: METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE' ET TEST_MAIL = 'NON'
+    if TEST_MAIL == 'NON':  
+
+      for numfis, Fiss in enumerate(Fissures) :
+
+        Coorfo = Fiss['FISS_ACTUELLE'].sdj.FONDFISS.get()
+
+#       Si NB_POINT_FOND: calcul de beta et Da/Dt aux points "physiques"
+        if Fiss['NB_POINT_FOND']!=None :
+
+          TABLE_BETA[numfis] = []
+          TABLE_VIT[numfis]  = []
+
+          NbPointFond = Fiss['NB_POINT_FOND']
+
+          Fondmult = Fiss['FISS_ACTUELLE'].sdj.FONDMULT.get()
+          Nbfond = len(Fondmult)/2
+
+          if (len(Fiss['NB_POINT_FOND']) != Nbfond) :
+            UTMESS('F','XFEM2_78')
+
+          for i in range(Nbfond) :
+            NI = Fondmult[2*i]
+            NF = Fondmult[2*i+1]
+
+            absmax = Coorfo[4*NF-1]
+
+#           verification de la coherence entre le nombre de valeurs de beta pour chaque fond et
+#           le nombre de points indiques dans NB_POINT_FOND
+            if len(tab_BETA[numfis][i+1]) != NbPointFond[i] :
+              UTMESS('F','XFEM2_75',vali=i+1,valk=fiss0.get_name())
+
+            if not presence_colonne_absc :
+#             cas ou la colonne ABSC_CURV n'existe pas la table SIF: calcul des abscisses curvilignes
+              for j in range(NbPointFond[i]):
+                tab_BETA[numfis][i+1][j][0] = absmax/(NbPointFond[i]-1)*j
+                tab_VIT[numfis][i+1][j][0]  = absmax/(NbPointFond[i]-1)*j
+
+#           interpolation lineaire
+            for j in range(NF-NI+1) :
+              abscurv_pt = Coorfo[4*(NI+j)-1]
+              TABLE_BETA[numfis].append(InterpolationLineaire(abscurv_pt,tab_BETA[numfis][i+1]))
+              TABLE_VIT[numfis].append(InterpolationLineaire(abscurv_pt,tab_VIT[numfis][i+1]))
+
+        else :
+#         il doit y avoir autant de valeurs de beta que de points au fond de fissure
+          if (len(TABLE_BETA[numfis]) != len(Coorfo)/4) :
+            UTMESS('F','XFEM2_80')
+
+#       Si 2D: verification de l'orientation du repere (VNOR,VDIR)
+        if not 'K3' in __tabsif.para :
+          Basefond = Fiss['FISS_ACTUELLE'].sdj.BASEFOND.get()
+          for fond in range(len(Basefond)/4):
+            VNOR = (Basefond[4*fond+0],Basefond[4*fond+1])
+            VDIR = (Basefond[4*fond+2],Basefond[4*fond+3])
+#           produit vectoriel
+            ZLOC = VDIR[0]*VNOR[1] - VDIR[1]*VNOR[0]
+            if ZLOC < 0. :
+#               correction de l'angle beta
+              TABLE_BETA[numfis][fond] = - TABLE_BETA[numfis][fond]
+
+
+
+#     APPEL A PROPA_XFEM pour la propagation
+      mcsimp = {}
+      mcsimp['MODELE']   = args['MODELE']
+      mcsimp['RAYON']    = args['RAYON']
+      mcsimp['DA_MAX']   = args['DA_MAX']
+      mcsimp['TEST_MAIL']= TEST_MAIL
+      mcsimp['ZONE_MAJ'] = args['ZONE_MAJ']
+      if mcsimp['ZONE_MAJ'] == 'TORE' :
+        if args['RAYON_TORE']!=None :
+          mcsimp['RAYON_TORE']=args['RAYON_TORE']
+
+      FissAct = [Fiss['FISS_ACTUELLE'] for Fiss in Fissures]
+
+      mcsimp['LISTE_FISS'] = FissAct
+      mcsimp['NB_CYCLES']  = NBCYCLE
+
+      FissNou = [Fiss['FISS_PROPAGEE'] for Fiss in Fissures]
+
+      for numfis in range(0,len(FissAct)) :
+        mcsimp['FISS_PROP']   = FissAct[numfis]
+        mcsimp['ANGLE']       = TABLE_BETA[numfis]
+        mcsimp['VITESSE']     = TABLE_VIT[numfis]
+        mcsimp['DA_FISS']     = Vmfiss[numfis] * NBCYCLE
+
+        self.DeclareOut('nomfiss',FissNou[numfis])
+        nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
+
+
+#------------------------------------------------------------------
+# CAS 3 : METHODE_PROPA = 'MAILLAGE'
+#
+
+    if METHODE_PROPA == 'MAILLAGE' :
+
+      print 'AVANCE MAXIMALE DU FOND DE FISSURE',Damax
+      print 'NOMBRE DE CYCLES DE FATIGUE',NBCYCLE
+
+      it = args['ITERATION']
+      mm = [None]*Nbfissure
+      __MMX = [None]*Nbfissure
 
 # DEUXIEME BOUCLE SUR LES FISSURES : PROPAGATION
-    for numfis, Fiss in enumerate(Fissures) :
-      DETRUIRE(CONCEPT=_F(NOM=__TAB_CUMUL[numfis]),INFO=1)
-      fiss0 = Fiss['FISS_ACTUELLE']
-      print '-------------------------------------------'
-      print 'TRAITEMENT DE LA FISSURE ',fiss0.get_name()
-      print '-------------------------------------------'
-      MAIL_FISS1 = Fiss['MAIL_ACTUEL']
-      MFOND = Fiss['GROUP_MA_FOND']
-      MFISS = Fiss['GROUP_MA_FISS']
+      for numfis, Fiss in enumerate(Fissures) :
+        DETRUIRE(CONCEPT=_F(NOM=__TAB_CUMUL[numfis]),INFO=1)
+        fiss0 = Fiss['FISS_ACTUELLE']
+        print '-------------------------------------------'
+        print 'TRAITEMENT DE LA FISSURE ',fiss0.get_name()
+        print '-------------------------------------------'
+        MAIL_FISS1 = Fiss['MAIL_ACTUEL']
+        dime = MAIL_FISS1.sdj.DIME.get()[5]
+        MFOND = Fiss['GROUP_MA_FOND']
+        MFISS = Fiss['GROUP_MA_FISS']
+
 #------------------------------------------------------------------
-# CAS 2a : MODELE 3D
+# CAS 3a : MODELE 3D
 #
-      if dime == 3 :
-        mm[numfis] = MAIL_PY()
-        mm[numfis].FromAster(MAIL_FISS1)
+        if dime == 3 :
+          mm[numfis] = MAIL_PY()
+          mm[numfis].FromAster(MAIL_FISS1)
 
 # Recuperation des informations sur le maillage
-        nbno = mm[numfis].dime_maillage[0]
-        nbma = mm[numfis].dime_maillage[2]
-        groupma = mm[numfis].gma
-        Fondmult = fiss0.sdj.FONDMULT.get()
-        Nbfond = len(Fondmult)/2
-        Coorfo = fiss0.sdj.FONDFISS.get()
+          nbno = mm[numfis].dime_maillage[0]
+          nbma = mm[numfis].dime_maillage[2]
+          groupma = mm[numfis].gma
+          Fondmult = fiss0.sdj.FONDMULT.get()
+          Nbfond = len(Fondmult)/2
+          Coorfo = fiss0.sdj.FONDFISS.get()
 
 # Recuperation de la liste des noeuds du fond
-        connex = mm[numfis].co
-        linomma  = list(mm[numfis].correspondance_mailles)
-        lisnofo = []
-        # recuperation des noeud du fond de fissure
-        inofo = 1
-        FmPrec = []
-        lmafo = groupma[MFOND+'_'+str(it-1)]
-        for i in range(len(lmafo)) :
-          ma_i = linomma[lmafo[i]]
-          no_i = connex[lmafo[i]]
-          if i == 0 :
-            FmPrec.append(no_i[0])
-            lisnofo.append(no_i[0])
-            lisnofo.append(no_i[1])
-          # si on reste sur le meme fond
-          elif lisnofo[inofo] == no_i[0] :
-            lisnofo.append(no_i[1])
-            inofo += 1
-          # si on change de fond
-          elif lisnofo[inofo] == no_i[0] - 1 :
-            FmPrec.append(no_i[0] - 1)
-            FmPrec.append(no_i[0])
-            lisnofo.append(no_i[0])
-            lisnofo.append(no_i[1])
-            inofo += 2
-          # le maillage en entree n'est pas bien ordonne
-          else :
-            UTMESS('F','RUPTURE1_51')
-        FmPrec.append(lisnofo[-1])
-        nbnofo = len(lisnofo)
+          connex = mm[numfis].co
+          linomma  = list(mm[numfis].correspondance_mailles)
+          lisnofo = []
+          # recuperation des noeud du fond de fissure
+          inofo = 1
+          FmPrec = []
+          lmafo = groupma[MFOND+'_'+str(it-1)]
+          for i in range(len(lmafo)) :
+            ma_i = linomma[lmafo[i]]
+            no_i = connex[lmafo[i]]
+            if i == 0 :
+              FmPrec.append(no_i[0])
+              lisnofo.append(no_i[0])
+              lisnofo.append(no_i[1])
+            # si on reste sur le meme fond
+            elif lisnofo[inofo] == no_i[0] :
+              lisnofo.append(no_i[1])
+              inofo += 1
+            # si on change de fond
+            elif lisnofo[inofo] == no_i[0] - 1 :
+              FmPrec.append(no_i[0] - 1)
+              FmPrec.append(no_i[0])
+              lisnofo.append(no_i[0])
+              lisnofo.append(no_i[1])
+              inofo += 2
+            # le maillage en entree n'est pas bien ordonne
+            else :
+              UTMESS('F','RUPTURE1_51')
+          FmPrec.append(lisnofo[-1])
+          nbnofo = len(lisnofo)
 
 # Dans le cas de la separation d'un front en deux
 # on cherche les points du front les plus proches des nouvelles extremites des fronts de fissures
-        FmAct = [-1]*2*Nbfond
-        for j in range(2*Nbfond):
-          xyz = Coorfo[4*(Fondmult[j]-1):4*Fondmult[j]-1]
-          xyzk = mm[numfis].cn[nbno-nbnofo+0]
-          dist0 = -1
-          k0=0
-          for k in range(nbnofo):
-            xyzk=mm[numfis].cn[nbno-nbnofo+k]
-            if (xyz[0]-xyzk[0])**2+(xyz[1]-xyzk[1])**2+(xyz[2]-xyzk[2])**2<=dist0 or dist0==-1:
-              dist0 = (xyz[0]-xyzk[0])**2 + (xyz[1]-xyzk[1])**2 + (xyz[2]-xyzk[2])**2
-              k0 = k
-          FmAct[j] = nbno - nbnofo + k0
+          FmAct = [-1]*2*Nbfond
+          for j in range(2*Nbfond) :
+            xyz = Coorfo[4*(Fondmult[j]-1):4*Fondmult[j]-1]
+            xyzk = mm[numfis].cn[nbno-nbnofo+0]
+            dist0 = -1
+            k0=0
+            for k in range(nbnofo) :
+              xyzk=mm[numfis].cn[nbno-nbnofo+k]
+              if (xyz[0]-xyzk[0])**2+(xyz[1]-xyzk[1])**2+(xyz[2]-xyzk[2])**2<=dist0 or dist0==-1:
+                dist0 = (xyz[0]-xyzk[0])**2 + (xyz[1]-xyzk[1])**2 + (xyz[2]-xyzk[2])**2
+                k0 = k
+            FmAct[j] = nbno - nbnofo + k0
 
-#         Correction de la position des noeuds les plus proches des bords libres
-          mm[numfis].cn[FmAct[j]][0] = Coorfo[4*(Fondmult[j]-1) + 0]
-          mm[numfis].cn[FmAct[j]][1] = Coorfo[4*(Fondmult[j]-1) + 1]
-          mm[numfis].cn[FmAct[j]][2] = Coorfo[4*(Fondmult[j]-1) + 2]
+#           Correction de la position des noeuds les plus proches des bords libres
+            mm[numfis].cn[FmAct[j]][0] = Coorfo[4*(Fondmult[j]-1) + 0]
+            mm[numfis].cn[FmAct[j]][1] = Coorfo[4*(Fondmult[j]-1) + 1]
+            mm[numfis].cn[FmAct[j]][2] = Coorfo[4*(Fondmult[j]-1) + 2]
 
 # Critere pour calculer le nombre de noeuds total et par fond
-        # nombre total de noeuds constant
-        # repartition par fonds en fonction de leurs distance curviligne
-        abstot = 0.
-        nbnofobis = 0
-        nbptfo = [0]*Nbfond
-        for j in range(Nbfond) :
-          abstot += Coorfo[4*Fondmult[2*j+1]-1]
-        for j in range(Nbfond) :
-          absmax = Coorfo[4*Fondmult[2*j+1]-1]
-          nbptfo[j] = int(nbnofo*absmax/abstot)
-          nbnofobis += nbptfo[j]
-        # pour eviter les cas comme 10.2 (10) + 10.4 (10) + 10.4 (10) = 31 (30)
-        if nbnofobis < nbnofo :
-          liste = []
+          # nombre total de noeuds constant
+          # repartition par fonds en fonction de leurs distance curviligne
+          abstot = 0.
+          nbnofobis = 0
+          nbptfo = [0]*Nbfond
+          for j in range(Nbfond) :
+            abstot += Coorfo[4*Fondmult[2*j+1]-1]
           for j in range(Nbfond) :
             absmax = Coorfo[4*Fondmult[2*j+1]-1]
-            liste.append([nbnofo*absmax/abstot - nbptfo[j],j])
-          # on ordonne les fonds en fonction de la longueur curviligne
-          liste.sort()
-          for i in range(nbnofo - nbnofobis) :
-            nbptfo[liste[i][1]] += 1
-            nbnofobis += 1
-        nbnofo = nbnofobis
+            nbptfo[j] = int(nbnofo*absmax/abstot)
+            nbnofobis += nbptfo[j]
+          # pour eviter les cas comme 10.2 (10) + 10.4 (10) + 10.4 (10) = 31 (30)
+          if nbnofobis < nbnofo :
+            liste = []
+            for j in range(Nbfond) :
+              absmax = Coorfo[4*Fondmult[2*j+1]-1]
+              liste.append([nbnofo*absmax/abstot - nbptfo[j],j])
+            # on ordonne les fonds en fonction de la longueur curviligne
+            liste.sort()
+            for i in range(nbnofo - nbnofobis) :
+              nbptfo[liste[i][1]] += 1
+              nbnofobis += 1
+          nbnofo = nbnofobis
 
 # Creation des points a partir desquels nous allons calculer le nouveau fond
 
-        numptfo = [[0]*nbptfo[i] for i in range(Nbfond)]
-        abscf=[[0.]*nbptfo[i] for i in range(Nbfond)]
-        ALPHABET = nom_points_fonds(nbnofo)
-        inofo = 0
-        for j in range(Nbfond):
-          absmax = Coorfo[4*Fondmult[2*j+1]-1]
-          Coorfoj= Coorfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]]
-          abscf[j][0] = 0
-          abscf[j][-1] = absmax
-          numptfo[j][0] = FmAct[2*j]
-          numptfo[j][-1] = FmAct[2*j+1]
-          for i in range(1,nbptfo[j]-1):
-            abscf[j][i] = i * absmax / (nbptfo[j]-1)
-            xyz = InterpolFondFiss(abscf[j][i], Coorfoj)
-            numptfo[j][i] = nbno
-            LesNoeudsEnPlus = NP.array([[xyz[0],xyz[1],xyz[2]]])
-            mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
-            NomNoeudsEnPlus =     ('PS%s%i' %(ALPHABET[inofo],it),)
-            mm[numfis].correspondance_noeuds = tuple(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus
-            inofo += 1
-            nbno += 1
-        nbmafo = nbnofo - Nbfond
-        nbno += nbnofo
+          numptfo = [[0]*nbptfo[i] for i in range(Nbfond)]
+          abscf=[[0.]*nbptfo[i] for i in range(Nbfond)]
+          ALPHABET = nom_points_fonds(nbnofo)
+          inofo = 0
+          for j in range(Nbfond) :
+            absmax = Coorfo[4*Fondmult[2*j+1]-1]
+            Coorfoj= Coorfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]]
+            abscf[j][0] = 0
+            abscf[j][-1] = absmax
+            numptfo[j][0] = FmAct[2*j]
+            numptfo[j][-1] = FmAct[2*j+1]
+            for i in range(1,nbptfo[j]-1):
+              abscf[j][i] = i * absmax / (nbptfo[j]-1)
+              xyz = InterpolFondFiss(abscf[j][i], Coorfoj)
+              numptfo[j][i] = nbno
+              LesNoeudsEnPlus = NP.array([[xyz[0],xyz[1],xyz[2]]])
+              mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
+              NomNoeudsEnPlus =     ('PS%s%i' %(ALPHABET[inofo],it),)
+              mm[numfis].correspondance_noeuds = tuple(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus
+              inofo += 1
+              nbno += 1
+          nbmafo = nbnofo - Nbfond
+          nbno += nbnofo
 
 # Recuperation des informations importantes pour la propagation
-        Basefo = fiss0.sdj.BASEFOND.get()
-        Listfo = fiss0.sdj.FONDFISS.get()
+          Basefo = fiss0.sdj.BASEFOND.get()
+          Listfo = fiss0.sdj.FONDFISS.get()
 
 # Boucle sur le fond : calcul des coordonnees des points propages
-        inofo = 0
-        A = [0,0,0]
-        B = [0,0,0]
-        Damaxbis = Damax
+          inofo = 0
+          A = [0,0,0]
+          B = [0,0,0]
+          Damaxbis = Damax
 
-        for j in range(Nbfond) :
-          for i in range(len(numptfo[j])) :
-             Xf =  mm[numfis].cn[numptfo[j][i]][0]
-             Yf =  mm[numfis].cn[numptfo[j][i]][1]
-             Zf =  mm[numfis].cn[numptfo[j][i]][2]
-             C = [Xf,Yf,Zf]
-             VPVNi = InterpolBaseFiss(abscf[j][i],Basefo[6*(Fondmult[2*j]-1):6*Fondmult[2*j+1]], Listfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]])
-             # Calcul des points propages
-             beta = InterpolationLineaire(abscf[j][i],tab_BETA[numfis][j+1])
-             Vloc = NBCYCLE*InterpolationLineaire(abscf[j][i],tab_DELTA_A[numfis][j+1])
-             Xf2 = Xf + (VPVNi[3]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
-             Yf2 = Yf + (VPVNi[4]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
-             Zf2 = Zf + (VPVNi[5]*cos(beta)+VPVNi[2]*sin(beta))*Vloc
-             D = [Xf2,Yf2,Zf2]
-             # Verification de la convexite du fond
-             if i > 0 :
-               AB = [B[0]-A[0],B[1]-A[1],B[2]-A[2]]
-               AC = [C[0]-A[0],C[1]-A[1],C[2]-A[2]]
-               AD = [D[0]-A[0],D[1]-A[1],D[2]-A[2]]
-               CD = [D[0]-C[0],D[1]-C[1],D[2]-C[2]]
-               # Calcul de produits scalaires pour savoir si cest un cas problematique
-               # Calcul de E1 et E2 base orthonorme dans le plan ABC
-               E1 = NORMEV(AB)
-               ACE1 = DDOT(AC,E1)
-               E2=[AC[k]-ACE1*E1[k] for k in range(3)]
-               E2 = NORMEV(E2)
-               # produit scalaire entre E2 (normal a AB) et CD pour savoir si convexe
-               PS = DDOT(E2,CD)
-               # Si fissure non convexe, verification de la grandeur du pas Damax
-               # (en effet les mailles peuvent avoir leurs aretes qui se croisent
-               #  ce qui risque de poser des problemes lors de lusage de DEFI_FISS)
-               if PS < 0 :
-                 # Recherche du point dintersection M, AM=xE1
-                 x = (DDOT(AD,E2)*DDOT(AC,E1) - DDOT(AC,E2)*DDOT(AD,E1))/DDOT(CD,E2)
-                 alpha = 1.2
-                 Crit1 = x / (alpha * DDOT(AB,E1))
-                 Crit2 = sqrt(((x - DDOT(AC,E1))**2 + DDOT(AC,E2)**2)/(DDOT(CD,E1)**2 + DDOT(CD,E2)**2))
-                 if Crit1 < 1 :
-                   Damaxbis = min(Damaxbis,Damax * Crit1)
-                 if Crit2 < 1 :
-                   Damaxbis = min(Damaxbis,Damax * Crit2)
-             A=C
-             B=D
-             LesNoeudsEnPlus = NP.array([[Xf2,Yf2,Zf2]])
-             NomNoeudsEnPlus =     ('NX%s%i' %(ALPHABET[inofo],it+1),)
-             mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
-             mm[numfis].correspondance_noeuds = tuple(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus
-             inofo+=1
+          for j in range(Nbfond) :
+            for i in range(len(numptfo[j])) :
+               Xf =  mm[numfis].cn[numptfo[j][i]][0]
+               Yf =  mm[numfis].cn[numptfo[j][i]][1]
+               Zf =  mm[numfis].cn[numptfo[j][i]][2]
+               C = [Xf,Yf,Zf]
+               VPVNi = InterpolBaseFiss(abscf[j][i],Basefo[6*(Fondmult[2*j]-1):6*Fondmult[2*j+1]], Listfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]])
+               # Calcul des points propages
+               beta = InterpolationLineaire(abscf[j][i],tab_BETA[numfis][j+1])
+               Vloc = NBCYCLE*InterpolationLineaire(abscf[j][i],tab_VIT[numfis][j+1])
+               Xf2 = Xf + (VPVNi[3]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
+               Yf2 = Yf + (VPVNi[4]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
+               Zf2 = Zf + (VPVNi[5]*cos(beta)+VPVNi[2]*sin(beta))*Vloc
+               D = [Xf2,Yf2,Zf2]
+               # Verification de la convexite du fond
+               if i > 0 :
+                 AB = [B[0]-A[0],B[1]-A[1],B[2]-A[2]]
+                 AC = [C[0]-A[0],C[1]-A[1],C[2]-A[2]]
+                 AD = [D[0]-A[0],D[1]-A[1],D[2]-A[2]]
+                 CD = [D[0]-C[0],D[1]-C[1],D[2]-C[2]]
+                 # Calcul de produits scalaires pour savoir si cest un cas problematique
+                 # Calcul de E1 et E2 base orthonorme dans le plan ABC
+                 E1 = NORMEV(AB)
+                 ACE1 = DDOT(AC,E1)
+                 E2=[AC[k]-ACE1*E1[k] for k in range(3)]
+                 E2 = NORMEV(E2)
+                 # produit scalaire entre E2 (normal a AB) et CD pour savoir si convexe
+                 PS = DDOT(E2,CD)
+                 # Si fissure non convexe, verification de la grandeur du pas Damax
+                 # (en effet les mailles peuvent avoir leurs aretes qui se croisent
+                 #  ce qui risque de poser des problemes lors de lusage de DEFI_FISS)
+                 if PS < 0 :
+                   # Recherche du point dintersection M, AM=xE1
+                   x = (DDOT(AD,E2)*DDOT(AC,E1) - DDOT(AC,E2)*DDOT(AD,E1))/DDOT(CD,E2)
+                   alpha = 1.2
+                   Crit1 = x / (alpha * DDOT(AB,E1))
+                   Crit2 = sqrt(((x - DDOT(AC,E1))**2 + DDOT(AC,E2)**2)/(DDOT(CD,E1)**2 + DDOT(CD,E2)**2))
+                   if Crit1 < 1 :
+                     Damaxbis = min(Damaxbis,Damax * Crit1)
+                   if Crit2 < 1 :
+                     Damaxbis = min(Damaxbis,Damax * Crit2)
+               A=C
+               B=D
+               LesNoeudsEnPlus = NP.array([[Xf2,Yf2,Zf2]])
+               NomNoeudsEnPlus =     ('NX%s%i' %(ALPHABET[inofo],it+1),)
+               mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
+               mm[numfis].correspondance_noeuds = tuple(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus
+               inofo+=1
 
-# 2eme Calcul des points avec le nouveau DAMAX si fissure probematique
-        if Damaxbis < Damax :
-          UTMESS('F','XFEM_70',valr = [Damax,Damaxbis])
+# 2eme Calcul des points avec le nouveau DAMAX si fissure problematique
+          if Damaxbis < Damax :
+            UTMESS('F','XFEM_70',valr = [Damax,Damaxbis])
 
 # Ajouts Maille levre (quad4)
-        imafo = 0
-        nbma += 2*nbmafo
-        fsi = mm[numfis].gma['%s_%i' %(MFISS,it-1)]
-        for j in range(Nbfond) :
-          for i in range(len(numptfo[j])-1) :
-             i1 = numptfo[j][i]
-             i2 = numptfo[j][i+1]
-             i3 = nbno - nbnofo + imafo + j + 1
-             i4 = nbno - nbnofo + imafo + j
-             mm[numfis].co.append(NP.array([i1,i2,i3,i4]))
-             typ_maille = mm[numfis].dic['QUAD4']
-             mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))
-             mm[numfis].correspondance_mailles += ('MX%s%i' %(ALPHABET[imafo], it+1),)
-             mm[numfis].gma['%s_%i' %(MFISS,it)] = NP.concatenate((fsi,NP.array([nbma - 2*nbmafo + imafo])))
-             fsi = mm[numfis].gma['%s_%i' %(MFISS,it)]
-             imafo += 1
+          imafo = 0
+          nbma += 2*nbmafo
+          fsi = mm[numfis].gma['%s_%i' %(MFISS,it-1)]
+          for j in range(Nbfond) :
+            for i in range(len(numptfo[j])-1) :
+              i1 = numptfo[j][i]
+              i2 = numptfo[j][i+1]
+              i3 = nbno - nbnofo + imafo + j + 1
+              i4 = nbno - nbnofo + imafo + j
+              mm[numfis].co.append(NP.array([i1,i2,i3,i4]))
+              typ_maille = mm[numfis].dic['QUAD4']
+              mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))
+              mm[numfis].correspondance_mailles += ('MX%s%i' %(ALPHABET[imafo], it+1),)
+              mm[numfis].gma['%s_%i' %(MFISS,it)] = NP.concatenate((fsi,NP.array([nbma - 2*nbmafo + imafo])))
+              fsi = mm[numfis].gma['%s_%i' %(MFISS,it)]
+              imafo += 1
 
 # Ajout Maille fond (SEG2)
-        imafo=0
-        for j in range(Nbfond) :
-          for i in range(len(numptfo[j])-1) :
-            i3 = nbno - nbnofo + imafo + j
-            i4 = nbno - nbnofo + imafo + j + 1
-            mm[numfis].co.append(NP.array([i3,i4]))
-            typ_maille = mm[numfis].dic['SEG2']
-            mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))
-            mm[numfis].correspondance_mailles += ('MF%s%i' %(ALPHABET[imafo], it+1),)
-            imafo += 1
-        mm[numfis].gma['%s_%i' %(MFOND,it)] = NP.arange(nbma - nbmafo,nbma)
+          imafo=0
+          for j in range(Nbfond) :
+            for i in range(len(numptfo[j])-1) :
+              i3 = nbno - nbnofo + imafo + j
+              i4 = nbno - nbnofo + imafo + j + 1
+              mm[numfis].co.append(NP.array([i3,i4]))
+              typ_maille = mm[numfis].dic['SEG2']
+              mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))
+              mm[numfis].correspondance_mailles += ('MF%s%i' %(ALPHABET[imafo], it+1),)
+              imafo += 1
+          mm[numfis].gma['%s_%i' %(MFOND,it)] = NP.arange(nbma - nbmafo,nbma)
 
 #------------------------------------------------------------------
-# CAS 2b : MODELE 2D
+# CAS 3b : MODELE 2D
 #
-      if dime == 2 :
-        mm[numfis] = MAIL_PY()
-        FISS_A = '%s_%i' %(MFISS,(it-1))
-        DEFI_GROUP(reuse =MAIL_FISS1,
+        if dime == 2 :
+          mm[numfis] = MAIL_PY()
+          FISS_A = '%s_%i' %(MFISS,(it-1))
+          DEFI_GROUP(reuse =MAIL_FISS1,
                  MAILLAGE=MAIL_FISS1,
                  CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
                                   NOM='Nds_Plan',
                                   GROUP_MA=FISS_A,),INFO=2);
-        DEFI_GROUP(reuse =MAIL_FISS1,
+          DEFI_GROUP(reuse =MAIL_FISS1,
                  MAILLAGE=MAIL_FISS1,
                  DETR_GROUP_MA=_F(NOM='A',),
                  CREA_GROUP_MA=_F(OPTION='APPUI',
                                   NOM='A',
                                   TYPE_APPUI='TOUT',
                                   GROUP_NO='Nds_Plan',),INFO=2);
-        DEFI_GROUP(reuse =MAIL_FISS1,
+          DEFI_GROUP(reuse =MAIL_FISS1,
                  MAILLAGE=MAIL_FISS1,
                  DETR_GROUP_NO=_F(NOM='Nds_Plan',),);
 
-        mm[numfis].FromAster(MAIL_FISS1)
+          mm[numfis].FromAster(MAIL_FISS1)
 
-        (nno,ndim) = mm[numfis].cn.shape
+          (nno,ndim) = mm[numfis].cn.shape
 
   # Recuperation des informations sur le maillage
-        nbno = mm[numfis].dime_maillage[0]
-        nbma = mm[numfis].dime_maillage[2]
-        coord    = mm[numfis].cn
-        linomno  = list(mm[numfis].correspondance_noeuds)
-        linomno = map(string.rstrip,linomno)
-        l_coorf =  [[linomno[i],coord[i]] for i in range(0,nbno)]
-        d_coorf = dict(l_coorf)
+          nbno = mm[numfis].dime_maillage[0]
+          nbma = mm[numfis].dime_maillage[2]
+          coord    = mm[numfis].cn
+          linomno  = list(mm[numfis].correspondance_noeuds)
+          linomno = map(string.rstrip,linomno)
+          l_coorf =  [[linomno[i],coord[i]] for i in range(0,nbno)]
+          d_coorf = dict(l_coorf)
 
   # Coordonnees du point propage
-        Xf =  d_coorf['NXA%i' %(it)][0]
-        Yf =  d_coorf['NXA%i' %(it)][1]
+          Xf =  d_coorf['NXA%i' %(it)][0]
+          Yf =  d_coorf['NXA%i' %(it)][1]
 
-        VPVNi = fiss0.sdj.BASEFOND.get()
-        Vloc = NBCYCLE*tab_DELTA_A[numfis][1][0][1]
-        beta = tab_BETA[numfis][1][0][1]
-        Xf2 = Xf + (VPVNi[2]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
-        Yf2 = Yf + (VPVNi[3]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
+          VPVNi = fiss0.sdj.BASEFOND.get()
+          Vloc = NBCYCLE*tab_VIT[numfis][1][0][1]
+          beta = tab_BETA[numfis][1][0][1]
+          Xf2 = Xf + (VPVNi[2]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
+          Yf2 = Yf + (VPVNi[3]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
 
-        LesNoeudsEnPlus = NP.array([[Xf2,Yf2]])
-        NomNoeudsEnPlus =     ('NXA%i' %(it+1),)
-        mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
-        mm[numfis].correspondance_noeuds = tuple(linomno) + NomNoeudsEnPlus
-        ALPHABET = nom_points_fonds(1)
+          LesNoeudsEnPlus = NP.array([[Xf2,Yf2]])
+          NomNoeudsEnPlus =     ('NXA%i' %(it+1),)
+          mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
+          mm[numfis].correspondance_noeuds = tuple(linomno) + NomNoeudsEnPlus
+          ALPHABET = nom_points_fonds(1)
 
   # Ajout Maille levre (SEG2)
-        NomMaillesEnPlus =     ('MX%s%i' %(ALPHABET[0], it+1),)
-        NoeudsMailles = [NP.array([nbno-1,nbno])]
-        typ_maille = mm[numfis].dic['SEG2']
-        mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))
-        mm[numfis].correspondance_mailles += NomMaillesEnPlus
-        mm[numfis].co += NoeudsMailles
-        fsi = mm[numfis].gma['%s_%i' %(MFISS,it-1)]
-        fsi = NP.concatenate((fsi,NP.array([nbma])))
-        mm[numfis].gma['%s_%i' %(MFISS,it)] = fsi.astype(int)
+          NomMaillesEnPlus =     ('MX%s%i' %(ALPHABET[0], it+1),)
+          NoeudsMailles = [NP.array([nbno-1,nbno])]
+          typ_maille = mm[numfis].dic['SEG2']
+          mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille])))
+          mm[numfis].correspondance_mailles += NomMaillesEnPlus
+          mm[numfis].co += NoeudsMailles
+          fsi = mm[numfis].gma['%s_%i' %(MFISS,it-1)]
+          fsi = NP.concatenate((fsi,NP.array([nbma])))
+          mm[numfis].gma['%s_%i' %(MFISS,it)] = fsi.astype(int)
 
 # Ajout Maille fond (POI1)
-        NomMaillesEnPlus =     ('MF%s%i' %(ALPHABET[0], it+1),)
-        NoeudsMailles = [NP.array([nbno])]
-        typ_maille = mm[numfis].dic['POI1']
-        mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille]*1)))
-        mm[numfis].correspondance_mailles += NomMaillesEnPlus
-        mm[numfis].co += NoeudsMailles
-        mm[numfis].gma['%s_%i' %(MFOND,it)] = NP.array([nbma+1], dtype=int)
+          NomMaillesEnPlus =     ('MF%s%i' %(ALPHABET[0], it+1),)
+          NoeudsMailles = [NP.array([nbno])]
+          typ_maille = mm[numfis].dic['POI1']
+          mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille]*1)))
+          mm[numfis].correspondance_mailles += NomMaillesEnPlus
+          mm[numfis].co += NoeudsMailles
+          mm[numfis].gma['%s_%i' %(MFOND,it)] = NP.array([nbma+1], dtype=int)
 # Fin du 2D
 
-      if INFO==2 :
-        texte="Maillage produit par l operateur PROPA_FISS"
-        aster.affiche('MESSAGE',texte)
-        print mm[numfis]
+        if INFO==2 :
+          texte="Maillage produit par l operateur PROPA_FISS"
+          aster.affiche('MESSAGE',texte)
+          print mm[numfis]
 
 # Sauvegarde maillage xfem
-      MAIL_FISS2 = Fiss['MAIL_PROPAGE']
-      if MAIL_FISS2 != None : self.DeclareOut('ma_xfem2',MAIL_FISS2)
+        MAIL_FISS2 = Fiss['MAIL_PROPAGE']
+        if MAIL_FISS2 != None : self.DeclareOut('ma_xfem2',MAIL_FISS2)
 
-      unit = mm[numfis].ToAster()
-      DEFI_FICHIER(UNITE=unit, ACTION="LIBERER")
-      ma_xfem2=LIRE_MAILLAGE(UNITE=unit);
+        unit = mm[numfis].ToAster()
+        DEFI_FICHIER(UNITE=unit, ACTION="LIBERER")
+        ma_xfem2=LIRE_MAILLAGE(UNITE=unit);
 
-      if numfis == 0 :
-        __MMX[0]=LIRE_MAILLAGE(UNITE=unit);
-      else:
-        __MMX[numfis]=ASSE_MAILLAGE(MAILLAGE_1 = __MMX[numfis-1],
+        if numfis == 0 :
+          __MMX[0]=LIRE_MAILLAGE(UNITE=unit);
+        else:
+          __MMX[numfis]=ASSE_MAILLAGE(MAILLAGE_1 = __MMX[numfis-1],
                       MAILLAGE_2 = ma_xfem2,
                       OPERATION='SUPERPOSE')
 
 
 # Sauvegarde maillage concatene
-    MAIL_TOTAL = args['MAIL_TOTAL']
-    if MAIL_TOTAL != None : self.DeclareOut('ma_tot',MAIL_TOTAL)
-    MAIL_STRUC = args['MAIL_STRUC']
-    ma_tot = ASSE_MAILLAGE(MAILLAGE_1 = MAIL_STRUC,
+      MAIL_TOTAL = args['MAIL_TOTAL']
+      if MAIL_TOTAL != None : self.DeclareOut('ma_tot',MAIL_TOTAL)
+      MAIL_STRUC = args['MAIL_STRUC']
+      ma_tot = ASSE_MAILLAGE(MAILLAGE_1 = MAIL_STRUC,
                       MAILLAGE_2 = __MMX[Nbfissure-1],
                       OPERATION='SUPERPOSE',)
 
 
 #------------------------------------------------------------------
-# CAS 3 : METHODE_PROPA = 'INITIALISATION'
+# CAS 4 : METHODE_PROPA = 'INITIALISATION'
 #
   if METHODE_PROPA == 'INITIALISATION' :
     form = args['FORM_FISS']
     MFOND = args['GROUP_MA_FOND']
     MFISS = args['GROUP_MA_FISS']
 
-# 3-a : demi-droite
+# 4-a : demi-droite
     if form == 'DEMI_DROITE' :
       PF = args['PFON']
       DTAN = args['DTAN']
@@ -929,7 +1059,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       mm.gma['%s_0' %(MFOND)] = NP.array([nbma+1], dtype=int)
 
 
-# 3-b : demi-plan
+# 4-b : demi-plan
     if form == 'DEMI_PLAN' :
       P0 = args['POINT_ORIG']
       P1 = args['POINT_EXTR']
@@ -1012,7 +1142,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       mm.co += NoeudsMailles
       mm.gma['%s_0' %(MFOND)] = NP.arange(nbpt-1, 2*(nbpt-1))
 
-# 3-c : ellipse
+# 4-c : ellipse
     if form == 'ELLIPSE' :
       P0 = args['CENTRE']
       alpha0 = args['ANGLE_ORIG']

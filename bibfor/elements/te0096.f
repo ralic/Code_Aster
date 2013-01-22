@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -236,7 +236,7 @@ C =====================================================================
       ENDIF
 
       IF (IVITES.NE.0) THEN
-        CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
+        CALL RCCOMA(MATCOD,'ELAS',1,PHENOM,ICODRE)
         CALL RCVALB(FAMIL,KPG,SPT,POUM,MATCOD,' ',PHENOM,1,' ',RBID,1,
      &              'RHO',RHO,ICODRE,1)
         CALL RCVALB(FAMIL,KPG,SPT,POUM,MATCOD,' ',PHENOM,1,' ',RBID,1,
@@ -245,7 +245,7 @@ C =====================================================================
 
 C CORRECTION DES FORCES VOLUMIQUES
       IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
-        CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
+        CALL RCCOMA(MATCOD,'ELAS',1,PHENOM,ICODRE)
         CALL RCVALB(FAMIL,KPG,SPT,POUM,MATCOD,' ',PHENOM,1,' ',RBID,1,
      &              'RHO',RHO,ICODRE,1)
         IF (IPESA.NE.0) THEN
@@ -532,7 +532,7 @@ C TRAITEMENTS PARTICULIERS DES TERMES CROISES
 463       CONTINUE
 
 C CALCUL DE LA DEFORMATION DE REFERENCE
-          CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
+          CALL RCCOMA(MATCOD,'ELAS',1,PHENOM,ICODRE)
           CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'NU',NU,
      &              ICODRE,1)
           CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'E',E,

@@ -7,7 +7,7 @@ C
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,11 +144,11 @@ C        EPAIS EST OBLIGATOIRE : ASSERT SI PAS LA
             CALL ASSERT(.FALSE.)
          ENDIF
          ZR(JDVC+1) =  ANG(1)
-         ZR(JDVC+2) = -ANG(2)
+         ZR(JDVC+2) = ANG(2)
          IF (NVEC.NE.0) THEN
             CALL ANGVX(VECT,ANG(1),ANG(2))
             ZR(JDVC+1) =  ANG(1)*180.D0/PI
-            ZR(JDVC+2) = -ANG(2)*180.D0/PI
+            ZR(JDVC+2) = ANG(2)*180.D0/PI
          ENDIF
          ZR(JDVC+3) = KAPPA
          IF (KORREC.EQ.'OUI') CORREC=1.D0

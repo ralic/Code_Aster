@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/01/2013   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION INTERFACE 2D AXIS SUR ARRACHEMENT, LOI CZM_TAC_MIX
 # ssna115c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,6 +22,7 @@
 DEBUT(CODE=_F(NOM='SSNA115C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 tfin = 10
+tfinc = 9
 nbpas = tfin
 nbarch = nbpas
 cmultpilo = 10
@@ -203,7 +204,7 @@ EVOL = STAT_NON_LINE(reuse  = EVOL,
     ),
   INCREMENT = _F(
     LIST_INST = INSTANTS,
-    INST_FIN  = tfin,
+    INST_FIN  = tfinc,
     ),
   PILOTAGE  = _F (
     GROUP_MA       = 'JOINT',
@@ -344,39 +345,39 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 # TESTS DE QUANTITES LOCALES AUX PG
-TEST_RESU(RESU=_F(INST=tfin,
+TEST_RESU(RESU=_F(INST=tfinc,
                   POINT=2,
                   RESULTAT=EVOL,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V8',
-                  VALE_CALC=0.59999959092038,
+                  VALE_CALC=0.41026334038946,
                   MAILLE='M2380',),
           )
           
-TEST_RESU(RESU=_F(INST=tfin,
+TEST_RESU(RESU=_F(INST=tfinc,
                   POINT=2,
                   RESULTAT=EVOL,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITX',
-                  VALE_CALC=2.0453982259168E-06,
+                  VALE_CALC=0.94868329805283,
                   MAILLE='M2380',),
           )
 
 # TESTS DES EXTRAPOLATIONS NODALES
-TEST_RESU(RESU=_F(INST=tfin,
+TEST_RESU(RESU=_F(INST=tfinc,
                   RESULTAT=EVOL,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V8',
-                  VALE_CALC=0.59999959092038,
+                  VALE_CALC=0.41026334038946,
                   NOEUD='N2'
                   ),
           )
           
-TEST_RESU(RESU=_F(INST=tfin,
+TEST_RESU(RESU=_F(INST=tfinc,
                   RESULTAT=EVOL,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SITX',
-                  VALE_CALC=2.0453983542587E-06,
+                  VALE_CALC=0.94868329805283,
                   NOEUD='N2'
                   ),
           )

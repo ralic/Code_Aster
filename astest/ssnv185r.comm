@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185r.para = tps_job 200 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,7 +149,7 @@ RI=[2. , 0.666 , 1. , 1. , 1. , 2.1]
 RS=[4. , 1.666 , 2. , 3. , 4. , 3.9]
 
 nbc=len(RI)
-SIF = [None]*nbc
+SIF = [None]*(nbc+1)
 
 for i in range(0,nbc) :
 
@@ -163,6 +163,17 @@ for i in range(0,nbc) :
                  INFO=2,);
 
    IMPR_TABLE(TABLE=SIF[i],);
+
+SIF[nbc]=CALC_G(RESULTAT=UTOT1,
+                 OPTION='CALC_K_G',
+                 THETA=_F(FISSURE=FISS,
+                          R_INF=RI[i],
+                          R_SUP=RS[i],),
+                 LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                            LISSAGE_G='LAGRANGE',),
+                 INFO=2,);
+
+IMPR_TABLE(TABLE=SIF[nbc],);
 
 # SOLUTION ANALYTIQUE (chaboche p.53) (chargement 1 et 3)
 a=5
@@ -182,8 +193,11 @@ VAL_CALC =[1.1108859141933E+07  ,
            1.1110876388698E+07  ,
            1.108330823459E+07   ,
            1.1108784944078E+07  ,
+           1.1086688704045E+07  ,
+           1.1108784944078E+07  ,
            1.1086688704045E+07  ]
-for i in range(0,nbc) :
+
+for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',

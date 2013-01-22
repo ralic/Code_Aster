@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE
 # sslv154a.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -110,8 +110,8 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     LEVRE_INF=_F(GROUP_MA='LEVINF'),
                     )
 
-RSUP = 0.5
-RINF = 0.1
+RSUP = 0.528
+RINF = 0.12
 
 # Methode G-theta
 CG=CALC_G(THETA=_F(FOND_FISS=FISS,
@@ -178,9 +178,8 @@ k3ref_90 = K3REF(90)
 # test de KI sur tout le fond de fissure
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.055,
-           
-           VALE_CALC=8.4018756011561E+05,
+           PRECISION=0.055,           
+           VALE_CALC=8.4116022407415E+05,
            VALE_REFE=K1REF(0),
            NOM_PARA='K1',
            TYPE_TEST='MAX',
@@ -188,9 +187,8 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.04,
-           
-           VALE_CALC=8.2619278713678E+05,
+           PRECISION=0.04,           
+           VALE_CALC=8.2467134885892E+05,
            VALE_REFE=K1REF(0),
            NOM_PARA='K1',
            TYPE_TEST='MIN',
@@ -201,9 +199,8 @@ TEST_TABLE(CRITERE='RELATIF',
 # il se trouve que le K2 de CALC_G est de signe oppose a celui de POST_K
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.09,
-           
-           VALE_CALC=8.7105098471177E+05,
+           PRECISION=0.09,           
+           VALE_CALC=8.6048423458242E+05,
            VALE_REFE=k2ref_0,
            NOM_PARA='K2',
            TABLE=CG,
@@ -216,9 +213,8 @@ TEST_TABLE(CRITERE='RELATIF',
 # il se trouve que le K3 de CALC_G est de signe oppose a celui de POST_K
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.03,
-           
-           VALE_CALC=6.7243828851615E+05,
+           PRECISION=0.03,           
+           VALE_CALC=6.7127146373538E+05,
            VALE_REFE=k3ref_90,
            NOM_PARA='K3',
            TABLE=CG,

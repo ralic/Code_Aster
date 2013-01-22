@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF xfem2 Messages  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,6 +111,36 @@ cata_msg = {
   -> Segment de FOND_FISS sans maille de surface rattachée
   -> Risque & Conseil:
      Veuillez revoir la définition des level-sets.
+"""),
+
+18 : _(u"""
+  -> Le mot-clé CRITERE de PROPA_FISS est différent de 'ANGLE_IMPO' et le tableau
+     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s contient
+     une colonne 'BETA'.
+  -> Risque & Conseil:
+     Les valeurs de l'angle de bifurcation notées dans ce tableau ne sont
+     pas prises en compte. Si vous souhaitez imposer les valeurs de l'angle
+     de bifurcation aux points du fonds de fissure, veuillez indiquer
+     CRITERE='ANGLE_IMPO'.
+"""),
+
+19 : _(u"""
+  -> Le mot-clé CRITERE de PROPA_FISS vaut 'ANGLE_IMPO' et le tableau
+     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s ne contient
+     pas de colonne 'BETA'.
+  -> Risque & Conseil:
+     Si vous souhaitez imposer les valeurs de l'angle de bifurcation aux points 
+     du fonds de fissure, veuillez indiquer CRITERE='ANGLE_IMPO' et ajouter
+     une colonne 'BETA' au tableau de SIF manuellement ou si le modèle est en 3D,
+     en utilisant l'option 'CALC_K_G' de la commande CALC_G.
+"""),
+
+20 : _(u"""
+  -> En 3D, si METHODE_PROPA='MAILLAGE' dans PROPA_FISS il faut absolument une
+     colonne 'ABSC_CURV' contenant les abscisses curvilignes des points du fond
+     dans le tableau des facteurs d'intensité de contraintes (SIF).
+  -> Risque & Conseil:
+     Veuillez vérifier la présence de cette colonne.
 """),
 
 
@@ -236,26 +266,6 @@ cata_msg = {
      Essayer d'utiliser un maillage plus raffiné, ou bien une grille auxiliaire.
   """),
 
-66 : _(u"""
-  -> Le taux de restitution d'énergie G est négatif sur certains des
-     noeuds du fond de fissure : le calcul de propagation est impossible.
-  -> Risque & Conseil:
-     Veuillez vérifier les paramètres du calcul de G (rayons des
-     couronnes, type de lissage...).
-  """),
-
-68 : _(u"""
-  -> Le nombre des résultats dans un des tableaux des facteurs
-     d'intensité de contraintes (SIF) donné à PROPA_FISS est supérieur
-     à deux.
-  -> Risque & Conseil:
-     Veuillez donner des tableaux avec seulement les SIF correspondant
-     aux conditions de chargement maximal et minimal du cycle de
-     fatigue.
-     Dans le cas de tableau contenant un seul résultat, on se place dans
-     l'hypothèse de rapport de charge égal à zéro (R=0).
-  """),
-
 70 : _(u"""
   -> La macro-commande PROPA_FISS ne peut traiter qu'un seul instant de calcul.
   -> Risque & Conseil:
@@ -263,79 +273,39 @@ cata_msg = {
      donnés dans l'opérateur PROPA_FISS ne contiennent qu'un seul instant.
 """),
 
-71 : _(u"""
-     Un tableau doit être donné pour chaque fissure du modèle.
 
-     Attention! Si une fissure est formée par plusieurs morceaux, un
-     tableau n'est pas suffisant et on doit donner un tableau pour
-     chaque morceau.
-  """),
 
-72 : _(u"""
-  -> L'angle de propagation de la fissure n'est pas constant dans le
-     cycle de chargement.
-  -> La valeur de la première configuration donnée dans les tableaux des
-     facteurs d'intensité de contraintes a été retenue.
-  -> Risque & Conseil:
-     Risques des résultats faux.
-     Veuillez vérifier les conditions de chargement du modèle.
-  """),
 
 73 : _(u"""
   -> L'option NB_POINT_FOND a été utilisé dans PROPA_FISS mais le
      modèle est 2D.
   -> Risque & Conseil:
-     Ne pas utiliser cette option avec un modèle 2D.
+     Cette option n'est utile qu'avec un modèle 3D.
+     Ce mot-clé n'est pas pris en compte.
   """),
 
 74 : _(u"""
-  -> Aucune fissure du modèle ne propage.
+  -> Aucune fissure du modèle ne se propage.
   -> Risque & Conseil:
      Veuillez vérifier les conditions du chargement du modèle et les
      constantes de la loi de propagation données à PROPA_FISS.
   """),
 
-76 : _(u"""
-  -> Une seule valeur des facteurs d'intensité de contraintes (SIF) a
-     été donné pour chaque point du fond de la fissure. Cela ne permit
-     pas de bien définir le cycle de fatigue.
-  -> En défaut, le rapport de charge du cycle de fatigue a été fixé égal
-     à zéro et les  SIF donnés ont été affectés à le chargement maximal
-     du cycle.
+75 : _(u"""
+  -> Une valeur de la liste de NB_POINT_FOND ne correspond pas au nombre de
+     lignes du tableau des facteurs d'intensité de contraintes (SIF) pour
+     le fond %(i1)d de la fissure %(k1)s.
   -> Risque & Conseil:
-     Veuillez vérifier si les hypothèses faits ci-dessus sont correctes.
-     Dans ce cas, c'est mieux de les bien expliciter en utilisant dans
-     PROPA_FISS l'opérateur COMP_LINE comme ceci:
-
-     COMP_LINE=_F(COEF_MULT_MINI=0.,
-                  COEF_MULT_MAXI=1.),
-
-     Cela permit d'éviter aussi l'émission de cette alarme.
-
-     Sinon, si le rapport de charge du cycle de fatigue n'est pas égal à
-     zéro, veuillez donner un tableau avec les SIF correspondants à les
-     conditions de chargement maximal et minimal du cycle de fatigue.
+     Veuillez vérifier que la liste NB_POINT_FOND donnée dans PROPA_FISS
+     soit identique à celle utilisée pour construire le tableau des SIF.
   """),
 
-77 : _(u"""
-  -> La valeur des facteurs d'intensité de contraintes (SIF) n'a pas
-     été trouvée pour un point du fond de fissure:
-     Nom de la fissure = %(k1)s
-     Nombre des morceaux = %(i1)d
-     Morceau élaboré = %(i2)d
-     Point inexistant = %(i3)d
-  -> Risque & Conseil:
-     Veuillez vérifier que les tableaux de SIF donnés dans l'opérateur
-     PROPA_FISS sont corrects. Si NB_POINT_FOND a été utilisé, veuillez
-     vérifier aussi que les valeurs données sont correctes.
-  """),
+
 
 78 : _(u"""
   -> L'option NB_POINT_FOND a été utilisée dans PROPA_FISS
      mais le nombre de valeurs données n'est pas égale au nombre total
      des morceaux des fissures dans le modèle.
-  -> Nombre total de valeurs données %(k2)s au nombre total
-     des morceaux des fissures du modèle.
 
   -> Conseil:
      Veuillez vérifier que l'option NB_POINT_FOND a été utilisée
@@ -343,12 +313,7 @@ cata_msg = {
      chaque fissure sont correctes.
   """),
 
-79 : _(u"""
-  -> Une des valeurs donnée pour NB_POINT_FOND n'est pas valide.
-  -> Risque & Conseil:
-     Veuillez vérifier que toutes les valeurs sont égales à 0 ou
-     supérieures à 1.
-  """),
+
 
 80 : _(u"""
   -> Le nombre des valeurs dans un des tableaux des facteurs
@@ -361,41 +326,15 @@ cata_msg = {
   """),
 
 81 : _(u"""
-  -> Les valeurs de COEF_MULT_MAXI et COEF_MULT_MINI de COMP_LINE données
-     dans l'opérateur PROPA_FISS sont égales à zéro.
+  -> Les valeurs de COEF_MULT_MAXI et COEF_MULT_MINI de COMP_LINE sont
+     égales à zéro.
   -> Risque & Conseil:
      Au moins une des deux valeurs doit être différente de zéro pour
-     avoir une cycle de fatigue. Veuillez vérifier les valeurs données.
+     avoir un cycle de fatigue. Veuillez vérifier les valeurs données.
   """),
 
-82 : _(u"""
-  -> L'opérande COMP_LINE a été utilisée dans PROPA_FISS et il y a
-     plusieurs résultats dans un des tableaux des facteurs d'intensité
-     de contraintes (SIF).
-  -> Risque & Conseil:
-     Veuillez donner des tableaux avec seulement les SIF correspondant à
-     la conditions de chargement de référence.
-  """),
 
-83 : _(u"""
-  -> Le taux de restitution maximal d'énergie G dans le cycle de fatigue
-     est zéro sur certains des noeuds du fond de fissure:
-     le calcul de propagation est impossible.
-  -> Risque & Conseil:
-     Veuillez vérifier les paramètres du calcul de G (rayons des
-     couronnes, type de lissage...) et les chargements affectant le
-     modèle.
-"""),
 
-84 : _(u"""
-  -> Le taux de restitution d'énergie G ne change pas dans le cycle de
-     fatigue sur certains des noeuds du fond de fissure:
-     le calcul de propagation est impossible.
-  -> Risque & Conseil:
-     Veuillez vérifier les paramètres du calcul de G (rayons des
-     couronnes, type de lissage...) et les chargements affectant le
-     modèle.
-"""),
 
 85 : _(u"""
    Les propriétés matériaux dépendent de la température. La température en fond
@@ -414,7 +353,7 @@ cata_msg = {
 
 87 : _(u"""
   -> L'opérande TEST_MAIL a été utilisé dans l'opérateur PROPA_FISS.
-  -> Cet opérande n'a pas des sens que pour un modèle 3D.
+  -> Cet opérande n'a de sens que pour un modèle 3D.
   -> Risque & Conseil:
      Ne pas utiliser TEST_MAIL pour un modèle 2D.
   """),
@@ -423,7 +362,7 @@ cata_msg = {
   -> La valeur du rayon du tore de localisation de la zone de mise à
      jour est supérieure à la valeur limite. Cette dernière est
      déterminée par la valeur du rayon du tore utilisée à la propagation
-     précédente et la valeur de l'avancée de la fissure (DA_MAX) imposé
+     précédente et la valeur de l'avancée de la fissure (DA_MAX) imposée
      à la propagation courante.
 
      Rayon actuel = %(r1)f
@@ -459,13 +398,6 @@ cata_msg = {
      définis.
   """),
 
-90 : _(u"""
-  -> Un ou plusieurs tableaux des facteurs d'intensité de contraintes
-     ne contient pas la colonne NUME_FOND.
-  -> Conseil:
-     Veuillez ajouter cette colonne aux tableaux (voir documentation
-     utilisateur de PROPA_FISS).
-  """),
 
 91 : _(u"""
   -> Le nouveau fond de fissure n'est pas très régulier. Cela signifie

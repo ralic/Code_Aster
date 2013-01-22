@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
 # sslv320d.para = tps_job 350 mem_job 1280Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,7 +53,6 @@ SIF=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.),PARA='K1'),
                         _F(LISTE_R=(0.,0.),PARA='K3'),
                         _F(LISTE_R=(1.,1.),PARA='G'),
                         _F(LISTE_R=(1.,1.),PARA='G_IRWIN'),
-                        _F(LISTE_R=(0.0,0.0),PARA='BETA'),
                         _F(LISTE_I=(1,1),PARA='NUME_FOND'),
                         _F(LISTE_I=(1,1),PARA='NUME_ORDRE'),
                         _F(LISTE_I=(1,2),PARA='NUM_PT'),
@@ -65,7 +64,6 @@ SIF2=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.),PARA='K1'),
                        _F(LISTE_R=(0.,0.,0.,0.),PARA='K3'),
                        _F(LISTE_R=(1.,1.,1.,1.),PARA='G'),
                        _F(LISTE_R=(1.,1.,1.,1.),PARA='G_IRWIN'),
-                       _F(LISTE_R=(0.0,0.0,0.0,0.0),PARA='BETA'),
                        _F(LISTE_I=(1,1,2,2),PARA='NUME_FOND'),
                        _F(LISTE_I=(1,1,1,1),PARA='NUME_ORDRE'),
                        _F(LISTE_I=(1,2,1,2),PARA='NUM_PT'),
@@ -278,6 +276,7 @@ for i in range(nbcalc) :
                               MATER=Alu),
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
+                 CRIT_ANGL_BIFURCATION = 'PLAN',
                  INFO=1,);
 
    else :
@@ -298,6 +297,7 @@ for i in range(nbcalc) :
                               MATER=Alu),
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
+                 CRIT_ANGL_BIFURCATION = 'PLAN',
                  INFO=1,);
       
    DETRUIRE(CONCEPT=_F(NOM=Mod,)); 

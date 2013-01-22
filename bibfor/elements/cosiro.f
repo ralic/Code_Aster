@@ -1,6 +1,6 @@
       SUBROUTINE COSIRO(NOMTE,PARAM,LOUE,SENS,GOUN,JTENS,SOUR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C ======================================================================
       PARAMETER      (NPGT=10)
       REAL*8         MATEVN(2,2,NPGT),MATEVG(2,2,NPGT)
       REAL*8         T2EV(4),T2VE(4),PGL(3,3),EPAIS,R8DGRD,ALPHA,BETA
+      REAL*8         C,S
       SAVE           T2EV,T2VE,MATEVN,MATEVG
 
       CALL ASSERT(LOUE.EQ.'L'  .OR. LOUE.EQ.'E')
@@ -112,7 +113,7 @@ C     ------------------------------------
             CALL JEVECH ('PCACOQU', 'L', JCARA)
             ALPHA = ZR(JCARA+1) * R8DGRD()
             BETA  = ZR(JCARA+2) * R8DGRD()
-            CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE)
+            CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE,C,S)
          ENDIF
 
          IF (SENS.EQ.'UI') THEN

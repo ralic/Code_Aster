@@ -4,9 +4,9 @@
       REAL*8 PGL(3,3),SIGT(1)
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,9 +47,9 @@ C     ------------------------------------------------------------------
 C --- INITIALISATIONS :
 C     -----------------
 C-----------------------------------------------------------------------
-      INTEGER I ,INDITH ,INO ,IRET1 ,IRET2 ,IRET3 ,IRET4 
-      INTEGER JCARA ,JMATE ,NNO 
-      REAL*8 COE1 ,COE2 ,EPAIS ,SOMIRE ,TREF ,ZERO 
+      INTEGER I ,INDITH ,INO ,IRET1 ,IRET2 ,IRET3 ,IRET4
+      INTEGER JCARA ,JMATE ,NNO
+      REAL*8 COE1 ,COE2 ,EPAIS ,SOMIRE ,TREF ,ZERO
 C-----------------------------------------------------------------------
       ZERO = 0.0D0
       IRET1 = 0
@@ -97,7 +97,7 @@ C MOYENNE
   42  CONTINUE
 
       CALL JEVECH('PMATERC','L',JMATE)
-      CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,ICODRE)
+      CALL RCCOMA(ZI(JMATE),'ELAS',1,PHENOM,ICODRE)
 
       IF ((PHENOM.EQ.'ELAS') .OR. (PHENOM.EQ.'ELAS_COQUE') .OR.
      &    (PHENOM.EQ.'ELAS_COQMU')) THEN

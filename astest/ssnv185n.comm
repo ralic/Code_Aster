@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185n.para = tps_job 1600 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -272,7 +272,6 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
                      MATER=ACIER,
                      FISSURE = FISS,
                      RESULTAT  = UTOT1,
-                     ABSC_CURV_MAXI = 1.5,
                      NB_NOEUD_COUPE = 6,
                     )
 
@@ -280,7 +279,7 @@ IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.035000000000000003,
-           VALE_CALC=1.0981730921854E+07,
+           VALE_CALC=1.099551598771E+07,
            VALE_REFE=K1REF,
            NOM_PARA='K1',
            TABLE=PK,

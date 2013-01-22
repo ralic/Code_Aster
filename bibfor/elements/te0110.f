@@ -5,7 +5,7 @@
       CHARACTER*16  OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -195,7 +195,7 @@ C..................................................................
 
 C ---   RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 C       -------------------------------------------------
-        CALL RCCOMA(ZI(IMATE),'THER',PHENOM,CODMAT)
+        CALL RCCOMA(ZI(IMATE),'THER',1,PHENOM,CODMAT)
 
 C ---   DETERMINATION DES TENSEURS DE CONDUCTIVITE MEMBRANAIRE
 C ---   ET TRANSVERSE ET DU TENSEUR DE CAPACITE THERMIQUE

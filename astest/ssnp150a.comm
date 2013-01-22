@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 2D
 # ssnp150a.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,30 +19,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# Import du module de calcul symbolique Sympy
-import sympy
-from Utilitai import TensorModule
-from Utilitai import HookeTensor
-
 DEBUT(CODE=_F(NOM='SSNP150A',NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM='CALCULEL2_63')
-
-
-# importation de sympy
-X,Y,Z = sympy.symbols('XYZ');
-
-
-#================================================================================================
-# Choix de la solution analytique
-#================================================================================================
-X3= 0.5
-
-Ux = -0.2*Y*Y*Y*(X-X3)
-Uy = -0.05*(X-X3)*(X-X3)*(1+Y)-0.01*Y
-U=TensorModule.Tensor([Ux,Uy,0]);
-
-
 
 #================================================================================================
 # Definition des caracteristiques du materiau
@@ -50,94 +29,11 @@ U=TensorModule.Tensor([Ux,Uy,0]);
 E=1;
 NU=0.3;
 
-
 #================================================================================================
-# Gradient de deformation et normale a la frontiere de contact
-#================================================================================================
-
-NormaleDroite =TensorModule.Tensor([ 1. , 0. , 0.]);
-NormaleGauche =TensorModule.Tensor([-1. , 0. , 0.]);
-NormaleHaut   =TensorModule.Tensor([ 0. , 1. , 0.]);
-NormaleBas    =TensorModule.Tensor([ 0. ,-1. , 0.]);
-
-TenseurIdentite = TensorModule.Tensor([[1.,0.,0],[0.,1.,0],[0.,0.,1.]])
-
-GradientDeformation   = TensorModule.grad(U)+ TenseurIdentite
-GradientDeformation_T = GradientDeformation.transpose()
-Ftm1                  = GradientDeformation_T.inverse()
-
-Ftm1_N             = Ftm1.produitSimpleContracte(NormaleBas)
-ModuleCarre_Ftm1_N = Ftm1_N.produitSimpleContracte(Ftm1_N)
-Module_Ftm1_N      = ModuleCarre_Ftm1_N.sqrt()
-NormaleContact     = Ftm1_N / Module_Ftm1_N
-
-#================================================================================================
-# Tenseur de Green-Lagrange
+# Calcul de la solution de reference
 #================================================================================================
 
-Tenseur_Green__Lagrange =0.5*(GradientDeformation.transpose().produitSimpleContracte(GradientDeformation) - TenseurIdentite)
-
-
-#================================================================================================
-# Deuxieme Tenseur de Piola-Kirchhoff (Force sur configuration non deformee par unite de surface non deformee)
-#================================================================================================
-
-C_Iso=HookeTensor.HookeIsotropic(E,NU);
-
-Piola_Kirchhoff_II = C_Iso.produitDoubleContracte(Tenseur_Green__Lagrange);
-
-
-#================================================================================================
-# Premier Tenseur de Piola-Kirchhoff  (Force en configuration deformee par unite de surface non deformee)
-#================================================================================================
-
-Piola_Kirchhoff_I = GradientDeformation .produitSimpleContracte(Piola_Kirchhoff_II)
-
-
-#================================================================================================
-# Divergence du Premier Tenseur de Piola-Kirchhoff == terme source
-#================================================================================================
-
-Fvol = -TensorModule.div(Piola_Kirchhoff_I);
-
-
-
-#================================================================================================
-# Assignation des conditions limites
-#================================================================================================
-#conditions de Neumann
-Fsurf_Droite = Piola_Kirchhoff_I.produitSimpleContracte(NormaleDroite);
-Fsurf_Gauche = Piola_Kirchhoff_I.produitSimpleContracte(NormaleGauche);
-Fsurf_Haut   = Piola_Kirchhoff_I.produitSimpleContracte(NormaleHaut);
-Fsurf_Bas    = Piola_Kirchhoff_I.produitSimpleContracte(NormaleBas);
-
-# Valeurs du  Sigma sur la face de Contact
-Fsurf_BAS_nn  =  Fsurf_Bas.produitSimpleContracte(NormaleContact);
-Fsurf_BAS_t   =  Fsurf_Bas - Fsurf_BAS_nn*NormaleContact;
-
-
-#================================================================================================
-# Transformation des formules pour utilisation dans Aster
-#================================================================================================
-
-FUx=FORMULE(VALE=str(U[0]), NOM_PARA=('X','Y') );
-FUy=FORMULE(VALE=str(U[1]), NOM_PARA=('X','Y') );
-
-FsurfXD=FORMULE(VALE=str(Fsurf_Droite[0]), NOM_PARA=('X','Y') );
-FsurfYD=FORMULE(VALE=str(Fsurf_Droite[1]), NOM_PARA=('X','Y') );
-
-FsurfXG=FORMULE(VALE=str(Fsurf_Gauche[0]), NOM_PARA=('X','Y') );
-FsurfYG=FORMULE(VALE=str(Fsurf_Gauche[1]), NOM_PARA=('X','Y') );
-
-FsurfXH=FORMULE(VALE=str(Fsurf_Haut[0]), NOM_PARA=('X','Y') );
-FsurfYH=FORMULE(VALE=str(Fsurf_Haut[1]), NOM_PARA=('X','Y') );
-
-FsurfTX=FORMULE(VALE=str(Fsurf_BAS_t[0]), NOM_PARA=('X','Y') );
-FsurfTY=FORMULE(VALE=str(Fsurf_BAS_t[1]), NOM_PARA=('X','Y') );
-
-FvolX=FORMULE(VALE=str(Fvol[0]), NOM_PARA=('X','Y') );
-FvolY=FORMULE(VALE=str(Fvol[1]), NOM_PARA=('X','Y') );
-
+INCLUDE(UNITE=38)
 
 #================================================================================================
 # Debut du modele

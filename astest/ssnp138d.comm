@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 # ssnp138d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -124,10 +124,10 @@ VAL_CALC = [
      0.20731069021940     ,
      1.0868478163907E+05  ,
      1.0846105576758E+05  ,
-     1.8360601091231E+05  ,
-     1.0871380689678E+05  ,
-     1.8265928365218E+05  ,
-     1.0530906649416E+05  ,     ]
+     1.8510295835057E+05  ,
+     1.062407917353E+05   ,
+     1.8486048195766E+05  ,
+     1.0680636910009E+05  ,     ]
 ct = -1
 for i in range(nbcalc) :
 
@@ -249,7 +249,6 @@ for i in range(nbcalc) :
                         MATER=ACIER,
                         FISSURE = FISS[i],
                         NUME_FOND = 1,
-                        ABSC_CURV_MAXI = RS[0],
                         RESULTAT  = RESU[i],
                        )
 
@@ -286,7 +285,6 @@ for i in range(nbcalc) :
                         MATER=ACIER,
                         FISSURE = FISS[i],
                         NUME_FOND = 2,
-                        ABSC_CURV_MAXI = RS[0],
                         RESULTAT  = RESU[i],
                        )
 

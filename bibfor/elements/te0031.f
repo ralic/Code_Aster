@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C
          IF (OPTION.EQ.'FULL_MECA' .OR.
      &       OPTION.EQ.'RAPH_MECA' .OR.
      &       OPTION.EQ.'RIGI_MECA_TANG') THEN
-            CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
+            CALL RCCOMA(ZI(JMATE),'ELAS',1,PHENOM,CODRET)
 
             IF (PHENOM.EQ.'ELAS_COQUE' .OR.
      &          PHENOM.EQ.'ELAS_COQMU') THEN

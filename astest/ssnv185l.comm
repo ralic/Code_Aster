@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185l.para = tps_job 50 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -292,8 +292,8 @@ RI=[2. , 0.666 , 1. , 1. , 1. , 2.1]
 RS=[4. , 1.666 , 2. , 3. , 4. , 3.9]
 
 nbc=len(RI)
-SIF2 = [None]*nbc
-SIF3 = [None]*nbc
+SIF2 = [None]*(nbc+1)
+SIF3 = [None]*(nbc+1)
 
 for i in range(0,nbc) :
 
@@ -319,6 +319,23 @@ for i in range(0,nbc) :
 
    IMPR_TABLE(TABLE=SIF3[i],);
 
+SIF2[nbc]=CALC_G(RESULTAT=UTOT2,
+                  OPTION='CALC_K_G',
+                  THETA=_F(FISSURE=FISS,),
+                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                             LISSAGE_G='LAGRANGE',),
+                  INFO=2,);
+
+IMPR_TABLE(TABLE=SIF2[nbc],);
+
+SIF3[nbc]=CALC_G(RESULTAT=UTOT3,
+                  OPTION='CALC_K_G',
+                  THETA=_F(FISSURE=FISS,),
+                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                             LISSAGE_G='LAGRANGE',),
+                  INFO=2,);
+
+IMPR_TABLE(TABLE=SIF3[nbc],);
 
 # SOLUTION ANALYTIQUE DU CHARGEMENT 2 (MODE II PUR)
 K1REF2=0.
@@ -327,51 +344,36 @@ K3REF2=0.
 
 VALE_CALC=[
  6.3840667920672E-04,
- 6.3840667920672E-04,
- 0.98678919179555,
  0.98678919179555,
  -2.9924414485458E-03,
- -2.9924414485458E-03,
- 6.5604283791418E-04,
  6.5604283791418E-04,
  1.0110666573018,
- 1.0110666573018,
- -3.0028720958186E-03,
  -3.0028720958186E-03,
  6.0250569985969E-04,
- 6.0250569985969E-04,
- 1.000987746148,
  1.000987746148,
  -2.9991925478259E-03,
- -2.9991925478259E-03,
- 6.1942669739418E-04,
  6.1942669739418E-04,
  0.99377661645165,
- 0.99377661645165,
- -2.9955254886188E-03,
  -2.9955254886188E-03,
  6.2643968609104E-04,
- 6.2643968609104E-04,
- 0.99152204324636,
  0.99152204324636,
  -2.9946918149727E-03,
- -2.9946918149727E-03,
- 6.3888238919424E-04,
  6.3888238919424E-04,
  0.98685928869104,
- 0.98685928869104,
  -2.9925889519167E-03,
- -2.9925889519167E-03,
+ 6.2907099113646E-04,
+ 0.98670704012152,
+ -2.9925812908352E-03,
 ]
 
 prec_k2 = 0.015
 
-for i in range(0,nbc) :
+for i in range(0,nbc+1) :
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VALE_CALC[i*6+0], VALE_REFE=K1REF2,
+              VALE_CALC=VALE_CALC[i*3+0], VALE_REFE=K1REF2,
               CRITERE='ABSOLU',
               PRECISION=0.02, 
               REFERENCE='ANALYTIQUE',);
@@ -379,7 +381,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=VALE_CALC[i*6+1], VALE_REFE=K1REF2,
+              VALE_CALC=VALE_CALC[i*3+0], VALE_REFE=K1REF2,
               CRITERE='ABSOLU',
               PRECISION=0.02, 
               REFERENCE='ANALYTIQUE',);
@@ -387,7 +389,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K2',
               TYPE_TEST='MAX',
-              VALE_CALC=VALE_CALC[i*6+2], VALE_REFE=K2REF2,
+              VALE_CALC=VALE_CALC[i*3+1], VALE_REFE=K2REF2,
               CRITERE='RELATIF',
               PRECISION=prec_k2, 
               REFERENCE='ANALYTIQUE',);
@@ -395,7 +397,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K2',
               TYPE_TEST='MIN',
-              VALE_CALC=VALE_CALC[i*6+3], VALE_REFE=K2REF2,
+              VALE_CALC=VALE_CALC[i*3+1], VALE_REFE=K2REF2,
               CRITERE='RELATIF',
               PRECISION=prec_k2, 
               REFERENCE='ANALYTIQUE',);
@@ -403,7 +405,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K3',
               TYPE_TEST='MAX',
-              VALE_CALC=VALE_CALC[i*6+4], VALE_REFE=K3REF2,
+              VALE_CALC=VALE_CALC[i*3+2], VALE_REFE=K3REF2,
               CRITERE='ABSOLU',
               PRECISION=0.02, 
               REFERENCE='ANALYTIQUE',);
@@ -411,7 +413,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K3',
               TYPE_TEST='MIN',
-              VALE_CALC=VALE_CALC[i*6+5], VALE_REFE=K3REF2,
+              VALE_CALC=VALE_CALC[i*3+2], VALE_REFE=K3REF2,
               CRITERE='ABSOLU',
               PRECISION=0.02, 
               REFERENCE='ANALYTIQUE',);
@@ -426,51 +428,36 @@ K3REF3=1.
 
 VALE_CALC=[
  0.010311457980424,
- 0.010311457980424,
- -0.016490443184888,
  -0.016490443184888,
  0.92556236709680,
- 0.92556236709680,
- 0.010490573760637,
  0.010490573760637,
  -0.016478824355619,
- -0.016478824355619,
- 0.94669868237547,
  0.94669868237547,
  0.010378242134567,
- 0.010378242134567,
- -0.016468864857965,
  -0.016468864857965,
  0.93848173748820,
- 0.93848173748820,
  0.010389049581960,
- 0.010389049581960,
- -0.016461572405244,
  -0.016461572405244,
  0.93203345162839,
- 0.93203345162838,
- 0.010333719365138,
  0.010333719365138,
  -0.016483250409247,
- -0.016483250409247,
- 0.92986882389393,
  0.92986882389393,
  0.010322850935009,
- 0.010322850935009,
- -0.016487511162015,
  -0.016487511162015,
  0.92560038447031,
- 0.92560038447031,
+ 0.010336144447723,
+ -0.016475052711499,
+ 0.92568574937568,
 ]
 
 prec_k3 = 0.08
 
-for i in range(0,nbc) :
+for i in range(0,nbc+1) :
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VALE_CALC[i*6+0], VALE_REFE=K1REF3,
+              VALE_CALC=VALE_CALC[i*3+0], VALE_REFE=K1REF3,
               CRITERE='ABSOLU',
               PRECISION=0.02, 
               REFERENCE='ANALYTIQUE',);
@@ -478,7 +465,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=VALE_CALC[i*6+1], VALE_REFE=K1REF3,
+              VALE_CALC=VALE_CALC[i*3+0], VALE_REFE=K1REF3,
               CRITERE='ABSOLU',
               PRECISION=0.02, 
               REFERENCE='ANALYTIQUE',);
@@ -486,7 +473,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K2',
               TYPE_TEST='MAX',
-              VALE_CALC=VALE_CALC[i*6+2], VALE_REFE=K2REF3,
+              VALE_CALC=VALE_CALC[i*3+1], VALE_REFE=K2REF3,
               CRITERE='ABSOLU',
               PRECISION=0.02, 
               REFERENCE='ANALYTIQUE',);
@@ -494,7 +481,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K2',
               TYPE_TEST='MIN',
-              VALE_CALC=VALE_CALC[i*6+3], VALE_REFE=K2REF3,
+              VALE_CALC=VALE_CALC[i*3+1], VALE_REFE=K2REF3,
               CRITERE='ABSOLU',
               PRECISION=0.02, 
               REFERENCE='ANALYTIQUE',);
@@ -502,7 +489,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K3',
               TYPE_TEST='MAX',
-              VALE_CALC=VALE_CALC[i*6+4], VALE_REFE=K3REF3,
+              VALE_CALC=VALE_CALC[i*3+2], VALE_REFE=K3REF3,
               CRITERE='ABSOLU',
               PRECISION=prec_k3, 
               REFERENCE='ANALYTIQUE',);
@@ -510,7 +497,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K3',
               TYPE_TEST='MIN',
-              VALE_CALC=VALE_CALC[i*6+5], VALE_REFE=K3REF3,
+              VALE_CALC=VALE_CALC[i*3+2], VALE_REFE=K3REF3,
               CRITERE='RELATIF',
               PRECISION=prec_k3, 
               REFERENCE='ANALYTIQUE',);

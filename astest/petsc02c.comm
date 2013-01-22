@@ -1,0 +1,186 @@
+# MODIF  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
+# TITRE VALIDATION DE LA DISTRIBUTION DE LA MATRICE AVEC PETSC
+# petsc02c.para = tps_job 60 mem_job 512Mo mpi_nbcpu 2 liste_test I
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# TEST MPI SUR 4 PROCESSEURS
+
+# PRE-CONDITIONNEUR ML
+
+DEBUT(CODE=_F(NOM='PETSC02C',NIV_PUB_WEB='INTERNET'),);
+
+MA=LIRE_MAILLAGE(FORMAT='MED',);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3,),);
+
+AFMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT1,));
+
+AFCIN=AFFE_CHAR_CINE(MODELE=MO,
+                     MECA_IMPO=(_F(GROUP_NO='Cote_inferieur',
+                                   DX=0,DY=0,DZ=0,),
+                                _F(GROUP_NO='Cote_superieur',
+                                   DZ=1,),),);
+
+# DISTRIBUTION PAR GREL
+
+MESTAT1=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=AFMAT,
+                      EXCIT=_F(CHARGE=AFCIN,),
+                      SOLVEUR=_F(METHODE='PETSC',
+                                 ALGORITHME='GCR',
+                                 PRE_COND='ML',
+                                 RESI_RELA=1.0E-12,
+                                 MATR_DISTRIBUEE='OUI',),
+                      INFO=2,);
+
+IMPR_RESU(RESU=_F(RESULTAT=MESTAT1,
+                  NOM_CHAM='DEPL',),);
+
+INT_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
+                                NOM_CMP='DZ',
+                                NOM_CHAM='DEPL',
+                                ),
+                   CHAM_MATER=AFMAT,
+                   RESULTAT=MESTAT1,
+                   );
+
+## INT_DEPX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_x',
+                                #~ NOM_CMP='DX',
+                                #~ NOM_CHAM='DEPL',),
+                   #~ CHAM_MATER=AFMAT,
+                   #~ RESULTAT=MESTAT1,);
+##
+## INT_DEPY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_y',
+                                #~ NOM_CMP='DY',
+                                #~ NOM_CHAM='DEPL',),
+                   #~ CHAM_MATER=AFMAT,
+                   #~ RESULTAT=MESTAT1,);
+
+IMPR_TABLE(TABLE=INT_DZ)
+## IMPR_TABLE(TABLE=INT_DEPX)
+## IMPR_TABLE(TABLE=INT_DEPY)
+
+TEST_TABLE(TABLE=INT_DZ,
+           NOM_PARA='MOYE_DZ',
+           VALE_CALC=0.46508731345542,
+           )
+
+TEST_RESU(RESU=_F(RESULTAT=MESTAT1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='N9',
+                  VALE_CALC=0.16778518685930,),);
+
+# DISTRIBUTION PAR MAILLE
+
+MO=MODI_MODELE(reuse=MO,
+               MODELE=MO,
+               PARTITION=_F(PARALLELISME='MAIL_DISPERSE',),);
+
+MESTAT2=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=AFMAT,
+                      EXCIT=_F(CHARGE=AFCIN,),
+                      SOLVEUR=_F(METHODE='PETSC',
+                                 ALGORITHME='GCR',
+                                 PRE_COND='ML',
+                                 RESI_RELA=1.0E-12,
+                                 MATR_DISTRIBUEE='OUI',),
+                      INFO=2,);
+
+IMPR_RESU(RESU=_F(RESULTAT=MESTAT2,
+                  NOM_CHAM='DEPL',),);
+
+INT_DZ2=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
+                                NOM_CMP='DZ',
+                                NOM_CHAM='DEPL',
+                                ),
+                   CHAM_MATER=AFMAT,
+                   RESULTAT=MESTAT2,
+                   );
+
+IMPR_TABLE(TABLE=INT_DZ2)
+
+TEST_TABLE(TABLE=INT_DZ2,
+           NOM_PARA='MOYE_DZ',
+           VALE_CALC=0.46508731345536,
+           )
+
+TEST_RESU(RESU=_F(RESULTAT=MESTAT2,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='N9',
+                  VALE_CALC=0.16778518685864,),);
+
+# DISTRIBUTION PAR SOUS-DOMAINES
+
+PART=DEFI_PART_FETI(NB_PART=4,
+                    MODELE=MO,
+                    METHODE='SCOTCH',
+                    EXCIT=_F(),);
+
+MO=MODI_MODELE(reuse=MO,
+               MODELE=MO,
+               PARTITION=_F(PARALLELISME='SOUS_DOMAINE',
+                            PARTITION=PART,),);
+
+MESTAT3=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=AFMAT,
+                      EXCIT=_F(CHARGE=AFCIN,),
+                      SOLVEUR=_F(METHODE='PETSC',
+                                 ALGORITHME='GCR',
+                                 PRE_COND='ML',
+                                 RESI_RELA=1.0E-12,
+                                 MATR_DISTRIBUEE='OUI',),
+                      INFO=2,);
+
+IMPR_RESU(RESU=_F(RESULTAT=MESTAT3,
+                  NOM_CHAM='DEPL',),);
+
+INT_DZ3=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
+                                NOM_CMP='DZ',
+                                NOM_CHAM='DEPL',
+                                ),
+                   CHAM_MATER=AFMAT,
+                   RESULTAT=MESTAT3,
+                   );
+
+IMPR_TABLE(TABLE=INT_DZ3)
+
+TEST_TABLE(TABLE=INT_DZ3,
+           NOM_PARA='MOYE_DZ',
+           VALE_CALC=0.46508731345546,
+           )
+
+TEST_RESU(RESU=_F(RESULTAT=MESTAT3,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='N9',
+                  VALE_CALC=0.16778518685817,),);
+
+FIN();

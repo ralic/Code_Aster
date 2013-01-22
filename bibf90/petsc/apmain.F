@@ -2,9 +2,9 @@
      &                  IRET  )
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APMAIN PETSC  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF APMAIN PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -78,8 +78,8 @@
       CHARACTER*14  NONUS(NMXINS)
       Mat              Ap(NMXINS)
       KSP              Kp(NMXINS)
-      Vec              Bp(NMXINS),x
-      COMMON /SPETSC/ Ap,Kp,Bp,x,NOMATS,NOSOLS,NONUS
+      Vec              b,x
+      COMMON /SPETSC/ Ap,Kp,b,x,NOMATS,NOSOLS,NONUS
 !
 !     COMMUN POUR LE PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP
       CHARACTER*19 SPSOMU,SPMAT,SPSOLV
@@ -199,9 +199,9 @@
 !        2.4 RESOLUTION :
 !        ----------------
 
-         call VecDuplicate(Bp(KPTSC),x,ierr)
+         call VecDuplicate(b,x,ierr)
          CALL ASSERT(ierr.EQ.0)
-         call KSPSolve(ksp,Bp(KPTSC),x,ierr)
+         call KSPSolve(ksp,b,x,ierr)
 
 !        2.5 DIAGNOSTIC :
 !        ----------------
@@ -272,13 +272,13 @@
             call MatMult(A,x,r,ierr)
             CALL ASSERT(ierr.EQ.0)
 !           r = b - Ax
-            call VecAYPX(r,-1.D0,Bp(KPTSC),ierr)
+            call VecAYPX(r,-1.D0,b,ierr)
             CALL ASSERT(ierr.EQ.0)
 !           fres = ||r||_2
             call VecNorm(r,NORM_2,fres,ierr)
             CALL ASSERT(ierr.EQ.0)
 !           ires = ||b||_2
-            call VecNorm(Bp(KPTSC),NORM_2,ires,ierr)
+            call VecNorm(b,NORM_2,ires,ierr)
             CALL ASSERT(ierr.EQ.0)
 !
             call VecDestroy(r,ierr)
@@ -302,7 +302,7 @@
 
 !        -- EN CAS D'ERREUR DANS LES ITERATIONS DE KRYLOV ON SAUTE ICI
 999      CONTINUE
-         call VecDestroy(Bp(KPTSC),ierr)
+         call VecDestroy(b,ierr)
          CALL ASSERT(ierr.EQ.0)
          call VecDestroy(x,ierr)
          CALL ASSERT(ierr.EQ.0)

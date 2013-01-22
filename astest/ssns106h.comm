@@ -1,10 +1,10 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106h.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -241,26 +241,22 @@ CAEL=AFFE_CARA_ELEM(MODELE=MO,
                                SECTION=8.0E-4,
                                ANGL_REP=(0.0,0.0,),
                                EXCENTREMENT=(-(EP) * 0.4),
-                               COEF_RIGI_DRZ=COEF_DRZ,
-                               GRILLE_NCOU=1,),
+                               COEF_RIGI_DRZ=COEF_DRZ,),
                             _F(GROUP_MA='ACIER1T',
                                SECTION=8.0E-4,
                                ANGL_REP=(90.0,0.0,),
                                EXCENTREMENT=(-(EP) * 0.4),
-                               COEF_RIGI_DRZ=COEF_DRZ,
-                               GRILLE_NCOU=1,),
+                               COEF_RIGI_DRZ=COEF_DRZ,),
                             _F(GROUP_MA='ACIER2L',
                                SECTION=8.0E-4,
                                ANGL_REP=(0.0,0.0,),
                                EXCENTREMENT=(EP * 0.4),
-                               COEF_RIGI_DRZ=COEF_DRZ,
-                               GRILLE_NCOU=1,),
+                               COEF_RIGI_DRZ=COEF_DRZ,),
                             _F(GROUP_MA='ACIER2T',
                                SECTION=8.0E-4,
                                ANGL_REP=(90.0,0.0,),
                                EXCENTREMENT=(EP * 0.4),
-                               COEF_RIGI_DRZ=COEF_DRZ,
-                               GRILLE_NCOU=1,),),);
+                               COEF_RIGI_DRZ=COEF_DRZ,),),);
 
 # -- AFFECTATION DES CARACTERISTIQUES POUR GLRC_DM --
 
@@ -401,7 +397,7 @@ RESU_R1=STAT_NON_LINE(MODELE=MO,
 
 RESU_R1=CALC_CHAMP(reuse =RESU_R1,RESULTAT=RESU_R1,PRECISION=1.E-3,
              FORCE=('FORC_NODA',),)
-             
+
 RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATER,
                       CARA_ELEM=CAEL_G,
@@ -789,7 +785,7 @@ IMPR_TABLE(TABLE=TD_G1,);
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.19528858586600001,
-           
+
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -798,7 +794,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=1.9533810452,
-           
+
            NOM_PARA='FXG_FXL',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -807,7 +803,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.33511651877655002,
-           
+
            NOM_PARA='DYG_DY',
            TABLE=D_DY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -818,7 +814,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.38598977845999999,
-           
+
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -827,7 +823,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.35971002195079999,
-           
+
            NOM_PARA='FXG_FXL',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -838,7 +834,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.38598977846600002,
-           
+
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -858,7 +854,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.078395170335,
-           
+
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -867,7 +863,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=-0.065780266480000002,
-           
+
            NOM_PARA='FXG_FXL',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -878,7 +874,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.078395170439999995,
-           
+
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -887,7 +883,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.10120894938,
-           
+
            NOM_PARA='FXG_FXL',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',

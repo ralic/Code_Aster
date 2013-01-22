@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv315b.para = tps_job 260 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,8 +20,8 @@
 # ======================================================================
 # METHODE PAR PROJECTION SUR UN MAILLAGE - FISSURE INITIALE INCLINEE
 
-DEBUT(CODE=_F(NOM='SSLV315B', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),);
-
+DEBUT(CODE=_F(NOM='SSLV315B', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('XFEM2_94','XFEM2_18'),);
 #----------------------------------------------
 #                 MAILLAGE
 #----------------------------------------------
@@ -128,9 +128,7 @@ for i in range(nbcalc) :
 
    SIF[i]=CALC_G        (RESULTAT=RESV[i],
                          OPTION='CALC_K_G',
-                         THETA=_F( FISSURE=FF[i],
-                                   R_INF=RI,
-                                   R_SUP=RS,),
+                         THETA=_F( FISSURE=FF[i],),
                          LISSAGE=_F( DEGRE=0,),);
 
    IMPR_TABLE(TABLE=SIF[i],);
@@ -179,7 +177,8 @@ TAB= POST_RELEVE_T(ACTION=_F(INTITULE='test',
 IMPR_TABLE(TABLE=TAB);
 TEST_TABLE(REFERENCE='NON_DEFINI',
            PRECISION=0.050000000000000003,
-           VALE_CALC=2.798282143,
+           TOLE_MACHINE=2.E-5, #TODO variabilite
+           VALE_CALC=2.7990056122833,
            VALE_REFE=2.7999999999999998,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MAX',
@@ -187,9 +186,9 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
            )
 
 TEST_TABLE(REFERENCE='NON_DEFINI',
-           TOLE_MACHINE=1.E-4,      #TODO variabilite
+           TOLE_MACHINE=3.E-4,      #TODO variabilite
            PRECISION=0.050000000000000003,
-           VALE_CALC=9.035064786,
+           VALE_CALC=9.0206603653409,
            VALE_REFE=9.0,
            NOM_PARA='COOR_Z',
            TYPE_TEST='MAX',
@@ -245,3 +244,4 @@ IMPR_RESU(FORMAT='IDEAS',
           RESU=_F(RESULTAT=DEPL,MAILLAGE=MAXFEM),);
 
 FIN();
+

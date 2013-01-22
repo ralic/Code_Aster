@@ -1,8 +1,8 @@
-#@ MODIF test_fonction_ops Macro  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fonction_ops Macro  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -129,100 +129,71 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
 
    return {'testOk' : testOk, 'erreur' : err, 'epsilon' : curEps, 'valeurRef' :vtc}
 
+#------------------------------------------
+def RoundValues(crit,res,vtc,err,curEps):
+   """
+      Effectue des troncatures en fonction des valeurs réelles fournies
+      et retourne eventuellement des valeurs sans exposant.
 
-def RoundValues(type,res,vtc,err,curEps):
+      input :
+        crit    (K)  :  'RELATIF' /'ABSOLU'
+        res     (R)  :  valeur calculée par aster (réelle)
+        vtc     (R)  :  valeur attendue par l'utilisateur (VALE_REFE ou VALE_CALC)
+        err     (R)  :  erreur calculée en % (colonne ERREUR)
+        curEps  (R)  :  tolérance acceptable pour l'erreur en % (colonne TOLE)
+      output :
+        resr    (K)  :  chaine représentant "res" (arrondie pour l'affichage)
+        vtcr    (K)  :  chaine représentant "vtc" (arrondie pour l'affichage)
+        errr    (K)  :  chaine représentant "err" (arrondie pour l'affichage)
+        curEpsr (K)  :  chaine représentant "curEps" (arrondie pour l'affichage)
    """
-      Effectue des troncatures en fonctions des valeurs réelles fournies
-      et retourne eventuellement des valeurs sans exposant
-   """
-   #valeur calculee, valeur de reference:
+   import math
+   # valeur calculee, valeur de reference:
+   #--------------------------------------
+   res2 = """%20.15E """%res
+   vtc2 = """%20.15E """%vtc
+
+   # détermination du nombre de digits à afficher pour resr et vtc : ndigit
+   # ----------------------------------------------------------------------
+   if crit[0:4]=='RELA' :
+      ndigit=-int(math.log10(abs(curEps)))
+      ndigit=ndigit+2      # +2 à cause des %
+      ndigit=max(ndigit,2) # il en faut un minimum quand meme
+   else :
+      if curEps != 0. :
+         ndigit=-int(math.log10(abs(curEps)))
+      else :
+         ndigit=10
+      if res != 0. : ndigit=ndigit+int(math.log10(abs(res)))
+      ndigit=max(ndigit,2) # il en faut un minimum quand meme
+   ndigit=min(ndigit,15) # limite de la double présision
+
+   # arrondi des 2 valeurs rest et vtc :
    #------------------------------------
-   if type=='R':
-     res2 = """%20.15E """%res
-     vtc2 = """%20.15E """%vtc
+   chndec="%25."+str(ndigit)+"E"
+   rest=chndec % res
+   rest=rest.strip()
+   vtct=chndec%vtc
+   vtct=vtct.strip()
 
-     # détermination du nombre de décimales à considérer : ndec
-     ndec=0
-     ii=res2.find('E')
-     sgExpoRes=res2[ii+1:ii+2]
-     expoRes=int(res2[ii+2:ii+4])
-     ii=vtc2.find('E')
-     sgExpoVtc=vtc2[ii+1:ii+2]
-     expoVtc=nexpo=int(res2[ii+2:ii+4])
-     # si les signes des exposants diffèrent : ndec = 6
-     if sgExpoRes != sgExpoVtc : ndec = 6
-     # si les signes des valeurs diffèrent : ndec = 6
-     if res*vtc<0 : ndec = 6
-     #si les exposants diffèrent : ndec = 6
-     if expoRes!=expoVtc : ndec = 6
-     #position de la première décimale différente : posD
-     if ndec == 0 :
-       kk=0
-       for k in range(len(res2)):
-          if res2[k]==' ':continue
-          if res2[k]==vtc2[k]:
-             kk=kk+1
-             continue;
-          break;
-       if  kk==0:
-          ndec=6
-       else:
-          posD=kk-1
-          ndec=min(14,posD+2)
-       #on supprime les zéros inutiles
-       if ndec==14:
-          i1=res2.find('E');i2=res2.find('.');
-          kk=0
-          for k in range(i1-1,i2,-1):
-              if res2[k]=='0' and res2[k]==vtc2[k]:
-                 kk=kk+1
-                 continue
-              break
-          if kk>0:  ndec=min(14,i1-kk-i2)
-     #troncatures
-     chndec="""%20."""+str(ndec)+"""E"""
-     rest=chndec%res
-     rest=rest.strip()
-     vtct=chndec%vtc
-     vtct=vtct.strip()
+   # écriture éventuelle sans exposant :
+   #---------------------------------------------
+   def sansExp(res,rest,crit,ndigit) :
+      ares=abs(res)
+      if ares>=0.01 and ares<1.e5:
+         if ares>=0.01 and ares<1. :
+            nap=ndigit+2 ; ntot=nap+1
+         else:
+            nav=int(math.log10(ares))+1
+            nap=ndigit+1-nav ; ntot=nav+nap
+         resr="%*.*f" % (ntot,nap,res)
+         resr=resr.strip()
+         return resr
+      else :
+         return rest.strip()
 
-     #écriture éventuelle sans exposant
-#     if(sgExpoRes=='+'):
-#        if(ndec>=expoRes):
-#          chdiff="""%20."""+str(min(1,ndec-expoRes))+"""f"""
-#          resr=chdiff%res
-#          resr=resr.strip()
-#          vtcr=chdiff%vtc
-#          vtcr=vtcr.strip()
-#        else:
-#          resr=rest
-#          vtcr=vtct
-#     else:
-#        if(ndec+expoRes)<=12:
-#          chadd="""%20."""+str(ndec+expoRes-1)+"""f"""
-#          resr=chadd%res
-#          resr=resr.strip()
-#          vtcr=chadd%vtc
-#          vtcr=vtcr.strip()
-#        else:
-#          resr=rest
-#          vtcr=vtct
-   if(abs(res)>=0.01 and abs(res)<100000):
-      chdiff="""%20."""+str(ndec)+"""f"""
-      resr=chdiff%res
-      resr=resr.strip()
-   else:
-      resr=rest.strip()
-
-   if(abs(vtc)>=0.01 and abs(vtc)<100000):
-      chdiff="""%20."""+str(ndec)+"""f"""
-      vtcr=chdiff%vtc
-      vtcr=vtcr.strip()
-   else:
-      vtcr=vtct.strip()
-
-
-
+   resr=sansExp(res,rest,crit,ndigit)
+   vtcr=sansExp(vtc,vtct,crit,ndigit)
 
    # erreur et tolerance:
    #--------------------
@@ -246,7 +217,9 @@ def RoundValues(type,res,vtc,err,curEps):
    errr=listEpsiOut[0]
    curEpsr=listEpsiOut[1]
 
+
    return (resr,vtcr,errr,curEpsr)
+#------------------------------------------
 
 
 def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt, label=True):
@@ -268,11 +241,11 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt, l
         vtc0=complex(vtc,0)
      else:
         vtc0=vtc
-     resr,vtcr,errr,curEpsr=RoundValues('R',res.real,vtc0.real,err,curEps)
-     resc,vtcc,errr,curEpsr=RoundValues('R',res.imag,vtc0.imag,err,curEps)
+     resr,vtcr,errr,curEpsr=RoundValues(crit,res.real,vtc0.real,err,curEps)
+     resc,vtcc,errr,curEpsr=RoundValues(crit,res.imag,vtc0.imag,err,curEps)
    else:
      vtc0=vtc
-     res2,vtc2,errr,curEpsr=RoundValues('R',res,vtc0,err,curEps)
+     res2,vtc2,errr,curEpsr=RoundValues(crit,res,vtc0,err,curEps)
 
    if is_complex(res):
       if(res.imag<0):

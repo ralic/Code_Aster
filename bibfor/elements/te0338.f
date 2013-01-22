@@ -5,7 +5,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C     -------------------------------
       NOMRES(3) = 'SEUIL_EPSP_CUMU'
       NOMRES(4) = 'SIGM_REFE'
 
-      CALL RCCOMA(ZI(IMATE),'WEIBULL',PHENOM,CODRES)
+      CALL RCCOMA(ZI(IMATE),'WEIBULL',1,PHENOM,CODRES)
 
 C     --- S'IL N Y A PAS DE CHAMP DE TEMPERATURE
 C     ARRET

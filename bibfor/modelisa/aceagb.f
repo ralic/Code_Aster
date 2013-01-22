@@ -8,7 +8,7 @@ C
       CHARACTER*8    NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C
          CALL GETVEM(NOMA,'GROUP_MA','GRILLE','GROUP_MA',
      &               IOC,IARG,LMAX,ZK24(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','GRILLE','MAILLE',
-     &               IOC,IARG,LMAX,ZK8(JDLS),NM)
+     &               IOC,IARG,LMAX,ZK8(JDLS2),NM)
 C
          CALL GETVR8('GRILLE','SECTION'        ,IOC,IARG,1,SL  ,N1 )
          CALL GETVID('GRILLE','SECTION_FO'     ,IOC,IARG,1,SLF ,N1F)

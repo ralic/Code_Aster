@@ -1,8 +1,13 @@
-      SUBROUTINE RCCOMA( JMAT,PHENO,PHENOM,ICODRE )
+      SUBROUTINE RCCOMA( JMAT,PHENO,IARRET,PHENOM,ICODRE )
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+      INTEGER  JMAT,IARRET,ICODRE
+      CHARACTER*(*) PHENO,PHENOM
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,28 +22,32 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT NONE
-      INCLUDE 'jeveux.h'
-      INTEGER            JMAT
-      CHARACTER*(*)      PHENO,PHENOM
-      INTEGER        ICODRE
-C ----------------------------------------------------------------------
+C
 C     OBTENTION DU COMPORTEMENT COMPLET D'UN MATERIAU DONNE A PARTIR
 C     D'UN PREMISSE
 C
 C     ARGUMENTS D'ENTREE:
 C        JMAT   : ADRESSE DE LA LISTE DE MATERIAU CODE
 C        PHENO  : NOM DU PHENOMENE INCOMPLET
+C        IARRET : = 0 ON REMPLIT ICODRE ET ON SORT SANS MESSAGE.
+C                 = 1 ON S'ARRETE AU PREMIER PROBLEME AVEC UN MESSAGE
 C     ARGUMENTS DE SORTIE:
 C        PHENOM : NOM DU PHENOMENE COMPLET
-C        ICODRE : POUR CHAQUE RESULTAT, 0 SI ON A TROUVE, 1 SINON
+C        ICODRE : = 0 SI ON A TROUVE
+C                 = 1 SI ON N'A RIEN TROUVE
+C                 = 2 SI ON A TROUVE PLUSIEURS COMPORTEMENT
+C                     DE TYPE PHENO
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER            NBMAT,IM,IMAT,ICOMP
       CHARACTER*16       FENO
-C DEB ------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
+C
+      CALL ASSERT(JMAT.NE.1)
+      CALL ASSERT((IARRET.EQ.0) .OR. (IARRET.EQ.1))
+
       FENO = PHENO
       ICODRE = 1
       PHENOM = ' '
@@ -51,13 +60,17 @@ C DEB ------------------------------------------------------------------
               PHENOM=ZK16(ZI(IMAT)+ICOMP-1)
               ICODRE = 0
             ELSE
-              CALL U2MESK('F','MODELISA6_56',1,FENO)
+              IF ( IARRET .EQ. 1 ) THEN
+                CALL U2MESK('F','MODELISA6_56',1,FENO)
+              ELSE
+                ICODRE = 2
+              ENDIF
             ENDIF
           ENDIF
  10     CONTINUE
  20   CONTINUE
-      IF ( ICODRE .EQ. 1 ) THEN
+      IF ( ( ICODRE .EQ. 1 ) .AND. ( IARRET .EQ. 1 ) ) THEN
         CALL U2MESK('F','MODELISA6_57',1,FENO)
       ENDIF
-C FIN ------------------------------------------------------------------
+C
       END

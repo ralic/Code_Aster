@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv315c.para = tps_job 260 mem_job 768Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,7 +130,6 @@ for i in range(nbcalc) :
                       MODELISATION='3D',
                       MATER = ACIER,
                       FISSURE=FF[i],
-                      ABSC_CURV_MAXI=3*RI,
                       INFO=2,);
 
    IMPR_TABLE(TABLE=SIF[i],);
@@ -182,7 +181,7 @@ IMPR_TABLE(TABLE=TAB);
 TEST_TABLE(REFERENCE='NON_DEFINI',
            TOLE_MACHINE=1.e-3,
            PRECISION=0.050000000000000003,
-           VALE_CALC=2.7802419790631,
+           VALE_CALC=2.7867108919188,
            VALE_REFE=2.7999999999999998,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MAX',
@@ -192,7 +191,7 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
 TEST_TABLE(REFERENCE='NON_DEFINI',
            TOLE_MACHINE=2.e-3,      #TODO variabilite
            PRECISION=0.050000000000000003,
-           VALE_CALC=9.1512171727545,
+           VALE_CALC=9.1404502464141,
            VALE_REFE=9.0,
            NOM_PARA='COOR_Z',
            TYPE_TEST='MAX',
@@ -217,3 +216,4 @@ IMPR_RESU(FORMAT='IDEAS',
 
 
 FIN();
+

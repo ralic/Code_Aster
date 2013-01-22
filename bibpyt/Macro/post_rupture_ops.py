@@ -1,4 +1,4 @@
-#@ MODIF post_rupture_ops Macro  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF post_rupture_ops Macro  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,7 +86,7 @@ def sittmax(k1,k2):
 
 
 def amestoy(k1,k2,crit_ang):
-   """ criteres de Amestoy, Bui, Dang Van : K1 max, K2 nul et G max (uniquement en 2D)"""
+   """ criteres de Amestoy, Bui, Dang Van : K1 max, K2 nul (uniquement en 2D)"""
    # attention, K2_nul ne marche pas pour un angle > 60
    # et pour les grands angles K1_MAX est tres sensible au signe de K1
    # donc si k1 est negatif ou nul, on force k1 = +0
@@ -106,11 +106,6 @@ def amestoy(k1,k2,crit_ang):
       l = abs(k1devp).tolist()+abs(k1devm).tolist()
    elif crit_ang == 'K2_NUL':
       l = abs(k2devp).tolist()+abs(k2devm).tolist()
-   elif crit_ang == 'G_MAX':
-      assert(0==1)
-      # le critere en G est chiant car il faut connaitre le type de modelisation (CP/DP)
-      # et les parametres materiaux, evalués au bon instant, a la bonne temperature....
-      # on l'interdit pour le moment
 
    # suppression de l'angle phi = -0
    l.pop(10)
@@ -144,37 +139,44 @@ def caract_mater(self,mater):
    compor = sd_compor1('%-8s.%s' % (mater.nom, phenom))
    valk = [s.strip() for s in compor.VALK.get()]
    valr = compor.VALR.get()
-   dicmat=dict(zip(valk,valr))
+   dicmat = dict(zip(valk,valr))
 
-   young=dicmat['E']
-   poisson = dicmat['NU']   
+   if dicmat.has_key('TEMP_DEF')  :
+     nompar = ('TEMP',)
+     valpar = (dicmat['TEMP_DEF'],)
+     UTMESS('A','XFEM2_85',valr=valpar)
+     nomres=['E','NU']
+     valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,2)
+     young = valres[0]
+     poisson = valres[1]
+   else :
+     young = dicmat['E']
+     poisson = dicmat['NU']   
    
-#  E et nu definis avec defi_fonction
-   if young==0.0 and poisson==0.0:    
-      list_oper=valk[: len(valk)/2]
-      list_fonc=valk[len(valk)/2 :]    
-#   valk contient les noms des operandes mis dans defi_materiau dans une premiere partie et
-#   et les noms des concepts de type [fonction] (ecrits derriere les operandes) dans une 
-#   une seconde partie  
-      try:list_oper.remove("B_ENDOGE")
-      except: ValueError
-      try:list_oper.remove("RHO")     
-      except: ValueError
-      try:list_oper.remove("PRECISIO")
-      except: ValueError
-      try:list_oper.remove("K_DESSIC")
-      except: ValueError      
-      try:list_oper.remove("TEMP_DEF")
-      except: ValueError
+#    E et nu definis avec defi_fonction
+     if young==0.0 and poisson==0.0:    
+       list_oper=valk[: len(valk)/2]
+       list_fonc=valk[len(valk)/2 :]    
+#    valk contient les noms des operandes mis dans defi_materiau dans une premiere partie et
+#    et les noms des concepts de type [fonction] (ecrits derriere les operandes) dans une 
+#    une seconde partie  
+       try:list_oper.remove("B_ENDOGE")
+       except ValueError: pass
+       try:list_oper.remove("RHO")     
+       except ValueError: pass
+       try:list_oper.remove("PRECISIO")
+       except ValueError: pass
+       try:list_oper.remove("K_DESSIC")
+       except ValueError: pass      
    
-      nom_fonc_e = self.get_concept(list_fonc[list_oper.index("E")])
-      nom_fonc_nu = self.get_concept(list_fonc[list_oper.index("NU")])
+       nom_fonc_e = self.get_concept(list_fonc[list_oper.index("E")])
+       nom_fonc_nu = self.get_concept(list_fonc[list_oper.index("NU")])
     
-      if (nom_fonc_e.sdj.PROL.get()[0].strip()=='CONSTANT' and
-          nom_fonc_nu.sdj.PROL.get()[0].strip()=='CONSTANT'):
+       if (nom_fonc_e.sdj.PROL.get()[0].strip()=='CONSTANT' and
+           nom_fonc_nu.sdj.PROL.get()[0].strip()=='CONSTANT'):
          young  = nom_fonc_e.Ordo()[0]
          poisson = nom_fonc_nu.Ordo()[0]
-      else:
+       else:
          UTMESS('F','RUPTURE1_68')
    return (young, poisson)
 
@@ -224,6 +226,9 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
    IMPR_TABLE    = self.get_cmd('IMPR_TABLE')
    CREA_TABLE    = self.get_cmd('CREA_TABLE')
    DEFI_CONSTANTE= self.get_cmd('DEFI_CONSTANTE')
+
+   # parametre
+   eps = 1e-15
 
    # verification que le nombre de tables est correct
    # et retourne le nombre de tables
@@ -290,27 +295,33 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
       self.update_const_context({'crit_ang' : crit_ang})
 
       # verification que la table contient les colonnes necessaires
-      if crit_ang in ('SITT_MAX','K1_MAX','K2_NUL','G_MAX') :
-         verif_exi(tabin, 'K1')
-         verif_exi(tabin, 'K2')
+      if crit_ang in ('SITT_MAX','K1_MAX','K2_NUL') :
+        verif_exi(tabin, 'K1')
+        verif_exi(tabin, 'K2')
 
-      if crit_ang == 'SITT_MAX' :
-         # on l'ajoute dans l'environnement pour pouvoir s'en servir dans les commandes
-         self.update_const_context({'sittmax' : sittmax})
-         __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='sittmax(K1,K2)*180./pi')
+        if crit_ang == 'SITT_MAX' :
+          # on l'ajoute dans l'environnement pour pouvoir s'en servir dans les commandes
+          self.update_const_context({'sittmax' : sittmax})
+          __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='sittmax(K1,K2)*180./pi')
 
-      elif crit_ang in ('K1_MAX','K2_NUL','G_MAX'):
-         # criteres uniquement valables en 2D
-         # mais comment savoir ?
-         # on l'ajoute dans l'environnement pour pouvoir s'en servir dans les commandes
-         self.update_const_context({'amestoy' : amestoy})
-         __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='amestoy(K1,K2,crit_ang)')
+        elif crit_ang in ('K1_MAX','K2_NUL') :
+          # criteres uniquement valables en 2D
+          # mais comment savoir ?
+          # on l'ajoute dans l'environnement pour pouvoir s'en servir dans les commandes
+          self.update_const_context({'amestoy' : amestoy})
+          __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='amestoy(K1,K2,crit_ang)')
 
-      tabout=CALC_TABLE(TABLE=TABIN,
-                        reuse=TABIN,
-                        ACTION=_F(OPERATION='OPER',
-                                  FORMULE=__angle_deg,
-                                  NOM_PARA=args['NOM_PARA']))
+        tabout=CALC_TABLE(TABLE=TABIN,
+                          reuse=TABIN,
+                          ACTION=_F(OPERATION='OPER',
+                                    FORMULE=__angle_deg,
+                                    NOM_PARA=args['NOM_PARA']))
+
+      elif crit_ang == 'PLAN' :
+        tabout=CALC_TABLE(TABLE=TABIN,
+                          reuse=TABIN,
+                          ACTION=_F(OPERATION='AJOUT_COLONNE',
+                                    VALE=0.,NOM_PARA=args['NOM_PARA']))         
 
    #-----------------------------------------------------------------------
    if OPERATION[-4:] == 'K_EQ' :
@@ -404,6 +415,9 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
          # recuperation des mot-clés
          COEF_MULT_MAXI=args['COEF_MULT_MAXI']
          COEF_MULT_MINI=args['COEF_MULT_MINI']
+
+         if abs(COEF_MULT_MAXI)<eps and abs(COEF_MULT_MINI)<eps :
+           UTMESS('F','XFEM2_81')
 
          # verification qu'il n'y a qu'un instant (ou instant absent)
          verif_un_instant(tabin, OPERATION, COMPTAGE)

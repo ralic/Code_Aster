@@ -1,8 +1,8 @@
-#@ MODIF calculel4 Messages  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel4 Messages  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -135,12 +135,9 @@ Risques et conseils :
 """),
 
 14 : _(u"""
- Erreur d'utilisation (CREA_RESU/PREP_VRC.) :
-  Le CARA_ELEM (%(k1)s) ne contient pas de "couches"
-
- Conseil :
-  Le CARA_ELEM qu'il faut fournir à la commande CREA_RESU doit être
-  celui associé au modèle "mécanique".
+ Erreur d'utilisation de la commande CREA_RESU / PREP_VRC[1|2] :
+    Le CARA_ELEM (%(k1)s) ne contient pas d'éléments à "couches"
+ Il n'y a aucune raison d'utiliser l'option PREP_VRC[1|2]
 """),
 
 15 : _(u"""

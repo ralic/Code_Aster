@@ -1,9 +1,9 @@
-# MODIF  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES POUR UNE MODE PROPRE
 # sdls114d.para = tps_job 480 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ tau = 0.001
 n_mode = 10
 tfin = 0.004
 pas = 5E-7
-nbpas = 100
+
 
 PRE_GIBI();
 
@@ -163,8 +163,8 @@ GLMO1=CALC_G(OPTION='CALC_K_G',
              RESULTAT=MODE,
              TOUT_MODE = 'OUI',
              THETA=_F( FISSURE=FF2,
-                       R_INF=1.E-3,
-                       R_SUP=3.E-3,),
+                       R_INF=1E-3,
+                       R_SUP=3E-3,),
 #              LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
 #                         LISSAGE_G='LAGRANGE',),
             );
@@ -217,11 +217,15 @@ IMPR_TABLE(TABLE=KT1, TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 
 # la reference est obtenue par fissure maillee (SDLS114B)
 # on test uniquement sur le point au milieu du fond de fissure
+#
+# REMARQUE IMPORTANTE
+# ON SOULIGNE QUE LE MAILLAGE EST TRS GROSSIER
+# LA SOLUTION DE POST_K_TRANS APPROCHE CELLE DE TRANSIENT DIRECTE SI LE MAILLAGE EST RAFFINEE
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.025000000000000001,
-           VALE_CALC= 9.04311309E+05,
-           VALE_REFE=9.23749E5,
+           PRECISION=0.02,
+           VALE_CALC= 1.4961078055564E+06,
+           VALE_REFE=1.50646E+06,
            NOM_PARA='K1',
            TABLE=KT1,
            FILTRE=(_F(NOM_PARA='INST',
@@ -232,9 +236,9 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.089999999999999997,
-           VALE_CALC= 6.01010944E+04,
-           VALE_REFE=6.5914699999999997E4,
+           PRECISION=0.1,
+           VALE_CALC= 4.2648023705824E+05,
+           VALE_REFE=4.70098E+05,
            NOM_PARA='K2',
            TABLE=KT1,
            FILTRE=(_F(NOM_PARA='INST',
@@ -245,9 +249,9 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.014999999999999999,
-           VALE_CALC=-4.16641367E+05,
-           VALE_REFE=-4.21525E5,
+           PRECISION=0.04,
+           VALE_CALC=-8.5924717953106E+05,
+           VALE_REFE=-8.83169E+05,
            NOM_PARA='K3',
            TABLE=KT1,
            FILTRE=(_F(NOM_PARA='INST',
@@ -261,8 +265,8 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # # CALCUL TRANSITOIRE EN COORDONNEES PHYSIQUES
 # ##############################################
 #
-# CES COMMANDES ONT ETE UTILISEE POUR OBTENIR LES VALEURS DE REFERENCES
-#
+### CES COMMANDES ONT ETE UTILISEE POUR OBTENIR LES VALEURS DE REFERENCES
+# 
 # RES_DYN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',
 #                     BASE_CALCUL='PHYS',
 # #                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
@@ -279,13 +283,13 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 #                     ARCHIVAGE=_F(PAS_ARCH = 200,),
 # #                    IMPRESSION = _F(TOUT='OUI',),
 #                     );
-#
+# 
 # GLMO2 = CALC_G(  RESULTAT=RES_DYN2,
 #                  OPTION='CALC_K_G',
 #                  THETA=_F( FISSURE=FF2,
-#                                    R_INF=1.E-3,
-#                                    R_SUP=3.E-3,
-#
+#                                    R_INF=1E-3,
+#                                    R_SUP=3E-3,
+# 
 #                                    ),
 #                  EXCIT= ( _F(  CHARGE= (CHAR),
 #                                FONC_MULT=RAMPE,),

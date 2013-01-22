@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316e.para = tps_job 500 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,18 +113,20 @@ ZERO=FORMULE(NOM_PARA='G',
 RI = 0.2
 RS = 0.8
 
-VAL_CALC = [-2.6367796834847E-16,
-           -8.3960616237277E-16,
-           2.0705208856419E-03 ,
-           2.0705208856415E-03 ,               
-           2.0839213107254E-03 ,
-           2.0839213107241E-03 ,
-           -2.7439928087258E-03,
-           -2.7439928087265E-03,
-           0.011696638041828   ,
-           0.011696638041827   ,
-           3.3857604952155E-03 ,
-           3.3857601981841E-03  ]
+VAL_CALC=[
+ -2.6367796834847E-16,
+ -8.3960616237277E-16,
+ 2.0705208856419E-03,
+ 2.0705208856415E-03,
+ 2.0839213107257E-03,
+ 2.0839213107241E-03,
+ -2.7439928087257E-03,
+ -2.7439928087261E-03,
+ 0.011696638041828,
+ 0.011696638041827,
+ 3.3857601981858E-03,
+ 3.3857601981841E-03,
+]
             
 for i in range(nbcalc) :
 
@@ -146,9 +148,7 @@ for i in range(nbcalc) :
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
-                         THETA=_F( FISSURE=FISS[i],
-                                   R_INF=RI,
-                                   R_SUP=RS,),
+                         THETA=_F( FISSURE=FISS[i],),
                          LISSAGE=_F( DEGRE=0,),);
 
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
@@ -178,12 +178,12 @@ for i in range(nbcalc) :
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
-                              N=0.,
                               MATER=ACIER),
                  RAYON=RS,
                  ZONE_MAJ='TOUT',
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
+                 CRIT_ANGL_BIFURCATION = 'ANGLE_IMPO',
                  INFO=0,)
 
    DETRUIRE(CONCEPT=_F(NOM=(CH)),INFO=1)

@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316i.para = tps_job 300 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -121,7 +121,6 @@ beta=30.0/180.0*3.1415
 ZERO=FORMULE(NOM_PARA='G',
              VALE='0.0*G+beta',);
 
-RI = 0.2
 RS = 0.8
 
 VAL_CALC = [5.5511151231258E-16 ,
@@ -151,9 +150,7 @@ for i in range(nbcalc) :
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
-                         THETA=_F( FISSURE=FISS[i],
-                                   R_INF=RI,
-                                   R_SUP=RS,),
+                         THETA=_F( FISSURE=FISS[i],),
                          LISSAGE=_F( DEGRE=0,),);
 
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
@@ -183,11 +180,11 @@ for i in range(nbcalc) :
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
-                              N=0.,
                               MATER=ACIER),
                  RAYON=RS,
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
+                 CRIT_ANGL_BIFURCATION = 'ANGLE_IMPO',
                  INFO=0,);
 
 #----------------------------------------------

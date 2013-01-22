@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION D UNE FISSURE X-FEM DEBOUCHANTE SOLLICITEE EN MODE I
 # sslp320a.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,6 +116,56 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 FOND1=FORMULE(NOM_PARA='NUME_ORDRE',
                 VALE='0*NUME_ORDRE+1',);
 
+VAL_CALC=[
+ 4.1749113788372E+06,
+ -294.54328325112,
+ 15.000035275393,
+ 4.6025435867672E+06,
+ -12.250424839352,
+ 15.000036606224,
+ 5.0675310534068E+06,
+ -359.49259603095,
+ 15.000072076415,
+ 5.5758812049056E+06,
+ -28.414437508366,
+ 15.000074624393,
+ 6.1344620866981E+06,
+ -423.59405177525,
+ 15.000109150163,
+ 6.751140305251E+06,
+ -51.66454025617,
+ 15.00011297652,
+ 7.4352184656844E+06,
+ -505.69963223947,
+ 15.000146983565,
+ 8.1976358540789E+06,
+ -95.00304392831,
+ 15.000152778105,
+ 9.051636186052E+06,
+ -615.95306981005,
+ 15.00018680251,
+ 1.00131365407E+07,
+ -168.15499998813,
+ 15.000195199229,
+ 1.1101802972541E+07,
+ -768.64406177138,
+ 15.000229817212,
+ 1.2341797430582E+07,
+ -285.38926996297,
+ 15.000241379113,
+ 1.3763607213838E+07,
+ -987.32088277422,
+ 15.000277246195,
+ 1.5405626619846E+07,
+ -470.39024299223,
+ 15.000292513027,
+ 1.7317490413567E+07,
+ -1313.0087281204,
+ 15.000330422929,
+]
+
+ct = -1
+
 for i in range(NPAS+1) :
     
     afiss[i]=xinit+i*DA
@@ -159,9 +209,7 @@ for i in range(NPAS+1) :
 
     SIF[i]=CALC_G        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
-                         THETA=_F( FISSURE=FISS[i],
-                                   R_INF=RI,
-                                   R_SUP=RS,),
+                         THETA=_F( FISSURE=FISS[i],),
                          );
 
     IMPR_TABLE(TABLE=SIF[i],
@@ -172,25 +220,26 @@ for i in range(NPAS+1) :
     K1REF[i]=-PRES*sqrt(pi*afiss[i])*faW[i]
 
 #Test de KI par rapport a KI theorique 
+    ct = ct +1
     TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K1',
                TYPE_TEST='MAX',
-               VALE_CALC=K1REF[i],
+               VALE_CALC=VAL_CALC[ct],
                VALE_REFE=K1REF[i],
                CRITERE='RELATIF',
-               TOLE_MACHINE=0.02,   # TODO: vale_calc
                PRECISION=0.02,
                REFERENCE='ANALYTIQUE',);               
 
 # Test de KII en pourcentage de KI theorique
+    ct = ct +1
     TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K2',
                TYPE_TEST='MAX',
-               VALE_CALC=0,
+               VALE_CALC=VAL_CALC[ct],
+               TOLE_MACHINE=2.1E-6, #TODO TOLE_MACHINE
                VALE_REFE=0,
                CRITERE='ABSOLU',
                PRECISION=(10**(-4))*K1REF[i],
-               TOLE_MACHINE=(10**(-4))*K1REF[i],   # TODO: vale_calc
                REFERENCE='AUTRE_ASTER',); 
 
 #Propagation de la fissure avec la methode maillage
@@ -237,12 +286,12 @@ for i in range(NPAS+1) :
         
         IMPR_TABLE(TABLE=TAB[i+1]);                                            
 
+        ct = ct +1
         TEST_TABLE(TABLE=TAB[i+1],
                    REFERENCE='ANALYTIQUE',
                    NOM_PARA='Y',
-                   TOLE_MACHINE=1.E-4,
                    PRECISION=1.E-4,
-                   VALE_CALC= yinit,
+                   VALE_CALC= VAL_CALC[ct],
                    VALE_REFE= yinit)
                 
 

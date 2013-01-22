@@ -8,9 +8,9 @@
       CHARACTER*4 FAMI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,9 +43,9 @@ C     ------------------------------------------------------------------
       REAL*8 CDF,CDM,VALRES(56)
       REAL*8 YOUNG,NU,EPAIS,VALPAR,EXCENT
       REAL*8 XAB1(3,3),DH(3,3)
-      REAL*8 DX,DY,DZ,S,C,NORM
-      REAL*8 PS,PJDX,PJDY,PJDZ,ALPHAT
-      REAL*8 ALPHA,BETA,R8DGRD,R8PREM
+      REAL*8 S,C
+      REAL*8 ALPHAT
+      REAL*8 ALPHA,BETA,R8DGRD
       REAL*8 DEUX
       INTEGER ICODRE(56)
       CHARACTER*3 NUM
@@ -67,42 +67,17 @@ C     ------------------------------------------------------------------
       BETA  = ZR(JCOQU+2)*R8DGRD()
       EXCENT= ZR(JCOQU+4)
 
-      DX = COS(BETA)*COS(ALPHA)
-      DY = COS(BETA)*SIN(ALPHA)
-      DZ = SIN(BETA)
-      NORM = SQRT(DX*DX+DY*DY+DZ*DZ)
-      DX = DX/NORM
-      DY = DY/NORM
-      DZ = DZ/NORM
-      PS = DX*PGL(3,1) + DY*PGL(3,2) + DZ*PGL(3,3)
-      PJDX = DX - PS*PGL(3,1)
-      PJDY = DY - PS*PGL(3,2)
-      PJDZ = DZ - PS*PGL(3,3)
-      NORM = SQRT(PJDX*PJDX+PJDY*PJDY+PJDZ*PJDZ)
+
 C     ------------------------------------------------
       INDITH = 0
       CALL JEVECH('PMATERC','L',JMATE)
-      CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,ICODRE)
+      CALL RCCOMA(ZI(JMATE),'ELAS',1,PHENOM,ICODRE)
       IF (PHENOM.EQ.'ELAS_COQMU') THEN
-        IF (NORM.LE.R8PREM()) THEN
-          CALL U2MESS('F','ELEMENTS_39')
-        END IF
-C          CALCUL DES MATRICE T1VE ET T2VE DE PASSAGE D'UNE MATRICE
-C          (3,3) ET (2,2) DU REPERE DE LA VARIETE AU REPERE ELEMENT
-C          ET T2VE INVERSE DE T2EV
-        PJDX = PJDX/NORM
-        PJDY = PJDY/NORM
-        PJDZ = PJDZ/NORM
-        C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
-        S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
-        T2EV(1) = C
-        T2EV(2) = S
-        T2EV(3) = -S
-        T2EV(4) = C
-        T2VE(1) = C
-        T2VE(2) = -S
-        T2VE(3) = S
-        T2VE(4) = C
+
+        CALL COQREP(PGL, ALPHA, BETA, T2EV,T2VE,C,S)
+
+C       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
+C       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
         T1VE(1) = C*C
         T1VE(4) = S*S
         T1VE(7) = C*S
@@ -119,35 +94,18 @@ C          ET T2VE INVERSE DE T2EV
    10   CONTINUE
 
       ELSE IF (PHENOM.EQ.'ELAS') THEN
-        IF (NORM.LE.R8PREM()) THEN
-          CALL U2MESS('A','ELEMENTS_40')
-        END IF
         NBV = 3
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
         NOMRES(3) = 'ALPHA'
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
-        IF (NORM.LE.R8PREM()) THEN
-          CALL U2MESS('A','ELEMENTS_40')
-        END IF
 
-C        CALCUL DES MATRICE T1VE ET T2VE DE PASSAGE D'UNE MATRICE
-C        (3,3) ET (2,2) DU REPERE DE LA VARIETE AU REPERE ELEMENT
-C        ET T2VE INVERSE DE T2EV
-        PJDX = PJDX/NORM
-        PJDY = PJDY/NORM
-        PJDZ = PJDZ/NORM
-        C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
-        S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
-        T2EV(1) = C
-        T2EV(2) = S
-        T2EV(3) = -S
-        T2EV(4) = C
-        T2VE(1) = C
-        T2VE(2) = -S
-        T2VE(3) = S
-        T2VE(4) = C
+        CALL COQREP(PGL, ALPHA, BETA, T2EV,T2VE,C,S)
+
+C       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
+C       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
+
         T1VE(1) = C*C
         T1VE(4) = S*S
         T1VE(7) = C*S

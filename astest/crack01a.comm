@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION DE L'ASSISTANT CRACK ANALYSIS DU MODULE ASTER SALOME-MECA : FISSURE CIRCULAIRE EN MILIEU INFINI
 # crack01a.para = tps_job 100 mem_job 768Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -186,6 +186,7 @@ nb_fond = dict['NOMBRE'][0]
 DETRUIRE(CONCEPT=_F(NOM=NB_FOND),INFO=1)
 
 G1 = [None]*nb_fond
+G2 = [None]*nb_fond
 
 for i in range(nb_fond) :
    
@@ -198,6 +199,12 @@ for i in range(nb_fond) :
 
    IMPR_TABLE(TABLE=G1[i])
 
+#  calcul sans R_INF et R_SUP
+   G2[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
+                         NUME_FOND=i+1,),
+                RESULTAT=RESU,
+                OPTION='CALC_K_G')
+
 #----------------------------------------------------------------------
 #              TEST DE K1 EN 1 POINT
 #----------------------------------------------------------------------
@@ -206,7 +213,7 @@ for i in range(nb_fond) :
 K1ref = 1.595E+6
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC= 1.63188324E+06,
+           VALE_CALC=1.6318832409245E+06,
            VALE_REFE=1.595000E6,
            NOM_PARA='K1',
            TYPE_TEST='MAX',
@@ -214,10 +221,28 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC= 1.61737095E+06,
+           VALE_CALC=1.6173709472276E+06,
            VALE_REFE=1.595000E6,
            NOM_PARA='K1',
            TYPE_TEST='MIN',
            TABLE=G1_0,)
 
+#  sans R_INF et R_SUP
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=1.6284654563328E+06,
+           VALE_REFE=1.595000E6,
+           NOM_PARA='K1',
+           TYPE_TEST='MAX',
+           TABLE=G2_0,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=1.6065723255199E+06,
+           VALE_REFE=1.595000E6,
+           NOM_PARA='K1',
+           TYPE_TEST='MIN',
+           TABLE=G2_0,)
+
 FIN();
+

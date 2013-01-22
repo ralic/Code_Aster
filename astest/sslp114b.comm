@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE PLANE SEMI-INFINIE
 # sslp114b.para = tps_job 120 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -282,6 +282,11 @@ CH_G=CALC_G(RESULTAT=UTOT,
                      R_SUP=0.3*A,),
             INFO=2);
 
+CH_G2=CALC_G(RESULTAT=UTOT,
+            OPTION='CALC_K_G',
+            THETA=_F(FISSURE=FISS,),
+            INFO=2);
+
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELK);
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -360,57 +365,63 @@ tab_du=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_MA',CHAM_GD=DIFF, MODE
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
-           VALE_CALC=0.999579728,
+           VALE_CALC=0.99957972844045,
            VALE_REFE=1.0,
            NOM_PARA='K1',
            LEGENDE='alpha=0.0',
            TABLE=CH_G,)
 
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.99957972843914999,
-           NOM_PARA='K1',
-           LEGENDE='alpha=0.0',
-           TABLE=CH_G,
-           )
-
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
-           VALE_CALC=-1.22022442E-05,
+           VALE_CALC=-1.2202241401932E-05,
            VALE_REFE=0.0,
            NOM_PARA='K2',
            LEGENDE='alpha=0.0',
            TABLE=CH_G,)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-1.2202243308776001E-05,
-           NOM_PARA='K2',
-           LEGENDE='alpha=0.0',
-           TABLE=CH_G,
-           )
-
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
-           VALE_CALC= 9.99159447E-06,
+           VALE_CALC=9.9915944728717E-06,
            VALE_REFE=1.0000000000000001E-05,
            NOM_PARA='G',
            LEGENDE='alpha=0.0',
            TABLE=CH_G,)
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=9.9915944728637996E-06,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.99958026777032,
+           VALE_REFE=1.0,
+           NOM_PARA='K1',
+           LEGENDE='alpha=0.0',
+           TABLE=CH_G2,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-1.1132906738342E-05,
+           VALE_REFE=0.0,
+           NOM_PARA='K2',
+           LEGENDE='alpha=0.0',
+           TABLE=CH_G2,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=9.9916192175815E-06,
+           VALE_REFE=1.0000000000000001E-05,
            NOM_PARA='G',
            LEGENDE='alpha=0.0',
-           TABLE=CH_G,
-           )
+           TABLE=CH_G2,)
 
 #TOLERANCE RELATIVE A LA NORME DU CHAMP DE DEPLACEMENT!
 NormeL2_U=7.72403392144e-06
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=7.7240339214399998E-09,
-           VALE_CALC= 2.35813402E-10,
+           VALE_CALC=2.3581340282132E-10,
            VALE_REFE=0.0,
            TOLE_MACHINE=7.7240339214399998E-09,
            NOM_PARA='VALE_NORM',
@@ -418,10 +429,11 @@ TEST_TABLE(CRITERE='ABSOLU',
            TABLE=tab_du,)
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=2.3581340301407998E-10,
+           VALE_CALC=2.3581340282132E-10,
            NOM_PARA='VALE_NORM',
            LEGENDE='ERREUR DEPL NORME_L2',
            TABLE=tab_du,
            )
 
 FIN();
+

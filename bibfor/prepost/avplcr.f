@@ -15,9 +15,9 @@
       REAL*8        CUDOMX, NXM, NYM, NZM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -275,6 +275,168 @@ C REMPACER PAR SUBROUTINE AVGRDO
      &             NOMFOR,GRDVIE, FORVIE,VALA,
      &      COEFPA,NCYCL,VMIN,VMAX,OMIN,OMAX,POST,CUDOMX, VNORMX )
 
+
+C 11. 3E RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
+C     CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
+
+         NXM = VECN1((VNORMX-1)*3+1)
+         NYM = VECN1((VNORMX-1)*3+2)
+         NZM = VECN1((VNORMX-1)*3+3)
+
+         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM**2)),NZM)
+         IF (GAMMAM .LT. 0.0D0) THEN
+            GAMMAM = GAMMAM + PI
+         ENDIF
+
+         IF ((ABS(NYM) .LT. EPSILO) .AND.
+     &       (ABS(NXM) .LT. EPSILO)) THEN
+           PHIM = 0.0D0
+         ELSE
+           PHIM = ATAN2(ABS(NYM),NXM)
+         ENDIF
+         IF (PHIM .LT. 0.0D0) THEN
+           PHIM = PHIM + PI
+         ENDIF
+
+         IF (ABS(GAMMAM) .LT. EPSILO) THEN
+            GAMMA = 5.0D0*(PI/180.0D0)
+            DPHI2 = 60.0D0*(PI/180.0D0)
+            IDEB = 1
+            IFIN = 6
+            N = 0
+            K = 1
+            DIM = 27
+            PHI0 = 0.0D0
+            CALL VECNUV(IDEB, IFIN, GAMMA, PHI0, DPHI2, N, K, DIM,
+     &                  VECN2, VECU2, VECV2)
+
+            GAMMA = 0.0D0
+            PHI0 = PI
+            IDEB = 1
+            IFIN = 1
+            K = 1
+            CALL VECNUV(IDEB, IFIN, GAMMA, PHI0, DPHI2, N, K, DIM,
+     &                  VECN2, VECU2, VECV2)
+
+C 11.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
+
+            NBVEC1 = 7
+
+
+            CALL  AVCIPR( NBVEC1, VECN2, VECU2, VECV2,
+     &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
+     &         I, NOMCRI, NOMFOR, FORDEF, FATSOC, PROAXE, PSEUIL,
+     &         METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX)
+
+         ELSE
+            DGAM2 = 0.5D0*(PI/180.0D0)
+            DPHI2 = DGAM2/SIN(GAMMAM)
+            N = 0
+            K = 2
+            DIM = 27
+            IDEB = 1
+            IFIN = 3
+            DO 460 J=1, 3
+               GAMMA = GAMMAM + (J-K)*DGAM2
+               CALL VECNUV(IDEB, IFIN, GAMMA, PHIM, DPHI2, N, K, DIM,
+     &                     VECN2, VECU2, VECV2)
+ 460        CONTINUE
+
+            NBVEC1 = 9
+
+            CALL  AVCIPR( NBVEC1, VECN2, VECU2, VECV2,
+     &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
+     &         I, NOMCRI,NOMFOR, FORDEF, FATSOC, PROAXE, PSEUIL,
+     &         METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX)
+         ENDIF
+
+C REMPACER PAR SUBROUTINE AVGRDO
+
+         CALL AVGRDO(NBVEC1, NBORDR, VECN2, VWORK, TDISP, KWORK,
+     &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI,
+     &             NOMFOR,GRDVIE, FORVIE,VALA,
+     &      COEFPA,NCYCL,VMIN,VMAX,OMIN,OMAX,POST,CUDOMX, VNORMX )
+
+C 12. 4E RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
+C     CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
+
+         NXM = VECN2((VNORMX-1)*3+1)
+         NYM = VECN2((VNORMX-1)*3+2)
+         NZM = VECN2((VNORMX-1)*3+3)
+
+         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM**2)),NZM)
+         IF (GAMMAM .LT. 0.0D0) THEN
+            GAMMAM = GAMMAM + PI
+         ENDIF
+
+         IF ((ABS(NYM) .LT. EPSILO) .AND.
+     &       (ABS(NXM) .LT. EPSILO)) THEN
+           PHIM = 0.0D0
+         ELSE
+           PHIM = ATAN2(ABS(NYM),NXM)
+         ENDIF
+         IF (PHIM .LT. 0.0D0) THEN
+           PHIM = PHIM + PI
+         ENDIF
+
+         IF (ABS(GAMMAM) .LT. EPSILO) THEN
+            GAMMA = 5.0D0*(PI/180.0D0)
+            DPHI2 = 60.0D0*(PI/180.0D0)
+            IDEB = 1
+            IFIN = 6
+            N = 0
+            K = 1
+            DIM = 27
+            PHI0 = 0.0D0
+            CALL VECNUV(IDEB, IFIN, GAMMA, PHI0, DPHI2, N, K, DIM,
+     &                  VECN1, VECU1, VECV1)
+
+            GAMMA = 0.0D0
+            PHI0 = PI
+            IDEB = 1
+            IFIN = 1
+            K = 1
+            CALL VECNUV(IDEB, IFIN, GAMMA, PHI0, DPHI2, N, K, DIM,
+     &                  VECN1, VECU1, VECV1)
+
+C 12.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
+
+            NBVEC1 = 7
+
+
+            CALL  AVCIPR( NBVEC1, VECN1, VECU1, VECV1,
+     &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
+     &         I, NOMCRI, NOMFOR, FORDEF, FATSOC, PROAXE, PSEUIL,
+     &         METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX)
+
+         ELSE
+            DGAM2 = 0.25D0*(PI/180.0D0)
+            DPHI2 = DGAM2/SIN(GAMMAM)
+            N = 0
+            K = 2
+            DIM = 27
+            IDEB = 1
+            IFIN = 3
+            DO 480 J=1, 3
+               GAMMA = GAMMAM + (J-K)*DGAM2
+               CALL VECNUV(IDEB, IFIN, GAMMA, PHIM, DPHI2, N, K, DIM,
+     &                     VECN1, VECU1, VECV1)
+ 480        CONTINUE
+
+            NBVEC1 = 9
+
+            CALL  AVCIPR( NBVEC1, VECN1, VECU1, VECV1,
+     &         NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
+     &         I, NOMCRI,NOMFOR, FORDEF, FATSOC, PROAXE, PSEUIL,
+     &         METHOD, NCYCL,VMIN,VMAX, OMIN, OMAX)
+         ENDIF
+
+C REMPACER PAR SUBROUTINE AVGRDO
+
+         CALL AVGRDO(NBVEC1, NBORDR, VECN1, VWORK, TDISP, KWORK,
+     &             SOMNOW, TSPAQ, I, NOMMAT, NOMCRI,
+     &             NOMFOR,GRDVIE, FORVIE,VALA,
+     &      COEFPA,NCYCL,VMIN,VMAX,OMIN,OMAX,POST,CUDOMX, VNORMX )
 C  VECTEUR NORMAL ASSOCIE AUX PLAN CRITIQUE  TROUVE
 
          NXM = VECN1((VNORMX-1)*3+1)

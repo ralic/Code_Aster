@@ -1,10 +1,10 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 # ssnp138c.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,10 +125,10 @@ VAL_CALC = [
             0.28340158704572     ,
             -100.43951712528     ,
             100.43951711944      ,
-            2.5708946597949E+05  ,
-            349.89035889757      ,
-            2.5708946597948E+05  ,
-            -349.890358892       ,
+            2.5702381604521E+05  ,
+            299.32743388891      ,
+            2.570238160452E+05   ,
+            -299.32743387679     ,
             1.9330299218729E+05  ,
             1.9315266784745E+05  ,
             0.21393403182112     ,
@@ -139,10 +139,10 @@ VAL_CALC = [
             0.21325649311301     ,
             1.0952531101003E+05  ,
             1.0963099331559E+05  ,
-            1.9351002002646E+05  ,
-            1.0955938432475E+05  ,
-            1.9274104070219E+05  ,
-           1.0814097516288E+05   ,
+            1.9130574941637E+05  ,
+            1.089686595826E+05   ,
+            1.9096734555584E+05  ,
+            1.0890401345001E+05  ,
            65177.077285727       ,
            65291.316006342       ,
            0.071687546307932     ,
@@ -153,10 +153,10 @@ VAL_CALC = [
            0.071275153567267     ,
            1.1041454784957E+05   ,
            1.1068628861294E+05   ,
-           64047.057848096       ,
-           1.1083161771838E+05   ,
-           64359.272762691       ,
-           1.0893526569851E+05   ,          
+           64645.161357605       ,
+           1.1047399597806E+05   ,
+           64573.020879371       ,
+           1.0972175045165E+05   ,
           ]
 ct = -1 
 
@@ -286,7 +286,6 @@ for i in range(nbcalc) :
                         MATER=ACIER,
                         FISSURE = FISS[i],
                         NUME_FOND = 1,
-                        ABSC_CURV_MAXI = RS[0],
                         RESULTAT  = RESU[i],
                        )
 
@@ -326,7 +325,6 @@ for i in range(nbcalc) :
                         MATER=ACIER,
                         FISSURE = FISS[i],
                         NUME_FOND = 2,
-                        ABSC_CURV_MAXI = RS[0],
                         RESULTAT  = RESU[i],
                        )
 

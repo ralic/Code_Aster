@@ -1,7 +1,7 @@
       SUBROUTINE TE0409(OPTION,NOMTE)
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C ---   RECUPERATION DU MATERIAU
      &      OPTION.EQ.'RIGI_MECA_TANG' .OR.
      &      OPTION.EQ.'RIGI_MECA     ') THEN
 
-          CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
+          CALL RCCOMA(ZI(IMATE),'ELAS',1,PHENOM,ICODRE)
         ENDIF
       ENDIF
 

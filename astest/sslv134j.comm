@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 22/01/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 # TITRE CALCUL 3D_INCO_ DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134j.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -114,9 +114,7 @@ for i in range(2) :
    THET1[i]=CALC_THETA(MODELE=MO[i],
                  FOND_FISS=FF1,
                  THETA_3D=_F(  TOUT = 'OUI',
-                               MODULE = 1.0,
-                               R_INF = 0.24,
-                               R_SUP = 0.53,      )
+                               MODULE = 1.0,      )
                   )
    G01[i]=CALC_G(        RESULTAT=RESU[i],
                    OPTION='CALC_G_GLOB',
@@ -125,7 +123,7 @@ for i in range(2) :
 
    TEST_TABLE(TABLE=G01[i],
               NOM_PARA='G',
-              VALE_CALC=147.72586006655,
+              VALE_CALC=146.74220492905,
               VALE_REFE=145.60,
               REFERENCE='NON_DEFINI',
               PRECISION=0.02)
@@ -135,9 +133,7 @@ for i in range(2) :
                 FOND_FISS=FF,
                 IMPRESSION=_F(UNITE=62),
                 THETA_3D=_F(  TOUT = 'OUI',
-                     MODULE = 1.0,
-                     R_INF = 0.24,
-                     R_SUP = 0.53,      )
+                     MODULE = 1.0,      )
                   )
 
 #    DEFI_FICHIER(ACTION='LIBERER',
@@ -160,7 +156,7 @@ for i in range(2) :
 
    TEST_TABLE(TABLE=G0[i],
               NOM_PARA='G',
-              VALE_CALC=147.72586006655,
+              VALE_CALC=146.74220492905,
               VALE_REFE=145.60,
               REFERENCE='NON_DEFINI',
               PRECISION=0.02)
@@ -168,9 +164,7 @@ for i in range(2) :
    GLOC1[i]=CALC_G(        RESULTAT=RESU[i],
                      INFO=2,
                      INST = 1,
-                     THETA=_F(FOND_FISS=FF,
-                              R_INF=0.24,
-                              R_SUP=0.53),
+                     THETA=_F(FOND_FISS=FF,),
                      LISSAGE=_F(LISSAGE_G='LAGRANGE',
                                 LISSAGE_THETA='LAGRANGE'),
                      )
@@ -178,7 +172,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N403',      ),
-                     VALE_CALC=11.943350830088,
+                     VALE_CALC=11.859037296472,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.04,
                      REFERENCE='ANALYTIQUE'       )
@@ -187,7 +181,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N2862',      ),
-                     VALE_CALC=11.668556811052,
+                     VALE_CALC=11.605181997437,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.01,
                      REFERENCE='ANALYTIQUE'       )
@@ -196,7 +190,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N375',      ),
-                     VALE_CALC=11.925185768244,
+                     VALE_CALC=11.840208601951,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.035,
                      REFERENCE='ANALYTIQUE'       )
@@ -205,7 +199,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N292',      ),
-                     VALE_CALC= 11.975314111244,
+                     VALE_CALC=11.84622123274,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.04,
                      REFERENCE='ANALYTIQUE'       )
@@ -213,7 +207,7 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC1[i],
            NOM_PARA='G',
            TYPE_TEST = 'MAX',
-           VALE_CALC= 12.017161926763,
+           VALE_CALC=11.868301352142,
            VALE_REFE=1.158648E+01,
            PRECISION=0.05,
            REFERENCE='ANALYTIQUE'       )
@@ -221,16 +215,14 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC1[i],
            NOM_PARA='G',
            TYPE_TEST = 'MIN',
-           VALE_CALC= 11.637609755459,
+           VALE_CALC=11.575552755563,
            VALE_REFE=1.158648E+01,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE'       )
 
    GLOC2[i]=CALC_G(        RESULTAT=RESU[i],
                      INST = 1,
-                     THETA=_F(FOND_FISS=FF,
-                              R_INF=0.24,
-                              R_SUP=0.53),
+                     THETA=_F(FOND_FISS=FF,),
                      LISSAGE=_F(LISSAGE_G='LAGRANGE_NO_NO',
                                 LISSAGE_THETA='LAGRANGE'),
                      )
@@ -238,7 +230,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N403',      ),
-                     VALE_CALC=11.826412003641,
+                     VALE_CALC=11.762383594434,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.025,
                      REFERENCE='ANALYTIQUE'       )
@@ -247,7 +239,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N2862',      ),
-                     VALE_CALC= 11.725953824511,
+                     VALE_CALC=11.655411206697,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.02,
                      REFERENCE='ANALYTIQUE'       )
@@ -256,7 +248,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N375',      ),
-                     VALE_CALC= 11.808089732461,
+                     VALE_CALC=11.742687604779,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.02,
                      REFERENCE='ANALYTIQUE'       )
@@ -265,7 +257,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N292',      ),
-                     VALE_CALC= 11.858810459716, 
+                     VALE_CALC=11.745482956201, 
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.03,
                      REFERENCE='ANALYTIQUE'       )
@@ -273,7 +265,7 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC2[i],
            NOM_PARA='G',
            TYPE_TEST = 'MAX',
-           VALE_CALC=11.899887661466,
+           VALE_CALC=11.771256753319,
            VALE_REFE=1.1714999753978E+01,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE'       )
@@ -281,7 +273,7 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC2[i],
            NOM_PARA='G',
            TYPE_TEST = 'MIN',
-           VALE_CALC=11.697683942632,
+           VALE_CALC=11.625450623661,
            VALE_REFE=1.1575479415611E+01,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE'       )
@@ -290,9 +282,7 @@ for i in range(2) :
 
    GLOC3[i]=CALC_G(        RESULTAT=RESU[i],
                      INST = 1,
-                     THETA=_F(FOND_FISS=FF,
-                              R_INF=0.24,
-                              R_SUP=0.53),
+                     THETA=_F(FOND_FISS=FF,),
                      LISSAGE=_F(LISSAGE_G='LAGRANGE_REGU',
                                 LISSAGE_THETA='LAGRANGE_REGU'),
                      )
@@ -301,43 +291,53 @@ for i in range(2) :
            NOM_PARA='G',
            FILTRE=_F(NOM_PARA = 'NOEUD',
                      VALE_K = 'N403'),
-           VALE_CALC=11.784472418264,
+           VALE_CALC=11.7043924426,
            VALE_REFE=1.158648E+01,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
-   TEST_TABLE(       TABLE=GLOC3[i],
-                 NOM_PARA='G',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N2862',      ),
-                     VALE_CALC=11.762804961292,
-                )
+   TEST_TABLE(TABLE=GLOC3[i],
+              NOM_PARA='G',
+              FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N2862',      ),
+              VALE_CALC=11.689098048905,
+              VALE_REFE=1.158648E+01,
+              PRECISION=0.02,
+              REFERENCE='ANALYTIQUE'  )
 
-   TEST_TABLE(       TABLE=GLOC3[i],
-                 NOM_PARA='G',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N375',      ),
-                     VALE_CALC= 11.764728029647,
-                )
+   TEST_TABLE(TABLE=GLOC3[i],
+              NOM_PARA='G',
+              FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N375',      ),
+              VALE_CALC=11.683349010188,
+              VALE_REFE=1.158648E+01,
+              PRECISION=0.02,
+              REFERENCE='ANALYTIQUE')
 
-   TEST_TABLE(       TABLE=GLOC3[i],
-                 NOM_PARA='G',
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N292',      ),
-                     VALE_CALC=11.746863300766,
-                )
+   TEST_TABLE(TABLE=GLOC3[i],
+              NOM_PARA='G',
+              FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N292',      ),
+              VALE_CALC=11.672899018654,
+              VALE_REFE=1.158648E+01,
+              PRECISION=0.03,
+              REFERENCE='ANALYTIQUE')
 
    TEST_TABLE(TABLE=GLOC3[i],
            NOM_PARA='G',
            TYPE_TEST = 'MAX',
-           VALE_CALC= 11.784639541025,
-           )
+           VALE_CALC=11.7043924426,
+           VALE_REFE=1.1714999753978E+01,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE' )
 
    TEST_TABLE(TABLE=GLOC3[i],
            NOM_PARA='G',
            TYPE_TEST = 'MIN',
-           VALE_CALC=11.734823905192,
-           )
+           VALE_CALC=11.655090679418,
+           VALE_REFE=1.1575479415611E+01,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE' )
 
 FIN( )
 #

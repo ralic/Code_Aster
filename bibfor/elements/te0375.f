@@ -6,7 +6,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -196,7 +196,7 @@ C
       IF ( YAPR .OR. YARO ) THEN
 C
         CALL JEVECH('PMATERC','L',IMATE)
-        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
+        CALL RCCOMA(ZI(IMATE),'ELAS',1,PHENOM,ICODRE)
         NOMPAR(1)='RHO'
         CALL RCVALB (FAMI,KPG,SPT,POUM, ZI(IMATE), ' ', PHENOM,
      &                1, ' ', R8BID, 1, NOMPAR, VALRES, ICODRE, 1)

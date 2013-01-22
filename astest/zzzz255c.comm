@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION DE L'OPTION INITIALISATION/ELLIPSE DANS PROPA_FISS
 # zzzz255c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='ZZZZ255C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-         DEBUG=_F(SDVERI='OUI'), )
+         DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='XFEM2_18', )
 
 MaiPlate=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
 
@@ -105,6 +105,7 @@ for i in range(0,(nbcalc-1)) :
                   ),
             COMP_LINE=_F(COEF_MULT_MINI=0.,                                 
                          COEF_MULT_MAXI=1.),   
+            CRIT_ANGL_BIFURCATION='PLAN',
             MAIL_STRUC=MaiPlate,
             MAIL_TOTAL = MAT[i+1],
             DA_MAX=25,

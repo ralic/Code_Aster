@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF COMPELEM  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1300,16 +1300,6 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     MATE_F   = K8   MATE
 
-<<  SPMX_R Type:R
-       VAL    :   valeur "min/max" trouvée
-       NUCOU  :   numéro de la couche ou le "min/max" a été atteint
-       NUSECT :   numéro du secteur ou le "min/max" a été atteint
-       NUFIBR :   numéro de la fibre ou le "min/max" a été atteint
-       POSIC  :   position dans la couche  (-1 : INF, 0: MOY, 1: SUP)
-       POSIS  :   position dans le secteur (-1 : INF, 0: MOY, 1: SUP)
->>
-    SPMX_R   = R    VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS
-
 %   COMPOSANTES CARACTERISTIQUES DES ELEMENTS A SOUS-POINTS
 <<  NBSP_I Type:I Caracteristique des sous-points
        COQ_NCOU : nombre de couches (COQUE)
@@ -1322,18 +1312,8 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
     NBSP_I   = I    NBFIBR   COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC  NBGRFI    NUG1
                     NUG2     NUG3     NUG4     NUG5     NUG6     NUG7     NUG8    NUG9
                     NUG10
-%
-%
-<<  NOMMATER Type:K8 Nom des matériaux codés
-       X(1)  : nom du matériau 1
-       ...
-       X(28) : nom du matériau 28
-       X(29) : Toujours egal a 'TREF=>'
-       X(30) : valeur de TREF (reel code dans un K8)
->>
-    NOMMATER   = K8   X[30]
-%
-%
+
+
 <<  NEUT_F Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
@@ -1393,6 +1373,16 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        X(90) : composante 90
 >>
     NEUT_R   = R    X[90]
+%
+%
+<<  NOMMATER Type:K8 Nom des matériaux
+       MAT1  : nom du matériau 1
+       ...
+       MAT28 : nom du matériau 28
+       LREF  : Toujours egal a 'TREF=>'
+       VREF  : valeur de TREF (reel code dans un K8 au format 'F8.2')
+>>
+    NOMMATER   = K8   MAT[28]  LREF  VREF
 %
 %
 <<  NUMC_I Type:I Pour les coques multi-couches
@@ -1973,6 +1963,16 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        mot clé VITE_FACE de la commande AFFE_CHAR_MECA
 >>
     SOUR_R   = R    SOUR     VNOR
+
+<<  SPMX_R Type:R
+       VAL    :   valeur "min/max" trouvée
+       NUCOU  :   numéro de la couche ou le "min/max" a été atteint
+       NUSECT :   numéro du secteur ou le "min/max" a été atteint
+       NUFIBR :   numéro de la fibre ou le "min/max" a été atteint
+       POSIC  :   position dans la couche  (-1 : INF, 0: MOY, 1: SUP)
+       POSIS  :   position dans le secteur (-1 : INF, 0: MOY, 1: SUP)
+>>
+    SPMX_R   = R    VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS
 
 <<  STAOUDYN Type:R Paramètres de Newmark si calcul dynamique
        STAOUDYN = 0 : statique

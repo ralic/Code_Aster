@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 22/01/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE AVEC 3D_INCO_
 # sslv154c.para = tps_job 200 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(NOM='SSLV154C',
               VISU_EFICAS='OUI'),
       DEBUG=_F(SDVERI='OUI'))
 
-# MODELISATION A : FEM, MAILLAGE QUADRATIQUE (SANS BARSOUM CAR PLANTE DANS DEFI_FISS_XFEM)
+# MODELISATION C : FEM, MAILLAGE QUADRATIQUE ET ELEMENT INCOMPRESSIBLES
 
 # parametres utiles
 #------------------
@@ -91,8 +91,8 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     LEVRE_INF=_F(GROUP_MA='LEVINF'),
                     )
 
-RSUP = 0.5
-RINF = 0.1
+RSUP = 0.528
+RINF = 0.12
                           
 SYME = [None]*2
 PRESS = [None]*2
@@ -159,10 +159,10 @@ k2ref_0 = 8.6435469393827E+05
 k3ref_90 = 6.7469786391964E+05
 
 # valeurs de ref calcule abtenus avec aster4
-k1calmax = 8.5329635382739E+05
-k1calmin = 8.4245454114162E+05 
-k2calc = 8.5271747151955E+05
-k3calc = 6.9086624915006E+05
+k1calmax = 8.5656320339502E+05
+k1calmin = 8.4012855590544E+05 
+k2calc = 8.3533060485032E+05
+k3calc = 6.8411187662648E+05
 
 # ajout des colonnes 'angle' et valeurs de ref dans les tables
 
@@ -216,7 +216,7 @@ for i in range(2):
            VALE_CALC=k2calc,
            VALE_REFE=k2ref_0,
            CRITERE='RELATIF',
-           PRECISION=0.03,
+           PRECISION=0.045,
            REFERENCE='ANALYTIQUE')
 
 # test de KIII au milieu du fond (angle = 90 avec + ou -0.5 degre)

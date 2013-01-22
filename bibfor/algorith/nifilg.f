@@ -1,13 +1,12 @@
-      SUBROUTINE NIFILG(NDIM,NNO1,NNO2,NNO3,NPG,IW,VFF1,VFF2,VFF3,
-     &                  IDFF1,DFF1,VU,VG,VP,GEOMI,TYPMOD,
-     &                  OPTION,MATE,COMPOR,LGPG,CRIT,INSTM,INSTP,DDLM,
-     &                  DDLD,ANGMAS,SIGM,VIM,SIGP,VIP,VECT,MATR,
-     &                  MATSYM,CODRET)
+      SUBROUTINE NIFILG(NDIM,NNO1,NNO2,NNO3,NPG,IW,VFF1,VFF2,VFF3,IDFF1,
+     &                  DFF1,VU,VG,VP,GEOMI,TYPMOD,OPTION,MATE,COMPOR,
+     &                  LGPG,CRIT,INSTM,INSTP,DDLM,DDLD,ANGMAS,SIGM,VIM,
+     &                  SIGP,VIP,RESI,RIGI,VECT,MATR,MATSYM,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 22/01/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,10 +22,12 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
+C TOLE CRP_20
 C TOLE CRS_1404
-C RESPONSABLE DELMAS J.DELMAS
+C RESPONSABLE SFAYOLLE S.FAYOLLE
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
+      LOGICAL RESI,RIGI
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 COMPOR(*),OPTION
       INTEGER MATE,NDIM,NPG,NNO1,NNO2,NNO3,IW,IDFF1,CODRET,LGPG
@@ -39,14 +40,13 @@ C RESPONSABLE DELMAS J.DELMAS
       REAL*8 VECT(*),MATR(*)
       REAL*8 FTP(3,3),EPSML(6)
       REAL*8 TN(6),DEPS(6),GN(3,3),LAMB(3),LOGL(3)
-      REAL*8 MATRST((NNO1*NDIM+NNO2+NNO3)*(NNO1*NDIM+NNO2+NNO3))
 C-----------------------------------------------------------------------
 C          CALCUL DES OPTIONS DE MECANIQUE NON LINEAIRE
 C          GRANDES DEFORMATIONS QUASI-INCOMPRESSIBLES
 C          3D/D_PLAN/AXIS
 C          ROUTINE APPELEE PAR TE0590
 C-----------------------------------------------------------------------
-C IN NDIM     : DIMENSION DE L'ESPACe
+C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  NNO1    : NOMBRE DE NOEUDS DE L'ELEMENT LIES AUX DEPLACEMENTS
 C IN  NNO2    : NOMBRE DE NOEUDS DE L'ELEMENT LIES AU GONFLEMENT
 C IN  NNO3    : NOMBRE DE NOEUDS DE L'ELEMENT LIES A LA PRESSION
@@ -84,12 +84,11 @@ C OUT MATR    : MATRICE DE RIGIDITE (RIGI_MECA_TANG ET FULL_MECA)
 C OUT CODRET  : CODE RETOUR
 C-----------------------------------------------------------------------
 
-      LOGICAL AXI,GRAND,RESI,RIGI,MATSYM
-      INTEGER NDDL,NDU,VIJ(3,3),OS,KK,M,N,O,P,L
+      LOGICAL AXI,GRAND,MATSYM
+      INTEGER NDDL,NDU,VIJ(3,3),OS,KK
       INTEGER IA,NA,RA,SA,IB,NB,RB,SB,JA,JB
-      INTEGER LIJ(3,3),I,J,K
+      INTEGER LIJ(3,3),I,J
       INTEGER G,KL,COD(27)
-      REAL*8 RAC2
       REAL*8 GEOMM(3*27),GEOMP(3*27),DEPLM(3*27),DEPLP(3*27)
       REAL*8 GM,GD,GP,PM,PD,PP,R,W,WP,JM,JP,FTM(3,3)
       REAL*8 FM(3,3),EPSM(6),EPSP(6),CORM
@@ -104,6 +103,7 @@ C-----------------------------------------------------------------------
       REAL*8 TAULDC(6)
       REAL*8 IDDID,DEVDI(6),IDDEV(6),DDDEV(6,6)
       REAL*8 PK2(6), PK2M(6)
+      REAL*8 VIAJA,VIBJB,VUIANA,VGRA,VPSA
 
       PARAMETER (GRAND = .TRUE.)
       DATA    KR   /1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -124,11 +124,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 
 C - INITIALISATION
-
-      RAC2 = SQRT(2.D0)
       AXI  = TYPMOD(1).EQ.'AXIS'
-      RESI = OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL'
-      RIGI = OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL'
       NDDL = NNO1*NDIM + NNO2 + NNO3
       NDU  = NDIM
       IF (AXI) NDU = 3
@@ -153,7 +149,6 @@ C - REACTUALISATION DE LA GEOMETRIE ET EXTRACTION DES CHAMPS
  30   CONTINUE
 
       IF (RESI) CALL R8INIR(NDDL,0.D0,VECT,1)
-      CALL R8INIR(NDDL*NDDL,0.D0,MATRST,1)
       IF (RIGI) THEN
         IF (MATSYM) THEN
           CALL R8INIR(NDDL*(NDDL+1)/2,0.D0,MATR,1)
@@ -210,7 +205,6 @@ C -   APPEL A LA LOI DE COMPORTEMENT
         CALL R8INIR(36,0.D0,DTDE,1)
         CALL R8INIR(6,0.D0,TP,1)
         CALL R8INIR(6,0.D0,TAUP,1)
-        CALL R8INIR(36,0.D0,DSIDEP,1)
 
         CALL PRELOG(NDIM,LGPG,VIM(1,G),GN,LAMB,LOGL,FTM,FTP,EPSML,
      &              DEPS,TN,RESI,COD(G))
@@ -229,19 +223,6 @@ C DSIDEP = 2dS/dC = dS/dE_GL
           IF (.NOT. RESI) CALL U2MESS('F','ALGORITH14_75')
           GOTO 9999
         ENDIF
-
-C - MATRICE TANGENTE SANS LES RACINES DE 2 ET SANS LES 2
-        IF (RIGI) THEN
-          CALL DSCAL(3,1.D0/RAC2,DSIDEP(4,1),1)
-          CALL DSCAL(3,1.D0/RAC2,DSIDEP(4,2),1)
-          CALL DSCAL(3,1.D0/RAC2,DSIDEP(4,3),1)
-          CALL DSCAL(3,1.D0/RAC2,DSIDEP(1,4),1)
-          CALL DSCAL(3,1.D0/RAC2,DSIDEP(1,5),1)
-          CALL DSCAL(3,1.D0/RAC2,DSIDEP(1,6),1)
-          CALL DSCAL(3,0.5D0    ,DSIDEP(4,4),1)
-          CALL DSCAL(3,0.5D0    ,DSIDEP(4,5),1)
-          CALL DSCAL(3,0.5D0    ,DSIDEP(4,6),1)
-        END IF
 
         IF (RESI) THEN
           CALL DSCAL(2*NDIM,EXP(GP),SIGP(1,G),1)
@@ -282,7 +263,6 @@ C - VECTEUR FINT:P
             T1 = VFF3(SA,G)*T2
             VECT(KK) = VECT(KK) + W*T1
  240      CONTINUE
-
         END IF
 
 C - MATRICE TANGENTE
@@ -296,28 +276,7 @@ C - MATRICE TANGENTE
           ENDIF
 
 C - CALCUL DE L'OPERATEUR TANGENT SYMÉTRISÉ D
-          CALL R8INIR(36,0.D0,D,1)
-
-          DO 300 M=1,3
-            DO 310 N=1,3
-              DO 320 O=1,3
-                DO 330 P=1,3
-                  T1=0.D0
-                  DO 340 I=1,3
-                    DO 350 J=1,3
-                      DO 360 K=1,3
-                        DO 370 L=1,3
-                          T1=T1+FTR(M,I)*FTR(N,J)
-     &                      *DSIDEP(VIJ(I,J),VIJ(K,L))*FTR(O,K)*FTR(P,L)
- 370                    CONTINUE
- 360                  CONTINUE
- 350                CONTINUE
- 340              CONTINUE
-                  D(VIJ(M,N),VIJ(O,P))=T1
- 330            CONTINUE
- 320          CONTINUE
- 310        CONTINUE
- 300      CONTINUE
+          CALL DSDE2D(3,FTR,DSIDEP,D)
 
           CALL PMAT(6,IDEV/3.D0,D,DEVD)
           CALL PMAT(6,D,IDEV/3.D0,DDEV)
@@ -337,25 +296,31 @@ C - CALCUL DU TENSEUR DE CONTRAINTE : TRACE ET PARTIE DEVIATORIQUE
  390        CONTINUE
  380      CONTINUE
 
+          IF(MATSYM)THEN
+C - MATRICE SYMETRIQUE
 C - TERME K:UX
           DO 400 NA = 1,NNO1
             DO 410 IA = 1,NDU
-              OS = (VU(IA,NA)-1)*NDDL
+              VUIANA = VU(IA,NA)
+              OS = (VUIANA-1)*VUIANA/2
 
 C - TERME K:UU      KUU(NDIM,NNO1,NDIM,NNO1)
               DO 420 NB = 1,NNO1
                 DO 430 IB = 1,NDU
+                  IF(VU(IB,NB).LE.VUIANA)THEN
                   KK = OS+VU(IB,NB)
                   T1 = 0.D0
 C - RIGIDITE DE COMPORTEMENT
                   DO 440 JA = 1,NDU
+                    VIAJA=VIJ(IA,JA)
                     DO 450 JB = 1,NDU
-                      T2 = DDDEV(VIJ(IA,JA),VIJ(IB,JB))
+                      VIBJB=VIJ(IB,JB)
+                      T2 = DDDEV(VIAJA,VIBJB)
                       T2 = T2 + TAUP(VIJ(IA,JB))*KR(VIJ(IB,JA))
                       T2 = T2 + TAUP(VIJ(JB,JA))*KR(VIJ(IA,IB))
-                    T2 = T2 - 2.D0/3.D0*(TAUP(VIJ(IA,JA))*KR(VIJ(IB,JB))
-     &                                 +KR(VIJ(IA,JA))*TAUP(VIJ(IB,JB)))
-                 T2 = T2 + 2.D0*KR(VIJ(IA,JA))*KR(VIJ(IB,JB))*TAUHY/3.D0
+                      T2 = T2 - 2.D0/3.D0*(TAUP(VIAJA)*KR(VIBJB)
+     &                                    +TAUP(VIBJB)*KR(VIAJA))
+                      T2 = T2 + 2.D0/3.D0*TAUHY*KR(VIAJA)*KR(VIBJB)
                       T1 = T1+DFF1(NA,LIJ(IA,JA))*T2*DFF1(NB,LIJ(IB,JB))
  450                CONTINUE
  440              CONTINUE
@@ -365,103 +330,223 @@ C - RIGIDITE GEOMETRIQUE
                     T1 = T1 - DFF1(NA,LIJ(IA,IB))*DFF1(NB,LIJ(IB,JB))
      &                      *TAULDC(VIJ(IA,JB))
  460              CONTINUE
-                  MATRST(KK) = MATRST(KK) + W*T1
+                  MATR(KK) = MATR(KK) + W*T1
+                  ENDIF
  430            CONTINUE
  420          CONTINUE
 
 C - TERME K:UG      KUG(NDIM,NNO1,NNO2)
               DO 470 RB = 1,NNO2
+                IF(VG(RB).LT.VUIANA)THEN
                 KK = OS + VG(RB)
                 T1 = 0.D0
                 DO 480 JA = 1,NDU
-                  T2 = (DEVDI(VIJ(IA,JA))+2.D0*TAUDV(VIJ(IA,JA)))/3.D0
+                  VIAJA=VIJ(IA,JA)
+                  T2 = (DEVDI(VIAJA)+2.D0*TAUDV(VIAJA))/3.D0
                   T1 = T1 + DFF1(NA,LIJ(IA,JA))*T2*VFF2(RB,G)
  480            CONTINUE
-                MATRST(KK) = MATRST(KK) + W*T1
+                MATR(KK) = MATR(KK) + W*T1
+                ENDIF
  470          CONTINUE
 
 C - TERME K:UP      KUP(NDIM,NNO1,NNO3)
               DO 490 SB = 1,NNO3
+                IF(VP(SB).LT.VUIANA)THEN
                 KK = OS + VP(SB)
                 T1 = DFF1(NA,LIJ(IA,IA))*VFF3(SB,G)
-                MATRST(KK) = MATRST(KK) + W*T1
+                MATR(KK) = MATR(KK) + W*T1
+                ENDIF
  490          CONTINUE
  410        CONTINUE
  400      CONTINUE
 
 C - TERME K:GX
           DO 500 RA = 1,NNO2
-            OS = (VG(RA)-1)*NDDL
+            VGRA = VG(RA)
+            OS = (VGRA-1)*VGRA/2
 
 C - TERME K:GU      KGU(NDIM,NNO2,NNO1)
             DO 510 NB = 1,NNO1
               DO 520 IB = 1,NDU
+                IF(VU(IB,NB).LT.VGRA)THEN
                 KK = OS + VU(IB,NB)
                 T1 = 0.D0
                 DO 530 JB = 1,NDU
-                  T2 = (IDDEV(VIJ(IB,JB))+2.D0*TAUDV(VIJ(IB,JB)))/3.D0
+                  VIBJB=VIJ(IB,JB)
+                  T2 = (IDDEV(VIBJB)+2.D0*TAUDV(VIBJB))/3.D0
                   T1 = T1 + VFF2(RA,G)*T2*DFF1(NB,LIJ(IB,JB))
  530            CONTINUE
-                MATRST(KK) = MATRST(KK) + W*T1
+                MATR(KK) = MATR(KK) + W*T1
+                ENDIF
  520          CONTINUE
  510        CONTINUE
 
 C - TERME K:GG      KGG(NNO2,NNO2)
             DO 540 RB = 1,NNO2
+              IF(VG(RB).LE.VGRA)THEN
               KK = OS + VG(RB)
               T2 = IDDID/9.D0+2.D0*TAUHY/3.D0
               T1 = VFF2(RA,G)*T2*VFF2(RB,G)
-              MATRST(KK) = MATRST(KK) + W*T1
+              MATR(KK) = MATR(KK) + W*T1
+              ENDIF
  540        CONTINUE
 
 C - TERME K:GP      KGP(NNO2,NNO3)
             DO 550 SB = 1,NNO3
+              IF(VP(SB).LT.VGRA)THEN
               KK = OS + VP(SB)
               T1 = - VFF2(RA,G)*VFF3(SB,G)
-              MATRST(KK) = MATRST(KK) + W*T1
+              MATR(KK) = MATR(KK) + W*T1
+              ENDIF
  550        CONTINUE
  500      CONTINUE
 
 C - TERME K:PX
           DO 600 SA = 1,NNO3
-            OS = (VP(SA)-1)*NDDL
+            VPSA = VP(SA)
+            OS = (VPSA-1)*VPSA/2
 
 C - TERME K:PU      KPU(NDIM,NNO3,NNO1)
             DO 610 NB = 1,NNO1
               DO 620 IB = 1,NDU
+                IF(VU(IB,NB).LT.VPSA)THEN
                 KK = OS + VU(IB,NB)
                 T1 = VFF3(SA,G)*DFF1(NB,LIJ(IB,IB))
-                MATRST(KK) = MATRST(KK) + W*T1
+                MATR(KK) = MATR(KK) + W*T1
+                ENDIF
  620          CONTINUE
  610        CONTINUE
 
 C - TERME K:PG      KPG(NNO3,NNO2)
             DO 630 RB = 1,NNO2
+              IF(VG(RB).LT.VPSA)THEN
               KK = OS + VG(RB)
               T1 = - VFF3(SA,G)*VFF2(RB,G)
-              MATRST(KK) = MATRST(KK) + W*T1
+              MATR(KK) = MATR(KK) + W*T1
+              ENDIF
  630        CONTINUE
 
 C - TERME K:PP = 0.D0      KPP(NNO3,NNO3)
-
  600      CONTINUE
+
+          ELSE
+C - MATRICE NON SYMETRIQUE
+C - TERME K:UX
+          DO 401 NA = 1,NNO1
+            DO 411 IA = 1,NDU
+              OS = (VU(IA,NA)-1)*NDDL
+
+C - TERME K:UU      KUU(NDIM,NNO1,NDIM,NNO1)
+              DO 421 NB = 1,NNO1
+                DO 431 IB = 1,NDU
+                  KK = OS+VU(IB,NB)
+                  T1 = 0.D0
+C - RIGIDITE DE COMPORTEMENT
+                  DO 441 JA = 1,NDU
+                    VIAJA=VIJ(IA,JA)
+                    DO 451 JB = 1,NDU
+                      VIBJB=VIJ(IB,JB)
+                      T2 = DDDEV(VIAJA,VIBJB)
+                      T2 = T2 + TAUP(VIJ(IA,JB))*KR(VIJ(IB,JA))
+                      T2 = T2 + TAUP(VIJ(JB,JA))*KR(VIJ(IA,IB))
+                      T2 = T2 - 2.D0/3.D0*(TAUP(VIAJA)*KR(VIBJB)
+     &                                   +KR(VIAJA)*TAUP(VIBJB))
+                      T2 = T2 + 2.D0*KR(VIAJA)*KR(VIBJB)*TAUHY/3.D0
+                      T1 = T1+DFF1(NA,LIJ(IA,JA))*T2*DFF1(NB,LIJ(IB,JB))
+ 451                CONTINUE
+ 441              CONTINUE
+
+C - RIGIDITE GEOMETRIQUE
+                  DO 461 JB = 1,NDU
+                    T1 = T1 - DFF1(NA,LIJ(IA,IB))*DFF1(NB,LIJ(IB,JB))
+     &                      *TAULDC(VIJ(IA,JB))
+ 461              CONTINUE
+                  MATR(KK) = MATR(KK) + W*T1
+ 431            CONTINUE
+ 421          CONTINUE
+
+C - TERME K:UG      KUG(NDIM,NNO1,NNO2)
+              DO 471 RB = 1,NNO2
+                KK = OS + VG(RB)
+                T1 = 0.D0
+                DO 481 JA = 1,NDU
+                  VIAJA=VIJ(IA,JA)
+                  T2 = (DEVDI(VIAJA)+2.D0*TAUDV(VIAJA))/3.D0
+                  T1 = T1 + DFF1(NA,LIJ(IA,JA))*T2*VFF2(RB,G)
+ 481            CONTINUE
+                MATR(KK) = MATR(KK) + W*T1
+ 471          CONTINUE
+
+C - TERME K:UP      KUP(NDIM,NNO1,NNO3)
+              DO 491 SB = 1,NNO3
+                KK = OS + VP(SB)
+                T1 = DFF1(NA,LIJ(IA,IA))*VFF3(SB,G)
+                MATR(KK) = MATR(KK) + W*T1
+ 491          CONTINUE
+ 411        CONTINUE
+ 401      CONTINUE
+
+C - TERME K:GX
+          DO 501 RA = 1,NNO2
+            OS = (VG(RA)-1)*NDDL
+
+C - TERME K:GU      KGU(NDIM,NNO2,NNO1)
+            DO 511 NB = 1,NNO1
+              DO 521 IB = 1,NDU
+                KK = OS + VU(IB,NB)
+                T1 = 0.D0
+                DO 531 JB = 1,NDU
+                  VIBJB=VIJ(IB,JB)
+                  T2 = (IDDEV(VIBJB)+2.D0*TAUDV(VIBJB))/3.D0
+                  T1 = T1 + VFF2(RA,G)*T2*DFF1(NB,LIJ(IB,JB))
+ 531            CONTINUE
+                MATR(KK) = MATR(KK) + W*T1
+ 521          CONTINUE
+ 511        CONTINUE
+
+C - TERME K:GG      KGG(NNO2,NNO2)
+            DO 541 RB = 1,NNO2
+              KK = OS + VG(RB)
+              T2 = IDDID/9.D0+2.D0*TAUHY/3.D0
+              T1 = VFF2(RA,G)*T2*VFF2(RB,G)
+              MATR(KK) = MATR(KK) + W*T1
+ 541        CONTINUE
+
+C - TERME K:GP      KGP(NNO2,NNO3)
+            DO 551 SB = 1,NNO3
+              KK = OS + VP(SB)
+              T1 = - VFF2(RA,G)*VFF3(SB,G)
+              MATR(KK) = MATR(KK) + W*T1
+ 551        CONTINUE
+ 501      CONTINUE
+
+C - TERME K:PX
+          DO 601 SA = 1,NNO3
+            OS = (VP(SA)-1)*NDDL
+
+C - TERME K:PU      KPU(NDIM,NNO3,NNO1)
+            DO 611 NB = 1,NNO1
+              DO 621 IB = 1,NDU
+                KK = OS + VU(IB,NB)
+                T1 = VFF3(SA,G)*DFF1(NB,LIJ(IB,IB))
+                MATR(KK) = MATR(KK) + W*T1
+ 621          CONTINUE
+ 611        CONTINUE
+
+C - TERME K:PG      KPG(NNO3,NNO2)
+            DO 631 RB = 1,NNO2
+              KK = OS + VG(RB)
+              T1 = - VFF3(SA,G)*VFF2(RB,G)
+              MATR(KK) = MATR(KK) + W*T1
+ 631        CONTINUE
+
+C - TERME K:PP = 0.D0      KPP(NNO3,NNO3)
+
+ 601      CONTINUE
+          ENDIF
         END IF
  1000 CONTINUE
 
-C - STOCKAGE DE LA MATRICE
-      IF(RIGI)THEN
-        IF(MATSYM)THEN
-          J=1
-          DO 700 K = 1,NDDL
-            OS = NDDL*(K-1)
-            DO 710 I = 1,K
-              MATR(J)=MATRST(OS + I)
- 710        CONTINUE
- 700      CONTINUE
-        ELSE
-          CALL DCOPY(NDDL*NDDL,MATRST,1,MATR,1)
-        ENDIF
-      ENDIF
 C - SYNTHESE DES CODES RETOURS
       CALL CODERE(COD,NPG,CODRET)
 

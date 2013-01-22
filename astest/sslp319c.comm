@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,18 +176,14 @@ for i in range(1,NPS-1) :
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A GAUCHE
-    SIFL[i]=CALC_G(THETA=_F(FISSURE=FissL[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
+    SIFL[i]=CALC_G(THETA=_F(FISSURE=FissL[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',
                    )
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A DROITE
-    SIFR[i]=CALC_G(THETA=_F(FISSURE=FissR[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
+    SIFR[i]=CALC_G(THETA=_F(FISSURE=FissR[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',
                    )

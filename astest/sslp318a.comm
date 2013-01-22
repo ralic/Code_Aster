@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION D UNE FISSURE XFEM NON DEBOUCHANTE SOLLICITE EN MODE I
 # sslp318a.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -135,17 +135,13 @@ for i in range(1,NPS-1) :
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
 #   DE FISSURE A GAUCHE
-    SIFL[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
+    SIFL[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',);
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
 #   DE FISSURE A DROITE
     SIFR[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],
-                            R_INF=RI,
-                            R_SUP=RS,
                             NUME_FOND=2,),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',);
@@ -175,7 +171,6 @@ for i in range(1,NPS-1) :
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
-                              N=0.,
                               MATER=steel),
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,
@@ -189,6 +184,15 @@ for i in range(1,NPS-1) :
 
 W=1000;
 sigma=1E6
+
+VALE_CALC=[
+ 2.2914396426887E+07,
+ 7488.1641027818,
+ 2.5803536128667E+07,
+ 10356.868350669,
+ 2.8809299070586E+07,
+ 13550.320850581,
+]
 
 for i in range(1,NPS-1) :
    
@@ -204,8 +208,7 @@ for i in range(1,NPS-1) :
 
    TEST_TABLE(REFERENCE='ANALYTIQUE',
               PRECISION=0.05,
-              TOLE_MACHINE=0.05,
-              VALE_CALC=KI_broek,
+              VALE_CALC=VALE_CALC[(i-1)*2+0],
               VALE_REFE=KI_broek,
               NOM_PARA='K1',
               TYPE_TEST='MAX',
@@ -213,9 +216,8 @@ for i in range(1,NPS-1) :
 
    TEST_TABLE(CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE',
-              TOLE_MACHINE=TOL_K2,
               PRECISION=TOL_K2,
-              VALE_CALC=0.0,
+              VALE_CALC=VALE_CALC[(i-1)*2+1],
               VALE_REFE=0.0,
               NOM_PARA='K2',
               TYPE_TEST='MAX',

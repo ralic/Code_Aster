@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ GENER_MEAXS2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEAXQS8          MAILLE__ QUAD8
-   ELREFE__  QU8       GAUSS__  RIGI=FPG4 FPG1=FPG1  MASS=FPG9  GANO=FPG4    NOEU=NOEU   FPG_LISTE__  MATER = (RIGI GANO NOEU FPG1)
+   ELREFE__  QU8       GAUSS__  RIGI=FPG4 FPG1=FPG1  MASS=FPG9     NOEU=NOEU   FPG_LISTE__  MATER = (RIGI NOEU FPG1)
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4    NOEU=NOEU
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     5  6  7  8
@@ -71,6 +71,7 @@ MODE_LOCAL__
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     EGTHETA  = G        ELEM__         (GTHETA   )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
+    CGEOMER  = GEOM_R   ELEM__         (X        Y        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
@@ -110,10 +111,10 @@ MODE_LOCAL__
                                         VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
-    EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   IND_DCHA VAL_DCHA X11      X22      X33 
-                                        X12      X13      X23      RADI_V   ERR_RADI   ) 
-    EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   IND_DCHA VAL_DCHA X11      X22      X33 
-                                        X12      X13      X23      RADI_V   ERR_RADI   ) 
+    EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   IND_DCHA VAL_DCHA X11      X22      X33
+                                        X12      X13      X23      RADI_V   ERR_RADI   )
+    EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   IND_DCHA VAL_DCHA X11      X22      X33
+                                        X12      X13      X23      RADI_V   ERR_RADI   )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
     ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
@@ -147,6 +148,8 @@ MATRICE__
     MMATVVR = MVAR_R DDL_NLOC DDL_NLOC
 
 OPTION__
+    REPERE_LOCAL        133   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER
+                              OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
@@ -159,7 +162,7 @@ OPTION__
                                      ECONTPG  PCONTGR  DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
                                      ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   DDL_MECA PTHETAR
-                                     ZVARINO  PVARIPR  DDL_MECA PVITESS  
+                                     ZVARINO  PVARIPR  DDL_MECA PVITESS
                               OUT__  EGTHETA  PGTHETA
     CALC_G_F            96    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFPNO  PDEFOPL
                                      ECONTPG  PCONTGR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
@@ -314,9 +317,9 @@ OPTION__
     INDIC_SEUIL         490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
                               OUT__  EENERR   PENERD1  EENERR   PENERD2
-    INIT_MAIL_VOIS      99    IN__  
+    INIT_MAIL_VOIS      99    IN__
                               OUT__  EVOISIN  PVOISIN
-    INIT_VARC           99    IN__  
+    INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           285   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  EMASSINE PMASSINE
@@ -341,7 +344,7 @@ OPTION__
                                      DDL_MECA PDDEPLR  DDL_MECA PDEPL0R  DDL_MECA PDEPL1R  DDL_MECA PDEPLMR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR
                               OUT__  ECOPILO  PCOPILO
-    QIRE_ELEM           378   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN 
+    QIRE_ELEM           378   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN
                                      CREFERI  PFORCEP  CREFERI  PFORCED  CREFERI  PPRESSP  CREFERI  PPRESSD
                                      CPESANR  PPESANRP CPESANR  PPESANRD CROTATR  PROTATRP CROTATR  PROTATRD
                                      EFORCER  PFRVOLUP EFORCER  PFRVOLUD CFORCEF  PFFVOLUD CFORCEF  PFFVOLUP
@@ -394,17 +397,17 @@ OPTION__
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
-    SING_ELEM           99    IN__  
+    SING_ELEM           99    IN__
                               OUT__  ESINGUL  PSING_R
-    SING_ELNO           99    IN__  
+    SING_ELNO           99    IN__
                               OUT__  ESINGNO  PSINGNO
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
-    TOU_INI_ELGA        99    IN__  
+    TOU_INI_ELGA        99    IN__
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
                                      EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  EGVALO_R PVALO_R  ZVARIPG  PVARI_R
                                      ESOURCR  PSOUR_R  EDEPLPG  PDEPL_R
-    TOU_INI_ELNO        99    IN__  
+    TOU_INI_ELNO        99    IN__
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R
     VARI_ELNO           4     IN__   ZVARIPG  PVARIGR

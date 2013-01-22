@@ -1,8 +1,8 @@
-%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 % RESPONSABLE DESROCHES
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,27 +22,27 @@ CHAR_MECA_PESA_R
    correspondant aux forces de gravité (MOT-CLE: PESANTEUR) >>
 OPTION__
    IN__
-        PNBSP_I  NBSP_I
+        PNBSP_I  NBSP_I 'CARA!.CANBSP' <<  PNBSP_I :  NOMBRE DE SOUS_POINTS  >>
         PGEOMER  GEOM_R
         PDEPLMR  DEPL_R
         PDEPLPR  DEPL_R
-        PMATERC  ADRSJEVE << Champ de matériaux. Concept CHAM_MATER >>
+        PMATERC  ADRSJEVE 'CHMA!.MATE_CODE' <<  PMATERC : CHAMP DE MATERIAU  >>
         PPESANR  PESA_R   << Champ de pesanteur. Concept CHARGE >>
-        PCAGNPO  CAGNPO   << Champ de caractéristiques générales pour les poutres. Concept CARA_ELEM >>
-        PCAARPO  CAARPO
-        PCACOQU  CACOQU   << Champ de caractéristiques pour les coques. Concept CARA_ELEM >>
-        PCADISM  CADISM   << Champ de caractéristiques pour les éléments discrets. Concept CARA_ELEM >>
-        PCAORIE  CAORIE   << Champ de caractéristiques d'orientation. Concept CARA_ELEM >>
-        PCACABL  CACABL   << Champ de caractéristiques pour les éléments de cable. Concept CARA_ELEM >>
-        PCAGNBA  CAGNBA
+        PCAGNPO  CAGNPO 'CARA!.CARGENPO' <<  PCAGNPO : CARACTERISTIQUES GEOMETRIQUES D'UNE SECTION DE POUTRE  >>
+        PCAARPO  CAARPO 'CARA!.CARARCPO' <<  PCAARPO : CARACTERISTIQUE DE POUTRE COURBE POU_C_T  >>
+        PCACOQU  CACOQU 'CARA!.CARCOQUE' <<  PCACOQU : CARACTERISTIQUE DE COQUE  >>
+        PCADISM  CADISM
+        PCAORIE  CAORIE 'CARA!.CARORIEN' <<  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  >>
+        PCACABL  CACABL
+        PCAGNBA  CAGNBA 'CARA!.CARGENBA' <<  PCAGNBA : CARACTERISTIQUE DE BARRE  >>
         PVARCPR  VARI_R
-        PCAGEPO  CAGEPO   << Champ de caractéristiques des élements de poutre.Concept CARA_ELEM >>
-        PFIBRES  CAFI_R   <<Champ des caractéristiques des fibres. Concept CARA_ELEM>>
+        PCAGEPO  CAGEPO 'CARA!.CARGEOPO' <<  PCAGEPO : CARACTERISTIQUE POUTRES, SECTION RECTANGLE OU CERCLE  >>
+        PFIBRES  CAFI_R 'CARA!.CAFIBR' <<  PFIBRES :  CARACTERISTIQUE DES FIBRES POUR POUTRES MULTI FIBRES  >>
         PCOMPOR  COMPOR
         PPINTTO  NEUT_R  << SPECIFIQUE X-FEM >>
-        PCNSETO  NEUT_I
+        PCNSETO  NEUT_I 'MODL!.TOPOSE.CNS' <<  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  >>
         PHEAVTO  NEUT_I
-        PLONCHA  NEUT_I
+        PLONCHA  NEUT_I 'MODL!.TOPOSE.LON' <<  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
         PLSN     NEUT_R
         PLST     NEUT_R
         PSTANO   NEUT_I

@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319a.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -142,17 +142,13 @@ for i in range(1,NPS-1) :
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A GAUCHE
-    SIFL[i]=CALC_G(THETA=_F(FISSURE=FissL[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
+    SIFL[i]=CALC_G(THETA=_F(FISSURE=FissL[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',);
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A DROITE
-    SIFR[i]=CALC_G(THETA=_F(FISSURE=FissR[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
+    SIFR[i]=CALC_G(THETA=_F(FISSURE=FissR[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',);
 
@@ -177,7 +173,6 @@ for i in range(1,NPS-1) :
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
-                              N=0.,
                               MATER=steel),
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,
@@ -193,9 +188,9 @@ W=1000;
 sigma=1E6
 
 KIL_calc = [ 3.7940271283694E+07,  4.1939581591243E+07, 4.630956543046E+07 ]
-KIIL_calc = [ -2164.5420169867 , -4610.2794337962, -6756.6055024512 ]
-KIR_calc = [ 3.7877442071324E+07,  4.1570656732814E+07, 4.6728543982413E+07 ]
-KIIR_calc =[ 2369.3436135991, 4855.3413774399, 6998.7129155579 ]
+KIIL_calc = [ -2164.5420169867 , -4610.2794337979, -6756.6055024048 ]
+KIR_calc = [ 3.7877442071324E+07,  4.1570656732813E+07, 4.6728543982413E+07 ]
+KIIR_calc =[ 2369.3436136001, 4855.3413774393, 6998.7129155518 ]
 for i in range(1,NPS-1) :
   
    a=a0+da_fiss*(i-1)

@@ -6,9 +6,9 @@
       CHARACTER*24 VACHAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,15 +62,15 @@ C   - ATTENTION : LE VECT_ELEM EST DETRUIT A LA FIN DE LA ROUTINE
       INTEGER N1,JVACHA
       LOGICAL BIDON
       CHARACTER*4 TYCH
-      CHARACTER*8 KBID,MODELE,NEWNOM
+      CHARACTER*8 KBID,MODELE,NEWNOM,VACHA8
       CHARACTER*19 CHAMNO,RESUEL,VECELE
 
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 
       VECELE = VECHAR
-      VACHAR = VECELE(1:3)//'A'//VECELE(5:8)
-      CHAMNO = VACHAR//'.???????'
+      VACHA8 = VECELE(1:3)//'A'//VECELE(5:8)
+      CHAMNO = VACHA8//'.???????'
       NEWNOM='.0000000'
 
 
@@ -84,16 +84,16 @@ C     --------------------------------------------------------
 
 C     2. DESTRUCTION ET RE-ALLOCATION DE VACHAR :
 C     --------------------------------------------------------
-      CALL JEEXIN(VACHAR,IRET)
+      CALL JEEXIN(VACHA8,IRET)
       IF (IRET.GT.0) THEN
-        CALL JEVEUO(VACHAR,'L',JVACHA)
-        CALL JELIRA(VACHAR,'LONMAX',N1,KBID)
+        CALL JEVEUO(VACHA8,'L',JVACHA)
+        CALL JELIRA(VACHA8,'LONMAX',N1,KBID)
         DO 10,I = 1,N1
           CALL DETRSD('CHAMP_GD',ZK24(JVACHA-1+I) (1:19))
    10   CONTINUE
-        CALL JEDETR(VACHAR)
+        CALL JEDETR(VACHA8)
       END IF
-      CALL WKVECT(VACHAR,'V V K24',MAX(NBVEC,1),JASS)
+      CALL WKVECT(VACHA8,'V V K24',MAX(NBVEC,1),JASS)
 
 
 C     2. SI IL N'Y A RIEN A FAIRE (VECT_ELEM BIDON):
@@ -121,7 +121,7 @@ C     --------------------------------------------------------
       IF (TYPRES.EQ.'C') ITYP = 2
 
       DO 20 I = 1,NBVEC
-        RESUEL = ZK24(JVEC-1+I)
+        RESUEL = ZK24(JVEC-1+I)(1:19)
 C       CALL UTIMS2('ASASVE 1',I,RESUEL,1,' ')
 
         CALL CORICH('L',RESUEL,IBID,ICHA)
@@ -167,6 +167,8 @@ C     -----------------------------------
    40 CONTINUE
       CALL JEDETR(VECELE//'.RELR')
       CALL JEDETR(VECELE//'.RERR')
+
+      VACHAR=VACHA8
 
 
       CALL JEDEMA()

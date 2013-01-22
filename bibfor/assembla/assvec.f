@@ -2,9 +2,9 @@
      &                  TYPE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ASSEMBLA  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -503,7 +503,7 @@ C           ==========================
               CALL JELIRA(VECEL//'.RELR','LONUTI ',NBRESU,K1BID)
               IF (NBRESU.GT.0) CALL JEVEUO(VECEL//'.RELR','L',IDLRES)
               DO 230 IRESU=1,NBRESU
-                RESU=ZK24(IDLRES+IRESU-1)
+                RESU=ZK24(IDLRES+IRESU-1)(1:19)
                 CALL JEEXIN(RESU//'.NOLI',IEXI)
                 IF (IEXI.EQ.0)GOTO 230
                 CALL JEVEUO(RESU//'.NOLI','L',IAD)
@@ -960,7 +960,7 @@ C     ----------------------------------------------------------
         CALL JEVEUO(A19//'.RELR','L',JRELR)
         CALL JELIRA(A19//'.RELR','LONUTI',N1,KBID)
         DO 290,K=1,N1
-          B19=ZK24(JRELR-1+K)
+          B19=ZK24(JRELR-1+K)(1:19)
           CALL JEEXIN(B19//'.VALE',IEXI)
           IF (IEXI.GT.0) THEN
             CALL ASSERT(.NOT.LFETI)

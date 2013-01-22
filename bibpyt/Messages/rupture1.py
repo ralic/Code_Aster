@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF rupture1 Messages  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -228,11 +228,11 @@ Remplacer si possible le comportement élastoplastique (COMP_INCR) par un comport
 """),
 
 44: _(u"""
-Les paramètres K1 et/ou G sont absents du tableau des facteurs d'intensité des
-contraintes fourni.
+Les paramètres K1 et/ou K2 et/ou G sont absents du tableau des facteurs d'intensité des
+contraintes (SIF) fourni.
 -> Risque et Conseil :
-Le mot clé METHODE_POSTK doit être fourni si et seulement si la table TABLE a été
-calculée avec l'opérateur POST_K1_K2_K3.
+Le tableau des facteurs d'intensité des contraintes doit absolument contenir ces trois
+paramètres ainsi que K3 en 3D. Veuillez vérifier le contenu de votre tableau de SIF.
 """),
 
 45: _(u"""
@@ -265,11 +265,6 @@ Si votre chargement n'est pas monotone proportionnel, il faut renseigner, dans C
 l'option COMP_INCR, RELATION=VMIS_XXX, et dans ce cas vous calculerez GTP (modèle en cours de validation).
 """),
 
-
-50: _(u"""
-La définition d'une loi de propagation (mot clé facteur LOI_PROPA) est obligatoire pour
-le calcul de la propagation de la fissure.
-"""),
 
 51: _(u"""
 PROPA_FISS / METHODE = 'MAILLAGE' : les noeuds définissant la fissure initiale ne sont

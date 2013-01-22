@@ -4,7 +4,7 @@
       CHARACTER*8         CHMAT, NOMAIL, NOMODE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,26 +27,27 @@ C  IN : NOMAIL : NOM DU MAILLAGE
 C ----------------------------------------------------------------------
 C
       INTEGER        IBID,NOCC,I,NM,NT,JNCMP,JVALV,NBMA,JMAIL,IER,NBCMP
-      INTEGER        IARG
-      CHARACTER*4    OUI ,NOCP
+      INTEGER        IARG,JAD
+      CHARACTER*4    OUI
       CHARACTER*8    K8B, NOMMAT, TYPMCL(2)
       CHARACTER*16   MOTCLE(2)
       CHARACTER*24   CHAMAT, MESMAI
+      CHARACTER*32 JEXNOM
 C ----------------------------------------------------------------------
 C
+      write(6,*) 'AJACOT DEBUT RCMATE'
       CALL JEMARQ()
       CHAMAT = CHMAT//'.CHAMP_MAT'
 C
       CALL ALCART ( 'G', CHAMAT, NOMAIL, 'NOMMATER')
       CALL JEVEUO ( CHAMAT(1:19)//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CHAMAT(1:19)//'.VALV', 'E', JVALV )
-      NOCP = 'X'
 C
       CALL DISMOI('F','NB_CMP_MAX','NOMMATER','GRANDEUR',NBCMP,K8B,IER)
-C
+      CALL ASSERT(NBCMP.EQ.30)
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP','NOMMATER'),'L',JAD)
       DO 5 I=1,NBCMP
-        CALL CODENT(I,'G',NOCP(2:4))
-        ZK8(JNCMP+I-1) = NOCP
+        ZK8(JNCMP-1+I) = ZK8(JAD-1+I)
  5    CONTINUE
 C
       CALL GETFAC ( 'AFFE' , NOCC )
@@ -82,4 +83,5 @@ C
       CALL JEDETR ( CHAMAT(1:19)//'.NCMP' )
 C
       CALL JEDEMA()
+      write(6,*) 'AJACOT FIN RCMATE'
       END

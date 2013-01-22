@@ -10,9 +10,9 @@
       REAL*8     VRESPC(24)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -149,7 +149,7 @@ C 3/ CDU 1ER MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
         ENDIF
  430  CONTINUE
 
-C 4/ P RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
+C 4/ 1-ER RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 C    EAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 2
 C    DPRES).
 
@@ -164,6 +164,7 @@ C    DPRES).
          EPNORM(K) = 0.0D0
          EPNMAX(K) = 0.0D0
          SEPNMX(K) = 0.0D0
+
          NXM(K) = ZR(JVECTN + (MNMAX(K)-1)*3)
          NYM(K) = ZR(JVECTN + (MNMAX(K)-1)*3 + 1)
          NZM(K) = ZR(JVECTN + (MNMAX(K)-1)*3 + 2)
@@ -237,7 +238,7 @@ C 4-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
             ENDIF
  480     CONTINUE
 
-C 5/ DE RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
+C 5/ 2-EXIME RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 C    EAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 1
 C    DRES).
 
@@ -319,6 +320,7 @@ C 5-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
          NYM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3 + 1)
          NZM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3 + 2)
          GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(K)**2)),NZM(K))
+
          IF (GAMMAM .LT. 0.0D0) THEN
             GAMMAM = GAMMAM + PI
          ENDIF
@@ -331,6 +333,115 @@ C 5-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
          ENDIF
          IF (PHIM .LT. 0.0D0) THEN
            PHIM = PHIM + PI
+         ENDIF
+
+         IF (ABS(GAMMAM) .LT. EPSILO) THEN
+            GAMMA = 0.5D0*(PI/180.0D0)
+            DPHI2 = 60.0D0*(PI/180.0D0)
+            PHI0 = 0.0D0
+            N = 0
+
+            CALL VECNUV(1, 6, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                  ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
+
+            GAMMA = 0.0D0
+            PHI0 = PI
+
+            CALL VECNUV(1, 1, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                  ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
+
+            NBVEC = 7
+            CALL TAURLO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
+     &                  KWORK, SOMPGW, JRWORK, TSPAQ, IPG, JVPG1)
+         ELSE
+            DGAM2 = 0.5D0*(PI/180.0D0)
+            DPHI2 = DGAM2/SIN(GAMMAM)
+            N = 0
+            DO 550 J=1, 3
+               GAMMA = GAMMAM + (J-2)*DGAM2
+
+               CALL VECNUV(1, 3, GAMMA, PHIM, DPHI2, N, 2, DIM,
+     &                  ZR(JVECN2), ZR(JVECU2), ZR(JVECV2))
+
+ 550        CONTINUE
+
+            NBVEC = 9
+            CALL TAURLO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
+     &                  KWORK, SOMPGW, JRWORK, TSPAQ, IPG, JVPG2)
+         ENDIF
+
+
+C 5/ 3-IEME RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
+C    EAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 1
+C    DRES)
+
+C 5-2/L DU RAYON CIRCONSCRIT
+
+         CALL RAYCIR(JVPG2, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
+
+C 5-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
+
+         DTAUM(K) = 0.0D0
+         MNMAX(K) = 1
+
+         DO 580 I=1, NBVEC
+            IF ( ZR(JDTAUM + (I-1)) .GT. DTAUM(K)) THEN
+               DTAUM(K) = ZR(JDTAUM + (I-1))
+               MNMAX(K) = I
+            ENDIF
+580      CONTINUE
+
+         NXM(K) = ZR(JVECN2 + (MNMAX(K)-1)*3)
+         NYM(K) = ZR(JVECN2 + (MNMAX(K)-1)*3 + 1)
+         NZM(K) = ZR(JVECN2 + (MNMAX(K)-1)*3 + 2)
+         GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(K)**2)),NZM(K))
+         IF (GAMMAM .LT. 0.0D0) THEN
+            GAMMAM = GAMMAM + PI
+         ENDIF
+
+         IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
+     &       (ABS(NXM(K)) .LT. EPSILO)) THEN
+           PHIM = 0.0D0
+         ELSE
+           PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+         ENDIF
+         IF (PHIM .LT. 0.0D0) THEN
+           PHIM = PHIM + PI
+         ENDIF
+
+         IF (ABS(GAMMAM) .LT. EPSILO) THEN
+            GAMMA = 0.25D0*(PI/180.0D0)
+            DPHI2 = 60.0D0*(PI/180.0D0)
+            PHI0 = 0.0D0
+            N = 0
+
+            CALL VECNUV(1, 6, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                  ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
+
+            GAMMA = 0.0D0
+            PHI0 = PI
+
+            CALL VECNUV(1, 1, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                  ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
+
+            NBVEC = 7
+            CALL TAURLO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
+     &                  KWORK, SOMPGW, JRWORK, TSPAQ, IPG, JVPG1)
+         ELSE
+            DGAM2 = 1.0D0*(PI/180.0D0)
+            DPHI2 = DGAM2/SIN(GAMMAM)
+            N = 0
+            DO 570 J=1, 3
+               GAMMA = GAMMAM + (J-2)*DGAM2
+
+               CALL VECNUV(1, 3, GAMMA, PHIM, DPHI2, N, 2, DIM,
+     &                  ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
+
+ 570        CONTINUE
+
+            NBVEC = 9
+            CALL TAURLO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
+     &                  KWORK, SOMPGW, JRWORK, TSPAQ, IPG, JVPG1)
          ENDIF
 
 C CALCLA CONTRAINTE NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
@@ -350,6 +461,31 @@ C             CALL U2MESS('F','PREPOST_12')
 C          ENDIF
 C          C1 = (1+VALNU)/VALE
 C          C2 = VALNU/VALE
+
+
+C 5/ 3-IEME RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
+C    EAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 1
+C    DRES)
+
+C 5-2/L DU RAYON CIRCONSCRIT
+
+         CALL RAYCIR(JVPG1, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
+
+C 5-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
+
+         DTAUM(K) = 0.0D0
+         MNMAX(K) = 1
+
+         DO 590 I=1, NBVEC
+            IF ( ZR(JDTAUM + (I-1)) .GT. DTAUM(K)) THEN
+               DTAUM(K) = ZR(JDTAUM + (I-1))
+               MNMAX(K) = I
+            ENDIF
+ 590     CONTINUE
+
+         NXM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3)
+         NYM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3 + 1)
+         NZM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3 + 2)
 
          DO 540 I=1, NBORDR
             DECAL = 18

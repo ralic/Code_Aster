@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,7 @@ C     ------------------------------------------------------------------
       REAL*8        PGL(3,3), XYZL(3,4), R8BID,VALR(2)
       REAL*8        DEPL(24)
       REAL*8        EFFGT(32),EFFPG(32)
-      REAL*8        T2EV(4), T2VE(4)
+      REAL*8        T2EV(4), T2VE(4),C,S
 
       LOGICAL       DKG
 
@@ -145,7 +145,7 @@ C
       CALL JEVECH ('PCACOQU', 'L', JCARA)
       ALPHA = ZR(JCARA+1) * R8DGRD()
       BETA  = ZR(JCARA+2) * R8DGRD()
-      CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE)
+      CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE,C,S)
 C
       CALL JEVECH('PDEPLAR','L',JDEPG)
       CALL UTPVGL(NNO,6,PGL,ZR(JDEPG),DEPL)
@@ -176,7 +176,7 @@ C
             CALL Q4GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
          END IF
 C
-         CALL RCCOMA ( ZI(JMATE), 'ELAS', PHENOM, ICODRE )
+         CALL RCCOMA (ZI(JMATE),'ELAS',1,PHENOM,ICODRE)
 C        ON NE SAIT PAS TRAITER LE CAS ELAS_COQUE
          IF (PHENOM.EQ.'ELAS'      .OR.
      &       PHENOM.EQ.'ELAS_ORTH' .OR.

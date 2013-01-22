@@ -1,9 +1,9 @@
       SUBROUTINE APSOLU(KPTSC,LMD,RSOLU)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APSOLU PETSC  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF APSOLU PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -53,8 +53,8 @@
       CHARACTER*14  NONUS(NMXINS)
       Mat              Ap(NMXINS)
       KSP              Kp(NMXINS)
-      Vec              Bp(NMXINS),x
-      COMMON /SPETSC/ Ap,Kp,Bp,x,NOMATS,NOSOLS,NONUS
+      Vec              b,x
+      COMMON /SPETSC/ Ap,Kp,b,x,NOMATS,NOSOLS,NONUS
 !----------------------------------------------------------------
 !     Variables PETSc
       PetscInt    i,neqg,neql,nuglpe,high,low,ierr
@@ -84,8 +84,8 @@
         neqg = NGLO
         neql = NLOC
 !
-        DO IAUX=0,NGLO-1
-          RSOLU(IAUX)=0
+        DO IAUX=1,NGLO
+          RSOLU(IAUX)=0.D0
         ENDDO
 !
         call VecGetOwnershipRange(x,low,high,ierr)
@@ -95,10 +95,10 @@
         call VecGetArray(x,XX,xidx,ierr)
         CALL ASSERT(ierr.EQ.0)
 !
-        DO IAUX=0,NLOC-1
-          IF ( ZI(JPRDDL+IAUX).EQ.RANG ) THEN
-            nuglpe=ZI(JNUGLP+IAUX)
-            NUMGLO=ZI(JNUGL+IAUX)
+        DO IAUX=1,NLOC
+          IF ( ZI(JPRDDL-1+IAUX).EQ.RANG ) THEN
+            nuglpe=ZI(JNUGLP-1+IAUX)
+            NUMGLO=ZI(JNUGL-1+IAUX)
             RSOLU(NUMGLO)=XX(xidx+nuglpe-low)
           ENDIF
         ENDDO
@@ -107,6 +107,7 @@
 !
         call VecRestoreArray(x,XX,xidx,ierr)
         CALL ASSERT(ierr.EQ.0)
+
       ELSE
 !
 !       -- RECONSTRUCTION DE LA LA SOLUTION SUR CHAQUE PROC
@@ -136,6 +137,7 @@
 !       -- NETTOYAGE
         call VecDestroy(xgth,ierr)
         CALL ASSERT(ierr.EQ.0)
+
       ENDIF
 !
       CALL JEVEUO(NOMAT//'.&INT','L',LMAT)

@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -213,7 +213,7 @@ C      LGPG = MAX(ITAB(6),1)*ITAB(7) resultats faux sur Bull avec ifort
          LGPG = ITAB(6)*ITAB(7)
       ENDIF
       CALL JEVECH('PCARCRI','L',ICARCR)
-      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
+      CALL RCCOMA(ZI(IMATE),'ELAS',1,PHENOM,ICODRE)
 
       IF (PHENOM.EQ.'ELAS') THEN
         NBV = 2

@@ -1,9 +1,9 @@
-# MODIF  DATE 29/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE CALCUL K_I EN X-FEM AXI-SYMMETRIQUE
 # sslv134i.para = tps_job 150 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -96,9 +96,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
 #-------------------------------------------------------
 # Taille d'element h = 0.1
-TAB=CALC_G(THETA=_F(FISSURE=FISS,
-                    R_INF=0.1,
-                    R_SUP=0.3,),
+TAB=CALC_G(THETA=_F(FISSURE=FISS,),
            RESULTAT=RESU,
            COMP_ELAS=_F(RELATION='ELAS',),
            OPTION='CALC_K_G',);
@@ -109,7 +107,6 @@ SIF=POST_K1_K2_K3(MODELISATION='AXIS',
                     FISSURE=FISS,
                     MATER=MA,
                     RESULTAT=RESU,
-                    ABSC_CURV_MAXI=0.3,
                     );
 
 IMPR_TABLE(TABLE=SIF,);
@@ -121,17 +118,31 @@ K1_REF=1.595769E6
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.021000000000000001,
-           VALE_CALC=11.812776976,
+           VALE_CALC=11.756931305835,
            VALE_REFE=G_REF,
            NOM_PARA='G',
            TABLE=TAB,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.040000000000000001,
-           VALE_CALC= 1.65590714E+06,
+           PRECISION=0.060000000000000001,
+           VALE_CALC=1.6739010427576E+06,
            VALE_REFE=K1_REF,
            NOM_PARA='K1',
            TABLE=TAB,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.06,
+           VALE_CALC=12.251309056872,
+           VALE_REFE=G_REF,
+           NOM_PARA='G',
+           TABLE=SIF,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.060000000000000001,
+           VALE_CALC=1.6409000082029E+06,
+           VALE_REFE=K1_REF,
+           NOM_PARA='K1',
+           TABLE=SIF,)
 
 # VALEUR DE REFERENCE OBETNUS DE FISSURE MAILLE DANS SSLV134C (DE CALC_G)
 G_REF=11.7803
@@ -140,14 +151,14 @@ K1_REF=1.6431E6
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=4.0000000000000001E-3,
-           VALE_CALC=11.812776976,
+           VALE_CALC=11.756931305835,
            VALE_REFE=G_REF,
            NOM_PARA='G',
            TABLE=TAB,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=8.0000000000000002E-3,
-           VALE_CALC= 1.65590714E+06,
+           PRECISION=2E-2,
+           VALE_CALC=1.6739010427576E+06,
            VALE_REFE=K1_REF,
            NOM_PARA='K1',
            TABLE=TAB,)
@@ -186,9 +197,7 @@ RES_XROT=POST_CHAM_XFEM(MODELE_VISU = MOD_XROT,
 
 #-------------------------------------------------------
 # Taille d'element h = 0.1
-TAB_ROT=CALC_G(THETA=_F(FISSURE=FISS,
-                    R_INF=0.1,
-                    R_SUP=0.3,),
+TAB_ROT=CALC_G(THETA=_F(FISSURE=FISS,),
            RESULTAT=RESU_ROT,
            COMP_ELAS=_F(RELATION='ELAS',),
            OPTION='CALC_K_G',);
@@ -199,7 +208,6 @@ SIF_ROT=POST_K1_K2_K3(MODELISATION='AXIS',
                     FISSURE=FISS,
                     MATER=MA,
                     RESULTAT=RESU_ROT,
-                    ABSC_CURV_MAXI=0.3,
                     );
 
 IMPR_TABLE(TABLE=SIF_ROT,);
@@ -211,16 +219,30 @@ K1_REF=21.911E6
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=3.0000000000000001E-3,
-           VALE_CALC=2142.4902425773,
+           VALE_CALC=2133.0633846696,
            VALE_REFE=G_REF,
            NOM_PARA='G',
            TABLE=TAB_ROT,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC=2.2098665848104E+07,
+           PRECISION=2.5E-2,
+           VALE_CALC=2.2425710175363E+07,
            VALE_REFE=K1_REF,
            NOM_PARA='K1',
            TABLE=TAB_ROT,)
 
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=4.0000000000000001E-2,
+           VALE_CALC=2220.0805498582,
+           VALE_REFE=G_REF,
+           NOM_PARA='G',
+           TABLE=SIF_ROT,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=2.5E-2,
+           VALE_CALC=2.2088824363775E+07,
+           VALE_REFE=K1_REF,
+           NOM_PARA='K1',
+           TABLE=SIF_ROT,)
 FIN();
+

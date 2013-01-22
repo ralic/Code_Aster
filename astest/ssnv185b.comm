@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185b.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -287,7 +287,6 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
                  MATER=ACIER,
                  FISSURE = FISS,
                  RESULTAT  = RESU,
-                 ABSC_CURV_MAXI = 1.5,
                  NB_NOEUD_COUPE = 6,
                  )
 
@@ -297,7 +296,7 @@ TEST_TABLE( TABLE=PK,
             NOM_PARA='K1',
             FILTRE=_F(NOM_PARA = 'NUM_PT',  
                       VALE_I = 1,  ),
-            VALE_CALC=1.1466816739358E+07, 
+            VALE_CALC=1.1298569976555E+07, 
             VALE_REFE=K1REF,    
             PRECISION=0.05,    
             REFERENCE='ANALYTIQUE' )
@@ -378,8 +377,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_VISU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=5.0894436126433E-04,
-                   
+                   VALE_CALC=5.0894436126433E-04,                  
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -387,8 +385,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_VISU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=1.694474332454,
-                   
+                   VALE_CALC=1.694474332454,                   
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -396,8 +393,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_VISU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=1.2530880070064,
-                   
+                   VALE_CALC=1.2530880070064,                   
                    CRITERE='ABSOLU',
                    ),
                 ),

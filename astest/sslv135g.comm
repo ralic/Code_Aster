@@ -1,0 +1,674 @@
+# MODIF  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+# TITRE TESTE DE DIRECTION DU PLAN CRITIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# sslv135g.para = tps_job 180 mem_job 768Mo ncpus 1 liste_test S
+
+DEBUT(  CODE=_F(  NOM = 'SSLV135G',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+               IGNORE_ALARM=('PREPOST4_27'))
+
+CUBE = LIRE_MAILLAGE(FORMAT='MED')
+
+CUBE = DEFI_GROUP( reuse = CUBE,
+                   ALARME='OUI',
+                   CREA_GROUP_NO = ( 
+                        _F(GROUP_MA='FACE1',
+                           CRIT_NOEUD='TOUS'),
+                        _F(GROUP_MA='FACE2',
+                           CRIT_NOEUD='TOUS'),
+                        _F(GROUP_MA='FACE3',
+                           CRIT_NOEUD='TOUS'),
+                        _F(GROUP_MA='FACE4',
+                         CRIT_NOEUD='TOUS'),
+                        _F(GROUP_MA='FACE5',
+                           CRIT_NOEUD='TOUS'),
+                        _F(GROUP_MA='FACE6',
+                           CRIT_NOEUD='TOUS')),
+                         MAILLAGE=CUBE,
+               );
+
+CUBE = DEFI_GROUP( reuse = CUBE,
+                   ALARME='OUI',
+                   CREA_GROUP_MA=(
+                 _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE1',
+                                  NOM='FACE1_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE2',
+                                  NOM='FACE2_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE3',
+                                  NOM='FACE3_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE4',
+                                  NOM='FACE4_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE5',
+                                  NOM='FACE5_3D'),
+                               _F(OPTION='APPUI',
+                                  TYPE_APPUI='AU_MOINS_UN',
+                                  GROUP_NO='FACE6',
+                                  NOM='FACE6_3D')),
+                    MAILLAGE=CUBE,
+               );
+
+TROISD = AFFE_MODELE ( MAILLAGE = CUBE,
+                       AFFE = _F( PHENOMENE    = 'MECANIQUE',
+                                  MODELISATION = '3D',
+                                  TOUT         = 'OUI'    ))
+
+TR_CS = AFFE_CHAR_MECA ( MODELE =  TROISD,
+                  FACE_IMPO  = ( _F( GROUP_MA= 'FACE3' ,DX=0.),
+                              _F( GROUP_MA= 'FACE2' ,DY=0.) ),
+               DDL_IMPO   = ( _F( GROUP_NO= 'P3' , DZ=0.) ),
+                  FORCE_FACE = ( _F( GROUP_MA= 'FACE4', FX=1.),
+                                 _F( GROUP_MA= 'FACE1', FY=1.) )
+                             );
+              
+PHIZ = FORMULE(   NOM_PARA = ('VNM1Z'),
+                  VALE = ''' acos(abs(VNM1Z))*180.0/pi ''')
+
+SA = 200.0
+  
+###############################################################
+# CALCULATE ELASTIC FIELD
+
+ACIER = DEFI_MATERIAU  ( ELAS = _F( E = 193000.,
+                                    NU = .3,
+                                    ALPHA = 0. ),
+            )
+                 
+MAT   = AFFE_MATERIAU  ( MAILLAGE = CUBE,
+                         AFFE = _F ( TOUT = 'OUI',
+                                     MATER = ACIER,))
+              
+LINST = DEFI_LIST_REEL ( DEBUT =  0.,
+                         INTERVALLE =_F (JUSQU_A= 2.0, NOMBRE = 2 )
+                          );
+              
+NBALP = 23
+ALP   = [NONE]*NBALP
+COEF  = [NONE]*NBALP
+SOL   = [NONE]*NBALP
+
+for i in range(NBALP):
+
+   ALP[i] = i/2.0-1.0
+   COEF[i] = DEFI_FONCTION ( NOM_PARA = 'INST',
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE',
+                            VALE        =( 0.,  (ALP[i]+1)*SA,
+                                           1.,  (ALP[i]-1)*SA,
+                                           2.,  (ALP[i]+1)*SA,))
+   SOL[i] = MECA_STATIQUE(   TITRE = 'TEST BIAXIAL TRACTION-COMPRESSION ALTERNATIVE ELASTIC',
+                          MODELE = TROISD,
+                          CHAM_MATER = MAT,
+                          EXCIT = _F( CHARGE = TR_CS,
+                                   FONC_MULT = COEF[i],),
+                                   LIST_INST = LINST,)
+   SOL[i] = CALC_CHAMP( reuse = SOL[i],
+                        RESULTAT = SOL[i],
+                       CONTRAINTE = ('SIGM_ELGA','SIGM_ELNO',),
+                       DEFORMATION = ('EPSI_ELGA','EPSI_ELNO',),)
+   SOL[i] = CALC_CHAMP( reuse = SOL[i],
+                       RESULTAT = SOL[i],
+                       GROUP_MA =('FACE1_3D','FACE2_3D','FACE3_3D'),
+                       CONTRAINTE = ('SIGM_NOEU',),
+                       DEFORMATION = ('EPSI_NOEU',),)
+             
+##################################################################
+# CALCULATE ELASTIC-PLASTIC FIELD
+
+ACIER2 = DEFI_MATERIAU  ( ELAS = _F( E = 193000.,
+                                    NU = .3,
+                                    ALPHA = 0. ),
+          ECRO_LINE = _F( SY= 208, D_SIGM_EPSI = 50000),
+         )
+                 
+MAT2   = AFFE_MATERIAU  ( MAILLAGE = CUBE,
+                          AFFE = _F ( TOUT = 'OUI',
+                                      MATER = ACIER2,))
+              
+LINST2 = DEFI_LIST_REEL ( DEBUT =  0.,
+                          INTERVALLE = _F (JUSQU_A= 2.0, NOMBRE = 10 )
+                          );
+           
+NBALP2 = 5
+ALP2   = [NONE]*NBALP2
+COEF2  = [NONE]*NBALP2
+SONL   = [NONE]*NBALP2
+
+for i in range(NBALP2):
+   ALP2[i] = i;
+   COEF2[i] = DEFI_FONCTION ( NOM_PARA = 'INST',
+                             PROL_DROITE = 'LINEAIRE',
+                             PROL_GAUCHE = 'LINEAIRE',
+                             VALE        = ( 0.,  (ALP2[i]+1)*SA,
+                                             1.,  (ALP2[i]-1)*SA,
+                                             2.,  (ALP2[i]+1)*SA,)
+                             )
+                                             
+   SONL[i] = STAT_NON_LINE (  TITRE      = 'TEST BIAXIAL TRACTION-COMPRESSION ALTERNATIVE ELASTIC-PLASTIC',
+                              MODELE     = TROISD,
+                              CHAM_MATER = MAT2,
+                              EXCIT      = _F( CHARGE       = TR_CS,
+                                               FONC_MULT    = COEF2[i],
+                                               TYPE_CHARGE  = 'FIXE_CSTE'),
+                              COMP_INCR  = _F( RELATION     = 'VMIS_ISOT_LINE',
+                                            DEFORMATION  = 'PETIT',
+                                            TOUT         = 'OUI'    ),
+                              INCREMENT  = _F( LIST_INST    = LINST2, ),
+                              NEWTON     = _F( MATRICE = 'TANGENTE',
+                                            REAC_ITER = 1),
+                              CONVERGENCE= _F( RESI_REFE_RELA = 1.,
+                                            SIGM_REFE      = 4.8E-3,
+                                             ITER_GLOB_MAXI = 50),
+                              SOLVEUR    = _F( METHODE = 'MULT_FRONT'),      )
+                              
+   SONL[i] = CALC_CHAMP(      reuse = SONL[i],
+                              RESULTAT = SONL[i],
+                              CONTRAINTE = ('SIGM_ELGA','SIGM_ELNO',),
+                              DEFORMATION = ('EPSI_ELGA','EPSI_ELNO',),)
+   SONL[i] = CALC_CHAMP(      reuse = SONL[i],
+                              RESULTAT = SONL[i],
+                              GROUP_MA =('FACE1_3D','FACE2_3D','FACE3_3D'),
+                              CONTRAINTE = ('SIGM_NOEU',),
+                              DEFORMATION = ('EPSI_NOEU',),)
+
+##################################################################
+# Test DANG_VAN_MODI_AC
+
+WHOL = DEFI_FONCTION( NOM_PARA='SIGM',
+                      INTERPOL='LOG',
+                      PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',
+                      VALE=( 184.8, 5000000,
+                             189.2, 1000000,
+                             192.4, 500000,
+                             205.6, 100000,
+                             215.2, 50000,
+                             254.6, 10000,
+                             283.4, 5000,
+                             401.4, 1000,
+                             487.6, 500,
+                             840.8, 100, 
+                            1098.9, 50,
+                            2156.3, 10,))
+            
+ACIERDC  = DEFI_MATERIAU(  ELAS = _F( E = 193000.,
+                                     NU = .3,
+                                     ALPHA = 0. ),
+                           FATIGUE        =_F( WOHLER = WHOL, ),
+                           CISA_PLAN_CRIT =_F( CRITERE = 'DANG_VAN_MODI_AC',
+                                              D_VAN_A = 0.05,
+                                              D_VAN_B = 2.0,
+                                              COEF_CISA_TRAC = 1.5 )
+         )
+                 
+MATDC   = AFFE_MATERIAU( MAILLAGE = CUBE,
+                         AFFE = _F ( TOUT = 'OUI',
+                                     MATER = ACIERDC,))
+
+FATDC   = [NONE]*NBALP
+TABDC   = [NONE]*NBALP
+FATDC2  = [NONE]*NBALP2
+TABDC2  = [NONE]*NBALP2
+
+for i in range(NBALP):
+   FATDC[i] = CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           TYPE_CHARGE   = 'PERIODIQUE',
+                         OPTION        = 'DOMA_NOEUD',
+                           RESULTAT      = SOL[i],
+                           CHAM_MATER    = MATDC,
+                           CRITERE       = 'DANG_VAN_MODI_AC',
+                           METHODE       = 'CERCLE_EXACT',
+                         MAILLAGE      = CUBE,
+                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),) 
+   TABDC[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
+                                        NOEUD = 'N1',
+                                        CHAM_GD = FATDC[i],
+                                      NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                                        OPERATION='EXTRACTION',),);
+   TABDC[i] = CALC_TABLE( reuse = TABDC[i],
+                               TABLE=TABDC[i],
+                               ACTION = ( _F( OPERATION ='OPER',
+                                              FORMULE = PHIZ,
+                                              NOM_PARA = 'PHIZ',),)
+                             )
+   TEST_TABLE(   
+            VALE_REFE = 45,
+            VALE_CALC = 44.5,
+            PRECISION = 0.015,
+            REFERENCE = 'ANALYTIQUE',
+            NOM_PARA = 'PHIZ',
+            TABLE= TABDC[i],)
+     
+for i in range(NBALP2):
+
+   FATDC2[i] = CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           TYPE_CHARGE   = 'PERIODIQUE',
+                         OPTION        = 'DOMA_NOEUD',
+                           RESULTAT      = SONL[i],
+                           CHAM_MATER    = MATDC,
+                           CRITERE       = 'DANG_VAN_MODI_AC',
+                           METHODE       = 'CERCLE_EXACT',
+                         MAILLAGE      = CUBE,
+                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),) 
+   TABDC2[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
+                              NOEUD = 'N1',
+                              CHAM_GD = FATDC2[i],
+                              NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                              OPERATION='EXTRACTION',),);
+   TABDC2[i] = CALC_TABLE(    reuse = TABDC2[i],
+                              TABLE = TABDC2[i],
+                              ACTION = ( _F( OPERATION ='OPER',
+                                             FORMULE = PHIZ,
+                                             NOM_PARA = 'PHIZ',),)
+                             )
+                             
+   TEST_TABLE(   
+         VALE_REFE = 45,
+         VALE_CALC = 44.5,
+         PRECISION = 0.015,
+         REFERENCE = 'ANALYTIQUE',
+         NOM_PARA = 'PHIZ',
+         TABLE= TABDC2[i],)
+
+##################################################################
+# Test MATAKE_MODI_AC
+            
+ACIERMC  = DEFI_MATERIAU ( ELAS = _F( E = 193000.,
+                                      NU = .3,
+                                      ALPHA = 0. ),
+                           FATIGUE        = _F( WOHLER = WHOL, ),
+                           CISA_PLAN_CRIT = _F( CRITERE = 'MATAKE_MODI_AC',
+                                                MATAKE_A = 0.05,
+                                                MATAKE_B = 2.0,
+                                                COEF_FLEX_TORS = 1.5 )
+                 )
+                 
+MATMC   = AFFE_MATERIAU ( MAILLAGE = CUBE,
+                          AFFE = _F ( TOUT = 'OUI',
+                                      MATER = ACIERMC,))
+
+FATMC   = [NONE]*NBALP
+TABMC   = [NONE]*NBALP
+FATMC2  = [NONE]*NBALP2
+TABMC2  = [NONE]*NBALP2
+
+for i in range(NBALP):
+
+   FATMC[i] = CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           TYPE_CHARGE   = 'PERIODIQUE',
+                         OPTION        = 'DOMA_NOEUD',
+                           RESULTAT      = SOL[i],
+                           CHAM_MATER    = MATMC,
+                           CRITERE       = 'MATAKE_MODI_AC',
+                           METHODE       = 'CERCLE_EXACT',
+                         MAILLAGE      = CUBE,
+                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),) 
+   TABMC[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
+                              NOEUD = 'N1',
+                              CHAM_GD = FATMC[i],
+                              NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                              OPERATION='EXTRACTION',),);
+   TABMC[i] = CALC_TABLE(    reuse = TABMC[i],
+                              TABLE = TABMC[i],
+                              ACTION = ( _F( OPERATION ='OPER',
+                                             FORMULE = PHIZ,
+                                             NOM_PARA = 'PHIZ',),)
+                             )
+                             
+   TEST_TABLE(   
+         VALE_REFE = 45,
+         VALE_CALC = 44.5,
+         PRECISION = 0.015,
+         REFERENCE = 'ANALYTIQUE',
+         NOM_PARA = 'PHIZ',
+         TABLE= TABMC[i],)
+
+  
+for i in range(NBALP2):
+   FATMC2[i] = CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           TYPE_CHARGE   = 'PERIODIQUE',
+                         OPTION        = 'DOMA_NOEUD',
+                           RESULTAT      = SONL[i],
+                           CHAM_MATER    = MATMC,
+                           CRITERE       = 'MATAKE_MODI_AC',
+                           METHODE       = 'CERCLE_EXACT',
+                         MAILLAGE      = CUBE,
+                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),) 
+   TABMC2[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
+                              NOEUD = 'N1',
+                              CHAM_GD = FATMC2[i],
+                              NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                              OPERATION='EXTRACTION',),);
+   TABMC2[i] = CALC_TABLE(    reuse = TABMC2[i],
+                              TABLE = TABMC2[i],
+                              ACTION = ( _F( OPERATION ='OPER',
+                                             FORMULE = PHIZ,
+                                             NOM_PARA = 'PHIZ',),)
+                             )
+                             
+   TEST_TABLE(   
+         VALE_REFE = 45,
+         VALE_CALC = 44.5,
+         PRECISION = 0.015,
+         REFERENCE = 'ANALYTIQUE',
+         NOM_PARA = 'PHIZ',
+         TABLE= TABMC2[i],)
+   
+##################################################################
+# Test DANG_VAN_MODI_AV
+            
+ACIERDV  = DEFI_MATERIAU   (    ELAS           = _F(    E         = 193000.,
+                                                     NU        = .3,
+                                                  ALPHA     = 0. ),
+                                                   FATIGUE        = _F(   WOHLER    = WHOL, ),
+                                                  CISA_PLAN_CRIT = _F(    CRITERE = 'DANG_VAN_MODI_AV',
+                                                  D_VAN_A  = 0.05,
+                                                  D_VAN_B  = 2.0,
+                                                  COEF_CISA_TRAC = 1.5 )
+            )
+                 
+MATDV   = AFFE_MATERIAU    (    MAILLAGE = CUBE,
+                              AFFE = _F ( TOUT = 'OUI',
+                                          MATER = ACIERDV,
+                                                ))
+FATDV   = [NONE]*NBALP
+TABDV   = [NONE]*NBALP
+FATDV2  = [NONE]*NBALP2
+TABDV2  = [NONE]*NBALP2
+
+#PHIZ PEUT ETRE 43.75 OU 46.25, ON NOTE QUE 43.75 + 46.25 = 90
+RESUC = [(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,(43.75, 46.25) ,
+         (43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,(43.75, 46.25) ,
+         (43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,(43.75, 46.25) ,
+         (43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ]
+  
+RESUC2 = [(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,]
+
+for i in range(NBALP):
+   FATDV[i] = CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
+                          TYPE_CHARGE   = 'NON_PERIODIQUE',
+                        OPTION        = 'DOMA_NOEUD',
+                          RESULTAT      = SOL[i],
+                          CHAM_MATER    = MATDV,
+                          CRITERE       = 'DANG_VAN_MODI_AV',
+                          PROJECTION    = 'UN_AXE',
+                        MAILLAGE      = CUBE,
+                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)     
+   TABDV[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
+                              NOEUD = 'N1',
+                              CHAM_GD = FATDV[i],
+                              NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                              OPERATION='EXTRACTION',),);
+   TABDV[i] = CALC_TABLE(    reuse = TABDV[i],
+                              TABLE = TABDV[i],
+                              ACTION = ( _F( OPERATION ='OPER',
+                                             FORMULE = PHIZ,
+                                             NOM_PARA = 'PHIZ',),)
+                             )
+                             
+   TEST_TABLE(   
+      REFERENCE='ANALYTIQUE',
+      VALE_REFE= (45, 45),
+      PRECISION = 0.03,
+      VALE_CALC= RESUC[i],
+      NOM_PARA = 'PHIZ',
+      TABLE= TABDV[i],)
+  
+for i in range(NBALP2):
+   FATDV2[i]= CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
+                       TYPE_CHARGE   = 'NON_PERIODIQUE',
+                     OPTION        = 'DOMA_NOEUD',
+                       RESULTAT      = SONL[i],
+                       CHAM_MATER    = MATDV,
+                       CRITERE       = 'DANG_VAN_MODI_AV',
+                       PROJECTION    = 'UN_AXE',
+                     MAILLAGE      = CUBE,
+                     GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)  
+   TABDV2[i] = POST_RELEVE_T( ACTION =_F( INTITULE='FATIGUE',
+                              NOEUD = 'N1',
+                              CHAM_GD = FATDV2[i],
+                              NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                              OPERATION='EXTRACTION',),);
+   TABDV2[i] = CALC_TABLE(    reuse = TABDV2[i],
+                              TABLE = TABDV2[i],
+                              ACTION = ( _F( OPERATION ='OPER',
+                                            FORMULE = PHIZ,
+                                            NOM_PARA = 'PHIZ',),)
+                             )
+                             
+   TEST_TABLE(   
+      REFERENCE='ANALYTIQUE',
+      VALE_REFE= (45, 45),
+      PRECISION = 0.03,
+      VALE_CALC= RESUC2[i],
+      NOM_PARA = 'PHIZ',
+      TABLE= TABDV[i],)
+   
+###############################################################
+# Test MATAKE_MODI_AV
+
+ACIERMV  = DEFI_MATERIAU   (    ELAS           =_F(  E         = 193000.,
+                                                     NU        = .3,
+                                                  ALPHA     = 0. ),
+                              FATIGUE        =_F(    WOHLER    = WHOL, ),
+                             CISA_PLAN_CRIT =_F(  CRITERE = 'MATAKE_MODI_AV',
+                                                  MATAKE_A  = 0.05,
+                                                  MATAKE_B  = 2.0,
+                                                  COEF_FLEX_TORS = 1.5 )
+            )
+                 
+MATMV   = AFFE_MATERIAU    (    MAILLAGE    =   CUBE,
+                             AFFE        = _F ( TOUT       = 'OUI',
+                                                  MATER      = ACIERMV,
+                                                ))
+
+FATMV   = [NONE]*NBALP
+TABMV   = [NONE]*NBALP
+FATMV2  = [NONE]*NBALP2
+TABMV2  = [NONE]*NBALP2
+
+RESUM  = [(45,45), 45.71604807, 46.43120259, 47.14457665, 47.85529654, 48.56250816, 49.26538279, 49.96312274,
+                    50.65496622, 51.34019173, 52.01812172, 52.68812561, 53.3496221, 54.00208078, 54.64502311,
+                    55.27802258, 55.90070474, 56.512746, 57.11387266,57.70385907,58.28252557, 58.84973637, 59.40539686]
+RESUC = [(43.75,46.25),46.25,46.5 ,47.25,47.75,48.5 ,49.25,50.0 ,
+         50.75,51.25,52.0 ,52.75,53.25,53.75,53.75,56.25,
+         56.25,56.5 ,57.0 ,57.75,58.25,58.75,59.5]
+  
+RESUM2 = [46.43120259,47.85529654,49.26538279,50.65496622,52.01812172,]
+RESUC2 = [46.5 ,47.75,49.25,50.75,52.0 ,]
+
+for i in range(1, NBALP):
+   FATMV[i]= CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
+                       TYPE_CHARGE   = 'NON_PERIODIQUE',
+                     OPTION        = 'DOMA_NOEUD',
+                       RESULTAT      = SOL[i],
+                       CHAM_MATER    = MATMV,
+                       CRITERE       = 'MATAKE_MODI_AV',
+                       PROJECTION    = 'UN_AXE',
+                     MAILLAGE      = CUBE,
+                     GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)  
+   TABMV[i] = POST_RELEVE_T( ACTION =_F( INTITULE='FATIGUE',
+                              NOEUD = 'N1',
+                              CHAM_GD = FATMV[i],
+                              NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                              OPERATION='EXTRACTION',),);
+   TABMV[i] = CALC_TABLE(    reuse = TABMV[i],
+                              TABLE = TABMV[i],
+                              ACTION = ( _F( OPERATION ='OPER',
+                                            FORMULE = PHIZ,
+                                            NOM_PARA = 'PHIZ',),)
+                             )
+                             
+   TEST_TABLE(   
+      REFERENCE='ANALYTIQUE',
+      VALE_REFE= RESUM[i],
+      PRECISION = 0.03,
+      VALE_CALC= RESUC[i],
+      NOM_PARA = 'PHIZ',
+      TABLE= TABMV[i],)
+
+   
+for i in range(1, NBALP2):
+   FATMV2[i]= CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
+                          TYPE_CHARGE   = 'NON_PERIODIQUE',
+                        OPTION        = 'DOMA_NOEUD',
+                          RESULTAT      = SONL[i],
+                          CHAM_MATER    = MATMV,
+                          CRITERE       = 'MATAKE_MODI_AV',
+                          PROJECTION    = 'UN_AXE',
+                        MAILLAGE      = CUBE,
+                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)  
+   TABMV2[i] = POST_RELEVE_T( ACTION=_F( INTITULE='FATIGUE',
+                                         NOEUD = 'N1',
+                                         CHAM_GD = FATMV2[i],
+                                       NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                                       OPERATION='EXTRACTION',),);
+   TABMV2[i] = CALC_TABLE(    reuse = TABMV2[i],
+                              TABLE = TABMV2[i],
+                              ACTION = ( _F(  OPERATION ='OPER',
+                                                FORMULE = PHIZ,
+                                                NOM_PARA = 'PHIZ',),)
+                             )
+                             
+   TEST_TABLE(   
+      REFERENCE='ANALYTIQUE',
+      VALE_REFE= RESUM2[i],
+      PRECISION = 0.03,
+      VALE_CALC= RESUC2[i],
+      NOM_PARA = 'PHIZ',
+      TABLE= TABMV2[i],)
+##################################################################
+# Test FATESOCI_MODI_AV
+
+MANCOF = DEFI_FONCTION( NOM_PARA='EPSI',
+                        INTERPOL='LOG',
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                        VALE=(0.002500552, 5000000,
+                             0.003283895, 1000000,
+                              0.003701497, 500000,
+                              0.004914169, 100000,
+                              0.005565059, 50000,
+                              0.006573788, 20000,
+                              0.007126133, 5000,
+                              0.016153442, 1000,
+                              0.023400386, 500,
+                             0.057463434, 100,
+                             0.225885749, 10,
+                            )  )
+
+ACIERF  = DEFI_MATERIAU   (ELAS =_F( E = 193000.,
+                                      NU = .3,
+                                      ALPHA = 0. ),
+                          FATIGUE =_F( MANSON_COFFIN = MANCOF, ),
+                           CISA_PLAN_CRIT =_F( CRITERE = 'FATESOCI_MODI_AV',
+                                               FATSOC_A = 0.00024,
+                                               COEF_CISA_TRAC = 1, )
+            )
+                 
+MATF   = AFFE_MATERIAU ( MAILLAGE = CUBE,
+                         AFFE =_F ( TOUT = 'OUI',
+                                    MATER = ACIERF,))
+
+
+FATF   = [NONE]*NBALP
+TABF   = [NONE]*NBALP
+FATF2  = [NONE]*NBALP2
+TABF2  = [NONE]*NBALP2
+
+#Analytical results
+RESUF  = [45, 45.34014828, 45.67180774, 45.99482259, 46.30909462, 46.61457847, 46.91127686,
+          47.19923533,     47.47853707, 47.74929779, 48.0116608,  48.26579244, 48.51187778,
+          48.75011672,     48.98072059, 49.20390894, 49.41990696, 49.62894294, 49.83124651,
+          50.02704663,     50.2165705,  50.40004212,  50.57768138]
+
+RESUC  = [43.75,46.25,46.25,46.25,46.25,46.5 ,47.0 ,47.25,
+         47.5 ,47.75,48.0 ,48.25,48.5 ,48.75,49.0 ,49.25,
+         49.5 ,49.5 ,49.75,50.0 ,50.25,50.5 ,50.5]   
+
+RESUF2 = [45.67180774,46.30909462,46.91127686,47.47853707,48.0116608,]
+RESUC2 = [46.25,46.25,47.0 ,47.5 ,48.0 ,]
+
+for i in range(NBALP):
+   FATF[i]= CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
+                          TYPE_CHARGE   = 'NON_PERIODIQUE',
+                        OPTION        = 'DOMA_NOEUD',
+                          RESULTAT      = SOL[i],
+                          CHAM_MATER    = MATF,
+                          CRITERE       = 'FATESOCI_MODI_AV',
+                          PROJECTION    = 'UN_AXE',
+                        MAILLAGE      = CUBE,
+                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)  
+   TABF[i] = POST_RELEVE_T( ACTION =_F( INTITULE='FATIGUE',
+                              NOEUD = 'N1',
+                              CHAM_GD = FATF[i],
+                              NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                              OPERATION='EXTRACTION',),);
+   TABF[i] = CALC_TABLE(    reuse = TABF[i],
+                              TABLE = TABF[i],
+                              ACTION = ( _F( OPERATION ='OPER',
+                                            FORMULE = PHIZ,
+                                            NOM_PARA = 'PHIZ',),)
+                             )
+                             
+   TEST_TABLE(   
+      REFERENCE = 'ANALYTIQUE',
+      VALE_REFE = RESUF[i],
+      PRECISION = 0.03,
+      VALE_CALC = RESUC[i],
+      NOM_PARA = 'PHIZ',
+      TABLE = TABF[i],)
+
+for i in range(NBALP2):
+   FATF2[i]= CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           TYPE_CHARGE   = 'NON_PERIODIQUE',
+                           OPTION        = 'DOMA_NOEUD',
+                             RESULTAT      = SONL[i],
+                             CHAM_MATER    = MATF,
+                             CRITERE       = 'FATESOCI_MODI_AV',
+                             PROJECTION    = 'UN_AXE',
+                           MAILLAGE      = CUBE,
+                           GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
+   TABF2[i] = POST_RELEVE_T( ACTION = _F(    INTITULE='FATIGUE',
+                                             NOEUD = 'N1',
+                                             CHAM_GD = FATF2[i],
+                                             NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
+                                             OPERATION='EXTRACTION',),);
+   TABF2[i]= CALC_TABLE(reuse = TABF2[i],
+                        TABLE = TABF2[i],
+                        ACTION = ( _F( OPERATION ='OPER',
+                                       FORMULE = PHIZ,
+                                       NOM_PARA = 'PHIZ',),))
+   TEST_TABLE(   
+      REFERENCE = 'ANALYTIQUE',
+      VALE_REFE = RESUF2[i],
+      PRECISION = 0.03,
+      VALE_CALC = RESUC2[i],
+      NOM_PARA = 'PHIZ',
+      TABLE = TABF2[i],)
+     
+FIN()

@@ -1,9 +1,9 @@
       SUBROUTINE APVSMB(KPTSC,LMD,RSOLU)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APVSMB PETSC  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF APVSMB PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -54,8 +54,8 @@
       CHARACTER*14  NONUS(NMXINS)
       Mat              Ap(NMXINS)
       KSP              Kp(NMXINS)
-      Vec              Bp(NMXINS),x
-      COMMON /SPETSC/ Ap,Kp,Bp,x,NOMATS,NOSOLS,NONUS
+      Vec              b,x
+      COMMON /SPETSC/ Ap,Kp,b,x,NOMATS,NOSOLS,NONUS
 !----------------------------------------------------------------
 !     Variables PETSc
       PetscInt    low,high,bs,i,neq,ierr
@@ -88,13 +88,13 @@
           IF ( ZI(JPRDDL+JCOLL).EQ.RANG ) NDPROP = NDPROP+1
         END DO
 !
-        call VecCreate(PETSC_COMM_WORLD,Bp(KPTSC),ierr)
+        call VecCreate(PETSC_COMM_WORLD,b,ierr)
         CALL ASSERT(ierr.EQ.0)
-        call VecSetBlockSize(Bp(KPTSC),bs,ierr)
+        call VecSetBlockSize(b,bs,ierr)
         CALL ASSERT(ierr.EQ.0)
-        call VecSetSizes(Bp(KPTSC),NDPROP,NGLO,ierr)
+        call VecSetSizes(b,NDPROP,NGLO,ierr)
         CALL ASSERT(ierr.EQ.0)
-        call VecSetType(Bp(KPTSC),VECMPI,ierr)
+        call VecSetType(b,VECMPI,ierr)
         CALL ASSERT(ierr.EQ.0)
 !
         CALL WKVECT('&&APVSMB.INDICES','V V S',NLOC,JINDIC)
@@ -104,37 +104,37 @@
           NUMGLO = ZI(JNUGL+JCOLL)
           ZR(JVALEU+JCOLL) = RSOLU(NUMGLO)
         END DO
-        call VecSetValues(Bp(KPTSC),NLOC,ZI4(JINDIC),
+        call VecSetValues(b,NLOC,ZI4(JINDIC),
      &                    ZR(JVALEU),ADD_VALUES,ierr)
         CALL JEDETR('&&APVSMB.INDICES')
         CALL JEDETR('&&APVSMB.VALEURS')
-        call VecAssemblyBegin(Bp(KPTSC),ierr)
+        call VecAssemblyBegin(b,ierr)
         CALL ASSERT(ierr.EQ.0)
-        call VecAssemblyEnd(Bp(KPTSC),ierr)
+        call VecAssemblyEnd(b,ierr)
         CALL ASSERT(ierr.EQ.0)
       ELSE
         CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
         neq=NSMDI
 !
-        call VecCreate(PETSC_COMM_WORLD,Bp(KPTSC),ierr)
+        call VecCreate(PETSC_COMM_WORLD,b,ierr)
         CALL ASSERT(ierr.EQ.0)
-        call VecSetBlockSize(Bp(KPTSC),bs,ierr)
+        call VecSetBlockSize(b,bs,ierr)
         CALL ASSERT(ierr.EQ.0)
-        call VecSetSizes(Bp(KPTSC),PETSC_DECIDE,neq,ierr)
+        call VecSetSizes(b,PETSC_DECIDE,neq,ierr)
         CALL ASSERT(ierr.EQ.0)
-        call VecSetType(Bp(KPTSC),VECMPI,ierr)
+        call VecSetType(b,VECMPI,ierr)
         CALL ASSERT(ierr.EQ.0)
 !
-        call VecGetOwnershipRange(Bp(KPTSC),low,high,ierr)
+        call VecGetOwnershipRange(b,low,high,ierr)
         CALL ASSERT(ierr.EQ.0)
-        call VecGetArray(Bp(KPTSC),XX,xidx,ierr)
+        call VecGetArray(b,XX,xidx,ierr)
         CALL ASSERT(ierr.EQ.0)
 !
         DO i=1,high-low
            XX(xidx+i)=RSOLU(low+i)
         END DO
 !
-        call VecRestoreArray(Bp(KPTSC),XX,xidx,ierr)
+        call VecRestoreArray(b,XX,xidx,ierr)
         CALL ASSERT(ierr.EQ.0)
       ENDIF
 !

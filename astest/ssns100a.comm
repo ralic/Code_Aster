@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SOUS CHARGEMENT THERMIQUE. GRILLE_ISOT_LINE
 # ssns100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,8 +84,8 @@ T0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (50., 50., 50.,),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (50.,),
                                )
                       )
 
@@ -93,8 +93,8 @@ T1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (-50.,    -50.,       -50.,     ),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (-50., ),
                                )
                       )
 
@@ -102,8 +102,8 @@ T2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (-250.,   -250.,      -250.,    ),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (-250., ),
                                )
                       )
 
@@ -111,8 +111,8 @@ T3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (-150.,   -150.,      -150.,    ),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (-150.,  ),
                                )
                       )
 
@@ -120,8 +120,8 @@ T4=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (-250.,   -250.,      -250.,    ),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (-250., ),
                                )
                       )
 
@@ -129,8 +129,8 @@ T5=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (-50., -50., -50.,),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (-50.,),
                                )
                       )
 
@@ -138,8 +138,8 @@ T6=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (350., 350., 350.,),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (350., ),
                                )
                       )
 
@@ -147,8 +147,8 @@ T7=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (50., 50., 50.,),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (50.,),
                                )
                       )
 
@@ -156,8 +156,8 @@ T8=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (-450., -450., -450.,),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (-450.,),
                                )
                       )
 
@@ -165,8 +165,8 @@ T9=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (-110., -110., -110.,),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (-110., ),
                                )
                       )
 
@@ -174,8 +174,8 @@ T10=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (550., 550., 550.,),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (550., ),
                                )
                       )
 
@@ -183,8 +183,8 @@ T11=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (50., 50., 50.,),
+                           NOM_CMP = ('TEMP', ),
+                           VALE = (50.,),
                                )
                       )
 
@@ -203,10 +203,7 @@ LATEMP=CREA_RESU(
            _F( CHAM_GD = T9,  INST = 9.,),
            _F( CHAM_GD = T10,  INST = 10.,),
            _F( CHAM_GD = T11,  INST = 11.,))
-                 )
-TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
-    PREP_VRC2= _F(  MODELE=LEMOD, CARA_ELEM=LACAR, EVOL_THER = LATEMP, ),)
-
+)
 #
 # -------------------------------------------------
 # AFFECTATION DES MATERIAUX
@@ -223,7 +220,7 @@ MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
 
                                )
                                ),
-                          AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
+                          AFFE_VARC=  _F(TOUT='OUI',EVOL=LATEMP,NOM_VARC='TEMP',
                                      NOM_CHAM='TEMP',VALE_REF=50.0), )
 
 # ----------------------------------------------

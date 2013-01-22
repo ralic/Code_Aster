@@ -1,9 +1,9 @@
-# MODIF  DATE 26/11/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION D UNE FISSURE XFEM NON DEBOUCHANTE SOLLICITE EN MODE I
 # sslp318b.para = tps_job 250 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -138,17 +138,13 @@ for i in range(1,NPS-1) :
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
 #   DE FISSURE A GAUCHE
-    SIFL[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
+    SIFL[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',);
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
 #   DE FISSURE A DROITE
     SIFR[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],
-                            R_INF=RI,
-                            R_SUP=RS,
                             NUME_FOND=2,),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',);
@@ -178,7 +174,6 @@ for i in range(1,NPS-1) :
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
-                              N=0.,
                               MATER=steel),
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,
@@ -192,8 +187,8 @@ for i in range(1,NPS-1) :
 
 W=1000;
 sigma=1E6
-KI_calc = [2.2914396426887E+07, 2.5803527020117E+07, 2.8809230349646E+07]
-KII_calc = [7488.1641027817 , 9984.9337456055, 12334.809198766]
+KI_calc = [2.2914396426887E+07, 2.5803527020115E+07, 2.8809230349718E+07]
+KII_calc = [7488.1641027818 , 9984.9337455261,12334.809173228]
 
 for i in range(1,NPS-1) :
    

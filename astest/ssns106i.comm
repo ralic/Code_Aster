@@ -1,10 +1,10 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106i.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -239,26 +239,22 @@ CAEL=AFFE_CARA_ELEM(MODELE=MO,
                                SECTION=8.0E-4,
                                ANGL_REP=(0.0,0.0,),
                                EXCENTREMENT=(-(EP) * 0.4),
-                               COEF_RIGI_DRZ=COEF_DRZ,
-                               GRILLE_NCOU=1,),
+                               COEF_RIGI_DRZ=COEF_DRZ,),
                             _F(GROUP_MA='ACIER1T',
                                SECTION=8.0E-4,
                                ANGL_REP=(90.0,0.0,),
                                EXCENTREMENT=(-(EP) * 0.4),
-                               COEF_RIGI_DRZ=COEF_DRZ,
-                               GRILLE_NCOU=1,),
+                               COEF_RIGI_DRZ=COEF_DRZ,),
                             _F(GROUP_MA='ACIER2L',
                                SECTION=8.0E-4,
                                ANGL_REP=(0.0,0.0,),
                                EXCENTREMENT=(EP * 0.4),
-                               COEF_RIGI_DRZ=COEF_DRZ,
-                               GRILLE_NCOU=1,),
+                               COEF_RIGI_DRZ=COEF_DRZ,),
                             _F(GROUP_MA='ACIER2T',
                                SECTION=8.0E-4,
                                ANGL_REP=(90.0,0.0,),
                                EXCENTREMENT=(EP * 0.4),
-                               COEF_RIGI_DRZ=COEF_DRZ,
-                               GRILLE_NCOU=1,),),);
+                               COEF_RIGI_DRZ=COEF_DRZ,),),);
 
 # -- AFFECTATION DES CARACTERISTIQUES POUR GLRC_DM --
 
@@ -461,8 +457,8 @@ EPS_G=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               GROUP_NO='A4',
                               TOUT_CMP='OUI',),
                             ),);
-                            
-                            
+
+
 EPS_G=CALC_TABLE(reuse =EPS_G,
                     TABLE=EPS_G,
                     ACTION=(_F(
@@ -471,8 +467,8 @@ EPS_G=CALC_TABLE(reuse =EPS_G,
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-                         
-                         
+
+
 EPS_L=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='TABEPS',
                               RESULTAT=RESU_L1,
@@ -480,7 +476,7 @@ EPS_L=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               NOEUD='N2',
                               TOUT_CMP='OUI',),
                             ),);
-                            
+
 EPS_L=CALC_TABLE(reuse =EPS_L,
                     TABLE=EPS_L,
                     ACTION=(_F(
@@ -488,8 +484,8 @@ EPS_L=CALC_TABLE(reuse =EPS_L,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);                            
-                            
+                         ),),);
+
 
 TMYA4_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A4MY',
@@ -596,8 +592,8 @@ TD_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               NOM_CHAM='VARI_NOEU',
                               GROUP_NO='A4',
                               NOM_CMP=('V1','V2',),),
-                             ), 
-                              
+                             ),
+
                               );
 
 TD_G1=CALC_TABLE(reuse =TD_G1,
@@ -615,8 +611,8 @@ TMY_L1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                NOM_CHAM='REAC_NODA',
                                NOEUD='N2',
                                NOM_CMP='DRY',),
-                             ),  
-                               
+                             ),
+
                                );
 
 TMY_L1=CALC_TABLE(reuse =TMY_L1,
@@ -842,7 +838,7 @@ IMPR_TABLE(TABLE=TD_G1,);
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=-0.13103676925800001,
-           
+
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -851,7 +847,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.263298794743,
-           
+
            NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -860,7 +856,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.056250531356100003,
-           
+
            NOM_PARA='RXG_RX',
            TABLE=D_RX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -871,7 +867,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=-9.3348505521800001E-3,
-           
+
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -880,7 +876,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=-0.012607353814876,
-           
+
            NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -891,7 +887,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=-9.3348567721599999E-3,
-           
+
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -900,7 +896,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.41462862022188002,
-           
+
            NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -911,7 +907,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.116693873612,
-           
+
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -920,7 +916,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.35250253834054002,
-           
+
            NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -931,7 +927,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=1.15577096091E-3,
-           
+
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -940,7 +936,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=-0.011570744992754,
-           
+
            NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -951,7 +947,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=1.15587703383E-3,
-           
+
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -960,7 +956,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.29064531266061,
-           
+
            NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',

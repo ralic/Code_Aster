@@ -1,8 +1,8 @@
-#@ MODIF elements Messages  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements Messages  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,12 +47,12 @@ Conseil :
 
 4 : _(u"""
 Problème dans le calcul de l'option FORC_NODA / REAC_NODA :
- 
-Le nombre de sous-point du champ de contrainte contenu dans la SD n'est 
+
+Le nombre de sous-point du champ de contrainte contenu dans la SD n'est
 pas cohérent avec ce qui a été défini dans AFFE_CARA_ELEM.
- 
+
 Il est probable que le champ de contrainte a été extrait sur un seul sous-point.
- 
+
 Il est impératif d'utiliser un champ de contrainte complet pour le calcul de FORC_NODA.
 """),
 
@@ -185,10 +185,6 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
    grandeur du champ   :%(k3)s
 """),
 
-39 : _(u"""
- l'axe de référence est normal à un élément de plaque anisotrope
-"""),
-
 40 : _(u"""
   -> L'axe de référence pour le calcul du repère local est normal à un
      au moins un élément de plaque.
@@ -221,12 +217,6 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 
 48 : _(u"""
  impossibilité, la surface de l'élément est nulle.
-"""),
-
-49 : _(u"""
- l'axe de référence est normal à un élément de plaque
- calcul option impossible
- orienter ces mailles
 """),
 
 50 : _(u"""

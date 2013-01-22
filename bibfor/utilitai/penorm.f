@@ -4,9 +4,9 @@
       CHARACTER*8       MODELE
       CHARACTER*19      RESU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 22/01/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,10 +26,12 @@ C     OPERATEUR :  POST_ELEM
 C     TRAITEMENT DU MOT CLE-FACTEUR : "NORME"
 C     ------------------------------------------------------------------
 C
+C TOLE CRS_512
+C TOLE CRP_20
       INTEGER IBID,IRET,NBMATO,NR,ND,NP,NC,NI,NO,NLI,NLO,JNO,JIN,JCOEF
       INTEGER NBPAR,NBPMAX,INUM,NUMO,IRESMA,NBORDR,JLICMP,JLICM1,JMA,NN
       INTEGER JLICM2,I,NNCP,NBMA,JVALK,JVALR,JVALI,NCMPM,NCP,IFM,NIV
-      INTEGER JLICMX,NB30
+      INTEGER JLICMX,NB30,NCMPT
       PARAMETER(NBPMAX=13,NB30=30)
       REAL*8 R8B,PREC,INST,VNORM(1)
       COMPLEX*16 C16B
@@ -83,6 +85,7 @@ C     ==================================================
 
       EXIORD=.FALSE.
       EXITEN=.FALSE.
+      NCMPT =0
 
       IF (ND.NE.0) THEN
 
@@ -229,11 +232,9 @@ C         CONTRAINTES, DEFORMATION, TEMPERATURE, FLUX ...
      &       NOMGD(1:4).NE.'EPSI'.AND.
      &       NOMGD(1:4).NE.'TEMP'.AND.
      &       NOMGD(1:4).NE.'FLUX'.AND.
-     &       NOMGD(1:4).NE.'SIEF'.AND.
-     &       NOMGD(1:4).NE.'SIGM')GOTO 999
+     &       NOMGD(1:4).NE.'SIEF')GOTO 999
 
-          IF(NOMGD(1:4).EQ.'EPSI' .OR. NOMGD(1:4).EQ.'SIEF' .OR.
-     &       NOMGD(1:4).EQ.'SIGM')THEN
+          IF(NOMGD(1:4).EQ.'EPSI' .OR. NOMGD(1:4).EQ.'SIEF')THEN
              EXITEN=.TRUE.
           ELSE
              EXITEN=.FALSE.
@@ -325,20 +326,78 @@ C             (UTILE POUR LES TENSEURS) --
           DO 19 I=1,NB30
               CALL CODENT(I,'G',KI)
               ZK8(JLICMX+I-1)='X'//KI(1:LEN(KI))
+              ZR(JCOEF+I-1)=0.D0
  19       CONTINUE
-          DO 20 I=1,NB30
-             ZR(JCOEF+I-1)=1.D0
- 20       CONTINUE
-          IF(EXITEN)THEN
-             IF(NCMPM.EQ.6)THEN
-                NCP=4
-             ELSE
-                NCP=3
-             ENDIF
-             DO 21 I=NCP,NCMPM
-                ZR(JCOEF+I-1)=2.0D0
- 21          CONTINUE
+          IF(NOMGD(1:4).EQ.'DEPL')THEN
+            DO 20 I=1,NCMPM
+              IF(ZK8(JLICM1+I-1).EQ.'DX      '.OR.
+     &           ZK8(JLICM1+I-1).EQ.'DY      '.OR.
+     &           ZK8(JLICM1+I-1).EQ.'DZ      ')THEN
+                ZR(JCOEF+I-1)=1.D0
+                NCMPT=NCMPT+1
+              ELSE
+                ZR(JCOEF+I-1)=0.D0
+              ENDIF
+ 20         CONTINUE
+          ELSEIF(NOMGD(1:4).EQ.'TEMP')THEN
+            DO 21 I=1,NCMPM
+              IF(ZK8(JLICM1+I-1).EQ.'TEMP    ')THEN
+                ZR(JCOEF+I-1)=1.D0
+                NCMPT=NCMPT+1
+              ELSE
+                ZR(JCOEF+I-1)=0.D0
+              ENDIF
+ 21         CONTINUE
+          ELSEIF(NOMGD(1:4).EQ.'FLUX')THEN
+            DO 22 I=1,NCMPM
+              IF(ZK8(JLICM1+I-1).EQ.'FLUX    '.OR.
+     &           ZK8(JLICM1+I-1).EQ.'FLUY    '.OR.
+     &           ZK8(JLICM1+I-1).EQ.'FLUZ    ')THEN
+                ZR(JCOEF+I-1)=1.D0
+                NCMPT=NCMPT+1
+              ELSE
+                ZR(JCOEF+I-1)=0.D0
+              ENDIF
+ 22         CONTINUE
+          ELSEIF(NOMGD(1:4).EQ.'EPSI')THEN
+            DO 23 I=1,NCMPM
+              IF(ZK8(JLICM1+I-1).EQ.'EPXX    '.OR.
+     &           ZK8(JLICM1+I-1).EQ.'EPYY    '.OR.
+     &           ZK8(JLICM1+I-1).EQ.'EPZZ    ')THEN
+                ZR(JCOEF+I-1)=1.D0
+                NCMPT=NCMPT+1
+              ELSEIF(ZK8(JLICM1+I-1).EQ.'EPXY    '.OR.
+     &               ZK8(JLICM1+I-1).EQ.'EPXZ    '.OR.
+     &               ZK8(JLICM1+I-1).EQ.'EPYZ    ')THEN
+                ZR(JCOEF+I-1)=2.D0
+                NCMPT=NCMPT+1
+              ELSE
+                ZR(JCOEF+I-1)=0.D0
+              ENDIF
+ 23         CONTINUE
+          ELSEIF(NOMGD(1:4).EQ.'SIEF')THEN
+            DO 24 I=1,NCMPM
+              IF(ZK8(JLICM1+I-1).EQ.'SIXX    '.OR.
+     &           ZK8(JLICM1+I-1).EQ.'SIYY    '.OR.
+     &           ZK8(JLICM1+I-1).EQ.'SIZZ    ')THEN
+                ZR(JCOEF+I-1)=1.D0
+                NCMPT=NCMPT+1
+              ELSEIF(ZK8(JLICM1+I-1).EQ.'SIXY    '.OR.
+     &               ZK8(JLICM1+I-1).EQ.'SIXZ    '.OR.
+     &               ZK8(JLICM1+I-1).EQ.'SIYZ    ')THEN
+                ZR(JCOEF+I-1)=2.D0
+                NCMPT=NCMPT+1
+              ELSE
+                ZR(JCOEF+I-1)=0.D0
+              ENDIF
+ 24         CONTINUE
           ENDIF
+
+C       - INFOS
+          IF (NIV.GT.1) THEN
+            WRITE(6,*) '<PENORM> NOMBRE DE COMPOSANTES TRAITEES: ',NCMPT
+          ENDIF
+
           CALL MECACT('V',COEFCA,'MODELE',MODELE,'NEUT_R',NB30,
      &                ZK8(JLICMX),IBID,ZR(JCOEF),C16B,K8B)
 

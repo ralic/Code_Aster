@@ -1,8 +1,8 @@
       SUBROUTINE VDREPE ( NOMTEZ , MATEVN , MATEVG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,16 +44,16 @@ C -----  ARGUMENTS
            REAL*8            MATEVN(2,2,1), MATEVG(2,2,1)
 C -----  VARIABLES LOCALES
            CHARACTER*16      NOMTE
-           REAL*8            PGL(3,3), NORM
+           REAL*8            PGL(3,3),R8BID4(4)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     ---------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IDEC ,IGAU ,INO ,J ,JCOQU ,K 
-      INTEGER LZI ,LZR ,NB2 ,NPGSR 
-      REAL*8 ALPHA ,BETA ,C ,DX ,DY ,DZ ,PJDX 
-      REAL*8 PJDY ,PJDZ ,PS ,R8DGRD ,R8PREM ,S 
+      INTEGER I ,IDEC ,IGAU ,INO ,J ,JCOQU ,K
+      INTEGER LZI ,LZR ,NB2 ,NPGSR
+      REAL*8 ALPHA ,BETA ,C
+      REAL*8 R8DGRD ,S
 C-----------------------------------------------------------------------
       NOMTE  = NOMTEZ
 C
@@ -78,14 +78,6 @@ C     ============================
 C
       ALPHA = ZR(JCOQU+1) * R8DGRD()
       BETA  = ZR(JCOQU+2) * R8DGRD()
-C
-      DX = COS(BETA)*COS(ALPHA)
-      DY = COS(BETA)*SIN(ALPHA)
-      DZ = SIN(BETA)
-      NORM = SQRT (DX*DX + DY*DY + DZ*DZ)
-      DX = DX/NORM
-      DY = DY/NORM
-      DZ = DZ/NORM
 C
 C --- DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
 C --- AUX NOEUDS DE L'ELEMENT AU REPERE UTILISATEUR :
@@ -114,21 +106,8 @@ C ---   DETERMINATION DE LA PROJECTION DU VECTEUR X DU REPERE
 C ---   UTILISATEUR SUR LE FEUILLET TANGENT A LA COQUE AU NOEUD
 C ---   COURANT :
 C       -------
-        PS = DX*PGL(3,1) + DY*PGL(3,2) + DZ*PGL(3,3)
-        PJDX = DX - PS*PGL(3,1)
-        PJDY = DY - PS*PGL(3,2)
-        PJDZ = DZ - PS*PGL(3,3)
-        NORM = SQRT (PJDX*PJDX + PJDY*PJDY + PJDZ*PJDZ)
-        IF ( NORM .LE. R8PREM() ) THEN
-          CALL U2MESS('F','ELEMENTS_49')
-        ENDIF
 
-        PJDX = PJDX/NORM
-        PJDY = PJDY/NORM
-        PJDZ = PJDZ/NORM
-
-        C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
-        S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
+        CALL COQREP(PGL, ALPHA, BETA, R8BID4,R8BID4,C,S)
 
 C       -- (C,S) N'EST PAS TOUJOURS EXACTEMENT DE NORME=1:
         C=C/SQRT(C*C+S*S)
@@ -170,19 +149,7 @@ C ---   DETERMINATION DE LA PROJECTION DU VECTEUR X DU REPERE
 C ---   UTILISATEUR SUR LE FEUILLET TANGENT A LA COQUE AU POINT
 C ---   D'INTEGRATION COURANT :
 C       ---------------------
-        PS = DX*PGL(3,1) + DY*PGL(3,2) + DZ*PGL(3,3)
-        PJDX = DX - PS*PGL(3,1)
-        PJDY = DY - PS*PGL(3,2)
-        PJDZ = DZ - PS*PGL(3,3)
-        NORM = SQRT (PJDX*PJDX + PJDY*PJDY + PJDZ*PJDZ)
-        IF ( NORM .LE. R8PREM())  CALL U2MESS('F','ELEMENTS_49')
-
-        PJDX = PJDX/NORM
-        PJDY = PJDY/NORM
-        PJDZ = PJDZ/NORM
-
-        C = PJDX*PGL(1,1) + PJDY*PGL(1,2) + PJDZ*PGL(1,3)
-        S = PJDX*PGL(2,1) + PJDY*PGL(2,2) + PJDZ*PGL(2,3)
+        CALL COQREP(PGL, ALPHA, BETA, R8BID4,R8BID4,C,S)
 
 C       -- (C,S) N'EST PAS TOUJOURS EXACTEMENT DE NORME=1:
         C=C/SQRT(C*C+S*S)

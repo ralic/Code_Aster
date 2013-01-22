@@ -6,9 +6,9 @@
       CHARACTER*19       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 22/01/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,14 +40,15 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IAGNO ,IDBASE ,IDDL ,IDINSG ,IDVECG ,IE
-      INTEGER IER ,IERD ,IGN2 ,II ,INO ,INOEUD ,IORDR
-      INTEGER IP ,IPAS ,IPSDEL ,IRET ,ITRESU ,JFON ,JINST
-      INTEGER LDESC ,LFON ,LG1 ,LG2 ,LORDR ,LPAS ,LPRO
-      INTEGER LVAR ,MXMODE ,N1 ,N2 ,N3 ,NBEXCI ,NBINSG
-      INTEGER NBMODE ,NBORDR ,NBPARI ,NBPARK ,NBPARR ,NBPAS ,NEQ
-      INTEGER NFONCT ,NGN ,NUMCMP
-      REAL*8 ALPHA ,EPSI ,REP
+      INTEGER     I ,IAGNO ,IDBASE ,IDDL ,IDINSG ,IDVECG ,IE
+      INTEGER     IER ,IERD ,IGN2 ,II ,INO ,INOEUD ,IORDR
+      INTEGER     IP ,IPAS ,IPSDEL ,IRET ,ITRESU ,JFON ,JINST
+      INTEGER     LDESC ,LFON ,LG1 ,LG2 ,LORDR ,LPAS ,LPRO
+      INTEGER     LVAR ,MXMODE ,N1 ,N2 ,N3 ,NBEXCI ,NBINSG
+      INTEGER     NBMODE ,NBORDR ,NBPARI ,NBPARK ,NBPARR ,NBPAS ,NEQ
+      INTEGER     NFONCT ,NGN ,NUMCMP
+      REAL*8      ALPHA ,EPSI ,REP
+      COMPLEX*16  CBID
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -206,12 +207,13 @@ C
              CALL DISMOI('F','NOM_MAILLA'  ,MATRAS,'MATR_ASSE',IBID,
      &                   NOMA,IE)
            ELSE
-             NUME = ZK24(LREFE2+3)(1:14)
-             CALL DISMOI('F','NOM_MAILLA',NUME,'NUME_DDL',IBID,NOMA,IE)
-             CALL DISMOI('F','NB_EQUA'   ,NUME,'NUME_DDL',NEQ,K8B,IE)
-             CALL WKVECT('&&RFRGEN.VECT.PROPRE','V V R',
-     &                   NEQ*NBMODE,IDBASE)
-             CALL COPMO2(BASEMO,NEQ,NUME,NBMODE,ZR(IDBASE))
+            NUME = ZK24(LREFE2+3)(1:14)
+            CALL DISMOI('F','NOM_MAILLA',NUME,'NUME_DDL',IBID,NOMA,IE)
+            CALL DISMOI('F','NB_EQUA'   ,NUME,'NUME_DDL',NEQ,K8B,IE)
+            CALL WKVECT('&&RFRGEN.VECT.PROPRE','V V R',
+     &                  NEQ*NBMODE,IDBASE)
+            CALL COPMOD(BASEMO,'DEPL',NEQ,NUME,NBMODE,'R',ZR(IDBASE),
+     &                  CBID)
            ENDIF
 
            CALL GETVTX(' ','GROUP_NO',0,IARG,1,NOGNO,NGN)

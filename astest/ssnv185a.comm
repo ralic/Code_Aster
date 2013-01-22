@@ -1,9 +1,9 @@
-# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -173,10 +173,10 @@ RI=[2. , 0.666 , 1. , 1. , 1. , 2.1]
 RS=[4. , 1.666 , 2. , 3. , 4. , 3.9]
 
 nbc=len(RI)
-SIF1 = [None]*nbc
-SIF2 = [None]*nbc
-SIF3 = [None]*nbc
-SIF4 = [None]*nbc
+SIF1 = [None]*(nbc+1)
+SIF2 = [None]*(nbc+1)
+SIF3 = [None]*(nbc+1)
+SIF4 = [None]*(nbc+1)
 
 for i in range(0,nbc) :
    
@@ -219,6 +219,39 @@ for i in range(0,nbc) :
                   FOND_FISS=FISS,),);
 
    IMPR_TABLE(TABLE=SIF4[i],);
+
+SIF1[nbc]=CALC_G(RESULTAT=UTOT1,
+                  OPTION='CALC_K_G',
+                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                               LISSAGE_G='LAGRANGE',),
+                  THETA=_F(FOND_FISS=FISS,),);
+
+IMPR_TABLE(TABLE=SIF1[nbc],);
+
+SIF2[nbc]=CALC_G(RESULTAT=UTOT2,
+                  OPTION='CALC_K_G',
+                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                               LISSAGE_G='LAGRANGE',),
+                  THETA=_F(FOND_FISS=FISS,),);
+
+IMPR_TABLE(TABLE=SIF2[nbc],);
+
+SIF3[nbc]=CALC_G(RESULTAT=UTOT3,
+                  OPTION='CALC_K_G',
+                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                               LISSAGE_G='LAGRANGE',),
+                  THETA=_F(FOND_FISS=FISS,),);
+
+IMPR_TABLE(TABLE=SIF3[nbc],);
+
+SIF4[nbc]=CALC_G(RESULTAT=UTOT4,
+                  OPTION='CALC_K_G',
+                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                               LISSAGE_G='LAGRANGE',),
+                  THETA=_F(FOND_FISS=FISS,),);
+
+IMPR_TABLE(TABLE=SIF4[nbc],);
+
    
 #                   SOLUTIONS ANALYTIQUES DE K1 :
 # POUR LES CHARGEMENT 1 & 3 : VOIR CHABOCHE P.53
@@ -284,9 +317,17 @@ VAL_CALC = [  1.0514480546308E+07   ,
               1.0514459563251E+07   ,
               1.0514459408421E+07   ,
               5.9900341212632E+06   ,
-              4.524425369112E+06     ]
+              4.524425369112E+06    ,
+              1.0492020677104E+07   ,
+              1.0492020505783E+07   ,
+              0.99746597320430      ,
+              0.99746595806601      ,
+              1.0492304431554E+07   ,
+              1.0492304259512E+07   ,
+              5.9798081648442E+06   ,
+              4.512496183805E+06    ,]
               
-for i in range(0,nbc) :
+for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX', 
@@ -311,7 +352,7 @@ for i in range(0,nbc) :
               FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
               VALE_CALC=VAL_CALC[i*8+2], VALE_REFE=K1REF2,
               CRITERE='RELATIF',
-              PRECISION=0.002,   
+              PRECISION=0.003,   
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
@@ -320,7 +361,7 @@ for i in range(0,nbc) :
               FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
               VALE_CALC=VAL_CALC[i*8+3], VALE_REFE=K1REF2,
               CRITERE='RELATIF',
-              PRECISION=0.002,   
+              PRECISION=0.003,   
               REFERENCE='ANALYTIQUE',);           
 
    TEST_TABLE(TABLE=SIF3[i],

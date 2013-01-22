@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2013   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316c.para = tps_job 700 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,9 +140,7 @@ for i in range(nbcalc) :
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
-                         THETA=_F( FISSURE=FISS[i],
-                                   R_INF=RI,
-                                   R_SUP=RS,),
+                         THETA=_F( FISSURE=FISS[i],),
                          LISSAGE=_F( DEGRE=0,),);
 
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
@@ -172,12 +170,12 @@ for i in range(nbcalc) :
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
-                              N=0.,
                               MATER=ACIER),
                  RAYON=RS,
                  RAYON_TORE=2.6,
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
+                 CRIT_ANGL_BIFURCATION = 'ANGLE_IMPO',
                  INFO=0,);
 
 #----------------------------------------------
@@ -199,16 +197,16 @@ TABLST=[None]*nbcalc
 
 VALE_CALC=[1.8041124150159E-16,
  -3.4694469519536E-16,
- 1.8043431119257E-03,
+ 1.8043431119256E-03,
  1.8043431116201E-03,
  1.3571022489363E-04,
  1.357102248898E-04,
  -4.7632761026863E-03,
  -4.7632761030732E-03,
- 4.7044665481218E-04,
- 4.6963179106625E-04,
- 2.4885629741322E-03,
- 2.4032399881628E-03,]
+ 4.7044665481213E-04,
+ 4.6963179106617E-04,
+ 2.4885628523164E-03,
+ 2.4032399734274E-03,]
 
 # VERIFICATION DE LA POSITION DU CHAQUE FOND DE FISSURE CALCULE
 for i in range(1,nbcalc) :

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION DES OPTIONS TOPOLOGIQUES ZONE_MAJ ET TORE DANS DEFI_GROUP 
 # zzzz309c.para = tps_job 300 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -64,7 +64,6 @@ SIF10=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
                         _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K3'),
                         _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G'),
                         _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G_IRWIN'),
-                        _F(LISTE_R=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),PARA='BETA'),
                         _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_FOND'),
                         _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
                         _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
@@ -85,11 +84,11 @@ PROPA_FISS(MODELE=modX,
            LOI_PROPA=_F(LOI='PARIS',
                         C=1.,
                         M=3.,
-                        N=0.,
                         MATER=Alu),
            RAYON=1.,
            COMP_LINE=_F(COEF_MULT_MINI=0.,
                         COEF_MULT_MAXI=1.,),
+           CRIT_ANGL_BIFURCATION = 'PLAN',
            );
 
 grille = DEFI_GROUP(reuse=grille,

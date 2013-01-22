@@ -1,9 +1,9 @@
-# MODIF  DATE 26/11/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316f.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -136,18 +136,20 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 RI = 0.2
 RS = 0.8
 
-VAL_CALC = [-4.0136417592262E-09,
-            -4.0136421269876E-09,
-            6.6062516801579E-05 ,
-            6.6062516801399E-05 ,               
-            -6.5419522021518E-04,
-            -6.5419522021594E-04,
-            -1.3052763748307E-03,
-            -1.305276374832E-03 ,
-            0.014633932365494   ,
-            0.014631973198177   ,
-            -1.2786460795874E-03,
-            -1.2949163485884E-03 ]
+VAL_CALC=[
+ -4.0136417592262E-09,
+ -4.0136421269876E-09,
+ 6.6062516801579E-05,
+ 6.6062516801399E-05,
+ -6.5419522021576E-04,
+ -6.5419522021641E-04,
+ -1.3052763748304E-03,
+ -1.3052763748319E-03,
+ 0.014631973198178,
+ 0.014631973198177,
+ -1.2949163485871E-03,
+ -1.2949163485888E-03,
+]
             
 for i in range(nbcalc) :
 
@@ -162,9 +164,7 @@ for i in range(nbcalc) :
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
-                         THETA=_F( FISSURE=FISS[i],
-                                   R_INF=RI,
-                                   R_SUP=RS,),
+                         THETA=_F( FISSURE=FISS[i],),
                          LISSAGE=_F( DEGRE=0,),);
 
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
@@ -194,12 +194,12 @@ for i in range(nbcalc) :
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
-                              N=0.,
                               MATER=ACIER),
                  RAYON=RS,
                  ZONE_MAJ='TOUT',
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
+                 CRIT_ANGL_BIFURCATION = 'ANGLE_IMPO',
                  INFO=0,);
 
 #----------------------------------------------

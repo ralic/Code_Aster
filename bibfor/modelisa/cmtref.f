@@ -6,7 +6,7 @@
       CHARACTER*8 CHMAT,NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,11 +35,12 @@ C
       INTEGER NCCM1,NCTRF,JNCMP,JVALV,NUCM1,NUTRF,KK
       INTEGER ICO,IBID,NM,NBMA,NINTER,CODINT,JLINT,NCM1,NTRF
       REAL*8 TREF,R8VIDE,VALR(2)
-      CHARACTER*8 K8B,NOCP,MATER
+      CHARACTER*8 K8B,MATER,NOCP
       CHARACTER*8 KTREF,NOMGD
       CHARACTER*19 CARCM1,CARCM2,CARTRF
 C ----------------------------------------------------------------------
 C
+      write(6,*) 'AJACOT DEBUT CMTREF'
       CALL JEMARQ()
 C
       CARCM1 = CHMAT//'.CHAMP_MAT'
@@ -87,20 +88,21 @@ C     ---------------------------------------------------------------
         NUCM1 = ZI(JDCM1-1+3+2* (KCM1-1)+2)
 C        -- ON STOCKE LES NOMS DES MATERIAUX AFFECTES (28 MAX) :
         ICO = 0
-        NOCP='X'
+        NOCP='MATXX'
         DO 20,KK = 1,28
           MATER = ZK8(JVCM1-1+NCCM1* (KCM1-1)+KK)
           IF (MATER.EQ.' ') GOTO 20
           ICO = ICO + 1
           ZK8(JVALV-1+ICO) = MATER
-          CALL CODENT(ICO,'G',NOCP(2:4))
+          CALL CODENT(ICO,'G',NOCP(4:5))
           ZK8(JNCMP+ICO-1) = NOCP
    20   CONTINUE
         NM = ICO
         CALL ASSERT(NM.GT.0 .AND. NM.LE.28)
-        ZK8(JNCMP-1+NM+1) = 'X29'
+        ZK8(JNCMP-1+NM+1) = 'LREF'
         ZK8(JVALV-1+NM+1) = 'TREF=>'
-        ZK8(JNCMP-1+NM+2) = 'X30'
+        ZK8(JNCMP-1+NM+2) = 'VREF'
+
 C        -- LISTE DES MAILLES CONCERNEES PAR KCM1 :
         IF (CODCM1.EQ.3) THEN
            CALL JEVEUO(JEXNUM(CARCM1//'.LIMA',NUCM1),'L',JLCM1)
@@ -190,4 +192,5 @@ C     ---------------------------------------------------------------
 C
    50 CONTINUE
       CALL JEDEMA()
+      write(6,*) 'AJACOT FIN CMTREF'
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2013   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 21/01/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE  VALIDATION DU CALCUL DE L'ENERGIE POTENTIELLE POUR LES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# zzzz330b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+# zzzz330b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 
 DEBUT(CODE=_F(NOM='ZZZZ330B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 

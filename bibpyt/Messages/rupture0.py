@@ -1,8 +1,8 @@
-#@ MODIF rupture0 Messages  DATE 17/12/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF rupture0 Messages  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,7 +137,7 @@ noeuds du fond de fissure est importante.
 La taille minimale vaut : %(r1)f
 La taille maximale vaut : %(r2)f
 -> Risque et Conseil :
-Il a été choisi de multiplier par quatre la taille maximale des mailles connectées aux
+Il a été choisi de multiplier par %(i1)d la taille maximale des mailles connectées aux
 noeuds du fond de fissure pour calculer le paramètre ABSC_CURV_MAXI. Or, si cette taille
 est importante, vous risquez de post-traiter vos résultats sur une zone trop éloignée
 du fond de fissure et d'obtenir des valeurs de facteurs d'intensité moins précises.

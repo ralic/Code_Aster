@@ -4,9 +4,9 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,11 +39,11 @@ C     ------------------------------------------------------------------
 C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 C-----------------------------------------------------------------------
-      INTEGER LCASTR ,LMATER ,LSECT ,LX 
+      INTEGER LCASTR ,LMATER ,LSECT ,LX
 C-----------------------------------------------------------------------
       CALL JEVECH ('PMATERC', 'L', LMATER )
 C
-      CALL RCCOMA ( ZI(LMATER), 'ELAS', PHENOM, CODRES )
+      CALL RCCOMA (ZI(LMATER),'ELAS',1,PHENOM,CODRES)
 C
       IF ( PHENOM .EQ. 'ELAS'          .OR.
      &     PHENOM .EQ. 'ELAS_FO'       .OR.

@@ -1,12 +1,12 @@
-      SUBROUTINE COQREP(PGL, ALPHA, BETA, T2EV, T2VE)
+      SUBROUTINE COQREP(PGL, ALPHA, BETA, T2EV, T2VE,C,S)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      REAL*8 PGL(3,3), T2EV(*), T2VE(*), ALPHA, BETA
+      REAL*8 PGL(3,3), T2EV(*), T2VE(*), ALPHA, BETA,C,S
 C     ---------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,13 +33,13 @@ C
 C     ==> ALPHA, BETA EN RADIAN
 C
 C     ------------------------------------------------------------------
-      REAL*8     DX, DY, DZ, S, C, NORM
+      REAL*8     DX, DY, DZ,NORM
       REAL*8     PS, PJDX, PJDY, PJDZ
       REAL*8     R8PREM
 C     LE VECTEUR EST NORME
       DX = COS(BETA)*COS(ALPHA)
       DY = COS(BETA)*SIN(ALPHA)
-      DZ = SIN(BETA)
+      DZ = -SIN(BETA)
 C
       PS = DX*PGL(3,1) + DY*PGL(3,2) + DZ*PGL(3,3)
       PJDX = DX - PS*PGL(3,1)
@@ -47,7 +47,7 @@ C
       PJDZ = DZ - PS*PGL(3,3)
       NORM = SQRT (PJDX*PJDX + PJDY*PJDY + PJDZ*PJDZ)
       IF ( NORM .LE. R8PREM() ) THEN
-          CALL U2MESS('F','ELEMENTS_49')
+          CALL U2MESS('F','ELEMENTS_40')
       ENDIF
 C
       PJDX = PJDX/NORM

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION D'UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
 # sslp315d.para = tps_job 250 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -136,9 +136,7 @@ for i in range(0,NPS) :
                      );
 
     SIF[i]=CALC_G(OPTION='CALC_K_G',
-                  THETA=_F(FISSURE=fiss[i],
-                           R_INF=RI,
-                           R_SUP=RS,),
+                  THETA=_F(FISSURE=fiss[i],),
                   RESULTAT=ResX[i],
                   INFO=2,);
 
@@ -155,7 +153,6 @@ for i in range(0,NPS) :
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
-                              N=0.,
                               MATER=acier),
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
@@ -219,7 +216,7 @@ DISTMAX=2.0
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=1.264553079,
+           VALE_CALC=1.2355102130238,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
@@ -230,7 +227,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=0.709903998,
+           VALE_CALC=0.73934928945071,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MIN',
@@ -241,7 +238,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=0.278733766,
+           VALE_CALC=0.27482273769134,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
@@ -252,7 +249,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=1.814529379,
+           VALE_CALC=1.8011907159967,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MIN',
@@ -288,3 +285,4 @@ for i in range(0,NPS-1) :
 
 
 FIN();
+

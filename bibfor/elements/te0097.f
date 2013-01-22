@@ -1,6 +1,6 @@
       SUBROUTINE TE0097(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 22/01/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,73 +18,40 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
+C.......................................................................
+
+C     BUT: CALCUL DES CONTRAINTES AUX POINTS DE GAUSS
+C          ELEMENTS INCOMPRESSIBLE EN PETITES DEFORMATIONS
+
+C          OPTION : 'SIEF_ELGA'
+
+C     ENTREES  ---> OPTION : OPTION DE CALCUL
+C              ---> NOMTE  : NOM DU TYPE ELEMENT
+C.......................................................................
+
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*16 OPTION,NOMTE
 
-C ......................................................................
-C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-C        ELEMENTS MIXTES 2D ET 3D (3CH UNIQUEMENT)
-C                          OPTION : 'CHAR_MECA_TEMP_R'
+      CHARACTER*16 NOMTE,OPTION
+      REAL*8 SIGMA(162),REPERE(7),INSTAN,NHARM
+      REAL*8 BARY(3)
+      INTEGER NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO
+      INTEGER IDIM
 
-C    - ARGUMENTS:
-C        DONNEES:      OPTION       -->  OPTION DE CALCUL
-C                      NOMTE        -->  NOM DU TYPE ELEMENT
-C ......................................................................
-
-      INTEGER NBSIGM, IDIM, NDDL1, IRET
-      INTEGER NDIM, NNO1, NNO2, NNOS, NPG1, NPG2, IPOIDS
-      INTEGER IDFDE1, IDFDE2, JGANO, IVF1, IVF2, NBSIG
-      INTEGER IGEOM, IMATE, ITEMPS, KK, N, I, IVECTU, NTROU
-
-      REAL*8 BSIGMA(81), SIGTH(162), REPERE(7), INSTAN, NHARM, BARY(3)
-      REAL*8 ZERO
-
-      CHARACTER*4 FAMI
-      CHARACTER*8 LIELRF(10)
-
-
-C     QUELLE FORMULATION MIXTE 3CH OU 2CH
-      IF (NOMTE(1:4).EQ.'MIAX' .OR.
-     &    NOMTE(1:4).EQ.'MIPL' .OR.
-     &    NOMTE(1:4).EQ.'GIPL' .OR.
-     &    NOMTE(1:4).EQ.'GIAX' .OR.
-     &    NOMTE(1:4).EQ.'LGAX' .OR.
-     &    NOMTE(1:4).EQ.'LGPL') THEN
-        IF (NOMTE(1:6).EQ.'MIAXUP' .OR.
-     &      NOMTE(1:6).EQ.'MIPLUP') THEN
-          NDDL1 = 3
-        ELSE
-          NDDL1 = 4
-        ENDIF
-        CALL METAU1(OPTION,NOMTE,IRET)
-      ELSEIF (NOMTE(1:4).EQ.'MINC' .OR.
-     &        NOMTE(1:4).EQ.'GDIN' .OR.
-     &        NOMTE(1:4).EQ.'LGIN') THEN
-        IF (NOMTE(1:6).EQ.'MINCUP') THEN
-          NDDL1 = 4
-        ELSE
-          NDDL1 = 5
-        ENDIF
-        CALL METAU2(OPTION,NOMTE,IRET)
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
-
-      IF(IRET.EQ.1)  GO TO 40
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
-      CALL ELREF2(NOMTE,10,LIELRF,NTROU)
-      CALL ASSERT(NTROU.GE.2)
+C-----------------------------------------------------------------------
+      INTEGER I ,ICONT ,IDEPL ,IGEOM ,IMATE ,NBSIG, ITABOU(7), IRET
+      INTEGER IGAU, ISIG
+      REAL*8 ZERO
+C-----------------------------------------------------------------------
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 
-      FAMI = 'RIGI'
-      CALL ELREF4(LIELRF(1),FAMI,NDIM,NNO1,NNOS,NPG1,IPOIDS,IVF1,
-     &                                              IDFDE1,JGANO)
-
-      CALL ELREF4(LIELRF(2),FAMI,NDIM,NNO2,NNOS,NPG2,IPOIDS,IVF2,
-     &                                              IDFDE2,JGANO)
+C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
+C      -----------------------------------------
+      NBSIG = NBSIGM()
 
 C --- INITIALISATIONS :
 C     -----------------
@@ -92,17 +59,9 @@ C     -----------------
       INSTAN = ZERO
       NHARM = ZERO
 
-C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-C      -----------------------------------------
-      NBSIG = NBSIGM()
-
       DO 10 I = 1,NBSIG*NPG1
-        SIGTH(I) = ZERO
+        SIGMA(I) = ZERO
    10 CONTINUE
-
-      DO 20 I = 1,NDIM*NNO1
-        BSIGMA(I) = ZERO
-   20 CONTINUE
 
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 C      ----------------------------------------------
@@ -119,76 +78,35 @@ C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
       BARY(1) = 0.D0
       BARY(2) = 0.D0
       BARY(3) = 0.D0
-      DO 150 I = 1,NNO1
+      DO 150 I = 1,NNO
         DO 140 IDIM = 1,NDIM
-          BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO1
+          BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
  140    CONTINUE
  150  CONTINUE
       CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
 
-C ---- RECUPERATION DE L'INSTANT
-C      -------------------------
-      CALL TECACH('ONN','PTEMPSR','L',1,ITEMPS,IRET)
-      IF (ITEMPS.NE.0) INSTAN = ZR(ITEMPS)
+C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
+C      --------------------------------------------------
+      CALL JEVECH('PDEPLAR','L',IDEPL)
 
-C ---- CALCUL DES CONTRAINTES THERMIQUES
-C ---- AUX POINTS D'INTEGRATION DE L'ELEMENT :
+      CALL SIGVMC('RIGI',NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
+     &            IDFDE,ZR(IGEOM),ZR(IDEPL),
+     &            INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA)
+
+
+C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
+C ---- AVEC LE VECTEUR DES CONTRAINTES AUX POINTS D'INTEGRATION
 C      --------------------------------------------------------
-      CALL SIGTMC(FAMI,NNO1,NDIM,NBSIG,NPG1,ZR(IVF1),
-     &            ZR(IGEOM),
-     &            INSTAN,ZI(IMATE),REPERE,OPTION,SIGTH)
+      CALL JEVECH('PCONTRR','E',ICONT)
 
-C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE
-C ---- OU DE SECHAGE (BT*SIGTH)
-C      ----------------------------------------------------------
-      CALL BSIGMC ( NNO1,NDIM,NBSIG,NPG1, IPOIDS, IVF1, IDFDE1,
-     &              ZR(IGEOM), NHARM, SIGTH, BSIGMA )
+      DO 80 IGAU = 1, NPG1
+      DO 81 ISIG = 1, NBSIG+1
+        IF(ISIG.LE.NBSIG)THEN
+      ZR(ICONT+(NBSIG+1)*(IGAU-1)+ISIG-1)=SIGMA(NBSIG*(IGAU-1)+ISIG)
+        ELSE
+          ZR(ICONT+(NBSIG+1)*(IGAU-1)+ISIG-1) = 0.D0
+        ENDIF
+81    CONTINUE
+80    CONTINUE
 
-C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE
-C ---- VECTEUR DES FORCES D'ORIGINE THERMIQUE
-C      -------------------------------------
-      CALL JEVECH('PVECTUR','E',IVECTU)
-
-      IF(NOMTE(1:4).EQ.'GIPL' .OR.
-     &   NOMTE(1:4).EQ.'GIAX' .OR.
-     &   NOMTE(1:4).EQ.'GDIN' .OR.
-     &   NOMTE(1:4).EQ.'LGIN' .OR.
-     &   NOMTE(1:4).EQ.'LGAX' .OR.
-     &   NOMTE(1:4).EQ.'LGPL')THEN
-C - ELEMENT P2-P1-P2
-        KK = 0
-        DO 50 N = 1, NNO1
-          DO 55 I = 1,NDDL1
-            IF (I.LE.NDIM) THEN
-              ZR(IVECTU+KK) = BSIGMA((N-1)*NDIM+I)
-              KK = KK + 1
-            END IF
-            IF (I.GE.(NDIM+1) .AND. N.LE.NNO2) THEN
-              ZR(IVECTU+KK) = 0.D0
-              KK = KK + 1
-            END IF
-            IF (I.GT.(NDIM+1) .AND. N.GT.NNO2) THEN
-              ZR(IVECTU+KK) = 0.D0
-              KK = KK + 1
-            END IF
- 55       CONTINUE
- 50     CONTINUE
-      ELSE
-C - ELEMENTS P2-P1 ou P2-P1-P1
-        KK = 0
-        DO 30 N = 1, NNO1
-          DO 35 I = 1,NDDL1
-            IF (I.LE.NDIM) THEN
-              ZR(IVECTU+KK) = BSIGMA((N-1)*NDIM+I)
-              KK = KK + 1
-            END IF
-            IF (I.GE.(NDIM+1) .AND. N.LE.NNO2) THEN
-              ZR(IVECTU+KK) = 0.D0
-              KK = KK + 1
-            END IF
- 35       CONTINUE
- 30     CONTINUE
-      ENDIF
-
-   40 CONTINUE
       END

@@ -1,8 +1,8 @@
       SUBROUTINE NUGLLO(NU,BASE,SOLVEU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ASSEMBLA  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -108,6 +108,8 @@ C     REPERTORIEES DANS LE REPERTOIRE TEMPO. .MATAS.LILI
 
 C----------------------------------------------------------------------
 
+      CALL JEMARQ()
+
 C---- SUPPRESSION DU .NUML
       CALL DETRSD('NUML_DDL',NU)
 
@@ -187,16 +189,16 @@ C     --------------------------------------------------------------
         CALL JENUNO(JEXNUM(NU//'.NUME.LILI',ILI),NOMLIG)
         IF (ILI.EQ.2) CALL ASSERT(NOMLIG.EQ.LIGRMO)
         DO 90 IGR=1,ZZNGEL(ILI)
-          IF (LDGREL .AND. MOD(IGR,NBPROC).NE.RANG)GOTO 90
+          IF (LDGREL .AND. MOD(IGR,NBPROC).NE.RANG) GOTO 90
           NEL=ZZNELG(ILI,IGR)
           DO 80 IEL=1,NEL
             NUMA=ZZLIEL(ILI,IGR,IEL)
             CALL ASSERT(NUMA.NE.0)
-            IF (LDIST .AND. .NOT.LDGREL) THEN
+            IF (.NOT.LDGREL) THEN
               IF (NUMA.GT.0) THEN
-                IF (ZI(JNUMSD-1+NUMA).NE.RANG)GOTO 80
+                IF (ZI(JNUMSD-1+NUMA).NE.RANG) GOTO 80
               ELSE
-                IF (RANG.NE.0)GOTO 80
+                IF (RANG.NE.0) GOTO 80
               ENDIF
             ENDIF
 
@@ -205,7 +207,7 @@ C             -- MAILLE DU MAILLAGE :
               NBNO=ZI(JCONX2+NUMA)-ZI(JCONX2+NUMA-1)
               DO 40 INO=1,NBNO
                 NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMA-1)+INO-1)
-                IF (ZI(JTANO+NUNO-1).EQ.1)GOTO 40
+                IF (ZI(JTANO+NUNO-1).EQ.1) GOTO 40
 
                 DDL1G=ZZPRNO(1,NUNO,1)
                 NDDL=ZZPRNO(1,NUNO,2)
@@ -234,12 +236,12 @@ C             -- MAILLE TARDIVE :
                   NUNO=-NUNO
                   ILIB=ILI
                 ELSE
-                  IF (ZI(JTANO+NUNO-1).EQ.1)GOTO 70
+                  IF (ZI(JTANO+NUNO-1).EQ.1) GOTO 70
                   ILIB=1
                   ZI(JTANO+NUNO-1)=1
                 ENDIF
                 DDL1G=ZZPRNO(ILIB,NUNO,1)
-                IF (ZI(JDDLP+DDL1G).EQ.1)GOTO 70
+                IF (ZI(JDDLP+DDL1G).EQ.1) GOTO 70
                 ZI(IZZPR2(ILIB,NUNO,1))=NUMINC
                 NDDL=ZZPRNO(ILIB,NUNO,2)
                 ZI(IZZPR2(ILIB,NUNO,2))=NDDL
@@ -301,12 +303,14 @@ C---- CREATION DU .NUML.NULG ET DU .NUML.NUEQ
 
       CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
 C     POUR PETSC ON A BESOIN D'INFORMATIONS SUPPLEMENTAIRES
-      IF ( ZK24(JSLVK).EQ.'PETSC' ) 
+      IF ( ZK24(JSLVK).EQ.'PETSC' )
      &  CALL NUPODD(NU,BASE,RANG,NBPROC)
 
       CALL JEDETR('&&NUGLLO.TAB_NO')
       CALL JEDETR('&&NUGLLO.TAB_EQ')
       CALL JEDETR('&&NUGLLO.DELG_TMP')
       CALL JEDETR('&&NUGLLO.DDL_PRES')
+
+      CALL JEDEMA()
 
       END

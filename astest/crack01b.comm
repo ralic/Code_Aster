@@ -1,9 +1,9 @@
-# MODIF  DATE 29/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION DE L'ASSISTANT CRACK ANALYSIS DU MODULE ASTER SALOME-MECA : FISSURE CIRCULAIRE EN MILIEU INFINI
 # crack01b.para = tps_job 20 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -167,6 +167,7 @@ nb_fond = dict['NOMBRE'][0]
 DETRUIRE(CONCEPT=_F(NOM=NB_FOND),INFO=1)
 
 G1 = [None]*nb_fond
+G2 = [None]*nb_fond
 
 for i in range(nb_fond) :
    
@@ -179,6 +180,12 @@ for i in range(nb_fond) :
 
    IMPR_TABLE(TABLE=G1[i])
 
+#  calcul sans R_INF et R_SUP
+   G2[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
+                         NUME_FOND=i+1,),
+                RESULTAT=RESU,
+                OPTION='CALC_K_G')
+
 #----------------------------------------------------------------------
 #              TEST 
 #----------------------------------------------------------------------
@@ -189,16 +196,31 @@ K1_REF=1.595769E6
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=11.246952125,
+           VALE_CALC=11.246952124893,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=G1_0,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC= 1.63734387E+06,
+           VALE_CALC=1.637343866876E+06,
            VALE_REFE=1.595769E6,
            NOM_PARA='K1',
            TABLE=G1_0,)
 
+#  sans R_INF et R_SUP
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=11.253590078761,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=G2_0,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=1.6164043187414E+06,
+           VALE_REFE=1.595769E6,
+           NOM_PARA='K1',
+           TABLE=G2_0,)
 FIN()
+

@@ -1,10 +1,10 @@
-# MODIF  DATE 16/10/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 21/01/2013   AUTEUR FLEJOU J-L.FLEJOU 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106e.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -159,26 +159,22 @@ CAEL=AFFE_CARA_ELEM(MODELE=MO,
                                SECTION=8.0E-4,
                                ANGL_REP=(0.0,0.0,),
                                EXCENTREMENT=(-(EP) * 0.4),
-                               COEF_RIGI_DRZ=1.E-10,
-                               GRILLE_NCOU=1,),
+                               COEF_RIGI_DRZ=1.E-10,),
                             _F(GROUP_MA='ACIER1T',
                                SECTION=8.0E-4,
                                ANGL_REP=(90.0,0.0,),
                                EXCENTREMENT=(-(EP) * 0.4),
-                               COEF_RIGI_DRZ=1.E-10,
-                               GRILLE_NCOU=1,),
+                               COEF_RIGI_DRZ=1.E-10,),
                             _F(GROUP_MA='ACIER2L',
                                SECTION=8.0E-4,
                                ANGL_REP=(0.0,0.0,),
                                EXCENTREMENT=(EP * 0.4),
-                               COEF_RIGI_DRZ=1.E-10,
-                               GRILLE_NCOU=1,),
+                               COEF_RIGI_DRZ=1.E-10,),
                             _F(GROUP_MA='ACIER2T',
                                SECTION=8.0E-4,
                                ANGL_REP=(90.0,0.0,),
                                EXCENTREMENT=(EP * 0.4),
-                               COEF_RIGI_DRZ=1.E-10,
-                               GRILLE_NCOU=1,),),);
+                               COEF_RIGI_DRZ=1.E-10,),),);
 
 CAEL_G=AFFE_CARA_ELEM(MODELE=MO_G,
                       COQUE=_F(GROUP_MA='DALLE_G',
@@ -248,7 +244,7 @@ RESU_R=STAT_NON_LINE(MODELE=MO,
 
 RESU_R=CALC_CHAMP(reuse =RESU_R,RESULTAT=RESU_R,PRECISION=1.E-3,
              FORCE=('FORC_NODA',),)
-             
+
 RESU_G=STAT_NON_LINE(MODELE=MO_G,
                      CHAM_MATER=MATER,
                      CARA_ELEM=CAEL_G,
@@ -451,7 +447,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N2',
                    NOM_CMP='DX',
                    VALE_CALC=0.0,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(INST=1.0,
@@ -460,7 +456,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N2',
                    NOM_CMP='DZ',
                    VALE_CALC=-3.0000000000000001E-3,
-                   
+
                    ),
                 _F(INST=1.0,
                    RESULTAT=RESU_G,
@@ -468,7 +464,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N2',
                    NOM_CMP='DY',
                    VALE_CALC=1.50588134864E4,
-                   
+
                    ),
                 _F(INST=1.0,
                    RESULTAT=RESU_G,
@@ -476,7 +472,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N1',
                    NOM_CMP='V1',
                    VALE_CALC=0.0,
-                   
+
                    MAILLE='GM182',),
                 _F(INST=1.0,
                    RESULTAT=RESU_G,
@@ -484,7 +480,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N1',
                    NOM_CMP='V2',
                    VALE_CALC=1.1781079999999999,
-                   
+
                    MAILLE='GM182',),
                 _F(INST=2.7999999999999998,
                    RESULTAT=RESU_G,
@@ -492,7 +488,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N4',
                    NOM_CMP='DX',
                    VALE_CALC=-8.7999999999999998E-05,
-                   
+
                    ),
                 _F(INST=2.7999999999999998,
                    RESULTAT=RESU_G,
@@ -500,7 +496,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N4',
                    NOM_CMP='DZ',
                    VALE_CALC=1.9504378E-3,
-                   
+
                    ),
                 _F(INST=2.7999999999999998,
                    RESULTAT=RESU_G,
@@ -508,7 +504,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N4',
                    NOM_CMP='DY',
                    VALE_CALC=-1.20470496585E4,
-                   
+
                    ),
                 _F(INST=2.7999999999999998,
                    RESULTAT=RESU_G,
@@ -516,7 +512,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N1',
                    NOM_CMP='V1',
                    VALE_CALC=0.75196359999999995,
-                   
+
                    MAILLE='GM182',),
                 _F(INST=2.7999999999999998,
                    RESULTAT=RESU_G,
@@ -524,7 +520,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N1',
                    NOM_CMP='V2',
                    VALE_CALC=1.1781079999999999,
-                   
+
                    MAILLE='GM182',),
                 _F(INST=3.0,
                    RESULTAT=RESU_G,
@@ -532,7 +528,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N1',
                    NOM_CMP='V1',
                    VALE_CALC=1.162571,
-                   
+
                    MAILLE='GM182',),
                 _F(INST=3.0,
                    RESULTAT=RESU_G,
@@ -540,7 +536,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOEUD='N1',
                    NOM_CMP='V2',
                    VALE_CALC=1.1781079999999999,
-                   
+
                    MAILLE='GM182',),
                 ),
           )

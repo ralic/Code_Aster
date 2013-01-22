@@ -13,9 +13,9 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 22/01/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,10 +66,11 @@ C
       INTEGER      IARG,JPSDEL,NPSDEL,IIPSDL
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IB ,IBID ,IDDEEQ ,IEQ ,II ,IINST ,IMOD
-      INTEGER IMODCO ,INUM ,IRET ,JDEPL ,JDRIF ,JMOD ,JORDR
-      INTEGER JVALE ,L1 ,LPROL ,M1 ,N1 ,N2 ,N3
-      INTEGER N4 ,N5 ,NA ,NBV ,NF ,NM
+      INTEGER      IB ,IBID ,IDDEEQ ,IEQ ,II ,IINST ,IMOD
+      INTEGER      IMODCO ,INUM ,IRET ,JDEPL ,JDRIF ,JMOD ,JORDR
+      INTEGER      JVALE ,L1 ,LPROL ,M1 ,N1 ,N2 ,N3
+      INTEGER      N4 ,N5 ,NA ,NBV ,NF ,NM
+      COMPLEX*16   CBID
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0
@@ -235,7 +236,7 @@ C
             CALL JELIBE(CHAMNO//'.VALE')
 C
 C           --- MISE A ZERO DES DDL DE LAGRANGE
-            CALL ZERLAG(ZR(JPSDEL+(I-1)*NEQ),NEQ,ZI(IDDEEQ))
+            CALL ZERLAG('R',ZR(JPSDEL+(I-1)*NEQ),CBID,NEQ,ZI(IDDEEQ))
 C
           ELSE
             CALL ASSERT(.FALSE.)

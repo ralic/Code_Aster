@@ -1,6 +1,6 @@
       SUBROUTINE TE0583(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -218,7 +218,7 @@ C CAS PESANTEUR ET FORCE LINEIQUE
         DO 250 ITER = 1,NITER
           IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
             CALL JEVECH('PMATERC','L',LMATER)
-            CALL RCCOMA(ZI(LMATER),'ELAS',PHENOM,CODRES)
+            CALL RCCOMA(ZI(LMATER),'ELAS',1,PHENOM,CODRES)
             IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
      &          PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
      &          PHENOM.EQ.'ELAS_ORTH' .OR.
@@ -226,7 +226,7 @@ C CAS PESANTEUR ET FORCE LINEIQUE
                 FAMI='FPG1'
                 KPG=1
                 SPT=1
-                POUM='+'              
+                POUM='+'
                 CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(LMATER),' ',PHENOM,0,
      &                      ' ',R8B,1,'RHO',RHO,CODRES,1)
             ELSE

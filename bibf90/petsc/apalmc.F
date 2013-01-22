@@ -1,9 +1,9 @@
       SUBROUTINE APALMC(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APALMC PETSC  DATE 19/12/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF APALMC PETSC  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -61,8 +61,8 @@
       CHARACTER*14  NONUS(NMXINS)
       Mat              Ap(NMXINS)
       KSP              Kp(NMXINS)
-      Vec              Bp(NMXINS),x
-      COMMON /SPETSC/ Ap,Kp,Bp,x,NOMATS,NOSOLS,NONUS
+      Vec              b,x
+      COMMON /SPETSC/ Ap,Kp,b,x,NOMATS,NOSOLS,NONUS
 !----------------------------------------------------------------
 !     Variables PETSc
       PetscInt bs,low,high,neq,ierr

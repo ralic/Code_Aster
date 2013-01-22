@@ -11,9 +11,9 @@
      &                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 22/01/2013   AUTEUR BERRO H.BERRO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,6 +55,7 @@ C-----------------------------------------------------------------------
       INTEGER NBNOEU ,NBV ,NCMP ,NEC ,NEQ ,NF ,NI
       INTEGER NM ,NN ,NTI ,NU
       REAL*8 ZERO
+      COMPLEX*16 CBID
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IMESS = IUNIFI('MESSAGE')
@@ -379,7 +380,7 @@ C     --- ECRITURE DESCRIPTION NOEUDS STRUCTURE ---
  151  CONTINUE
 C
       CALL WKVECT('&&IREDM1.BASEMO','V V R',NBMODT*NEQ,IDBASE)
-      CALL COPMO2(BASEMO,NEQ,NUME,NBMODT,ZR(IDBASE))
+      CALL COPMOD(BASEMO,'DEPL',NEQ,NUME,NBMODT,'R',ZR(IDBASE),CBID)
 C
 C --- ALLOCATION VECTEUR DE TRAVAIL
 C

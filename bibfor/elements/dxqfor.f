@@ -1,8 +1,8 @@
       SUBROUTINE DXQFOR (GLOBAL , XYZL , PGL , FOR , VECL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/09/2012   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ C     OUT VECL   : CHARGEMENT NODAL RESULTANT
 C     ------------------------------------------------------------------
       REAL*8       AIRETR(4) , C1 , C2 , FNO(6,4,4)
       REAL*8       FX , FY , ALPHA, BETA , R8DGRD
-      REAL*8       T2EV(4), T2VE(4), CARAQ4(25)
+      REAL*8       T2EV(4), T2VE(4), CARAQ4(25),C,S
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
@@ -49,7 +49,7 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
       CALL JEVECH ('PCACOQU', 'L', JCARA)
       ALPHA = ZR(JCARA+1) * R8DGRD()
       BETA  = ZR(JCARA+2) * R8DGRD()
-      CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE)
+      CALL COQREP(PGL,ALPHA,BETA,T2EV,T2VE,C,S)
 C
       IF (.NOT. GLOBAL) THEN
          DO 50 I = 1, NNO

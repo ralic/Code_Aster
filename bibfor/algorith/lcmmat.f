@@ -3,11 +3,11 @@
      &   HSR,NFS,NSG,TOUTMS,VIND,IMPEXP)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21 CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -133,7 +133,7 @@ C        COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
          NVINI=NBCOMM(IFA,1)
          IF (NECOUL.EQ.'MONO_DD_KR') THEN
             NBVAL=NBVAL+1
-C           une seule matrice d'interaction pour le monocristal         
+C           une seule matrice d'interaction pour le monocristal
             VALRES(NBVAL)=1
          ENDIF
          DO 501 I=1,NBVAL
@@ -154,7 +154,7 @@ C        COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
          CALL LCMAEI(FAMI,KPG,KSP,'-',NMATER,IMAT,NECRIS,NECOUL,NBVAL,
      &            VALRES,NMAT,ITBINT,NFS,NSG,HSR,IFA,NOMFAM,NBSYS)
          NBVAL=NBVAL+1
-C        une seule matrice d'interaction pour le monocristal         
+C        une seule matrice d'interaction pour le monocristal
          VALRES(NBVAL)=1
          NVINI=NBCOMM(IFA,3)
          DO 503 I=1,NBVAL
@@ -187,7 +187,7 @@ C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
          NVINI=NBCOMM(IFA,1)
          IF (NECOUL.EQ.'MONO_DD_KR') THEN
             NBVAL=NBVAL+1
-C           une seule matrice d'interaction pour le monocristal         
+C           une seule matrice d'interaction pour le monocristal
             VALRES(NBVAL)=1
          ENDIF
          DO 504 I=1,NBVAL
@@ -207,7 +207,7 @@ C           une seule matrice d'interaction pour le monocristal
      &       VALRES,NMAT,ITBINT,NFS,NSG,HSR,IFA,NOMFAM,NBSYS)
          NVINI=NBCOMM(IFA,3)
          NBVAL=NBVAL+1
-C        une seule matrice d'interaction pour le monocristal         
+C        une seule matrice d'interaction pour le monocristal
          VALRES(NBVAL)=1
          DO 506 I=1,NBVAL
             MATERF(NVINI-1+I,2)=VALRES(I)
@@ -216,7 +216,7 @@ C        une seule matrice d'interaction pour le monocristal
 
  61   CONTINUE
 
-      CALL RCCOMA(IMAT,'ELAS',PHENOM,CERR)
+      CALL RCCOMA(IMAT,'ELAS',1,PHENOM,CERR)
 
       IF (PHENOM.EQ.'ELAS') THEN
 C
@@ -367,11 +367,11 @@ C
  40   CONTINUE
 C
  9999 CONTINUE
- 
+
 C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
 C      MATERD(NMAT,2)=NBCOMM(NMAT,3)
 C      MATERF(NMAT,2)=NBCOMM(NMAT,3)
- 
+
       CALL JEDEMA()
-      
+
       END

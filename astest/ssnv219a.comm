@@ -1,9 +1,9 @@
-# MODIF  DATE 29/10/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219a.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,35 +19,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# Import du module de calcul symbolique Sympy
-import sympy
-import numpy
-from Utilitai import TensorModule
-from Utilitai import HookeTensor
-
-
 DEBUT(CODE=_F(NOM='SSNV219A',NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('CALCULEL2_63',),);
-
-# importation de sympy
-import sympy
-X,Y,Z=sympy.symbols('XYZ');
-
-
-#================================================================================================
-#================================================================================================
-# Principe de la MSM pour une formulation en deplacement de Saint-Venant-Kirchhoff
-#================================================================================================
-#================================================================================================
-
-#================================================================================================
-# Choix de la solution analytique
-#================================================================================================
-Ux=0.2*(Z**2)*X*Y
-Uy=0.2*(Z**2)*X*Y
-Uz=-0.2*(1. + X**2 + Y**2)*(1+0.01*Z) -0.01*Z -0.3
-U=TensorModule.Tensor([Ux,Uy,Uz]);
 
 #================================================================================================
 # Definition des caracteristiques du materiau
@@ -56,111 +30,10 @@ E=1;
 NU=0.3;
 
 #================================================================================================
-# Gradient de deformation et Normale a la frontiere de Contact
+# Calcul de la solution de reference
 #================================================================================================
 
-NormaleX =TensorModule.Tensor([ +1. , 0. , 0.]);
-NormalemX=TensorModule.Tensor([ -1. , 0. , 0.]);
-NormaleY =TensorModule.Tensor([ 0. , +1. , 0.]);
-NormalemY=TensorModule.Tensor([ 0. , -1. , 0.]);
-
-NormaleEsclave=TensorModule.Tensor([ 0. , 0. , -1.]);
-
-TenseurIdentite=TensorModule.Tensor([[1.,0.,0],[0.,1.,0],[0.,0.,1.]])
-
-GradientDeformation  =TensorModule.grad(U)+ TenseurIdentite
-GradientDeformation_T=GradientDeformation.transpose()
-Ftm1                 =GradientDeformation_T.inverse()
-
-Ftm1_N            =Ftm1.produitSimpleContracte(NormaleEsclave)
-ModuleCarre_Ftm1_N=Ftm1_N.produitSimpleContracte(Ftm1_N)
-Module_Ftm1_N     =ModuleCarre_Ftm1_N.sqrt()
-NormaleContact    =Ftm1_N / Module_Ftm1_N
-
-#================================================================================================
-# Le Tenseur de Green-Lagrange
-#================================================================================================
-
-Tenseur_Green__Lagrange =0.5*(GradientDeformation.transpose().produitSimpleContracte(GradientDeformation) - TenseurIdentite)
-
-
-#================================================================================================
-# Le Deuxieme Tenseur de Piola-Kirchhoff (Force sur configuration non deformee par unite de surface non deformee)
-#================================================================================================
-
-C_Iso=HookeTensor.HookeIsotropic(E,NU);
-
-Piola_Kirchhoff_II=C_Iso.produitDoubleContracte(Tenseur_Green__Lagrange);
-
-
-#================================================================================================
-# Le Premier Tenseur de Piola-Kirchhoff  (Force en configuration deformee par unite de surface non deformee)
-#================================================================================================
-
-Piola_Kirchhoff_I=GradientDeformation .produitSimpleContracte(Piola_Kirchhoff_II)
-
-
-#================================================================================================
-# La Divergence du Premier Tenseur de Piola-Kirchhoff == terme source
-#================================================================================================
-
-Fvol=-TensorModule.div(Piola_Kirchhoff_I);
-
-
-
-#================================================================================================
-# Assiganation des conditions limites
-#================================================================================================
-#conditions de Neumann
-Fsurf_X =Piola_Kirchhoff_I.produitSimpleContracte(NormaleX);
-Fsurf_mX=Piola_Kirchhoff_I.produitSimpleContracte(NormalemX);
-Fsurf_Y =Piola_Kirchhoff_I.produitSimpleContracte(NormaleY);
-Fsurf_mY=Piola_Kirchhoff_I.produitSimpleContracte(NormalemY);
-
-Fsurf_Esclave   =Piola_Kirchhoff_I.produitSimpleContracte(NormaleEsclave);
-
-# Valeurs du  Sigma sur la face de Contact
-Fsurf_Esclave_nn = Fsurf_Esclave.produitSimpleContracte(NormaleContact);
-Fsurf_Esclave_t  = Fsurf_Esclave - Fsurf_Esclave_nn*NormaleContact;
-
-
-#================================================================================================
-# Transformation des formules pour utilisation dans Aster
-#================================================================================================
-
-FUx=FORMULE(VALE=str(U[0]), NOM_PARA=('X','Y','Z') );
-FUy=FORMULE(VALE=str(U[1]), NOM_PARA=('X','Y','Z') );
-FUz=FORMULE(VALE=str(U[2]), NOM_PARA=('X','Y','Z') );
-
-FsurfXx=FORMULE(VALE=str(Fsurf_X[0]), NOM_PARA=('X','Y','Z') );
-FsurfXy=FORMULE(VALE=str(Fsurf_X[1]), NOM_PARA=('X','Y','Z') );
-FsurfXz=FORMULE(VALE=str(Fsurf_X[2]), NOM_PARA=('X','Y','Z') );
-
-FsurfmXx=FORMULE(VALE=str(Fsurf_mX[0]), NOM_PARA=('X','Y','Z') );
-FsurfmXy=FORMULE(VALE=str(Fsurf_mX[1]), NOM_PARA=('X','Y','Z') );
-FsurfmXz=FORMULE(VALE=str(Fsurf_mX[2]), NOM_PARA=('X','Y','Z') );
-
-FsurfYx=FORMULE(VALE=str(Fsurf_Y[0]), NOM_PARA=('X','Y','Z') );
-FsurfYy=FORMULE(VALE=str(Fsurf_Y[1]), NOM_PARA=('X','Y','Z') );
-FsurfYz=FORMULE(VALE=str(Fsurf_Y[2]), NOM_PARA=('X','Y','Z') );
-
-FsurfmYx=FORMULE(VALE=str(Fsurf_mY[0]), NOM_PARA=('X','Y','Z') );
-FsurfmYy=FORMULE(VALE=str(Fsurf_mY[1]), NOM_PARA=('X','Y','Z') );
-FsurfmYz=FORMULE(VALE=str(Fsurf_mY[2]), NOM_PARA=('X','Y','Z') );
-
-
-FsurfTx=FORMULE(VALE=str(Fsurf_Esclave_t[0]), NOM_PARA=('X','Y','Z') );
-FsurfTy=FORMULE(VALE=str(Fsurf_Esclave_t[1]), NOM_PARA=('X','Y','Z') );
-FsurfTz=FORMULE(VALE=str(Fsurf_Esclave_t[2]), NOM_PARA=('X','Y','Z') );
-
-Fcontx=FORMULE(VALE=str(Fsurf_Esclave[0]), NOM_PARA=('X','Y','Z') );
-Fconty=FORMULE(VALE=str(Fsurf_Esclave[1]), NOM_PARA=('X','Y','Z') );
-Fcontz=FORMULE(VALE=str(Fsurf_Esclave[2]), NOM_PARA=('X','Y','Z') );
-
-Fvolx=FORMULE(VALE=str(Fvol[0]), NOM_PARA=('X','Y','Z') );
-Fvoly=FORMULE(VALE=str(Fvol[1]), NOM_PARA=('X','Y','Z') );
-Fvolz=FORMULE(VALE=str(Fvol[2]), NOM_PARA=('X','Y','Z') );
-
+INCLUDE(UNITE=38)
 
 #================================================================================================
 # Debut du modele

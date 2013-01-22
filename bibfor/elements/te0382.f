@@ -1,7 +1,7 @@
       SUBROUTINE TE0382(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -448,7 +448,7 @@ C
 
         NOMPAR(1)='E'
         NOMPAR(2)='NU'
-        CALL RCCOMA (ZI(IMATE),'ELAS',PHENOM,ICODRE)
+        CALL RCCOMA (ZI(IMATE),'ELAS',1,PHENOM,ICODRE)
         CALL RCVALB (FAMIL,KPG,SPT,POUM,ZI(IMATE),' ',PHENOM,1,' ',
      &               R8BID,2,NOMPAR,VALRES,ICODRE,1)
         E =VALRES(1)

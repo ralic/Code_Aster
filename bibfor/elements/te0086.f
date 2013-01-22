@@ -1,8 +1,8 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +31,6 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*4      FAMI
       REAL*8           SIGMA(54),BARY(3),REPERE(7)
       REAL*8           NHARM, INSTAN,CONTNO(54)
       INTEGER          IDIM
@@ -39,17 +38,12 @@ C
 C
 C-----------------------------------------------------------------------
       INTEGER I ,ICONT ,IDEPL ,IDFDE ,IGAU ,IGEOM ,IMATE
-      INTEGER INO ,IPOIDS ,ISIG ,IVF ,J ,JGANO ,NBSIG
+      INTEGER INO ,IPOIDS ,ISIG ,IVF ,J ,NBSIG,JGANO
       INTEGER NBSIG1 ,NBSIG2 ,NBSIGM ,NDIM ,NNO ,NNOS ,NPG
 
       REAL*8 ZERO
 C-----------------------------------------------------------------------
-      IF ( OPTION(6:9) .EQ.'ELNO' ) THEN
-        FAMI='GANO'
-      ELSE
-        FAMI='RIGI'
-      ENDIF
-      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -105,7 +99,7 @@ C
 C       CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C       DE L'ELEMENT : (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C       --------------------------------------------------------
-      CALL SIGVMC(FAMI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
+      CALL SIGVMC('RIGI',NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
      +           ZR(IGEOM),ZR(IDEPL),
      +           INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA)
 

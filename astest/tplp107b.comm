@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : THERMIQUE 2D
 # tplp107b.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,10 +19,17 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# importation de sympy 
-import sympy,math
-# cet import inutile est du au plantage sur la machine clpaster (fiche 17434)
-import numpy
+import math
+
+try:
+  # Import du module de calcul symbolique Sympy
+  import sympy
+  sympy_available = True
+  # cet import inutile est du au plantage sur la machine clpaster (fiche 17434)
+  import numpy
+except ImportError:
+  sympy_available = False
+
 
 # ================================================================================================================================================================================
 def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
@@ -160,47 +167,20 @@ DEBUT(CODE=_F(NOM='TPLP107B',NIV_PUB_WEB='INTERNET'),
 # Conductivite thermique du milieu
 Lambda=15;
 
+#Definition du materiau
+ACIER=DEFI_MATERIAU(THER=_F(LAMBDA=Lambda),);
+
 # ========================================================================================
 #          Creation de la solution manufacturee
 # ========================================================================================
 
-# definition des variables du calcul symbolique
-X,Y=sympy.symbols('XY');
-S=sympy.Function('S');
-T=sympy.Function('T');
-N=sympy.Function('N');
-F=sympy.Function('F');
-
-
-# Definition de la solution manufacturee
-T=100*(X**6+Y**6);
-
-
-# Deduction de la fonction source de chaleur, ie: S=-laplacien(F(X,Y))
-S=-Lambda*(sympy.diff(sympy.diff(T,X),X)+sympy.diff(sympy.diff(T,Y),Y));
-
-
-# Deduction des conditions de Neumann
-N=Lambda*sympy.diff(T,X);
-
-
-
-#Definition du materiau
-ACIER=DEFI_MATERIAU(THER=_F(LAMBDA=Lambda),);
-
-                          
-# Transformation des formules Sympy en formules Aster
-TT=FORMULE(NOM_PARA=('X','Y'),VALE=str(T));
-SS=FORMULE(NOM_PARA=('X','Y'),VALE=str(S));
-NN=FORMULE(NOM_PARA=('X','Y'),VALE=str(N));
-
-
+INCLUDE(UNITE=38)
 
 #================================================================================================
 # Debut de l'etude de la convergence           
 #================================================================================================
   
-#nombre de remaillege
+#nombre de remaillage
 nb_remail=4;
 
 

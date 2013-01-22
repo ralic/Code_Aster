@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -755,7 +755,7 @@ def get_direction_xfem(Nnoff,Vpropa,Coorfo,ndim) :
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_sauts_xfem(self,Nnoff,Coorfo,VDIR,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX) :
+def get_sauts_xfem(self,Nnoff,Coorfo,VDIR,hmax,NB_NOEUD_COUPE,dmax,__RESX) :
       """retourne la table des sauts"""
       from Accas import _F
       import numpy as NP
@@ -765,7 +765,7 @@ def get_sauts_xfem(self,Nnoff,Coorfo,VDIR,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__R
       mcfact=[]
       for i in xrange(Nnoff):
          Porig = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
-         Pextr = Porig - ABSC_CURV_MAXI*VDIR[i]
+         Pextr = Porig - hmax*VDIR[i]
 
          mcfact.append(_F(NB_POINTS=NB_NOEUD_COUPE,
                           COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
@@ -1760,7 +1760,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          UTMESS('I','RUPTURE0_32',valr=hmax)
          tailmin = min(list_tail)
          if tailmax>2*tailmin :
-            UTMESS('A','RUPTURE0_17',valr=[tailmin,tailmax])        
+            UTMESS('A','RUPTURE0_17',vali=4,valr=[tailmin,tailmax])        
       else:
          hmax = ABSC_CURV_MAXI      
 
@@ -1844,7 +1844,19 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
       MAILLAGE = self.get_concept(nom_ma.strip())
 
-      dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
+#     Recuperation de la liste des tailles de maille en chaque noeud du fond
+      if not ABSC_CURV_MAXI :
+         list_tail = FISSURE.sdj.FOND_TAILLE_R.get()
+         tailmax = max(list_tail)
+         hmax = tailmax*5
+         UTMESS('I','RUPTURE0_32',valr=hmax)
+         tailmin = min(list_tail)
+         if tailmax>2*tailmin :
+            UTMESS('A','RUPTURE0_17',vali=5,valr=[tailmin,tailmax])        
+      else:
+         hmax = ABSC_CURV_MAXI
+
+      dmax  = PREC_VIS_A_VIS * hmax
 
       (xcont,MODEL) = verif_resxfem(self,RESULTAT)
       # incohérence entre le modèle et X-FEM
@@ -1862,7 +1874,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 #     Extraction des sauts sur la fissure
       NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
-      TTSo = get_sauts_xfem(self,Nnoff,Coorfo,VDIR,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX)
+      TTSo = get_sauts_xfem(self,Nnoff,Coorfo,VDIR,hmax,NB_NOEUD_COUPE,dmax,__RESX)
 
       Lnofon = []
       Nbnofo = Nnoff

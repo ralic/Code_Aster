@@ -1,10 +1,9 @@
       SUBROUTINE NIREFE(NDIM,NNO1,NNO2,NNO3,NPG,IW,VFF1,VFF2,VFF3,
      &   IDF1,DFF1,VU,VG,VP,TYPMOD,GEOMI,SIGREF,EPSREF,VECT)
-                         
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 22/01/2013   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -31,7 +30,7 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C
 C     BUT:  CALCUL  DE L'OPTION REFE_FORC_NODA EN QUASI INCOMPRESSIBLE
-C                  DEFORMATION = 'SIMO_MIEHE'
+C                  INCO_GD ET INCO_LOG
 C     APPELEE PAR  TE0456
 C-----------------------------------------------------------------------
 C IN NDIM     : DIMENSION DE L'ESPACE
@@ -52,7 +51,7 @@ C IN  GEOMI   : COORDONEES DES NOEUDS
 C IN  TYPMOD  : TYPE DE MODELISATION
 C IN  SIGREF  : CONTRAINTE DE REFERENCE
 C IN  EPSREF  : DEFORMATIONS DE REFERENCE
-C OUT VECT    : REFE_FIRC_NODA
+C OUT VECT    : REFE_FORC_NODA
 C-----------------------------------------------------------------------
 
 
@@ -60,8 +59,8 @@ C-----------------------------------------------------------------------
       INTEGER NDDL,NDIMSI,VIJ(3,3),LIJ(3,3),NDU
       INTEGER G,KL,SA,RA,NA,IA,JA,KK
       REAL*8 R,W,TAU(6)
-      REAL*8 T1,T2
-      
+      REAL*8 T1
+
       DATA    VIJ  / 1, 4, 5,
      &               4, 2, 6,
      &               5, 6, 3 /
@@ -82,7 +81,6 @@ C - INITIALISATION
         CALL NMMALU(NNO1,AXI,R,VFF1(1,G),DFF1,LIJ)
 
 C      VECTEUR FINT:U
-
         DO 10 KL = 1,NDIMSI        
           CALL R8INIR(6,0.D0,TAU,1)
           TAU(KL) = SIGREF
@@ -91,8 +89,7 @@ C      VECTEUR FINT:U
             KK = VU(IA,NA)
             T1 = 0.D0
             DO 320 JA = 1,NDU
-              T2 = TAU(VIJ(IA,JA))
-              T1 = T1 + T2*DFF1(NA,LIJ(IA,JA))
+              T1 = T1 + TAU(VIJ(IA,JA))*DFF1(NA,LIJ(IA,JA))
  320        CONTINUE
             VECT(KK) = VECT(KK) + ABS(W*T1)/NDIMSI
  310      CONTINUE
@@ -100,7 +97,6 @@ C      VECTEUR FINT:U
  10     CONTINUE
 
 C      VECTEUR FINT:G
-
         DO 350 RA=1,NNO2
           KK = VG(RA)
           T1 = VFF2(RA,G)*SIGREF
@@ -113,6 +109,6 @@ C      VECTEUR FINT:P
           T1 = VFF3(SA,G)*EPSREF
           VECT(KK) = VECT(KK) + ABS(W*T1)
  370    CONTINUE
-        
+
  1000 CONTINUE
       END

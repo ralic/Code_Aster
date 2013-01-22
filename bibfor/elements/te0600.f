@@ -5,7 +5,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE GRANET S.GRANET
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -212,7 +212,7 @@ C =====================================================================
          CALL JEVECH('PMATERC','L',IMATE)
          CALL JEVECH('PPESANR','L',IPESA)
          CALL JEVECH('PVECTUR','E',IVECTU)
-         CALL RCCOMA(ZI(IMATE),'THM_DIFFU',PHENOM,ICODRE)
+         CALL RCCOMA(ZI(IMATE),'THM_DIFFU',1,PHENOM,ICODRE)
          CALL RCVALB('FPG1',1,1,'+',ZI(IMATE),' ',PHENOM,0,' ',R8BID,
      &               1,'RHO',RHO,ICODRE,1)
          IF (NDIM.EQ.3) THEN

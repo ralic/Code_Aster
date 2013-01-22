@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 05/11/2012   AUTEUR CHANSARD F.CHANSARD 
+#& MODIF COMMANDE  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
       b_absc = BLOC(condition="OPERATION == 'ABSC_CURV_NORM'",fr="normalise l'abscisse curviligne",
 
-                    NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="ABSC_CURV_NORM",fr="Nom de la nouvelle colonne"),
+                   NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="ABSC_CURV_NORM",fr="Nom de la nouvelle colonne"),
 
                    ),
 
@@ -58,9 +58,9 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
       b_angle = BLOC(condition="OPERATION == 'ANGLE_BIFURCATION'  ",fr="Angle de bifurcation",
 
-                     NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="BETA",fr="Nom de la nouvelle colonne"),
-                     CRITERE  = SIMP(statut='f',typ='TXM',max=1,defaut="SITT_MAX",into=('SITT_MAX','K1_MAX','K2_NUL'),),
-                     ),
+                   NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="BETA",fr="Nom de la nouvelle colonne"),
+                   CRITERE  = SIMP(statut='f',typ='TXM',max=1,defaut="SITT_MAX",into=('SITT_MAX','K1_MAX','K2_NUL','PLAN'),),
+                   ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'K_EQ'
@@ -72,9 +72,9 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
                    CUMUL    = SIMP(statut='f',typ='TXM',max=1,defaut="CUMUL_G",fr="Formule de cumul des modes",
                                    into=('LINEAIRE','QUADRATIQUE','CUMUL_G','MODE_I'),),
 
-                   b_mater = BLOC(condition="CUMUL in ('QUADRATIQUE','CUMUL_G')",fr="materiau du fond de fissure",
-                                  MATER = SIMP(statut='o',typ=mater_sdaster,),
-                                 ),
+                     b_mater = BLOC(condition="CUMUL in ('QUADRATIQUE','CUMUL_G')",fr="materiau du fond de fissure",
+                                    MATER = SIMP(statut='o',typ=mater_sdaster,),
+                                   ),
                    ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
@@ -83,15 +83,15 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
                   
       b_DeltaKeq = BLOC(condition="OPERATION == 'DELTA_K_EQ'  ",fr="Cumul sur les modes : calcul du DeltaK equivalent",
 
-                       NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="DELTA_K_EQ",fr="Nom de la nouvelle colonne"),
-                       CUMUL    = SIMP(statut='f',typ='TXM',max=1,defaut="CUMUL_G",fr="Formule de cumul des modes",
+                   NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="DELTA_K_EQ",fr="Nom de la nouvelle colonne"),
+                   CUMUL    = SIMP(statut='f',typ='TXM',max=1,defaut="CUMUL_G",fr="Formule de cumul des modes",
                                        into=('QUADRATIQUE','CUMUL_G','MODE_I'),),
 
-                       b_mater = BLOC(condition="CUMUL in ('QUADRATIQUE','CUMUL_G')",fr="materiau du fond de fissure",
+                     b_mater = BLOC(condition="CUMUL in ('QUADRATIQUE','CUMUL_G')",fr="materiau du fond de fissure",
                                       MATER = SIMP(statut='o',typ=mater_sdaster,),
-                                      ),
+                                    ),
                   
-                       ),
+                   ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'COMPTAGE_CYCLES'
@@ -99,10 +99,10 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
       b_Comptage = BLOC(condition="OPERATION == 'COMPTAGE_CYCLES'  ",fr="Comptage des cycles",
 
-                     NOM_PARA   = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
+                   NOM_PARA   = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                                      fr="Nom des quantités sur lesquelles s'effectuent le comptage"),
-                     COMPTAGE   = SIMP(statut='o',typ='TXM',into=("RAINFLOW","RCCM","NATUREL","UNITAIRE")),
-                     DELTA_OSCI = SIMP(statut='f',typ='R',defaut= 0.0E+0),
+                   COMPTAGE   = SIMP(statut='o',typ='TXM',into=("RAINFLOW","RCCM","NATUREL","UNITAIRE")),
+                   DELTA_OSCI = SIMP(statut='f',typ='R',defaut= 0.0E+0),
 
                      b_Comptage_Unitaire = BLOC(condition="COMPTAGE=='UNITAIRE'",
                                                 fr="comptage unitaire pour les amplitudes constantes",
@@ -112,7 +112,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
                                                ),
 
-                        ),
+                   ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'LOI_PROPA'
@@ -120,14 +120,15 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
       b_Loi_Propa   = BLOC(condition="OPERATION == 'LOI_PROPA'  ",fr="calcul de l'incrément d'avancée de fissure par cycle",
 
-         NOM_PARA       = SIMP(statut='f',typ='TXM',defaut="DELTA_A"   ,max=1,fr="Nom de la nouvelle colonne"),
-         NOM_DELTA_K_EQ = SIMP(statut='f',typ='TXM',defaut="DELTA_K_EQ",max=1,fr="Nom de la quantité correspondant au Delta_K_eq"),
-         LOI            = SIMP(statut='o',typ='TXM',into=("PARIS",)),
+                   NOM_PARA       = SIMP(statut='f',typ='TXM',defaut="DELTA_A"   ,max=1,fr="Nom de la nouvelle colonne"),
+                   NOM_DELTA_K_EQ = SIMP(statut='f',typ='TXM',defaut="DELTA_K_EQ",max=1,
+                                                                              fr="Nom de la quantité correspondant au Delta_K_eq"),
+                   LOI            = SIMP(statut='o',typ='TXM',into=("PARIS",)),
 
-         b_paris = BLOC(condition = "LOI=='PARIS'",
-                        C = SIMP(statut='o',typ='R',),
-                        M = SIMP(statut='o',typ='R',),
-         ),
+                     b_paris = BLOC(condition = "LOI=='PARIS'",
+                                    C = SIMP(statut='o',typ='R',),
+                                    M = SIMP(statut='o',typ='R',),
+                                   ),
 
       ),
 
@@ -137,10 +138,10 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
       b_cumul = BLOC(condition="OPERATION == 'CUMUL_CYCLES'  ",fr="Cumul sur les cycles",
 
-                     NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="DELTA_A",fr="Nom de la colonne à traiter"),
-                     CUMUL    = SIMP(statut='f',typ='TXM',max=1,defaut="LINEAIRE",into=('LINEAIRE',)),
+                   NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="DELTA_A",fr="Nom de la colonne à traiter"),
+                   CUMUL    = SIMP(statut='f',typ='TXM',max=1,defaut="LINEAIRE",into=('LINEAIRE',)),
 
-                     ),
+                   ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'PILO_PROPA'
@@ -148,11 +149,11 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
                   
       b_pilo_propa = BLOC(condition="OPERATION == 'PILO_PROPA'  ",fr="Pilotage de la propagation",
 
-                          regles      = UN_PARMI('DELTA_A_MAX','DELTA_N'),
-                          DELTA_A_MAX = SIMP(statut='f',typ='R',max=1,val_min=0.,fr="Pilotage en incrément d'avancée max"),
-                          DELTA_N     = SIMP(statut='f',typ='R',max=1,val_min=1 ,fr="Pilotage en incrément de nombre de blocs"),
+                   regles      = UN_PARMI('DELTA_A_MAX','DELTA_N'),
+                   DELTA_A_MAX = SIMP(statut='f',typ='R',max=1,val_min=0.,fr="Pilotage en incrément d'avancée max"),
+                   DELTA_N     = SIMP(statut='f',typ='R',max=1,val_min=1 ,fr="Pilotage en incrément de nombre de blocs"),
                   
-                     ),
+                   ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #                 'K1_NEGATIF'
@@ -160,10 +161,10 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
 
       b_k1_neg = BLOC(condition="OPERATION == 'K1_NEGATIF'  ",fr="Mise a zero des valeurs negatives de K1",
 
-                     MODELISATION = SIMP(statut='o',typ='TXM',into=("C_PLAN","D_PLAN","3D","AXIS")),
-                     MATER        = SIMP(statut='o',typ=mater_sdaster,),
+                   MODELISATION = SIMP(statut='o',typ='TXM',into=("C_PLAN","D_PLAN","3D","AXIS")),
+                   MATER        = SIMP(statut='o',typ=mater_sdaster,),
 
-                     ),
+                   ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 

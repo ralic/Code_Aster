@@ -1,7 +1,7 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -464,7 +464,7 @@ C CALCUL DU TERME VOLUMIQUE
 C------------------------------------------------------------------
 
 C RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
-      CALL RCCOMA(ZI(IMATE),'THER',PHENOM,ICODRE)
+      CALL RCCOMA(ZI(IMATE),'THER',1,PHENOM,ICODRE)
       CALL ASSERT(ICODRE(1).EQ.0)
       IF ((PHENOM.EQ.'THER') .OR.
      &   (PHENOM.EQ.'THER_ORTH')) THEN

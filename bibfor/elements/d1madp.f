@@ -1,8 +1,8 @@
       SUBROUTINE  D1MADP(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,8 +42,8 @@ C -----  ARGUMENTS
            REAL*8       REPERE(7), D1(4,*), INSTAN
 C -----  VARIABLES LOCALES
 C-----------------------------------------------------------------------
-      INTEGER I ,IREP ,J ,MATER ,NBRES ,NBV 
-      REAL*8 DEUX ,E ,E1 ,E2 ,E3 ,UN ,ZERO 
+      INTEGER I ,IREP ,J ,MATER ,NBRES ,NBV
+      REAL*8 DEUX ,E ,E1 ,E2 ,E3 ,UN ,ZERO
 
 C-----------------------------------------------------------------------
            PARAMETER (NBRES = 7)
@@ -75,7 +75,7 @@ C
 C
 C ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 C      --------------------------------------------
-      CALL RCCOMA(MATER,'ELAS',PHENOM,ICODRE)
+      CALL RCCOMA(MATER,'ELAS',1,PHENOM,ICODRE)
 C
 C      ------------
 C ---- CAS ISOTROPE

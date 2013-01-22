@@ -1,0 +1,395 @@
+# MODIF  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+# TITRE TESTE DE DIRECTION DU PLAN CRITIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# szlz107f.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+
+DEBUT(  CODE=_F(  NOM = 'SZLZ107F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+WHOL = DEFI_FONCTION(   NOM_PARA = 'SIGM',
+                        INTERPOL = 'LOG',
+                        PROL_DROITE = 'LINEAIRE',
+                        PROL_GAUCHE = 'LINEAIRE',
+                        VALE = ( 184.8, 5000000,
+                                 189.2, 1000000,
+                                 192.4, 500000,
+                                 205.6, 100000,
+                                 215.2, 50000,
+                                 254.6, 10000,
+                                 283.4, 5000,
+                                 401.4, 1000,
+                                 487.6, 500,
+                                 840.8, 100,
+                                 1098.9, 50,
+                                 2156.3, 10,)
+                                 )    
+
+ZERO = DEFI_FONCTION(   NOM_PARA = 'INST',
+                        VALE = ( 1, 0.0,
+                                 2, 0.0,
+                                 3, 0.0,
+                                 ))
+
+# Angle calculated from VNMZ, absolute value of VNMZ is used because the sign could not be decided for this particular case
+PHIZ = FORMULE(   NOM_PARA = ('VNMZ'),
+                  VALE = ''' acos(abs(VNMZ))*180.0/pi '''
+               )
+
+# Half amplitude of stress, the same value in X and Y directions
+SA = 200.0
+
+# Number of Alpha considered
+NBALP = 23
+ALP   = [NONE]*NBALP
+SXM   = [NONE]*NBALP
+SYM   = [NONE]*NBALP
+SX    = [NONE]*NBALP
+SY    = [NONE]*NBALP
+
+###############################################################################
+#Test DANG_VAN_MODI_AC criterion
+
+MATDC = DEFI_MATERIAU   ( ELAS = _F( E = 193000.,
+                                     NU = .3,
+                                     ALPHA = 0. ),
+                          FATIGUE        = _F( WOHLER  = WHOL, ),
+                          CISA_PLAN_CRIT = _F( CRITERE = 'DANG_VAN_MODI_AC',
+                                               D_VAN_A  = 0.05,
+                                               D_VAN_B  = 2.0,
+                                               COEF_CISA_TRAC = 1.0 )
+                         )
+              
+TABDC   = [NONE]*NBALP
+for i in range(NBALP):
+    ALP[i] = i/2.0-1.0
+    SXM[i] = ALP[i]*SA
+    SYM[i] = ALP[i]*SA
+    SX[i]  = DEFI_FONCTION( NOM_PARA = 'INST',
+                         VALE = ( 1, SXM[i]+SA,
+                                 2,  SXM[i]-SA,
+                                 3,  SXM[i]+SA,      ))
+    SY[i] = DEFI_FONCTION(  NOM_PARA = 'INST',
+                            VALE = ( 1,  SYM[i]+SA,
+                                    2,   SYM[i]-SA,
+                                    3,   SYM[i]+SA,
+                                 ))
+ 
+    TABDC[i] = POST_FATIGUE(CHARGEMENT = 'MULTIAXIAL',
+                              TYPE_CHARGE = 'PERIODIQUE',
+                              HISTOIRE = _F( SIGM_XX = SX[i],
+                                          SIGM_YY = SY[i],
+                                          SIGM_ZZ = ZERO,
+                                          SIGM_XY = ZERO,
+                                          SIGM_XZ = ZERO,
+                                          SIGM_YZ = ZERO,
+                                              
+                                          EPS_XX = ZERO,
+                                          EPS_YY = ZERO,
+                                          EPS_ZZ = ZERO,
+                                          EPS_XY = ZERO,
+                                          EPS_XZ = ZERO,
+                                          EPS_YZ = ZERO,
+                                 ),
+                              CRITERE = 'DANG_VAN_MODI_AC',
+                              METHODE = 'CERCLE_EXACT',
+                              MATER = MATDC,
+                           DOMMAGE = 'WOHLER',
+                           )    
+
+    TABDC[i] = CALC_TABLE(   reuse = TABDC[i],
+                         TABLE = TABDC[i],
+                         ACTION = ( _F( OPERATION ='OPER',
+                                       FORMULE = PHIZ,
+                                       NOM_PARA = 'PHIZ',),
+                                           )
+                          ) 
+               
+    TEST_TABLE(
+         VALE_REFE = 45,
+         VALE_CALC = 44.5,
+         PRECISION = 0.015,
+         REFERENCE ='ANALYTIQUE',
+         NOM_PARA = 'PHIZ',
+         TABLE = TABDC[i],)
+             
+###############################################################################
+#Test MATAKE_MODI_AC criterion
+
+MATMC = DEFI_MATERIAU( ELAS = _F( E = 193000.,
+                                  NU = .3,
+                                  ALPHA = 0. ),
+                       FATIGUE        = _F( WOHLER  = WHOL, ),
+                       CISA_PLAN_CRIT = _F( CRITERE = 'MATAKE_MODI_AC',
+                                            MATAKE_A = 0.05,
+                                            MATAKE_B = 2.0,
+                                            COEF_FLEX_TORS = 1.0 )
+                      )
+               
+TABMC = [NONE]*NBALP
+for i in range(NBALP):
+ 
+   TABMC[i] = POST_FATIGUE( CHARGEMENT = 'MULTIAXIAL',
+                            TYPE_CHARGE = 'PERIODIQUE',
+                            HISTOIRE = _F( SIGM_XX = SX[i],
+                                          SIGM_YY = SY[i],
+                                          SIGM_ZZ = ZERO,
+                                          SIGM_XY = ZERO,
+                                          SIGM_XZ = ZERO,
+                                          SIGM_YZ = ZERO,
+                                       
+                                          EPS_XX = ZERO,
+                                          EPS_YY = ZERO,
+                                          EPS_ZZ = ZERO,
+                                          EPS_XY = ZERO,
+                                          EPS_XZ = ZERO,
+                                          EPS_YZ = ZERO,
+                                       ),
+                           CRITERE = 'MATAKE_MODI_AC',
+                           METHODE = 'CERCLE_EXACT',
+                           MATER = MATMC,
+                        DOMMAGE = 'WOHLER',
+                           )    
+
+   TABMC[i] = CALC_TABLE(    reuse = TABMC[i],
+                         TABLE = TABMC[i],
+                         ACTION = ( _F( OPERATION ='OPER',
+                                            FORMULE = PHIZ,
+                                            NOM_PARA = 'PHIZ',),)
+                         )  
+           
+   TEST_TABLE(   
+         REFERENCE = 'ANALYTIQUE',
+            VALE_REFE = 45,
+            VALE_CALC = 44.5,
+             PRECISION = 0.015,
+             NOM_PARA = 'PHIZ',
+             TABLE = TABMC[i],)
+             
+##########################################################################
+# Test DANG_VAN_MODI_AV criterion
+
+MATD   = DEFI_MATERIAU   ( ELAS  = _F( E        = 193000.,
+                                       NU       = .3,
+                                       ALPHA    = 0. ),
+                           FATIGUE        = _F( WOHLER   = WHOL, ),
+                           CISA_PLAN_CRIT = _F( CRITERE = 'DANG_VAN_MODI_AV',
+                                                D_VAN_A  = 0.05,
+                                                D_VAN_B  = 2.0,
+                                                COEF_CISA_TRAC = 1.0 )
+                                    )
+
+TABD   = [NONE]*NBALP
+#PHIZ PEUT ETRE 43.75 OU 46.25, ON NOTE QUE 43.75 + 46.25 = 90
+RESUC = [(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,(43.75, 46.25) ,
+         (43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,(43.75, 46.25) ,
+         (43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,(43.75, 46.25) ,
+         (43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ]
+for i in range(NBALP):
+     TABD[i] = POST_FATIGUE( CHARGEMENT = 'MULTIAXIAL',
+                              TYPE_CHARGE = 'NON_PERIODIQUE',
+                              HISTOIRE = _F(  SIGM_XX = SX[i],
+                                             SIGM_YY = SY[i],
+                                             SIGM_ZZ = ZERO,
+                                             SIGM_XY = ZERO,
+                                             SIGM_XZ = ZERO,
+                                             SIGM_YZ = ZERO,
+                                          
+                                             EPS_XX = ZERO,
+                                             EPS_YY = ZERO,
+                                             EPS_ZZ = ZERO,
+                                             EPS_XY = ZERO,
+                                             EPS_XZ = ZERO,
+                                             EPS_YZ = ZERO,
+                                          ),
+                              CRITERE = 'DANG_VAN_MODI_AV',
+                              PROJECTION = 'UN_AXE',
+                              MATER = MATD,
+                              )    
+ 
+ 
+     TABD[i]= CALC_TABLE(reuse = TABD[i],
+                             TABLE=TABD[i],
+                             ACTION = ( _F( OPERATION ='OPER',
+                                               FORMULE = PHIZ,
+                                               NOM_PARA = 'PHIZ',),)
+                          ) 
+               
+     TEST_TABLE(
+                REFERENCE = 'ANALYTIQUE',
+                VALE_REFE = (45, 45),
+                PRECISION = 0.03,
+                VALE_CALC = RESUC[i],
+                NOM_PARA = 'PHIZ',
+                TABLE = TABD[i],)
+             
+###############################################################################
+#Test MATAKE_MODI_AV criterion
+
+MATM   = DEFI_MATERIAU   ( ELAS  = _F( E        = 193000.,
+                                       NU       = .3,
+                                       ALPHA    = 0. ),
+                            FATIGUE        = _F( WOHLER   = WHOL, ),
+                            CISA_PLAN_CRIT = _F( CRITERE = 'MATAKE_MODI_AV',
+                                                 MATAKE_A  = 0.05,
+                                                 MATAKE_B  = 2.0,
+                                                 COEF_FLEX_TORS = 1.0 )
+                                    )
+
+TABM   = [NONE]*NBALP
+
+# Analytical results
+RESUM  = [(45,45), 45.71604807, 46.43120259, 47.14457665, 47.85529654, 48.56250816, 49.26538279,
+          49.96312274, 50.65496622, 51.34019173, 52.01812172, 52.68812561, 53.3496221, 54.00208078,
+          54.64502311, 55.27802258, 55.90070474, 56.512746,  57.11387266,  57.70385907, 58.28252557, 58.84973637, 59.40539686]
+
+RESUC = [(43.75,46.25),46.25,46.5 ,47.25,47.75,48.5 ,49.25,50.0 ,
+         50.75,51.25,52.0 ,52.75,53.25,53.75,53.75,56.25,
+         56.25,56.5 ,57.0 ,57.75,58.25,58.75,59.5]
+for i in range(NBALP):
+ 
+   TABM[i] = POST_FATIGUE( CHARGEMENT = 'MULTIAXIAL',
+                           TYPE_CHARGE = 'NON_PERIODIQUE',
+                           HISTOIRE = _F(  SIGM_XX = SX[i],
+                                          SIGM_YY = SY[i],
+                                          SIGM_ZZ = ZERO,
+                                          SIGM_XY = ZERO,
+                                          SIGM_XZ = ZERO,
+                                          SIGM_YZ = ZERO,
+                                       
+                                          EPS_XX = ZERO,
+                                          EPS_YY = ZERO,
+                                          EPS_ZZ = ZERO,
+                                          EPS_XY = ZERO,
+                                          EPS_XZ = ZERO,
+                                          EPS_YZ = ZERO,
+                                       ),
+                           CRITERE = 'MATAKE_MODI_AV',
+                           PROJECTION = 'UN_AXE',
+                           MATER = MATM,
+                           )    
+
+   TABM[i] = CALC_TABLE( reuse = TABM[i],
+                         TABLE=TABM[i],
+                         ACTION = ( _F( OPERATION ='OPER',
+                                            FORMULE = PHIZ,
+                                            NOM_PARA = 'PHIZ',),)
+                       ) 
+           
+   TEST_TABLE( 
+      REFERENCE = 'ANALYTIQUE',
+      VALE_REFE = RESUM[i],
+      PRECISION = 0.03,
+      NOM_PARA  = 'PHIZ',
+      VALE_CALC = RESUC[i],
+      TABLE = TABM[i],)
+
+##########################################################################
+# Test FATESOCI_MODI_AV criterion
+
+MANCOF = DEFI_FONCTION( NOM_PARA='EPSI',
+                        INTERPOL='LOG',
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                        VALE=(  0.002500552, 5000000,
+                     0.003283895, 1000000,
+                                0.003701497, 500000,
+                                0.004914169, 100000,
+                                0.005565059, 50000,
+                                0.006573788, 20000,
+                                0.007126133, 5000,
+                                0.016153442, 1000,
+                                0.023400386, 500,
+                     0.057463434, 100,
+                     0.225885749, 10,
+                                 )  )
+                                
+MATF   = DEFI_MATERIAU   ( ELAS  = _F( E        = 193000.,
+                                       NU       = .3,
+                                       ALPHA    = 0. ),
+                          FATIGUE        = _F( MANSON_COFFIN = MANCOF, ),
+                          CISA_PLAN_CRIT = _F( CRITERE = 'FATESOCI_MODI_AV',
+                                               FATSOC_A = 0.00024,
+                                               COEF_CISA_TRAC = 1, )
+                                    )
+
+EX   = [NONE]*NBALP
+EY   = [NONE]*NBALP
+EZ   = [NONE]*NBALP
+TABF = [NONE]*NBALP
+
+#Analytical results
+RESUF  = [45, 45.34014828, 45.67180774, 45.99482259, 46.30909462, 46.61457847, 46.91127686,
+          47.19923533,     47.47853707, 47.74929779, 48.0116608,  48.26579244, 48.51187778,
+          48.75011672,     48.98072059, 49.20390894, 49.41990696, 49.62894294, 49.83124651,
+          50.02704663,     50.2165705,  50.40004212, 50.57768138]
+
+RESUC  = [43.75,46.25,46.25,46.25,46.25,46.5 ,47.0 ,47.25,
+         47.5 ,47.75,48.0 ,48.25,48.5 ,48.75,49.0 ,49.25,
+         49.5 ,49.5 ,49.75,50.0 ,50.25,50.5 ,50.5]
+                             
+for i in range(NBALP):
+    EX[i] = DEFI_FONCTION(  NOM_PARA = 'INST',
+                           VALE = (    1,    ((SXM[i]+SA)-0.3*(SYM[i]+SA))/193000,
+                                             2,  ((SXM[i]-SA)-0.3*(SYM[i]-SA))/193000,
+                                             3,  ((SXM[i]+SA)-0.3*(SYM[i]+SA))/193000,
+                                     ))
+    EY[i] = DEFI_FONCTION(  NOM_PARA = 'INST',
+                         VALE = ( 1, ((SYM[i]+SA)-0.3*(SXM[i]+SA))/193000,
+                                         2,  ((SYM[i]-SA)-0.3*(SXM[i]-SA))/193000,
+                                         3,  ((SYM[i]+SA)-0.3*(SXM[i]+SA))/193000,
+                                 ))
+    EZ[i] = DEFI_FONCTION(  NOM_PARA = 'INST',
+                         VALE = ( 1, -0.3*(SXM[i]+SA+SYM[i]+SA)/193000,
+                                         2,  -0.3*(SXM[i]-SA+SYM[i]-SA)/193000,
+                                         3,  -0.3*(SXM[i]+SA+SYM[i]+SA)/193000,
+                                 ))
+    TABF[i] = POST_FATIGUE( CHARGEMENT = 'MULTIAXIAL',
+                           TYPE_CHARGE = 'NON_PERIODIQUE',
+                           HISTOIRE = _F(  SIGM_XX = SX[i],
+                                          SIGM_YY = SY[i],
+                                          SIGM_ZZ = ZERO,
+                                          SIGM_XY = ZERO,
+                                          SIGM_XZ = ZERO,
+                                          SIGM_YZ = ZERO,
+                                 
+                                          EPS_XX = EX[i],
+                                          EPS_YY = EY[i],
+                                          EPS_ZZ = EZ[i],
+                                          EPS_XY = ZERO,
+                                          EPS_XZ = ZERO,
+                                          EPS_YZ = ZERO,),
+                           CRITERE = 'FATESOCI_MODI_AV',
+                           PROJECTION = 'UN_AXE',
+                           MATER = MATF,
+                           )
+    TABF[i]= CALC_TABLE( reuse = TABF[i],
+                         TABLE = TABF[i],
+                         ACTION = ( _F( OPERATION ='OPER',
+                                       FORMULE = PHIZ,
+                                       NOM_PARA = 'PHIZ',),)
+                       ) 
+    TEST_TABLE( 
+      REFERENCE='ANALYTIQUE',
+      VALE_REFE=RESUF[i],
+      PRECISION = 0.03,
+      VALE_CALC= RESUC[i],
+      NOM_PARA = 'PHIZ',
+      TABLE= TABF[i],)
+                             
+FIN()
+
