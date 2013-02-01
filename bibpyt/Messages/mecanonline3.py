@@ -1,8 +1,8 @@
-#@ MODIF mecanonline3 Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline3 Messages  DATE 28/01/2013   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,13 +50,20 @@ cata_msg = {
  FETI et contact continu incompatibles !
 """),
 
+88 : _(u"""
+  -> Vous utilisez l'algorithme de contact 'GCP' avec un préconditionneur qui n'est pas adapté.
+
+  -> Conseil :
+     Utilisez le préconditionneur 'LDLT_SP' en spécifiant PRE_COND='LDLT_SP' sous le mot-clé SOLVEUR.
+"""),
+
 89 : _(u"""
  contact et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
 90 : _(u"""
   -> Vous utilisez une formulation 'DISCRETE' de contact conjointement avec le solveur linéaire '%(k1)s'.
-     Le solveur '%(k1)s' n'est actuellement autorisé qu'avec les algorithmes de contact 'VERIF' et 'PENALISATION'.
+     Le solveur '%(k1)s' n'est actuellement autorisé qu'avec les algorithmes de contact 'GCP','VERIF' et 'PENALISATION'.
 
   -> Conseil :
      Changez d'algorithme de contact en utilisant le mot-clé ALGO_CONT de DEFI_CONTACT ou bien changez de solveur linéaire
