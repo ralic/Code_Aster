@@ -1,22 +1,22 @@
-# MODIF  DATE 18/12/2012   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 29/01/2013   AUTEUR KHAM M.KHAM 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL APRES CONSTRUCTION
 # wdnp101c.para = tps_job 800 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #  PAR COUCHES AVEC LOI DE HUJEUX PAR REPONSE DIRECTE IMPLICITE
 
@@ -186,8 +186,8 @@ PES=AFFE_CHAR_MECA(MODELE=MOD[0],
                    PESANTEUR=_F(GRAVITE=1.0,
                                 DIRECTION=(0.0,-1.0,0.0),),);
 
-CHPAR=AFFE_CHAR_MECA(MODELE=MOD[0],
-                     DDL_IMPO=_F(GROUP_MA='BAS', DY=0.0),);
+CHPAR=AFFE_CHAR_CINE(MODELE=MOD[0],
+                     MECA_IMPO=_F(GROUP_MA='BAS', DY=0.0),);
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=2000000./T0, NOMBRE=20,),
@@ -609,7 +609,10 @@ for n in range(1,nbcouche-1):
 
 DETRUIRE(INFO=1,
          CONCEPT=_F(NOM=(CHLAT,PHAUT,CHPAR,SIEF,),),);
-
+         
+PESA=AFFE_CHAR_MECA(MODELE=MOD[9],
+                   PESANTEUR=_F(GRAVITE=9.81 /F0,
+                                DIRECTION=(0.0,-1.0,0.0),),);
 # Deplacements lateraux nuls
 CHLAT=AFFE_CHAR_CINE(INFO=1,
                      MODELE=MOD[9],
@@ -623,9 +626,17 @@ PHAUT=AFFE_CHAR_CINE(INFO=1,
 # Deplacement vertical nul a la base
 CHPAR=AFFE_CHAR_CINE(MODELE=MOD[9],
                      MECA_IMPO=_F(GROUP_MA='BAS', DY=0.0,),);
-                                    
+
+# Deplacement horizontal nul a la base
+NORIGID=AFFE_CHAR_CINE(MODELE=MOD[9],
+                     MECA_IMPO=_F(GROUP_MA='BAS', DX=0.0,),);
+                     
+# Deplacement horizontal solidaire a la base                    
 BO_CONH0=AFFE_CHAR_MECA(MODELE=MOD[9],
-                       LIAISON_UNIF=_F(GROUP_NO='BAS', DDL='DX'),
+                       LIAISON_UNIF=_F(GROUP_NO='BAS', DDL='DX'),);
+
+# Deplacements horizontal et vertical solidaires sur les cotes
+BO_CONH1=AFFE_CHAR_MECA(MODELE=MOD[9],
                        LIAISON_GROUP=(_F(GROUP_NO_1='LAT_LEFT',
                                     GROUP_NO_2='LAT_RIGH',
                                     DDL_1=('DX',),
@@ -639,17 +650,7 @@ BO_CONH0=AFFE_CHAR_MECA(MODELE=MOD[9],
                                     DDL_2=('DY',),
                                     COEF_MULT_1 = 1.,
                                     COEF_MULT_2 = -1.,
-                                    COEF_IMPO = 0.,),
-#                                  _F(#GROUP_NO_1='LAT_LEFD',
-#                                     #GROUP_NO_2='LAT_RIGD',
-#                                     GROUP_NO_1=('GA10NS'),
-#                                     GROUP_NO_2=('DR10NS'),
-#                                     DDL_1=('PRE1',),
-#                                     DDL_2=('PRE1',),
-#                                     COEF_MULT_1 = 1.,
-#                                     COEF_MULT_2 = -1.,
-#                                     COEF_IMPO = 0.,),
-                                    ),);
+                                    COEF_IMPO = 0.,),),);
 
 TI_LI_IN=DEFI_LIST_REEL(DEBUT=-1.e+2 /T0,
                         INTERVALLE=_F(JUSQU_A=0., NOMBRE=1,),);
@@ -662,11 +663,11 @@ DEFLIST3 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TI_LI_IN),
 
 U9B=STAT_NON_LINE(MODELE=MOD[9],
                  CHAM_MATER=AFFMAT1,
-                 EXCIT=(#_F(CHARGE=CHLAT),
+                 EXCIT=(_F(CHARGE=NORIGID),
                         _F(CHARGE=PHAUT),
                         _F(CHARGE=CHPAR),
-                        _F(CHARGE=BO_CONH0),
-                        _F(CHARGE=PES, FONC_MULT=FOC,),),
+                        _F(CHARGE=BO_CONH1),
+                        _F(CHARGE=PESA,),),
                  COMP_INCR=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
@@ -743,18 +744,12 @@ trace =FORMULE(VALE='0.3333*abs(SIXX+SIYY+SIZZ)',
 norme =FORMULE(VALE='sqrt(DX*DX+DY*DY)',
                 NOM_PARA=('DX','DY',),);
                 
-norm_flu =FORMULE(VALE='sqrt(FH11X*FH11X+FH11Y*FH11Y)',
+norm_flu =FORMULE(VALE='pas_hfin*sqrt(FH11X*FH11X+FH11Y*FH11Y)',
                 NOM_PARA=('FH11X','FH11Y',),);
 
 GrMa =list_group_ma
 
-table_suivi_ddl= [# _F(NOM_CHAM='DEPL',
-#                        NOM_CMP=('DX','DY',),
-#                        EVAL_CMP ='FORMULE',
-#                        FORMULE  =norme,
-#                        EVAL_CHAM='MAX',
-#                        GROUP_MA =GrMa,),
-                  _F(NOM_CHAM='ACCE',
+table_suivi_ddl= [_F(NOM_CHAM='ACCE',
                        NOM_CMP=('DX','DY',),
                        EVAL_CMP ='FORMULE',
                        FORMULE  =norme,
@@ -787,7 +782,8 @@ U9B=DYNA_NON_LINE(reuse=U9B,
                  EXCIT=(_F(CHARGE=PHAUT),
                         _F(CHARGE=CHPAR),
                         _F(CHARGE=BO_CONH0),
-                        _F(CHARGE=PES, FONC_MULT=FOC,),
+                        _F(CHARGE=BO_CONH1),
+                        _F(CHARGE=PESA,),
                         _F(CHARGE=MONOX, FONC_MULT=ACCELE,),),
                  COMP_INCR=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
@@ -807,8 +803,8 @@ U9B=DYNA_NON_LINE(reuse=U9B,
                  SOLVEUR=_F(RENUM='METIS',
                             STOP_SINGULIER='NON',
                             METHODE='MULT_FRONT',
-                            NPREC=15,SYME='NON',
-                            #SYME='OUI', necessaire avec le shift de la masse
+                            SYME='NON',
+                            #SYME='OUI', necessaire seulement avec le shift de la masse
                             ),
                  ETAT_INIT=_F(EVOL_NOLI=U9B,
                               INST=0.0,PRECISION=1.E-6,
@@ -828,9 +824,134 @@ U9B=DYNA_NON_LINE(reuse=U9B,
                                 RESI_GLOB_RELA=1.E-6,
                                 ARRET='OUI',),
                  SUIVI_DDL  =table_suivi_ddl,
-                 #AFFICHAGE=_F(INFO_RESIDU='OUI',),
-                 );
-                 
+                 AFFICHAGE=_F(INFO_RESIDU='OUI',),);
+
+ACC_R1X=RECU_FONCTION(RESULTAT=U9B,
+                      TITRE='ACC_R1X',
+                      NOM_CHAM='ACCE',
+                      NOM_CMP='DX',
+                      NOEUD='N1',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      INTERPOL='LIN',);
+
+ACC_R47X=RECU_FONCTION( RESULTAT=U9B,
+                        TITRE='ACC_R47X',
+                        NOM_CHAM='ACCE',
+                        NOM_CMP='DX',
+                        NOEUD='N12',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                        INTERPOL='LIN',);
+
+ACC_A1X=CALC_FONCTION(LIST_PARA=L_COMB,
+                      COMB=(_F(FONCTION = ACC_R1X,COEF = 1.*F0),
+                            _F(FONCTION = ACCELE, COEF = 1.),),);
+
+ACC_A47X=CALC_FONCTION(LIST_PARA=L_COMB,
+                       COMB=(_F(FONCTION = ACC_R47X,COEF = 1.*F0),
+                             _F(FONCTION = ACCELE,  COEF = 1.),),);
+
+
+TAB_INF1 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
+                                  INST_INIT=2.80 /T0,
+                                  INST_FIN =2.88 /T0,),);
+                                  
+TAB_INF2 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
+                                  INST_INIT=3.06 /T0,
+                                  INST_FIN =3.14 /T0,),);
+                                    
+TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
+                                  INST_INIT=3.47 /T0,
+                                  INST_FIN =3.55 /T0,),);
+
+# Les valeurs de reference correspondent a un calcul avec
+# une modelisation "d_plan_hm" avec un maillage raffine
+# en supposant que ce calcul est suffisamment precis.
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           #TOLE_MACHINE=1.E-2,
+           PRECISION=4.E-2,
+           VALE_CALC=1.9013835448089,
+           VALE_REFE=1.8628625511053,
+           NOM_PARA='RMS',
+           TABLE=TAB_INF1,);
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           #TOLE_MACHINE=1.E-2,
+           PRECISION=2.4E-1,
+           VALE_CALC=1.3392568996956,
+           VALE_REFE=1.107501776192,
+           NOM_PARA='RMS',
+           TABLE=TAB_INF2,);
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           #TOLE_MACHINE=1.E-2,
+           PRECISION=5.E-2,
+           VALE_CALC=2.3234793910643,
+           VALE_REFE=2.4097094098975,
+           NOM_PARA='RMS',
+           TABLE=TAB_INF3,);
+
+freq =[0.200000*T0, 0.250000*T0, 0.300000*T0, 0.350000*T0, 0.400000*T0,
+0.450000*T0, 0.500000*T0, 0.550000*T0, 0.600000*T0, 0.650000*T0,
+0.700000*T0, 0.750000*T0, 0.800000*T0, 0.850000*T0, 0.900000*T0,
+0.950000*T0, 1.000000*T0, 1.050000*T0, 1.100000*T0, 1.150000*T0,
+1.200000*T0, 1.250000*T0, 1.300000*T0, 1.350000*T0, 1.400000*T0,
+1.450000*T0, 1.500000*T0, 1.550000*T0, 1.600000*T0, 1.650000*T0,
+1.700000*T0, 1.750000*T0, 1.800000*T0, 1.850000*T0, 1.900000*T0,
+1.950000*T0, 2.000000*T0, 2.050000*T0, 2.100000*T0, 2.150000*T0,
+2.200000*T0, 2.250000*T0, 2.300000*T0, 2.350000*T0, 2.400000*T0,
+2.450000*T0, 2.500000*T0, 2.550000*T0, 2.600000*T0, 2.650000*T0,
+2.700000*T0, 2.750000*T0, 2.800000*T0, 2.850000*T0, 2.900000*T0,
+2.950000*T0, 3.000000*T0, 3.075000*T0, 3.150000*T0, 3.225000*T0,
+3.300000*T0, 3.375000*T0, 3.450000*T0, 3.525000*T0, 3.600000*T0,
+3.700000*T0, 3.800000*T0, 3.900000*T0, 4.000000*T0, 4.100000*T0,
+4.200000*T0, 4.300000*T0, 4.400000*T0, 4.500000*T0, 4.600000*T0,
+4.700000*T0, 4.800000*T0, 4.900000*T0, 5.000000*T0, 5.125000*T0,
+5.250000*T0, 5.375000*T0, 5.500000*T0, 5.625000*T0, 5.750000*T0,
+5.875000*T0, 6.000000*T0, 6.125000*T0, 6.250000*T0, 6.375000*T0,
+6.500000*T0, 6.625000*T0, 6.750000*T0, 6.875000*T0, 7.000000*T0,
+7.125000*T0, 7.250000*T0, 7.375000*T0, 7.500000*T0, 7.625000*T0,
+7.750000*T0, 7.875000*T0, 8.000000*T0, 8.250000*T0, 8.500000*T0,
+8.750000*T0, 9.000000*T0, 9.250000*T0, 9.500000*T0, 9.750000*T0,
+10.000000*T0, 10.250000*T0, 10.500000*T0, 10.750000*T0, 11.000000*T0,
+11.250000*T0, 11.500000*T0, 11.750000*T0, 12.000000*T0, 12.250000*T0,
+12.500000*T0, 12.750000*T0, 13.000000*T0, 13.250000*T0, 13.500000*T0,
+13.750000*T0, 14.000000*T0, 14.250000*T0, 14.500000*T0, 14.750000*T0,
+15.000000*T0, 15.500000*T0, 16.000000*T0, 16.500000*T0, 17.000000*T0,
+17.500000*T0, 18.000000*T0, 19.000000*T0, 20.000000*T0, 21.000000*T0,
+22.000000*T0, 23.500000*T0, 25.000000*T0, 26.500000*T0, 28.000000*T0,
+29.500000*T0, 31.000000*T0, 32.500000*T0, 34.000000*T0, 35.500000*T0,]
+
+freq =2.500000*T0
+
+SPOSCI = CALC_FONCTION(INFO=2,
+                       SPEC_OSCI=_F(FONCTION=ACC_A47X,
+                                    FREQ=freq, NORME=9.81,),);
+
+MAXSP = INFO_FONCTION(MAX=_F(FONCTION = SPOSCI,),);
+
+
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.941495800847907e-01,
+                        VALE_REFE=8.798585602334655e-01,
+                        VALE_PARA=(0.02, 2.5 *T0),
+                        REFERENCE='AUTRE_ASTER',
+                        #TOLE_MACHINE=1.E-3,
+                        PRECISION=0.020000000000000003,
+                        NOM_PARA=('AMOR', 'FREQ'),
+                        FONCTION=SPOSCI,),
+              ATTRIBUT=(_F(REFERENCE='ANALYTIQUE',
+                           PARA=0.02,
+                           ATTR_REFE='FREQ',
+                           FONCTION=SPOSCI,
+                           ATTR='NOM_PARA_FONC',),
+                        _F(REFERENCE='ANALYTIQUE',
+                           ATTR_REFE='AMOR',
+                           FONCTION=SPOSCI,
+                           ATTR='NOM_PARA',),
+                        ),);
+
 U9B=CALC_CHAMP(reuse   = U9B,
             CONTRAINTE= ('SIEF_ELNO',),
             RESULTAT  = U9B,
@@ -888,7 +1009,7 @@ SIXYMIDL=RECU_FONCTION(RESULTAT=U9B,
 # PRE1 =1e+5
 vitx_ref =.125
 depx_ref =1.5e-2
-pre1_ref =1e+5
+pre1_ref =2.e+4
 sixy_ref =2.e+4
 
 DVITXMID=CALC_FONCTION(LIST_PARA=L_COMB,
@@ -928,8 +1049,8 @@ TAB_SIXY=CREA_TABLE(FONCTION=_F(FONCTION=ABSDSIXY),);
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           #TOLE_MACHINE=1.e-3,
-           VALE_CALC=0.16937315710963,
+           #TOLE_MACHINE=1.e-2,
+           VALE_CALC=0.16950093938095,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -939,8 +1060,8 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           #TOLE_MACHINE=1.e-3,
-           VALE_CALC=0.025300213667263,
+           #TOLE_MACHINE=1.e-2,
+           VALE_CALC=0.025384618641282,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -950,22 +1071,23 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
 TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           #TOLE_MACHINE=1.e-3,
-           VALE_CALC=0.012814964227664,
+           #TOLE_MACHINE=1.e-2,
+           VALE_CALC=0.064164321153350,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
-           PRECISION=.02,
+           PRECISION=.1,
            VALE_REFE=0.,);
            
 TEST_TABLE(NOM_PARA='SIXY', TABLE=TAB_SIXY, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            # Non-regression
-           #TOLE_MACHINE=1.e-3,
-           VALE_CALC=0.19256952027937,
+           #TOLE_MACHINE=1.e-2,
+           VALE_CALC=0.19258499958864,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
            PRECISION=.25,
            VALE_REFE=0.,);
+           
 FIN();
