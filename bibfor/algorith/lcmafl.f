@@ -2,7 +2,7 @@
      &             NBVAL,VALRES,NMAT,ITBINT,NFS,NSG,HSRI,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 28/01/2013   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -163,6 +163,10 @@ C         CALCUL ET STOCKAGE DE MU
      &                   1,'G_LN',MU,ICODRE,1)
           ENDIF
           CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMPF,IRET2)
+          IF (IRET2.NE.0) THEN
+             CALL U2MESG('F','COMPOR1_82',1,NECOUL,0,0,0,0.D0)
+          ENDIF
+
           NBVAL=NBVAL+1
           VALLUE(NBVAL)=TEMPF
           NBVAL=NBVAL+1
@@ -205,6 +209,9 @@ C         PAR CONVENTION KOCKS_RAUCH A LE NUMERO 4
           VALRES(1)=4
 
           CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMPF,IRET2)
+          IF (IRET2.NE.0) THEN
+             CALL U2MESG('F','COMPOR1_82',1,NECOUL,0,0,0,0.D0)
+          ENDIF
           NBVAL=NBVAL+1
           VALRES(NBVAL)=TEMPF
 
