@@ -18,7 +18,7 @@
       REAL*8        INSTAM,INSTAP,SIGM(2*NDIM,NPG),SIGN(6)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,7 +74,7 @@ C OUT IVECTU  : VECTEUR FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C......................................................................
 C
       INTEGER  I,IG,IRET,J,J1,KKD,KL,KPG,L,M,N,NN,MN
-      INTEGER  DDLS,DDLD,CPT,IBID,IDFDE,IPOIDS,IVF
+      INTEGER  DDLS,DDLD,CPT,IBID,IDFDE,IPOIDS,IVF,DEC(NNOP)
       INTEGER  JCOOPG,JDFD2,JGANO,NDIMB,NNO,NNOPS,NNOS,NPGBIS
       REAL*8   DSIDEP(6,6),F(3,3),EPS(6),DEPS(6),SIGMA(6),FTF,DETF
       REAL*8   TMP1,TMP2,SIGP(6),FE(4),BASLOG(3*NDIM)
@@ -124,7 +124,9 @@ C - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES LOIS DE COMPORTEMENT
      &            ZR(IGEOM),TYPMOD,COMPOR,NDIM  ,DFDIB ,
      &            DEPLB1   ,DEPLB2,ELGEOM)
 
-
+      DO 178 N=1,NNOP
+         CALL INDENT(N,DDLS,DDLM,NNOPS,DEC(N))
+178   CONTINUE
 C-----------------------------------------------------------------------
 C - CALCUL POUR CHAQUE POINT DE GAUSS
       DO 1000 KPG=1,NPG
@@ -334,7 +336,7 @@ C
      &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    ) THEN
 C
           DO 170 N=1,NNOP
-            CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
+            NN=DEC(N)
 
             DO 171 I=1,DDLD
               KKD = (NN+I-1) * (NN+I) /2
@@ -346,7 +348,7 @@ C
  172          CONTINUE
               DO 174 J=1,DDLD
                 DO 175 M=1,N
-                  CALL INDENT(M,DDLS,DDLM,NNOPS,MN)
+                  MN=DEC(M)
 
                   IF (M.EQ.N) THEN
                     J1 = I
@@ -393,7 +395,7 @@ C
      &     OPTION(1:9).EQ.'RAPH_MECA') THEN
 
           DO 180 N=1,NNOP
-            CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
+            NN=DEC(N)
             DO 181 I=1,DDLD
               DO 182 L=1,2*NDIM
               ZR(IVECTU-1+NN+I)=

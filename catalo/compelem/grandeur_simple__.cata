@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -2135,7 +2135,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        RELA   : gère l''activation des lois cohésives avec X-FEM
 >>
     XCONTAC  = R      RHON     MU       RHOTK     INTEG    COECH    COSTCO   COSTFR
-                      COPECO   COPEFR   RELA      CZMFE
+                      COPECO   COPEFR   RELA
 
 GRANDEUR_ELEMENTAIRE__
    MDEP_C 2 DEPL_C   DEPL_C   MS

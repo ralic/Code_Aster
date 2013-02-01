@@ -1,11 +1,11 @@
-      SUBROUTINE INDENT(I,DDLS,DDLM,NNOS,IN)
+      SUBROUTINE INDENT(I,DDLS,DDLM,NNOS,IDEC)
       IMPLICIT   NONE
-      INTEGER    I,DDLS,DDLM,NNOS,IN
+      INTEGER    I,DDLS,DDLM,NNOS,IDEC
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ELEMENTS  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -35,20 +35,9 @@ C  SORTIE
 C  IN      : SAUT DE DDL
 C......................................................................
 
-      INTEGER     NNOI,DDLI     
-C......................................................................
-
-      CALL JEMARQ()
-
       IF (I.LE.NNOS) THEN
-         NNOI=0
-         DDLI=DDLS
-      ELSEIF (I.GT.NNOS) THEN
-         NNOI=NNOS
-         DDLI=DDLM
+         IDEC=DDLS*(I-1)
+      ELSE
+         IDEC=DDLS*NNOS+DDLM*(I-NNOS-1)
       ENDIF
- 
-      IN = DDLS*NNOI+DDLI*(I-NNOI-1)
-
-      CALL JEDEMA()
       END

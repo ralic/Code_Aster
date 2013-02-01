@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +21,6 @@ POST_MAIL_XFEM=OPER(nom="POST_MAIL_XFEM",op= 187,sd_prod=maillage_sdaster,
                     reentrant='n',UIinfo={"groupes":("Maillage","Rupture",)},
             fr="Crée un maillage se conformant à la fissure pour le post-traitement des éléments XFEM",
     MODELE        = SIMP(statut='o',typ=modele_sdaster),
-    MAILLAGE_SAIN = SIMP(statut='f',typ=maillage_sdaster),
     PREF_NOEUD_X   =SIMP(statut='f',typ='TXM',defaut="NX",validators=LongStr(1,2),),
     PREF_NOEUD_M   =SIMP(statut='f',typ='TXM',defaut="NM",validators=LongStr(1,2),),
     PREF_NOEUD_P   =SIMP(statut='f',typ='TXM',defaut="NP",validators=LongStr(1,2),),

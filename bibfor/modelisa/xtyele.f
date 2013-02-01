@@ -1,8 +1,8 @@
       SUBROUTINE XTYELE(NOMA,TRAV,NFISS,FISS,CONTAC,NDIM,LINTER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -339,22 +339,28 @@ C ---  1 -> X-FEM AVEC CONTACT
 C ---  0 -> FEM SI LA COLONE 4 EST À 1,
 C           NON AFFECTÉ SI LA COLONE 4 EST À 0
 C
-              IF(NFISS.EQ.1) THEN
-                IF(LCONT) THEN
+C SI MAILLE PAS ENCORE VUE
+C
+               IF(LCONT) THEN
                   ICONT(IFISS) = ICONT(IFISS)+1
                   ZI(JCONT(IFISS)-1+ICONT(IFISS)) = IMA
-                 ENDIF
-              ELSE              
-                IF(LCONT.AND.ZI(JTAB-1+5*(IMA-1)+KK).LE.0) THEN
-                   DO 188 IFIS=1,NFISS
-                     DO 191 L=1,3
-C                      IF(L.EQ.2) GOTO 191
-                       CALL JEEXIN(GRP(4*(IFIS-1)+L),IRET)
+               ENDIF
+C
+C SI MAILLE POUR LA PREMIERE FOIS EN CONTACT
+C MAIS DEJA VUE AILLEURS
+C ON ENRICHIT LES GROUPES DES FISSURES POUR LESQUELS
+C C EST UNE HEAVISIDE
+C
+                IF(LCONT.AND.ZI(JTAB-1+5*(IMA-1)+KK).LE.0.AND.
+     &             ZI(JTAB-1+5*(IMA-1)+4).EQ.0) THEN
+                   IF(KK.NE.1) CALL U2MESK('F','XFEM_44', 1 ,NOMAIL)
+                   DO 188 IFIS=1,IFISS-1
+                       CALL JEEXIN(GRP(4*(IFIS-1)+1),IRET)
                        IF (IRET.NE.0) THEN
-                        CALL JELIRA(GRP(4*(IFIS-1)+L),
+                        CALL JELIRA(GRP(4*(IFIS-1)+1),
      &                              'LONMAX',NMA,K8BID)
                         DO 189 J=1,NMA
-                          IMAE = ZI(JGRP(4*(IFIS-1)+L)-1+J)
+                          IMAE = ZI(JGRP(4*(IFIS-1)+1)-1+J)
                           IF(IMAE.EQ.IMA) THEN
                              ICONT(IFIS) = ICONT(IFIS)+1
                              ZI(JCONT(IFIS)-1+ICONT(IFIS)) = IMA
@@ -362,10 +368,16 @@ C                      IF(L.EQ.2) GOTO 191
                           ENDIF
 189                     CONTINUE
                       ENDIF
-191                  CONTINUE
 188               CONTINUE                  
                 ENDIF
-              ENDIF
+C
+C SI MAILLE DEJA EN CONTACT POUR UNE AUTRE FISS
+               IF(.NOT.LCONT.AND.ZI(JTAB-1+5*(IMA-1)+KK).GT.0) THEN
+                  IF(KK.NE.1) CALL U2MESK('F','XFEM_44', 1 ,NOMAIL)
+                  CALL ASSERT(ZI(JTAB-1+5*(IMA-1)+4).EQ.0)
+                  ICONT(IFISS) = ICONT(IFISS)+1
+                  ZI(JCONT(IFISS)-1+ICONT(IFISS)) = IMA
+               ENDIF
               IF (ZI(JTAB-1+5*(IMA-1)+4).EQ.1) THEN
                 IF (LCONT) THEN                  
                   ZI(JTAB-1+5*(IMA-1)+KK) = 1

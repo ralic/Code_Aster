@@ -5,7 +5,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,8 @@ C
       CALL VECINI(3,0.D0,TAU2)
       LELIM = .FALSE.
       NBSPG=0
+C INTIALISATION JMATE POUR DETECTER EVENTUELLES ERREURS JEVEUX
+      JMATE=1
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
@@ -202,7 +204,7 @@ C     ..............................
 C
             CALL XMCONT(ALGOCR,COEFCR,COEFCP,COHES ,COHEO,
      &                  DDLM  ,DDLS  ,FFC   ,FFP   ,IDEPD ,IDEPM ,
-     &                  IFA   ,IFISS ,ZI(JMATE) ,INDCO ,IPGF  ,
+     &                  IFA   ,IFISS ,JMATE ,INDCO ,IPGF  ,
      &                  JAC   ,JFISNO,JHEAFA,MMAT  ,LACT,
      &                  NCOMPH,ND    ,NDDL  ,NDIM  ,NFH   ,
      &                  NFISS ,NNO   ,NNOL  ,NNOS  ,

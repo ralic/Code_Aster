@@ -5,7 +5,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C......................................................................
       CHARACTER*8 ELC,FPG
       CHARACTER*8  FAMI,POUM
       CHARACTER*9  PHEN
-      REAL*8     FFPC(27),RELA,R8PREM,EPS
+      REAL*8     FFPC(27),RELA,R8PREM,EPS,RHON
       REAL*8     REAC,FFP(27),FFC(8),LC,R3BID(3),JAC
       REAL*8     PREC,ND(3),DN,SAUT(3),RR,RBID,R3BD(3)
       REAL*8     COEFCP,COEFFP,COEFCR,COEFFR,R6BID(6)
@@ -231,7 +231,9 @@ C
 C                ON REGARDE LA REACTION POUR LES POINTS
 C                SUPPOSES CONTACTANT :
                ELSE IF (INDCO.EQ.1) THEN
-                 IF (REAC.GT.-1.D-3) THEN
+                 IF(COEFCR.EQ.0.D0) RHON = 100.D0
+                 IF(COEFCR.NE.0.D0) RHON = COEFCR
+                 IF ((REAC-RHON*DN).GT.R8PREM()) THEN
 C                  SI GLISSIERE=OUI ET IL Y A EU DU CONTACT DEJA SUR CE
 C                  POINT (MEMCON=1), ALORS ON FORCE LE CONTACT
                   IF ((GLISS.EQ.1).AND.

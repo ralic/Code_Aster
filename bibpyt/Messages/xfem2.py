@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF xfem2 Messages  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,24 +30,6 @@ cata_msg = {
 2 : _(u"""
   -> GROT_GDEP n'est pas disponible avec COMP_ELAS.
   -> Conseils : Utilisez COMP_INCR.
-"""),
-
-3 : _(u"""
-  -> Erreur utilisateur : Pour le post-traitement de visualisation en présence
-     de contact aux arêtes ('P1P1A' dans la commande MODI_MODELE_XFEM), il faut
-     obligatoirement renseigner le mot-clé MAILLAGE_SAIN de la commande %(k1)s.
-  -> Risques et conseils:
-     Veuillez renseigner le mot-clé MAILLAGE_SAIN avec le maillage linéaire.
-"""),
-
-4 : _(u"""
-  -> Pour le post-traitement de visualisation standard (sans présence
-     de contact aux arêtes dans la commande MODI_MODELE_XFEM), le mot-clé
-     MAILLAGE_SAIN de la commande %(k1)s ne sert à rien. Il ne sera pas
-     utilisé.
-  -> Risques et conseils:
-     Pour ne plus avoir cette alarme, veuillez supprimer le mot-clé MAILLAGE_SAIN
-     de la commande %(k1)s.
 """),
 
 5 : _(u"""

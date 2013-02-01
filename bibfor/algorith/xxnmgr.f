@@ -18,7 +18,7 @@
       REAL*8        INSTAM,INSTAP,SIGM(2*NDIM,NPG),SIGN(6)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+C MODIF ALGORITH  DATE 29/01/2013   AUTEUR FERTE G.FERTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -76,7 +76,7 @@ C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C......................................................................
 C
       INTEGER  I,IG,IRET,J,J1,K,KK,KKD,KPG,L,M,MN,N,NN
-      INTEGER  DDLS,DDLD,DDLDN,CPT
+      INTEGER  DDLS,DDLD,DDLDN,CPT,DEC(NNOP)
       INTEGER  IBID,IDFDE,IPOIDS,IVF,JCOOPG,JDFD2,JGANO
       INTEGER  NDIMB,NNO,NNOPS,NNOS,NPGBIS
       REAL*8   F(3,3),FM(3,3),FR(3,3),EPSM(6),EPSP(6),DEPS(6)
@@ -132,6 +132,10 @@ C - LES ARGUMENTS DFDIB, DEPLB1, DEPLB2 NE SERVENT PAS DANS CE CAS
       CALL LCEGEO(NNO      ,NPG   ,IPOIDS,IVF   ,IDFDE ,
      &            ZR(IGEOM),TYPMOD,COMPOR,NDIM  ,DFDIB ,
      &            DEPLB1   ,DEPLB2,ELGEOM)
+C
+      DO 178 N=1,NNOP
+         CALL INDENT(N,DDLS,DDLM,NNOPS,DEC(N))
+178   CONTINUE
 C
 C-----------------------------------------------------------------------
 C - CALCUL POUR CHAQUE POINT DE GAUSS DU SOUS-ELEMENT
@@ -323,10 +327,10 @@ C - CALCUL DE LA MATRICE DE RIGIDITE
 C
 C          RIGIDITÉ GEOMETRIQUE
           DO 190 N=1,NNOP
-            CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
+            NN=DEC(N)
 
             DO 191 M=1,N
-              CALL INDENT(M,DDLS,DDLM,NNOPS,MN)
+              MN=DEC(M)
 C
               DO 192 I=1,DDLDN
                 DO 193 J=1,DDLDN
@@ -377,7 +381,7 @@ C                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
  190      CONTINUE
 C         RIGIDITE ELASTIQUE
           DO 200 N=1,NNOP
-            CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
+            NN=DEC(N)
 
             DO 201 I=1,DDLD
               DO 202 L=1,2*NDIM
@@ -389,7 +393,7 @@ C         RIGIDITE ELASTIQUE
               DO 204 J=1,DDLD
                 DO 205 M=1,N
                   TMP2 = 0.D0
-                  CALL INDENT(M,DDLS,DDLM,NNOPS,MN)
+                  MN=DEC(M)
                   DO 206 K=1,2*NDIM
                     TMP2 = TMP2 + SIG(K) * DEF(K,M,J)
  206              CONTINUE
@@ -415,7 +419,7 @@ C
         IF (RESI) THEN
 C
           DO 210 N=1,NNOP
-            CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
+            NN=DEC(N)
             DO 211 I=1,DDLD
               DO 212 L=1,2*NDIM
               ZR(IVECTU-1+NN+I)=
