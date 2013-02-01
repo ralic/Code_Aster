@@ -1,9 +1,9 @@
-#@ MODIF B_ETAPE Build  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,7 @@ from types import ClassType, TypeType
 
 # Module Eficas
 from Noyau.N_utils import prbanner, AsType
-from Noyau.N_types import is_int, is_float, is_float_or_int, is_complex, is_str, is_enum, is_assd
+from Noyau.N_types import is_int, is_float, is_float_or_int, is_complex, is_str, is_sequence, is_assd
 from Noyau import N_MCSIMP, N_MCFACT, N_MCBLOC, N_MCLIST, N_ASSD, N_ENTITE
 from Noyau import N_FACT, N_BLOC, N_SIMP
 from Noyau.N_Exception import AsException
@@ -344,7 +344,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         """
         if isinstance(valeur, N_ASSD.ASSD):
             return valeur.nom
-        elif is_enum(valeur):
+        elif is_sequence(valeur):
             l = []
             for obj in valeur :
                 l.append(self.transforme_valeur_nom(obj))
@@ -368,7 +368,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         for k in tup_avant :
             if isinstance(k, N_ASSD.ASSD):
                 k = k.valeur
-            if is_enum(k):
+            if is_sequence(k):
                 if leType == "C8" and k[0] in ("MP", "RI") :
                     # on est en presence d'un complexe isolé
                     list_apres.append( k )
@@ -391,10 +391,10 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         """Vérifier que les éléments de 'values' sont du bon type (pour getvid, getvtx, getvr8).
         """
         ok = True
-        if not is_enum(values):
+        if not is_sequence(values):
             values = [values, ]
         for v in values:
-            if is_enum(v):
+            if is_sequence(v):
                 ok = self.check_values(func, v)
                 continue
             ok = func(v)
@@ -491,12 +491,36 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         self.jdc.alea.jumpahead(jump)
         return None
 
-    def fiintf(self, nom_fonction, nom_param, val):
+    def fiintf(self, coderr, nom_fonction, nom_param, val):
+        """Cette methode permet d'appeler une formule python depuis le fortran.
+        Elle évalue les concepts FORMULE.
+        coderr: comportement en cas d'erreur:
+            'F': erreur fatale, 'A': alarme, ' ': silencieux (dans ce cas,
+            il faut utiliser le code retour)
+        nom_fonction: nom de la fonction
+        nom_param: nom de ses paramètres
+        val: valeurs des paramètres (même cardinal que nom_param)
+        Elle retourne 2 valeurs : code_retour, valeur
         """
-            Cette methode permet d'appeler une formule python depuis le fortran.
-            Elle évalue les concepts FORMULE.
-            Elle retourne 3 valeurs : code_retour, message_erreur, valeur
-        """
+        def _print_msg(case, **kwargs):
+            """Print the error message"""
+            from Utilitai.Utmess import UTMESS
+            if coderr.strip() == '':
+                # silencieux
+                return
+            suite = coderr + '+'
+            UTMESS(suite, 'FONCT0_9', valk=nom_fonction)
+            # prend les messages dans le catalogues
+            if case == 1:
+                UTMESS(suite, 'FONCT0_67', **kwargs)
+            elif case == 2:
+                UTMESS(suite, 'FONCT0_68', **kwargs)
+            elif case == 3:
+                UTMESS(suite, 'FONCT0_69', **kwargs)
+            elif case == 4:
+                UTMESS(suite, 'FONCT0_70', **kwargs)
+            UTMESS(coderr, 'FONCT0_52')
+        
         nom_param = tuple([p.strip() for p in nom_param])
         self._cache_func = getattr(self, '_cache_func', {})
         self._cache_ctxt = getattr(self, '_cache_ctxt', (None, {}))
@@ -511,8 +535,8 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         assert objet_sd is not None, "concept inconnu : %s" % nom_fonction.strip()
 
         if len(nom_param) != len(val) :
-            msgerr = """Le nombre de valeurs est différent du nombre de paramètres"""
-            return 4, msgerr, None
+            _print_msg(1)
+            return 4, None
 
         if self._cache_func.get(nom_fonction).get(nom_param):
             inter = self._cache_func[nom_fonction][nom_param]
@@ -524,17 +548,15 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
                 args = list(miss)
                 args.sort()
                 args = ', '.join([repr(nom) for nom in args])
-                msgerr = """Les paramètres de la formule n'ont pas été fournis.
-Paramètres manquants : %s""" % args
-                return 4, msgerr, None
+                _print_msg(2, valk=args)
+                return 4, None
 
             if len(dble) > 0:
                 args = list(dble)
                 args.sort()
                 args = ', '.join(args)
-                msgerr = """Certains paramètres de la formule ont été fournis plusieurs fois.
-Paramètres répétés : %s""" % args
-                return 4, msgerr, None
+                _print_msg(3, valk=args)
+                return 4, None
 
         # appel de fonction definie dans le corps du jeu de commandes
         try:
@@ -554,11 +576,9 @@ Paramètres répétés : %s""" % args
                 context[param] = dp[param]
             res = eval(objet_sd.code, self.jdc.const_context, context)
         except:
-            msgerr = """Erreur lors de l'évaluation de la formule.
-La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
-%s""" % traceback.format_exc()
-            return 4, msgerr, None
-        return 0, '', res
+            _print_msg(4, valk=traceback.format_exc())
+            return 4, None
+        return 0, res
 
     def getvr8(self, nom_motfac, nom_motcle, iocc, mxval):
         """
@@ -567,6 +587,7 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
         if CONTEXT.debug : prbanner("getvr8 %s %s %d %d" %(nom_motfac, nom_motcle, iocc, mxval))
 
         valeur = self.get_valeur_mc(nom_motfac, nom_motcle, iocc, mxval)
+        valeur = self.Traite_value(valeur, "R8")
         if not self.check_float(valeur[1]):
             # elements de contexte
             print '! Etape  :', getattr(self, 'nom', '?'), '/', nom_motfac, '/', nom_motcle
@@ -575,7 +596,6 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
             print "!", valeur[1]
             raise AssertionError
 
-        valeur = self.Traite_value(valeur, "R8")
         if CONTEXT.debug :
             B_utils.TraceGet( 'GETVR8', nom_motfac, iocc, nom_motcle, valeur)
             for k in valeur[1] : assert is_float_or_int(k), `k` + " n'est pas un float"
@@ -750,10 +770,10 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
             if obj is None:
                 continue
             lmc.append(name)
-            if is_enum(obj):
+            if is_sequence(obj):
                 obj = obj[0]
                 # cas liste de complexes sous la forme RI/MP !
-                if is_enum(obj):
+                if is_sequence(obj):
                     obj = obj[0]
             if isinstance(obj, (N_ASSD.ASSD, N_ENTITE.ENTITE, N_MCLIST.MCList)):
                 lty.append(type(obj).__name__)
@@ -842,3 +862,17 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
         self.sd.valeur = ival
         return 1
 
+    def putvrr(self, rval):
+        """
+          Sorties:
+                indicateur sur le type ( 1 = le concept sortant est bien un 'reel',
+                                         0 = mauvais type de concept)
+          Fonction:
+                renvoyer une valeur entière depuis le fortran vers l'attribut
+                valeur de la sd 'entier'
+        """
+        if B_utils.Typast(AsType(self.sd)) != 'R8 ' :
+            raise AsException("Probleme dans putvrr: %s, n est pas de type reel !" % (self.sd.nom))
+            return 0
+        self.sd.valeur = rval
+        return 1

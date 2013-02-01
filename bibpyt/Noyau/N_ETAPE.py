@@ -1,9 +1,9 @@
-#@ MODIF N_ETAPE Noyau  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -304,26 +304,28 @@ Causes possibles :
       """
       return 0
 
-   def get_file(self,unite=None,fic_origine=''):
+   def get_file(self, unite=None, fic_origine='', fname=None):
       """
-         Retourne le nom du fichier associe a l unite logique unite (entier)
-         ainsi que le source contenu dans le fichier
+          Retourne le nom du fichier correspondant à un numero d'unité
+          logique (entier) ainsi que le source contenu dans le fichier
       """
-      if self.jdc : return self.jdc.get_file(unite=unite,fic_origine=fic_origine)
-      else :
-         file = None
+      if self.jdc:
+         return self.jdc.get_file(unite=unite, fic_origine=fic_origine, fname=fname)
+      else:
          if unite != None:
             if os.path.exists("fort."+str(unite)):
-               file= "fort."+str(unite)
-         if file == None :
-            raise AsException("Impossible de trouver le fichier correspondant a l unite %s" % unite)
-         if not os.path.exists(file):
+               fname= "fort."+str(unite)
+         if fname == None :
+            raise AsException("Impossible de trouver le fichier correspondant"
+                               " a l unite %s" % unite)
+         if not os.path.exists(fname):
             raise AsException("%s n'est pas un fichier existant" % unite)
-         fproc=open(file,'r')
-         text=string.replace(fproc.read(),'\r\n','\n')
+         fproc = open(fname, 'r')
+         text = fproc.read()
          fproc.close()
-         linecache.cache[file]=0,0,string.split(text,'\n'),file
-         return file,text
+         text = text.replace('\r\n', '\n')
+         linecache.cache[fname] = 0, 0, text.split('\n'), fname
+         return fname, text
 
    def accept(self,visitor):
       """

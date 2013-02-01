@@ -1,8 +1,8 @@
-#@ MODIF ops Cata  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -271,39 +271,44 @@ def build_poursuite(self,**args):
    self.jdc.UserError = self.codex.error
    return 0
 
-def INCLUDE(self,UNITE,**args):
-   """
-       Fonction sd_prod pour la macro INCLUDE
-   """
-   if not UNITE : return
-   if hasattr(self,'unite'):return
-   self.unite=UNITE
-
-   if self.jdc and self.jdc.par_lot == 'NON':
-      # On est en mode commande par commande, on appelle la methode speciale
-      self.Execute_alone()
-
-   self.make_include(unite=UNITE)
+def INCLUDE(self, UNITE, DONNEE, **args):
+    """Fonction sd_prod pour la macro INCLUDE"""
+    if not (UNITE or DONNEE) or hasattr(self, '_mark'):
+        return
+    self._mark = 1
+    if self.jdc and self.jdc.par_lot == 'NON':
+        # On est en mode commande par commande, on appelle la methode speciale
+        self.Execute_alone()
+    if UNITE:
+        fname = 'fort.%s' % UNITE
+    else:
+        fname = DONNEE
+        if aster_exists:
+            repdex = aster_core.get_option('repdex')
+            fname = osp.join(repdex, fname)
+    try:
+        self.make_include(fname=fname)
+    except Accas.AsException:
+        if aster_exists:
+            UTMESS('F+', 'FICHIER_1', valk=fname)
+            UTMESS('F', 'FICHIER_2')
+        raise
 
 def INCLUDE_context(self,d):
-   """
-       Fonction op_init pour macro INCLUDE
-   """
-   ctxt = self.g_context
-   d.update(ctxt)
+    """Fonction op_init pour macro INCLUDE"""
+    ctxt = self.g_context
+    d.update(ctxt)
 
 def build_include(self,**args):
-   """
-   Fonction ops de la macro INCLUDE appelée lors de la phase de Build
-   """
-   # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
-   # le numéro de la commande n est pas utile en phase de construction
-   # La macro INCLUDE ne sera pas numérotée (incrément=None)
-   ier=0
-   self.set_icmd(None)
-   # On n'execute pas l'ops d'include en phase BUILD car il ne sert a rien.
-   #ier=self.codex.opsexe(self,1)
-   return ier
+    """Fonction ops de la macro INCLUDE appelée lors de la phase de Build"""
+    # Pour presque toutes les commandes (sauf FORMULE et POURSUITE)
+    # le numéro de la commande n est pas utile en phase de construction
+    # La macro INCLUDE ne sera pas numérotée (incrément=None)
+    ier=0
+    self.set_icmd(None)
+    # On n'execute pas l'ops d'include en phase BUILD car il ne sert a rien.
+    #ier=self.codex.opsexe(self,1)
+    return ier
 
 def _detr_list_co(self, context):
     """Utilitaire pour DETRUIRE"""
@@ -389,7 +394,7 @@ def build_DEFI_FICHIER(self,**args):
 
 def build_formule(self, d):
     """Fonction ops de FORMULE."""
-    NOM_PARA = self.etape['NOM_PARA']
+    NOM_PARA = self.etape['NOM_PARA'] or ''
     VALE = self.etape['VALE']
     VALE_C = self.etape['VALE_C']
     if type(NOM_PARA) not in (list, tuple):
@@ -400,7 +405,7 @@ def build_formule(self, d):
                " : %s" % repr(para))
     if self.sd == None:
         return
-    if VALE     != None :
+    if VALE != None :
         texte = ''.join(VALE.splitlines())
     elif VALE_C != None :
         texte = ''.join(VALE_C.splitlines())

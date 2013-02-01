@@ -1,9 +1,9 @@
-#@ MODIF N_MCSIMP Noyau  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCSIMP Noyau  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,7 @@ from Noyau.N_ASSD import ASSD
 from Noyau.N_CO import CO
 import N_OBJECT
 from N_CONVERT import ConversionFactory
-from N_types import force_list
+from N_types import force_list, is_sequence
 
 class MCSIMP(N_OBJECT.OBJECT):
    """
@@ -98,9 +98,9 @@ class MCSIMP(N_OBJECT.OBJECT):
       # par "not has_attr(v, '__iter__')".
       if v is None:
           pass
-      elif type(v) in (list, tuple) and len(v) == 1 and self.definition.max == 1:
+      elif is_sequence(v) and len(v) == 1 and self.definition.max == 1:
          v = v[0]
-      elif not hasattr(v, '__iter__') and self.definition.max != 1:
+      elif not is_sequence(v) and self.definition.max != 1:
           v = (v, )
       # traitement particulier pour les complexes ('RI', r, i)
       if 'C' in self.definition.type and self.definition.max != 1 \

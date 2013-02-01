@@ -8,7 +8,7 @@
       CHARACTER*(*)       CODMES, NOMF,       NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,6 @@ C     ------------------------------------------------------------------
       CHARACTER*16 INTERP, PROLGD
       CHARACTER*19 NOMFON
       CHARACTER*24 CHPROL, CHVALE
-      CHARACTER*512 MSGERR
 C     ------------------------------------------------------------------
       INTEGER      MXSAVE
       PARAMETER   (MXSAVE=4)
@@ -89,11 +88,9 @@ C
 C        -- SI LA FONCTION EST REELLE, FIINTF NE CALCULE QUE
 C           RESU(1). IL FAUT DONC INITIALISER RESU(2).
          RESU(2)=0.D0
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IER,MSGERR,RESU)
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IER,'A',RESU)
          IF (IER.GT.0) THEN
             IER = 110
-            CALL U2MESK ('A+', 'FONCT0_51', 1, NOMF )
-            CALL U2MESK ('A', 'FONCT0_52', 1, MSGERR )
             GOTO 9999
          ENDIF
          RESURE=RESU(1)

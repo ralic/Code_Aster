@@ -7,9 +7,9 @@
       CHARACTER*(*)       NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,6 @@ C
       CHARACTER*1  COLI
       CHARACTER*19 NOMF
       CHARACTER*24 NOMPF(2)
-      CHARACTER*512 MSGERR
 C     ------------------------------------------------------------------
       INTEGER      IADZI, IAZK24
       CHARACTER*24 VALK(4)
@@ -85,11 +84,7 @@ C
       ELSEIF (ZK24(JPRO).EQ.'INTERPRE') THEN
 C             ------------------------
          NOMF = ZK24(JPRO+5)
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IRET,MSGERR,RESU)
-         IF (IRET.GT.0) THEN
-            CALL U2MESK('F+', 'FONCT0_9',1,NOMF)
-            CALL U2MESK('F', 'FONCT0_51',1,MSGERR)
-         ENDIF
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IRET,'F',RESU)
          GOTO 9999
 C
 C --- AUTRES TYPES DE FONCTION

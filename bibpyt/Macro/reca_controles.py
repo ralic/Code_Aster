@@ -1,9 +1,9 @@
-#@ MODIF reca_controles Macro  DATE 05/11/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_controles Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -29,7 +29,7 @@ import pprint
 # Nom de la routine
 nompro = 'MACR_RECAL'
 
-from Noyau.N_types import is_float, is_str, is_enum
+from Noyau.N_types import is_float, is_str, is_sequence
 
 
 #_____________________________________________
@@ -48,7 +48,7 @@ def erreur_de_type(code_erreur,X):
 
    txt = ""
    if(code_erreur == 0 ):
-      if not is_enum(X):
+      if not is_sequence(X):
          txt="\nCette entrée: " +str(X)+" n'est pas une liste valide"
    if(code_erreur == 1 ):
       if not is_str(X):

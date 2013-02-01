@@ -1,8 +1,8 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 15/10/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF exec_logiciel_ops Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -101,7 +101,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
    from Utilitai.System     import ExecCommand
    from Utilitai.UniteAster import UniteAster
    from Stanley.salomeRunScript import MakeTempScript, DelTempScript, RunScript
-   from Noyau.N_types import is_enum
+   from Noyau.N_types import is_sequence
 
    PRE_GMSH      = self.get_cmd("PRE_GMSH")
    PRE_GIBI      = self.get_cmd("PRE_GIBI")
@@ -244,9 +244,9 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
 
 
       # Changement en liste s'il n'y a qu'un seul element
-      if (not is_enum(FICHIERS_ENTREE)):
+      if (not is_sequence(FICHIERS_ENTREE)):
           FICHIERS_ENTREE = [FICHIERS_ENTREE,]
-      if (not is_enum(FICHIERS_SORTIE)):
+      if (not is_sequence(FICHIERS_SORTIE)):
           FICHIERS_SORTIE = [FICHIERS_SORTIE,]
 
 

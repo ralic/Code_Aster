@@ -1,9 +1,9 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 19/11/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_VALIDATOR Noyau  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,7 @@
 import types
 import traceback
 from N_ASSD import ASSD
-from N_types import is_int, is_float_or_int, is_complex, is_number, is_str, is_enum
+from N_types import is_int, is_float_or_int, is_complex, is_number, is_str, is_sequence
 from strfunc import convert, ufmt
 
 class ValError(Exception):pass
@@ -426,7 +426,7 @@ class ListVal(Valid):
           fait appel à la méthode convert_item sur chaque élément de la
           liste.
        """
-       if is_enum(valeur):
+       if is_sequence(valeur):
           for val in valeur:
               self.convert_item(val)
           return valeur
@@ -440,7 +440,7 @@ class ListVal(Valid):
           liste. Si valeur est un paramètre, on utilise sa valeur effective
           valeur.valeur.
        """
-       if is_enum(valeur):
+       if is_sequence(valeur):
           for val in valeur:
               if not self.verif_item(val):
                  return 0
@@ -455,7 +455,7 @@ class Compulsory(ListVal):
       """
       registry={}
       def __init__(self,elem=()):
-          if not is_enum(elem): elem=(elem,)
+          if not is_sequence(elem): elem=(elem,)
           Valid.__init__(self,elem=elem)
           self.elem=elem
           self.cata_info=""
@@ -483,7 +483,7 @@ class Compulsory(ListVal):
           return 1
 
       def verif(self,valeur):
-          if not is_enum(valeur):
+          if not is_sequence(valeur):
              liste=list(valeur)
           else:
              liste=valeur
@@ -525,7 +525,7 @@ class NoRepeat(ListVal):
           return 1
 
       def verif(self,valeur):
-          if is_enum(valeur):
+          if is_sequence(valeur):
              liste=list(valeur)
              for val in liste:
                 if liste.count(val)!=1 : return 0
@@ -683,7 +683,7 @@ class OrVal(Valid):
           Elle verifie qu'au moins un des validateurs de la liste valide la valeur
       """
       def __init__(self,validators=()):
-          if not is_enum(validators):
+          if not is_sequence(validators):
              validators=(validators,)
           self.validators=[]
           for validator in validators:
@@ -808,7 +808,7 @@ class AndVal(Valid):
           Elle verifie que tous les validateurs de la liste valident la valeur
       """
       def __init__(self,validators=()):
-          if not is_enum(validators):
+          if not is_sequence(validators):
              validators=(validators,)
           self.validators=[]
           for validator in validators:
@@ -1034,7 +1034,7 @@ class CardVal(Valid):
              return []
 
       def convert(self,valeur):
-          if is_enum(valeur):
+          if is_sequence(valeur):
              l=len(valeur)
           elif valeur is None:
              l=0
@@ -1050,7 +1050,7 @@ class CardVal(Valid):
           return 1
 
       def verif(self,valeur):
-          if is_enum(valeur):
+          if is_sequence(valeur):
              if self.max != '**' and len(valeur) > self.max:return 0
              if self.min != '**' and len(valeur) < self.min:return 0
              return 1
@@ -1103,7 +1103,7 @@ class PairVal(ListVal):
           return valeur % 2 == 0
 
       def verif(self,valeur):
-          if is_enum(valeur):
+          if is_sequence(valeur):
              for val in valeur:
                 if val % 2 != 0:return 0
              return 1
@@ -1118,7 +1118,7 @@ class EnumVal(ListVal):
           Susceptible de remplacer l attribut "into" dans les catalogues
       """
       def __init__(self,into=()):
-          if not is_enum(into): 
+          if not is_sequence(into): 
               into=(into,)
           self.into=into
           self.cata_info=""
@@ -1157,7 +1157,7 @@ def ImpairVal(valeur):
         Cette fonction est un validateur. Elle verifie que la valeur passee
         est bien un nombre impair.
     """
-    if is_enum(valeur):
+    if is_sequence(valeur):
        for val in valeur:
            if val % 2 != 1:return 0
        return 1
@@ -1182,7 +1182,7 @@ class F1Val(Valid):
           return ufmt(_(u"valeur %s pour la somme des cles A et B "), self.somme)
 
       def verif(self,valeur):
-          if is_enum(valeur):
+          if is_sequence(valeur):
              for val in valeur:
                 if not val.has_key("A"):return 0
                 if not val.has_key("B"):return 0

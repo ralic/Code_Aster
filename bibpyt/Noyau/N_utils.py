@@ -1,9 +1,9 @@
-#@ MODIF N_utils Noyau  DATE 17/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_utils Noyau  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ import sys
 
 # Modules EFICAS
 from N_Exception import AsException
-from N_types     import is_int, is_float, is_complex, is_str, is_enum, is_assd
+from N_types import is_int, is_float, is_complex, is_str, is_sequence, is_assd
 
 SEP='_'
 
@@ -71,14 +71,19 @@ def AsType(a):
       Retourne le type d'un concept (a) à partir
       des caractéristiques de l'objet Python
    """
-   if is_enum(a):  return AsType(a[0])
-   if is_assd(a):  return type(a)
-   if is_float(a): return "R"
-   if is_int(a):   return "I"
-   if is_str(a):   return "TXM"
-   if a == None:   return None
-   print 'a=', a, type(a)
-   raise AsException("type inconnu")
+   if is_sequence(a):
+       return AsType(a[0])
+   if is_assd(a):
+       return type(a)
+   if is_float(a):
+       return "R"
+   if is_int(a):
+       return "I"
+   if is_str(a):
+       return "TXM"
+   if a == None:
+       return None
+   raise AsException("type inconnu: %r %s" % (a, type(a)))
 
 
 def prbanner(s):

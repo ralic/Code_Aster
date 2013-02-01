@@ -1,8 +1,8 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF simu_point_mat_ops Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -51,7 +51,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   from Accas import _F
   from Utilitai.UniteAster import UniteAster
   from Utilitai.Utmess import  UTMESS,MasquerAlarme, RetablirAlarme
-  from Noyau.N_types import is_enum
+  from Noyau.N_types import is_sequence
   
   # alarme de STAT_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
   MasquerAlarme('COMPOR1_70')
@@ -669,7 +669,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           lnomneu=[]
           lnomvar=[]
           VARINI=VARI_INIT[0].cree_dict_valeurs(VARI_INIT[0].mc_liste)
-          if (not is_enum(VARINI['VALE'])) :
+          if (not is_sequence(VARINI['VALE'])) :
               VARINI['VALE'] = [VARINI['VALE'],]
           nbvari=len(VARINI['VALE'])
           for i in range(nbvari):

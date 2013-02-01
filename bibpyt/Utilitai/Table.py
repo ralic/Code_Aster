@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 14/01/2013   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ import re
 from copy  import copy
 from types import IntType, FloatType, StringType, UnicodeType, NoneType
 
-from Noyau.N_types import is_int, is_float, is_complex, is_number, is_str, is_enum
+from Noyau.N_types import is_int, is_float, is_complex, is_number, is_str, is_sequence
 
 import transpose
 from Utilitai.Utmess import UTMESS
@@ -107,7 +107,7 @@ class TableBase(object):
          para[FORMAT]['driver'](**kargs)
 
       else:
-         if not is_enum(kargs['PAGINATION']):
+         if not is_sequence(kargs['PAGINATION']):
             ppag = [kargs['PAGINATION'],]
          else:
             ppag = list(kargs['PAGINATION'])
@@ -162,7 +162,7 @@ class TableBase(object):
       rows=self.rows
       para=self.para
       typ =self.type
-      if not is_enum(para):
+      if not is_sequence(para):
          para=[self.para,]
          typ =[self.type,]
       if dform==None:
@@ -323,9 +323,9 @@ class Table(TableBase):
 
    def add_para(self, para, typ):
       """Ajoute un nouveau paramètre."""
-      if not is_enum(para):
+      if not is_sequence(para):
          para=[para,]
-      if not is_enum(typ):
+      if not is_sequence(typ):
          typ =[typ,]
       if len(typ) != len(para):
          typ = [typ[0],] * len(para)
@@ -403,7 +403,7 @@ class Table(TableBase):
          if not hasattr(funct, 'nompar'):
             UTMESS('F', 'TABLE0_25', valk=(funct.__name__, 'nompar'))
          l_para = funct.nompar
-      if not is_enum(l_para):
+      if not is_sequence(l_para):
          l_para = [l_para]
       not_found = ', '.join([p for p in l_para if not p in self.para])
       if not_found != '':
@@ -451,7 +451,7 @@ class Table(TableBase):
       if CLES == None:
          CLES = self.para[:]
       # vérification des arguments
-      if not is_enum(CLES):
+      if not is_sequence(CLES):
          CLES = [CLES]
       else:
          CLES = list(CLES)
@@ -465,7 +465,7 @@ class Table(TableBase):
 
    def __delitem__(self, args):
       """Supprime les colonnes correspondantes aux éléments de args """
-      if not is_enum(args):
+      if not is_sequence(args):
          args=[args,]
       for item in args:
          try:
@@ -480,7 +480,7 @@ class Table(TableBase):
 
    def __getitem__(self, args):
       """Extrait la sous table composée des colonnes dont les paramètres sont dans args """
-      if not is_enum(args):
+      if not is_sequence(args):
          args=[args,]
       else:
          args=list(args)
@@ -691,35 +691,35 @@ class Colonne(TableBase):
                    self.Table.para, self.Table.type, self.Table.titr)
 
    def __le__(self, VALE):
-      if is_enum(VALE) :
+      if is_sequence(VALE) :
         crit = max(VALE)
       else:
         crit = VALE
       return self._extract(lambda v: v != None and v<=crit)
 
    def __lt__(self, VALE):
-      if is_enum(VALE) :
+      if is_sequence(VALE) :
         crit = max(VALE)
       else:
         crit = VALE
       return self._extract(lambda v: v != None and v<crit)
 
    def __ge__(self, VALE):
-      if is_enum(VALE):
+      if is_sequence(VALE):
         crit = min(VALE)
       else:
         crit = VALE
       return self._extract(lambda v: v != None and v>=crit)
 
    def __gt__(self, VALE):
-      if is_enum(VALE):
+      if is_sequence(VALE):
         crit = min(VALE)
       else:
         crit = VALE
       return self._extract(lambda v: v != None and v>crit)
 
    def __eq__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
-      if not is_enum(VALE):
+      if not is_sequence(VALE):
          VALE = [VALE]
       if is_str(VALE[0]):
          stripVALE = [value.strip() for value in VALE]
@@ -741,7 +741,7 @@ class Colonne(TableBase):
       return self._extract(lambda v : v != None and re.search(regexp, v) != None)
 
    def __ne__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
-      if not is_enum(VALE):
+      if not is_sequence(VALE):
          VALE = [VALE]
       if is_str(VALE[0]):
          stripVALE = [value.strip() for value in VALE]
@@ -896,7 +896,7 @@ def merge(tab1, tab2, labels=[], restrict=False):
    """
    tb1 = tab1.copy()
    tb2 = tab2.copy()
-   if not is_enum(labels):
+   if not is_sequence(labels):
       labels=(labels,)
    for key in labels :
        if key not in tb1.para : UTMESS('F','TABLE0_27', valk=key)

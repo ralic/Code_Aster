@@ -1,9 +1,9 @@
-#@ MODIF B_utils Build  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_utils Build  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,27 +29,30 @@ import sys
 
 # Modules Eficas
 from Noyau.N_ASSD import ASSD
+from Noyau.N_types import is_sequence
 
-def RETLIST(v,mxval):
-   """
-       Cette fonction retourne un tuple dont le premier element est sa longueur reelle
+def RETLIST(v, mxval):
+    """Cette fonction retourne un tuple dont le premier element est sa longueur reelle
        eventuellement negative si supérieure a mxval
        et le deuxieme la liste complete qui sera tronquee a mxval dans le fortran
-   """
-   if type(v) in (list, tuple):
-     if len(v) == 3 and v[0] in ("RI","MP"): # On a affaire a un complexe isole
-       ll=1
-       l=(v,)
-     else: # Il s'agit d'un tuple de longueur quelconque
-       ll= len(v)
-       l=v
-   elif v != None: # Il s'agit d'un objet isole
-     ll=1
-     l=(v,)
-   else: # Le reste : None,...
-     return 0,()
-   if ll > mxval:ll= -ll
-   return ll,l
+    """
+    if type(v) is tuple and len(v) == 3 and v[0] in ("RI","MP"):
+       # On a affaire a un complexe isole
+       length = 1
+       val = (v, )
+    elif is_sequence(v):
+       # Il s'agit d'un tuple de longueur quelconque
+       length = len(v)
+       val = v
+    elif v != None:
+       # Il s'agit d'un objet isole
+       length = 1
+       val = (v, )
+    else: # Le reste : None,...
+       return 0, ()
+    if length > mxval:
+       length = -length
+    return length, val
 
 
 def TraceGet( nom_fonction , nom_motfac , iocc , nom_motcle , tup , sortie=sys.stdout ) :

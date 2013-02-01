@@ -1,9 +1,9 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 12/11/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,6 +30,7 @@
 # Modules Python
 import types,sys,string
 import traceback
+from warnings import warn
 
 # Modules EFICAS
 import N_MCCOMPO
@@ -587,27 +588,23 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       for co in self.sdprods:
         d[co.nom]=co
 
-   def make_include(self,unite=None):
-      """
-          Inclut un fichier dont l'unite logique est unite
-      """
-      if not unite : return
-      f,text=self.get_file(unite=unite,fic_origine=self.parent.nom)
+   def make_include(self, unite=None, fname=None):
+      """Inclut un fichier dont l'unite logique est `unite` ou de nom `fname`"""
+      if unite is not None:
+         warn("'unite' is deprecated, please use 'fname' instead",
+              DeprecationWarning, stacklevel=2)
+         fname = 'fort.%s' % unite
+      if not fname:
+         return
+      f, text = self.get_file(fic_origine=self.parent.nom, fname=fname)
       self.fichier_init = f
-      if f == None:return
-      self.make_contexte(f,text)
+      if f == None:
+         return
+      self.make_contexte(f, text)
 
    def make_poursuite(self):
-      """
-          Inclut un fichier poursuite
-      """
-      try:
-         f,text=self.get_file(fic_origine=self.parent.nom)
-      except:
-         raise AsException("Impossible d'ouvrir la base pour une poursuite")
-      self.fichier_init=f
-      if f == None:return
-      self.make_contexte(f,text)
+      """Inclut un fichier poursuite"""
+      raise NotImplementedError('this method must be derivated (in Eficas)')
 
    def make_contexte(self,f,text):
       """

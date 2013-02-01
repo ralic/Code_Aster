@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# TITRE VALIDATION DE LIRE_TABLE / IMPR_TABLE
+# MODIF  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
+# TITRE VALIDATION DE LIRE_TABLE / IMPR_TABLE / EXTR_TABLE
 # zzzz128b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N2',),
            )
 
-# PARTIE POUR COMPLEMENT DE VALIDATION IMPR_TABLE
+# PARTIE POUR VALIDATION IMPR_TABLE
 fr1 = DEFI_FONCTION(NOM_PARA='INST',
                     NOM_RESU='QTE',
                     VALE=(0., 9.,
@@ -73,4 +73,37 @@ tabf = CREA_TABLE(
 IMPR_TABLE(TABLE=tabf,
            IMPR_FONCTION='OUI')
 
-FIN( )
+# PARTIE POUR VALIDATION EXTR_TABLE
+# type ENTIER
+ival = EXTR_TABLE(
+        TYPE_RESU='ENTIER',
+        TABLE=tabf,
+        NOM_PARA='NUME_ORDRE',)
+
+ttesti = CREA_TABLE(LISTE=_F(PARA='CHECK',
+                             LISTE_I=ival,),)
+
+TEST_TABLE(TABLE=ttesti,
+           NOM_PARA='CHECK',
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE_I=1,
+           VALE_CALC_I=1,)
+
+# type REEL
+rval = EXTR_TABLE(
+        TYPE_RESU='REEL',
+        TABLE=T2,
+        NOM_PARA='VALEUR',
+        FILTRE=_F(NOM_PARA='NOEUD',
+                  VALE_K='N2',),)
+
+ttestr = CREA_TABLE(LISTE=_F(PARA='CHECK',
+                             LISTE_R=rval,),)
+
+TEST_TABLE(TABLE=ttestr,
+           NOM_PARA='CHECK',
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=21.0,
+           VALE_CALC=21.0,)
+
+FIN()

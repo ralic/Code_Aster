@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 21/01/2013   AUTEUR PELLET J.PELLET 
+#@ MODIF test_fonction_ops Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 import os
 
-from Noyau.N_types import is_complex, is_str, is_enum
+from Noyau.N_types import is_complex, is_str, is_sequence
 
 from Cata.cata import formule, formule_c, fonction_sdaster, fonction_c, nappe_sdaster
 
@@ -61,7 +61,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
 
    isTestOk = 0
    vtc = valRef[0]
-   if is_enum(vtc):
+   if is_sequence(vtc):
       assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) ), vtc[0]
       if vtc[0]=='RI':
          vtc = vtc[1]+1j*vtc[2]
@@ -78,7 +78,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
    curI = 0
    for i in range(len(valRef)):
       vtc = valRef[i]
-      if is_enum(vtc):
+      if is_sequence(vtc):
          assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) ), vtc[0]
          if vtc[0]=='RI':
             vtc = vtc[1]+1j*vtc[2]
@@ -92,7 +92,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
          curI = i
 
    vtc = valRef[curI]
-   if is_enum(vtc):
+   if is_sequence(vtc):
       assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) ), vtc[0]
       if vtc[0]=='RI':
          vtc = vtc[1]+1j*vtc[2]
@@ -356,7 +356,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
          nomfct = fct.get_name()
 
          # Transformation de nompara en liste
-         if (not is_enum(nompara)) and nompara != None:
+         if (not is_sequence(nompara)) and nompara != None:
             nompara = [nompara,]
 
          # La fonction est directement de dres['FONCTION']
@@ -366,7 +366,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
          res = 0.
          typeFct = ''
          valpu = dres['VALE_PARA']
-         if not is_enum(valpu): valpu = [valpu,]
+         if not is_sequence(valpu): valpu = [valpu,]
 
          valref = get_valref(lafonc, dres, 'CALC')
          if other_ref:
@@ -420,7 +420,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
             # On cherche les valeurs de reference passees a TEST_FONCTION et
             # on les trie grace a ceux de la formule
             paramFormule = lafonc.Parametres()['NOM_PARA']
-            if not is_enum(paramFormule):
+            if not is_sequence(paramFormule):
                paramFormule = [paramFormule,]
             if nompara[0] == '':
                nompara = paramFormule

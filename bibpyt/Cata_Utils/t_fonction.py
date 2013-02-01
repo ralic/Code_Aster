@@ -1,8 +1,8 @@
-#@ MODIF t_fonction Cata_Utils  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF t_fonction Cata_Utils  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,7 +24,7 @@ from math import exp, log
 import numpy as NP
 import numpy.fft as FFT
 
-from Noyau.N_types import is_float, is_float_or_int, is_complex, is_number, is_enum
+from Noyau.N_types import is_float, is_float_or_int, is_complex, is_number, is_sequence
 
 
 # -----------------------------------------------------------------------------
@@ -560,7 +560,7 @@ class t_nappe :
     if para['PROL_GAUCHE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
          raise FonctionError, 'nappe : parametre PROL_GAUCHE incorrect : %s' % para['PROL_GAUCHE']
     self.vale_para    = NP.array(vale_para)
-    if not is_enum(l_fonc):
+    if not is_sequence(l_fonc):
          raise FonctionError, 'nappe : la liste de fonctions fournie n est pas une liste'
     if len(l_fonc)!=len(vale_para) :
          raise FonctionError, 'nappe : nombre de fonctions différent du nombre de valeurs du paramètre'
@@ -696,7 +696,7 @@ def homo_support_nappe(l_f):
    """Homogénéisation du support d'une liste de nappes.
    Retourne une liste de nappes.
    """
-   if not is_enum(l_f):
+   if not is_sequence(l_f):
       l_f = [l_f,]
    l_fres=[]
    for f in l_f:

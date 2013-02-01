@@ -1,9 +1,9 @@
-#@ MODIF N_FACT Noyau  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_FACT Noyau  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ import N_ENTITE
 import N_MCFACT
 import N_MCLIST
 from N__F import _F
-from N_types import is_enum
+from N_types import is_sequence
 from strfunc import ufmt
 
 import N_OBJECT
@@ -119,7 +119,7 @@ class FACT(N_ENTITE.ENTITE):
           # On ne devrait jamais passer par la
           print "On ne devrait jamais passer par la"
           return None
-      elif is_enum(val) and len(val) == 0 and self.statut == 'o':
+      elif is_sequence(val) and len(val) == 0 and self.statut == 'o':
           # On est dans le cas où le mcfact est présent mais est une liste/tuple
           # vide. Il est obligatoire donc on l'initialise. Les règles, mots-clés
           # obligatoires diront si un mcfact vide est accepté.

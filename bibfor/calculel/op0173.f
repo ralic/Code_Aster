@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,14 +97,18 @@ C          ------------------------------
          CALL COPISD ( 'FONCTION', 'G', VALK, NOMRES )
 C
       ELSEIF ( TYPESD .EQ. 'ENTIER' ) THEN
-C          ------------------------------
          CALL PUTVIR(VALI)
+C
+      ELSEIF ( TYPESD .EQ. 'REEL' ) THEN
+         CALL PUTVRR(VALR)
 C
       ELSE
          CALL U2MESK('F','CALCULEL4_47',1,TYPESD)
       ENDIF
 C
-      CALL TITRE()
+      IF (TYPESD .EQ. 'REEL' .AND. TYPESD .EQ. 'ENTIER') THEN
+         CALL TITRE()
+      ENDIF
 C
       CALL JEDEMA ( )
 C

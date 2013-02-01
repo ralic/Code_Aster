@@ -6,9 +6,9 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,7 +71,6 @@ C
 C     ------------------------------------------------------------------
       CHARACTER*24 VALK(3)
       INTEGER      VALI(2)
-      CHARACTER*512 MSGERR
 C     ------------------------------------------------------------------
       INTEGER      MXSAVE, MXPARA, SVNBPA, SVPAR, ISVNXT, ISVIND, NEXTSV
       INTEGER      IAPROL, IAVALE, IAPARA, LUVALE, LUPARA
@@ -128,11 +127,9 @@ C
       CALL JEVEUT(CHPROL,'L',LPROL)
       IF (ZK24(LPROL).EQ.'INTERPRE') THEN
 C     ------------------------ CAS DES FORMULES ------------------------
-         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IER,MSGERR,RESU)
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,IER,'A',RESU)
          IF (IER.GT.0) THEN
             IER = 200
-            CALL U2MESK ('A+', 'FONCT0_51', 1, NOMF )
-            CALL U2MESK ('A', 'FONCT0_52', 1, MSGERR )
          ENDIF
          GOTO 9999
       ENDIF

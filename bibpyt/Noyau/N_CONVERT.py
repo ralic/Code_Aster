@@ -1,9 +1,9 @@
-#@ MODIF N_CONVERT Noyau  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_CONVERT Noyau  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,7 +23,7 @@
    Module de conversion des valeurs saisies par l'utilisateur après vérification.
 """
 
-from N_types import is_int, is_float, is_enum
+from N_types import is_int, is_float, is_sequence
 
 
 def has_int_value(real):
@@ -42,15 +42,15 @@ class Conversion:
    def convert(self, obj):
       """Filtre liste
       """
-      in_as_enum = is_enum(obj)
-      if not in_as_enum:
+      in_as_seq = is_sequence(obj)
+      if not in_as_seq:
          obj = (obj,)
       
       result = []
       for o in obj:
          result.append(self.function(o))
       
-      if not in_as_enum:
+      if not in_as_seq:
          return result[0]
       else:
          # ne marche pas avec MACR_RECAL qui attend une liste et non un tuple

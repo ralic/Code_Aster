@@ -1,8 +1,8 @@
-#@ MODIF impr_table_ops Macro  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF impr_table_ops Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,11 +70,8 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    form_filtre='\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
 
    # 0.3. Création de la liste des tables
-   ltab=[]
-   ltab.append([TABLE.EXTR_TABLE(), TABLE])
-
-   if len(ltab)<1:
-      return ier
+   # on conserve la liste même si aujourd'hui, on n'en imprime qu'une à la fois
+   ltab=[[TABLE.EXTR_TABLE(), TABLE]]
 
    # 0.4.1. liste des paramètres à conserver
    nom_para=ltab[0][0].para

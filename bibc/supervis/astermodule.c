@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 15/10/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -660,11 +660,11 @@ void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
                               _IN INTEGER *nbpu,_IN char *param,_IN STRING_SIZE lpara,
                               _IN DOUBLE *val,
                              _OUT INTEGER *iret,
-                             _OUT char *msgerr, _INOUT STRING_SIZE lmsg,
+                              _IN char *coderr, _INOUT STRING_SIZE lcod,
                              _OUT DOUBLE *resu)
 {
-        PyObject *tup3  = (PyObject*)0 ;
-        PyObject *res, *txt, *piret;
+        PyObject *tup2  = (PyObject*)0 ;
+        PyObject *res, *piret;
         PyObject *tup_par;
         PyObject *tup_val;
         char *kvar, *sret;
@@ -680,16 +680,14 @@ void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
            PyTuple_SetItem( tup_val, i, PyFloat_FromDouble((double)val[i]) ) ;
         }
 
-        tup3 = PyObject_CallMethod(commande,"fiintf","s#OO",nomfon,lfon,tup_par,tup_val);
+        tup2 = PyObject_CallMethod(commande,"fiintf","s#s#OO",coderr,lcod,nomfon,lfon,tup_par,tup_val);
 
-        if (tup3 == NULL)MYABORT("erreur dans la partie Python");
-        piret = PyTuple_GetItem(tup3, 0);
-        txt   = PyTuple_GetItem(tup3, 1);
-        res   = PyTuple_GetItem(tup3, 2);
+        if (tup2 == NULL) MYABORT("erreur dans la partie Python");
+        piret = PyTuple_GetItem(tup2, 0);
+        res   = PyTuple_GetItem(tup2, 1);
 
         *iret = (INTEGER)PyInt_AsLong(piret);
         *resu = (DOUBLE)0.;
-        BlankStr(msgerr, lmsg);
         if ( *iret == 0 ) {
            if (PyComplex_Check(res)) {
                *resu    = (DOUBLE)PyComplex_RealAsDouble(res);
@@ -699,14 +697,11 @@ void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
            } else {
               *iret = 4;
            }
-        } else {
-            sret = PyString_AsString(txt);
-            CopyCStrToFStr(msgerr, sret, lmsg);
         }
 
         Py_DECREF(tup_par);
         Py_DECREF(tup_val);
-        Py_DECREF(tup3);
+        Py_DECREF(tup2);
         return ;
 }
 
@@ -1040,20 +1035,35 @@ void DEFP(PUTVIR,putvir, _IN INTEGER *ival)
          ival entier à affecter
       Fonction:
          renseigner l'attribut valeur associé à la sd
-         n'est utile que pour DEFI_FICHIER
+         n'est utile que pour DEFI_FICHIER, EXTR_TABLE
          cet attribut est ensuite évalué par la méthode traite_value
          de B_ETAPE.py
    */
    PyObject *res = (PyObject*)0 ;
 
    res = PyObject_CallMethod(commande,"putvir","i",(int)*ival);
-   /*
-         Si le retour est NULL : une exception a ete levee dans le code Python appele
-         Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-         On produit donc un abort en ecrivant des messages sur la stdout
-   */
    if (res == NULL)
       MYABORT("erreur a l appel de putvir dans la partie Python");
+
+   Py_DECREF(res);
+}
+
+void DEFP(PUTVRR,putvrr, _IN DOUBLE *rval)
+{
+   /*
+      Entrees:
+         rval réel à affecter
+      Fonction:
+         renseigner l'attribut valeur associé à la sd
+         n'est utile que pour EXTR_TABLE
+         cet attribut est ensuite évalué par la méthode traite_value
+         de B_ETAPE.py
+   */
+   PyObject *res = (PyObject*)0 ;
+
+   res = PyObject_CallMethod(commande,"putvrr","d",(double)*rval);
+   if (res == NULL)
+      MYABORT("erreur a l appel de putvrr dans la partie Python");
 
    Py_DECREF(res);
 }

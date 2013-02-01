@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 07/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF calc_precont_ops Macro  DATE 28/01/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   from Accas import _F
   from Cata.cata import listr8_sdaster, list_inst
   from Noyau.N_utils import AsType
-  from Noyau.N_types import is_enum
+  from Noyau.N_types import is_sequence
   from Utilitai.Utmess     import  UTMESS, MasquerAlarme, RetablirAlarme
   ier=0
 
@@ -175,13 +175,13 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   #     et CABLE_BP_INACTIF
   # ------------------------------------------------------
   if type(CABLE_BP) is not types.NoneType:
-    if not is_enum(CABLE_BP):
+    if not is_sequence(CABLE_BP):
       CABLE_BP0 = CABLE_BP
       CABLE_BP = []
       CABLE_BP.append ( CABLE_BP0 )
 
   if type(CABLE_BP_INACTIF) is not types.NoneType:
-    if not is_enum(CABLE_BP_INACTIF):
+    if not is_sequence(CABLE_BP_INACTIF):
       CABLE_BP_INACTIF0 = CABLE_BP_INACTIF
       CABLE_BP_INACTIF = []
       CABLE_BP_INACTIF.append ( CABLE_BP_INACTIF0 )
