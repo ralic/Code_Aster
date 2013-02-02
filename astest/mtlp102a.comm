@@ -1,0 +1,238 @@
+# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
+# TITRE  EFFET TAILLE DE GRAIN
+# mtlp102a.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+DEBUT(CODE=_F(NOM='MTLP102A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# DEFINITION DES CARACTERISTIQUES DU MATERIAU
+
+TRCMNDA=DEFI_TRC(HIST_EXP=(
+
+ _F( VALE = (
+-1.000E-01,  1.000E+01,  0.000E+00,  0.000E+00,
+ 0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+ 0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+ 0.000E+00,  0.000E+00,  0.000E+00,  7.591E+02,
+ 1.000E-02,  0.000E+00,  0.000E+00,  7.550E+02,
+ 6.700E-01,  0.000E+00,  0.000E+00,  6.200E+02,
+ 6.800E-01,  0.000E+00,  0.000E+00,  6.159E+02,
+ 6.800E-01,  0.000E+00,  0.000E+00,  5.247E+02,
+ 6.800E-01,  0.000E+00,  1.000E-02,  5.150E+02,
+ 6.800E-01,  0.000E+00,  3.100E-01,  3.700E+02,
+ 6.800E-01,  0.000E+00,  3.200E-01,  3.603E+02,
+     )),
+_F( VALE = (
+-1.000E+00,  1.000E+01,  0.000E+00,  0.000E+00,
+ 0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+ 0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+ 0.000E+00,  0.000E+00,  0.000E+00,  7.586E+02,
+ 1.000E-02,  0.000E+00,  0.000E+00,  7.500E+02,
+ 2.900E-01,  0.000E+00,  0.000E+00,  6.300E+02,
+ 3.000E-01,  0.000E+00,  0.000E+00,  6.214E+02,
+ 3.000E-01,  0.000E+00,  0.000E+00,  5.853E+02,
+ 3.000E-01,  0.000E+00,  1.000E-02,  5.800E+02,
+ 3.000E-01,  0.000E+00,  6.900E-01,  4.000E+02,
+ 3.000E-01,  0.000E+00,  7.000E-01,  3.947E+02,
+     )),
+_F( VALE = (
+-1.000E+01,  1.000E+01,  0.000E+00,  0.000E+00,
+ 0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+ 0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+ 0.000E+00,  0.000E+00,  0.000E+00,  5.994E+02,
+ 0.000E+00,  0.000E+00,  1.000E-02,  5.950E+02,
+ 0.000E+00,  0.000E+00,  9.000E-01,  4.000E+02,
+ 0.000E+00,  0.000E+00,  9.100E-01,  3.956E+02,
+     )),
+_F( VALE = (
+-6.000E+01,  1.000E+01,  0.000E+00,  0.000E+00,
+ 0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+ 0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+ 0.000E+00,  0.000E+00,  0.000E+00,  5.094E+02,
+ 0.000E+00,  0.000E+00,  1.000E-02,  5.000E+02,
+ 0.000E+00,  0.000E+00,  1.900E-01,  4.150E+02,
+ 0.000E+00,  0.000E+00,  2.000E-01,  4.056E+02,
+     ))),
+
+   TEMP_MS=_F(
+    SEUIL = 4.500E-01,
+    AKM = -3.125E+01,
+    BKM = 1.406E+01,
+    TPLM = -3.497E+00),
+   GRAIN_AUST=_F(  DREF = 11.00E-6,
+                A = 11200.)
+
+   )
+
+ACIER=DEFI_MATERIAU(         THER=_F(  RHO_CP = 5260000.0, LAMBDA = 33.5),
+                           META_ACIER=_F(  TRC = TRCMNDA,    AR3 = 830.0,
+                                       ALPHA = -0.0306,    MS0 = 400.0,
+                                       AC1 = 724.0,      AC3 = 846.0,
+                                      TAUX_1 = 0.034,     TAUX_3 = 0.034,
+                                      LAMBDA0 = 0.117,
+                                      QSR_K = 37500.,
+                                      D10 = 3.31,
+                                      WSR_K = 12860.)
+                        )
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED', )
+
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                               AFFE=_F(  TOUT = 'OUI', MATER = ACIER)
+                       )
+
+MOTH=AFFE_MODELE(    MAILLAGE=MAIL,
+                             AFFE=_F(  TOUT = 'OUI',
+                                    MODELISATION = 'PLAN',
+                                    PHENOMENE = 'THERMIQUE')
+                     )
+
+TIMPO1=DEFI_FONCTION(     NOM_RESU='TEMP',
+                            NOM_PARA='INST',
+                                VALE=(   0.0,    700.0,
+                                       200.0,    900.0,
+                                       1100.0,    900.0,
+                                       1900.0,   100.0, ),
+                            PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE'
+                       )
+
+TIMPO=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
+                       MAILLAGE=MAIL,
+                        AFFE=_F( TOUT = 'OUI',
+                              NOM_CMP = 'TEMP',
+                              VALE_F = TIMPO1)
+                      )
+
+
+LIST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1900.0,
+                                  NOMBRE=950,),)
+
+TEMPE=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                        NOM_CHAM='TEMP',
+                         AFFE=_F(  CHAM_GD = TIMPO,
+                                   LIST_INST = LIST)
+                    )
+
+
+PHASINIT=CREA_CHAMP(AFFE=_F(VALE=(0.7,0.0,0.3,0.0,0.0),
+                            NOM_CMP=('V1','V2','V3','V4','V5'),
+                            TOUT='OUI',),
+                    TYPE_CHAM='CART_VAR2_R',
+                    MAILLAGE=MAIL,
+                    OPERATION='AFFE',);
+
+
+TEMPE=CALC_META(reuse=TEMPE,
+                MODELE=MOTH,
+                CHAM_MATER=CHMAT,
+                RESULTAT=TEMPE,
+                ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
+                COMP_INCR=_F(RELATION='ACIER',
+                             TOUT='OUI'),
+                OPTION='META_ELNO',);
+
+
+PHAS_0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
+                    RESULTAT=TEMPE,
+                           NOM_CHAM='META_ELNO',
+                                INST=200.0
+                        )
+
+PHAS_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
+                    RESULTAT=TEMPE,
+                           NOM_CHAM='META_ELNO',
+                               INST=620.0
+                        )
+
+PHAS_2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
+                    RESULTAT=TEMPE,
+                           NOM_CHAM='META_ELNO',
+                               INST=1354.0
+                        )
+
+PHAS_3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
+                    RESULTAT=TEMPE,
+                           NOM_CHAM='META_ELNO',
+                               INST=1900.0
+                        )
+
+TEST_RESU(CHAM_ELEM=(_F(NOEUD='N66',
+                        CRITERE='RELATIF',
+                        REFERENCE='NON_DEFINI',
+                        NOM_CMP='V5',
+                        PRECISION=1.E-2,
+                        MAILLE='M19',
+                        CHAM_GD=PHAS_0,
+                        VALE_CALC= 2.56478413E-06,
+                        VALE_REFE=2.565E-06,),
+                     _F(NOEUD='N70',
+                        CRITERE='RELATIF',
+                        REFERENCE='NON_DEFINI',
+                        NOM_CMP='V5',
+                        PRECISION=1.E-2,
+                        MAILLE='M19',
+                        CHAM_GD=PHAS_1,
+                        VALE_CALC= 9.43704313E-06,
+                        VALE_REFE=9.4299999999999995E-06,),
+                     _F(NOEUD='N39',
+                        CRITERE='RELATIF',
+                        REFERENCE='NON_DEFINI',
+                        NOM_CMP='V5',
+                        PRECISION=1.E-2,
+                        MAILLE='M13',
+                        CHAM_GD=PHAS_2,
+                        VALE_CALC= 1.34149716E-05,
+                        VALE_REFE=1.34E-05,),
+                     _F(NOEUD='N39',
+                        CRITERE='ABSOLU',
+                        REFERENCE='NON_DEFINI',
+                        NOM_CMP='V4',
+                        PRECISION=2.E-3,
+                        MAILLE='M13',
+                        CHAM_GD=PHAS_3,
+                        VALE_CALC= 0.00000000E+00,
+                        VALE_REFE=0.0,),
+                     _F(NOEUD='N66',
+                        CRITERE='RELATIF',
+                        REFERENCE='NON_DEFINI',
+                        NOM_CMP='V3',
+                        PRECISION=1.E-2,
+                        MAILLE='M19',
+                        CHAM_GD=PHAS_3,
+                        VALE_CALC=0.449704552,
+                        VALE_REFE=0.45000000000000001,),
+                     _F(NOEUD='N70',
+                        CRITERE='RELATIF',
+                        REFERENCE='NON_DEFINI',
+                        NOM_CMP='V1',
+                        PRECISION=1.E-2,
+                        MAILLE='M19',
+                        CHAM_GD=PHAS_3,
+                        VALE_CALC=0.406193352,
+                        VALE_REFE=0.40300000000000002,),
+                     ),
+          )
+
+FIN()
+#
+#
+#

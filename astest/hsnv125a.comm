@@ -1,0 +1,514 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE TEST PHI2AS NUMERO 2
+# hsnv125a.para = tps_job 280 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#       VOLUME EN TRACTION/TEMPERATURE VARIABLES ET CISAILLEMENT
+#       MODELISATION A : PLASTICITE PARFAITE
+
+DEBUT(CODE=_F(NOM='HSNV125A',
+NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+TITRE = 'PHI2AS TEST2 PLASTICITE PARFAITE';
+
+
+MA=LIRE_MAILLAGE();
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+Y_F = FORMULE(VALE='2.E5 - (1.E5*((TEMP - 100.)/960.)**2)',
+              NOM_PARA='TEMP',);
+
+AL_F = FORMULE(VALE='1.E-5 + (1.E-5  * ((TEMP - 100.)/960.) ** 4)',
+               NOM_PARA='TEMP',);
+
+S_F = FORMULE(VALE='500. - 25.*(TEMP - 100.)/96.',
+              NOM_PARA='TEMP',);
+
+TEMPE1=DEFI_LIST_REEL(DEBUT=20.,
+                      INTERVALLE=_F(JUSQU_A=1060.,
+                                    NOMBRE=1040,),);
+
+YOUN=CALC_FONC_INTERP(FONCTION=Y_F,
+                      LIST_PARA=TEMPE1,
+                      NOM_PARA='TEMP',);
+
+SIGY=CALC_FONC_INTERP(FONCTION=S_F,
+                      LIST_PARA=TEMPE1,
+                      NOM_PARA='TEMP',);
+
+ALPH=CALC_FONC_INTERP(FONCTION=AL_F,
+                      LIST_PARA=TEMPE1,
+                      NOM_PARA='TEMP',);
+
+POISS=DEFI_CONSTANTE(VALE=0.3,);
+
+DSDE=DEFI_CONSTANTE(VALE=0.0,);
+########################
+##DIVERSES FONCTIONS ##
+########################
+#### CYCLES
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=-1.,
+                      INTERVALLE=(_F(JUSQU_A=0.,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=1.,
+                                     NOMBRE=10,),
+                                  _F(JUSQU_A=61.,
+                                     NOMBRE=60,),
+                                  _F(JUSQU_A=121.,
+                                     NOMBRE=60,),
+                                  _F(JUSQU_A=181.,
+                                     NOMBRE=60,),
+                                  _F(JUSQU_A=241.,
+                                     NOMBRE=60,),
+                                  _F(JUSQU_A=301.,
+                                     NOMBRE=60,),
+                                  _F(JUSQU_A=361.,
+                                     NOMBRE=60,),
+                                  _F(JUSQU_A=421.,
+                                     NOMBRE=60,),
+                                  _F(JUSQU_A=481.,
+                                     NOMBRE=60,),),);
+
+P_PLUS=DEFI_FONCTION(NOM_PARA='INST',VALE=(-1.,0.,
+                           0.,0.,
+                           1.,100.,
+                           61.,100.,
+                           121.,100.,
+                           181.,100.,
+                           241.,100.,
+                           301.,100.,
+                           361.,100.,
+                           421.,100.,
+                           481.,100.,
+                           ),);
+
+P_MOINS=DEFI_FONCTION(NOM_PARA='INST',VALE=(-1.,0.,
+                            0.,0.,
+                            1.,-100.,
+                            61.,-100.,
+                            121.,-100.,
+                            181.,-100.,
+                            241.,-100.,
+                            301.,-100.,
+                            361.,-100.,
+                            421.,-100.,
+                            481.,-100.,
+                            ),);
+DY1 = -0.0208;
+
+DY2 = -0.0008;
+
+
+DEP_Y=DEFI_FONCTION(NOM_PARA='INST',VALE=(-1.,0.,
+                          0.,DY1,
+                          1.,DY1,
+                          61.,DY2,
+                          121.,DY1,
+                          181.,DY2,
+                          241.,DY1,
+                          301.,DY2,
+                          361.,DY1,
+                          421.,DY2,
+                          481.,DY1,
+                          ),);
+
+TEMP_CY=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(-1.,20.,
+                            0.,1060.,
+                            1.,1060.,
+                            61.,100.,
+                            121.,1060.,
+                            181.,100.,
+                            241.,1060.,
+                            301.,100.,
+                            361.,1060.,
+                            421.,100.,
+                            481.,1060.,
+                            ),);
+##############
+##MATERIAU ##
+##############
+
+
+MAT=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
+                             NU=POISS,
+                             TEMP_DEF_ALPHA=20.0,
+                             ALPHA=ALPH,),
+                  ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE,
+                                  SY=SIGY,),);
+
+#
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+#################
+##CHARGEMENTS ##
+#################
+#### CYCLES
+
+
+CH_CY=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                 OPERATION='AFFE',
+                 MAILLAGE=MA,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE_F=TEMP_CY,),);
+
+T_CY=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=_F(CHAM_GD=CH_CY,
+                       LIST_INST=L_INST,),);
+
+CHMTM=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),
+                    AFFE_VARC=_F(TOUT='OUI',
+                                 EVOL=T_CY,
+                                 NOM_VARC='TEMP',
+                                 NOM_CHAM='TEMP',
+                                 VALE_REF=20.,),);
+
+CHA1=AFFE_CHAR_MECA_F(MODELE=MO,
+                      FORCE_FACE=(_F(MAILLE='GAUCHE',
+                                     FY=P_MOINS,),
+                                  _F(MAILLE='DROITE',
+                                     FY=P_PLUS,),
+                                  _F(MAILLE='HAUT',
+                                     FX=P_PLUS,),
+                                  _F(MAILLE='BAS',
+                                     FX=P_MOINS,),),);
+
+CHA2=AFFE_CHAR_MECA_F(MODELE=MO,
+                      FACE_IMPO=_F(MAILLE='GAUCHE',
+                                   DX=DEP_Y,),);
+
+CHA4=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(NOEUD='NO4',
+                                 DX=0.,
+                                 DY=0.,),
+                              _F(NOEUD='NO8',
+                                 DX=0.,
+                                 DY=0.,
+                                 DZ=0.,),
+                              _F(NOEUD='NO2',
+                                 DX=0.,),
+                              _F(NOEUD='NO6',
+                                 DX=0.,),),);
+
+RESUEL=STAT_NON_LINE(MODELE=MO,
+                     CHAM_MATER=CHMTM,
+                     EXCIT=(_F(CHARGE=CHA1,),
+                            _F(CHARGE=CHA2,),
+                            _F(CHARGE=CHA4,),),
+                     COMP_INCR=_F(RELATION='ELAS',),
+                     INCREMENT=_F(LIST_INST=L_INST,
+                                  INST_FIN=121.,),);
+
+RESUEL=CALC_CHAMP(reuse=RESUEL,RESULTAT=RESUEL,CONTRAINTE=('SIGM_ELNO'))
+
+
+TEST_RESU(RESU=_F(INST=25.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESUEL,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOEUD='NO1',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=883.931136000,
+                  VALE_REFE=884.23400000000004,
+                  MAILLE='CUBE',),
+          )
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMTM,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),
+                          _F(CHARGE=CHA4,),),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=100,),);
+
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+INST1 = 23.0;
+
+INST2 = 61.0;
+
+INST3 = 87.0;
+
+INST4 = 121.0;
+
+
+TEST_RESU(RESU=(_F(INST=23.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=287.71800000000002,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=61.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-469.04199999999997,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=87.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=351.28699999999998,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=121.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-180.27799999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=61.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=8.0000000000000004E-4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=121.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.020799999999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=61.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=3.5434500000000001E-3,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=121.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=6.3241399999999998E-3,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                ),
+          )
+
+INST1F = 421.0;
+
+INST2F = 447.0;
+
+INST3F = 462.0;
+
+INST4F = 479.0;
+
+INST5F = 481.0;
+
+NINST1F = 431;
+
+NINST2F = 457;
+
+NINST3F = 472;
+
+NINST4F = 489;
+
+NINST5F = 491;
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=431,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-469.041575998,
+                   VALE_REFE=-469.14999999999998,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=457,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=351.287315126,
+                   VALE_REFE=349.51999999999998,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=472,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=279.270688430,
+                   VALE_REFE=281.0,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=489,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-191.666667315,
+                   VALE_REFE=-195.84,
+                   PRECISION=0.029999999999999999,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=491,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-180.277567159,
+                   VALE_REFE=-180.52000000000001,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=431,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 8.00000000E-04,
+                   VALE_REFE=8.0000000000000004E-4,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=491,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.020800000,
+                   VALE_REFE=0.020799999999999999,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=431,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.014761076,
+                   VALE_REFE=0.014657999999999999,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=457,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.014848980,
+                   VALE_REFE=0.014832,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=472,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.015575889,
+                   VALE_REFE=0.015526999999999999,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=489,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.016439051,
+                   VALE_REFE=0.016160999999999998,
+                   PRECISION=0.02,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=491,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.017541763,
+                   VALE_REFE=0.017482999999999999,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                ),
+          )
+
+SXX=RECU_FONCTION(RESULTAT=RESU,
+
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIXX',
+                  MAILLE='CUBE',
+                  NOEUD='NO1',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',);
+
+EPXX=RECU_FONCTION(RESULTAT=RESU,
+
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='CUBE',
+                   NOEUD='NO1',
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
+
+EPXY=RECU_FONCTION(RESULTAT=RESU,
+
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXY',
+                   MAILLE='CUBE',
+                   NOEUD='NO1',
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
+
+IMPR_FONCTION(FORMAT='AGRAF',
+              UNITE=25,
+              UNITE_DIGR=26,
+              COURBE=(_F(FONCTION=SXX,
+                         LEGENDE='SIXX',),
+                      _F(FONCTION=EPXX,
+                         LEGENDE='EPXX',),
+                      _F(FONCTION=EPXY,
+                         LEGENDE='EPXY',),),
+              TITRE=TITRE,
+              LEGENDE_X='T (S)',
+              LEGENDE_Y='SIXX ET EPXX ET EPXY ',);
+
+FIN();

@@ -1,0 +1,306 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
+# sdnv100j.para = tps_job 250 mem_job 512Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ET BASCULE DE SCHEMA EN TEMPS
+
+
+# CALCUL AVEC BASCULES DE SCHEMA
+DEBUT(CODE=_F(NOM='SDNV100J',
+              NIV_PUB_WEB='INTERNET',),);
+
+from Contrib.macro_bascule_schema_cata import MACRO_BASCULE_SCHEMA
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#  CALCUL TEST ELEMENTS DISCRETS DE CONTACT EN DYNAMIQUE
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+MAILO=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAILL=CREA_MAILLAGE(MAILLAGE=MAILO,
+                    CREA_POI1=_F(NOM_GROUP_MA='BASE',
+                                 GROUP_MA='SBAS',),);
+
+MAILL=DEFI_GROUP(reuse =MAILL,
+                 MAILLAGE=MAILL,
+                 CREA_GROUP_NO=_F(GROUP_MA='BARRE',),);
+
+MODE=AFFE_MODELE(MAILLAGE=MAILL,
+                 VERIF='MAILLE',
+                 AFFE=(_F(GROUP_MA='BARRE',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='3D',),
+                       _F(GROUP_MA='BASE',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_T',),),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.0,
+                            RHO=8000.,),);
+
+# ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+#                             NU=0.3,
+#                             RHO=8000.,),
+#                    ECRO_LINE=_F(D_SIGM_EPSI = 2000.E6,
+#                                   SY = 80.E6));
+
+MATCHO=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E10,
+                                    JEU=0.,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=MAILL,
+                 AFFE=(_F(GROUP_MA='BARRE',
+                          MATER=ACIER,),
+                       _F(GROUP_MA='BASE',
+                          MATER=MATCHO,),),);
+
+CH=AFFE_CHAR_MECA(MODELE=MODE,
+                  DDL_IMPO=_F(GROUP_MA='BARRE',
+                              DX=0.,
+                              DY=0.,),);
+
+CAR=AFFE_CARA_ELEM(MODELE=MODE,
+                    DISCRET=(_F(GROUP_MA='BASE',
+                               REPERE='LOCAL',
+                               CARA='K_T_D_N',
+                               VALE=(0.,0.,0.,),),
+                             _F(GROUP_MA='BASE',
+                               REPERE='LOCAL',
+                               CARA='M_T_D_N',
+                               VALE=(0.,),),),
+                    ORIENTATION=_F(GROUP_MA='BASE',
+                                   CARA='VECT_X_Y',
+                                   VALE=(0.,0.,-1.,0.,1.,0.,),),);
+# ************* CHAMP DE VITESSE INITIALE ***************
+
+CHAMP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAILL,
+                  AFFE=_F(
+                  GROUP_NO='BARRE',
+                  NOM_CMP=('DX','DY','DZ',),
+                  VALE=(0.0,0.0,-100.,),),);
+# ************* CHAMP DE DEPLACEMENT INITIAL ************
+
+CHAMP2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAILL,
+                  AFFE=_F(
+                  GROUP_NO='BARRE',
+                  NOM_CMP=('DX','DY','DZ',),
+                  VALE=(0.0,0.0,0.002,),),);
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,1.0,0.0001,1.0,0.00010001,0.0,),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+#
+# CONDITION DE COURANT = (.005 m)/(5000 m/s) = 1e-6 s
+# UNIQUEMENT SUR LES ELEMENTS ISOPARAMETRIQUES
+# ATTENTION A LA REDUCTION DU PAS DE TEMPS DU A LA PENALISATION DE CHOC
+
+DT_EXP=.1*1.e-6;
+np=50. ;
+DT_IMP=np*DT_EXP;
+
+temfi1=2.0E-5;
+temfi2=(9.0E-5)+(2*DT_IMP);
+temfin=2.0E-4;
+
+L_IMP=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=(_F(JUSQU_A=temfi2, PAS=DT_IMP,),
+                                           _F(JUSQU_A=(temfi2+DT_IMP),PAS=(10*DT_EXP),),
+                                           _F(JUSQU_A=temfin, PAS=DT_IMP,),           ));
+
+L_EXP=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F(JUSQU_A=temfin, PAS=DT_EXP,),);
+
+L_BAS=DEFI_LIST_REEL(VALE=(temfi1, temfi2, temfin),);
+
+#L_ARCH=DEFI_LIST_REEL(DEBUT=0.,
+#                      INTERVALLE=_F(JUSQU_A=temfi,
+#                                    PAS=DT2,),);
+#
+#---------------------------------------------------#
+#                                                   #
+# RESOLUTION DYNAMIQUE                              #
+#                                                   #
+#---------------------------------------------------#
+
+U = MACRO_BASCULE_SCHEMA(MODE=MODE,
+                 MATE=CM,
+                 CARA =CAR,
+                 INCR_I=_F(LIST_INST=L_IMP,),
+                 INCR_E=_F(LIST_INST=L_EXP,),
+                 SCH_TEMPS_I  =_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', ALPHA = -0.1, MODI_EQUI='OUI',),
+                 SCH_TEMPS_E  =_F(SCHEMA='TCHAMWA', FORMULATION='ACCELERATION',PHI = 1.05,),
+# Pour tester avec equilibrage explicite :
+#                 SCH_TEMPS_EQ =_F(SCHEMA='TCHAMWA', FORMULATION='ACCELERATION',PHI = 1.05,),
+# Pour tester avec equilibrage implicite :
+                 SCH_TEMPS_EQ  =_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', ALPHA = -0.1, MODI_EQUI='OUI',),
+                 C_INCR_I   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
+                                 _F(RELATION='ELAS',     GROUP_MA='BARRE',),),
+                 C_INCR_E   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
+                                 _F(RELATION='ELAS',     GROUP_MA='BARRE',),),
+#                  C_INCR_I   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
+#                                  _F(RELATION='VMIS_ISOT_LINE',     GROUP_MA='BARRE',),),
+#                  C_INCR_E   =(_F(RELATION='DIS_CHOC', GROUP_MA='BASE',),
+#                                  _F(RELATION='VMIS_ISOT_LINE',     GROUP_MA='BARRE',),),
+                 EXC_T      =_F(CHARGE=CH, FONC_MULT=RAMPE,),
+                 NEWT=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                 INIT=_F(DEPL=CHAMP2, VITE=CHAMP1,),
+                 TP_BAS     = L_BAS,
+                 SCH_INI    ='IMPLICITE',
+                 EQUILIBRAGE=_F(EQU_EXP_IMP='NON',
+                                DT_IMP=DT_IMP,
+                                DT_EXP=DT_EXP,
+                                ),
+                );
+#
+#---------------------------------------------------#
+#                                                   #
+# POST TRAITEMENT                                   #
+#                                                   #
+#---------------------------------------------------#
+#
+
+VITECONT=RECU_FONCTION(RESULTAT=U,
+                       NOM_CHAM='VITE',
+                       NOM_CMP='DZ',
+                       NOEUD='N5',
+                       TITRE='VITE',);
+
+VC=CALC_FONCTION(COMB=_F(FONCTION=VITECONT,
+                         COEF=12500.,),);
+
+MVC=CALC_FONCTION(INTEGRE=_F(FONCTION=VC,),);
+
+DE100=RECU_FONCTION(RESULTAT=U,
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DZ',
+                    NOEUD='N100',
+                    TITRE='DEPL',);
+
+VI100=RECU_FONCTION(RESULTAT=U,
+                    NOM_CHAM='VITE',
+                    NOM_CMP='DZ',
+                    NOEUD='N100',
+                    TITRE='VITE',);
+
+DE5=RECU_FONCTION(RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD='N5',
+                  TITRE='DEPL',);
+
+VI5=RECU_FONCTION(RESULTAT=U,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DZ',
+                  NOEUD='N5',
+                  TITRE='VITE',);
+
+
+tpost=POST_ELEM(ENER_CIN=_F(TOUT='OUI',),
+                RESULTAT=U,);
+
+
+TEST_RESU(RESU=(_F(INST=1.0000000000000001E-05,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 1.00000000E-03,
+                   VALE_REFE=1.E-3,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   PRECISION=1.E-3, TOLE_MACHINE=(1.E-3, 1.E-08),),
+                _F(INST=2.4000000000000001E-05,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N100',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-4.00000000E-04,
+                   VALE_REFE=-3.8000000000000002E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   PRECISION=0.059999999999999998, TOLE_MACHINE=(0.059999999999999998, 1.E-08),),
+                _F(INST=8.0000000000000007E-05,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-8.24283604E-04,
+                   VALE_REFE=-8.0000000000000004E-4,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   PRECISION=0.040000000000000001, TOLE_MACHINE=(0.040000000000000001, 1.E-08),),
+                _F(INST=1.2E-4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='VITE',
+                   NOEUD='N5',
+                   NOM_CMP='DZ',
+                   VALE_CALC=112.178549706,
+                   VALE_REFE=100.0,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   PRECISION=0.14999999999999999, TOLE_MACHINE=(0.14999999999999999, 1.E-08),),
+                _F(INST=1.2E-4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 2.02100896E-03,
+                   VALE_REFE=2.E-3,
+                   CRITERE=('RELATIF', 'ABSOLU'),
+                   PRECISION=0.050000000000000003, TOLE_MACHINE=(0.050000000000000003, 1.E-08),),
+                ),
+          )
+
+#
+# Test de l energie cinetique
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-4,
+           VALE_CALC=800.000000000,
+           VALE_REFE=800.0,
+           NOM_PARA='TOTALE',
+           TABLE=tpost,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MAILL',),
+                   _F(CRITERE='ABSOLU',
+                      PRECISION=1.E-08,
+                      NOM_PARA='INST',
+                      VALE=5.0000000000000004E-06,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=786.933080993,
+           VALE_REFE=800.0,
+           NOM_PARA='TOTALE',
+           TABLE=tpost,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                      VALE_K='MAILL',),
+                   _F(CRITERE='ABSOLU',
+                      PRECISION=1.E-08,
+                      NOM_PARA='INST',
+                      VALE=1.2E-4,),
+                   ),
+           )
+
+FIN();

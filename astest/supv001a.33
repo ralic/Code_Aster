@@ -1,0 +1,97 @@
+# -*- coding: iso-8859-1 -*-
+# RESPONSABLE
+
+"""
+Macro de test du fonctionnement de INCLUDE dans une macro.
+Uniquement à titre de validation.
+Demander un avis avant d'utiliser ce genre de mécanisme !
+"""
+
+from Noyau.nommage import GetNomConceptResultat as GNC
+from Cata.cata import MACRO, SIMP, OPS, CO, table_sdaster
+
+def build_naming_function(macro, intern):
+    """Construit la fonction de nommage.
+    'intern' : dict de correspondance 'nom dans include' : 'nom temporaire'
+               qui sera rempli au fur et à mesure des nommages."""
+    def naming_function(operator):
+        orig = GNC.native(operator, level=4)
+        tmpname = macro.gcncon('_')
+        if intern.get(orig) == 0:
+            intern[orig] = tmpname
+        else:
+            # stocke les concepts produits
+            intern[tmpname] = tmpname
+        return tmpname
+    return naming_function
+
+def mon_include_ops(self, UNITE, INTERNE, TABLE, **kwargs):
+    """Corps de la macro de test."""
+    from Cata.cata import _F
+    self.set_icmd(1)
+    INCLUDE = self.get_cmd('INCLUDE')
+    TEST_TABLE = self.get_cmd('TEST_TABLE')
+    CALC_TABLE = self.get_cmd('CALC_TABLE')
+    DETRUIRE = self.get_cmd('DETRUIRE')
+
+    # concepts que l'on veut identifier
+    intern = INTERNE or []
+    d_incname = {}.fromkeys( intern, 0 )
+    include_naming = build_naming_function(self, d_incname)
+
+    GNC.use_naming_function(include_naming)
+    INCLUDE(UNITE=UNITE)
+    GNC.use_global_naming()
+
+    # test que l'on peut récupérer un concept produit par l'INCLUDE.
+    # cela suppose que l'on sache ce qui va être produit par l'INCLUDE !
+    # concept temporaire que l'on veut utiliser ici :
+    for nomco in intern:
+        print '<DBG> %s a ete produit sous le nom %s' % (nomco, d_incname[nomco])
+        fff = self.get_concept(d_incname[nomco])
+        assert fff is not None
+
+    # concept à produire en sortie, on sait que intern[0] donne le nom de la table
+    self.DeclareOut('tabout', TABLE)
+    nomco = intern[0]
+    ttt = self.get_concept(nomco)
+    assert ttt is not None
+    TEST_TABLE(TABLE=ttt,
+               FILTRE=_F(NOM_PARA='INST',
+                         VALE=1.),
+               NOM_PARA='TOUTRESU',
+               VALE_CALC=1.23456,)
+    # on reporte la table à l'identique.
+    tabout = CALC_TABLE(TABLE=ttt,
+                        ACTION=(_F(OPERATION='AJOUT_COLONNE',
+                                  NOM_PARA='_para_',
+                                  VALE=1),
+                                _F(OPERATION='SUPPRIME',
+                                  NOM_PARA='_para_',),),)
+    # faire le ménage des concepts produits dans l'INCLUDE
+    others = set()
+    new_concepts = set()
+    for nomco in d_incname.values():
+        co = self.get_concept(nomco)
+        if co:
+            new_concepts.add(co)
+        else:
+            others.add(nomco)
+    if new_concepts:
+        DETRUIRE(CONCEPT=_F(NOM=tuple(new_concepts)))
+    # concepts produits par des macros sous l'INCLUDE (aucun assd ne pointe dessus)
+    if others:
+        DETRUIRE(OBJET=_F(CHAINE=tuple(others)))
+
+
+def mon_include_prod(self, TABLE, **kwargs):
+    """Déclaration des concepts de sortie"""
+    self.type_sdprod(TABLE, table_sdaster)
+
+MON_INCLUDE = MACRO(nom="MON_INCLUDE",
+                    op=mon_include_ops,
+                    sd_prod=mon_include_prod,
+                    UNITE = SIMP(statut='o',typ='I'),
+                    INTERNE = SIMP(statut='f', typ='TXM', max='**'),
+                    TABLE = SIMP(statut='o', typ=CO,),
+)

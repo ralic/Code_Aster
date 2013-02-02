@@ -1,0 +1,280 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE : POUTRE MULTIFIBRE SOUMISE A UNE TEMPERATURE CONSTANTE
+# hsll100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='HSLL100A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# LECTURE DU MAILLAGE FILAIRE 
+
+mailp = LIRE_MAILLAGE(UNITE=20)
+
+# LECTURE DU MAILLAGE DE LA SECTION
+
+MASEC = LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
+
+
+GF=DEFI_GEOM_FIBRE(
+                   SECTION = (
+                              _F(GROUP_FIBRE='SECT',
+                                 MAILLAGE_SECT = MASEC , 
+                                 GROUP_MA_SECT = 'SECTION', 
+                                 COOR_AXE_POUTRE = (0., 0.,)),
+                              )
+                   )
+
+modelp=AFFE_MODELE(MAILLAGE=mailp,
+                   AFFE=_F(TOUT='OUI', 
+                           PHENOMENE='MECANIQUE', 
+                           MODELISATION='POU_D_EM',),
+                   )
+
+carel = AFFE_CARA_ELEM(
+                       MODELE = modelp,
+                       POUTRE = _F(
+                                   GROUP_MA = 'POUTRE',
+                                   SECTION = 'CERCLE',
+                                   CARA = ( 'R',   'EP',),
+                                   VALE = ( 20.0E-03,    20.0E-03),
+                                   ),
+                       GEOM_FIBRE=GF,
+                       MULTIFIBRE=_F(GROUP_MA='POUTRE',
+                                     GROUP_FIBRE='SECT'),
+                      )
+
+
+# #########################################################
+#
+#        Definition de la Temperature
+#
+# #########################################################
+TemperRefe = 0.0
+
+TEMP_0=CREA_CHAMP(
+                  TYPE_CHAM='NOEU_TEMP_R',
+                  OPERATION='AFFE', 
+                  MAILLAGE=mailp,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE=TemperRefe,),
+                  )
+
+TEMP_1=CREA_CHAMP(
+                  TYPE_CHAM='NOEU_TEMP_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=mailp,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE=400.0,),
+                  )
+
+ResuTemp=CREA_RESU(
+                   OPERATION='AFFE',
+                   TYPE_RESU='EVOL_VARC',
+                   NOM_CHAM='TEMP',
+                   AFFE=(_F(CHAM_GD=TEMP_0,
+                            INST=  0.0,),
+                         _F(CHAM_GD=TEMP_1,
+                            INST=100.0,),
+                        ),
+                   )
+
+# #########################################################
+#
+#        Definition et affectation des materiaux
+#
+# #########################################################
+
+YOUNG = DEFI_CONSTANTE(VALE = 200000.E+06)
+ALPHA = DEFI_CONSTANTE(VALE = 15.0E-06)
+NU    = DEFI_CONSTANTE(VALE = 0.30)
+
+ACIER=DEFI_MATERIAU(
+                    ELAS_FO=_F(E = YOUNG,
+                               NU = NU,
+                               ALPHA = ALPHA,
+                               TEMP_DEF_ALPHA = TemperRefe ),
+                    ECRO_LINE=_F( D_SIGM_EPSI = 2.E9, SY = 150.E10)
+                    )
+
+COMPF=DEFI_COMPOR(
+                  GEOM_FIBRE=GF, 
+                  MATER_SECT=ACIER,
+                  MULTIFIBRE=(
+                              _F(GROUP_FIBRE = 'SECT',
+                                 MATER       =  ACIER,
+                                 RELATION    = 'ELAS'),
+                             ),
+                   )
+
+CHMAT=AFFE_MATERIAU(
+                    MAILLAGE=mailp,
+                    AFFE_VARC=(
+                               _F(EVOL=ResuTemp,
+                                  NOM_VARC='TEMP',
+                                  VALE_REF=TemperRefe,),
+                              ),
+                    AFFE=_F(TOUT = 'OUI',
+                            MATER = ACIER),
+                   AFFE_COMPOR=_F(GROUP_MA = 'POUTRE',
+                                  COMPOR=COMPF),
+                    )
+
+climi=AFFE_CHAR_MECA(
+                     MODELE=modelp,
+                     DDL_IMPO=_F(GROUP_NO=('PT0','PT1'),LIAISON='ENCASTRE',),
+                     )
+
+linstS = DEFI_LIST_REEL(
+                        DEBUT=0.0,
+                        INTERVALLE=(
+                                    _F(JUSQU_A = 200.0, PAS = 5.0,),
+                                    ),
+                       )
+
+DEFLISTS =DEFI_LIST_INST(
+   DEFI_LIST=_F(LIST_INST =linstS ,),
+   ECHEC=_F(SUBD_METHODE='MANUEL',SUBD_NIVEAU=6,),
+)
+
+STATS=STAT_NON_LINE(
+                     MODELE    = modelp,
+                     CHAM_MATER= CHMAT,
+                     CARA_ELEM = carel,
+                     INCREMENT= _F(LIST_INST=DEFLISTS,
+                                   INST_FIN =100.0),
+                     EXCIT=_F(CHARGE=climi,),
+                     NEWTON= _F( REAC_INCR =1,
+                                 REAC_ITER =1, ),
+                     CONVERGENCE=_F(
+                                    ITER_GLOB_MAXI=20,
+                                    RESI_GLOB_RELA=1.0E-10,
+                                    RESI_GLOB_MAXI=5.0E-03,
+                                    ARRET='OUI',
+                                    ),
+                     COMP_INCR = (
+                                  _F(DEFORMATION='PETIT',
+                                     TOUT='OUI',
+                                     RELATION='MULTIFIBRE',
+                                     ITER_INTE_PAS = -50,
+                                     ITER_INTE_MAXI = 120,
+                                     RESI_INTE_RELA=1.0E-09,),
+                         ),
+                     )
+
+# IMPR_RESU(RESU=_F(RESULTAT=STATS))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=120,
+                   RESULTAT=STATS,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-6.00000000E+08,
+                   VALE_REFE=-6.E8,
+                   MAILLE='M4',),
+                _F(NUME_ORDRE=20,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=2,
+                   SOUS_POINT=40,
+                   RESULTAT=STATS,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-1.20000000E+09,
+                   VALE_REFE=-1.200000000E9,
+                   MAILLE='M9',),
+                ),
+          )
+
+#======================================================================
+
+COMPF1=DEFI_COMPOR(
+                  GEOM_FIBRE=GF, 
+                  MATER_SECT=ACIER,
+                  MULTIFIBRE=(
+                              _F(GROUP_FIBRE = 'SECT',
+                                 MATER       =  ACIER,
+                                 RELATION    = 'VMIS_ISOT_LINE'),
+                             ),
+                  )
+
+CHMAT1=AFFE_MATERIAU(
+                    MAILLAGE=mailp,
+                    AFFE_VARC=(
+                               _F(    EVOL = ResuTemp,
+                                  NOM_VARC = 'TEMP',
+                                  VALE_REF = TemperRefe,),
+                              ),
+                    AFFE=_F( TOUT = 'OUI',
+                            MATER = ACIER),
+                   AFFE_COMPOR=_F(GROUP_MA = 'POUTRE',
+                                  COMPOR=COMPF1),
+                   )
+
+STATNL=STAT_NON_LINE(MODELE     = modelp,
+                     CHAM_MATER = CHMAT1,
+                     CARA_ELEM  = carel,
+                     INCREMENT= _F(LIST_INST = DEFLISTS,
+                                   INST_FIN  = 100.0),
+                     EXCIT=_F(CHARGE = climi,),
+                     NEWTON= _F( REAC_INCR = 1,
+                                 REAC_ITER = 1, ),
+                     CONVERGENCE=_F(
+                                    ITER_GLOB_MAXI=20,
+                                    RESI_GLOB_RELA=1.0E-10,
+                                    RESI_GLOB_MAXI=5.0E-03,
+                                    ARRET='OUI',
+                                    ),
+                     COMP_INCR = (
+                                  _F(DEFORMATION='PETIT',
+                                     TOUT='OUI',
+                                     RELATION='MULTIFIBRE',
+                                     ITER_INTE_PAS = -50,
+                                     ITER_INTE_MAXI = 120,
+                                     RESI_INTE_RELA=1.0E-09,),
+                         ),
+                     )
+
+# IMPR_RESU(RESU=_F(RESULTAT=STATNL))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=10,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   SOUS_POINT=120,
+                   RESULTAT=STATNL,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-6.00000000E+08,
+                   VALE_REFE=-6.E8,
+                   MAILLE='M4',),
+                _F(NUME_ORDRE=20,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=2,
+                   SOUS_POINT=40,
+                   RESULTAT=STATNL,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-1.20000000E+09,
+                   VALE_REFE=-1.200000000E9,
+                   MAILLE='M9',),
+                ),
+          )
+
+FIN()

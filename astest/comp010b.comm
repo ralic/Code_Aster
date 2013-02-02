@@ -1,0 +1,105 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#======================================================================
+#
+# TITRE : VALIDATION DE LA BONNE PRISE EN COMPTE DE LA VARIATION DE
+# comp010b.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+#         RELATION = 'LEMAITRE' sous COMP_INCR
+#
+# CAS-TEST DE REFERENCE : SSNV170A
+#
+#=====================================================================
+
+DEBUT(CODE=_F(NOM='COMP010B',NIV_PUB_WEB='INTERNET'),IMPR_MACRO='OUI',DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+TREF = 20.
+T0   = TREF
+Tmax = 500.
+
+NCAL = 20
+
+ZERO =DEFI_CONSTANTE(VALE=0.0);
+
+# Parametres elastiques
+
+YOUN=DEFI_FONCTION(  NOM_PARA='TEMP',
+                     VALE=(T0,   100.E3,
+                           Tmax, 200.E3,)  )
+
+ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   2.0E-5,
+                                         Tmax, 2.0E-5,),);
+# Parametre de la loi de Lemaitre
+
+N_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   10.8,
+                                        Tmax,  8.0,),);
+
+UNSK_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   6.9E-4,
+                                           Tmax, 4.0E-4,),);
+
+UNSM_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.102,
+                                           Tmax, 0.05));
+
+MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
+                                NU=ZERO,
+                                TEMP_DEF_ALPHA=TREF,
+                                ALPHA=ALPH,),
+                     LEMAITRE_FO=_F(N=N_F,
+                                    UN_SUR_K=UNSK_F,
+                                    UN_SUR_M=UNSM_F,),
+                      );
+
+
+LMT2  = [None]*(NCAL)
+time=0.
+tfin=1.
+for i in range(NCAL):
+    timem = time
+    time = timem + tfin/NCAL
+    Ti = TREF + time/tfin * (Tmax - TREF)
+    Tm = TREF + timem/tfin * (Tmax - TREF)
+    LMT2[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti),
+                                        NU=0.,
+                                        ALPHA=0.,),
+                        LEMAITRE=_F(N=N_F(Ti),
+                                    UN_SUR_K=UNSK_F(Ti),
+                                    UN_SUR_M=UNSM_F(Ti),),
+                                );
+
+
+############################################################################
+# MACRO pour test thermoplastique
+
+compor='LEMAITRE'
+
+
+tabresu=TEST_COMPOR(
+              MATER=MATERI,COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100,PARM_THETA=1.0),
+              LIST_MATER=LMT2,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=TREF,TEMP_FIN=Tmax,
+              NEWTON=_F(REAC_ITER=1),
+              NB_VARI=2,
+              VARI_TEST=('V1','V2'),
+              )
+
+IMPR_TABLE(TABLE=tabresu)
+
+
+FIN()
+

@@ -1,0 +1,165 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE FLEXION D'UNE PLAQUE RECTANULAIRE TROUEE
+# ssls130b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#       METHODE DE ZOOM STRUCTURALE
+
+DEBUT(CODE=_F(NOM='SSLS130B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+#***************************************
+# CALCUL INITIAL SUR MAILLAGE 'GROSSIER'
+#***************************************
+
+PRE_IDEAS();
+
+MAYAGRO=LIRE_MAILLAGE();
+
+MATELAS=DEFI_MATERIAU(ELAS=_F(E=71000000000.0,
+                              NU=0.3,),);
+
+MODELGRO=AFFE_MODELE(MAILLAGE=MAYAGRO,
+                     AFFE=_F(GROUP_MA='ALL_EL',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='DKT',),);
+
+CHMATGRO=AFFE_MATERIAU(MAILLAGE=MAYAGRO,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATELAS,),);
+
+CHCARGRO=AFFE_CARA_ELEM(MODELE=MODELGRO,
+                        COQUE=_F(GROUP_MA='ALL_EL',
+                                 EPAIS=0.001,),);
+
+ENCASGRO=AFFE_CHAR_MECA(MODELE=MODELGRO,
+                        DDL_IMPO=_F(GROUP_NO='GOCH_NO',
+                                    LIAISON='ENCASTRE',),);
+
+FORCEGRO=AFFE_CHAR_MECA(MODELE=MODELGRO,
+                        FORCE_NODALE=_F(GROUP_NO='DROI_NO',
+                                        FX=100.0,
+                                        FZ=1.0,),);
+
+MECASTAT=MECA_STATIQUE(MODELE=MODELGRO,
+                       CHAM_MATER=CHMATGRO,
+                       CARA_ELEM=CHCARGRO,
+                       EXCIT=(_F(CHARGE=ENCASGRO,),
+                              _F(CHARGE=FORCEGRO,),),);
+
+#***************************************
+# CALCUL SUR PARTIE ZOOMEE
+#***************************************
+PRE_IDEAS(UNITE_IDEAS=21,
+          UNITE_MAILLAGE=22,);
+
+MAYAFIN=LIRE_MAILLAGE(UNITE=22,);
+
+MODELFIN=AFFE_MODELE(MAILLAGE=MAYAFIN,
+                     AFFE=_F(GROUP_MA='INT_EL',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='DKT',),);
+
+CHMATFIN=AFFE_MATERIAU(MAILLAGE=MAYAFIN,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATELAS,),);
+
+CHCARFIN=AFFE_CARA_ELEM(MODELE=MODELFIN,
+                        COQUE=_F(GROUP_MA='INT_EL',
+                                 EPAIS=0.001,),);
+
+# Phase de projection du champ de deplacement calcule
+# sur le maillage grossier sur le contour du maillage fin
+# de zoom
+CHAMPROJ=PROJ_CHAMP(METHODE='COLLOCATION',
+                    RESULTAT=MECASTAT,
+                    MODELE_1=MODELGRO,
+                    MODELE_2=MODELFIN,
+                    NOM_CHAM=('DEPL'),
+
+                    VIS_A_VIS=_F(GROUP_MA_1='INT_EL',
+                                 GROUP_NO_2='INT2_NO',),
+                    );
+
+DEPLNO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  OPERATION='EXTR',
+                  RESULTAT=CHAMPROJ,
+                  NOM_CHAM='DEPL',
+                  NUME_ORDRE=1,);
+
+# affectation des deplacements projetes comme
+# deplacement impose
+ENCASFIN=AFFE_CHAR_MECA(MODELE=MODELFIN,
+                        CHAMNO_IMPO=_F(CHAM_NO=DEPLNO,
+                                       COEF_MULT=1.,),
+                        INFO=1);
+
+MECAFIN=MECA_STATIQUE(MODELE=MODELFIN,
+                       CHAM_MATER=CHMATFIN,
+                       CARA_ELEM=CHCARFIN,
+                       EXCIT=(_F(CHARGE=ENCASFIN,),),
+                       OPTION='SIEF_ELGA',);
+
+MECAFIN=CALC_CHAMP(reuse=MECAFIN,RESULTAT=MECAFIN,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
+
+
+MECAFIN2=POST_CHAMP(RESULTAT=MECAFIN,
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+MECAFIN2=CALC_CHAMP(reuse =MECAFIN2,
+                 RESULTAT=MECAFIN2,
+                 CONTRAINTE='SIGM_NOEU',);
+
+DEPLVER=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
+                   OPERATION='EXTR',
+                   RESULTAT=MECAFIN2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NUME_ORDRE=1,);
+
+TEST_RESU(CHAM_NO=(_F(REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='SIXX',
+                      PRECISION=4.1000000000000003E-3,
+                      TYPE_TEST='MAX',
+                      CHAM_GD=DEPLVER,
+                      VALE_CALC= 5.96347146E+06,
+                      VALE_REFE=5.988000E6,),
+                   _F(REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='SIXX',
+                      PRECISION=0.010999999999999999,
+                      TYPE_TEST='MIN',
+                      CHAM_GD=DEPLVER,
+                      VALE_CALC=-2.40086228E+05,
+                      VALE_REFE=-2.42600E5,),
+                   _F(REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='SIYY',
+                      PRECISION=1.5E-3,
+                      TYPE_TEST='MAX',
+                      CHAM_GD=DEPLVER,
+                      VALE_CALC= 9.65158610E+05,
+                      VALE_REFE=9.66600E5,),
+                   _F(REFERENCE='AUTRE_ASTER',
+                      NOM_CMP='SIYY',
+                      PRECISION=0.010999999999999999,
+                      TYPE_TEST='MIN',
+                      CHAM_GD=DEPLVER,
+                      VALE_CALC=-2.05063192E+06,
+                      VALE_REFE=-2.072000E6,),
+                   ),
+          )
+
+FIN();

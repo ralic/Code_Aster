@@ -1,0 +1,305 @@
+# MODIF  DATE 20/11/2012   AUTEUR TRAN V-X.TRAN 
+# TITRE CYLINDRE FISSURE SOUS CHARGEMENTS MULTIPLES
+# ssnv166c.para = tps_job 720 mem_job 768Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV166C',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI'));
+
+MAILLE=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,
+                       CREA_POI1=(_F(NOM_GROUP_MA='NOBLOC',
+                                     GROUP_NO='NOBLOC',),
+                                  _F(NOM_GROUP_MA='NOTORS',
+                                     GROUP_NO='NOTORS',),),);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=(_F(GROUP_MA='VTUBE',),
+                                   _F(GROUP_MA='FONFIS',),
+                                   _F(GROUP_MA='FISSUR_P',),
+                                   _F(GROUP_MA='FISSUR_N',),
+                                   _F(GROUP_MA='SLAT_POS',),
+                                   _F(GROUP_MA='SLAT_NEG',),),);
+
+# POUR ELIMINER LES NOEUDS COMMUNS AUX SURFACES DE CONTACT
+MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(INTERSEC=('FISSUR_P','FISSUR_N',),
+                                     NOM='FISS_SGN'),)
+
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=(_F(GROUP_MA=('VTUBE','FONFIS','SLAT_POS','SLAT_NEG','FISSUR_P','FISSUR_N',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA=('NOBLOC','NOTORS',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),),);
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SLAT_POS',
+                                                 'SLAT_NEG',
+                                                 'FISSUR_P',
+                                                 'FISSUR_N',
+                       ),),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
+                            NU=0.3,
+                            RHO=7800.0,),);
+
+CARA=AFFE_CARA_ELEM(MODELE=MODELE,
+                    DISCRET=_F(GROUP_MA=('NOBLOC','NOTORS',),
+                               CARA='K_TR_D_N',
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       MODELE=MODELE,
+                       AFFE=(_F(GROUP_MA=('VTUBE','FONFIS','SLAT_POS','SLAT_NEG','FISSUR_P','FISSUR_N',),
+                                MATER=ACIER,
+                                ),
+                             _F(GROUP_MA=('NOBLOC','NOTORS',),
+                                MATER=ACIER,),),);
+
+
+FISS=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
+                    FOND_FISS=_F(GROUP_MA='FONFIS',
+                                 GROUP_NO_ORIG='PFON_INI',
+                                 GROUP_NO_EXTR='PFON_FIN',),
+                    LEVRE_SUP=_F(GROUP_MA='FISSUR_P',),
+                    LEVRE_INF=_F(GROUP_MA='FISSUR_N',),
+                    INFO=1,);
+
+#*********************************************************************
+#                          CONDITIONS AUX LIMITES                    *
+#*********************************************************************
+
+MTORS=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(1.0,3000000.0,2.0,0.0,3.0,0.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+MFLEX=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(1.0,0.0,2.0,1500000.0,3.0,0.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+TRACT=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(1.0,6000000.0,2.0,0.0,3.0,0.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO='NOBLOC',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                       LIAISON_ELEM=(_F(OPTION='3D_POU',
+                                        GROUP_MA_1='SLAT_NEG',
+                                        GROUP_NO_2='NOBLOC',),
+                                     _F(OPTION='3D_POU',
+                                        GROUP_MA_1='SLAT_POS',
+                                        GROUP_NO_2='NOTORS',),),
+                       INFO=1,);
+
+
+CHARTOFL=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                          FORCE_NODALE=_F(GROUP_NO='NOTORS',
+                                          FX=TRACT,
+                                          MX=MTORS,
+                                          MY=MFLEX,),);
+
+
+CHARFISS=DEFI_CONTACT(MODELE     = MODELE,
+                  FORMULATION    = 'DISCRETE',
+                  REAC_GEOM      = 'SANS',
+
+                  ZONE=(
+                        _F(
+                          GROUP_MA_MAIT='FISSUR_N',
+                          GROUP_MA_ESCL='FISSUR_P',
+                          SANS_GROUP_NO='FISS_SGN',
+                         ),
+                       ),
+                  )
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=1.,
+                      INTERVALLE=_F(JUSQU_A=3.0,
+                                    NOMBRE=2,),);
+
+UTOT=MECA_STATIQUE(MODELE=MODELE,
+                   CHAM_MATER=CHAMPMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CHARBLO,),
+                          _F(CHARGE=CHARTOFL,),),
+                   LIST_INST=L_INST,
+                   INST_FIN=2.0,
+                   SOLVEUR=_F(METHODE='MULT_FRONT',
+                              RENUM='METIS',),
+                   INFO=1,);
+
+UTOTC=STAT_NON_LINE(MODELE=MODELE,
+                    CHAM_MATER=CHAMPMAT,
+                    CARA_ELEM=CARA,
+                    EXCIT=(_F(CHARGE=CHARBLO,),
+                           _F(CHARGE=CHARTOFL,),
+                           ),
+                    CONTACT  =CHARFISS,
+                    COMP_ELAS=(_F(RELATION='ELAS',
+                                 GROUP_MA=('NOBLOC','NOTORS',),),
+                               _F(RELATION='ELAS',
+                                 GROUP_MA='VTUBE',),
+                                 ),
+                    INCREMENT=_F(LIST_INST=L_INST,
+                                 INST_INIT=1.0,
+                                 INST_FIN=2.0,),
+                    NEWTON=_F(MATRICE='ELASTIQUE',),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                   ITER_GLOB_MAXI=100,),
+                    SOLVEUR=_F(SYME='OUI',
+                               METHODE='MULT_FRONT',
+                               RENUM='METIS',),
+                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                    INFO=1,);
+
+
+UTOT=CALC_CHAMP(reuse =UTOT,
+                CONTRAINTE=('SIGM_ELNO'),
+               RESULTAT=UTOT,);
+
+UTOT=CALC_CHAMP(reuse =UTOT,
+               CONTRAINTE='SIGM_NOEU',
+               RESULTAT=UTOT,);
+
+GLOC1=CALC_G(RESULTAT=UTOT,
+             NUME_ORDRE=1,
+             OPTION='CALC_K_G',
+             THETA=_F(FOND_FISS=FISS,
+                      R_INF=0.004,
+                      R_SUP=0.013,),
+             LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                        LISSAGE_G='LAGRANGE',),);
+
+GLOC2=CALC_G(RESULTAT=UTOT,
+             NUME_ORDRE=2,
+             OPTION='CALC_K_G',
+             THETA=_F(FOND_FISS=FISS,
+                      R_INF=0.004,
+                      R_SUP=0.013,),
+             LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                        LISSAGE_G='LAGRANGE',),);
+
+GLOC3=CALC_G(RESULTAT=UTOTC,
+             NUME_ORDRE=1,
+             OPTION='CALC_K_G',
+             THETA=_F(FOND_FISS=FISS,
+                      R_INF=0.004,
+                      R_SUP=0.013,),
+             LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                        LISSAGE_G='LAGRANGE',),);
+
+IMPR_TABLE(TABLE=GLOC1,);
+
+IMPR_TABLE(TABLE=GLOC2,);
+
+IMPR_TABLE(TABLE=GLOC3,);
+
+K1REF = 5350000.0;
+K3REF =11220000.0;
+K1AREF=11710000.0;
+
+# CHARGEMENT EN TRACTION (K1)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=5.1337256817486E+06,
+           TOLE_MACHINE = 1.E-5,
+           VALE_REFE=5.350000E6,
+           NOM_PARA='K1',
+           TYPE_TEST='MAX',
+           TABLE=GLOC1,)
+
+# CHARGEMENT EN TORSION (K3)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.080000000000000002,
+           VALE_CALC=1.0341412909469E+07,
+           TOLE_MACHINE = 1.E-5,
+           VALE_REFE=1.1220000E7,
+           NOM_PARA='K3',
+           TYPE_TEST='MAX',
+           TABLE=GLOC1,)
+
+# NON REGRESSION SUR LES 2 PRECEDENTS TESTS
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='NON_DEFINI',
+           TOLE_MACHINE = 1.E-5,
+           PRECISION=1.E-2,
+           VALE_CALC=5.1337256817486E+06,
+           VALE_REFE=5.109016E6,
+           NOM_PARA='K1',
+           TYPE_TEST='MAX',
+           TABLE=GLOC1,
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='NON_DEFINI',
+           TOLE_MACHINE = 1.E-5,
+           PRECISION=1.E-2,
+           VALE_CALC=1.0341412909469E+07,
+           VALE_REFE=1.0341007554826001E7,
+           NOM_PARA='K3',
+           TYPE_TEST='MAX',
+           TABLE=GLOC1,
+           )
+
+# CHARGEMENT EN FLEXION (K1) SANS CONTACT
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           TOLE_MACHINE = 1.E-5,
+           PRECISION=0.14000000000000001,
+           VALE_CALC=1.0352812204605E+07,
+           VALE_REFE=1.1710000E7,
+           NOM_PARA='K1',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=11,),
+           )
+
+# CHARGEMENT EN FLEXION (K1) AVEC CONTACT
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           
+           PRECISION=0.10000000000000001,
+           VALE_CALC=9.4654426560243E+06,
+           VALE_REFE=1.0318900E7,
+           NOM_PARA='K1',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=11,),
+           )
+
+FIN();
+
+

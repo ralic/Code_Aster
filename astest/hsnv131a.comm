@@ -1,0 +1,222 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (C_PLAN) INCLUDE_MATERIAU
+# hsnv131a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='HSNV131A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+#......................................................................
+# CAS TEST THERMOPLASTICITE ELEMENTAIRE SUR ACIER Z2CND1712
+#......................................................................
+# TEST DE INCLDE_MATERIAU
+
+MAIL=LIRE_MAILLAGE();
+
+MA=INCLUDE_MATERIAU(NOM_AFNOR='Z2CND1712',
+                    TYPE_MODELE='REF',
+                    VARIANTE='A',
+                    TYPE_VALE='NOMI',
+                    UNITE_LONGUEUR='MM',);
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=66.666E0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=80.000E0,
+                                     NOMBRE=2,),
+                                  _F(JUSQU_A=90.000E0,
+                                     NOMBRE=2,),),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MA,
+                            ),);
+
+TIMPVAR=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.E0,25.E0,
+                            100.E0,100.E0,
+                            ),);
+
+MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='THERMIQUE',
+                           MODELISATION='PLAN',),);
+
+CHTHE=AFFE_CHAR_THER_F(MODELE=MOTHER,
+                       TEMP_IMPO=(_F(GROUP_NO='GRNO1',
+                                     TEMP=TIMPVAR,),
+                                  _F(GROUP_NO='GRNO2',
+                                     TEMP=TIMPVAR,),
+                                  _F(GROUP_NO='GRNO3',
+                                     TEMP=TIMPVAR,),
+                                  _F(GROUP_NO='GRNO4',
+                                     TEMP=TIMPVAR,),),);
+
+T25=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+               OPERATION='AFFE',
+               MAILLAGE=MAIL,
+               AFFE=_F(TOUT='OUI',
+                       NOM_CMP='TEMP',
+                       VALE=25.0,),);
+
+MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
+
+TEMP=THER_NON_LINE(MODELE=MOTHER,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHTHE,),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   ETAT_INIT=_F(CHAM_NO=T25,),);
+
+CHMTM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MA,),
+                    AFFE_VARC=_F( TOUT='OUI',
+                                  EVOL=TEMP,
+                                  NOM_VARC='TEMP',
+                                  NOM_CHAM='TEMP',
+                                  VALE_REF=25.),
+                     );
+
+
+CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
+                      DDL_IMPO=(_F(NOEUD='N1',
+                                   DX=0.,),
+                                _F(GROUP_NO='GRNO1',
+                                   DY=0.,),
+                                _F(GROUP_NO='GRNO3',
+                                   DY=0.,),),);
+
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CHMTM,
+                EXCIT=_F(CHARGE=CHMECA,),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
+                               ITER_GLOB_MAXI=10,),);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMP,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=25.000000000,
+                   VALE_REFE=25.0,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMP,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=74.999500000,
+                   VALE_REFE=75.0,),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMP,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=79.999750000,
+                   VALE_REFE=80.0,),
+                _F(NUME_ORDRE=3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMP,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=85.000000000,
+                   VALE_REFE=85.0,),
+                _F(NUME_ORDRE=4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMP,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=88.750000000,
+                   VALE_REFE=88.75,),
+                _F(NUME_ORDRE=5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMP,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=92.500000000,
+                   VALE_REFE=92.5,),
+                _F(NUME_ORDRE=1,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-151.64940000000001,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',
+                   ),
+                _F(NUME_ORDRE=1,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=9.6002490000000007E-06,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',
+                   ),
+                _F(NUME_ORDRE=3,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=7.1386799999999999E-05,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',
+                   ),
+                _F(NUME_ORDRE=3,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-170.45150000000001,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',
+                   ),
+                _F(NUME_ORDRE=5,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   VALE_CALC=1.5030410000000001E-4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',
+                   ),
+                _F(NUME_ORDRE=5,
+                   POINT=1,
+                   RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-178.3459,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='M1',
+                   ),
+                ),
+          )
+
+FIN();

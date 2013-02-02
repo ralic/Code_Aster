@@ -1,0 +1,480 @@
+
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE TEST PHI2AS NUMERO 1
+# hsnv124f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ======================================================================
+#       ELEMENT DE VOLUME EN TRACTION / TEMPERATURE VARIABLE
+#       MODELISATION A : ECROUISSAGE ISOTROPE
+
+DEBUT(CODE=_F(NOM='HSNV124F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+TITRE='PHI2AS TEST1 ECR ISOTROPE VMIS_ISOT_TRAC';
+
+COMMENT='20 INCREMENTS ';
+
+MA=LIRE_MAILLAGE();
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=0.01,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=1.0,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=2.0,
+                                    NOMBRE=20,),),);
+
+COEF=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,1.0,1.0,2.0,1.0,),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+
+F0=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.001,200.0,0.002024385,204.87706,0.003047581,209.51626,0.004069646,213.9292,0.005090635,
+                        218.12692,0.0061106,222.11992,0.007129591,225.91818,0.008147656,229.53119,0.00916484,232.968,
+                        0.010181186,236.23718,0.011196735,239.34693,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+#
+
+F1=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.000915,183.0,0.00195455,190.90992,0.002991425,198.28509,0.004025808,205.16164,
+                        0.005057867,211.5733,0.006087757,217.55149,0.007115628,223.12552,0.008141614,228.32271,0.009165843,
+                        233.16854,0.010188434,237.68676,0.011209498,241.89952,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+F2=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.00083,166.0,0.001887666,177.53322,0.002940369,188.07379,0.003988536,197.70715,
+                        0.005032557,206.51137,0.006072789,214.55783,0.007109559,221.91173,0.008143163,228.6327,0.009173876,
+                        234.7752,0.010201945,240.38902,0.011227598,245.51967,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+F3=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.000745,149.0,0.001823645,164.72905,0.002894098,178.81966,0.003957213,191.44252,
+                        0.005013753,202.7505,0.006064403,212.88058,0.007109777,221.95545,0.008150425,230.08503,0.009186839,
+                        237.36778,0.01021946,243.89192,0.011248682,249.73647,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+F4=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.00066,132.0,0.0017624,152.47997,0.002852317,170.46333,0.003931272,186.25445,0.005000603,
+                        200.12055,0.006061482,212.29631,0.007114939,222.98779,0.00816188,232.37593,0.009203098,240.61961,
+                        0.010239292,247.85835,0.011271073,254.21466,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+F5=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.000575,115.0,0.001703845,140.76902,0.002814743,162.94863,0.003910194,182.03879,
+                        0.004992349,198.46985,0.006063061,212.61219,0.007123923,224.78461,0.008176308,235.26152,0.009221395,
+                        244.27907,0.010260203,252.04055,0.011293605,258.72092,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+F6=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.00049,98.0,0.001647899,129.57971,0.002781112,156.22239,0.003893499,178.69989,0.004988317,
+                        197.66337,0.006068311,213.66218,0.007135799,227.15982,0.008192737,238.5473,0.009240773,248.15452,
+                        0.010281299,256.2598,0.01131549,263.09793,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+F7=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.000405,81.0,0.00159448,118.89595,0.002751172,150.23435,0.00388075,176.14993,0.004987905,
+                        197.58105,0.006076519,215.30372,0.007149798,229.95963,0.008210397,242.07948,0.00926051,252.1021,
+                        0.010301952,260.39039,0.011336222,267.24447,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+F8=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.00032,64.0,0.001543511,108.70212,0.002724685,144.93695,0.003871542,174.30833,0.004990582,
+                        198.11632,0.006087073,217.41469,0.007165288,233.05765,0.008228688,245.73759,0.009280079,256.01574,
+                        0.010321735,264.34705,0.011355501,271.10028,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+F9=DEFI_FONCTION(NOM_PARA='EPSI',
+                 VALE=
+                 (0.000235,47.0,0.001494915,98.982999,0.002701426,140.28524,0.003865506,173.10125,
+                        0.004995873,199.17468,0.006099454,219.8909,0.007181753,236.35063,0.008247142,249.42843,0.009299096,
+                        259.81919,0.010340375,268.075,0.011373173,274.63451,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+F10=DEFI_FONCTION(NOM_PARA='EPSI',
+                  VALE=
+                  (0.00015,30.0,0.001448619,89.723789,0.002681184,136.23672,0.003862305,172.46103,
+                         0.005003363,200.67255,0.006113219,222.6437,0.007198774,239.75486,0.008265405,253.08104,0.009317297,
+                         263.45947,0.010357711,271.54221,0.011389185,277.83705,),
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',);
+
+CTRACB=DEFI_NAPPE(NOM_PARA='TEMP',
+                  PARA=(0.0,10.0,20.0,30.0,40.0,50.0,60.0,70.0,80.0,90.0,100.0,),
+                  FONCTION=(F0,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,),
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                            NU=0.3,
+                            ALPHA=1e-05,),
+                    TRACTION=_F(SIGM=CTRACB,),
+                    PRAGER=_F(C=0.0,),);
+
+
+MOMECA=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='BARRE',),);
+
+CARAELEM=AFFE_CARA_ELEM(MODELE=MOMECA,
+                        BARRE=_F(MAILLE='M1',
+                                 SECTION='GENERALE',
+                                 CARA='A',
+                                 VALE=1.0,),);
+
+PRESSION=AFFE_CHAR_MECA(MODELE=MOMECA,
+                        FORCE_NODALE=_F(NOEUD='N7',
+                                        FZ=210.0,),);
+
+FTEMP=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,0.0,2.0,100.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+CHP_TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                    OPERATION='AFFE',
+                    MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP='TEMP',
+                            VALE_F=FTEMP,),);
+
+RTEMP=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD=CHP_TEMP,
+                        LIST_INST=LINST,),);
+
+TEMP7=RECU_FONCTION(RESULTAT=RTEMP,
+                    NOM_CHAM='TEMP',
+                    NOM_CMP='TEMP',
+                    NOEUD='N7',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+
+LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
+                       DDL_IMPO=(_F(NOEUD='N3',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,),
+                                 _F(NOEUD='N7',
+                                    DX=0.0,
+                                    DY=0.0,),),);
+
+CHMATER=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER,),
+                      AFFE_VARC=_F(TOUT='OUI',
+                              NOM_VARC='TEMP',
+                              EVOL=RTEMP,VALE_REF=0.,
+                              NOM_CHAM='TEMP',),);
+
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CHMATER,
+                CARA_ELEM=CARAELEM,
+                EXCIT=(_F(CHARGE=LIAISON,),
+                       _F(CHARGE=PRESSION,
+                          FONC_MULT=COEF,),),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC'),
+                INCREMENT=_F(LIST_INST=LINST,),
+                NEWTON=_F(REAC_INCR=1,
+                          REAC_ITER=1,),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=50,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=1500,
+                               ARRET='OUI',),);
+
+FU=RECU_FONCTION(RESULTAT=U,
+                 NOM_CHAM='DEPL',
+                 NOM_CMP='DZ',
+                 NOEUD='N7',
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='CONSTANT',);
+
+FN=RECU_FONCTION(RESULTAT=U,
+                 NOM_CHAM='SIEF_ELGA',
+                 NOM_CMP='N',
+                 MAILLE='M1',
+                 POINT=1,
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='CONSTANT',);
+
+EPSP=CALC_FONCTION(COMB=(_F(FONCTION=FU,
+                            COEF=1,),
+                         _F(FONCTION=TEMP7,
+                            COEF=-1e-05,),
+                         _F(FONCTION=FN,
+                            COEF=-5e-06,),),);
+
+TEST_FONCTION(TEST_NOOK='NON',
+              VALEUR=(_F(VALE_CALC=0.00210961826384,
+                         VALE_REFE=2.1072E-3,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=2.E-3,
+                         NOM_PARA='INST',
+                         FONCTION=EPSP,),
+                      _F(VALE_CALC=0.00481349378798,
+                         VALE_REFE=4.8107999999999996E-3,
+                         VALE_PARA=1.45,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
+                         NOM_PARA='INST',
+                         FONCTION=EPSP,),
+                      _F(VALE_CALC=0.00481529293762,
+                         VALE_REFE=4.8107999999999996E-3,
+                         VALE_PARA=2.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
+                         NOM_PARA='INST',
+                         FONCTION=EPSP,),
+                      ),
+              )
+
+U3=STAT_NON_LINE(MODELE=MOMECA,
+                 CHAM_MATER=CHMATER,
+                 CARA_ELEM=CARAELEM,
+                 EXCIT=(_F(CHARGE=LIAISON,),
+                        _F(CHARGE=PRESSION,
+                           FONC_MULT=COEF,),),
+                 COMP_INCR=_F(RELATION='VMIS_ECMI_TRAC',),
+                 INCREMENT=_F(LIST_INST=LINST,),
+                 NEWTON=_F(REAC_INCR=1,
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,
+                                ITER_GLOB_MAXI=100,
+                                ARRET='OUI',),);
+
+FU3=RECU_FONCTION(RESULTAT=U3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD='N7',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',);
+
+FN3=RECU_FONCTION(RESULTAT=U3,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='N',
+                  MAILLE='M1',
+                  POINT=1,
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',);
+
+EPSP3=CALC_FONCTION(COMB=(_F(FONCTION=FU3,
+                             COEF=1,),
+                          _F(FONCTION=TEMP7,
+                             COEF=-1e-05,),
+                          _F(FONCTION=FN3,
+                             COEF=-5e-06,),),);
+
+TEST_FONCTION(TEST_NOOK='NON',
+              VALEUR=(_F(VALE_CALC=0.00210961826384,
+                         VALE_REFE=2.1072E-3,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=2.E-3,
+                         NOM_PARA='INST',
+                         FONCTION=EPSP3,),
+                      _F(VALE_CALC=0.00481349378798,
+                         VALE_REFE=4.8107999999999996E-3,
+                         VALE_PARA=1.45,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
+                         NOM_PARA='INST',
+                         FONCTION=EPSP3,),
+                      _F(VALE_CALC=0.00481529293762,
+                         VALE_REFE=4.8107999999999996E-3,
+                         VALE_PARA=2.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
+                         NOM_PARA='INST',
+                         FONCTION=EPSP3,),
+                      ),
+              )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U3,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='N',
+                  VALE_CALC=210.000000000,
+                  VALE_REFE=210.0,
+                  MAILLE='M1',),
+          )
+
+# MATERIAU CIN1_CHAB
+
+UN=DEFI_CONSTANTE(VALE=1.0,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+Q_F = FORMULE(NOM_PARA='TEMP',VALE='100.+1.7*TEMP')
+
+B_F = FORMULE(NOM_PARA='TEMP',VALE='50.+2.*TEMP')
+
+S_F = FORMULE(NOM_PARA='TEMP',VALE='200.- 1.7*TEMP')
+
+RI_F = FORMULE(NOM_PARA='TEMP',VALE='S_F(TEMP)+ Q_F(TEMP)')
+
+TEMPE1=DEFI_LIST_REEL(DEBUT=-10.0,
+                      INTERVALLE=_F(JUSQU_A=120.0,
+                                    NOMBRE=130,),);
+
+R0_T=CALC_FONC_INTERP(FONCTION=S_F,
+                      NOM_PARA='TEMP',
+                      LIST_PARA=TEMPE1,);
+
+RI_T=CALC_FONC_INTERP(FONCTION=RI_F,
+                      NOM_PARA='TEMP',
+                      LIST_PARA=TEMPE1,);
+
+B_T=CALC_FONC_INTERP(FONCTION=B_F,
+                     NOM_PARA='TEMP',
+                     LIST_PARA=TEMPE1,);
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                             NU=0.3,
+                             ALPHA=1e-05,),
+                     CIN1_CHAB_FO=_F(R_0=R0_T,
+                                     R_I=RI_T,
+                                     B=B_T,
+                                     C_I=ZERO,
+                                     K=UN,
+                                     W=ZERO,
+                                     G_0=ZERO,
+                                     A_I=UN,),
+                     THER=_F(LAMBDA=1.0,),);
+
+CHMATER2=AFFE_MATERIAU(MAILLAGE=MA,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER2,),
+                       AFFE_VARC=_F(TOUT='OUI',
+                              NOM_VARC='TEMP',
+                              EVOL=RTEMP,VALE_REF=0.,
+                              NOM_CHAM='TEMP',),);
+
+U2=STAT_NON_LINE(MODELE=MOMECA,
+                 CHAM_MATER=CHMATER2,
+                 CARA_ELEM=CARAELEM,
+                 EXCIT=(_F(CHARGE=LIAISON,),
+                        _F(CHARGE=PRESSION,
+                           FONC_MULT=COEF,),),
+                 COMP_INCR=_F(RELATION='VMIS_CIN1_CHAB',
+                                ITER_INTE_MAXI=500,
+                                ITER_INTE_PAS=0,
+                                ),
+                 INCREMENT=_F(LIST_INST=LINST,),
+                 NEWTON=_F(REAC_INCR=1,
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=150,
+                                ARRET='OUI',),);
+
+FU2=RECU_FONCTION(RESULTAT=U2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD='N7',
+                  INTERPOL='LIN',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',);
+
+FN2=RECU_FONCTION(RESULTAT=U2,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='N',
+                  MAILLE='M1',
+                  POINT=1,
+                  INTERPOL='LIN',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',);
+
+EPSP2=CALC_FONCTION(COMB=(_F(FONCTION=FU2,
+                             COEF=1,),
+                          _F(FONCTION=TEMP7,
+                             COEF=-1e-05,),
+                          _F(FONCTION=FN2,
+                             COEF=-5e-06,),),);
+
+TEST_FONCTION(TEST_NOOK='NON',
+              VALEUR=(_F(VALE_CALC=0.00210721102054,
+                         VALE_REFE=2.1072E-3,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=2.E-3,
+                         NOM_PARA='INST',
+                         FONCTION=EPSP2,),
+                      _F(VALE_CALC=0.00481079452619,
+                         VALE_REFE=4.8107999999999996E-3,
+                         VALE_PARA=1.45,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
+                         NOM_PARA='INST',
+                         FONCTION=EPSP2,),
+                      _F(VALE_CALC=0.00481079452619,
+                         VALE_REFE=4.8107999999999996E-3,
+                         VALE_PARA=2.0,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-3,
+                         NOM_PARA='INST',
+                         FONCTION=EPSP2,),
+                      ),
+              )
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  POINT=1,
+                  RESULTAT=U2,
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP='N',
+                  VALE_CALC=209.999999992,
+                  VALE_REFE=210.0,
+                  MAILLE='M1',),
+          )
+
+FIN();
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#

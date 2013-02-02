@@ -1,0 +1,724 @@
+# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
+# TITRE CALCUL TEMPOREL AVEC L'ALGORITHME ITMI DE LA PARTIE
+# sdnl112c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CEINTREE D'UN TUBE DE GV SOUMISE A UNE EXCITATION ALEATOIRE.
+# PRISE EN COMPTE DES FORCES FLUIDELASTIQUES ET POST TRAITEMENT 
+# D'USURE PAR DES CHOCS
+# FICHIER MODELE GEVIBUS
+# RESPONSABLE ADOBES A.ADOBES
+#-------------------------------------------------------------------
+#
+DEBUT( CODE=_F( NOM = 'SDNL112C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+#
+
+TUBE=LIRE_MAILLAGE(FORMAT='MED',   ABSC_CURV=_F(  TOUT = 'OUI'))
+
+TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
+                       CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+#
+MODELE=AFFE_MODELE(  MAILLAGE=TUBE,
+                     AFFE=_F(  TOUT = 'OUI',
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'POU_D_T')
+)
+
+CARA=AFFE_CARA_ELEM(  MODELE=MODELE,
+                      POUTRE=_F(  GROUP_MA = 'TOUT',
+                                SECTION = 'CERCLE',
+                                CARA = ( 'R'         , 'EP',),
+                                VALE = ( 1.111000E-02, 1.270000E-03, ))
+)
+
+RHOI=DEFI_FONCTION(  NOM_PARA='ABSC',
+                     MAILLAGE=TUBE,
+                     VALE_Y    =( 7.385800E+02, 7.311600E+02, ),
+                     NOEUD_PARA=( 'N_01_001'  , 'N_06_007'  , )
+)
+
+RHOE=DEFI_FONCTION(  NOM_PARA='ABSC',
+                     MAILLAGE=TUBE,
+                     VALE_Y=( 
+1.490800E+02, 1.332700E+02, 1.336500E+02, 8.721000E+01, 9.144000E+01, 
+8.399000E+01, 8.707000E+01, 8.626000E+01, 8.882000E+01, ),
+                   NOEUD_PARA=( 
+'N_01_001'  , 'N_02_013'  , 'N_02_014'  , 'N_05_002'  , 'N_05_003'  ,
+'N_05_009'  , 'N_05_014'  , 'N_05_017'  , 'N_06_007'  , )
+)
+
+PROFVIT1=DEFI_FONCTION(  NOM_PARA='ABSC',
+                         MAILLAGE=TUBE,
+                         VALE_Y=(
+0.000000E+00, 0.000000E+00, 5.100000E-01, 9.500000E-01, 9.300000E-01, 
+9.600000E-01, 8.800000E-01, 1.120000E+00, 3.100000E-01, 1.060000E+00, 
+1.560000E+00, 1.120000E+00, 1.260000E+00, 0.000000E+00, 0.000000E+00, ),
+                         NOEUD_PARA=(
+'N_01_001'  , 'N_01_006'  , 'N_02_001'  , 'N_02_006'  , 'N_02_007'  ,
+'N_02_008'  , 'N_02_009'  , 'N_02_016'  , 'N_04_001'  , 'N_04_004'  ,
+'N_05_005'  , 'N_05_012'  , 'N_05_015'  , 'N_06_001'  , 'N_06_007'  , )
+)
+
+TYPEFLUI=DEFI_FLUI_STRU(  INFO=2,
+               FAISCEAU_TRANS=_F(  COUPLAGE = 'OUI',
+                                   CARA_ELEM = CARA,
+                                   PROF_RHO_F_INT = RHOI,
+                                   PROF_RHO_F_EXT = RHOE,
+                                   NOM_CMP = 'DX',
+                                   TYPE_PAS = 'CARRE_LIGN',
+                                   TYPE_RESEAU = 1001, 
+                                   PAS = 1.464450E+00, 
+                                   PROF_VITE_FLUI = PROFVIT1),
+)
+
+FONC_CM=FONC_FLUI_STRU(  TYPE_FLUI_STRU=TYPEFLUI   )
+
+MAT=DEFI_MATERIAU(  ELAS_FLUI=_F( 
+                                E = 2.020000E+11,
+                                RHO = 8.330000E+03,
+                                NU = 3.000000E-01,
+                                PROF_RHO_F_EXT = RHOE,
+                                PROF_RHO_F_INT = RHOI,
+                                COEF_MASS_AJOU = FONC_CM)
+)
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=TUBE,
+                      AFFE=_F(  TOUT = 'OUI', MATER = MAT)
+)
+
+CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,
+                       DDL_IMPO=( _F(  NOEUD = 'N_01_001', 
+                                       DX  = 0.0, DY  = 0.0, DZ  = 0.0, 
+                                       DRX = 0.0, DRY = 0.0, DRZ = 0.0 ),
+                                  _F(  NOEUD = 'N_06_007', 
+                                       DX  = 0.0, DY  = 0.0, DZ  = 0.0, 
+                                       DRX = 0.0, DRY = 0.0, DRZ = 0.0 ),)
+)
+
+MELR=CALC_MATR_ELEM(      MODELE=MODELE,
+                          CHARGE=CHDDL,
+                       CARA_ELEM=CARA,
+                      CHAM_MATER=CHMAT,
+                          OPTION='RIGI_FLUI_STRU'
+)
+
+MELM=CALC_MATR_ELEM(      MODELE=MODELE,
+                          CHARGE=CHDDL,
+                       CARA_ELEM=CARA,
+                      CHAM_MATER=CHMAT,
+                          OPTION='MASS_FLUI_STRU'
+)
+
+NUM=NUME_DDL(  MATR_RIGI=MELR , METHODE='MULT_FRONT',RENUM='MDA'  )
+
+MATRR=ASSE_MATRICE(  MATR_ELEM=MELR,  NUME_DDL=NUM   )
+
+MATRM=ASSE_MATRICE(  MATR_ELEM=MELM,  NUME_DDL=NUM   )
+
+MODES=MODE_ITER_SIMULT(   MATR_RIGI=MATRR,
+                          MATR_MASS=MATRM,
+                         METHODE='TRI_DIAG',
+                       CALC_FREQ=_F( 
+                           OPTION = 'BANDE',
+                           DIM_SOUS_ESPACE=20,
+                           FREQ = ( 1.000000, 140.000000,))
+)
+
+
+MODES=NORM_MODE( reuse=MODES,  MODE=MODES,
+                               NORME=('TRAN',)
+)
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=32.781615096734001,
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   VALE_CALC=96.033718315555006,
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=14.970765892467,
+                   ),
+                _F(NUME_ORDRE=2,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=2,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=43.668421398108997,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=2,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=5.4428937307506002,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=2,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   VALE_CALC=82.126874239767005,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=2,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=2,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=3,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=35.569527429894002,
+                   
+                   ),
+                _F(NUME_ORDRE=3,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=3,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=3,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=3,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   VALE_CALC=110.2146588292,
+                   
+                   ),
+                _F(NUME_ORDRE=3,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=149.45223255421001,
+                   
+                   ),
+                _F(NUME_ORDRE=4,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=4,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=20.681628460016999,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=4,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=17.722073737873998,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=4,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   VALE_CALC=132.98806239496,
+                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=4,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=4,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=MODES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=0.0,
+                   TOLE_MACHINE=9.9999999999999995E-08,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
+
+vite_min = 5.11000E+00
+vite_max = 5.11000E+00
+nb_poin = 1
+
+MELFLUI=CALC_FLUI_STRU( 
+             VITE_FLUI=_F(  VITE_MIN = vite_min,
+                         VITE_MAX = vite_max,
+                         NB_POIN = nb_poin),
+                        BASE_MODALE=_F( MODE_MECA = MODES, 
+                                        NUME_ORDRE  = ( 1, 2, 3, 4, ),
+                                        AMOR_REDUIT = ( 4.999900E-03, 4.999900E-03, 
+                                                        4.999900E-03, 4.999900E-03,)),
+                        TYPE_FLUI_STRU=TYPEFLUI,
+                        IMPRESSION=_F(  PARA_COUPLAGE = 'OUI')
+)
+
+MODES=MODI_BASE_MODALE( reuse=MODES,   BASE=MODES,
+                        BASE_ELAS_FLUI=MELFLUI,
+                        NUME_VITE_FLUI=1
+)
+
+NUMG=NUME_DDL_GENE(  STOCKAGE='DIAG', BASE=MODES,  NB_VECT=4   )
+
+MASSPROJ=PROJ_MATR_BASE(           BASE=MODES,
+                          NUME_DDL_GENE=NUMG,
+                              MATR_ASSE=MATRM
+)
+
+RIGIPROJ=PROJ_MATR_BASE(           BASE=MODES,
+                          NUME_DDL_GENE=NUMG,
+                              MATR_ASSE=MATRR
+
+)
+
+TSPC1=DEFI_SPEC_TURB(  
+              SPEC_LONG_COR_4=_F(  LONG_COR = 3.4,
+                                TAUX_VIDE = 8.500000E-01, 
+                                PROF_VITE_FLUI = PROFVIT1)
+)
+
+# DEFINITIONS DE CONSTANTES
+
+F_INIT   = 1.0
+F_FIN    = 3.848320E+02
+
+N_POIN_0 = 1024
+DF       = (F_FIN-F_INIT)/(N_POIN_0-1) 
+
+T_FIN  = 1./DF
+T_ETAB = 1.
+T_PAS  = 1.E-5
+T_INI  = 0.
+
+N_POIN_1 = 1./(2.*DF*T_PAS)
+N_POIN_1 = 2.**(int(log(N_POIN_1)/log(2))+1)
+
+F_MAX_GEN = DF * N_POIN_1 
+
+#
+
+TPSB=PROJ_SPEC_BASE( SPEC_TURB=TSPC1,
+                     TOUT_CMP='NON',
+                     BASE_ELAS_FLUI=MELFLUI,
+                       VITE_FLUI  = vite_min,
+                     FREQ_INIT=F_INIT,
+                     FREQ_FIN=F_FIN,
+                     NB_POIN=N_POIN_0,
+                     TOUT='OUI',
+                     OPTION='TOUT'
+)
+
+VECTINT=GENE_FONC_ALEA(INTE_SPEC=TPSB,
+                       INTERPOL='NON',
+                       NB_POIN=N_POIN_1,
+                       INIT_ALEA = 748513,
+                       INFO=2,
+)
+
+EFPROJ1=RECU_FONCTION(  TABLE=VECTINT,
+                        FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                    VALE_I   = 1           ),
+                  NOM_PARA_TABL='FONCTION',
+                       INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='EXCLU'
+)
+
+EFPROJ2=RECU_FONCTION(  TABLE=VECTINT,
+                        FILTRE=_F( NOM_PARA = 'NUME_ORDRE',
+                                   VALE_I   = 2           ),
+                  NOM_PARA_TABL='FONCTION',
+                       INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='EXCLU'
+)
+
+EFPROJ3=RECU_FONCTION(  TABLE=VECTINT,
+                        FILTRE=_F( NOM_PARA = 'NUME_ORDRE',
+                                   VALE_I   = 3          ),
+                  NOM_PARA_TABL='FONCTION',
+                       INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='EXCLU'
+)
+
+EFPROJ4=RECU_FONCTION(  TABLE=VECTINT,
+                        FILTRE=_F( NOM_PARA = 'NUME_ORDRE',
+                                   VALE_I   = 4          ),
+                  NOM_PARA_TABL='FONCTION',
+                       INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='EXCLU'
+)
+
+# OBST1 ---> DEF_CHOC 
+OBST1=DEFI_OBSTACLE(  TYPE='PLAN_Y'   )
+
+TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                                   SCHEMA_TEMPS=_F(SCHEMA='ITMI',
+                                   BASE_ELAS_FLUI=MELFLUI,
+                                   CHOC_FLUI='OUI',
+                                   NUME_VITE_FLUI=1,
+                                   NB_MODE_FLUI=4,
+                                   PREC_DUREE=1.000000E-01,
+                                   TS_REG_ETAB=T_ETAB,),
+                    MATR_MASS=MASSPROJ,
+                    MATR_RIGI=RIGIPROJ,               
+                  AMOR_MODAL=_F(AMOR_REDUIT=( 
+                                1.000000E-02, 1.000000E-02,
+                                1.000000E-02, 1.000000E-02, ),),
+                EXCIT=( _F(  NUME_ORDRE = 1, 
+                             FONC_MULT = EFPROJ1),
+                        _F(  NUME_ORDRE = 2, 
+                             FONC_MULT = EFPROJ2),
+                        _F(  NUME_ORDRE = 3, 
+                             FONC_MULT = EFPROJ3),
+                        _F(  NUME_ORDRE = 4, 
+                             FONC_MULT = EFPROJ4)),
+          CHOC=_F(  NOEUD_1 = 'N_04_001',
+                 OBSTACLE = OBST1,
+                 ORIG_OBST = ( 0.000000E+00,
+                                3.626403E-07,
+                                6.633470E-01,
+                              ),
+                  NORM_OBST = ( 0.000000E+00,
+                                9.703448E-01,
+                                2.417252E-01,
+                              ),
+                 RIGI_NOR = 5.582200E+06,
+                 AMOR_NOR = 2.655900E+02,
+                 RIGI_TAN = 5.582200E+07,
+                 AMOR_TAN = 1.185410E+04,
+                 JEU = 1.200000E-02,
+                 ANGL_VRIL = 0.000000E+00,
+                 FROTTEMENT='COULOMB',
+                 COULOMB = 4.000000E-01),
+          INCREMENT=_F( 
+                  INST_INIT = T_INI,
+                  INST_FIN = T_FIN,
+                  PAS = T_PAS),
+          ARCHIVAGE=_F(  PAS_ARCH = 10),
+)
+#
+#
+# TESTS DES RESULTATS
+# -------------------
+#
+#INST_F = 0.920
+INST_F = T_FIN,
+
+TABLE=POST_DYNA_MODA_T(  RESU_GENE=TRANGENE,
+                         INFO = 2,
+                              CHOC=_F(  INST_INIT = 0.0,
+                                        INST_FIN = INST_F,
+                                        NB_BLOC = 1,
+                                        SEUIL_FORCE = 1.000000E-04,
+                                        DUREE_REPOS = 1.000000E-03)
+                          )
+
+#
+
+IMPR_TABLE(  TABLE=TABLE,
+             NOM_PARA=('NOEUD','CALCUL','MOYEN','ECART_TYPE','RMS','MAXI','MINI')
+ )
+IMPR_TABLE(  TABLE=TABLE,
+             NOM_PARA=('NOEUD','MOYEN_T_TOTAL','MOYEN_T_CHOC','RMS_T_TOTAL',
+                       'RMS_T_CHOC','NB_CHOC_S','NB_REBON_CHOC',) 
+ )
+IMPR_TABLE(  TABLE=TABLE,
+             NOM_PARA=('NOEUD','T_CHOC_MOYEN','T_CHOC_MAXI','T_CHOC_MINI',
+                       'T_REBON_MOYEN','%_T_CHOC','PUIS_USURE',)  
+ )
+#
+
+# LES VALEURS DE NON-REGRESSION SONT PAR RAPPORT A LA 11.2.20
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=1.E-2,
+           TOLE_MACHINE=1.E-2,
+           VALE_CALC= 5.0242840707E-03,
+           VALE_REFE= 5.0242840707E-03,
+           NOM_PARA='RMS',
+           TABLE=TABLE,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='DEPL_Y',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N_04_001',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=1.E-2,
+           TOLE_MACHINE=1.E-2,
+           VALE_CALC= 5.0242840707E-03,
+           VALE_REFE= 5.0242840707E-03,
+           NOM_PARA='RMS',
+           TABLE=TABLE,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='DEPL_RADIAL',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N_04_001',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=1.E-2,
+           TOLE_MACHINE=1.E-2,
+           VALE_CALC=129.2944916986,
+           VALE_REFE=129.2944916986,
+           NOM_PARA='RMS',
+           TABLE=TABLE,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='DEPL_ANGULAIRE',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N_04_001',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=1.E-2,
+           TOLE_MACHINE=1.E-2,
+           VALE_CALC= 5.0242840707E-03,
+           VALE_REFE= 5.0242840707E-03,
+           NOM_PARA='RMS',
+           TABLE=TABLE,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='DEPL_Y',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N_04_001',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=1.E-2,
+           TOLE_MACHINE=1.E-2,
+           VALE_CALC= 5.0242840707E-03,
+           VALE_REFE= 5.0242840707E-03,
+           NOM_PARA='RMS',
+           TABLE=TABLE,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='DEPL_RADIAL',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N_04_001',),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='NON_DEFINI',
+           PRECISION=1.E-2,
+           TOLE_MACHINE=1.E-2,
+           VALE_CALC=129.2944916986,
+           VALE_REFE=129.2944916986,
+           NOM_PARA='RMS',
+           TABLE=TABLE,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='DEPL_ANGULAIRE',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N_04_001',),
+                   ),
+           )
+
+
+#
+#
+# POST TRAITEMENT D'USURE
+# -----------------------
+#
+DATA=DEFI_LIST_REEL(  VALE=(
+          1.000000E+00, 2.000000E+00, 3.000000E+00, 4.000000E+00, 5.000000E+00,
+          6.000000E+00, 7.000000E+00, 8.000000E+00, 9.000000E+00, 1.000000E+01, )
+)
+
+USURE=POST_USURE(  RESU_GENE=TRANGENE,
+                       NOEUD='N_04_001',
+                   INST_INIT=0.0,
+                    INST_FIN=INST_F,
+                   LOI_USURE='ARCHARD',
+                      MOBILE=_F(  COEF_USURE = 2.000000E+00),
+                    OBSTACLE=_F(  COEF_USURE = 1.000000E+00),
+                   LIST_INST=DATA,
+                     CONTACT='TUBE_BAV',
+                RAYON_MOBILE=9.840000E-03,
+                LARGEUR_OBST=1.400000E-02,
+                  ANGL_INCLI=1.000000E+00
+                    )
+
+#
+
+
+IMPR_TABLE(      TABLE=USURE, )
+
+FIN( )
+
+#  Commentaire C. Durand version 6.2.17 :
+#  les calculs d'usure sont hyper sensibles a des variations tres
+#  minimes sur le calcul modal. De plus, les valeurs numeriques
+#  testees sont dans l'absolu tres faibles (1.E-10).
+#  Fatigues de devoir tournevisser les tolerances a chaque fois
+#  que le calcul modal bouge d'epsilon, on ne teste plus la table
+#  USURE.
+#  La commande POST_USURE reste validee par le test sdnv101a.
+#  Par exemple, en 6.2.17, avec une variation de 0.17 pourcent sur 
+#  les TEST_RESU de TABLE, on bouge de 17 pourcent sur ceux de USURE.
+
+TEST_TABLE(  TABLE=USURE,
+             REFERENCE = 'NON_DEFINI',
+               VERSION = '6.1.18',
+             PRECISION = 2.E-2,
+              NOM_PARA = 'PUIS_USUR_GLOBAL',
+# sur SOLARIS: VALE =  7.94189E-11
+# sur CLASTER: VALE =  8.26558E-11
+                  VALE = 8.103735E-11     )
+
+TEST_TABLE(  TABLE=USURE,
+             FILTRE=_F(  NOM_PARA = 'INST',
+                         VALE     = 1.0   ),
+             REFERENCE = 'NON_DEFINI',
+               VERSION = '6.1.18',
+             PRECISION = 2.E-2,
+              NOM_PARA = 'V_USUR_TUBE',
+# sur SOLARIS: VALE =  1.58838E-10
+# sur CLASTER: VALE =  1.65312E-10
+                  VALE = 1.62075E-10     )
+
+TEST_TABLE(  TABLE=USURE,
+             FILTRE=_F(  NOM_PARA = 'INST',
+                         VALE     = 5.0   ),
+             REFERENCE = 'NON_DEFINI',
+               VERSION = '6.1.18',
+             PRECISION = 2.E-2,
+              NOM_PARA = 'V_USUR_TUBE',
+# sur SOLARIS: VALE =  7.94189E-10
+# sur CLASTER: VALE =  8.26558E-10
+                  VALE = 8.103735E-10     )
+
+TEST_TABLE(  TABLE=USURE,
+             FILTRE=_F(  NOM_PARA = 'INST',
+                         VALE     = 10.0  ),
+             REFERENCE = 'NON_DEFINI',
+               VERSION = '6.1.18',
+             PRECISION = 2.E-2,
+              NOM_PARA = 'V_USUR_TUBE',
+# sur SOLARIS: VALE =  1.58838E-09
+# sur CLASTER: VALE =  1.65312E-09
+                  VALE = 1.62075E-09     )
+
+#
+
+
+
+
+
+

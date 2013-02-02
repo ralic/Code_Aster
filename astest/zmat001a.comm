@@ -1,0 +1,216 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE TEST COUPLAGE ZMAT-ASTER, SIMILAIRE A SSNV101D, APPEL A ZMAT
+# RESPONSABLE PROIX J.M.PROIX
+# zmat001a.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test Z
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
+# ======================================================================
+#       TEST ZMAT  AVEC LE MODELE DE CHABOCHE A UN
+#       CENTRE (RELATION DE COMPORTEMENT 'VISC_CINE_CHAB') POUR LE 2D
+#       ET CELUI A DEUX CENTRES VISC_CIN2_CHAB DECLINE EN TROIS CAS :
+#----------------------------------------------------------------------
+#    CAS TEST VPCS PLAQUE CARREE EN TRACTION CISAILLEMENT PROPORTIONNEL
+#                   ESSAI AVEC CHARGE EN RAMPE A 100 N
+#----------------------------------------------------------------------
+#        UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
+#                    MODELE ELASTOPLASTIQUE DE CHABOCHE
+#----------------------------------------------------------------------
+#
+#               Y       A                          H = 1 MM (EPAISSEUR)
+#               I<----------->                     A = 1 MM (COTE)
+#                                                          2
+#                                                  S = 1 MM (AIRE)
+#                 NO4         +  NO3
+#               O-------------OB
+#           H  /+             I                F(T)
+#             / I             I                 A
+#               I NO6         I           100 N I____
+#               I-------------I  NO5            I   /I
+#               I             I                 I  / I
+#               I             I                 I /  I
+#               I  NO1        I  NO2            I/   I
+#             ++O-------------OB     - X        O---------> T
+#               +             B                       1S
+#
+#
+#----------------------------------------------------------------------
+
+DEBUT(CODE=_F(NOM='ZMAT001A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
+
+#----------------------------------------------------------------------
+# Exemple que l'on pourrait developper pour automatiser la lecture
+# du nombre de variables internes du comportement Zmat
+import re
+from Utilitai.System import ExecCommand
+
+iret, output = ExecCommand('Zpreload fort.33')
+#
+mat=re.search('DEPVAR\n +([0-9]+) *\n', output)
+try:
+   nbvari=int(mat.group(1))
+except (ValueError, AttributeError), msg:
+   print "Zpreload:", output
+   raise aster.FatalError,"<F> <ZMAT/Zpreload> Message : %s" % str(msg)
+
+aster.affiche('MESSAGE',
+              'Zpreload : Nombre de variables internes = %d' % nbvari)
+#----------------------------------------------------------------------
+
+CARRE=LIRE_MAILLAGE();
+
+DPLAN=AFFE_MODELE(MAILLAGE=CARRE,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='D_PLAN',),);
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=145200.0,
+                             NU=0.3,
+                             ALPHA=0.0,),
+                     CIN1_CHAB=_F(R_0=87.0,
+                                  R_I=151.0,
+                                  B=2.3,
+                                  C_I=63767.0,
+                                  G_0=341.0,),);
+
+MAT2=AFFE_MATERIAU(MAILLAGE=CARRE,
+                   AFFE=_F(MAILLE=('MA1','MA2',),
+                           MATER=ACIER2),);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=0.4,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=1.435,
+                                    NOMBRE=12,),),);
+
+TR_CS=AFFE_CHAR_MECA(MODELE=DPLAN,
+                     DDL_IMPO=(_F(NOEUD=('NO3','NO5',),
+                                  DX=0.0,),
+                               _F(NOEUD='NO2',
+                                  DX=0.0,
+                                  DY=0.0,),),
+                     FORCE_NODALE=(_F(NOEUD='NO1',
+                                      FX=-1.5,
+                                      FY=-0.5,),
+                                   _F(NOEUD='NO3',
+                                      FY=0.5,),
+                                   _F(NOEUD='NO4',
+                                      FX=0.5,
+                                      FY=-0.5,),
+                                   _F(NOEUD='NO5',
+                                      FY=1.0,),
+                                   _F(NOEUD='NO6',
+                                      FX=-1.0,
+                                      FY=-1.0,),),);
+
+COEF=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,1.0,50.0,),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+
+SOLNL2=STAT_NON_LINE(MODELE=DPLAN,
+                     CHAM_MATER=MAT2,
+                     EXCIT=_F(CHARGE=TR_CS,
+                              FONC_MULT=COEF,
+                              TYPE_CHARGE='FIXE_CSTE',),
+                     COMP_INCR=_F(RELATION='ZMAT',
+                                  NB_VARI=nbvari,
+                                  UNITE=33,
+                                  ITER_INTE_MAXI=20,
+                                  DEFORMATION='PETIT',
+                                  TOUT='OUI',),
+                     INCREMENT=_F(LIST_INST=LINST,),
+                     NEWTON=_F(REAC_INCR=1,
+                               MATRICE='TANGENTE',
+                               REAC_ITER=1,),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+                     TITRE='TEST TRACTION_CISAILLEMENT CHABOCHE D_PLAN',);
+
+SOLNL2=CALC_CHAMP(reuse=SOLNL2,RESULTAT=SOLNL2,INST=1.435,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
+
+
+SOLNL2=CALC_CHAMP(reuse=SOLNL2,RESULTAT=SOLNL2,INST=1.435,DEFORMATION=('EPSI_ELNO'))
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=13,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=143.500014293,
+                   VALE_REFE=143.5,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=13,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO5',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=143.500010129,
+                   VALE_REFE=143.5,
+                   MAILLE='MA2',),
+                _F(NUME_ORDRE=13,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.015329443,
+                   VALE_REFE=0.015329000000000001,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=13,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO5',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.015329443,
+                   VALE_REFE=0.015329000000000001,
+                   MAILLE='MA2',),
+                _F(NUME_ORDRE=13,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.030067120,
+                   VALE_REFE=0.030065999999999999,
+                   MAILLE='MA1',),
+                _F(NUME_ORDRE=13,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO5',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.030067120,
+                   VALE_REFE=0.030065999999999999,
+                   MAILLE='MA2',),
+                _F(NUME_ORDRE=13,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V5',
+                   VALE_CALC=0.037160505,
+                   VALE_REFE=0.037159999999999999,
+                   MAILLE='MA1',),
+                ),
+          )
+
+FIN();

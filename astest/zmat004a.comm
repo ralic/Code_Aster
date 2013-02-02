@@ -1,0 +1,530 @@
+
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE COMPARAISON ZMAT ET MONOCRISTAL.
+# RESPONSABLE JMBHH01 J.M.PROIX
+# zmat004a.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test Z
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+# # Angles d'Euler
+#
+import numpy as NP
+
+def provec(x,y):
+   z=NP.zeros(3)
+   z[0]=x[1]*y[2]-x[2]*y[1]
+   z[1]=x[2]*y[0]-x[0]*y[2]
+   z[2]=x[0]*y[1]-x[1]*y[0]
+   return z
+
+def norm(x):
+   tmp = NP.sqrt(NP.dot(x,x))
+   return tmp
+
+def ANGLENAUT(Phi1,Phi,Phi2):
+
+
+#   Calcule les angles nautiques correspondant aux angles d'Euler
+
+   import copy
+
+   psi = Phi1*NP.pi/180
+   theta=Phi*NP.pi/180
+   phi  =Phi2*NP.pi/180
+
+   cosphi=NP.cos(phi)
+   cospsi=NP.cos(psi)
+   costheta=NP.cos(theta)
+   sinphi=NP.sin(phi)
+   sinpsi=NP.sin(psi)
+   sintheta=NP.sin(theta)
+
+   P=NP.zeros((3,3))
+   P[0,0]= cosphi *cospsi - sinphi *costheta *sinpsi
+   P[1,0]= cosphi *sinpsi + sinphi *costheta *cospsi
+   P[2,0]= sinphi *sintheta
+   P[0,1]= -sinphi *cospsi - cosphi *costheta *sinpsi
+   P[1,1]= -sinphi *sinpsi + cosphi *costheta *cospsi
+   P[2,1]= cosphi *sintheta
+   P[0,2]= sintheta *sinpsi
+   P[1,2]= -sintheta *cospsi
+   P[2,2]= costheta
+   print 'Matrice P (Euler)= \n ',P
+   print ' '
+
+   # expression des coordonnees globales des 3 vecteurs de base locale
+   x=NP.array([1.,0.,0.])
+   y=NP.array([0.,1.,0.])
+   z=NP.array([0.,0.,1.])
+
+   xg=NP.dot(P,x)
+   yg=NP.dot(P,y)
+   zg=NP.dot(P,z)
+
+   # calcul des angles nautiques
+   x1=copy.copy(xg)
+   # x1 projection de xg sur la plan xy, non norme
+   x1[2]=0.
+   # produit scalaire X xg
+   COSA=x1[0]/norm(x1)
+   #produit vectoriel X xg
+   SINA=x1[1]/norm(x1)
+   ar=NP.arctan2(SINA,COSA)
+   alpha=ar*180/NP.pi
+
+   COSB=norm(x1)
+   SINB=-xg[2]
+   beta=NP.arctan2(SINB,COSB)*180/NP.pi
+
+   P2=NP.zeros((3,3))
+   P2[0,0]=NP.cos(ar)
+   P2[1,0]=NP.sin(ar)
+   P2[1,1]=NP.cos(ar)
+   P2[0,1]=-NP.sin(ar)
+   y1=NP.dot(P2,y)
+   y1n=y1/norm(y1)
+
+   # calcul de gamma
+   COSG=NP.dot(y1n,yg)
+   SING=NP.dot(xg,provec(y1n,yg))
+   gamma=NP.arctan2(SING,COSG)*180/pi
+
+   PGL=NP.zeros((3,3))
+   PGL[0,0] = COSB*COSA
+   PGL[1,0] = SING*SINB*COSA - COSG*SINA
+   PGL[2,0] = SING*SINA + COSG*SINB*COSA
+   PGL[0,1] = COSB*SINA
+   PGL[1,1] = COSG*COSA + SING*SINB*SINA
+   PGL[2,1] = COSG*SINB*SINA - COSA*SING
+   PGL[0,2] = -SINB
+   PGL[1,2] = SING*COSB
+   PGL[2,2] = COSG*COSB
+   pgl=NP.transpose(PGL)
+   print 'Matrice P (Nautiques)= \n ',pgl
+   print ' '
+   xgl=NP.dot(pgl,x)
+   ygl=NP.dot(pgl,y)
+   zgl=NP.dot(pgl,z)
+
+#   print 'xg =',xg
+#   print 'xgl=',xgl
+#   print 'yg =',yg
+#   print 'ygl=',ygl
+#   print 'zg =',zg
+#   print 'zgl=',zgl
+
+
+   return alpha,beta,gamma
+
+
+DEBUT(CODE=_F(NOM='ZMAT004A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+
+CUBE=LIRE_MAILLAGE();
+
+TROISD=AFFE_MODELE(MAILLAGE=CUBE,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+TFIN = 1.6;
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1.2,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=TFIN,
+                                    NOMBRE=4,),),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
+                            NU=0.3,),
+                    MONO_VISC1=_F(N=10.0,
+                                  K=40.0,
+                                  C=1.0,),
+                    MONO_ISOT1=_F(R_0=75.5,
+                                  Q=9.77,
+                                  B=19.34,
+                                  H=0.0,),
+                    MONO_CINE1=_F(D=36.68,),);
+
+COEF=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,1.0,1.0,),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+
+MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=ACIER,),);
+
+TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
+                    DDL_IMPO=(_F(NOEUD='NO4',
+                                 DX=0.0,
+                                 DY=0.0,),
+                              _F(NOEUD='NO8',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(NOEUD='NO2',
+                                 DX=0.0,),
+                              _F(NOEUD='NO6',
+                                 DX=0.0,),),
+                    FORCE_NODALE=(_F(NOEUD=('NO3','NO7',),
+                                     FX=35.0,),
+                                  _F(NOEUD=('NO1','NO5',),
+                                     FX=35.0,),),);
+
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
+                                   ECOULEMENT='MONO_VISC1',
+                                   ECRO_ISOT='MONO_ISOT1',
+                                   ECRO_CINE='MONO_CINE1',
+                                   ELAS='ELAS',
+                                   FAMI_SYST_GLIS='OCTAEDRIQUE',),);
+
+#INCLUDE(UNITE=38,);
+
+# Phi1=30.0
+# Phi =30.0
+# Phi2=30.0
+
+
+Phi1=330.0
+Phi =230.0
+Phi2=130.0
+
+
+
+print 'Psi, Theta, Phi=',Phi1,Phi,Phi2
+
+
+alpha,beta,gamma=ANGLENAUT(Phi1,Phi,Phi2)
+print 'alpha,beta,gamma=',alpha,beta,gamma
+
+
+ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
+                     MASSIF=_F(GROUP_MA='TOUT',
+                     ANGL_REP=(alpha,beta,gamma),
+                   #  ANGL_EULER=(Phi1,Phi,Phi2),
+                     ),);
+
+SOLNL=STAT_NON_LINE(MODELE=TROISD,
+                    CHAM_MATER=MAT,
+                    CARA_ELEM=ORIEN,
+                    EXCIT=_F(CHARGE=TRAC,
+                             FONC_MULT=COEF,
+                             TYPE_CHARGE='FIXE_CSTE',),
+                    COMP_INCR=_F(RELATION='MONOCRISTAL',
+                                 COMPOR=COMPORT,
+                                 RESI_INTE_RELA=1e-09,
+                                 ITER_INTE_MAXI=100,
+                                 ALGO_INTE='NEWTON',
+                                 DEFORMATION='PETIT',
+                                 TOUT='OUI',),
+                    INCREMENT=_F(LIST_INST=LINST),
+                    NEWTON=_F(REAC_ITER=1),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=100),);
+
+SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
+
+TEST_RESU(RESU=(_F(INST=1.6000000000000001,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-223.999974675,
+                   VALE_REFE=-224.0,
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   POINT=1,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-1.57675E-3,
+                   TOLE_MACHINE=1.E-4,
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   POINT=1,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=4.9551E-4,
+                   TOLE_MACHINE=1.E-4,
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   POINT=1,
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=3.2700000000000002E-05,
+                   TOLE_MACHINE=1.E-4,
+                   MAILLE='MA1',),
+                ),
+          )
+
+ORIENE=AFFE_CARA_ELEM(MODELE=TROISD,
+                     MASSIF=_F(GROUP_MA='TOUT',
+                   #  ANGL_REP=(alpha,beta,gamma),
+                     ANGL_EULER=(Phi1,Phi,Phi2),
+                     ),);
+
+SOLNLE=STAT_NON_LINE(MODELE=TROISD,
+                    CHAM_MATER=MAT,
+                    CARA_ELEM=ORIENE,
+                    EXCIT=_F(CHARGE=TRAC,
+                             FONC_MULT=COEF,
+                             TYPE_CHARGE='FIXE_CSTE',),
+                    COMP_INCR=_F(RELATION='MONOCRISTAL',
+                                 COMPOR=COMPORT,
+                               #  RESI_INTE_RELA=1e-07,
+                                 ITER_INTE_MAXI=100,
+                                 ALGO_INTE='NEWTON',
+                                 DEFORMATION='PETIT',
+                                 TOUT='OUI',),
+                    INCREMENT=_F(LIST_INST=LINST),
+                    NEWTON=_F(REAC_ITER=1,
+                   # PREDICTION='ELASTIQUE',
+                    ),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                   ITER_GLOB_MAXI=100),);
+
+SOLNLE=CALC_CHAMP(reuse=SOLNLE,RESULTAT=SOLNLE,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
+
+TEST_RESU(RESU=(_F(INST=1.6000000000000001,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=SOLNLE,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-223.999974676,
+                   VALE_REFE=-224.0,
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=SOLNLE,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-1.57675056E-03,
+                   VALE_REFE=-1.57675E-3,
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-07),
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=SOLNLE,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC= 4.95510085E-04,
+                   VALE_REFE=4.9551E-4,
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-07),
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=SOLNLE,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC= 3.27003855E-05,
+                   VALE_REFE=3.2700000000000002E-05,
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-07),
+                   MAILLE='MA1',),
+                ),
+          )
+
+SOLNLZ=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MAT,
+                     CARA_ELEM=ORIEN,
+                     EXCIT=_F(CHARGE=TRAC,
+                              FONC_MULT=COEF,
+                              TYPE_CHARGE='FIXE_CSTE',),
+                     COMP_INCR=_F(RELATION='ZMAT',
+                                  DEFORMATION='PETIT',
+                                  UNITE=33,
+                                  NB_VARI=49,
+                                  TOUT='OUI',),
+                     INCREMENT=_F(LIST_INST=LINST),
+                    NEWTON=_F(REAC_ITER=1,
+                   # PREDICTION='ELASTIQUE',
+                    ),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                    ITER_GLOB_MAXI=10,),);
+
+SOLNLZ=CALC_CHAMP(reuse=SOLNLZ,RESULTAT=SOLNLZ,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
+
+TEST_RESU(RESU=(_F(INST=1.6000000000000001,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=SOLNLZ,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-223.999989921,
+                   VALE_REFE=-224.0,
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=SOLNLZ,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-1.57675100E-03,
+                   VALE_REFE=-1.57675E-3,
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-07),
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=SOLNLZ,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC= 4.95510506E-04,
+                   VALE_REFE=4.9551E-4,
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-07),
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=SOLNLZ,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC= 3.27006756E-05,
+                   VALE_REFE=3.2700000000000002E-05,
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-07),
+                   MAILLE='MA1',),
+                ),
+          )
+
+SOLNLZE=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MAT,
+                     CARA_ELEM=ORIENE,
+                     EXCIT=_F(CHARGE=TRAC,
+                              FONC_MULT=COEF,
+                              TYPE_CHARGE='FIXE_CSTE',),
+                     COMP_INCR=_F(RELATION='ZMAT',
+                                  DEFORMATION='PETIT',
+                                  UNITE=33,
+                                  NB_VARI=49,
+                                  TOUT='OUI',),
+                     INCREMENT=_F(LIST_INST=LINST),
+                    NEWTON=_F(REAC_ITER=1,
+                   # PREDICTION='ELASTIQUE',
+                    ),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                    ITER_GLOB_MAXI=10,),);
+
+SOLNLZE=CALC_CHAMP(reuse=SOLNLZE,RESULTAT=SOLNLZE,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
+
+TEST_RESU(RESU=(_F(INST=1.6000000000000001,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=SOLNLZE,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-223.999989921,
+                   VALE_REFE=-224.0,
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=SOLNLZE,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-1.57675100E-03,
+                   VALE_REFE=-1.57675E-3,
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-07),
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=SOLNLZE,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC= 4.95510506E-04,
+                   VALE_REFE=4.9551E-4,
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-07),
+                   MAILLE='MA1',),
+                _F(INST=1.6000000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   RESULTAT=SOLNLZE,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPYY',
+                   VALE_CALC= 3.27006756E-05,
+                   VALE_REFE=3.2700000000000002E-05,
+                   PRECISION=1.E-4, TOLE_MACHINE=(1.E-4, 9.9999999999999995E-07),
+                   MAILLE='MA1',),
+                ),
+          )
+
+EPSPXXZ=RECU_FONCTION(RESULTAT=SOLNLZ,
+                      NOM_CHAM='EPSP_ELGA',
+
+                      NOM_CMP='EPXX',
+                      MAILLE='MA1',
+                      POINT=1,);
+
+EPSPXX=RECU_FONCTION(RESULTAT=SOLNL,
+                      NOM_CHAM='EPSP_ELGA',
+
+                      NOM_CMP='EPXX',
+                      MAILLE='MA1',
+                      POINT=1,);
+
+EPSPXXZE=RECU_FONCTION(RESULTAT=SOLNLZE,
+                      NOM_CHAM='EPSP_ELGA',
+
+                      NOM_CMP='EPXX',
+                      MAILLE='MA1',
+                      POINT=1,);
+
+EPSPXXE=RECU_FONCTION(RESULTAT=SOLNLE,
+                      NOM_CHAM='EPSP_ELGA',
+
+                      NOM_CMP='EPXX',
+                      MAILLE='MA1',
+                      POINT=1,);
+
+
+IMPR_FONCTION(
+              FORMAT='XMGRACE',
+           #   PILOTE='INTERACTIF',
+              COURBE=(
+                      _F(FONCTION=EPSPXXZ,
+                         LEGENDE='MONOCRISTAL ZMAT IMPLICITE',
+                         COULEUR=1,
+                         MARQUEUR=1,
+                         FREQ_MARQUEUR=1,),
+                      _F(FONCTION=EPSPXX,
+                         LEGENDE='MONOCRISTAL IMPLICITE',
+                         COULEUR=1,
+                         MARQUEUR=1,
+                         FREQ_MARQUEUR=1,),
+                      _F(FONCTION=EPSPXXZE,
+                         LEGENDE='MONOCRISTAL ZMAT IMPLICITE EULER',
+                         COULEUR=1,
+                         MARQUEUR=1,
+                         FREQ_MARQUEUR=1,),
+                      _F(FONCTION=EPSPXXE,
+                         LEGENDE='MONOCRISTAL IMPLICITE EULER',
+                         COULEUR=1,
+                         MARQUEUR=1,
+                         FREQ_MARQUEUR=1,),
+                         ),);
+
+FIN();

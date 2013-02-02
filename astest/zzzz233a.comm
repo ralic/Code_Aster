@@ -1,0 +1,109 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE Validation du motcle FRAGILITE de la commande POST_DYNA_ALEA
+# zzzz233a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# =====================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ233A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# creation de la table en entree
+
+import random
+#indicateur (PGA)
+ai =[ 0.5, 0.45, 0.3, 0.3, 0.15,  0.25, 0.9, 0.4]
+#observations (defaillance ou non)
+xi= [1,    0,    0,   1,   0,   0,   1, 1]
+
+TAB1=CREA_TABLE(LISTE=(_F(PARA='PARA_NOCI',LISTE_R = ai,),
+                       _F(PARA='DEFA',LISTE_I =xi ,),),);
+
+# liste indicateurs pour tracer les courbes
+LISTEA=DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F(JUSQU_A = 1.0, PAS=0.1) )
+# initialiser le generateur de variables aleatoires
+random.seed(1234567890)
+
+TAB_POST=POST_DYNA_ALEA( FRAGILITE=(_F(TABL_RESU=TAB1,
+                                   LIST_PARA=LISTEA,
+                                   AM_INI  =0.3 ,
+                                   BETA_INI=0.1 ,
+                                   FRACTILE = (0.0,0.05,0.5,0.95,1.0),
+                                   NB_TIRAGE =8,
+                                 ),),
+                         TITRE = 'courbe 1',
+                         INFO=2, );
+
+
+# tests
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=0.357545130,
+           VALE_REFE=0.35754512999999999,
+           NOM_PARA='AM',
+           TABLE=TAB_POST,)
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=0.404039514,
+           VALE_REFE=0.40403950999999999,
+           NOM_PARA='BETA',
+           TABLE=TAB_POST,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='0.0',
+           TABLE=TAB_POST,
+           FILTRE=_F(NOM_PARA='PARA_NOCI',
+                     VALE=0.20000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='NON_DEFINI',
+           PRECISION=1.E-2,
+           VALE_CALC= 3.31235876E-04,
+           VALE_REFE=3.3246600000000001E-4,
+           NOM_PARA='0.5',
+           TABLE=TAB_POST,
+           FILTRE=_F(CRITERE='RELATIF',
+                     NOM_PARA='PARA_NOCI',
+                     VALE=0.20000000000000001,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.090822100000000003,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='1.0',
+           TABLE=TAB_POST,
+           FILTRE=_F(CRITERE='RELATIF',
+                     NOM_PARA='PARA_NOCI',
+                     VALE=0.20000000000000001,),
+           )
+
+IMPR_TABLE(TABLE = TAB_POST);
+
+#POST_DYNA_ALEA concept : TAB_POST
+# COURBE       AM           BETA         PARA_NOCI    PFA          0.0          0.05         0.5          0.95         1.0
+#  courbe 1  3.57545E-01  4.04040E-01  1.00000E-01  8.07015E-04  0.00000E+00  0.00000E+00  7.94549E-11  1.16722E-03  1.25367E-03
+#  -        -            -             2.00000E-01  7.52398E-02  0.00000E+00  0.00000E+00  3.32466E-04  8.74750E-02  9.08221E-02
+#  -        -            -             3.00000E-01  3.32031E-01  0.00000E+00  0.00000E+00  2.95780E-01  4.52238E-01  5.00000E-01
+#  -        -            -             4.00000E-01  6.09380E-01  0.00000E+00  1.57111E-01  6.26608E-01  1.00000E-00  1.00000E+00
+#  -        -            -             5.00000E-01  7.96726E-01  7.64646E-01  7.76817E-01  9.07179E-01  1.00000E+00  1.00000E+00
+#  -        -            -             6.00000E-01  8.99944E-01  8.86929E-01  8.91685E-01  9.76458E-01  1.00000E+00  1.00000E+00
+#  -        -            -             7.00000E-01  9.51819E-01  9.47793E-01  9.49130E-01  9.95419E-01  1.00000E+00  1.00000E+00
+#  -        -            -             8.00000E-01  9.76883E-01  9.76260E-01  9.76349E-01  9.99212E-01  1.00000E+00  1.00000E+00
+#  -        -            -             9.00000E-01  9.88837E-01  9.88518E-01  9.88763E-01  9.99873E-01  1.00000E+00  1.00000E+00
+#  -        -            -             1.00000E+00  9.94544E-01  9.94316E-01  9.94579E-01  9.99980E-01  1.00000E+00  1.00000E+00
+FIN();

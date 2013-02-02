@@ -1,0 +1,181 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE TEST COUPLAGE ZMAT-ASTER, SIMILAIRE A SSNV101C (3D), APPEL A ZMAT
+# RESPONSABLE PROIX J.M.PROIX
+# zmat001b.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test Z
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ======================================================================
+# ESSAI DE TRACTION-CISAILLEMENT EN 3D (CHABOCHE)
+# ======================================================================
+#       TEST ZMAT  AVEC LE MODELE DE CHABOCHE A UN CENTRE
+#     (RELATION DE COMPORTEMENT 'VISC_CINE_CHAB') POUR LE 3D
+#----------------------------------------------------------------------
+
+DEBUT(CODE=_F(NOM='ZMAT001B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+
+#----------------------------------------------------------------------
+# Exemple que l'on pourrait developper pour automatiser la lecture
+# du nombre de variables internes du comportement Zmat
+import re
+from Utilitai.System import ExecCommand
+
+iret, output = ExecCommand('Zpreload fort.33')
+#
+mat=re.search('DEPVAR\n +([0-9]+) *\n', output)
+try:
+   nbvari=int(mat.group(1))
+except (ValueError, AttributeError), msg:
+   from Utilitai.Utmess import UTMESS
+   UTMESS('F', 'GENERIC_1', valk=str(msg))
+
+aster.affiche('MESSAGE',
+              'Zpreload : Nombre de variables internes = %d' % nbvari)
+#----------------------------------------------------------------------
+
+CUBE=LIRE_MAILLAGE(    )
+
+TROISD=AFFE_MODELE(MAILLAGE=CUBE,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='3D',),);
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=145200.0,
+                             NU=0.3,
+                             ALPHA=0.0,),
+                     CIN1_CHAB=_F(R_0=87.0,
+                                  R_I=151.0,
+                                  B=2.3,
+                                  C_I=63767.0,
+                                  G_0=341.0,),);
+
+MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=ACIER2),);
+
+TRACTION=AFFE_CHAR_MECA(        MODELE=TROISD,
+                               FORCE_FACE=_F(  MAILLE = 'GAUCHE',
+                                            FX = -1.)
+                           )
+
+CISAIL=AFFE_CHAR_MECA(        MODELE=TROISD,FORCE_FACE=(
+
+                                  _F(  MAILLE = 'GAUCHE',  FY = -1.),
+                                  _F(  MAILLE = 'DROITE',  FY = 1.),
+                                  _F(  MAILLE = 'HAUT',    FX = 1.),
+                                  _F(  MAILLE = 'BAS',     FX = -1.))
+                           )
+
+LIAISON=AFFE_CHAR_MECA(      MODELE=TROISD,DDL_IMPO=(
+
+                               _F(  NOEUD = 'NO4',   DX = 0.,  DY = 0.),
+                               _F(  NOEUD = 'NO8',   DX = 0.,  DY = 0.,  DZ = 0.),
+                               _F(  NOEUD = 'NO2',   DX = 0.),
+                               _F(  NOEUD = 'NO6',   DX = 0.))
+                           )
+
+SIGMA_F=DEFI_FONCTION(      NOM_PARA='INST',
+                              PROL_DROITE='LINEAIRE',
+                             PROL_GAUCHE='LINEAIRE',
+                                    VALE=( 0.0,    0.0,
+                                           1.0,  100.0,
+                                         )
+                          )
+
+TAU_F=DEFI_FONCTION(      NOM_PARA='INST',
+                              PROL_DROITE='LINEAIRE',
+                             PROL_GAUCHE='LINEAIRE',
+                                    VALE=( 0.0,    0.0,
+                                           1.0,  100.0,
+                                         )
+                          )
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=0.4,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=1.435,
+                                    NOMBRE=12,),),);
+
+SOLNL1=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MAT2,
+                               EXCIT=(
+                                 _F(  CHARGE = LIAISON),
+                                 _F(  CHARGE = TRACTION,
+                                     FONC_MULT = SIGMA_F),
+                                 _F(  CHARGE = CISAIL,
+                                       FONC_MULT = TAU_F)),
+                     COMP_INCR=_F(RELATION='ZMAT',
+                                  NB_VARI=nbvari,
+                                  ITER_INTE_MAXI=20,
+                                  UNITE=33,
+                                  DEFORMATION='PETIT',
+                                  TOUT='OUI',),
+                     INCREMENT=_F(LIST_INST=LINST,),
+                     NEWTON=_F(REAC_INCR=1,
+                               MATRICE='TANGENTE',
+                               REAC_ITER=1,),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                     TITRE='TEST TRACTION_CISAILLEMENT CHABOCHE',);
+
+SOLNL1=CALC_CHAMP(reuse=SOLNL1,RESULTAT=SOLNL1,INST=1.435,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
+
+
+SOLNL1=CALC_CHAMP(reuse=SOLNL1,RESULTAT=SOLNL1,INST=1.435,DEFORMATION=('EPSI_ELNO'))
+
+
+IMPR_RESU(RESU=_F( RESULTAT=SOLNL1, INST=1.435,))
+
+TEST_RESU(RESU=(_F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=143.499996041,
+                   VALE_REFE=143.5,
+                   MAILLE='CUBE',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.051253532,
+                   VALE_REFE=0.051249999999999997,
+                   MAILLE='CUBE',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.076682640,
+                   VALE_REFE=0.076676999999999995,
+                   MAILLE='CUBE',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL1,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V7',
+                   VALE_CALC=0.100530481,
+                   VALE_REFE=0.100523,
+                   MAILLE='CUBE',),
+                ),
+          )
+
+FIN();

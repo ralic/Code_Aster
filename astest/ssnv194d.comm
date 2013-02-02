@@ -1,0 +1,208 @@
+# MODIF  DATE 29/10/2012   AUTEUR DELMAS J.DELMAS 
+# TITRE VALIDATION POLYCRISTAL LOI DD_CC THERMIQUE + A-THERMIQUE
+# ssnv194d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+DEBUT(CODE=_F(NOM='SSNV194D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('MECANONLINE5_21',),);
+
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+# IGNORE_ALARM='MECANONLINE5_21' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-3 suffit pour une bonne precision
+# comparaison : resi_inte_rela  CPU total (calibre7)   RESU
+#                1.E-4           98s                   OK
+#                1.E-3           51s                   OK
+
+from numpy.linalg import norm
+from numpy import *
+
+TEMP=50
+
+format_courbe='TABLEAU'
+
+#coef=1.e3 # Pa, m 
+coef=1.   # MPa, mm
+
+E=(236-0.0459*TEMP)*1000.*coef*coef  # Pa
+Nu=0.35
+MU=E/2./(1.+Nu)
+
+tau_f  = 0.                # Pa
+tau_0  = 363.0*coef*coef   # Pa
+y_at   = 2.e-6/coef        # m
+N      = 50.
+gamma0 = 1.E-6             # s**-1
+GH     = 1.e11             # s**-1
+b      = 2.48e-7/coef      # m
+DeltaG0= 0.84              # eV
+epsi_1 = 3.e-4             # s**-1
+D      = 10.e-6/coef       # m
+beta   = 0.2
+d_lat  = 0.25/coef
+K_self = 100.
+k      = 8.62E-5  # "Constante de Boltzmann, en eV/K"
+K_self_sur_K_f=3.
+denom= min( K_self_sur_K_f, 1.+ (K_self_sur_K_f -1.)*TEMP/300.)
+K_f= K_self/denom
+l_c = 500.*b*(TEMP/300.)**2
+a_coli=0.7
+a_ncol=0.1
+a_self=0.1
+rho_ini= 6.E5*coef*coef    # en m**-2
+
+ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=Nu,
+                            ALPHA=0.),
+                      MONO_DD_CC=_F(
+                                    B       =b,
+                                    GH       =GH,
+                                    DELTAG0 =DeltaG0,
+                                    TAU_0   =tau_0,
+                                    TAU_F   =tau_f,
+                                    GAMMA0  =gamma0,
+                                    N       =N,
+                                    RHO_MOB =rho_ini,
+                                    D       =D,
+                                    BETA    =beta,
+                                    D_LAT   =d_lat,
+                                    Y_AT    =y_at,
+                                    K_F     =K_f,
+                                    K_SELF  =K_self,
+                                    K_BOLTZ =k,
+                                    H1      =a_self,
+                                    H2      =a_coli,
+                                    H3      =a_ncol,
+                                    H4      =a_ncol,
+                                    H5      =a_ncol,
+                                    H6      =a_ncol,
+                                    DEPDT=epsi_1,
+                                     ),
+                    );
+
+# DD_CC
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
+                                    ECOULEMENT='MONO_DD_CC',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='CUBIQUE1',
+                                    ),);
+
+INCLUDE(UNITE=91)
+ 
+##chargement
+EpsMax=0.1
+viteps=3.e-4
+tmax=EpsMax/viteps
+
+EPSZZ=DEFI_FONCTION(
+                      NOM_PARA='INST',  NOM_RESU='EPSI',
+                       VALE=(  0. , 0., tmax , EpsMax),
+                       PROL_DROITE='LINEAIRE',
+                        )
+
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=tmax,
+                                    NOMBRE=500,),
+                                    ),);
+
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),)
+
+nbgr=100
+nb_syst=12
+nvarit=7+nbgr*(6+3*nb_syst+6)+1
+
+nvarpargr=3*nb_syst 
+
+                    
+# densites de dislocation initiales : variables internes de 0 a 44
+avari = zeros(nvarit)
+for igr in range(nbgr):
+   for isy in range(12):
+       avari[7+6*nbgr+igr*nvarpargr+isy*3]=rho_ini
+
+lvari=list(avari)
+
+
+TIMP=DEFI_CONSTANTE(VALE=TEMP)
+                    
+SOLNL=SIMU_POINT_MAT(INFO=2,
+                   COMP_INCR=_F(
+                                RELATION='POLYCRISTAL',
+                                COMPOR=COMPORP,
+                                ALGO_INTE='RUNGE_KUTTA',
+                                RESI_INTE_RELA=1.E-4,
+                                ),
+                   NEWTON=_F(
+                             MATRICE='ELASTIQUE',
+                             PREDICTION='EXTRAPOLE',
+                             REAC_ITER=0
+                             ),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                                  RESI_GLOB_RELA=1.E-3
+                                     ),
+                   MATER      = ACIERDD,
+
+                   NB_VARI_TABLE=6,
+                   
+                   VARI_INIT=_F(VALE=lvari,
+                                  ),
+
+                   INCREMENT=_F(LIST_INST=DEFLIST1),
+                   ARCHIVAGE=_F(LIST_INST=LINST),
+                   EPSI_IMPOSE=_F(EPZZ=EPSZZ),
+                      AFFE_VARC=_F(  NOM_VARC='TEMP',
+                                     VALE_FONC=TIMP,
+                                     VALE_REF=TEMP),
+                        );
+
+
+F_SI=RECU_FONCTION(TABLE=SOLNL,
+                           PARA_X='INST',
+                           PARA_Y='SIZZ',);
+
+F_EP=RECU_FONCTION(TABLE=SOLNL,
+                           PARA_X='INST',
+                           PARA_Y='EPZZ',);
+
+
+IMPR_FONCTION(
+FORMAT ='XMGRACE',
+UNITE=38,
+COURBE=(
+_F(FONC_X=F_EP, FONC_Y=F_SI),
+))
+
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.10009999999999999,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=333.33333333333337,
+                        NOM_PARA='INST',
+                        FONCTION=F_EP,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=815.78599999999994,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=333.33333333333337,
+                        NOM_PARA='INST',
+                        FONCTION=F_SI,
+                        ),
+              )
+
+FIN()

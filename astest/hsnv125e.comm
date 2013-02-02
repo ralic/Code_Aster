@@ -1,0 +1,546 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE TEST PHI2AS NUMERO 2
+# hsnv125e.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#       VOLUME EN TRACTION/TEMPERATURE VARIABLES ET CISAILLEMENT
+#       MODELISATION E : VISC_CIN2_MEMO
+
+DEBUT(CODE=_F(NOM='HSNV125E',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+TITRE = 'PHI2AS TEST 2 VISC_CIN2_MEMO ';
+
+
+#################################
+## CARACTERISTIQUES MECANIQUES ##
+#################################
+
+
+
+Y_F = FORMULE(NOM_PARA='TEMP',VALE='2.E5 - (1.E5*((TEMP - 100.)/960.)**2)')
+
+AL_F = FORMULE(NOM_PARA='TEMP',VALE='1.E-5 + (1.E-5  * ((TEMP - 100.)/960.) ** 4)')
+
+C_F = FORMULE(NOM_PARA='TEMP',VALE='(2.E6 - (192500. * (TEMP - 100.) / 96.))')
+
+D_F = FORMULE(NOM_PARA='TEMP',VALE='(5000. - ( 450. * (TEMP - 100.)/96.) )')
+
+TEMPE1=DEFI_LIST_REEL(  DEBUT=20.,
+                          INTERVALLE=_F(  JUSQU_A = 1060.,    NOMBRE = 1040,  )
+                         )
+
+YOUN=CALC_FONC_INTERP(    FONCTION=Y_F,
+                             LIST_PARA=TEMPE1,
+                             NOM_PARA = 'TEMP', )
+
+C_T=CALC_FONC_INTERP(    FONCTION=C_F,
+                             LIST_PARA=TEMPE1,
+                             NOM_PARA = 'TEMP', )
+
+D_T=CALC_FONC_INTERP(    FONCTION=D_F,
+                             LIST_PARA=TEMPE1,
+                            NOM_PARA = 'TEMP', )
+
+ALPH=CALC_FONC_INTERP(    FONCTION=AL_F,
+                             LIST_PARA=TEMPE1,
+                            NOM_PARA = 'TEMP', )
+
+POISS=DEFI_CONSTANTE( VALE=0.3)
+
+SIGY=DEFI_CONSTANTE( VALE=100.0)
+
+UN=DEFI_CONSTANTE( VALE=1.0)
+
+ZERO=DEFI_CONSTANTE( VALE=0.0)
+
+Q=DEFI_CONSTANTE(VALE=0.,);
+
+ETA=DEFI_FONCTION(NOM_PARA='TEMP', VALE=(0.,0.5,2000.,0.5))
+
+C2_F = FORMULE(NOM_PARA='TEMP',VALE='C_F(TEMP)/2.')
+
+C2_T=CALC_FONC_INTERP(    FONCTION=C2_F,
+                             LIST_PARA=TEMPE1,
+                            NOM_PARA = 'TEMP',)
+
+MAT=DEFI_MATERIAU(
+                             ELAS_FO=_F(
+                                   E = YOUN,
+                                   NU = POISS,
+                                   ALPHA = ALPH,
+                                   TEMP_DEF_ALPHA=20.0,
+                                  ),
+                   CIN2_CHAB_FO=_F(
+                                 R_0 = SIGY,
+                                 R_I = SIGY,
+                                 B = ZERO,
+                                 C1_I = C2_T,
+                                 C2_I = C2_T,
+                                 K = UN,
+                                 W = ZERO,
+                                 G1_0 = D_T,
+                                 G2_0 = D_T,
+                                 A_I = UN,
+                                    ),
+                    MEMO_ECRO_FO=_F(
+                                   MU = ZERO,
+                                   Q_M = Q,
+                                   Q_0 = Q,
+                                   ETA = ETA,
+                                 ),
+                           )
+
+########################
+## DIVERSES FONCTIONS ##
+########################
+
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(
+                           MAILLAGE=MA,
+                            AFFE=_F(  TOUT = 'OUI',
+                                   MODELISATION = '3D',
+                                   PHENOMENE = 'MECANIQUE',    )
+                                )
+
+
+#### CYCLES
+
+
+
+L_INST=DEFI_LIST_REEL(
+                             DEBUT=-1.,INTERVALLE=(
+                             _F( JUSQU_A = 0.,     NOMBRE = 1, ),
+                                          _F( JUSQU_A = 1.,     NOMBRE = 10, ),
+                                          _F( JUSQU_A = 61.,    NOMBRE = 60, ),
+                                          _F( JUSQU_A = 121.,   NOMBRE = 60, ),
+                                          _F( JUSQU_A = 181.,   NOMBRE = 60, ),
+                                          _F( JUSQU_A = 241.,   NOMBRE = 60, ),
+                                          _F( JUSQU_A = 301.,   NOMBRE = 60, ),
+                                          _F( JUSQU_A = 361.,   NOMBRE = 60, ),
+                                          _F( JUSQU_A = 421.,   NOMBRE = 60, ),
+                                          _F( JUSQU_A = 481.,   NOMBRE = 60, ))
+                           )
+
+P_PLUS=DEFI_FONCTION(
+                         NOM_PARA='INST',
+                         VALE=(  -1., 0.,
+                                0.,  0.,
+                                 1.,  100.,
+                                61.,  100.,
+                               121.,  100.,
+                               181.,  100.,
+                               241.,  100.,
+                               301.,  100.,
+                               361.,  100.,
+                               421.,  100.,
+                               481.,  100.,
+                               )
+                        )
+
+P_MOINS=DEFI_FONCTION(
+                         NOM_PARA='INST',
+                         VALE=(  -1.,  0.,
+                                  0.,  0.,
+                                 1.,  -100.,
+                                61.,  -100.,
+                               121.,  -100.,
+                               181.,  -100.,
+                               241.,  -100.,
+                               301.,  -100.,
+                               361.,  -100.,
+                               421.,  -100.,
+                               481.,  -100.,
+                               )
+                        )
+
+#DYVAR= -0.02 ;
+DY1=-2.08000E-02
+
+DY2=-8.0E-04
+
+DEP_Y=DEFI_FONCTION(
+                         NOM_PARA='INST',
+                         VALE=(  -1., 0.,
+                                  0., DY1,
+                                 1.,  DY1,
+                                61.,  DY2,
+                               121.,  DY1,
+                               181., DY2,
+                               241., DY1,
+                               301., DY2,
+                               361., DY1,
+                               421., DY2,
+                               481., DY1,
+                               )
+                        )
+
+TEMP_CY=DEFI_FONCTION(
+                         NOM_PARA='INST',
+                          NOM_RESU='TEMP',
+                         VALE=( -1.,  20.,
+                                 0.,  1060.,
+                                 1.,  1060.,
+                                61.,   100.,
+                               121.,  1060.,
+                               181.,   100.,
+                               241.,  1060.,
+                               301.,   100.,
+                               361.,  1060.,
+                               421.,   100.,
+                               481.,  1060.,
+                               )
+                        )
+
+#################
+## CHARGEMENTS ##
+#################
+
+
+#### CYCLES
+
+CH_CY=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
+               MAILLAGE=MA,
+                   AFFE=_F(
+               TOUT = 'OUI',
+               NOM_CMP = 'TEMP',
+               VALE_F = TEMP_CY,
+               )
+             )
+
+T_CY=CREA_RESU(
+                 OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                  NOM_CHAM='TEMP',
+                   AFFE=_F(
+               LIST_INST = L_INST,
+               CHAM_GD = CH_CY,
+               )
+             )
+
+CHMTM=AFFE_MATERIAU(
+                            MAILLAGE=MA,
+                           AFFE=_F(
+                                 TOUT = 'OUI',
+                                 MATER = MAT,),
+                           AFFE_VARC=_F( TOUT='OUI',
+                                     EVOL=T_CY,
+                                     NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',
+                                     VALE_REF=20.),
+                           )
+
+
+CHA1=AFFE_CHAR_MECA_F(
+                   MODELE=MO,FORCE_FACE=(
+                      _F(  MAILLE = 'GAUCHE',   FY = P_MOINS,  ),
+                      _F(  MAILLE = 'DROITE',   FY = P_PLUS,  ),
+                      _F(  MAILLE = 'HAUT',     FX = P_PLUS,   ),
+                      _F(  MAILLE = 'BAS',      FX = P_MOINS,     ))
+                    )
+
+CHA2=AFFE_CHAR_MECA_F(
+                   MODELE=MO,
+                #  FACE_IMPO : ( GROUP_MA : CD , DY:  DEP_Y)
+                    FACE_IMPO=_F(  MAILLE = 'GAUCHE',    DX = DEP_Y,  )
+                    )
+
+
+CHA4=AFFE_CHAR_MECA(
+                           MODELE=MO,DDL_IMPO=(
+                               _F(  NOEUD = 'NO4',    DX = 0.,   DY = 0.,         ),
+                               _F(  NOEUD = 'NO8',    DX = 0.,   DY = 0.,   DZ = 0., ),
+                               _F(  NOEUD = 'NO2',    DX = 0.,                 ),
+                               _F(  NOEUD = 'NO6',    DX = 0.,                 ))
+                           )
+
+RESU=STAT_NON_LINE(
+                                  MODELE=MO,
+                              CHAM_MATER=CHMTM,EXCIT=(
+                                   _F( CHARGE = CHA1, ),
+                                   _F( CHARGE = CHA2, ),
+                                   _F( CHARGE = CHA4,
+                                          )),
+                               COMP_INCR=_F( RELATION = 'VMIS_CIN2_MEMO',
+                                             ITER_INTE_MAXI = 100, ),
+                                  NEWTON=_F(  MATRICE = 'TANGENTE',
+                                             REAC_ITER = 1,),
+                       #    RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3,  ),
+                               INCREMENT=_F(  LIST_INST = L_INST, ),
+
+                          CONVERGENCE=_F(ITER_GLOB_MAXI = 100,
+                                       ),
+                       SUIVI_DDL=(_F(NOM_CMP    ='V1',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V2',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V16',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V17',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                                 ),
+
+                       );
+
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+
+INST1=24.
+
+INST2=61.
+
+INST3=91.
+
+INST4=121.
+
+# resultats modelisation C (VISC_CIN1_CHAB)
+TEST_RESU(RESU=(_F(INST=24.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=581.53200000000004,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=61.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-273.44600000000003,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=91.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=404.20499999999998,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=121.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-117.127,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=61.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=8.0000000000000004E-4,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=121.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.020799999999999999,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=61.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=2.2322000000000002E-3,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(INST=121.0,
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=6.0167700000000003E-3,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                ),
+          )
+
+NINST1F=431
+
+NINST2F=465
+
+NINST3F=475
+
+NINST4F=483
+
+NINST5F=491
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=431,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-415.037122584,
+                   VALE_REFE=-414.63,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=465,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=369.524364858,
+                   VALE_REFE=369.60000000000002,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=475,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=290.922171742,
+                   VALE_REFE=284.24000000000001,
+                   PRECISION=0.029999999999999999,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=483,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=65.451499999999996,
+                   TOLE_MACHINE=1.E-3,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=491,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-118.981777191,
+                   VALE_REFE=-118.65000000000001,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=431,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 8.00000000E-04,
+                   VALE_REFE=8.0000000000000004E-4,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=491,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.020800000,
+                   VALE_REFE=0.020799999999999999,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=431,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.011591067,
+                   VALE_REFE=0.011528,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=465,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.012099453,
+                   VALE_REFE=0.012022,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=475,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.012359724,
+                   VALE_REFE=0.012302,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=483,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.012578403,
+                   VALE_REFE=0.012470999999999999,
+                   PRECISION=0.02,
+                   MAILLE='CUBE',),
+                _F(NUME_ORDRE=491,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.015214394,
+                   VALE_REFE=0.015157,
+                   PRECISION=1.E-2,
+                   MAILLE='CUBE',),
+                ),
+          )
+
+SYY=RECU_FONCTION(    RESULTAT=RESU,   NOM_CHAM='SIGM_ELNO',
+          NOM_CMP='SIXX', NOEUD='NO1', MAILLE='CUBE',
+          PROL_GAUCHE='CONSTANT',   PROL_DROITE='CONSTANT'
+ )
+
+EPYY=RECU_FONCTION(    RESULTAT=RESU,   NOM_CHAM='EPSI_ELNO',
+          NOM_CMP='EPXX', NOEUD='NO1', MAILLE='CUBE',
+          PROL_GAUCHE='CONSTANT',   PROL_DROITE='CONSTANT'
+ )
+
+EPXY=RECU_FONCTION(    RESULTAT=RESU,   NOM_CHAM='EPSI_ELNO',
+          NOM_CMP='EPXY', NOEUD='NO1', MAILLE='CUBE',
+          PROL_GAUCHE='CONSTANT',   PROL_DROITE='CONSTANT'
+ )
+
+IMPR_FONCTION( UNITE = 29, FORMAT='XMGRACE',
+               LEGENDE_X='T (S)',
+               LEGENDE_Y='SIYY ET EPYY ET EPXY ',
+               TITRE=TITRE,
+               COURBE=(
+              _F(  FONCTION = SYY,
+                       LEGENDE = 'SIYY', ),
+              _F(  FONCTION = EPYY,
+                       LEGENDE = 'EPYY', ),
+              _F(  FONCTION = EPXY,
+                       LEGENDE = 'EPXY', )))
+
+FIN()

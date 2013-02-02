@@ -1,0 +1,318 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE  MODELISATION D UN GRADIENT D'EAU SUR UN BARREAU SATURE EN LIQUIDE
+# wtnp127e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# INCOMPRESSIBLE MODELISATION HS
+
+
+DEBUT(CODE=_F(NOM='WTNP127E', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+#=============================================================
+#=============================================================
+MODELISA = 'D_PLAN_HS'
+
+#=============================================================
+#                     donnees
+#=============================================================
+# Le coefficient d'emmag n'est pas pris en compte ici car il y a de la meca
+EMMAG=1.E-10
+UN_SUR_K= 0
+
+
+#*********************************************************
+# CI/CL
+#*********************************************************
+#
+
+P0=10000.
+PGAUCHE=0
+
+#*********************************************************
+# PAS DE TEMPS
+#*********************************************************
+#
+TFINAL=1000000.
+NBDECOUP=5
+
+#*********************************************************
+# CRITERES DE CONVERGENCE
+#*********************************************************
+#
+
+ITER_GLOB_MAXI = 5
+
+#*********************************************************
+# Definition des caracteristiques fluides
+#**********************************************************
+
+UN=DEFI_CONSTANTE(VALE=1.0);
+ZERO=DEFI_CONSTANTE(VALE=0.0);
+PERMINT=DEFI_CONSTANTE(VALE=1.E-13);
+HENRY=DEFI_CONSTANTE(VALE=1.E10);
+
+#*********************
+# Lecture du maillage
+#*********************
+MAIL=LIRE_MAILLAGE(FORMAT='MED');
+
+
+MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
+                   ORIE_PEAU_2D=(
+                   _F(GROUP_MA='MMIL',
+                      GROUP_MA_SURF='DROITE'),
+                   _F(GROUP_MA=('MDROIT','MGAUCHE')))
+                                   );
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(
+                _F(GROUP_MA='MHAUT'),
+                _F(GROUP_MA='MBAS'),
+                _F(GROUP_MA='MMIL'),
+                _F(GROUP_MA='MDROIT'),
+                _F(GROUP_MA='MGAUCHE'),
+                   ));
+
+
+
+#*********************************************************
+# Modele de calcul
+#*********************************************************
+#
+MODELT=AFFE_MODELE(MAILLAGE=MAIL,
+                   VERI_JACOBIEN='NON',
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION=MODELISA),
+                  );
+
+#*********************************************************
+# DEFI_MATERIAU
+#*********************************************************
+#
+MATERIAU=DEFI_MATERIAU(
+   ELAS=_F(E=5.E8,
+           NU=0.2,
+           RHO=2600.0,
+           ALPHA=0.0),
+   THM_LIQU=_F(
+         RHO = 1.,
+         UN_SUR_K = UN_SUR_K,
+         ALPHA = 1.E-4,
+         VISC = UN,
+         D_VISC_TEMP = ZERO),
+
+   COMP_THM = 'LIQU_SATU',
+
+
+   THM_DIFFU=_F(
+            R_GAZ      = 8.315,
+            EMMAG      = EMMAG,
+            RHO        = 1.,
+            BIOT_COEF  = 1.,
+            PESA_X     = 0.0,
+            PESA_Y     = 0.,
+            PESA_Z     = 0.,
+            PERMIN_X   = PERMINT,
+            PERMIN_Y   = PERMINT,
+            PERMIN_Z   = ZERO,
+            PERMINXY   = ZERO,
+            PERMINYZ   = ZERO,
+            PERMINZX   = ZERO,
+              ),
+
+   THM_INIT=_F(
+         TEMP = 293.,
+         PRE1 = 0.,
+         PORO = 0.5,
+              ),
+   )
+#****************************************************************
+# Affectation des materiaux
+#****************************************************************
+#
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(GROUP_MA=('GAUCHE','DROITE'),
+                             MATER=MATERIAU)));
+
+#*************************************************************
+# Affectation de l etat initial
+#*************************************************************
+#
+PINIT=CREA_CHAMP(MAILLAGE=MAIL,
+                    OPERATION='AFFE',
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    AFFE=(
+                    _F( GROUP_MA=('GAUCHE','DROITE'),
+                        NOM_CMP  = 'PRE1' ,
+                        VALE = P0 ),
+                ))
+#*************************************************************
+# Affectation des CL
+#*************************************************************
+
+CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
+       MECA_IMPO=(
+                 _F(GROUP_MA = 'MDROIT',PRE1=P0),
+                 ));
+
+CH_FLU1=AFFE_CHAR_MECA(   MODELE=MODELT,FLUX_THM_REP=(
+                          _F(GROUP_MA = 'MGAUCHE',
+                             FLUN_HYDR1 = -2.E-10),
+                                   ));
+#
+#
+#*************************************************************
+# Liste des instants de calculs
+#*************************************************************
+#
+
+INST1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=TFINAL,
+                                    NOMBRE=NBDECOUP)),
+                     );
+
+LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
+                                ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                         ACTION        = 'ARRET'))
+#
+#
+#*************************************************************
+#     STAT NON LINE
+#*************************************************************
+#
+cal1=STAT_NON_LINE(MODELE=MODELT,
+                 CHAM_MATER=CHMAT,
+
+                 EXCIT=( _F(CHARGE=CHIMP),
+                         _F(CHARGE=CH_FLU1)),
+                 COMP_INCR=_F(RELATION='KIT_H',
+                              RELATION_KIT=('LIQU_SATU','HYDR_UTIL'),
+                 ),
+
+                INCREMENT=_F(
+                   LIST_INST = LI,
+                     INST_FIN=TFINAL,
+                ),
+
+                 ETAT_INIT  = _F ( DEPL = PINIT  ,
+                                  ),
+
+                 SOLVEUR=_F(METHODE='MUMPS'),
+
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1),
+
+                 CONVERGENCE=_F(
+                                 RESI_REFE_RELA = 1.E-6,
+                                 FLUX_HYD1_REFE = 1.E-10,
+                                 ITER_GLOB_MAXI = ITER_GLOB_MAXI),
+
+                 ARCHIVAGE=_F(LIST_INST     = INST1  ),
+                 );
+#
+#*************************************************************
+# Impressions
+#*************************************************************
+#
+L_INST=DEFI_LIST_REEL(VALE=(0.,10000.,100000.));
+
+
+PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+             GROUP_NO=('MBAS'),
+             RESULTAT=cal1,
+             NOM_CHAM='DEPL',
+             LIST_INST=L_INST,
+             NOM_CMP=('PRE1'),
+             OPERATION='EXTRACTION'));
+
+
+cal1=CALC_CHAMP(reuse=cal1,CONTRAINTE=('SIEF_ELNO'),RESULTAT=cal1)
+
+
+F_EAUG=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU GAUCHE',
+                           GROUP_NO=('MGAUCHE'),
+                           RESULTAT=cal1,
+                           NOM_CHAM='SIEF_ELNO',
+                           INST=TFINAL,
+                           NOM_CMP=('FH11X','FH11Y'),
+                           OPERATION='EXTRACTION'));
+
+F_EAUD=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU DROITE',
+                           GROUP_NO=('MDROIT'),
+                           RESULTAT=cal1,
+                           NOM_CHAM='SIEF_ELNO',
+                           INST=TFINAL,
+                           NOM_CMP=('FH11X','FH11Y'),
+                           OPERATION='EXTRACTION'));
+
+F_EAUM=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU MILIEU',
+                           GROUP_NO=('MMIL'),
+                           RESULTAT=cal1,
+                           NOM_CHAM='SIEF_ELNO',
+                           INST=TFINAL,
+                           NOM_CMP=('FH11X','FH11Y'),
+                           OPERATION='EXTRACTION'));
+
+cal1= CALC_CHAMP( reuse    = cal1,
+                   RESULTAT = cal1,
+                   CONTRAINTE='SIEF_NOEU'
+                  )
+
+cal1=CALC_CHAMP(reuse=cal1,HYDRAULIQUE=('FLHN_ELGA'),RESULTAT=cal1,INST=TFINAL)
+
+
+
+FLUXND = POST_ELEM(RESULTAT   = cal1,
+              INST=TFINAL,
+              MODELE     = MODELT,
+              INTEGRALE=_F(GROUP_MA=('MDROIT'),
+              NOM_CHAM='FLHN_ELGA',
+              NOM_CMP=('FH11')))
+
+TEST_TABLE(VALE_CALC=-2.0000000000000001E-10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_FH11',
+           TABLE=FLUXND,)
+
+FLUXNM = POST_ELEM(RESULTAT   = cal1,
+              INST=TFINAL,
+              MODELE     = MODELT,
+              INTEGRALE=_F(GROUP_MA=('MMIL'),
+              NOM_CHAM='FLHN_ELGA',
+              NOM_CMP=('FH11')))
+
+TEST_TABLE(VALE_CALC=-2.0000000000000001E-10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_FH11',
+           TABLE=FLUXNM,)
+
+FLUXNG = POST_ELEM(RESULTAT   = cal1,
+              INST=TFINAL,
+              MODELE     = MODELT,
+              INTEGRALE=_F(GROUP_MA=('MGAUCHE'),
+              NOM_CHAM='FLHN_ELGA',
+              NOM_CMP=('FH11')))
+
+TEST_TABLE(VALE_CALC=2.0000000000000001E-10,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='INTE_FH11',
+           TABLE=FLUXNG,)
+
+FIN();

@@ -1,0 +1,377 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE MODELE PROBABILISTE NONPARAMETRIQUE D UNE PLAQUE AVEC BUTEE ELASTIQUE
+# sdns01b.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# sdns01b.para = tps_job 80 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+##############################################################################
+#                                                                            #
+# PLAQUE RECTANGULAIRE EN APPPUI  SIMPLE SUR TROIS BORD ET LIBRE SUR         #
+# SUR LE DERNIER BORD, AVEC MASSE ET RAIDEUR LOCALISEES, UNE IMPULSION COMME #
+# CHARGEMENT EXTERIEUR ET UNE BUTEE ELASTIQUE COMME NONLINEARITE LOCALISEE   #
+#                                                                            #
+##############################################################################
+
+DEBUT(CODE=_F(NOM='SDNS01B', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
+
+##############################################################################
+#                                                                            #
+# CONSTRUCTION DU MODELE MOYEN ELEMENTS FINIS PUIS REDUCTION SUR LES MODES   #
+# ELASTIQUES AVANT DE COMMENCER LA SIMULATION NUMERIQUE DE MONTE CARLO       #
+#                                                                            #
+##############################################################################
+
+# MODELE MECANIQUE ET CALCUL DE SES MODES
+M=4.
+K=2.388E+7
+MA=LIRE_MAILLAGE(FORMAT='MED', )
+MA=DEFI_GROUP( reuse=MA,
+               MAILLAGE=MA,
+               CREA_GROUP_MA=( _F(  NOM = 'TOUT', TOUT = 'OUI'),
+                               _F(  NOM = 'MASSE', MAILLE ='P02'),
+                               _F(  NOM = 'RAIDEUR', MAILLE ='P01'),
+                               _F(  NOM = 'DISCRET',
+                                    UNION=('RAIDEUR','MASSE')),
+                               _F(  NOM=  'PLAQUE',
+                                    DIFFE = ('TOUT','DISCRET'))
+                             )
+              )
+MAT=DEFI_MATERIAU( ELAS=_F( E   = 2.1E+11,
+                            NU  = 0.29,
+                            RHO = 7800.)
+                           )
+CHMAT=AFFE_MATERIAU( MAILLAGE=MA,
+                     AFFE=_F( GROUP_MA= 'PLAQUE',
+                              MATER = MAT
+                             )
+                    )
+MO=AFFE_MODELE( MAILLAGE=MA,
+                AFFE=( _F( GROUP_MA = 'PLAQUE',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DKT'),
+                       _F( GROUP_MA = 'DISCRET',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DIS_T'),)
+               )
+CH=AFFE_CHAR_CINE( MODELE=MO,
+                   MECA_IMPO=( _F( TOUT='OUI',
+                                   DX=0.,
+                                   DY=0.,
+                                   DRZ=0.
+                                 ),
+                              _F(  GROUP_NO='C1',
+                                   DZ=0.,
+                                   DRX=0.
+                                 ),
+                              _F(  GROUP_NO='C2',
+                                   DZ=0.,
+                                   DRX=0.
+                                 ),
+                              _F(  GROUP_NO='C3',
+                                   DZ=0.,
+                                   DRY=0.
+                                 ),
+                           )
+                  )
+CA=AFFE_CARA_ELEM( MODELE=MO,
+                   COQUE=_F( GROUP_MA = 'PLAQUE',
+                               EPAIS = 4.0E-4),
+                   DISCRET=( _F( GROUP_MA = 'RAIDEUR',
+                                 CARA = 'K_T_D_N',
+                                 VALE = ( K, K, K, )),
+                             _F( GROUP_MA = 'RAIDEUR',
+                                 CARA = 'M_T_D_N',
+                                 VALE = ( 0., )),
+                             _F( GROUP_MA = 'MASSE',
+                                 CARA = 'M_T_D_N',
+                                 VALE = M))
+                  )
+RIGIEL= CALC_MATR_ELEM(
+                       OPTION='RIGI_MECA',
+                       MODELE=MO,
+                       CARA_ELEM=CA,
+                       CHAM_MATER=CHMAT
+                       )
+MASSEL= CALC_MATR_ELEM(
+                       OPTION='MASS_MECA',
+                       MODELE=MO,
+                       CARA_ELEM=CA,
+                       CHAM_MATER=CHMAT
+                       )
+NUMDDL=NUME_DDL( MATR_RIGI=RIGIEL )
+MATR=ASSE_MATRICE(MATR_ELEM=RIGIEL,
+                  NUME_DDL=NUMDDL,
+                  CHAR_CINE=CH)
+MATM=ASSE_MATRICE(MATR_ELEM=MASSEL,
+                  NUME_DDL=NUMDDL,
+                  CHAR_CINE=CH)
+MODE200=MODE_ITER_SIMULT( MATR_RIGI=MATR,
+                       MATR_MASS=MATM,
+                       CALC_FREQ=_F( NMAX_FREQ= 5,
+                                     OPTION ='PLUS_PETITE'
+                                    ),
+                       VERI_MODE=_F( SEUIL = 1.E-5 )
+                      )
+
+
+# CONTRUCTION DU CHARGEMENT (IMPULSION)
+OMEGA=2*pi*20
+DELTAW=2*OMEGA
+T1= 2*pi/DELTAW
+amred=0.04
+Omin=4*pi
+Omax=200*pi
+a= 2*amred*Omax*Omin/(Omax+Omin)
+b=2*amred/(Omax+Omin)
+IMPULS= FORMULE( NOM_PARA='INST',VALE='''1./(DELTAW*(INST-T1))
+                 * (sin((OMEGA+DELTAW/2.)*(INST-T1))
+                 - sin((OMEGA-DELTAW/2.)*(INST-T1))) ''' )
+LIINST= DEFI_LIST_REEL( DEBUT = 0.,
+                        INTERVALLE = _F( JUSQU_A = 0.05,
+                                         PAS = 0.00005),
+                      )
+IMPULF= CALC_FONC_INTERP( FONCTION = IMPULS,
+                          LIST_PARA= LIINST,
+NOM_PARA='INST',
+                          NOM_RESU='IMPULSE',
+                          PROL_GAUCHE='CONSTANT',
+                          PROL_DROITE='CONSTANT',
+#                          INTERPOL='INT',
+                         INTERPOL='LIN',
+                          TITRE='FONCTION IMPULSION'
+                         )
+CHARGE=AFFE_CHAR_MECA( MODELE=MO,
+                         FORCE_NODALE=_F(
+                                          GROUP_NO= 'F1',
+                                          FZ = 1
+                                         )
+                        )
+VECTEL=CALC_VECT_ELEM( CHARGE=CHARGE,
+                       OPTION='CHAR_MECA'
+                      )
+VECTASS=ASSE_VECTEUR(VECT_ELEM=VECTEL,NUME_DDL=NUMDDL)
+
+# CONSTRUCTION DU SYSTEME REDUIT
+# ( LE STOCKAGE DU SYSTEME REDUIT DOIT ETRE PLEIN )
+NUM100=NUME_DDL_GENE(  BASE=MODE200,
+                       STOCKAGE='PLEIN',
+                       NB_VECT=5 )
+IM_G100=PROJ_VECT_BASE(   BASE=MODE200,  VECT_ASSE=VECTASS,
+                          NUME_DDL_GENE=NUM100,
+                          TYPE_VECT='FORC')
+MA_G100=PROJ_MATR_BASE(     BASE=MODE200,
+                            NUME_DDL_GENE=NUM100,
+                            MATR_ASSE=MATM
+                         )
+RI_G100=PROJ_MATR_BASE(    BASE=MODE200,
+                          NUME_DDL_GENE=NUM100,
+                          MATR_ASSE=MATR
+                         )
+
+# CONSTRUCTION DE LA MATRICE DE DISSIPATION CORRESPONDANT
+# A UN AMORTISSEMENT REDUIT DE 0.04 CONSTANT POUR TOUS LES MODES
+AM_G100=COMB_MATR_ASSE(CALC_AMOR_GENE=_F( MASS_GENE=MA_G100,
+                                          RIGI_GENE=RI_G100,
+                                          AMOR_REDUIT=0.04,
+                                        )
+                       )
+
+PLANZ=DEFI_OBSTACLE(   TYPE='PLAN_Z' )
+LFREQ=DEFI_LIST_REEL(DEBUT=0.5,
+                          INTERVALLE=_F(JUSQU_A=100.,
+                                        PAS=0.5)
+                          )
+#############################################################
+#                                                           #
+# DEBUT DE LA  SIMULATION NUMERIQUE DE MONTE CARLO          #
+#                                                           #
+#############################################################
+
+# COEFFICIENTS DE VARIATION DES MATRICES ALEATOIRES
+DELTA_M = 0.2
+DELTA_K = 0.2
+DELTA_D = 0.2
+
+ns=5
+# 5 REALISATIONS DES PROCESSUS STOCHASTIQUES ( 5 TIRAGES)
+
+for k in range(1,ns+1):
+
+# GENERATION DES REALISATIONS ALEATOIRE DES MATRICES GENERALISEES DE MASSE,
+# DE RAIDEUR ET D AMORTISSEMENT
+
+    MATM100=GENE_MATR_ALEA(MATR_MOYEN=MA_G100,
+                           COEF_VAR=DELTA_M,)
+
+    MATK100=GENE_MATR_ALEA(MATR_MOYEN=RI_G100,
+                           COEF_VAR=DELTA_K)
+
+    MATD100=GENE_MATR_ALEA(MATR_MOYEN=AM_G100,
+                           COEF_VAR=DELTA_D)
+
+# GENERATION D UNE REALISATION ALEATOIRE DE LA RAIDEUR DE CHOC
+    KN =GENE_VARI_ALEA(TYPE='GAMMA', BORNE_INF=0.,
+               VALE_MOY=25000.,  COEF_VAR=0.01)
+
+# GENERATION D UNE REALISATION ALEATOIRE DU PROCESSUS STOCHASTIQUE
+
+    DM100=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                            SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                            MATR_MASS=MATM100,
+                            MATR_RIGI=MATK100,
+                            MATR_AMOR=MATD100,
+                            INCREMENT=_F( INST_INIT = 0.,
+                                          INST_FIN = 4.,
+                                          PAS = 0.00005),
+                            EXCIT=_F( VECT_ASSE_GENE = IM_G100,
+                                      FONC_MULT = IMPULF
+                                    ),
+                            CHOC=_F( NOEUD_1 = 'N3201',
+                                     OBSTACLE = PLANZ,
+                                     ORIG_OBST = (0., 0., 0.,),
+                                     NORM_OBST = (1., 0., 0.,),
+                                     JEU = 0.002,
+                                     RIGI_NOR = KN(),
+                                     RIGI_TAN = 0.,
+                                     FROTTEMENT='COULOMB',
+                                     COULOMB = 0.),
+                           )
+    ACC3201=RECU_FONCTION(RESU_GENE = DM100,
+                          NOM_CHAM='ACCE',
+                          NOM_CMP='DZ',
+                          NOEUD='N3201')
+    SPO3201= CALC_FONCTION(SPEC_OSCI=_F(
+                                      NATURE='ACCE',
+                                      FONCTION=ACC3201,
+                                      METHODE='NIGAM',
+                                      NORME=9.81,
+                                      LIST_FREQ=LFREQ,
+                                      AMOR_REDUIT=(0.001)
+                                      ),
+                           INTERPOL='LOG',
+                          )
+# CONSTRCTION DES ESTIMATIONS STATISTIQUES
+    if k==1:
+    #  ON INITIALISE LES ESTIMATEURS
+       UP3201=  CALC_FONCTION(COMB=_F(FONCTION=SPO3201,
+                                        COEF=1.),
+                               )
+       INF3201=  CALC_FONCTION(COMB=_F(FONCTION=SPO3201,
+                                        COEF=1.),
+                                )
+       M2_3201=  CALC_FONCTION(PUISSANCE=_F(FONCTION=SPO3201,
+                                             EXPOSANT=2),)
+       M1_3201=  CALC_FONCTION(COMB=_F(FONCTION=SPO3201,
+                                        COEF=1.),
+                                )
+    else:
+    #  ON CALCULE LES NOUVEAUX ESTIMATEURS EN PRENANT EN COMPTE LE
+    #  DERNIER TIRAGE. ON LES STOCKE DANS DES VARIABLES INTERMEDIAIRES
+    #  (CAR PAS DE CONCEPT REENTRANT)
+       UP1=CALC_FONCTION(ENVELOPPE=_F(
+                                         FONCTION=(UP3201,SPO3201),
+                                         CRITERE='SUP'
+                                         ),
+                              )
+       INF1=CALC_FONCTION(ENVELOPPE=_F(
+                                         FONCTION=(INF3201,SPO3201),
+                                         CRITERE='INF'
+                                         ),
+                              )
+       M2 = CALC_FONCTION(PUISSANCE=_F(FONCTION=SPO3201,
+                                       EXPOSANT=2), )
+       M2_2 =  CALC_FONCTION( COMB=(_F(FONCTION=M2,COEF=1.),
+                                    _F(FONCTION=M2_3201,COEF=1.))
+                             )
+       M1_2 =  CALC_FONCTION( COMB=(_F(FONCTION=SPO3201,COEF=1.),
+                                    _F(FONCTION=M1_3201,COEF=1.))
+                             )
+       DETRUIRE(CONCEPT=_F(NOM=(UP3201,INF3201,M1_3201 ,M2_3201,M2)),INFO=1)
+   # STOCKAGE DES ESTIMATEURS ET DESTRUCTION DES VARIABLES INTERMEDIAIRES
+       UP3201=  CALC_FONCTION(COMB=_F(FONCTION=UP1,
+                                        COEF=1.),
+                               )
+       INF3201= CALC_FONCTION(COMB=_F(FONCTION=INF1,
+                                        COEF=1.),
+                               )
+       M1_3201=  CALC_FONCTION(COMB=_F(FONCTION=M1_2,
+                                        COEF=1.),
+                               )
+       M2_3201=  CALC_FONCTION(COMB=_F(FONCTION=M2_2,
+                                        COEF=1.),
+                               )
+       DETRUIRE(CONCEPT=_F(NOM=(M2_2,M1_2,INF1,UP1)),INFO=1)
+    DETRUIRE(CONCEPT=_F(NOM=(DM100,ACC3201,SPO3201, MATM100, MATD100, MATK100,KN)),INFO=1)
+# CALCUL DES ESTIMATEURS FINAUX
+M13201=  CALC_FONCTION(COMB=_F(   FONCTION=M1_3201, COEF=1./ns),)
+M23201=  CALC_FONCTION(COMB=_F(   FONCTION=M2_3201, COEF=1./ns),)
+N3201=  INFO_FONCTION(NORME=_F(FONCTION=M13201),)
+
+# FIN DE LA SIMULATION NUMERIQUE DE MONTE CARLO ET DES ESTIMATIONS STATISTIQUES
+# DU PROCESSUS STOCHASTIQUE
+
+#################################
+#                               #
+#     TESTS DE VALIDATION       #
+#                               #
+#################################
+# PAS DE REFERENCE ANALYTIQUE => TESTS DE NON REGRESSION
+# LA VALIDATION A ETE EFFECTUEE PAR REFERENCE BIBLIO (CF. DOC.)
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=133.68160014537,
+                         TOLE_MACHINE=9.9999999999999995E-08,
+                         VALE_PARA=(1.E-3, 50.0),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=M13201,
+                         ),
+                      _F(VALE_CALC=2.0500918738843E4,
+                         TOLE_MACHINE=9.9999999999999995E-08,
+                         VALE_PARA=(1.E-3, 50.0),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=M23201,
+                         ),
+                      _F(VALE_CALC=75.058829169671995,
+                         TOLE_MACHINE=9.9999999999999995E-08,
+                         VALE_PARA=(1.E-3, 50.0),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=INF3201,
+                         ),
+                      _F(VALE_CALC=215.81493211393999,
+                         TOLE_MACHINE=9.9999999999999995E-08,
+                         VALE_PARA=(1.E-3, 50.0),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=UP3201,
+                         ),
+                      ),
+              )
+
+TEST_TABLE(
+           VALE_CALC=1043.3854966957001,
+           TOLE_MACHINE=9.9999999999999995E-08,
+           NOM_PARA='NORME',
+           TABLE=N3201,
+           )
+
+FIN()
+
+
+
+
+
+

@@ -1,0 +1,495 @@
+# MODIF  DATE 26/11/2012   AUTEUR ALARCON A.ALARCON 
+# TITRE CREATION D'UNE SD RESULTAT A PARTIR DE MESURES AVEC OBSERVATION
+# sdlv125a.para = tps_job 520 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+DEBUT( CODE = _F( NOM = 'SDLV125A',
+                  NIV_PUB_WEB='INTERNET'),
+       DEBUG=_F(SDVERI='OUI'),
+      );
+
+
+#****************************************************************************
+#
+# CREATION D'UN MODELE NUMERIQUE SUR LEQUEL ON CALCUL UNE BASE DE MODES
+#
+#****************************************************************************
+
+#----------------------
+# 1) Creation du modele
+#----------------------
+MAYANUM = LIRE_MAILLAGE( UNITE = 20);
+
+
+
+MAYANUM = DEFI_GROUP( reuse         = MAYANUM,
+                      MAILLAGE      = MAYANUM,
+                      CREA_GROUP_NO = _F( TOUT_GROUP_MA = 'OUI',),);
+
+
+ELASTIC = DEFI_MATERIAU(ELAS = _F( E   = 7.1E10,
+                                   NU  = 0.3,
+                                   RHO = 2820.0,),);
+
+
+MODELNUM = AFFE_MODELE(MAILLAGE = MAYANUM,
+                       AFFE     = _F( TOUT = 'OUI',
+                                      PHENOMENE = 'MECANIQUE',
+                                      MODELISATION = 'DKT',),);
+
+
+CHMAT = AFFE_MATERIAU( MAILLAGE = MAYANUM,
+                       AFFE     = _F( TOUT = 'OUI',
+                                      MATER = ELASTIC,),);
+
+
+CHCARA = AFFE_CARA_ELEM( MODELE = MODELNUM,
+                         COQUE  = _F(GROUP_MA = 'ALL_EL',
+                                     EPAIS = 0.01,),);
+
+
+CHARGE = AFFE_CHAR_MECA( MODELE = MODELNUM,
+                         DDL_IMPO = _F( GROUP_NO = 'BASE_NO',
+                                        DX=0.,DY=0.,DZ=0.,DRX=0.,DRY=0.,DRZ=0.,),
+                        );
+
+
+ASSEMBLAGE( MODELE     = MODELNUM,
+                 CHAM_MATER = CHMAT,
+                 CARA_ELEM  = CHCARA,
+                 CHARGE     = CHARGE,
+                 NUME_DDL   = CO('NUMNUM'),
+                 MATR_ASSE  = ( _F( MATRICE = CO('KASS'),
+                                    OPTION  = 'RIGI_MECA',),
+                                _F( MATRICE = CO('MASS'),
+                                    OPTION  = 'MASS_MECA',),
+                               ),
+                );
+
+
+
+#------------------------------
+# 2) Calcul d'une base de modes
+#------------------------------
+
+MODE_tmp = MODE_ITER_SIMULT( MATR_RIGI = KASS,
+                             MATR_MASS = MASS,
+                             CALC_FREQ=_F( NMAX_FREQ = 10,),
+                             VERI_MODE = _F( STOP_ERREUR = 'NON',
+                                             STURM = 'NON',),
+                            );
+
+# AMORTISSEMENT MODAL A LA MAIN DE 1%
+list_amor = [0.01]*10
+LISTAMOR = DEFI_LIST_REEL( VALE = list_amor);
+
+MODE_NUM = DEFI_BASE_MODALE( RITZ = _F( MODE_MECA = MODE_tmp ),
+                             LIST_AMOR = LISTAMOR );
+
+
+
+#----------------------------------------------------------
+# 3) Application d'un effort sous forme d'un inter-spectre.
+#----------------------------------------------------------
+# On applique 3 efforts sur 2 noeuds : 1er effort sur noeud 'N2633' selon x
+# 2e noeud selon z, 3e noeud selon y ('N2937'), au sommet du cylindre. On
+# applique des spectres sous forme de bruits "rose". L'effort en N2633-DX et N2633-DZ
+# sont correles.
+# L'inter-spectre a ette defini dans Aster (cf annexe 1 en bas du fichier de commande),
+# puis a ete exporte et transforme sous format 'IDEAS' dans Mescope pour tester l'option
+# FORMAT = 'IDEAS' de LIRE_INTE_SPEC.
+
+EXCISPEC = LIRE_INTE_SPEC( FORMAT = 'IDEAS', UNITE = 33, NOM_RESU = 'EFFO')
+
+#IMPR_TABLE( UNITE = 8, TABLE = EXCISPEC )
+
+
+#-----------------------------------------------
+# 4) Calcul de l'inter-spectre de reponse modale
+#-----------------------------------------------
+DYN = DYNA_ALEA_MODAL( BASE_MODALE = _F( MODE_MECA = MODE_NUM,
+                                         BANDE     = (0.0,250.0,),
+                                         AMOR_UNIF = 0.01,),
+                       EXCIT = _F( INTE_SPEC    = EXCISPEC,
+                                   NOEUD_I = ('N2633','N2633','N2937'),
+                                   NOEUD_J = ('N2633','N2633','N2937'),
+                                   NOM_CMP_I = ('DX','DZ','DY'),
+                                   NOM_CMP_J = ('DX','DZ','DY'),
+                                   NOEUD        = ('N2633','N2633','N2937'),
+                                   NOM_CMP      = ('DX','DZ','DY'),
+                                   GRANDEUR = 'EFFO',),);
+
+# On restituera le resultat sur base physique sur le modele experimental
+
+
+
+
+#***************************************************************************
+#
+# CREATION D'UN MODELE EXPERIMENTAL DONT LES NOEUDS SONT LES POSITIONS DES
+# CAPTEURS
+#
+#***************************************************************************
+
+# NB : le modele ainsi cree l'est dans le repere global, identique a celui
+# utilise pour le modele numerique. c'est la MACRO_OBSERVATION qui permettra
+# de preciser :
+# - l'orientation des composantes X1, Y1 et Z1 de mesure
+# - le fait que certaines composantes n'ont pas ete mesurees (capteurs
+#   mono-axes)
+
+PRE_IDEAS( UNITE_IDEAS = 31, UNITE_MAILLAGE = 21 )
+
+MAYAEXP = LIRE_MAILLAGE( UNITE = 21 );
+
+gpsupred = ('N24','N28','N30');
+gpcylred = ('N5','N8','N15','N17','N20','N27')
+
+MAYAEXP = DEFI_GROUP( reuse        = MAYAEXP,
+                      MAILLAGE     = MAYAEXP,
+                      CREA_GROUP_MA =  _F( NOM  = 'ALLELEXP',
+                                           TOUT = 'OUI',),
+                      CREA_GROUP_NO = (_F( NOM = 'GPSUPRED',
+                                           NOEUD = gpsupred),
+                                       _F( NOM = 'GPCYLRED',
+                                           NOEUD = gpcylred)
+                                      ),
+                    );
+
+
+
+# NB : la modelisation choisie ici est 'BARRE'. C'est une modelisation qui ne
+# comporte que des ddl de translation, contrairement a une modelisation
+# de poutre, type Timoshenko. Cela permet de faire un PROJ_CHAMP dans la macro)
+# d'un modele 3D vers un modele experimental de poutres.
+MODELEXP = AFFE_MODELE(MAILLAGE = MAYAEXP,
+                       AFFE     = _F( TOUT = 'OUI',
+                                      PHENOMENE = 'MECANIQUE',
+                                      MODELISATION = 'BARRE',),);
+
+CHMATEXP = AFFE_MATERIAU( MAILLAGE = MAYAEXP,
+                          AFFE     = _F( TOUT  = 'OUI',
+                                         MATER = ELASTIC,),);
+
+# Caracteristiques geometriques bidon pour modele experimental
+CHCAREXP = AFFE_CARA_ELEM( MODELE = MODELEXP,
+                           BARRE  = _F( GROUP_MA = 'ALLELEXP',
+                                        SECTION  = 'CERCLE',
+                                        CARA     = 'R',
+                                        VALE     = 1.)
+                          );
+
+ASSEMBLAGE( MODELE     = MODELEXP,
+                 CHAM_MATER = CHMATEXP,
+                 CARA_ELEM  = CHCAREXP,
+                 NUME_DDL   = CO('NUMEXP'),
+                 MATR_ASSE  = ( _F( MATRICE = CO('KASSEXP'),
+                                    OPTION  = 'RIGI_MECA',),
+                                _F( MATRICE = CO('MASSEXP'),
+                                    OPTION  = 'MASS_MECA',),
+                               ),
+                 );
+
+
+
+# Le maillage est un cylindre avec un couvercle. Pour l'utilisation de la macro que l'on
+# fait ici, on suppose que les capteurs du couvercle ont ete places selon un repere cylindrique
+# et ne mesurent que le deplacement vertical. Les capteurs sur la paroi  ont leur axe Z normal
+# a cette paroi et mesurent dans les trois directions.
+MODEIDE1 = OBSERVATION( INFO = 1,
+                        RESULTAT = MODE_NUM,
+                        MODELE_1 = MODELNUM,
+                        MODELE_2 = MODELEXP,
+                        PROJECTION = 'OUI',
+                        TOUT_ORDRE = 'OUI',
+                        MATR_A   = KASSEXP,
+                        MATR_B   = MASSEXP,
+                        NOM_CHAM = 'DEPL',
+                        MODI_REPERE = (
+                                       _F( GROUP_NO = 'GPSUPRED',
+                                           REPERE = 'CYLINDRIQUE',
+                                           AXE_Z = (0.,1.,0.),
+                                           ORIGINE = (0.,0.,0.)),
+
+                                       _F( GROUP_NO = 'GPCYLRED',
+                                           REPERE = 'NORMALE',
+                                           VECT_Y = (0.,1.,0.)),
+                                        ),
+                        FILTRE = (
+                                   _F( GROUP_NO = 'GPCYLRED',
+                                       NOM_CHAM = 'DEPL',
+                                       DDL_ACTIF = ('DX','DZ')),
+
+                                   _F( GROUP_NO='GPSUPRED',
+                                       NOM_CHAM = 'DEPL',
+                                       DDL_ACTIF=('DY')),
+                                  ),
+                      );
+
+
+
+#*********************************************************************************
+#
+# CREATION DE L'INTER-SPECTRE DES DEPLACEMENTS MESURES, DONNE DANS LE REPERE LOCAL
+#
+#*********************************************************************************
+
+
+# MODEIDE2 = MODEIDE1 avec des mesures extensiometriques en plus
+# La commande ci-dessous permet de tester OBSERVATION sur des champs mixtes
+# Le concept n'est pas utilise par ailleurs
+MODEIDE2 = LIRE_RESU( TYPE_RESU = 'MODE_MECA',
+                      FORMAT    = 'IDEAS',
+                      MODELE    = MODELEXP,
+                      UNITE     = 31,
+                      NOM_CHAM  = ('DEPL','VITE','EPSI_NOEU',),
+                      MATR_A    = KASSEXP,
+                      MATR_B    = MASSEXP,
+                      FORMAT_IDEAS =( _F( NOM_CHAM       = 'DEPL',
+                                         NUME_DATASET   = 55,
+                                     #    RECORD_6       = (1,2,3,8,2,6,),
+                                         POSI_ORDRE     = (7,4,),  #obligatoire pour 2414 mais recuperable dans le dataset pour 55 et 57
+                                         POSI_NUME_MODE = (7,4),
+                                         POSI_FREQ      = (8,1),
+                                         POSI_MASS_GENE = (8,2),
+                                         POSI_AMOR_GENE = (8,3),
+                                         NOM_CMP        = ('DX','DY','DZ','DRX','DRY','DRZ'),
+                                      ),
+                                     _F( NOM_CHAM       = 'VITE',
+                                         NUME_DATASET   = 55,
+                                         POSI_ORDRE     = (7,4,),
+                                         POSI_NUME_MODE = (7,4),
+                                         POSI_FREQ      = (8,1),
+                                         POSI_MASS_GENE = (8,2),
+                                         POSI_AMOR_GENE = (8,3),
+                                         NOM_CMP        = ('DX','DY','DZ','DRX','DRY','DRZ'),
+                                      ),
+                                     _F( NOM_CHAM       = 'EPSI_NOEU',
+                                         NUME_DATASET   = 55,
+                                         POSI_ORDRE     = (7,4,),
+                                         POSI_NUME_MODE = (7,4),
+                                         POSI_FREQ      = (8,1),
+                                         POSI_MASS_GENE = (8,2),
+                                         POSI_AMOR_GENE = (8,3),
+                                         NOM_CMP        = ('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),
+                                      ),
+                          ),
+                      TOUT_ORDRE = 'OUI',
+                    );
+
+
+
+noeud = list(gpsupred)
+nom_cmp = ['DY']*len(gpsupred)
+for ind in gpcylred:
+    noeud.append(ind)
+    noeud.append(ind)
+    nom_cmp.append('DX')
+    nom_cmp.append('DZ')
+nom_cmp = tuple(nom_cmp)
+noeud = tuple(noeud)
+
+SPECTPHY = REST_SPEC_PHYS( MODE_MECA = MODEIDE1,
+                           BANDE     = (0.0,250.0,),
+                           INTE_SPEC_GENE = DYN,
+                           NOEUD          = noeud,
+                           NOM_CMP        = nom_cmp,
+                           NOM_CHAM       = 'DEPL',
+                           OPTION         = 'TOUT_TOUT',);
+
+
+#****************************************************************************
+#
+# CREATION DU MODELE D'ACTIONNEURS, QUI NE CONTIENT QUE LES POINTS OU SONT A
+# PRIORI APPLIQUES LES EFFORTS (LES NOEUDS 2510, 2633 ET 2937)
+#
+#****************************************************************************
+
+PRE_IDEAS(UNITE_IDEAS = 32, UNITE_MAILLAGE = 22)
+
+MAYAACT = LIRE_MAILLAGE( UNITE = 22 );
+
+
+MAYAACT = DEFI_GROUP( reuse        = MAYAACT,
+                      MAILLAGE     = MAYAACT,
+                      CREA_GROUP_MA =  _F( NOM  = 'ALL_EL',
+                                           TOUT = 'OUI',),
+                      CREA_GROUP_NO = (_F( NOM = 'N2', NOEUD = 'N2'),
+                                       _F( NOM = 'N1', NOEUD = 'N1')
+                                      ),
+                      );
+
+MODELACT = AFFE_MODELE(MAILLAGE = MAYAACT,
+                       AFFE     = _F( TOUT = 'OUI',
+                                      PHENOMENE = 'MECANIQUE',
+                                      MODELISATION = 'BARRE',),);
+
+CHMATACT = AFFE_MATERIAU( MAILLAGE = MAYAACT,
+                          AFFE     = _F( TOUT  = 'OUI',
+                                         MATER = ELASTIC,),);
+
+# Caracteristiques geometriques bidon pour modele experimental
+CHCARACT = AFFE_CARA_ELEM( MODELE = MODELACT,
+                           BARRE  = _F( GROUP_MA = 'ALL_EL',
+                                        SECTION  = 'CERCLE',
+                                        CARA     = 'R',
+                                        VALE     = 1.)
+                          );
+
+ASSEMBLAGE( MODELE     = MODELACT,
+                 CHAM_MATER = CHMATACT,
+                 CARA_ELEM  = CHCARACT,
+                 NUME_DDL   = CO('NUMACT'),
+                 MATR_ASSE  = ( _F( MATRICE = CO('KASSACT'),
+                                    OPTION  = 'RIGI_MECA',),
+                                _F( MATRICE = CO('MASSACT'),
+                                    OPTION  = 'MASS_MECA',),
+                               ),
+                 );
+
+
+MODEACT = OBSERVATION( INFO = 1,
+                       RESULTAT = MODE_NUM,
+                       MODELE_1 = MODELNUM,
+                       MODELE_2 = MODELACT,
+                       PROJECTION = 'OUI',
+                       TOUT_ORDRE = 'OUI',
+                       MATR_A = KASSACT,
+                       MATR_B = MASSACT,
+                       NOM_CHAM = 'DEPL',
+                       FILTRE = (
+                                  _F( GROUP_NO = 'N2',
+                                       NOM_CHAM = 'DEPL',
+                                      DDL_ACTIF = 'DY'),
+                                  _F( GROUP_NO = 'N1',
+                                       NOM_CHAM = 'DEPL',
+                                      DDL_ACTIF=('DX','DZ')),
+                                 ),
+                     );
+
+
+
+
+interactif = 0
+if not interactif:
+    # Lancement en mode non-interactif
+    CALC_ESSAI(
+                INTERACTIF = 'NON',
+                IDENTIFICATION = _F(
+                                      ALPHA = 0.0,
+                                      EPS   = 1.0E-7,
+                                      INTE_SPEC      = SPECTPHY,
+                                      OBSERVABILITE  = MODEIDE1,
+                                      COMMANDABILITE = MODEACT,
+                                      BASE = MODE_NUM),
+                RESU_IDENTIFICATION = (
+                                         _F(TABLE = CO('EFFORTS')),  # intsp des efforts phy identifies
+                                         _F(TABLE = CO('DEPL_PHY')), # intsp des deplacements mesures
+                                         _F(TABLE = CO('DEPL_SYN')), # intsp des deplacements resynthetises
+                                        ),
+              );
+
+else:
+    # Lancement en mode interactif
+    CALC_ESSAI(
+                INTERACTIF = 'OUI',
+                RESU_IDENTIFICATION  = (
+                                _F(TABLE = CO('EFFORTS')),  # intsp des efforts phy identifies
+                                _F(TABLE = CO('DEPL_PHY')), # intsp des deplacements mesures
+                                _F(TABLE = CO('DEPL_SYN')), # intsp des deplacements resynthetises
+                                        ),
+              );
+
+#**************************************************************************************
+#
+#       TEST_RESU : COMPARAISON ENTRE DEPLACEMENTS "MESURES" (DEPL_PHY, OU SPECTPHY)
+#                     AVEC LES DEPLACEMENTS RESYNTHETISES (DEPL_SYN)
+#
+#**********************************************************************************************
+
+# Pour quelques noeuds, on extrait les deplacements "mesures" aux deplacements synthetises, en
+# sortie de CALC_ESSAI. On recupere les fonctions dans les inter-spectres, on en
+# tire le module, on calcule la valeurs RMS. NORM0_X est la valeur RMS pour la mesure,
+# NORM1_X est la valeurs RMS du depl synthetise, NORM_X est la RMS de la difference des spectres.
+# vale_refe contient les valeurs de reference, qui sont les NORM0_X
+# On fait ce test dans la direction DX, puis dans la direction DZ.
+
+test_no = ['N' + str(ind) for ind in [5,8,15,17,20,27]]*2 + ['N' + str(ind) for ind in [24,28,30]]
+test_ddl = ['DX']*6+['DZ']*6+['DY']*3
+l_vale_calc = [0.10597078761551,0.013220495063151,0.044467153184123,0.036152293635863,4.244322037558E-03,
+0.019369716201988,0.066472795142863,0.16757397589042,0.070522668804075,0.050193297381413,0.079778731195360,
+0.034815163996144,1.258593928322E-04,1.4582686174139E-04,2.4132303225626E-05]
+
+RAPPORT = FORMULE( NOM_PARA = ('REFE','DELTA'), VALE = 'DELTA/REFE')
+
+for ind in range(len(test_no)):
+
+    FONC0 = RECU_FONCTION( INTE_SPEC = DEPL_PHY,
+                                     NOEUD_I = test_no[ind],
+                                     NOM_CMP_I = test_ddl[ind],
+                                    )
+
+    FONC1 = RECU_FONCTION( INTE_SPEC = DEPL_SYN,
+                                     NOEUD_I = test_no[ind],
+                                     NOM_CMP_I = test_ddl[ind],
+                                    )
+
+    DIFF  = CALC_FONCTION(COMB = (_F( FONCTION = FONC0,COEF = -1),
+                                    _F( FONCTION = FONC1,COEF =  1)))
+
+    NORM0 = INFO_FONCTION( RMS= _F(FONCTION = FONC0))
+    NORM0 = CALC_TABLE( reuse = NORM0, TABLE = NORM0,
+                        ACTION = _F(OPERATION = 'RENOMME', NOM_PARA=('RMS','REFE')))
+
+    NORM  = INFO_FONCTION( RMS= _F(FONCTION = DIFF))
+    NORM = CALC_TABLE( reuse = NORM, TABLE = NORM,
+                       ACTION = _F(OPERATION = 'RENOMME', NOM_PARA=('RMS','DELTA')))
+
+    # On range dans la meme table la RMS de la mesure et la RMS de la difference entre mesure et synthese
+    NORM = CALC_TABLE( reuse = NORM, TABLE = NORM,
+                       ACTION = _F(OPERATION = 'COMB', TABLE = NORM0, NOM_PARA='METHODE'))
+
+    # On ajoute le NOEU_CMP associe :
+    noeu_cmp = test_no[ind] + '_' + test_ddl[ind]
+    NOM = CREA_TABLE(LISTE = (_F( PARA = 'FONCTION', LISTE_K = 'DIFF'),
+                              _F( PARA = 'NOEU_CMP', LISTE_K = noeu_cmp)))
+    NORM = CALC_TABLE( reuse = NORM, TABLE = NORM,
+                       ACTION = _F(OPERATION = 'COMB', TABLE = NOM, NOM_PARA='FONCTION'))
+
+    # calcul de la colonne du rapport DELTA/REFE : celui-ci doit etre e
+    NORM = CALC_TABLE( reuse = NORM, TABLE = NORM,
+                       ACTION = _F(OPERATION = 'OPER', FORMULE = RAPPORT, NOM_PARA='DELTA/REFE'))
+
+    TEST_TABLE(CRITERE='ABSOLU',
+               REFERENCE='AUTRE_ASTER',
+               PRECISION=0.2,
+               VALE_CALC=l_vale_calc[ind],
+               VALE_REFE=0.0,
+               NOM_PARA='DELTA/REFE',
+               TYPE_TEST='MAX',
+               TABLE=NORM,)
+
+
+    DETRUIRE( CONCEPT = _F(NOM = (NORM,NORM0,DIFF,FONC0,FONC1,NOM)))
+
+
+FIN();
+
+

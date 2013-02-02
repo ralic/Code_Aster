@@ -1,0 +1,306 @@
+
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# RESPONSABLE SFAYOLLE S.FAYOLLE
+#  DATE   : 27/10/03
+#  AUTEUR : F. LEBOUVIER (DeltaCAD)
+#  TITRE  : FLEXION D'UNE DALLE EN BETON ARME (MODELE GLRC) APPUYEE SUR 2 COTES:
+# ssls126a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#           REGIME DE POUTRE ELASTIQUE
+#
+#  DETAILS : MODELISATION DKTG
+#            Mailles TRIA3
+
+DEBUT(CODE=_F(NOM='SSLS126A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# Carateristiques de la dalle
+
+EP = 0.12;         # Epaisseur
+AX = 7.854E-4;     # Taux de ferraillage
+AY = 7.854E-4;     # Taux de ferraillage
+EZ = 0.038;        # Distance grille/surface moyenne de la dalle
+EZ = 0.5*EP - EZ   # Enrobage
+R0 = EZ/(0.5*EP)   # Distance normalisee du ferraillage par rapport
+                   # au feuillet moyen
+
+# Caracteristiques du beton
+
+EB  = 35700.E6;    # Module d'Young
+NUB = 0.22;
+
+# Caracteristiques de l'acier (armatures)
+
+E  = 210000.E6;    # Module d'Young
+NU = 0.3;          # Coefficient de poisson
+
+# Calcul des coefficients de la matrice elastique en membrane et en flexion
+
+# Membrane
+
+# COEF_N1 = EB*EP/(1.-NUB*NUB)
+# COEF_N2 = 2.*E
+
+# H1111 = COEF_N1 + COEF_N2*AX
+# H1122 = COEF_N1*NUB
+# H1112 = 0.
+# H2222 = COEF_N1 + COEF_N2*AY
+# H2212 = 0.
+# H1212 = COEF_N1*(1-NUB)/2.
+
+# Flexion
+
+# COEF_M1 = EB*EP*EP*EP/12./(1.-NUB*NUB)
+# COEF_M2 = 2.*E*EZ*EZ
+#
+# A1111 = COEF_M1 + COEF_M2*AX
+# A1122 = COEF_M1*NUB
+# A1112 = 0.
+# A2222 = COEF_M1 + COEF_M2*AY
+# A2212 = 0.
+# A1212 = COEF_M1*(1-NUB)/2.
+
+# Membrane-Flexion
+
+# B1111 = 0.
+# B1122 = 0.
+# B1112 = 0.
+# B2222 = 0.
+# B2212 = 0.
+# B1212 = 0.
+
+# Membrane-Cisaillement
+
+# E1113=0.
+# E1123=0.
+# E2213=0.
+# E2223=0.
+# E1213=0.
+# E1223=0.
+
+# Flexion-Cisaillement
+
+# F1113=0.
+# F1123=0.
+# F2213=0.
+# F2223=0.
+# F1213=0.
+# F1223=0.
+
+# Cisaillement
+
+# G1313=0.001
+# G1323=0.
+# G2323=0.001
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='LCONTY',),
+                               _F(GROUP_MA='LCONTX',),
+                               _F(GROUP_MA='LSYMX' ,),
+                               _F(GROUP_MA='LSYMY' ,),
+                             ),);
+
+MOD=AFFE_MODELE(MAILLAGE=MAIL,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKTG',),);
+
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
+                                      VECT_NORM=(0.,0.,1.),
+                                      GROUP_NO='A1',),
+                   );
+
+CPRAG  = 0.
+GAM    = 0.0
+
+CPRG  = CPRAG
+MF     = 1.0E16
+QP     = 0.15E0
+
+MAT_B=DEFI_MATERIAU(
+                           ELAS = _F(
+                                      E    =  EB,
+                                      NU   =  NUB,
+                                      RHO    = 2500.0,
+                                     ),
+                           BETON_ECRO_LINE = _F(
+                                      D_SIGM_EPSI = 0.0,
+                                      SYT   =  4.4E6,
+                                      SYC    = -52.5E6,
+                                     ),
+                          );
+
+MAT_A=DEFI_MATERIAU(
+                           ELAS = _F(
+                                      E    =  E,
+                                      NU   =  NU,
+                                     ),
+                           ECRO_LINE = _F(
+                                      D_SIGM_EPSI = 0.0,
+                                      SY   =  5.E8,
+                                     ),
+                          );
+MAT = DEFI_GLRC(RELATION='GLRC_DAMAGE',
+                        BETON = _F(
+                          MATER = MAT_B,
+                          EPAIS = EP,
+                          GAMMA = GAM,
+                          QP1 = QP,
+                          QP2 = QP,
+
+                          C1N1 = CPRG,C1N2 = CPRG,C1N3 = CPRG,
+                          C2N1 = CPRG,C2N2 = CPRG,C2N3 = CPRG,
+                          C1M1 = CPRG,C1M2 = CPRG,C1M3 = CPRG,
+                          C2M1 = CPRG,C2M2 = CPRG,C2M3 = CPRG,
+                         ),
+                        NAPPE = (_F(
+                          MATER = MAT_A,
+                          OMX = AX,
+                          OMY = AY,
+                          RX = R0,
+                          RY = R0,
+                         ),_F(
+                          MATER = MAT_A,
+                          OMX = AX,
+                          OMY = AY,
+                          RX = -R0,
+                          RY = -R0,
+                         )),
+                         INFO=2,
+                                             );
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MOD,
+                        COQUE=_F(GROUP_MA='MESH',
+                                 EPAIS=EP,
+                                 ANGL_REP=(0.0,0.0,),),);
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
+                        DDL_IMPO=(_F(GROUP_NO='LCONTY',
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='LSYMX',
+                                     DY=0,
+                                     DRX=0,),
+                                  _F(GROUP_NO='LSYMY',
+                                     DX=0,
+                                     DRY=0.0,),),);
+
+PRES=AFFE_CHAR_MECA(MODELE=MOD,
+                    FORCE_COQUE=_F(GROUP_MA='DALLE',
+                                   PRES=-10000.0,),);
+CH_FO=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0, 0.0,1.0, 1.0),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                   );
+
+INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
+                          _F(JUSQU_A = 1.,NOMBRE = 1),
+                      ),);
+
+RESU=STAT_NON_LINE( MODELE=MOD,
+                      CHAM_MATER= CHMAT,
+                      CARA_ELEM = CARA_ELE,
+                      COMP_INCR=_F(
+                                    RELATION = 'GLRC_DAMAGE',
+                                    ),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+                      INCREMENT=_F( LIST_INST = INST,
+                                    PRECISION =1.E-1),
+                      EXCIT=(   _F( CHARGE = COND_LIM,),
+                                _F( CHARGE = PRES,
+                                    FONC_MULT = CH_FO,),
+                     ),);
+
+RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=RESU)
+
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC= 2.44227865E-04,
+                  VALE_REFE=2.433E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=8.9999999999999993E-3,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOM_CMP='MXX',
+                  VALE_CALC= 3.98284132E+03,
+                  VALE_REFE=4050.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02,
+                  MAILLE='M266',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU,
+                  NOM_CHAM='DEGE_ELNO',
+                  NOM_CMP='KXX',
+                  VALE_CALC= 7.24595188E-04,
+                  VALE_REFE=7.2099999999999996E-4,
+                  CRITERE='RELATIF',
+                  PRECISION=0.029999999999999999,
+                  MAILLE='M266',),
+          )
+
+if 0 :   # cette partie du test est cassee car EFGE_ELNO necessite SIEF_ELGA
+         # et SIEF_ELGA n'est pas calcule par DKTG
+
+      #-----------------------------------------------------------------------
+      # verification que l'on peut utiliser DKTG dans un calcul MECA_STATIQUE
+      # et que l'on peut calculer EFGE_ELNO (non-regression) :
+      #------------------------------------------------------------------------
+
+      MESTAT=MECA_STATIQUE( MODELE=MOD, CHAM_MATER= CHMAT,  CARA_ELEM = CARA_ELE,
+                            EXCIT=(   _F( CHARGE = COND_LIM,),
+                                      _F( CHARGE = PRES,)),
+                            OPTION='SANS',
+                           )
+
+      MESTAT=CALC_CHAMP(reuse=MESTAT,RESULTAT=MESTAT,CONTRAINTE=('EFGE_ELNO'))
+
+
+      #TEST_RESU(RESU= _F( RESULTAT = MESTAT, NUME_ORDRE = 1, NOM_CHAM = 'DEPL', NOEUD = 'N6', NOM_CMP='DZ',
+      #               VALE = 2.6050938293546E-04 , CRITERE = 'RELATIF', PRECISION = 1.E-8, REFERENCE = 'NON_DEFINI'))
+
+      #TEST_RESU(RESU= _F( RESULTAT = MESTAT, NUME_ORDRE = 1, NOM_CHAM = 'EFGE_ELNO', MAILLE='M1', NOEUD = 'N158', NOM_CMP='MXX',
+      #               VALE = 184.4373531702 ,      CRITERE = 'RELATIF', PRECISION = 1.E-8, REFERENCE = 'NON_DEFINI'))
+
+      #TEST_RESU(RESU= _F( RESULTAT = MESTAT, NUME_ORDRE = 1, NOM_CHAM = 'EFGE_ELNO', MAILLE='M1', NOEUD = 'N158', NOM_CMP='QX',
+      #               VALE = -13072.786909204 ,    CRITERE = 'RELATIF', PRECISION = 1.E-8, REFERENCE = 'NON_DEFINI'))
+
+
+FIN();

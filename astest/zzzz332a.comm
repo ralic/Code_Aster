@@ -1,0 +1,72 @@
+# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
+#
+# TITRE VALIDATION DE CREA_RESU / EVOL_VARC / NEUT A PARTIR DE NEUT_F
+# zzzz332a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+DEBUT(CODE=_F(NOM='ZZZZ332A',NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'), )
+
+MAIL=LIRE_MAILLAGE(FORMAT='ASTER',UNITE=17)
+
+LIM = DEFI_LIST_REEL(
+   DEBUT = 0.,
+   INTERVALLE = ( _F(JUSQU_A = 2.0, PAS = 1.0,),),
+)
+
+def Temper(t,x,y,z):
+    return t*x*y*z
+
+fct1 = FORMULE(NOM_PARA = ('INST','X','Y','Z'), VALE='Temper(INST,X,Y,Z)')
+
+ch1 = CREA_CHAMP(
+   TYPE_CHAM='NOEU_NEUT_F', OPERATION= 'AFFE', MAILLAGE = MAIL ,
+   AFFE=_F(TOUT='OUI', NOM_CMP='X1', VALE_F=fct1,),
+)
+
+NEUT1 = CREA_RESU(
+   OPERATION = 'AFFE', TYPE_RESU = 'EVOL_VARC', NOM_CHAM = 'NEUT',
+   AFFE = _F(CHAM_GD = ch1, LIST_INST = LIM,),
+)
+
+
+IMPR_RESU(RESU=_F(RESULTAT=NEUT1))
+
+Noeuds={
+ 'N1' : (0.00,  0.00,  0.00),
+ 'N2' : (0.50,  0.10,  0.05),
+ 'N3' : (0.30,  0.45,  0.10),
+ 'N4' : (0.10,  0.50,  0.15),
+ 'N5' : (0.10,  0.05,  0.80),
+ 'N6' : (0.45,  0.15,  0.75),
+ 'N7' : (0.55,  0.60,  0.70),
+ 'N8' : (0.15,  0.65,  0.85),
+}
+
+mclf = {}
+mclf['RESU'] = []
+for ne in Noeuds.keys():
+   for temps in [1.0 , 2.0]:
+      valeur = temps*Noeuds[ne][0]*Noeuds[ne][1]*Noeuds[ne][2]
+      mclf['RESU'].append( _F(RESULTAT=NEUT1,INST=temps,NOM_CHAM='NEUT',NOM_CMP='X1',
+                NOEUD=ne, VALE_CALC = valeur, VALE_REFE = valeur,
+                REFERENCE='ANALYTIQUE',PRECISION=1.0E-10,CRITERE='RELATIF' ),)
+
+TEST_RESU(**mclf)
+FIN()
+

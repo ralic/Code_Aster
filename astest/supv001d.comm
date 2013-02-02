@@ -1,0 +1,58 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE : VERIFICATION DE LA MEMOIRE CONSOMMEE PAR LE SUPERVISEUR
+# supv001d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
+
+from Noyau.N_info import (message, ALL, SUPERV, LEVEL,
+                          current_memory_used, stack_header_callback)
+#message.extend_message(SUPERV, stack_header_callback)
+#message.set_level(ALL, LEVEL.DEBUG)
+
+DEBUT(CODE=_F(NOM='SUPV001D', NIV_PUB_WEB='INTERNET'),
+      PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1',)
+
+niter = 5000
+
+mem0 = current_memory_used()
+#message.debug(ALL, "Execution de %d iterations", niter)
+
+for i in xrange(niter):
+    listeR = DEFI_LIST_REEL(DEBUT=1.,
+                            INTERVALLE=_F(JUSQU_A=10.,
+                                          NOMBRE=50),)
+    DETRUIRE(CONCEPT=_F(NOM=listeR))
+
+mem = current_memory_used() - mem0
+message.info(ALL, "Memoire consommee = %6.2f Mo pour %d iterations (%.2f ko par etapes)",
+              mem, niter, mem * 1024. / niter / 2)
+
+# test qu'on a consomme peu (moins de 1 Mo)
+tab = CREA_TABLE(LISTE=(_F(PARA='MEMOIRE',
+                           LISTE_R=mem,),),)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0,
+           VALE_CALC= 0.00000000E+00,
+           VALE_REFE=0.0,
+           NOM_PARA='MEMOIRE',
+           TABLE=tab,)
+
+FIN()

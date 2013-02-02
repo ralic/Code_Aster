@@ -1,0 +1,106 @@
+
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE FLEXION D'UNE PLAQUE RECTANULAIRE TROUEE
+# ssls130a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#       METHODE PAR MODELISATION COMPLETE
+
+DEBUT(CODE=_F(NOM='SSLS130A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+PRE_IDEAS();
+
+MAYA=LIRE_MAILLAGE();
+
+MATELAS=DEFI_MATERIAU(ELAS=_F(E=71000000000.0,
+                              NU=0.3,),);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAYA,
+                   AFFE=_F(GROUP_MA='ALL_EL',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DKT',),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATELAS,),);
+
+CHCAR=AFFE_CARA_ELEM(MODELE=MODELE,
+                     COQUE=_F(GROUP_MA='ALL_EL',
+                              EPAIS=0.001,),);
+
+ENCAS=AFFE_CHAR_MECA(MODELE=MODELE,
+                     DDL_IMPO=_F(GROUP_NO='GOCH_NO',
+                                 LIAISON='ENCASTRE',),);
+
+FORCE=AFFE_CHAR_MECA(MODELE=MODELE,
+                     FORCE_NODALE=_F(GROUP_NO='DROI_NO',
+                                     FX=100.0,
+                                     FZ=1.0,),);
+
+MECASTAT=MECA_STATIQUE(MODELE=MODELE,
+                       CHAM_MATER=CHMAT,
+                       CARA_ELEM=CHCAR,
+                       EXCIT=(_F(CHARGE=ENCAS,),
+                              _F(CHARGE=FORCE,),),
+                       OPTION='SIEF_ELGA',);
+
+MECASTAT=CALC_CHAMP(reuse=MECASTAT,RESULTAT=MECASTAT,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
+
+
+MECASTA2=POST_CHAMP(RESULTAT=MECASTAT,
+                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),);
+MECASTA2=CALC_CHAMP(reuse =MECASTA2,
+                 RESULTAT=MECASTA2,
+                 CONTRAINTE='SIGM_NOEU',);
+
+DEPLVER=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
+                   OPERATION='EXTR',
+                   RESULTAT=MECASTA2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NUME_ORDRE=1,);
+
+TEST_RESU(CHAM_NO=(_F(
+                      NOM_CMP='SIXX',
+                      TYPE_TEST='MAX',
+                      CHAM_GD=DEPLVER,
+                      VALE_CALC=5.988000E6,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(
+                      NOM_CMP='SIXX',
+                      TYPE_TEST='MIN',
+                      CHAM_GD=DEPLVER,
+                      VALE_CALC=-2.42600E5,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(
+                      NOM_CMP='SIYY',
+                      TYPE_TEST='MAX',
+                      CHAM_GD=DEPLVER,
+                      VALE_CALC=9.66600E5,
+                      TOLE_MACHINE=1.E-3,),
+                   _F(
+                      NOM_CMP='SIYY',
+                      TYPE_TEST='MIN',
+                      CHAM_GD=DEPLVER,
+                      VALE_CALC=-2.072000E6,
+                      TOLE_MACHINE=1.E-3,),
+                   ),
+          )
+
+FIN();

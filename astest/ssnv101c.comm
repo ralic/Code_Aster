@@ -1,0 +1,407 @@
+# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
+# TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (CHABOCHE)
+# ssnv101c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#       MODELE DE CHABOCHE A 2 CENTRES POUR LE 3D
+# TEST VPCS PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D
+# MODELE ELASTOPLASTIQUE DE CHABOCHE AVEC TEMPERATURE IMPOSEE
+# MAILLAGE : ELEMENT 3D CUBE A 8 NOEUDS
+# UNITES   : NEWTON , MILLIMETRE , SECONDE (N,MM,S)
+# RESPONSABLE PROIX J.M.PROIX
+#
+DEBUT(CODE=_F(NOM='SSNV101C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+CUBE=LIRE_MAILLAGE(    )
+
+TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
+                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
+                                            MODELISATION = '3D',
+                                            TOUT = 'OUI',              ))
+
+E0 = 145200.
+E1 = 142500.
+E2 = 151500.
+T1 = 700.
+T2 = 600.
+Temp = T1 + ( (T2-T1)*(E0-E1)/(E2-E1))
+
+ACIER1=INCLUDE_MATERIAU(NOM_AFNOR='Z2CND1712',
+                        UNITE_LONGUEUR='MM',
+                        TYPE_MODELE='REF',
+                        VARIANTE='A',
+                        TYPE_VALE='NOMI',
+                        EXTRACTION=_F(COMPOR='ELAS',
+                                      TEMP_EVAL=Temp,),  );
+
+# LE C_I DU MODELE VMIS_CIN1_CHAB EST DETERMINE PAR C_I = C1*A1
+
+ACIER2=DEFI_MATERIAU(         MATER=ACIER1,
+                              CIN1_CHAB=_F( R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
+                                            C_I = 63767.,
+                                            G_0 = 341.,             ))
+
+ACIER3=DEFI_MATERIAU(       MATER=ACIER1,
+                            CIN2_CHAB=_F(   R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
+                                            C1_I = 63767.,
+                                            G1_0 = 341.,
+                                            C2_I = 0.,
+                                            G2_0 = 0.,
+                                            ))
+
+ACIER4=DEFI_MATERIAU(       MATER=ACIER1,
+                            CIN2_CHAB=_F(   R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
+                                            C1_I = 0.,
+                                            G1_0 = 341.,
+                                            C2_I = 63767.,
+                                            G2_0 = 341.,
+                                            ))
+
+ACIER5=DEFI_MATERIAU(       MATER=ACIER1,
+                            CIN2_CHAB=_F(   R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
+                                            C1_I = 31883.5,
+                                            G1_0 = 341.,
+                                            C2_I = 31883.5,
+                                            G2_0 = 341.,
+                                             ))
+
+MAT2=AFFE_MATERIAU(            MAILLAGE=CUBE,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = ACIER2,
+                                           ))
+
+MAT3=AFFE_MATERIAU(            MAILLAGE=CUBE,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = ACIER3,
+                                           ))
+
+MAT4=AFFE_MATERIAU(            MAILLAGE=CUBE,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = ACIER4,
+                                           ))
+
+MAT5=AFFE_MATERIAU(            MAILLAGE=CUBE,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = ACIER5,
+                                           ))
+
+LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
+                              _F( JUSQU_A = 0.4,    NOMBRE = 1,  ),
+                              _F( JUSQU_A = 1.435, NOMBRE = 12,  )))
+
+TR_CS=AFFE_CHAR_MECA( MODELE=TROISD,
+                      DDL_IMPO=(_F( NOEUD = 'NO4',  DX = 0.,DY = 0.,),
+                                _F( NOEUD = 'NO8',  DX = 0.,DY = 0.,DZ = 0.,),
+                                _F( NOEUD = 'NO2',  DX = 0.,),
+                                _F( NOEUD = 'NO6',  DX = 0.,)),
+                      FORCE_NODALE=(_F( NOEUD = ('NO3', 'NO7',),  FX = -50.,  FY = -25., ),
+                                    _F( NOEUD = ('NO4', 'NO8',),  FX = -25.,  FY = 25.,  ),
+                                    _F( NOEUD = ('NO2', 'NO6',),  FX = 25.,   FY = 25.,  ),
+                                    _F( NOEUD = ('NO1', 'NO5',),           FY = -25., )) )
+
+COEF=DEFI_FONCTION(      NOM_PARA='INST',
+                            PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                          VALE=( 0.0,  0.0,
+                                 1.0,  1.0,    ))
+
+
+SOLNL2=STAT_NON_LINE(      TITRE='TEST TRACTION_CISAILLEMENT LOI CHABOCHE',
+                                    MODELE=TROISD,
+                                CHAM_MATER=MAT2,
+                                   EXCIT=_F(  CHARGE = TR_CS,
+                                           FONC_MULT = COEF,
+                                           TYPE_CHARGE = 'FIXE_CSTE',     ),
+                               COMP_INCR=_F(  RELATION = 'VMIS_CIN1_CHAB',
+                                           RESI_INTE_RELA = 1.E-8,
+                                           ITER_INTE_MAXI = 30,
+                                           DEFORMATION = 'PETIT',
+                                           TOUT = 'OUI',                 ),
+                               INCREMENT=_F(
+                                           LIST_INST = LINST,            ),
+                                  NEWTON=_F(  MATRICE = 'TANGENTE',
+                                           REAC_INCR = 1,
+                                           REAC_ITER = 1,                ),
+                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
+                                           RESI_GLOB_RELA = 1.E-8,
+                                          ),
+                                 SOLVEUR=_F(  SYME = 'NON',  )
+                         )
+
+#
+
+SOLNL2=CALC_CHAMP(reuse=SOLNL2,RESULTAT=SOLNL2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+
+TEST_RESU(RESU=(_F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=143.499999993,
+                   VALE_REFE=143.5,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.051249789,
+                   VALE_REFE=0.051249999999999997,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.076677025,
+                   VALE_REFE=0.076676999999999995,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL2,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.100522994,
+                   VALE_REFE=0.100523,
+                   MAILLE='MA1',),
+                ),
+          )
+
+
+SOLNL3=STAT_NON_LINE(
+                           TITRE='TEST TRACTION_CISAILLEMENT LOI CHABOCHE',
+                                    MODELE=TROISD,
+                                CHAM_MATER=MAT3,
+                                   EXCIT=_F(  CHARGE = TR_CS,
+                                           FONC_MULT = COEF,
+                                           TYPE_CHARGE = 'FIXE_CSTE',     ),
+                               COMP_INCR=_F(  RELATION = 'VMIS_CIN2_CHAB',
+                                           RESI_INTE_RELA = 1.E-8,
+                                           ITER_INTE_MAXI = 30,
+                                           DEFORMATION = 'PETIT',
+                                           TOUT = 'OUI',                 ),
+                               INCREMENT=_F(
+                                           LIST_INST = LINST,            ),
+                                  NEWTON=_F(  MATRICE = 'TANGENTE',
+                                           REAC_INCR = 1,
+                                           REAC_ITER = 1,                ),
+                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
+                                           RESI_GLOB_RELA = 1.E-8,
+                                          ),
+                                 SOLVEUR=_F(  SYME = 'NON',  )
+                         )
+
+#
+
+
+
+SOLNL3=CALC_CHAMP(reuse=SOLNL3,RESULTAT=SOLNL3,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+
+TEST_RESU(RESU=(_F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL3,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=143.499999993,
+                   VALE_REFE=143.5,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL3,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.051249789,
+                   VALE_REFE=0.051249999999999997,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL3,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.076677025,
+                   VALE_REFE=0.076676999999999995,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL3,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.100522994,
+                   VALE_REFE=0.100523,
+                   MAILLE='MA1',),
+                ),
+          )
+
+SOLNL4=STAT_NON_LINE(
+                           TITRE='TEST TRACTION_CISAILLEMENT LOI CHABOCHE',
+                                    MODELE=TROISD,
+                                CHAM_MATER=MAT4,
+                                   EXCIT=_F(  CHARGE = TR_CS,
+                                           FONC_MULT = COEF,
+                                           TYPE_CHARGE = 'FIXE_CSTE',     ),
+                               COMP_INCR=_F(  RELATION = 'VMIS_CIN2_CHAB',
+                                           RESI_INTE_RELA = 1.E-8,
+                                           ITER_INTE_MAXI = 30,
+                                           DEFORMATION = 'PETIT',
+                                           TOUT = 'OUI',                 ),
+                               INCREMENT=_F(
+                                           LIST_INST = LINST,            ),
+                                  NEWTON=_F(  MATRICE = 'TANGENTE',
+                                           REAC_INCR = 1,
+                                           REAC_ITER = 1,                ),
+                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
+                                           RESI_GLOB_RELA = 1.E-8,
+                                          ),
+                                 SOLVEUR=_F(  SYME = 'NON',  )
+                         )
+
+#
+
+
+
+SOLNL4=CALC_CHAMP(reuse=SOLNL4,RESULTAT=SOLNL4,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+
+TEST_RESU(RESU=(_F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL4,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=143.499999993,
+                   VALE_REFE=143.5,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL4,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.051249789,
+                   VALE_REFE=0.051249999999999997,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL4,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.076677025,
+                   VALE_REFE=0.076676999999999995,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL4,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.100522994,
+                   VALE_REFE=0.100523,
+                   MAILLE='MA1',),
+                ),
+          )
+
+SOLNL5=STAT_NON_LINE(
+                           TITRE='TEST TRACTION_CISAILLEMENT LOI CHABOCHE',
+                                    MODELE=TROISD,
+                                CHAM_MATER=MAT5,
+                                   EXCIT=_F(  CHARGE = TR_CS,
+                                           FONC_MULT = COEF,
+                                           TYPE_CHARGE = 'FIXE_CSTE',     ),
+                               COMP_INCR=_F(  RELATION = 'VMIS_CIN2_CHAB',
+                                           RESI_INTE_RELA = 1.E-8,
+                                           ITER_INTE_MAXI = 30,
+                                           DEFORMATION = 'PETIT',
+                                           TOUT = 'OUI',                 ),
+                               INCREMENT=_F(
+                                           LIST_INST = LINST,            ),
+                                  NEWTON=_F(  MATRICE = 'TANGENTE',
+                                           REAC_INCR = 1,
+                                           REAC_ITER = 1,                ),
+                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
+                                           RESI_GLOB_RELA = 1.E-8,
+                                          ),
+                                 SOLVEUR=_F(  SYME = 'NON',  )
+                         )
+
+#
+
+
+
+SOLNL5=CALC_CHAMP(reuse=SOLNL5,RESULTAT=SOLNL5,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+
+TEST_RESU(RESU=(_F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL5,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=143.499999993,
+                   VALE_REFE=143.5,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL5,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.051249789,
+                   VALE_REFE=0.051249999999999997,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL5,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='EPXY',
+                   VALE_CALC=0.076677025,
+                   VALE_REFE=0.076676999999999995,
+                   MAILLE='MA1',),
+                _F(INST=1.4350000000000001,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=SOLNL5,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='NO1',
+                   NOM_CMP='V1',
+                   VALE_CALC=0.100522994,
+                   VALE_REFE=0.100523,
+                   MAILLE='MA1',),
+                ),
+          )
+
+FIN( )
+#

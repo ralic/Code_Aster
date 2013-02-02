@@ -1,0 +1,378 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE CALCUL DES MODES PROPRES D'UNE ROUE AUBAGEE
+# sdll133b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#       METHODE PAR SYMETRIE CYCLIQUE DYNAMIQUE
+
+DEBUT(CODE=_F(NOM='SDLL133B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+#*********************************************
+# DEFINITION DES PARAMETRES GLOBAUX DE L'ETUDE
+#*********************************************
+
+ELAS=DEFI_MATERIAU(ELAS=_F(E=71000000000.0,
+                           NU=0.3,
+                           RHO=7820.0,),
+                   ECRO_LINE=_F(SY=1.E15,D_SIGM_EPSI=0.),);
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,1.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
+
+#*********************************************************
+# CALCUL STATIQUE DE LA PRECONTRAINTE SUR LE MODELE SIMPLE
+#*********************************************************
+
+MAYAS=LIRE_MAILLAGE(FORMAT='MED',);
+
+MODELS=AFFE_MODELE(MAILLAGE=MAYAS,
+                   AFFE=_F(GROUP_MA='ALL_EL',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+
+CHMATS=AFFE_MATERIAU(MAILLAGE=MAYAS,
+                    MODELE=MODELS,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ELAS,),);
+
+IMPOS=AFFE_CHAR_MECA(MODELE=MODELS,
+                    DDL_IMPO=_F(GROUP_NO='BAS_NO',
+                                DX=0.0,
+                                DY=0.0,
+                                DZ=0.0,),);
+
+ROTATIOS=AFFE_CHAR_MECA(MODELE=MODELS,
+                        ROTATION= _F(VITESSE=157.0,
+                                     AXE=(0.0,0.0,1.0,),
+                                     CENTRE=(0.0,0.0,0.0,),),);
+
+# liaison cyclique en statique par liaison_mail
+LIAIS=AFFE_CHAR_MECA(MODELE=MODELS,
+                     LIAISON_MAIL=_F(GROUP_MA_MAIT='DROI_X8',
+                                     GROUP_NO_ESCL='GOCH_NO',
+                                     ANGL_NAUT=(22.5,0.0,0.0,),
+                                     CENTRE=(0.0,0.0,0.0,),),
+                     INFO=1,);
+
+KELES=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MODELS,
+                     CHAM_MATER=CHMATS,
+                     CHARGE=(IMPOS,LIAIS,ROTATIOS,),);
+
+NUMES=NUME_DDL(MATR_RIGI=KELES,);
+
+
+# calcul non lineaire en grande deformation
+PRECONT=STAT_NON_LINE(MODELE=MODELS,
+                      CHAM_MATER=CHMATS,
+                      EXCIT=(_F(CHARGE=IMPOS,
+                                TYPE_CHARGE='FIXE_CSTE',),
+                             _F(CHARGE=LIAIS,
+                                TYPE_CHARGE='FIXE_CSTE',),
+                             _F(CHARGE=ROTATIOS,
+                                FONC_MULT=RAMPE,
+                                TYPE_CHARGE='SUIV',
+                                ),),
+                      COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                   DEFORMATION='SIMO_MIEHE',
+                                   ),
+                      INCREMENT=_F(LIST_INST=L_INST,),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                     ITER_GLOB_MAXI=30,),);
+
+
+################################################################
+#  DEFINITION DU MODELE CYCLIQUE PAR DUPLICATION DU MAILLAGE
+################################################################
+
+# duplication du maillage initiale
+# les groupes de mailles et de noeuds du maillage 2 sont renomes
+# en 6 caracteres + '_0' pour eviter les conflits avec le maillage 1
+MAYAD=ASSE_MAILLAGE(MAILLAGE_1=MAYAS,
+                   MAILLAGE_2=MAYAS,
+                   OPERATION='SUPERPOSE',);
+
+MODELD=AFFE_MODELE(MAILLAGE=MAYAD,
+                   AFFE=_F(GROUP_MA=('ALL_EL','ALL_EL_0'),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+
+CHMATD=AFFE_MATERIAU(MAILLAGE=MAYAD,
+                    MODELE=MODELD,
+                    AFFE=_F(GROUP_MA=('ALL_EL','ALL_EL_0'),
+                            MATER=ELAS,),);
+
+IMPOD=AFFE_CHAR_MECA(MODELE=MODELD,
+                      DDL_IMPO=_F(GROUP_NO=('BAS_NO','BAS_NO_0'),
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),
+                                      );
+
+ROTATIOD=AFFE_CHAR_MECA(MODELE=MODELD,
+                        ROTATION= _F(VITESSE=157.0,
+                                     AXE=(0.0,0.0,1.0,),
+                                     CENTRE=(0.0,0.0,0.0,),),);
+
+#****************************************************
+# CALCUL DE LA PRECONTRAINTE SUR LE MAILLAGE DUPLIQUE
+#****************************************************
+
+# affectation des conditions de symetrie cyclique pour le diametre
+# nodal = 0 par liaison_cycl pour permettre le recalcul des contraintes
+# par STAT_NON_LINE
+# les regles d'utilisation sont les memes que pour liaison_mail
+# mais avec deux 'partenaires' au lieu d'un.
+LIAIS0=AFFE_CHAR_MECA(MODELE=MODELD,
+                      LIAISON_CYCL=(
+                                    _F(
+                                       GROUP_MA_MAIT1='DROI_X8',
+                                       GROUP_MA_MAIT2='DROI_X80',
+                                       GROUP_NO_ESCL='GOCH_NO',
+                                       ANGL_NAUT=(22.5,0.0,0.0,),
+                                       CENTRE=(0.0,0.0,0.0,),
+                                       COEF_MAIT1=(1.),
+                                       COEF_MAIT2=(0.),
+                                       ),
+                                    _F(
+                                       GROUP_MA_MAIT1='DROI_X8',
+                                       GROUP_MA_MAIT2='DROI_X80',
+                                       GROUP_NO_ESCL='GOCH_NO0',
+                                       ANGL_NAUT=(22.5,0.0,0.0,),
+                                       CENTRE=(0.0,0.0,0.0,),
+                                       COEF_MAIT1=(0.),
+                                       COEF_MAIT2=(1.),
+                                       ),
+                                       ),
+                     INFO=1);
+
+# Projection du deplacement statique sur le maillage duplique
+EVOLNOLI=PROJ_CHAMP(METHODE='COLLOCATION',
+                RESULTAT=PRECONT,
+                MODELE_1=MODELS,
+                MODELE_2=MODELD,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,
+                VIS_A_VIS=_F(GROUP_MA_1='ALL_EL',
+                             GROUP_MA_2=('ALL_EL','ALL_EL_0'),
+                             ),
+                );
+
+# calcul statique en utilisant le champ de deplacement calcule
+# precedemment 'DEPL_CALCULE'.
+# Ceci permet de calculer la precontrainte sans relancer l'ensemble
+# du calcul
+PRECOND=STAT_NON_LINE(MODELE=MODELD,
+                      CHAM_MATER=CHMATD,
+                      EXCIT=(_F(CHARGE=LIAIS0,
+                                TYPE_CHARGE='FIXE_CSTE',),
+                             _F(CHARGE=IMPOD,
+                                TYPE_CHARGE='FIXE_CSTE',),
+                             _F(CHARGE=ROTATIOD,
+                                FONC_MULT=RAMPE,
+                                TYPE_CHARGE='SUIV',
+                                ),
+                                ),
+                      COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                   DEFORMATION='SIMO_MIEHE',
+                                   ),
+                      INCREMENT=_F(LIST_INST=L_INST,),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,
+                                PREDICTION='DEPL_CALCULE',
+                                EVOL_NOLI=EVOLNOLI,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1e10,
+                                     ITER_GLOB_MAXI=0,
+                                     ),);
+
+CONTRAIN=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                    OPERATION='EXTR',
+                    NUME_ORDRE = 1,
+                    RESULTAT=PRECOND,
+                    NOM_CHAM='SIEF_ELGA',);
+
+
+#****************************************************
+# DEFINITION DE LA CONDITION DE SYMETRIE CYCLIQUE
+# POUR UN DIAMETRE DONNE
+#****************************************************
+
+# Definition du numero du diametre nodale
+n=2
+
+# affectation des conditions de symetrie cyclique avec
+# prise en compte du dephasage inter_secteur par liaison_cycl
+# les regles d'utilisation sont les memes que pour liaison_mail
+# mais avec deux 'partenaires' au lieu d'un.
+LIAISD=AFFE_CHAR_MECA(MODELE=MODELD,
+                      LIAISON_CYCL=(
+                                    _F(
+                                       GROUP_MA_MAIT1='DROI_X8',
+                                       GROUP_MA_MAIT2='DROI_X80',
+                                       GROUP_NO_ESCL='GOCH_NO',
+                                       ANGL_NAUT=(22.5,0.0,0.0,),
+                                       CENTRE=(0.0,0.0,0.0,),
+                                       COEF_MAIT1=(cos(n*22.5*pi/180)),
+                                       COEF_MAIT2=(sin(n*22.5*pi/180)),
+                                       ),
+                                    _F(
+                                       GROUP_MA_MAIT1='DROI_X8',
+                                       GROUP_MA_MAIT2='DROI_X80',
+                                       GROUP_NO_ESCL='GOCH_NO0',
+                                       ANGL_NAUT=(22.5,0.0,0.0,),
+                                       CENTRE=(0.0,0.0,0.0,),
+                                       COEF_MAIT1=(-sin(n*22.5*pi/180)),
+                                       COEF_MAIT2=(cos(n*22.5*pi/180)),
+                                       ),
+                                       ),
+                     INFO=1);
+
+#************************************
+# PROCEDURE D'ASSEMBLAGE DES MATRICES
+#************************************
+KELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MODELD,
+                     CHAM_MATER=CHMATD,
+                     CHARGE=(IMPOD,LIAISD,ROTATIOD),
+                     );
+
+MELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MODELD,
+                     CHAM_MATER=CHMATD,
+                     CHARGE=(IMPOD,LIAISD,ROTATIOD),
+                     );
+
+KELGEO=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
+                      MODELE=MODELD,
+                      SIEF_ELGA=CONTRAIN,);
+
+KELROT=CALC_MATR_ELEM(OPTION='RIGI_ROTA',
+                      MODELE=MODELD,
+                      CHAM_MATER=CHMATD,
+                      CHARGE=(IMPOD,LIAISD,ROTATIOD),);
+
+NUME=NUME_DDL(MATR_RIGI=KELEM,);
+
+KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
+                  NUME_DDL=NUME,);
+
+MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
+                  NUME_DDL=NUME,);
+
+KASGEO=ASSE_MATRICE(MATR_ELEM=KELGEO,
+                    NUME_DDL=NUME,);
+
+KASROT=ASSE_MATRICE(MATR_ELEM=KELROT,
+                    NUME_DDL=NUME,);
+
+KASTOT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=KASGEO,
+                                 COEF_R=1.0,),
+                              _F(MATR_ASSE=KASROT,
+                                 COEF_R=1.0,),
+                              _F(MATR_ASSE=KASS,
+                                 COEF_R=1.0,),),);
+
+#********************************************************
+# CALCUL MODAL DES MODES CYCLIQUES POUR LE DIAMETRE DONNE
+#********************************************************
+MODES=MODE_ITER_SIMULT(MATR_RIGI=KASTOT,
+                       MATR_MASS=MASS,
+                       CALC_FREQ=_F(
+                       OPTION='PLUS_PETITE',
+                       NMAX_FREQ=6,),
+                       );
+
+
+TEST_RESU(RESU=(_F(PARA='FREQ',
+                   NUME_MODE=1,
+                   RESULTAT=MODES,
+                   VALE_CALC=33.4833,
+                   TOLE_MACHINE=1.E-3,),
+                _F(PARA='FREQ',
+                   NUME_MODE=2,
+                   RESULTAT=MODES,
+                   VALE_CALC=33.4833,
+                   TOLE_MACHINE=1.E-3,),
+                _F(PARA='FREQ',
+                   NUME_MODE=3,
+                   RESULTAT=MODES,
+                   VALE_CALC=44.899700000000003,
+                   TOLE_MACHINE=1.E-3,),
+                _F(PARA='FREQ',
+                   NUME_MODE=4,
+                   RESULTAT=MODES,
+                   VALE_CALC=44.899700000000003,
+                   TOLE_MACHINE=1.E-3,),
+                _F(PARA='FREQ',
+                   NUME_MODE=5,
+                   RESULTAT=MODES,
+                   VALE_CALC=80.2363,
+                   TOLE_MACHINE=1.E-3,),
+                ),
+          )
+
+SKEL=DEFI_SQUELETTE(CYCLIQUE=_F(NB_SECTEUR=16,
+                                MAILLAGE=MAYAS,),
+                    SECTEUR=_F(TOUT='OUI',),);
+
+MODINTC1=PROJ_CHAMP(METHODE='COLLOCATION',
+                RESULTAT=MODES,
+                MODELE_1=MODELD,
+                MODELE_2=MODELS,
+                NOM_CHAM='DEPL',
+                TOUT_ORDRE='OUI',
+                NUME_DDL=NUMES,
+                VIS_A_VIS=_F(GROUP_MA_1='ALL_EL',
+                             GROUP_MA_2='ALL_EL',),);
+
+MODINTS1=PROJ_CHAMP(METHODE='COLLOCATION',
+                RESULTAT=MODES,
+                MODELE_1=MODELD,
+                MODELE_2=MODELS,
+                NOM_CHAM='DEPL',
+                TOUT_ORDRE='OUI',
+                NUME_DDL=NUMES,
+                VIS_A_VIS=_F(GROUP_MA_1='ALL_EL_0',
+                             GROUP_MA_2='ALL_EL',),);
+
+BIDON=REST_SOUS_STRUC(RESULTAT=MODINTC1,
+                     SQUELETTE=SKEL,
+                     CYCLIQUE=_F(NB_SECTEUR=16,
+                                 NUME_DIAMETRE =2,
+                                 RESULTAT2=MODINTS1,
+                                 ),
+                     );
+
+
+
+
+FIN();
+
+
+
+
+
+

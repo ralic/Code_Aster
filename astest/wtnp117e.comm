@@ -1,0 +1,436 @@
+# MODIF  DATE 15/10/2012   AUTEUR GRANET S.GRANET 
+# TITRE - REEQUILIBRAGE CAPILLAIRE D UN BI-MATERIAUX BO-BG (LIQU_AD_GAZ)
+# wtnp117e.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+#******************************************************************************************
+#  REEQUILIBRAGE CAPILLAIRE D UN BI-MATERIAUX BO-BG - D_PLAN_HHS
+#  LOI HYDRAU DE DE VAN GENUCHTEN+MUALEM
+#  COUPLAGE LIQU_VAPE_GAZ
+#******************************************************************************************
+
+DEBUT(CODE=_F(NOM='WTNP117E', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+
+#=============================================================
+#=============================================================
+METHODE='EF'
+#=============================================================
+#=============================================================
+
+MODELISA = 'D_PLAN_HH2S'
+   
+#=============================================================
+#                     donnees
+#=============================================================
+
+PARM_ALPHA=1.
+
+#
+#*********************
+# Lecture du maillage
+#*********************
+#
+MAILINI  = LIRE_MAILLAGE (FORMAT='MED', );
+
+MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,COPIE=_F(),)
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='BAS',),
+                              _F(GROUP_MA='HAUT',),
+                              _F(GROUP_MA='GAUCHE'),
+                              _F(GROUP_MA='DROIT',),
+                               ),);
+  
+#*********************************************************
+#  Modele de calcul
+#*********************************************************
+#
+MODELE  = AFFE_MODELE ( MAILLAGE =  MAIL,
+      AFFE  = _F( TOUT   = 'OUI'    ,
+            PHENOMENE = 'MECANIQUE' ,
+            MODELISATION = MODELISA ),
+      ) ,
+
+#*********************************************************
+# Definition des caracteristiques fluides
+#**********************************************************
+UN   = DEFI_CONSTANTE ( VALE = 1.);
+ZERO = DEFI_CONSTANTE ( VALE = 0.);
+BIDON = DEFI_CONSTANTE ( VALE = 0.);
+#SMAX=0.99
+SMAX=0.999
+#
+VISCOLIQ = DEFI_CONSTANTE ( VALE = 1.0E-3  ) ;
+VISCOGAZ = DEFI_CONSTANTE ( VALE = 1.8E-5  ) ;
+#
+DVISCOL  = DEFI_CONSTANTE ( VALE = 0. ) ;
+DVISCOG  = DEFI_CONSTANTE ( VALE = 0. ) ;
+#
+#
+#************************************#
+# PERMEABILITE INTRINSEQUE
+#************************************
+KINTBO=DEFI_CONSTANTE(VALE=1.e-20,);
+KINTBG=DEFI_CONSTANTE(VALE=1.e-19,);
+#
+#
+
+HENRY = DEFI_CONSTANTE(VALE=1.E20,);
+
+
+
+#**********************
+
+BBO = 0.06
+BBG=0.412
+
+PRBO = 1.5E6   ;
+NBO  = 1./(1.- BBO) ;
+MBO  = 1-1/NBO  ;
+SRBO = 0.00  ;
+
+PRBG = 1.E7   ;
+NBG  = 1./(1.- BBG) ;
+MBG  = 1-1/NBG  ;
+SRBG = 0.00  ;
+
+#
+#
+
+MATERBO = DEFI_MATERIAU (
+
+       COMP_THM ='LIQU_AD_GAZ' ,
+
+       THM_LIQU =_F(
+   RHO    = 1000.   ,
+   UN_SUR_K  = 0.500E-9   ,
+   ALPHA     = 1.048E-4   ,
+   CP     = 4180.   ,
+   VISC   = VISCOLIQ   ,
+   D_VISC_TEMP  = DVISCOL ,
+            ),
+
+       THM_GAZ=_F(
+  MASS_MOL=0.02896,
+  CP   = 1000.  ,
+  VISC=VISCOGAZ,
+  D_VISC_TEMP=ZERO,
+         ),
+
+              THM_AIR_DISS=_F(CP=0.0,
+                                    COEF_HENRY=HENRY,
+                                      ),
+       THM_VAPE_GAZ=_F(
+  MASS_MOL=0.018,
+  CP=1900.0,
+  VISC=VISCOGAZ,
+  D_VISC_TEMP=ZERO,),
+  
+       THM_DIFFU =_F(
+   R_GAZ   = 8.315  ,
+   RHO     = 1514.  ,
+   CP      = 1500.  ,
+   BIOT_COEF  = 1.  ,
+   PESA_X     = 0.  ,
+   PESA_Y     = 0.  ,
+   PESA_Z     = 0.  ,
+   PERM_IN=KINTBO,
+   VG_N   = NBO  ,
+   VG_PR     = PRBO ,
+   VG_SR     = SRBO ,
+   VG_SMAX   = SMAX ,
+   VG_SATUR=0.9999,
+#
+   FICKV_T=ZERO,
+   FICKV_PV=ZERO,
+   FICKA_T=ZERO,
+   LAMB_T     = ZERO   ,
+   LAMB_S     = ZERO   ,
+   D_LB_S     = ZERO  ,
+   LAMB_CT    = 1.81  ,
+            ),
+
+
+        THM_INIT =_F(
+   TEMP   =  303.  ,
+   PRE1   =   0.0  ,
+   PRE2   =   0.1E6   ,
+   PORO   =   0.3 ,
+   PRES_VAPE    =   3000.0,
+            ),
+
+     )
+#**************************************************************
+# BG on en est la
+#***************************************************************
+#
+MATERBG = DEFI_MATERIAU (
+
+       COMP_THM ='LIQU_AD_GAZ' ,
+
+       THM_LIQU =_F(
+   RHO    = 1000.   ,
+   UN_SUR_K  = 0.500E-9   ,
+   ALPHA     = 1.048E-4   ,
+   CP     = 4180.   ,
+   VISC   = VISCOLIQ   ,
+   D_VISC_TEMP  = DVISCOL ,
+            ),
+
+       THM_GAZ=_F(
+  MASS_MOL=0.02896,
+  CP   = 1000.  ,
+  VISC=VISCOGAZ,
+  D_VISC_TEMP=ZERO,
+         ),
+
+              THM_AIR_DISS=_F(CP=0.0,
+                                    COEF_HENRY=HENRY,
+                                      ),
+
+       THM_VAPE_GAZ=_F(
+  MASS_MOL=0.018,
+  CP=1900.0,
+  VISC=VISCOGAZ,
+  D_VISC_TEMP=ZERO,),
+        THM_DIFFU =_F(
+   R_GAZ   = 8.315  ,
+   RHO     = 1514.  ,
+   CP      = 1500.  ,
+   BIOT_COEF  = 1.  ,
+   PESA_X     = 0.  ,
+   PESA_Y     = 0.  ,
+   PESA_Z     = 0.  ,
+   PERM_IN    = KINTBG,
+#
+ VG_N   = NBG  ,
+ VG_PR     = PRBG ,
+ VG_SR     = SRBG ,
+ VG_SMAX   = SMAX ,
+ VG_SATUR=0.9999,
+#
+   FICKV_T=ZERO,
+   FICKA_T=ZERO,
+   FICKV_PV=ZERO,
+   LAMB_T     = ZERO   ,
+   LAMB_S     = ZERO  ,
+   D_LB_S     = ZERO ,
+   LAMB_CT    = 1.81  ,
+            ),
+
+        THM_INIT =_F(
+   TEMP   =  303.  ,
+   PRE1   =   0.0  ,
+   PRE2   =   0.1E6   ,
+   PRES_VAPE    =   3000.0,
+   PORO   =   0.05 ,
+            ),
+
+     )
+
+#****************************************************************
+# Affectation des materiaux
+#****************************************************************
+#
+#******************************************************************
+# Affectation des materiaux (courbe de saturation du remblai affinee
+#*******************************************************************
+#
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+      AFFE=(_F(GROUP_MA='BO',
+         MATER=MATERBO,),
+         _F(GROUP_MA='BG',
+         MATER=MATERBG,),),);
+#*************************************************************
+# Affectation de l etat initial
+#*************************************************************
+#
+PCINI = 0.
+
+CHAM_0 = CREA_CHAMP ( TYPE_CHAM   = 'NOEU_DEPL_R' ,
+      OPERATION   = 'AFFE'  ,
+      MAILLAGE =  MAIL   ,
+
+      AFFE    = (
+          _F( GROUP_MA  = 'BG',
+             NOM_CMP   = 'PRE1'  ,
+         VALE   =  PCINI , ),
+           _F( GROUP_MA  = ('BO'),
+            NOM_CMP   = 'PRE1'  , # S = 0,77
+            VALE   =  8.9E7  , ),
+           _F( GROUP_MA  = ('BO','BG'),
+            NOM_CMP   = 'PRE2'  ,
+            VALE   =  0.  , ),
+          ),
+        )
+
+
+# FLUX NULS
+
+CH0 = AFFE_CHAR_MECA ( MODELE = MODELE ,
+      FLUX_THM_REP = _F( GROUP_MA   = 'DROIT' ,
+            FLUN_HYDR1 =  0.   ,),)
+
+#
+#
+#********************************
+# Liste des instants de calculs
+#*******************************
+#
+INST1 = DEFI_LIST_REEL ( DEBUT   = 0.0,
+      INTERVALLE = (
+#
+  _F( JUSQU_A = 1000.  , NOMBRE = 30  ,), # Au bout de 2 jour
+  _F( JUSQU_A = 5000.  , NOMBRE = 20  ,), # Au bout de 2 jour
+  _F( JUSQU_A = 10000.  , NOMBRE = 10  ,), # Au bout de 2 jour
+  _F( JUSQU_A = 50000.  , NOMBRE = 30  ,), # Au bout de 2 jour
+  _F( JUSQU_A = 100000.  , NOMBRE = 20  ,), # Au bout de 2 jour
+       ),
+        );
+#
+#******************************************************************
+# Simulation de la corrosion et du chauffage entre 0 et 5000 ans
+# pour la vitesse de corrosion V1
+#******************************************************************
+#
+cal1 = STAT_NON_LINE (
+       MODELE    = MODELE    ,
+       CHAM_MATER   = CHMAT  ,
+
+       EXCIT  =(
+         _F( CHARGE  = CH0 ,) ,
+          ),
+
+       COMP_INCR =_F(  RELATION  = 'KIT_HH',
+                       RELATION_KIT = ('LIQU_AD_GAZ', 'HYDR_VGM'),
+                       PARM_THETA  = 1. , 
+                       PARM_ALPHA=PARM_ALPHA,),
+
+       INCREMENT  =_F(
+#           SUBD_METHODE=SUBD_METHODE,
+           LIST_INST    = INST1,   
+           ),
+
+       ETAT_INIT = _F ( DEPL  = CHAM_0   ,
+       ),
+
+
+       NEWTON    =_F(
+          MATRICE = 'TANGENTE' ,
+          REAC_ITER  =  1   , ),
+      
+       RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
+                        ITER_LINE_MAXI=1,),
+
+       CONVERGENCE  =_F (
+           ITER_GLOB_MAXI = 10,
+           RESI_GLOB_MAXI = 1.E-15  ,
+          ),
+#     INFO=2,
+        );
+#
+# POST TRAITEMENT
+#
+LINST=DEFI_LIST_REEL(VALE=(100.,10000.,50000,100000., ),);
+#LINST=DEFI_LIST_REEL(VALE=(100.,10000., ),);
+#LINST=DEFI_LIST_REEL(VALE=(50., ),);
+
+
+TRB2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+       GROUP_NO='BAS',
+       RESULTAT=cal1,
+       LIST_INST=LINST,
+       NOM_CHAM='DEPL',
+       NOM_CMP=('PRE2',),
+       OPERATION='EXTRACTION',),);
+
+IMPR_TABLE ( TABLE =  TRB2  ,
+   FORMAT   = 'TABLEAU_CROISE' ,
+   TRI    = (_F( NOM_PARA = 'COOR_X',
+   ORDRE = 'CROISSANT',),),
+   NOM_PARA=('INST','COOR_X', 'PRE2',),
+    );
+
+TRB0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+       GROUP_NO='BAS',
+       RESULTAT=cal1,
+       LIST_INST=LINST,
+       NOM_CHAM='DEPL',
+       NOM_CMP=('PRE1',),
+       OPERATION='EXTRACTION',),);
+
+IMPR_TABLE ( TABLE =  TRB0  ,
+    FORMAT   = 'TABLEAU_CROISE' ,
+    TRI   = (_F( NOM_PARA = 'COOR_X' ,
+    ORDRE = 'CROISSANT',),),
+    NOM_PARA=('INST','COOR_X', 'PRE1',),
+    );
+#IMPR_RESU(RESU=(_F(RESULTAT=cal1,))); 
+ 
+TEST_RESU(RESU=_F(INST=100.0,
+               RESULTAT=cal1,
+               NOM_CHAM='DEPL',
+               NOEUD='N111',
+               NOM_CMP='PRE1',
+               VALE_CALC= 3.75690502E+04,
+               REFERENCE='NON_DEFINI',
+               VALE_REFE=3.7569099999999999E4,
+               CRITERE='RELATIF',
+               PRECISION=1.E-2,),
+       )
+
+TEST_RESU(RESU=_F(INST=100.0,
+               RESULTAT=cal1,
+               NOM_CHAM='DEPL',
+               NOEUD='N111',
+               NOM_CMP='PRE2',
+               VALE_CALC=-6.53555041E+03,
+               REFERENCE='NON_DEFINI',
+               VALE_REFE=-6535.5500000000002,
+               CRITERE='RELATIF',
+               PRECISION=1.E-2,),
+       )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=110,
+               REFERENCE='AUTRE_ASTER',
+               RESULTAT=cal1,
+               NOM_CHAM='DEPL',
+               NOEUD='N111',
+               NOM_CMP='PRE1',
+               VALE_CALC= 4.48570609E+06,
+               VALE_REFE=4.485706E6,
+               CRITERE='RELATIF',
+               PRECISION=1.E-2,),
+       )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=110,
+               REFERENCE='AUTRE_ASTER',
+               RESULTAT=cal1,
+               NOM_CHAM='DEPL',
+               NOEUD='N111',
+               NOM_CMP='PRE2',
+               VALE_CALC=-1.24133535E+04,
+               VALE_REFE=-1.241335E4,
+               CRITERE='RELATIF',
+               PRECISION=0.040000000000000001,),
+       )
+
+FIN ( ) ;

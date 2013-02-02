@@ -1,0 +1,462 @@
+# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
+# TITRE SIMULATION DES ESSAIS ANL (TUBES LONGS) : POUTRE SOUMISE
+# sdll110c.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       A UN ECOULEMENT MONOPHASIQUE AVEC UN AMORTISSEMENT EN
+#       FLUIDE AU REPOS DE 1,3#.
+#-------------------------------------------------------------------
+# FICHIER MODELE GEVIBUS
+# RESPONSABLE ADOBES A.ADOBES
+
+DEBUT( CODE=_F(  NOM = 'SDLL110C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+TUBE=LIRE_MAILLAGE(FORMAT='MED', ABSC_CURV=_F(  TOUT = 'OUI'))
+
+TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
+                       CREA_GROUP_MA=_F(  NOM = 'POUTRE',
+                                       TOUT = 'OUI') )
+
+TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
+                       CREA_GROUP_NO=_F(  GROUP_MA = 'POUTRE',)  )
+
+MODELE=AFFE_MODELE(  MAILLAGE=TUBE,
+                     AFFE=_F(  GROUP_MA = 'POUTRE',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'POU_D_TG')
+)
+
+CARA=AFFE_CARA_ELEM(   MODELE=MODELE,
+                       POUTRE=_F(  GROUP_MA = 'POUTRE',
+                                SECTION = 'CERCLE',
+                                CARA = ( 'R','EP',),
+                                VALE = ( 7.939000E-03,
+                                            3.176000E-03, ))
+)
+
+RHOI=DEFI_FONCTION( 
+                   NOM_PARA='ABSC',
+                   MAILLAGE=TUBE,
+                   VALE_Y    =( 1.300000E+00, 1.300000E+00, ),
+                   NOEUD_PARA=( 'N_01_001'  , 'N_04_089', )
+)
+
+RHOE=DEFI_FONCTION( 
+                   NOM_PARA='ABSC',
+                   MAILLAGE=TUBE,
+                   VALE_Y=( 1.000000E+03, 1.000000E+03, 1.300000E+00, 1.300000E+00, ),
+                   NOEUD_PARA=( 'N_01_001', 'N_03_061', 'N_04_001', 'N_04_089', )
+)
+
+PROFVIT1=DEFI_FONC_FLUI(       MAILLAGE=TUBE,
+                             NOEUD_INIT='N_02_001',
+                              NOEUD_FIN='N_02_060',
+                             VITE=_F( 
+                                   PROFIL = 'UNIFORME',
+                                   VALE = 1.000000E+00)
+)
+
+TYPEFLUI=DEFI_FLUI_STRU( 
+               FAISCEAU_TRANS=_F( 
+             COUPLAGE = 'OUI',
+             CARA_ELEM = CARA,
+             PROF_RHO_F_INT = RHOI,
+             PROF_RHO_F_EXT = RHOE,
+             COEF_MASS_AJOU = 2.071110E+00,
+             NOM_CMP = 'DX',
+             TYPE_PAS = 'CARRE_LIGN',
+             TYPE_RESEAU = 1001, 
+             PAS = 1.500000E+00, 
+             PROF_VITE_FLUI = PROFVIT1),
+                           INFO=2
+)
+
+FONC_CM=FONC_FLUI_STRU(  TYPE_FLUI_STRU=TYPEFLUI
+)
+
+MAT=DEFI_MATERIAU(  ELAS_FLUI=_F( 
+                                E = 1.100000E+11,
+                                RHO = 8.330000E+03,
+                                NU = 3.000000E-01,
+                                PROF_RHO_F_EXT = RHOE,
+                                PROF_RHO_F_INT = RHOI,
+                                COEF_MASS_AJOU = FONC_CM)
+)
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=TUBE,
+                       AFFE=_F(  TOUT = 'OUI',
+                              MATER = MAT)
+)
+
+CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+                           _F(  NOEUD = 'N_01_001', 
+                                      DX = 0.0, 
+                                      DY = 0.0, 
+                                      DZ = 0.0, 
+                                      DRZ = 0.0,
+                                     ),
+                           _F(  NOEUD = 'N_04_001', 
+                                      DX = 0.0, 
+                                      DY = 0.0, 
+                                      DZ = 0.0, 
+                                      DRZ = 0.0,),
+                           _F(GROUP_MA = 'POUTRE',
+                              DY = 0.0),)
+)
+
+MELR=CALC_MATR_ELEM(      MODELE=MODELE,
+                          CHARGE=CHDDL,
+                       CARA_ELEM=CARA,
+                      CHAM_MATER=CHMAT,
+                          OPTION='RIGI_FLUI_STRU'
+)
+
+MELM=CALC_MATR_ELEM(      MODELE=MODELE,
+                          CHARGE=CHDDL,
+                       CARA_ELEM=CARA,
+                      CHAM_MATER=CHMAT,
+                          OPTION='MASS_FLUI_STRU'
+)
+
+NUM=NUME_DDL(   MATR_RIGI=MELR
+)
+
+MATRR=ASSE_MATRICE(   MATR_ELEM=MELR,
+                       NUME_DDL=NUM
+)
+
+MATRM=ASSE_MATRICE(   MATR_ELEM=MELM,
+                       NUME_DDL=NUM
+)
+
+MODES=MODE_ITER_SIMULT(   MATR_RIGI=MATRR,
+                          MATR_MASS=MATRM,
+                         METHODE='TRI_DIAG',
+                       CALC_FREQ=_F( 
+                           OPTION = 'PLUS_PETITE',
+                           NMAX_FREQ = 2)
+)
+
+
+MODES=NORM_MODE( reuse=MODES,  MODE=MODES,
+                               NORME=('TRAN',)
+)
+
+vite_min = 5.000000E-01
+vite_max = 2.500000E+00
+nb_poin = 201
+
+MELFLUI0=CALC_FLUI_STRU(
+             VITE_FLUI=_F(  VITE_MIN = vite_min,
+                         VITE_MAX = vite_max,
+                         NB_POIN = nb_poin),
+             BASE_MODALE=_F(  MODE_MECA = MODES, 
+                          NUME_ORDRE = ( 1,),
+                          AMOR_REDUIT = (1.300000E-02,)),
+
+             TYPE_FLUI_STRU=TYPEFLUI,
+                 IMPRESSION=_F(  PARA_COUPLAGE = 'OUI')
+)
+
+SPECTRE1=DEFI_SPEC_TURB(  
+              SPEC_LONG_COR_3=_F(  LONG_COR = 3.4,
+                                PROF_VITE_FLUI = PROFVIT1)
+)
+
+pas = (vite_max - vite_min)/(nb_poin - 1)
+vite = []
+for i in range(nb_poin):
+  vitesse = vite_min+i*pas
+  vite.append(vitesse)
+
+SPRJ  = [None]*nb_poin
+RPM0  = [None]*nb_poin
+RPP0  = [None]*nb_poin
+DYN0  = [None]*nb_poin
+
+for i in range(len(vite)):
+  SPRJ[i]=PROJ_SPEC_BASE(
+                       SPEC_TURB=SPECTRE1,
+                       NB_POIN=1024,
+                       FREQ_INIT= 10.2222 ,
+                       FREQ_FIN= 30.6666 ,
+                       TOUT_CMP='NON',
+                       TOUT='OUI',
+                       BASE_ELAS_FLUI=MELFLUI0,
+                    VITE_FLUI=vite[i],
+               )
+
+  RPM0[i]=DYNA_SPEC_MODAL( 
+              BASE_ELAS_FLUI=MELFLUI0,
+                    VITE_FLUI=vite[i],
+                       EXCIT=_F(  INTE_SPEC_GENE = SPRJ[i])
+              )
+
+  RPP0[i]=REST_SPEC_PHYS( 
+               BASE_ELAS_FLUI=MELFLUI0,
+                    VITE_FLUI=vite[i],
+               INTE_SPEC_GENE=RPM0[i],
+                     NOM_CHAM='DEPL',
+                      NOM_CMP='DX',
+                       OPTION='TOUT_TOUT',
+                        NOEUD=('N_02_030', )
+                )
+
+  DYN0[i]=POST_DYNA_ALEA( 
+             INTE_SPEC=RPP0[i], 
+            TOUT_ORDRE='OUI',
+                OPTION='DIAG'
+             )
+
+F_FREQ=RECU_FONCTION( 
+                 BASE_ELAS_FLUI=MELFLUI0,
+                         PARA_X='VITE_FLU',
+                         PARA_Y='FREQ',
+                     TOUT_ORDRE='OUI',
+                      NUME_MODE=1
+                          )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.0819324569,
+                        VALE_PARA=0.5,
+                        FONCTION=F_FREQ,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.3096438369,
+                        VALE_PARA=0.75,
+                        FONCTION=F_FREQ,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.4674595336,
+                        VALE_PARA=1.0,
+                        FONCTION=F_FREQ,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.4439720111,
+                        VALE_PARA=1.25,
+                        FONCTION=F_FREQ,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.4439720274,
+                        VALE_PARA=1.5,
+                        FONCTION=F_FREQ,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.4439720690,
+                        VALE_PARA=1.75,
+                        FONCTION=F_FREQ,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.4439721809,
+                        VALE_PARA=2.0,
+                        FONCTION=F_FREQ,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.4439720105,
+                        VALE_PARA=2.25,
+                        FONCTION=F_FREQ,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.4439720107,
+                        VALE_PARA=2.5,
+                        FONCTION=F_FREQ,
+                        ),
+              )
+
+F_AMOR=RECU_FONCTION( 
+                 BASE_ELAS_FLUI=MELFLUI0,
+                         PARA_X='VITE_FLU',
+                         PARA_Y='AMOR',
+                     TOUT_ORDRE='OUI',
+                      NUME_MODE=1
+                          )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0100802121,
+                        VALE_PARA=0.5,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0100658894,
+                        VALE_REFE=0.010065879999999999,
+                        VALE_PARA=0.75,
+                        REFERENCE='NON_DEFINI',
+                        PRECISION=2.E-3,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0101802919,
+                        VALE_PARA=1.0,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.5250260303E-3,
+                        VALE_PARA=1.25,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.3987499481E-3,
+                        VALE_PARA=1.5,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.6538542055E-3,
+                        VALE_PARA=1.75,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.00051333295529,
+                        VALE_REFE=-5.1277709999999999E-4,
+                        VALE_PARA=2.0,
+                        REFERENCE='NON_DEFINI',
+                        PRECISION=5.E-3,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.1028127182E-3,
+                        VALE_PARA=2.25,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-8.1145836018E-3,
+                        VALE_PARA=2.5,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+TEST_TABLE(
+           VALE_CALC=1.7593848956986E-06,
+           NOM_PARA='ECART',
+           TABLE=DYN0_0,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N_02_030',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N_02_030',),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=6.3435389851152E-06,
+           NOM_PARA='ECART',
+           TABLE=DYN0_25,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N_02_030',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N_02_030',),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.562949196422E-05,
+           NOM_PARA='ECART',
+           TABLE=DYN0_50,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N_02_030',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N_02_030',),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.3209383986777E-05,
+           NOM_PARA='ECART',
+           TABLE=DYN0_75,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N_02_030',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N_02_030',),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=7.8979847257356E-05,
+           NOM_PARA='ECART',
+           TABLE=DYN0_100,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N_02_030',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N_02_030',),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.6575728105317E-4,
+           NOM_PARA='ECART',
+           TABLE=DYN0_125,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N_02_030',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N_02_030',),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=6.1379857501375E-4,
+           NOM_PARA='ECART',
+           TABLE=DYN0_150,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N_02_030',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N_02_030',),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=7.5430795357726E-4,
+           NOM_PARA='ECART',
+           TABLE=DYN0_175,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N_02_030',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N_02_030',),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=9.070369912528E-4,
+           NOM_PARA='ECART',
+           TABLE=DYN0_200,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N_02_030',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N_02_030',),
+                   ),
+           )
+
+FIN( )
+#
+
+
+
+
+
+

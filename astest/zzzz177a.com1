@@ -1,0 +1,40 @@
+POURSUITE(CODE=_F(NOM='ZZZZ177A'), PAR_LOT='NON')
+# TITRE Validation elementaire du tri sur les tables
+from Utilitai.Table import Table
+
+
+t=Table()
+t.append({'AAA':5, 'BBB':7})
+t.append({'AAA':3, 'BBB':9, 'CCC':1})
+t.append({'AAA':3, 'CCC':0})
+print t
+
+p = 'AAA'
+print '<<< TRI sur %s >>>' % p
+t.sort(p)
+print t
+print t.rows
+assert t.rows[0][p] == 3
+assert t.rows[1][p] == 3
+assert t.rows[2][p] == 5
+
+p = 'BBB'
+print '<<< TRI sur %s >>>' % p
+t.sort(p)
+print t
+print t.rows
+assert t.rows[0].get(p) is None
+assert t.rows[1][p] == 7
+assert t.rows[2][p] == 9
+
+p = 'AAA'
+print '<<< TRI sur %s >>>' % p
+t.sort(p)
+print t
+print t.rows
+assert t.rows[0][p] == 3
+assert t.rows[1][p] == 3
+assert t.rows[2][p] == 5
+
+FIN()
+

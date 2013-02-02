@@ -1,0 +1,759 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 2D
+# ssnv191b.para = tps_job 50 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV191B', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+              
+# CETTE MODELISATION TESTE L'APPLICATION D'UNE PRESSION (CONSTANTE ET FONCTION)
+# ET CELLE D UNE FORCE (CONSTANTE ET FONCTION)
+#----------------------------------------------
+#                   MAILLAGE
+#----------------------------------------------
+# precision
+n = 1000.0;
+
+# dimensions de la structure
+lx = 2.0;
+
+ly = 3.0;
+
+MAILLAG1=LIRE_MAILLAGE();
+
+MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
+                       MAILLAGE=MAILLAG1,
+                       ORIE_PEAU_2D=_F(GROUP_MA=('LPRESD','LPRESG',),),);
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=(_F(NOEUD='N12',
+                                      NOM='A',),
+                                   _F(NOEUD='N6',
+                                      NOM='B',),),
+                    INFO=2,);
+
+
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=MAILLAG1))
+
+#----------------------------------------------
+#                   MODELE ET FISSURE
+#----------------------------------------------
+
+MO=AFFE_MODELE(MAILLAGE=MAILLAG1,
+               AFFE=_F(GROUP_MA=('MTOT','LPRESG','LPRESD',),
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='D_PLAN',),);
+
+
+
+LN = FORMULE(VALE='Y-1.5',
+             NOM_PARA=('X','Y',),);
+
+FISS=DEFI_FISS_XFEM(MODELE=MO,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
+                    INFO=3,);
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
+                         FISSURE=FISS,
+                         INFO=1,);
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+E = 10000000000.0;
+
+nu = 0.0;
+
+rho = 7800.0;
+
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=rho,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                       MODELE=MO,
+                       AFFE=_F(GROUP_MA='MTOT',
+                               MATER=ACIER,
+                               ),);
+#----------------------------------------------
+#                   CHARGEMENTS
+#----------------------------------------------
+
+CH=AFFE_CHAR_MECA(MODELE=MODELEK,
+                  DDL_IMPO=(_F(GROUP_NO='P1',
+                               DY=0.0,),
+                            _F(GROUP_NO='P2',
+                               DY=0.0,),
+                            _F(GROUP_NO='A',
+                               DX=0.0,
+                               DY=0.0,),
+                            _F(GROUP_NO='B',
+                               DX=0.0,
+                               DY=0.0,),),
+                  INFO=1,);
+
+
+# pour tester option CHAR_MECA_PRES_R
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   PRES_REP=(
+                             _F(GROUP_MA='LPRESG',
+                                PRES=10000.,
+                                CISA_2D=0.,
+                                ),
+                             _F(GROUP_MA='LPRESD',
+                                PRES=10000.,
+                                CISA_2D=0.,
+                                ),
+                                ),);
+
+def pr(y) :
+   if y<1.5  :  return -10000.
+   if y>1.5  :  return  10000.
+   if y==1.5  :  return  0.
+FCTPRES = FORMULE(VALE='pr(Y)',
+                  NOM_PARA=('X','Y',),);
+# pour tester option CHAR_MECA_PRES_F
+FCTCIS = FORMULE(VALE='0.',
+                  NOM_PARA=('X','Y',),);
+
+CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                     PRES_REP=_F(GROUP_MA=('LPRESD','LPRESG',),
+                                 PRES=FCTPRES,
+                                 CISA_2D=FCTCIS),);
+
+# pour tester option CHAR_MECA_FR1D2D
+CH3=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   FORCE_CONTOUR=(_F(GROUP_MA='LPRESG',FX=10000.,),
+                               _F(GROUP_MA='LPRESD',FX=-10000.,),
+                             ),);
+
+# pour tester option CHAR_MECA_FF1D2D
+def prinv(y) :
+   if y<1.5  :  return 10000.
+   if y>1.5  :  return -10000.
+   if y==1.5  :  return  0.
+FCTPRES2=FORMULE(NOM_PARA=('X','Y'),VALE='prinv(Y)');
+CH4=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                     FORCE_CONTOUR=(_F(GROUP_MA='LPRESG',FX=FCTPRES,),
+                               _F(GROUP_MA='LPRESD',FX=FCTPRES2,),
+                              ),); 
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+L_INS=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=3.0,
+                                   NOMBRE=3,),);
+
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(
+                          _F(CHARGE=CH),
+                          _F(CHARGE=CH1),
+                          ),
+                   INFO=1,
+                   ); 
+UTOT2=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(
+                          _F(CHARGE=CH),
+                          _F(CHARGE=CH2),
+                          ),
+                   INFO=1,
+                   ); 
+UTOT3=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(
+                          _F(CHARGE=CH),
+                          _F(CHARGE=CH3),
+                          ),
+                   INFO=1,
+                   ); 
+UTOT4=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(
+                          _F(CHARGE=CH),
+                          _F(CHARGE=CH4),
+                          ),
+                   INFO=1,
+                   ); 
+#----------------------------------------------
+#             IMPRESSION
+#----------------------------------------------
+
+MA_XFEM=POST_MAIL_XFEM(
+                       MODELE        = MODELEK)
+
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM,))
+IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE = MA_XFEM,))
+
+
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=(_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN',),),
+                              );  
+
+RES_X1=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        )
+
+RES_X2=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT2,
+                        )
+
+RES_X3=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT3,
+                        )
+
+RES_X4=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT4,
+                        )
+
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_X1,));
+
+
+
+#----------------------------------------------
+#                  TESTS
+#----------------------------------------------
+#PREMIER CHARGEMENT
+
+DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X1,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=DEP1,);
+
+
+DEP1P = CALC_TABLE(TABLE = DEP1,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
+
+
+DEP1M = CALC_TABLE(TABLE = DEP1,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP1M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP1M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP1M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP1M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+#DEUXIEME CHARGEMENT
+
+DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X2,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=DEP1,);
+
+
+DEP2P = CALC_TABLE(TABLE = DEP2,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
+
+
+DEP2M = CALC_TABLE(TABLE = DEP2,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP2M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP2M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP2M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP2M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+#TROISIEME CHARGEMENT
+
+DEP3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X3,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=DEP3,);
+
+
+DEP3P = CALC_TABLE(TABLE = DEP3,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
+
+
+DEP3M = CALC_TABLE(TABLE = DEP3,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP3M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP3M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP3M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP3M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+#QUATRIEME CHARGEMENT
+
+DEP4=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X4,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=DEP4,);
+
+
+DEP4P = CALC_TABLE(TABLE = DEP4,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
+
+
+DEP4M = CALC_TABLE(TABLE = DEP4,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP4M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP4M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEP4M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC=-1.00000000000E-06,
+           VALE_REFE=-9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEP4M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=2.0,),
+           )
+
+FIN();

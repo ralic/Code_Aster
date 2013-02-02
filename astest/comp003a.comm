@@ -1,0 +1,276 @@
+# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
+# TITRE TEST BETON_RAG 3D UTILISANT SIMU_POINT_MAT
+# comp003a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='COMP003A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+# donnee materiau et fonction
+
+#parametres elastiques
+YOUNG = 32000.0
+POISSON = 0.2
+
+#parametres viscosite
+
+K_RS      = 200000.
+K_IS      = 20000.
+ETA_RS    = 350000.
+ETA_IS    = 2500000.
+K_RD      = 100000.
+K_ID      = 90000.
+ETA_RD    = 2000000.
+ETA_ID    = 3000000.
+
+
+#autres parametres
+EPS_0     = 0.0035
+TAU_0     = 5.
+F_C       = 15.
+F_T       = 8.0
+EPS_COMP  = 6.0e-3
+EPS_TRAC  = 5.0e-4
+LC_COMP   = 1.0
+LC_TRAC   = 1.0
+BIOT_EAU  = 0.0
+MODU_EAU  = 0.0
+HYD_PRES  = 0.0
+W_EAU_0   = 1.0
+BIOT_GEL  = 0.0
+MODU_GEL  = 0.0
+VOL_GEL   = 0.0
+AVANC_LI  = 0.0
+SEUIL_SR  = 0.0
+PARA_CIN  = 0.0
+ENR_AC_G  = 0.0
+
+# def des materiaux
+BETON = [None]*3
+#unite en Pa
+C_Pa = 1.e+6
+YOUNG_Pa = YOUNG * C_Pa
+K_RS_Pa = K_RS * C_Pa
+K_IS_Pa = K_IS * C_Pa
+ETA_RS_Pa = ETA_RS * C_Pa
+ETA_IS_Pa = ETA_IS * C_Pa
+K_RD_Pa = K_RD * C_Pa
+K_ID_Pa = K_ID * C_Pa
+ETA_RD_Pa = ETA_RD * C_Pa
+ETA_ID_Pa = ETA_ID * C_Pa
+F_C_Pa = F_C * C_Pa
+F_T_Pa = F_T * C_Pa
+MODU_EAU_Pa = MODU_EAU * C_Pa
+MODU_GEL_Pa = MODU_GEL * C_Pa
+
+BETON[0]=DEFI_MATERIAU(ELAS     =_F(NU=POISSON,
+                                    E=YOUNG_Pa,
+                                    ALPHA=1.E-6),
+                    BETON_RAG =_F( ACTIV_FL  = 1.0,
+                                   K_RS      = K_RS_Pa,
+                                   K_IS      = K_IS_Pa,
+                                   ETA_RS    = ETA_RS_Pa,
+                                   ETA_IS    = ETA_IS_Pa,
+                                   K_RD      = K_RD_Pa,
+                                   K_ID      = K_ID_Pa,
+                                   ETA_RD    = ETA_RD_Pa,
+                                   ETA_ID    = ETA_ID_Pa,
+                                   EPS_0     = EPS_0,
+                                   TAU_0     = TAU_0,
+                                   F_C       = F_C_Pa,
+                                   F_T       = F_T_Pa,
+                                   EPS_COMP  = EPS_COMP,
+                                   EPS_TRAC  = EPS_TRAC,
+                                   ACTIV_LO  = 1.0,
+                                   LC_COMP   = LC_COMP,
+                                   LC_TRAC   = LC_TRAC,
+                                   BIOT_EAU  = BIOT_EAU,
+                                   MODU_EAU  = MODU_EAU_Pa,
+                                   HYD_PRES  = HYD_PRES,
+                                   W_EAU_0   = W_EAU_0,
+                                   BIOT_GEL  = BIOT_GEL,
+                                   MODU_GEL  = MODU_GEL_Pa,
+                                   VOL_GEL   = VOL_GEL,
+                                   AVANC_LI  = AVANC_LI,
+                                   SEUIL_SR  = SEUIL_SR,
+                                   PARA_CIN  = PARA_CIN,
+                                   ENR_AC_G  = ENR_AC_G,),
+                                    );
+
+#unite en MPa
+
+BETON[1]=DEFI_MATERIAU(ELAS     =_F(NU=POISSON,
+                                    E=YOUNG,
+                                    ALPHA=1.E-6),
+                    BETON_RAG =_F( ACTIV_FL  = 1.0,
+                                   K_RS      = K_RS,
+                                   K_IS      = K_IS,
+                                   ETA_RS    = ETA_RS,
+                                   ETA_IS    = ETA_IS,
+                                   K_RD      = K_RD,
+                                   K_ID      = K_ID,
+                                   ETA_RD    = ETA_RD,
+                                   ETA_ID    = ETA_ID,
+                                   EPS_0     = EPS_0,
+                                   TAU_0     = TAU_0,
+                                   F_C       = F_C,
+                                   F_T       = F_T,
+                                   EPS_COMP  = EPS_COMP,
+                                   EPS_TRAC  = EPS_TRAC,
+                                   ACTIV_LO  = 1.0,
+                                   LC_COMP   = LC_COMP,
+                                   LC_TRAC   = LC_TRAC,
+                                   BIOT_EAU  = BIOT_EAU,
+                                   MODU_EAU  = MODU_EAU,
+                                   HYD_PRES  = HYD_PRES,
+                                   W_EAU_0   = W_EAU_0,
+                                   BIOT_GEL  = BIOT_GEL,
+                                   MODU_GEL  = MODU_GEL,
+                                   VOL_GEL   = VOL_GEL,
+                                   AVANC_LI  = AVANC_LI,
+                                   SEUIL_SR  = SEUIL_SR,
+                                   PARA_CIN  = PARA_CIN,
+                                   ENR_AC_G  = ENR_AC_G,),
+                                    );
+
+compor='BETON_RAG'
+
+
+##################################################################################
+#Discretisation du calcul. nbequi = nombre de calculs "equivalents" : Pa, Rot
+Ncal = 4
+N_pas = 2*[5] + [5, 25]
+nbequi=2
+# les differents calculs effectues
+label_cal=['_Pa_','_rot_'] + 2* ['_N']
+#pointeur materiau
+P_imat = [0] + [1] + (Ncal-2)*[1]
+
+#parametres vitesse de sollicitation
+vitesse = 1.e-2
+t_0 = 5.e-2/(8.0*vitesse)
+# calibrage des deformations maximum dans l'extension 93
+calibrage = 1.0e-2;
+CALIB_E=YOUNG
+CALIB_NU=POISSON
+
+# liste d'archivage
+temps_ar=DEFI_LIST_REEL( VALE =[t_0*i for i in range(9)],)
+
+# angles utilises pour la rotation
+angle2=30.
+angle0=0.
+angles=[angle0,angle2] + (Ncal-2)*[angle0]
+
+# les precisions sur chaque TEST_RESU
+prec_ecart=[[1.E-10, 1.E-7, 1.E-10, 1.E-10],
+            [1.E-10, 1.E-4, 5.E-3,  1.E-10],
+            [1.E-10, 5.E-5, 5.E-3,  1.E-10]]
+vale_calc=[
+    [7.600583312786E-14,  4.650432407122E-08,  5.6899111050598E-11, 0.0E+00],
+    [1.3357935352641E-12, 1.8156323644981E-05, 2.2139052211768E-03, 0.0E+00],
+    [2.0158272841686E-12, 8.1732569997431E-06, 1.5578051696935E-03, 0.0E+00],
+    ]
+prec_tgt=2.e-2
+prec_zero=[1.E-10, 0.01, 0.01]
+
+# les quantites (invariants...) sur lequels portent les calculs d'erreur et les test_resu
+ch_param2=['V21','VMIS','TRACE']
+# coefficients pour ch_param2 pour calculer l'erreur sur le cas "Pa"
+coef_para=[1.,C_Pa,C_Pa]
+
+# utilitaires divers : calcul de l'erreur, renommage
+INCLUDE(UNITE=91)
+
+# definition de la temperature imposee
+TIMP=DEFI_FONCTION(
+                      NOM_PARA='INST',  NOM_RESU='TEMP',
+                       VALE=(  0.E0,  20.,
+                             10.E0*t_0, 20.,)
+                        )
+
+
+###################################################################################
+#  TEST 3D
+##################################################################################
+
+# les quantites extraites du calcul
+ch_param=['V21','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
+
+# resultats
+RESU=[None]*Ncal
+R_SI=[None]*len(ch_param)
+TMP_S=[None]
+
+# definition du chargement 3D
+INCLUDE(UNITE=93)
+
+#Boucle sur l'ensemble des calculs
+for i in range(Ncal):
+        N = N_pas[i]
+        imat = P_imat[i]
+        temps=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+#       DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
+#                          ECHEC=_F(SUBD_METHODE='UNIFORME',
+#                                   SUBD_PAS=10,
+#                                   SUBD_NIVEAU=2,),);
+#       Resout le pb a deformation imposee
+        RESU[i]=SIMU_POINT_MAT(
+                   COMP_INCR=_F(RELATION=compor,
+                                ITER_INTE_MAXI=100,
+                                RESI_INTE_RELA=1.E-9),
+                   ANGLE=angles[i],
+                   SUPPORT='ELEMENT',
+                   AFFE_VARC=(
+                   _F(  NOM_VARC='TEMP',
+                        VALE_FONC=TIMP,
+                        VALE_REF=20.0),
+                        ),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
+                   MATER      = BETON[imat],
+                   INCREMENT=_F(LIST_INST=temps),
+#                  SUBD_METHODE='UNIFORME',SUBD_PAS=10,SUBD_NIVEAU=2,
+                   EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
+                                  EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
+                        );
+        DETRUIRE(CONCEPT=_F(NOM=temps))
+#       DETRUIRE(CONCEPT=_F(NOM=DEFLIST))
+# On renomme les composantes en fonction de  l'ordre de discretisation
+        R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
+
+# TEST_RESU sur les erreurs relatives
+TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,vale_calc,prec_zero,coef_para)
+
+###############################################################################
+# impressions
+#for i in range(len(ch_param)):
+#        IMPR_TABLE(TABLE=R_SI[i])
+
+FIN();
+#

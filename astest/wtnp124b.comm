@@ -1,0 +1,558 @@
+# MODIF  DATE 15/10/2012   AUTEUR GRANET S.GRANET 
+# TITRE - TEST DE LIAKOPOULOS : DRAINAGE D UNE COLONNE D EAU
+# wtnp124b.para = tps_job 200 mem_job 1024Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#                               PAR LA SEULE FORCE DE GRAVITE
+#                       MODELISATION VF DECENTRE ARETE (VFDA)
+# wtnp124b.para = tps_job 200 mem_job 1024Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+#
+DEBUT(CODE=_F(NOM='WTNP124B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+import sys
+import string
+import os
+
+#=============================================================
+#=============================================================
+METHODE='VFDA'
+#=============================================================
+#=============================================================
+
+MODELISA = 'D_PLAN_HH2SUDA'
+LOI= 'LIQU_AD_GAZ'
+NOEUD_G='N603'
+
+#=============================================================
+#                     DONNEES
+#=============================================================
+
+PARM_ALPHA=1.
+
+#
+####################################
+#   OPERATIONS SUR LE MAILLAGE
+#
+####################################
+
+M3=LIRE_MAILLAGE(FORMAT='MED');
+MAIL=CREA_MAILLAGE( MAILLAGE=M3,
+          MODI_MAILLE=(
+          _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ'),
+          ))
+MAIL=DEFI_GROUP( reuse=MAIL,
+       MAILLAGE=MAIL,
+       CREA_GROUP_NO=(
+         _F( GROUP_MA = 'DROIT',NOM='NSDROIT',CRIT_NOEUD='MILIEU'),
+         _F( GROUP_MA = 'HAUT',NOM='NSHAUT',CRIT_NOEUD='MILIEU'),
+         _F( GROUP_MA = 'GAUCHE'),
+         _F( GROUP_MA = 'BAS')),
+        )
+
+
+#*********************************************************
+#  MODELE DE CALCUL
+#*********************************************************
+#
+MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
+                        AFFE=_F(  TOUT = 'OUI',
+                      PHENOMENE = 'MECANIQUE',
+                      MODELISATION = MODELISA),
+                     ),
+
+####################################
+#  LISTE DES INSTANTS DE CALCUL
+####################################
+
+
+INST1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
+                       _F(  JUSQU_A = 10.,  NOMBRE = 10),
+                       _F(  JUSQU_A = 200.,  NOMBRE = 20),
+                       _F(  JUSQU_A = 300.,  NOMBRE = 10),
+                       _F(  JUSQU_A = 1200.,  NOMBRE = 9),
+                       _F(  JUSQU_A = 3600.,  NOMBRE = 8),
+                       _F(  JUSQU_A = 36000.,  NOMBRE = 9),
+                       _F(  JUSQU_A = 86400.,  NOMBRE = 23),
+                       _F(  JUSQU_A = 864000.,  NOMBRE = 9),
+                       _F(  JUSQU_A = 8640000.,  NOMBRE = 9),
+                       _F(  JUSQU_A = 3.1536E7,  NOMBRE = 10),
+                      ),
+                     );
+
+LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
+                                ECHEC=_F(EVENEMENT     = 'ERREUR',
+                                         ACTION        = 'DECOUPE',
+                                         SUBD_METHODE  = 'MANUEL',
+                                         SUBD_PAS=5,
+                                         SUBD_PAS_MINI=0.1))
+
+
+############################################
+#
+# DEFINITION DES FONCTIONS DE COMPORTEMENT :
+#
+# ON MET TOUT A L UNITE
+####
+
+VISCOL=DEFI_CONSTANTE(VALE=1.E-3);
+VISCOG=DEFI_CONSTANTE(VALE=1.8E-5);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0);
+
+RHO_EAU = 1000.0;
+G = -9.81;
+####
+UN=DEFI_CONSTANTE(    VALE=1.);
+
+ZERO=DEFI_CONSTANTE(    VALE=0.);
+
+
+# ==================================
+# DONNEES HYDRAULIQUES LIAKOPOULOS
+# ==================================
+
+PRBG  = 1.E4  ;
+NBG = 2.  ;
+MBG = 1-1/NBG ;
+SRBG  = 0.00 ;
+SMAX=0.9999
+
+##
+#==================================
+# PERMEABILITE INTRINSEQUE,
+#==================================
+
+KINT= DEFI_CONSTANTE (VALE= 1.E-12);
+
+#DISSOLUTION
+HENRY = DEFI_CONSTANTE ( VALE = 1.E20);
+
+PREF=1.;
+
+MATERIAU=DEFI_MATERIAU(
+   ELAS=_F(  E = 1.3E8,
+             NU = 0.4,
+             RHO = 2500.,
+             ALPHA = 1.E-5,
+             ),
+   THM_LIQU=_F(
+         RHO = RHO_EAU,
+         UN_SUR_K = 0.5E-9,
+         ALPHA = 1.E-4,
+         VISC = VISCOL,
+         D_VISC_TEMP = ZERO),
+   COMP_THM = 'LIQU_AD_GAZ',
+
+   THM_GAZ=_F(
+         MASS_MOL = 28.96E-3,
+         VISC = VISCOG,
+         D_VISC_TEMP = ZERO),
+
+     THM_AIR_DISS=_F(
+            CP= 1000.,
+            COEF_HENRY= HENRY
+             ),
+
+   THM_DIFFU=_F(
+        R_GAZ=8.315,
+        RHO = 2400,
+        BIOT_COEF = 0.9,
+        PESA_X = 0.,
+        PESA_Y = G,
+        PESA_Z = 0.,
+        PERM_IN = KINT,
+  VG_N  = NBG ,
+  VG_PR  = PRBG  ,
+  VG_SR  = SRBG  ,
+  VG_SMAX   = SMAX  ,
+  VG_SATUR=0.9999,
+#
+        FICKV_T = ZERO,
+        FICKA_T = ZERO,
+        LAMB_T =ZERO
+        ),
+   THM_INIT=_F(
+         TEMP = 293.,
+         PRE1 = 0.,
+         PRE2 = PREF,
+         PORO = 0.2975,
+        ),
+   )
+
+CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                          AFFE=_F( TOUT = 'OUI',
+                        MATER = MATERIAU))
+
+##==================================
+## AFFECTATION D UN ETAT INITIAL HYDRAUSTATIQUE
+##==================================
+PATM = 0.1E6
+PGINI = PATM
+PLBASI = PATM-RHO_EAU*G
+
+PGBAS = PATM
+PLBAS = PATM
+PCBAS = PGBAS+PREF-PLBAS
+
+#
+# PLINI = PLBAS+RHO_EAU*G*Y
+# PCINI = PGINI-PBAS-RHO_EAU*G*Y
+
+CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
+                OPERATION='EXTR',
+                MAILLAGE=MAIL,
+                NOM_CHAM='GEOMETRIE');
+FHYDRO = FORMULE(VALE='PGINI+PREF-PLBASI-RHO_EAU*G*Y',
+                 NOM_PARA='Y');
+
+PAHYDRO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
+                   OPERATION='AFFE',
+                   MAILLAGE=MAIL,
+                   AFFE=_F(
+                   TOUT='OUI',
+                   NOM_CMP='X1',
+                   VALE_F=FHYDRO));
+
+PCHYDRO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                   OPERATION='EVAL',
+                   CHAM_F=PAHYDRO,
+                   CHAM_PARA=CHXN);
+
+PRE20=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=MAIL,
+                 AFFE=_F(
+                 TOUT='OUI',
+                 NOM_CMP='PRE2',
+                 VALE=PGINI));
+
+PINIT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                 OPERATION='ASSE',
+                 MAILLAGE=MAIL,
+                 ASSE=(
+                 _F(TOUT='OUI',
+                    CHAM_GD=PCHYDRO,
+                    NOM_CMP='X1',
+                    NOM_CMP_RESU='PRE1'),
+                 _F(TOUT='OUI',
+                    CHAM_GD=PRE20,
+                    NOM_CMP='PRE2'),
+                    ));
+
+CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=(_F(GROUP_MA='HAUT',
+                                   PRE2=PATM),
+                                  _F(GROUP_MA='BAS',
+                                   PRE2=PGINI),
+                                   ));
+CALPC=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=(
+                                  _F(GROUP_MA='BAS',
+                                   PRE1=PCBAS),
+                                   ));
+
+
+##==================================
+## STAT_NON_LINE
+##==================================
+RESU0=STAT_NON_LINE(
+                MODELE=MODELE,
+                CHAM_MATER=CHMAT0,
+                EXCIT=( _F(CHARGE=CALGAZ),
+                        _F(CHARGE=CALPC)),
+
+              ETAT_INIT=_F(DEPL=PINIT),
+
+                COMP_INCR=_F( RELATION = 'KIT_HH',
+                              RELATION_KIT = ('LIQU_AD_GAZ','HYDR_VGM'),
+                              PARM_ALPHA=PARM_ALPHA),
+                INCREMENT=_F(
+                   LIST_INST = LI,
+                     INST_FIN=10),
+
+                SOLVEUR=_F(METHODE='MUMPS'),
+
+                NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1),
+
+               RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
+                                     ITER_LINE_MAXI=1),
+
+              CONVERGENCE=_F(
+                             ITER_GLOB_MAXI=10,
+                             RESI_GLOB_MAXI = 1.E-4),
+
+             );
+
+
+RESU0=STAT_NON_LINE( reuse=RESU0,
+                MODELE=MODELE,
+
+                CHAM_MATER=CHMAT0,
+
+                EXCIT=( _F(CHARGE=CALGAZ),
+                        _F(CHARGE=CALPC)),
+
+                ETAT_INIT=_F(EVOL_NOLI=RESU0),
+
+                COMP_INCR=_F( RELATION = 'KIT_HH',
+                              RELATION_KIT = ('LIQU_AD_GAZ','HYDR_VGM'),
+                              PARM_ALPHA=PARM_ALPHA),
+
+               INCREMENT=_F(  LIST_INST = LI),
+
+              SOLVEUR=_F(METHODE='MUMPS'),
+
+                NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1),
+
+                  RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
+                                     ITER_LINE_MAXI=1),
+
+                CONVERGENCE=_F(
+                             ITER_GLOB_MAXI=5,
+                             RESI_GLOB_MAXI = 1.E-7),
+             );
+##==================================
+## IMPRESSIONS
+##================================
+
+
+L_INST=DEFI_LIST_REEL(VALE=(0.,200.,300.,1200.,1800.,3600.,7200.,36000.,86400.));
+
+
+PR1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+           GROUP_NO=('GAUCHE'),
+           RESULTAT=RESU0,
+           NOM_CHAM='DEPL',
+           LIST_INST=L_INST,
+           NOM_CMP=('PRE1'),
+           OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=PR1,
+      FORMAT   = 'TABLEAU_CROISE'    ,
+      NOM_PARA=('INST','COOR_Y','PRE1'),
+      TRI   = (_F( NOM_PARA = ('COOR_Y' ),
+         ORDRE    = 'CROISSANT')));
+
+PR2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+           GROUP_NO=('GAUCHE'),
+           RESULTAT=RESU0,
+           NOM_CHAM='DEPL',
+           LIST_INST=L_INST,
+           NOM_CMP=('PRE2'),
+           OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=PR2,
+      FORMAT   = 'TABLEAU_CROISE'    ,
+      NOM_PARA=('INST','COOR_Y','PRE2'),
+      TRI   = (_F( NOM_PARA = ('COOR_Y' ),
+         ORDRE    = 'CROISSANT')));
+PR1MIL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+           GROUP_NO=('MILIEU'),
+           RESULTAT=RESU0,
+           NOM_CHAM='DEPL',
+           LIST_INST=L_INST,
+           NOM_CMP=('PRE1'),
+           OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=PR1MIL,
+      FORMAT   = 'TABLEAU_CROISE'    ,
+      NOM_PARA=('INST','COOR_Y','PRE1'),
+      TRI   = (_F( NOM_PARA = ('COOR_Y' ),
+         ORDRE    = 'CROISSANT')));
+
+PR2MIL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+           GROUP_NO=('MILIEU'),
+           RESULTAT=RESU0,
+           NOM_CHAM='DEPL',
+           LIST_INST=L_INST,
+           NOM_CMP=('PRE2'),
+           OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=PR2MIL,
+      FORMAT   = 'TABLEAU_CROISE'    ,
+      NOM_PARA=('INST','COOR_Y','PRE2'),
+      TRI   = (_F( NOM_PARA = ('COOR_Y' ),
+         ORDRE    = 'CROISSANT')));
+
+
+#=============== A 200S =========================
+
+
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(INST=200,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE1',
+                VALE_CALC= 3.42368191E+03,
+                VALE_REFE=3424.0,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=200,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE1',
+                VALE_CALC=60.155146964,
+                VALE_REFE=60.15504,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(INST=200,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.00000000E+05,
+                VALE_REFE=1.E5,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=200,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE2',
+                VALE_CALC= 9.85293854E+04,
+                VALE_REFE=9.8585682197197006E4,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#=============== A 1800. =========================
+
+
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(INST=1800,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE1',
+                VALE_CALC= 5.59933146E+03,
+                VALE_REFE=5553.0658673106,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=1800,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE1',
+                VALE_CALC= 1.86431672E+03,
+                VALE_REFE=1860.5162619064999,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(INST=1800,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.00000000E+05,
+                VALE_REFE=1.E5,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=1800,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE2',
+                VALE_CALC= 9.92238719E+04,
+                VALE_REFE=9.9244632427548E4,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#=============== A 864000S =========================
+
+
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(INST=864000,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE1',
+                VALE_CALC= 9.81095188E+03,
+                VALE_REFE=9811.3792024673003,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=864000,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE1',
+                VALE_CALC= 4.91179627E+03,
+                VALE_REFE=4911.8456778087002,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU HAUT
+TEST_RESU(RESU=_F(INST=864000,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.00000000E+05,
+                VALE_REFE=1.E5,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+#NOEUD DU MILIEU
+TEST_RESU(RESU=_F(INST=864000,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=RESU0,
+                NOM_CHAM='DEPL',
+                NOEUD='N229',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.00005820E+05,
+                VALE_REFE=1.0000581817976999E5,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+FIN()
+#

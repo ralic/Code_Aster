@@ -1,0 +1,247 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE BARREAU FISSURE AVEC X-FEM
+# ssnv173j.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV173J', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+#----------------------------------------------
+#                MAILLAGE : ssnv173f.mgib
+#----------------------------------------------
+
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+
+#----------------------------------------------
+#                   MODELE ET FISSURE
+#----------------------------------------------
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
+                     AFFE=(_F(GROUP_MA=('SURF'),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='C_PLAN'),
+                           _F(GROUP_MA=('LIG1','LIG3'),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='C_PLAN')));
+
+
+# FORME ANALYTIQUE POUR LA FISSURE
+
+LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-2.5');
+
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN));
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,
+                         INFO=1);
+
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+E=205000.0E6
+nu=0.
+rho=7800.
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
+
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                       MODELE=MODELEK,
+                       AFFE=_F(GROUP_MA=('SURF'),
+                                MATER=ACIER,
+                                ),
+                             );
+
+#----------------------------------------------
+#                   CHARGEMENTS
+#----------------------------------------------
+
+DEPY=1.E-6
+DEPMILY=DEPY/2.
+ZERO=0.0
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   DDL_IMPO=(_F(GROUP_MA='LIG1',DX=0.0,DY=0.0),
+                             _F(GROUP_MA='LIG3',DX=0.0,DY=DEPY)));
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3));
+
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMA1,
+                   EXCIT=(
+                          _F(CHARGE=CH1),
+                          ),
+                   SOLVEUR=_F(   
+                            METHODE='MUMPS'),
+                   INFO=1,
+                   ); 
+
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
+
+MA_XFEM=POST_MAIL_XFEM(
+                       MODELE        = MODELEK)
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='C_PLAN'))
+
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        )
+
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
+
+
+# -------------------------------------------------------------   
+#            TEST_TABLE
+# -------------------------------------------------------------   
+
+
+DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('NFISSU'),
+                                RESULTAT=RES_XFEM,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION'));
+
+IMPR_TABLE(TABLE=DEP1,
+           FORMAT='AGRAF',
+           FORMAT_R='1PE12.5',
+           IMPR_FONCTION='NON');
+
+DEPP = CALC_TABLE(TABLE = DEP1,
+                   ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]')));
+
+
+DEPM = CALC_TABLE(TABLE = DEP1,
+                   ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]')));
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC= 8.8504490275731494E-22,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEPP,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC= 9.3605054485592825E-22,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEPP,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC=-4.2351647362715017E-22,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           TABLE=DEPP,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC= 3.7057691442375640E-22,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           TABLE=DEPP,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC=-2.4329156417787660E-21,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           TABLE=DEPM,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999998E-17,
+           VALE_CALC=-2.4177311814320683E-21,
+           VALE_REFE=0.0,
+           TOLE_MACHINE=9.9999999999999998E-17,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=DEPM,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           TABLE=DEPM,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=9.9999999999999994E-12,
+           VALE_CALC= 1.00000000000E-06,
+           VALE_REFE=9.9999999999999995E-07,
+           TOLE_MACHINE=9.9999999999999994E-12,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           TABLE=DEPM,)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_XFEM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0,
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_XFEM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.2999999999999999E-05,
+                   
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+
+FIN();

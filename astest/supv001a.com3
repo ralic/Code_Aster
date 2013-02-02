@@ -1,0 +1,29 @@
+# AJOUT
+# TITRE TEST DE INCLUDE
+# RESPONSABLE
+
+DEBUT(CODE=_F(NOM='SUPV001A', NIV_PUB_WEB='INTERNET'),)
+
+# form n'est utilisable que dans l'INCLUDE, la ou est defini 'para'
+form = FORMULE(NOM_PARA='INST', VALE='para * INST')
+
+INCLUDE(UNITE=11)
+
+DETRUIRE(CONCEPT=_F(NOM=form))
+
+# normal que fonc ne doit pas connu, on ne peut pas deviner que MON_INCLUDE fait un INCLUDE
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.2345600000000001,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=1.0,
+                        FONCTION=fonc,),
+              )
+
+TEST_TABLE(VALE_CALC=2.4691200000000002,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TOUTRESU',
+           TABLE=tab,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
+
+FIN()

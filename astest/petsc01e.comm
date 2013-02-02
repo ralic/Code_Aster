@@ -1,0 +1,115 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE  Validation du solveur PETSc en elasticite lineaire 3D
+# petsc01e.para = tps_job 60 mem_job 1000Mo liste_test I
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='PETSC01E',
+              NIV_PUB_WEB='INTERNET',),);
+
+MA=LIRE_MAILLAGE(FORMAT='MED',);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),
+               PARTITION=_F(PARALLELISME='CENTRALISE',),
+               );
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
+                          NU=0.3,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+
+CHA1=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_NO='GRNO1',
+                                 DZ=0.0,),
+                              _F(GROUP_NO='GRNO8',
+                                 DY=0.0,),),);
+
+CHA2=AFFE_CHAR_CINE(MODELE=MO,
+                    MECA_IMPO=_F(GROUP_NO='GRNO7',
+                                 DX=0.0,
+                                 DY=0.01,),);
+
+LIST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1.0,
+                                  NOMBRE=1,),);
+
+EVOL=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CHA1,),
+                          _F(CHARGE=CHA2,),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                TOUT='OUI',),
+                   INCREMENT=_F(LIST_INST=LIST,),
+                   SOLVEUR=_F(METHODE='PETSC',
+                              ALGORITHME='CR',
+                              PRE_COND='LDLT_SP',),
+                   INFO=2,);
+
+TEST_RESU(RESU=(_F(RESULTAT=EVOL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='NO2958',
+                   VALE_CALC=0.010000000000000,
+                   VALE_REFE=0.01,
+                   PRECISION=0.00015,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=EVOL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='NO2958',
+                   VALE_CALC=1.0295822951213E-04,
+                   VALE_REFE=0.00010296,
+                   PRECISION=0.00015,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=EVOL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2974',
+                   VALE_CALC=4.3005795560894E-03,
+                   VALE_REFE=0.0043006,
+                   PRECISION=0.00015,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=EVOL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='NO2974',
+                   VALE_CALC=9.2889750414784E-03,
+                   VALE_REFE=0.009289,
+                   PRECISION=0.00015,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=EVOL,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='NO2974',
+                   VALE_CALC=-2.9172949419019E-05,
+                   VALE_REFE=-2.9173e-05,
+                   PRECISION=0.00015,
+                   REFERENCE='AUTRE_ASTER',),),);
+
+FIN();
+

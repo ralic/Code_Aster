@@ -1,0 +1,10 @@
+para = 1.23456
+
+fonc = CALC_FONC_INTERP(FONCTION=form,
+                        VALE_PARA=(0., 1., 2.))
+
+tab = CREA_TABLE(FONCTION=_F(FONCTION=fonc))
+
+IMPR_FONCTION(COURBE=_F(FONCTION=fonc),
+              UNITE=6,
+              FORMAT='TABLEAU')

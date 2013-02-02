@@ -1,0 +1,208 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE  - VALIDATION DE LA MODELISATION A MICRO-DILATATION
+# ssll117f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test RI
+# RESPONSABLE FERNANDES R.FERNANDES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSLL117F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MA = LIRE_MAILLAGE();
+
+MAIL=CREA_MAILLAGE(MAILLAGE=MA,
+                    CREA_GROUP_MA=(_F(NOM  = 'ROCHE_RE',
+                                      GROUP_MA    = 'ROCHE',
+                                      PREF_MAILLE = 'MR')));
+
+MAIL = DEFI_GROUP( reuse    = MAIL,
+                   MAILLAGE = MAIL,
+                   CREA_GROUP_NO = (     _F(GROUP_MA='ROCHE'),
+                                         _F(GROUP_MA='DA'),
+                                         _F(GROUP_MA='BC'),
+                                         _F (NOM        ='SROCHE',
+                                             CRIT_NOEUD ='SOMMET',
+                                             GROUP_MA   ='ROCHE'),
+                                         _F (NOM        ='MROCHE',
+                                             CRIT_NOEUD ='MILIEU',
+                                             GROUP_MA   ='ROCHE'),
+                                         _F (NOM        ='SBC',
+                                             CRIT_NOEUD ='SOMMET',
+                                             GROUP_MA   ='BC')));
+
+MAILLAGE=CREA_MAILLAGE( INFO=2,
+                        MAILLAGE=MAIL,
+                        MODI_MAILLE=(_F( GROUP_MA = 'ROCHE_RE',OPTION = 'QUAD8_9'),
+                       ))
+
+MODELE   = AFFE_MODELE( MAILLAGE = MAILLAGE,
+                        INFO     = 2,
+                        AFFE     = (_F( GROUP_MA     = 'ROCHE',
+                                        PHENOMENE    = 'MECANIQUE',
+                                        MODELISATION = 'D_PLAN_SI'),
+                                    _F( GROUP_MA     = 'ROCHE_RE',
+                                        PHENOMENE    = 'MECANIQUE',
+                                        MODELISATION = 'D_PLAN_2DG'),
+                       ));
+
+SOL1  = DEFI_MATERIAU( ELAS      = _F( E           = 1000.0,
+                                      NU          = 0.0),
+                      );
+
+SOL2  = DEFI_MATERIAU( ELAS_2NDG = _F( A1          = 10.0,
+                                      A2          = 0.0,
+                                      A3          = 0.0,
+                                      A4          = 0.0,
+                                      A5          = 0.0),
+                      );
+
+
+CHMAT = AFFE_MATERIAU( MAILLAGE = MAILLAGE,
+                       AFFE     = (_F( TOUT  = 'OUI',
+                                      MATER =  SOL1),
+                                  _F( GROUP_MA  = 'ROCHE_RE',
+                                      MATER =  SOL2),
+                                      ));
+
+CHCI=AFFE_CHAR_MECA( INFO = 2,
+                     MODELE=MODELE,
+                     DDL_IMPO=( _F( GROUP_NO='SROCHE',
+                                    DY=0.0),
+                                _F( GROUP_NO='MROCHE',
+                                    DY=0.0),
+                                _F( GROUP_NO='BC',
+                                    DX=0.0),
+                                _F( GROUP_NO='SBC',
+                                    V11=0.0),
+                                _F( GROUP_NO='SBC',
+                                    V22=0.0),
+                                _F( GROUP_NO='SROCHE',
+                                    V12=0.0),
+                                _F( GROUP_NO='SROCHE',
+                                    V21=0.0),
+                   ))
+
+# CETTE CHARGE PERMET DE BLOQUER A UNE VALEUR QUELCONQUE LE DDL PRES21
+# QUI EST INDETERMINE A CAUSE DES CL CHOISIES.
+# CELA EVITE D'AVOIR UNE MATRICE SINGULIERE.
+CHCI_DEF=AFFE_CHAR_CINE(MODELE=MODELE,
+                        MECA_IMPO=_F(NOEUD  = 'NS1',
+                                     PRES21 = 1.0,
+                                     ));
+
+CALEXT=AFFE_CHAR_MECA(MODELE=MODELE,
+                      DDL_IMPO=(_F(GROUP_NO = 'DA',
+                                  DX       =  0.1),
+                                 ));
+
+TEMPS=DEFI_LIST_REEL( DEBUT      = 0.0,
+                      INTERVALLE = (_F(JUSQU_A = 1.0,
+                                       PAS   = 0.10)))
+
+COEF  = DEFI_FONCTION( NOM_PARA    = 'INST',
+                       VALE        = ( 0.0,    0.0,
+                                       1.0,    1.0),
+                       PROL_DROITE = 'CONSTANT');
+
+U1 = STAT_NON_LINE(SOLVEUR=(_F( METHODE='MUMPS',
+                             PRETRAITEMENTS='SANS',ELIM_LAGR2='NON')),
+                    MODELE      = MODELE,
+                    CHAM_MATER  = CHMAT,
+                    EXCIT       = ( _F( CHARGE    = CHCI     ),
+                                    _F( CHARGE    = CHCI_DEF ),
+                                    _F( CHARGE    = CALEXT,
+                                        FONC_MULT = COEF     )),
+
+                    COMP_INCR=(_F(GROUP_MA='ROCHE',
+                                  RELATION='ELAS'),
+                               _F(GROUP_MA='ROCHE_RE',
+                                  RELATION='ELAS')),
+                    NEWTON      = _F( MATRICE  = 'TANGENTE',
+                                      REAC_ITER = 1 ),
+                    CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6 )  ,
+                    INCREMENT    = _F( LIST_INST     = TEMPS ))
+
+U1=CALC_CHAMP(reuse=U1,RESULTAT=U1,DEFORMATION=('EPSI_ELGA'),INST=1.0)
+
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N1',
+                   NOM_CMP='V11',
+                   VALE_CALC=-0.10000000000000001,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   ),
+                _F(INST=1.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.050000000000000003,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   ),
+                _F(INST=1.0,
+                   POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIG111',
+                   VALE_CALC=1.0,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   MAILLE='MRM1',),
+                _F(INST=1.0,
+                   POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIG221',
+                   VALE_CALC=0.5,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   MAILLE='MRM1',),
+                _F(INST=1.0,
+                   POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='DEPV11',
+                   VALE_CALC=0.028867500000000001,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   MAILLE='MRM1',),
+                _F(INST=1.0,
+                   POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='DEPV11',
+                   VALE_CALC=-0.028867500000000001,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   MAILLE='MRM1',),
+                _F(INST=1.0,
+                   POINT=1,
+                   RESULTAT=U1,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-0.050000000000000003,
+                   TOLE_MACHINE=1.E-4,
+                   CRITERE='RELATIF',
+                   MAILLE='M1',),
+                ),
+          )
+
+FIN();

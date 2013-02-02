@@ -1,0 +1,196 @@
+DEBUT();
+
+# COEFFICIENTS OBTENUS EN STA7.2
+
+R0__ = 5.39556628611
+RINF__ = 124.516713235
+PETITB__ = 0.0936790879154
+PETITK__ = 10.1492141811
+PETITW__ = 0.1524782189
+GAMA1__ = 530.27009253
+GAMA2__ = 0.281;
+C1INF__ = 1065.55205118
+C2INF__ = 276.140367779
+AINF__ = 1.20694340382
+UNETA__ = 0.0036437291784
+EXP_N__ = 14.5181576689
+
+#ETA__=xxx on utilise UNETA = 1/ ETA
+
+YOUNG = 143006.0;
+
+NU = 0.33;
+
+UNSURM__ = 0.0;
+
+
+P10CD910=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                               NU=NU,),
+                       CIN2_CHAB=_F(R_0=R0__,
+                                    R_I=RINF__,
+                                    B=PETITB__,
+                                    C1_I=C1INF__,
+                                    C2_I=C2INF__,
+                                    K=PETITK__,
+                                    W=PETITW__,
+                                    G1_0=GAMA1__,
+                                    G2_0=GAMA2__,
+                                    A_I=AINF__,),
+                       LEMAITRE=_F(N=EXP_N__,
+                                   UN_SUR_K=UNETA__,
+                                   UN_SUR_M=UNSURM__,),);
+
+EPS_IMPO = 0.01;
+
+#INCLUDE(UNITE=38,);
+
+# EPS=1 POUR_CENT  EN 10000 s
+TPSFIN1 = 10000.0;
+
+NBREINCR = 50;
+
+LINST1=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=TPSFIN1,
+                                     NOMBRE=NBREINCR,),),);
+
+EPYY1=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.0,0.0,TPSFIN1,EPS_IMPO,),
+                      INTERPOL='LIN',
+                      PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',);
+
+R_10000=SIMU_POINT_MAT(INFO=1,COMP_INCR=_F(RELATION='VISC_CIN2_CHAB'),
+                 MATER=P10CD910,
+                 INCREMENT=_F(LIST_INST=LINST1,),
+                 EPSI_IMPOSE=_F(EPYY=EPYY1,),
+                                );
+
+# EPS=1 POUR_CENT  EN 2000 s
+TPSFIN2 = 2000.0;
+
+LINST2=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=TPSFIN2,
+                                     NOMBRE=NBREINCR,),),);
+
+EPYY2=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.0,0.0,TPSFIN2,EPS_IMPO,),
+                      INTERPOL='LIN',
+                      PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',);
+
+R_2000=SIMU_POINT_MAT(INFO=1,COMP_INCR=_F(RELATION='VISC_CIN2_CHAB'),
+                 MATER=P10CD910,
+                 INCREMENT=_F(LIST_INST=LINST2,),
+                 EPSI_IMPOSE=_F(EPYY=EPYY2,),
+                                );
+
+# EPS=1 POUR_CENT  EN 1000 s
+TPSFIN3 = 1000.0;
+
+LINST3=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=TPSFIN3,
+                                     NOMBRE=NBREINCR,),),);
+                                     
+EPYY3=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.0,0.0,TPSFIN3,EPS_IMPO,),
+                      INTERPOL='LIN',
+                      PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',);
+
+R_1000=SIMU_POINT_MAT(INFO=1,COMP_INCR=_F(RELATION='VISC_CIN2_CHAB'),
+                 MATER=P10CD910,
+                 INCREMENT=_F(LIST_INST=LINST3,),
+                 EPSI_IMPOSE=_F(EPYY=EPYY3,),
+                                );
+
+# EPS=1 POUR_CENT  EN 200 s
+TPSFIN4 = 200.0;
+
+
+LINST4=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=TPSFIN4,
+                                     NOMBRE=NBREINCR,),),);
+
+EPYY4=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.0,0.0,TPSFIN4,EPS_IMPO,),
+                      INTERPOL='LIN',
+                      PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',);
+
+R_200=SIMU_POINT_MAT(INFO=1,COMP_INCR=_F(RELATION='VISC_CIN2_CHAB'),
+                 MATER=P10CD910,
+                 INCREMENT=_F(LIST_INST=LINST4,),
+                 EPSI_IMPOSE=_F(EPYY=EPYY4,),
+                                );
+
+
+R1_10000 = CALC_TABLE( TABLE=R_10000,
+   ACTION=_F(OPERATION='EXTR', NOM_PARA=('INST','SIYY','EPYY'),),)
+   
+R1_2000 = CALC_TABLE( TABLE=R_2000,
+   ACTION=_F(OPERATION='EXTR', NOM_PARA=('INST','SIYY','EPYY'),),)
+   
+R1_1000 = CALC_TABLE( TABLE=R_1000,
+   ACTION=_F(OPERATION='EXTR', NOM_PARA=('INST','SIYY','EPYY'),),)
+   
+R1_200 = CALC_TABLE( TABLE=R_200,
+   ACTION=_F(OPERATION='EXTR', NOM_PARA=('INST','SIYY','EPYY'),),)
+   
+
+FIN();
+
+IMPR_TABLE(TABLE=R_10000)
+IMPR_TABLE(TABLE=R_2000)
+IMPR_TABLE(TABLE=R_1000)
+IMPR_TABLE(TABLE=R_200)
+
+#IMPR_FONCTION(UNITE=92,
+#              FORMAT='TABLEAU',
+##              COURBE=_F(FONCTION=E1_200,),)
+#IMPR_FONCTION(UNITE=92,
+##              FORMAT='TABLEAU',
+#              COURBE=_F(FONCTION=E1_1000,),)
+#IMPR_FONCTION(UNITE=92,
+#              FORMAT='TABLEAU',
+#              COURBE=_F(FONCTION=E1_2000,),)
+#IMPR_FONCTION(UNITE=92,
+#              FORMAT='TABLEAU',
+#              COURBE=_F(FONCTION=E1_1000,),)
+IMPR_TABLE(UNITE=92,
+           FORMAT='TABLEAU',
+           TABLE=R1_200,
+           NOM_PARA=('INST','SIYY',),)
+
+
+IMPR_TABLE(UNITE=92,
+           FORMAT='TABLEAU',
+           TABLE=R1_1000,
+           NOM_PARA=('INST','SIYY',),)
+
+
+IMPR_TABLE(UNITE=92,
+           FORMAT='TABLEAU',
+           TABLE=R1_2000,
+           NOM_PARA=('INST','SIYY',),)
+
+
+IMPR_TABLE(UNITE=92,
+           FORMAT='TABLEAU',
+           TABLE=R1_10000,
+           NOM_PARA=('INST','SIYY',),)
+
+
+print '*** valeurs de coefficients ***'
+print 'R0=',R0__,
+print 'RINF=',RINF__
+print 'PETITB=',PETITB__,
+print 'PETITK=',PETITK__,
+print 'PETITW=',PETITW__
+print 'GAMA1=',GAMA1__,
+print 'GAMA2=',GAMA2__,
+print 'C1INF=',C1INF__,
+print 'C2INF=',C2INF__,
+print 'AINF=',AINF__
+print 'UNETA__=',UNETA__,
+print 'EXP_N__=',EXP_N__
+print '*******************************'

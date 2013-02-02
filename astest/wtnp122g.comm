@@ -1,0 +1,386 @@
+# MODIF  DATE 15/10/2012   AUTEUR GRANET S.GRANET 
+# TITRE - MODELISATION D UN BARREAU SATURE EN GAZ COMPRESSIBLE
+# wtnp122g.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 1D
+#    MODELISATION VF CENTRE (VFC)
+
+
+DEBUT(CODE=_F(NOM='WTNP122G', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+
+#=============================================================
+#=============================================================
+METHODE='VFC'
+#=============================================================
+#=============================================================
+
+MODELISA = 'D_PLAN_HH2SUC'
+
+
+#=============================================================
+#                     DONNEES
+#=============================================================
+
+PARM_ALPHA=1.
+
+
+MOLVP =0.0001
+
+#*********************************************************
+# CI/CL
+#*********************************************************
+
+PCREF=0.
+PGREF=1.E4
+PVPREF=0.001
+PG0=10000.
+PC0=0.
+
+PRE2G0=0.
+
+#*********************************************************
+# PAS DE TEMPS
+#*********************************************************
+#
+TFINAL=100.
+NBDECOUP=100
+
+#*********************************************************
+# CRITERES DE CONVERGENCE
+#*********************************************************
+#
+RESI_GLOB_MAXI = 1.E-12
+
+ITER_GLOB_MAXI = 20 
+#
+#
+#*************************************************************
+# LISTE DES INSTANTS DE CALCULS
+#*************************************************************
+#
+              
+INST1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=TFINAL,
+                                    NOMBRE=NBDECOUP,),),
+                     );
+        
+LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
+                                ECHEC=_F(EVENEMENT = 'ERREUR',
+                                         ACTION    = 'ARRET',),)       
+#*********************
+# LECTURE DU MAILLAGE
+#*********************
+
+
+MAILINI=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
+          MODI_MAILLE=(
+           _F( TOUT = 'OUI',OPTION = 'TRIA6_7',PREF_NOEUD='NT',),
+           ),
+
+         )
+MAIL=DEFI_GROUP(reuse =MAIL,
+         MAILLAGE=MAIL,
+         CREA_GROUP_NO=(
+         _F(GROUP_MA='MHAUT',NOM='NSHAUT',CRIT_NOEUD='MILIEU',),
+         _F(GROUP_MA='MBAS',NOM='NSBAS',CRIT_NOEUD='MILIEU',),
+         _F(GROUP_MA='MDROIT',),
+         _F(GROUP_MA='MGAUCHE',),
+         _F(GROUP_MA='TOUT',NOM='NS',CRIT_NOEUD='MILIEU',),
+         _F(GROUP_MA='TOUT',NOM='NK',CRIT_NOEUD='CENTRE',)
+       ,),);        
+
+#*********************************************************
+# MODELE DE CALCUL
+#*********************************************************
+#
+MODELT=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION=MODELISA,),
+                  );
+
+                                    
+
+#*********************************************************
+# DEFINITION DES CARACTERISTIQUES FLUIDES
+#**********************************************************
+
+UN=DEFI_CONSTANTE(VALE=1.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+HENRY=DEFI_CONSTANTE(VALE=10000000000.0,);
+
+
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.,);
+VISCOGAZ=DEFI_CONSTANTE(VALE=1.,);
+
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+
+
+VALKINT=1.E-3 /PGREF
+KINT=DEFI_CONSTANTE(VALE=VALKINT,);
+MATERIAU=DEFI_MATERIAU(  
+
+         THM_LIQU=_F(  
+               RHO = 1000.0,
+                VISC = VISCOLIQ,
+       UN_SUR_K=0.,
+          D_VISC_TEMP = DVISCOL,),
+         
+         COMP_THM = 'LIQU_AD_GAZ_VAPE',
+   
+         THM_AIR_DISS=_F(
+                   CP=0.,
+                   COEF_HENRY=HENRY,
+                   ),
+                   
+         THM_VAPE_GAZ    =_F(                                 
+                   MASS_MOL   = MOLVP,
+                   CP         = 1870.,
+                   VISC       = VISCOGAZ,
+                   D_VISC_TEMP= DVISCOG,
+                       ),
+          
+         THM_GAZ=_F(
+                  MASS_MOL    = 0.002,
+       CP=1000.0, 
+                  VISC        = VISCOGAZ,
+                  D_VISC_TEMP = DVISCOG,
+             ), 
+         
+         THM_DIFFU=_F(
+            R_GAZ      = 8.315,
+            RHO=2200.0,
+            BIOT_COEF  = 1.,
+#*****SATURATION******            
+            SATU_PRES  = ZERO,
+            D_SATU_PRES= ZERO,
+#*****GRAVITE****** 
+            PESA_X     = 0.0,
+            PESA_Y     = 0.,
+            PESA_Z     = 0.,
+#*****TENSEUR******            
+#           PERM_IN    = KINT,
+            PERMIN_X   = KINT,
+            PERMIN_Y   = KINT,
+            PERMIN_Z   = ZERO,
+            PERM_LIQU  = UN,
+            D_PERM_LIQU_SATU=ZERO,
+            PERM_GAZ   = UN,
+            D_PERM_SATU_GAZ=ZERO,
+            D_PERM_PRES_GAZ=ZERO,
+#*****FICK****** 
+            FICKV_T    = ZERO,
+            FICKA_T    = ZERO,
+            LAMB_T     = ZERO
+              ),
+            
+        THM_INIT=_F( 
+         TEMP = 303.,
+         PRE1 = PCREF,
+         PRE2 = PGREF,
+         PORO = 1.,
+         PRES_VAPE=PVPREF,
+                 ),
+   );
+#****************************************************************
+# AFFECTATION DES MATERIAUX
+#****************************************************************
+#
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(GROUP_MA='TOUT',
+                             MATER=MATERIAU,),),);   
+                
+#*************************************************************
+# AFFECTATION DE L ETAT INITIAL
+#*************************************************************
+#
+
+PINIT=CREA_CHAMP(MAILLAGE=MAIL,
+                    OPERATION='AFFE', 
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    AFFE=(
+                          _F( GROUP_MA = 'TOUT'  ,
+                                     NOM_CMP  = 'PRE1' ,
+                              VALE = PC0 , ),
+                         _F( GROUP_MA = 'TOUT'  ,
+                                 NOM_CMP  = 'PRE2' ,
+                               VALE = PG0 , ),
+                         ),
+                );
+
+#*************************************************************
+# AFFECTATION DES CL
+#*************************************************************
+#
+
+CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
+       MECA_IMPO=(
+                 _F(TOUT='OUI',PRE1=0.,),
+                 _F(GROUP_MA = 'MGAUCHE',PRE2=PRE2G0,),
+                 ), 
+                             
+       );
+    
+#
+#
+#*************************************************************
+#     STAT NON LINE
+#*************************************************************
+#
+        
+
+CAL1=STAT_NON_LINE(MODELE=MODELT,
+                 CHAM_MATER=CHMAT, 
+                 
+                 EXCIT=( _F(CHARGE=CHIMP,),),
+                 
+                 COMP_INCR=_F(RELATION='KIT_HH',
+                              RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),
+                 ),
+
+                INCREMENT=_F(  
+                   LIST_INST = LI,
+                     INST_FIN=TFINAL,
+                ),
+                
+                 ETAT_INIT  = _F ( DEPL = PINIT  ,
+                                  ),
+                                               
+               SOLVEUR=_F(METHODE='MULT_FRONT',
+                            STOP_SINGULIER='NON',),
+                 
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+              
+                 CONVERGENCE=_F(
+                                 RESI_GLOB_MAXI = RESI_GLOB_MAXI,
+                                 ITER_GLOB_MAXI = ITER_GLOB_MAXI,),
+                    
+                 ARCHIVAGE=_F(LIST_INST     = INST1  ,),
+                 );
+
+         
+#
+#*************************************************************
+# IMPRESSIONS
+#*************************************************************
+
+L_INST=DEFI_LIST_REEL(VALE=(1.,10.,100.,),);
+ 
+
+
+PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+        GROUP_NO=('NSBAS'),
+        RESULTAT=CAL1,
+        NOM_CHAM='DEPL',
+        LIST_INST=L_INST,
+        NOM_CMP=('PRE1'),
+        OPERATION='EXTRACTION',),);
+       
+IMPR_TABLE(TABLE=PR1_BAS,
+      PAGINATION = 'INST' ,
+      NOM_PARA=('INST','COOR_X','PRE1'),
+      TRI   = (_F( NOM_PARA = ('COOR_X' ,),
+      ORDRE    = 'CROISSANT',),),);
+    
+PR2_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+        GROUP_NO=('NSBAS'),
+        RESULTAT=CAL1,
+        NOM_CHAM='DEPL',
+        LIST_INST=L_INST,
+        NOM_CMP=('PRE2'),
+        OPERATION='EXTRACTION',),);
+IMPR_TABLE(TABLE=PR2_BAS,
+      PAGINATION = 'INST' ,
+      NOM_PARA=('INST','COOR_X','PRE2'),
+      TRI   = (_F( NOM_PARA = ('COOR_X' ,),
+      ORDRE    = 'CROISSANT',),),); 
+
+# NOEUD DU BAS
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                REFERENCE='ANALYTIQUE',
+                RESULTAT=CAL1,
+                NOM_CHAM='DEPL',
+                NOEUD='N360',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.47349469E+03,
+                VALE_REFE=1473,
+                CRITERE='RELATIF',
+                PRECISION=0.10000000000000001,),
+        )
+
+# NOEUD MILIEU
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                REFERENCE='ANALYTIQUE',
+                RESULTAT=CAL1,
+                NOM_CHAM='DEPL',
+                NOEUD='N505',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.47240735E+03,
+                VALE_REFE=1472.0,
+                CRITERE='RELATIF',
+                PRECISION=0.10000000000000001,),
+        )
+
+# NOEUD DU BAS
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=CAL1,
+                NOM_CHAM='DEPL',
+                NOEUD='N360',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.47349469E+03,
+                VALE_REFE=1473.3,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+# NOEUD MILIEU
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=CAL1,
+                NOM_CHAM='DEPL',
+                NOEUD='N505',
+                NOM_CMP='PRE2',
+                VALE_CALC= 1.47240735E+03,
+                VALE_REFE=1472.4000000000001,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+# NOEUD CENTRE
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                REFERENCE='NON_DEFINI',
+                RESULTAT=CAL1,
+                NOM_CHAM='DEPL',
+                NOEUD='NT70',
+                NOM_CMP='PRE2',
+                VALE_CALC=353.232568021,
+                VALE_REFE=353.97760862167002,
+                CRITERE='RELATIF',
+                PRECISION=1.E-2,),
+        )
+
+
+FIN();

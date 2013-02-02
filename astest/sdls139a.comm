@@ -1,0 +1,574 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE IDENTIFICATION D EFFORTS FLUIDES SUR UNE STRUCTURE FILAIRE
+# sdls139a.para = tps_job 380 mem_job 512Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT( CODE = _F( NOM = 'SDLS139A',
+                  NIV_PUB_WEB='INTERNET'),
+       DEBUG=_F(SDVERI='OUI'),
+      );
+
+
+#***************************************************************************************#
+#                                                                                       #
+#      CREATION DU MODELE NUMERIQUE DE BASE : UN CRAYON COMBUSTIBLE ACCROCHE AU         #
+#       NIVEAU DES GRILLE A UN GUIDE REPRESENTANT L'INERTIE DES AUTRES CRAYONS          #
+#                                                                                       #
+#***************************************************************************************#
+
+#==================================
+#IMPORTATION DU MAILLAGE DE MESURES
+#==================================
+
+MAINUM=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
+
+#=================================================
+#AFFECTATION DES PROPRIETES AU MODELE ELEMTS FINIS
+#=================================================
+
+MODELNUM=AFFE_MODELE(MAILLAGE=MAINUM,
+                    VERIF='MAILLE',
+                    AFFE=(_F(GROUP_NO=('GRILLE1','GRILLE3','GRILLE6','GRILLE8',),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='DIS_TR',),
+                          _F(GROUP_MA=('MC','MG',),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='POU_D_T',),),);
+
+
+MATGUI=DEFI_MATERIAU(ELAS=_F(E=9.84E10,
+                             NU=0.3,
+                             RHO=6526.0,
+                     ),);
+
+MATCRAY=DEFI_MATERIAU(ELAS=_F(E=9.84E10,
+                             NU=0.3,
+                             RHO=1.581E4,
+                             ),);
+
+CARANUM=AFFE_CARA_ELEM(MODELE=MODELNUM,
+                       POUTRE=(_F(GROUP_MA='MG',
+                                  SECTION='CERCLE',
+                                  CARA=('EP','R',),
+                                  VALE=(0.0005,0.01245,),),
+                               _F(GROUP_MA='MC',
+                                  SECTION='CERCLE',
+                                  CARA=('EP','R',),
+                                  VALE=(0.0005,0.0095,),),),
+                       DISCRET=(_F(GROUP_NO=('GRILLE1','GRILLE3','GRILLE6','GRILLE8',),
+                                  CARA='K_TR_D_N',
+                                  VALE=(1000000.0,1000000.0,1000000.0,100.0,100.0,100.0,),),
+                                 _F(GROUP_NO=('GRILLE1','GRILLE3','GRILLE6','GRILLE8',),
+                                  CARA='M_TR_D_N',
+                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),));
+
+MATNUM=AFFE_MATERIAU(MAILLAGE=MAINUM,
+                     MODELE=MODELNUM,
+                     AFFE=(_F(GROUP_MA='MG',
+                              MATER=MATGUI,),
+                           _F(GROUP_MA='MC',
+                              MATER=MATCRAY,),),);
+
+#==================================
+#CONDITIONS LIMITES DE LA STRUCTURE 
+#==================================
+
+# Encastrement des extremites du tube guide
+# Blocage du mouvement selon DZ des deux poutres
+CLs1=AFFE_CHAR_MECA(MODELE=MODELNUM,
+                    DDL_IMPO=(_F(NOEUD=('N1','N2',),
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,
+                                 DRX=0.0,
+                                 DRY=0.0,
+                                 DRZ=0.0,),
+                              _F(GROUP_NO=('NC','NG',),
+                                 DZ=0.0,
+                                 DRX=0.0,
+                                 DRY=0.0,
+                              ),),);
+
+
+#===========================================================================                
+#CONSTRUCTION ET ASSEMBLAGE DES MATRICES ET VECTEURS ELEMENTAIRES ET GLOBAUX
+#===========================================================================
+
+
+KELNUM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                      MODELE=MODELNUM,
+                      CHAM_MATER=MATNUM,
+                      CARA_ELEM=CARANUM,
+                      CHARGE=CLs1,);
+
+MELNUM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=MODELNUM,
+                      CHAM_MATER=MATNUM,
+                      CARA_ELEM=CARANUM,
+                      CHARGE=CLs1,);
+
+
+NUMENUM=NUME_DDL(MATR_RIGI=KELNUM,);
+
+KASNUM=ASSE_MATRICE(MATR_ELEM=KELNUM,
+                    NUME_DDL=NUMENUM,);
+
+MASNUM=ASSE_MATRICE(MATR_ELEM=MELNUM,
+                    NUME_DDL=NUMENUM,);
+
+
+#=============================================                
+#ANALYSE MODALE EN AIR, NORMALISATION EN MASSE
+#=============================================
+
+MODEAIR1=MODE_ITER_SIMULT(MATR_RIGI=KASNUM,
+                          MATR_MASS=MASNUM,
+                          METHODE='SORENSEN',
+                          TYPE_RESU='DYNAMIQUE',
+                          OPTION='SANS',
+                          CALC_FREQ=_F(
+                                       OPTION='PLUS_PETITE',
+                                       APPROCHE='REEL',
+                                       NMAX_FREQ=10,
+                                       SEUIL_FREQ=10.0,
+                                       ),
+                          VERI_MODE=_F(STOP_ERREUR='NON',
+                                       SEUIL=1e-03,),);
+
+
+
+MODEAIR1=NORM_MODE( 
+                    reuse = MODEAIR1,
+                    MODE = MODEAIR1,
+                    NORME ='MASS_GENE',)
+
+
+# ON AJOUTE D'UN AMORTISSEMENT MODAL A LA MAIN DE 1%
+list_amor = [0.02]*10
+LISTAMOR = DEFI_LIST_REEL( VALE = list_amor);
+
+MODEAIR = DEFI_BASE_MODALE( RITZ = _F( MODE_MECA = MODEAIR1 ),
+                            LIST_AMOR = LISTAMOR );
+
+
+#***************************************************************************************
+#                                                                                       
+#      CREATION DU MODELE NUMERIQUE DU CRAYON SEUL : IL SERT A CALCULER LA LONGUEUR          
+#        EQUIVALENTE POUR SES DEFORMEES. ON PROJETTE LA BASE MODEAIR SUR LE MODELE         
+#                                                                                       
+#***************************************************************************************
+
+
+MAICRA=CREA_MAILLAGE(MAILLAGE=MAINUM,
+                     CREA_POI1=_F(NOM_GROUP_MA='CRAYON',
+                                  GROUP_NO='NC',
+                                  ),);
+
+MODELCRA=AFFE_MODELE(MAILLAGE=MAICRA,
+                     AFFE=_F(GROUP_MA='CRAYON',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='DIS_TR',),);
+
+CARACRA=AFFE_CARA_ELEM(MODELE=MODELCRA,
+                      DISCRET=(_F(GROUP_MA='CRAYON',
+                                 REPERE='GLOBAL',
+                                 CARA='K_TR_D_N',
+                                 VALE=(1.0,1.0,1.0,1.0,1.0,1.0,),),
+                                 _F(GROUP_MA='CRAYON',
+                                 REPERE='GLOBAL',
+                                 CARA='M_TR_D_N',
+                                 VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),)
+                      ));
+
+MATCRA=AFFE_MATERIAU(MAILLAGE=MAICRA,
+                     MODELE=MODELCRA,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MATCRAY,),);
+
+
+KELCRA=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                      MODELE=MODELCRA,
+                      CHAM_MATER=MATCRA,
+                      CARA_ELEM=CARACRA,
+                     );
+
+NUMCRA=NUME_DDL(MATR_RIGI = KELCRA,);
+
+
+MODCRA=PROJ_CHAMP(METHODE='COLLOCATION',
+                  RESULTAT=MODEAIR,
+                  MODELE_1=MODELNUM,
+                  MODELE_2=MODELCRA,
+                  NOM_CHAM='DEPL',
+                  NUME_DDL=NUMCRA,
+                  TOUT_ORDRE='OUI',
+                  NOM_PARA=('FREQ','AMOR_REDUIT','AMOR_GENE','MASS_GENE',),
+                  VIS_A_VIS=_F(TOUT_1='OUI',
+                               TOUT_2='OUI',),);
+
+
+
+#****************************************************************#
+#                                                                #
+#   SIMULATION D'UN EFFORT APPLIQUE EN DEUX POINTS DU TUBE :      #
+#   UNE FORCE PLUTOT LARGE BANDE ET UNE SUR BANDE FINE, AVEC     #
+#   DEUX FONCTIONS DE TYPE GAUSIENNES                            #
+#                                                                #
+#****************************************************************#
+
+#=============================================
+#FONCTION MUL DE LA FORME GAUSSIENNE
+#=============================================
+
+# fonction gaussienne
+def gauss(mu,sigma,freq):
+    from numpy import sqrt, pi
+    fonc = (1./sigma*sqrt(2*pi))*exp(-1/2*((freq - mu)/sigma)**2)
+    return fonc
+
+liste = DEFI_LIST_REEL( DEBUT = 0.0,
+                        INTERVALLE = _F( JUSQU_A = 600.0,
+                                         PAS     = 1),);
+
+
+# excitation spectre large
+tmp11 = FORMULE( NOM_PARA = 'FREQ',
+                 VALE     = 'gauss(300,100,FREQ)')
+
+tmp12 = CALC_FONC_INTERP( FONCTION  = tmp11,
+                          LIST_PARA = liste,
+                          NOM_PARA  = 'FREQ',);
+
+FONC_11 = CALC_FONCTION( COMB_C = _F( FONCTION = tmp12 , COEF_C= 2.0E12*complex(1,0)) )
+
+# excitation de type raie
+tmp21 = FORMULE( NOM_PARA = 'FREQ',
+                 VALE     = 'gauss(250,1,FREQ)')
+
+tmp22 = CALC_FONC_INTERP( FONCTION  = tmp21,
+                          LIST_PARA = liste,
+                          NOM_PARA  = 'FREQ',);
+
+FONC_22 = CALC_FONCTION( COMB_C = _F( FONCTION = tmp22 , COEF_C = 2.0E10*complex(1,0)) )
+
+# les deux excitations sont decorellees : inter-spectre nul
+FONC_12 = CALC_FONCTION( COMB_C = _F( FONCTION = tmp22 , COEF_C = 0.0*complex(1,0)) )
+
+
+INTESP = DEFI_INTE_SPEC( DIMENSION = 2,
+                         PAR_FONCTION = (_F( NUME_ORDRE_I = 1, NUME_ORDRE_J = 1, FONCTION = FONC_11),
+                                         _F( NUME_ORDRE_I = 2, NUME_ORDRE_J = 2, FONCTION = FONC_22),
+                                         _F( NUME_ORDRE_I = 1, NUME_ORDRE_J = 2, FONCTION = FONC_12), 
+                                         ),
+                        );
+
+
+
+#=========================================                                  
+# CALCUL DES INTER-SPECTRES DE DEPLACEMENT 
+#=========================================
+
+
+DYN=DYNA_ALEA_MODAL( BASE_MODALE = _F( MODE_MECA = MODEAIR,
+                                       BANDE = (0.0,600.0,),
+                                       AMOR_UNIF = 0.02,),
+                     EXCIT = _F( INTE_SPEC = INTESP,
+                                 NUME_ORDRE_I = (1,2),
+                                 NUME_ORDRE_J = (1,2),
+                                 NOEUD = ('N3','N136'),
+                                 NOM_CMP = ('DX','DX'),
+                                 GRANDEUR = 'EFFO',),
+                    );
+
+
+# Restitution de la mesure sur 19 capteurs
+noeuds = ('N3','N4','N79','N83','N87','N91','N95','N99','N103','N107','N111',
+          'N115','N119','N123','N127','N131','N135','N139','N143')
+cmp = tuple(['DX']*19)
+SPECTR19 = REST_SPEC_PHYS( MODE_MECA = MODEAIR,
+                           BANDE = (0.0,200.0,),
+                           INTE_SPEC_GENE = DYN,
+                           NOEUD = noeuds,
+                           NOM_CMP = cmp,
+                           NOM_CHAM = 'DEPL',
+                           OPTION = 'TOUT_TOUT',);
+       
+
+
+DETRUIRE( CONCEPT = _F( NOM = (DYN,INTESP) ), INFO=1)
+
+
+       
+#***************************************************************************************
+#
+#                CREATION DU MODELE EXPERIMENTAL - MODES EXPERIMENTAUX
+#
+#***************************************************************************************
+
+#===========================================                             
+#CREATION DU MODELE CAPTEURS / OBSERVABILITE 
+#===========================================
+
+MAIEXP = CREA_MAILLAGE( MAILLAGE = MAINUM,
+                        CREA_POI1 = _F( NOM_GROUP_MA = 'CAPTEURS',
+                                        NOEUD = noeuds,
+                                        ),);
+
+
+MODELEXP = AFFE_MODELE( MAILLAGE = MAIEXP,
+                        AFFE = _F( GROUP_MA = 'CAPTEURS',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = 'DIS_T',),);
+
+CAREXP = AFFE_CARA_ELEM( MODELE = MODELEXP,
+                         DISCRET = (_F( GROUP_MA = 'CAPTEURS',
+                                       REPERE = 'GLOBAL',
+                                       CARA = 'K_T_D_N',
+                                       VALE = (1000.0,1000.0,1000.0,),),
+                                    _F( GROUP_MA = 'CAPTEURS',
+                                       REPERE = 'GLOBAL',
+                                       CARA = 'M_T_D_N',
+                                       VALE = (0.,),),));
+
+MATEXP = AFFE_MATERIAU( MAILLAGE = MAIEXP,
+                        MODELE = MODELEXP,
+                        AFFE = _F( TOUT = 'OUI',
+                                   MATER = MATCRAY,),);
+
+KELEXP=CALC_MATR_ELEM(OPTION     = 'RIGI_MECA',
+                      MODELE     = MODELEXP,
+                      CHAM_MATER = MATEXP,
+                      CARA_ELEM  = CAREXP,);
+
+MELEXP=CALC_MATR_ELEM(OPTION     = 'MASS_MECA',
+                      MODELE     = MODELEXP,
+                      CHAM_MATER = MATEXP,
+                      CARA_ELEM  = CAREXP,);
+
+# la fabrication du NUME_DDL est obligatoire pour fabriquer le concept "observe"
+# (avec la macro OBSERVATION, en interactif ou non interactif).
+# Amelioration possible : les etapes CAREXP, MATEXP et KELEXP pourraient etre 
+# effectuees automatiquement pour un modele experimental...
+NUMEXP = NUME_DDL( MATR_RIGI = KELEXP,);
+
+KASEXP=ASSE_MATRICE(MATR_ELEM=KELEXP,
+                    NUME_DDL=NUMEXP,);
+
+MASEXP=ASSE_MATRICE(MATR_ELEM=MELEXP,
+                    NUME_DDL=NUMEXP,);
+
+
+MODEEXP = PROJ_CHAMP( RESULTAT = MODEAIR,
+                      MODELE_1 = MODELNUM,
+                      MODELE_2 = MODELEXP,
+                      NOM_CHAM='DEPL',
+                      NUME_DDL=NUMEXP,
+                      TOUT_ORDRE='OUI',
+                      NOM_PARA=('FREQ','AMOR_REDUIT','AMOR_GENE','MASS_GENE',),
+                      VIS_A_VIS=_F(TOUT_1='OUI',
+                                   TOUT_2='OUI',),);
+                      
+
+#***********************************************************************************#
+#                                                                                   #
+#       CREATION DU MODELE DEFINISSANT LES POINTS D'APPLICATION DES EFFORTS         #
+#                                                                                   #
+#***********************************************************************************#
+#===========================================                             
+#CREATION DU MODELE EFFORTS / COMMANDABILITE 
+#===========================================
+
+MAIACT = CREA_MAILLAGE( MAILLAGE=MAINUM,
+                        CREA_POI1 = _F( NOM_GROUP_MA = 'GMA2',
+                                        NOEUD=('N3','N136'),
+                                      ),
+                       );
+
+# on utilise un modele avec DDL de translation et de rotation.
+# Les DDL de translation correspondent a des efforts ponctuels
+# Les DDL de rotation correspondent a des moments ponctuels.
+MODELACT = AFFE_MODELE( MAILLAGE = MAIACT,
+                        AFFE = _F( GROUP_MA = 'GMA2',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = 'DIS_TR',),);
+
+CARACT = AFFE_CARA_ELEM( MODELE = MODELACT,
+                         DISCRET = (_F( GROUP_MA = 'GMA2',
+                                       REPERE = 'GLOBAL',
+                                       CARA = 'K_TR_D_N',
+                                       VALE = (1.0,1.0,1.0,1.0,1.0,1.0),),
+                                   _F( GROUP_MA = 'GMA2',
+                                       REPERE = 'GLOBAL',
+                                       CARA = 'M_TR_D_N',
+                                       VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),));
+
+MATACT = AFFE_MATERIAU( MAILLAGE = MAIACT,
+                        MODELE = MODELACT,
+                        AFFE = _F( TOUT = 'OUI',
+                                   MATER = MATCRAY,),);
+
+KELACT = CALC_MATR_ELEM( OPTION = 'RIGI_MECA',
+                         MODELE = MODELACT,
+                         CHAM_MATER = MATACT,
+                         CARA_ELEM = CARACT,);
+
+MELACT = CALC_MATR_ELEM( OPTION = 'MASS_MECA',
+                         MODELE = MODELACT,
+                         CHAM_MATER = MATACT,
+                         CARA_ELEM = CARACT,);
+
+NUMACT = NUME_DDL( MATR_RIGI = KELACT,);
+
+KASACT=ASSE_MATRICE(MATR_ELEM=KELACT,
+                    NUME_DDL=NUMACT,);
+
+MASACT=ASSE_MATRICE(MATR_ELEM=MELACT,
+                    NUME_DDL=NUMACT,);
+
+OBS = OBSERVATION( RESULTAT = MODEAIR,
+                   MODELE_1 = MODELNUM,
+                   MODELE_2 = MODELEXP,
+                   PROJECTION = 'OUI',
+                   TOUT_ORDRE = 'OUI',
+               #    NUME_DDL = NUMEXP,
+                   MATR_A = KASEXP,
+                   MATR_B = MASEXP,
+                   NOM_CHAM = 'DEPL',
+                   FILTRE = _F( GROUP_MA = 'CAPTEURS',
+                                NOM_CHAM = 'DEPL',
+                                DDL_ACTIF = ('DX')
+                           ),
+                  );
+
+# Pour le concept de commandabilite, on garde les DDL DX uniquement
+# si on veut identifier des efforts, et DX et DRZ si on veut identifier 
+# efforts et moments ponctuels.
+COM = OBSERVATION( RESULTAT = MODEAIR,
+                   MODELE_1 = MODELNUM,
+                   MODELE_2 = MODELACT,
+                   PROJECTION = 'OUI',
+                   TOUT_ORDRE = 'OUI',
+               #    NUME_DDL = NUMACT,
+                   MATR_A = KASACT,
+                   MATR_B = MASACT,
+                   NOM_CHAM = 'DEPL',
+                   FILTRE = ( _F( GROUP_MA = 'GMA2',
+                                NOM_CHAM = 'DEPL',
+                                  DDL_ACTIF = ('DX','DRZ')),
+                           ),
+                  );
+
+
+interactif = 0
+if interactif:
+# Pour lancer Meidee en interactif, on peut ecrire :
+    CALC_ESSAI( 
+                INTERACTIF = 'OUI',
+                RESU_IDENTIFICATION = (
+                                  _F(TABLE = CO("EFFORTS")), # intsp des efforts phy identifies
+                                  _F(TABLE = CO("DEPL_PHY")), # intsp des deplacements mesures
+                                  _F(TABLE = CO("DEPL_SYN")), # intsp des deplacements resynthetises
+                                       ),
+                );
+
+else:
+    CALC_ESSAI( 
+                INTERACTIF = 'NON',
+                EXPANSION        = _F(CALCUL = MODEAIR,
+                                      NUME_MODE_CALCUL = (1,2,3,4,5,6,7,8,),
+                                      MESURE = MODCRA,
+                                      NUME_MODE_MESURE = (1,2,3,4,5,6,7,8,)),
+                IDENTIFICATION   = _F(ALPHA = 0.0,
+                                      EPS   = 0.0,
+                                      INTE_SPEC      = SPECTR19,
+                                      OBSERVABILITE  = OBS,
+                                      COMMANDABILITE = COM,
+                                      BASE = MODEAIR),
+                RESU_IDENTIFICATION = (
+                                        _F(TABLE = CO("EFFORTS")),  # intsp des efforts phy identifies
+                                        _F(TABLE = CO("DEPL_PHY")), # intsp des deplacements mesures
+                                        _F(TABLE = CO("DEPL_SYN")), # intsp des deplacements resynthetises
+                                       ),
+               );
+
+
+
+#**********************************************************************************************#
+#                                                                                              #
+#       TEST_RESU : ON COMPARE LES DEPLACEMENTS CALCULES AVEC LES VRAIS EFFORTS (SPECTR19)     #
+#               ET LES DEPLACEMENTS CALCULES AVEC LES EFFORTS IDENTIFIES (TAB_03)              #
+#                                                                                              #
+#**********************************************************************************************#
+
+
+# Extraction de quelques fonctions dans les inter-spectres, calcul de la "valeur RMS" de
+# celles-ci et comparaison entre les deplacements calcules a partir des 
+# vrais efforts (valeurs RMS dans liste_ref et dans FONC0_X) et a partir des depl identifies (FONC1_X)
+
+test_no = ('N3','N79','N83','N87','N91','N107','N115','N119','N123')
+
+FONC0 = [None]*9
+FONC1 = [None]*9
+DIFF  = [None]*9
+AMPL  = [None]*9
+AMPL0 = [None]*9
+AMPL1 = [None]*9
+NORM  = [None]*9
+NORM0 = [None]*9
+NORM1 = [None]*9
+
+for ind in range(len(FONC0)):
+
+    FONC0[ind] = RECU_FONCTION( INTE_SPEC = DEPL_PHY,
+                                NOEUD_I = test_no[ind],
+                                NOM_CMP_I = 'DX')
+
+
+    FONC1[ind] = RECU_FONCTION( INTE_SPEC = DEPL_SYN,
+                                NOEUD_I = test_no[ind],
+                                NOM_CMP_I = 'DX')
+
+
+    DIFF[ind]  = CALC_FONCTION(COMB = (_F( FONCTION = FONC0[ind],COEF = -1),
+                                         _F( FONCTION = FONC1[ind],COEF =  1)))
+
+#    AMPL0[ind] = CALC_FONCTION( EXTRACTION = _F( FONCTION = FONC0[ind],PARTIE = 'MODULE'))
+#    AMPL1[ind] = CALC_FONCTION( EXTRACTION = _F( FONCTION = FONC1[ind],PARTIE = 'MODULE'))
+
+#    NORM0[ind] = INFO_FONCTION( RMS= _F(FONCTION = AMPL0[ind]))
+#    NORM1[ind] = INFO_FONCTION( RMS= _F(FONCTION = AMPL1[ind]))
+    NORM[ind]  = INFO_FONCTION( RMS= _F(FONCTION = DIFF[ind]))
+    
+#    IMPR_TABLE( UNITE = 8, TABLE = NORM0[ind])
+#    IMPR_TABLE( UNITE = 8, TABLE = NORM1[ind])
+    IMPR_TABLE( UNITE = 8, TABLE = NORM[ind])
+    
+    TEST_TABLE(CRITERE='ABSOLU',
+               REFERENCE='AUTRE_ASTER',
+               TOLE_MACHINE=1.E-3,
+               PRECISION=1.E-3,
+               VALE_CALC=0.0,
+               VALE_REFE=0.0,
+               NOM_PARA='RMS',
+               TYPE_TEST='MAX',
+               TABLE=NORM[ind],)
+
+FIN();
+

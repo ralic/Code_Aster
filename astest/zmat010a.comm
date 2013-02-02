@@ -1,0 +1,246 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE TEST ELASTICITE CUBIQUE COMPARAISON ASTER ZMAT
+# zmat010a.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test Z
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE JMBHH01 J.M.PROIX
+
+DEBUT(CODE=_F(NOM='ZMAT010A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
+
+# test elasticite cubique
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+
+
+
+# donnees ZMAT
+
+y1111=160000.0
+y1122=78000.0
+y1212=110000.0
+
+# Correspondance avec ELAS_ORTH : la matrice d'elasticite vaut 
+# pour une elasticite orthotrope cubique
+#H11=H22=H33=E*(1-Nu**2)/(1-3*Nu**2-2*Nu**3)
+#H44=H55=H66=y1212=G_LT
+# donc NU_LT=1/(1+y1111/y1122)
+
+Nu=1.0/(1.0+y1111/y1122)
+
+E_L=y1111*(1.0-3.0*Nu**2-2.0*Nu**3)/(1.0-Nu**2)
+
+                           
+ACIER=DEFI_MATERIAU(  ELAS_ORTH =_F(E_L  =E_L,
+                                    E_T  =E_L,
+                                    E_N  =E_L,
+                                    NU_LT=Nu,
+                                    NU_LN=Nu,
+                                    NU_TN=Nu,
+                                    G_LT =y1212,
+                                    G_LN =y1212,
+                                    G_TN =y1212,
+                                 ),
+                   );
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                         MATER=ACIER,),);
+
+PRECIS=1.E-6
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+              MAILLAGE=MAIL,             
+              DETR_GROUP_NO=_F(NOM=('GAUCHE','ARRIERE','HAUT','BAS','DROITE','DEVANT'),),
+              CREA_GROUP_NO=(_F(OPTION='PLAN',
+                                NOM='BAS',
+                                POINT=(0.0,0.0,0.0,),
+                                VECT_NORMALE=(0.0,0.0,1.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='HAUT',
+                                POINT=(0.0,0.0,1.0,),
+                                VECT_NORMALE=(0.0,0.0,1.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='GAUCHE',
+                                POINT=(0.0,0.0,0.0,),
+                                VECT_NORMALE=(0.0,1.0,0.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='ARRIERE',
+                                POINT=(0.0,0.0,0.0,),
+                                VECT_NORMALE=(1.0,0.0,0.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='DROITE',
+                                POINT=(0.0,1.0,0.0,),
+                                VECT_NORMALE=(0.0,1.0,0.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='DEVANT',
+                                POINT=(1.0,0.0,0.0,),
+                                VECT_NORMALE=(1.0,0.0,0.0,),
+                                PRECISION=PRECIS,),
+                                ),);
+
+MODEL3D=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
+
+ANG45=AFFE_CARA_ELEM(MODELE=MODEL3D,
+                     MASSIF=(
+    _F(GROUP_MA='GM1',ANGL_EULER=(0.00,137.47,272.02),),
+    _F(GROUP_MA='GM2',ANGL_EULER=(165.11,86.24,78.83),),
+    _F(GROUP_MA='GM3',ANGL_EULER=(16.94,69.04,244.55),),
+    _F(GROUP_MA='GM4',ANGL_EULER=(336.49,103.47,186.99),),
+    _F(GROUP_MA='GM5',ANGL_EULER=(299.15,158.57,19.25),),
+    _F(GROUP_MA='GM6',ANGL_EULER=(190.69,69.98,2.77),),
+    _F(GROUP_MA='GM7',ANGL_EULER=(138.03,150.03,150.29),),
+    _F(GROUP_MA='GM8',ANGL_EULER=(247.24,79.75,334.96),),
+    _F(GROUP_MA='GM9',ANGL_EULER=(304.62,86.91,33.11),),
+    _F(GROUP_MA='GM10',ANGL_EULER=(235.41,99.67,252.43),),
+),);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(
+                     _F(JUSQU_A=1.,NOMBRE=1),
+                     ),)
+                     
+
+COEF=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.0,  0.0,
+                                          1.0 , 0.02,
+                                         ),
+                       PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+
+CHAR=AFFE_CHAR_CINE(MODELE=MODEL3D,
+                    MECA_IMPO=(
+                    _F(GROUP_NO='ARRIERE',DX=0.0,),
+                    _F(GROUP_NO='BAS',DZ=0.0,),
+                    _F(GROUP_NO='GAUCHE',DY=0.0,),
+                    _F(GROUP_NO='HAUT',DZ=1.,),
+                    ),);
+
+# SOLUTION DE REFERENCE
+
+ZMAT=STAT_NON_LINE(
+                    MODELE=MODEL3D,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=ANG45,
+                    EXCIT=(
+                          _F( CHARGE=CHAR),
+                         ),
+                    COMP_INCR=_F(
+                                 RELATION='ZMAT',NB_VARI=49,UNITE=33,
+                                 ),
+                    INCREMENT=_F(LIST_INST=LINST),
+                    NEWTON=_F(REAC_ITER=1),
+                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6),
+                                  );
+
+# elasticite cubique Aser
+ASTER=STAT_NON_LINE(
+                    MODELE=MODEL3D,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=ANG45,
+                    EXCIT=(
+                          _F( CHARGE=CHAR),
+                         ),
+                     COMP_INCR=_F(
+                                 RELATION='ELAS',
+                                 ),
+                    INCREMENT=_F(LIST_INST=LINST),
+                    NEWTON=_F(REAC_ITER=1),
+                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6),
+                                  );
+
+
+IMPR_RESU(RESU=_F(RESULTAT=ZMAT,VALE_MAX='OUI',VALE_MIN='OUI'),);
+
+IMPR_RESU(RESU=_F(RESULTAT=ASTER,VALE_MAX='OUI',VALE_MIN='OUI'),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=(
+          _F(RESULTAT=ZMAT,),
+          _F(RESULTAT=ASTER,),
+          ),);
+
+
+# REFERENCE : ZMAT
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='MAX',
+                   RESULTAT=ZMAT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0147478,
+                   TOLE_MACHINE=1.E-4,
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='MIN',
+                   RESULTAT=ZMAT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.35538199999999998,
+                   TOLE_MACHINE=1.E-4,
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='MAX',
+                   RESULTAT=ZMAT,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=2.93649E5,
+                   TOLE_MACHINE=1.E-4,
+                   ),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   TYPE_TEST='MAX',
+                   RESULTAT=ASTER,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.014747833,
+                   VALE_REFE=0.0147478,
+                   PRECISION=1.E-4,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   TYPE_TEST='MIN',
+                   RESULTAT=ASTER,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.355381613,
+                   VALE_REFE=-0.35538199999999998,
+                   PRECISION=1.E-4,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   TYPE_TEST='MAX',
+                   RESULTAT=ASTER,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC= 2.93648778E+05,
+                   VALE_REFE=2.93649E5,
+                   PRECISION=1.E-4,),
+                ),
+          )
+
+FIN();
+
+#

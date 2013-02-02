@@ -1,0 +1,763 @@
+# MODIF  DATE 20/11/2012   AUTEUR LADIER A.LADIER 
+# TITRE - INJECTION DE GAZ DANS UN MILIEU DE TYPE ARGILE DECRIT PAR DES LOIS DE MUALEM /VAN-GENUCHTEN
+# wtna105a.para = tps_job 800 mem_job 1024Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+#************************************************************************************************
+# INJECTION DE GAZ DANS UN MILIEU DE TYPE ARGILE DECRIT PAR DES LOIS DE MUALEM /VAN-GENUCHTEN
+#                                                                                               *
+#     Tranche de 1 m d epaisseur - TYPE Colis C -  (zones de Jeu , de ZE et de COX)             *
+#
+#******************************************************************************************
+#
+#  Modele de calcul : - calcul de type hydraulique (AXIS_HH2S)
+#           - comportement hydraulique "LIQU_AD_GAZ_VAPE"
+#           - Modele Mualem-Van-Genuchten (parametres COUPLEX)                                  *
+#           - conditions initiales
+#            Pour le Cox et la ZE
+#            (T = 30 C ; Pgz = 1 atm ; Pc = 0.1MPa )
+#
+#            Pour le JEU
+#            (T = 30 c ; Pgz = 1 atm ; Pc = 5.18 MPa c.ad. S = 0.1)
+#
+#           - Injection de gaz applique        *
+#            au niveau de la paroi externe du JEU (gauche)
+#
+#******************************************************************************************
+
+#
+DEBUT(CODE=_F(NOM='WTNA105A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+#
+#
+# Lecture du maillage
+#*********************
+#
+CORDEC = LIRE_MAILLAGE (FORMAT='MED', );
+
+CORDEC = DEFI_GROUP ( reuse    = CORDEC,
+            MAILLAGE  = CORDEC,
+            CREA_GROUP_NO = (
+              _F( GROUP_MA = 'HAUT',),
+             _F( GROUP_MA = 'BAS',),
+             _F( GROUP_MA = 'GAUCHE',),
+             _F( GROUP_MA = 'DROITE',),
+             _F( GROUP_MA = 'JEU',),
+             _F( GROUP_MA = 'ZE',),
+             _F( GROUP_MA = 'COX',),
+             ),
+           )
+
+#*********************************************************
+# Modele de calcul
+#*********************************************************
+#
+MODELT = AFFE_MODELE ( MAILLAGE = CORDEC,
+            AFFE   = _F( TOUT     = 'OUI'    ,
+                    PHENOMENE  = 'MECANIQUE' ,
+                    MODELISATION = 'AXIS_HH2S' ),
+           ) ,
+#*********************************************************
+# Definition des caracteristiques fluides
+#**********************************************************
+UN  = DEFI_CONSTANTE ( VALE = 1.);
+ZERO = DEFI_CONSTANTE ( VALE = 0.);
+BIDON = DEFI_CONSTANTE ( VALE = 0.);
+SMAX=0.999
+#
+VISCOLIQ = DEFI_CONSTANTE ( VALE = 1.0E-3 ) ;
+VISCOGAZ = DEFI_CONSTANTE ( VALE = 1.8E-5 ) ;
+#
+DVISCOL = DEFI_CONSTANTE ( VALE = 0. ) ;
+DVISCOG = DEFI_CONSTANTE ( VALE = 0. ) ;
+#
+#
+#************************************#
+# PERMEABILITE INTRINSEQUE
+#************************************
+KINTJEU = DEFI_CONSTANTE ( VALE = 1.019E-13 );
+KINTZE  = DEFI_CONSTANTE ( VALE = 5.097E-18 );
+KINTCOX = DEFI_CONSTANTE ( VALE = 5.097E-21 );
+#
+#
+FICKJEU  = DEFI_CONSTANTE ( VALE = 0.0015 );
+FICKZE   = DEFI_CONSTANTE ( VALE = 0.00075 );
+FICKCOX  = DEFI_CONSTANTE ( VALE = 0.00075 );
+###
+
+#
+# Fick melange liquide Couplex
+#
+FadJEU   = DEFI_CONSTANTE ( VALE = 4.47E-10 );
+FadZE   = DEFI_CONSTANTE ( VALE = 2.23632E-10 );
+FadCOX   = DEFI_CONSTANTE ( VALE = 2.23632E-10 );
+#
+KHENRY  = DEFI_CONSTANTE ( VALE = 1.252E05 );
+
+
+# Fonction de saturation et sa derivee
+#**************************************
+#
+# LI2  pour la variation du degre de saturation
+# LIJEU pour la variation du degre de saturation
+#
+
+
+LI2 = DEFI_LIST_REEL ( DEBUT   = 0.019,
+            INTERVALLE = (
+             _F( JUSQU_A = 0.999 , PAS = 1.E-2 ,),
+                  ),)
+
+
+LIJEU = DEFI_LIST_REEL ( DEBUT   = 0.089,
+             INTERVALLE = (
+              _F( JUSQU_A = 0.999 , PAS = 1.E-2 ,),
+                  ),)
+
+#**********************
+# PARAMETRE MUALEM- VAN-GENUCHTEN
+#
+PRJEU  = 4.91E3   ;
+NJEU  = 1.55    ;
+MJEU  = 1-1/NJEU ;
+SRJEU  = 0.08    ;
+
+PRZE  = 4.91E6  ;
+NZE   = 1.50   ;
+MZE   = 1-1/NZE ;
+SRZE  = 0.00   ;
+
+PRCOX  = 1.47E7  ;
+NCOX  = 1.49   ;
+MCOX  = 1-1/NCOX ;
+SRCOX  = 0.01   ;
+
+#
+#
+# Variation du coefficient de Fick "Fvp" en fonction de la saturation)
+#**********************************************************************
+# Pour le jeu (JEU)
+#=======================
+FVP_SR = FORMULE(NOM_PARA='SAT' ,VALE=''' ( 0.999-SAT)''');
+
+FVPSR = CALC_FONC_INTERP ( FONCTION  = FVP_SR  ,
+              LIST_PARA  = LIJEU  ,
+              NOM_PARA  = 'SAT'   ,
+              PROL_GAUCHE = 'CONSTANT' ,
+              PROL_DROITE = 'CONSTANT' ,
+              INFO    = 2     ,);
+
+FA_SR = FORMULE(NOM_PARA='SAT' ,VALE=' SAT');
+
+FASR = CALC_FONC_INTERP ( FONCTION  = FA_SR   ,
+              LIST_PARA  = LIJEU  ,
+              NOM_PARA  = 'SAT'   ,
+              PROL_GAUCHE = 'CONSTANT' ,
+              PROL_DROITE = 'CONSTANT' ,
+              INFO    = 2     ,);
+# Pour la ZE et COX
+#==================
+FVP_S = FORMULE(NOM_PARA='SAT' ,VALE=''' ( 0.999-SAT)''');
+
+FVPS = CALC_FONC_INTERP ( FONCTION  = FVP_S   ,
+              LIST_PARA  = LI2    ,
+              NOM_PARA  = 'SAT'   ,
+              PROL_GAUCHE = 'CONSTANT' ,
+              PROL_DROITE = 'CONSTANT' ,
+              INFO    = 2     ,);
+
+FA_S = FORMULE(NOM_PARA='SAT' ,VALE=' SAT');
+
+FAS = CALC_FONC_INTERP ( FONCTION  = FA_S   ,
+              LIST_PARA  = LI2  ,
+              NOM_PARA  = 'SAT'   ,
+              PROL_GAUCHE = 'CONSTANT' ,
+              PROL_DROITE = 'CONSTANT' ,
+              INFO    = 2     ,);
+#
+# Conductivite thermique
+#************************
+#
+LAMBLIQ = DEFI_CONSTANTE ( VALE = 0.6 ) ;         # LAMB_T (liquide)
+#
+# Pour le Jeu (JEU)
+#***********************
+#
+LS_RB = FORMULE(NOM_PARA='SAT' ,VALE='''( 0.45*SAT)''');
+
+LSRB = CALC_FONC_INTERP ( FONCTION  = LS_RB   ,
+              LIST_PARA  = LIJEU  ,
+              NOM_PARA  = 'SAT'   ,
+              PROL_GAUCHE = 'CONSTANT' ,
+              PROL_DROITE = 'CONSTANT' ,
+              INFO    = 2     ,); # LAMB_S (Phi0 x S)
+
+DLSRB  = DEFI_CONSTANTE ( VALE = 0.45 );        # D_LB_S (Phi0)
+
+LCTRB  = DEFI_CONSTANTE ( VALE = 1.13 );        # LAMB_CT ((1 - PHI0) x LAMBSolide)
+#============================================================================================
+# Pour la ZE
+#************
+#
+LS_ZE = FORMULE(NOM_PARA='SAT' ,VALE=''' ( 0.15*SAT)''');
+
+LSZE = CALC_FONC_INTERP ( FONCTION  = LS_ZE   ,
+              LIST_PARA  = LI2    ,
+              NOM_PARA  = 'SAT'   ,
+              PROL_GAUCHE = 'CONSTANT' ,
+              PROL_DROITE = 'CONSTANT' ,
+              INFO    = 2     ,); # LAMB_S (Phi0 x S)
+
+DLSZE = DEFI_CONSTANTE ( VALE = 0.15 );         # D_LB_S (Phi0)
+
+LCTZE = DEFI_CONSTANTE ( VALE = 1.81 );         # LAMB_CT ((1 - PHI0) x LAMBSolide)
+#============================================================================================
+# Pour le COX
+#**************
+#
+LSCX  = FORMULE(NOM_PARA='SAT' ,VALE=''' ( 0.15*SAT)''');
+
+LSCOX = CALC_FONC_INTERP ( FONCTION  = LSCX   ,
+              LIST_PARA  = LI2    ,
+              NOM_PARA  = 'SAT'   ,
+              PROL_GAUCHE = 'CONSTANT' ,
+              PROL_DROITE = 'CONSTANT' ,
+              INFO    = 2     ,); # LAMB_S (Phi0 x S)
+
+DLSCOX = DEFI_CONSTANTE ( VALE = 0.15 );         # D_LB_S (Phi0)
+
+LCTCOX = DEFI_CONSTANTE ( VALE = 1.81 );        # LAMB_CT ((1 - PHI0) x LAMBSolide)
+#
+
+#****************************************************************
+# JEU
+#****************************************************************
+MATJEU = DEFI_MATERIAU (
+
+             ELAS   =_F(
+  E        = 72.9E6 ,
+  NU       = 0.3   ,
+  RHO       = 2670.  ,
+  ALPHA      = 1.E-5
+                   ),
+
+             COMP_THM  ='LIQU_AD_GAZ_VAPE' ,
+
+             THM_LIQU  =_F(
+  RHO       = 1000.   ,
+  UN_SUR_K    = 0.500E-9  ,
+  ALPHA      = 1.048E-4  ,
+  CP       = 4180.   ,
+  VISC      = VISCOLIQ  ,
+  D_VISC_TEMP   = DVISCOL  ,
+                    ),
+             THM_GAZ  =_F(
+  MASS_MOL     = 2.0E-3  ,
+  CP        = 1000.   ,
+  VISC       = VISCOGAZ ,
+  D_VISC_TEMP   = ZERO   ,
+                     ),
+           THM_VAPE_GAZ  =_F(
+  MASS_MOL     = 18.E-3  ,
+  CP        = 1870.   ,
+  VISC       = VISCOGAZ ,
+  D_VISC_TEMP   = ZERO   ,
+                     ),
+
+           THM_AIR_DISS  =_F(
+  CP        = 1870.   ,
+  COEF_HENRY    = KHENRY  ,
+                    ),
+
+             THM_DIFFU  =_F(
+  R_GAZ      = 8.315   ,
+  RHO       = 1514.   ,
+  CP        = 1500.   ,
+  BIOT_COEF    = 1.    ,
+  PESA_X      = 0.    ,
+  PESA_Y      = 0.    ,
+  PESA_Z      = 0.    ,
+  PERMIN_X     = KINTJEU  ,
+  PERMIN_Y     = KINTJEU  ,
+  PERMIN_Z     = KINTJEU  ,
+#
+  VG_N      = NJEU   ,
+  VG_PR      = PRJEU  ,
+  VG_SR      = SRJEU  ,
+  VG_SMAX     = SMAX  ,
+  VG_SATUR=0.9999,
+
+#
+  FICKV_T     = FICKJEU ,
+  FICKV_S     = FVPSR   ,
+  FICKA_S     = FASR,
+  FICKA_T     = FadJEU  ,
+
+  LAMB_T      = LAMBLIQ  ,
+  LAMB_S      = LSRB   ,
+  D_LB_S      = DLSRB   ,
+  LAMB_CT     = 1.13   ,
+                    ),
+
+
+             THM_INIT  =_F(
+  TEMP      = 303.   ,
+  PRE1      = 0.0   ,
+  PRE2      = 0.1E6  ,
+  PORO      = 0.3   ,
+  PRES_VAPE    = 4.276E3 ,
+                    ),
+
+      )
+#****************************************************************
+# ZE Caracteristiques de la Zone Endommagee
+#****************************************************************
+#
+MATZE = DEFI_MATERIAU (
+
+             ELAS   =_F(
+  E        = 3643.7E6  ,
+  NU       = 0.3    ,
+  RHO       = 2670.   ,
+  ALPHA      = 1.E-5
+                   ),
+
+             COMP_THM  ='LIQU_AD_GAZ_VAPE' ,
+
+             THM_LIQU  =_F(
+  RHO       = 1000.   ,
+  UN_SUR_K    = 0.500E-9  ,
+  ALPHA      = 1.048E-4  ,
+  CP       = 4180.   ,
+  VISC      = VISCOLIQ  ,
+  D_VISC_TEMP   = DVISCOL  ,
+                    ),
+
+
+             THM_GAZ  =_F(
+  MASS_MOL     = 2.0E-3  ,
+  CP        = 1000.   ,
+  VISC       = VISCOGAZ ,
+  D_VISC_TEMP   = ZERO   ,
+                     ),
+
+
+           THM_VAPE_GAZ  =_F(
+  MASS_MOL     = 18.E-3  ,
+  CP        = 1870.   ,
+  VISC       = VISCOGAZ ,
+  D_VISC_TEMP   = ZERO   ,
+                     ),
+
+           THM_AIR_DISS  =_F(
+  CP        = 1870.   ,
+  COEF_HENRY    = KHENRY  ,
+                    ),
+
+             THM_DIFFU  =_F(
+  R_GAZ      = 8.315   ,
+  RHO       = 2420.   ,
+  CP        = 1100.   ,
+  BIOT_COEF    = 1.    ,
+  PESA_X      = 0.    ,
+  PESA_Y      = 0.    ,
+  PESA_Z      = 0.    ,
+  PERMIN_X     = KINTZE  ,
+  PERMIN_Y     = KINTZE  ,
+  PERMIN_Z     = KINTZE  ,
+  VG_N      = NZE   ,
+  VG_PR      = PRZE  ,
+  VG_SR      = SRZE  ,
+  VG_SMAX     = SMAX  ,
+  VG_SATUR=0.9999,
+#
+  FICKV_T     = FICKZE  ,
+  FICKV_S     = FVPS   ,
+  FICKA_T     = FadZE   ,
+  FICKA_S     = FAS,
+
+  LAMB_T      = LAMBLIQ  ,
+  LAMB_S      = LSZE   ,
+  D_LB_S      = DLSZE   ,
+  LAMB_CT     = 1.81   ,
+                    ),
+
+
+             THM_INIT  =_F(
+  TEMP      = 303.   ,
+  PRE1      =  0.0   ,
+  PRE2      =  0.1E6  ,
+  PORO      =  0.15  ,
+  PRES_VAPE    =  4.276E3 ,
+
+                    ),
+
+      )
+#**************************************************************
+# COX Caracteristiques du Callovo-Oxfordien
+#***************************************************************
+#
+MATCOX = DEFI_MATERIAU (
+
+             ELAS   =_F(
+  E        = 4500.0E6  ,
+  NU       = 0.3    ,
+  RHO       = 2670.   ,
+  ALPHA      = 1.E-5
+                   ),
+
+             COMP_THM  ='LIQU_AD_GAZ_VAPE' ,
+
+             THM_LIQU  =_F(
+  RHO       = 1000.   ,
+  UN_SUR_K    = 0.500E-9  ,
+  ALPHA      = 1.048E-4  ,
+  CP       = 4180.   ,
+  VISC      = VISCOLIQ  ,
+  D_VISC_TEMP   = DVISCOL  ,
+                    ),
+
+
+             THM_GAZ  =_F(
+  MASS_MOL     = 2.0E-3  ,
+  CP        = 1000.   ,
+  VISC       = VISCOGAZ ,
+  D_VISC_TEMP   = ZERO   ,
+                     ),
+
+           THM_VAPE_GAZ  =_F(
+  MASS_MOL     = 18.E-3  ,
+  CP        = 1870.   ,
+  VISC       = VISCOGAZ ,
+  D_VISC_TEMP   = ZERO   ,
+                     ),
+
+           THM_AIR_DISS  =_F(
+  CP        = 1870.   ,
+  COEF_HENRY    = KHENRY  ,
+                   ),
+
+             THM_DIFFU  =_F(
+  R_GAZ      = 8.315   ,
+  RHO       = 2420.   ,
+  CP        = 1100.   ,
+  BIOT_COEF    = 1.    ,
+  PESA_X      = 0.    ,
+  PESA_Y      = 0.    ,
+  PESA_Z      = 0.    ,
+  PERMIN_X     = KINTCOX  ,
+  PERMIN_Y     = KINTCOX  ,
+  PERMIN_Z     = KINTCOX  ,
+#
+  VG_N      = NCOX   ,
+  VG_PR      = PRCOX  ,
+  VG_SR      = SRCOX  ,
+  VG_SMAX     = SMAX  ,
+  VG_SATUR=0.9999,
+#
+  FICKV_T     = FICKCOX  ,
+  FICKV_S     = FVPS   ,
+  FICKA_T     = FadCOX  ,
+  FICKA_S     = FAS,
+
+  LAMB_T      = LAMBLIQ  ,
+  LAMB_S      = LSCOX   ,
+  D_LB_S      = DLSCOX  ,
+  LAMB_CT     = 1.81   ,
+                    ),
+
+
+             THM_INIT  =_F(
+  TEMP      = 303.   ,
+  PRE1      =  0.0   ,
+  PRE2      =  0.1E6  ,
+  PORO      =  0.15  ,
+  PRES_VAPE    =  4.276E3 ,
+                    ),
+        )
+
+#****************************************************************
+# Affectation des materiaux
+#****************************************************************
+#
+CHMAT = AFFE_MATERIAU ( MAILLAGE = CORDEC,
+              AFFE = (_F( GROUP_MA  = 'JEU',
+                   MATER   = MATJEU,),
+                   _F( GROUP_MA  = 'ZE',
+                   MATER   = MATZE,),
+                   _F( GROUP_MA  = 'COX',
+                   MATER   = MATCOX,),
+                   ),
+             );
+#*************************************************************
+# Affectation de l etat initial
+#*************************************************************
+#
+PCINI = 1.E5
+
+TPPINIT = CREA_CHAMP ( TYPE_CHAM  = 'NOEU_DEPL_R' ,
+            OPERATION  = 'AFFE' ,
+            MAILLAGE  = CORDEC  ,
+            AFFE    = ( _F( TOUT  = 'OUI',
+                     NOM_CMP = 'TEMP',
+                     VALE  = 0.0,),
+                    _F( GROUP_MA = 'JEU',
+                      NOM_CMP  = 'PRE1',
+                VALE   = 5.18E6,),
+                   _F( GROUP_MA = ('ZE','COX'),
+                     NOM_CMP  = 'PRE1' ,
+                     VALE   = PCINI , ),
+                   _F( GROUP_MA = ('ZE','COX','JEU'),
+                     NOM_CMP  = 'PRE2' ,
+                     VALE   = 0. , ),
+                     ),
+            )
+
+
+#******************************************************************
+# Conditions aux limites
+#******************************************************************
+#
+CHIMP = AFFE_CHAR_MECA ( MODELE = MODELT ,
+             DDL_IMPO  = (
+             _F ( GROUP_MA = 'DROITE',
+               PRE1   = PCINI ,),
+             _F ( GROUP_MA = 'DROITE',
+               PRE2   = 0.0,),
+                    ),
+            );
+
+#
+#***********************************************************************************************
+# Flux hydraulique eau = consommation d eau appliquee au niveau de la paroi gauche du Jeu ( x 3)
+# Vitesse de corrosion V1 (entre 0 et 5000 ans)
+#***********************************************************************************************
+#
+FLUXE0 = DEFI_FONCTION ( NOM_PARA  = 'INST' ,
+             VALE = (
+   0.     ,  0.0   ,
+   8.6400E+04 ,  2.13E-10 , # au bout de 1 jour
+   3.1536E+09 ,  2.13E-10 , # au bout de 100 ans
+   3.1536E+10 ,  2.13E-10 , # au bout de 1000 ans
+   3.1536E+11 ,  2.13E-10 , # au bout de 10 000 ans
+   3.1536E+12 ,  2.13E-10 ), # au bout de 100 000 ans
+            PROL_DROITE ='EXCLU' ,
+            PROL_GAUCHE ='EXCLU' , );
+#
+#***********************************************************************************************
+# Flux hydraulique gaz = production de gaz appliquee au niveau de la paroi gauche du Jeu ( x 3)
+#***********************************************************************************************
+#
+FLUXG0 = DEFI_FONCTION ( NOM_PARA  = 'INST' ,
+           VALE = (
+   0.     ,  0.0,
+   8.6400E+04 ,  2.37E-11 , # au bout de 1 jour
+   3.1536E+09 ,  2.37E-11 , # au bout de 100 ans
+   3.1536E+10 ,  2.37E-11 , # au bout de 1000 ans
+   3.1536E+11 ,  2.37E-11 , # au bout de 10 000 ans
+   3.1536E+12 ,  2.37E-11 ), # au bout de 100 000 ans
+            PROL_DROITE ='EXCLU' ,
+            PROL_GAUCHE ='EXCLU' , );
+#
+#
+#******************************************************************
+# Chargements
+#******************************************************************
+# Consommation d eau
+#*******************
+CHE = AFFE_CHAR_MECA ( MODELE = MODELT ,
+            FLUX_THM_REP = _F( GROUP_MA  = 'GAUCHE',
+                      FLUN_HYDR1 = -1.0 ,),)
+# Production de gaz
+#******************
+CHG = AFFE_CHAR_MECA ( MODELE = MODELT ,
+            FLUX_THM_REP = _F( GROUP_MA  = 'GAUCHE' ,
+                     FLUN_HYDR2 = 1.0 ,),)
+#
+#
+#**************************************************************************************************
+# Liste des instants de calculs
+#*******************************
+#
+INST1 = DEFI_LIST_REEL ( DEBUT   = 0.0,
+        INTERVALLE = (
+ _F( JUSQU_A = 8640 , NOMBRE = 10 ,), # Au bout de 1/10 jour
+ _F( JUSQU_A = 86400, NOMBRE = 20,), # Au bout de 1 jour
+ _F( JUSQU_A = 172800 , NOMBRE = 10 ,), # Au bout de 2 jour
+ _F( JUSQU_A = 432000 , NOMBRE = 10 ,), # Au bout de 5 jours
+ _F( JUSQU_A = 864000 , NOMBRE = 5 ,), # Au bout de 10 jours
+ _F( JUSQU_A = 3.1536E+07 , NOMBRE = 10 ,), # Au bout de 1 an
+ _F( JUSQU_A = 6.3072E+07 , NOMBRE = 12 ,),# Au bout de 2 ans
+_F( JUSQU_A = 9.4608E+07 , NOMBRE = 6 ,), # Au bout de 3 ans
+ _F( JUSQU_A = 1.2614E+08 , NOMBRE = 6 ,), # Au bout de 4 ans
+   _F( JUSQU_A = 1.5768E+08 , NOMBRE = 6 ,),# Au bout de 5 ans
+   _F( JUSQU_A = 1.8922E+08 , NOMBRE = 6 ,),# Au bout de 6 ans
+ _F( JUSQU_A = 2.2075E+08 , NOMBRE = 6 ,),# Au bout de 7 ans
+ _F( JUSQU_A = 2.5229E+08 , NOMBRE = 6 ,),# Au bout de 8 ans
+ _F( JUSQU_A = 2.8382E+08 , NOMBRE = 6 ,),# Au bout de 9 ans
+ _F( JUSQU_A = 3.1536E+08 , NOMBRE = 6 ,),# Au bout de 10 ans
+ _F( JUSQU_A = 6.3072E+08 , NOMBRE = 11 ,),# Au bout de 20 ans
+ _F( JUSQU_A = 9.4608E+08 , NOMBRE = 10 ,),# Au bout de 30 ans
+ _F( JUSQU_A = 1.2614E+09 , NOMBRE = 10 ,),# Au bout de 40 ans
+ _F( JUSQU_A = 1.5768E+09 , NOMBRE = 5 ,),# Au bout de 50 ans
+ _F( JUSQU_A = 1.8922E+09 , NOMBRE = 5 ,), # Au bout de 60 ans
+ _F( JUSQU_A = 3.1536E+09 , NOMBRE = 10 ,), # Au bout de 100 ans
+ _F( JUSQU_A = 6.3072E+09 , NOMBRE = 20 ,),# Au bout de 200 ans
+ _F( JUSQU_A = 9.4608E+09 , NOMBRE = 20 ,),# Au bout de 300 ans
+ _F( JUSQU_A = 1.5768E+10 , NOMBRE = 20 ,),# Au bout de 500 ans
+ _F( JUSQU_A = 3.1536E+10 , NOMBRE = 20 ,), # Au bout de 1000 ans
+ _F( JUSQU_A = 1.5768E+11 , NOMBRE = 20 ,), # Au bout de 5000 ans
+ _F( JUSQU_A = 3.1536E+11 , NOMBRE = 20 ,), # Au bout de 10000 ans
+ _F( JUSQU_A = 3.1536E+12 , NOMBRE = 30 ,), # Au bout de 100000 ans
+                   ),
+            );
+TFIN=6.3072E+08
+#
+#******************************************************************
+# Simulation de la corrosion et du chauffage entre 0 et 5000 ans
+# pour la vitesse de corrosion V1
+#******************************************************************
+#
+cal1 = STAT_NON_LINE (
+          MODELE    = MODELT     ,
+          CHAM_MATER  = CHMAT    ,
+
+          EXCIT    =(
+          _F( CHARGE   = CHIMP ),
+                 _F( CHARGE   = CHE ,
+                   FONC_MULT = FLUXE0 ) ,
+                 _F( CHARGE   = CHG ,
+                   FONC_MULT = FLUXG0 ) ,
+                      ),
+
+          COMP_INCR  =_F( RELATION   = 'KIT_HH',
+                   RELATION_KIT = ('LIQU_AD_GAZ_VAPE', 'HYDR_VGM'),
+                   PARM_THETA = 1. , ),
+          INCREMENT   =_F(
+                   LIST_INST    = INST1   ,
+                   INST_FIN = TFIN,
+                   ),
+          ETAT_INIT  = _F ( DEPL   = TPPINIT,
+             ),
+
+          NEWTON    =_F(
+                   MATRICE  = 'TANGENTE' ,
+                   REAC_ITER = 1     , ),
+          SOLVEUR=_F(METHODE='MUMPS',),
+          CONVERGENCE =_F (
+                   ITER_GLOB_MAXI = 25   ,
+                   RESI_GLOB_RELA = 1.E-5  ,
+                   ),
+
+            );
+#
+# POST TRAITEMENT
+#
+
+cal1=CALC_CHAMP(reuse=cal1,INST=(8640.,3.1536E+8,6.3072E+08),CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=cal1)
+
+
+cal1  = CALC_CHAMP  ( reuse    = cal1  ,
+            VARI_INTERNE='VARI_NOEU',
+            INST = (8640.,3.1536E+8, 6.3072E+08),
+            RESULTAT   = cal1  ,);
+
+PgTU1  = POST_RELEVE_T ( ACTION  =_F( INTITULE  = 'DEPL' ,
+                      RESULTAT  = cal1 ,
+           INST = (0.,3.1536E+8,6.3072E+08),
+          GROUP_NO   = 'HAUT'  ,
+           NOM_CHAM  = 'DEPL' ,
+          NOM_CMP  = ('PRE1', 'PRE2',) ,
+           OPERATION = 'EXTRACTION',),);
+
+SATU1  = POST_RELEVE_T ( ACTION  =_F( INTITULE  = 'DEPL' ,
+                      RESULTAT  = cal1 ,
+            INST = (8640.,3.1536E+8, 6.3072E+08),
+          GROUP_NO   = 'HAUT'  ,
+           NOM_CHAM  = 'VARI_NOEU' ,
+          NOM_CMP  = ('V4', ) ,
+           OPERATION = 'EXTRACTION',),);
+
+IMPR_TABLE ( TABLE  = PgTU1   ,
+       FORMAT  = 'TABLEAU_CROISE'  ,
+       NOM_PARA = ( 'INST', 'COOR_X', 'PRE2', ),
+   TRI  = (_F( NOM_PARA = ('COOR_X' ,),
+      ORDRE  = 'CROISSANT' ,),),
+           );
+IMPR_TABLE ( TABLE  = PgTU1   ,
+       FORMAT  = 'TABLEAU_CROISE'  ,
+       NOM_PARA = ( 'INST', 'COOR_X', 'PRE1', ),
+       TRI  = (_F( NOM_PARA = ('COOR_X' ,),
+       ORDRE  = 'CROISSANT' ,),),
+          );
+IMPR_TABLE ( TABLE  = SATU1   ,
+       FORMAT  = 'TABLEAU_CROISE'  ,
+       NOM_PARA = ( 'INST', 'COOR_X', 'V4', ),
+       TRI  = (_F( NOM_PARA = ('COOR_X' ,),
+       ORDRE  = 'CROISSANT' ,),),
+      );
+
+TEST_RESU(RESU=_F(INST=3.15360000E8,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=cal1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE2',
+                  VALE_CALC= 4.81035890E+05,
+                  VALE_REFE=4.81000E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=3.15360000E8,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=cal1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N94',
+                  NOM_CMP='PRE2',
+                  VALE_CALC= 3.57770949E+05,
+                  VALE_REFE=3.58000E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=6.30720000E8,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=cal1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='PRE2',
+                  VALE_CALC= 6.83619225E+05,
+                  VALE_REFE=6.83000E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST=6.30720000E8,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=cal1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N94',
+                  NOM_CMP='PRE2',
+                  VALE_CALC= 5.36436185E+05,
+                  VALE_REFE=5.36000E5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+FIN ( ) ;

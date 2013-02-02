@@ -1,0 +1,51 @@
+# AJOUT
+# TITRE TEST DE INCLUDE
+# RESPONSABLE
+
+DEBUT(CODE=_F(NOM='SUPV001A', NIV_PUB_WEB='INTERNET'),
+      IMPR_MACRO='OUI',
+      PAR_LOT='NON',)
+
+# import la macro
+import os
+if os.path.exists('fort.33'):
+    os.rename('fort.33', 'ma_macro.py')
+from ma_macro import MON_INCLUDE
+
+# form n'est utilisable que dans l'INCLUDE, la ou est defini 'para'
+form = FORMULE(NOM_PARA='INST', VALE='para * INST')
+
+# vérifie que l'INCLUDE ne crée pas de conflit avec les concepts du jdc
+fonc = DEFI_FONCTION(NOM_PARA='X',
+                     VALE=(1., 0.),
+                     PROL_GAUCHE='CONSTANT',
+                     PROL_DROITE='CONSTANT')
+
+MON_INCLUDE(UNITE=11,
+            INTERNE=('tab', 'fonc'),
+            # INTERNE sert à dire à la macro que des concepts sont nommés
+            # 'tab' et 'fonc' mais elle doit les produire sous un nom
+            # temporaire pour ne pas rentrer en conflit avec le jdc.
+            TABLE=CO('tabres'),
+            # permet de produire une table pour vérifier qu'elle a bien
+            # été créée dans l'INCLUDE.
+)
+
+DETRUIRE(CONCEPT=_F(NOM=form))
+
+# tester que fonc est bien celui du jdc
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0,
+                        TOLE_MACHINE=1.E-3,
+                        VALE_PARA=1.0,
+                        FONCTION=fonc,),
+              )
+
+TEST_TABLE(VALE_CALC=2.4691200000000002,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='TOUTRESU',
+           TABLE=tabres,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           )
+
+FIN()

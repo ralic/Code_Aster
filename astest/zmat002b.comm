@@ -1,0 +1,230 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE TEST COUPLAGE ZMAT-ASTER, SIMILAIRE A HSNV100A, APPEL A ZMAT
+# zmat002b.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+DEBUT(CODE=_F(NOM='ZMAT002B', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+#......................................................................
+# CAS TEST THERMOPLASTICITE ELEMENTAIRE
+#......................................................................
+# DEFINITION DES CARACTERISTIQUES DU MATERIAU
+
+MAIL=LIRE_MAILLAGE();
+#
+# DONNEES DE MODELISATION
+
+FCT1=DEFI_FONCTION(NOM_PARA='EPSI',
+                   VALE=(0.002,400.0,0.004,500.0,),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+#
+
+FCT2=DEFI_FONCTION(NOM_PARA='EPSI',
+                   VALE=(0.001,200.0,0.003,300.0,),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+#
+
+CTRACB=DEFI_NAPPE(NOM_PARA='TEMP',
+                  PARA=(0.0,50.0,),
+                  FONCTION=(FCT1,FCT2,),
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',);
+#
+
+DEBUG(SDVERI='NON')
+MAT=DEFI_MATERIAU(ELAS=_F(E=2000.0,
+                          NU=0.3,
+                          ALPHA=0.0,),
+                  TRACTION=_F(SIGM=CTRACB,),
+                  THER=_F(LAMBDA=0.001,
+                          RHO_CP=0.0,),);
+DEBUG(SDVERI='OUI')
+#
+
+CM=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI', MATER=MAT), );
+#
+
+T0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+              OPERATION='AFFE',
+              MAILLAGE=MAIL,
+              AFFE=_F(
+              TOUT='OUI',
+              NOM_CMP='TEMP',
+              VALE=0.0,),);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=66.666,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=80.0,
+                                     NOMBRE=2,),
+                                  _F(JUSQU_A=90.0,
+                                     NOMBRE=2,),),);
+#
+
+TIMPVAR=DEFI_FONCTION(NOM_PARA='INST',
+                      NOM_RESU='TEMP',
+                      VALE=(0.0,0.0,100.0,100.0,),);
+#
+
+MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='THERMIQUE',
+                           MODELISATION='PLAN',),);
+#
+
+MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
+#
+
+CHTHER=AFFE_CHAR_THER_F(MODELE=MOTHER,
+                        TEMP_IMPO=(_F(GROUP_NO='GRNO1',
+                                      TEMP=TIMPVAR,),
+                                   _F(GROUP_NO='GRNO2',
+                                      TEMP=TIMPVAR,),
+                                   _F(GROUP_NO='GRNO3',
+                                      TEMP=TIMPVAR,),
+                                   _F(GROUP_NO='GRNO4',
+                                      TEMP=TIMPVAR,),),);
+#
+
+TEMPE=THER_LINEAIRE(MODELE=MOTHER,
+                    CHAM_MATER=CM,
+                    EXCIT=_F(CHARGE=CHTHER,),
+                    INCREMENT=_F(LIST_INST=L_INST,),
+                    ETAT_INIT=_F(CHAM_NO=T0,),);
+
+CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
+                      #TEMP_CALCULEE=TEMPE,
+                      DDL_IMPO=(_F(NOEUD='N1',
+                                   DX=0.0,),
+                                _F(GROUP_NO='GRNO1',
+                                   DY=0.0,),
+                                _F(GROUP_NO='GRNO3',
+                                   DY=0.0,),),);
+CM2=AFFE_MATERIAU(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI', MATER=MAT),
+                 AFFE_VARC=_F(NOM_VARC='TEMP', EVOL=TEMPE, VALE_REF = 0.),
+                 );
+
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CM2,
+                EXCIT=_F(CHARGE=CHMECA,),
+                COMP_INCR=_F(RELATION='ZMAT',
+                             NB_VARI=13,
+                             UNITE=33,
+                             ),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
+                               ITER_GLOB_MAXI=10,),);
+#
+#  ATTENTION, SIGMA_33 EST INCALCULABLE A POSTERIORI EN C_PLAN :
+
+U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
+#
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=90.000000000,
+                   VALE_REFE=90.0,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 8.66658000E-04,
+                   VALE_REFE=8.6666E-4,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-133.332000000,
+                   VALE_REFE=-133.333,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N2',
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 1.09999998E-03,
+                   VALE_REFE=1.1000000000000001E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N2',
+                   NOM_CMP='V5',
+                   VALE_CALC= 3.00000561E-04,
+                   VALE_REFE=2.9999999999999997E-4,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N2',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-99.999897371,
+                   VALE_REFE=-100.0,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 1.27499995E-03,
+                   VALE_REFE=1.2750000000000001E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='V5',
+                   VALE_CALC= 5.25000421E-04,
+                   VALE_REFE=5.2499999999999997E-4,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOEUD='N3',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-74.999923022,
+                   VALE_REFE=-75.0,
+                   MAILLE='M1',),
+                ),
+          )
+
+FIN();
+#

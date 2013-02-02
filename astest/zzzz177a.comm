@@ -1,0 +1,358 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE VALIDATION DE CREA_TABLE
+# zzzz177a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ==============================
+# COMMANDE : CREA_TABLE
+# BUT : CREER UNE TABLE A PARTIR DE PLUSIEURS LISTES
+#       OU D UNE FONCTION
+#
+
+DEBUT (CODE=_F(NOM='ZZZZ177A',
+       NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# CAS : FONCTION :
+# --------------
+FCT=DEFI_FONCTION(NOM_PARA='X',
+                  VALE=(0.0,5.0,
+                        4.0,17.5,),
+                );
+
+TF1=CREA_TABLE(FONCTION=_F(FONCTION=FCT));
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=5.000000000,
+           VALE_REFE=5.0,
+           NOM_PARA='TOUTRESU',
+           TABLE=TF1,
+           FILTRE=_F(NOM_PARA='X',
+                     VALE=0.0,),
+           )
+
+TF2=CREA_TABLE(FONCTION=_F(FONCTION=FCT,
+                PARA=('F1','F2')));
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=17.500000000,
+           VALE_REFE=17.5,
+           NOM_PARA='F2',
+           TABLE=TF2,
+           FILTRE=_F(NOM_PARA='F1',
+                     VALE=4.0,),
+           )
+
+# CAS : LISTE :
+# -----------
+TB1=CREA_TABLE(LISTE=(_F(LISTE_I=(0,1,2),
+                         PARA='N'),
+                      _F(LISTE_R=(4.0,17.5,5.),
+                         PARA='Y'),
+                      _F(LISTE_R=(4.0,17.5,5.),
+                         PARA='Z'),
+                     ));
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=4.000000000,
+           VALE_REFE=4.0,
+           NOM_PARA='Y',
+           TABLE=TB1,
+           FILTRE=_F(NOM_PARA='N',
+                     VALE_I=0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=5.000000000,
+           VALE_REFE=5.0,
+           NOM_PARA='Z',
+           TABLE=TB1,
+           FILTRE=_F(NOM_PARA='N',
+                     VALE_I=2,),
+           )
+
+TB2=CREA_TABLE(LISTE=(_F(LISTE_I=(4,17),
+                         PARA='N1'),
+                      _F(LISTE_I=(0,1),
+                         PARA='N2')));
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='N2',
+           TABLE=TB2,
+           FILTRE=_F(NOM_PARA='N1',
+                     VALE_I=17,),
+           )
+
+TB3=CREA_TABLE(LISTE=(_F(LISTE_R=(4.0,17.5),
+                         PARA='R1'),
+                      _F(LISTE_R=(0.6,1.9),
+                         PARA='R2')));
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.600000000,
+           VALE_REFE=0.59999999999999998,
+           NOM_PARA='R2',
+           TABLE=TB3,
+           FILTRE=_F(NOM_PARA='R1',
+                     VALE=4.0,),
+           )
+
+TB4=CREA_TABLE(LISTE=(_F(LISTE_K=('UN','JOUR'),
+                         PARA='L1'),
+                      _F(LISTE_K=('UNE','NUIT'),
+                         PARA='L2')));
+
+
+TB5=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT'),
+                         PARA='L2'),
+                      _F(LISTE_R=(4.0,17.5),
+                         PARA='R1')));
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=4.000000000,
+           VALE_REFE=4.0,
+           NOM_PARA='R1',
+           TABLE=TB5,
+           FILTRE=_F(NOM_PARA='L2',
+                     VALE_K='UNE',),
+           )
+
+TB6=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT','BLEUE','BLANCHE'),
+                         PARA='L2'),
+                      _F(LISTE_I=(0,1,2,3),
+                         PARA='N2')));
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=2,
+           VALE_REFE_I=2,
+           NOM_PARA='N2',
+           TABLE=TB6,
+           FILTRE=_F(NOM_PARA='L2',
+                     VALE_K='BLEUE',),
+           )
+
+TB7=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT BLEUE'),
+                         PARA='L2',TYPE_K='K16'),
+                      _F(LISTE_I=(0,1),
+                         PARA='N2')));
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='N2',
+           TABLE=TB7,
+           FILTRE=_F(NOM_PARA='L2',
+                     VALE_K='NUIT BLEUE',),
+           )
+
+TB8=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT BLEUE AZURE'),
+                         PARA='L2',TYPE_K='K24'),
+                      _F(LISTE_I=(0,1),
+                         PARA='N2')));
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='N2',
+           TABLE=TB8,
+           FILTRE=_F(NOM_PARA='L2',
+                     VALE_K='NUIT BLEUE AZURE',),
+           )
+
+TB9=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT BLEUE AZURE'),
+                         PARA='L2',TYPE_K='K24'),
+                      _F(LISTE_R=(0.6,1.9),
+                         PARA='R2')));
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.900000000,
+           VALE_REFE=1.8999999999999999,
+           NOM_PARA='R2',
+           TABLE=TB9,
+           FILTRE=_F(NOM_PARA='L2',
+                     VALE_K='NUIT BLEUE AZURE',),
+           )
+
+#
+# TEST DES VALEURS DE LA TABLE CREE
+#
+SIYY=DEFI_FONCTION(      NOM_PARA='EPSI',
+                         PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                             VALE=(
+                                   0.001404,  2.719E+08,
+                                   0.006134,  3.459E+08,
+                                   0.014044,  3.789E+08,
+                                   0.029764,  4.036E+08,
+                                   0.050504,  4.242E+08,
+                                   0.106404,  5.276E+08,
+                                   )
+                    )
+
+TABF1=CREA_TABLE(FONCTION=_F(FONCTION=SIYY,
+                             PARA=('EPSI','SIYY',),
+                            ),
+                 );
+
+F2=RECU_FONCTION(TABLE=TABF1,
+                  PARA_Y='SIYY',INTERPOL='LIN',
+                  PARA_X='EPSI',);
+
+DIFF=CALC_FONCTION(COMB=(
+                          _F(  FONCTION = SIYY, COEF =  1.),
+                          _F(  FONCTION = F2,   COEF = -1.),
+                          ),);
+TOLE=1.E-10;
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
+                         VALE_REFE=0.0,
+                         TOLE_MACHINE=1.E-10,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=2.E-3,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=1.E-10,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=0.0,
+                         VALE_REFE=0.0,
+                         TOLE_MACHINE=1.E-10,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.014,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=1.E-10,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=0.0,
+                         VALE_REFE=0.0,
+                         TOLE_MACHINE=1.E-10,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.025000000000000001,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=1.E-10,
+                         FONCTION=DIFF,),
+                      _F(VALE_CALC=0.0,
+                         VALE_REFE=0.0,
+                         TOLE_MACHINE=1.E-10,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.095000000000000001,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=1.E-10,
+                         FONCTION=DIFF,),
+                      ),
+              )
+
+# Validation de la reunion de deux tables (merge) par
+# CALC_TABLE OPERATION=COMB
+t1=LIRE_TABLE(UNITE=31, FORMAT='TABLEAU')
+t2=LIRE_TABLE(UNITE=32, FORMAT='ASTER')
+
+IMPR_TABLE(TABLE=t1)
+IMPR_TABLE(TABLE=t2)
+
+# Seul le couple de labels (2,'b') est reuni car present de facon
+# unique dans chacune des deux tables
+t3=CALC_TABLE(TABLE = t2,
+              ACTION=_F(OPERATION = 'COMB',
+                        TABLE     = t1,
+                        NOM_PARA  = ('ALPHA','BETA',)), )
+
+IMPR_TABLE(TABLE=t3)
+
+# Validation des performances de CALC_TABLE OPERATION=COMB
+# 10.6 s avec n = 20.000
+n_table=200
+tp1=CREA_TABLE(LISTE=(_F(PARA    ='NOEUD',
+                         TYPE_K  ='K8',
+                         LISTE_K =['N'+str(i) for i in range(n_table) ],),
+                      _F(PARA    ='NUME_ORDRE',
+                         LISTE_I =range(n_table)),
+                      _F(PARA    ='INST',
+                         LISTE_R =[float(i) for i in range(n_table) ]),
+                      _F(PARA    ='DX',
+                         LISTE_R =[float(i)/2. for i in range(n_table) ]),) )
+
+tp2=CREA_TABLE(LISTE=(_F(PARA    ='NOEUD',
+                         TYPE_K  ='K8',
+                         LISTE_K =['N'+str(i) for i in range(n_table,0,-1) ],),
+                      _F(PARA    ='NUME_ORDRE',
+                         LISTE_I =range(n_table,0,-1)),
+                      _F(PARA    ='INST',
+                         LISTE_R =[float(i) for i in range(n_table,0,-1) ]),
+                      _F(PARA    ='COOR_Y',
+                         LISTE_R =[float(i) for i in range(n_table,0,-1) ]),) )
+
+tp3=CALC_TABLE(TABLE = tp2,
+               ACTION=_F(OPERATION = 'COMB',
+                         TABLE     = tp1,
+                         NOM_PARA  = ('NOEUD','NUME_ORDRE',),),)
+
+IMPR_TABLE(TABLE=tp3,
+           FORMAT='ASTER',
+           UNITE=38)
+
+# test la suppression d'un parametre
+tp4 = CALC_TABLE(TABLE=tp3,
+                 ACTION=_F(OPERATION='SUPPRIME',
+                           NOM_PARA='INST'),
+                 TITRE='table tp4 = tp3 sans INST')
+
+tp5 = CALC_TABLE(TABLE=tp4,
+                 ACTION=_F(OPERATION='AJOUT_LIGNE',
+                           NOM_PARA=('NOEUD', 'NUME_ORDRE', 'COOR_Y', 'PARA'),
+                           VALE=(    'NSUP',          99,   1.234e5,  'nouveau'),),
+                 TITRE='tp4 + ajout ligne')
+
+tp6 = CALC_TABLE(TABLE=tp5,
+                 ACTION=_F(OPERATION='AJOUT_COLONNE',
+                           NOM_PARA=('DY', 'DZ', 'NUME_CALC', 'NOM_CALC'),
+                           VALE=(0., 9.99, 5, 'CALC_i'),),
+                 TITRE='tp5 + ajout de colonnes constantes')
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=5,
+           VALE_REFE_I=5,
+           NOM_PARA='NUME_CALC',
+           TABLE=tp6,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NSUP',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 1.23400000E+05,
+           VALE_REFE=1.23400E5,
+           NOM_PARA='COOR_Y',
+           TABLE=tp6,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NSUP',),
+           )
+
+IMPR_TABLE(TABLE=tp6,
+           FORMAT='ASTER',
+           UNITE=39)
+
+# lecture table produite par OpenOffice au format csv
+# avec des virgules comme separateur decimal
+tp7 = LIRE_TABLE(UNITE=55,
+                  FORMAT='LIBRE',
+                  SEPARATEUR=';',)
+
+IMPR_TABLE(TABLE=tp7, FORMAT='ASTER')
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1776,
+           VALE_REFE_I=1776,
+           NOM_PARA='Colonne_B',
+           TABLE=tp7,
+           FILTRE=_F(NOM_PARA='Colonne_A',
+                     VALE_K='ligne5',),
+           )
+
+FIN();
