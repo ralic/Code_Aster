@@ -87,8 +87,8 @@ SRCC           | src     | 11-04 | %(SRC)s/bibc
 SRCPY          | src     | 11-04 | %(PYTHONARCHDIR)s
 SRCCATA        | src     | 11-04 | %(SRC)s/catalo
 SRCCAPY        | src     | 11-04 | %(SRC)s/catapy
-SRCTEST        | src     | 11-04 | %(SRC)s/../tests/astest
-SRCTEST        | src     | 11-04 | %(SRC)s/../tests_intranet/astest
+SRCTEST        | src     | 11-04 | %(SRC)s/astest
+SRCTEST        | src     | 11-04 | %(SRC)s/../validation/astest
 SRCMAT         | src     | 11-04 | %(SRC)s/../data/materiau
 SRCHIST        | src     | 11-04 | %(SRC)s/histor
 #
