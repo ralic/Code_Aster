@@ -23,8 +23,10 @@ def options(self):
 def configure(self):
     from Options import options as opts
     try:
+        self.env.stash()
         self.check_petsc()
     except Errors.ConfigurationError:
+        self.env.revert()
         if opts.enable_petsc == True:
             raise
     else:
