@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 05/02/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 # ssls118e.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -118,6 +118,80 @@ SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
                                    NIVE_COUCHE='INF',),);
 EFF=CALC_CHAMP(RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO'))
 
+CHAMELG=CALC_CHAM_ELEM(MODELE=MO,
+                       CARA_ELEM=CAR_ELE,
+                       TOUT='OUI',
+                       OPTION='COOR_ELGA',);
+
+DEGE=CALC_CHAMP(RESULTAT=RESU,DEFORMATION=('DEGE_ELNO','DEGE_ELGA'))
+
+# IMPR_RESU(RESU=_F(RESULTAT=DEGE,NOM_CHAM='DEGE_ELNO',GROUP_NO='O'))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='O',
+                   MAILLE ='M132',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEGE,
+                   NOM_CHAM='DEGE_ELNO',
+                   NOM_CMP='KXX',
+                   VALE_CALC=-11.319249388616,
+                   VALE_REFE=-11.39863316,
+                   PRECISION= 0.01),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='O',
+                   MAILLE ='M132',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEGE,
+                   NOM_CHAM='DEGE_ELNO',
+                   NOM_CMP='KYY',
+                   VALE_CALC=-11.442975902056,
+                   VALE_REFE=-11.39863316,
+                   PRECISION= 0.01),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='O',
+                   MAILLE ='M132',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEGE,
+                   NOM_CHAM='DEGE_ELNO',
+                   NOM_CMP='KXY',
+                   VALE_CALC=-0.014124258752544,
+                   VALE_REFE=0.,
+                   PRECISION= 0.02,
+                   CRITERE='ABSOLU'),
+               ))
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   POINT=7,
+                   MAILLE ='M132',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=DEGE,
+                   NOM_CHAM='DEGE_ELGA',
+                   NOM_CMP='KXX',
+                   VALE_CALC=-11.16866575081,
+                   VALE_REFE=-11.16866575081,
+                   PRECISION= 1.E-10),
+                _F(NUME_ORDRE=1,
+                   POINT=7,
+                   MAILLE ='M132',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=DEGE,
+                   NOM_CHAM='DEGE_ELGA',
+                   NOM_CMP='KYY',
+                   VALE_CALC=-11.24869760729,
+                   VALE_REFE=-11.24869760729,
+                   PRECISION= 1.E-10),
+                _F(NUME_ORDRE=1,
+                   POINT=7,
+                   MAILLE ='M132',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=DEGE,
+                   NOM_CHAM='DEGE_ELGA',
+                   NOM_CMP='KXY',
+                   VALE_CALC=0.17899564626069,
+                   VALE_REFE=0.17899564626069,
+                   PRECISION= 1.E-10,),
+               ))
 
 SIGG=CALC_CHAMP(RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO'))
 

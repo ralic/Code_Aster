@@ -1,10 +1,10 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 05/02/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE PELLET J.PELLET
 # ssls200a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -175,7 +175,7 @@ MESTAT2=POST_CHAMP(RESULTAT=MESTAT,
                                  NIVE_COUCHE='MOY',),);
 MESTAT=CALC_CHAMP(reuse =MESTAT,
                   RESULTAT=MESTAT,
-                  MAILLE=('Q1','T1','Q2','Q3','T3','T4'),
+                  MAILLE=('Q1','T1','Q2','Q3','T3','T4','Q9','T7'),
                   DEFORMATION=('DEGE_ELNO','DEGE_ELGA',));
 
 MESTAT2=CALC_CHAMP(reuse =MESTAT2,
@@ -231,13 +231,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='DEGE_ELNO',
-                   VALE_CALC=2.7786118051878999E4,
+                   VALE_CALC=53984.851272958,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=2.2052339482185998E4,
+                   VALE_CALC=48101.597890323,
                    ),
                 ),
           )

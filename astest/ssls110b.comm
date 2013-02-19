@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 05/02/2013   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE RECTANGULAIRE SIMPLEMENT APPUIEE COMPRIMEE
 # ssls110b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ MATERI_1=DEFI_MATERIAU( ELAS=_F(  E = 210000.,     NU = 0.3000, ) )
 
 #
 
-MAILLA_1=LIRE_MAILLAGE(FORMAT='MED',   )
+MAILLA_1=LIRE_MAILLAGE(FORMAT='MED'   )
 
 MAILLA_1=DEFI_GROUP( reuse=MAILLA_1,   MAILLAGE=MAILLA_1,
   CREA_GROUP_MA=_F(  NOM = 'TOUT',   TOUT = 'OUI',   ))
@@ -146,7 +146,7 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   RESULTAT=MOD_1,
                   VALE_CALC=-377.689592810,
                   VALE_REFE=-379.60016927266759,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='ANALYTIQUE',
                   CRITERE='RELATIF',
                   PRECISION=6.0000000000000001E-3,),
           )
@@ -161,7 +161,7 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   RESULTAT=MOD_1,
                   VALE_CALC=-1.05744294E+03,
                   VALE_REFE=-1054.4449146462989,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='ANALYTIQUE',
                   CRITERE='RELATIF',
                   PRECISION=3.0000000000000001E-3,),
           )
@@ -177,13 +177,81 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   RESULTAT=MOD_1,
                   VALE_CALC=-2.58295877E+03,
                   VALE_REFE=-2566.0971442832338,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='ANALYTIQUE',
                   CRITERE='RELATIF',
                   PRECISION=7.0000000000000001E-3,),
           )
 
 #
 #
+#
+##### TEST DES DEFORMATIONS GENERALISEES EN MEMBRANE
+#
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,DEFORMATION=('DEGE_ELNO','DEGE_ELGA'))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='G_3',
+                   MAILLE ='MA000240',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEGE_ELNO',
+                   NOM_CMP='EXX',
+                   VALE_CALC=-9.5238095238095E-07,
+                   VALE_REFE=-9.52380952E-07,
+                   PRECISION= 1.E-6),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='G_3',
+                   MAILLE ='MA000240',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEGE_ELNO',
+                   NOM_CMP='EYY',
+                   VALE_CALC=2.8571428571428E-07,
+                   VALE_REFE=2.85714286E-07,
+                   PRECISION= 1.E-6),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='G_3',
+                   MAILLE ='MA000240',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEGE_ELNO',
+                   NOM_CMP='EXY',
+                   VALE_CALC=-1.2705494208815E-20,
+                   VALE_REFE=0.,
+                   CRITERE = 'ABSOLU',
+                   PRECISION= 1.E-10)))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   POINT=1,
+                   MAILLE ='MA000240',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEGE_ELGA',
+                   NOM_CMP='EXX',
+                   VALE_CALC=-9.5238095238095E-07,
+                   VALE_REFE=-9.52380952E-07,
+                   PRECISION= 1.E-6),
+                _F(NUME_ORDRE=1,
+                   POINT=1,
+                   MAILLE ='MA000240',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEGE_ELGA',
+                   NOM_CMP='EYY',
+                   VALE_CALC=2.8571428571429E-07,
+                   VALE_REFE=2.85714286E-07,
+                   PRECISION= 1.E-6),
+                _F(NUME_ORDRE=1,
+                   POINT=1,
+                   MAILLE ='MA000240',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEGE_ELGA',
+                   NOM_CMP='EXY',
+                   VALE_CALC=-4.2351647362715E-21,
+                   VALE_REFE=0.,
+                   CRITERE = 'ABSOLU',
+                   PRECISION= 1.E-10)))
 #
 FIN()
 #
