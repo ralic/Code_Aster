@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_exceptions include  DATE 10/09/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_exceptions include  DATE 05/02/2013   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2013  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -40,7 +40,7 @@
 #define try                 _new_try(); _printDBG("try"); \
                             if ((gExcNumb = setjmp(gExcEnv[gExcLvl])) == 0)
 #define interruptTry(val)   if(gExcLvl > 0) { _printDBG("interruptTry"); longjmp(gExcEnv[gExcLvl], val); } \
-                            else { MYABORT("Programming error: should not pass here!\n"); _raiseException(val); }
+                            else { printf("Exception raised out of Code_Aster commands.\n"); _raiseException(val); }
 #define except(val)         else if (gExcNumb == val)
 #define exceptAll           else
 #define endTry()            _end_try(); _printDBG("endTry")

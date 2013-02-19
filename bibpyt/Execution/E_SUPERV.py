@@ -1,9 +1,9 @@
-#@ MODIF E_SUPERV Execution  DATE 23/10/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 05/02/2013   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,14 +21,28 @@
 
 
 """
-
+Main module of supervision of a Code_Aster commands file.
 """
+
 # Modules Python
 import sys
 import os
 import os.path as osp
 import traceback
 import re
+
+# Here are some modules that may raise a floating point exception at import
+# so they must be imported before we intercept the FPE signal.
+# Of course, if FPE don't occur at import but at execution it will fail.
+MODULES_RAISING_FPE = (
+    'sympy',    # overflow in sympy.mpmath.math2
+    'cmath',    # do not remember
+)
+for mod in MODULES_RAISING_FPE:
+    try:
+        __import__('sympy')
+    except ImportError:
+        pass
 
 # Pas d'import des autres packages d'aster car l'import de ce module est
 # fait avant l'ajout des paths. Les autres imports seront possibles une fois
