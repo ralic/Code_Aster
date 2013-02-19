@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 22/01/2013   AUTEUR LADIER A.LADIER 
+#@ MODIF rupture1 Messages  DATE 05/02/2013   AUTEUR BARGELLI R.BARGELLINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,6 +122,9 @@ Veuillez les remplacer par R_INF ou R_SUP, ou bien ne rien indiquer afin que les
 de la couronne soient calculés avec les données du maillage.
 """),
 
+19: _(u"""
+L'opérateur CALC_GP ne supporte que les modélisations 2D.
+"""),
 
 20: _(u"""
 Votre étude comporte une charge de type PRE_EPSI. Ceci est incompatible
@@ -131,6 +134,12 @@ de l'opérateur CALC_G).
 On ne peut pas faire de calcul de G en introduisant simultanément une contrainte
 initiale ET une déformation initiale. Veuillez revoir les données.
 """),
+
+21: _(u"""
+La liste de taille n'a pas la taille de la liste des groupes mailles.
+Vérifiez vos données.
+"""),
+
 
 23: _(u"""
 CALC_G - option CALC_G : détection de chargements non nuls sur l'axe,

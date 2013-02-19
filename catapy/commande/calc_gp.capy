@@ -1,0 +1,65 @@
+#& MODIF COMMANDE  DATE 05/02/2013   AUTEUR BARGELLI R.BARGELLINI 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE BARGELLINI R.BARGELLINI
+#Quoi qu'il en soit, on sort la table GP
+#Si on est sans copeau et que l'utilisateur souhaite verifier
+#les copeaux automatiquement crees, il peut grace a CHAMP_COP
+def calc_gp_prod(self,ZONE,GPMAX, **args):
+  """Typage des sd_prod
+  """
+  if ZONE['ZONE_MAIL']== "NON":
+     for ss_cop in ZONE:
+         if ss_cop['CHAMP_VISU']!= None:
+             self.type_sdprod(ss_cop['CHAMP_VISU'], cham_elem)
+  if GPMAX !=None:
+     self.type_sdprod(GPMAX, table_sdaster)
+  return table_sdaster
+
+
+CALC_GP =MACRO(nom="CALC_GP",
+                   op=OPS('Macro.calc_gp_ops.calc_gp_ops'),
+                   sd_prod=calc_gp_prod,
+#                   sd_prod=table_sdaster,
+                   UIinfo={"groupes":("Outils-métier","Rupture",)},
+                   reentrant='n',
+                   fr="calcul du parametre de clivage energetique Gp en 2D",
+         LIST_INST   = SIMP(statut='o',typ=(listr8_sdaster) ),
+         PRECISION   = SIMP(statut='f',typ='R',validators=NoRepeat(),val_min=0.,val_max=1E-3,defaut=1E-6),
+         CRITERE     = SIMP(statut='f',typ='TXM',defaut="ABSOLU",into=("RELATIF","ABSOLU") ),                  
+         ZONE        = FACT(statut='o',max = 1,
+                           ZONE_MAIL     = SIMP(statut='o',typ='TXM',into=("NON","OUI") ),
+                           b_cop= BLOC(condition = "ZONE_MAIL=='OUI'",
+                                       fr="Les copeaux sont mailles",
+                                 GROUP_MA  = SIMP(statut='o', typ=grma, validators=NoRepeat(), max='**'),
+                                 TAILLE   =SIMP(statut='o',typ=listr8_sdaster),),
+                           b_ss_cop = BLOC(condition="ZONE_MAIL=='NON'",
+                                           fr="Les copeaux ne sont pas mailles",
+                                 CENTRE           =SIMP(statut='o',typ='R',max=2),
+                                 RAYON       =SIMP(statut='o',typ='R',max=1),
+                                 ANGLE            =SIMP(statut='o',typ='R',max=1),
+                                 TAILLE          =SIMP(statut='o',typ='R',max=1),
+                                 NB_ZONE        =SIMP(statut='o',typ='I',),
+                                 CHAMP_VISU        =SIMP(statut='f',typ=CO),),
+                             ),
+         RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,
+                                      fr="Resultat d'une commande globale STAT_NON_LINE"),
+         SYME            =SIMP(statut='o',typ='TXM',into=("NON","OUI"),
+                      fr="multiplication par 2 si SYME=OUI"),
+         GPMAX           = SIMP(statut='f',typ=CO,),
+           )

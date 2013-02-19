@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
-# TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
-# ssnp131b.para = tps_job 500 mem_job 1536Mo ncpus 1 liste_test S
+# MODIF  DATE 05/02/2013   AUTEUR BARGELLI R.BARGELLINI 
+# TITRE CALCUL DU PARAMETRE GP EN 2D AVEC MAILLAGE QUELCONQUE
+# ssnp131b.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,267 +19,174 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+
 DEBUT(CODE=_F(NOM='SSNP131B',
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON'));
-
-# IDENTIFICATION DU GP CRITIQUE A RUPTURE (D'APRES TENACITES KJ CRIT. EXP.)
-# A TEMPERATURE CONSTANTE (35 DEGRES) SUR UNE EPROUVETTE CT
-#
-#    * CARACTERISTIQUES MECANIQUES :
-#
-#       LE MODULE D'YOUNG EVOLUE  AVEC LA  TEMPERATURE
-#       ALORS QUE LE COEFFICIENT DE POISSON EST CONSIDERE
-#       CONSTANT.
-#
-#    * GOUPILLE MAILLEE AFIN DE MIEUX REPRESENTER L'APPLICATION 
-#      DU CHARGEMENT (ICI FORCE IMPOSEE)
-#
-#    * CONDITIONS AUX LIMITES (1/2 DE L'EPROUVETTE MAILLE) :
-#
-#      - DEPLACEMENT BLOQUE SUIVANT DY SUR LE LIGAMENT
-#      - DEPLACEMENT IMPOSE MONOTONE CROISSANT AU CENTRE DE LA GOUPILLE
-#        (DONNEE EN NEWTON CAR N/MM2 = MPA)
-
-MA=LIRE_MAILLAGE(FORMAT='MED');
-TPCAL = 100;
-
-
-#----------------------------------------------------------------------
-#----------------  AFFECTATION MODELE MECANIQUE    --------------------
-#----------------------------------------------------------------------
+   
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MOD=AFFE_MODELE(MAILLAGE=MA,
-                AFFE=_F(GROUP_MA=('VEPRO','VGOUP','FACBE'),
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='3D'));
+                AFFE=_F(GROUP_MA=('SEPRO','FOND_0','SGOUP',),
+                 PHENOMENE='MECANIQUE',
+                 MODELISATION='D_PLAN',),);
 
+                 
 
 #----------------------------------------------------------------------
-# DEFINITION DE LA COURBE DE TRACTION 
+#---------------- DONNEES MECANIQUES ACIER  -------------------
 #----------------------------------------------------------------------
-#-- DEFINITION DE LA NAPPE (EPSI, SI, TEMP)
 
-CT_100=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.003439678,740.6632663,
-                           0.004628373,842.148772,
-                           0.00607988,876.3117064,
-                           0.007654628,895.2063119,
-                           0.010417548,911.0718694,
-                           0.014178015,925.022448,
-                           0.017543214,935.2135771,
-                           0.021942493,945.6948965,
-                           0.027416704,960.732311,
-                           0.033866984,975.8041996,
-                           0.040205805,988.2450325,
-                           0.046616375,1000.143035,
-                           0.052903597,1010.004051,
-                           0.058235889,1017.5664,
-                           ),PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE');
+# ECROUISSAGE ISOTROPE NON LINEAIRE
+
+CT_100 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                            VALE = (
+0.003439678,    740.6632663,
+0.004628373,    842.148772,
+0.00607988,     876.3117064,
+0.007654628,    895.2063119,
+0.010417548,    911.0718694,
+0.014178015,    925.022448,
+0.017543214,    935.2135771,
+0.021942493,    945.6948965,
+0.027416704,    960.732311,
+0.033866984,    975.8041996,
+0.040205805,    988.2450325,
+0.046616375,    1000.143035,
+0.052903597,    1010.004051,
+0.058235889,    1017.5664,
+                            ),
+                            PROL_DROITE = 'CONSTANT',
+                            PROL_GAUCHE = 'LINEAIRE',);
+
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=214100,
-                               NU=0.3),
-                    TRACTION=_F(SIGM=CT_100));
+                               NU=0.3,),
+                    TRACTION=_F(SIGM=CT_100,),);
 
 #----------------------------------------------------------------------
 #---------------- DONNEES MECANIQUES GOUPILLE  -------------------
 #----------------------------------------------------------------------
 #-- GOUPILLE ELASTIQUE "RIGIDE"
 
-MATGOUP=DEFI_MATERIAU(ELAS=_F(E=2.E6,
-                              NU=0.3,
-                              ALPHA=0.),
-                      ECRO_LINE=_F(D_SIGM_EPSI=200000.,
-                                   SY=200000.));
 
+MATGOUP=DEFI_MATERIAU(ELAS=_F(   E=2.E6,
+                                 NU=0.3,
+                                 ALPHA = 0.),
+                      ECRO_LINE=_F(D_SIGM_EPSI=200000.,
+                                   SY=200000, )
+                      );
 
 #----------------------------------------------------------------------
-# DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS 
+# DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS
 # ----------------------------------------------------------------------
 
-RAMPD=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                          100.,0.25,
-                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE');
+RAMPD=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(   0.0   ,    0.0 ,
+                           100.    ,    0.25 ),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=8.0,
-                                    NOMBRE=1));
+                    INTERVALLE=(_F(JUSQU_A=40.0,
+                                   NOMBRE=10,),
+                     ),);
 
 #----------------------------------------------------------------------
 # AFFECTATION DES PROPRIETES MECANIQUES
 # ----------------------------------------------------------------------
+#
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA='VEPRO',
-                             MATER=ACIER),
-                          _F(GROUP_MA='VGOUP',
-                             MATER=MATGOUP)));
+                   AFFE=(_F(GROUP_MA='SEPRO',
+                            MATER=ACIER,),
+                         _F(GROUP_MA='FOND_0',
+                            MATER=ACIER,),
+                         _F(GROUP_MA='SGOUP',
+                            MATER=MATGOUP,),),
+                         );
+
 
 #----------------------------------------------------------------------
 # CHARGEMENT ET CONDITIONS LIMITES
 # ----------------------------------------------------------------------
 
-COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
-                        LIAISON_UNIF=_F(GROUP_MA='STOT_OPP',
-                                        DDL='DZ'));
-
-COND_LI2=AFFE_CHAR_CINE(MODELE=MOD,
-                        MECA_IMPO=(_F(GROUP_MA='FACBE',
-                                     DY=0.0),
-                                  _F(GROUP_MA='LGOUP',
-                                     DX=0.0,
-                                     DZ=0.0),
-                                  _F(GROUP_MA='STOT',
-                                     DZ=0.0)));
-
-CHAD=AFFE_CHAR_CINE_F(MODELE=MOD,
-                      MECA_IMPO=_F(GROUP_MA='LGOUP',
-                                  DY=RAMPD));
+COND_LIM=AFFE_CHAR_CINE(MODELE=MOD,
+                        MECA_IMPO=(_F(GROUP_NO='LIGBE',
+                                     DY=0.0,),
+                                  _F(GROUP_NO='PGOUP',
+                                     DX=0.0,),),);
+CHAD=AFFE_CHAR_MECA_F(MODELE=MOD,
+                      DDL_IMPO=_F(GROUP_NO='PGOUP',
+                                      DY=RAMPD,),);
 
 #----------------------------------------------------------------------
 #---------------  RESOLUTION   ------------------
 #----------------------------------------------------------------------
 
 RESU=STAT_NON_LINE(MODELE=MOD,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=COND_LIM),
-                          _F(CHARGE=COND_LI2),
-                          _F(CHARGE=CHAD)),
-                   COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
-                                 DEFORMATION='PETIT',
-                                 GROUP_MA='VEPRO'),
-                              _F(RELATION='VMIS_ISOT_LINE',
-                                 DEFORMATION='PETIT',
-                                 GROUP_MA='VGOUP')),
-                   INCREMENT=_F(LIST_INST=L_INST),
-                   NEWTON=_F(REAC_ITER=1),
-                   RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
-                                  ITER_GLOB_MAXI=50),
-                   SOLVEUR=_F(METHODE='MUMPS',
-                              ));
-                              
-nbcop = 2;
-
-# Script pour generer la liste des copeaux:
-# =========================================
-
-nbtranches = 2
-l_copeaux1=[]
-for i in range(1,nbcop+1):
-  nom = "T1_C%i"%(i)
-  l_copeaux1.append(nom)
-print l_copeaux1
-
-
-l_copeaux2=[]
-for i in range(1,nbcop+1):
-  nom = "T2_C%i"%(i)
-  l_copeaux2.append(nom)
-print l_copeaux2
+                CHAM_MATER=CHMAT,
+                EXCIT=(_F(CHARGE=COND_LIM,),
+                       _F(CHARGE=CHAD,),),
+                COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
+                             DEFORMATION='PETIT',
+                             GROUP_MA='SEPRO',),
+                          _F(RELATION='VMIS_ISOT_TRAC',
+                             DEFORMATION='PETIT',
+                             GROUP_MA='FOND_0',),
+                          _F(RELATION='VMIS_ISOT_LINE',
+                             DEFORMATION='PETIT',
+                             GROUP_MA='SGOUP',),),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(REAC_ITER=3,),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
+                               ITER_GLOB_MAXI=50,),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',
+                              RENUM='METIS',),);
 
 
 
-# fin du script pour generer la liste
-# ===================================
 
-# conversion MPa.m^1/2 vers MPa.mm^1/2
-conv = 31.6227766017;
+#----------------------------------------------------------------------
+#---------------  POST_TRAITEMENT_SANS_COPEAU  ------------------
+#----------------------------------------------------------------------
+L_INSTGP=DEFI_LIST_REEL(DEBUT=4.0,
+                    INTERVALLE=(_F(JUSQU_A=40.0,
+                                   NOMBRE=9,),
+                     ),);
 
-kjc1 = (27.2 * conv);
-
-kjc2 = (34.0 * conv);
-
-kjc3 = (40.0 * conv);
-
-# temperature de calcul
-tcal = 100.;
-
-# definition du fond de fissure
-
-FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
-                       CONFIG_INIT='DECOLLEE',
-                       NORMALE=(0.,-1.,0.),
-                       SYME='OUI',
-                       FOND_FISS=_F(GROUP_MA='FONDFISS',
-                                    GROUP_NO_ORIG='PFON_0'),
-                       );
-
-L_INSTGP=DEFI_LIST_REEL(VALE=(8.0));
-
-# Ici, la loi de comportement dans CALC_G (ELAS_VMIS_TRAC) 
-# differe de la loi de
-# comportement de STAT_NON_LINE (VMIS_ISOT_TRAC).
-# Ceci est du au fait que l'on veut calculer G en supposant 
-# que le chargement est monotone
-# proportionnel. L'utilisation de la loi VMIS_ISOT_TRAC dans 
-# CALC_G aurait conduit a
-# calculer le parametre GTP (voir doc U2.82.03).
-
-tab=POST_GP(RESULTAT=RESU,
-            MODELE=MOD,
-            MATER=ACIER,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
-                         DEFORMATION='PETIT'),
-            EXCIT=(_F(CHARGE=COND_LIM),
-                   _F(CHARGE=COND_LI2),
-                   _F(CHARGE=CHAD)),
-            LIST_INST=L_INSTGP,
-            THETA_3D=(_F(GROUP_MA='FONDFISS',
-                         R_INF=1,
-                         R_SUP=2),
-                      _F(GROUP_MA='FONDFISS',
-                         R_INF=2,
-                         R_SUP=5),
-                      _F(GROUP_MA='FONDFISS',
-                         R_INF=5,
-                         R_SUP=10),
-                      _F(GROUP_MA='FONDFISS',
-                         R_INF=10,
-                         R_SUP=20),
-                         ),
-            FOND_FISS=FONFISS,
-            TRANCHE = (
-                       _F(GROUP_MA=l_copeaux1),
-                       _F(GROUP_MA=l_copeaux2),
-                       ),
-            PREDICTION=_F(GP_CRIT  =(0.678875,1.),
-                              TEMP = (tcal,150)),
-            TABL_GPMAX=CO('tabgpmax'),
-            TABL_GP   =CO('tabgp'),
-            LISSAGE=_F( LISSAGE_THETA='LEGENDRE',
-                           DEGRE=1),
-            INFO=2);
-           
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC_I=0,
-           VALE_REFE_I=0,
-           TOLE_MACHINE=1.E-10,
-           PRECISION=1.E-10,
-           NOM_PARA='PREDICTION',
-           TABLE=tabgpmax,
-           FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
-                      VALE_I=1,),
-                   _F(PRECISION=9.9999999999999995E-07,
-                      NOM_PARA='INST',
-                      VALE=8.0,),
-                   ),
-           )
+TESTSCOP= CALC_GP(RESULTAT=RESU,
+             LIST_INST=L_INSTGP,
+             ZONE=_F(ZONE_MAIL='NON',
+                     CENTRE=(27.4,0.),
+                     RAYON=(0.1),
+                     ANGLE=0,
+                     TAILLE=0.02,
+                     NB_ZONE=10,
+                     CHAMP_VISU=CO('CH_VISU')
+                        ),
+             GPMAX=CO('GPMAXSCO'),
+             SYME='OUI',
+             ) 
 
 TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-4,
-           VALE_CALC=0.235656741,
-           VALE_REFE=0.23565700000000001,
-           NOM_PARA='GPMAX',
-           TABLE=tabgpmax,
-           FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
-                      VALE_I=1,),
-                   _F(PRECISION=9.9999999999999995E-07,
-                      NOM_PARA='INST',
-                      VALE=8.0,),
-                   ),
+           VALE_CALC=0.02443105,
+           NOM_PARA='GP',
+           TABLE=TESTSCOP,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=4,),
+                   _F(NOM_PARA='ZONE',
+                      VALE_K = 'COPS_8'),)
+           )
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.740216439,
+           NOM_PARA='GP',
+           TABLE=TESTSCOP,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=40,),
+                   _F(NOM_PARA='ZONE',
+                      VALE_K = 'COPS_3'),)
            )
 
-FIN();
-
-#
+FIN()
