@@ -1,8 +1,8 @@
-#@ MODIF calculel5 Messages  DATE 13/11/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel5 Messages  DATE 05/02/2013   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -217,6 +217,17 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  On ne l'écrit donc pas.
 """),
 
+52 : _(u"""
+ Le calcul du champ SIGM_ELNO n'a pas été fait sur la maille volumique %(k1)s qui borde
+ la maille surfacique %(k2)s.
+
+ Conseils :
+  Il faut faire le calcul du champ SIGM_ELNO sur les éléments volumiques de l'autre "coté"
+  de la face en choisissant le bon groupe de mailles soit en faisant le calcul sur tout
+  le volume.
+  Il est aussi possible de supprimer le calcul préalable de SIGM_ELNO, le calcul sera fait
+  automatiquement sur les bonnes mailles volumiques.
+"""),
 
 
 53 : _(u"""
@@ -228,14 +239,8 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
  Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou
  un groupe de maille contenant des mailles de peau.
-"""),
-
-55 : _(u"""
- En 3D, les mailles de peau doivent être de type QUAD ou TRIA.
- Or la maille %(k1)s est de type %(k2)s.
-
- Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou
- un groupe de maille contenant des mailles de peau de type QUAD ou TRIA.
+ Si vous avez renseigné le mot-clé TOUT='OUI', cela signifie qu'il n'y a pas de mailles
+ de peau dans votre modèle ; il faut revoir le maillage.
 """),
 
 56 : _(u"""

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 05/02/2013   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,8 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
                         'LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS',),
                  ),
 
-         RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_harmo,mult_elas) ),
+         RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,
+                               fr="Resultat d'une commande globale"),
 
 
 #====
