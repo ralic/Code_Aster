@@ -1,7 +1,7 @@
       SUBROUTINE LKIJAC (MOD,NMAT,MATERF,TIMED,TIMEF,YF,DEPS,NR,NVI,
      &                   VIND,VINF,YD,DY,DRDY,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/01/2013   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 05/02/2013   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -453,11 +453,11 @@ C ------------------------------------------------------------------
 C --- TEST POUR SAVOIR SI ON EST EN BUTEE SUR XIVP
       CALL LCPRMV(DSDSIG,DGVDXI,DGTVDX)
       CALL LCPRSC(DEVGV,DGTVDX,DGIVDX)
-      IF(VARV.EQ.0)THEN
-        DRDY(NDT+2,NDT+3)= ZERO
-      ELSE
+      IF(ABS(DXIV-DGAMV).LT.R8PREM())THEN
         DRDY(NDT+2,NDT+3)= -(DPHIDX*DEVGIV+PHIV*DGIVDX/DEVGIV)
      &                       *SQRT(DEUX/TROIS)*DT
+      ELSE
+        DRDY(NDT+2,NDT+3)= ZERO
       ENDIF
 C ##################################################################
 C --- CALCUL DE DR4/DY                        
