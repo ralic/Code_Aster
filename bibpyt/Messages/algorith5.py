@@ -1,8 +1,8 @@
-#@ MODIF algorith5 Messages  DATE 13/11/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith5 Messages  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,12 +85,18 @@ Le déterminant de la matrice à inverser est nul.
 L'inversion est possible uniquement en dimension inférieure ou égale à 3.
 """),
 
+21 : _(u"""
+La prise en compte de LAME FLUIDE n'est pas disponible pour les schémas
+d'intégration de Runge-Kutta. 
+"""),
+
+
 22 : _(u"""
 La matrice masse est singulière.
 """),
 
 23 : _(u"""
-Le pas de temps minimal a été atteint. Ha !
+Le pas de temps minimal a été atteint. Le calcul s'arrête.
 """),
 
 24 : _(u"""

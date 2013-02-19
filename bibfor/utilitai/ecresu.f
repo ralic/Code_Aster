@@ -6,9 +6,9 @@
       CHARACTER*19 VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF UTILITAI  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -215,7 +215,7 @@ C           --- ALLOCATION DE LA SD DYNA_GENE RESULTAT
      &                   JDEPS,JVITS,JACCS,JPASS,JORDR,JINST,
      &                   JFCHO,JDCHO,JVCHO, JICHO,
      &                   JREDC,JREDD, JREVC, JREVD, 'EULER           ',
-     &                   IBID,K4BID,'TRAN')
+     &                   IBID,K4BID,'TRAN','GLOB')
 C
 C           --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
             CALL WKVECT('&&ECRESU.DEPL','V V R',NEQ,LVALS)
@@ -316,7 +316,7 @@ C
      &                   JDEPS,JVITS,JACCS,JPASS,JORDR,JFREQ,
      &                   IBID,IBID,IBID, IBID,
      &                   IBID,IBID, IBID, IBID, 'EULER           ',
-     &                   NBSYM,NOMSYM,'HARM')
+     &                   NBSYM,NOMSYM,'HARM','GLOB')
 C
 C           --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
             CALL WKVECT('&&ECRESU.DEPLC','V V C',NEQ,LVALS)

@@ -1,8 +1,8 @@
-#@ MODIF dyna_vibra_ops Macro  DATE 15/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dyna_vibra_ops Macro  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -83,7 +83,7 @@ def dyna_vibra_ops(self, TYPE_CALCUL, BASE_CALCUL, **args):
             dyna = DYNA_LINE_TRAN(**motscle)
         else:
             if not motscle['SCHEMA_TEMPS'][0]['SCHEMA'] \
-               in ['NEWMARK', 'EULER', 'ADAPT_ORDRE2', 'DEVOGE', 'ADAPT_ORDRE1', 'ITMI']:
+               in ['NEWMARK', 'EULER', 'ADAPT_ORDRE2', 'DEVOGE', 'ADAPT_ORDRE1', 'ITMI', 'RUNGE_KUTTA_54','RUNGE_KUTTA_32']:
                 UTMESS('F', 'ALGORITH3_15', motscle['SCHEMA_TEMPS'][0]['SCHEMA'])
             dyna = DYNA_TRAN_MODAL(**motscle)
     else:

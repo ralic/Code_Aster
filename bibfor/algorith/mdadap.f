@@ -10,7 +10,7 @@
      &                   IREDST,DREDST,
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
-     &                   NBPAL,DTSTO,TCF,VROTAT,PRDEFF,METHOD,
+     &                   NBPAL,DTSTO,VROTAT,PRDEFF,METHOD,
      &                   NOMRES,NBEXCI,IREVST,DREVST)
 C
       IMPLICIT NONE
@@ -24,7 +24,7 @@ C
      &             DREDST(*),PREC,EPSI,DPLMOD(NBCHOC,NEQGEN,*),
      &             DPLREV(*),DPLRED(*),DREVST(*)
       REAL*8       DTI,DTMAX
-      REAL*8       DTSTO,TCF,VROTAT
+      REAL*8       DTSTO,VROTAT
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*),VVAR
       CHARACTER*8  NOMRES,MONMOT
       CHARACTER*16 TYPBAS,METHOD
@@ -37,9 +37,9 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -343,7 +343,7 @@ C
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            0,FBID,FBID,0.D0,FBID,
-     &            1,0,DT2,DTSTO,TCF,VROTAT,
+     &            1,0,DT2,DTSTO,VROTAT,
      &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
 C
@@ -364,7 +364,7 @@ C
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            0,FBID,FBID,0.D0,FBID,
-     &            1,NBPAL,DT2,DTSTO,TCF,VROTAT,
+     &            1,NBPAL,DT2,DTSTO,VROTAT,
      &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
 
@@ -391,7 +391,6 @@ C
      &                  IREDST,DREDST,IREVST,DREVST)
 C
       TEMPS = TINIT
-      TCF = TEMPS + DT2
       TARCH = TINIT+ DTARCH
       CALL UTTCPU('CPU.MDADAP','INIT',' ')
       IVERI = 0
@@ -482,7 +481,7 @@ C
      &                  ZR(JREDR),ZI(JREDI), NBREVI,DPLREV,FONREV,
      &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &                  0,FBID,FBID,0.D0,FBID,
-     &                  II,NBPAL,DT2,DTSTO,TCF,
+     &                  II,NBPAL,DT2,DTSTO,
      &                  VROTAT,TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
               IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
 
@@ -530,7 +529,7 @@ C
      &                  ZR(JREDR),ZI(JREDI), NBREVI,DPLREV,FONREV,
      &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &                  0,FBID,FBID,0.D0,FBID,
-     &                  II,NBPAL,DT2,DTSTO,TCF,
+     &                  II,NBPAL,DT2,DTSTO,
      &                  VROTAT,TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
               IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
 
@@ -580,7 +579,6 @@ C           LES DEUX LIGNES SUIVANTES SIMULENT LE WHILE - CONTINUE
 C
             DT1 = DT2
             TEMP2 = TEMPS + DT2
-            TCF = TEMP2 + DT2
 C
 C           --- AUGMENTATION DU PAS SI ERREUR TROP FAIBLE ---
 C

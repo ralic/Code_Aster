@@ -30,9 +30,9 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -206,7 +206,7 @@ C     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            0,FBID,FBID,0.D0,FBID,
-     &            0,0,0.D0,0.D0,0.D0,0.D0,
+     &            0,0,0.D0,0.D0,0.D0,
      &            TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 C
 C     --- INITIALISATION DE L'ALGORITHME ---
@@ -278,7 +278,7 @@ C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &               0,FBID,FBID,0.D0,FBID,
-     &               0,0,0.D0,0.D0,0.D0,0.D0,
+     &               0,0,0.D0,0.D0,0.D0,
      &               TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 C
          DO 34 IM = 0,NBMOD1
@@ -315,7 +315,7 @@ C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &               0,FBID,FBID,0.D0,FBID,
-     &               0,0,0.D0,0.D0,0.D0,0.D0,
+     &               0,0,0.D0,0.D0,0.D0,
      &               TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 
 C

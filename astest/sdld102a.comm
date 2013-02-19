@@ -1,9 +1,9 @@
-# MODIF  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
+# MODIF  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
-# sdld102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
+# sdld102a.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -418,6 +418,27 @@ TRANGEN5=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          EXCIT=_F(VECT_ASSE_GENE=FGEN,
                                   COEF_MULT=1.,),);
 
+TRANGEN6=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                         SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.E-5),
+                         MATR_MASS=MASPRO,
+                         MATR_RIGI=RIGPRO,
+                         INCREMENT=_F(INST_INIT=0.,
+                                      INST_FIN=82.,
+                                      PAS=0.1,),
+                         ARCHIVAGE=_F(PAS_ARCH=1,),
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
+                                  COEF_MULT=1.,),);
+
+TRANGEN7=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                         SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.E-4),
+                         MATR_MASS=MASGEN,
+                         MATR_RIGI=RIGGEN,
+                         INCREMENT=_F(INST_INIT=0.,
+                                      INST_FIN=82.,
+                                      PAS=0.1,),
+                         ARCHIVAGE=_F(PAS_ARCH=1,),
+                         EXCIT=_F(VECT_ASSE_GENE=FGEN,
+                                  COEF_MULT=1.,),);
 #
 #
 # ----- VISUALISATION
@@ -430,7 +451,6 @@ TRAN1=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',
                      NOEUD='NO3',);
-
 
 #
 
@@ -460,7 +480,12 @@ TRAN4=REST_GENE_PHYS(RESU_GENE=TRANGEN4,
                      TOUT_CHAM='OUI',
                      NOEUD='NO3',);
 
-
+TRAN6=REST_GENE_PHYS(RESU_GENE=TRANGEN6,
+                     MODE_MECA=MODGLO,
+                     LIST_INST=LIST_R,
+                     INTERPOL='LIN',
+                     TOUT_CHAM='OUI',
+                     NOEUD='NO3',);
 
 DEBUG(SDVERI='OUI',);
 
@@ -473,15 +498,18 @@ TRAN5=REST_SOUS_STRUC(RESU_GENE=TRANGEN5,
                       NOEUD='NO3',
                       SQUELETTE=SQUEL,);
 
-
+TRAN7=REST_SOUS_STRUC(RESU_GENE=TRANGEN7,
+                      LIST_INST=LIST_R,
+                      INTERPOL='LIN',
+                      TOUT_CHAM='OUI',
+                      NOEUD='NO3',
+                      SQUELETTE=SQUEL,);
 
 TRAN_SS=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
                        MODE_MECA=MODCOT,
                        LIST_INST=LIST_R,
                        INTERPOL='LIN',
                        TOUT_CHAM='OUI',);
-
-
 
 TEST_RESU(RESU=_F(INST=80.0,
                   RESULTAT=TRAN1,
@@ -496,7 +524,6 @@ TEST_RESU(RESU=_F(INST=80.0,
           )
 
 #
-
 TEST_RESU(RESU=_F(INST=80.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='VITE',
@@ -689,6 +716,89 @@ TEST_RESU(RESU=_F(INST=80.0,
                   REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
+          )
+
+#
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN6,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.41839634271263,
+                  VALE_REFE=0.41699999999999998,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+#
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN6,
+                  NOM_CHAM='VITE',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.42949366885990,
+                  VALE_REFE=-0.43010999999999999,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+#
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN6,
+                  NOM_CHAM='ACCE',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.33265285820404,
+                  VALE_REFE=0.33749000000000001,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=3.E-2,),
+          )
+
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN7,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.41922243598522,
+                  VALE_REFE=0.41699999999999998,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+#
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN7,
+                  NOM_CHAM='VITE',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.42991676142134,
+                  VALE_REFE=-0.43010999999999999,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+#
+
+TEST_RESU(RESU=_F(INST=80.0,
+                  RESULTAT=TRAN7,
+                  NOM_CHAM='ACCE',
+                  NOEUD='NO3',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.32981026303897,
+                  VALE_REFE=0.33749000000000001,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=5.E-2,),
           )
 
 #

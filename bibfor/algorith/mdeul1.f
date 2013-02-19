@@ -12,7 +12,7 @@
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
      &                   NBRFIS,FK,DFK,ANGINI,FONCP,
-     &                   NBPAL,DTSTO,TCF,VROTAT,PRDEFF,
+     &                   NBPAL,DTSTO,VROTAT,PRDEFF,
      &                   NOMRES,NBEXCI,PASSTO)
 C
       IMPLICIT NONE
@@ -26,7 +26,7 @@ C
      &             TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),DREDST(*),
      &             DREVST(*),PREC,DPLMOD(NBCHOC,NEQGEN,*),
      &             DPLRED(*),DPLREV(*),PASSTO(*)
-      REAL*8       DT,DTSTO,TCF,VROTAT,ANGINI
+      REAL*8       DT,DTSTO,VROTAT,ANGINI
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*)
       CHARACTER*8  NOMRES,MONMOT
       CHARACTER*16 TYPBAS
@@ -40,9 +40,9 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/11/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -316,7 +316,7 @@ C
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            NBRFIS,FK,DFK,ANGINI,FONCP,
-     &            1,0,DT,DTSTO,TCF,VROTAT,
+     &            1,0,DT,DTSTO,VROTAT,
      &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
           CALL U2MESS('F','EDYOS_46')
@@ -361,7 +361,7 @@ C
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &            NBRFIS,FK,DFK,ANGINI,FONCP,
-     &            1,NBPAL,DT,DTSTO,TCF,VROTAT,
+     &            1,NBPAL,DT,DTSTO,VROTAT,
      &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
           CALL U2MESS('F','EDYOS_46')
@@ -392,7 +392,6 @@ C
      &        IREDST,DREDST,IREVST,DREVST)
 C
       TEMPS = TINIT + DT
-      TCF = TEMPS
       CALL UTTCPU('CPU.MDEUL1','INIT',' ')
       N100 = NBPAS/100 + 1
 C
@@ -467,7 +466,7 @@ C
      &                  ZR(JREDR),ZI(JREDI),NBREVI,DPLREV,FONREV,
      &                  TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &                  NBRFIS,FK,DFK,ANGINI,FONCP,
-     &                  (I+1),NBPAL,DT,DTSTO,TCF,VROTAT,
+     &                  (I+1),NBPAL,DT,DTSTO,VROTAT,
      &                  TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
             IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
               CALL U2MESS('F','EDYOS_46')
@@ -513,7 +512,7 @@ C
      &               ZR(JREDR),ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
      &               NBRFIS,FK,DFK,ANGINI,FONCP,
-     &               (I+1),NBPAL,DT,DTSTO,TCF,VROTAT,
+     &               (I+1),NBPAL,DT,DTSTO,VROTAT,
      &               TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
          IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
            CALL U2MESS('F','EDYOS_46')
@@ -578,7 +577,6 @@ C          --- CAS D'UNE POURSUITE ---
           ENDIF
          ENDIF
          TEMPS = TEMPS + DT
-         TCF = TEMPS
  30   CONTINUE
 C
  9999 CONTINUE

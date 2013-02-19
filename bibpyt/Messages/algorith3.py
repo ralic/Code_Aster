@@ -1,8 +1,8 @@
-#@ MODIF algorith3 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith3 Messages  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,6 +26,10 @@ cata_msg = {
  élément non traité
 """),
 
+9 : _(u"""
+ Vous avez choisie une méthode à pas de temps adaptatif. Il n'est pas possible de prendre en compte une
+ liste d'instants de calcul définie a priori.
+"""),
 
 10 : _(u"""
   -> Contact avec DYNA_TRAN_MODAL : Il y a interpénétration d'une valeur supérieure à (DIST_MAIT + DIST_ESCL).

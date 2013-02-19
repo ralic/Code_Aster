@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 # TITRE CALCUL DE LA PUISSANCE D'USURE D'UN PATIN FROTTANT
-# sdnd104a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+# sdnd104a.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -178,8 +178,47 @@ DYNAMOA1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
-
 #
+DYRK541=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.E-6),
+                               MATR_MASS=MASSEGEN,
+                               MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE_GENE = FGENE, FONC_MULT = ACCELER1),
+                              INCREMENT=_F( INST_INIT = 0.,
+                                         INST_FIN = 12.,
+                                         PAS = 0.00001,),
+                             CHOC=_F(  NOEUD_1 = 'NO1',
+                                    OBSTACLE = PLANZ,
+                                    ORIG_OBST = (0., 0., 1.,),
+                                    NORM_OBST = (0., 1., 0.,),
+                                    JEU = 0.50,
+                                    RIGI_NOR = 20.,
+                                    RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
+                                    COULOMB = COULOMB)
+                           )
+#
+DYRK321=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.E-5),
+                               MATR_MASS=MASSEGEN,
+                               MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE_GENE = FGENE, FONC_MULT = ACCELER1),
+                              INCREMENT=_F( INST_INIT = 0.,
+                                         INST_FIN = 12.,
+                                         PAS = 0.00001,),
+                             CHOC=_F(  NOEUD_1 = 'NO1',
+                                    OBSTACLE = PLANZ,
+                                    ORIG_OBST = (0., 0., 1.,),
+                                    NORM_OBST = (0., 1., 0.,),
+                                    JEU = 0.50,
+                                    RIGI_NOR = 20.,
+                                    RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
+                                    COULOMB = COULOMB),
+                           )
+
 DYNAMOD1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
                                MATR_MASS=MASSEGEN,
@@ -244,7 +283,46 @@ DYNAMOA2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
-
+#
+DYRK542=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.E-6),
+                               MATR_MASS=MASSEGEN,
+                               MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE_GENE = FGENE, FONC_MULT = ACCELER2),
+                              INCREMENT=_F( INST_INIT = 0.,
+                                         INST_FIN = 12.,
+                                         PAS = 0.00001,),
+                             CHOC=_F(  NOEUD_1 = 'NO1',
+                                    OBSTACLE = PLANZ,
+                                    ORIG_OBST = (0., 0., 1.,),
+                                    NORM_OBST = (0., 1., 0.,),
+                                    JEU = 0.50,
+                                    RIGI_NOR = 20.,
+                                    RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
+                                    COULOMB = COULOMB)
+                           )
+#
+DYRK322=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.E-5),
+                               MATR_MASS=MASSEGEN,
+                               MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE_GENE = FGENE, FONC_MULT = ACCELER2),
+                              INCREMENT=_F( INST_INIT = 0.,
+                                         INST_FIN = 12.,
+                                         PAS = 0.00001,),
+                             CHOC=_F(  NOEUD_1 = 'NO1',
+                                    OBSTACLE = PLANZ,
+                                    ORIG_OBST = (0., 0., 1.,),
+                                    NORM_OBST = (0., 1., 0.,),
+                                    JEU = 0.50,
+                                    RIGI_NOR = 20.,
+                                    RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
+                                    COULOMB = COULOMB),
+                           )
 #
 DYNAMOD2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
@@ -310,7 +388,46 @@ DYNAMOA3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
-
+#
+DYRK543=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.E-7),
+                               MATR_MASS=MASSEGEN,
+                               MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE_GENE = FGENE, FONC_MULT = ACCELER3),
+                              INCREMENT=_F( INST_INIT = 0.,
+                                         INST_FIN = 12.,
+                                         PAS = 0.00001,),
+                             CHOC=_F(  NOEUD_1 = 'NO1',
+                                    OBSTACLE = PLANZ,
+                                    ORIG_OBST = (0., 0., 1.,),
+                                    NORM_OBST = (0., 1., 0.,),
+                                    JEU = 0.50,
+                                    RIGI_NOR = 20.,
+                                    RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
+                                    COULOMB = COULOMB)
+                           )
+#
+DYRK323=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.E-7),
+                               MATR_MASS=MASSEGEN,
+                               MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE_GENE = FGENE, FONC_MULT = ACCELER3),
+                              INCREMENT=_F( INST_INIT = 0.,
+                                         INST_FIN = 12.,
+                                         PAS = 0.00001,),
+                             CHOC=_F(  NOEUD_1 = 'NO1',
+                                    OBSTACLE = PLANZ,
+                                    ORIG_OBST = (0., 0., 1.,),
+                                    NORM_OBST = (0., 1., 0.,),
+                                    JEU = 0.50,
+                                    RIGI_NOR = 20.,
+                                    RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
+                                    COULOMB = COULOMB),
+                           )
 #
 DYNAMOD3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
@@ -377,7 +494,46 @@ DYNAMOA4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
-
+#
+DYRK544=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.E-6),
+                               MATR_MASS=MASSEGEN,
+                               MATR_RIGI=RIGIDGEN,
+                               AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                     EXCIT=_F(  VECT_ASSE_GENE = FGENE, FONC_MULT = ACCELER4),
+                              INCREMENT=_F( INST_INIT = 0.,
+                                         INST_FIN = 12.,
+                                         PAS = 0.00001,),
+                             CHOC=_F(  NOEUD_1 = 'NO1',
+                                    OBSTACLE = PLANZ,
+                                    ORIG_OBST = (0., 0., 1.,),
+                                    NORM_OBST = (0., 1., 0.,),
+                                    JEU = 0.50,
+                                    RIGI_NOR = 20.,
+                                    RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
+                                    COULOMB = COULOMB)
+                           )
+#
+DYRK324=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                                SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.E-5),
+                                MATR_MASS=MASSEGEN,
+                                MATR_RIGI=RIGIDGEN,
+                                AMOR_MODAL=_F(AMOR_REDUIT=0.,),
+                      EXCIT=_F(  VECT_ASSE_GENE = FGENE, FONC_MULT = ACCELER4),
+                               INCREMENT=_F( INST_INIT = 0.,
+                                          INST_FIN = 12.,
+                                          PAS = 0.00001,),
+                              CHOC=_F(  NOEUD_1 = 'NO1',
+                                     OBSTACLE = PLANZ,
+                                     ORIG_OBST = (0., 0., 1.,),
+                                     NORM_OBST = (0., 1., 0.,),
+                                     JEU = 0.50,
+                                     RIGI_NOR = 20.,
+                                     RIGI_TAN = 9000000.,
+                                     FROTTEMENT='COULOMB',
+                                     COULOMB = COULOMB),
+                            )
 #
 DYNAMOD4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
@@ -432,7 +588,28 @@ TTA1=POST_DYNA_MODA_T(   RESU_GENE=DYNAMOA1,
                                   NB_CLASSE = 8),
                            INFO=2
                        )
-
+#
+TTRK541=POST_DYNA_MODA_T(   RESU_GENE=DYRK541,
+                          CHOC=_F( INST_INIT = 4.,
+                                  INST_FIN = 12.,
+                                  SEUIL_FORCE = 0.,
+                                  DUREE_REPOS = 0.001,
+                                  NB_BLOC = 8,
+                                  OPTION = 'USURE',
+                                  NB_CLASSE = 8),
+                           INFO=2
+                       )
+#
+TTRK321=POST_DYNA_MODA_T(   RESU_GENE=DYRK321,
+                          CHOC=_F( INST_INIT = 4.,
+                                  INST_FIN = 12.,
+                                  SEUIL_FORCE = 0.,
+                                  DUREE_REPOS = 0.001,
+                                  NB_BLOC = 8,
+                                  OPTION = 'USURE',
+                                  NB_CLASSE = 8),
+                           INFO=2
+                       )
 #
 TTD1=POST_DYNA_MODA_T(    RESU_GENE=DYNAMOD1,
                           CHOC=_F(   INST_INIT = 4.,
@@ -468,7 +645,28 @@ TTA2=POST_DYNA_MODA_T(   RESU_GENE=DYNAMOA2,
                                   NB_CLASSE = 8),
                            INFO=2
                        )
-
+#
+TTRK542=POST_DYNA_MODA_T(   RESU_GENE=DYRK542,
+                          CHOC=_F( INST_INIT = 4.,
+                                  INST_FIN = 12.,
+                                  SEUIL_FORCE = 0.,
+                                  DUREE_REPOS = 0.001,
+                                  NB_BLOC = 8,
+                                  OPTION = 'USURE',
+                                  NB_CLASSE = 8),
+                           INFO=2
+                       )
+#
+TTRK322=POST_DYNA_MODA_T(   RESU_GENE=DYRK322,
+                          CHOC=_F( INST_INIT = 4.,
+                                  INST_FIN = 12.,
+                                  SEUIL_FORCE = 0.,
+                                  DUREE_REPOS = 0.001,
+                                  NB_BLOC = 8,
+                                  OPTION = 'USURE',
+                                  NB_CLASSE = 8),
+                           INFO=2
+                       )
 #
 TTD2=POST_DYNA_MODA_T(    RESU_GENE=DYNAMOD2,
                           CHOC=_F(   INST_INIT = 4.,
@@ -504,7 +702,29 @@ TTA3=POST_DYNA_MODA_T(   RESU_GENE=DYNAMOA3,
                                   NB_CLASSE = 8),
                            INFO=2
                        )
-
+#
+TTRK543=POST_DYNA_MODA_T(   RESU_GENE=DYRK543,
+                          CHOC=_F( INST_INIT = 4.,
+                                  INST_FIN = 12.,
+                                  SEUIL_FORCE = 0.,
+                                  DUREE_REPOS = 0.001,
+                                  NB_BLOC = 8,
+                                  OPTION = 'USURE',
+                                  NB_CLASSE = 8),
+                           INFO=2
+                       )
+#
+TTRK323=POST_DYNA_MODA_T(   RESU_GENE=DYRK323,
+                          CHOC=_F( INST_INIT = 4.,
+                                  INST_FIN = 12.,
+                                  SEUIL_FORCE = 0.,
+                                  DUREE_REPOS = 0.001,
+                                  NB_BLOC = 8,
+                                  OPTION = 'USURE',
+                                  NB_CLASSE = 8),
+                           INFO=2
+                       )
+#
 #
 TTD3=POST_DYNA_MODA_T(    RESU_GENE=DYNAMOD3,
                           CHOC=_F(   INST_INIT = 4.,
@@ -540,7 +760,28 @@ TTA4=POST_DYNA_MODA_T(   RESU_GENE=DYNAMOA4,
                                   NB_CLASSE = 8),
                            INFO=2
                        )
-
+#
+TTRK544=POST_DYNA_MODA_T(   RESU_GENE=DYRK544,
+                          CHOC=_F( INST_INIT = 4.,
+                                  INST_FIN = 12.,
+                                  SEUIL_FORCE = 0.,
+                                  DUREE_REPOS = 0.001,
+                                  NB_BLOC = 8,
+                                  OPTION = 'USURE',
+                                  NB_CLASSE = 8),
+                           INFO=2
+                       )
+#
+TTRK324=POST_DYNA_MODA_T(   RESU_GENE=DYRK324,
+                          CHOC=_F( INST_INIT = 4.,
+                                  INST_FIN = 12.,
+                                  SEUIL_FORCE = 0.,
+                                  DUREE_REPOS = 0.001,
+                                  NB_BLOC = 8,
+                                  OPTION = 'USURE',
+                                  NB_CLASSE = 8),
+                           INFO=2
+                       )
 #
 TTD4=POST_DYNA_MODA_T(    RESU_GENE=DYNAMOD4,
                           CHOC=_F(   INST_INIT = 4.,
@@ -574,7 +815,24 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='NO1',),
            )
-
+#
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=14.944751774644,
+           TOLE_MACHINE=1.0000000000000007E-02,
+           NOM_PARA='PUIS_USURE',
+           TABLE=TTRK541,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1',),
+           )
+#
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=15.150658615341,
+           TOLE_MACHINE=1.0000000000000007E-02,
+           NOM_PARA='PUIS_USURE',
+           TABLE=TTRK321,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1',),
+           )
 #
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=15.267099589400001,
@@ -604,7 +862,24 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='NO1',),
            )
-
+#
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.39203745320644,
+           TOLE_MACHINE=3.0000000000000007E-02,
+           NOM_PARA='PUIS_USURE',
+           TABLE=TTRK542,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1',),
+           )
+#
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.40650600908607,
+           TOLE_MACHINE=3.0000000000000007E-02,
+           NOM_PARA='PUIS_USURE',
+           TABLE=TTRK322,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1',),
+           )
 #
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=0.40906245000000002,
@@ -636,7 +911,24 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='NO1',),
            )
-
+#
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=2.353254846459E-04,
+           TOLE_MACHINE=3.0000000000000007E-02,
+           NOM_PARA='PUIS_USURE',
+           TABLE=TTRK543,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1',),
+           )
+#
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=2.2613547822174E-04,
+           TOLE_MACHINE=3.0000000000000007E-02,
+           NOM_PARA='PUIS_USURE',
+           TABLE=TTRK323,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1',),
+           )
 #
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=2.2616410000000001E-4,
@@ -666,7 +958,24 @@ TEST_TABLE(CRITERE='ABSOLU',
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='NO1',),
            )
-
+#
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.0000000000000007E-05,
+           NOM_PARA='PUIS_USURE',
+           TABLE=TTRK544,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1',),
+           )
+#
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.0,
+           TOLE_MACHINE=1.0000000000000007E-05,
+           NOM_PARA='PUIS_USURE',
+           TABLE=TTRK324,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NO1',),
+           )
 #
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
@@ -686,7 +995,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='NO1',),
            )
-
 #
 FIN( )
 #

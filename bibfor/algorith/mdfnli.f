@@ -6,13 +6,13 @@
      +                   TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,
      +                   MONMOT,
      +                   NBRFIS,FK,DFK,ANGINI,FONCP,
-     +                   NUMPAS,NBPAL,DT,DTSTO,TCF,
+     +                   NUMPAS,NBPAL,DT,DTSTO,
      +                   VROTAT,TYPAL,FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
       IMPLICIT NONE
       INTEGER       NBMODE,NBREDE,NBREVI,NBEXCI,LOGCHO(*),SAREDI(*)
       INTEGER       NBPAL,NBCHOC
       INTEGER       NUMPAS
-      REAL*8        DT,DTSTO,TCF,VROTAT,CONV,ANGINI
+      REAL*8        DT,DTSTO,VROTAT,CONV,ANGINI
       REAL*8        DEPGEN(*),VITGEN(*),FEXGEN(*),MASGEN(*)
       REAL*8        PHICAR(*),PULSA2(*),AMOGEN(*),PARCHO(*),SAUCHO(*)
       REAL*8        PARRED(*),SAURED(*),DPLREV(*),DPLRED(*)
@@ -35,9 +35,9 @@ C-----------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 05/02/2013   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
