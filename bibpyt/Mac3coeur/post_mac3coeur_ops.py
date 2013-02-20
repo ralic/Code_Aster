@@ -1,8 +1,8 @@
-#@ MODIF post_mac3coeur_ops Mac3coeur  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF post_mac3coeur_ops Mac3coeur  DATE 04/02/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -88,22 +88,6 @@ def makeXMGRACEjeu(unit,post,coeur,valjeuac,valjeucu):
        x=coeur.ALPHAMAC.index(k[1])-(len(coeur.ALPHAMAC)-1)/2.
        xmgrfile.write('@kill s%d\n@s%d symbol 2\n@s%d symbol pattern 1\n@s%d symbol size 0.4\n@s%d symbol color 1\n@s%d symbol fill pattern 1\n@s%d symbol fill color 1\n@type xy\n%10.8f %10.8f\n' %(ind,ind,ind,ind,ind,ind,ind,x,y))
 
-    for name in valjeuac.keys():
-        position1 = name[4:6]
-        position2 = name[6:8]
-        (x1,y1) = NodePos(position1)
-        (x2,y2) = NodePos(position2)
-        if (post=='MAXI') :
-            (redF,greenF,blueF,lame,size) = computeColor(max(valjeuac[name]))
-            titre = 'maximaux'
-        elif (post=='MINI') :
-            (redF,greenF,blueF,lame,size) = computeColor(min(valjeuac[name]))
-            titre = 'minimaux'
-        else :
-            (redF,greenF,blueF,lame,size) = computeColor(valjeuac[name][post-1])
-            titre = 'au niveau des grilles %s'%post
-        xmgrfile.write('@with string\n@string on\n@string loctype world\n@string color (%d,%d,%d)\n@string char size %f\n@string just 2\n@string %f, %f\n@string def \"%s\"\n' %(redF,greenF,blueF,size,(x1+x2)/2.0,(y1+y2)/2.0-0.1,lame))
-
     for name in valjeucu.keys():
         position1 = name[3:5]
         position2 = name[6:7]
@@ -111,11 +95,28 @@ def makeXMGRACEjeu(unit,post,coeur,valjeuac,valjeucu):
         (x2,y2) = NodePosCu(position2)
         if (post=='MAXI') :
            (redF,greenF,blueF,lame,size) = computeColor(max(valjeucu[name]))
+           titre = 'maximaux'
         elif (post=='MINI') :
            (redF,greenF,blueF,lame,size) = computeColor(min(valjeucu[name]))
+           titre = 'minimaux'
         else :
            (redF,greenF,blueF,lame,size) = computeColor(valjeucu[name][post-1])
+           titre = 'au niveau des grilles %s'%post
         xmgrfile.write('@with string\n@string on\n@string loctype world\n@string color (%d,%d,%d)\n@string char size %f\n@string just 2\n@string %f, %f\n@string def \"%s\"\n' %(redF,greenF,blueF,size,(x1+x2),(y1+y2)-0.1,lame))
+
+    if len(valjeuac) != 0 :
+      for name in valjeuac.keys():
+          position1 = name[4:6]
+          position2 = name[6:8]
+          (x1,y1) = NodePos(position1)
+          (x2,y2) = NodePos(position2)
+          if (post=='MAXI') :
+              (redF,greenF,blueF,lame,size) = computeColor(max(valjeuac[name]))
+          elif (post=='MINI') :
+              (redF,greenF,blueF,lame,size) = computeColor(min(valjeuac[name]))
+          else :
+              (redF,greenF,blueF,lame,size) = computeColor(valjeuac[name][post-1])
+          xmgrfile.write('@with string\n@string on\n@string loctype world\n@string color (%d,%d,%d)\n@string char size %f\n@string just 2\n@string %f, %f\n@string def \"%s\"\n' %(redF,greenF,blueF,size,(x1+x2)/2.0,(y1+y2)/2.0-0.1,lame))
 
     xmgrfile.write('&\n@xaxis ticklabel off\n@yaxis ticklabel off\n@xaxis tick off\n@yaxis tick off\n@subtitle \"Jeux %s entre les ACs du Coeur (en mm)"\n@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n'%(titre))
     xmgrfile.close()
@@ -310,29 +311,6 @@ def post_mac3coeur_ops(self, **args):
              post_table=1
 
        _formule = FORMULE(NOM_PARA='V8',VALE='1000.*V8')
-      
-       UTMESS('I','COEUR0_4')
-       k=0
-       dim=len(_coeur.nomContactAssLame)
-       for name in _coeur.nomContactAssLame:
-          _TAB1 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,NOM_CHAM='VARI_ELGA',NOM_CMP='V8',GROUP_MA=name,INST=_inst))
-          _TAB1 = CALC_TABLE(reuse=_TAB1,TABLE=_TAB1,
-                            ACTION = (_F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE_I=1),
-                                      _F(OPERATION='TRI',NOM_PARA='COOR_X',ORDRE='CROISSANT'),
-                                      _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA=name)))
-          if (post_table==1):
-             if (len(valjeuac)==0):
-                _TAB3 = CALC_TABLE(TABLE  =  _TAB1,
-                                   ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X',name))))
-             else:
-                _TABTMP = CALC_TABLE(TABLE  =  _TAB1,
-                                     ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X',name))))
-                _TAB3   = CALC_TABLE(TABLE=_TAB3,
-                                     ACTION = (_F(OPERATION='COMB',TABLE=_TABTMP,NOM_PARA='COOR_X')))
-          tab1 = _TAB1.EXTR_TABLE()
-          tab1.Renomme(name, 'P_LAME')
-          valjeuac[name] = tab1.P_LAME.values()
-          k=k+1
 
        UTMESS('I','COEUR0_5')
        k=0
@@ -345,15 +323,40 @@ def post_mac3coeur_ops(self, **args):
                                       _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA=name)))
 
           if (post_table==1):
-             _TABTMP = CALC_TABLE(TABLE  =  _TAB2,
-                                  ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X',name))))
-             _TAB3   = CALC_TABLE(TABLE=_TAB3,
-                                  ACTION = (_F(OPERATION='COMB',TABLE=_TABTMP,NOM_PARA='COOR_X')))
+             if (len(valjeuac)==0):
+                _TAB3 = CALC_TABLE(TABLE  =  _TAB2,
+                                   ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X',name))))
+             else:
+                
+                _TABTMP = CALC_TABLE(TABLE  =  _TAB2,
+                                      ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X',name))))
+                _TAB3   = CALC_TABLE(TABLE=_TAB3,
+                                      ACTION = (_F(OPERATION='COMB',TABLE=_TABTMP,NOM_PARA='COOR_X')))
 
           tab2 = _TAB2.EXTR_TABLE()
           tab2.Renomme(name, 'P_LAME')
           valjeucu[name] = tab2.P_LAME.values()
           k=k+1
+      
+       UTMESS('I','COEUR0_4')
+       k=0
+       dim=len(_coeur.nomContactAssLame)
+       if dim != 0 :
+          for name in _coeur.nomContactAssLame:
+              _TAB1 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,NOM_CHAM='VARI_ELGA',NOM_CMP='V8',GROUP_MA=name,INST=_inst))
+              _TAB1 = CALC_TABLE(reuse=_TAB1,TABLE=_TAB1,
+                                ACTION = (_F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE_I=1),
+                                          _F(OPERATION='TRI',NOM_PARA='COOR_X',ORDRE='CROISSANT'),
+                                          _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA=name)))
+              if (post_table==1):
+                _TABTMP = CALC_TABLE(TABLE  =  _TAB1,
+                                    ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X',name))))
+                _TAB3   = CALC_TABLE(TABLE=_TAB3,
+                                    ACTION = (_F(OPERATION='COMB',TABLE=_TABTMP,NOM_PARA='COOR_X')))
+              tab1 = _TAB1.EXTR_TABLE()
+              tab1.Renomme(name, 'P_LAME')
+              valjeuac[name] = tab1.P_LAME.values()
+              k=k+1
 
        for attr in POST_LAME:
           _num_grille = attr['NUME_GRILLE']

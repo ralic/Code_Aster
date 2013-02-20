@@ -1,4 +1,4 @@
-#@ MODIF mac3coeur_coeur Mac3coeur  DATE 14/01/2013   AUTEUR PERONY R.PERONY 
+#@ MODIF mac3coeur_coeur Mac3coeur  DATE 04/02/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,8 +60,8 @@ class Coeur(object):
         # Post-traitement des lames
         'nomContactAssLame','nomContactCuve',
     ]
-    _time        = ('T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T8b', 'T9',)
-    _subtime     = ('N0', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'N8', 'N8b', 'N9')
+    _time        = ('T0','T0b', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T8b', 'T9',)
+    _subtime     = ('N0','N0b', 'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'N8', 'N8b', 'N9')
 
     def __init__(self, name, typ_coeur, macro, datg):
         """Initialisation d'un type de coeur."""
@@ -510,9 +510,9 @@ class Coeur(object):
         mtmp=_F(GROUP_MA='DIL',SECTION='RECTANGLE',CARA=('HY','HZ'),VALE=(0.03,0.21338),)
         mcp.append(mtmp)
         mcd = self.mcf_cara_discret()
-        mtmp=_F(GROUP_MA=('RES_EXT','RES_CONT',),REPERE='LOCAL',CARA='K_T_D_L',VALE=(0.,0.,0.,),)
+        mtmp=_F(GROUP_MA='RES_TOT',REPERE='LOCAL',CARA='K_T_D_L',VALE=(0.,0.,0.,),)
         mcd.append(mtmp)
-        mtmp=_F(GROUP_MA=('RES_EXT','RES_CONT',),REPERE='LOCAL',CARA='M_T_D_L',VALE=0.,)
+        mtmp=_F(GROUP_MA='RES_TOT',REPERE='LOCAL',CARA='M_T_D_L',VALE=0.,)
         mcd.append(mtmp)
 
         _CARA = AFFE_CARA_ELEM( MODELE      = MODELE,
@@ -543,6 +543,7 @@ class Coeur(object):
                               VALE=( -2.0,   0.,
                                  -1.0,   0.,
                                  self.temps_simu['T0'],   0.,
+                                 self.temps_simu['T0b'],   0.,
                                  self.temps_simu['T1'],   -1.*self.flechResMaint,
                                  self.temps_simu['T2'],   -1.*self.flechResMaint,
                                  self.temps_simu['T3'],   -1.*self.flechResMaint,
@@ -558,6 +559,34 @@ class Coeur(object):
                               
         _F_EMBO = AFFE_CHAR_MECA_F( MODELE   = MODELE,
                                    DDL_IMPO = _F(GROUP_NO = 'PMNT_S',           DX=_DXpsc,  ),); 
+        return _F_EMBO
+
+    def definition_effor_maintien_force(self,MODELE,ForceMaintien):
+        """Retourne le chargement d'effort de maintien considéré constant"""
+        from Accas import _F
+        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
+        AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
+                              
+        _FXpsc=DEFI_FONCTION(NOM_PARA='INST',
+                              VALE=( -2.0,   0.,
+                                 -1.0,   0.,
+                                 self.temps_simu['T0'],   0.,
+                                 self.temps_simu['T0b'],   0.,
+                                 self.temps_simu['T1'],   -1.*ForceMaintien,
+                                 self.temps_simu['T2'],   -1.*ForceMaintien,
+                                 self.temps_simu['T3'],   -1.*ForceMaintien,
+                                 self.temps_simu['T4'],   -1.*ForceMaintien,
+                                 self.temps_simu['T5'],   -1.*ForceMaintien,
+                                 self.temps_simu['T6'],   -1.*ForceMaintien,
+                                 self.temps_simu['T7'],   -1.*ForceMaintien,
+                                 self.temps_simu['T8'],   -1.*ForceMaintien,
+                                 self.temps_simu['T8b'],  -1.*ForceMaintien/30.,
+                                 self.temps_simu['T9'],   0.,),
+                              PROL_DROITE='CONSTANT',
+                              PROL_GAUCHE='CONSTANT',);
+                              
+        _F_EMBO = AFFE_CHAR_MECA_F( MODELE   = MODELE,
+                                   FORCE_NODALE = _F(GROUP_NO = 'PMNT_S',           FX=_FXpsc,  ),); 
         return _F_EMBO
 
     def affectation_maillage(self,MA0):
@@ -650,13 +679,13 @@ class Coeur(object):
                        _F( GROUP_MA     =('MAINTIEN',),
                            PHENOMENE    = 'MECANIQUE',
                            MODELISATION = 'BARRE',),
-                       _F( GROUP_MA     =('RES_EXT','RES_CONT'),
+                       _F( GROUP_MA     ='RES_TOT',
                            PHENOMENE    = 'MECANIQUE',
                            MODELISATION = 'DIS_T',),),);
 
         return _MODELE
 
-    def definition_time(self,fluence):
+    def definition_time(self,fluence,subdivis):
         from Accas import _F
         DEFI_LIST_REEL = self.macro.get_cmd('DEFI_LIST_REEL')
         DEFI_LIST_INST = self.macro.get_cmd('DEFI_LIST_INST')
@@ -665,7 +694,7 @@ class Coeur(object):
             m_time = ( _F( JUSQU_A = self.temps_simu[self._time[a]], NOMBRE = self.sub_temps_simu[self._subtime[a]],),)
             return m_time
 
-        self.init_temps_simu(fluence)
+        self.init_temps_simu(fluence,subdivis)
 
         _list = []
         for _time in range(1,len(self._time)):
@@ -678,10 +707,11 @@ class Coeur(object):
 
         return _TE
 
-    def init_temps_simu(self,fluence):
+    def init_temps_simu(self,fluence,subdivis):
         """Initialise les temps caracteristiques"""
         Dt = 1.e-3
         self.temps_simu['T0'] = 0.0
+        self.temps_simu['T0b'] = self.temps_simu['T0'] + Dt/2 ;
         self.temps_simu['T1'] = self.temps_simu['T0'] + Dt ;
         self.temps_simu['T2'] = self.temps_simu['T1'] + Dt ;
         self.temps_simu['T3'] = self.temps_simu['T2'] + Dt ;
@@ -694,16 +724,17 @@ class Coeur(object):
         self.temps_simu['T9'] = self.temps_simu['T8'] + Dt ;
 
         self.sub_temps_simu['N0'] =  2;
-        self.sub_temps_simu['N1'] =  2;
+        self.sub_temps_simu['N0b'] =  1;
+        self.sub_temps_simu['N1'] =  2 * subdivis;
         self.sub_temps_simu['N2'] =  2;
-        self.sub_temps_simu['N3'] =  2;
-        self.sub_temps_simu['N4'] =  2;
+        self.sub_temps_simu['N3'] =  2 * subdivis;
+        self.sub_temps_simu['N4'] =  2 * subdivis;
         self.sub_temps_simu['N5'] = 50;
-        self.sub_temps_simu['N6'] =  2;
-        self.sub_temps_simu['N7'] =  2;
+        self.sub_temps_simu['N6'] =  2 * subdivis;
+        self.sub_temps_simu['N7'] =  2 * subdivis;
         self.sub_temps_simu['N8'] =  2;
-        self.sub_temps_simu['N8b'] =  2;
-        self.sub_temps_simu['N9'] =  1;
+        self.sub_temps_simu['N8b'] =  2 * subdivis*2;
+        self.sub_temps_simu['N9'] =  1 ;
 
     def definition_fluence(self,fluence,MAILLAGE):
         from Accas import _F
@@ -913,7 +944,7 @@ class Coeur(object):
         if (CONTACT == 'OUI'):
            _M_RES  = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E9, ),);
         elif (CONTACT == 'NON'):
-           _M_RES  = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E4, ),);
+           _M_RES  = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E1, ),);
 
         mcf_affe_mater = self.mcf_coeur_mater(_M_RES)
         mcf_compor     = self.mcf_compor_fibre(GFF)
@@ -957,7 +988,7 @@ class Coeur(object):
         _MAT_GR  = DEFI_MATERIAU(ELAS = _F( E = 1.E14, NU = 0.3, RHO = 0.0, ALPHA = 0.0,),);
 
         mcf  = []
-        mtmp = (_F(GROUP_MA = ('RES_EXT','RES_CONT'), MATER = _M_RES,),)
+        mtmp = (_F(GROUP_MA = 'RES_TOT', MATER = _M_RES,),)
         mcf.extend(mtmp)
 
         for ac in self.collAC.values():
@@ -1102,7 +1133,8 @@ class Coeur(object):
         _DthXpicCentre=DEFI_FONCTION(NOM_PARA='INST',
                               VALE=( -2.0,   0.,
                                  -1.0,   0.,                                 
-                                 self.temps_simu['T0'],   0.,
+                                 self.temps_simu['T0'],   0.,              
+                                 self.temps_simu['T0b'],   0.,
                                  self.temps_simu['T1'],   self.Hcav1centre - self.Hcav1centre ,
                                  self.temps_simu['T2'],   self.Hcav1centre - self.Hcav2centre ,
                                  self.temps_simu['T3'],   self.Hcav1centre - self.Hcav3centre ,
@@ -1118,7 +1150,8 @@ class Coeur(object):
         _DthXpicPeriph=DEFI_FONCTION(NOM_PARA='INST',
                               VALE=( -2.0,   0.,
                                  -1.0,   0.,                                 
-                                 self.temps_simu['T0'],   0.,
+                                 self.temps_simu['T0'],   0.,              
+                                 self.temps_simu['T0b'],   0.,
                                  self.temps_simu['T1'],   self.Hcav1periph - self.Hcav1periph ,
                                  self.temps_simu['T2'],   self.Hcav1periph - self.Hcav2periph ,
                                  self.temps_simu['T3'],   self.Hcav1periph - self.Hcav3periph ,

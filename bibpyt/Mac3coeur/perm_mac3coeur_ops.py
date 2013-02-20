@@ -1,8 +1,8 @@
-#@ MODIF perm_mac3coeur_ops Mac3coeur  DATE 05/11/2012   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF perm_mac3coeur_ops Mac3coeur  DATE 04/02/2013   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -86,7 +86,7 @@ def perm_mac3coeur_ops(self, **args):
     _CARANP1  = _coeurp1.definition_cara_coeur(_MO_NP1,_GFF_NP1)
 
     _fluence  = 0.0
-    _timep1   = _coeurp1.definition_time(_fluence)
+    _timep1   = _coeurp1.definition_time(_fluence,1.)
     _FLU_NP1  = _coeurp1.definition_fluence(_fluence,_MA_NP1)
     _CHTHNP1  = _coeurp1.definition_champ_temperature(_MA_NP1)
     _AFSCNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_SANS_CONTACT,_FLU_NP1,_CHTHNP1)
@@ -111,7 +111,7 @@ def perm_mac3coeur_ops(self, **args):
                               COMP_INCR   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION='GROT_GDEP',),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
-                                    _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
+                                    _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
                                     _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
                                     _F(RELATION='VMIS_ISOT_TRAC',GROUP_MA ='MAINTIEN',DEFORMATION='PETIT',),),
                               INCREMENT   = _F(LIST_INST = _timep1, NUME_INST_FIN = 1,),
