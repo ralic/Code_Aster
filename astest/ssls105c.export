@@ -7,7 +7,4 @@ P testlist C
 
 F comm ssls105c.comm D 1
 F datg ssls105c.datg D 16
-F mgib ssls105c.mgib D 19
 F libr ssls105c.21 D 21
-F libr ssls105c.22 D 22
-F libr ssls105c.23 D 23

@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm ssnv193a.comm D 1
-F msh ssnv193a.msh D 19
 F mmed ssnv193a.mmed D 20

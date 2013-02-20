@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm sslv04d.comm D 1
-F mail sslv04d.mail D 20
 F datg sslv04d.datg D 16
 F mgib sslv04d.mgib D 19

@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnl502a.comm D 1
-F mail ssnl502a.mail D 20
 F msup ssnl502a.msup D 19

@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssls130a.comm D 1
-F mail ssls130a.mail D 20
 F msup ssls130a.msup D 19

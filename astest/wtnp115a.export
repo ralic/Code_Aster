@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm wtnp115a.comm D 1
-F mail wtnp115a.mail D 20
 F msup wtnp106a.msup D 19

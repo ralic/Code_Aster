@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm ssna108a.comm D 1
-F msup ssna108a.msup D 19
 F mmed ssna108a.mmed D 20

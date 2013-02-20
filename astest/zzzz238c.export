@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm zzzz238c.comm D 1
-F msh zzzz238c.msh D 19
 F mmed zzzz238c.mmed D 20

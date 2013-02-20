@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm fdlv105a.comm D 1
-F msup fdlv105a.msup D 19
 F mmed fdlv105a.mmed D 20

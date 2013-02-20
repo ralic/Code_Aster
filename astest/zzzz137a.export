@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm zzzz137a.comm D 1
-F mail zzzz137a.mail D 20
 F msup zzzz137a.msup D 19
 F libr zzzz137a.37 D 37

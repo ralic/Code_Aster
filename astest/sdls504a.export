@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm sdls504a.comm D 1
-F msup sdls504a.msup D 19
 F mmed sdls504a.mmed D 20

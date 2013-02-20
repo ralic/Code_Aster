@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm ssnv129a.comm D 1
-F mail ssnv129a.mail D 20
 F datg ssnv129a.datg D 16
 F mgib ssnv129a.mgib D 19

@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist CI 
 
 F comm ssnl125a.comm D 1
-F msh ssnl125a.msh D 19
 F mmed ssnl125a.mmed D 20

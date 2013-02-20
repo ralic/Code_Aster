@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C 
 
 F comm zzzz125a.comm D 1
-F mail zzzz125a.mail D 20
 F datg zzzz125a.datg D 16
 F mgib zzzz125a.mgib D 19
