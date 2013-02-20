@@ -1,0 +1,1072 @@
+========================================================================
+Version 11.3.7 du : 06/02/2013
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR alarcon      ALARCON Albert         DATE 02/05/2013 - 04:55:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012636 DU 2008-10-16 08:44:10
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MOD3 - DYNA_TRAN_MODAL : algo en temps
+FONCTIONNALITE
+   Contexte
+   -----------------
+   Dans le but d'améliorer les performances de calcul de l'opérateur DTM, en particulier en
+   présence de non-linéarités, un nouveau schéma d'intégration à pas de temps adaptatif
+   semblait nécessaire, notamment au vu des performances des schémas actuels ADAPT_ORDRE1 et
+    ADAPT_ORDRE2.
+   Pour cela deux nouveaux schémas d'intégration faisant partie de la famille des schémas de
+   Runge-Kutta sont proposés :  le schéma de Dormand-Prince DOPRI54 et le schéma de
+   Bogacki-Shampine BOSHA32.
+   Ces schémas évaluent le pas de temps optimal en contrôlant l'erreur de quadrature
+   d'intégration entre les estimations d'ordre 5-4 pour DOPRI54 et 3-2 pour BOSHA32.
+   
+   On restitue donc ces schémas dans DTM dans le cadre de cette fiche
+   
+   Les schémas restitués ont été codés pour être compatibles, en principe, avec toutes les
+   possibilités de non-linéarité disponibles dans DTM à l'exception de LAME_FLUIDE. 
+   
+   
+   Nouveautés catalogue
+   ---------------------
+   Pour l'opérateur Dyna_Tran_Modal, et par extension Dyna_Vibra, on dispose maintenant sous
+   le mot clé SCHEMA_TEMPS  des deux possibilités suivantes :
+   
+   SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=xxx) 
+   SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=xxx) 
+   
+   dont la correspondance avec les schémas cités plus haut se fait par l'ordre ( 54 ou  32 ). 
+   Le mot clé TOLERANCE permet de contrôler la tolérance voulue entre les ordres en question
+   et il s'agit d'un paramètre utilisateur. Par défaut elle est fixée à 1e-3.
+   
+   
+   Nouveautés Fortran
+   ---------------------
+   Une nouvelle routine générique pour tout type de schéma de Runge-Kutta est introduite →
+   mdruku.f
+   Elle est appelée par les routines châpeau mdtr74 (superposition modale) et ssdt74
+   (sous-structuration) de DTM si le choix d'un algorithme de type Runge-Kutta est fait. A
+   l'intérieur, d'autres nouvelles sous-routines spécifiques aux schémas de Runge-Kutta sont
+   appelées lors de l'intégration (mddp54.f , mdbs32.f, concrk.f)
+   
+   De manière macroscopique :
+   La routine mdruku prepare l'intégration, fait la boucle en temps et restitue le résultat
+   de l'intégration dans un objet conforme à la SD dyna_gene. Elle gère donc la taille
+   variable des objets du fait du pas de temps variable.
+   
+   La routine mddp54 fait l'estimation par quadrature de l'état à l'instant suivant par la
+   méthode de DOPRI54 et donne aussi l'estimation de l'erreur.
+   
+   La routine mdbs32 fait l'estimation par quadrature de l'état à l'instant suivant par la
+   méthode de BOSHA32 et donne aussi l'estimation de l'erreur.
+   
+   La routine concrk permet de concatener l'ensemble d'objets jeveux temporaires nécessaires
+   au stockage du résultat d'intégration qui ont été crées par mdruku lors de l'intégration.
+   
+   
+   Cas test de validation
+   ----------------------
+   Les cas-test de validation suivants ont été enrichis avec les deux nouveaux schémas
+   d'intégration :
+   
+   sdld22b, sdnd104a, sdld102a, sdld13a,sdld321b, sdld325a,sdld325b
+   
+   
+   Documentation impactée :
+   -------------------------
+   U4.53.21 → Dyna_Tran_Modal
+   U4.53.03 → Dyna_Vibra
+   R5.06.04 → Algorithmes d'intégration de l'opérateur Dyna_Tran_Modal
+   Documentation cas test= v2.01.22,v5.01.104,v2.01.102,v2.01.103,v2.01.321,v2.01.325
+   
+   Autres impacts collatéraux
+   ---------------------------
+   Fortran : mdallo (possiblité de créer des objets sur base volatile ou globale), mdtr74,
+   ssdt74, mdptem, ecresu, limsst,mdall2, mptran, op0060.
+   
+   Capy/py : dyna_tran_modal.capy, dyna_vibra.capy, dyna_vibra_ops.py
+   
+   Messages : algorith3.py, algorith5.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.53.21,U4.53.03,R5.06.04,v2.01.22,v5.01.104,v2.01.102,v2.01.103,v2.01.321,v2.01.325
+VALIDATION
+    sdld22b, sdnd104a, sdld102a, sdld13a,sdld321b, sdld325a,sdld325b
+NB_JOURS_TRAV  : 30.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020009 DU 2012-11-27 17:25:36
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    DYNA_TRAN_MODAL : variable TCF inutile (MDFNLI)
+FONCTIONNALITE
+   Problème
+   *************
+   Lors de la création des sources concernant les nouveaux schémas d'intégration de
+   Runge-Kutta à pas adaptatif (DTM), il a été constaté que la routine mdfnli avait une
+   variable d'entrée (TCF) qui n'est plus utile.
+   
+   Modification
+   *************
+   On supprime la variable TCF de mdfnli et on modifie les routines qui l'appellent, à savoir
+   mdeul1, mdadap et mddevo.
+   
+   Restitution faite au même temps que issue12636, validation comprise.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    validé par issue12636
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bargelli     BARGELLINI Renaud      DATE 05/02/2013 - 10:16:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019964 DU 2012-11-20 10:27:59
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    RUPT : S'affranchir des copeaux pour le calcul de Gp en 2D
+FONCTIONNALITE
+   BUT RECHERCHE
+   ***********************
+   Actuellement, l'approche �nerg�tique Gp n�cessite l'utilisation d'un maillage �
+   morphologie particuli�re (d�finition de zones � g�om�trie sp�cifique appel�e copeaux).
+   Le livrable Anode L3.1a a pour objectif de permettre l'utilisation d'un maillage
+   quelconque (mais suffisamment fin) en fond d'entaille pour les probl�mes 2D.
+   
+   
+   
+   ACTION REALISEE
+   ***********************
+   Cr�ation d'une macro CALC_GP, sp�cifique au 2D pour l'instant.
+   
+   Cette macro permet le calcul du param�tre �nerg�tique � partir d'un maillage comportant
+   d�j� des copeaux ou � partir d'un maillage fin quelconque pr�sentant une entaille.
+   
+   La macro donne en sortie syst�matique une table compl�te du param�tre �nerg�tique � chaque
+   instant pour les diff�rents copeaux ; de fa�on facultative, on peut obtenir en plus une
+   table donnant simplement le max du param�tre � chaque instant ; dans le cas d'un maillage
+   quelconque, on peut visualiser le champ des copeaux cr��s afin de v�rifier sa d�finition.
+   
+   La d�finition automatique se base sur des champs valant 1 dans le copeau et 0 ailleurs. On
+   cr�� donc autant de champs que de copeaux demand�s. Il n'a pas �t� possible de se servir
+   d'un seul champ contenant l'ensemble des informations.
+   
+   VALIDATION
+   ***************************************
+   Le cas test ssnp131a est modifi� ; il utilise toujours POST_GP, et compare les r�sultats
+   obtenus avec CALC_GP dans les 2 cas de d�finition des copeaux (automatique ou maill�).
+   On ajoute le cas ssnp131b dans lequel le maillage est quelconque.
+   L'ancien ssnp131b, 3D, est plac� en ssnp131c.
+   
+   IMPACT
+   ***************************************
+   informatique :
+   calc_gp.capy
+   calc_gp_ops.py
+   rupture01.py
+   documentaire :
+   V6.03.131
+   U4.82.?? (en cours, pas de numero !)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.03.131
+VALIDATION
+    ssnp131
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 05/02/2013 - 10:59:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020301 DU 2013-02-01 09:36:15
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.06, le cas-test ssnv213a s’arrête en erreur fatale sur Rocks et Calibre7.
+FONCTIONNALITE
+   Le test ssnv213a échoue car le fichier datg contenant les propriétés matériaux est 
+   absent.
+   Le fichier a été copié sur Rocks, Calibre7, Ivanoe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnv213a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020265 DU 2013-01-25 17:12:51
+TYPE evolution concernant astk (VERSION )
+TITRE
+    AR14 : Utiliser les .export dans les astouts
+FONCTIONNALITE
+   Cette fiche traite du support des .export pour les cas-tests en remplacement des .para.
+   La syntaxe est la suivante (.export standard) :
+   
+   P time_limit 200
+   P memory_limit 512
+   P ncpus 1
+   P testlist rest
+   F comm zzzz241a.comm D 1
+   F comm zzzz241a.com1 D 1
+   F libr zzzz241a.11 D 11
+   
+   
+   Les paramètres autorisés sont:
+   - time_limit, memory_limit, mem_aster
+   - ncpus, mpi_nbcpu, mpi_nbnoeud
+   - testlist (on peut mettre plusieurs noms)
+   
+   Les noms de fichiers doivent être sans répertoire. Uniquement des fichiers en données
+   strictement nécessaires.
+   
+   Pour as_run 1.12.0, l'astout utilise '<test>.export' s'il est présent, sinon il cherche le
+   '<test>.*'.
+   
+   Rem: on a pris memory_limit, time_limit à cause des différences d'unité (min/secondes,
+   ko/Mo) entre memjob/mem_job, tpsjob/tps_job... Il faudrait généraliser l'utilisation de
+   ces 'limits'.
+   
+   Fonctionnement avec --get:
+   'as_run --get --all zzzz241a' prend tous les fichiers zzzz241a.*, y compris le .export
+   
+   Plus intéressant: 'as_run --get_export zzzz241a' fournit un .export complété afin d'être importé 
+   dans astk. C'est ce que fait, Fichier/Importer/cas-test...
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D1.02.05
+VALIDATION
+    astout + unittest as_run
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020299 DU 2013-02-01 09:30:20
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.06, les cas-tests ssnp150b, ssnv219b, c, d, tplp107a et b s’arrêtent en erreur fatale sur Rocks.
+FONCTIONNALITE
+   Problème
+   --------
+   
+   Les tests ssnp150b, ssnv219b, c, d, tplp107a et b s'arrêtent en Floating Point Exception sur 
+   Rocks depuis la 11.3.6.
+   
+   
+   Analyse & Correction
+   --------------------
+   
+   Un test très simple: DEBUT() / import sympy / FIN() met en évidence le problème.
+   
+   C'est un OVERFLOW qui se produit dans sympy.mpmath.math2 (pour le trouver, on vide les __init__ 
+   de chaque package pour détecter l'instruction qui pose problème).
+   On y fait: INF = 1e300*1e300
+   
+   Or dans Code_Aster, on intercepte les divisions par zéro, overflows et invalids.
+   Donc l'import échoue, c'est "normal".
+   
+   L'erreur se produisant dès l'import, on peut contourner le problème.
+   En effet, un import n'est réellement fait qu'une fois. Les fois suivantes, python retourne la 
+   référence du module déjà importé.
+   On va donc importer ce module le plus tôt possible et surtout avant que l'on configure 
+   l'interception des FPE. On le fait dans E_SUPERV.py. On prévoit une liste de modules en 
+   commentant la raison pour laquelle on met en cache l'import.
+   
+   
+   Pourquoi les tests n'ont pas cassés avant la 11.3.6 ? Ils auraient au moins dû planté dès la 
+   11.3.5. Avant 11.3.5, le 'import sympy' avant DEBUT pouvait sauver la mise.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tplp107a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 05/02/2013 - 10:59:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020003 DU 2012-11-27 06:25:53
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR05 Optimisation Memoire dans les macros
+FONCTIONNALITE
+   Cette demande fait suite au constat que dans la macro-commande PERM_MAC3COEUR on a besoin 
+   d'une mémoire importante due aux appels répétés aux commandes CREA_CHAMP, CREA_RESU...
+   
+   Le diagnostic initial n'est pas bon. La macro libère bien les objets JEVEUX associés aux
+   différents
+   concepts. Il est normal que la mémoire consommée 'VmSize' croisse jusqu'à la limite fixée
+   au lancement. Dès que cette limite est atteinte l'appel au mécanisme de libération
+   (JJLDYN) doit permettre d'allouer de nouveaux objets. 
+   Dans cette étude, le problème est ailleurs. Malheureusement je n'ai pas réussi à
+   reproduire le plantage avec
+   le code instrumenté. Par contre j'ai détecté une légère anomalie dans la routine JJALLS
+   (instruction ligne 132 où le cumul des tailles des objets libérés était divisé par LOIS et
+   comparé à une valeur en entiers) qui a fait l'objet d'une correction en 11.2.26. 
+   
+   La fiche est à mettre sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    étude fournie
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 05/02/2013 - 09:30:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020298 DU 2013-02-01 09:27:13
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.03.06, le cas-test sdls504a s’arrête en erreur fatale sur Calibre7.
+FONCTIONNALITE
+   Problème :
+   ========
+   En NEW11.03.06, le cas-test sdls504a s’arrête en erreur fatale sur Calibre7 en manque de
+   mémoire.
+   
+   Correction :
+   ==========
+   On passe la limite mémoire de 256Mo à 512Mo
+   
+   Impact :
+   ======
+   sdls504a.export
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage du test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020232 DU 2013-01-22 15:06:36
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    MN18 - [FORUM] POST_CHAMP ne marche pas après un transitoire dynamique
+FONCTIONNALITE
+   Problème :
+   ========
+   POST_CHAMP n'accepte pas les résultats issus d'un calcul dynamique transitoire sur base
+   physique (dyna_trans).
+   
+   Correction :
+   ==========
+   Il n'y a pas de limitation théorique. On permet dans POST_CHAMP, les mêmes types de SD que
+   pour CALC_CHAMP.
+   
+   On vérifie pour les dyna_trans en ajoutant CALC_CHAMP+POST_CHAMP dans sdlx100a.
+   
+   Impacts :
+   =======
+   CAPY:
+   post_champ.capy
+   
+   TESTS:
+   sdlx100a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage de la liste complete
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019195 DU 2012-07-17 12:01:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MN18 - Amélioration de l'ergonomie de CALC_CHAMP / SIRO_ELEM
+FONCTIONNALITE
+   Demande :
+   =======
+   Cette fiche pointe deux problèmes d'architecture pour le calcul de l'option SIRO_ELEM :
+   - le calcul n'est pas possible lorsqu'une maille surfacique est "coincée" entre deux
+   mailles volumiques ;
+   - il faut faire un calcul préalable de SIGM_ELNO sur tout le modèle (volumique) avant de
+   pouvoir calculer SIRO_ELEM, c'est à l'encontre de l'esprit CALC_CHAMP.
+   
+   Réalisation :
+   ===========
+   Le problème des mailles "coincées" a déjà été dans une autre fiche issue19628 : on choisit
+   celle qui est dans la direction de la normale à la surface pour recopier les valeurs des
+   contraintes sur la face.
+   
+   Pour résoudre le second problème, on modifier le ligrel quand SIRO_ELEM est demandé. A la
+   place de ne prendre que les mailles de peau données par l'utilisateur, on prend les
+   mailles de peau et les mailles sous-jacentes. On rétablit la dépendance dans le catalogue.
+   Ainsi, SIGM_ELNO est calculé sur les mailles volumiques et SIRO_ELEM sur les mailles de
+   peau. L'utilisateur n'est plus obligé de procéder en deux temps et ne devra plus se
+   préoccuper du calcul de SIGM_ELNO.
+   
+   Pour valider le fonctionnement, on modifie deux tests dans lesquels on supprime le calcul
+   de SIGM_ELNO.
+   
+   Par ailleurs TOUT='OUI' n'était pas sympa puisqu'on ne scrutait que MAILLE ou GROUPE_MA.
+   Ainsi la liste des mailles est vide et on se plante car on ne trouve aucune maille de peau.
+   
+   J'ai fait en sorte de lire TOUT, MAILLE ou GROUPE_MA puis de ne garder que les mailles 2D.
+   
+   Ainsi l'option marche à tous les coups.
+   
+   Enfin j'ai vu avec le cas fourni qu'avec mon développement sans reuse, on plantait car
+   on ne trouvait pas SIGM_ELNO. On ne cherchait que sur le RESUIN et pas sur RESUOU. J'ai aussi 
+   corrigé ce problème.
+   
+   Dans le cas où SIGM_ELNO n'a pas été calculé sur les "bonnes" mailles volumiques, on a un
+   plantage peu explicite. J'améliore le message :
+   
+   """
+    Le calcul du champ SIGM_ELNO n'a pas été fait sur la maille volumique %(k1)s qui borde
+    la maille surfacique %(k2)s.
+   
+    Conseils :
+     Il faut faire le calcul du champ SIGM_ELNO sur les éléments volumiques de l'autre "coté"
+     de la face en choisissant le bon groupe de mailles soit en faisant le calcul sur tout
+     le volume.
+     Il est aussi possible de supprimer le calcul préalable de SIGM_ELNO, le calcul sera fait
+     automatiquement sur les bonnes mailles volumiques.
+   """
+   
+   
+   Impacts :
+   =======
+   CATA:
+   siro_elem.cata
+   
+   F:
+   calcop.f  ccchel.f  ccpara.f  ccvepo.f  mearcc.f  medom2.f  srlima.f  srmedo.f
+   
+   PY:
+   calculel5.py
+   
+   TESTS:
+   sslv04a.comm  sslv04b.para  sslv04c.para  sslv04d.para  zzzz325a.comm  zzzz325a.para
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.81.04
+VALIDATION
+    passage de la liste des tests SIRO_ELEM
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 02/04/2013 - 03:36:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020243 DU 2013-01-23 15:53:18
+TYPE anomalie concernant Code_Aster (VERSION 11.3)
+TITRE
+    En NEW11.03.05, le cas-test zzzz331a est NOOK sur Aster4, Rocks et Calibre7.
+FONCTIONNALITE
+   Passage du cas test.
+   
+   Modification des VALE_CALC.
+   
+   Pas de résultats faux.
+   Méthode de vérification avec une surcharge du code, en attendant de pouvoir faire mieux !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage du cas test
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014817 DU 2010-03-18 16:16:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MN09 Amelioration potentielle temps de calcul SNS  - STAT_NON_LINE : Prise en compte de tous les termes "thermique" dans le 2nd membre
+FONCTIONNALITE
+   L'analyse est terminée, document CR-AMA-2012.224.
+   Une synthèse est présentée dans le document joint.
+   
+   Fiche issue20307 pour améliorer la convergence dans certain cas.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+NB_JOURS_TRAV  : 8.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR foucault     FOUCAULT Alexandre     DATE 02/05/2013 - 09:01:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020240 DU 2013-01-23 12:32:58
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Variable non initialisee detectee a l'execution en NEW11.3.5 dans la routine LKIJAC
+FONCTIONNALITE
+   Variable utilise sans initialisation - DPHIDX dans LKIJAC
+   ---------------------------------------------------------
+   Pas de risque de resultats faux puisqu'il s'agit de la routine permettant l'evaluation de
+   la matrice jacobienne. Au pire, elle n'est pas exacte et produit une divergence locale et
+   un echec de la loi de comportement.
+   
+   Action realisee:
+   ----------------
+   La fonction test (IF...) permettant ensuite d'utiliser la variable DPHIDX devient
+   identique à celle ayant permis sa definition.
+   
+   Validation:
+   ----------
+   Le cas-test SSNV206C ne presente plus l'anomalie relevee
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    CAS-TESTS
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroche     DESROCHES Xavier       DATE 02/05/2013 - 08:41:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017449 DU 2011-08-31 12:42:02
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    AR01 Developper les options DEGE_ELGA et DEGE_ELNO pour les COQUES_3D
+FONCTIONNALITE
+   1. Objectif
+   -----------
+   Développer les options DEGE_ELGA et DEGE_ELNO pour les COQUE_3D.
+   
+   2. Analyse
+   ----------
+   Les déformations généralisées Eij, Kij et GAi sont reliées aux déplacements de la façon
+   suivante:
+         E  = [Bm]{Un}  --> déformations de membrane
+         K  = [Bf]{Un}  --> déformations de courbure
+        GA  = [Bc]{Un}  --> déformations de cisaillement
+   ou 
+      - Bm : représente la matrice de passage des déformations membranaires 
+             au champ de déplacement
+      - Bf : représente la matrice de passage des déformations de courbures 
+             au champ de déplacement
+      - Bc : représente la matrice de passage des déformations de cisaillement 
+             au champ de déplacement
+      - Un : représente le champ de déplacement 
+   
+   3. Développement 
+   ----------------
+   3.1 DEGE_ELGA
+   La routine vdxsig calcule les déformations locales EPij sur les peaux SUP, MOY et INF 
+   pour chacune des couches. Pour ces calculs, vdxsig calcule les matrices Bm(BTDM), Bf
+   (BTDF) et Bc(BTDS). On utilise donc ces matrices pour calculer les déformations 
+   généralisées.
+   
+         E  = [BTDM]{Un}  --> déformations de membrane
+         K  = [BTDF]{Un}  --> déformations de courbure
+        GA  = [BTDS]{Un}  --> déformations de cisaillement
+   
+   On calcule l'option DEGE_ELGA en appelant la routine te0410. Pour cela on crée une
+   nouvelle routine "vdxedg" à partir de la routine vdxsig. Les déformations généralisées
+   sont exprimées dans le repère local utilisateur. Le changement de repère INTRINSEQUE -
+   > UTILISATEUR est effectué dans la routine te0410. 
+   
+   3.2 DEGE_ELNO
+   Le calcul de l'option EFGE_ELNO est effectué en intégrant les contraintes dans 
+   l'épaisseur (routine vdefge) aux points d'intégration. On propose de créer une 
+   nouvelle routine (vddege) basée sur vdefge pour calculer DEGE_ELNO à partir de 
+   DEGE_ELGA. Les déformations généralisées sont exprimées dans le repère local 
+   utilisateur. Le changement de repère INTRINSEQUE -> UTILISATEUR est effectué dans la 
+   routine te0410.
+   
+   4. VALIDATION
+   -------------
+   => Membrane : ssls110 "Stabilité d'une plaque carrée comprimée"
+       - Modélisation A : QUAD9
+       - Modélisation B : TRIA7 
+      On teste les déformations de membrane par rapport a la solution analytique.
+      On en profite pour mettre en cohérence la REFERENCE avec la doc => 
+   REFERENCE='ANALYTIQUE'
+   
+   => Flexion : ssls118" Plaque carrée posée soumise a une pression sinusoïdale". 
+       - Modélisation E : TRIA7
+       - Modélisation F : QUAD9 
+      On teste les déformations de courbure par rapport a la solution analytique.
+   
+   => Cas test ssls200 "Mécanique linéaire modélisation de coque". 
+     Ce cas-test valide les éléments de coques. On le complète par le calcul de DEGE_ELGA 
+   et DEGE_ELNO  sur les COQUE_3D. Comme on ajoute dans les calculs de DEGE_ELGA et 
+   DEGE_ELNO les mailles Q9 et T7, on modifie la valeur de référence du TEST_RESU
+   (...,TYPE_TEST='SOMM_ABS',...).
+   
+   - Liste restreinte + cas-tests utilisant la modélisation COQUE_3D
+   
+   5. DOCUMENTATION
+   ---------------- 
+    Doc U 
+       - Actualisation de la doc u2.02.01
+    Doc V
+      cas-test ssls110 [V3.03.110] ajout :
+       - de la formule analytique des déformations de membranes,
+       - des valeurs de référence pour les modélisations a et b
+      cas-test ssls118 [V3.03.118] ajout :
+       - de la formule analytique donnant l'expression des courbures
+      cas-test ssls200 [V3.03.200] :
+       - Mise à jour des valeurs de référence
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u2.02.01 V3.03.110 V3.03.118 V3.03.200
+VALIDATION
+    ssls110 ssls118 ssls200
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 02/04/2013 - 05:59:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020250 DU 2013-01-24 12:22:30
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR14 : Changer les .para en .export
+FONCTIONNALITE
+   Afin de réduire la taille du futur dépôt des fichiers sources de Code_Aster il a été
+   entrepris un grand nettoyage des fichiers des tests. Un gain significatif est obtenu en
+   mutualisant les gros fichiers de données associées aux maillages (issue20255), mais aussi
+   en supprimant les données inutiles (maillages en doublon dans des formats différents,
+   fichiers de résultats restitués à tort, fichier associés à des unités logiques ne figurant
+   pas de le fichier de commandes). Afin de réaliser ce travail, on modifie l'organisation
+   des tests. On introduit un fichier .export (syntaxe asrun), obligatoire lors de la
+   restitution, permettant de stocker à la fois les paramètres d'exécution et la liste des
+   fichiers de données nécessaires au test, on peut ainsi partager des données communes entre
+   les modélisations et entre tests différents. Le fichier .para devient inutile. La syntaxe
+   du fichier .export est la suivante, par exemple perf009d :
+   
+   P time_limit 1200            -> limite de temps cpu en secondes
+   P memory_limit 2882          -> limite mémoire en Mo de l'exécution
+   P ncpus 1                    -> nombre de CPUs OpenMP   
+   P mpi_nbcpu 1                -> nombre de CPUs MPI
+   P mpi_nbnoeud 1              -> nombre de noeuds MPI
+   P testlist PI                -> affectation du test (liste complete C, restreinte R,
+   performance P, mpi I, debug D) 
+   
+   F comm perf009d.comm D 1     -> F fichier ou R répertoire, type astk associé, nom relatif
+   du fichier, D données ou R résultat, unité logique associée
+   F mmed perf009a.mmed D 20
+   
+   Les scripts de l'AGLA et d'asrun ont été modifiés pour prendre en compte cette nouvelle
+   syntaxe lors du passage des tests et de la restitution (pre_eda, eda, astout) et effectuer
+   un minimum de vérification. 
+   On supprime ainsi 1369 fichiers (environ 961 Mo).
+   Par ailleurs le fichier de maillage au format MED du test adlv301a est reconstruit, il
+   passe de 2.48 Mo à 0.21 Mo.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : D1.02.05
+VALIDATION
+    tests impactés par les renommages et les destructions
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR perony       PERONY Raphael         DATE 04/02/2013 - 15:48:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020143 DU 2013-01-03 16:31:12
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Extension de CALC_MAC3COEUR au cas mono-assemblage
+FONCTIONNALITE
+   -----------------------
+   OBJET :
+   -----------------------
+   L'objet de cette fiche est d'étendre CALC_MAC3COEUR au cas d'un coeur mono-assemblage. Le
+   mot clé TYPE_COEUR doit pouvoir prendre la valeur 'MONO'.
+   L'objectif est de pouvoir simuler le comportement d'un seul assemblage combustible, tout
+   en gardant la même macro-commande.
+   
+   De plus, l'utilisateur doit pouvoir choisir entre :
+      * un effort de maintien fixe imposé sur l'embout supérieur de l'assemblage combustible,
+   pour reproduire fidèlement les essais expérimentaux qui servent notamment à recaler le
+   modèle ;
+      * ou un effort de maintien engendré par le déplacement de la Plaque Supérieur de Coeur
+   (PSC) imposé aux ressorts de maintien, comme c'est le cas pour un coeur réel
+   multi-assemblages (cf. issue19170).
+   
+   
+   -----------------------
+   SOLUTION PROPOSEE :
+   -----------------------
+   Le cas 'MONO' est ajouté aux valeurs possibles du mot clé TYPE_COEUR de CALC_MAC3COEUR.
+   
+   Il faut aussi introduire deux nouveaux mots clés : TYPE_MAINTIEN et FORCE_MAINTIEN.
+   
+   Dans les cas de coeur réel (TYPE_COEUR == 'TEST', '900', '1300', 'N4', 'EPR'), le mot clé
+   TYPE_MAINTIEN est facultatif et n'autorise que la valeur 'DEPL_PSC' décrite
+   ci-dessous'(c'est aussi la valeur par défaut).
+   Ainsi, la syntaxe actuelle des fichiers de commandes utilisateurs n'est pas à modifier.
+   
+   Dans le cas TYPE_COEUR == 'MONO', le mot clé TYPE_MAINTIEN est obligatoire, sans valeur
+   par défaut, et peut prendre les valeurs 'DEPL_PSC' ou 'FORCE' :
+     * Si TYPE_MAINTIEN=='DEPL_PSC', l'effort de maintien est alors engendré par un
+   déplacement imposé dont la valeur est renseigné dans le fichier datg du coeur considéré
+   (comme dans le cas des coeurs réels). Dans ce cas le 2ème mot clé FORCE_MAINTIEN n'est pas
+   attendu.
+     * Si TYPE_MAINTIEN=='FORCE', l'effort de maintien est alors introduit par un effort
+   imposé fixe dont la valeur est donnée par le 2ème mot clé FORCE_MAINTIEN, dont la valeur
+   correspond à l'intensité de la force.
+   
+   
+   -----------------------------
+   IMPACT calc_mac3coeur.capy :
+   -----------------------------
+   On complète le fichier calc_mac3coeur.capy :
+   TYPE_COEUR   =
+   SIMP(statut='o',typ='TXM',into=("MONO","TEST","900","1300","N4","EPR"),position='global' ),
+   
+   
+   On complète aussi le bloc DEFORMATION du fichier calc_mac3coeur.capy par deux blocs
+   conditionnels :
+   
+   DEFORMATION  = FACT(...   
+          
+   # choix du maintien dans le cas mono-assemblage
+   b_maintien_mono = BLOC(condition = "TYPE_COEUR == 'MONO'", TYPE_MAINTIEN =
+   SIMP(statut='o',typ='TXM',into=("FORCE","DEPL_PSC"), ),
+    b_maintien_mono_force = BLOC(condition = "TYPE_MAINTIEN == 'FORCE'",
+    fr="valeur de l'effort de maintien imposée",
+    FORCE_MAINTIEN=SIMP(statut='o',typ='R', max=1),),),
+                   
+   # choix du maintien dans le cas d'un coeur à plusieurs assemblages
+   b_maintien_coeur = BLOC(condition = "TYPE_COEUR != 'MONO'",TYPE_MAINTIEN =
+   SIMP(statut='f',typ='TXM',into=("DEPL_PSC",),defaut="DEPL_PSC" ),),),
+   
+   
+   ------------------------------
+   IMPACT calc_mac3coeur_ops.py :
+   ------------------------------
+   Si TYPE_COEUR=='MONO', on fait appel à deux fonctions différentes selon la valeur de
+   TYPE_MAINTIEN :
+   
+   if _DEFORMATION['TYPE_MAINTIEN'] == 'DEPL_PSC' :
+     _F_EMBO  = _coeur.definition_effor_maintien_deplPSC(_MO_N)   
+   else :      
+     _F_EMBO  = _coeur.definition_effor_maintien(_MO_N,_DEFORMATION['FORCE_MAINTIEN'])
+   
+   
+   De plus, si TYPE_COEUR=='MONO', on ne considère pas de contact entre l'assemblage et les
+   internes de cuve :
+   if (_typ_coeur=="MONO"):
+     _AVEC_CONTACT = 'NON'
+   --> dans ce cas, on donne une valeur très petite à la raideur de contact : 10 N/m.
+   
+   Remarques: un nouveau groupe de mailles 'RES_TOT' est utilisé pour les appels aux
+   différents éléments de contact du modèle. Il correspond à l'union des groupes 'RES_CONT'
+   (contact assemblage-assemblage) et 'RES_EXT'(contact assemblage-cuve). Dans le cas
+   'MONO','RES_CONT' n'existe pas.
+   
+   
+   -----------------------------
+   IMPACT mac3coeur_coeur.py :
+   -----------------------------
+   Définition d'une nouvelle fonction : "definition_effor_maintien_force"
+   
+   Introduction d'un paramètre de subdivision du pas de temps dans la fonction
+   "definition_time", pour bien simuler, dans le cas TYPE_COEUR=='MONO', la charge et la
+   décharge des essais de compression et de flexion.
+   
+   Ajout d'un pas de temps intermédiaire T0b (entre T0 et T1) où seules la pesanteur et la
+   force d'Archimède sont actives.
+   
+   
+   -----------------------------
+   IMPACT autres fichiers :
+   -----------------------------
+   Les fichiers suivants sont impactés dans une moindre mesure pour introduire 'MONO' :
+    * perm_mac3coeur_ops.py --> ajout de 'MONO'
+    * post_mac3coeur.capy --> ajout de 'MONO'
+    * post_mac3coeur_ops.py --> ajout de tests (if) : pas d'affichage des lames d'eau
+   inter-assemblage dans le cas 'MONO'
+   
+   Le fichier suivant est créé :
+    * Coeur_MONO.datg
+   
+   
+   Par ailleurs, un recalage des paramètres materiaux de la liaison grille-crayon a été
+   reconduit. Les fichiers suivants ont été modifiés:
+   AF3G_GC_EB_REF_A.NOMI
+   AF3G_GC_EH_REF_A.NOMI
+   AF3G_GC_ME_REF_A.NOMI
+   AFA_GC_EB_REF_A.NOMI
+   AFA_GC_EH_REF_A.NOMI
+   AFA_GC_ME_REF_A.NOMI
+   
+   
+   
+   -----------------------
+   IMPACT UTILISATEUR :
+   -----------------------
+   Au niveau du fichier de commande, cela donne la syntaxe suivante :
+   
+   RESU_C1 = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO',
+                         TABLE_N     =  tabn,
+                         MAILLAGE_N  =  MA1,
+                         DEFORMATION = _F(UNITE_THYC   = 32,
+                                          NIVE_FLUENCE = 0.,
+                                          TYPE_MAINTIEN = 'FORCE',
+                                          FORCE_MAINTIEN =9000.,
+                                          ),)
+   
+   -----------------------
+   VALIDATION :
+   -----------------------
+   Les cas-tests ssnl132a et ssnl132b sont supprimés. Ils simulaient respectivement les
+   essais expérimentaux de compression et de flexion d'un assemblage combustible, sans
+   utiliser CALC_MAC3COEUR (fichier de commande classique).
+   
+   Ces cas-tests sont remplacés par trois nouveaux cas tests :
+   * mac3c04a : essai de compression en utilisant CALC_MAC3COEUR.
+   * mac3c04b : essai de flexion en utilisant CALC_MAC3COEUR.
+   * mac3c04c : recalage avec MACR_RECAL du comportement de l'assemblage sur les essais de
+   compression et de flexion. Le fichier esclave de MACR_RECAL correspond à un fichier de
+   commande classique, n'utilisant pas CALC_MAC3COEUR.
+   
+   
+   La note associée pour le descriptif des phénomènes physiques est la suivante :
+   H-T64-2012-01646-FR
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.90.11,V1.02.100, V1.02.103, V1.02.104 ,V1.02.105, U4.90.12,V6.02.132
+VALIDATION
+    mac3c01a, mac3c02a, mac3c03a, mac3c04a, mac3c04b, mac3c04c
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 02/04/2013 - 04:54:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 020284 DU 2013-01-29 14:16:39
+TYPE aide utilisation concernant Code_Aster (VERSION 10.5)
+TITRE
+    Définir un chargement fonction de l'espace 3D
+FONCTIONNALITE
+   Problème :
+   ---------
+   Suite à discussion avec le support Aster, j'ai cerné le pb qui consiste essentiellement à être capable 
+   d'interpoler un ensemble de valeurs dans l'espace.
+   Aster est équipé de tel outil pour des fonctions d'une variable ou des nappes mais pas des fonctions de 
+   3 variables.
+   
+   Solution :
+   ---------
+   Le moyen le plus direct consiste à utiliser les Radial Basis Function du module Scipy (technique à 
+   rapprocher de la méthode NUAGE_DEG_1 de la commande PROJ_CHAMP). 
+   Je joins un petit exemple où je tire des points au hasard dans l'espace où j'interpole une fonction 
+   connue. Ensuite, je compare les valeurs interpolées aux valeurs vraies. 
+   On peut noter qu'en cas d'extrapolation, les différences peuvent être importantes.
+   D'où l'intérêt d'échantillonner suffisamment sa fonction.
+   
+   Cette approche me semble être la plus simple car, une fois la formule définie en Python, on peut 
+   l'utiliser dans AFFE_CHAR_MECA_F.
+   
+   Pour bien faire les choses, il faudrait faire produire un maillage et un champ correspondant à 
+   l'échantillonnage puis faire un appel à PROJ_CHAMP/CAS_FIGURE='2.5D' puis transformer ce
+   champ en champ de pression utilisable par AFFE_CHAR_MECA/EVOL_CHAR. C'est donc une approche plus précise 
+   mais plus complexe.
+   
+   
+   PS : On pourrait aussi utiliser la fonctionnalité LinearNDInterpolator 
+   (http://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.LinearNDInterpolator.html#scipy.i
+   nterpolate.LinearNDInterpolator) qui se base sur la construction d'un maillage de Delaunay et une 
+   interpolation linéaire. Par contre, l'extrapolation n'est pas supportée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/aster_exceptions    courtois M.COURTOIS         175      2      2
+ CASTEST AJOUT mac3c04a                       perony R.PERONY           148    148      0
+ CASTEST AJOUT mac3c04b                       perony R.PERONY           157    157      0
+ CASTEST AJOUT mac3c04c                       perony R.PERONY           109    109      0
+ CASTEST MODIF adlv301a                     lefebvre J-P.LEFEBVRE       171     12     15
+ CASTEST MODIF forma30a                     lefebvre J-P.LEFEBVRE       161      4      4
+ CASTEST MODIF forma30b                     lefebvre J-P.LEFEBVRE       370      6      6
+ CASTEST MODIF mac3c01a                       perony R.PERONY           119      6      6
+ CASTEST MODIF mac3c02a                       perony R.PERONY           289     28     42
+ CASTEST MODIF mac3c03a                       perony R.PERONY           244     17     17
+ CASTEST MODIF sdld102a                      alarcon A.ALARCON         1134    119      9
+ CASTEST MODIF sdld103a                      alarcon A.ALARCON         1708    500      8
+ CASTEST MODIF sdld22b                       alarcon A.ALARCON          989    332      3
+ CASTEST MODIF sdld321b                      alarcon A.ALARCON         1007    406      3
+ CASTEST MODIF sdld325a                      alarcon A.ALARCON         1446    540      3
+ CASTEST MODIF sdld325b                      alarcon A.ALARCON         1594    603      3
+ CASTEST MODIF sdls504a                       delmas J.DELMAS           276      3      5
+ CASTEST MODIF sdlx100a                       delmas J.DELMAS           286     11      2
+ CASTEST MODIF sdnd104a                      alarcon A.ALARCON         1006    324     16
+ CASTEST MODIF ssls105b                    lebouvier F.LEBOUVIER        295    195      3
+ CASTEST MODIF ssls110a                    lebouvier F.LEBOUVIER        260     74      6
+ CASTEST MODIF ssls110b                    lebouvier F.LEBOUVIER        263     74      6
+ CASTEST MODIF ssls118e                    lebouvier F.LEBOUVIER       1398     76      2
+ CASTEST MODIF ssls118f                    lebouvier F.LEBOUVIER       1412     69      2
+ CASTEST MODIF ssls200a                    lebouvier F.LEBOUVIER        411      5      5
+ CASTEST MODIF sslv04a                        delmas J.DELMAS          2310     20     32
+ CASTEST MODIF sslv04b                        delmas J.DELMAS          1240      2      2
+ CASTEST MODIF sslv04c                        delmas J.DELMAS           932      2      2
+ CASTEST MODIF ssnp131a                     bargelli R.BARGELLINI       290    144     33
+ CASTEST MODIF ssnp131b                     bargelli R.BARGELLINI       192    111    204
+ CASTEST MODIF ssnp150b                     courtois M.COURTOIS         617      1      3
+ CASTEST MODIF ssnv219b                     courtois M.COURTOIS         628      1      3
+ CASTEST MODIF ssnv219c                     courtois M.COURTOIS         551      1      3
+ CASTEST MODIF zzzz325a                       delmas J.DELMAS           455      2      5
+ CASTEST MODIF zzzz331a                       flejou J-L.FLEJOU         125      4      4
+ CASTEST SUPPR ssnl132a.comm                  perony R.PERONY          1047      0   1047
+ CASTEST SUPPR ssnl132b.comm                  perony R.PERONY          1099      0   1099
+CATALOGU MODIF options/siro_elem              delmas J.DELMAS            32      4      4
+CATALOGU MODIF typelem/gener_mecq32        lebouvier F.LEBOUVIER        313      8      3
+CATALOPY AJOUT commande/calc_gp             bargelli R.BARGELLINI        65     65      0
+CATALOPY MODIF commande/calc_mac3coeur        perony R.PERONY            63     26      5
+CATALOPY MODIF commande/dyna_tran_modal      alarcon A.ALARCON          302      6      3
+CATALOPY MODIF commande/dyna_vibra           alarcon A.ALARCON          475      6      3
+CATALOPY MODIF commande/post_champ            delmas J.DELMAS           137      4      3
+CATALOPY MODIF commande/post_mac3coeur        perony R.PERONY            52      3      3
+    CMAT MODIF AF3G_GC_EB_REF_A.NOMI        R.PERONY 122                  9      9      0
+    CMAT MODIF AF3G_GC_EH_REF_A.NOMI        R.PERONY 122                  9      9      0
+    CMAT MODIF AF3G_GC_ME_REF_A.NOMI        R.PERONY 124                  9      9      0
+    CMAT MODIF AFA_GC_EB_REF_A.NOMI         R.PERONY 122                  9      9      0
+    CMAT MODIF AFA_GC_EH_REF_A.NOMI         R.PERONY 122                  9      9      0
+    CMAT MODIF AFA_GC_ME_REF_A.NOMI         R.PERONY 124                  9      9      0
+    DATG AJOUT Coeur_MONO.datg                perony R.PERONY           107    107      0
+ FORTRAN AJOUT algorith/concrk               alarcon A.ALARCON          168    168      0
+ FORTRAN AJOUT algorith/mdbs32               alarcon A.ALARCON          196    196      0
+ FORTRAN AJOUT algorith/mddp54               alarcon A.ALARCON          222    222      0
+ FORTRAN AJOUT algorith/mdruku               alarcon A.ALARCON          473    473      0
+ FORTRAN AJOUT calculel/srlima                delmas J.DELMAS            94     94      0
+ FORTRAN AJOUT calculel/srmedo                delmas J.DELMAS           135    135      0
+ FORTRAN AJOUT elements/vddege             lebouvier F.LEBOUVIER         93     93      0
+ FORTRAN AJOUT elements/vdxedg             lebouvier F.LEBOUVIER        164    164      0
+ FORTRAN MODIF algorith/limsst               alarcon A.ALARCON           82      5      4
+ FORTRAN MODIF algorith/lkijac              foucault A.FOUCAULT         508      4      4
+ FORTRAN MODIF algorith/mdadap               alarcon A.ALARCON          768      8     10
+ FORTRAN MODIF algorith/mdall2               alarcon A.ALARCON           83      3      3
+ FORTRAN MODIF algorith/mdallo               alarcon A.ALARCON          318     48     26
+ FORTRAN MODIF algorith/mddevo               alarcon A.ALARCON          412      5      5
+ FORTRAN MODIF algorith/mdeul1               alarcon A.ALARCON          611      8     10
+ FORTRAN MODIF algorith/mdfnli               alarcon A.ALARCON          122      4      4
+ FORTRAN MODIF algorith/mditm2               alarcon A.ALARCON          507      4      4
+ FORTRAN MODIF algorith/mdptem               alarcon A.ALARCON          327     36     18
+ FORTRAN MODIF algorith/mdtr74               alarcon A.ALARCON          913     75     56
+ FORTRAN MODIF algorith/mptran               alarcon A.ALARCON          454      5      5
+ FORTRAN MODIF algorith/op0060               alarcon A.ALARCON          542      4      4
+ FORTRAN MODIF algorith/ssdt74               alarcon A.ALARCON          442     52     25
+ FORTRAN MODIF calculel/calcop                delmas J.DELMAS           300     12      5
+ FORTRAN MODIF calculel/ccchel                delmas J.DELMAS           117      4      4
+ FORTRAN MODIF calculel/ccpara                delmas J.DELMAS           154      9      6
+ FORTRAN MODIF calculel/ccvepo                delmas J.DELMAS           118      6     14
+ FORTRAN MODIF calculel/mearcc                delmas J.DELMAS           162     35     52
+ FORTRAN MODIF calculel/medom2                delmas J.DELMAS           131      9     21
+ FORTRAN MODIF elements/te0410             lebouvier F.LEBOUVIER        132     29      1
+ FORTRAN MODIF utilitai/ecresu               alarcon A.ALARCON          397      4      4
+       H MODIF include/aster_exceptions     courtois M.COURTOIS          75      3      3
+  PYTHON AJOUT Macro/calc_gp_ops            bargelli R.BARGELLINI       314    314      0
+  PYTHON MODIF Execution/E_SUPERV           courtois M.COURTOIS         376     17      3
+  PYTHON MODIF Mac3coeur/calc_mac3coeur_ops     perony R.PERONY           414     20     11
+  PYTHON MODIF Mac3coeur/mac3coeur_coeur      perony R.PERONY          1227     51     18
+  PYTHON MODIF Mac3coeur/perm_mac3coeur_ops     perony R.PERONY           191      4      4
+  PYTHON MODIF Mac3coeur/post_mac3coeur_ops     perony R.PERONY           470     42     39
+  PYTHON MODIF Macro/dyna_vibra_ops          alarcon A.ALARCON           92      3      3
+  PYTHON MODIF Messages/algorith3            alarcon A.ALARCON          255      6      2
+  PYTHON MODIF Messages/algorith5            alarcon A.ALARCON          352      9      3
+  PYTHON MODIF Messages/calculel5             delmas J.DELMAS           345     15     10
+  PYTHON MODIF Messages/rupture1            bargelli R.BARGELLINI       364     10      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   14        2445      2445             +2445
+ MODIF :   78       35543      4354     865     +3489
+ SUPPR :    2        2146              2146     -2146
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   94       40134      6799    3011     +3788 
