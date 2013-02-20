@@ -1,0 +1,100 @@
+# le modèle "expérimental"
+
+EP=0.5
+MP=50000.
+
+
+#PRE_GIBI(UNITE_GIBI=23);
+
+PRE_IDEAS(UNITE_IDEAS=21);
+
+MAILEXP2=LIRE_MAILLAGE();
+
+MODEXP=AFFE_MODELE(MAILLAGE=MAILEXP2,
+                  AFFE=(_F(GROUP_MA = 'TOUT_ELT',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DST',),
+                        _F(GROUP_MA = 'MASS',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_T',),
+  
+                          ),);
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES 
+#---------------------------------------------------------------------
+
+CAREXP=AFFE_CARA_ELEM(MODELE=MODEXP,
+                        COQUE=_F(GROUP_MA='SURF',
+                                 EPAIS=EP,),
+                        DISCRET=( _F(  GROUP_MA = 'MASS',
+                                     CARA = 'M_T_D_N',
+                                     VALE = MP,),
+                                  _F(  GROUP_MA = 'MASS',
+                                     CARA = 'K_T_D_N',
+                                     VALE = (0.,0.,0.,),)           
+                        ));
+                         
+
+#
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.3,
+                            RHO=7800.,),);
+#
+
+MATEX=AFFE_MATERIAU(MAILLAGE=MAILEXP2,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=ACIER,),);
+#
+
+
+KELEXP=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MODEXP,
+                     CHAM_MATER=MATEX,
+                     CARA_ELEM=CAREXP,
+                     );
+
+MELEXP=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MODEXP,
+                     CHAM_MATER=MATEX,
+                     CARA_ELEM=CAREXP,
+                     );
+
+
+NUMEXP=NUME_DDL(MATR_RIGI=KELEXP,
+                METHODE='MULT_FRONT',
+                );
+
+KASSEXP=ASSE_MATRICE(MATR_ELEM=KELEXP,
+                  NUME_DDL=NUMEXP,);
+
+MASSEXP=ASSE_MATRICE(MATR_ELEM=MELEXP,
+                  NUME_DDL=NUMEXP,);
+
+
+# creation de la sd_mode_meca avec les modes experimentaux
+
+
+MODMES=LIRE_RESU(TYPE_RESU='MODE_MECA',
+                 FORMAT='IDEAS',
+                 MODELE=MODEXP,
+                 UNITE=21,
+                 NOM_CHAM='DEPL',
+                 MATR_A =KASSEXP,
+                 MATR_B =MASSEXP,
+                 FORMAT_IDEAS=_F(NOM_CHAM='DEPL',
+                                 NUME_DATASET=55,
+                                 RECORD_6=(1,2,3,8,2,6,),
+                                 POSI_ORDRE=(7,4,),
+                                 POSI_NUME_MODE=(7,4),
+                                 POSI_FREQ=(8,1,),
+                                 POSI_MASS_GENE=(8,2),
+                                 POSI_AMOR_GENE=(8,3),
+                                 NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),),
+                 TOUT_ORDRE='OUI',);
+
+
+
+

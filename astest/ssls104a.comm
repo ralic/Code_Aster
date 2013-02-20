@@ -1,0 +1,91 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE COQUE CYLINDRIQUE PINCEE AVEC DIAPHRAGME - DKT -
+# ssls104a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# SSLS104 A                COMMANDES                            4/06/91
+# COQUE CYLINDRIQUE PINCEE AVEC DIAPHRAGME
+# MAILLAGE 1/8 DE CYLINDRE
+# ARC AB NE SE DEFORME PAS ( UX=UY=PHIZ=0)   --    FORCE EN C
+# POINTS: A(300 0 0)   B(0 300 0)   C(0 300 300)   D(300 0 300)
+#                                                              REF:MMN
+# MODELISATION DKT: 209 NOEUDS    364 TRIA3
+# GROUP_NO: A   B   C   D
+#           AB  BC  CD  AD     ADSANSAD  CDSANSCD  BCSANSBC
+#=======================================================================
+#
+
+DEBUT(CODE=_F(NOM='SSLS104A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MATER=DEFI_MATERIAU( ELAS=_F(  E = 3.E6,    NU = 0.3) )
+
+MAILL=LIRE_MAILLAGE(FORMAT='MED',   )
+
+MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
+                          AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
+
+MODEL=AFFE_MODELE(  MAILLAGE=MAILL,    VERIF='MAILLE',
+                        AFFE=_F( TOUT = 'OUI',   MODELISATION = 'DKT',
+                              PHENOMENE = 'MECANIQUE') )
+
+CHARGE=AFFE_CHAR_MECA(  MODELE=MODEL,DDL_IMPO=(
+            _F( GROUP_NO = 'AB',        DX = 0., DY = 0., DRZ = 0.),
+                     _F( GROUP_NO = 'CD',        DZ = 0., DRX = 0., DRY = 0.),
+                     _F( GROUP_NO = 'BCSANSBC',  DX = 0., DRY = 0., DRZ = 0.),
+                     _F( GROUP_NO = 'ADSANSAD',  DY = 0., DRX = 0., DRZ = 0.),
+                     _F( GROUP_NO = 'C',         DX = 0., DRZ = 0.),
+                     _F( GROUP_NO = 'D',         DY = 0., DRZ = 0.)),
+        FORCE_NODALE=_F( GROUP_NO = 'C',         FY = -0.25) )
+
+CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
+                               COQUE=_F(
+       GROUP_MA = 'TOUT',
+  EPAIS = 3.) )
+
+MATELEM=CALC_MATR_ELEM(   MODELE=MODEL,        CHARGE=CHARGE,
+                               CARA_ELEM=CARELEM,
+                               CHAM_MATER=CHMAT,
+                               OPTION='RIGI_MECA' )
+
+VEL=CALC_VECT_ELEM(   CHARGE=CHARGE,    OPTION='CHAR_MECA' )
+
+NU=NUME_DDL(   MATR_RIGI=MATELEM )
+
+MATASS=ASSE_MATRICE(   MATR_ELEM=MATELEM,   NUME_DDL=NU )
+
+DEPLA=ASSE_VECTEUR(   VECT_ELEM=VEL,       NUME_DDL=NU )
+
+MATASS=FACTORISER( reuse=MATASS,  MATR_ASSE=MATASS )
+
+DEPLA=RESOUDRE(reuse=DEPLA,  MATR=MATASS,        CHAM_NO=DEPLA  )
+
+TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
+                     REFERENCE='SOURCE_EXTERNE',
+                     NOM_CMP='DY',
+                     GROUP_NO='C',
+                     PRECISION=0.029999999999999999,
+                     CHAM_GD=DEPLA,
+                     VALE_CALC=-1.87762717E-05,
+                     VALE_REFE=-1.8247999999999999E-05,),
+          )
+
+FIN()
+#

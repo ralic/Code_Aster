@@ -1,0 +1,225 @@
+# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# TITRE ROTATION D'UNE INCLUSION RIGIDE AVEC X-FEM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ssnv507h.para = tps_job 800 mem_job 1536Mo liste_test S
+
+
+
+
+
+# GRANDES ROTATIONS AVEC XFEM
+# QUADRANGLES, CONTACT P2P1
+#
+
+DEBUT(CODE=_F(NOM='SSNV507H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+
+MAILLAG=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+
+R  = 8.;
+R1 = 1.;
+R2 = 20.;
+
+MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG,COPIE=_F(),
+#                        LINE_QUAD=_F(GROUP_MA='SURF'),
+                       );
+
+
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                    MAILLAGE=MAILLAG2,
+                    CREA_GROUP_NO=(_F(NOM='INTER',
+                                      OPTION ='ENV_SPHERE',
+                                      POINT  = (0.0,0.0),
+                                      RAYON = R1,
+                                      PRECISION = 2.0)));
+
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+                     AFFE=(_F(GROUP_MA=('SURF'),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN'),
+                           _F(GROUP_MA=('LB','LH','LG','LD'),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN')));    
+
+LN=FORMULE(NOM_PARA=('X','Y'),VALE='-X*X-Y*Y+R*R');
+
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN),
+                    INFO=1);
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         CONTACT='P2P1',
+                         INFO=1);
+
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      REAC_GEOM      = 'AUTOMATIQUE',
+                      ITER_CONT_MAXI = 15,
+                      ITER_GEOM_MAXI = 20,
+                      ZONE = (_F(
+                                 INTEGRATION   = 'GAUSS',
+                                 ORDRE_INT=3,
+                                 TOLE_PROJ_EXT = 0.0,   
+                                 CONTACT_INIT  = 'OUI',
+                                 GLISSIERE     = 'OUI',
+                                 FISS_MAIT     = FISS,
+                               ALGO_CONT    = 'STANDARD',
+                               COEF_CONT    = 100.,
+                               ALGO_LAGR    = 'VERSION2',
+                              ),
+                            )
+                    );     
+
+
+E=100.0E6
+nu=0.
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=7800.0));
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+                       MODELE=MODELEK,
+                       AFFE=_F(TOUT=('OUI'),
+                                MATER=ACIER,
+                                ));
+
+DTH=-pi/2.
+
+VAR1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,1.,1.,1.));
+
+p=1.E6
+a=-(p/E)*( (R2*R2)/(R1*R1+R2*R2) )
+b=-a*R1*R1
+ux= FORMULE(NOM_PARA=('X','Y'),
+    VALE='(a*sqrt(X*X+Y*Y)+b/sqrt(X*X+Y*Y))*cos(atan2(Y,X))');
+
+uy=FORMULE(NOM_PARA=('X','Y'),
+   VALE='(a*sqrt(X*X+Y*Y)+b/sqrt(X*X+Y*Y))*sin(atan2(Y,X))');
+
+CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                    DDL_IMPO=(_F(GROUP_MA=('LB','LG','LH','LD'),
+                                 DX=ux,DY=uy)));
+
+tournex = FORMULE(NOM_PARA=('X','Y','INST'),
+          VALE='sqrt(X*X+Y*Y)*cos(atan2(Y,X)+DTH*INST)-X');
+
+tourney = FORMULE(NOM_PARA=('X','Y','INST'),
+          VALE='sqrt(X*X+Y*Y)*sin(atan2(Y,X)+DTH*INST)-Y');
+
+ROT=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                    DDL_IMPO=(_F(GROUP_NO='INTER',
+                                 DX=tournex,DY=tourney)));
+
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',
+                      CONTACT_XFEM=CTXFEM);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1,
+                                    NOMBRE=4));
+
+UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CH1,FONC_MULT=VAR1),
+                          _F(CHARGE=ROT)),
+                   CONTACT  = CTXFEM, 
+                   COMP_INCR=(_F(RELATION='ELAS',
+                                 DEFORMATION='GROT_GDEP')),
+                   NEWTON=_F(REAC_INCR=1,REAC_ITER=1),
+                   INCREMENT=_F(LIST_INST=L_INST),
+                   CONVERGENCE=(_F(ITER_GLOB_MAXI=30,
+                                  RESI_GLOB_RELA=1E-6)),
+                   SOLVEUR=_F(METHODE='MUMPS',
+   NPREC=-1),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
+                   INFO=1);
+
+#-----------------------------------------------------------
+#             POST-TRAITEMENT POUR LA VISUALISATION
+#-----------------------------------------------------------
+
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
+                       INFO          = 2)
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                     PHENOMENE='MECANIQUE',
+                     MODELISATION='D_PLAN',
+                ))
+
+RES_XFEM=POST_CHAM_XFEM( MODELE_VISU  = MOD_VISU,
+                         RESULTAT        = UTOT1);
+
+#----------------------------------------------
+#                   POST RELEVE
+#----------------------------------------------
+
+LAG=[None]*5
+inst=[0.0,0.25,0.5,0.75,1.0]
+valref=[-1.0602901679254E+06,-1.0959568989366E+06,-1.0591207483958E+06,
+-1.085354679982E+06,-1.0602899111508E+06,-1.0959570752656E+06,
+-1.0749924753401E+06,-1.0789908186502E+06]
+a=-9.7799511e-3
+b=0.0880195599
+LAGS_A = E*a-(E*b)/(8*8)
+
+for i in [1,2,3,4]: #Boucle sur les increments
+  LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                 GROUP_NO=('NFISSU'),
+                                 RESULTAT=RES_XFEM,
+                                 NOM_CHAM='DEPL',
+                                 INST=inst[i],
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION'));
+
+  LAG[i] = CALC_TABLE(TABLE = LAG[i],
+                  reuse = LAG[i],
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]'),
+                            _F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'LAGS_C',
+                               CRIT_COMP = 'NE',
+                               VALE      = 0)));
+
+  IMPR_TABLE(TABLE=LAG[i]);
+
+  TEST_TABLE(CRITERE='RELATIF',
+             REFERENCE='ANALYTIQUE',
+             PRECISION=0.055, 
+             VALE_CALC=valref[2*(i-1)],
+             VALE_REFE=LAGS_A,
+             NOM_PARA='LAGS_C',
+             TYPE_TEST='MAX',
+             TABLE=LAG[i],)
+
+  TEST_TABLE(CRITERE='RELATIF',
+             REFERENCE='ANALYTIQUE',
+             PRECISION=0.055, 
+             VALE_CALC=valref[2*(i-1)+1],
+             VALE_REFE=LAGS_A,
+             NOM_PARA='LAGS_C',
+             TYPE_TEST='MIN',
+             TABLE=LAG[i],)
+
+FIN();
