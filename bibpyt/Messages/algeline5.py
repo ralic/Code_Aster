@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 14/01/2013   AUTEUR BRIE N.BRIE 
+#@ MODIF algeline5 Messages  DATE 11/02/2013   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -382,11 +382,12 @@ cata_msg={
 """),
 
 74: _(u"""
-    Lors d'un calcul modal utilisant le solveur linéaire MUMPS (METHODE='MUMPS' sous le mot-clé facteur SOLVEUR),
-    il ne faut pas débrancher la détection de singularité.
+    Vous utilisez une fonctionnalité qui nécessite de connaître le degré de singularité de matrices associées à
+    des systèmes linéaires. Or, vous avez désactivé la détection de singularité avec le mot-clé NPREC.
 
-    Conseil :
-    Relancer le calcul avec NPREC > 0 (par exemple 8) sous le mot-clé facteur SOLVEUR.
+    Conseils :
+      - Relancez le calcul avec NPREC > 0 (par exemple 8) sous le mot-clé facteur SOLVEUR.
+      - S'il vous est indispensable de désactiver la détection de singularité, essayez d'utiliser un autre solveur linéaire, comme MULT_FRONT par exemple.
 """),
 
 75: _(u"""
@@ -456,7 +457,7 @@ Vous pouvez améliorer cette norme :
       En diminuant la valeur %(k1)s de l'option 'CENTRE'
       et en augmentant le nombre de valeurs propres retenues (NMAX_%(k1)s),
       on peut souvent capter tous les couples (lambda,conjugué(lambda)) souhaités.
-   
+
     Sinon utiliser METHODE='QZ' pour les problèmes de petites tailles (<500 ddls).
 """),
 

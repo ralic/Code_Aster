@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 11/02/2013   AUTEUR DESOZA T.DESOZA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,10 +26,17 @@ ENTETE__ ELEMENT__ MECA_ARETE3      MAILLE__ SEG3
 
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
+    EDEPLPG  = DEPL_R   ELGA__ RIGI    (DX       DY       DZ       )
     MFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     MFORCE   = FORC_R   ELEM__         (FX       FY       FZ       )
-    MGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
+    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     MTEMPSR  = INST_R   ELEM__         (INST     )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
+    ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
+    ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -37,8 +44,14 @@ VECTEUR__
 MATRICE__
 
 OPTION__
-    CHAR_MECA_FF1D3D    469   IN__   MFORCEF  PFF1D3D  MGEOMER  PGEOMER  MTEMPSR  PTEMPSR
+    CHAR_MECA_FF1D3D    469   IN__   MFORCEF  PFF1D3D  NGEOMER  PGEOMER  MTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FR1D3D    469   IN__   MFORCE   PFR1D3D  MGEOMER  PGEOMER 
+    CHAR_MECA_FR1D3D    469   IN__   MFORCE   PFR1D3D  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
-
+    COOR_ELGA           478   IN__   NGEOMER  PGEOMER
+                              OUT__  EGGEOP_R PCOORPG
+    TOU_INI_ELGA        99    IN__
+                              OUT__  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R
+                                     EDEPLPG  PDEPL_R
+    TOU_INI_ELNO        99    IN__
+                              OUT__  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R

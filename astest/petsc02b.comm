@@ -1,4 +1,4 @@
-# MODIF  DATE 21/01/2013   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 11/02/2013   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE LA DISTRIBUTION DE LA MATRICE AVEC PETSC
 # petsc02b.para = tps_job 60 mem_job 512Mo mpi_nbcpu 4 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,33 +68,36 @@ INT_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
                    RESULTAT=MESTAT1,
                    );
 
-## INT_DEPX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_x',
-                                #~ NOM_CMP='DX',
-                                #~ NOM_CHAM='DEPL',),
-                   #~ CHAM_MATER=AFMAT,
-                   #~ RESULTAT=MESTAT1,);
-##
-## INT_DEPY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_y',
-                                #~ NOM_CMP='DY',
-                                #~ NOM_CHAM='DEPL',),
-                   #~ CHAM_MATER=AFMAT,
-                   #~ RESULTAT=MESTAT1,);
+INT_DEPX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
+                                NOM_CMP='DX',
+                                NOM_CHAM='DEPL',),
+                   CHAM_MATER=AFMAT,
+                   RESULTAT=MESTAT1,);
+
+INT_DEPY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
+                                NOM_CMP='DY',
+                                NOM_CHAM='DEPL',),
+                   CHAM_MATER=AFMAT,
+                   RESULTAT=MESTAT1,);
 
 IMPR_TABLE(TABLE=INT_DZ)
-## IMPR_TABLE(TABLE=INT_DEPX)
-## IMPR_TABLE(TABLE=INT_DEPY)
+IMPR_TABLE(TABLE=INT_DEPX)
+IMPR_TABLE(TABLE=INT_DEPY)
 
 TEST_TABLE(TABLE=INT_DZ,
            NOM_PARA='MOYE_DZ',
            VALE_CALC=0.46508731345542,
            )
 
-TEST_RESU(RESU=_F(RESULTAT=MESTAT1,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  NOEUD='N9',
-                  VALE_CALC=0.16778518685930,),);
+TEST_TABLE(TABLE=INT_DEPX,
+           NOM_PARA='MOYE_DX',
+           VALE_CALC=0.162925870541,
+           )
+
+TEST_TABLE(TABLE=INT_DEPY,
+           NOM_PARA='MOYE_DY',
+           VALE_CALC=0.162925870541,
+           )
 
 # DISTRIBUTION PAR MAILLE
 

@@ -1,7 +1,7 @@
-#& MODIF COMMUN  DATE 18/12/2012   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMUN  DATE 11/02/2013   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -321,7 +321,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocPE['ALGORITHME'] = SIMP(statut='f', typ='TXM', defaut="GMRES", into=("CG", "CR", "GMRES", "GCR", ), )
+   _BlocPE['ALGORITHME'] = SIMP(statut='f', typ='TXM', defaut="GCR", into=("CG", "CR", "GMRES", "GCR", ), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 

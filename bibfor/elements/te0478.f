@@ -1,6 +1,6 @@
       SUBROUTINE TE0478 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2013   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/02/2013   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,105 +22,96 @@ C ======================================================================
 
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
+C
 C     CALCUL DES COORDONNEES DES POINTS DE GAUSS + POIDS
-C     POUR LES ELEMENTS : BARRE, CABLE, DISCRET, POUTRE
+C     POUR LES ELEMENTS 0D ET 1D (POI ET SEG)
 C
+C     TRAITEMENT SPECIFIQUE POUR LES ELEMENTS A SOUS POINTS
+C     (PMF, TUYAU, COQUE(2D))
 C
-C
-C
+C ----------------------------------------------------------------------
       INTEGER  NDIM,NNO,NNOS,NPG,JGANO,ICOPG,IDFDE,IPOIDS,IVF,IGEOM
       INTEGER  TAB(2),IRET,NDIM1,IGEPO
       INTEGER  INBF,NBFIB,JACF,IORIEN,NBSP,NBCOU,NBSEC
       INTEGER  NCARFI,ISEC,ICOU,ISP,ICOQ
-C      INTEGER  IADZI,IAZK24,NUMAIL,IPEL,IPGA
-      INTEGER  IG,IFI,DECGA,LX,K
-      REAL*8   XL2,COPG(4,4),COPG2(3,4),PGL(3,3),GM1(3),GM2(3)
-      REAL*8   EPCOU,PI,ALPHA,RAYON,EP,Y,Z,HH
+      INTEGER  IG,IFI,K,I
+      REAL*8   COPG(4,4),COPG2(3,4),PGL(3,3),GM1(3),GM2(3),AIREFB
+      REAL*8   EPCOU,R8PI,ALPHA,RAYON,EP,Y,Z,HH,R
       REAL*8   DFDX(3),COUR,JACP,COSA,SINA,SPOID
-      PARAMETER    (PI=3.141592653589793238462643D0)
 C ----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM1,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      CALL ASSERT(NPG.LE.4)
 
 C     NDIM1 EST LA DIMENSION TOPOLOGIQUE. IL FAUT CALCULER LA
 C     DIMENSION DE L'ESPACE NDIM (2 OU 3) :
       CALL TECACH('OOO','PGEOMER','L',2,TAB,IRET)
       NDIM  = TAB(2)/NNO
       IGEOM = TAB(1)
+
 C     ZR(ICOPG) : COORDONNEES POINTS DE GAUSS + POIDS
       CALL JEVECH('PCOORPG','E',ICOPG )
-
-C ELEMENTS A SOUS POINTS : POUTRES MULTIFIBRES
+C
+C == POUTRES MULTIFIBRES ==
+C
       IF(NOMTE.EQ.'MECA_POU_D_EM'.OR.NOMTE.EQ.'MECA_POU_D_TGM') THEN
         CALL JEVECH('PNBSP_I','L',INBF)
         NBFIB = ZI(INBF)
         CALL JEVECH('PFIBRES','L',JACF)
         NCARFI = 3
         CALL JEVECH('PCAORIE','L',IORIEN)
-
-C POSITION DES POINTS DE GAUSS SUR L'AXE
-        CALL PPGA12(NDIM,NNO,NPG,ZR(IPOIDS),ZR(IVF),
-     &              ZR(IGEOM),COPG)
-
-C POIDS * JACOBIEN (JACOBIEN=L/2)
-        LX=IGEOM-1
-        XL2 = SQRT( (ZR(LX+4)-ZR(LX+1))**2
-     &  + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )/2.D0
-
         CALL MATROT(ZR(IORIEN),PGL)
 
-        IF(NOMTE.EQ.'MECA_POU_D_EM')THEN
-          DECGA=NBFIB*4
-        ELSE
-          DECGA=NBFIB*4
-        ENDIF
+C       POSITION ET POIDS DES POINTS DE GAUSS
+        CALL PPGA1D(NDIM,NNO,NPG,ZR(IPOIDS),ZR(IVF),ZR(IDFDE),ZR(IGEOM),
+     &              COPG)
+
         GM1(1)=0.D0
-C boucle sur les fibres (4 valeurs par fibre, X,Y,Z,W)
+C       BOUCLE SUR LES FIBRES (4 VALEURS PAR FIBRE, X,Y,Z,W)
         DO 100 IFI=1,NBFIB
           GM1(2)=ZR(JACF+(IFI-1)*NCARFI)
           GM1(3)=ZR(JACF+(IFI-1)*NCARFI+1)
           CALL UTPVLG(1,3,PGL,GM1,GM2)
+          AIREFB=ZR(JACF+(IFI-1)*NCARFI+2)
+
           DO 110 IG=1,NPG
-            ZR(ICOPG+(IG-1)*DECGA+(IFI-1)*4+0)=COPG(1,IG)+GM2(1)
-            ZR(ICOPG+(IG-1)*DECGA+(IFI-1)*4+1)=COPG(2,IG)+GM2(2)
-            ZR(ICOPG+(IG-1)*DECGA+(IFI-1)*4+2)=COPG(3,IG)+GM2(3)
-C pour le poids, on multiplie par l'aire des fibres
-            ZR(ICOPG+(IG-1)*DECGA+(IFI-1)*4+3)=
-     &               ZR(IPOIDS+IG-1)*XL2*ZR(JACF+(IFI-1)*NCARFI+2)
+            ZR(ICOPG-1+4*NBFIB*(IG-1)+4*(IFI-1)+1)=COPG(1,IG)+GM2(1)
+            ZR(ICOPG-1+4*NBFIB*(IG-1)+4*(IFI-1)+2)=COPG(2,IG)+GM2(2)
+            ZR(ICOPG-1+4*NBFIB*(IG-1)+4*(IFI-1)+3)=COPG(3,IG)+GM2(3)
+C           POUR LE POIDS, ON MULTIPLIE PAR L'AIRE DES FIBRES
+            ZR(ICOPG-1+4*NBFIB*(IG-1)+4*(IFI-1)+4)=COPG(4,IG)*AIREFB
  110      CONTINUE
  100    CONTINUE
-
+C
+C == TUYAUX ==
+C
       ELSEIF((NOMTE(1:8).EQ.'MET3SEG3').OR. (NOMTE(1:8).EQ.'MET3SEG4')
-     &                            .OR.(NOMTE(1:8).EQ.'MET6SEG3')) THEN
-        CALL JEVECH('PNBSP_I','L',INBF)
-        CALL JEVECH('PCAGEPO','L',IGEPO)
+     &   .OR.(NOMTE(1:8).EQ.'MET6SEG3')) THEN
 C       NOMBRE DE COUCHES ET NOMBRE DE SECTIONS
-        NBCOU = ZI(INBF)
+        CALL JEVECH('PNBSP_I','L',INBF)
+        NBCOU =   ZI(INBF  )
         NBSEC = 2*ZI(INBF+1)+1
 C       NOMBRE DE SOUS POINTS PAR POINT DE GAUSS
         NBSP= NBSEC*(2*NBCOU+1)
 C       RAYON ET EPAISSEUR DU TUYAUX
-        RAYON=ZR(IGEPO)
-        EP=ZR(IGEPO+1)
-        EPCOU=EP/NBCOU
+        CALL JEVECH('PCAGEPO','L',IGEPO)
+        RAYON = ZR(IGEPO)
+        EP    = ZR(IGEPO+1)
+        EPCOU = EP/NBCOU
         CALL JEVECH('PCAORIE','L',IORIEN)
-C       POSITION DES POINTS DE GAUSS SUR L'AXE
-        CALL PPGA12(NDIM,NNO,NPG,ZR(IPOIDS),ZR(IVF),
-     &              ZR(IGEOM),COPG)
+
+C       POSITION ET POIDS DES POINTS DE GAUSS
+        CALL PPGA1D(NDIM,NNO,NPG,ZR(IPOIDS),ZR(IVF),ZR(IDFDE),ZR(IGEOM),
+     &              COPG)
 
         GM1(1)=0.D0
         DO 20 IG=1,NPG
-C         CALCUL DE LA MATRICE DE PASSAGE DE LA BASE GLOBALE DANS LA
-C         LOCAL
           CALL MATROT(ZR(IORIEN+3*(IG-1)),PGL)
-
-
-
 C         CALCUL DES COORDONNEES ET STOCKAGE
-C         LES SOUS POINTS SONT STOCKES NIVEAU PAR NIVEAU ( IL Y A
-C         PLUSIEURS NIVEAUX PAR COUCHE)
+C         LES SOUS POINTS SONT STOCKES NIVEAU PAR NIVEAU
+C         (IL Y A PLUSIEURS NIVEAUX PAR COUCHE)
 C         EN COMMENCANT PAR LA SECTION Z LOCAL = 0 ET Y >0
           DO 30 ISEC=0,NBSEC-1
-            ALPHA=2*PI/(NBSEC-1)
+            ALPHA=2.D0*R8PI()/(NBSEC-1)
             Y=COS(-ISEC*ALPHA)
             Z=SIN(-ISEC*ALPHA)
             DO 40 ICOU=1,2*NBCOU+1
@@ -135,55 +126,67 @@ C         EN COMMENCANT PAR LA SECTION Z LOCAL = 0 ET Y >0
                ZR(ICOPG+4*(IG-1)*NBSP+4*(ICOU-1)*NBSEC+ISEC*4+2)=
      &                                              COPG(3,IG)+GM2(3)
 C              ON LAISSE LE POIDS A 0
-               ZR(ICOPG+4*(IG-1)*NBSP+4*(ICOU-1)*NBSEC+ISEC*4+3)=0
+               ZR(ICOPG+4*(IG-1)*NBSP+4*(ICOU-1)*NBSEC+ISEC*4+3)=0.D0
 
   40        CONTINUE
   30      CONTINUE
   20    CONTINUE
-
+C
+C == COQUE(2D) ==
+C
        ELSEIF((NOMTE(1:7).EQ.'METCSE3').OR. (NOMTE(1:7).EQ.'MECXSE3')
-     &                            .OR.(NOMTE(1:7).EQ.'METDSE3')) THEN
-
-        CALL JEVECH ('PCACOQU' , 'L' , ICOQ)
+     &    .OR.(NOMTE(1:7).EQ.'METDSE3')) THEN
+C
+        CALL ASSERT(NDIM.EQ.2)
+C
         CALL JEVECH('PNBSP_I','L',INBF)
         NBCOU=ZI(INBF)
+        CALL JEVECH ('PCACOQU' , 'L' , ICOQ)
         EP=ZR(ICOQ)
         EPCOU=EP/NBCOU
-        CALL PPGA12(NDIM,NNO,NPG,ZR(IPOIDS),ZR(IVF),
-     &              ZR(IGEOM),COPG2)
-      DO 50 IG=1,NPG
+
+        CALL PPGA1D(NDIM,NNO,NPG,ZR(IPOIDS),ZR(IVF),ZR(IDFDE),ZR(IGEOM),
+     &              COPG2)
+
+        DO 50 IG=1,NPG
 C       CALCUL DU VECTEUR NORMAL UNITAIRE AU POINT DE GAUSS
-        K = (IG-1)*NNO
-        CALL DFDM1D(NNO,ZR(IPOIDS+IG-1),ZR(IDFDE+K),ZR(IGEOM),DFDX,COUR,
-     &              JACP,COSA,SINA)
-        GM2(1)=COSA
-        GM2(2)=SINA
+          K = (IG-1)*NNO
+          CALL DFDM1D(NNO,ZR(IPOIDS+IG-1),ZR(IDFDE+K),ZR(IGEOM),DFDX,
+     &                COUR,JACP,COSA,SINA)
+          IF (NOMTE.EQ.'MECXSE3') THEN
+            R = 0.D0
+            DO 10 I = 1,NNO
+              R = R + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)
+   10       CONTINUE
+            JACP = JACP*R
+          END IF
+          GM2(1)=COSA
+          GM2(2)=SINA
 
-        DO 60 ICOU=1,NBCOU
-
+          DO 60 ICOU=1,NBCOU
             DO 70 ISP=1,3
-                HH=-EP/2+(ICOU-1+0.5D0*(ISP-1))*EPCOU
-                ZR(ICOPG+(IG-1)*9*NBCOU+(ICOU-1)*9+(ISP-1)*3+0)=
-     &                                        COPG2(1,IG)+HH*GM2(1)
-                ZR(ICOPG+(IG-1)*9*NBCOU+(ICOU-1)*9+(ISP-1)*3+1)=
-     &                                        COPG2(2,IG)+HH*GM2(2)
-                IF (ISP.EQ.2) THEN
-                    SPOID=2.0D0/3
-                ELSE
-                    SPOID=1.0D0/6
-                ENDIF
-                ZR(ICOPG+(IG-1)*9*NBCOU+(ICOU-1)*9+(ISP-1)*3+2)=
-     &                              1.0D0/NBCOU*ZR(IPOIDS+IG-1)*SPOID
+              HH=-EP/2+(ICOU-1+0.5D0*(ISP-1))*EPCOU
+              ZR(ICOPG+(IG-1)*9*NBCOU+(ICOU-1)*9+(ISP-1)*3+0)=
+     &                                             COPG2(1,IG)+HH*GM2(1)
+              ZR(ICOPG+(IG-1)*9*NBCOU+(ICOU-1)*9+(ISP-1)*3+1)=
+     &                                             COPG2(2,IG)+HH*GM2(2)
+              IF (ISP.EQ.2) THEN
+                 SPOID=2.0D0/3
+              ELSE
+                 SPOID=1.0D0/6
+              ENDIF
+C             POUR LE POIDS, ON MULTIPLIE PAR L'EPAISSEUR PAR COUCHE
+              ZR(ICOPG+(IG-1)*9*NBCOU+(ICOU-1)*9+(ISP-1)*3+2)=
+     &                                                  JACP*SPOID*EPCOU
   70        CONTINUE
   60    CONTINUE
-
   50  CONTINUE
-
+C
+C ==  AUTRES ELEMENTS
+C
       ELSE
-C AUTRES ELEMENTS
-         CALL PPGA12(NDIM,NNO,NPG,ZR(IPOIDS),ZR(IVF),
-     &               ZR(IGEOM),ZR(ICOPG))
+        CALL PPGA1D(NDIM,NNO,NPG,ZR(IPOIDS),ZR(IVF),ZR(IDFDE),ZR(IGEOM),
+     &              ZR(ICOPG))
       ENDIF
-
 
       END

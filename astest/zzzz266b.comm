@@ -1,51 +1,63 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 11/02/2013   AUTEUR DESOZA T.DESOZA 
 # TITRE  COOR_ELGA POUR MAILLES 2D et LEUR PEAUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # zzzz266b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 
 DEBUT(CODE=_F(NOM='zzzz266b', NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('CALCULEL2_63'))
+      IGNORE_ALARM=('CALCULEL2_63','CALCULEL2_64',),)
 
-mail2d=LIRE_MAILLAGE()
+mail=LIRE_MAILLAGE()
 
-modeldp=AFFE_MODELE(MAILLAGE=mail2d, 
+modeldp=AFFE_MODELE(MAILLAGE=mail,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',MODELISATION='D_PLAN',), )
 
-modelcp=AFFE_MODELE(MAILLAGE=mail2d, 
+modelcp=AFFE_MODELE(MAILLAGE=mail,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',MODELISATION='C_PLAN',), )
 
+model3d=AFFE_MODELE(MAILLAGE=mail,
+                    AFFE=_F(MAILLE=('M5','M6',),
+                            PHENOMENE='MECANIQUE',MODELISATION='3D',), )
+
 bidon=DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2,),)
 
-mater=AFFE_MATERIAU(MAILLAGE=mail2d, AFFE=_F(TOUT='OUI', MATER=bidon,), )
+mater=AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(TOUT='OUI', MATER=bidon,), )
 
 
 coordp=CALC_CHAM_ELEM(MODELE=modeldp, OPTION='COOR_ELGA',)
 coorcp=CALC_CHAM_ELEM(MODELE=modelcp, OPTION='COOR_ELGA',)
+# Pour le 3D, on tourne le maillage de maniere a en faire un vrai maillage 3D
+mail=MODI_MAILLAGE(reuse=mail,
+                   MAILLAGE=mail,
+                   ROTATION=_F(POIN_1=(0,0,0,),
+                               DIR=(0,1,0,),
+                               ANGL=30,),);
+coor3d=CALC_CHAM_ELEM(MODELE=model3d, OPTION='COOR_ELGA',)
 
 IMPR_RESU(RESU=_F(CHAM_GD=coordp,),)
 IMPR_RESU(RESU=_F(CHAM_GD=coorcp,),)
+IMPR_RESU(RESU=_F(CHAM_GD=coor3d,),)
 
 # =============================================================================================
-#  On peut verifier que l'on obtient bien la bonne longueur de la maille M5 
+#  On peut verifier que l'on obtient bien la bonne longueur de la maille M5
 #  qui est une branche de parabole a l'aide du module de calcul symbolique
 #  Sympy de Python.
 #  Determination des parametres de la parabole :
@@ -60,37 +72,51 @@ IMPR_RESU(RESU=_F(CHAM_GD=coorcp,),)
 
 
 PourTest = [
-['M1',   1,  0.00000E+00,  6.69991E-01,  3.26073E-01], 
-['M1',   2,  0.00000E+00,  3.30009E-01,  3.26073E-01], 
-['M1',   3,  0.00000E+00,  9.30568E-01,  1.73927E-01], 
-['M1',   4,  0.00000E+00,  6.94318E-02,  1.73927E-01], 
-['M2',   1,  6.69991E-01,  1.00000E+00,  3.26073E-01], 
-['M2',   2,  3.30009E-01,  1.00000E+00,  3.26073E-01], 
-['M2',   3,  9.30568E-01,  1.00000E+00,  1.73927E-01], 
-['M2',   4,  6.94318E-02,  1.00000E+00,  1.73927E-01], 
-['M3',   1,  1.00000E+00,  3.30009E-01,  3.26073E-01], 
-['M3',   2,  1.00000E+00,  6.69991E-01,  3.26073E-01], 
-['M3',   3,  1.00000E+00,  6.94318E-02,  1.73927E-01], 
-['M3',   4,  1.00000E+00,  9.30568E-01,  1.73927E-01], 
-['M4',   1,  3.30009E-01,  0.00000E+00,  3.26073E-01], 
-['M4',   2,  6.69991E-01,  0.00000E+00,  3.26073E-01], 
-['M4',   3,  6.94318E-02,  0.00000E+00,  1.73927E-01], 
-['M4',   4,  9.30568E-01,  0.00000E+00,  1.73927E-01], 
-['M5',   1,  1.60019E-01, -5.77936E-03,  6.52522E-01], 
-['M5',   2,  8.39981E-01, -5.77936E-03,  6.52522E-01], 
-['M5',   3, -3.61136E-01, -3.70778E-02,  3.49142E-01], 
-['M5',   4,  1.36114E+00, -3.70778E-02,  3.49142E-01], 
-['M6',   1,  1.12702E-01,  1.12702E-01,  7.71605E-02], 
-['M6',   2,  8.87298E-01,  1.12702E-01,  7.71605E-02], 
-['M6',   3,  8.87298E-01,  8.87298E-01,  7.71605E-02], 
-['M6',   4,  1.12702E-01,  8.87298E-01,  7.71605E-02], 
-['M6',   5,  5.00000E-01,  1.12702E-01,  1.23457E-01], 
-['M6',   6,  8.87298E-01,  5.00000E-01,  1.23457E-01], 
-['M6',   7,  5.00000E-01,  8.87298E-01,  1.23457E-01], 
-['M6',   8,  1.12702E-01,  5.00000E-01,  1.23457E-01], 
+['M1',   1,  0.00000E+00,  6.69991E-01,  3.26073E-01],
+['M1',   2,  0.00000E+00,  3.30009E-01,  3.26073E-01],
+['M1',   3,  0.00000E+00,  9.30568E-01,  1.73927E-01],
+['M1',   4,  0.00000E+00,  6.94318E-02,  1.73927E-01],
+['M2',   1,  6.69991E-01,  1.00000E+00,  3.26073E-01],
+['M2',   2,  3.30009E-01,  1.00000E+00,  3.26073E-01],
+['M2',   3,  9.30568E-01,  1.00000E+00,  1.73927E-01],
+['M2',   4,  6.94318E-02,  1.00000E+00,  1.73927E-01],
+['M3',   1,  1.00000E+00,  3.30009E-01,  3.26073E-01],
+['M3',   2,  1.00000E+00,  6.69991E-01,  3.26073E-01],
+['M3',   3,  1.00000E+00,  6.94318E-02,  1.73927E-01],
+['M3',   4,  1.00000E+00,  9.30568E-01,  1.73927E-01],
+['M4',   1,  3.30009E-01,  0.00000E+00,  3.26073E-01],
+['M4',   2,  6.69991E-01,  0.00000E+00,  3.26073E-01],
+['M4',   3,  6.94318E-02,  0.00000E+00,  1.73927E-01],
+['M4',   4,  9.30568E-01,  0.00000E+00,  1.73927E-01],
+['M5',   1,  1.60019E-01, -5.77936E-03,  6.52522E-01],
+['M5',   2,  8.39981E-01, -5.77936E-03,  6.52522E-01],
+['M5',   3, -3.61136E-01, -3.70778E-02,  3.49142E-01],
+['M5',   4,  1.36114E+00, -3.70778E-02,  3.49142E-01],
+['M6',   1,  1.12702E-01,  1.12702E-01,  7.71605E-02],
+['M6',   2,  8.87298E-01,  1.12702E-01,  7.71605E-02],
+['M6',   3,  8.87298E-01,  8.87298E-01,  7.71605E-02],
+['M6',   4,  1.12702E-01,  8.87298E-01,  7.71605E-02],
+['M6',   5,  5.00000E-01,  1.12702E-01,  1.23457E-01],
+['M6',   6,  8.87298E-01,  5.00000E-01,  1.23457E-01],
+['M6',   7,  5.00000E-01,  8.87298E-01,  1.23457E-01],
+['M6',   8,  1.12702E-01,  5.00000E-01,  1.23457E-01],
 ['M6',   9,  5.00000E-01,  5.00000E-01,  1.97531E-01]
 ]
 
+PourTest3D = [
+['M5',   1,  1.1038330951422, -0.03000000000000 , -0.63729833462074,  0.55721972969422],
+['M5',   2,  0.4330127018922,  0.0E+00          , -0.25000000000000,  0.88888888888889],
+['M5',   3, -0.2378076913577, -0.03000000000000 ,  0.13729833462074,  0.55721972969422],
+['M6',   1,  0.0976025052672,  0.11270166537926 , -0.05635083268963,  0.07716049382716],
+['M6',   2,  0.7684228985171,  0.11270166537926 , -0.44364916731037,  0.07716049382716],
+['M6',   3,  0.7684228985171,  0.88729833462074 , -0.44364916731037,  0.07716049382716],
+['M6',   4,  0.0976025052673,  0.88729833462074 , -0.05635083268963,  0.07716049382716],
+['M6',   5,  0.4330127018922,  0.11270166537926 , -0.25000000000000,  0.12345679012346],
+['M6',   6,  0.7684228985172,  0.50000000000000 , -0.44364916731037,  0.12345679012346],
+['M6',   7,  0.4330127018922,  0.88729833462074 , -0.25000000000000,  0.12345679012346],
+['M6',   8,  0.0976025052672,  0.50000000000000 , -0.05635083268963,  0.12345679012346],
+['M6',   9,  0.4330127018922,  0.50000000000000 , -0.25000000000000,  0.19753086419753]
+]
 
 for maille,point,X,Y,W in PourTest:
    TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
@@ -141,6 +167,43 @@ for maille,point,X,Y,W in PourTest:
                            NOM_CMP='W',
                            MAILLE=maille,
                            CHAM_GD=coorcp,
+                           TOLE_MACHINE=1.E-5,
+                           VALE_CALC=W,
+                           VALE_REFE=W,),
+                        ),
+             )
+
+
+for maille,point,X,Y,Z,W in PourTest3D:
+   TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='X',
+                           MAILLE=maille,
+                           CHAM_GD=coor3d,
+                           TOLE_MACHINE=1.E-5,
+                           VALE_CALC=X,
+                           VALE_REFE=X,),
+                        _F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='Y',
+                           MAILLE=maille,
+                           CHAM_GD=coor3d,
+                           TOLE_MACHINE=1.E-5,
+                           VALE_CALC=Y,
+                           VALE_REFE=Y,),
+                        _F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='Z',
+                           MAILLE=maille,
+                           CHAM_GD=coor3d,
+                           TOLE_MACHINE=1.E-5,
+                           VALE_CALC=Z,
+                           VALE_REFE=Z,),
+                        _F(REFERENCE='ANALYTIQUE',
+                           POINT=point,
+                           NOM_CMP='W',
+                           MAILLE=maille,
+                           CHAM_GD=coor3d,
                            TOLE_MACHINE=1.E-5,
                            VALE_CALC=W,
                            VALE_REFE=W,),
