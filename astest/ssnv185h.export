@@ -1,0 +1,10 @@
+P time_limit 130
+P memory_limit 1024
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnv185h.comm D 1
+F datg ssnv185h.datg D 16
+F mmed ssnv185h.mmed D 20

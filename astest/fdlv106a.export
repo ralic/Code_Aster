@@ -1,0 +1,11 @@
+P time_limit 60
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm fdlv106a.comm D 1
+F mail fdlv106a.21 D 20
+F msup fdlv106a.msup D 19
+F libr fdlv106a.21 D 21

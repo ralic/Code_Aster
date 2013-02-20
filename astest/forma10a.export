@@ -1,0 +1,12 @@
+P time_limit 60
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm forma10a.comm D 1
+F comm forma10a.com1 D 1
+F mail erreu13a.mail D 20
+F libr forma10a.21 D 21
+F libr forma10a.22 D 22

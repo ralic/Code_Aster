@@ -1,0 +1,11 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm tpna01b.comm D 1
+F datg tpna01b.datg D 16
+F msup tpna01b.msup D 19
+F mmed tpna01b.mmed D 20

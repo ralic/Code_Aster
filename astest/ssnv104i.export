@@ -1,0 +1,11 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm ssnv104i.comm D 1
+F mail ssnv104i.mail D 20
+F datg ssnv104i.datg D 16
+F mgib ssnv104i.mgib D 19

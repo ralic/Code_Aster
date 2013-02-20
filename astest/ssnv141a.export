@@ -1,0 +1,9 @@
+P time_limit 310
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnv141a.comm D 1
+F mmed ssnv141a.mmed D 20

@@ -1,0 +1,10 @@
+P time_limit 100
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm sslx103a.comm D 1
+F datg sslx103a.datg D 16
+F libr sslx103a.20 D 20

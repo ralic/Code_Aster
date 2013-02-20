@@ -1,0 +1,10 @@
+P time_limit 270
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnp312b.comm D 1
+F datg ssnp312b.datg D 16
+F mmed ssnp312b.mmed D 20

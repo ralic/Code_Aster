@@ -1,0 +1,9 @@
+P time_limit 100
+P memory_limit 768
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm mumps03a.comm D 1
+F mmed ahlv100a.mmed D 20

@@ -1,0 +1,10 @@
+P time_limit 300
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnv183a.comm D 1
+F mail ssnv183a.mail D 20
+F libr ssnv183a.29 D 29

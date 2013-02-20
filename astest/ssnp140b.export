@@ -1,0 +1,9 @@
+P time_limit 100
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnp140b.comm D 1
+F mmed ssnp140b.mmed D 20

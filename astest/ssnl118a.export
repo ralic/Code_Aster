@@ -1,0 +1,11 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm ssnl118a.comm D 1
+F mail ssnl118a.mail D 20
+F libr ssnl118a.30 D 30
+F libr ssnl118a.38 D 38

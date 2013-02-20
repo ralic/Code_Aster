@@ -1,0 +1,11 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm sdll302b.comm D 1
+F mail sdll302a.mail D 20
+F libr sdll302b.17 D 17
+F libr sdll302b.38 D 38

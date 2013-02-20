@@ -1,0 +1,10 @@
+P time_limit 170
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm ssnv164b.comm D 1
+F datg ssnv164a.datg D 16
+F mmed ssnv164b.mmed D 20

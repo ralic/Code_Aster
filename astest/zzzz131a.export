@@ -1,0 +1,12 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm zzzz131a.comm D 1
+F mmed zzzz131a.mmed D 20
+F libr ssnl106a.22 D 21
+F libr ssnl106a.21 D 22
+F libr zzzz131a.50 D 50

@@ -1,0 +1,11 @@
+P time_limit 120
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssna110a.comm D 1
+F libr ssna110a.3 D 3
+F libr ssna110a.90 D 90
+F libr ssna110a.91 D 91

@@ -1,0 +1,11 @@
+P time_limit 60
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm zzzz261a.comm D 1
+F datg zzzz261a.datg D 16
+F libr zzzz261a.18 D 18
+F libr zzzz261a.19 D 19

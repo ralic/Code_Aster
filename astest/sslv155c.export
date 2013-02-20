@@ -1,0 +1,9 @@
+P time_limit 300
+P memory_limit 1536
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm sslv155c.comm D 1
+F mmed sslv155c.mmed D 20

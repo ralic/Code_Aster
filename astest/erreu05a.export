@@ -1,0 +1,10 @@
+P time_limit 60
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm erreu05a.comm D 1
+F comm erreu05a.com1 D 1
+F mmed erreu05a.mmed D 20

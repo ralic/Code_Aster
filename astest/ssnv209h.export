@@ -1,0 +1,10 @@
+P time_limit 700
+P memory_limit 768
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnv209h.comm D 1
+F datg ssnv209h.datg D 16
+F mmed ssnv209h.mmed D 20

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 04/02/2013   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE PROBLEME DE COUPLAGE CAVITE-PLAQUE
 # adlv301a.para = tps_job 160 mem_job 1024Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -74,7 +74,7 @@ DDLIMP=AFFE_CHAR_MECA(
 
 FORCE=AFFE_CHAR_MECA(
          MODELE=MO,
-         FORCE_NODALE=_F( NOEUD = 'NO000352',
+         FORCE_NODALE=_F( GROUP_NO = 'N1',
                       FZ = 1.)
          )
 
@@ -141,30 +141,27 @@ DYNAHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
            )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   VALE_CALC_C=-0.061061669+ 0.00000000E+00j,
-                   VALE_REFE_C=(-0.058400000000000001+0j),
-                   REFERENCE='NON_DEFINI',
+                   VALE_CALC_C=-0.0685016+0j,
                    RESULTAT=DYNAHARM,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO000352',
-                   NOM_CMP='PRES',
-                   PRECISION=0.050000000000000003,),
+                   GROUP_NO='N1',
+                   NOM_CMP='PRES',),
                 _F(NUME_ORDRE=1,
-                   VALE_CALC_C=-0.025249481+ 0.00000000E+00j,
-                   VALE_REFE_C=(-0.025360000000000001+0j),
+                   VALE_CALC_C=-0.02507196+0j,
+                   VALE_REFE_C=(-0.02536+0j),
                    REFERENCE='NON_DEFINI',
                    RESULTAT=DYNAHARM,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO009136',
+                   GROUP_NO='N2',
                    NOM_CMP='PRES',
                    PRECISION=0.02,),
                 _F(NUME_ORDRE=1,
-                   VALE_CALC_C=0.092401102+ 0.00000000E+00j,
-                   VALE_REFE_C=(0.092240000000000003+0j),
+                   VALE_CALC_C=0.09240108+0.0j,
+                   VALE_REFE_C=(0.092240+0j),
                    REFERENCE='NON_DEFINI',
                    RESULTAT=DYNAHARM,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO017956',
+                   GROUP_NO='N3',
                    NOM_CMP='PRES',
                    PRECISION=2.E-3,),
                 ),

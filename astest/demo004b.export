@@ -1,0 +1,10 @@
+P time_limit 60
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm demo004b.comm D 1
+F datg demo004b.datg D 16
+F msh demo004b.msh D 19

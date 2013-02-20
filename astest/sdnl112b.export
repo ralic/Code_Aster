@@ -1,0 +1,11 @@
+P time_limit 240
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm sdnl112b.comm D 1
+F mmed sdnl112b.mmed D 20
+F libr sdll110a.70 D 70
+F libr sdll110a.71 D 71

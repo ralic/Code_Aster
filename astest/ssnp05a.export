@@ -1,0 +1,11 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm ssnp05a.comm D 1
+F msup ssnp05a.msup D 19
+F mmed ssnp05a.mmed D 20
+F libr ssnp05a.35 D 35

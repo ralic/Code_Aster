@@ -1,0 +1,10 @@
+P time_limit 430
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssns501a.comm D 1
+F mail ssns501a.mail D 20
+F msup ssns501a.msup D 19

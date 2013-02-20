@@ -1,0 +1,10 @@
+P time_limit 80
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist CI 
+
+F comm zzzz307a.comm D 1
+F datg zzzz307a.datg D 16
+F mgib zzzz307a.mgib D 19

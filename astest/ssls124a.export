@@ -1,0 +1,14 @@
+P time_limit 60
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssls124a.comm D 1
+F datg ssls124a.datg D 16
+F libr ssls124a.21 D 21
+F libr ssls124a.22 D 22
+F libr ssls124a.23 D 23
+F libr ssls124a.24 D 24
+F libr ssls124a.25 D 25

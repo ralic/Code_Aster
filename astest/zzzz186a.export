@@ -1,0 +1,14 @@
+P time_limit 70
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm zzzz186a.comm D 1
+F datg zzzz186a.datg D 16
+F msh zzzz186a.msh D 19
+F mmed zzzz186a.mmed D 20
+F libr zzzz186a.21 D 21
+F libr zzzz186a.40 D 40
+F libr zzzz186a.41 D 41

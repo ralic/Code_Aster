@@ -1,0 +1,13 @@
+P time_limit 60
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm distr01a.comm D 1
+F comm distr01a.com1 D 1
+F mmed distr01a.mmed D 20
+F libr distr01a.11 D 11
+F libr distr01a.50 D 50
+F libr distr01a.51 D 51

@@ -1,0 +1,13 @@
+P time_limit 120
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm forma03c.comm D 1
+F datg forma03a.datg D 16
+F mmed forma03a.mmed D 20
+F libr forma03a.21 D 21
+F libr forma03c.3 D 3
+F libr forma03c.84 D 84

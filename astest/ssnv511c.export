@@ -1,0 +1,10 @@
+P time_limit 50
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnv511c.comm D 1
+F datg ssnv511c.datg D 16
+F mmed ssnv511c.mmed D 20

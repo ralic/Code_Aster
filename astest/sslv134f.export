@@ -1,0 +1,9 @@
+P time_limit 160
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm sslv134f.comm D 1
+F mmed sslv134e.mmed D 20

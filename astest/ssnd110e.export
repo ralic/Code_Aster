@@ -1,0 +1,13 @@
+P time_limit 300
+P memory_limit 500
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnd110e.comm D 1
+F libr ssnd110a.22 D 22
+F libr ssnd110a.28 D 28
+F libr ssnd110a.29 D 29
+F libr ssnd110e.30 D 30
+F libr ssnd110e.31 D 31

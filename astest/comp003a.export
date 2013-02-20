@@ -1,0 +1,10 @@
+P time_limit 300
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm comp003a.comm D 1
+F libr comp003a.91 D 91
+F libr comp002j.93 D 93

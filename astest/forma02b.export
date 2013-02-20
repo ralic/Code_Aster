@@ -1,0 +1,11 @@
+P time_limit 140
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm forma02b.comm D 1
+F comm forma02b.com1 D 1
+F datg forma02b.datg D 16
+F mmed forma02b.mmed D 20

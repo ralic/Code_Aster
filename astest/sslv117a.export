@@ -1,0 +1,10 @@
+P time_limit 120
+P memory_limit 1500
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm sslv117a.comm D 1
+F comm sslv117a.com0 D 1
+F mmed sslv117a.mmed D 20

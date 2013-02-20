@@ -1,0 +1,9 @@
+P time_limit 780
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnv506f.comm D 1
+F mmed ssnv506c.mmed D 20

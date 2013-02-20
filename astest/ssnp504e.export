@@ -1,0 +1,10 @@
+P time_limit 400
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnp504e.comm D 1
+F datg ssnp504e.datg D 16
+F msh ssnp504e.msh D 19

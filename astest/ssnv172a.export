@@ -1,0 +1,12 @@
+P time_limit 300
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm ssnv172a.comm D 1
+F mail ssnv171c.mail D 20
+F libr ssnv172a.39 D 39
+F libr ssnv172a.40 D 40
+F libr ssnv172a.49 D 49

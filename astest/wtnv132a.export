@@ -1,0 +1,11 @@
+P time_limit 1000
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm wtnv132a.comm D 1
+F comm wtnv132a.com1 D 1
+F datg wtnv132a.datg D 16
+F mmed wtnv132a.mmed D 20

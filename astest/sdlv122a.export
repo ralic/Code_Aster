@@ -1,0 +1,10 @@
+P time_limit 120
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm sdlv122a.comm D 1
+F msup sdlv122a.msup D 19
+F libr sdlv122a.33 D 33

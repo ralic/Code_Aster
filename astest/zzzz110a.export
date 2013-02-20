@@ -1,0 +1,12 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm zzzz110a.comm D 1
+F datg zzzz110a.datg D 16
+F mmed zzzz110a.mmed D 20
+F libr zzzz110a.17 D 17
+F libr zzzz110a.18 D 18

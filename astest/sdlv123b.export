@@ -1,0 +1,10 @@
+P time_limit 300
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm sdlv123b.comm D 1
+F datg sdlv123b.datg D 16
+F mmed sdlv123b.mmed D 20

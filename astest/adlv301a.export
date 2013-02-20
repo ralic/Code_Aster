@@ -1,0 +1,10 @@
+P time_limit 160
+P memory_limit 1024
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm adlv301a.comm D 1
+F msup adlv301a.msup D 19
+F mmed adlv301a.mmed D 20

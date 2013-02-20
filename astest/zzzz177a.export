@@ -1,0 +1,12 @@
+P time_limit 60
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm zzzz177a.comm D 1
+F comm zzzz177a.com1 D 1
+F libr zzzz177a.31 D 31
+F libr zzzz177a.32 D 32
+F libr zzzz177a.55 D 55

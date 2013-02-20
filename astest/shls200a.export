@@ -1,0 +1,10 @@
+P time_limit 310
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm shls200a.comm D 1
+F datg shls200a.datg D 16
+F mmed shls200a.mmed D 20
