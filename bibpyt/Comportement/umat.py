@@ -1,8 +1,8 @@
-#@ MODIF umat Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF umat Comportement  DATE 18/02/2013   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -30,7 +30,7 @@ loi = LoiComportement(
    mc_mater       = ('UMAT'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC','GDEF_LOG'),
-   nom_varc       = ('TEMP', 'IRRA', 'CORR', 'HYDR', 'SECH'),
+   nom_varc       = ('TEMP', 'IRRA', 'CORR', 'HYDR', 'SECH','NEUT1','NEUT2'),
    algo_inte         = ('SANS_OBJET'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
