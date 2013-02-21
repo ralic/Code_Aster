@@ -1,13 +1,14 @@
-      SUBROUTINE VTCOP1(CHIN,CHOUT)
+      SUBROUTINE VTCOP1(CHIN,CHOUT,KSTOP,CODRET)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*(*)       CHIN,CHOUT
+      CHARACTER*(*) CHIN,CHOUT
+      CHARACTER*1   KSTOP
+      INTEGER       CODRET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 12/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE SELLENET N.SELLENET
 C     APPELLE PAR LA ROUTINE CHAPEAU VTCOPY
 C     RECOPIE LES VALEURS DU CHAM_NO CHIN DANS LE CHAM_NO CHOUT
 C     CETTE ROUTINE PERMET DE CHANGER LA NUMEROTATION D'UN CHAM_NO
@@ -34,17 +36,18 @@ C     ------------------------------------------------------------------
 C
 C
 C
-      INTEGER        IBID, IRET, IEQ1, IEQ2, NEQ1, JVALE1, JVALE2
+      INTEGER      IBID,IRET,IEQ1,IEQ2,NEQ1,JVALE1,JVALE2,JTRAV2
       INTEGER      NEQ2,JDESC1,JDESC2,JREFE1,JREFE2,JDEEQ1,JDEEQ2
       INTEGER      NNOMX,NCPMX,JTRAV1,NUNO2,NUCP2,NUNO1,NUCP1,JDEEQ
-      CHARACTER*1    K1B, TYP1, TYP2
+      CHARACTER*1  K1B, TYP1, TYP2
       CHARACTER*24 VALK(4)
-      CHARACTER*19   CH1, CH2,PFCHNO
+      CHARACTER*19 CH1, CH2,PFCHNO
 
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
-      CH1  = CHIN
+      CODRET = 0
+      CH1 = CHIN
       CH2 = CHOUT
 C
       CALL VRREFE ( CH1, CH2, IRET )
@@ -146,10 +149,12 @@ C     ---------------------------------------------------------------
 C     2.2 ON REMPLIT UN OBJET DE TRAVAIL :
 C     ------------------------------------
       CALL WKVECT ( '&&VTCOPY.TRAV1', 'V V I', NNOMX*NCPMX, JTRAV1 )
+      CALL WKVECT ( '&&VTCOPY.TRAV2', 'V V L', NEQ2, JTRAV2 )
       DO 18, IEQ2=1,NEQ2
         NUNO2=ZI(JDEEQ2-1+2*(IEQ2-1)+1)
         NUCP2=ZI(JDEEQ2-1+2*(IEQ2-1)+2)
         IF (NUCP2.GT.0) ZI(JTRAV1-1+(NUNO2-1)*NCPMX+NUCP2)=IEQ2
+        ZL(JTRAV2-1+IEQ2)=.FALSE.
  18   CONTINUE
 
 
@@ -164,6 +169,7 @@ C     -------------------------------------------
      &                        .AND. (NUCP1.LE.NCPMX)) THEN
                 IEQ2=ZI(JTRAV1-1+(NUNO1-1)*NCPMX+NUCP1)
                 IF (IEQ2 .GT. 0) THEN
+                  ZL(JTRAV2-1+IEQ2)=.TRUE.
                   ZR(JVALE2-1+IEQ2)=ZR(JVALE1-1+IEQ1)
                 ENDIF
               END IF
@@ -175,6 +181,7 @@ C     -------------------------------------------
               IF ((NUCP1.GT.0).AND.(NUNO1.LE.NNOMX))THEN
                 IEQ2=ZI(JTRAV1-1+(NUNO1-1)*NCPMX+NUCP1)
                 IF (IEQ2 .GT. 0) THEN
+                  ZL(JTRAV2-1+IEQ2)=.TRUE.
                   ZC(JVALE2-1+IEQ2)=ZC(JVALE1-1+IEQ1)
                 ENDIF
               END IF
@@ -193,6 +200,7 @@ C
            IF ((NUCP1.GT.0).AND.(NUNO1.LE.NNOMX))THEN
              IEQ2=ZI(JTRAV1-1+(NUNO1-1)*NCPMX+NUCP1)
              IF (IEQ2 .GT. 0) THEN
+               ZL(JTRAV2-1+IEQ2)=.TRUE.
                ZC(JVALE2-1+IEQ2)=ZR(JVALE1-1+IEQ1)
              ENDIF
            END IF
@@ -205,7 +213,19 @@ C
           VALK(4) = TYP2
           CALL U2MESK('F','ALGELINE3_94', 4 ,VALK)
       ENDIF
+      DO 19, IEQ2=1,NEQ2
+        NUNO2=ZI(JDEEQ2-1+2*(IEQ2-1)+1)
+        NUCP2=ZI(JDEEQ2-1+2*(IEQ2-1)+2)
+        IF (NUCP2.GT.0.AND..NOT.ZL(JTRAV2+IEQ2-1)) THEN
+          IF (KSTOP.EQ.'F') THEN
+            CALL ASSERT(.FALSE.)
+          ELSE
+            CODRET = 1
+          ENDIF
+        ENDIF
+ 19   CONTINUE
       CALL JEDETR ( '&&VTCOPY.TRAV1' )
+      CALL JEDETR ( '&&VTCOPY.TRAV2' )
 C
  9999 CONTINUE
       CALL JEDEMA ( )

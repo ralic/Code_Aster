@@ -1,9 +1,9 @@
-# MODIF  DATE 17/12/2012   AUTEUR BRIE N.BRIE 
+# MODIF  DATE 12/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_N
 # sdld02b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1018,11 +1018,25 @@ RES=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',    NOM_CHAM='DEPL',
 DEP=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                 RESULTAT=RES, NOM_CHAM='DEPL', INST=0. )
 
+CHT2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', MAILLAGE=MA,AFFE=(
+                 _F(  TOUT='OUI',
+                      NOM_CMP = ('DX','DY','DZ'),  VALE = (0.,0.,0.),),
+                    ))
+
+DEP2=CREA_CHAMP(OPERATION='ASSE',
+                TYPE_CHAM='NOEU_DEPL_R',
+                MAILLAGE=MA,
+                ASSE=(
+                      _F(TOUT='OUI',
+                         CHAM_GD=CHT2),
+                      _F(TOUT='OUI',
+                         CHAM_GD=DEP),),)
+
 # LA MATRICE DE MASSE EST DIAGONALE DONC : MDEP = 10. * DEP
 
 
 MDEP=PROD_MATR_CHAM(    MATR_ASSE=MATASSM,
-                          CHAM_NO=DEP        )
+                          CHAM_NO=DEP2        )
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='P1',
                       CRITERE='ABSOLU',

@@ -1,8 +1,8 @@
-#@ MODIF mecanonline Messages  DATE 02/10/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline Messages  DATE 12/02/2013   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,6 +23,15 @@ cata_msg = {
 
 1 : _(u"""
  Échec dans le calcul des matrices élastiques pour l'amortissement.
+"""),
+
+2 : _(u"""
+ Lors de la recopie du champ %(k1)s donné dans ETAT_INIT de la commande
+ STAT_NON_LINE vers le champ %(k2)s, certaines composantes de %(k2)s
+ ont du être mises à zéro.
+ 
+ Ce problème survient lorsque le champ donné dans ETAT_INIT ne comporte
+ pas assez de composantes, on complète donc pas des zéros.
 """),
 
 23 : _(u"""

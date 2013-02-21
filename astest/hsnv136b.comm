@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE TRACTION SIMPLE GRANDES DEF LOI DE NORTON
 # hsnv136b.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,8 +92,6 @@ VL=STAT_NON_LINE(
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-1,
                 ITER_GLOB_MAXI = 50),
-#                     RECH_LINEAIRE=_F(
-#                ITER_LINE_MAXI = 3)
               )
 
 VL=STAT_NON_LINE( reuse=VL,
@@ -115,14 +113,11 @@ VL=STAT_NON_LINE( reuse=VL,
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(
-#               PREDICTION = 'ELASTIQUE',
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),
-#                     RECH_LINEAIRE=_F(
-#                ITER_LINE_MAXI = 0)
               )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=501,
@@ -132,7 +127,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=501,
                    NOEUD='NO3',
                    NOM_CMP='DX',
                    VALE_CALC=-527.42724700637,
-                   VALE_REFE=-527.42345999999998,
+                   VALE_REFE=-527.42590554164,
                    PRECISION=1.E-2,),
                 _F(NUME_ORDRE=501,
                    REFERENCE='AUTRE_ASTER',
@@ -141,8 +136,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=501,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    VALE_CALC=235.17731592299,
-                   VALE_REFE=239.45302000000001,
-                   PRECISION=2.E-2,
+                   VALE_REFE=236.68597139133,
+                   PRECISION=1.E-2,
                    MAILLE='MA1',),
                 _F(NUME_ORDRE=501,
                    REFERENCE='AUTRE_ASTER',
@@ -151,8 +146,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=501,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=1.4984193398407,
-                   VALE_REFE=1.4983659,
-                   PRECISION=0.014999999999999999,
+                   VALE_REFE=1.4984004816205,
+                   PRECISION=0.015,
                    MAILLE='MA1',),
                 ),
           )

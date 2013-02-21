@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2013   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE TRACTION SIMPLE GRANDES DEF META_LEMA_ANI DEGENERE EN NORTON
 # hsnv136a.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,8 +97,6 @@ ACIER=DEFI_MATERIAU(ELAS_META=_F(E = 80000.,
                             F1_M=0.0,    F2_M=0.80E-04, C_M=0.99E-04,  
                             F1_N=4.40,    F2_N=3.0,     C_N=6.1,  
                             F1_Q=19900., F2_Q=21000.,  C_Q=6200., 
-#                           F_MRR_RR=0.44,             C_MRR_RR=1.,
-#                           F_MTT_TT=0.71,              C_MTT_TT=1.,
                             F_MRR_RR=1.,                 C_MRR_RR=1.,
                             F_MTT_TT=1.,                 C_MTT_TT=1.,
                             F_MZZ_ZZ=1.,                 C_MZZ_ZZ=1.,
@@ -164,8 +162,6 @@ VL=STAT_NON_LINE(
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-1,
                 ITER_GLOB_MAXI = 50),
-#                     RECH_LINEAIRE=_F(
-#                ITER_LINE_MAXI = 3)
               )
 
 VL=STAT_NON_LINE( reuse=VL,
@@ -191,38 +187,27 @@ VL=STAT_NON_LINE( reuse=VL,
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),
-#                     RECH_LINEAIRE=_F(
-#                ITER_LINE_MAXI = 0)
               )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=501,
-                   REFERENCE='AUTRE_ASTER',
                    RESULTAT=VL,
                    NOM_CHAM='DEPL',
                    NOEUD='NO3',
                    NOM_CMP='DX',
-                   VALE_CALC=-527.42590554164,
-                   VALE_REFE=-527.42344000000003,
-                   PRECISION=1.E-2,),
+                   VALE_CALC=-527.42590554164,),
                 _F(NUME_ORDRE=501,
-                   REFERENCE='AUTRE_ASTER',
                    POINT=1,
                    RESULTAT=VL,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    VALE_CALC=236.68597139133,
-                   VALE_REFE=239.47961530000001,
-                   PRECISION=2.E-2,
                    MAILLE='MA1',),
                 _F(NUME_ORDRE=501,
-                   REFERENCE='AUTRE_ASTER',
                    POINT=1,
                    RESULTAT=VL,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=1.4984004816205,
-                   VALE_REFE=1.4983655600000001,
-                   PRECISION=0.014999999999999999,
                    MAILLE='MA1',),
                 ),
           )

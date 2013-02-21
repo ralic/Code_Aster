@@ -4,9 +4,9 @@
      &                    NEQ, NUMEDD, INCHAC, BASENO)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 12/02/2013   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -142,7 +142,7 @@ C
             INCHAC = 1
             CHAM2 = BASENO//'.DEPINI'
             CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-            CALL VTCOPY(CHAMP,CHAM2)
+            CALL VTCOPY(CHAMP,CHAM2,'F',IRET)
             CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
             CALL DCOPY(NEQ,ZR(JVALE),1,DEPINI,1)
          ELSE
@@ -158,7 +158,7 @@ C
             INCHAC = 1
             CHAM2 = BASENO//'.VITINI'
             CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-            CALL VTCOPY(CHAMP,CHAM2)
+            CALL VTCOPY(CHAMP,CHAM2,'F',IRET)
             CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
             CALL DCOPY(NEQ,ZR(JVALE),1,VITINI,1)
          ELSE
@@ -174,7 +174,7 @@ C
            INCHAC = 0
            CHAM2 = BASENO//'.ACCINI'
            CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-           CALL VTCOPY(CHAMP,CHAM2)
+           CALL VTCOPY(CHAMP,CHAM2,'F',IRET)
            CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
            CALL DCOPY(NEQ,ZR(JVALE),1,ACCINI,1)
          ENDIF
